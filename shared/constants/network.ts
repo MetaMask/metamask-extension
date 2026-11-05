@@ -11,7 +11,6 @@ import {
 } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from './chain-ids';
-import { getFailoverUrlsForChainId } from './network-failover';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -1483,7 +1482,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://linea-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.LINEA_MAINNET),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1498,7 +1496,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ARBITRUM),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1513,7 +1510,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.AVALANCHE),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1528,7 +1524,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://bsc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.BSC),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1543,7 +1538,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.OPTIMISM),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1558,7 +1552,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.POLYGON),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1573,7 +1566,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://zksync-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ZKSYNC_ERA),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1588,7 +1580,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://sei-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.SEI),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1603,7 +1594,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://monad-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.MONAD),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1618,7 +1608,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://hyperevm-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.HYPE),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1633,7 +1622,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.BASE),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1648,7 +1636,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://megaeth-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.MEGAETH_MAINNET),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1663,7 +1650,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://rpc.tempo.xyz/`,
-        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1678,7 +1664,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://arc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ARC),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1693,7 +1678,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://robinhood-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.ROBINHOOD_CHAIN),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1708,7 +1692,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://xdc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.XDC),
         type: RpcEndpointType.Custom,
       },
     ],

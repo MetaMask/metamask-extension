@@ -97,7 +97,7 @@ function transformState(state: Record<string, unknown>) {
       nativeCurrency: featuredNetwork.nativeCurrency,
       rpcEndpoints: featuredNetwork.rpcEndpoints.map((endpoint) => ({
         url: endpoint.url,
-        failoverUrls: endpoint.failoverUrls || [],
+        failoverUrls: [],
         type: endpoint.type,
         networkClientId: uuidV4(), // Will be set by the network controller
       })),

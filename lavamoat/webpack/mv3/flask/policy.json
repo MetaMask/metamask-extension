@@ -8114,7 +8114,8 @@
     },
     "@metamask/network-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/notification-services-controller>uuid": {
