@@ -5,11 +5,17 @@ import {
   mockResizeObserver,
   type ResizeObserverMock,
 } from '../../../../test/lib/mock-resize-observer';
+import {
+  mockElementAnimate,
+  mockReducedMotion,
+  type ElementAnimateMock,
+} from '../animated-numeric-text/test-utils';
 import { isPartialHeroAmount } from './hero-amount-input.constants';
 import { HeroAmountInput } from './hero-amount-input';
 import { getHeroAmountFontSize } from './hero-amount-input.utils';
 
 const LONG_AMOUNT = '500000000000000000';
+const TRANSPARENT_TEXT = '[-webkit-text-fill-color:transparent]';
 
 const ControlledAmount = (
   props: Omit<React.ComponentProps<typeof HeroAmountInput>, 'value'>,
@@ -279,6 +285,157 @@ describe('HeroAmountInput', () => {
       } finally {
         HTMLElement.prototype.getBoundingClientRect = originalRect;
       }
+    });
+  });
+
+  describe('glyph motion', () => {
+    let animate: ElementAnimateMock;
+
+    beforeEach(() => {
+      animate = mockElementAnimate();
+    });
+
+    afterEach(() => {
+      animate.restore();
+    });
+
+    const getValue = () => screen.getByTestId('hero-amount-input-value');
+    const getField = () => screen.getByTestId('hero-amount-input-input');
+    const getGlyphKeys = () =>
+      Array.from(
+        getValue().querySelectorAll<HTMLElement>('[data-flip-key]'),
+      ).map((glyph) => glyph.dataset.flipKey);
+
+    it('draws keyed glyphs under a field with transparent text', () => {
+      render(<HeroAmountInput prefix="$" value="12.5" />);
+
+      expect(getValue()).not.toHaveClass('invisible');
+      expect(getGlyphKeys()).toStrictEqual([
+        'digit-0-1',
+        'digit-1-2',
+        'separator-46-0',
+        'digit-2-5',
+      ]);
+      expect(getField()).toHaveValue('12.5');
+      expect(getField()).toHaveClass(TRANSPARENT_TEXT);
+    });
+
+    it('shows the field placeholder while the value is empty', () => {
+      render(<HeroAmountInput value="" />);
+
+      expect(getField()).not.toHaveClass(TRANSPARENT_TEXT);
+      expect(getField()).toHaveAttribute('placeholder', '0');
+      expect(getGlyphKeys()).toStrictEqual([]);
+    });
+
+    it('zooms in a typed digit and keeps the earlier glyphs mounted', () => {
+      render(<ControlledAmount />);
+      fireEvent.change(getField(), { target: { value: '1' } });
+      const first = getValue().querySelector('[data-flip-key="digit-0-1"]');
+      animate.calls.length = 0;
+
+      fireEvent.change(getField(), { target: { value: '12' } });
+
+      expect(getValue().querySelector('[data-flip-key="digit-0-1"]')).toBe(
+        first,
+      );
+      const zooms = animate.calls.filter(
+        ({ keyframes }) => keyframes[0].transform === 'scale(0)',
+      );
+      expect(zooms).toHaveLength(1);
+      expect(zooms[0].element).toHaveTextContent('2');
+    });
+
+    it('zooms out a deleted digit', () => {
+      render(<ControlledAmount />);
+      fireEvent.change(getField(), { target: { value: '12' } });
+      animate.calls.length = 0;
+
+      fireEvent.change(getField(), { target: { value: '1' } });
+
+      const exits = animate.calls.filter(
+        ({ keyframes }) => keyframes[1]?.transform === 'scale(0)',
+      );
+      expect(exits).toHaveLength(1);
+      expect(exits[0].element).toHaveTextContent('2');
+    });
+
+    it('still rejects invalid keystrokes', () => {
+      render(<ControlledAmount maxDecimals={2} />);
+
+      for (const value of ['1', '1a', '1.2.', '1.23', '1.234']) {
+        fireEvent.change(getField(), { target: { value } });
+      }
+
+      expect(getField()).toHaveValue('1.23');
+      expect(getValue()).toHaveTextContent('1.23');
+    });
+
+    it('shows the field text while an IME composition is open', () => {
+      render(<HeroAmountInput value="12" />);
+
+      fireEvent.compositionStart(getField());
+      expect(getValue()).toHaveClass('invisible');
+      expect(getField()).not.toHaveClass(TRANSPARENT_TEXT);
+
+      fireEvent.compositionEnd(getField());
+      expect(getValue()).not.toHaveClass('invisible');
+      expect(getField()).toHaveClass(TRANSPARENT_TEXT);
+    });
+
+    it('forwards composition and scroll handlers from inputProps', () => {
+      const onCompositionStart = jest.fn();
+      const onCompositionEnd = jest.fn();
+      const onScroll = jest.fn();
+      render(
+        <HeroAmountInput
+          value="12"
+          inputProps={{ onCompositionStart, onCompositionEnd, onScroll }}
+        />,
+      );
+
+      fireEvent.compositionStart(getField());
+      fireEvent.compositionEnd(getField());
+      fireEvent.scroll(getField());
+
+      expect(onCompositionStart).toHaveBeenCalledTimes(1);
+      expect(onCompositionEnd).toHaveBeenCalledTimes(1);
+      expect(onScroll).toHaveBeenCalledTimes(1);
+    });
+
+    it('moves the glyphs with the field when it scrolls', () => {
+      render(<HeroAmountInput value={LONG_AMOUNT} />);
+      const field = getField();
+
+      field.scrollLeft = 40;
+      fireEvent.scroll(field);
+
+      expect(getValue().style.transform).toBe('translateX(-40px)');
+    });
+
+    describe('with reduced motion', () => {
+      let restoreReducedMotion: () => void;
+
+      beforeEach(() => {
+        restoreReducedMotion = mockReducedMotion();
+      });
+
+      afterEach(() => {
+        restoreReducedMotion();
+      });
+
+      it('shows the field text without glyphs or animation', () => {
+        render(<ControlledAmount />);
+
+        fireEvent.change(getField(), { target: { value: '1' } });
+        fireEvent.change(getField(), { target: { value: '12' } });
+        fireEvent.change(getField(), { target: { value: '1' } });
+
+        expect(getValue()).toHaveClass('invisible');
+        expect(getField()).not.toHaveClass(TRANSPARENT_TEXT);
+        expect(getGlyphKeys()).toStrictEqual([]);
+        expect(animate.calls).toHaveLength(0);
+      });
     });
   });
 

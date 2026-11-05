@@ -13,20 +13,32 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <label
-          class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1"
+          class="relative flex w-full items-center overflow-clip justify-start min-w-0 flex-1"
           data-testid="from-amount-row"
           style="height: 40px;"
         >
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="from-amount-row-value"
               style="font-size: 40px; line-height: 40px;"
             >
-              0
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
+              <span
+                class="invisible [font-family:inherit]"
+              >
+                0
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -139,20 +151,28 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <label
-            class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1 opacity-50"
+            class="relative flex w-full items-center overflow-clip justify-start min-w-0 flex-1 opacity-50"
             data-testid="to-amount-row"
             style="height: 40px;"
           >
             <span
               class="relative w-max min-w-0 overflow-hidden"
+              data-flip-key="amount"
             >
               <span
                 aria-hidden="true"
-                class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+                class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
                 data-testid="to-amount-row-value"
                 style="font-size: 40px; line-height: 40px;"
               >
-                0
+                <span
+                  class="relative inline-block whitespace-pre [font-family:inherit]"
+                >
+                  0
+                  <span
+                    class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                  />
+                </span>
               </span>
               <input
                 aria-label="Amount"
@@ -271,20 +291,28 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <label
-          class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1"
+          class="relative flex w-full items-center overflow-clip justify-start min-w-0 flex-1"
           data-testid="from-amount-row"
           style="height: 40px;"
         >
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="from-amount-row-value"
               style="font-size: 40px; line-height: 40px;"
             >
-              1
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                1
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -397,20 +425,28 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
         >
           <label
-            class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1 opacity-50"
+            class="relative flex w-full items-center overflow-clip justify-start min-w-0 flex-1 opacity-50"
             data-testid="to-amount-row"
             style="height: 40px;"
           >
             <span
               class="relative w-max min-w-0 overflow-hidden"
+              data-flip-key="amount"
             >
               <span
                 aria-hidden="true"
-                class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+                class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
                 data-testid="to-amount-row-value"
                 style="font-size: 40px; line-height: 40px;"
               >
-                0
+                <span
+                  class="relative inline-block whitespace-pre [font-family:inherit]"
+                >
+                  0
+                  <span
+                    class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                  />
+                </span>
               </span>
               <input
                 aria-label="Amount"

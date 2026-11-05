@@ -26,11 +26,12 @@ function getContentWidth(element: HTMLElement): number {
  * then only when a ResizeObserver reports a change, so typing never reads
  * layout. A zero width (unmeasured or hidden) uses the popup fallback.
  *
- * @returns A ref callback for the row and its width.
+ * @returns A ref callback for the row, its width, and the row element.
  */
 export function useHeroAmountRowWidth(): [
   (element: HTMLElement | null) => void,
   number,
+  HTMLElement | null,
 ] {
   // Held in state so the effect re-runs when the row mounts or is replaced.
   // A ref callback cannot return a cleanup on React 18.
@@ -65,7 +66,7 @@ export function useHeroAmountRowWidth(): [
     return () => observer.disconnect();
   }, [row]);
 
-  return [setRow, width > 0 ? width : HERO_AMOUNT_FALLBACK_WIDTH];
+  return [setRow, width > 0 ? width : HERO_AMOUNT_FALLBACK_WIDTH, row];
 }
 
 /**

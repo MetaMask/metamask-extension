@@ -44,7 +44,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -57,6 +57,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -64,14 +65,22 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              25
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                25
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -757,7 +766,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -770,6 +779,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -777,14 +787,22 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              100
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                100
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -904,7 +922,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -917,6 +935,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
           </span>
           <span
             class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -924,14 +943,22 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              100
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                100
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -1075,7 +1102,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -1088,6 +1115,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
           </span>
           <span
             class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -1095,14 +1123,22 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              100
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                100
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -1246,7 +1282,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -1259,6 +1295,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -1266,14 +1303,22 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              100
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                100
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -1393,7 +1438,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -1406,6 +1451,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -1413,14 +1459,22 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              100
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                100
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -1857,7 +1911,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -1870,6 +1924,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
           </span>
           <span
             class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -1877,14 +1932,22 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              100
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                100
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
@@ -2028,7 +2091,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <label
-          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          class="relative flex w-full min-w-0 items-center overflow-clip justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
         >
@@ -2041,6 +2104,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-flip-key="prefix"
             data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
@@ -2048,14 +2112,22 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
           </span>
           <span
             class="relative w-max min-w-0 overflow-hidden"
+            data-flip-key="amount"
           >
             <span
               aria-hidden="true"
-              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block min-w-[1ch] whitespace-pre invisible transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-value"
               style="font-size: 88px; line-height: 88px;"
             >
-              50
+              <span
+                class="relative inline-block whitespace-pre [font-family:inherit]"
+              >
+                50
+                <span
+                  class="pointer-events-none absolute inset-0 [font-family:inherit]"
+                />
+              </span>
             </span>
             <input
               aria-label="Amount"
