@@ -7956,6 +7956,17 @@ export async function openUpdateTabAndReload() {
   );
 }
 
+/**
+ * Rejects every pending approval so a dapp waiting on a confirmation receives
+ * a user-rejected response. The extension reload that follows an update would
+ * otherwise drop the request without an answer.
+ */
+export async function rejectAllPendingApprovals() {
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:rejectAllPendingApprovals',
+  );
+}
+
 export async function getERC1155BalanceOf(
   userAddress: string,
   tokenAddress: string,

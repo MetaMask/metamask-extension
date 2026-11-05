@@ -10,8 +10,12 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import {
+  checkPersonalSignWasRejected,
+  DappConfirmationType,
   openBasicFunctionalityModal,
   openTakeoverInNewExtensionTab,
+  rejectDappConfirmation,
+  requestDappConfirmation,
 } from '../../page-objects/flows/extension-update-takeover.flow';
 import { version } from '../../../../package.json';
 
@@ -35,6 +39,22 @@ function qualifyingFixture(pendingExtensionVersion = minimumVersion) {
   return new FixtureBuilderV2()
     .withAppStateController({ pendingExtensionVersion })
     .build();
+}
+
+function connectedFixture() {
+  return new FixtureBuilderV2()
+    .withAppStateController({ pendingExtensionVersion: minimumVersion })
+    .withPermissionControllerConnectedToTestDapp()
+    .build();
+}
+
+function notificationFlags(showOnNotification: boolean) {
+  return {
+    remoteFeatureFlags: {
+      ...versionUpdateFlags.remoteFeatureFlags,
+      extensionUpdatePromptOnNotification: showOnNotification,
+    },
+  };
 }
 
 async function mockUpdatingPage(server: Mockttp): Promise<MockedEndpoint> {
@@ -182,5 +202,78 @@ describe('Extension update takeover', function (this: Suite) {
         await takeover.confirmUpdate({ doubleClick: true });
       },
     );
+  });
+
+  describe('notification windows', function () {
+    const confirmationTypes: DappConfirmationType[] = [
+      'signature',
+      'transaction',
+    ];
+
+    for (const type of confirmationTypes) {
+      it(`does not cover a ${type} confirmation when the notification flag is off`, async function () {
+        await withFixtures(
+          {
+            dappOptions: { numberOfTestDapps: 1 },
+            fixtures: connectedFixture(),
+            manifestFlags: notificationFlags(false),
+            title: this.test?.fullTitle(),
+          },
+          async ({ driver }) => {
+            await login(driver);
+            const takeover = new ExtensionUpdateTakeover(driver);
+            await takeover.checkVersionUpdateIsDisplayed();
+
+            await requestDappConfirmation(driver, type);
+            await takeover.checkPageIsNotPresent();
+            await rejectDappConfirmation(driver, type);
+          },
+        );
+      });
+
+      it(`covers a ${type} confirmation when the notification flag is on and returns to it after dismissal`, async function () {
+        await withFixtures(
+          {
+            dappOptions: { numberOfTestDapps: 1 },
+            fixtures: connectedFixture(),
+            manifestFlags: notificationFlags(true),
+            title: this.test?.fullTitle(),
+          },
+          async ({ driver }) => {
+            await login(driver);
+            const takeover = new ExtensionUpdateTakeover(driver);
+            await takeover.checkVersionUpdateIsDisplayed();
+
+            await requestDappConfirmation(driver, type);
+            await takeover.checkVersionUpdateIsDisplayed();
+            await takeover.checkBackgroundIsBlocked();
+            await takeover.dismiss();
+            await rejectDappConfirmation(driver, type);
+          },
+        );
+      });
+    }
+
+    it('rejects the pending personal sign when updating from a notification', async function () {
+      await withFixtures(
+        {
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: connectedFixture(),
+          manifestFlags: notificationFlags(true),
+          testSpecificMock: mockUpdatingPage,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }) => {
+          await login(driver);
+          const takeover = new ExtensionUpdateTakeover(driver);
+          await takeover.checkVersionUpdateIsDisplayed();
+
+          await requestDappConfirmation(driver, 'signature');
+          await takeover.checkVersionUpdateIsDisplayed();
+          await takeover.confirmUpdate();
+          await checkPersonalSignWasRejected(driver);
+        },
+      );
+    });
   });
 });
