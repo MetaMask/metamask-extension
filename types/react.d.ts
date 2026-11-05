@@ -9,12 +9,16 @@ declare namespace React {
     '--progress'?: string;
     anchorName?: string;
     positionAnchor?: string;
+    positionTryFallbacks?: string;
   }
 
-  export type HTMLAttributes<Tag> = {
+  // Augment the existing interface so popover / invoker attributes merge with
+  // the rest of React's DOM typings instead of replacing them.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  export interface HTMLAttributes<Target> {
     popover?: 'auto' | 'manual' | 'hint' | boolean;
     interestfor?: string;
     commandfor?: string;
     command?: string;
-  };
+  }
 }

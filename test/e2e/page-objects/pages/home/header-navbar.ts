@@ -224,14 +224,13 @@ class HeaderNavbar {
     );
     const container = await this.driver.findElement(this.networkAddressesLink);
     const trigger = await container.findElement({
-      css: '[data-testid="network-group-with-copy-icon"]',
+      css: '[data-testid="multichain-address-rows-trigger"]',
     });
     await this.driver.hoverElement(trigger);
-    await this.driver.executeScript(
-      (element: HTMLElement) =>
-        element.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })),
-      trigger,
-    );
+    await this.driver.executeScript((element: HTMLElement) => {
+      element.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: false }));
+    }, trigger);
   }
 
   async clickNotificationCount(count: number): Promise<void> {

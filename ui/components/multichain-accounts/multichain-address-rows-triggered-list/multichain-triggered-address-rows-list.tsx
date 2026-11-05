@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useId } from 'react';
+import React, { useMemo, useCallback, useId, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -44,6 +44,28 @@ const MAX_NETWORK_AVATARS = 4;
 // the "View all" button and the default address section always stay visible.
 const POPOVER_CONTENT_MAX_HEIGHT = 300;
 
+/**
+ * Whether the current browser supports Interest Invokers (`interestfor`).
+ * Exposed as a mutable object so tests can exercise native and fallback paths.
+ * Firefox and Safari do not support this API yet.
+ */
+export const interestInvokerSupport = {
+  detected:
+    typeof HTMLButtonElement !== 'undefined' &&
+    'interestForElement' in HTMLButtonElement.prototype,
+};
+
+/**
+ * Whether the current browser supports Invoker Commands (`command` /
+ * `commandfor` on buttons). Exposed as a mutable object so tests can exercise
+ * native and fallback paths.
+ */
+export const commandInvokerSupport = {
+  detected:
+    typeof HTMLButtonElement !== 'undefined' &&
+    'commandForElement' in HTMLButtonElement.prototype,
+};
+
 export type MultichainAddressRowsListProps = {
   /**
    * The account group ID.
@@ -77,6 +99,11 @@ export type MultichainAddressRowsListProps = {
    * When 'click', the popover toggles on click and closes when clicking outside.
    */
   triggerMode?: 'hover' | 'click';
+  /**
+   * Delay in ms before the hover fallback closes after pointer leave.
+   * Gives the pointer time to move onto the popover (WCAG 1.4.13).
+   */
+  hoverCloseDelay?: number;
 };
 
 const Divider = () => (
@@ -125,9 +152,22 @@ export const MultichainTriggeredAddressRowsList = ({
   showViewAllButton = true,
   showDefaultAddressSection = true,
   triggerMode = 'hover',
+  hoverCloseDelay = 50,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const popoverId = useId().replace(/:/gu, '');
+  const anchorName = `--multichain-address-rows-${popoverId}`;
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+  const hoverCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  const useNativeInterest =
+    triggerMode === 'hover' && interestInvokerSupport.detected;
+  const useNativeCommand =
+    triggerMode === 'click' && commandInvokerSupport.detected;
+  const useHoverFallback = triggerMode === 'hover' && !useNativeInterest;
+  const useClickFallback = triggerMode === 'click' && !useNativeCommand;
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard();
@@ -159,14 +199,48 @@ export const MultichainTriggeredAddressRowsList = ({
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
 
-  const handleClick = useCallback(
+  const clearHoverCloseTimeout = useCallback(() => {
+    if (hoverCloseTimeoutRef.current) {
+      clearTimeout(hoverCloseTimeoutRef.current);
+      hoverCloseTimeoutRef.current = null;
+    }
+  }, []);
+
+  const showFallbackPopover = useCallback(() => {
+    clearHoverCloseTimeout();
+    popoverRef.current?.showPopover?.();
+  }, [clearHoverCloseTimeout]);
+
+  const hideFallbackPopover = useCallback(() => {
+    clearHoverCloseTimeout();
+    popoverRef.current?.hidePopover?.();
+  }, [clearHoverCloseTimeout]);
+
+  const scheduleHideFallbackPopover = useCallback(() => {
+    clearHoverCloseTimeout();
+    hoverCloseTimeoutRef.current = setTimeout(() => {
+      hideFallbackPopover();
+    }, hoverCloseDelay);
+  }, [clearHoverCloseTimeout, hideFallbackPopover, hoverCloseDelay]);
+
+  useEffect(
+    () => () => {
+      clearHoverCloseTimeout();
+    },
+    [clearHoverCloseTimeout],
+  );
+
+  const handleClickTrigger = useCallback(
     (e: React.MouseEvent) => {
       if (triggerMode !== 'click') {
         return;
       }
       e.stopPropagation();
+      if (useClickFallback) {
+        popoverRef.current?.togglePopover?.();
+      }
     },
-    [triggerMode],
+    [triggerMode, useClickFallback],
   );
 
   const sortByPriorityNetworks = useCallback(
@@ -303,49 +377,92 @@ export const MultichainTriggeredAddressRowsList = ({
     sortByPriorityNetworks,
   ]);
 
-  const triggerProps = useMemo(() => {
-    const props: Record<string, string> = {};
-    if (triggerMode === 'click') {
-      props.commandfor = popoverId;
-      props.command = 'toggle-popover';
-    }
-    if (triggerMode === 'hover') {
-      props.interestfor = popoverId;
-    }
-    return props;
-  }, [triggerMode, popoverId]);
-
   const trigger = useMemo(() => {
-    if (React.isValidElement(children)) {
-      return React.cloneElement(children as React.ReactElement, {
-        ...triggerProps,
-        onClick: (e: React.MouseEvent) => {
-          handleClick(e);
-          const originalOnClick = (children as React.ReactElement).props
-            ?.onClick;
-          if (originalOnClick) {
-            originalOnClick(e);
+    // Hover requires a real <button> — interestfor only activates on button/a/area.
+    // Do not cloneElement onto arbitrary children (e.g. Box/div) for hover.
+    if (triggerMode === 'hover') {
+      return (
+        <button
+          type="button"
+          className="inline-flex border-0 bg-transparent p-0 text-inherit"
+          style={{ anchorName } as React.CSSProperties}
+          // eslint-disable-next-line react/no-unknown-property -- interestfor is a native HTML attribute
+          interestfor={useNativeInterest ? popoverId : undefined}
+          onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
+          onMouseLeave={
+            useHoverFallback ? scheduleHideFallbackPopover : undefined
           }
+          data-testid="multichain-address-rows-trigger"
+        >
+          {children}
+        </button>
+      );
+    }
+
+    // Click mode: prefer cloning onto the child when it is already a button
+    // (e.g. ButtonIcon), so we do not nest buttons.
+    if (React.isValidElement(children)) {
+      const child = children as React.ReactElement<{
+        style?: React.CSSProperties;
+        onClick?: (e: React.MouseEvent) => void;
+        commandfor?: string;
+        command?: string;
+      }>;
+
+      return React.cloneElement(child, {
+        style: {
+          ...child.props.style,
+          anchorName,
+        },
+        ...(useNativeCommand
+          ? {
+              commandfor: popoverId,
+              command: 'toggle-popover',
+            }
+          : {}),
+        onClick: (e: React.MouseEvent) => {
+          handleClickTrigger(e);
+          child.props.onClick?.(e);
         },
       });
     }
+
     return children;
-  }, [children, triggerProps, handleClick]);
+  }, [
+    anchorName,
+    children,
+    handleClickTrigger,
+    popoverId,
+    scheduleHideFallbackPopover,
+    showFallbackPopover,
+    triggerMode,
+    useHoverFallback,
+    useNativeCommand,
+    useNativeInterest,
+  ]);
 
   return (
     <>
       {trigger}
       <div
+        ref={popoverRef}
         id={popoverId}
-        // @ts-expect-error We need to update React types
         popover="auto"
         className="rounded-lg border border-border-muted bg-background-elevated2 p-2 inset-auto"
-        style={{
-          width: '360px',
-          margin: '2px 0 0',
-          top: 'anchor(bottom)',
-          left: 'anchor(left)',
-        }}
+        onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
+        onMouseLeave={
+          useHoverFallback ? scheduleHideFallbackPopover : undefined
+        }
+        style={
+          {
+            width: '360px',
+            margin: '2px 0 0',
+            positionAnchor: anchorName,
+            top: 'anchor(bottom)',
+            left: 'anchor(left)',
+            positionTryFallbacks: 'flip-block',
+          } as React.CSSProperties
+        }
       >
         <Box
           flexDirection={BoxFlexDirection.Column}
