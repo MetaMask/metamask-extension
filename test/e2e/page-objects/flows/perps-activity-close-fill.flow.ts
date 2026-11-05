@@ -13,21 +13,31 @@ import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
  * @param options.driver
  * @param options.pushUserFills
  * @param options.expectedTitleContains
+ * @param options.openActivityFromMarketDetail - Open Activity from the market
+ * screen instead of going back through Perps home. Market detail and Activity
+ * share one Perps layout, so the close fill is not dropped on the way.
  */
 export async function assertPerpsActivityShowsCloseFill({
   driver,
   pushUserFills,
   expectedTitleContains,
+  openActivityFromMarketDetail = false,
 }: {
   driver: Driver;
   pushUserFills: () => void;
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
+  openActivityFromMarketDetail?: boolean;
 }): Promise<void> {
   pushUserFills();
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.checkPageIsLoaded();
+  if (openActivityFromMarketDetail) {
+    await marketDetailPage.clickViewAllActivity();
+    await assertActivityShowsTrade(driver, expectedTitleContains);
+    return;
+  }
   await marketDetailPage.clickBack();
 
   const marketListPage = new PerpsMarketListPage(driver);
@@ -46,6 +56,13 @@ export async function assertPerpsActivityShowsCloseFill({
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 
+  await assertActivityShowsTrade(driver, expectedTitleContains);
+}
+
+async function assertActivityShowsTrade(
+  driver: Driver,
+  expectedTitleContains: string,
+): Promise<void> {
   const activityPage = new PerpsActivityPage(driver);
   await activityPage.checkPageIsLoaded();
   await activityPage.waitForAnyTransactionCard();
