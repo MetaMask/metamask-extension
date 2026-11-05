@@ -3,9 +3,46 @@ import type { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { MoneyAccountDepositConfirmation } from '../pages/confirmations/money-account-deposit-confirmation';
 import BottomNavBar from '../pages/home/bottom-nav-bar-page';
+import MoneyFtueSplashPage from '../pages/money/money-ftue-splash-page';
 import MoneyHomePage from '../pages/money/money-home-page';
 import MoneyTransactionDetailsPage from '../pages/money/money-transaction-details-page';
 import { login } from './login.flow';
+
+/**
+ * Open the Money home page via the bottom nav Money tab. Assumes the wallet
+ * is already unlocked.
+ *
+ * @param driver - The WebDriver instance.
+ * @returns The loaded `MoneyHomePage`.
+ */
+export async function openMoneyHome(driver: Driver): Promise<MoneyHomePage> {
+  const bottomNavBar = new BottomNavBar(driver);
+  await bottomNavBar.checkPageIsLoaded();
+  await bottomNavBar.clickMoney();
+
+  const moneyHomePage = new MoneyHomePage(driver);
+  await moneyHomePage.checkPageIsLoaded();
+  return moneyHomePage;
+}
+
+/**
+ * Open the Money FTUE splash via the bottom nav Money tab. Assumes the wallet
+ * is already unlocked.
+ *
+ * @param driver - The WebDriver instance.
+ * @returns The loaded `MoneyFtueSplashPage`.
+ */
+export async function openMoneyFtueSplash(
+  driver: Driver,
+): Promise<MoneyFtueSplashPage> {
+  const bottomNavBar = new BottomNavBar(driver);
+  await bottomNavBar.checkPageIsLoaded();
+  await bottomNavBar.clickMoney({ assertRoute: false });
+
+  const splash = new MoneyFtueSplashPage(driver);
+  await splash.checkPageIsLoaded();
+  return splash;
+}
 
 /**
  * Unlock the wallet and open the Money home page via the bottom nav Money
@@ -21,13 +58,7 @@ export async function loginAndOpenMoneyHome(
 ): Promise<MoneyHomePage> {
   await login(driver, { localNode, validateBalance: false });
 
-  const bottomNavBar = new BottomNavBar(driver);
-  await bottomNavBar.checkPageIsLoaded();
-  await bottomNavBar.clickMoney();
-
-  const moneyHomePage = new MoneyHomePage(driver);
-  await moneyHomePage.checkPageIsLoaded();
-  return moneyHomePage;
+  return openMoneyHome(driver);
 }
 
 /**

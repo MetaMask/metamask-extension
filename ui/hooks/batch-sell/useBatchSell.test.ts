@@ -17,7 +17,6 @@ describe('useBatchSell', () => {
         navigateToBatchSellSelectPage: mockNavigateToBatchSellSelectPage,
         navigateToBatchSellConfirmPage: jest.fn(),
         navigateToDefaultRoute: jest.fn(),
-        resetLocationState: jest.fn(),
       });
   });
 
@@ -61,7 +60,6 @@ describe('useBatchSell', () => {
         navigateToBatchSellSelectPage: newNavigate,
         navigateToBatchSellConfirmPage: jest.fn(),
         navigateToDefaultRoute: jest.fn(),
-        resetLocationState: jest.fn(),
       });
 
     rerender();

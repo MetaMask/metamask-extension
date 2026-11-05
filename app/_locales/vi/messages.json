@@ -7,9 +7,6 @@
     "message": "Thời gian tải lâu hơn bình thường.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "Không còn tài khoản nào. Nếu bạn muốn truy cập một tài khoản khác không được liệt kê bên dưới, vui lòng kết nối lại với ví cứng và chọn tài khoản đó."
-  },
   "QRHardwareScanInstructions": {
     "message": "Đặt mã QR phía trước máy ảnh. Màn hình bị mờ nhưng không ảnh hưởng đến khả năng đọc."
   },
@@ -1263,17 +1260,11 @@
   "add_device_error_expired": {
     "message": "Phiên đồng bộ này đã hết hạn. Hãy bắt đầu lại để tạo mã QR mới."
   },
-  "add_device_error_generic": {
-    "message": "Đã xảy ra lỗi khi đồng bộ với điện thoại của bạn. Vui lòng thử lại."
-  },
   "add_device_error_invalid_code": {
     "message": "Mã xác minh không chính xác. Hãy bắt đầu lại để thử đồng bộ điện thoại của bạn."
   },
   "add_device_error_rejected": {
     "message": "Quá trình đồng bộ đã bị hủy trên điện thoại của bạn. Hãy bắt đầu lại để thử đồng bộ."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Chúng tôi không thể hoàn tất quá trình đồng bộ tài khoản với điện thoại của bạn. Vui lòng thử lại."
   },
   "add_device_error_title": {
     "message": "Không thể hoàn tất quá trình đồng bộ"
@@ -1507,6 +1498,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Các đối tác bảo mật đã gắn cờ địa chỉ này do có hoạt động độc hại."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Các đối tác bảo mật đã gắn cờ địa chỉ $1 này do có hoạt động độc hại."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Các đối tác bảo mật không có đủ lịch sử đáng tin cậy để xác minh địa chỉ $1 này."
+  },
   "alertMessageBurnAddress": {
     "message": "Bạn đang gửi tài sản của mình đến địa chỉ đốt. Nếu tiếp tục, bạn sẽ mất tài sản."
   },
@@ -1524,6 +1521,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí mạng."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Các đối tác bảo mật đã gắn cờ địa chỉ $1 trong giao dịch lồng nhau do có hoạt động độc hại."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Các đối tác bảo mật không có đủ lịch sử đáng tin cậy để xác minh địa chỉ $1 trong giao dịch lồng nhau này."
   },
   "alertMessageNoGasPrice": {
     "message": "Chúng tôi không thể tiếp tục giao dịch này cho đến khi bạn cập nhật phí thủ công."
@@ -1599,6 +1602,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Quyền không cần thiết"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "Địa chỉ lồng nhau bị gắn cờ là có rủi ro cao"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Tín hiệu về địa chỉ lồng nhau còn hạn chế"
   },
   "alertReasonNoGasPrice": {
     "message": "Ước tính phí không có sẵn"
@@ -2484,9 +2493,6 @@
   },
   "bridgeSelectDestinationAccount": {
     "message": "Chọn tài khoản đích"
-  },
-  "bridgeSelectDifferentQuote": {
-    "message": "Vui lòng chọn một báo giá khác."
   },
   "bridgeSelectNetwork": {
     "message": "Chọn mạng"
@@ -3573,7 +3579,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Không thể hoàn tất yêu cầu này ngay bây giờ do sự cố máy chủ hệ thống phân tích, vui lòng thử lại sau."
+    "message": "Hiện không thể hoàn tất yêu cầu này do sự cố máy chủ của hệ thống phân tích. Hãy thử lại sau."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Chúng tôi không thể xóa dữ liệu này bây giờ"
@@ -3659,9 +3665,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "Thao tác này sẽ ngắt kết nối tất cả tài khoản của bạn khỏi tất cả dapp. Bạn sẽ cần kết nối lại để sử dụng lại các tài khoản đó."
-  },
-  "disconnectAllSitesError": {
-    "message": "Không thể ngắt kết nối một số dapp. Vui lòng thử lại."
   },
   "disconnectAllSitesQuestion": {
     "message": "Ngắt kết nối tất cả?"
@@ -3967,9 +3970,6 @@
   "enter_verification_code_desc": {
     "message": "Để bảo mật, hãy nhập mã được hiển thị trong ứng dụng MetaMask trên thiết bị của bạn."
   },
-  "enter_verification_code_error": {
-    "message": "Mã không chính xác. Vui lòng thử lại."
-  },
   "enter_verification_code_expired": {
     "message": "Mã xác minh đã hết hạn"
   },
@@ -3992,9 +3992,6 @@
   "errorCode": {
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
   },
   "errorLegalTextFirstInfo": {
     "message": "Thông tin chẩn đoán kỹ thuật."
@@ -4165,13 +4162,6 @@
   "fileUploaderDescription": {
     "message": "Nhấn để tải lên hoặc kéo và thả"
   },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "Loại tập tin không hợp lệ. Vui lòng tải lên định dạng tập tin được hỗ trợ."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "Kích thước tập tin vượt quá $1MB. Vui lòng tải lên tập tin nhỏ hơn.",
-    "description": "$1 is the maximum file size in MB"
-  },
   "flaskWelcomeUninstall": {
     "message": "bạn nên gỡ cài đặt tiện ích mở rộng này",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -4198,9 +4188,6 @@
   },
   "floatAmountToken": {
     "message": "Số lượng Token phải là số nguyên"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "Cổng kết nối IPFS không được phép: Vui lòng chỉ định một cổng kết nối CID"
   },
   "forgetDevice": {
     "message": "Quên thiết bị này"
@@ -4431,9 +4418,6 @@
   "general": {
     "message": "Chung"
   },
-  "generalCameraError": {
-    "message": "Chúng tôi không thể truy cập máy ảnh của bạn. Vui lòng thử lại một lần nữa."
-  },
   "generalCameraErrorTitle": {
     "message": "Đã xảy ra sự cố..."
   },
@@ -4628,9 +4612,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "Đang tìm thiết bị..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Không tìm thấy thiết bị. Vui lòng kiểm tra các bước trước đó và thử lại."
   },
   "hardwareWalletRepairLink": {
     "message": "Kết nối lại từ đầu"
@@ -4891,9 +4872,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
   },
-  "importTokensError": {
-    "message": "Chúng tôi không thể nhập token. Vui lòng thử lại sau."
-  },
   "importWalletSuccess": {
     "message": "Đã nhập ví $1",
     "description": "$1 is the index of the secret recovery phrase"
@@ -5144,7 +5122,7 @@
     "message": "Nhớ cắm thiết bị Ledger và chọn ứng dụng Ethereum."
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Vui lòng mở ứng dụng trên thiết bị Ledger của bạn để tiếp tục"
+    "message": "Mở ứng dụng trên thiết bị Ledger của bạn để tiếp tục"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "Ứng dụng Ethereum đã đóng"
@@ -5153,7 +5131,7 @@
     "message": "Đã tìm thấy thiết bị Ledger"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Vui lòng mở khóa thiết bị Ledger của bạn để tiếp tục"
+    "message": "Mở khóa thiết bị Ledger của bạn để tiếp tục"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Ledger đã khóa"
@@ -5174,7 +5152,7 @@
     "message": "Không tìm thấy thiết bị"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Vui lòng ngắt kết nối và kết nối lại với thiết bị của bạn"
+    "message": "Ngắt kết nối rồi kết nối lại thiết bị của bạn"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Thiết bị Ledger không phản hồi"
@@ -5190,9 +5168,6 @@
   },
   "ledgerConnectionStatusSearchingTitle": {
     "message": "Đang tìm thiết bị của bạn"
-  },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Mở thiết bị Ledger không thành công. Ledger của bạn có thể đã được kết nối với phần mềm khác. Vui lòng đóng Ledger Live hoặc các ứng dụng khác được kết nối với thiết bị Ledger của bạn và thử kết nối lại."
   },
   "ledgerErrorConnectionIssue": {
     "message": "Kết nối lại với Ledger của bạn, mở ứng dụng ETH và thử lại."
@@ -5224,15 +5199,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox không được hỗ trợ"
   },
-  "ledgerLocked": {
-    "message": "Không thể kết nối với thiết bị Ledger. Vui lòng đảm bảo bạn đã mở khóa thiết bị và mở ứng dụng Ethereum."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Thiết bị Ledger chưa được kết nối. Nếu bạn muốn kết nối với Ledger, vui lòng nhấp lại vào \"Tiếp tục\" và chấp thuận kết nối HID",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "Sáng"
@@ -5299,17 +5267,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "Đăng nhập"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Đăng nhập lại để tiếp tục."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Phiên làm việc đã hết hạn"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Cập nhật Telegram"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Chúng tôi không thể kết nối với Telegram. Điều này thường xảy ra khi ứng dụng Telegram của bạn đã cũ. Vui lòng cập nhật Telegram và thử lại."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Không thể đăng nhập bằng Telegram"
@@ -5461,9 +5423,6 @@
   "metamaskSwap": {
     "message": "MetaMask Hoán đổi"
   },
-  "metamaskSwapsOfflineDescription": {
-    "message": "Tính năng Hoán đổi trên MetaMask đang được bảo trì. Vui lòng thử lại sau."
-  },
   "metamaskVersion": {
     "message": "Phiên bản MetaMask"
   },
@@ -5509,8 +5468,14 @@
   "mfaErrorGeneric": {
     "message": "Đã xảy ra lỗi. Hãy thử lại."
   },
+  "mfaErrorInvalidCode": {
+    "message": "Mã này không chính xác. Hãy thử lại"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "Không thể xác minh khóa truy cập của bạn. Hãy thử lại."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "Mã này không chính xác. Hãy thử lại"
   },
   "mfaErrorLimitReached": {
     "message": "Bạn đã đạt giới hạn cho phương thức này."
@@ -5547,6 +5512,12 @@
   },
   "mfaFailureRetry": {
     "message": "Thử lại"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Liên hệ bộ phận hỗ trợ để tiếp tục."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "Chúng tôi không thể xác minh thông tin của bạn"
   },
   "mfaFailureTitle": {
     "message": "Đã xảy ra sự cố"
@@ -5653,8 +5624,14 @@
   "mfaSettingsAddedOn": {
     "message": "Đã thêm vào $1"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Đã thêm ứng dụng xác thực"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "Đã gỡ bỏ phương thức xác minh qua email"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "Đã xác minh email"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "Email này là phương thức bảo mật duy nhất cho tài khoản này. Hãy thêm phương thức thứ hai trước khi gỡ bỏ."
@@ -5713,8 +5690,17 @@
   "mfaTotpSetupContinue": {
     "message": "Tiếp tục"
   },
+  "mfaTotpSetupCopied": {
+    "message": "Đã sao chép khóa thiết lập"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Quét mã QR bằng ứng dụng xác thực hoặc nhập khóa thiết lập."
+  },
   "mfaTotpSetupKey": {
     "message": "Khóa thiết lập"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Hoặc nhập thủ công"
   },
   "mfaTotpSetupQrAlt": {
     "message": "Mã QR để thêm MetaMask vào ứng dụng xác thực của bạn"
@@ -6381,7 +6367,7 @@
     "message": "Bắt đầu"
   },
   "musdEducationHeadline": {
-    "message": "NHẬN $1% TRÊN\nSỐ LƯỢNG ĐỒNG ỔN ĐỊNH",
+    "message": "Nhận $1% từ\nđồng ổn định",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6487,10 +6473,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "Chỉnh sửa thông tin mạng"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "Ký hiệu token gốc không khớp với ký hiệu dự kiến của token gốc dành cho mạng với ID chuỗi liên quan. Bạn đã nhập $1 trong khi ký hiệu token dự kiến là $2. Vui lòng xác minh rằng bạn đã kết nối với đúng chuỗi.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "cảnh báo khác",
@@ -7219,6 +7201,10 @@
   },
   "paidByMetaMask": {
     "message": "Được thanh toán bởi MetaMask"
+  },
+  "paidBySponsor": {
+    "message": "Được thanh toán bởi $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "Đã thanh toán bằng"

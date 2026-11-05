@@ -15,6 +15,12 @@ import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 import type { EnvironmentType } from '../../constants/app';
 import { getEnvironmentType } from '../environment-type';
 import type { ReportedStartupPhase } from '../telemetry/startup-phase';
+import {
+  getLastActivityContext,
+  hydrateLastActivity,
+  recordWrite,
+  type LastActivityContext,
+} from '../telemetry/last-activity';
 import { IndexedDBStore } from './indexeddb-store';
 import {
   BACKUP_INDEXED_DB_NAME,
@@ -109,6 +115,7 @@ export type SplitStateWriteEvent = {
   writeDurationMs: number;
   environmentType: EnvironmentType | 'unknown';
   currentActivity: CurrentActivity;
+  lastActivity: LastActivityContext;
 };
 
 export type PersistenceManagerEventMap = {
@@ -380,7 +387,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
-   * Sets the activity provider (background only).
+   * Sets the current-activity provider (background only).
    *
    * @param getCurrentActivity - Returns the current activity snapshot.
    */
@@ -883,6 +890,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       }
     }
 
+    // Best-effort: throwing getter → empty activity, write still emits.
+    // Wait for session restore so an early startup write still reports
+    // timestamps from before the service-worker restart.
+    let lastActivity: LastActivityContext = {};
+    try {
+      await hydrateLastActivity();
+    } catch {
+      // Snapshot whatever is already in memory.
+    }
+    try {
+      lastActivity = getLastActivityContext();
+    } catch {
+      // Keep empty snapshot.
+    }
+
     const href = globalThis.self?.location?.href;
     const environmentType = (
       href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
@@ -936,6 +958,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       writeDurationMs,
       environmentType,
       currentActivity,
+      lastActivity,
     });
   }
 
@@ -1009,6 +1032,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           try {
             // Telemetry must not treat a successful write as a failure.
+            // Snapshot before recordWrite() so msSinceLastWrite is the prior
+            // interval, not ~0 for this write.
             await this.#recordSplitStateWrite(
               clone,
               coalescedUpdates,
@@ -1017,6 +1042,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           } catch {
             // Ignore measurement/reporting failures after a successful write.
           }
+
+          // Every successful write, including unsampled ones.
+          recordWrite();
 
           const partialState = Object.create(null);
           for (const [key, value] of clone.entries()) {
