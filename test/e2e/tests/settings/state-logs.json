@@ -304,6 +304,7 @@
         "lastUpdated": "number"
       }
     },
+    "autorampTransactionRecords": {},
     "autoramps": [],
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
@@ -759,6 +760,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccountWalletRegistrations": [],
     "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
@@ -1301,6 +1303,8 @@
     "usePhishDetect": "boolean",
     "userOperations": {},
     "userRegion": "null",
+    "vbaAutorampListFetchedAt": "null",
+    "vbaCustomerAbilities": "null",
     "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
