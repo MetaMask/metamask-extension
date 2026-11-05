@@ -41,6 +41,7 @@ const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
 const mockUseUpgradeMoneyAccount = jest.fn();
+const mockUseOpenMoneyFtueOnFirstVisit = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -129,6 +130,10 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
 }));
 jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
   useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
+}));
+jest.mock('../../hooks/money/use-open-money-ftue-on-first-visit', () => ({
+  useOpenMoneyFtueOnFirstVisit: (options: unknown) =>
+    mockUseOpenMoneyFtueOnFirstVisit(options),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -287,6 +292,15 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
+  });
+
+  it('passes availability to the FTUE auto-open hook', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: true,
+      isLoading: false,
+    });
   });
 
   it('keeps groundwork actions other than the transfer entry points inert', () => {

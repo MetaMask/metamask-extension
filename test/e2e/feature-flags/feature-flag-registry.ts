@@ -4290,6 +4290,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  swapsRebateBannerEnabled: {
+    inProd: false,
+    name: 'swapsRebateBannerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   swapsSWAPS4827AbtestChainValueOrder: {
     inProd: true,
     name: 'swapsSWAPS4827AbtestChainValueOrder',
