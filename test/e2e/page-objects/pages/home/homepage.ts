@@ -29,7 +29,7 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  *
  * Screen: `#/` (DEFAULT_ROUTE), after unlock / onboarding.
  * Owns: balance and empty-state checks, Send / Swap / Bridge / Receive,
- * navigating to Tokens / NFTs / DeFi and the Activity page, home notifications,
+ * navigating to Tokens / NFTs / DeFi / Perps / Activity page, home notifications,
  * shield entry modal, survey and SRP toasts, and page-ready waits.
  * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
  * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
