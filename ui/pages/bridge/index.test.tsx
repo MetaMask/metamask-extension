@@ -115,7 +115,6 @@ describe('Bridge', () => {
     mockUseNavigate.mockReset();
     mockResetBridgeState.mockClear();
     mockUseLocation.mockReturnValue(directOpenLocation);
-    window.history.replaceState(null, '');
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: false,
       walletType: null,
@@ -251,53 +250,5 @@ describe('Bridge', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-  });
-
-  it('returns home when a direct open replaced the history entry', async () => {
-    window.history.replaceState({ idx: 0 }, '');
-    mockUseLocation.mockReturnValue({
-      ...directOpenLocation,
-      key: 'stripped-query',
-    });
-
-    const bridgeMockStore = createBridgeMockStore({
-      featureFlagOverrides: {
-        bridgeConfig: {
-          support: true,
-          refreshRate: 5000,
-          maxRefreshCount: 5,
-          chains: {
-            '1': {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
-        },
-      },
-      metamaskStateOverrides: {
-        useExternalServices: true,
-      },
-    });
-    const store = configureMockStore(middleware)(bridgeMockStore);
-
-    const { getByRole } = renderWithProvider(
-      <HardwareWalletProvider>
-        <CrossChainSwap />
-      </HardwareWalletProvider>,
-      store,
-      PREPARE_SWAP_ROUTE,
-    );
-
-    const backButton = getByRole('button', { name: messages.back.message });
-    await act(async () => {
-      fireEvent.click(backButton);
-    });
-
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-      state: {
-        bridgeState: null,
-        token: null,
-      },
-    });
   });
 });

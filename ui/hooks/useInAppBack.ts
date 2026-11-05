@@ -9,9 +9,9 @@ import { PREVIOUS_ROUTE } from '../helpers/constants/routes';
 
 type BackTransition = (navigateBack: () => void) => void;
 
-// A replace keeps this history index and assigns a new location key.
-// Index 0 is still the first entry, so Back must use the fallback route.
-export function hasNoInAppHistory(location: { key: string; state: unknown }) {
+// A replace gives a new location key but keeps the history index, so the key
+// alone can't detect the first entry; at index 0 there is nothing to go back to.
+export function isAppHistoryEmpty(location: { key: string; state: unknown }) {
   const historyIndex = globalThis.history?.state?.idx;
   return (
     location.key === 'default' ||
@@ -39,11 +39,11 @@ export function useInAppBack(
 ): () => void {
   const navigate: NavigateFunction = useNavigate();
   const location = useLocation();
-  const noInAppHistory = hasNoInAppHistory(location);
+  const hasNoInAppHistory = isAppHistoryEmpty(location);
 
   return useCallback(() => {
     // Navigate to fallback route if there is no in-app history
-    if (noInAppHistory) {
+    if (hasNoInAppHistory) {
       navigate(fallbackRoute, {
         replace: true,
         state: { fromFreshTab: true },
@@ -58,5 +58,5 @@ export function useInAppBack(
     } else {
       navigateBack();
     }
-  }, [fallbackRoute, noInAppHistory, navigate, transition]);
+  }, [fallbackRoute, hasNoInAppHistory, navigate, transition]);
 }
