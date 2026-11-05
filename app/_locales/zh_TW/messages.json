@@ -573,9 +573,6 @@
   "mainnet": {
     "message": "以太坊 主網路"
   },
-  "makeAnotherSwap": {
-    "message": "建立新的 swap"
-  },
   "max": {
     "message": "最大值"
   },
@@ -593,9 +590,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "連線狀態按鈕會顯示您正在造訪的網站是否已經連結到您目前選擇的帳戶。"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps 正在維護。請晚點再來看看。"
   },
   "metamaskVersion": {
     "message": "MetaMask 版本"
@@ -669,9 +663,6 @@
   },
   "off": {
     "message": "關閉"
-  },
-  "offlineForMaintenance": {
-    "message": "離線維護中"
   },
   "ok": {
     "message": "確認"

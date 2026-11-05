@@ -1,5 +1,6 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { KeyringType } from '../../../shared/constants/keyring';
+import type { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getCurrencyRateControllerCurrencyRates } from '../../../shared/lib/selectors/assets-migration';
 import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
 import {
@@ -8,6 +9,10 @@ import {
 } from '../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import type { MetaMaskSlice } from './types';
+
+type SwapsTokensState = {
+  metamask: { swapsState: { tokens: SwapsTokenObject[] } };
+};
 
 export function getConversionRate(state: MetaMaskSlice) {
   return (
@@ -94,4 +99,13 @@ export function isAddressLedger(state: MetaMaskSlice, address: string) {
 
 export function getIsUnlocked(state: MetaMaskSlice) {
   return state.metamask.isUnlocked;
+}
+
+/**
+ * Returns tokens from the background swaps controller, not the legacy UI slice.
+ *
+ * @param state - The Redux state.
+ */
+export function getSwapsTokens(state: SwapsTokensState): SwapsTokenObject[] {
+  return state.metamask.swapsState.tokens;
 }

@@ -471,6 +471,5 @@
   "rewardsMoney": "object",
   "sendMaxValue": "object",
   "smartAccounts": "object",
-  "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
 }

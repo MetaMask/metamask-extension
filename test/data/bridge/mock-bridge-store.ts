@@ -371,11 +371,7 @@ export const createBridgeMockStore = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stateOverrides?: Record<string, any>;
 } = {}): BridgeAppState => {
-  const {
-    metamask: swapsMetamask,
-    swaps,
-    ...swapsStore
-  } = createSwapsMockStore();
+  const { metamask: swapsMetamask, ...swapsStore } = createSwapsMockStore();
   const { internalAccounts: tokenInternalAccounts, ...tokenData } =
     mockTokenData;
   const {
@@ -816,11 +812,6 @@ export const createBridgeMockStore = ({
       origin: 'https://github.com',
     },
     ...swapsStore,
-    // For initial state of dest asset picker
-    swaps: {
-      ...swaps,
-      topAssets: [],
-    },
     bridge: {
       isSlippageUserOverride: false,
       sortOrder: 'cost_ascending',
