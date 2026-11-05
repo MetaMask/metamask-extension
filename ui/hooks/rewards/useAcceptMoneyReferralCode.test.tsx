@@ -2,7 +2,8 @@ import { it } from '@jest/globals';
 import React from 'react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { act, render } from '@testing-library/react';
+import { act, render, renderHook } from '@testing-library/react';
+import { withResolvers } from '#shared/lib/promise-with-resolvers';
 import { useAcceptMoneyReferralCode } from './useAcceptMoneyReferralCode';
 
 const mockRegister = jest.fn();
@@ -92,6 +93,90 @@ function serializedHttpFailure(
 describe('useAcceptMoneyReferralCode', () => {
   beforeEach(() => {
     mockRegister.mockReset();
+  });
+
+  it('does not register when validation completes after unmount', async () => {
+    const validation = withResolvers<string>();
+    const onAccepted = jest.fn();
+    const { result, unmount } = renderHook(() =>
+      useAcceptMoneyReferralCode({
+        validateCode: () => validation.promise,
+        fetchReferralMe: async () => ({ status: 'settled' }),
+        onAccepted,
+      }),
+    );
+    let accepting!: ReturnType<typeof result.current.accept>;
+    act(() => {
+      accepting = result.current.accept('CODE');
+    });
+    unmount();
+
+    await act(async () => {
+      validation.resolve('');
+      await accepting;
+    });
+
+    expect(mockRegister).not.toHaveBeenCalled();
+    expect(onAccepted).not.toHaveBeenCalled();
+  });
+
+  it.each(['resolve', 'reject'] as const)(
+    'ignores a registration that finishes after unmount: %s',
+    async (outcome) => {
+      const registration = withResolvers<void>();
+      mockRegister.mockReturnValue(registration.promise);
+      const onAccepted = jest.fn();
+      const { result, unmount } = renderHook(() =>
+        useAcceptMoneyReferralCode({
+          validateCode: async () => '',
+          fetchReferralMe: async () => ({ status: 'settled' }),
+          onAccepted,
+        }),
+      );
+      let accepting!: ReturnType<typeof result.current.accept>;
+      await act(async () => {
+        accepting = result.current.accept('CODE');
+      });
+      expect(mockRegister).toHaveBeenCalledTimes(1);
+      unmount();
+
+      await act(async () => {
+        if (outcome === 'resolve') {
+          registration.resolve();
+        } else {
+          registration.reject({ data: { status: 429, retryAfterSeconds: 2 } });
+        }
+        await accepting;
+      });
+
+      expect(onAccepted).not.toHaveBeenCalled();
+      expect(await accepting).not.toHaveProperty('refusalReason');
+    },
+  );
+
+  it('ignores another Accept while validation is pending', async () => {
+    const validation = withResolvers<string>();
+    const validateCode = jest.fn(() => validation.promise);
+    const onAccepted = jest.fn();
+    const { result } = renderHook(() =>
+      useAcceptMoneyReferralCode({
+        validateCode,
+        fetchReferralMe: async () => ({ status: 'settled' }),
+        onAccepted,
+      }),
+    );
+
+    await act(async () => {
+      const first = result.current.accept('CODE');
+      const second = result.current.accept('OTHER');
+      validation.resolve('');
+      await Promise.all([first, second]);
+    });
+
+    expect(validateCode).toHaveBeenCalledTimes(1);
+    expect(mockRegister).toHaveBeenCalledTimes(1);
+    expect(mockRegister).toHaveBeenCalledWith({ code: 'CODE' });
+    expect(onAccepted).toHaveBeenCalledTimes(1);
   });
 
   it.each([
