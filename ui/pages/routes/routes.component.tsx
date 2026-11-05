@@ -102,6 +102,7 @@ import {
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
+import { useUiInteractionReporter } from '../../hooks/useUiInteractionReporter';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
@@ -861,6 +862,8 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
+
+  useUiInteractionReporter();
 
   const handleIdleAction = useCallback(() => {
     dispatch(setLastActiveTime());
