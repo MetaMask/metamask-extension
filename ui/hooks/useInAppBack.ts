@@ -9,6 +9,17 @@ import { PREVIOUS_ROUTE } from '../helpers/constants/routes';
 
 type BackTransition = (navigateBack: () => void) => void;
 
+// A replace keeps this history index and assigns a new location key.
+// Index 0 is still the first entry, so Back must use the fallback route.
+export function hasNoInAppHistory(location: { key: string; state: unknown }) {
+  const historyIndex = globalThis.history?.state?.idx;
+  return (
+    location.key === 'default' ||
+    historyIndex === 0 ||
+    (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab === true
+  );
+}
+
 /**
  * In-app Back button handler. Does not affect the browser Back button.
  *
@@ -27,15 +38,12 @@ export function useInAppBack(
   transition?: BackTransition,
 ): () => void {
   const navigate: NavigateFunction = useNavigate();
-  const { key, state } = useLocation();
-
-  const hasNoInAppHistory =
-    key === 'default' ||
-    (state as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
+  const location = useLocation();
+  const noInAppHistory = hasNoInAppHistory(location);
 
   return useCallback(() => {
     // Navigate to fallback route if there is no in-app history
-    if (hasNoInAppHistory) {
+    if (noInAppHistory) {
       navigate(fallbackRoute, {
         replace: true,
         state: { fromFreshTab: true },
@@ -50,5 +58,5 @@ export function useInAppBack(
     } else {
       navigateBack();
     }
-  }, [fallbackRoute, hasNoInAppHistory, navigate, transition]);
+  }, [fallbackRoute, noInAppHistory, navigate, transition]);
 }

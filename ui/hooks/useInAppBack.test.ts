@@ -12,8 +12,15 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('useInAppBack', () => {
+  const originalHistoryState = window.history.state;
+
   beforeEach(() => {
     jest.resetAllMocks();
+    window.history.replaceState(null, '');
+  });
+
+  afterEach(() => {
+    window.history.replaceState(originalHistoryState, '');
   });
 
   it('goes back when the page was reached from another in-app route', () => {
@@ -27,6 +34,22 @@ describe('useInAppBack', () => {
 
   it('replaces with the fallback when the page is the first route entry', () => {
     mockUseLocation.mockReturnValue({ key: 'default' });
+
+    const { result } = renderHook(() => useInAppBack(MONEY_HOME_ROUTE));
+    result.current();
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+      state: { fromFreshTab: true },
+    });
+  });
+
+  it('replaces with the fallback when a replace left this entry at history index 0', () => {
+    window.history.replaceState({ idx: 0 }, '');
+    mockUseLocation.mockReturnValue({
+      key: 'stripped-query',
+      state: null,
+    });
 
     const { result } = renderHook(() => useInAppBack(MONEY_HOME_ROUTE));
     result.current();

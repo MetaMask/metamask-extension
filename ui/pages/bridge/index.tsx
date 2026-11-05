@@ -36,6 +36,7 @@ import {
   startSwapViewLoadTrace,
   useBridgeNavigation,
 } from '../../hooks/bridge/useBridgeNavigation';
+import { hasNoInAppHistory } from '../../hooks/useInAppBack';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
@@ -58,16 +59,14 @@ const CrossChainSwap = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { key: locationKey, state: locationState } = useLocation();
+  const location = useLocation();
   const {
     navigateToDefaultRoute,
     search,
     swapViewTraceId,
     swapViewPrefilledAmount,
   } = useBridgeNavigation();
-  const hasNoInAppHistory =
-    locationKey === 'default' ||
-    (locationState as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
+  const noInAppHistory = hasNoInAppHistory(location);
   const [swapViewTrace] = useState(() => {
     if (swapViewTraceId) {
       return {
@@ -150,7 +149,7 @@ const CrossChainSwap = () => {
   const handleBack = () => {
     transitionBack(() => {
       // Direct open or deep link: leave Swap for Home, or Transaction Shield.
-      if (hasNoInAppHistory) {
+      if (noInAppHistory) {
         navigateToDefaultRoute();
         return;
       }
