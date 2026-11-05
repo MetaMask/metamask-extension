@@ -46,6 +46,7 @@ import {
   type BalanceCalculationState,
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectUnifiedBalanceGetterBySelectedAccountGroup,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
   getAssetsByAccountGroupId,
@@ -2587,5 +2588,92 @@ describe('getAsset', () => {
         currency: 'USD',
       },
     });
+  });
+});
+
+describe('selectUnifiedBalanceGetterBySelectedAccountGroup', () => {
+  const walletId = 'entropy:wallet1';
+  const groupId = 'entropy:wallet1/group1';
+  const accountIds = ['account1', 'account2'];
+
+  const buildState = (
+    selectedAccountGroup: string | null = groupId,
+  ): AssetSelectorTestState => ({
+    metamask: {
+      selectedAccountGroup,
+      accountTree: {
+        wallets: {
+          [walletId]: {
+            id: walletId,
+            type: 'entropy',
+            groups: {
+              [groupId]: {
+                id: groupId,
+                type: 'multichain-account',
+                accounts: accountIds,
+                metadata: { name: 'Account 1' },
+              },
+            },
+            metadata: { name: 'Wallet 1' },
+          },
+        },
+      },
+      selectedCurrency: 'eur',
+    },
+  });
+
+  beforeEach(() => {
+    mockGetAggregatedBalanceForAccount.mockReset();
+  });
+
+  it('returns a getter that is null when no account group is selected', () => {
+    const getBalance = selectUnifiedBalanceGetterBySelectedAccountGroup(
+      buildState(null),
+    );
+
+    expect(getBalance({ eip155: { '0x1': true } })).toBeNull();
+    expect(mockGetAggregatedBalanceForAccount).not.toHaveBeenCalled();
+  });
+
+  it('computes the selected group balance for the given enabled networks', () => {
+    mockGetAggregatedBalanceForAccount.mockImplementation(((
+      _assetsState: unknown,
+      _account: unknown,
+      enabledNetworkMap: Record<string, Record<string, boolean>>,
+    ) => ({
+      totalBalanceInFiat: enabledNetworkMap.eip155?.['0x89'] ? 30 : 10,
+    })) as never);
+    const getBalance =
+      selectUnifiedBalanceGetterBySelectedAccountGroup(buildState());
+
+    expect(getBalance({ eip155: { '0x1': true } })).toStrictEqual({
+      walletId,
+      groupId,
+      totalBalanceInUserCurrency: 10,
+      userCurrency: 'eur',
+    });
+    expect(getBalance({ eip155: { '0x1': true, '0x89': true } })).toStrictEqual(
+      {
+        walletId,
+        groupId,
+        totalBalanceInUserCurrency: 30,
+        userCurrency: 'eur',
+      },
+    );
+    expect(mockGetAggregatedBalanceForAccount).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({ id: accountIds[0] }),
+      { eip155: { '0x1': true, '0x89': true } },
+      undefined,
+      accountIds,
+    );
+  });
+
+  it('returns the same getter while the balance state is unchanged', () => {
+    const state = buildState();
+
+    expect(selectUnifiedBalanceGetterBySelectedAccountGroup(state)).toBe(
+      selectUnifiedBalanceGetterBySelectedAccountGroup(state),
+    );
   });
 });
