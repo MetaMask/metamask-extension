@@ -14,13 +14,13 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Popover,
   PopoverPosition,
   PopoverRole,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Popover } from '#ui/components/app/modal-layer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';

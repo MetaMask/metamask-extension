@@ -27,10 +27,11 @@ import {
   ButtonVariant,
   BoxFlexDirection,
   IconName,
+  Modal,
   ModalOverlay,
   ModalHeader,
+  ModalContent,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';

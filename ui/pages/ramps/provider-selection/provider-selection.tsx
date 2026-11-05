@@ -5,7 +5,9 @@ import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
   BoxFlexDirection,
+  Modal,
   ModalBody,
+  ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
@@ -13,7 +15,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';

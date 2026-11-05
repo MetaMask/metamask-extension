@@ -10,7 +10,9 @@ import {
   FontWeight,
   Icon,
   IconSize,
+  Modal,
   ModalBody,
+  ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
@@ -18,7 +20,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import {

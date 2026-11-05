@@ -15,7 +15,9 @@ import {
   IconAlertSeverity,
   IconName,
   IconSize,
+  Modal,
   ModalBody,
+  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -24,7 +26,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { MFA_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { formatDate } from '../../../helpers/utils/util';
 import { getIsSocialLoginFlow } from '../../../selectors';

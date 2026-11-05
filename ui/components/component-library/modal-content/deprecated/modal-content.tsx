@@ -1,6 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import classnames from 'clsx';
-import { useModalEvents } from '#ui/components/app/modal-layer/use-modal-events';
 
 import {
   BackgroundColor,
@@ -49,12 +48,42 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
       autoFocus,
     } = useModalContext();
     const modalDialogRef = useRef<HTMLElement>(null);
-    useModalEvents({
-      dialogRef: modalDialogRef,
-      onClose,
-      isClosedOnEscapeKey,
-      isClosedOnOutsideClick,
-    });
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (isClosedOnEscapeKey && event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      // Popover should be launched from within Modal but
+      // the Popover containing element is a sibling to modal,
+      // so this is required to ensure `onClose` isn't triggered
+      // when clicking on a popover item
+      if (
+        isClosedOnOutsideClick &&
+        (event.target as HTMLElement).closest('.mm-popover')
+      ) {
+        return;
+      }
+
+      if (
+        isClosedOnOutsideClick &&
+        modalDialogRef?.current &&
+        !modalDialogRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    useEffect(() => {
+      document.addEventListener('keydown', handleEscKey);
+      document.addEventListener('mousedown', handleClickOutside);
+
+      return () => {
+        document.removeEventListener('keydown', handleEscKey);
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
     return (
       <ModalFocus
         initialFocusRef={initialFocusRef}

@@ -4,10 +4,11 @@ import { CaipChainId, Hex } from '@metamask/utils';
 import {
   IconName,
   IconSize,
+  Modal,
   ModalOverlay,
   ModalHeader,
+  ModalContent,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { Text } from '../../component-library';
 import {

@@ -3,12 +3,13 @@ import {
   Text,
   TextVariant,
   TextColor,
+  Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  ModalContent,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { Button, ButtonSize, ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

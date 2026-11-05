@@ -6,12 +6,13 @@ import {
   Box,
   ButtonSize,
   BoxFlexDirection,
+  Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  ModalContent,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PermissionItem } from './permission-item';
 import { DisconnectAllGatorPermissionsModalProps } from './types';

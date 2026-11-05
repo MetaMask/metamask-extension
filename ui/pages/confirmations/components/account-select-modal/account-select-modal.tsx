@@ -6,7 +6,9 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   FontWeight,
+  Modal,
   ModalBody,
+  ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
@@ -14,7 +16,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';

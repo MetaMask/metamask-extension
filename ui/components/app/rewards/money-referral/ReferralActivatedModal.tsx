@@ -9,10 +9,8 @@ import {
   ButtonVariant,
   FontWeight,
   ModalBody,
-  ModalContentSize,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Text,
   TextAlign,
   TextColor,
@@ -20,10 +18,9 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import {
-  Modal,
-  ModalContent,
-  ModalPriority,
-} from '#ui/components/app/modal-layer';
+  ReferralDialog,
+  ReferralDialogContent,
+} from '#ui/components/app/rewards/money-referral/ReferralDialog';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -113,13 +110,8 @@ export function ReferralActivatedModal({
   const theme = useTheme();
   const t = useI18nContext();
   const titleId = React.useId();
+  // Focus the primary action when the invite hands off to this dialog.
   const startButtonRef = React.useRef<HTMLButtonElement>(null);
-
-  React.useLayoutEffect(() => {
-    // The invite dialog unmounts in the same commit, which drops focus to the
-    // page. Move it onto the primary action once this dialog is in the DOM.
-    startButtonRef.current?.focus();
-  }, []);
   const copy = referralMe?.localized_text;
   const hero = referralMe?.invite_hero;
   const imageUrl =
@@ -132,19 +124,13 @@ export function ReferralActivatedModal({
   );
 
   return (
-    <Modal
-      isOpen
-      priority={ModalPriority.Urgent}
+    <ReferralDialog
       onClose={onClose}
       initialFocusRef={startButtonRef}
       data-testid="money-referral-activated"
+      aria-labelledby={titleId}
     >
-      <ModalOverlay />
-      <ModalContent
-        className="items-center"
-        size={ModalContentSize.Md}
-        modalDialogProps={{ 'aria-labelledby': titleId }}
-      >
+      <ReferralDialogContent>
         <ModalHeader
           onClose={onClose}
           closeButtonProps={{
@@ -210,7 +196,7 @@ export function ReferralActivatedModal({
             {copy?.inviteAcceptedStartTrading ?? ''}
           </Button>
         </ModalFooter>
-      </ModalContent>
-    </Modal>
+      </ReferralDialogContent>
+    </ReferralDialog>
   );
 }

@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Modal,
   ModalBody,
+  ModalContent,
   ModalContentSize,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {

@@ -6,11 +6,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import rewardsMoney, { initialState } from '#ui/ducks/rewards-money';
 import { RootLayout } from '#ui/layouts/root-layout';
-import {
-  Modal,
-  ModalContent,
-  ModalProvider,
-} from '#ui/components/app/modal-layer';
 
 jest.mock('#shared/lib/manifestFlags', () => ({
   getManifestFlags: () => ({}),
@@ -19,28 +14,18 @@ jest.mock('#ui/selectors/home-modals', () => ({
   selectShowTermsOfUse: (state: { appState: { termsOpen: boolean } }) =>
     state.appState.termsOpen,
 }));
-jest.mock('#ui/components/app/rewards/money-referral/AcceptInviteSheet', () => {
-  const {
-    Modal: InviteModal,
-    ModalContent: InviteContent,
-    ModalPriority,
-  } = jest.requireActual('#ui/components/app/modal-layer');
-  return {
+jest.mock(
+  '#ui/components/app/rewards/money-referral/AcceptInviteSheet',
+  () => ({
     AcceptInviteSheet: ({
       initialCode,
       onClose,
     }: {
       initialCode: string;
       onClose: () => void;
-    }) => (
-      <InviteModal isOpen priority={ModalPriority.Urgent} onClose={onClose}>
-        <InviteContent>
-          <button onClick={onClose}>{initialCode}</button>
-        </InviteContent>
-      </InviteModal>
-    ),
-  };
-});
+    }) => <button onClick={onClose}>{initialCode}</button>,
+  }),
+);
 
 function renderInvite({
   enabled = true,
@@ -67,56 +52,32 @@ function renderInvite({
     [
       {
         element: <RootLayout />,
-        children: [
-          {
-            path: '*',
-            element: (
-              <>
-                <div>Destination</div>
-                {termsOpen && (
-                  <Modal isOpen onClose={() => undefined}>
-                    <ModalContent>
-                      <button>Terms</button>
-                    </ModalContent>
-                  </Modal>
-                )}
-              </>
-            ),
-          },
-        ],
+        children: [{ path: '*', element: <div>Destination</div> }],
       },
     ],
     { initialEntries: [route] },
   );
   render(
     <Provider store={store}>
-      <ModalProvider>
-        <RouterProvider
-          router={router}
-          // eslint-disable-next-line @typescript-eslint/naming-convention -- React Router API
-          future={{ v7_startTransition: true }}
-        />
-      </ModalProvider>
+      <RouterProvider
+        router={router}
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- React Router API
+        future={{ v7_startTransition: true }}
+      />
     </Provider>,
   );
   return store;
 }
 
 describe('ReferralInvite', () => {
-  it('opens ahead of destination dialogs and resumes them when closed', () => {
+  it('opens over the destination and clears the pending code on close', () => {
     const store = renderInvite({ termsOpen: true, route: '/' });
 
     expect(screen.getByText('Destination')).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Terms' }),
-    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'ABC123' }));
 
     expect(store.getState().rewardsMoney.pendingReferralCode).toBeNull();
-    expect(
-      screen.queryByRole('button', { name: 'ABC123' }),
-    ).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Terms' })).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
     expect(screen.getByText('Destination')).toBeInTheDocument();
   });
 

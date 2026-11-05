@@ -1,11 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  Modal,
+  ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   selectRewardsModalOpen,

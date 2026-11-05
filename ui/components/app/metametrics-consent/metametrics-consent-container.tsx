@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
+  Modal,
   ModalBody,
+  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
   Text,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

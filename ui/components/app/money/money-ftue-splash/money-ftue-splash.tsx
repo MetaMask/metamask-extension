@@ -12,13 +12,14 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Modal,
+  ModalContent,
   ModalContentSize,
   ModalOverlay,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,

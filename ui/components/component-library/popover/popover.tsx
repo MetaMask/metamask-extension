@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import classnames from 'clsx';
-import { useModalActivity } from '#ui/components/app/modal-layer/modal-layer';
 import {
   AlignItems,
   BackgroundColor,
@@ -57,7 +56,6 @@ export const Popover: PopoverComponent = React.forwardRef(
     }: PopoverProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const isActive = useModalActivity();
     const [popperElement, setPopperElement] = useState<HTMLElement | null>(
       null,
     );
@@ -98,7 +96,7 @@ export const Popover: PopoverComponent = React.forwardRef(
     };
 
     useEffect(() => {
-      if (!isOpen || !isActive || (!onPressEscKey && !onClickOutside)) {
+      if (!isOpen || (!onPressEscKey && !onClickOutside)) {
         return undefined;
       }
 
@@ -152,7 +150,7 @@ export const Popover: PopoverComponent = React.forwardRef(
           );
         }
       };
-    }, [onPressEscKey, isOpen, isActive, onClickOutside, referenceElement]);
+    }, [onPressEscKey, isOpen, onClickOutside, referenceElement]);
 
     const PopoverContent = (
       <Box
@@ -182,13 +180,7 @@ export const Popover: PopoverComponent = React.forwardRef(
         }}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
-        {...(!isActive && { hidden: true })}
-        style={{
-          ...styles.popper,
-          ...contentStyle,
-          ...props.style,
-          ...(!isActive && { display: 'none' }),
-        }}
+        style={{ ...styles.popper, ...contentStyle, ...props.style }}
       >
         {children}
         {hasArrow && (

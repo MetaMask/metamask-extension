@@ -17,13 +17,13 @@ import {
   IconName,
   IconSize,
   Label,
+  Popover,
   PopoverPosition,
   PopoverRole,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Popover } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
 

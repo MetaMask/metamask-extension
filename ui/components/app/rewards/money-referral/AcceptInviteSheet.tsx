@@ -10,10 +10,8 @@ import {
   HelpTextSeverity,
   Label,
   ModalBody,
-  ModalContentSize,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Text,
   TextColor,
   TextField,
@@ -22,10 +20,9 @@ import {
 } from '@metamask/design-system-react';
 import { normalizeMoneyReferralCode } from '#shared/lib/money-referral-code';
 import {
-  Modal,
-  ModalContent,
-  ModalPriority,
-} from '#ui/components/app/modal-layer';
+  ReferralDialog,
+  ReferralDialogContent,
+} from '#ui/components/app/rewards/money-referral/ReferralDialog';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -305,14 +302,8 @@ const AcceptInviteSheetContent = ({
     isValid && acceptAllowedForGeo && !isAccepting && !isAcceptCoolingDown;
 
   return (
-    <Modal
-      isOpen
-      priority={ModalPriority.Urgent}
-      onClose={handleDismiss}
-      data-testid="money-referral-invite"
-    >
-      <ModalOverlay />
-      <ModalContent className="items-center" size={ModalContentSize.Md}>
+    <ReferralDialog onClose={handleDismiss} data-testid="money-referral-invite">
+      <ReferralDialogContent>
         <ModalHeader
           onClose={handleDismiss}
           closeButtonProps={{ ariaLabel: t('close') }}
@@ -391,8 +382,8 @@ const AcceptInviteSheetContent = ({
             </Button>
           </Box>
         </ModalFooter>
-      </ModalContent>
-    </Modal>
+      </ReferralDialogContent>
+    </ReferralDialog>
   );
 };
 

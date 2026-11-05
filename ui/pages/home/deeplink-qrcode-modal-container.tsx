@@ -1,11 +1,12 @@
 import {
   ModalContentSize,
+  ModalContent,
+  Modal,
   ModalHeader,
   ModalOverlay,
 } from '@metamask/design-system-react';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { ModalContent, Modal } from '#ui/components/app/modal-layer';
 import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {

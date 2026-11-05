@@ -2,11 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
 
 import { connect } from 'react-redux';
-import { ModalFocus } from '#ui/components/app/modal-layer';
-import {
-  ModalLayerContext,
-  useModalLayer,
-} from '#ui/components/app/modal-layer/modal-layer';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
@@ -273,7 +268,6 @@ type ModalProps = {
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
   const modalRef = useRef<FadeModalRef | null>(null);
-  const layer = useModalLayer(active);
 
   useEffect(() => {
     if (active) {
@@ -293,37 +287,23 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
   const contentStyle = modal.contentStyle ?? {};
 
   return (
-    <ModalLayerContext.Provider value={layer}>
-      <div
-        aria-hidden={!layer.isActive || undefined}
-        // Keep FadeModal's animationend cleanup running while it is suspended.
-        style={
-          layer.isActive
-            ? undefined
-            : { visibility: 'hidden', pointerEvents: 'none' }
+    <FadeModal
+      keyboard={false}
+      onHide={() => {
+        if (modal.onHide) {
+          modal.onHide();
         }
-      >
-        <ModalFocus autoFocus>
-          <FadeModal
-            keyboard={false}
-            onHide={() => {
-              if (modal.onHide) {
-                modal.onHide();
-              }
-              hideModal(modal.customOnHideOpts);
-            }}
-            ref={modalRef}
-            modalStyle={modalStyle}
-            contentStyle={contentStyle}
-            backdropStyle={BACKDROPSTYLE}
-            closeOnClick={!disableBackdropClick}
-            testId={testId}
-          >
-            {children}
-          </FadeModal>
-        </ModalFocus>
-      </div>
-    </ModalLayerContext.Provider>
+        hideModal(modal.customOnHideOpts);
+      }}
+      ref={modalRef}
+      modalStyle={modalStyle}
+      contentStyle={contentStyle}
+      backdropStyle={BACKDROPSTYLE}
+      closeOnClick={!disableBackdropClick}
+      testId={testId}
+    >
+      {children}
+    </FadeModal>
   );
 }
 

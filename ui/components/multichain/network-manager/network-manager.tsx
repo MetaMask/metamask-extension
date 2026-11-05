@@ -1,4 +1,9 @@
-import { ModalContentSize, ModalHeader } from '@metamask/design-system-react';
+import {
+  ModalContentSize,
+  ModalContent,
+  Modal,
+  ModalHeader,
+} from '@metamask/design-system-react';
 import {
   type NetworkConfiguration,
   RpcEndpointType,
@@ -8,7 +13,6 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
-import { ModalContent, Modal } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNetworkFormState } from '../networks-form/networks-form-state';
 import {

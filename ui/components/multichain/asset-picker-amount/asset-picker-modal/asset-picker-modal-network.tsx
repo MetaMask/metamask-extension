@@ -16,11 +16,12 @@ import {
   TextVariant as DsTextVariant,
   TextButton,
   TextButtonSize,
+  Modal,
+  ModalContent,
   ModalOverlay,
   ModalHeader,
   ModalBody,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import {
   Display,
   FlexDirection,
