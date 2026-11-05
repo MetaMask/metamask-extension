@@ -6,6 +6,7 @@ import {
   openMoneyHome,
 } from '../../page-objects/flows/money-account-deposit.flow';
 import { login } from '../../page-objects/flows/login.flow';
+import MoneyHomePage from '../../page-objects/pages/money/money-home-page';
 import { getMoneyAccountDepositConfig } from '../confirmations/metamask-pay/helpers';
 
 /**
@@ -25,7 +26,8 @@ describe('Money Account FTUE', function (this: Suite) {
         const splash = await openMoneyFtueSplash(driver);
         await splash.clickStartEarning();
 
-        await openMoneyHome(driver);
+        const moneyHomePage = new MoneyHomePage(driver);
+        await moneyHomePage.checkPageIsLoaded();
         await splash.checkIsNotShown();
 
         // Reload so the persisted seen flag is read back from background
@@ -49,7 +51,8 @@ describe('Money Account FTUE', function (this: Suite) {
         const splash = await openMoneyFtueSplash(driver);
         await splash.clickClose();
 
-        await openMoneyHome(driver);
+        const moneyHomePage = new MoneyHomePage(driver);
+        await moneyHomePage.checkPageIsLoaded();
         await splash.checkIsNotShown();
       },
     );
