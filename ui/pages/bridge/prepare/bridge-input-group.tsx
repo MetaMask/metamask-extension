@@ -73,7 +73,7 @@ const getBlockExplorerUrl = (
 
 // Two stacked amount fields cannot fit the 88px start, so the Swap/Bridge
 // fields start lower on the same shared scale.
-const AMOUNT_FIELD_MAX_FONT_SIZE = 40;
+const AMOUNT_FIELD_MAX_FONT_SIZE = 48;
 
 type BridgeAmountFieldProps = {
   testId: string;

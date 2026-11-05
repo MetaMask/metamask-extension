@@ -254,15 +254,15 @@ describe('BridgeInputGroup', () => {
     expect(input).toHaveAttribute('inputmode', 'decimal');
   });
 
-  it('starts a short amount at 40px', () => {
+  it('starts a short amount at 48px', () => {
     renderBridgeInputGroup(
       {},
       { amountFieldProps: { testId: 'from-amount', value: '1' } },
     );
 
     expect(screen.getByTestId('from-amount')).toHaveStyle({
-      fontSize: '40px',
-      lineHeight: '40px',
+      fontSize: '48px',
+      lineHeight: '48px',
     });
   });
 
@@ -278,7 +278,7 @@ describe('BridgeInputGroup', () => {
       resizeObserver.restore();
     });
 
-    it('keeps a long amount at 40px in a wide expanded-view field', () => {
+    it('keeps a long amount at 48px in a wide expanded-view field', () => {
       renderBridgeInputGroup(
         {},
         { amountFieldProps: { testId: 'from-amount', value: longAmount } },
@@ -287,8 +287,8 @@ describe('BridgeInputGroup', () => {
       act(() => resizeObserver.resize(626));
 
       expect(screen.getByTestId('from-amount')).toHaveStyle({
-        fontSize: '40px',
-        lineHeight: '40px',
+        fontSize: '48px',
+        lineHeight: '48px',
       });
     });
 
@@ -330,7 +330,7 @@ describe('BridgeInputGroup', () => {
       }
 
       expect(input).toHaveValue(longAmount);
-      expect(input).toHaveStyle({ fontSize: '40px' });
+      expect(input).toHaveStyle({ fontSize: '48px' });
       expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
         observersBeforeTyping,
       );
@@ -358,7 +358,7 @@ describe('BridgeInputGroup', () => {
 
     for (const element of [prefix, input]) {
       expect(element).toHaveClass('font-hero');
-      expect(element).toHaveStyle({ fontSize: '40px', lineHeight: '40px' });
+      expect(element).toHaveStyle({ fontSize: '48px', lineHeight: '48px' });
     }
   });
 

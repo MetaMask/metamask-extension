@@ -15,7 +15,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         <label
           class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1"
           data-testid="from-amount-row"
-          style="height: 40px;"
+          style="height: 48px;"
         >
           <span
             class="relative w-max min-w-0 overflow-hidden"
@@ -24,7 +24,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
               aria-hidden="true"
               class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="from-amount-row-value"
-              style="font-size: 40px; line-height: 40px;"
+              style="font-size: 48px; line-height: 48px;"
             >
               0
             </span>
@@ -35,7 +35,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
               data-testid="from-amount"
               inputmode="decimal"
               placeholder="0"
-              style="font-size: 40px; line-height: 40px;"
+              style="font-size: 48px; line-height: 48px;"
               type="text"
               value=""
             />
@@ -141,7 +141,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           <label
             class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1 opacity-50"
             data-testid="to-amount-row"
-            style="height: 40px;"
+            style="height: 48px;"
           >
             <span
               class="relative w-max min-w-0 overflow-hidden"
@@ -150,7 +150,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                 aria-hidden="true"
                 class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
                 data-testid="to-amount-row-value"
-                style="font-size: 40px; line-height: 40px;"
+                style="font-size: 48px; line-height: 48px;"
               >
                 0
               </span>
@@ -163,7 +163,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                 inputmode="decimal"
                 placeholder="0"
                 readonly=""
-                style="font-size: 40px; line-height: 40px;"
+                style="font-size: 48px; line-height: 48px;"
                 type="text"
                 value="0"
               />
@@ -273,7 +273,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         <label
           class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1"
           data-testid="from-amount-row"
-          style="height: 40px;"
+          style="height: 48px;"
         >
           <span
             class="relative w-max min-w-0 overflow-hidden"
@@ -282,7 +282,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
               aria-hidden="true"
               class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="from-amount-row-value"
-              style="font-size: 40px; line-height: 40px;"
+              style="font-size: 48px; line-height: 48px;"
             >
               1
             </span>
@@ -293,7 +293,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
               data-testid="from-amount"
               inputmode="decimal"
               placeholder="0"
-              style="font-size: 40px; line-height: 40px;"
+              style="font-size: 48px; line-height: 48px;"
               type="text"
               value="1"
             />
@@ -399,7 +399,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           <label
             class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1 opacity-50"
             data-testid="to-amount-row"
-            style="height: 40px;"
+            style="height: 48px;"
           >
             <span
               class="relative w-max min-w-0 overflow-hidden"
@@ -408,7 +408,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                 aria-hidden="true"
                 class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
                 data-testid="to-amount-row-value"
-                style="font-size: 40px; line-height: 40px;"
+                style="font-size: 48px; line-height: 48px;"
               >
                 0
               </span>
@@ -421,7 +421,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                 inputmode="decimal"
                 placeholder="0"
                 readonly=""
-                style="font-size: 40px; line-height: 40px;"
+                style="font-size: 48px; line-height: 48px;"
                 type="text"
                 value="0"
               />

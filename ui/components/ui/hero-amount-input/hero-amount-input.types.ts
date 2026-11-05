@@ -82,7 +82,7 @@ export type HeroAmountInputProps = {
    */
   isLoading?: boolean;
   /**
-   * Largest step of the scale, and the row height. Swap and Bridge use 40.
+   * Largest step of the scale, and the row height. Swap and Bridge use 48.
    */
   maxFontSize?: HeroAmountFontSize;
   /**
