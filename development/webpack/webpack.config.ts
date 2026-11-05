@@ -290,6 +290,10 @@ if (args.lavamoat) {
   } = require('./utils/plugins/LavamoatPlugin');
   plugins.push(lavamoatPlugin(args, manifestPlugin), lavamoatUnsafeLayerPlugin);
 }
+if (process.env.MM_DEBUG_HASH_DUMP) {
+  const { MmHashDump } = require('./utils/plugins/MmHashDump');
+  plugins.push(new MmHashDump());
+}
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
