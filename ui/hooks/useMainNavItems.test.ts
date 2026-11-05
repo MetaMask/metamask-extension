@@ -247,6 +247,12 @@ describe('useMainNavItems', () => {
         acknowledged: false,
       });
       expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+        labelKey: 'money',
+        redirectTarget: MoneyScreenName.MoneyFtue,
+      });
     });
 
     it('navigates to the activity route on Activity click', () => {

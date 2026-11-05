@@ -85,7 +85,9 @@ export function useMainNavItems(): MainNavItem[] {
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.GoToMoneyHome,
       labelKey: 'money',
-      redirectTarget: MoneyScreenName.MoneyHome,
+      redirectTarget: hasSeenMoneyFtue
+        ? MoneyScreenName.MoneyHome
+        : MoneyScreenName.MoneyFtue,
     });
 
     if (!hasSeenMoneyFtue) {

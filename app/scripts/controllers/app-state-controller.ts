@@ -1393,7 +1393,8 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether the Money account FTUE splash has been seen.
+   * Sets whether the Money account first-time-user-experience (FTUE) splash
+   * has been seen.
    *
    * @param value - Whether the Money FTUE splash has been seen
    */
