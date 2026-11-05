@@ -7755,6 +7755,20 @@ export function setMusdConversionEducationSeen(value: boolean) {
 }
 
 /**
+ * Persist that the Money account FTUE splash has been seen.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setMoneyFtueSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('AppStateController:setMoneyFtueSeen', [
+      value,
+    ]);
+  };
+}
+
+/**
  * Persist that the user has seen (and dismissed) the Perps tab "New" badge.
  * Stored in AppStateController until uninstall.
  *
