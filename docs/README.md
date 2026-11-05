@@ -15,6 +15,7 @@ To learn how to develop MetaMask-compatible applications, visit our [Developer D
 - [A/B testing guide](./ab-testing.md)
 - [Publishing Guide](./publishing.md)
 - [How to add a feature behind a secret feature flag](./secret-preferences.md)
+- [Deeplink route authoring](./deeplink-route-authoring.md)
 - [Developing on MetaMask](../development/README.md)
 
 ## LLM Agent Tooling
