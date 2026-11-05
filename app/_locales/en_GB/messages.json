@@ -4197,6 +4197,30 @@
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
+  "extensionUpdateDescription": {
+    "message": "A newer version of MetaMask is ready. Update to get the latest security improvements."
+  },
+  "extensionUpdatePrimaryAction": {
+    "message": "Update MetaMask"
+  },
+  "extensionUpdateSecondaryAction": {
+    "message": "Not now"
+  },
+  "extensionUpdateTitle": {
+    "message": "A new version is available"
+  },
+  "extensionUpdateUnsupportedDescription": {
+    "message": "This version of MetaMask is no longer supported. Update now to keep using your wallet."
+  },
+  "extensionUpdateUnsupportedPrimaryAction": {
+    "message": "Update now"
+  },
+  "extensionUpdateUnsupportedSecondaryAction": {
+    "message": "Continue anyway"
+  },
+  "extensionUpdateUnsupportedTitle": {
+    "message": "This version is no longer supported"
+  },
   "externalAccount": {
     "message": "External account"
   },
