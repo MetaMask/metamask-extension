@@ -1,10 +1,11 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import type { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
-import BottomNavBar from '../../page-objects/pages/home/bottom-nav-bar-page';
-import MoneyHomePage from '../../page-objects/pages/money/money-home-page';
-import { loginAndOpenMoneyFtueSplash } from '../../page-objects/flows/money-account-deposit.flow';
+import {
+  openMoneyFtueSplash,
+  openMoneyHome,
+} from '../../page-objects/flows/money-account-deposit.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { getMoneyAccountDepositConfig } from '../confirmations/metamask-pay/helpers';
 
 /**
@@ -18,27 +19,19 @@ describe('Money Account FTUE', function (this: Suite) {
         title: this.test?.fullTitle(),
         moneyFtueSeen: false,
       }),
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        const splash = await loginAndOpenMoneyFtueSplash(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const splash = await openMoneyFtueSplash(driver);
         await splash.clickStartEarning();
 
-        const moneyHomePage = new MoneyHomePage(driver);
-        await moneyHomePage.checkPageIsLoaded();
+        await openMoneyHome(driver);
         await splash.checkIsNotShown();
 
         // Reload so the persisted seen flag is read back from background
         // state, then revisit Money through the tab.
         await driver.navigate();
-        const bottomNavBar = new BottomNavBar(driver);
-        await bottomNavBar.checkPageIsLoaded();
-        await bottomNavBar.clickMoney();
-        await moneyHomePage.checkPageIsLoaded();
+        await openMoneyHome(driver);
         await splash.checkIsNotShown();
       },
     );
@@ -50,18 +43,13 @@ describe('Money Account FTUE', function (this: Suite) {
         title: this.test?.fullTitle(),
         moneyFtueSeen: false,
       }),
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        const splash = await loginAndOpenMoneyFtueSplash(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const splash = await openMoneyFtueSplash(driver);
         await splash.clickClose();
 
-        const moneyHomePage = new MoneyHomePage(driver);
-        await moneyHomePage.checkPageIsLoaded();
+        await openMoneyHome(driver);
         await splash.checkIsNotShown();
       },
     );

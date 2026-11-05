@@ -9,6 +9,42 @@ import MoneyTransactionDetailsPage from '../pages/money/money-transaction-detail
 import { login } from './login.flow';
 
 /**
+ * Open the Money home page via the bottom nav Money tab. Assumes the wallet
+ * is already unlocked.
+ *
+ * @param driver - The WebDriver instance.
+ * @returns The loaded `MoneyHomePage`.
+ */
+export async function openMoneyHome(driver: Driver): Promise<MoneyHomePage> {
+  const bottomNavBar = new BottomNavBar(driver);
+  await bottomNavBar.checkPageIsLoaded();
+  await bottomNavBar.clickMoney();
+
+  const moneyHomePage = new MoneyHomePage(driver);
+  await moneyHomePage.checkPageIsLoaded();
+  return moneyHomePage;
+}
+
+/**
+ * Open the Money FTUE splash via the bottom nav Money tab. Assumes the wallet
+ * is already unlocked.
+ *
+ * @param driver - The WebDriver instance.
+ * @returns The loaded `MoneyFtueSplashPage`.
+ */
+export async function openMoneyFtueSplash(
+  driver: Driver,
+): Promise<MoneyFtueSplashPage> {
+  const bottomNavBar = new BottomNavBar(driver);
+  await bottomNavBar.checkPageIsLoaded();
+  await bottomNavBar.clickMoney({ assertRoute: false });
+
+  const splash = new MoneyFtueSplashPage(driver);
+  await splash.checkPageIsLoaded();
+  return splash;
+}
+
+/**
  * Unlock the wallet and open the Money home page via the bottom nav Money
  * tab (bottom nav AB test treatment).
  *
@@ -22,36 +58,7 @@ export async function loginAndOpenMoneyHome(
 ): Promise<MoneyHomePage> {
   await login(driver, { localNode, validateBalance: false });
 
-  const bottomNavBar = new BottomNavBar(driver);
-  await bottomNavBar.checkPageIsLoaded();
-  await bottomNavBar.clickMoney();
-
-  const moneyHomePage = new MoneyHomePage(driver);
-  await moneyHomePage.checkPageIsLoaded();
-  return moneyHomePage;
-}
-
-/**
- * Unlock the wallet and open the Money FTUE splash via the bottom nav Money
- * tab. The splash is shown before Money home on the first visit.
- *
- * @param driver - The WebDriver instance.
- * @param localNode - The Anvil node backing Mainnet, for balance validation.
- * @returns The loaded `MoneyFtueSplashPage`.
- */
-export async function loginAndOpenMoneyFtueSplash(
-  driver: Driver,
-  localNode?: Anvil,
-): Promise<MoneyFtueSplashPage> {
-  await login(driver, { localNode, validateBalance: false });
-
-  const bottomNavBar = new BottomNavBar(driver);
-  await bottomNavBar.checkPageIsLoaded();
-  await bottomNavBar.clickMoney({ assertRoute: false });
-
-  const splash = new MoneyFtueSplashPage(driver);
-  await splash.checkPageIsLoaded();
-  return splash;
+  return openMoneyHome(driver);
 }
 
 /**

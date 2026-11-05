@@ -42,7 +42,9 @@ class MoneyFtueSplashPage {
 
   async checkIsNotShown(): Promise<void> {
     console.log('Check the Money FTUE splash is not shown');
-    await this.driver.assertElementNotPresent(this.page);
+    await this.driver.assertElementNotPresent(this.page, {
+      waitAtLeastGuard: 1000,
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -58,7 +60,7 @@ class MoneyFtueSplashPage {
 
   async clickClose(): Promise<void> {
     console.log('Click the Money FTUE splash close button');
-    await this.driver.clickElement(this.closeButton);
+    await this.driver.clickElementAndWaitToDisappear(this.closeButton);
   }
 
   async clickStartEarning(): Promise<void> {
