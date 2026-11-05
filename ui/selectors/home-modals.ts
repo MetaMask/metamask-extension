@@ -8,10 +8,12 @@ import {
 } from '../ducks/metamask/metamask';
 import { getIsSocialLoginFlow } from './first-time-flow';
 import {
+  getActiveQrCodeScanRequest,
   getShowShieldEntryModal,
   getShowRecoveryPhraseReminder,
   getShowTermsOfUse,
   getShowUpdateModal,
+  getUnapprovedConfirmations,
 } from './selectors';
 
 /**
@@ -121,6 +123,55 @@ export const selectDisplayUpdateModal = createSelector(
   [selectCanSeeModals, selectShowMultiRpcEditModal, getShowUpdateModal],
   (canSeeModals, showMultiRpcEditModal, showUpdateModal) =>
     canSeeModals && showUpdateModal && !showMultiRpcEditModal,
+);
+
+/**
+ * Returns true when a flow the user is in the middle of should keep the update
+ * takeover from covering it. The takeover appears as soon as all of these have
+ * closed.
+ *
+ * - a pending confirmation (including add-network confirmations)
+ * - an active QR hardware scan
+ * - the network menu
+ * - the IPFS modal
+ * - the basic functionality modal
+ * - the keyring snap removal result
+ * - the deprecated network modal
+ *
+ * This is deliberately separate from `selectDisplayUpdateModal`, which keeps
+ * the lower-priority home modals suppressed while the takeover waits.
+ *
+ * @param state - Redux state object.
+ * @returns Whether the update takeover should wait.
+ */
+export const selectIsUpdateModalDeferred = createSelector(
+  [
+    (state: MetaMaskReduxState) => getUnapprovedConfirmations(state).length > 0,
+    getActiveQrCodeScanRequest,
+    (state: MetaMaskReduxState) => state.appState.isNetworkMenuOpen,
+    (state: MetaMaskReduxState) => state.appState.showIpfsModalOpen,
+    (state: MetaMaskReduxState) => state.appState.showBasicFunctionalityModal,
+    (state: MetaMaskReduxState) => state.appState.showKeyringRemovalSnapModal,
+    (state: MetaMaskReduxState) => state.appState.deprecatedNetworkModalOpen,
+  ],
+  (
+    hasPendingConfirmation,
+    activeQrCodeScanRequest,
+    isNetworkMenuOpen,
+    isIpfsModalOpen,
+    isBasicFunctionalityModalOpen,
+    isKeyringRemovalResultOpen,
+    isDeprecatedNetworkModalOpen,
+  ) =>
+    Boolean(
+      hasPendingConfirmation ||
+      activeQrCodeScanRequest ||
+      isNetworkMenuOpen ||
+      isIpfsModalOpen ||
+      isBasicFunctionalityModalOpen ||
+      isKeyringRemovalResultOpen ||
+      isDeprecatedNetworkModalOpen,
+    ),
 );
 
 /**
