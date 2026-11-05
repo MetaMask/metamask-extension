@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useAppLayout } from '../contexts/app-layout';
 import { isMainNavRoute } from '../helpers/utils/main-nav';
-import { useBottomNavBar } from './useBottomNavBar';
 
 export type MainNavBars = {
   hasNavBar: boolean;
@@ -20,12 +19,10 @@ export function useMainNavBars(): MainNavBars {
   const { pathname } = useLocation();
   const { isWideLayout } = useAppLayout();
   const hasNavBar = isMainNavRoute(pathname);
-  const showBottomNav = useBottomNavBar() && !isWideLayout;
-  const showSideNav = isMainNavRoute(pathname) && isWideLayout;
 
   return {
     hasNavBar,
-    showSideNav,
-    showBottomNav,
+    showSideNav: hasNavBar && isWideLayout,
+    showBottomNav: hasNavBar && !isWideLayout,
   };
 }

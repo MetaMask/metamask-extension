@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -17,9 +16,9 @@ import { RecoveryPhraseReminderContainer } from '../../components/app/recovery-p
 import { ImportedTokensNotificationContainer } from '../../components/app/imported-tokens-notification/imported-tokens-notification-container';
 import { MultiRpcEditModalContainer } from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal-container';
 import { UpdateModalContainer } from '../../components/app/update-modal/update-modal-container';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+
 import ConnectedSites from '../connected-sites';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+
 import ConnectedAccounts from '../connected-accounts';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import {
@@ -233,8 +232,6 @@ export default function Home() {
     setBasicFunctionalityModalOpen();
   }, [setBasicFunctionalityModalOpen]);
 
-  const showNavbar = useBottomNavBar();
-
   if (forgottenPassword) {
     return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
   }
@@ -300,22 +297,11 @@ export default function Home() {
   );
 
   return (
-    <>
-      {showNavbar ? (
-        <div className="flex min-h-full flex-col">
-          <div className="grow">{homeBody}</div>
-          <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 z-10">
-            <DappConnectionControlBar />
-          </div>
-        </div>
-      ) : (
-        <div className="flex min-h-0 flex-1 flex-col">
-          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
-            {homeBody}
-          </ScrollContainer>
-          <DappConnectionControlBar />
-        </div>
-      )}
-    </>
+    <div className="flex min-h-full flex-col">
+      <div className="grow">{homeBody}</div>
+      <div className="sticky bottom-0 z-10 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16">
+        <DappConnectionControlBar />
+      </div>
+    </div>
   );
 }
