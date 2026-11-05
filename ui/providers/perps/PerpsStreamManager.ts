@@ -209,13 +209,18 @@ class PerpsStreamManager {
           // Replace a seed with fresh REST data: the provider's WebSocket
           // cache has not confirmed it either.
           const params = this.positions.isSeeded() ? [{ skipCache: true }] : [];
+          // The response belongs to the account and network it was requested
+          // for: a cache clear or account switch bumps the generation.
+          const generation = this.positions.getGeneration();
+          const isCurrent = () =>
+            !cancelled && generation === this.positions.getGeneration();
           submitRequestToBackground<Position[]>('perpsGetPositions', params)
             .then((data) => {
               // A nullish response leaves the seeded snapshot unconfirmed.
               if (!data && this.positions.isSeeded()) {
                 return;
               }
-              if (!cancelled && !hasLivePositions()) {
+              if (isCurrent() && !hasLivePositions()) {
                 push(data ?? EMPTY_POSITIONS);
               }
             })
@@ -224,7 +229,7 @@ class PerpsStreamManager {
                 '[PerpsStreamManager] Failed to fetch positions',
                 err,
               );
-              if (!cancelled && !this.positions.hasCachedData()) {
+              if (isCurrent() && !this.positions.hasCachedData()) {
                 push(EMPTY_POSITIONS);
               }
             });

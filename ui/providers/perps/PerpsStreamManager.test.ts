@@ -542,6 +542,38 @@ describe('PerpsStreamManager', () => {
       expect(manager.positions.isSeeded()).toBe(false);
     });
 
+    it('drops a seeded REST response that arrives after the caches were cleared', async () => {
+      const ADDR = '0xABCDEF0000000000000000000000000000000001';
+      const stalePositions = [makePosition('ETH')];
+      let resolvePositions: (value: Position[]) => void = () => undefined;
+      mockSubmitRequestToBackground.mockImplementation((method: string) =>
+        method === 'perpsGetPositions'
+          ? new Promise<Position[]>((resolve) => {
+              resolvePositions = resolve;
+            })
+          : Promise.resolve(undefined),
+      );
+      manager.hydrateFromControllerCache(
+        { positions: [makePosition('BTC')], address: ADDR },
+        ADDR,
+      );
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      await jest.advanceTimersByTimeAsync(3_000);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
+
+      manager.clearAllCaches();
+      cb.mockClear();
+      resolvePositions(stalePositions);
+      await jest.advanceTimersByTimeAsync(0);
+
+      expect(cb).not.toHaveBeenCalledWith(stalePositions);
+    });
+
     it.each([null, undefined])(
       'preserves a seeded snapshot when REST returns %s',
       async (data) => {
