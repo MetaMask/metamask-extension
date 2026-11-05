@@ -45,7 +45,7 @@ export const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
  * Events delegated to the AssetsController messenger.
  */
 export const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
-  'AccountTreeController:selectedAccountGroupChange',
+  'AccountTreeController:selectedAccountGroupReadyChange',
   'AccountTreeController:initialized',
   'AccountTreeController:uninitialized',
   'NetworkEnablementController:stateChange',

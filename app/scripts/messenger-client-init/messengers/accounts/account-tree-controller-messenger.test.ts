@@ -33,6 +33,8 @@ const ACCOUNT_TREE_CONTROLLER_DELEGATED_EVENTS = [
   'AccountsController:selectedAccountChange',
   'UserStorageController:stateChange',
   'MultichainAccountService:walletStatusChange',
+  'MultichainAccountService:multichainAccountGroupCreated',
+  'MultichainAccountService:multichainAccountGroupAligned',
 ] as const;
 
 const ACCOUNT_TREE_CONTROLLER_INIT_DELEGATED_ACTIONS = [
