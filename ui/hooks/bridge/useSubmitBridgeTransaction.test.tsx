@@ -289,7 +289,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
               "replace": true,
               "state": {
                 "bridgeState": null,
-                "stayOnHomePage": true,
                 "token": null,
               },
             },
@@ -345,7 +344,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
               "replace": true,
               "state": {
                 "bridgeState": null,
-                "stayOnHomePage": true,
                 "token": null,
               },
             },
@@ -767,7 +765,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         replace: true,
         state: {
           bridgeState: null,
-          stayOnHomePage: true,
           token: null,
         },
       });
@@ -912,7 +909,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         state: {
           bridgeState: null,
           token: null,
-          stayOnHomePage: true,
         },
       });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
