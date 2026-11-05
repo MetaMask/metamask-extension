@@ -49,6 +49,8 @@ export class MetaMaskPayConfirmation extends Confirmation {
     testId: 'wallet-initiated-header-back-button',
   };
 
+  protected readonly paidByMetaMask = { testId: 'paid-by-metamask' };
+
   private readonly payWithBalance = (balanceText: string) => ({
     testId: 'pay-with-balance',
     text: balanceText,
