@@ -5616,7 +5616,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many attempts. Request a new code."
+    "message": "Too many incorrect codes. Get a new code when it's available."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5696,6 +5696,10 @@
   },
   "mfaOtpGetNewCode": {
     "message": "Get new code"
+  },
+  "mfaOtpGetNewCodeIn": {
+    "message": "Get new code in $1s",
+    "description": "$1 is a number of seconds"
   },
   "mfaOtpResend": {
     "message": "Resend code"
@@ -8632,7 +8636,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "contact support",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Some services are temporarily unavailable. $1, or $2.",
@@ -8640,7 +8644,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "See your options in FAQs",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "We're experiencing an outage",

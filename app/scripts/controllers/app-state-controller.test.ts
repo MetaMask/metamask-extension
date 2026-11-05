@@ -241,10 +241,10 @@ describe('AppStateController', () => {
   describe('setDefaultHomeActiveTabName', () => {
     it('sets the default home tab name', async () => {
       await withController(({ controller }) => {
-        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Activity);
+        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Tokens);
 
         expect(controller.state.defaultHomeActiveTabName).toBe(
-          AccountOverviewTabKey.Activity,
+          AccountOverviewTabKey.Tokens,
         );
       });
     });

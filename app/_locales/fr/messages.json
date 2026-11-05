@@ -8431,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "contacter notre service d’assistance",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Certains services sont temporairement indisponibles. $1, ou $2.",
@@ -8439,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Découvrez les options qui s'offrent à vous dans la FAQ",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Nous subissons actuellement une panne",

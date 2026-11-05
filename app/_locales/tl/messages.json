@@ -8431,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "makipag-ugnayan sa suporta",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Pansamantalang hindi available ang ilang serbisyo.$1, o $2.",
@@ -8439,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Tingnan ang iyong mga opsyon sa Mga FAQ",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Nakakaranas kami ng outage",
