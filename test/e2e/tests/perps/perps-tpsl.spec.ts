@@ -72,7 +72,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
               tid: 9_101_002,
             }),
           expectedTitleContains: 'Closed long',
-          openActivityFromMarketDetail: true,
         });
       },
     );
@@ -122,7 +121,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
               tid: 9_102_002,
             }),
           expectedTitleContains: 'Closed long',
-          openActivityFromMarketDetail: true,
         });
       },
     );

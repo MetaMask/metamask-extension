@@ -73,10 +73,6 @@ export class PerpsMarketDetailPage {
 
   private readonly driver: Driver;
 
-  private readonly viewAllActivityButton = {
-    testId: 'perps-market-detail-view-all-activity',
-  };
-
   private readonly editMarginAvailableValue = {
     testId: 'perps-edit-margin-available-value',
   };
@@ -319,18 +315,6 @@ export class PerpsMarketDetailPage {
   async clickAutoCloseRow(): Promise<void> {
     await this.dismissPerpsToastIfPresent();
     await this.driver.findScrollToAndClickElement(this.autoCloseRow);
-  }
-
-  /**
-   * Opens Perps Activity from the market screen. The control renders only once
-   * this market has a fill, and it stays inside the Perps layout.
-   */
-  async clickViewAllActivity(): Promise<void> {
-    const button = await this.driver.waitForSelector(
-      this.viewAllActivityButton,
-    );
-    await this.driver.scrollToElement(button);
-    await this.driver.clickElement(this.viewAllActivityButton);
   }
 
   /**
