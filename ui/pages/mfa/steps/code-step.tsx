@@ -135,6 +135,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
 
   const getResendLabel = () => {
     if (isCoolingDown) {
+      if (needsNewCode) {
+        return t('mfaOtpGetNewCodeIn', [String(secondsLeft)]);
+      }
       return t(codeSent ? 'mfaOtpResendIn' : 'mfaOtpSendIn', [
         String(secondsLeft),
       ]);
@@ -193,7 +196,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             onClick={() => onAction({ type: 'resend' })}
             data-testid={MfaFlowTestIds.RESEND_BUTTON}
           >
-            {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}
+            {needsNewCode && !isCoolingDown
+              ? t('mfaOtpGetNewCode')
+              : getResendLabel()}
           </Button>
         )
       }
