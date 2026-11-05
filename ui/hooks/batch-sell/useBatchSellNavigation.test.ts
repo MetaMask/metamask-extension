@@ -7,12 +7,10 @@ import {
 import { useBatchSellNavigation } from './useBatchSellNavigation';
 
 const mockNavigate = jest.fn();
-const mockPathname = '/some-page';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ pathname: mockPathname, state: null }),
 }));
 
 describe('useBatchSellNavigation', () => {
@@ -20,58 +18,15 @@ describe('useBatchSellNavigation', () => {
     jest.clearAllMocks();
   });
 
-  describe('resetLocationState', () => {
-    it('navigates to the current pathname with stayOnHomePage=false by default', () => {
-      const { result } = renderHook(() => useBatchSellNavigation());
-
-      act(() => {
-        result.current.resetLocationState();
-      });
-
-      expect(mockNavigate).toHaveBeenCalledWith(
-        { pathname: mockPathname },
-        {
-          state: { stayOnHomePage: false },
-        },
-      );
-    });
-
-    it('navigates to a custom destination when provided', () => {
-      const { result } = renderHook(() => useBatchSellNavigation());
-
-      act(() => {
-        result.current.resetLocationState('/custom-route');
-      });
-
-      expect(mockNavigate).toHaveBeenCalledWith('/custom-route', {
-        state: { stayOnHomePage: false },
-      });
-    });
-
-    it('sets stayOnHomePage=true when the flag is passed', () => {
-      const { result } = renderHook(() => useBatchSellNavigation());
-
-      act(() => {
-        result.current.resetLocationState('/custom-route', true);
-      });
-
-      expect(mockNavigate).toHaveBeenCalledWith('/custom-route', {
-        state: { stayOnHomePage: true },
-      });
-    });
-  });
-
   describe('navigateToDefaultRoute', () => {
-    it('navigates to the DEFAULT_ROUTE with stayOnHomePage=true', () => {
+    it('navigates to the DEFAULT_ROUTE', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
         result.current.navigateToDefaultRoute();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 
