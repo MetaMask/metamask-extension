@@ -16,8 +16,6 @@ const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 const SEND_AMOUNT = '0.5';
 
 describe('Bitcoin Send', function (this: Suite) {
-  this.timeout(180_000);
-
   it('confirms a partial-balance send after mining a local Bitcoin block', async function () {
     let bitcoinNode: BitcoinNode | undefined;
     await withBitcoinFixtures(

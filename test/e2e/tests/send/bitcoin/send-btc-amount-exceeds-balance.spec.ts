@@ -11,8 +11,6 @@ import SendPage from '../../../page-objects/pages/send/send-page';
 const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 
 describe('Bitcoin Send', function (this: Suite) {
-  this.timeout(300_000);
-
   it('displays an error when the amount exceeds the balance', async function () {
     await withBitcoinFixtures(
       {

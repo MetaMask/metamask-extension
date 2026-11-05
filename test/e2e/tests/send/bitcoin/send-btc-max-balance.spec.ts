@@ -15,8 +15,6 @@ const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 const TOTAL_BALANCE_SEND_AMOUNT = '0.99999719';
 
 describe('Bitcoin Send', function (this: Suite) {
-  this.timeout(300_000);
-
   it('sends the fee-buffered total BTC balance', async function () {
     await withBitcoinFixtures(
       {

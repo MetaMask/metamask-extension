@@ -13,8 +13,6 @@ const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 const SEND_AMOUNT = '0.5';
 
 describe('Bitcoin Send', function (this: Suite) {
-  this.timeout(300_000);
-
   it('displays the send amount, network fee, and total on review', async function () {
     await withBitcoinFixtures(
       {

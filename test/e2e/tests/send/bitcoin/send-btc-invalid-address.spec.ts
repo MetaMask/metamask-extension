@@ -9,8 +9,6 @@ import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SendPage from '../../../page-objects/pages/send/send-page';
 
 describe('Bitcoin Send', function (this: Suite) {
-  this.timeout(300_000);
-
   it('displays an error for an invalid recipient address', async function () {
     await withBitcoinFixtures(
       {
