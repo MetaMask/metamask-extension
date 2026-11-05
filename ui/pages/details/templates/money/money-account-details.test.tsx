@@ -6,26 +6,26 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 
-import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
-import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
-import { useMoneyAccountDeposit } from '../../../hooks/money/useMoneyAccountDeposit';
-import { useMoneyAccountInfo } from '../../../hooks/money/useMoneyAccountInfo';
+import type { MoneyAccountActivityItem } from '../../../../../shared/lib/activity/types';
+import { useLocalTransactionMeta } from '../../../../hooks/activity/useLocalTransactionMeta';
+import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
+import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
 import { MoneyAccountDetails } from './money-account-details';
 
-jest.mock('../../../hooks/activity/useLocalTransactionMeta');
-jest.mock('../../../hooks/money/useMoneyAccountDeposit');
-jest.mock('../../../hooks/money/useMoneyAccountInfo');
+jest.mock('../../../../hooks/activity/useLocalTransactionMeta');
+jest.mock('../../../../hooks/money/useMoneyAccountDeposit');
+jest.mock('../../../../hooks/money/useMoneyAccountInfo');
 
-jest.mock('../../../contexts/route-messenger', () => ({
+jest.mock('../../../../contexts/route-messenger', () => ({
   RouteMessengerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
 }));
 
-jest.mock('../../../hooks/useI18nContext', () => ({
+jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../../hooks/useFormatters', () => ({
+jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatDateTime: (timestamp: number) => `date-${timestamp}`,
     formatCurrencyWithMinThreshold: (value: number, currency: string) =>
@@ -33,20 +33,20 @@ jest.mock('../../../hooks/useFormatters', () => ({
   }),
 }));
 
-jest.mock('../../../components/app/activity-list-item-avatar', () => ({
+jest.mock('../../../../components/app/activity-list-item-avatar', () => ({
   ActivityAvatar: ({ tokens }: { tokens?: (string | undefined)[] }) => (
     <div data-testid="activity-avatar" data-tokens={String(tokens?.[0])} />
   ),
 }));
 
-jest.mock('../../../components/app/transaction/transaction-status', () => ({
+jest.mock('../../../../components/app/transaction/transaction-status', () => ({
   TransactionStatus: ({ status }: { status: string }) => (
     <div data-testid="transaction-status">{status}</div>
   ),
 }));
 
 jest.mock(
-  '../../confirmations/components/activity/transaction-details-context',
+  '../../../confirmations/components/activity/transaction-details-context',
   () => ({
     TransactionDetailsProvider: ({
       children,
@@ -57,13 +57,13 @@ jest.mock(
 );
 
 jest.mock(
-  '../../confirmations/components/activity/transaction-details-summary',
+  '../../../confirmations/components/activity/transaction-details-summary',
   () => ({
     TransactionDetailsSummary: () => <div data-testid="details-summary" />,
   }),
 );
 
-jest.mock('../components/block-explorer-button', () => ({
+jest.mock('../../components/block-explorer-button', () => ({
   BlockExplorerButton: ({
     chainId,
     txHash,
@@ -79,7 +79,7 @@ jest.mock('../components/block-explorer-button', () => ({
   ),
 }));
 
-jest.mock('../components/shared', () => ({
+jest.mock('../../components/shared', () => ({
   Footer: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="footer">{children}</div>
   ),

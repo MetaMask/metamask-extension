@@ -76,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-10-27
+ * Production defaults last synced: 2026-11-03
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -710,7 +710,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'cashtagInjection',
     productionDefault: {
       enabled: true,
-      minimumVersion: '13.53.0',
+      minimumVersion: '13.55.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -1320,78 +1320,33 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   confirmations_pay_extended: {
     inProd: true,
     name: 'confirmations_pay_extended',
-    productionDefault: [
-      {
-        scope: {
-          type: 'threshold',
-          value: 1,
+    productionDefault: {
+      depositLimit: {
+        moneyAccountDeposit: 500000,
+      },
+      excludeChainIdsFromInfura: ['0x8f'],
+      payStrategies: {
+        relay: {
+          atomicMaxEnabled: {
+            default: false,
+            transactionTypes: {
+              moneyAccountDeposit: true,
+            },
+          },
+          gaslessEnabled: true,
         },
-        thresholdName: 'control',
-        thresholdVersion: 2,
-        value: {
-          depositLimit: {
-            moneyAccountDeposit: 500000,
-          },
-          excludeChainIdsFromInfura: ['0x8f'],
-          payStrategies: {
-            relay: {
-              atomicMaxEnabled: {
-                default: false,
-                transactionTypes: {
-                  moneyAccountDeposit: true,
-                },
-              },
-              gaslessEnabled: true,
-            },
-          },
-          prefilledAmount: {
-            default: {
-              enabled: false,
-            },
-            overrides: {
-              moneyAccountDeposit: {
-                enabled: false,
-              },
-              musdConversion: {
-                enabled: false,
-              },
-            },
+      },
+      prefilledAmount: {
+        default: {
+          enabled: false,
+        },
+        overrides: {
+          moneyAccountDeposit: {
+            enabled: true,
           },
         },
       },
-      {
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        thresholdName: 'treatment',
-        thresholdVersion: 2,
-        value: {
-          depositLimit: {
-            moneyAccountDeposit: 500000,
-          },
-          excludeChainIdsFromInfura: ['0x8f'],
-          payStrategies: {
-            relay: {
-              gaslessEnabled: true,
-            },
-          },
-          prefilledAmount: {
-            default: {
-              enabled: false,
-            },
-            overrides: {
-              moneyAccountDeposit: {
-                enabled: false,
-              },
-              musdConversion: {
-                enabled: false,
-              },
-            },
-          },
-        },
-      },
-    ],
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -1500,7 +1455,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'confirmations_pay_rpc',
     productionDefault: {
-      enabled: false,
+      allowedTypes: ['perpsDeposit', 'perpsWithdraw'],
+      dapps: {
+        'http://localhost': {
+          allowedTypes: ['perpsDeposit', 'perpsWithdraw'],
+        },
+        'https://terminal.metamask.com': {
+          allowedTypes: ['perpsDeposit', 'perpsWithdraw'],
+        },
+        'https://va-mmcx-terminal.vercel.app': {
+          allowedTypes: ['perpsDeposit', 'perpsWithdraw'],
+        },
+      },
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3320,7 +3286,23 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: ACTIVE_TAB_DOMAIN_METRICS_FLAG,
     productionDefault: {
       minimumVersion: '13.36.0',
-      value: ['x.com', 'twitter.com'],
+      value: [
+        'x.com',
+        'twitter.com',
+        'stocktwits.com',
+        'uniswap.org',
+        'opensea.io',
+        'hyperliquid.xyz',
+        'pancakeswap.finance',
+        'aave.com',
+        'relay.link',
+        'jumper.xyz',
+        'polymarket.com',
+        'ponsfamily.com',
+        'safe.global',
+        'lighter.xyz',
+        'revoke.cash',
+      ],
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3502,7 +3484,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'mfaUiKit',
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.56.0',
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3602,9 +3584,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'neNetworkDiscoverButton',
     productionDefault: {
       '0x531': true,
-      '0x8f': true,
+      '0x8f': false,
       '0xe708': true,
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+      'stellar:pubnet': true,
       'tron:728126428': true,
     },
     status: FeatureFlagStatus.Active,
@@ -3706,6 +3689,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       'https://sei.carbondefi.xyz',
       'https://matcha.xyz',
       'https://app.trysweep.finance',
+      'https://app.ens.domains',
     ],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3793,11 +3777,11 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   perpsPerpTradingServiceInterruptionBannerEnabled: {
     // Dark until SRE enables it during a Perps outage. Not in the production
     // client-config response until the LaunchDarkly flag is created.
-    inProd: false,
+    inProd: true,
     name: 'perpsPerpTradingServiceInterruptionBannerEnabled',
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.52.0',
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3967,6 +3951,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'rampsServiceDisruption',
     productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  rewardsEnabled: {
+    inProd: true,
+    name: 'rewardsEnabled',
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '13.32.0',
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -4290,6 +4285,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'swapsChainValueOrderOverride',
     productionDefault: {
       positionOverrides: [],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  swapsRebateBannerEnabled: {
+    inProd: false,
+    name: 'swapsRebateBannerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
