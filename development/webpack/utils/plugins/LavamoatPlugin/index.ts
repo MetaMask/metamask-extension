@@ -19,6 +19,7 @@ const nullUnsafeEntries: Set<string> = new Set([
 const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by different mm deps outside of lm compartment
   'window',
+  'Window',
   'Proxy',
   'toString',
   'getComputedStyle',
@@ -99,7 +100,7 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'requestIdleCallback',
   // globals used by e2e
   ...(args.test
-    ? ['ret_nodes', 'browser', 'chrome', 'indexedDB', 'Window']
+    ? ['ret_nodes', 'browser', 'chrome', 'indexedDB']
     : []),
 ];
 
