@@ -157,7 +157,7 @@ jobs:
           import json, sys
           dump = json.load(open(sys.argv[1]))
           ctx = dump['context']
-          mods = {m['ident'].replace(ctx, '<ctx>'): m['buildHash'] for m in dump['modules']}
+          mods = {m['ident'].replace(ctx, '<ctx>'): m.get('buildHash') for m in dump['modules']}
           result = {
               'variant': '${{ matrix.variant }}',
               'iteration': ${{ matrix.iteration }},
