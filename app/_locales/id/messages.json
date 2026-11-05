@@ -4430,9 +4430,6 @@
   "getDollarMore": {
     "message": "Dapatkan $1 lagi"
   },
-  "getTheNewestFeatures": {
-    "message": "Dapatkan fitur terbaru"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Siapkan dompet Anda untuk menggunakan web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12625,9 +12622,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "Situs ini meminta pembaruan URL jaringan default Anda. Anda dapat mengedit informasi default dan jaringan setiap saat."
   },
-  "updateInformation": {
-    "message": "Kami telah membuat dompet Anda lebih aman, lebih lancar, dan menambahkan beberapa fitur baru. Perbarui sekarang untuk tetap terlindungi dan gunakan penyempurnaan terkini dari kami."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Perbarui $1",
     "description": "$1 represents network name"
@@ -12641,9 +12635,6 @@
   "updateRpc": {
     "message": "Perbarui RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Perbarui ke versi terkini"
   },
   "updatedRpcForNetworks": {
     "message": "RPC Jaringan Diperbarui"
