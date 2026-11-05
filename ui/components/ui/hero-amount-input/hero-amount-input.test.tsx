@@ -35,6 +35,14 @@ describe('isPartialHeroAmount', () => {
     expect(isPartialHeroAmount('1.23', 2)).toBe(true);
     expect(isPartialHeroAmount('1,234', 2)).toBe(false);
   });
+
+  it('rejects a separator when no decimals are allowed', () => {
+    expect(isPartialHeroAmount('1', 0)).toBe(true);
+    expect(isPartialHeroAmount('', 0)).toBe(true);
+    expect(isPartialHeroAmount('1.', 0)).toBe(false);
+    expect(isPartialHeroAmount('1,', 0)).toBe(false);
+    expect(isPartialHeroAmount('.', 0)).toBe(false);
+  });
 });
 
 describe('getHeroAmountFontSize', () => {
