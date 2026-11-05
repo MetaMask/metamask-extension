@@ -8,10 +8,10 @@ const DEFAULT_BROWSE_OCCURRENCE_FLOOR = 3;
 const EVM_CHAIN_NAMESPACE = 'eip155:';
 
 /**
- * Service profile sent as the `x-mm-service-profile` header on
- * `/tokens/search` requests. Matches the default used by `searchTokens` in
- * `@metamask/assets-controllers` so every token search request is tagged
- * consistently.
+ * Service profile sent as the `x-mm-service-profile` header on every
+ * `/tokens/search` request made by the extension. Both the local helper below
+ * and `useDiscoverCryptoSearch` (via core `searchTokens`) pass this value
+ * explicitly, so they stay in sync regardless of the core default.
  */
 export const TOKEN_SEARCH_SERVICE_PROFILE = 'assets--trending-search';
 
