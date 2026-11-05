@@ -48,7 +48,8 @@ export const HERO_AMOUNT_SKELETON_WIDTH = 80;
 
 /**
  * Whether a typed value is a partial amount: digits with at most one `.` or
- * `,` separator, and at most `maxDecimals` digits after it.
+ * `,` separator, and at most `maxDecimals` digits after it. A separator is
+ * rejected when `maxDecimals` is 0, because no digit can follow it.
  *
  * @param value - The value the field would hold after the keystroke.
  * @param maxDecimals - Digits allowed after the separator. Unlimited if omitted.
@@ -60,6 +61,11 @@ export function isPartialHeroAmount(
 ): boolean {
   const match = /^\d*(?:[.,](\d*))?$/u.exec(value);
   if (!match) {
+    return false;
+  }
+  // The capture group is set only when a separator is present. With no
+  // decimals allowed, that separator can never be completed.
+  if (maxDecimals === 0 && match[1] !== undefined) {
     return false;
   }
   return maxDecimals === undefined || (match[1] ?? '').length <= maxDecimals;
