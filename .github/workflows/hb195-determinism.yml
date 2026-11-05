@@ -89,11 +89,6 @@ jobs:
            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
            41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
     steps:
-      - name: Checkout (only so the workspace exists)
-        uses: actions/checkout@v6
-        with:
-          sparse-checkout: .nvmrc
-
       - name: Choose a build directory whose absolute path differs per iteration
         id: dir
         shell: bash
@@ -112,6 +107,7 @@ jobs:
           echo "Building in ${abs} (length ${#abs})"
 
       - name: Clone the ${{ matrix.variant }} branch into that directory
+        id: clone
         shell: bash
         run: |
           git clone --quiet --depth 1 --branch "test/hb195-${{ matrix.variant }}" \
@@ -119,11 +115,14 @@ jobs:
             "${{ steps.dir.outputs.dir }}"
           git -C "${{ steps.dir.outputs.dir }}" log -1 --format='%H %s'
           grep '"html-bundler-webpack-plugin"' "${{ steps.dir.outputs.dir }}/package.json"
+          # No checkout of the workspace itself: Yarn merges .yarnrc.yml from
+          # parent directories, and a partial checkout there breaks the install.
+          echo "node=$(cat "${{ steps.dir.outputs.dir }}/.nvmrc")" >> "${GITHUB_OUTPUT}"
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version-file: ${{ steps.dir.outputs.dir }}/.nvmrc
+          node-version: ${{ steps.clone.outputs.node }}
 
       - name: Install dependencies
         shell: bash
