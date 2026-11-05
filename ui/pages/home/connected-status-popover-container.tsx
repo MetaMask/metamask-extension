@@ -4,13 +4,12 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
-  ModalContent,
-  Modal,
   ModalOverlay,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from '@metamask/design-system-react';
+import { ModalContent, Modal } from '#ui/components/app/modal-layer';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { useI18nContext } from '../../hooks/useI18nContext';

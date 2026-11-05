@@ -1,10 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Popover,
-  PopoverPosition,
-  PopoverRole,
-} from '@metamask/design-system-react';
+import { PopoverPosition, PopoverRole } from '@metamask/design-system-react';
+import { Popover } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, IconName, ModalFocus, Text } from '../../component-library';
 import { MenuItem } from '../../ui/menu';

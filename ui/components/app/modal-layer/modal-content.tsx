@@ -34,7 +34,7 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
     ref,
   ) => {
     const context = useModalContext();
-    const dialogRef = useRef<HTMLElement>(null);
+    const dialogRef = useRef<HTMLDivElement>(null);
     useModalEvents({ ...context, dialogRef });
     return (
       <ModalFocus {...context}>
@@ -58,13 +58,18 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
             paddingTop={4}
             paddingBottom={4}
             {...modalDialogProps}
+            ref={dialogRef}
             className={twMerge(
               'flex max-h-full w-full rounded-4xl shadow-lg motion-safe:animate-slide-up',
               maxWidth[size],
               modalDialogProps?.className,
             )}
           >
-            <section ref={dialogRef} role="dialog" aria-modal="true">
+            <section
+              ref={modalDialogProps?.ref}
+              role="dialog"
+              aria-modal="true"
+            >
               {children}
             </section>
           </Box>

@@ -14,9 +14,7 @@ import {
   IconColor,
   IconName,
   IconSize,
-  Modal,
   ModalBody,
-  ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
@@ -24,6 +22,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';

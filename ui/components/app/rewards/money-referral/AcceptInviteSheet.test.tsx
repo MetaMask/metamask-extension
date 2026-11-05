@@ -4,6 +4,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import {
+  Modal,
+  ModalContent,
+  ModalProvider,
+} from '#ui/components/app/modal-layer';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AcceptInviteSheet } from './AcceptInviteSheet';
@@ -166,12 +171,14 @@ function renderSheet({
   geoError = false,
   excludedRegions = [] as string[] | null,
   onClose = jest.fn(),
+  wrapper,
 }: {
   initialCode?: string;
   geoLocation?: string | null;
   geoError?: boolean;
   excludedRegions?: string[] | null;
   onClose?: () => void;
+  wrapper?: React.ComponentType<React.PropsWithChildren>;
 } = {}) {
   const store = configureStore({
     reducer: (state = {}) => state,
@@ -189,6 +196,7 @@ function renderSheet({
     <Provider store={store}>
       <AcceptInviteSheet initialCode={initialCode} onClose={onClose} />
     </Provider>,
+    { wrapper },
   );
 
   return { ...view, onClose, store };
@@ -525,9 +533,24 @@ describe('AcceptInviteSheet', () => {
       });
       return { status: 'settled' };
     });
-    const view = renderSheet({ initialCode: 'AB12CD' });
+    const view = renderSheet({
+      initialCode: 'AB12CD',
+      wrapper: ({ children }) => (
+        <ModalProvider>
+          {children}
+          <Modal isOpen onClose={() => undefined}>
+            <ModalContent>
+              <button>Destination dialog</button>
+            </ModalContent>
+          </Modal>
+        </ModalProvider>
+      ),
+    });
 
     expect(view.getByTestId('money-referral-accept')).toBeEnabled();
+    expect(
+      view.queryByRole('button', { name: 'Destination dialog' }),
+    ).not.toBeInTheDocument();
 
     await act(async () => {
       await user.click(view.getByTestId('money-referral-accept'));
@@ -536,6 +559,9 @@ describe('AcceptInviteSheet', () => {
 
     expect(view.getByTestId('money-referral-activated')).toBeInTheDocument();
     expect(view.getByRole('dialog', { name: 'Activated' })).toBeInTheDocument();
+    expect(
+      view.queryByRole('button', { name: 'Destination dialog' }),
+    ).not.toBeInTheDocument();
     expect(view.getByTestId('money-referral-activated-start')).toHaveFocus();
     expect(
       view.getByRole('button', { name: 'Close activated' }),

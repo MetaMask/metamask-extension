@@ -15,13 +15,12 @@ import {
   IconColor,
   IconName,
   Tag,
-  Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalContent,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,

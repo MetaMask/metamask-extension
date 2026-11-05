@@ -9,9 +9,7 @@ import {
   HelpText,
   HelpTextSeverity,
   Label,
-  Modal,
   ModalBody,
-  ModalContent,
   ModalContentSize,
   ModalFooter,
   ModalHeader,
@@ -23,6 +21,11 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { normalizeMoneyReferralCode } from '#shared/lib/money-referral-code';
+import {
+  Modal,
+  ModalContent,
+  ModalPriority,
+} from '#ui/components/app/modal-layer';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -302,7 +305,12 @@ const AcceptInviteSheetContent = ({
     isValid && acceptAllowedForGeo && !isAccepting && !isAcceptCoolingDown;
 
   return (
-    <Modal isOpen onClose={handleDismiss} data-testid="money-referral-invite">
+    <Modal
+      isOpen
+      priority={ModalPriority.Urgent}
+      onClose={handleDismiss}
+      data-testid="money-referral-invite"
+    >
       <ModalOverlay />
       <ModalContent className="items-center" size={ModalContentSize.Md}>
         <ModalHeader

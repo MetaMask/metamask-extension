@@ -11,15 +11,14 @@ import {
   IconColor,
   IconName,
   IconSize,
-  Modal,
   ModalFooter,
   ModalHeader,
-  ModalContent,
   ModalOverlay,
   Text,
   TextAlign,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type ConfirmDeleteNetworkProps = {

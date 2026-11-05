@@ -9,14 +9,13 @@ import {
 } from '@metamask/subscription-controller';
 import {
   BoxJustifyContent,
-  Modal,
   ModalBody,
-  ModalContent,
   ModalHeader,
   ModalOverlay,
   ModalContentSize,
 } from '@metamask/design-system-react';
 import log from 'loglevel';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import {
   MarketingMoment,
   type MarketingMomentAction,

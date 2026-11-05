@@ -187,6 +187,7 @@ describe('ModalProvider', () => {
 
   it('honors dismissal settings and floating UI portals', () => {
     const onClose = jest.fn();
+    const dialogRef = React.createRef<HTMLDivElement>();
     const view = render(
       <ModalProvider>
         <Modal
@@ -195,12 +196,13 @@ describe('ModalProvider', () => {
           isClosedOnEscapeKey={false}
           isClosedOnOutsideClick={false}
         >
-          <ModalContent>
+          <ModalContent modalDialogProps={{ ref: dialogRef }}>
             <button>Dialog</button>
           </ModalContent>
         </Modal>
       </ModalProvider>,
     );
+    expect(dialogRef.current).toBe(screen.getByRole('dialog'));
     fireEvent.keyDown(document, { key: 'Escape' });
     fireEvent.mouseDown(document.body);
     expect(onClose).not.toHaveBeenCalled();

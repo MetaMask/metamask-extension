@@ -9,8 +9,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  Modal,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -18,6 +16,7 @@ import {
   TextButton,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';

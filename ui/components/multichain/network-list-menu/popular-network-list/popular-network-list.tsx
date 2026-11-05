@@ -8,11 +8,11 @@ import {
   IconName,
   IconSize,
   IconColor,
-  Popover,
   PopoverPosition,
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { Popover } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box, Text } from '../../../component-library';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';

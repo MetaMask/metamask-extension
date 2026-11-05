@@ -27,7 +27,7 @@ exports[`Hide Token Confirmation Modal matches snapshot 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pb-4 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[360px]"
+          class="flex-col items-stretch justify-start pt-4 pb-4 border border-alternative bg-elevated1 flex max-h-full w-full rounded-4xl shadow-lg motion-safe:animate-slide-up max-w-[360px]"
           role="dialog"
         >
           <header

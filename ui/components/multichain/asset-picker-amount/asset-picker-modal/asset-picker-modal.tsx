@@ -13,11 +13,10 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   AvatarToken,
   AvatarTokenSize,
-  Modal,
   ModalOverlay,
   ModalHeader,
-  ModalContent,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { Box, Text, PickerNetwork } from '../../../component-library';
 import {
   TextVariant,

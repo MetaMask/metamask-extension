@@ -8,9 +8,7 @@ import {
   IconAlertSeverity,
   IconName,
   IconSize,
-  Modal,
   ModalOverlay,
-  ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
@@ -19,6 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type RampsTokenUnavailableInfoProps = {

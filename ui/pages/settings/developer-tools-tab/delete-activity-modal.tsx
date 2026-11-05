@@ -10,12 +10,11 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  Modal,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalContent,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { toast } from '../../../components/ui/toast/toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { resetAccount } from '../../../store/actions';

@@ -3,9 +3,7 @@ import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
   Box,
   FontWeight,
-  Modal,
   ModalBody,
-  ModalContent,
   ModalHeader,
   ModalOverlay,
   Text,
@@ -13,6 +11,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 
 import { NetworkListItem } from '../../components/multichain/network-list-item';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';

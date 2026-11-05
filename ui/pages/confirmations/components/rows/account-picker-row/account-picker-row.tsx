@@ -9,9 +9,7 @@ import {
   Icon,
   IconName,
   IconSize,
-  Modal,
   ModalBody,
-  ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
@@ -20,6 +18,7 @@ import {
   TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,

@@ -8,9 +8,7 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Modal,
   ModalBody,
-  ModalContent,
   ModalContentSize,
   ModalFooter,
   ModalHeader,
@@ -21,6 +19,11 @@ import {
   TextTransform,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  Modal,
+  ModalContent,
+  ModalPriority,
+} from '#ui/components/app/modal-layer';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -131,6 +134,7 @@ export function ReferralActivatedModal({
   return (
     <Modal
       isOpen
+      priority={ModalPriority.Urgent}
       onClose={onClose}
       initialFocusRef={startButtonRef}
       data-testid="money-referral-activated"

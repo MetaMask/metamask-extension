@@ -1,12 +1,8 @@
-import {
-  ModalContent,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-} from '@metamask/design-system-react';
+import { ModalOverlay, ModalHeader } from '@metamask/design-system-react';
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { ModalContent, Modal } from '#ui/components/app/modal-layer';
 import { Box } from '../../component-library';
 import QrCodeView from '../../ui/qr-code-view';
 import { useI18nContext } from '../../../hooks/useI18nContext';

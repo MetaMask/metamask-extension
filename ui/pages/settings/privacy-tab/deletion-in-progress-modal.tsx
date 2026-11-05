@@ -10,13 +10,12 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  Modal,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalContent,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMetaMetricsDataDeletionTimestamp } from '../../../selectors';
 import { formatDate } from '../../../helpers/utils/util';

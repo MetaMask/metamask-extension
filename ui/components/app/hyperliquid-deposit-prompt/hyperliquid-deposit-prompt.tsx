@@ -23,14 +23,13 @@ import {
   IconColor,
   IconName,
   IconSize,
-  Modal,
-  ModalContent,
   ModalHeader,
   ModalOverlay,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Modal, ModalContent } from '#ui/components/app/modal-layer';
 import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
