@@ -5,11 +5,35 @@
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
+  BENCHMARK_MOCK_MODE,
 } from '../../shared/constants/benchmarks';
+import type { BenchmarkMockMode } from '../../shared/constants/benchmarks';
 import type { HistoricalBaselineReference } from './historical-comparison';
 
 export const EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL =
   'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
+
+export const EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_MOCKED_URL =
+  'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data_mocked.json';
+
+/**
+ * URL of the published series for a population.
+ *
+ * The two populations are written to separate files by
+ * `benchmark-stats-commit.sh`, so the reader has to select the same one the
+ * run measured. Selecting only with the in-file `mockMode` filter is not
+ * enough: a `mocked` consumer pointed at the live file finds no matching
+ * entries and reports no baseline forever, which silently defeats publishing
+ * the mocked series at all.
+ *
+ * @param mockMode - Population the consuming run measured.
+ * @returns Raw URL of that population's series.
+ */
+export function getBenchmarkStatsUrl(mockMode: BenchmarkMockMode): string {
+  return mockMode === BENCHMARK_MOCK_MODE.MOCKED
+    ? EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_MOCKED_URL
+    : EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL;
+}
 
 /**
  * Runs a section builder and returns its result, or a "data not available"
