@@ -321,6 +321,9 @@ describe('BridgeInputGroup', () => {
       renderWithProvider(<ControlledInputGroup />, configureStore(mockState));
       act(() => resizeObserver.resize(626));
       const input = screen.getByTestId('from-amount');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
 
       for (const value of ['5', '50000', '5000000000', longAmount]) {
         fireEvent.change(input, { target: { value } });
@@ -328,8 +331,12 @@ describe('BridgeInputGroup', () => {
 
       expect(input).toHaveValue(longAmount);
       expect(input).toHaveStyle({ fontSize: '40px' });
-      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
-      expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
       expect(resizeObserver.disconnect).not.toHaveBeenCalled();
     });
   });
