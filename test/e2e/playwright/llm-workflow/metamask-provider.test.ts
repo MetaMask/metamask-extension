@@ -1,6 +1,7 @@
-import type {
-  SessionLaunchInput,
-  WorkflowContext,
+import {
+  writeSessionMetadata,
+  type SessionLaunchInput,
+  type WorkflowContext,
 } from '@metamask/client-mcp-core';
 import { MetaMaskSessionManager } from './metamask-provider';
 import { MetaMaskExtensionLauncher } from '.';
@@ -56,9 +57,9 @@ jest.mock('@metamask/client-mcp-core', () => ({
     MM_CONTEXT_SWITCH_BLOCKED: 'MM_CONTEXT_SWITCH_BLOCKED',
   },
   generateSessionId: jest.fn().mockReturnValue('test-session-id'),
-  knowledgeStore: {
-    writeSessionMetadata: jest.fn().mockResolvedValue(undefined),
-  },
+  writeSessionMetadata: jest
+    .fn()
+    .mockResolvedValue('/repo/test-artifacts/test-session-id/session.json'),
 }));
 
 describe('MetaMaskSessionManager', () => {
@@ -119,6 +120,58 @@ describe('MetaMaskSessionManager', () => {
       expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
         expect.objectContaining({ password: undefined }),
       );
+    });
+
+    it('writes session metadata to the default artifacts dir without goal or flowTags', async () => {
+      await sessionManager.launch({
+        stateMode: 'default',
+        tags: ['smoke'],
+      } as SessionLaunchInput);
+
+      expect(writeSessionMetadata).toHaveBeenCalledTimes(1);
+      const [artifactsDir, metadata] =
+        jest.mocked(writeSessionMetadata).mock.calls[0];
+      expect(artifactsDir).toBe('test-artifacts');
+      expect(metadata).toStrictEqual(
+        expect.objectContaining({
+          schemaVersion: 1,
+          sessionId: 'test-session-id',
+          tags: ['smoke'],
+          launch: expect.objectContaining({ stateMode: 'default' }),
+        }),
+      );
+      expect(metadata).not.toHaveProperty('goal');
+      expect(metadata).not.toHaveProperty('flowTags');
+    });
+
+    it('writes session metadata to the workflow context artifacts dir', async () => {
+      sessionManager.setWorkflowContext({
+        config: {
+          environment: 'prod',
+          defaultChainId: 1337,
+          artifactsDir: 'custom-artifacts',
+        },
+        stateSnapshot: {
+          getState: jest.fn().mockResolvedValue({ currentScreen: 'home' }),
+        },
+      } as unknown as WorkflowContext);
+
+      await sessionManager.launch({ stateMode: 'default' });
+
+      expect(writeSessionMetadata).toHaveBeenCalledWith(
+        'custom-artifacts',
+        expect.objectContaining({ sessionId: 'test-session-id' }),
+      );
+    });
+
+    it('fails the launch when the session metadata cannot be written', async () => {
+      jest
+        .mocked(writeSessionMetadata)
+        .mockRejectedValueOnce(new Error('disk full'));
+
+      await expect(
+        sessionManager.launch({ stateMode: 'default' }),
+      ).rejects.toThrow('disk full');
     });
   });
 });
