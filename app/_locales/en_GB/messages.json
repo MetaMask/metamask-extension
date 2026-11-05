@@ -6137,7 +6137,7 @@
     "message": "Withdraw anytime"
   },
   "moneyFtueDescription": {
-    "message": "MetaMask Money is a stablecoin account that earns up to $1 APY—with trading, sending, and spending built in.",
+    "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyFtueHeadline": {
