@@ -296,11 +296,12 @@ exports[`Bridge renders the component with initial props 1`] = `
                 <p
                   class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate text-end"
                 />
-                <a
+                <button
                   class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default flex cursor-pointer gap-1 underline"
+                  type="button"
                 >
                   0xac...35DA
-                </a>
+                </button>
               </div>
             </div>
           </div>

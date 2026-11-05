@@ -331,18 +331,14 @@ export const BridgeInputGroup = ({
               className="flex cursor-pointer gap-1 underline"
               asChild
             >
-              <a
-                onClick={() => {
-                  handleAddressClick();
-                }}
-              >
+              <button type="button" onClick={handleAddressClick}>
                 {shortenString(assetReference, {
                   truncatedCharLimit: 11,
                   truncatedStartChars: 4,
                   truncatedEndChars: 4,
                   skipCharacterInEnd: false,
                 })}
-              </a>
+              </button>
             </Text>
           )}
       </Row>
