@@ -263,6 +263,46 @@ describe('ExtensionUpdateTakeover', () => {
     });
   });
 
+  it('closes a notification window after requesting the reload', async () => {
+    const order: string[] = [];
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    openUpdateTabAndReload.mockImplementation(async () => {
+      order.push('reload');
+    });
+    const closeWindow = jest.spyOn(window, 'close').mockImplementation(() => {
+      order.push('close');
+    });
+
+    render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
+    fireEvent.click(
+      screen.getByTestId('extension-update-takeover-update-button'),
+    );
+
+    await waitFor(() => {
+      expect(order).toStrictEqual(['reload', 'close']);
+    });
+    closeWindow.mockRestore();
+  });
+
+  it('keeps a full-screen tab open after requesting the reload', async () => {
+    const closeWindow = jest
+      .spyOn(window, 'close')
+      .mockImplementation(() => undefined);
+
+    render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
+    fireEvent.click(
+      screen.getByTestId('extension-update-takeover-update-button'),
+    );
+
+    await waitFor(() => {
+      expect(openUpdateTabAndReload).toHaveBeenCalledTimes(1);
+    });
+    expect(closeWindow).not.toHaveBeenCalled();
+    closeWindow.mockRestore();
+  });
+
   it('does not reload when rejecting the pending approval fails', async () => {
     jest
       .mocked(getEnvironmentType)
