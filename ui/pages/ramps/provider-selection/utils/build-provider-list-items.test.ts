@@ -198,7 +198,7 @@ describe('getProviderTags', () => {
         t,
       ),
     ).toStrictEqual([
-      { label: 'rampsMostReliable', severity: 'neutral' },
+      { label: 'rampsMostReliable', severity: 'info' },
       { label: 'rampsBestRate', severity: 'success' },
     ]);
   });

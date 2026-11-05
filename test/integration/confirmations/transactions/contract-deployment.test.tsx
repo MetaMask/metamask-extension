@@ -50,7 +50,8 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
     analyticsId: 'test-metametrics-id',
     consentDecisionMade: true,
     optedIn: true,
-    dataCollectionForMarketing: false,
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: true,
     preferences: {
       ...mockMetaMaskState.preferences,
       showConfirmationAdvancedDetails,
@@ -104,12 +105,12 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
 };
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
-  decodeTransactionData: {
+  'LegacyBackgroundApiService:getNextNonce': '9',
+  'LegacyBackgroundApiService:decodeTransactionData': {
     data: [
       {
         name: 'Deposit',
@@ -124,7 +125,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'Sourcify',
   },
-  setPreference: {},
+  'PreferencesController:setPreference': {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -338,7 +339,7 @@ describe('Contract Deployment Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('setPreference', [
+      ).toHaveBeenCalledWith('PreferencesController:setPreference', [
         'showConfirmationAdvancedDetails',
         true,
       ]);
@@ -368,7 +369,10 @@ describe('Contract Deployment Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('getNextNonce', expect.anything());
+      ).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:getNextNonce',
+        expect.anything(),
+      );
     });
 
     const gasFeesSection = await screen.findByTestId('gas-fee-section');

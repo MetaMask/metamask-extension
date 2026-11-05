@@ -27,7 +27,7 @@ describe('AboutInfo', () => {
       });
       expect(privacyPolicyLink).toHaveAttribute(
         'href',
-        'https://metamask.io/privacy.html',
+        'https://metamask.com/privacy.html',
       );
     });
 
@@ -37,7 +37,7 @@ describe('AboutInfo', () => {
       });
       expect(termsOfUseLink).toHaveAttribute(
         'href',
-        'https://metamask.io/terms.html',
+        'https://metamask.com/terms.html',
       );
     });
 

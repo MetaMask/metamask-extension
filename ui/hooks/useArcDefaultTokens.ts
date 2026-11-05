@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getInternalAccounts } from '../selectors/accounts';
 import {
@@ -25,8 +24,6 @@ const ARC_DEFAULT_ASSETS_METADATA: Record<string, Record<string, unknown>> = {
 /**
  * Adds USDC on Arc for all EVM accounts that don't already have it, whenever
  * the Arc network is present. Also handles new accounts added after Arc.
- *
- * Write path: only runs when the unified assets state is included in the build.
  */
 export function useArcDefaultTokens() {
   const dispatch = useDispatch();
@@ -39,10 +36,6 @@ export function useArcDefaultTokens() {
   const dispatchedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-      return;
-    }
-
     if (!networkConfigurations?.[CHAIN_IDS.ARC]) {
       return;
     }

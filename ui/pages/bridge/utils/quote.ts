@@ -24,6 +24,7 @@ export const formatTokenAmount = (
     locale,
     new BigNumber(amount),
     roundingMode,
+    { compact: true },
   );
 
   return [stringifiedAmount, symbol].join(' ').trim();
@@ -261,6 +262,10 @@ export const getTotalNetworkFee = (quote?: QuoteResponse | null) => {
     quote?.quote.feeData[FeeType.NETWORK],
     quote?.quote.feeData[FeeType.RELAYER],
   );
+};
+
+export const getNativeReserve = (quote?: QuoteResponse | null) => {
+  return sumAmounts(quote?.quote.feeData.reserve);
 };
 
 export const getIncludedTxFees = (quote?: QuoteResponse | null) => {

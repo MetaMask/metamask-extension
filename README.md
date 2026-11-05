@@ -85,7 +85,7 @@ AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [Me
 Zero-config setup:
 
 ```bash
-yarn install # refreshes the MetaMask/skills cache via the shared `@metamask/skills` CLI
+yarn install # refreshes the MetaMask/skills cache and syncs the base skill set locally
 yarn skills  # syncs all default skills through the `metamask-skills sync` command
 ```
 
@@ -96,11 +96,12 @@ cp .skills.local.example .skills.local
 # edit .skills.local to set SKILLS_DOMAINS or override skills source paths
 yarn skills --select                         # interactively pick domains
 SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
+yarn skills --prune-stale                    # remove stale managed mms-* skills while syncing
 ```
 
 Use `.skills.local` for persistent skills configuration. Shell environment variables with the same names are supported for one-off or CI overrides and take precedence.
 
-Skipping `yarn skills` is fine — it only affects agent tooling, not the app build. The repo uses the shared `@metamask/skills` package so sync/cache behavior stays uniform across MetaMask packages. To opt into best-effort regeneration during install/setup, set `SKILLS_AUTO_UPDATE=1` in your shell or `.skills.local`.
+Skipping `yarn skills` is fine — it only affects agent tooling, not the app build. The repo uses the shared `@metamask/skills` package so sync/cache behavior stays uniform across MetaMask packages. Local install/setup syncs the base skill set by default and honors configured domain selections. Set `SKILLS_AUTO_UPDATE=0` in your shell or `.skills.local` to disable automatic sync. CI skips this postinstall step by default.
 
 ## Git Hooks
 
@@ -168,7 +169,7 @@ Our e2e test suite can be run on either Firefox or Chrome. Here's how to get sta
 
 Before running e2e tests, ensure you've run `yarn install` to download dependencies. Next, you'll need a test build. You have 3 options:
 
-1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
+1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing. See the [download-builds guide](docs/download-builds.md) for commit selection, browser selection, and provenance options.
 2. Create a custom production-like Webpack test build. This command allows you to generate test builds for various types, including:
    - `yarn build:test` for main build
    - `yarn build:test:flask` for flask build

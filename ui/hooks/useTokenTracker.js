@@ -82,7 +82,7 @@ export function useTokenTracker({
 
   const userAddress = address ?? selectedAddress;
 
-  const [loading, setLoading] = useState(() => tokens?.length >= 0);
+  const [loading, setLoading] = useState(true);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
   const [error, setError] = useState(null);
   const tokenTracker = useRef(null);
@@ -155,31 +155,43 @@ export function useTokenTracker({
     return teardownTracker;
   }, [teardownTracker]);
 
-  // Effect to set loading state and initialize tracker when values change
+  // Initialize or tear down the tracker when tracker inputs change.
   useEffect(() => {
-    // This effect will only run initially and when:
-    // 1. chainId is updated,
-    // 2. rpc url is changd,
-    // 3. userAddress is changed,
-    // 4. token list is updated and not equal to previous list
-    // in any of these scenarios, we should indicate to the user that their token
-    // values are in the process of updating by setting loading state.
-    setLoading(true);
+    let cancelled = false;
+    // Match main: signal loading when tracker inputs change. Kept in the effect
+    // (with microtask) to avoid render-phase setState and set-state-in-effect sync.
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setLoading(true);
+      }
+    });
 
     if (!userAddress || chainId === undefined || !provider) {
       // If we do not have enough information to build a TokenTracker, we exit early
       // When the values above change, the effect will be restarted. We also teardown
       // tracker because inevitably this effect will run again momentarily.
       teardownTracker();
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
     if (memoizedTokens.length === 0) {
-      // sets loading state to false and token list to empty
-      updateBalances([]);
+      teardownTracker();
+      queueMicrotask(() => {
+        if (!cancelled) {
+          updateBalances([]);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
     buildTracker(userAddress, memoizedTokens);
+    return () => {
+      cancelled = true;
+    };
   }, [
     userAddress,
     teardownTracker,

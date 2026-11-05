@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { TxToastNotification } from '../../components/tx-toast-notification';
 import HomePage from './homepage';
 
 /**
@@ -12,7 +13,7 @@ import HomePage from './homepage';
  * Boundaries: homepage chrome, balance, and tab switching stay on `HomePage`.
  * Post-submit toast UI belongs to `TxToastNotification`.
  * Related: `HomePage` (`goToActivityList`), `TxToastNotification`,
- * `flows/send-transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
+ * `flows/transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
  * land here after a tx.
  *
  * @see ui/pages/activity/activity-list.tsx
@@ -378,6 +379,23 @@ class ActivityTab extends HomePage {
     });
   }
 
+  /**
+   * Checks that no transaction activity item matching the provided text is
+   * displayed in the activity list.
+   *
+   * @param txnText - The text to search for within the transaction activity list.
+   * @returns A promise that resolves when no activity item with the text is present.
+   */
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity with text is absent: ${txnText}`);
+    await this.driver.assertElementNotPresent({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
   async checkTransactionAmount(transactionAmount: string): Promise<void> {
     console.log('Validate transaction amount');
     await this.driver.waitForSelector({
@@ -496,6 +514,15 @@ class ActivityTab extends HomePage {
     });
   }
 
+  /**
+   * Clicks the activity row whose visible text contains the provided text.
+   *
+   * @param text - The text shown on the activity row (e.g. 'Sent TRX').
+   */
+  async clickActivityByText(text: string): Promise<void> {
+    await this.driver.clickElement({ css: this.activityListAction, text });
+  }
+
   async clickCancelTransaction() {
     // Ensure the Speed Up button is present before canceling
     // to avoid component re-render, resulting in auto-closing the modal
@@ -505,6 +532,8 @@ class ActivityTab extends HomePage {
 
   async clickConfirmedTransaction(): Promise<void> {
     console.log('Clicking on confirmed transaction');
+    const toastNotification = new TxToastNotification(this.driver);
+    await toastNotification.dismissConfirmedToastIfPresent();
     await this.driver.clickElement(this.confirmedTransactions);
   }
 

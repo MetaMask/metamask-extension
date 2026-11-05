@@ -38,6 +38,7 @@ import {
   verifyPassword,
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { PASSKEY_STAGES } from '../../../../shared/constants/passkey';
 import { SECOND } from '../../../../shared/constants/time';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPRFSupport } from '../../../hooks/usePasskeyPRFSupport';
@@ -56,6 +57,7 @@ import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
 } from '../../../components/app/passkey-enrollment-steps';
+import { PasskeyEnrollmentError } from '../../../components/app/passkey-setup/supported-passkey-providers-link';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -153,7 +155,7 @@ export default function PasskeyRegisterSubPage() {
     }
 
     const enrollmentStartedAt = Date.now();
-    let currentStep = 'register';
+    let currentStep: string = PASSKEY_STAGES.REGISTER;
     trackEvent(
       createEventBuilder(MetaMetricsEventName.PasskeySetup)
         .addCategory(MetaMetricsEventCategory.Settings)
@@ -170,7 +172,7 @@ export default function PasskeyRegisterSubPage() {
         password: walletPassword,
         onStageChange: (stage) => {
           currentStep = stage;
-          if (stage === 'verify') {
+          if (stage === PASSKEY_STAGES.VERIFY) {
             setRegisterStepStatus('success');
             setVerifyStepStatus('loading');
             registrationSucceeded = true;
@@ -181,7 +183,7 @@ export default function PasskeyRegisterSubPage() {
       setVerifyStepStatus('success');
       setWalletPassword('');
 
-      currentStep = 'complete';
+      currentStep = PASSKEY_STAGES.COMPLETE;
       const derivationMethod = getPasskeyDerivationMethod({
         metamask: newMetamaskState,
       });
@@ -432,7 +434,12 @@ export default function PasskeyRegisterSubPage() {
               {enrollmentError && (
                 <BannerAlert
                   severity={BannerAlertSeverity.Danger}
-                  description={enrollmentError}
+                  description={
+                    <PasskeyEnrollmentError
+                      message={enrollmentError}
+                      passkeyMethodLabel={passkeyMethodLabel}
+                    />
+                  }
                   data-testid="passkey-enrollment-error"
                 />
               )}

@@ -130,7 +130,7 @@ export const MultichainTriggeredAddressRowsList = ({
   const popoverId = useId().replace(/:/gu, '');
 
   // useCopyToClipboard analysis: Copies one of your public addresses
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
   const navigate = useNavigate();
 
   const allAccountGroups = useSelector(getAllAccountGroups);
@@ -265,9 +265,8 @@ export const MultichainTriggeredAddressRowsList = ({
       },
       index: number,
     ): JSX.Element => {
-      const handleCopyClick = () => {
+      const handleCopyClick = () =>
         handleCopy(normalizeSafeAddress(item.account.address));
-      };
 
       return (
         <MultichainAggregatedAddressListRow

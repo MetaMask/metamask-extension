@@ -14,6 +14,13 @@ import {
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
 import { getClientHeaders } from '@metamask/bridge-controller';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 import { getCacheKey, updateCache, retrieveCachedResponse } from './cache';
 
 const MinimalAssetSchema = type({
@@ -101,21 +108,80 @@ const toMinimalAsset = (token: BridgeAssetV2): MinimalAsset => {
   return { assetId, symbol, name, decimals };
 };
 
-const postWithCache = async (
+type CacheMissTrace = {
+  name: TraceName;
+  data: Record<string, number | string | boolean>;
+  isSuccess?: (response: unknown) => boolean;
+  getEndData?: (response: unknown) => Record<string, number | string | boolean>;
+};
+
+const postWithCache = async <TResponse extends object>(
   url: Parameters<typeof handleFetch>[0],
   requestParams: Parameters<typeof handleFetch>[1],
+  cacheMissTrace: CacheMissTrace | undefined,
   ...cacheParams: Parameters<typeof retrieveCachedResponse>
 ) => {
   const cachedResponse = await retrieveCachedResponse(...cacheParams);
   if (cachedResponse) {
-    return cachedResponse;
+    return cachedResponse as TResponse;
   }
-  // If this fetch returns a non-200 response, the cache will not be updated
-  const response = await handleFetch(url, requestParams);
 
-  await updateCache(response, ...cacheParams);
-  return response;
+  const traceId = cacheMissTrace ? uuidv4() : undefined;
+  if (cacheMissTrace && traceId) {
+    trace({
+      name: cacheMissTrace.name,
+      op: TraceOperation.BridgeDataFetch,
+      id: traceId,
+      data: cacheMissTrace.data,
+      startTime: Date.now(),
+    });
+  }
+
+  let traceResult: 'success' | 'cancelled' | 'error' = 'success';
+  let response: TResponse | undefined;
+  try {
+    // If this fetch returns a non-200 response, the cache will not be updated
+    response = (await handleFetch(url, requestParams)) as TResponse;
+
+    if (cacheMissTrace?.isSuccess && !cacheMissTrace.isSuccess(response)) {
+      traceResult = 'error';
+      return response;
+    }
+
+    await updateCache(response, ...cacheParams);
+    return response;
+  } catch (error) {
+    traceResult = requestParams?.signal?.aborted ? 'cancelled' : 'error';
+    throw error;
+  } finally {
+    if (cacheMissTrace && traceId) {
+      endTrace({
+        name: cacheMissTrace.name,
+        id: traceId,
+        timestamp: Date.now(),
+        data: {
+          result: traceResult,
+          ...(cacheMissTrace.getEndData?.(response) ?? {}),
+        },
+      });
+    }
+  }
 };
+
+const getBucket = (
+  value: number,
+  thresholds: readonly number[],
+  labels: readonly string[],
+): string => {
+  const index = thresholds.findIndex((threshold) => value <= threshold);
+  return labels[index === -1 ? labels.length - 1 : index];
+};
+
+const getQueryLengthBucket = (length: number): string =>
+  getBucket(length, [2, 5, 10], ['0-2', '3-5', '6-10', '11+']);
+
+const getResultCountBucket = (count: number): string =>
+  getBucket(count, [0, 5, 20], ['0', '1-5', '6-20', '21+']);
 
 /**
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
@@ -159,7 +225,7 @@ export const fetchPopularTokens = async ({
     includeAssets,
   });
 
-  const tokens = await postWithCache(
+  const tokens = await postWithCache<BridgeAssetV2[]>(
     url,
     {
       signal,
@@ -173,12 +239,22 @@ export const fetchPopularTokens = async ({
         'Content-Type': 'application/json',
       },
     },
+    {
+      name: TraceName.SwapPopularTokensFetch,
+      data: {
+        /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
+        chain_scope: chainIds.length > 1 ? 'multi_chain' : 'single_chain',
+        chain_ids: chainIds.join(','),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
+      isSuccess: (response) => Array.isArray(response),
+    },
     cacheKey,
   );
 
   return tokens
     .map((token: unknown) => (validateSwapsAssetV2Object(token) ? token : null))
-    .filter(Boolean);
+    .filter((token): token is BridgeAssetV2 => token !== null);
 };
 
 /**
@@ -235,7 +311,10 @@ export const fetchTokensBySearchQuery = async ({
     searchQuery: query,
   });
 
-  const { data: tokens, pageInfo } = await postWithCache(
+  const { data: tokens, pageInfo } = await postWithCache<{
+    data: BridgeAssetV2[];
+    pageInfo: { hasNextPage: boolean; endCursor?: string };
+  }>(
     url,
     {
       method: 'POST',
@@ -251,6 +330,28 @@ export const fetchTokensBySearchQuery = async ({
         'Content-Type': 'application/json',
       },
     },
+    !after && query.trim().length > 0
+      ? {
+          name: TraceName.SwapTokenSearch,
+          data: {
+            /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
+            chain_scope: chainIds.length > 1 ? 'multi_chain' : 'single_chain',
+            query_length_bucket: getQueryLengthBucket(query.trim().length),
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+          getEndData: (response) => {
+            const resultCount =
+              typeof response === 'object' &&
+              response !== null &&
+              'data' in response &&
+              Array.isArray(response.data)
+                ? response.data.length
+                : 0;
+            // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry trace attribute
+            return { result_count_bucket: getResultCountBucket(resultCount) };
+          },
+        }
+      : undefined,
     cacheKey,
     after,
   );
@@ -263,6 +364,6 @@ export const fetchTokensBySearchQuery = async ({
       .map((token: unknown) =>
         validateSwapsAssetV2Object(token) ? token : null,
       )
-      .filter(Boolean),
+      .filter((token): token is BridgeAssetV2 => token !== null),
   };
 };

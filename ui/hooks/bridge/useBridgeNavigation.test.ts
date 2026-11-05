@@ -225,10 +225,12 @@ describe('useBridgeNavigation', () => {
           search: 'from=test-from',
         },
         {
-          state: {
+          state: expect.objectContaining({
             bridgeState: locationBridgeState,
+            swapViewPrefilledAmount: false,
+            swapViewTraceId: expect.any(String),
             token: locationToken,
-          },
+          }),
           replace: false,
         },
       );

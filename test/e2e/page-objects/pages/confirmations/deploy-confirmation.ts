@@ -27,12 +27,12 @@ class ContractDeploymentConfirmation extends Confirmation {
     this.driver = driver;
 
     this.deploymentHeadingTitle = {
-      css: 'h2',
+      testId: 'confirm-title-text',
       text: 'Deploy a contract' as string,
     };
 
     this.deploymentSiteInfo = {
-      css: 'p',
+      testId: 'confirm-title-description',
       text: 'This site wants you to deploy a contract',
     };
   }

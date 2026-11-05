@@ -12,6 +12,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
@@ -23,7 +24,12 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
-import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
+import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
+import Routes, {
+  routeConfig,
+  TokenManagementFeatureRoute,
+  PageNotFound,
+} from '.';
 
 const middlewares = [thunk];
 
@@ -53,8 +59,6 @@ jest.mock('../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
   setTokenNetworkFilter: jest.fn(),
 }));
 
@@ -223,6 +227,18 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
 
+  it('shows the missing-page screen for unknown routes', () => {
+    const fallbackRoute = matchRoutes(routeConfig, '/unknown-route')?.at(
+      -1,
+    )?.route;
+    expect(fallbackRoute).toMatchObject({
+      path: '*',
+      element: expect.objectContaining({
+        type: PageNotFound,
+      }),
+    });
+  });
+
   it('registers the hardware wallet signing page outside guarded swap routes', () => {
     const path = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
     const matches = matchRoutes(routeConfig, path);
@@ -232,6 +248,18 @@ describe('Routes Component', () => {
       path,
     ]);
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+  });
+
+  it('guards discover search with basic functionality', () => {
+    const matches = matchRoutes(routeConfig, DISCOVER_SEARCH_ROUTE);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      undefined,
+      DISCOVER_SEARCH_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
   });
 
   describe('render during send flow', () => {

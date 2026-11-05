@@ -23,10 +23,12 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import type {
-  ClosePositionParams,
-  InputMethod,
-  OrderType,
+import {
+  ORDER_SLIPPAGE_CONFIG,
+  PERPS_ERROR_CODES,
+  type ClosePositionParams,
+  type InputMethod,
+  type OrderType,
 } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
@@ -60,10 +62,16 @@ import {
   getPositionDirection,
   getPositionPnlRatio,
 } from '../utils';
-import { handlePerpsError } from '../utils/translate-perps-error';
+import {
+  handlePerpsError,
+  isPerpsErrorCode,
+  isSlippageFailure,
+  type PerpsErrorInput,
+} from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import {
   CloseAmountSection,
@@ -77,10 +85,14 @@ import {
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsServiceInterruptionBanner } from '../perps-service-interruption-banner';
 import { useSelectedAccountComplianceGate } from '../../compliance';
-import type { Position } from '../types';
+import type { PerpsBackgroundResult, Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
-import { getIsPerpsCloseLimitOrderEnabled } from '../../../../selectors/perps/feature-flags';
+import {
+  getIsPerpsCloseLimitOrderEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
+} from '../../../../selectors/perps/feature-flags';
 import {
   getCloseLimitReferencePrice,
   isCloseLimitPriceOutsideDeviation,
@@ -162,6 +174,7 @@ const buildCloseRequestParams = ({
     symbol,
     orderType: 'market',
     currentPrice,
+    maxSlippageBps: ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps,
     ...(includeSize ? { size } : {}),
     position,
   };
@@ -267,14 +280,18 @@ const getCloseFailureToastConfig = ({
   t: CloseToastTranslation;
   formatFiat: FormatPerpsFiat;
 }): { errorMessage: string; toast: CloseToastConfig } => {
-  const isOrderSizeMinError =
-    error instanceof Error && error.message === 'ORDER_SIZE_MIN';
+  const isOrderSizeMinError = isPerpsErrorCode(
+    error,
+    PERPS_ERROR_CODES.ORDER_SIZE_MIN,
+  );
 
   const errorMessage = isOrderSizeMinError
     ? t('perpsClosePartialMinNotional', [
         formatFiat(PERPS_MIN_MARKET_ORDER_USD),
       ])
     : handlePerpsError(error, t as (key: string) => string);
+  const shouldExplainFailure =
+    orderType === 'market' && isSlippageFailure(error);
 
   if (orderType === 'limit') {
     return {
@@ -293,7 +310,9 @@ const getCloseFailureToastConfig = ({
       errorMessage,
       toast: {
         key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED,
-        description: t('perpsToastPositionStillActive'),
+        description: shouldExplainFailure
+          ? errorMessage
+          : t('perpsToastPositionStillActive'),
       },
     };
   }
@@ -345,6 +364,9 @@ export const ClosePositionModal = ({
   const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
@@ -356,6 +378,8 @@ export const ClosePositionModal = ({
       // Which CTA opened this modal — close vs reduce_exposure.
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: buttonClicked,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
@@ -384,7 +408,10 @@ export const ClosePositionModal = ({
   // Abandon-order tracking state: latest form snapshot, a stable reader for it,
   // and the commit flag that suppresses the event once a close is submitted.
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
-  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const getAbandonProperties = useCallback(
+    () => latestAbandonPropsRef.current,
+    [],
+  );
   const hasConfirmedCloseRef = useRef(false);
 
   // Which control the trader last used to set the close amount. Mirrors mobile:
@@ -472,7 +499,7 @@ export const ClosePositionModal = ({
       : (validCurrentPrice ?? 0);
 
   const closeNotionalUsd = useMemo(
-    () => closeSize * effectivePrice,
+    () => getPerpsNotionalUsd({ size: closeSize, price: effectivePrice }),
     [closeSize, effectivePrice],
   );
 
@@ -504,7 +531,7 @@ export const ClosePositionModal = ({
     closeNotionalUsd,
   ]);
   usePerpsAbandonOrderTracking({
-    getAbandonProperties: getAbandonProperties.current,
+    getAbandonProperties,
     hasCommittedRef: hasConfirmedCloseRef,
     active: isOpen,
   });
@@ -518,6 +545,7 @@ export const ClosePositionModal = ({
     symbol: position.symbol,
     orderType: effectiveOrderType,
     isMaker: effectiveOrderType === 'limit',
+    amount: String(closeNotionalUsd),
   });
 
   const liveUnrealizedPnl = useMemo(
@@ -711,15 +739,27 @@ export const ClosePositionModal = ({
           vipDiscount: metamaskFeeRateDiscountPercentage,
           hlFeeRate: protocolFeeRate,
           inputMethod: inputMethodRef.current,
+          ...(effectiveOrderType === 'market'
+            ? {
+                maxSlippageBps: closeRequestParams.maxSlippageBps,
+                maxSlippageSource:
+                  PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+              }
+            : {}),
         });
-        const result = await submitRequestToBackground<{
-          success: boolean;
-          error?: string;
-        }>('perpsClosePosition', [closeRequestParams]);
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsClosePosition',
+          [closeRequestParams],
+        );
         if (!result.success) {
-          const message = result.error || 'Failed to close position';
+          const failure: PerpsErrorInput = {
+            error: result.error || 'Failed to close position',
+            errorCode: result.errorCode,
+            errorDetails: result.errorDetails,
+            maxSlippageBps: closeRequestParams.maxSlippageBps,
+          };
           const { errorMessage, toast } = getCloseFailureToastConfig({
-            error: new Error(message),
+            error: failure,
             isPartialClose,
             orderType: effectiveOrderType,
             t,
@@ -763,8 +803,14 @@ export const ClosePositionModal = ({
           PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
         );
+        const failure = err instanceof Error ? err : new Error(raw);
+        if (effectiveOrderType === 'market') {
+          Object.assign(failure, {
+            maxSlippageBps: ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps,
+          });
+        }
         const { errorMessage, toast } = getCloseFailureToastConfig({
-          error: err,
+          error: failure,
           isPartialClose,
           orderType: effectiveOrderType,
           t,
@@ -850,6 +896,7 @@ export const ClosePositionModal = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
+          <PerpsServiceInterruptionBanner />
           <OrderEntryHeader
             displayName={displayName}
             displayPrice={headerDisplayPrice}

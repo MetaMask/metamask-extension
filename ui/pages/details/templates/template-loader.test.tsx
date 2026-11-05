@@ -24,7 +24,7 @@ jest.mock('./swap-details', () => ({
 jest.mock('./nft-details', () => ({
   NftDetails: () => <div data-testid="nft-details" />,
 }));
-jest.mock('./money-account-details', () => ({
+jest.mock('./money/money-account-details', () => ({
   MoneyAccountDetails: () => <div data-testid="money-account-details" />,
 }));
 jest.mock('./perps-deposit-details', () => ({

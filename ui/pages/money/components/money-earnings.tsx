@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   FontWeight,
+  SensitiveText,
   Skeleton,
   Text,
   TextColor,
@@ -25,9 +26,12 @@ const EARNINGS_ROWS = [
 
 type MoneyEarningsProps = {
   monthlyEarnings: string;
-  lifetimeEarnings: string;
+  lifetimeEarnings?: string;
   isMonthlyLoading: boolean;
   isLifetimeLoading: boolean;
+  privacyMode?: boolean;
+  onMonthlyTooltipOpen?: () => void;
+  onLifetimeTooltipOpen?: () => void;
 };
 
 export function MoneyEarnings({
@@ -35,6 +39,9 @@ export function MoneyEarnings({
   lifetimeEarnings,
   isMonthlyLoading,
   isLifetimeLoading,
+  privacyMode = false,
+  onMonthlyTooltipOpen,
+  onLifetimeTooltipOpen,
 }: MoneyEarningsProps) {
   const t = useI18nContext();
   const earnings = {
@@ -44,6 +51,10 @@ export function MoneyEarnings({
   const loading = {
     monthly: isMonthlyLoading,
     lifetime: isLifetimeLoading,
+  };
+  const onTooltipOpen = {
+    monthly: onMonthlyTooltipOpen,
+    lifetime: onLifetimeTooltipOpen,
   };
 
   return (
@@ -58,41 +69,53 @@ export function MoneyEarnings({
         </Text>
       </div>
       <div className="mt-3 flex flex-col gap-4">
-        {EARNINGS_ROWS.map(({ key, labelKey, tooltipText }) => (
-          <div
-            key={key}
-            className="flex min-h-6 items-center justify-between gap-4"
-            data-testid={`money-earnings-${key}`}
-          >
-            <TooltipText
-              text={t(labelKey)}
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              position={PopoverPosition.Auto}
+        {EARNINGS_ROWS.map(({ key, labelKey, tooltipText }) => {
+          if (
+            key === 'lifetime' &&
+            !loading.lifetime &&
+            earnings.lifetime === undefined
+          ) {
+            return null;
+          }
+
+          return (
+            <div
+              key={key}
+              className="flex min-h-6 items-center justify-between gap-4"
+              data-testid={`money-earnings-${key}`}
             >
-              {t(tooltipText)}
-            </TooltipText>
-            {loading[key] ? (
-              <Skeleton
-                className="h-6 w-20"
-                data-testid={`money-earnings-${key}-skeleton`}
-              />
-            ) : (
-              <Text
+              <TooltipText
+                text={t(labelKey)}
                 variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                className={
-                  earnings[key].startsWith('+')
-                    ? 'text-success-default'
-                    : undefined
-                }
-                data-testid={`money-earnings-${key}-value`}
+                color={TextColor.TextAlternative}
+                position={PopoverPosition.Auto}
+                onOpen={onTooltipOpen[key]}
               >
-                {earnings[key]}
-              </Text>
-            )}
-          </div>
-        ))}
+                {t(tooltipText)}
+              </TooltipText>
+              {loading[key] ? (
+                <Skeleton
+                  className="h-6 w-20"
+                  data-testid={`money-earnings-${key}-skeleton`}
+                />
+              ) : (
+                <SensitiveText
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  isHidden={privacyMode}
+                  className={
+                    !privacyMode && earnings[key]?.startsWith('+')
+                      ? 'text-success-default'
+                      : undefined
+                  }
+                  data-testid={`money-earnings-${key}-value`}
+                >
+                  {earnings[key]}
+                </SensitiveText>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

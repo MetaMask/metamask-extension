@@ -150,10 +150,7 @@ class AccountAddressListPage {
         const rowText = await row.getText();
         return rowText.includes(networkAddress);
       },
-      {
-        interval: 100,
-        timeout: this.driver.timeout,
-      },
+      { interval: 500, timeout: this.driver.timeout },
     );
   }
 

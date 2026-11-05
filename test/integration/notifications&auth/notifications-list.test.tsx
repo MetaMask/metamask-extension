@@ -36,7 +36,8 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      getNotificationPreferences: createMockNotificationPreferences(),
+      'AuthenticatedUserStorageService:getNotificationPreferences':
+        createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );
@@ -97,7 +98,8 @@ describe('Notifications List', () => {
           ...mockedState,
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -246,10 +248,14 @@ describe('Notifications List', () => {
     await waitFor(() => {
       const markAllAsReadEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'markMetamaskNotificationsAsRead',
+          (call) =>
+            call[0] ===
+            'NotificationServicesController:markMetamaskNotificationsAsRead',
         );
 
-      expect(markAllAsReadEvent?.[0]).toBe('markMetamaskNotificationsAsRead');
+      expect(markAllAsReadEvent?.[0]).toBe(
+        'NotificationServicesController:markMetamaskNotificationsAsRead',
+      );
       expect(markAllAsReadEvent?.[1]).toStrictEqual([
         [
           {
@@ -280,7 +286,8 @@ describe('Notifications List', () => {
           ...mockedState,
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

@@ -23,8 +23,8 @@ export type ProviderTag = {
  * different quote's amount. All matching tags are returned in mobile's Quote
  * pill order so e.g. a quote that is both most reliable and best rate shows
  * both pills.
- * Each reason gets its own severity so the pills are visually distinct.
- * `Info` aliases the `primary-muted` / `primary-default` design tokens.
+ * Severities: `Info` (blue) for previously used and most reliable,
+ * `Success` (green) for best rate.
  *
  * @param providerId - Provider id.
  * @param matchedQuote - The quote displayed for the provider row.
@@ -43,7 +43,7 @@ export function getProviderTags(
     tags.push({ label: t('rampsPreviouslyUsed'), severity: TagSeverity.Info });
   }
   if (matchedQuote?.metadata?.tags?.isMostReliable) {
-    tags.push({ label: t('rampsMostReliable'), severity: TagSeverity.Neutral });
+    tags.push({ label: t('rampsMostReliable'), severity: TagSeverity.Info });
   }
   if (matchedQuote?.metadata?.tags?.isBestRate) {
     tags.push({ label: t('rampsBestRate'), severity: TagSeverity.Success });

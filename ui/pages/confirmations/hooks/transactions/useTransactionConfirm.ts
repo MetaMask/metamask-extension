@@ -21,21 +21,27 @@ import {
 } from '../../../../contexts/hardware-wallets';
 import { useSendBundleHwNavigation } from '../../../../hooks/hardware-wallets/useSendBundleHwNavigation';
 import { useDispatch } from '../../../../store/hooks';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
+import { useTransactionPayingAccount } from './useTransactionPayingAccount';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const { showErrorModal } = useHardwareWalletError();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isAmountPending } =
     useConfirmContext<TransactionMeta>();
   const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
   ]);
   const { prepareWithdrawTransaction } = useMoneyAccountWithdrawConfirm();
+  const payingAccount = useTransactionPayingAccount();
+  const isPayingWithHardwareWallet = useIsHardwareWalletAccount(payingAccount);
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
@@ -80,6 +86,13 @@ export function useTransactionConfirm() {
   } = useShieldConfirm();
 
   const onTransactionConfirm = useCallback(async (): Promise<boolean> => {
+    // The field can already show the new amount while publish would still
+    // execute the previous quote. The footer blocks the click; this covers
+    // any other confirm path.
+    if (isAmountPending) {
+      return false;
+    }
+
     let txToApprove = cloneDeep(transactionMeta);
 
     if (isMoneyAccountWithdraw) {
@@ -159,7 +172,14 @@ export function useTransactionConfirm() {
     // navigate to shield settings page first before approving transaction to wait for subscription creation there
     handleShieldSubscriptionApprovalTransactionAfterConfirm(txToApprove);
     try {
-      await dispatch(updateAndApproveTx(txToApprove, true, ''));
+      await dispatch(
+        updateAndApproveTx(
+          txToApprove,
+          !isPayingWithHardwareWallet,
+          isPayingWithHardwareWallet ? t('swapConfirmWithHwWallet') : '',
+          payingAccount,
+        ),
+      );
       onDappSwapCompleted();
       return true;
     } catch (error) {
@@ -183,17 +203,21 @@ export function useTransactionConfirm() {
     dispatch,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+    isAmountPending,
     isGaslessSupported,
     isGaslessSupportedSTX,
     isMoneyAccountWithdraw,
+    isPayingWithHardwareWallet,
     isSponsorshipOptedOut,
     onDappSwapCompleted,
+    payingAccount,
     prepareWithdrawTransaction,
     redirectToHwSigningPage,
     selectedGasFeeToken,
     shouldRedirectToHwSigningPage,
     showErrorModal,
     transactionMeta,
+    t,
     updateSwapWithQuoteDetailsIfRequired,
   ]);
 

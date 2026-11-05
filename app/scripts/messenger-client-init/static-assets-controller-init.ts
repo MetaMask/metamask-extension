@@ -6,7 +6,6 @@ import {
   StaticAssetsControllerMessenger,
   StaticAssetsPollingFeatureFlagOptions,
 } from '../controllers/static-assets-controller';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { MessengerClientInitFunction } from './types';
 import { StaticAssetsControllerInitMessenger } from './messengers';
 
@@ -41,10 +40,6 @@ export const StaticAssetsControllerInit: MessengerClientInitFunction<
       const topX = getRemoteFeatureFlagControllerState(initMessenger)?.topX;
       return topX ? Number(topX) : DEFAULT_TOP_X;
     },
-    // Write path: treat the runtime rollout flag as always-on; only the
-    // compile-time build gate decides whether StaticAssets writes go through
-    // AssetsController vs TokensController.
-    getIsAssetsUnifyStateEnabled: getIsAssetsUnifiedStateIncludedInBuild,
   });
   return {
     messengerClient,
