@@ -56,7 +56,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                 class="inline-flex"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
                 >
                   <img
                     alt="ETH"
@@ -70,7 +70,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                 style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-[18px] w-[18px] border-background-default border"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md h-[18px] w-[18px] border-background-default border bg-white"
                   style="border-width: 1px; border-radius: 6px;"
                 >
                   <img
@@ -184,7 +184,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   class="inline-flex"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
                   >
                     <img
                       alt="mUSD"
@@ -198,7 +198,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-[18px] w-[18px] border-background-default border"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md h-[18px] w-[18px] border-background-default border bg-white"
                     style="border-width: 1px; border-radius: 6px;"
                   >
                     <img
@@ -328,7 +328,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                 style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-[18px] w-[18px] border-background-default border"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md h-[18px] w-[18px] border-background-default border bg-white"
                   style="border-width: 1px; border-radius: 6px;"
                 >
                   <img
@@ -442,7 +442,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                   class="inline-flex"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
                   >
                     <img
                       alt="UNI"
@@ -456,7 +456,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                   style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-[18px] w-[18px] border-background-default border"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md h-[18px] w-[18px] border-background-default border bg-white"
                     style="border-width: 1px; border-radius: 6px;"
                   >
                     <img
