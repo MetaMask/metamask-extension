@@ -2,6 +2,7 @@ import React from 'react';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { BridgeCTAInfoText } from './bridge-cta-info-text';
 import { BridgeDiscountFeeMessage } from './bridge-discount-fee-message';
+import { SwapsRebateBanner } from './swaps-rebate-banner';
 
 export const PrepareBridgePageFooter = (
   props: React.ComponentProps<typeof BridgeCTAButton>,
@@ -12,6 +13,7 @@ export const PrepareBridgePageFooter = (
         display: 'contents',
       }}
     >
+      <SwapsRebateBanner />
       <BridgeCTAButton {...props} />
       <BridgeDiscountFeeMessage />
       <BridgeCTAInfoText />

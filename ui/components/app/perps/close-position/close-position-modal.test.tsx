@@ -30,6 +30,27 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // gate is a passthrough here; real gating behavior is covered in
 // useComplianceGate.test.tsx.
+jest.mock('../../modals/visit-support-data-consent-modal', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const { createPortal } =
+    jest.requireActual<typeof import('react-dom')>('react-dom');
+
+  return {
+    __esModule: true,
+    default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
+      isOpen
+        ? createPortal(
+            ReactActual.createElement('button', {
+              type: 'button',
+              'data-testid': 'visit-support-data-consent-modal',
+              onClick: onClose,
+            }),
+            globalThis.document.body,
+          )
+        : null,
+  };
+});
+
 jest.mock('../../compliance', () => {
   // Stable references so components that put `gate` in effect/callback deps
   // don't re-run on every render.
@@ -319,6 +340,74 @@ describe('ClosePositionModal', () => {
       );
 
       fireEvent.click(screen.getByTestId('perps-close-position-back-button'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('service interruption support consent', () => {
+    const renderWithOutageBanner = (onClose: () => void) => {
+      const store = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            perpsPerpTradingServiceInterruptionBannerEnabled: true,
+          },
+        },
+      });
+
+      return renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={onClose}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        store,
+      );
+    };
+
+    it('keeps the close flow open when the support consent action is pressed', () => {
+      const onClose = jest.fn();
+      renderWithOutageBanner(onClose);
+
+      fireEvent.click(
+        screen.getByTestId('perps-service-interruption-banner-support-link'),
+      );
+      const consentButton = screen.getByTestId(
+        'visit-support-data-consent-modal',
+      );
+
+      // Consent is portaled outside this dialog. Parent ModalContent treats
+      // that mousedown as an outside click unless the host ignores it.
+      fireEvent.mouseDown(consentButton);
+
+      expect(onClose).not.toHaveBeenCalled();
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(consentButton);
+
+      expect(onClose).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('visit-support-data-consent-modal'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('still dismisses the close flow from an outside click after consent closes', () => {
+      const onClose = jest.fn();
+      renderWithOutageBanner(onClose);
+
+      fireEvent.click(
+        screen.getByTestId('perps-service-interruption-banner-support-link'),
+      );
+      fireEvent.click(screen.getByTestId('visit-support-data-consent-modal'));
+      fireEvent.mouseDown(document.body);
 
       expect(onClose).toHaveBeenCalledTimes(1);
     });

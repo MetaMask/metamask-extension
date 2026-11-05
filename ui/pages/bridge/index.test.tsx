@@ -205,7 +205,6 @@ describe('Bridge', () => {
       state: {
         bridgeState: null,
         token: null,
-        stayOnHomePage: true,
       },
     });
   });
