@@ -165,7 +165,6 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
-      'AppStateController:setPendingRedirectRoute',
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',

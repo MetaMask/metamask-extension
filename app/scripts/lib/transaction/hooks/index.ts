@@ -163,8 +163,6 @@ function publishHook({
 
     const isSwapGasIncluded7702 = transactionMeta.isGasFeeIncluded;
 
-    let attemptedHook = false;
-
     if (
       keyringSupports7702 &&
       !isRevokeDelegation &&
@@ -173,7 +171,6 @@ function publishHook({
         !sendBundleSupport ||
         isExternalSign)
     ) {
-      attemptedHook = true;
       const hook = new Delegation7702PublishHook({
         messenger,
       }).getHook();
@@ -201,8 +198,6 @@ function publishHook({
       isSmartTransaction &&
       (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
     ) {
-      attemptedHook = true;
-
       const result = await submitSmartTransactionHook({
         transactionMeta,
         signedTransactionInHex: signedTx as Hex,
@@ -246,19 +241,6 @@ function publishHook({
           console.error('Failed to record sentinel_stx metrics fragment', e);
         }
         return result;
-      }
-    }
-
-    if (attemptedHook) {
-      try {
-        await messenger.call('AppStateController:setPendingRedirectRoute', {
-          path: '/activity',
-        });
-      } catch (error) {
-        console.error(
-          'Failed to open Activity after a fallback transaction',
-          error,
-        );
       }
     }
 

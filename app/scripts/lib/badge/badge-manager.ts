@@ -13,7 +13,6 @@ import { NOTIFICATION_MANAGER_EVENTS } from '../notification-manager';
 const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
-const ACTIVITY_LANDING_PATH = '/activity';
 const maxSeenFailedNonces = 99;
 
 type BadgeActionApi = {
@@ -28,9 +27,6 @@ export type BadgeManagerBrowser = {
 
 export type BadgeManagerController = {
   approvalController: ApprovalController;
-  appStateController: {
-    setPendingRedirectRoute: (route: { path: string } | null) => void;
-  };
   controllerMessenger: {
     subscribe: (event: string, handler: (...args: unknown[]) => void) => void;
   };
@@ -71,7 +67,6 @@ export type BadgeManagerApi = {
   updateBadge: () => void;
   clearFailedTxBadge: () => void;
   getFailedTxCount: () => number;
-  setActivityLandingRoute: () => void;
 };
 
 type TransactionStatusUpdatedPayload = {
@@ -164,16 +159,6 @@ export function createBadgeManager({
     }
   };
 
-  const setActivityLandingRoute = () => {
-    try {
-      getController().appStateController.setPendingRedirectRoute({
-        path: ACTIVITY_LANDING_PATH,
-      });
-    } catch (error) {
-      console.error('Error setting Activity landing route:', error);
-    }
-  };
-
   const onTransactionStatusUpdated = (
     payload: TransactionStatusUpdatedPayload,
   ) => {
@@ -206,11 +191,6 @@ export function createBadgeManager({
     }
 
     failedTxCount += 1;
-
-    // Defer landing page until notification closes; close handler re-applies
-    if (!isOnlyNotificationOpen()) {
-      setActivityLandingRoute();
-    }
 
     updateBadge();
   };
@@ -291,6 +271,5 @@ export function createBadgeManager({
     updateBadge,
     clearFailedTxBadge,
     getFailedTxCount: () => failedTxCount,
-    setActivityLandingRoute,
   };
 }

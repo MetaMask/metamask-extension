@@ -811,8 +811,6 @@ export function setupController(
   const {
     updateBadge,
     clearFailedTxBadge,
-    getFailedTxCount,
-    setActivityLandingRoute,
   } = createBadgeManager({
     getController: () =>
       // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
@@ -939,9 +937,6 @@ export function setupController(
         onStreamFinished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (getFailedTxCount() > 0) {
-            setActivityLandingRoute();
-          }
           updateBadge();
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
