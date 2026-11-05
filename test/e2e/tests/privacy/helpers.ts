@@ -4,6 +4,7 @@ import path from 'path';
 import { CompletedRequest, Mockttp } from 'mockttp';
 import {
   browserAPIRequestDomains,
+  SENTRY_FAKE_ENVELOPE_URL,
   SENTRY_PERFORMANCE_ENVELOPE_URL,
 } from '../../mock-e2e';
 
@@ -123,7 +124,8 @@ function isJsonRpcPayload(payload: unknown): boolean {
 
 /**
  * Records every request that is not a JSON-RPC call, ignoring requests the
- * browser itself makes and CI-only Sentry performance tracing.
+ * browser itself makes and CI-only Sentry performance tracing. Tracing uses
+ * the performance DSN when CI provides it, and the fake DSN otherwise.
  *
  * @param server - The mock server proxying all extension traffic.
  * @returns A function resolving to the recorded non-RPC requests.
@@ -141,7 +143,8 @@ export function recordNonRpcRequests(
         if (
           !host ||
           browserAPIRequestDomains.test(host) ||
-          request.url.startsWith(SENTRY_PERFORMANCE_ENVELOPE_URL)
+          request.url.startsWith(SENTRY_PERFORMANCE_ENVELOPE_URL) ||
+          request.url.startsWith(SENTRY_FAKE_ENVELOPE_URL)
         ) {
           return;
         }
