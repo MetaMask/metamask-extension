@@ -1,42 +1,36 @@
 {
   "files": {
     "test/integration/confirmations/signatures/permit-batch.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-single.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/permit.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/signatures/personalSign.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
@@ -44,84 +38,72 @@
     },
     "test/integration/confirmations/transactions/alerts.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/dapp-swap-comparison-banner.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/erc721-approve.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/gas-sponsorship-alerts.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/increase-approval.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/confirmations/transactions/set-approval-for-all.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/defi/defi-positions.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 4,
@@ -129,13 +111,11 @@
     },
     "test/integration/nfts/nfts.test.tsx": {
       "React: DOM nesting violations": 1,
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 5,
       "error: Error: AggregateError": 3,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/notifications&auth/notifications-list.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
     },
@@ -156,19 +136,16 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/tokens/balance-persistence-xdc.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/tokens/hyperevm-wrong-decimals.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/tokens/non-zero-native-address.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1

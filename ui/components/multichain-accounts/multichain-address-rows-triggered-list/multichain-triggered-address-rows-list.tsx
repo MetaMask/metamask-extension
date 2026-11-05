@@ -161,6 +161,8 @@ export const MultichainTriggeredAddressRowsList = ({
   const hoverCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const isPopoverOpenRef = useRef(false);
+  const wasOpenOnPointerDownRef = useRef<boolean | null>(null);
 
   const useNativeInterest =
     triggerMode === 'hover' && interestInvokerSupport.detected;
@@ -230,14 +232,44 @@ export const MultichainTriggeredAddressRowsList = ({
     [clearHoverCloseTimeout],
   );
 
+  useEffect(() => {
+    const popover = popoverRef.current;
+    if (!popover) {
+      return undefined;
+    }
+    const handleToggle = (event: Event) => {
+      isPopoverOpenRef.current =
+        (event as Event & { newState?: string }).newState === 'open';
+    };
+    popover.addEventListener('toggle', handleToggle);
+    return () => popover.removeEventListener('toggle', handleToggle);
+  }, []);
+
+  // An `auto` popover light-dismisses on pointerup when the trigger is not
+  // linked via popovertarget/commandfor, so by click time it is already
+  // closed. Capture the state at pointerdown to know the click means "close".
+  const handlePointerDownTrigger = useCallback(() => {
+    if (useClickFallback) {
+      wasOpenOnPointerDownRef.current = isPopoverOpenRef.current;
+    }
+  }, [useClickFallback]);
+
   const handleClickTrigger = useCallback(
     (e: React.MouseEvent) => {
       if (triggerMode !== 'click') {
         return;
       }
       e.stopPropagation();
-      if (useClickFallback) {
-        popoverRef.current?.togglePopover?.();
+      if (!useClickFallback) {
+        return;
+      }
+      const wasOpen =
+        wasOpenOnPointerDownRef.current ?? isPopoverOpenRef.current;
+      wasOpenOnPointerDownRef.current = null;
+      if (wasOpen) {
+        popoverRef.current?.hidePopover?.();
+      } else {
+        popoverRef.current?.showPopover?.();
       }
     },
     [triggerMode, useClickFallback],
@@ -405,6 +437,7 @@ export const MultichainTriggeredAddressRowsList = ({
       const child = children as React.ReactElement<{
         style?: React.CSSProperties;
         onClick?: (e: React.MouseEvent) => void;
+        onPointerDown?: (e: React.PointerEvent) => void;
         commandfor?: string;
         command?: string;
       }>;
@@ -420,6 +453,10 @@ export const MultichainTriggeredAddressRowsList = ({
               command: 'toggle-popover',
             }
           : {}),
+        onPointerDown: (e: React.PointerEvent) => {
+          handlePointerDownTrigger();
+          child.props.onPointerDown?.(e);
+        },
         onClick: (e: React.MouseEvent) => {
           handleClickTrigger(e);
           child.props.onClick?.(e);
@@ -432,6 +469,7 @@ export const MultichainTriggeredAddressRowsList = ({
     anchorName,
     children,
     handleClickTrigger,
+    handlePointerDownTrigger,
     popoverId,
     scheduleHideFallbackPopover,
     showFallbackPopover,
