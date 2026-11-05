@@ -27,7 +27,6 @@ describe('getAnalyticsControllerInitMessenger', () => {
           'RemoteFeatureFlagController:getState',
           'AnalyticsController:getState',
           'AnalyticsController:trackEvent',
-          'AnalyticsController:trackErrorAsAnalytics',
           'AnalyticsController:identify',
           'AnalyticsController:trackView',
           'AnalyticsController:optIn',

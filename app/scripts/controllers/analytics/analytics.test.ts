@@ -13,7 +13,6 @@ import type {
   AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerSetMarketingCampaignCookieIdAction,
-  AnalyticsControllerTrackErrorAsAnalyticsAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
 } from '@metamask/analytics-controller';
@@ -38,7 +37,6 @@ import {
   identify,
   setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
-  trackErrorAsAnalytics,
   trackEvent,
   updateProfileSessionData,
 } from './analytics';
@@ -64,7 +62,6 @@ function createConfiguredMessenger({
     marketingCampaignCookieId,
   };
   const trackEventHandler = jest.fn();
-  const trackErrorAsAnalyticsHandler = jest.fn();
   const trackViewHandler = jest.fn();
   const identifyHandler = jest.fn();
   const optInHandler = jest.fn(async () => {
@@ -109,7 +106,6 @@ function createConfiguredMessenger({
     | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
     | AnalyticsControllerTrackEventAction
-    | AnalyticsControllerTrackErrorAsAnalyticsAction
     | AnalyticsControllerIdentifyAction
     | AnalyticsControllerTrackViewAction
     | AnalyticsControllerOptInAction
@@ -187,10 +183,6 @@ function createConfiguredMessenger({
     trackEventHandler as never,
   );
   rootMessenger.registerActionHandler(
-    'AnalyticsController:trackErrorAsAnalytics',
-    trackErrorAsAnalyticsHandler as never,
-  );
-  rootMessenger.registerActionHandler(
     'AnalyticsController:identify',
     identifyHandler as never,
   );
@@ -229,7 +221,6 @@ function createConfiguredMessenger({
   return {
     identifyHandler,
     trackEventHandler,
-    trackErrorAsAnalyticsHandler,
     trackViewHandler,
     optInHandler,
     optOutHandler,
@@ -326,35 +317,6 @@ describe('analytics', () => {
       }),
       expect.any(Object),
     );
-  });
-
-  describe('trackErrorAsAnalytics', () => {
-    it('delegates to AnalyticsController:trackErrorAsAnalytics', () => {
-      const { trackErrorAsAnalyticsHandler } = createConfiguredMessenger();
-      const error = new Error('Deletion failed');
-
-      trackErrorAsAnalytics(error, { source: 'clear-metametrics-data' });
-
-      expect(trackErrorAsAnalyticsHandler).toHaveBeenCalledWith(error, {
-        source: 'clear-metametrics-data',
-      });
-    });
-
-    it('does not throw when the messenger call fails', () => {
-      const { trackErrorAsAnalyticsHandler } = createConfiguredMessenger();
-      trackErrorAsAnalyticsHandler.mockImplementation(() => {
-        throw new Error('messenger unavailable');
-      });
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
-      expect(() =>
-        trackErrorAsAnalytics(new Error('Deletion failed'), {
-          source: 'clear-metametrics-data',
-        }),
-      ).not.toThrow();
-
-      consoleErrorSpy.mockRestore();
-    });
   });
 
   it('validates identify traits before delivery', () => {

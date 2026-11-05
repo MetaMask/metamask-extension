@@ -6373,7 +6373,10 @@ export function trackErrorAsAnalytics(
   error: unknown,
   options: { source: string; volumeControls?: object },
 ) {
-  return submitRequestToBackground('trackErrorAsAnalytics', [error, options]);
+  return submitRequestToBackground(
+    'AnalyticsController:trackErrorAsAnalytics',
+    [error, options],
+  );
 }
 
 export function upsertTransactionUIMetricsFragment(
