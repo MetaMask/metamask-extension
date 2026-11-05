@@ -919,8 +919,9 @@ export default class MetamaskController extends EventEmitter {
     // `wallet.init()` runs before MultichainNetworkController exists, so
     // NetworkEnablementController.init() is deferred until messenger clients
     // are registered. Must run before the UI first opens, because
-    // AssetsController reads NetworkEnablementController state when it
-    // bootstraps on the first `ClientController:setUiOpen(true)`.
+    // AssetsController starts fetching on the first
+    // `ClientController:setUiOpen(true)` and reads the enabled networks from
+    // NetworkEnablementController state for each fetch.
     setupNetworkEnablementController({
       networkEnablementController: this.networkEnablementController,
       initMessenger: getNetworkEnablementControllerInitMessenger(

@@ -2361,7 +2361,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "ethereumjs-util>bn.js": true,
-        "uuid": true
+        "@metamask/wallet>@metamask/gas-fee-controller>uuid": true
       }
     },
     "@metamask/gator-permissions-controller": {
@@ -8117,8 +8117,12 @@
     },
     "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/wallet>@metamask/gas-fee-controller>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/keyring-sdk>uuid": {
