@@ -58,7 +58,7 @@ export function isPartialHeroAmount(
   value: string,
   maxDecimals?: number,
 ): boolean {
-  const match = /^[0-9]*(?:[.,]([0-9]*))?$/u.exec(value);
+  const match = /^\d*(?:[.,](\d*))?$/u.exec(value);
   if (!match) {
     return false;
   }

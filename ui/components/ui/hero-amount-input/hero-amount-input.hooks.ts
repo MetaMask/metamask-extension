@@ -34,7 +34,7 @@ export function useHeroAmountRowWidth(): [
 ] {
   // Held in state so the effect re-runs when the row mounts or is replaced.
   // A ref callback cannot return a cleanup on React 18.
-  const [row, rowRef] = useState<HTMLElement | null>(null);
+  const [row, setRow] = useState<HTMLElement | null>(null);
   const [width, setWidth] = useState(0);
 
   useLayoutEffect(() => {
@@ -65,7 +65,7 @@ export function useHeroAmountRowWidth(): [
     return () => observer.disconnect();
   }, [row]);
 
-  return [rowRef, width > 0 ? width : HERO_AMOUNT_FALLBACK_WIDTH];
+  return [setRow, width > 0 ? width : HERO_AMOUNT_FALLBACK_WIDTH];
 }
 
 /**
