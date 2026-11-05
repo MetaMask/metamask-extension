@@ -1,19 +1,23 @@
 import type {
   EnrolledCredential,
-  VerificationToken,
+  TokenReason,
 } from '@metamask/profile-sync-controller/sdk';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 /**
- * Removes one of the profile's methods, with a fresh verification token
- * proven with another one. The server and `AuthenticationController` don't
- * offer removal yet, so for now it always rejects.
+ * Removes one of the profile's methods and caches the ones left. It needs a
+ * verification from `verifyOrEnroll` with another type of method: the server
+ * refuses one with the same type, and the last method.
  *
- * @param _credential - The method to remove.
- * @param _token - A verification token from `verifyOrEnroll`.
+ * @param credential - The method to remove.
+ * @param reason - The operation, for tracing.
  */
 export const removeMfaCredential = async (
-  _credential: EnrolledCredential,
-  _token?: VerificationToken,
+  credential: EnrolledCredential,
+  reason: TokenReason,
 ): Promise<void> => {
-  throw new Error('Removing MFA methods is not supported yet');
+  await submitRequestToBackground<EnrolledCredential[]>('messengerCall', [
+    'AuthenticationController:removeCredential',
+    [{ credentialId: credential.id, reason }],
+  ]);
 };

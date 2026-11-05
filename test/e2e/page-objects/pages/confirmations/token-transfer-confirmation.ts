@@ -82,8 +82,8 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
       await Promise.all([
         this.driver.waitForSelector(this.confirmButton),
         this.driver.waitForSelector({
+          testId: 'confirm-send-amount',
           text: `${transferAmount} ${symbol}`,
-          tag: 'h2',
         }),
         this.driver.waitForSelector({
           css: this.networkFee,

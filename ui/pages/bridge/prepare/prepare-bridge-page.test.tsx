@@ -76,11 +76,8 @@ jest.mock(
 );
 
 setBackgroundConnection({
-  resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
-  updateBridgeQuoteRequestParams: async () => jest.fn(),
-  setInputPrimaryDenomination: async () => undefined,
-  trackUnifiedSwapBridgeEvent: async () => undefined,
+  messengerCall: jest.fn(),
 } as never);
 
 describe('PrepareBridgePage', () => {
@@ -499,14 +496,10 @@ describe('PrepareBridgePage', () => {
       .spyOn(reactRouterUtils, 'useSearchParams')
       .mockReturnValue([{ get: () => null }] as never);
 
-    const updateBridgeQuoteRequestParams = jest
-      .fn()
-      .mockResolvedValue(undefined);
+    const messengerCall = jest.fn().mockResolvedValue(undefined);
     setBackgroundConnection({
-      resetState: jest.fn().mockResolvedValue(undefined),
       getStatePatches: jest.fn().mockResolvedValue([]),
-      updateBridgeQuoteRequestParams,
-      trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
+      messengerCall,
     } as never);
 
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
@@ -599,15 +592,18 @@ describe('PrepareBridgePage', () => {
       await Promise.resolve();
     });
 
-    expect(updateBridgeQuoteRequestParams).toHaveBeenCalledWith(
-      expect.objectContaining({
-        insufficientBal: false,
-        srcChainId: btcToken.chainId,
-        srcTokenAmount: '99997000',
-      }),
-      expect.any(Object),
-      0,
-      1,
+    expect(messengerCall).toHaveBeenCalledWith(
+      'BridgeController:updateBridgeQuoteRequestParams',
+      [
+        expect.objectContaining({
+          insufficientBal: false,
+          srcChainId: btcToken.chainId,
+          srcTokenAmount: '99997000',
+        }),
+        expect.any(Object),
+        0,
+        1,
+      ],
     );
 
     jest.useRealTimers();
@@ -663,10 +659,8 @@ describe('PrepareBridgePage', () => {
         .spyOn(reactRouterUtils, 'useSearchParams')
         .mockReturnValue([{ get: () => null }] as never);
       setBackgroundConnection({
-        resetState: jest.fn(),
         getStatePatches: jest.fn().mockResolvedValue([]),
-        updateBridgeQuoteRequestParams: jest.fn().mockResolvedValue(undefined),
-        trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
+        messengerCall: jest.fn(),
       } as never);
     });
 
@@ -805,12 +799,8 @@ describe('PrepareBridgePage', () => {
       });
 
     const backgroundWithAllMethods = {
-      resetState: jest.fn(),
       getStatePatches: jest.fn(),
-      updateBridgeQuoteRequestParams: jest.fn(),
-      trackUnifiedSwapBridgeEvent: jest.fn(),
-      setEnabledAllPopularNetworks: jest.fn(),
-      setActiveNetwork: jest.fn(),
+      messengerCall: jest.fn(),
     } as never;
 
     beforeEach(() => {

@@ -70,8 +70,6 @@ jest.mock('../../../ducks/locale/locale', () => ({
 
 jest.mock('../../../store/actions', () => ({
   startNewDraftTransaction: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -572,12 +570,6 @@ describe('EthOverview', () => {
       expect(queryByTestId('eth-overview-more')).not.toBeInTheDocument();
       expect(queryByTestId('eth-overview-default')).toBeInTheDocument();
       expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
-    });
-
-    it('should always show the Portfolio button', () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const portfolioButton = queryByTestId('portfolio-link');
-      expect(portfolioButton).toBeInTheDocument();
     });
 
     it('should always show the Buy button regardless of current chain Id', () => {

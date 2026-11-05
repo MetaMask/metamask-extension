@@ -11,5 +11,7 @@ export function estimateGasFee(request: {
   chainId?: Hex;
   networkClientId?: NetworkClientId;
 }): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
+  return submitRequestToBackground('TransactionController:estimateGasFee', [
+    request,
+  ]);
 }
