@@ -125,8 +125,8 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
   const [amount, setAmount] = useState<HTMLSpanElement | null>(null);
   const [rowTracker] = useState(createFlipTracker);
   // The glyph layer draws the digits under the field, whose text is
-  // transparent, so the field still draws the caret and selection. Reduced motion and IME composition show the field's
-  // own text instead.
+  // transparent, so the field still draws the caret and selection. Reduced
+  // motion and IME composition show the field's own text instead.
   const showGlyphs =
     !prefersReducedMotion && !isComposing && canAnimateElements();
   const sizeTransition = showGlyphs ? GLYPH_SIZE_TRANSITION : SIZE_TRANSITION;
