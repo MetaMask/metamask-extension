@@ -12,7 +12,7 @@ type BackTransition = (navigateBack: () => void) => void;
 // A replace gives a new location key but keeps the history index, so the key
 // alone can't detect the first entry; at index 0 there is nothing to go back to.
 export function isAppHistoryEmpty(location: { key: string; state: unknown }) {
-  const historyIndex = globalThis.history?.state?.idx;
+  const historyIndex = window.history.state?.idx;
   return (
     location.key === 'default' ||
     historyIndex === 0 ||
