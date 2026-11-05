@@ -96,10 +96,11 @@ const PerpsActivityPage = () => {
   );
 
   // Fetch real transaction data from the Perps controller.
-  // forceFreshOnMount: opening Activity must miss both this hook's 10-second
-  // cache and the controller's 60-second fills cache. Perps home may already
-  // have cached an empty fill history, and orders, funding, and deposits do
-  // not arrive through the live-fills channel.
+  // forceFreshOnMount: user opening the Activity page must see the latest
+  // orders/funding/deposits even if PerpsView ("Recent activity") grabbed a
+  // snapshot inside the 10s TTL. Orders/funding/userHistory do not update via
+  // the live-fills WebSocket merge, so without this the page could render a
+  // stale snapshot. The hook's in-flight dedup still suppresses bursts.
   const { transactions, isLoading, error } = usePerpsTransactionHistory({
     forceFreshOnMount: true,
   });
