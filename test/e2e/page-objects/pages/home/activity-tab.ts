@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { TxToastNotification } from '../../components/tx-toast-notification';
 import HomePage from './homepage';
 
@@ -80,6 +81,19 @@ class ActivityTab extends HomePage {
 
   private readonly transactionWithStatus = (status: string) =>
     `[data-testid="activity-list-item"][data-tx-status="${status}"]`;
+
+  private readonly transactionWithStatusAndAmount = (
+    status: string,
+    amount: string,
+  ) => ({
+    xpath:
+      `//*[@data-testid="activity-list-item" and @data-tx-status=${quoteXPathText(
+        status,
+      )}]` +
+      `//*[@data-testid="transaction-list-item-primary-currency" and normalize-space(.)=${quoteXPathText(
+        amount,
+      )}]`,
+  });
 
   /**
    * This function checks a swap or bridge transaction's details
@@ -528,38 +542,9 @@ class ActivityTab extends HomePage {
     status: 'confirmed' | 'cancelled' | 'pending',
     { timeout = 5000 }: { timeout?: number } = {},
   ): Promise<void> {
-    await this.driver.waitUntil(
-      async () => {
-        try {
-          const transactions = await this.driver.findElements(
-            this.completedTransactions,
-          );
-
-          for (const transaction of transactions) {
-            const [amount] = await this.driver.findNestedElements(
-              transaction,
-              this.transactionAmountsInActivity,
-            );
-            if (amount && (await amount.getText()) === expectedAmount) {
-              return (
-                (await transaction.getAttribute('data-tx-status')) === status
-              );
-            }
-          }
-
-          return false;
-        } catch (error) {
-          if (
-            error instanceof Error &&
-            error.name === 'StaleElementReferenceError'
-          ) {
-            return false;
-          }
-
-          throw error;
-        }
-      },
-      { interval: 100, timeout },
+    await this.driver.waitForSelector(
+      this.transactionWithStatusAndAmount(status, expectedAmount),
+      { timeout },
     );
   }
 

@@ -781,21 +781,6 @@ class Driver {
   }
 
   /**
-   * Finds nested elements without waiting; returns an empty list if none match.
-   *
-   * @param {WebElement} element - Parent element
-   * @param {string | object} nestedLocator - Nested element locator
-   * @returns {Promise<Array<WebElement>>} The matching nested elements.
-   */
-  async findNestedElements(element, nestedLocator) {
-    const locator = this.buildLocator(nestedLocator);
-    const nestedElements = await element.findElements(locator);
-    return nestedElements.map((nestedElement) =>
-      wrapElementWithAPI(nestedElement, this),
-    );
-  }
-
-  /**
    * Finds a visible element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
