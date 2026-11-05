@@ -43,9 +43,6 @@ jest.mock(
   '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal-container',
   () => ({ MultiRpcEditModalContainer: () => null }),
 );
-jest.mock('../../components/app/update-modal/update-modal-container', () => ({
-  UpdateModalContainer: () => null,
-}));
 jest.mock('./connected-status-popover-container', () => ({
   ConnectedStatusPopoverContainer: () => null,
 }));

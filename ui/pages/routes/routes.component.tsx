@@ -167,6 +167,7 @@ import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messeng
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
+import { ExtensionUpdateTakeoverContainer } from '../../components/app/extension-update-takeover';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -971,6 +972,7 @@ export default function Routes() {
 
       {isUnlocked ? <Toaster /> : null}
       {isUnlocked ? <Modals /> : null}
+      {isUnlocked ? <ExtensionUpdateTakeoverContainer /> : null}
     </div>
   );
 }
