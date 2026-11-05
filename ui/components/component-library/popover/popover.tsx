@@ -182,7 +182,7 @@ export const Popover: PopoverComponent = React.forwardRef(
         }}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
-        hidden={!isActive}
+        {...(!isActive && { hidden: true })}
         style={{
           ...styles.popper,
           ...contentStyle,

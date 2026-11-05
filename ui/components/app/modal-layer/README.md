@@ -28,8 +28,8 @@ participate through adapters. Floating popovers use the same scope to hide and
 stop handling dismissal while their owning modal is suspended. A floating menu
 outside any modal pauses whenever a modal is active.
 
-Suspended components remain mounted, so asynchronous work continues. View
-tracking outside the modal subtree does not automatically wait for visibility.
+Suspended components remain mounted, so asynchronous work continues. Mount-based
+view tracking does not automatically wait for visibility.
 Routes still control authentication and security interstitials; modal priority
 does not change navigation or those gates.
 

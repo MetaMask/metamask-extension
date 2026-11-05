@@ -20,8 +20,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
           {...props}
           ref={ref}
           isOpen={isOpen}
-          hidden={!layer.isActive}
-          aria-hidden={!layer.isActive || undefined}
+          {...(!layer.isActive && { hidden: true, 'aria-hidden': true })}
           style={{ ...style, ...(!layer.isActive && { display: 'none' }) }}
         >
           {children}
