@@ -124,14 +124,25 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
     >
       {prefix ? (
         <>
-          <span
-            ref={probeRef}
-            aria-hidden="true"
-            className="pointer-events-none invisible absolute font-hero whitespace-pre"
-            style={{ fontSize: HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE }}
+          {/*
+           * The probe takes the prefix variant's weight classes through asChild,
+           * so it measures the same weight as the rendered prefix. The inline
+           * size overrides the variant size.
+           */}
+          <Text
+            asChild
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
           >
-            {prefix}
-          </span>
+            <span
+              ref={probeRef}
+              aria-hidden="true"
+              className="pointer-events-none invisible absolute whitespace-pre"
+              style={{ fontSize: HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE }}
+            >
+              {prefix}
+            </span>
+          </Text>
           <Text
             data-testid={`${dataTestId}-prefix`}
             {...restPrefixProps}
