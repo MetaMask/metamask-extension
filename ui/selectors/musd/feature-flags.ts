@@ -2,8 +2,8 @@
  * MUSD Feature Flag Selectors
  *
  * Selectors for accessing mUSD-related feature flags from remote configuration.
- * Uses the shared getRemoteFeatureFlags selector which properly merges
- * manifest overrides with state flags.
+ * Uses the shared getRemoteFeatureFlags selector, which reads the effective
+ * flags published by the RemoteFeatureFlagController.
  *
  * Supports version-gated flags in both direct and progressive rollout formats:
  * - Direct: { enabled: true, minimumVersion: '12.0.0' }
@@ -32,7 +32,7 @@ import {
 // ============================================================================
 
 /**
- * Casts the merged remote feature flags (which are typed as Record<string, Json>)
+ * Casts the effective remote feature flags (which are typed as Record<string, Json>)
  * to the mUSD-specific flag shape for type-safe access in downstream selectors.
  */
 const selectMusdRemoteFeatureFlags = createSelector(

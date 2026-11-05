@@ -3,6 +3,7 @@ import type { AuthenticationControllerState } from '@metamask/profile-sync-contr
 import { ClientConfigApiService } from '@metamask/remote-feature-flag-controller';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
+import * as manifestFlags from '../../../../shared/lib/manifestFlags';
 import { createMockMessenger } from '../test-utils';
 import {
   getConfigForRemoteFeatureFlagRequest,
@@ -137,6 +138,18 @@ describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
 
     expect(options.defaultFeatureFlags).toStrictEqual({});
     expect(options.metaMetricsFlags).toStrictEqual([]);
+  });
+
+  it('includes remote feature flag manifest overrides', () => {
+    jest.spyOn(manifestFlags, 'getManifestFlags').mockReturnValue({
+      remoteFeatureFlags: { testBooleanFlag: false },
+    });
+
+    const options = buildOptions({});
+
+    expect(options.overrideFeatureFlags).toStrictEqual({
+      testBooleanFlag: false,
+    });
   });
 
   it('uses the configured client version and 15-minute fetch interval', () => {
