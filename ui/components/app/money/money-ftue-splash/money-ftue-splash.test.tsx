@@ -152,6 +152,15 @@ describe('MoneyFtueSplash', () => {
     ).toHaveTextContent(messages.moneyFtueStartEarning.message);
   });
 
+  it('labels the dialog with the visible title', () => {
+    renderSplash();
+
+    const dialog = screen.getByTestId(MONEY_FTUE_SPLASH_TEST_ID);
+    const title = screen.getByTestId('money-ftue-splash-title');
+
+    expect(dialog).toHaveAttribute('aria-labelledby', title.id);
+  });
+
   it('renders a full-width page in the popup', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 

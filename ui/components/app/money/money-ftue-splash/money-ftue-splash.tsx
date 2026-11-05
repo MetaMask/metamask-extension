@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useId } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -93,6 +93,7 @@ const MoneyFtueSplashContent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const titleId = useId();
   const source = useSelector(selectMoneyFtueSource);
   const pendingDeposit = useSelector(selectMoneyFtuePendingDeposit);
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: true });
@@ -201,14 +202,21 @@ const MoneyFtueSplashContent = () => {
         size={ModalContentSize.Sm}
         className={contentClassName}
         modalDialogProps={{
+          'aria-labelledby': titleId,
           className: dialogClassName,
           'data-testid': MONEY_FTUE_SPLASH_TEST_ID,
         }}
       >
         <div className="flex min-h-0 flex-1 flex-col">
           <header className="flex items-center justify-between gap-2 px-4 py-2">
-            <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Bold}>
-              {t('moneyFtueTitle')}
+            <Text
+              asChild
+              variant={TextVariant.HeadingSm}
+              fontWeight={FontWeight.Bold}
+            >
+              <h2 id={titleId} data-testid="money-ftue-splash-title">
+                {t('moneyFtueTitle')}
+              </h2>
             </Text>
             <ButtonIcon
               iconName={IconName.Close}
