@@ -707,6 +707,7 @@
     "@storybook/test-runner": "^0.23.0",
     "@swc/helpers": "^0.5.17",
     "@swc/types": "^0.1.23",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
