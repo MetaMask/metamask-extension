@@ -29,12 +29,12 @@ function getContentWidth(element: HTMLElement): number {
  * @returns A ref callback for the row and its width.
  */
 export function useHeroAmountRowWidth(): [
-  (element: HTMLDivElement | null) => void,
+  (element: HTMLElement | null) => void,
   number,
 ] {
   // Held in state so the effect re-runs when the row mounts or is replaced.
   // A ref callback cannot return a cleanup on React 18.
-  const [row, rowRef] = useState<HTMLDivElement | null>(null);
+  const [row, rowRef] = useState<HTMLElement | null>(null);
   const [width, setWidth] = useState(0);
 
   useLayoutEffect(() => {
@@ -111,11 +111,14 @@ export function useHeroAmountPrefixWidthEm(
 
     measure();
     let cancelled = false;
-    document.fonts?.ready.then(() => {
-      if (!cancelled) {
-        measure();
-      }
-    });
+    // A rejected font load leaves the first reading in place.
+    document.fonts?.ready
+      .then(() => {
+        if (!cancelled) {
+          measure();
+        }
+      })
+      .catch(() => undefined);
     return () => {
       cancelled = true;
     };

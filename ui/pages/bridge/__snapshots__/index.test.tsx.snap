@@ -77,7 +77,7 @@ exports[`Bridge renders the component with initial props 1`] = `
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
-              <div
+              <label
                 class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1"
                 data-testid="from-amount-row"
                 style="height: 40px;"
@@ -105,7 +105,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                     value=""
                   />
                 </span>
-              </div>
+              </label>
               <button
                 class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
                 data-testid="bridge-source-button"
@@ -203,7 +203,7 @@ exports[`Bridge renders the component with initial props 1`] = `
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
               >
-                <div
+                <label
                   class="relative flex w-full items-center overflow-hidden justify-start min-w-0 flex-1 opacity-50"
                   data-testid="to-amount-row"
                   style="height: 40px;"
@@ -233,7 +233,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       value="0"
                     />
                   </span>
-                </div>
+                </label>
                 <button
                   class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
                   data-testid="bridge-destination-button"

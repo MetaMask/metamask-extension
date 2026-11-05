@@ -109,8 +109,10 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
   const { className: valueClassName, ...restValueProps } = valueProps ?? {};
   const { className: inputClassName, ...restInputProps } = inputProps ?? {};
 
+  // A label row focuses the field natively from a click on the prefix or the
+  // space around the amount, and does nothing when the field is disabled.
   return (
-    <div
+    <label
       ref={rowRef}
       data-testid={dataTestId}
       className={twMerge(
@@ -119,11 +121,6 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
         className,
       )}
       style={{ height: maxFontSize }}
-      onClick={(event) => {
-        if (!disabled) {
-          event.currentTarget.querySelector('input')?.focus();
-        }
-      }}
     >
       {prefix ? (
         <>
@@ -198,6 +195,6 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
           style={amountStyle}
         />
       </span>
-    </div>
+    </label>
   );
 };

@@ -43,7 +43,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -84,7 +84,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
               value="25"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -756,7 +756,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -797,7 +797,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
               value="100"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -903,7 +903,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -944,7 +944,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
               value="100"
             />
           </span>
-        </div>
+        </label>
         <div
           class="gap-1 flex flex-col items-center"
         >
@@ -1074,7 +1074,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -1115,7 +1115,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
               value="100"
             />
           </span>
-        </div>
+        </label>
         <div
           class="gap-1 flex flex-col items-center"
         >
@@ -1245,7 +1245,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -1286,7 +1286,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
               value="100"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -1392,7 +1392,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -1433,7 +1433,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
               value="100"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -1856,7 +1856,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -1897,7 +1897,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
               value="100"
             />
           </span>
-        </div>
+        </label>
         <div
           class="gap-1 flex flex-col items-center"
         >
@@ -2027,7 +2027,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
+        <label
           class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
           data-testid="ramps-build-quote-amount"
           style="height: 88px;"
@@ -2068,7 +2068,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
               value="50"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
