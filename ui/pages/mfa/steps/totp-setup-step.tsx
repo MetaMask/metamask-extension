@@ -50,6 +50,7 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
 
   return (
     <StepLayout
+      onAction={onAction}
       title={t('mfaTotpSetupTitle')}
       description={t('mfaTotpSetupDescription')}
       error={state.error}
