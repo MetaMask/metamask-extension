@@ -58,17 +58,14 @@ async function waitForFocusedTestId(
   driver: Driver,
   expectedTestId: string,
 ): Promise<void> {
-  let focusedTestId = '';
-  try {
-    await driver.wait(async () => {
-      focusedTestId = await driver.executeScript(
+  await driver.driver.wait(
+    async () =>
+      (await driver.executeScript(
         () => document.activeElement?.getAttribute('data-testid') ?? '',
-      );
-      return focusedTestId === expectedTestId;
-    });
-  } catch {
-    assert.equal(focusedTestId, expectedTestId, 'Unexpected focused element');
-  }
+      )) === expectedTestId,
+    driver.timeout,
+    `Expected focus on [data-testid="${expectedTestId}"]`,
+  );
 }
 
 /**
@@ -177,7 +174,8 @@ class ExtensionUpdateTakeover {
    * driver on that tab.
    *
    * @param options - Update options.
-   * @param options.doubleClick - Double-clicks Update to exercise request deduplication.
+   * @param options.doubleClick - Double-clicks Update to check that the
+   * takeover's busy state ignores a second click in the same window.
    */
   async confirmUpdate({
     doubleClick = false,
