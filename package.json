@@ -805,7 +805,7 @@
     "gulp-autoprefixer": "^8.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^3.0.0",
-    "html-bundler-webpack-plugin": "patch:html-bundler-webpack-plugin@npm%3A4.24.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.0-c360a7b7fc.patch",
+    "html-bundler-webpack-plugin": "patch:html-bundler-webpack-plugin@npm%3A4.24.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.1-c360a7b7fc.patch",
     "http-server": "^14.1.1",
     "https-browserify": "^1.0.0",
     "husky": "^9.1.7",
