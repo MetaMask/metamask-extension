@@ -7429,9 +7429,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.1.1":
-  version: 113.1.1
-  resolution: "@metamask/assets-controllers@npm:113.1.1"
+"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.1.1, @metamask/assets-controllers@npm:^113.2.0":
+  version: 113.2.0
+  resolution: "@metamask/assets-controllers@npm:113.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -7478,11 +7478,11 @@ __metadata:
     multiformats: "npm:^9.9.0"
     reselect: "npm:^5.3.0"
     single-call-balance-checker-abi: "npm:^1.0.0"
-    uuid: "npm:^14.0.1"
+    uuid: "npm:^14.0.2"
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/379b859f93f67794fec4781ea4d955d828882f6de34bff53331b3f2ffc2fa7fe1dc451e155aff03afe21da996db7294dc76a786a7c7eb4d5230d49ea3f0abe0a
+  checksum: 10/c79851f7ebd75aa1691fa780711cefa41616572ddbb932ce491114e42a6a8f9c4a3badbbd691d8efd2de29898ea1fd241329123e1c4f3ee662afbec8d728cf18
   languageName: node
   linkType: hard
 
@@ -35494,7 +35494,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^20.2.2"
-    "@metamask/assets-controllers": "npm:^113.1.1"
+    "@metamask/assets-controllers": "npm:^113.2.0"
     "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^10.0.0"
@@ -47634,7 +47634,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0.1":
+"uuid@npm:^14.0.1, uuid@npm:^14.0.2":
   version: 14.0.3
   resolution: "uuid@npm:14.0.3"
   bin:

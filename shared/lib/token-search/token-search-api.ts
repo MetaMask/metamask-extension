@@ -7,6 +7,14 @@ const TOKEN_V3_BASE_URL = 'https://tokens.api.cx.metamask.io';
 const DEFAULT_BROWSE_OCCURRENCE_FLOOR = 3;
 const EVM_CHAIN_NAMESPACE = 'eip155:';
 
+/**
+ * Service profile sent as the `x-mm-service-profile` header on
+ * `/tokens/search` requests. Matches the default used by `searchTokens` in
+ * `@metamask/assets-controllers` so every token search request is tagged
+ * consistently.
+ */
+export const TOKEN_SEARCH_SERVICE_PROFILE = 'assets--trending-search';
+
 export type TokenSearchResult = {
   assetId: CaipAssetType;
   symbol: string;
@@ -77,7 +85,10 @@ const fetchTokenSearch = async (
   const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
   const response = await fetchWithTimeout(url, {
     method: 'GET',
-    headers: { 'X-Client-Id': 'extension' },
+    headers: {
+      'X-Client-Id': 'extension',
+      'x-mm-service-profile': TOKEN_SEARCH_SERVICE_PROFILE,
+    },
     signal: options.signal,
   });
 
