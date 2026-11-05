@@ -500,6 +500,33 @@ describe('createMfaFlow', () => {
       await expect(flow.result).resolves.toBeDefined();
     });
 
+    it('asks the user for a new code after too many wrong ones, instead of sending one', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.controller.completeCredentialVerification.mockRejectedValueOnce(
+        new MfaError('too_many_attempts', 'too many'),
+      );
+      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+
+      await act(flow, { type: 'submitCode', code: '111111' });
+      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(flow.getState()).toMatchObject({
+        step: { name: 'otp', codeSent: true },
+        busy: false,
+        error: 'too_many_attempts',
+        // The wait left from the code already sent.
+        resendAvailableAt: NOW + 60_000,
+      });
+      expect(flow.getState().codeResent).toBeUndefined();
+
+      await act(flow, { type: 'resend' });
+      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
+        2,
+      );
+      expect(flow.getState().error).toBeUndefined();
+    });
+
     it('shows a countdown when a code was sent less than a minute ago', async () => {
       const fake = createFakeController([activeEmail]);
       fake.controller.beginCredentialVerification.mockRejectedValueOnce(

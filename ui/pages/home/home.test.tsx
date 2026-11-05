@@ -125,8 +125,6 @@ beforeEach(() => {
 });
 
 describe('Home', () => {
-  // The app header is rendered by `MainLayout`, which is the only route that
-  // mounts Home, so Home itself no longer renders one.
   it('renders DappConnectionControlBar', () => {
     const { getByTestId } = renderHome();
     expect(getByTestId('dapp-control-bar-bottom')).toBeInTheDocument();

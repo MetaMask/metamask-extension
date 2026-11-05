@@ -8451,7 +8451,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "hubungi dukungan",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Beberapa layanan tidak tersedia untuk sementara waktu. $1, atau $2.",
@@ -8459,7 +8459,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Lihat pilihan Anda di bagian Pertanyaan Umum",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Kami sedang mengalami gangguan",
