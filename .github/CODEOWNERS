@@ -287,7 +287,9 @@ ui/selectors/activity/                                         @MetaMask/core-ex
 ui/components/app/activity-list-item-avatar/                   @MetaMask/core-extension-ux
 ui/components/app/transaction-activity-empty-state/            @MetaMask/core-extension-ux
 ui/pages/details/templates/ramps/                              @MetaMask/core-extension-ux @MetaMask/money-movement
+ui/pages/details/templates/perps/                              @MetaMask/core-extension-ux @MetaMask/perps
 ui/pages/details/templates/money/                              @MetaMask/core-extension-ux @MetaMask/earn
+ui/pages/details/templates/bridge/                             @MetaMask/swaps-engineers @MetaMask/core-extension-ux
 ui/selectors/activity/musd/                                    @MetaMask/core-extension-ux @MetaMask/earn
 
 

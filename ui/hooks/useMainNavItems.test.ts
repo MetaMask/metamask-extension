@@ -55,14 +55,17 @@ jest.mock('../../shared/lib/environment', () => ({
 const createState = ({
   isPerpsEnabled = true,
   defaultHomeActiveTabName,
+  moneyFtueSeen = true,
 }: {
   isPerpsEnabled?: boolean;
   defaultHomeActiveTabName?: string;
+  moneyFtueSeen?: boolean;
 } = {}) => ({
   metamask: {
     ...mockState.metamask,
     completedOnboarding: true,
     defaultHomeActiveTabName,
+    moneyFtueSeen,
     remoteFeatureFlags: {
       ...mockState.metamask.remoteFeatureFlags,
       perpsEnabledVersion: { enabled: isPerpsEnabled, minimumVersion: '0.0.1' },
@@ -207,7 +210,7 @@ describe('useMainNavItems', () => {
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE);
     });
 
-    it('navigates to Money Home and tracks the click on Money click', () => {
+    it('navigates to Money Home and tracks the click on Money click when the splash has been seen', () => {
       const { result } = renderUseMainNavItems();
 
       act(() => getItem(result.current, 'money').onClick());
@@ -221,6 +224,28 @@ describe('useMainNavItems', () => {
         buttonIntent: MoneyButtonIntent.GoToMoneyHome,
         labelKey: 'money',
         redirectTarget: MoneyScreenName.MoneyHome,
+      });
+    });
+
+    it('opens the FTUE splash without navigating on the first Money click', () => {
+      const { result, store } = renderUseMainNavItems(
+        createState({ moneyFtueSeen: false }),
+      );
+
+      act(() => getItem(result.current, 'money').onClick());
+
+      expect(store.getState().moneyFtue).toStrictEqual({
+        isOpen: true,
+        source: 'moneyHome',
+        pendingDeposit: null,
+        acknowledged: false,
+      });
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+        labelKey: 'money',
+        redirectTarget: MoneyScreenName.MoneyFtue,
       });
     });
 

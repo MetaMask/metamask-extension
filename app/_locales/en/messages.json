@@ -6110,6 +6110,49 @@
   "moneyExploreBenefits": {
     "message": "Explore your benefits"
   },
+  "moneyFtueBenefitConvertDescription": {
+    "message": "Funds you add convert 1:1 to MetaMask USD, with no fees."
+  },
+  "moneyFtueBenefitConvertTitle": {
+    "message": "Converts to MetaMask USD, 1:1"
+  },
+  "moneyFtueBenefitEarnDescription": {
+    "message": "Earnings land in your balance in real time, with nothing to claim."
+  },
+  "moneyFtueBenefitEarnTitle": {
+    "message": "Earn automatically"
+  },
+  "moneyFtueBenefitSpendDescription": {
+    "message": "Send to any wallet or bank, or spend with MetaMask Card for up to 3% back."
+  },
+  "moneyFtueBenefitSpendTitle": {
+    "message": "Send or spend anywhere"
+  },
+  "moneyFtueBenefitTradeDescription": {
+    "message": "Fund swaps, perps, and predictions directly from your Money balance."
+  },
+  "moneyFtueBenefitTradeTitle": {
+    "message": "Trade from the same balance"
+  },
+  "moneyFtueBenefitWithdrawDescription": {
+    "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
+  },
+  "moneyFtueBenefitWithdrawTitle": {
+    "message": "Withdraw anytime"
+  },
+  "moneyFtueDescription": {
+    "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyFtueHeadline": {
+    "message": "Earn, trade, and spend from one balance"
+  },
+  "moneyFtueStartEarning": {
+    "message": "Start earning"
+  },
+  "moneyFtueTitle": {
+    "message": "MetaMask Money"
+  },
   "moneyFundDescription": {
     "message": "Fund your Money account and watch your balance grow."
   },
@@ -6157,6 +6200,12 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "How much can I earn with a MetaMask Money account?"
   },
+  "moneyHowItWorksFaqControlsAnswer": {
+    "message": "You! MetaMask is a self-custodial wallet, meaning only the account holder's Private Keys control it. MetaMask can't access, freeze, or move your funds. This is what distinguishes us from traditional bank accounts and custodial crypto platforms—there's no third party holding your funds."
+  },
+  "moneyHowItWorksFaqControlsQuestion": {
+    "message": "Who controls my MetaMask Money account?"
+  },
   "moneyHowItWorksFaqCountriesAnswer": {
     "message": "Most places! We currently aren't available in the UK and countries on the USA sanctions list."
   },
@@ -6187,6 +6236,12 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "What is a MetaMask Money account?"
+  },
+  "moneyHowItWorksFaqSafeAnswer": {
+    "message": "Yes, but like all DeFi products, it carries risk. It's a self-custodial wallet, meaning you have full control over your account with your Private Keys.\n\nRisks include smart-contract failures, protocol exploits, liquidity shortages, third-party failures, and legal or regulatory restrictions. The Money account isn't insured by the FDIC or any government agency. There is a risk of loss."
+  },
+  "moneyHowItWorksFaqSafeQuestion": {
+    "message": "Is MetaMask Money account safe?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
@@ -12282,6 +12337,15 @@
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
+  },
+  "swapsRebateBanner": {
+    "message": "You’re getting $1% back on fees"
+  },
+  "swapsRebateTooltipContent": {
+    "message": "Get $1% of the MetaMask fee on this trade back as a reward, paid in mUSD to your Money account. Network fees aren’t included. See the Rewards tab for details."
+  },
+  "swapsRebateTooltipTitle": {
+    "message": "Trading Rewards"
   },
   "swapsViewInActivity": {
     "message": "View in activity"

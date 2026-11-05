@@ -495,6 +495,18 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setMoneyFtueSeen', () => {
+    it('defaults to unseen and updates when set', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.moneyFtueSeen).toStrictEqual(false);
+
+        controller.setMoneyFtueSeen(true);
+
+        expect(controller.state.moneyFtueSeen).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setOnboardingDate', () => {
     it('set the onboardingDate', async () => {
       await withController(({ controller }) => {
@@ -870,6 +882,7 @@ describe('AppStateController', () => {
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -961,6 +974,7 @@ describe('AppStateController', () => {
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1046,6 +1060,7 @@ describe('AppStateController', () => {
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1129,6 +1144,7 @@ describe('AppStateController', () => {
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
