@@ -20687,10 +20687,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansis@npm:4.5.0":
-  version: 4.5.0
-  resolution: "ansis@npm:4.5.0"
-  checksum: 10/d2b35da9873847a728648650b80d69d37d17d6bed3bb38ed185b916b9927bd7c53b00ce8fc012925487a170fc3bba65d4d9bd79961b4c709caa755521076efb6
+"ansis@npm:4.1.0":
+  version: 4.1.0
+  resolution: "ansis@npm:4.1.0"
+  checksum: 10/e2658367807edb461a4c772bdba50cef85c7b3e5f19d4d67d7a406e97b9ba222cfd4dc300fee1b05619207d4e17c809f32e97ac47429f8b4b1a6709dc6ac35ac
   languageName: node
   linkType: hard
 
@@ -30584,17 +30584,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@npm:4.24.0":
-  version: 4.24.0
-  resolution: "html-bundler-webpack-plugin@npm:4.24.0"
+"html-bundler-webpack-plugin@npm:4.23.2":
+  version: 4.23.2
+  resolution: "html-bundler-webpack-plugin@npm:4.23.2"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
-    ansis: "npm:4.5.0"
+    ansis: "npm:4.1.0"
     enhanced-resolve: "npm:>=5.7.0"
     eta: "npm:^3.5.0"
     html-minifier-terser: "npm:^7.2.0"
   peerDependencies:
-    css-loader: ">=6.11.0"
     ejs: ">=3.1.10"
     favicons: ">=7.2.0"
     handlebars: ">=4.7.8"
@@ -30608,8 +30607,6 @@ __metadata:
     twig: ">=1.17.1"
     webpack: ">=5.81.0"
   peerDependenciesMeta:
-    css-loader:
-      optional: true
     ejs:
       optional: true
     favicons:
@@ -30632,21 +30629,20 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/00bfc8b59b9aa4bf00f8c2821e5fbd875a34c13b1a88cc9055dd514bc86c244ae52d2ad52164eeb16ff8cea9c77a57a0683587d408493ceeeeedcb29705e30a5
+  checksum: 10/fd449ca7cc15a660362482749b3726740cebb42d7fcd17dab50266c4af895bbf10f78e5c8be68e754191f3e51b3a86ff8c458616cd23e7ec2a259ca413562348
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.24.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.0-c360a7b7fc.patch":
-  version: 4.24.0
-  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.24.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.0-c360a7b7fc.patch::version=4.24.0&hash=1e814c"
+"html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch":
+  version: 4.23.2
+  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch::version=4.23.2&hash=1e814c"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
-    ansis: "npm:4.5.0"
+    ansis: "npm:4.1.0"
     enhanced-resolve: "npm:>=5.7.0"
     eta: "npm:^3.5.0"
     html-minifier-terser: "npm:^7.2.0"
   peerDependencies:
-    css-loader: ">=6.11.0"
     ejs: ">=3.1.10"
     favicons: ">=7.2.0"
     handlebars: ">=4.7.8"
@@ -30660,8 +30656,6 @@ __metadata:
     twig: ">=1.17.1"
     webpack: ">=5.81.0"
   peerDependenciesMeta:
-    css-loader:
-      optional: true
     ejs:
       optional: true
     favicons:
@@ -30684,7 +30678,7 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/a2701f032591d68653d027f62fe1831c244d9385d63ab077ea51cd414e07541b1c24314f2ecff3d790c48907137beccea8bf940e4158b485c174da9a128df345
+  checksum: 10/f713eeeb07a5563221aff034596c3baa5390812727b87d382fee1667b47998c8a5f7d065ce1085dc483a46ad16dbad9d00d35b0b459dae33e2e4af7425aaaf35
   languageName: node
   linkType: hard
 
@@ -35832,7 +35826,7 @@ __metadata:
     gulp-sass: "npm:^5.1.0"
     gulp-sourcemaps: "npm:^3.0.0"
     he: "npm:^1.2.0"
-    html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.24.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.0-c360a7b7fc.patch"
+    html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch"
     http-server: "npm:^14.1.1"
     https-browserify: "npm:^1.0.0"
     human-standard-token-abi: "npm:^2.0.0"
