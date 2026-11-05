@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import { getCleanAppState } from '../../helpers';
 import ExtensionUpdateTakeover from '../pages/dialog/extension-update-takeover';
 import HeaderNavbar from '../pages/home/header-navbar';
 import PrivacySettings from '../pages/settings/privacy-settings';
@@ -41,4 +42,25 @@ export async function openBasicFunctionalityModal(
   await privacySettings.checkPageIsLoaded();
   await privacySettings.toggleBasicFunctionality();
   await privacySettings.checkBasicFunctionalityModalIsDisplayed();
+}
+
+/**
+ * Waits until a remote feature flag value has reached the UI state.
+ *
+ * @param driver - The webdriver instance.
+ * @param name - Remote feature flag name.
+ * @param value - Expected flag value.
+ */
+export async function waitForRemoteFeatureFlag(
+  driver: Driver,
+  name: string,
+  value: unknown,
+): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return uiState?.metamask?.remoteFeatureFlags?.[name] === value;
+    },
+    { interval: 500, timeout: driver.timeout },
+  );
 }
