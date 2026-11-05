@@ -13,8 +13,8 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
 import { twMerge } from '@metamask/design-system-react';
 import {
-  IconName as LegacyIconName,
-  Text as LegacyText,
+  IconName,
+  Text,
   ButtonLink,
 } from '../../../components/component-library';
 import { HeroAmountInput } from '../../../components/ui/hero-amount-input';
@@ -23,12 +23,12 @@ import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
-  FontWeight as LegacyFontWeight,
-  IconColor as LegacyIconColor,
-  TextAlign as LegacyTextAlign,
+  FontWeight,
+  IconColor,
+  TextAlign,
   JustifyContent,
-  TextVariant as LegacyTextVariant,
-  TextColor as LegacyTextColor,
+  TextVariant,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   getFromTokenBalance,
@@ -269,10 +269,10 @@ export const BridgeInputGroup = ({
       <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
         {onAmountTypeToggle ? (
           <ButtonLink
-            variant={LegacyTextVariant.bodyMd}
-            color={LegacyTextColor.textAlternative}
-            endIconName={LegacyIconName.SwapVertical}
-            endIconProps={{ color: LegacyIconColor.iconAlternative }}
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            endIconName={IconName.SwapVertical}
+            endIconProps={{ color: IconColor.iconAlternative }}
             ellipsis
             style={{ textDecoration: 'none' }}
             data-testid="bridge-input-denomination-toggle"
@@ -284,29 +284,29 @@ export const BridgeInputGroup = ({
             {secondaryDisplay}
           </ButtonLink>
         ) : (
-          <LegacyText
-            variant={LegacyTextVariant.bodyMd}
-            fontWeight={LegacyFontWeight.Normal}
+          <Text
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Normal}
             color={
               isAmountReadOnly && isEstimatedReturnLow
-                ? LegacyTextColor.warningDefault
-                : LegacyTextColor.textAlternative
+                ? TextColor.warningDefault
+                : TextColor.textAlternative
             }
-            textAlign={LegacyTextAlign.End}
+            textAlign={TextAlign.End}
             ellipsis
           >
             {secondaryDisplay}
-          </LegacyText>
+          </Text>
         )}
         {!isAmountReadOnly && balanceAmount && token && (
-          <LegacyText
+          <Text
             display={Display.Flex}
             gap={1}
-            variant={LegacyTextVariant.bodyMd}
+            variant={TextVariant.bodyMd}
             color={
               isInsufficientBalance
-                ? LegacyTextColor.errorDefault
-                : LegacyTextColor.textAlternative
+                ? TextColor.errorDefault
+                : TextColor.textAlternative
             }
             style={{
               cursor: 'default',
@@ -316,23 +316,23 @@ export const BridgeInputGroup = ({
             {formattedTokenAmount}
             {onMaxButtonClick && (
               <ButtonLink
-                variant={LegacyTextVariant.bodyMd}
+                variant={TextVariant.bodyMd}
                 onClick={() => onMaxButtonClick(balanceAmount)}
               >
                 {t('max')}
               </ButtonLink>
             )}
-          </LegacyText>
+          </Text>
         )}
         {isAmountReadOnly &&
           token &&
           selectedChainId &&
           !isNativeAddress(assetReference) && (
-            <LegacyText
+            <Text
               display={Display.Flex}
               gap={1}
-              variant={LegacyTextVariant.bodyMd}
-              color={LegacyTextColor.textAlternative}
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
               onClick={() => {
                 handleAddressClick();
               }}
@@ -348,7 +348,7 @@ export const BridgeInputGroup = ({
                 truncatedEndChars: 4,
                 skipCharacterInEnd: false,
               })}
-            </LegacyText>
+            </Text>
           )}
       </Row>
     </Column>

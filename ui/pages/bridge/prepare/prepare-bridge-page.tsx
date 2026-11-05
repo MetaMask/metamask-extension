@@ -55,14 +55,11 @@ import {
   getFromTokenBalance,
   getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
-import {
-  ButtonIcon as LegacyButtonIcon,
-  IconName as LegacyIconName,
-} from '../../../components/component-library';
+import { ButtonIcon, IconName } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  IconColor as LegacyIconColor,
+  IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -586,7 +583,7 @@ const PrepareBridgePage = ({
               justifyContent: JustifyContent.center,
             }}
           >
-            <LegacyButtonIcon
+            <ButtonIcon
               iconProps={{
                 className: classnames({
                   rotate: rotateSwitchTokens,
@@ -600,8 +597,8 @@ const PrepareBridgePage = ({
               }}
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
-              iconName={LegacyIconName.SwapVertical}
-              color={LegacyIconColor.iconAlternative}
+              iconName={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
