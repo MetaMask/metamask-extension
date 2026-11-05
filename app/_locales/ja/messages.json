@@ -8398,7 +8398,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "サポートにお問い合わせ",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "現在、一部のサービスを一時的にご利用いただけません。$1または$2。",
@@ -8406,7 +8406,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "よくある質問 (FAQ)でオプションをご確認ください",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "障害が発生しています",
