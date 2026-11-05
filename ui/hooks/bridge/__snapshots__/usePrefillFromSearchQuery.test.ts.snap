@@ -1,13 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`usePrefillFromSearchQuery leaves an amount-only query in place without setting an input 1`] = `
-{
-  "fromToken": undefined,
-  "fromTokenInputValue": undefined,
-  "toToken": undefined,
-}
-`;
-
 exports[`usePrefillFromSearchQuery should not set inputs when there are no query params 1`] = `
 {
   "fromNativeBalance": undefined,
@@ -176,6 +168,14 @@ exports[`usePrefillFromSearchQuery should set src token after navigating from na
     "tokenFiatAmount": undefined,
   },
   "fromTokenInputValue": null,
+  "toToken": undefined,
+}
+`;
+
+exports[`usePrefillFromSearchQuery should unset amount 1`] = `
+{
+  "fromToken": undefined,
+  "fromTokenInputValue": undefined,
   "toToken": undefined,
 }
 `;

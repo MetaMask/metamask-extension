@@ -62,7 +62,6 @@ const fetchAssetMetadata = async (
 /**
  * This sets the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
- * The query stays on the URL. Replacing it would look like a new page to Back.
  */
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
@@ -94,8 +93,8 @@ export const usePrefillFromSearchQuery = () => {
     ReturnType<typeof fetchAssetMetadataForAssetIds>
   > | null>(null);
 
-  // Apply a given search once for this mount. Swap stays mounted across the
-  // asset picker, so returning to the same query must not overwrite edits.
+  // Only update parsed values and fetch metadata if the search params
+  // are set (once) to prevent infinite re-renders
   useEffect(() => {
     if (appliedSearch.current === search) {
       return;

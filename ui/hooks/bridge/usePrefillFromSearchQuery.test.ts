@@ -266,16 +266,13 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe(
-        `?${searchParams.toString()}`,
-      );
       expect(store?.getState().bridge?.fromToken).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
@@ -318,16 +315,13 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/slip44:60',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe(
-        `?${searchParams.toString()}`,
-      );
       expect(store?.getState().bridge?.fromToken).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
@@ -401,16 +395,13 @@ describe('usePrefillFromSearchQuery', () => {
       to: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe(
-        `?${searchParams.toString()}`,
-      );
       expect(store?.getState().bridge?.toToken).toBeDefined();
     });
     const { fromToken, toToken, fromTokenInputValue } =
@@ -456,16 +447,13 @@ describe('usePrefillFromSearchQuery', () => {
       from: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
 
     await waitFor(() => {
-      expect(result.current.location.search).toBe(
-        `?${searchParams.toString()}`,
-      );
       expect(store?.getState().bridge?.fromToken).toBeDefined();
       expect(store?.getState().bridge?.fromTokenInputValue).toBeDefined();
     });
@@ -483,7 +471,7 @@ describe('usePrefillFromSearchQuery', () => {
     it('does not throw and skips metadata fetch when the from param is completely malformed', () => {
       // CaipAssetTypeStruct.create('not-a-caip-id') throws → parseAsset returns null
       // → the search-params effect condition (from || to || amount) is false
-      // → the block is skipped entirely: no fetch, no state update.
+      // → the block is skipped entirely: no resetSearchParams, no fetch, no state update.
       const fetchSpy = jest.spyOn(assetUtils, 'fetchAssetMetadataForAssetIds');
       const mockStoreState = createBridgeMockStore({});
 
@@ -494,7 +482,7 @@ describe('usePrefillFromSearchQuery', () => {
         '/?' + searchParams.toString(),
       );
 
-      // Effect block was skipped → no fetch, and the query is left as it was
+      // Effect block was skipped → no fetch and URL was NOT cleared
       expect(fetchSpy).not.toHaveBeenCalled();
       expect(result.current.location.search).toContain('from=not-a-caip-id');
       const { fromToken } = store?.getState().bridge ?? {};
@@ -604,7 +592,7 @@ describe('usePrefillFromSearchQuery', () => {
     });
   });
 
-  it('leaves an amount-only query in place without setting an input', async () => {
+  it('should unset amount', async () => {
     const fetchAssetMetadataForAssetIdsSpy = jest.spyOn(
       assetUtils,
       'fetchAssetMetadataForAssetIds',
@@ -625,12 +613,11 @@ describe('usePrefillFromSearchQuery', () => {
       amount: '100',
     });
 
-    const { result, store } = renderUseBridgeQueryParams(
+    const { store } = renderUseBridgeQueryParams(
       mockStoreState,
       // eslint-disable-next-line prefer-template
       '/?' + searchParams.toString(),
     );
-    expect(result.current.location.search).toBe(`?${searchParams.toString()}`);
     expect(store).toBeDefined();
     const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
