@@ -23,9 +23,9 @@ const NESTED_TRACE_NAMES = new Set<string>([
   'Wallet Alignment',
 ]);
 
-function traceWithNestedFallback<T>(
+function traceWithNestedFallback<ResultType>(
   request: TraceRequest,
-  fn?: TraceCallback<T>,
+  fn?: TraceCallback<ResultType>,
 ) {
   const req = NESTED_TRACE_NAMES.has(request.name)
     ? { ...request, allowActiveSpanFallback: true }
