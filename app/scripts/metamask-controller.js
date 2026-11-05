@@ -226,6 +226,7 @@ import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   createEventBuilder,
   setParticipateInMetaMetrics,
+  trackErrorAsAnalytics,
   trackEvent,
   trackPage,
   updateEventFragment,
@@ -2695,6 +2696,7 @@ export default class MetamaskController extends EventEmitter {
       // MetaMetrics
 
       trackAnalyticsEvent: trackEvent,
+      trackErrorAsAnalytics,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
       updateEventFragment,

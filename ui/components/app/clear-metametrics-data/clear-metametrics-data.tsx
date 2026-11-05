@@ -44,7 +44,8 @@ export default function ClearMetaMetricsData({
 }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent, createEventBuilder, trackErrorAsAnalytics } =
+    useAnalytics();
 
   const closeModal = () => {
     dispatch(hideDeleteMetaMetricsDataModal());
@@ -61,11 +62,7 @@ export default function ClearMetaMetricsData({
       onDeletionSuccess?.();
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ErrorOccured)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .build({ excludeMetaMetricsId: true }),
-      );
+      trackErrorAsAnalytics(error, { source: 'clear-metametrics-data' });
     } finally {
       dispatch(hideDeleteMetaMetricsDataModal());
     }

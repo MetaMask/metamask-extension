@@ -4,6 +4,7 @@ import type {
   AnalyticsTrackingEvent,
   AnalyticsUserTraits,
   ReadonlyAnalyticsEventFragment,
+  TrackErrorAsAnalyticsOptions,
 } from '@metamask/analytics-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import type { Json } from '@metamask/utils';
@@ -392,6 +393,30 @@ export function trackEvent(
     );
   } catch (error) {
     sentryCaptureException(error);
+  }
+}
+
+/**
+ * Report a caught error as an `Error Occurred` analytics event.
+ *
+ * Delegates to `AnalyticsController:trackErrorAsAnalytics`, which applies
+ * sanitization, sampling, deduplication, and a per-session cap.
+ *
+ * @param error - The caught value to report.
+ * @param options - Source and optional volume controls.
+ */
+export function trackErrorAsAnalytics(
+  error: unknown,
+  options: TrackErrorAsAnalyticsOptions,
+): void {
+  try {
+    getMessenger().call(
+      'AnalyticsController:trackErrorAsAnalytics',
+      error,
+      options,
+    );
+  } catch (error_) {
+    sentryCaptureException(error_);
   }
 }
 

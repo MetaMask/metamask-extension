@@ -15,6 +15,7 @@ export {
   identify,
   setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
+  trackErrorAsAnalytics,
   trackEvent,
   trackPage,
   updateEventFragment,

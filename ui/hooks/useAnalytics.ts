@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type { TrackErrorAsAnalyticsOptions } from '@metamask/analytics-controller';
 import {
   createEventBuilder,
   type AnalyticsEvent,
@@ -16,7 +17,10 @@ import {
   getConsentDecisionMade,
   getOptedIn,
 } from '../selectors';
-import { trackAnalyticsEvent } from '../store/actions';
+import {
+  trackAnalyticsEvent,
+  trackErrorAsAnalytics as trackErrorAsAnalyticsAction,
+} from '../store/actions';
 import { useSegmentContext } from './useSegmentContext';
 
 type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
@@ -28,6 +32,10 @@ type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
 type UseAnalyticsResult = {
   createEventBuilder: typeof createEventBuilder;
   trackEvent: (built: AnalyticsEvent) => Promise<void>;
+  trackErrorAsAnalytics: (
+    error: unknown,
+    options: TrackErrorAsAnalyticsOptions,
+  ) => Promise<void>;
 };
 
 export function useAnalytics(): UseAnalyticsResult {
@@ -59,11 +67,30 @@ export function useAnalytics(): UseAnalyticsResult {
     [canMaybeTrackLater, canTrackImmediately, context],
   );
 
+  const trackErrorAsAnalytics = useCallback(
+    async (
+      error: unknown,
+      options: TrackErrorAsAnalyticsOptions,
+    ): Promise<void> => {
+      if (!canTrackImmediately && !canMaybeTrackLater) {
+        return;
+      }
+
+      try {
+        await trackErrorAsAnalyticsAction(error, options);
+      } catch {
+        // Swallow background RPC failures. Error reporting must not break UI.
+      }
+    },
+    [canMaybeTrackLater, canTrackImmediately],
+  );
+
   return useMemo(
     () => ({
       createEventBuilder,
       trackEvent,
+      trackErrorAsAnalytics,
     }),
-    [trackEvent],
+    [trackEvent, trackErrorAsAnalytics],
   );
 }

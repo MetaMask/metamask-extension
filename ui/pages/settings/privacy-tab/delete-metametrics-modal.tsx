@@ -38,7 +38,8 @@ export default function DeleteMetametricsModal({
   onError,
 }: Readonly<DeleteMetametricsModalProps>) {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent, createEventBuilder, trackErrorAsAnalytics } =
+    useAnalytics();
 
   const deleteMetaMetricsData = async () => {
     try {
@@ -51,11 +52,7 @@ export default function DeleteMetametricsModal({
       onSuccess();
     } catch (error) {
       captureException(error);
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ErrorOccured)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .build({ excludeMetaMetricsId: true }),
-      );
+      trackErrorAsAnalytics(error, { source: 'delete-metametrics-modal' });
       onError();
     } finally {
       onClose();

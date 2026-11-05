@@ -11,6 +11,7 @@ import type {
   AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerSetMarketingCampaignCookieIdAction,
+  AnalyticsControllerTrackErrorAsAnalyticsAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
   AnalyticsControllerUpdateEventFragmentAction,
@@ -43,6 +44,7 @@ export type AnalyticsControllerInitMessengerActions =
   | AnalyticsControllerSetMarketingCampaignCookieIdAction
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
+  | AnalyticsControllerTrackErrorAsAnalyticsAction
   | AnalyticsControllerIdentifyAction
   | AnalyticsControllerTrackViewAction
   | AnalyticsControllerOptInAction
@@ -100,6 +102,7 @@ export function getAnalyticsControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'AnalyticsController:getState',
       'AnalyticsController:trackEvent',
+      'AnalyticsController:trackErrorAsAnalytics',
       'AnalyticsController:identify',
       'AnalyticsController:trackView',
       'AnalyticsController:optIn',
