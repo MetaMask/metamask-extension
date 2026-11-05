@@ -16,7 +16,6 @@ import { MetaMetricsConsentContainer } from '../../components/app/metametrics-co
 import { RecoveryPhraseReminderContainer } from '../../components/app/recovery-phrase-reminder';
 import { ImportedTokensNotificationContainer } from '../../components/app/imported-tokens-notification/imported-tokens-notification-container';
 import { MultiRpcEditModalContainer } from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal-container';
-import { UpdateModalContainer } from '../../components/app/update-modal/update-modal-container';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import ConnectedSites from '../connected-sites';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -279,7 +278,6 @@ export default function Home() {
         <MetaMetricsConsentContainer />
         <PasswordOutdatedModalContainer />
         <MultiRpcEditModalContainer />
-        <UpdateModalContainer />
         <RecoveryPhraseReminderContainer />
         <TermsOfUsePopupContainer />
         <ShieldEntryModalContainer />
