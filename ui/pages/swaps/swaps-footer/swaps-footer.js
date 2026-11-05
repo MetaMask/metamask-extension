@@ -49,7 +49,7 @@ export default function SwapsFooter({
         <div
           className="swaps-footer__bottom-text"
           onClick={() =>
-            global.platform.openTab({ url: 'https://metamask.io/terms.html' })
+            global.platform.openTab({ url: 'https://metamask.com/terms.html' })
           }
         >
           {t('termsOfService')}
