@@ -8,6 +8,10 @@ import { useSelector } from 'react-redux';
 
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { getCustomNonceValue } from '../../../../selectors';
+import {
+  isMoneyKeyringAddress,
+  type MoneyAccountState,
+} from '../../../../selectors/money-account';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
@@ -40,6 +44,9 @@ export function useTransactionConfirm() {
     TransactionType.moneyAccountWithdraw,
   ]);
   const { prepareWithdrawTransaction } = useMoneyAccountWithdrawConfirm();
+  const isFromMoneyKeyring = useSelector((state: MoneyAccountState) =>
+    isMoneyKeyringAddress(state, transactionMeta?.txParams?.from),
+  );
   const payingAccount = useTransactionPayingAccount();
   const isPayingWithHardwareWallet = useIsHardwareWalletAccount(payingAccount);
 
@@ -116,16 +123,25 @@ export function useTransactionConfirm() {
     // on fresh installs will not show as sponsored even if they were because
     // this is not easily observable onchain for all cases.
     //
-    // Money Account withdrawals are sponsored on Monad by design (the money
-    // account has no native MON). `useIsGaslessSupported` can disagree with
-    // the 7702 publish hook; clearing the flag here made the hook skip and
-    // published the parent `execute()` instead — which mines and moves
-    // nothing when that parent is still the empty placeholder.
-    txToApprove.isGasFeeSponsored = isMoneyAccountWithdraw
-      ? Boolean(transactionMeta.isGasFeeSponsored) && !isSponsorshipOptedOut
-      : isGaslessSupported &&
-        transactionMeta.isGasFeeSponsored &&
-        !isSponsorshipOptedOut;
+    // Money Account transactions (withdrawals and deposits, sent `from` a
+    // Money keyring account) are sponsored on Monad by design: the money
+    // account has no native MON and its keyring cannot `signTransaction`.
+    // They ignore both `useIsGaslessSupported` (which can disagree with the
+    // 7702 publish hook) and the per-chain sponsorship opt-out (which the user
+    // sets on unrelated confirmations and cannot see here). Clearing the flag
+    // would fall back to local signing and fail in KeyringController.
+    const isSponsoredMoneyKeyringTransaction =
+      isFromMoneyKeyring && Boolean(transactionMeta.isGasFeeSponsored);
+
+    // Money Account withdrawals not yet identified by keyring (e.g. keyring
+    // state not loaded) keep the previous carve-out from `isGaslessSupported`.
+    txToApprove.isGasFeeSponsored =
+      isSponsoredMoneyKeyringTransaction ||
+      (isMoneyAccountWithdraw
+        ? Boolean(transactionMeta.isGasFeeSponsored) && !isSponsorshipOptedOut
+        : isGaslessSupported &&
+          transactionMeta.isGasFeeSponsored &&
+          !isSponsorshipOptedOut);
 
     // Revert the controller's `isExternalSign` flag when this account cannot
     // use an external relay — i.e. gasless is unsupported for the account/chain
@@ -139,16 +155,17 @@ export function useTransactionConfirm() {
     // catches the publish, an unsigned/empty payload reaches
     // `eth_sendRawTransaction` and is rejected by the node.
     //
-    // Sponsored money-account withdrawals skip local signing and must stay
-    // externally signed so the 7702 relay publishes them, even when
-    // `useIsGaslessSupported` is false (same reason we keep `isGasFeeSponsored`
-    // above).
+    // Money keyring transactions skip local signing and must stay externally
+    // signed so the 7702 relay publishes them, even when
+    // `useIsGaslessSupported` is false or the user opted out of sponsorship
+    // (same reason we keep `isGasFeeSponsored` above).
     const shouldKeepSponsoredMoneyAccountWithdraw =
       isMoneyAccountWithdraw &&
       Boolean(transactionMeta.isGasFeeSponsored) &&
       !isSponsorshipOptedOut;
     const shouldClearExternalSign =
       transactionMeta.isExternalSign &&
+      !isFromMoneyKeyring &&
       !shouldKeepSponsoredMoneyAccountWithdraw &&
       (!isGaslessSupported ||
         isSponsorshipOptedOut ||
@@ -204,6 +221,7 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     isAmountPending,
+    isFromMoneyKeyring,
     isGaslessSupported,
     isGaslessSupportedSTX,
     isMoneyAccountWithdraw,

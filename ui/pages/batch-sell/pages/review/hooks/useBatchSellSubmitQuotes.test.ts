@@ -265,7 +265,6 @@ describe('useBatchSellSubmitQuotes', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith('/home?tab=activity', {
-        state: { stayOnHomePage: true },
         replace: true,
       });
     });
@@ -319,7 +318,6 @@ describe('useBatchSellSubmitQuotes', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith('/home?tab=activity', {
-        state: { stayOnHomePage: true },
         replace: true,
       });
     });
