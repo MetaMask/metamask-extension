@@ -248,9 +248,7 @@ export const MoneyAccountBalance = () => {
     trackSurfaceClicked({
       redirectTarget: MoneyScreenName.MoneyHome,
     });
-    transitionForward(() =>
-      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
-    );
+    transitionForward(() => navigate(MONEY_HOME_ROUTE));
   };
 
   const handleSummaryClick = (event: React.MouseEvent<HTMLDivElement>) => {
