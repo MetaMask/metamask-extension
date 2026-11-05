@@ -1754,7 +1754,6 @@
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -3154,6 +3153,7 @@
         "console.error": true
       },
       "packages": {
+        "@metamask/base-data-service": true,
         "@metamask/profile-metrics-controller>@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-metrics-controller>@metamask/polling-controller": true,
@@ -8162,7 +8162,8 @@
     },
     "@metamask/profile-metrics-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/transaction-controller>uuid": {
