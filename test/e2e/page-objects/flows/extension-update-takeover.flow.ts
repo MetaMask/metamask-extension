@@ -1,5 +1,6 @@
 import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
+import { getCleanAppState } from '../../helpers';
 import ExtensionUpdateTakeover from '../pages/dialog/extension-update-takeover';
 import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
@@ -50,6 +51,27 @@ export async function openBasicFunctionalityModal(
 }
 
 /**
+ * Waits until a remote feature flag value has reached the UI state.
+ *
+ * @param driver - The webdriver instance.
+ * @param name - Remote feature flag name.
+ * @param value - Expected flag value.
+ */
+export async function waitForRemoteFeatureFlag(
+  driver: Driver,
+  name: string,
+  value: unknown,
+): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return uiState?.metamask?.remoteFeatureFlags?.[name] === value;
+    },
+    { interval: 500, timeout: driver.timeout },
+  );
+}
+
+/**
  * Triggers a dapp request from the test dapp and switches to the notification
  * window it opens.
  *
@@ -76,13 +98,6 @@ export async function requestDappConfirmation(
 }
 
 /**
- * Checks the pending confirmation is rendered and still actionable by
- * rejecting it and verifying the test dapp receives the rejection.
- *
- * @param driver - The webdriver instance, focused on the notification window.
- * @param type - The confirmation type requested by `requestDappConfirmation`.
- */
-/**
  * After Update from a notification window, checks the test dapp received a
  * user-rejected response for the personal sign it requested.
  *
@@ -95,6 +110,13 @@ export async function checkPersonalSignWasRejected(
   await testDapp.checkFailedPersonalSign('Error: User rejected the request.');
 }
 
+/**
+ * Checks the pending confirmation is rendered and still actionable by
+ * rejecting it and verifying the test dapp receives the rejection.
+ *
+ * @param driver - The webdriver instance, focused on the notification window.
+ * @param type - The confirmation type requested by `requestDappConfirmation`.
+ */
 export async function rejectDappConfirmation(
   driver: Driver,
   type: DappConfirmationType,
@@ -107,8 +129,7 @@ export async function rejectDappConfirmation(
       button: 'cancel',
       waitUntil: 'windowClose',
     });
-    const testDapp = new TestDapp(driver);
-    await testDapp.checkFailedPersonalSign('Error: User rejected the request.');
+    await checkPersonalSignWasRejected(driver);
     return;
   }
   const confirmation = new TransactionConfirmation(driver);

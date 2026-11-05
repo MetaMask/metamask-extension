@@ -16,6 +16,7 @@ import {
   openTakeoverInNewExtensionTab,
   rejectDappConfirmation,
   requestDappConfirmation,
+  waitForRemoteFeatureFlag,
 } from '../../page-objects/flows/extension-update-takeover.flow';
 import { version } from '../../../../package.json';
 
@@ -178,6 +179,11 @@ describe('Extension update takeover', function (this: Suite) {
 
         await openBasicFunctionalityModal(driver);
         releaseFlags();
+        await waitForRemoteFeatureFlag(
+          driver,
+          'extensionUpdatePromptMinimumVersion',
+          minimumVersion,
+        );
         await takeover.checkPageIsNotPresent();
 
         await new PrivacySettings(driver).cancelBasicFunctionalityModal();
@@ -186,7 +192,7 @@ describe('Extension update takeover', function (this: Suite) {
     );
   });
 
-  it('opens a single updating tab and reloads the extension', async function () {
+  it('ignores a second Update click and opens a single updating tab', async function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,

@@ -167,7 +167,7 @@ describe('ExtensionUpdateTakeover', () => {
     });
   });
 
-  it('tracks one view per variant and includes prompt_type on actions', async () => {
+  it('tracks one view per variant with the existing force-upgrade events', async () => {
     const { rerender } = render(
       <ExtensionUpdateTakeover promptType="versionUpdate" />,
     );
@@ -193,13 +193,19 @@ describe('ExtensionUpdateTakeover', () => {
       screen.getByTestId('extension-update-takeover-dismiss-button'),
     );
 
-    const promptTypes = mockTrackEvent.mock.calls.map(
-      ([event]) => event.properties.prompt_type,
-    );
-    expect(promptTypes).toEqual([
-      'version_update',
-      'unsupported_version',
-      'unsupported_version',
+    expect(mockTrackEvent.mock.calls.map(([event]) => event)).toEqual([
+      {
+        name: MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+        properties: {},
+      },
+      {
+        name: MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+        properties: {},
+      },
+      {
+        name: MetaMetricsEventName.ForceUpgradeClickedUpdateToLatestVersion,
+        properties: {},
+      },
     ]);
   });
 

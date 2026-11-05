@@ -31,11 +31,6 @@ type ExtensionUpdateTakeoverProps = {
   promptType: VisiblePromptType;
 };
 
-const PROMPT_TYPE_PROPERTY = {
-  unsupportedVersion: 'unsupported_version',
-  versionUpdate: 'version_update',
-} as const;
-
 /**
  * Full-screen extension update takeover. The modal overlay blocks the page
  * behind it. It has no close icon, and Escape and outside clicks do not
@@ -53,7 +48,6 @@ export function ExtensionUpdateTakeover({
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const viewedPromptType = useRef<VisiblePromptType | null>(null);
 
-  const promptTypeProperty = PROMPT_TYPE_PROPERTY[promptType];
   const isUnsupported = promptType === 'unsupportedVersion';
 
   useEffect(() => {
@@ -66,14 +60,9 @@ export function ExtensionUpdateTakeover({
         MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
       )
         .addCategory(MetaMetricsEventCategory.App)
-        .addProperties({
-          // Segment property names are snake_case.
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          prompt_type: promptTypeProperty,
-        })
         .build(),
     );
-  }, [createEventBuilder, promptType, promptTypeProperty, trackEvent]);
+  }, [createEventBuilder, promptType, trackEvent]);
 
   const handleUpdate = useCallback(async () => {
     if (isBusy) {
@@ -88,11 +77,6 @@ export function ExtensionUpdateTakeover({
           MetaMetricsEventName.ForceUpgradeClickedUpdateToLatestVersion,
         )
           .addCategory(MetaMetricsEventCategory.App)
-          .addProperties({
-            // Segment property names are snake_case.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            prompt_type: promptTypeProperty,
-          })
           .build(),
       );
       // A notification window exists to show a confirmation. Reject it before
@@ -106,7 +90,7 @@ export function ExtensionUpdateTakeover({
       log.error('[ExtensionUpdateTakeover] update failed', error);
       setIsBusy(false);
     }
-  }, [createEventBuilder, isBusy, promptTypeProperty, trackEvent]);
+  }, [createEventBuilder, isBusy, trackEvent]);
 
   const handleDismiss = useCallback(async () => {
     if (isBusy) {
@@ -117,11 +101,6 @@ export function ExtensionUpdateTakeover({
       trackEvent(
         createEventBuilder(MetaMetricsEventName.ForceUpgradeSkipped)
           .addCategory(MetaMetricsEventCategory.App)
-          .addProperties({
-            // Segment property names are snake_case.
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            prompt_type: promptTypeProperty,
-          })
           .build(),
       );
       await setUpdateModalLastDismissedAt(Date.now());
@@ -129,7 +108,7 @@ export function ExtensionUpdateTakeover({
       log.error('[ExtensionUpdateTakeover] dismissal failed', error);
       setIsBusy(false);
     }
-  }, [createEventBuilder, isBusy, promptTypeProperty, trackEvent]);
+  }, [createEventBuilder, isBusy, trackEvent]);
 
   return (
     <Modal
