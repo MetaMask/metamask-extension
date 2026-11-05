@@ -55,13 +55,25 @@ export function ExtensionUpdateTakeover({
       return;
     }
     viewedPromptType.current = promptType;
-    trackEvent(
-      createEventBuilder(
-        MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
-      )
-        .addCategory(MetaMetricsEventCategory.App)
-        .build(),
-    );
+
+    const trackView = async () => {
+      try {
+        await trackEvent(
+          createEventBuilder(
+            MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+          )
+            .addCategory(MetaMetricsEventCategory.App)
+            .build(),
+        );
+      } catch (error) {
+        log.error('[ExtensionUpdateTakeover] view tracking failed', error);
+      }
+    };
+
+    // The effect cannot await this. The rejection is handled inside trackView.
+    trackView().catch((error: unknown) => {
+      log.error('[ExtensionUpdateTakeover] view tracking failed', error);
+    });
   }, [createEventBuilder, promptType, trackEvent]);
 
   const handleUpdate = useCallback(async () => {
@@ -98,7 +110,7 @@ export function ExtensionUpdateTakeover({
     }
     setIsBusy(true);
     try {
-      trackEvent(
+      await trackEvent(
         createEventBuilder(MetaMetricsEventName.ForceUpgradeSkipped)
           .addCategory(MetaMetricsEventCategory.App)
           .build(),
