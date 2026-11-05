@@ -262,7 +262,7 @@ export const BridgeInputGroup = ({
         />
       </Row>
 
-      <Row style={{ height: 24 }}>
+      <Row className="h-6">
         {onAmountTypeToggle ? (
           <TextButton
             className="max-w-full hover:no-underline"
