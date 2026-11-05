@@ -373,6 +373,28 @@ module.exports = defineConfig([
   },
 
   /**
+   * Modal primitives must share focus and dismissal ownership across features.
+   */
+  {
+    files: ['ui/**/*.{js,jsx,ts,tsx}'],
+    ignores: ['ui/components/app/modal-layer/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@metamask/design-system-react',
+              importNames: ['Modal', 'ModalContent', 'ModalFocus', 'Popover'],
+              message:
+                'Import from #ui/components/app/modal-layer to share focus and dismissal ownership.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  /**
    * React-specific code
    *
    * Code in this category contains JSX and hence needs to be run through the

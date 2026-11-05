@@ -4,6 +4,7 @@
 `ModalFocus` from `#ui/components/app/modal-layer`; keep importing the other
 visual parts (`ModalOverlay`, `ModalHeader`, `ModalBody`, `ModalFooter`) from
 `@metamask/design-system-react`.
+Lint enforces this entry point for modal primitives and floating popovers.
 
 ```tsx
 <Modal isOpen={isOpen} onClose={onClose} priority={ModalPriority.Urgent}>
