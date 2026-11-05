@@ -142,7 +142,9 @@ describe('ExtensionUpdateTakeover', () => {
     fireEvent.click(dismissButton);
     fireEvent.click(dismissButton);
 
-    expect(setUpdateModalLastDismissedAt).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(setUpdateModalLastDismissedAt).toHaveBeenCalledTimes(1);
+    });
     rejectDismissal(new Error('persist failed'));
 
     await waitFor(() => {
