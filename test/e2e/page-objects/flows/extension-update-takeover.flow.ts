@@ -101,13 +101,34 @@ export async function requestDappConfirmation(
  * After Update from a notification window, checks the test dapp received a
  * user-rejected response for the personal sign it requested.
  *
+ * Switches windows through WebDriver handles. The extension reload drops the
+ * background socket that `switchToWindowWithTitle` uses.
+ *
  * @param driver - The webdriver instance. It may be focused on the updating tab.
  */
 export async function checkPersonalSignWasRejected(
   driver: Driver,
 ): Promise<void> {
-  const testDapp = new TestDapp(driver);
-  await testDapp.checkFailedPersonalSign('Error: User rejected the request.');
+  let dappHandle = '';
+  await driver.wait(async () => {
+    for (const handle of await driver.driver.getAllWindowHandles()) {
+      try {
+        await driver.driver.switchTo().window(handle);
+        if ((await driver.driver.getTitle()) === WINDOW_TITLES.TestDApp) {
+          dappHandle = handle;
+          return true;
+        }
+      } catch {
+        // Windows close while the extension reloads.
+      }
+    }
+    return false;
+  });
+  await driver.driver.switchTo().window(dappHandle);
+  await driver.waitForSelector({
+    css: '#personalSign',
+    text: 'Error: User rejected the request.',
+  });
 }
 
 /**
