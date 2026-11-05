@@ -386,8 +386,8 @@ export const MultichainTriggeredAddressRowsList = ({
           type="button"
           className="inline-flex border-0 bg-transparent p-0 text-inherit"
           style={{ anchorName } as React.CSSProperties}
-          // eslint-disable-next-line react/no-unknown-property -- interestfor is a native HTML attribute
-          interestfor={useNativeInterest ? popoverId : undefined}
+          // @ts-expect-error React types do not include interestfor yet.
+          interestfor={useNativeInterest ? popoverId : undefined} // eslint-disable-line react/no-unknown-property
           onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
           onMouseLeave={
             useHoverFallback ? scheduleHideFallbackPopover : undefined
@@ -413,7 +413,7 @@ export const MultichainTriggeredAddressRowsList = ({
         style: {
           ...child.props.style,
           anchorName,
-        },
+        } as React.CSSProperties,
         ...(useNativeCommand
           ? {
               commandfor: popoverId,
@@ -447,6 +447,7 @@ export const MultichainTriggeredAddressRowsList = ({
       <div
         ref={popoverRef}
         id={popoverId}
+        // @ts-expect-error React types do not include popover yet.
         popover="auto"
         className="rounded-lg border border-border-muted bg-background-elevated2 p-2 inset-auto"
         onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
