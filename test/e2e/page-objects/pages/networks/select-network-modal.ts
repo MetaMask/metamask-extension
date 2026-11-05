@@ -188,9 +188,12 @@ class SelectNetworkModal {
 
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.networkListItemByName(networkName),
-    );
+    // After onboarding the popular-network list is long; non-EVM rows (e.g.
+    // Stellar) sit below the fold and are not "visible" until scrolled.
+    const locator = this.networkListItemByName(networkName);
+    const element = await this.driver.findElement(locator);
+    await this.driver.scrollToElement(element);
+    await this.driver.clickElementAndWaitToDisappear(locator);
   }
 }
 
