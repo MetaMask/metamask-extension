@@ -50,7 +50,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             GBP
@@ -763,7 +763,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             $
@@ -910,7 +910,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             $
@@ -1081,7 +1081,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             $
@@ -1252,7 +1252,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             $
@@ -1399,7 +1399,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             $
@@ -1863,7 +1863,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             $
@@ -2034,7 +2034,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
             style="font-size: 100px;"
           >
             GBP

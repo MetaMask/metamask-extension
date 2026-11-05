@@ -229,6 +229,59 @@ describe('HeroAmountInput', () => {
     });
   });
 
+  it('gives the prefix probe the prefix weight classes', () => {
+    render(<HeroAmountInput prefix="KRW" value="1" />);
+
+    const probe = screen.getByText('KRW', { selector: '[aria-hidden="true"]' });
+    expect(probe).toHaveClass('font-hero', 'font-bold', 'md:font-medium');
+  });
+
+  describe('prefix width', () => {
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    it('remeasures the prefix when the probe resizes', () => {
+      let probeWidth = 0;
+      const originalRect = HTMLElement.prototype.getBoundingClientRect;
+      HTMLElement.prototype.getBoundingClientRect = function (
+        this: HTMLElement,
+      ) {
+        const isProbe = this.getAttribute('aria-hidden') === 'true';
+        const width = isProbe && this.textContent === 'KRW' ? probeWidth : 0;
+        return { ...originalRect.call(this), width };
+      };
+
+      try {
+        render(<HeroAmountInput prefix="KRW" value="12345678901234567890" />);
+        const probe = screen.getByText('KRW', {
+          selector: '[aria-hidden="true"]',
+        });
+        // Estimated prefix: 3 * 0.43em, which picks 32px.
+        expect(screen.getByTestId('hero-amount-input-input')).toHaveStyle({
+          fontSize: '32px',
+        });
+
+        // The probe now measures 170px at 100px, so the prefix is 1.7em and
+        // 32px no longer fits the 328px fallback row.
+        probeWidth = 170;
+        act(() => resizeObserver.resize(0, probe));
+
+        expect(screen.getByTestId('hero-amount-input-input')).toHaveStyle({
+          fontSize: '24px',
+        });
+      } finally {
+        HTMLElement.prototype.getBoundingClientRect = originalRect;
+      }
+    });
+  });
+
   describe('row width', () => {
     let resizeObserver: ResizeObserverMock;
 

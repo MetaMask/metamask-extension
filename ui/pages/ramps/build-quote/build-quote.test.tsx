@@ -248,14 +248,21 @@ describe('RampsBuildQuoteScreen', () => {
       );
       act(() => resizeObserver.resize(328));
       const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
 
       for (const value of ['1', '1234', '1234567', '1234567890']) {
         fireEvent.change(amountInput, { target: { value } });
       }
 
       expect(amountInput).toHaveStyle({ fontSize: '60px' });
-      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
-      expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
       expect(resizeObserver.disconnect).not.toHaveBeenCalled();
     });
   });

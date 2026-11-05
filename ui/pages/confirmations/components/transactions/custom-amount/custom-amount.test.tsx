@@ -155,6 +155,9 @@ describe('CustomAmount', () => {
       );
       act(() => resizeObserver.resize(600));
       const input = screen.getByTestId('custom-amount-input');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
 
       for (const value of ['1', '1234', '1234567', '1234567.89']) {
         fireEvent.change(input, { target: { value } });
@@ -162,8 +165,12 @@ describe('CustomAmount', () => {
 
       expect(input).toHaveValue('1234567.89');
       expect(input).toHaveStyle({ fontSize: '88px' });
-      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
-      expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
       expect(resizeObserver.disconnect).not.toHaveBeenCalled();
     });
   });

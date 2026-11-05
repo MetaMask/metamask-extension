@@ -71,7 +71,8 @@ export function useHeroAmountRowWidth(): [
 /**
  * Width of the prefix in em, measured from a fixed-size probe so the result
  * does not depend on the font size being chosen. Remeasured when the probe
- * mounts and when web fonts finish loading.
+ * mounts, when web fonts finish loading, and when the probe resizes, such as
+ * when its weight changes at the md breakpoint.
  *
  * The probe is absent while the loading skeleton is showing. Holding the
  * element in state retriggers this effect when the skeleton gives way to the
@@ -119,8 +120,16 @@ export function useHeroAmountPrefixWidthEm(
         }
       })
       .catch(() => undefined);
+    // The probe's width changes when its weight switches at the md breakpoint,
+    // so observing it remeasures without a media query.
+    const observer =
+      typeof ResizeObserver === 'undefined'
+        ? undefined
+        : new ResizeObserver(() => measure());
+    observer?.observe(probe);
     return () => {
       cancelled = true;
+      observer?.disconnect();
     };
   }, [estimate, prefix, probe]);
 
