@@ -7704,7 +7704,8 @@
     },
     "@metamask/assets-controllers>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/base-data-service>uuid": {
@@ -7714,7 +7715,8 @@
     },
     "@metamask/bridge-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/bridge-status-controller>uuid": {
