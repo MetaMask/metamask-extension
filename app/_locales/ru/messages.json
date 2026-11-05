@@ -4426,9 +4426,6 @@
   "getDollarMore": {
     "message": "Получите еще $1"
   },
-  "getTheNewestFeatures": {
-    "message": "Получите новейшие функции"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Подготовьте свой кошелек к использованию web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12617,9 +12614,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "Этот сайт запрашивает обновление URL вашей сети по умолчанию. Вы можете редактировать настройки по умолчанию и информацию о сети в любое время."
   },
-  "updateInformation": {
-    "message": "Мы сделали ваш кошелек безопаснее и удобнее и добавили несколько новых функций. Обновите сейчас, чтобы оставаться под защитой и использовать наши последние улучшения."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Обновить $1",
     "description": "$1 represents network name"
@@ -12633,9 +12627,6 @@
   "updateRpc": {
     "message": "Обновить RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Обновить до последней версии"
   },
   "updatedRpcForNetworks": {
     "message": "Обновлены сетевые RPC"

@@ -4426,9 +4426,6 @@
   "getDollarMore": {
     "message": "再额外获取 $1"
   },
-  "getTheNewestFeatures": {
-    "message": "获取最新功能"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "准备好钱包以便使用 Web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12623,9 +12620,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "此网站正在请求更新您的默认网络 URL。您可以随时编辑默认值和网络信息。"
   },
-  "updateInformation": {
-    "message": "我们已对钱包进行全方位升级，安全性更高、运行更流畅，并新增多项功能。立即更新，即可获得最新防护措施并体验最新优化功能。"
-  },
   "updateNetworkConfirmationTitle": {
     "message": "更新 $1",
     "description": "$1 represents network name"
@@ -12639,9 +12633,6 @@
   "updateRpc": {
     "message": "更新 RPC（远程过程调用）",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "更新至最新版本"
   },
   "updatedRpcForNetworks": {
     "message": "网络 RPC（远程过程调用）已更新"

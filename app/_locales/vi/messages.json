@@ -4430,9 +4430,6 @@
   "getDollarMore": {
     "message": "Nhận thêm $1"
   },
-  "getTheNewestFeatures": {
-    "message": "Nhận các tính năng mới nhất"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Chuẩn bị ví của bạn để sử dụng web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12631,9 +12628,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "Trang web này đang yêu cầu cập nhật URL mạng mặc định của bạn. Bạn có thể chỉnh sửa thông tin mặc định và mạng bất cứ lúc nào."
   },
-  "updateInformation": {
-    "message": "Chúng tôi đã giúp ví của bạn trở nên an toàn hơn, hoạt động trơn tru hơn và bổ sung một số tính năng mới. Hãy cập nhật ngay để được bảo vệ và trải nghiệm các cải tiến mới nhất."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Cập nhật $1",
     "description": "$1 represents network name"
@@ -12647,9 +12641,6 @@
   "updateRpc": {
     "message": "Cập nhật RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Cập nhật lên phiên bản mới nhất"
   },
   "updatedRpcForNetworks": {
     "message": "Đã cập nhật RPC mạng"

@@ -4430,9 +4430,6 @@
   "getDollarMore": {
     "message": "Obtén $1 más"
   },
-  "getTheNewestFeatures": {
-    "message": "Accede a las funciones más recientes"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Prepara tu billetera para usar web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12631,9 +12628,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "Este sitio solicita actualizar la URL de su red predeterminada. Puede editar los valores predeterminados y la información de la red en cualquier momento."
   },
-  "updateInformation": {
-    "message": "Hemos mejorado la seguridad y la fluidez de tu billetera, y hemos añadido nuevas funciones. Actualiza ahora para mantenerte protegido y disfrutar de nuestras últimas mejoras."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Actualizar $1",
     "description": "$1 represents network name"
@@ -12647,9 +12641,6 @@
   "updateRpc": {
     "message": "Actualizar RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Actualizar a la última versión"
   },
   "updatedRpcForNetworks": {
     "message": "RPC de red actualizadas"
