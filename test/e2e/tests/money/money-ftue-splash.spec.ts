@@ -3,10 +3,8 @@ import { withFixtures } from '../../helpers';
 import type { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import BottomNavBar from '../../page-objects/pages/home/bottom-nav-bar-page';
-import MoneyFtueSplashPage from '../../page-objects/pages/money/money-ftue-splash-page';
 import MoneyHomePage from '../../page-objects/pages/money/money-home-page';
-import { login } from '../../page-objects/flows/login.flow';
-import { loginAndOpenMoneyHome } from '../../page-objects/flows/money-account-deposit.flow';
+import { loginAndOpenMoneyFtueSplash } from '../../page-objects/flows/money-account-deposit.flow';
 import { getMoneyAccountDepositConfig } from '../confirmations/metamask-pay/helpers';
 
 /**
@@ -14,8 +12,6 @@ import { getMoneyAccountDepositConfig } from '../confirmations/metamask-pay/help
  * interaction, and the seen flag survives a UI reload.
  */
 describe('Money Account FTUE', function (this: Suite) {
-  this.timeout(180_000);
-
   it('shows the splash only on the first Money tab visit', async function () {
     await withFixtures(
       getMoneyAccountDepositConfig({
@@ -29,16 +25,7 @@ describe('Money Account FTUE', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await login(driver, {
-          localNode: localNodes[0],
-          validateBalance: false,
-        });
-        const bottomNavBar = new BottomNavBar(driver);
-        await bottomNavBar.checkPageIsLoaded();
-        await bottomNavBar.clickMoney({ assertRoute: false });
-
-        const splash = new MoneyFtueSplashPage(driver);
-        await splash.checkPageIsLoaded();
+        const splash = await loginAndOpenMoneyFtueSplash(driver, localNodes[0]);
         await splash.clickStartEarning();
 
         const moneyHomePage = new MoneyHomePage(driver);
@@ -48,6 +35,7 @@ describe('Money Account FTUE', function (this: Suite) {
         // Reload so the persisted seen flag is read back from background
         // state, then revisit Money through the tab.
         await driver.navigate();
+        const bottomNavBar = new BottomNavBar(driver);
         await bottomNavBar.checkPageIsLoaded();
         await bottomNavBar.clickMoney();
         await moneyHomePage.checkPageIsLoaded();
@@ -56,9 +44,12 @@ describe('Money Account FTUE', function (this: Suite) {
     );
   });
 
-  it('does not show the splash for returning users', async function () {
+  it('opens Money home when the splash is closed with X', async function () {
     await withFixtures(
-      getMoneyAccountDepositConfig({ title: this.test?.fullTitle() }),
+      getMoneyAccountDepositConfig({
+        title: this.test?.fullTitle(),
+        moneyFtueSeen: false,
+      }),
       async ({
         driver,
         localNodes,
@@ -66,9 +57,11 @@ describe('Money Account FTUE', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginAndOpenMoneyHome(driver, localNodes[0]);
+        const splash = await loginAndOpenMoneyFtueSplash(driver, localNodes[0]);
+        await splash.clickClose();
 
-        const splash = new MoneyFtueSplashPage(driver);
+        const moneyHomePage = new MoneyHomePage(driver);
+        await moneyHomePage.checkPageIsLoaded();
         await splash.checkIsNotShown();
       },
     );

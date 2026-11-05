@@ -53,7 +53,9 @@ class BottomNavBar {
    * @param [options.assertRoute] - Whether to assert the Money home route. Set
    * to `false` when the first-visit FTUE splash is expected instead.
    */
-  async clickMoney({ assertRoute = true }: { assertRoute?: boolean } = {}) {
+  async clickMoney({
+    assertRoute = true,
+  }: { assertRoute?: boolean } = {}): Promise<void> {
     console.log('Click bottom nav money tab');
     await this.driver.clickElement(this.moneyTab);
     if (assertRoute) {
