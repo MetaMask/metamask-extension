@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
 import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 import { resetCoalesceCacheForTests } from './coalesceBackgroundRequest';
@@ -202,18 +202,49 @@ describe('usePerpsTransactionHistory', () => {
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetOrderFills',
-      [{ accountId: 'eip155:1:0xabc', aggregateByTime: false }],
+      [
+        { accountId: 'eip155:1:0xabc', aggregateByTime: false },
+        { forceRefresh: true },
+      ],
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetOrders',
-      [{ accountId: 'eip155:1:0xabc' }],
+      [{ accountId: 'eip155:1:0xabc' }, { forceRefresh: true }],
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetFunding',
-      [{ accountId: 'eip155:1:0xabc', startTime: 1000, endTime: 2000 }],
+      [
+        { accountId: 'eip155:1:0xabc', startTime: 1000, endTime: 2000 },
+        { forceRefresh: true },
+      ],
     );
+  });
+
+  it('asks the controller to bypass its REST cache when forceFreshOnMount is set', async () => {
+    renderHook(() => usePerpsTransactionHistory({ forceFreshOnMount: true }));
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrderFills',
+        [
+          { accountId: undefined, aggregateByTime: false },
+          { forceRefresh: true },
+        ],
+      );
+    });
+  });
+
+  it('keeps the controller REST cache for passive fetches', async () => {
+    renderHook(() => usePerpsTransactionHistory());
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrderFills',
+        [{ accountId: undefined, aggregateByTime: false }],
+      );
+    });
   });
 
   it('enriches fills with detailedOrderType from orders', async () => {
