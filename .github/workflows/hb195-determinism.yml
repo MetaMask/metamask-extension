@@ -19,6 +19,9 @@ name: html-bundler 4.24.1 determinism check
 # This workflow only runs on the experiment branches; it is not part of CI.
 
 on:
+  push:
+    branches:
+      - test/hb195-control
   workflow_dispatch:
 
 permissions:
