@@ -1,4 +1,5 @@
 import { fireEvent, waitFor } from '@testing-library/react';
+import { it } from '@jest/globals';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -520,6 +521,42 @@ describe('Onboarding Flow', () => {
   });
 
   describe('Unlock Screen', () => {
+    it.each([false, true])(
+      'resumes the destination after social import (side panel: %s)',
+      async (sidePanelEnabled) => {
+        jest
+          .mocked(getIsSeedlessOnboardingFeatureEnabled)
+          .mockReturnValue(true);
+        jest.mocked(useSidePanelEnabled).mockReturnValue(sidePanelEnabled);
+        const route = '/settings/privacy?a=v#metametrics';
+        const redirectStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.socialImport,
+          },
+          appState: { ...mockState.appState, onboardingRedirect: route },
+        });
+        const { getByTestId } = renderOnboarding(
+          <OnboardingFlowWithRouteContext />,
+          redirectStore,
+          ONBOARDING_UNLOCK_ROUTE,
+        );
+
+        submitUnlock(getByTestId);
+
+        await waitFor(() => {
+          expect(mockUseNavigate).toHaveBeenCalledWith(route, {
+            replace: true,
+          });
+          expect(redirectStore.getActions()).toContainEqual({
+            type: 'SET_ONBOARDING_REDIRECT',
+            payload: null,
+          });
+        });
+      },
+    );
+
     it('should render unlock page', () => {
       const { queryByTestId } = renderOnboarding(
         <OnboardingFlowWithRouteContext />,

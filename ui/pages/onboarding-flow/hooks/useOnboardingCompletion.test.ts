@@ -1,4 +1,5 @@
 import { act, waitFor } from '@testing-library/react';
+import { it } from '@jest/globals';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
@@ -248,6 +249,37 @@ describe('useOnboardingCompletion', () => {
     });
   });
 
+  it.each([
+    [false, false],
+    [true, false],
+    [true, true],
+  ])(
+    'resumes the intended destination (side panel: %s, auto-complete: %s)',
+    async (sidePanelEnabled, autoComplete) => {
+      jest
+        .mocked(useSidePanelEnabledHook.useSidePanelEnabled)
+        .mockReturnValue(sidePanelEnabled);
+      const browserMock = jest.requireMock('webextension-polyfill');
+      browserMock.tabs.query.mockResolvedValue([{ windowId: 1, id: 1 }]);
+      const route = '/settings/privacy?a=v#metametrics';
+      const { result, store } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          appState: { ...mockState.appState, onboardingRedirect: route },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding(autoComplete);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(route, { replace: true });
+      expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+      expect(store.getState().appState.onboardingRedirect).toBeNull();
+    },
+  );
+
   it('does not complete onboarding while the wallet is locked', async () => {
     const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
       ...mockState,
@@ -474,9 +506,13 @@ describe('useOnboardingCompletion', () => {
       .mockRejectedValueOnce(new Error('completion failed'))
       .mockResolvedValueOnce(true);
 
-    const { result } = renderHookWithProvider(
+    const route = '/settings/privacy?a=v#metametrics';
+    const { result, store } = renderHookWithProvider(
       () => useOnboardingCompletion(),
-      mockState,
+      {
+        ...mockState,
+        appState: { ...mockState.appState, onboardingRedirect: route },
+      },
     );
 
     await act(async () => {
@@ -484,6 +520,7 @@ describe('useOnboardingCompletion', () => {
         'completion failed',
       );
     });
+    expect(store.getState().appState.onboardingRedirect).toBe(route);
 
     await act(async () => {
       await result.current.completeOnboarding();
@@ -491,7 +528,8 @@ describe('useOnboardingCompletion', () => {
 
     await waitFor(() => {
       expect(mockCompleteOnboarding).toHaveBeenCalledTimes(2);
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(route, { replace: true });
+      expect(store.getState().appState.onboardingRedirect).toBeNull();
     });
   });
 
@@ -1030,7 +1068,7 @@ describe('useOnboardingCompletion', () => {
       });
     });
 
-    it('navigates to interstitial page for Interstitial type (unsigned/invalid signature) when side panel is disabled', async () => {
+    it('preserves the deferred interstitial over a pending destination', async () => {
       const urlPathAndQuery = '/swap?amount=100';
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Interstitial,
@@ -1041,10 +1079,14 @@ describe('useOnboardingCompletion', () => {
         `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
       );
 
-      const { result } = renderHookWithProvider(
+      const { result, store } = renderHookWithProvider(
         () => useOnboardingCompletion(),
         {
           ...mockState,
+          appState: {
+            ...mockState.appState,
+            onboardingRedirect: '/settings/privacy?a=v#metametrics',
+          },
           metamask: {
             ...mockState.metamask,
             deferredDeepLink: {
@@ -1067,6 +1109,7 @@ describe('useOnboardingCompletion', () => {
           `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
         );
         expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+        expect(store.getState().appState.onboardingRedirect).toBeNull();
       });
     });
   });
