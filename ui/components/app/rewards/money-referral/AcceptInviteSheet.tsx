@@ -22,6 +22,7 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
+import { normalizeMoneyReferralCode } from '#shared/lib/money-referral-code';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -48,8 +49,6 @@ import { useReferralMe } from '../../../../hooks/rewards/useReferralMe';
 import { REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES } from '../../../../hooks/rewards/rewards-money-messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { ReferralActivatedModal } from './ReferralActivatedModal';
-
-const MONEY_REFERRAL_CODE_MAX_LENGTH = 24;
 
 const MONEY_REFERRAL_CODE_ERROR_ID = 'money-referral-code-error';
 
@@ -87,19 +86,6 @@ const referralCodeInputProps = {
   autoCapitalize: 'characters',
   'data-testid': 'money-referral-code-input',
 };
-
-/**
- * Keeps letters and digits, uppercases them, and caps the length at 24.
- *
- * @param value - Raw code from the route or the text field.
- * @returns The normalized code.
- */
-function normalizeMoneyReferralCode(value: string): string {
-  return value
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/gu, '')
-    .slice(0, MONEY_REFERRAL_CODE_MAX_LENGTH);
-}
 
 type AcceptInviteSheetProps = {
   initialCode: string;
