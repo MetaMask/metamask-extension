@@ -184,26 +184,43 @@ export function usePerpsTransactionHistory({
       // The controller coalesces these REST reads for 60s on its own, so an
       // explicit refresh must opt out of that cache too. Otherwise a read made
       // before a fill (e.g. by the perps home preview) hides it from Activity.
+      // replaceInFlight covers the same window while that preview's read is
+      // still in flight: joining it would drop forceRefresh.
       const controllerOptions = forceRefresh ? [{ forceRefresh: true }] : [];
+      const coalesceOptions = forceRefresh
+        ? { replaceInFlight: true }
+        : undefined;
       try {
         const [fillsResult, ordersResult, funding] = await Promise.all([
-          coalesceBackgroundRequest<OrderFill[]>(coalesceKeys.fills, () =>
-            submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
-              { accountId, aggregateByTime: false },
-              ...controllerOptions,
-            ]),
+          coalesceBackgroundRequest<OrderFill[]>(
+            coalesceKeys.fills,
+            () =>
+              submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
+                { accountId, aggregateByTime: false },
+                ...controllerOptions,
+              ]),
+            undefined,
+            coalesceOptions,
           ),
-          coalesceBackgroundRequest<Order[]>(coalesceKeys.orders, () =>
-            submitRequestToBackground<Order[]>('perpsGetOrders', [
-              { accountId },
-              ...controllerOptions,
-            ]),
+          coalesceBackgroundRequest<Order[]>(
+            coalesceKeys.orders,
+            () =>
+              submitRequestToBackground<Order[]>('perpsGetOrders', [
+                { accountId },
+                ...controllerOptions,
+              ]),
+            undefined,
+            coalesceOptions,
           ),
-          coalesceBackgroundRequest<Funding[]>(coalesceKeys.funding, () =>
-            submitRequestToBackground<Funding[]>('perpsGetFunding', [
-              { accountId, startTime, endTime },
-              ...controllerOptions,
-            ]),
+          coalesceBackgroundRequest<Funding[]>(
+            coalesceKeys.funding,
+            () =>
+              submitRequestToBackground<Funding[]>('perpsGetFunding', [
+                { accountId, startTime, endTime },
+                ...controllerOptions,
+              ]),
+            undefined,
+            coalesceOptions,
           ),
         ]);
 
