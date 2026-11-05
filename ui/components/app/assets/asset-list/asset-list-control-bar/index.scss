@@ -14,7 +14,8 @@
     display: flex;
     justify-content: flex-end;
 
-    & .asset-list-control-bar__button {
+    & .asset-list-control-bar__button,
+    & .overflow-menu button {
       width: 32px;
       min-width: 32px;
       margin: 0;

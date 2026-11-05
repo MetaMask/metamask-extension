@@ -161,7 +161,7 @@ describe('NFTs options', () => {
     );
     fireEvent.click(actionButton);
 
-    const refreshButton = await findByTestId('refresh-list-button__button');
+    const refreshButton = await findByTestId('refresh-list-button');
 
     expect(detectNftsSpy).not.toHaveBeenCalled();
     expect(checkAndUpdateAllNftsOwnershipStatusSpy).not.toHaveBeenCalled();
@@ -201,7 +201,7 @@ describe('NFTs options', () => {
     );
     fireEvent.click(actionButton);
 
-    const refreshButton = await findByTestId('refresh-list-button__button');
+    const refreshButton = await findByTestId('refresh-list-button');
 
     expect(detectNftsSpy).not.toHaveBeenCalled();
     expect(checkAndUpdateAllNftsOwnershipStatusSpy).not.toHaveBeenCalled();
@@ -243,9 +243,7 @@ describe('NFTs options', () => {
     );
     fireEvent.click(actionButton);
 
-    const autodetectButton = await findByTestId(
-      'enable-autodetect-button__button',
-    );
+    const autodetectButton = await findByTestId('enable-autodetect-button');
 
     expect(detectNftsSpy).not.toHaveBeenCalled();
     expect(checkAndUpdateAllNftsOwnershipStatusSpy).not.toHaveBeenCalled();
@@ -577,7 +575,7 @@ describe('NFTs options', () => {
 
     fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
 
-    const refreshListButton = await findByTestId('refreshList__button');
+    const refreshListButton = await findByTestId('refreshList');
     expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
     expect(await findByTestId('manageTokens__button')).toBeInTheDocument();
   });
@@ -603,7 +601,7 @@ describe('NFTs options', () => {
     );
 
     fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refreshList__button'));
+    fireEvent.click(await findByTestId('refreshList'));
 
     expect(refreshAssetsSpy).toHaveBeenCalledWith(
       [
@@ -629,16 +627,16 @@ describe('NFTs options', () => {
     ].groups[DEFAULT_ACCOUNT_GROUP_ID].accounts = [];
     const store = configureMockStore([thunk])(state);
 
-    const { findByTestId, queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <AssetListControlBar showTokensLinks />,
       store,
     );
 
-    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refreshList__button'));
-
     expect(refreshAssetsSpy).not.toHaveBeenCalled();
-    expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('asset-list-control-bar-action-button'),
+    ).not.toBeInTheDocument();
+    expect(queryByTestId('refreshList')).not.toBeInTheDocument();
   });
 
   it.each([
@@ -679,7 +677,7 @@ describe('NFTs options', () => {
       fireEvent.click(
         await findByTestId('asset-list-control-bar-action-button'),
       );
-      fireEvent.click(await findByTestId('refreshList__button'));
+      fireEvent.click(await findByTestId('refreshList'));
 
       expect(refreshAssetsSpy).toHaveBeenCalledWith(
         groupAccountIds.map((id) => expect.objectContaining({ id })),
@@ -703,7 +701,7 @@ describe('NFTs options', () => {
 
     fireEvent.click(await findByTestId('importTokens-button'));
 
-    expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
+    expect(queryByTestId('refreshList')).not.toBeInTheDocument();
     expect(queryByTestId('import-nfts')).not.toBeInTheDocument();
     expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
       state: {
@@ -730,7 +728,7 @@ describe('NFTs options', () => {
     );
     fireEvent.click(actionButton);
 
-    const refreshListButton = await findByTestId('refreshList__button');
+    const refreshListButton = await findByTestId('refreshList');
     expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
     expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
 

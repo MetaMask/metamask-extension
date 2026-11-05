@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -34,7 +34,7 @@ import {
   PopoverPosition,
   Text,
 } from '../../../../component-library';
-import SortControl, { SelectableListItem } from '../sort-control/sort-control';
+import SortControl from '../sort-control/sort-control';
 import {
   AlignItems,
   BackgroundColor,
@@ -44,7 +44,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import ImportControl from '../import-control';
+import { OverflowMenu } from '../../../../ui/overflow-menu/overflow-menu';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { useBoolean } from '../../../../../hooks/useBoolean';
@@ -118,13 +118,8 @@ const AssetListControlBar = ({
   const navigate = useNavigate();
   const [sortReferenceElement, setSortReferenceElement] =
     useState<HTMLButtonElement | null>(null);
-  const [importReferenceElement, setImportReferenceElement] =
-    useState<HTMLButtonElement | null>(null);
   const setSortButtonRef = useCallback((node: HTMLButtonElement | null) => {
     setSortReferenceElement(node);
-  }, []);
-  const setImportButtonRef = useCallback((node: HTMLButtonElement | null) => {
-    setImportReferenceElement(node);
   }, []);
   const useNftDetection = useSelector(getUseNftDetection);
   const useExternalServices = useSelector(getUseExternalServices);
@@ -173,11 +168,6 @@ const AssetListControlBar = ({
   const { value: isNetworkSwitchPending, setValue: setIsNetworkSwitchPending } =
     useBoolean();
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
-  const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
-    useState(false);
-  const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
-  const [isRefreshListPopoverOpen, setIsRefreshListPopoverOpen] =
-    useState(false);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -305,49 +295,16 @@ const AssetListControlBar = ({
 
   const toggleTokenSortPopover = () => {
     setIsNetworkFilterModalOpen(false);
-    setIsImportTokensPopoverOpen(false);
-    setIsImportNftPopoverOpen(false);
-    setIsRefreshListPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
-  };
-
-  const toggleImportTokensPopover = () => {
-    setIsNetworkFilterModalOpen(false);
-    setIsTokenSortPopoverOpen(false);
-    setIsImportNftPopoverOpen(false);
-    setIsRefreshListPopoverOpen(false);
-    setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
-  };
-
-  const toggleImportNftPopover = () => {
-    setIsNetworkFilterModalOpen(false);
-    setIsTokenSortPopoverOpen(false);
-    setIsImportTokensPopoverOpen(false);
-    setIsRefreshListPopoverOpen(false);
-    setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
-  };
-
-  const toggleRefreshListPopover = () => {
-    setIsNetworkFilterModalOpen(false);
-    setIsTokenSortPopoverOpen(false);
-    setIsImportTokensPopoverOpen(false);
-    setIsImportNftPopoverOpen(false);
-    setIsRefreshListPopoverOpen(!isRefreshListPopoverOpen);
   };
 
   const closePopover = () => {
     setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
-    setIsImportTokensPopoverOpen(false);
-    setIsImportNftPopoverOpen(false);
-    setIsRefreshListPopoverOpen(false);
   };
 
   const handleNetworkFilterClick = () => {
     setIsTokenSortPopoverOpen(false);
-    setIsImportTokensPopoverOpen(false);
-    setIsImportNftPopoverOpen(false);
-    setIsRefreshListPopoverOpen(false);
     setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
   };
 
@@ -361,8 +318,6 @@ const AssetListControlBar = ({
         .build(),
     );
     setIsTokenSortPopoverOpen(false);
-    setIsImportTokensPopoverOpen(false);
-    setIsImportNftPopoverOpen(false);
     navigate(TOKEN_MANAGEMENT_ROUTE, {
       state: {
         globalMenuTransition: 'forward',
@@ -406,6 +361,78 @@ const AssetListControlBar = ({
     });
     closePopover();
   };
+
+  const overflowTriggerClassName =
+    'asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed';
+
+  const tokenMenuItems = [
+    {
+      key: 'manage-tokens',
+      label: t('manageTokens'),
+      iconName: IconName.Setting,
+      'data-testid': 'manageTokens__button',
+      onClick: handleOpenTokenManagement,
+    },
+    {
+      key: 'refresh-list',
+      label: t('refreshList'),
+      iconName: IconName.Refresh,
+      'data-testid': 'refreshList',
+      onClick: handleRefresh,
+    },
+  ];
+
+  const nftMenuItems = [
+    {
+      key: 'import-nft',
+      label: t('importNFT'),
+      iconName: IconName.Add,
+      'data-testid': 'import-nfts__button',
+      onClick: handleNftImportModal,
+    },
+    ...(shouldShowRefreshButtons
+      ? [
+          {
+            key: 'refresh-nfts',
+            label: t('refreshList'),
+            iconName: IconName.Refresh,
+            'data-testid': 'refresh-list-button',
+            onClick: handleNftRefresh,
+          },
+        ]
+      : []),
+    ...(shouldShowEnableAutoDetect
+      ? [
+          {
+            key: 'enable-autodetect',
+            label: t('enableAutoDetect'),
+            iconName: IconName.Setting,
+            'data-testid': 'enable-autodetect-button',
+            onClick: onEnableAutoDetect,
+          },
+        ]
+      : []),
+  ];
+
+  const refreshOnlyMenuItems = [
+    {
+      key: 'refresh-list',
+      label: t('refreshList'),
+      iconName: IconName.Refresh,
+      'data-testid': 'refreshList',
+      onClick: handleRefreshListOnly,
+    },
+  ];
+
+  const showTokenOrNftMenu = Boolean(
+    showImportTokenButton &&
+      (isEvm || showTokensLinks) &&
+      selectedAccountGroupAccounts.length > 0,
+  );
+  const showRefreshOnlyMenu =
+    !showImportTokenButton &&
+    Boolean(onRefresh) &&
+    selectedAccountGroupAccounts.length > 0;
 
   let networkFilterTextColor = TextColor.textDefault;
   if (isNetworkSwitchPending) {
@@ -493,42 +520,35 @@ const AssetListControlBar = ({
             </Tooltip>
           )}
 
-          {showImportTokenButton &&
-            (isEvm || showTokensLinks ? (
-              // Tokens (EVM and non-EVM) and EVM NFT: overflow menu with Refresh list
-              <ImportControl
-                ref={setImportButtonRef}
-                showTokensLinks={showTokensLinks}
-                onClick={
-                  showTokensLinks
-                    ? toggleImportTokensPopover
-                    : toggleImportNftPopover
-                }
-              />
-            ) : (
-              // Non-EVM NFT: no Refresh list
-              <Tooltip
-                title={t('manageTokens')}
-                position="bottom"
-                distance={20}
-              >
-                <ButtonIcon
-                  ref={setImportButtonRef}
-                  data-testid="importTokens-button"
-                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
-                  onClick={handleOpenTokenManagement}
-                  size={ButtonIconSize.Sm}
-                  iconName={IconName.MoreVertical}
-                  ariaLabel={t('manageTokens')}
-                />
-              </Tooltip>
-            ))}
+          {showTokenOrNftMenu ? (
+            <OverflowMenu
+              ariaLabel={t('assetOptions')}
+              disabled={showTokensLinks === false}
+              items={showTokensLinks ? tokenMenuItems : nftMenuItems}
+              size={ButtonIconSize.Sm}
+              testId="asset-list-control-bar-action-button"
+            />
+          ) : null}
 
-          {!showImportTokenButton && onRefresh ? (
-            <ImportControl
-              ref={setImportButtonRef}
-              showTokensLinks
-              onClick={toggleRefreshListPopover}
+          {showImportTokenButton && !isEvm && !showTokensLinks ? (
+            <Tooltip title={t('manageTokens')} position="bottom" distance={20}>
+              <ButtonIcon
+                data-testid="importTokens-button"
+                className={overflowTriggerClassName}
+                onClick={handleOpenTokenManagement}
+                size={ButtonIconSize.Sm}
+                iconName={IconName.MoreVertical}
+                ariaLabel={t('manageTokens')}
+              />
+            </Tooltip>
+          ) : null}
+
+          {showRefreshOnlyMenu ? (
+            <OverflowMenu
+              ariaLabel={t('assetOptions')}
+              items={refreshOnlyMenuItems}
+              size={ButtonIconSize.Sm}
+              testId="asset-list-control-bar-action-button"
             />
           ) : null}
         </Box>
@@ -555,112 +575,6 @@ const AssetListControlBar = ({
         }}
       >
         <SortControl handleClose={closePopover} />
-      </Popover>
-
-      {/* Tokens Popover */}
-      <Popover
-        onClickOutside={closePopover}
-        isOpen={isImportTokensPopoverOpen}
-        position={PopoverPosition.BottomEnd}
-        referenceElement={importReferenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '158px' : '',
-        }}
-      >
-        <SelectableListItem
-          onClick={handleOpenTokenManagement}
-          testId="manageTokens"
-          className="min-h-12"
-        >
-          <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
-          {t('manageTokens')}
-        </SelectableListItem>
-        <SelectableListItem onClick={handleRefresh} testId="refreshList">
-          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
-          {t('refreshList')}
-        </SelectableListItem>
-      </Popover>
-
-      {/* NFT Popover */}
-      <Popover
-        onClickOutside={closePopover}
-        isOpen={isImportNftPopoverOpen}
-        position={PopoverPosition.BottomEnd}
-        referenceElement={importReferenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '158px' : '',
-        }}
-      >
-        <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
-          <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
-
-          {t('importNFT')}
-        </SelectableListItem>
-
-        <Box className="nfts-tab__link" justifyContent={JustifyContent.flexEnd}>
-          {shouldShowRefreshButtons && (
-            <SelectableListItem
-              onClick={handleNftRefresh}
-              testId="refresh-list-button"
-            >
-              <Icon
-                name={IconName.Refresh}
-                size={IconSize.Sm}
-                className="mr-2"
-              />
-
-              {t('refreshList')}
-            </SelectableListItem>
-          )}
-          {shouldShowEnableAutoDetect && (
-            <SelectableListItem
-              onClick={onEnableAutoDetect}
-              testId="enable-autodetect-button"
-            >
-              <Icon
-                name={IconName.Setting}
-                size={IconSize.Sm}
-                className="mr-2"
-              />
-
-              {t('enableAutoDetect')}
-            </SelectableListItem>
-          )}
-        </Box>
-      </Popover>
-
-      {/* Refresh-only Popover (e.g. DeFi) */}
-      <Popover
-        onClickOutside={closePopover}
-        isOpen={isRefreshListPopoverOpen}
-        position={PopoverPosition.BottomEnd}
-        referenceElement={importReferenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '158px' : '',
-        }}
-      >
-        <SelectableListItem
-          onClick={handleRefreshListOnly}
-          testId="refreshList"
-        >
-          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
-          {t('refreshList')}
-        </SelectableListItem>
       </Popover>
     </Box>
   );
