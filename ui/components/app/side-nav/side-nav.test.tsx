@@ -57,6 +57,7 @@ const baseState = {
   metamask: {
     ...mockState.metamask,
     completedOnboarding: true,
+    moneyFtueSeen: true,
     remoteFeatureFlags: {
       ...mockState.metamask.remoteFeatureFlags,
       perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.1' },
