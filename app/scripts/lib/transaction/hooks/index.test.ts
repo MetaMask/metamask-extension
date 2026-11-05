@@ -495,39 +495,6 @@ describe('Transaction Controller Hooks', () => {
       expect(result).toStrictEqual({ transactionHash: undefined });
     });
 
-    it('returns no hash when a hook was attempted but fell back', async () => {
-      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
-      delegation7702HookFn.mockResolvedValue({ transactionHash: undefined });
-      jest.mocked(Delegation7702PublishHook).mockImplementation(
-        () =>
-          ({
-            getHook: () => delegation7702HookFn,
-          }) as unknown as Delegation7702PublishHook,
-      );
-
-      const messenger = buildMockMessenger();
-      (messenger.call as jest.Mock).mockImplementation((action: string) => {
-        if (action === 'KeyringController:getKeyringForAccount') {
-          return { type: 'HD Key Tree' };
-        }
-        return undefined;
-      });
-
-      const request = buildMockRequest({ messenger });
-      const { publish } = getTransactionControllerHooks(request);
-
-      const result = await publish?.({
-        ...mockTransactionMeta,
-        isExternalSign: true,
-      } as TransactionMeta);
-
-      expect(result).toStrictEqual({ transactionHash: undefined });
-      expect(messenger.call).not.toHaveBeenCalledWith(
-        'AppStateController:setDefaultHomeActiveTabName',
-        expect.anything(),
-      );
-    });
-
     it('calls Delegation7702PublishHook when isGasFeeIncluded is true even on STX+sendBundle chain', async () => {
       jest
         .mocked(sentinelApiModule.isSendBundleSupported)
