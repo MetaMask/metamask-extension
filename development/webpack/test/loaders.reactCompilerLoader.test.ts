@@ -10,108 +10,44 @@ describe('getReactCompilerLoader', () => {
     target: '18',
     verbose: false,
     debug: 'none',
-    threadLoaderEnabled: false,
   };
 
-  describe('when threadLoaderEnabled is true', () => {
-    it('returns wrapper loader', () => {
-      const loader = getReactCompilerLoader({
-        ...baseConfig,
-        threadLoaderEnabled: true,
-      });
+  it('returns the wrapper loader', () => {
+    const loader = getReactCompilerLoader(baseConfig);
 
-      assert.ok(
-        (loader as { loader: string }).loader.includes(
-          'reactCompilerLoaderWrapper',
-        ),
-      );
-    });
-
-    it('passes __verbose option when verbose is true', () => {
-      const loader = getReactCompilerLoader({
-        ...baseConfig,
-        threadLoaderEnabled: true,
-        verbose: true,
-      });
-
-      const opts = (
-        loader as {
-          options: { __verbose?: boolean };
-        }
-      ).options;
-      assert.strictEqual(opts.__verbose, true);
-    });
-
-    it('passes __verbose: false when verbose is false', () => {
-      const loader = getReactCompilerLoader({
-        ...baseConfig,
-        threadLoaderEnabled: true,
-        verbose: false,
-      });
-
-      const opts = (
-        loader as {
-          options: { __verbose?: boolean };
-        }
-      ).options;
-      assert.strictEqual(opts.__verbose, false);
-    });
+    assert.ok(
+      (loader as { loader: string }).loader.includes(
+        'reactCompilerLoaderWrapper',
+      ),
+    );
   });
 
-  describe('when threadLoaderEnabled is false and verbose is false', () => {
-    it('returns direct react-compiler-loader (not wrapper)', () => {
-      const loader = getReactCompilerLoader({
-        ...baseConfig,
-        threadLoaderEnabled: false,
-        verbose: false,
-      });
-
-      const path = (loader as { loader: string }).loader;
-      assert.ok(!path.includes('Wrapper'));
-      assert.ok(path.includes('react-compiler'));
+  it('passes __verbose option when verbose is true', () => {
+    const loader = getReactCompilerLoader({
+      ...baseConfig,
+      verbose: true,
     });
 
-    it('does not include __verbose in options', () => {
-      const loader = getReactCompilerLoader({
-        ...baseConfig,
-        threadLoaderEnabled: false,
-        verbose: false,
-      });
-
-      const opts = (loader as { options: Record<string, unknown> }).options;
-      assert.strictEqual('__verbose' in opts, false);
-    });
+    const opts = (
+      loader as {
+        options: { __verbose?: boolean };
+      }
+    ).options;
+    assert.strictEqual(opts.__verbose, true);
   });
 
-  describe('when threadLoaderEnabled is false but verbose is true', () => {
-    it('uses wrapper loader for verbose logging', () => {
-      const loader = getReactCompilerLoader({
-        ...baseConfig,
-        threadLoaderEnabled: false,
-        verbose: true,
-      });
-
-      assert.ok(
-        (loader as { loader: string }).loader.includes(
-          'reactCompilerLoaderWrapper',
-        ),
-      );
+  it('passes __verbose: false when verbose is false', () => {
+    const loader = getReactCompilerLoader({
+      ...baseConfig,
+      verbose: false,
     });
 
-    it('passes __verbose option', () => {
-      const loader = getReactCompilerLoader({
-        ...baseConfig,
-        threadLoaderEnabled: false,
-        verbose: true,
-      });
-
-      const opts = (
-        loader as {
-          options: { __verbose?: boolean };
-        }
-      ).options;
-      assert.strictEqual(opts.__verbose, true);
-    });
+    const opts = (
+      loader as {
+        options: { __verbose?: boolean };
+      }
+    ).options;
+    assert.strictEqual(opts.__verbose, false);
   });
 
   describe('React Compiler options', () => {
@@ -144,5 +80,42 @@ describe('getReactCompilerLoader', () => {
       const opts = (loader as { options: { panicThreshold?: string } }).options;
       assert.strictEqual(opts.panicThreshold, undefined);
     });
+  });
+});
+
+describe('reactCompilerLoaderWrapper', () => {
+  it('names the input file relative to the build context in the source map', async () => {
+    const { default: wrapper } =
+      await import('../utils/loaders/reactCompilerLoaderWrapper');
+    const rootContext = '/project/app';
+    const resourcePath = '/project/ui/component.tsx';
+
+    type WrapperCallbackArgs = [
+      Error | null | undefined,
+      string | undefined,
+      unknown,
+    ];
+    // the loader reports its result through the callback returned by
+    // `this.async()`, so resolve a promise with the callback's arguments
+    const [err, code, map] = await new Promise<WrapperCallbackArgs>(
+      (resolve) => {
+        const context = {
+          rootContext,
+          resourcePath,
+          getOptions: () => ({ target: '18', __verbose: false }),
+          async:
+            () =>
+            (...args: WrapperCallbackArgs) =>
+              resolve(args),
+        } as unknown as Parameters<typeof wrapper>[0] &
+          ThisParameterType<typeof wrapper>;
+        wrapper.call(context, 'export const a = 1;', undefined);
+      },
+    );
+
+    assert.strictEqual(err, null);
+    assert.ok(code);
+    const mapObj = map as { sources: string[] };
+    assert.deepStrictEqual(mapObj.sources, ['webpack://../ui/component.tsx']);
   });
 });
