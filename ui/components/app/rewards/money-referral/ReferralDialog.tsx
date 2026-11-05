@@ -28,6 +28,7 @@ export function ReferralDialog({
   ...props
 }: ReferralDialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const backdropPress = useRef(false);
   useLayoutEffect(() => {
     const dialog = ref.current;
     dialog?.showModal();
@@ -54,10 +55,13 @@ export function ReferralDialog({
         }
       }}
       // Other modals listen on document; keep our interactions local.
-      onMouseDown={(event) => event.stopPropagation()}
+      onMouseDown={(event) => {
+        event.stopPropagation();
+        backdropPress.current = event.target === event.currentTarget;
+      }}
       onClick={(event) => {
         event.stopPropagation();
-        if (event.target === event.currentTarget) {
+        if (backdropPress.current && event.target === event.currentTarget) {
           onClose();
         }
       }}

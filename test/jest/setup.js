@@ -7,7 +7,10 @@ if (globalThis.HTMLDialogElement) {
     this.open = true;
   };
   globalThis.HTMLDialogElement.prototype.close = function () {
-    this.open = false;
+    if (this.open) {
+      this.open = false;
+      this.dispatchEvent(new Event('close'));
+    }
   };
 }
 

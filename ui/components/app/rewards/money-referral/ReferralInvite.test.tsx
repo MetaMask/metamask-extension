@@ -71,7 +71,7 @@ function renderInvite({
 
 describe('ReferralInvite', () => {
   it('opens over the destination and clears the pending code on close', () => {
-    const store = renderInvite({ termsOpen: true, route: '/' });
+    const store = renderInvite();
 
     expect(screen.getByText('Destination')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'ABC123' }));
@@ -81,13 +81,14 @@ describe('ReferralInvite', () => {
     expect(screen.getByText('Destination')).toBeInTheDocument();
   });
 
-  it.each([{ enabled: false }, { externalServices: false }])(
-    'waits while the invite cannot be shown: %j',
-    (options) => {
-      const store = renderInvite(options);
+  it.each([
+    { enabled: false },
+    { externalServices: false },
+    { termsOpen: true, route: '/' },
+  ])('waits while the invite cannot be shown: %j', (options) => {
+    const store = renderInvite(options);
 
-      expect(screen.queryByRole('button')).not.toBeInTheDocument();
-      expect(store.getState().rewardsMoney.pendingReferralCode).toBe('ABC123');
-    },
-  );
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(store.getState().rewardsMoney.pendingReferralCode).toBe('ABC123');
+  });
 });

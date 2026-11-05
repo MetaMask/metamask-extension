@@ -56,7 +56,7 @@ describe('ReferralDialog', () => {
     }
   });
 
-  it('dismisses backdrop clicks without dismissing clicks on the sheet', () => {
+  it('dismisses only gestures that start and finish on the backdrop', () => {
     const onClose = jest.fn();
     render(
       <ReferralDialog onClose={onClose} data-testid="invite">
@@ -64,8 +64,13 @@ describe('ReferralDialog', () => {
       </ReferralDialog>,
     );
     const dialog = screen.getByRole('dialog');
+    fireEvent.mouseDown(screen.getByText('Invite'));
     fireEvent.click(screen.getByText('Invite'));
     expect(onClose).not.toHaveBeenCalled();
+    fireEvent.mouseDown(screen.getByText('Invite'));
+    fireEvent.click(dialog);
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.mouseDown(dialog);
     fireEvent.click(dialog);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
