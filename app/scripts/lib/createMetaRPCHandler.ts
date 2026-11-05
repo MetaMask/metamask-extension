@@ -46,11 +46,25 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        if (Array.isArray(cleanParams)) {
-          result = await handler.call(api, ...cleanParams);
-        } else {
-          result = await handler.call(api, cleanParams);
-        }
+        // No upstream UI trace context — root this op in its own trace so it
+        // peels off the long-lived SW pageload root instead of accumulating
+        // into the keepalive mega-trace. `root: true` forces a fresh root even
+        // with another RPC handler concurrently in flight, so overlapping ops
+        // get independent trace ids.
+        result = await trace(
+          {
+            name: spanName,
+            op: 'rpc.handler',
+            root: true,
+            data: { method: data.method, ...(controller && { controller }) },
+          },
+          () => {
+            if (Array.isArray(cleanParams)) {
+              return handler.call(api, ...cleanParams);
+            }
+            return handler.call(api, cleanParams);
+          },
+        );
       } else if (shouldSampleWrappers(traceContext._traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.
@@ -64,10 +78,9 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
           () => handler.call(api, ...cleanParams),
         );
       } else {
-        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
-        // propagate trace context so nested auto-instrumented and core-package
-        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
-        // attach to the originating UI trace instead of becoming orphans.
+        // Sub-sample rejects: skip the `rpc.handler` span but still propagate
+        // context so nested spans (http.client, core-package trace() callers)
+        // attach to the UI trace instead of orphaning.
         result = await continueTraceContext(traceContext, () =>
           handler.call(api, ...cleanParams),
         );
