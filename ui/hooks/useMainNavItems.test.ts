@@ -183,7 +183,6 @@ describe('useMainNavItems', () => {
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
@@ -199,7 +198,6 @@ describe('useMainNavItems', () => {
       expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
@@ -209,9 +207,7 @@ describe('useMainNavItems', () => {
 
       act(() => getItem(result.current, 'perps').onClick());
 
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE);
     });
 
     it('navigates to Money Home and tracks the click on Money click when the splash has been seen', () => {
@@ -219,9 +215,7 @@ describe('useMainNavItems', () => {
 
       act(() => getItem(result.current, 'money').onClick());
 
-      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
       expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
         componentName: MoneyComponentName.HomeTab,
       });
@@ -263,7 +257,6 @@ describe('useMainNavItems', () => {
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
