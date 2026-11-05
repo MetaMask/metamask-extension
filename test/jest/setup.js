@@ -35,6 +35,27 @@ jest.mock('../../shared/lib/stores/browser-storage-adapter', () => {
 });
 
 /**
+ * Mock react-toggle-button globally to avoid componentWill* lifecycle deprecation warnings.
+ * The real react-toggle-button library uses react-motion, which internally uses deprecated
+ * componentWillReceiveProps. This mock provides the same functionality without the warnings.
+ */
+jest.mock('react-toggle-button', () => {
+  const React = jest.requireActual('react');
+  return function mockToggleButton({
+    value,
+    onToggle,
+    inactiveLabel,
+    activeLabel,
+  }) {
+    return React.createElement('button', {
+      'data-testid': 'toggle-button',
+      onClick: () => onToggle(!value),
+      children: value ? activeLabel : inactiveLabel,
+    });
+  };
+});
+
+/**
  * Globally force the assets-unify-state feature flag helper to return `true`
  * for all unit tests. Fixtures and selectors have migrated to AssetsController
  * state; individual tests can still override this by re-mocking the module

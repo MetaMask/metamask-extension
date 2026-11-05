@@ -44,6 +44,24 @@ jest.mock('../../../hooks/metamask-notifications/useCounter', () => ({
   }),
 }));
 
+jest.mock('react-toggle-button', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  return function mockToggleButton({
+    value,
+    onToggle,
+  }: {
+    value: boolean;
+    onToggle?: (value: boolean) => void;
+  }) {
+    return ReactActual.createElement('input', {
+      type: 'checkbox',
+      checked: value,
+      onChange: () => onToggle?.(!value),
+      readOnly: true,
+    });
+  };
+});
+
 describe('AppHeaderUnlockedContent trace', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -71,9 +89,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
 
-    const networksSubtitle = screen.getByTestId('networks-subtitle-test-id');
-    // The hover handler is on the first child Box inside MultichainTriggeredAddressRowsList
-    const hoverTarget = networksSubtitle.firstElementChild as HTMLElement;
+    const hoverTarget = screen.getByTestId('network-group-with-copy-icon');
     fireEvent.mouseEnter(hoverTarget);
 
     await waitFor(() => {

@@ -7,5 +7,14 @@ declare namespace React {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   export interface CSSProperties extends CSS.Properties<string | number> {
     '--progress'?: string;
+    anchorName?: string;
+    positionAnchor?: string;
   }
+
+  export type HTMLAttributes<Tag> = {
+    popover?: 'auto' | 'manual' | 'hint' | boolean;
+    interestfor?: string;
+    commandfor?: string;
+    command?: string;
+  };
 }
