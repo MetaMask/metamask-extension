@@ -62,15 +62,16 @@ const fetchAssetMetadata = async (
 /**
  * This sets the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
- * It also clears the search params after setting the values.
+ * The query stays on the URL. Replacing it would look like a new page to Back.
  */
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
 
   const abortController = useRef<AbortController>(new AbortController());
+  const appliedSearch = useRef<string | null>(null);
 
-  const { resetSearchParams, search } = useBridgeNavigation();
+  const { search } = useBridgeNavigation();
 
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -93,9 +94,13 @@ export const usePrefillFromSearchQuery = () => {
     ReturnType<typeof fetchAssetMetadataForAssetIds>
   > | null>(null);
 
-  // Only update parsed values and fetch metadata if the search params
-  // are set (once) to prevent infinite re-renders
+  // Apply a given search once for this mount. Swap stays mounted across the
+  // asset picker, so returning to the same query must not overwrite edits.
   useEffect(() => {
+    if (appliedSearch.current === search) {
+      return;
+    }
+
     const searchParamsFrom = parseAsset(
       searchParams.get(BridgeQueryParams.From),
     );
@@ -103,6 +108,7 @@ export const usePrefillFromSearchQuery = () => {
     const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
+      appliedSearch.current = search;
       // Defer state updates so they are not synchronous effect setStates
       // (react-hooks/set-state-in-effect).
       queueMicrotask(() => {
@@ -112,11 +118,6 @@ export const usePrefillFromSearchQuery = () => {
           setParsedAmount(searchParamsAmount);
         }
       });
-      resetSearchParams([
-        BridgeQueryParams.From,
-        BridgeQueryParams.To,
-        BridgeQueryParams.Amount,
-      ]);
 
       // Fetch asset metadata for both tokens in 1 call
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
@@ -131,7 +132,7 @@ export const usePrefillFromSearchQuery = () => {
         });
       }
     }
-  }, [searchParams]);
+  }, [search, searchParams]);
 
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {

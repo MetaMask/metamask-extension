@@ -259,39 +259,6 @@ describe('useBridgeNavigation', () => {
     });
   });
 
-  describe('resetSearchParams', () => {
-    it('removes the requested search params and preserves location state', () => {
-      mockUseLocation.mockReturnValue({
-        pathname: '/cross-chain/swaps/prepare-bridge-page',
-        search: `?${BridgeQueryParams.From}=from-token&${BridgeQueryParams.Amount}=10`,
-        state: {
-          token: locationToken,
-          bridgeState: locationBridgeState,
-        },
-      });
-
-      const { result } = renderUseBridgeNavigation();
-
-      act(() => {
-        result.current.resetSearchParams([BridgeQueryParams.From]);
-      });
-
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        {
-          pathname: '/cross-chain/swaps/prepare-bridge-page',
-          search: `${BridgeQueryParams.Amount}=10`,
-        },
-        {
-          replace: true,
-          state: {
-            token: locationToken,
-            bridgeState: locationBridgeState,
-          },
-        },
-      );
-    });
-  });
-
   describe('resetLocationState', () => {
     it('clears bridge navigation state on the current route', () => {
       const { result } = renderUseBridgeNavigation();
