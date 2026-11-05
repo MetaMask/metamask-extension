@@ -198,6 +198,7 @@ import {
   TraceName,
   TraceOperation,
   TraceRequest,
+  withoutTraceContext,
 } from '../../shared/lib/trace';
 import type { SerializedTraceContext } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
@@ -5757,7 +5758,9 @@ export function recordUiInteraction(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('AppStateController:recordUiInteraction');
+      await withoutTraceContext(() =>
+        submitRequestToBackground('AppStateController:recordUiInteraction'),
+      );
     } catch {
       // Telemetry must not surface background failures in the UI.
     }
