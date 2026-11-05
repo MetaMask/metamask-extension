@@ -669,7 +669,7 @@
     "@metamask/foundryup": "^1.0.1",
     "@metamask/java-tron-up": "^1.0.0",
     "@metamask/messenger-cli": "^0.2.0",
-    "@metamask/phishing-warning": "^5.1.0",
+    "@metamask/phishing-warning": "^6.0.0",
     "@metamask/platform-api-docs": "^0.2.1",
     "@metamask/preferences-controller": "^23.0.0",
     "@metamask/skills": "^0.3.1",
