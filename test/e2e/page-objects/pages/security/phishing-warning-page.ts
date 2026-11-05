@@ -87,7 +87,9 @@ class PhishingWarningPage {
     }
   }
 
-  async clickProceedAnywayButton(waitForNavigation = true): Promise<void> {
+  async clickProceedAnywayButton({
+    waitForNavigation = true,
+  }: { waitForNavigation?: boolean } = {}): Promise<void> {
     console.log('Clicking proceed anyway button on phishing warning page');
     if (waitForNavigation) {
       // Retry in case the phishing page hasn't fully loaded yet by the time we click it.
