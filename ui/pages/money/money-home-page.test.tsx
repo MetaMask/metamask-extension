@@ -11,7 +11,7 @@ import {
 } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
-import { useFullScreenDesign } from '../../hooks/useFullScreenDesign';
+import { AppLayoutProvider } from '../../contexts/app-layout';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
 import {
@@ -145,10 +145,6 @@ jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
   useMoneyAnalytics: jest.fn(),
 }));
 const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
-jest.mock('../../hooks/useFullScreenDesign', () => ({
-  useFullScreenDesign: jest.fn(),
-}));
-const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 jest.mock('./components/money-transfer-sheet', () => ({
   MoneyTransferSheet: ({
     isOpen,
@@ -173,7 +169,6 @@ jest.mock('../../helpers/money/report-money-error', () => ({
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseFullScreenDesign.mockReturnValue(false);
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
     mockGetPrivacyMode.mockReturnValue(false);
@@ -1451,11 +1446,14 @@ describe('MoneyHomePage', () => {
   });
 
   describe('fullscreen design', () => {
-    it('keeps the centred, stacked layout when the fullscreen design is off', () => {
+    it('keeps the centred, stacked layout, with wide-layout overrides', () => {
       renderWithLocalization(<MoneyHomePage />);
 
       expect(screen.getByTestId('money-balance').parentElement).toHaveClass(
+        'max-w-[784px]',
         'sm:items-center',
+        'wide-layout:max-w-none',
+        'wide-layout:items-start',
       );
       expect(screen.getByTestId('money-add-button')).toHaveClass(
         'h-[76px]',
@@ -1468,33 +1466,24 @@ describe('MoneyHomePage', () => {
       expect(screen.getByTestId('money-fund-card')).toHaveClass(
         'flex-col',
         'max-w-[389px]',
+        'wide-layout:flex-row',
+        'wide-layout:max-w-none',
       );
     });
 
-    it('left-aligns the balance and uses plain action buttons when fullscreen design is on', () => {
-      mockUseFullScreenDesign.mockReturnValue(true);
+    it('uses the button defaults in the wide layout', () => {
+      renderWithLocalization(
+        <AppLayoutProvider isWideLayout>
+          <MoneyHomePage />
+        </AppLayoutProvider>,
+      );
 
-      renderWithLocalization(<MoneyHomePage />);
-
-      const balanceColumn = screen.getByTestId('money-balance').parentElement;
-      expect(balanceColumn).not.toHaveClass('sm:items-center');
-      expect(balanceColumn).not.toHaveClass('max-w-[784px]');
       expect(screen.getByTestId('money-add-button')).not.toHaveClass(
         'h-[76px]',
       );
       expect(screen.getByTestId('money-send-button')).not.toHaveClass(
         'h-[76px]',
       );
-    });
-
-    it('lays the fund card out in a full-width row when fullscreen design is on', () => {
-      mockUseFullScreenDesign.mockReturnValue(true);
-
-      renderWithLocalization(<MoneyHomePage />);
-
-      const card = screen.getByTestId('money-fund-card');
-      expect(card).toHaveClass('flex-row', 'w-full');
-      expect(card).not.toHaveClass('max-w-[389px]');
     });
   });
 });

@@ -85,14 +85,9 @@ export type CoinOverviewProps = {
 
 const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
-const BalanceOverviewSkeleton = ({
-  isWideLayout,
-}: {
-  isWideLayout: boolean;
-}) => {
+const BalanceOverviewSkeleton = () => {
   const environmentType = getEnvironmentType();
   const isFullscreenOrSidepanel =
-    isWideLayout ||
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
@@ -438,7 +433,7 @@ export const CoinOverview = ({
   );
 
   if (shouldShowBalanceLoadingState) {
-    balanceContent = <BalanceOverviewSkeleton isWideLayout={isWideLayout} />;
+    balanceContent = <BalanceOverviewSkeleton />;
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState
@@ -454,7 +449,6 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
-      align={isWideLayout ? 'start' : 'center'}
       balance={balanceContent}
       buttons={
         <CoinButtons

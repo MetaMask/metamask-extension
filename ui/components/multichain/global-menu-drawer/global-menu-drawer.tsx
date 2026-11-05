@@ -63,8 +63,8 @@ const getDialogLayoutClassName = (
 ) =>
   classnames(
     isWideLayout
-      ? '[--drawer-column-width:var(--width-max-fullscreen-redesign)]'
-      : '[--drawer-column-width:var(--width-max)]',
+      ? '[--drawer-column-width:var(--width-max)]'
+      : '[--drawer-column-width:var(--width-md)]',
     isFullscreen && !isWideLayout
       ? '[--drawer-header-height:var(--header-height)]'
       : '[--drawer-header-height:0px]',

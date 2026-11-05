@@ -47,6 +47,7 @@ const renderRootLayout = (pathname: string) => {
   return screen.getByTestId('child').parentElement as HTMLElement;
 };
 
+const columnWidthClass = 'max-w-[var(--width-md)]';
 const maxWidthClass = 'max-w-[var(--width-max)]';
 
 describe('RootLayout', () => {
@@ -59,7 +60,7 @@ describe('RootLayout', () => {
     (pathname) => {
       const layout = renderRootLayout(pathname);
 
-      expect(layout).toHaveClass(maxWidthClass);
+      expect(layout).toHaveClass(columnWidthClass);
     },
   );
 
@@ -70,27 +71,28 @@ describe('RootLayout', () => {
       'data-wide-layout',
       'false',
     );
-    expect(layout).toBeInTheDocument();
+    expect(layout).not.toHaveAttribute('data-wide-layout');
   });
 
-  describe('in the fullscreen design', () => {
+  describe('in the wide layout design', () => {
     beforeEach(() => {
       mockUseFullScreenDesign.mockReturnValue(true);
     });
 
     it('provides the wide layout to its routes', () => {
-      renderRootLayout(DEFAULT_ROUTE);
+      const layout = renderRootLayout(DEFAULT_ROUTE);
 
       expect(screen.getByTestId('child')).toHaveAttribute(
         'data-wide-layout',
         'true',
       );
+      expect(layout).toHaveAttribute('data-wide-layout', 'true');
     });
 
     it('caps the width of routes that are not main nav routes', () => {
       const layout = renderRootLayout(SETTINGS_ROUTE);
 
-      expect(layout).toHaveClass(maxWidthClass);
+      expect(layout).toHaveClass(columnWidthClass);
     });
 
     it.each([DEFAULT_ROUTE, ACTIVITY_ROUTE])(
@@ -98,7 +100,8 @@ describe('RootLayout', () => {
       (pathname) => {
         const layout = renderRootLayout(pathname);
 
-        expect(layout).not.toHaveClass(maxWidthClass);
+        expect(layout).toHaveClass(maxWidthClass);
+        expect(layout).not.toHaveClass(columnWidthClass);
       },
     );
   });

@@ -5,22 +5,17 @@ type WalletOverviewProps = {
   balance: React.ReactNode;
   buttons: React.ReactNode;
   className?: string;
-  align?: 'center' | 'start';
 };
 
 const WalletOverview = ({
   balance,
   buttons,
   className,
-  align = 'center',
 }: WalletOverviewProps) => {
-  const isCentered = align === 'center';
-
   return (
     <div
       className={classnames(
-        'flex min-w-0 w-full flex-1 flex-col justify-between gap-4',
-        isCentered ? 'items-center' : 'items-start',
+        'flex min-w-0 w-full flex-1 flex-col items-center justify-between gap-4 wide-layout:items-start',
         className,
       )}
     >
@@ -28,11 +23,7 @@ const WalletOverview = ({
         {balance}
       </div>
       {/* 458px = 490px - 32px */}
-      <div
-        className={classnames('flex h-full w-full', {
-          'max-w-[458px] self-center': isCentered,
-        })}
-      >
+      <div className="flex h-full w-full max-w-[458px] self-center wide-layout:max-w-none wide-layout:self-start">
         {buttons}
       </div>
     </div>

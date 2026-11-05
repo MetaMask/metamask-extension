@@ -3,16 +3,12 @@ import { render, screen } from '@testing-library/react';
 
 import WalletOverview from './wallet-overview';
 
-const renderWalletOverview = ({
-  className,
-  align,
-}: { className?: string; align?: 'center' | 'start' } = {}) => {
+const renderWalletOverview = ({ className }: { className?: string } = {}) => {
   const { container } = render(
     <WalletOverview
       balance={<span data-testid="balance" />}
       buttons={<span data-testid="buttons" />}
       className={className}
-      align={align}
     />,
   );
 
@@ -36,17 +32,15 @@ describe('WalletOverview', () => {
     expect(root).toHaveClass('custom-class');
   });
 
-  it('centres the content and caps the width of the buttons by default', () => {
+  it('centres the content, and left-aligns it in the wide layout', () => {
     const { root, buttonsContainer } = renderWalletOverview();
 
-    expect(root).toHaveClass('items-center');
-    expect(buttonsContainer).toHaveClass('max-w-[458px]', 'self-center');
-  });
-
-  it('left-aligns the content and removes max-width on the buttons when aligned to the start', () => {
-    const { root, buttonsContainer } = renderWalletOverview({ align: 'start' });
-
-    expect(root).toHaveClass('items-start');
-    expect(buttonsContainer).not.toHaveClass('max-w-[458px]', 'self-center');
+    expect(root).toHaveClass('items-center', 'wide-layout:items-start');
+    expect(buttonsContainer).toHaveClass(
+      'max-w-[458px]',
+      'self-center',
+      'wide-layout:max-w-none',
+      'wide-layout:self-start',
+    );
   });
 });

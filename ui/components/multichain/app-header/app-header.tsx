@@ -27,7 +27,7 @@ export const AppHeader = () => {
         className={classnames(
           'flex items-center gap-2 pl-2 pr-4 py-2',
           isWideLayout
-            ? 'h-[var(--header-height-fullscreen-design)]'
+            ? 'h-[var(--header-height-wide-layout)]'
             : 'min-h-[var(--header-height)]',
         )}
       >

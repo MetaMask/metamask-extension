@@ -41,9 +41,11 @@ export type TokenTableProps = {
   safeChains?: SafeChain[];
 };
 
+// Measures the table, not the viewport: the side nav has already taken 320px
+// by the time `lg` would apply. `@2xl` (42rem) is room for a separate price column.
 const COLUMNS_CLASS_NAME =
-  'grid w-full grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] items-center gap-4 px-4 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]';
-const PRICE_COLUMN_CLASS_NAME = 'hidden lg:block';
+  'grid w-full grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] items-center gap-4 px-4 @2xl/token-table:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]';
+const PRICE_COLUMN_CLASS_NAME = 'hidden @2xl/token-table:block';
 
 const TokenTableHeader = () => {
   const t = useI18nContext();
@@ -223,7 +225,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
   }
 
   return (
-    <div data-testid="token-table">
+    <div data-testid="token-table" className="@container/token-table">
       <TokenTableHeader />
       {/* Virtualization is disabled for the empty balance state, as in TokenList. */}
       {hasBalance ? (
