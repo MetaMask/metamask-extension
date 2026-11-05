@@ -500,7 +500,9 @@ class PerpsStreamManager {
     );
     // The response belongs to the account and network it was requested for.
     // Drop it if either changed (or the manager reset) while it was in flight.
-    if (generation !== this.positions.getGeneration()) {
+    // A nullish response is missing data, not an empty account: keep whatever
+    // the channel holds, like the REST fallback does for a seeded snapshot.
+    if (generation !== this.positions.getGeneration() || !positions) {
       return;
     }
     this.pushPositionsWithOverrides(positions);

@@ -1904,6 +1904,25 @@ describe('PerpsStreamManager', () => {
       expect(cb).toHaveBeenLastCalledWith(freshPositions);
     });
 
+    it.each([null, undefined])(
+      'leaves a seeded snapshot unconfirmed when the refresh returns %s',
+      async (data) => {
+        const address = '0xABCDEF0000000000000000000000000000000001';
+        const positions = [makePosition('BTC')];
+        manager.hydrateFromControllerCache({ positions, address }, address);
+        mockSubmitRequestToBackground.mockResolvedValue(data);
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+        cb.mockClear();
+
+        await manager.refreshPositions();
+
+        expect(manager.positions.getCachedData()).toBe(positions);
+        expect(manager.positions.isSeeded()).toBe(true);
+        expect(cb).not.toHaveBeenCalled();
+      },
+    );
+
     it.each([
       ['the account switches', (m: PerpsStreamManager) => m.init('0xaccountB')],
       ['the network changes', (m: PerpsStreamManager) => m.clearAllCaches()],
