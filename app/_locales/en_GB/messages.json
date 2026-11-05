@@ -5619,7 +5619,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many attempts. Request a new code."
+    "message": "Too many incorrect codes. Get a new code when it's available."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5699,6 +5699,10 @@
   },
   "mfaOtpGetNewCode": {
     "message": "Get new code"
+  },
+  "mfaOtpGetNewCodeIn": {
+    "message": "Get new code in $1s",
+    "description": "$1 is a number of seconds"
   },
   "mfaOtpResend": {
     "message": "Resend code"
