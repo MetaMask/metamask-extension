@@ -30,7 +30,7 @@ import type {
   SentryTracingServiceClearTracesAfterMetricsOptInAction,
   SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from '../../services/sentry/sentry-tracing-service-method-action-types';
-import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
+import { getAnalyticsControllerInitMessenger } from '../../wallet-init/messengers/analytics-controller-messenger';
 import {
   configureAnalytics,
   getProfileIdentityProperties,

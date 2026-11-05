@@ -5,6 +5,7 @@ import type { RouteMessenger } from '../messengers/route-messenger';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 import mockState from '../../test/data/mock-state.json';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
+import { submitRequestToBackground } from '../store/background-connection';
 import { useNetworkConnectionBanner } from './useNetworkConnectionBanner';
 
 const mockSelectStatus = jest.fn();
@@ -48,6 +49,7 @@ jest.mock('../store/background-connection', () => ({
 }));
 
 const mockSetShowInfuraSwitchToast = jest.mocked(setShowInfuraSwitchToast);
+const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
 const SWITCH_TO_INFURA_ACTION =
   'NetworkConnectionBannerController:switchToDefaultInfuraRpcEndpoint';
@@ -97,6 +99,7 @@ function renderBannerHook(
 describe('useNetworkConnectionBanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSubmitRequestToBackground.mockResolvedValue(true);
     mockSelectStatus.mockReturnValue('available');
     mockSelectNetwork.mockReturnValue(null);
   });
@@ -136,6 +139,23 @@ describe('useNetworkConnectionBanner', () => {
     renderBannerHook();
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('checks the RPC URL using the legacy background service messenger action', async () => {
+    mockSelectStatus.mockReturnValue('degraded');
+    const network = mockFailedNetwork();
+
+    await act(async () => {
+      renderBannerHook();
+      // `submitRequestToBackground` is called asynchronously; wait for the
+      // promise queue to be cleared.
+      await Promise.resolve();
+    });
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'LegacyBackgroundApiService:isPublicEndpointUrl',
+      [network.rpcUrl],
+    );
   });
 
   describe('switchToInfura', () => {

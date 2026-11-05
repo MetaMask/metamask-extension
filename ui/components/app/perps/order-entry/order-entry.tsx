@@ -275,7 +275,7 @@ export const OrderEntry = ({
         fillPrice = parsed;
       }
     }
-    if (fillPrice === 0) {
+    if (!Number.isFinite(fillPrice) || fillPrice <= 0) {
       return undefined;
     }
 

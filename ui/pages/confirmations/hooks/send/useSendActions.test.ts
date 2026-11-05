@@ -13,8 +13,15 @@ import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
+import { toast } from '../../../../components/ui/toast/toast';
 import { NonEvmSendUnknownValue } from './metrics/useNonEvmSendMetrics';
 import { useSendActions } from './useSendActions';
+
+jest.mock('../../../../components/ui/toast/toast', () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}));
 
 const MOCK_ADDRESS_1 = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 const MOCK_ADDRESS_2 = '0xd12662965960f3855a09f85396459429a595d741';
@@ -71,11 +78,20 @@ const trackedEventProperties = (eventName: string) =>
   mockTrackEvent.mock.calls.find(([event]) => event.name === eventName)?.[0]
     .properties;
 
+const GENERIC_TRANSACTION_ERROR =
+  'Transaction error. Exception thrown in contract code.';
+
 beforeEach(() => {
   mockUseNavigate.mockClear();
   mockDispatch.mockClear();
   mockTrackEvent.mockClear();
+  jest.mocked(toast.error).mockClear();
   mockUseLocation.mockReturnValue({ key: 'in-app-entry' });
+  window.location.hash = '#/send/loader';
+});
+
+afterEach(() => {
+  window.location.hash = '';
 });
 
 function renderHook() {
@@ -442,6 +458,80 @@ describe('useSendQueryParams', () => {
       failure_phase: 'snap_rpc',
       error_code: '-32603',
     });
+  });
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each([
+    {
+      testcase: 'Snap Returned a Validation Error',
+      mockImp: () =>
+        Promise.resolve({
+          valid: false,
+          errors: [{ code: 'InsufficientBalance' }],
+        }),
+    },
+    {
+      testcase: 'Snap threw an error',
+      mockImp: () =>
+        Promise.reject(
+          Object.assign(new Error('Unexpected snap error'), { code: -32603 }),
+        ),
+    },
+  ])(
+    'when the loader has left the send screen, handleSubmit shows a toast for a validation error when the loader has left the send screen - $testcase',
+    async ({
+      mockImp,
+    }: {
+      mockImp: () => Promise<{ valid: boolean; errors: { code: string }[] }>;
+    }) => {
+      window.location.hash = '#/confirmation/pending-send';
+
+      const mockUpdateNonEVMSubmitError = jest.fn();
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        ...NON_EVM_SEND_CONTEXT,
+        updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
+      } as unknown as SendContext.SendContextType);
+
+      jest
+        .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+        .mockImplementation(mockImp);
+
+      const result = renderHook();
+      result.handleSubmit(MOCK_ADDRESS_4);
+
+      await waitFor(() => {
+        expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
+        expect(toast.error).toHaveBeenCalledWith(GENERIC_TRANSACTION_ERROR);
+        expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+      });
+    },
+  );
+
+  it('when the loader has left the send screen, handleSubmit does not show a toast when the user rejects the confirmation', async () => {
+    window.location.hash = '#/confirmation/pending-send';
+
+    const mockUpdateNonEVMSubmitError = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      ...NON_EVM_SEND_CONTEXT,
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
+    } as unknown as SendContext.SendContextType);
+
+    jest
+      .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+      .mockImplementation(() =>
+        Promise.reject(
+          Object.assign(new Error('User rejected'), { code: 4001 }),
+        ),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_4);
+
+    await waitFor(() => {
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    });
+    expect(toast.error).not.toHaveBeenCalled();
   });
 
   it('handleSubmit does not emit a client submit/complete event on success', async () => {

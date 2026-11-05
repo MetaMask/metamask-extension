@@ -721,6 +721,8 @@ describe('MultichainAddressRowsList', () => {
         'multichain-address-row-network-name',
       );
 
+      expect(screen.getByText('Native SegWit')).toBeInTheDocument();
+
       // Find the Bitcoin row
       const bitcoinIndex = Array.from(networkNames).findIndex(
         (el) => el.textContent === 'Bitcoin',

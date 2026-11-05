@@ -11,6 +11,7 @@ import {
   PHISHING_CONFIG_BASE_URL,
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
+  RequestSourceFlow,
 } from '@metamask/phishing-controller';
 import {
   EthAccountType,
@@ -22,7 +23,6 @@ import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { TokenListController } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import {
   Caip25CaveatType,
@@ -50,7 +50,6 @@ import mockEncryptor from '../../test/lib/mock-encryptor';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
-import { SECOND } from '../../shared/constants/time';
 import * as NetworkFailoverModule from '../../shared/constants/network-failover';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
@@ -62,6 +61,7 @@ import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
+import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../shared/lib/transactions-controller-utils';
 import * as utils from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -610,8 +610,6 @@ describe('MetaMaskController', () => {
         .mockReturnValue(true);
 
       jest.spyOn(Messenger.prototype, 'subscribe');
-      jest.spyOn(TokenListController.prototype, 'start');
-      jest.spyOn(TokenListController.prototype, 'stop');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
@@ -2277,6 +2275,83 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('NFT source', () => {
+      const NFT_ADDRESS = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
+      const NETWORK_CLIENT_ID = 'mainnet';
+
+      it('passes the custom source for addNft from the API', async () => {
+        const addNft = jest
+          .spyOn(metamaskController.nftController, 'addNft')
+          .mockResolvedValue(undefined);
+
+        await metamaskController
+          .getApi()
+          .addNft(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
+
+        expect(addNft).toHaveBeenCalledWith(
+          NFT_ADDRESS,
+          '1',
+          NETWORK_CLIENT_ID,
+          {
+            source: 'custom',
+          },
+        );
+      });
+
+      it('passes the custom source for addNftVerifyOwnership from the API', async () => {
+        const addNftVerifyOwnership = jest
+          .spyOn(metamaskController.nftController, 'addNftVerifyOwnership')
+          .mockResolvedValue(undefined);
+
+        await metamaskController
+          .getApi()
+          .addNftVerifyOwnership(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
+
+        expect(addNftVerifyOwnership).toHaveBeenCalledWith(
+          NFT_ADDRESS,
+          '1',
+          NETWORK_CLIENT_ID,
+          { source: 'custom' },
+        );
+      });
+
+      it('passes the detected source when adding an NFT found in transaction logs', async () => {
+        const addNft = jest
+          .spyOn(metamaskController.nftController, 'addNft')
+          .mockResolvedValue(undefined);
+        const { address: selectedAddress } =
+          metamaskController.accountsController.getSelectedAccount();
+        const pad = (hex) => `0x${hex.replace('0x', '').padStart(64, '0')}`;
+
+        await metamaskController._updateNFTOwnership({
+          type: 'contractInteraction',
+          chainId: '0x1',
+          txParams: { from: selectedAddress },
+          txReceipt: {
+            logs: [
+              {
+                address: NFT_ADDRESS,
+                data: '0x',
+                topics: [
+                  TOKEN_TRANSFER_LOG_TOPIC_HASH,
+                  pad('0x1'),
+                  pad(selectedAddress),
+                  pad('0x7'),
+                ],
+              },
+            ],
+          },
+        });
+
+        expect(addNft).toHaveBeenCalledWith(
+          NFT_ADDRESS,
+          '7',
+          expect.anything(),
+          { source: 'detected' },
+        );
+      });
+    });
+
     describe('setArcUsageNoticeShown', () => {
       it('flips the flag and tracks the viewed event only once', () => {
         const { setArcUsageNoticeShown } = metamaskController.getApi();
@@ -2902,7 +2977,11 @@ describe('MetaMaskController', () => {
           await waitForAllPromises();
           await new Promise((resolve) => setTimeout(resolve, 0));
 
-          expect(scanUrlSpy).toHaveBeenCalledWith('http://mycrypto.com');
+          expect(scanUrlSpy).toHaveBeenCalledWith(
+            'http://mycrypto.com',
+            RequestSourceFlow.DappConnection,
+          );
+
           streamTest.end();
         } finally {
           process.env.SECURITY_ALERTS_API_ENABLED =
@@ -4343,68 +4422,6 @@ describe('MetaMaskController', () => {
           },
         );
       });
-    });
-  });
-
-  describe('onFeatureFlagResponseReceived', () => {
-    const metamaskController = new MetaMaskController({
-      showUserConfirmation: noop,
-      encryptor: mockEncryptor,
-      initState: cloneDeep(firstTimeState),
-      initLangCode: 'en_US',
-      platform: {
-        showTransactionNotification: () => undefined,
-        getVersion: () => 'foo',
-        switchToAnotherURL: jest.fn(),
-      },
-      browser: browserPolyfillMock,
-      getRequestAccountTabIds: () => ({}),
-      getOpenMetamaskTabsIds: () => ({}),
-      notificationManager: {
-        closePopup: jest.fn(),
-        markAsAutomaticallyClosed: jest.fn(),
-      },
-      infuraProjectId: 'foo',
-      isFirstMetaMaskControllerSetup: true,
-      cronjobControllerStorageManager:
-        createMockCronjobControllerStorageManager(),
-      controllerMessenger: new Messenger({
-        namespace: MOCK_ANY_NAMESPACE,
-      }),
-    });
-
-    beforeEach(() => {
-      jest.spyOn(
-        metamaskController.tokenBalancesController,
-        'setIntervalLength',
-      );
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should not set the interval length if the pollInterval is 0', () => {
-      metamaskController.onFeatureFlagResponseReceived({
-        multiChainAssets: {
-          pollInterval: 0,
-        },
-      });
-      expect(
-        metamaskController.tokenBalancesController.setIntervalLength,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('should set the interval length if the pollInterval is greater than 0', () => {
-      const pollInterval = 10;
-      metamaskController.onFeatureFlagResponseReceived({
-        multiChainAssets: {
-          pollInterval,
-        },
-      });
-      expect(
-        metamaskController.tokenBalancesController.setIntervalLength,
-      ).toHaveBeenCalledWith(pollInterval * SECOND);
     });
   });
 

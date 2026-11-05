@@ -34,7 +34,7 @@ export function useTransactionConfirm() {
   const { showErrorModal } = useHardwareWalletError();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isAmountPending } =
     useConfirmContext<TransactionMeta>();
   const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
@@ -86,6 +86,13 @@ export function useTransactionConfirm() {
   } = useShieldConfirm();
 
   const onTransactionConfirm = useCallback(async (): Promise<boolean> => {
+    // The field can already show the new amount while publish would still
+    // execute the previous quote. The footer blocks the click; this covers
+    // any other confirm path.
+    if (isAmountPending) {
+      return false;
+    }
+
     let txToApprove = cloneDeep(transactionMeta);
 
     if (isMoneyAccountWithdraw) {
@@ -168,7 +175,7 @@ export function useTransactionConfirm() {
       await dispatch(
         updateAndApproveTx(
           txToApprove,
-          true,
+          !isPayingWithHardwareWallet,
           isPayingWithHardwareWallet ? t('swapConfirmWithHwWallet') : '',
           payingAccount,
         ),
@@ -196,6 +203,7 @@ export function useTransactionConfirm() {
     dispatch,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+    isAmountPending,
     isGaslessSupported,
     isGaslessSupportedSTX,
     isMoneyAccountWithdraw,

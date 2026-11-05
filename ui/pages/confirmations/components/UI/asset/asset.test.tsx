@@ -53,10 +53,18 @@ const mockNFTERC1155Asset = {
   },
 };
 
-const store = createMockStore()();
+const createStore = (useCurrencyRateCheck = true) =>
+  createMockStore()({
+    metamask: { useCurrencyRateCheck },
+  });
 
-function render(ui: React.ReactElement) {
-  return renderWithProvider(ui, store);
+const store = createStore();
+
+function render(
+  ui: React.ReactElement,
+  reduxStore: ReturnType<typeof createStore> = store,
+) {
+  return renderWithProvider(ui, reduxStore);
 }
 
 jest.mock('../../../hooks/useNftImageUrl', () => ({
@@ -115,6 +123,16 @@ describe('TokenAsset', () => {
     expect(queryByText('$100.00')).not.toBeInTheDocument();
     expect(queryByText('10.5 TEST')).not.toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('hides the fiat value but keeps the token amount when the currency rate check is off', () => {
+    const { queryByText, getByText } = render(
+      <Asset asset={mockTokenAsset} />,
+      createStore(false),
+    );
+
+    expect(queryByText('$100.00')).not.toBeInTheDocument();
+    expect(getByText('10.5 TEST')).toBeInTheDocument();
   });
 
   it('does not call onClick when token is disabled', () => {
@@ -288,15 +306,5 @@ describe('NFTAsset', () => {
 
     const image = getByAltText('Test NFT');
     expect(image).toHaveAttribute('src', 'https://example.com/collection.png');
-  });
-
-  it('renders account type label when account type is provided', () => {
-    const assetWithAccountType = {
-      ...mockTokenAsset,
-      accountType: BtcAccountType.P2wpkh,
-    };
-    const { getByText } = render(<Asset asset={assetWithAccountType} />);
-
-    expect(getByText('Native SegWit')).toBeInTheDocument();
   });
 });

@@ -35,6 +35,18 @@ export type LaunchOptions = {
   fixture?: FixtureData;
   proxyServer?: string;
   manifestFlags?: Partial<ManifestFlags>;
+  /**
+   * Restore the supplied secret recovery phrase and finish onboarding inside
+   * `launch()`, instead of leaving the extension on the onboarding UI.
+   */
+  selfOnboarding?: boolean;
+  /** Secret recovery phrase used when `selfOnboarding` is set. Cleared after use. */
+  srp?: string;
+  /**
+   * Vault password set and used to unlock when `selfOnboarding` is set.
+   * Defaults to the e2e password. Cleared after use.
+   */
+  password?: string;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;
