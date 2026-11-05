@@ -68,12 +68,6 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
         })
       | null;
     /**
-     * If this is set, the user will be redirected back to the home page regardless of
-     * the presence of a bridgeState or token. Used to prevent redirecting back to the bridge
-     * page after transaction submission.
-     */
-    stayOnHomePage?: boolean;
-    /**
      * Prepared sendBundle transaction metadata for hardware-wallet signing on
      * the shared signing page.
      */
@@ -158,21 +152,18 @@ export const startSwapViewLoadTrace = ({
 /**
  * Builds a "cleared" bridge navigation state: preserves any extra props from
  * `baseState` while resetting `bridgeState`, `token`, and any existing
- * `sendBundle` to null and setting `stayOnHomePage` to the given value.
+ * `sendBundle` to null.
  *
  * @param baseState - The base navigation state to spread (extra props pass through).
- * @param stayOnHomePage - Whether the user should be kept on the home page.
  * @returns The cleared navigation state.
  */
 const clearedBridgeState = (
   baseState: BridgeNavigationOptions['state'],
-  stayOnHomePage: boolean,
 ): BridgeNavigationOptions['state'] => ({
   ...baseState,
   bridgeState: null,
   token: null,
   ...clearSendBundleIfPresent(baseState),
-  stayOnHomePage,
 });
 
 /**
@@ -198,13 +189,9 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (
-      to: To = { pathname },
-      options: { replace?: boolean } = {},
-      stayOnHomePage = false,
-    ) => {
+    (to: To = { pathname }, options: { replace?: boolean } = {}) => {
       navigate(to, {
-        state: clearedBridgeState(state, stayOnHomePage),
+        state: clearedBridgeState(state),
         ...options,
       });
     },
@@ -383,7 +370,7 @@ export const useBridgeNavigation = () => {
    */
   const navigateToActivityPage = useCallback(() => {
     navigate(ACTIVITY_ROUTE, {
-      state: clearedBridgeState(state, true),
+      state: clearedBridgeState(state),
       replace: true,
     });
   }, [navigate, state]);
@@ -397,7 +384,7 @@ export const useBridgeNavigation = () => {
       if (isFromTransactionShield) {
         resetLocationState(TRANSACTION_SHIELD_ROUTE, options);
       } else {
-        resetLocationState(DEFAULT_ROUTE, options, true);
+        resetLocationState(DEFAULT_ROUTE, options);
       }
     },
     [dispatch, search, resetLocationState],

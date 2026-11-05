@@ -77,7 +77,6 @@ export default function useBatchSellSubmitQuotes({
     }
 
     navigate(ACTIVITY_ROUTE, {
-      state: { stayOnHomePage: true },
       replace: true,
     });
   };

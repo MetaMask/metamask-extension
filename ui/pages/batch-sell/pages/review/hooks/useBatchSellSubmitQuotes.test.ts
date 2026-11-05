@@ -262,7 +262,6 @@ describe('useBatchSellSubmitQuotes', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
-        state: { stayOnHomePage: true },
         replace: true,
       });
     });
@@ -316,7 +315,6 @@ describe('useBatchSellSubmitQuotes', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
-        state: { stayOnHomePage: true },
         replace: true,
       });
     });

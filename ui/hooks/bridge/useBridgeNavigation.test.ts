@@ -307,7 +307,6 @@ describe('useBridgeNavigation', () => {
           state: {
             bridgeState: null,
             token: null,
-            stayOnHomePage: false,
           },
         },
       );
@@ -346,7 +345,6 @@ describe('useBridgeNavigation', () => {
         state: {
           bridgeState: null,
           token: null,
-          stayOnHomePage: true,
         },
         replace: true,
       });
@@ -371,7 +369,6 @@ describe('useBridgeNavigation', () => {
         state: {
           bridgeState: null,
           token: null,
-          stayOnHomePage: true,
         },
       });
     });
@@ -400,7 +397,6 @@ describe('useBridgeNavigation', () => {
         state: {
           bridgeState: null,
           token: null,
-          stayOnHomePage: false,
         },
       });
     });
