@@ -92,6 +92,11 @@ jobs:
            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
            41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
     steps:
+      - name: Checkout (only so the workspace exists)
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: .nvmrc
+
       - name: Choose a build directory whose absolute path differs per iteration
         id: dir
         shell: bash
@@ -99,11 +104,15 @@ jobs:
           # Iteration n gets a directory name of n*2 extra characters, so the
           # 50 iterations span absolute path lengths of roughly 70 to 170.
           pad="$(printf '%*s' "$(( ${{ matrix.iteration }} * 2 ))" '' | tr ' ' 'x')"
-          dir="${RUNNER_TEMP}/i${{ matrix.iteration }}-${pad}/metamask-extension"
+          # Relative to the workspace: actions/setup-node resolves
+          # node-version-file against GITHUB_WORKSPACE.
+          dir="work/i${{ matrix.iteration }}-${pad}/metamask-extension"
           mkdir -p "${dir}"
+          abs="$(cd "${dir}" && pwd)"
           echo "dir=${dir}" >> "${GITHUB_OUTPUT}"
-          echo "len=${#dir}" >> "${GITHUB_OUTPUT}"
-          echo "Building in ${dir} (length ${#dir})"
+          echo "abs=${abs}" >> "${GITHUB_OUTPUT}"
+          echo "len=${#abs}" >> "${GITHUB_OUTPUT}"
+          echo "Building in ${abs} (length ${#abs})"
 
       - name: Clone the ${{ matrix.variant }} branch into that directory
         shell: bash
@@ -160,7 +169,7 @@ jobs:
           result = {
               'variant': '${{ matrix.variant }}',
               'iteration': ${{ matrix.iteration }},
-              'path': '${{ steps.dir.outputs.dir }}',
+              'path': '${{ steps.dir.outputs.abs }}',
               'path_length': ${{ steps.dir.outputs.len }},
               'runtime': sys.argv[3],
               'dist_digest': sys.argv[4],
