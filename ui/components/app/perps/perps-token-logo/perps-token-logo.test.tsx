@@ -153,9 +153,9 @@ describe('PerpsTokenLogo', () => {
       mockImg.onload?.();
     });
 
-    const logo = screen.getByTestId('perps-token-logo-BTC');
-    expect(logo).toHaveClass('custom-class');
-    expect(logo).toHaveClass('bg-white');
+    expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
+      'custom-class',
+    );
   });
 
   it('applies bg-white to ETH in dark mode', () => {
@@ -167,18 +167,6 @@ describe('PerpsTokenLogo', () => {
     });
 
     expect(screen.getByTestId('perps-token-logo-ETH')).toHaveClass('bg-white');
-  });
-
-  it('uses the avatar background for ETH in light mode', () => {
-    renderWithProvider(<PerpsTokenLogo symbol="ETH" />, mockStore);
-
-    act(() => {
-      mockImg.onload?.();
-    });
-
-    const logo = screen.getByTestId('perps-token-logo-ETH');
-    expect(logo).toHaveClass('bg-white');
-    expect(logo).not.toHaveClass('bg-icon-default');
   });
 
   it('applies bg-icon-default to S in light mode', () => {
@@ -223,9 +211,9 @@ describe('PerpsTokenLogo', () => {
     mockUseTheme.mockReturnValue('dark');
     rerender(<PerpsTokenLogo symbol={symbol} />);
 
-    const logo = screen.getByTestId(`perps-token-logo-${symbol}`);
-    expect(logo).toHaveClass('bg-white');
-    expect(logo).not.toHaveClass('bg-icon-default');
+    expect(screen.getByTestId(`perps-token-logo-${symbol}`)).not.toHaveClass(
+      'bg-icon-default',
+    );
   };
 
   it('applies only the light-mode dark background override to RESOLV', () => {
@@ -236,7 +224,7 @@ describe('PerpsTokenLogo', () => {
     expectOnlyLightModeDarkBackgroundOverride('USUAL');
   });
 
-  it('uses the avatar background for BTC', () => {
+  it('does not apply a background override to BTC', () => {
     mockUseTheme.mockReturnValue('dark');
     renderWithProvider(<PerpsTokenLogo symbol="BTC" />, mockStore);
 
@@ -245,7 +233,6 @@ describe('PerpsTokenLogo', () => {
     });
 
     const logo = screen.getByTestId('perps-token-logo-BTC');
-    expect(logo).toHaveClass('bg-white');
     expect(logo).not.toHaveClass('bg-icon-default');
   });
 

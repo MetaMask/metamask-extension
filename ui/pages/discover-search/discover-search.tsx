@@ -875,7 +875,7 @@ export const DiscoverSearchPage = () => {
         <search className="flex min-w-0 flex-1">
           <TextFieldSearch
             autoFocus={true}
-            className="min-w-0 flex-1"
+            className="w-full"
             placeholder={t('searchTokens')}
             value={searchQuery}
             onChange={handleSearchChange}
