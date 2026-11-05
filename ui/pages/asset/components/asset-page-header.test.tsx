@@ -263,6 +263,15 @@ describe('AssetPageHeader', () => {
       expect(mockHandleCopy).toHaveBeenCalledWith(CONTRACT_ADDRESS);
     });
 
+    it('shows the copied message in place of the address after copying', () => {
+      (useCopyToClipboard as jest.Mock).mockReturnValue([true, mockHandleCopy]);
+      renderHeader();
+
+      const addressButton = screen.getByTestId('asset-page-header-address');
+      expect(addressButton).toHaveTextContent('tokenContractAddressCopied');
+      expect(addressButton).not.toHaveTextContent('0x..5831');
+    });
+
     it('is omitted for native assets without a contract address', () => {
       renderHeader({ symbol: 'ETH', contractAddress: undefined });
 

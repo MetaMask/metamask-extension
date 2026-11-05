@@ -110,19 +110,24 @@ const AssetPageHeaderSubtitle = ({
           onClick={() => handleCopy(address)}
           aria-label={t('copyToClipboard')}
           className={classnames(
-            'inline-flex shrink-0 items-center gap-1 rounded-full border-0 bg-transparent p-0',
+            'inline-flex items-center gap-1 rounded-full border-0 bg-transparent p-0',
             'hover:bg-hover active:bg-pressed',
+            copied ? 'min-w-0' : 'shrink-0',
           )}
           data-testid="asset-page-header-address"
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
+            ellipsis={copied}
             color={
               copied ? TextColor.SuccessDefault : TextColor.TextAlternative
             }
+            className={copied ? 'min-w-0' : undefined}
           >
-            {formatCompactContractAddress(address)}
+            {copied
+              ? t('tokenContractAddressCopied')
+              : formatCompactContractAddress(address)}
           </Text>
           <Icon
             name={copied ? IconName.CopySuccess : IconName.Copy}
