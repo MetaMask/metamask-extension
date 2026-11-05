@@ -18,9 +18,14 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const mockResetBridgeController = jest.fn(() => Promise.resolve());
+const mockSetFromTokenInputValue = jest.fn();
 jest.mock('../../ducks/bridge/actions', () => ({
   ...jest.requireActual('../../ducks/bridge/actions'),
   resetBridgeController: () => () => mockResetBridgeController(),
+  setFromTokenInputValue: (value: string | null) => {
+    mockSetFromTokenInputValue(value);
+    return { type: 'bridge/setFromTokenInputValue', payload: value };
+  },
 }));
 
 const mockUseBridgeNavigation = jest.requireMock(
@@ -88,6 +93,8 @@ describe('useHwSwapNavigation', () => {
 
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledWith({ replace: true });
     expect(mockNavigate).not.toHaveBeenCalled();
+    // Swaps stays in history behind Shield, so its amount must be cleared.
+    expect(mockSetFromTokenInputValue).toHaveBeenCalledWith(null);
   });
 
   it('navigates to the default route for sendBundle flows', async () => {

@@ -54,6 +54,9 @@ export function useHwSwapNavigation({
 
     const timer = setTimeout(async () => {
       hasNavigatedAfterSubmission.current = true;
+      // Swaps can stay in history (e.g. behind Transaction Shield), so never
+      // leave the submitted amount behind.
+      dispatch(setFromTokenInputValue(null));
       if (
         isSendBundleFlow ||
         isFromTransactionShield ||
@@ -62,7 +65,6 @@ export function useHwSwapNavigation({
         await navigateToDefaultRoute({ replace: isFromTransactionShield });
         return;
       }
-      dispatch(setFromTokenInputValue(null));
       // The Swaps page remounts on return; clear quotes so it does not
       // restore the submitted amount.
       await dispatch(resetBridgeController());
