@@ -109,7 +109,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               %
             </button>
             <div
-              class="inline-flex items-center rounded-xl border transition-colors h-10 pl-0 pr-4 border-default w-24 bg-default"
+              class="inline-flex items-center rounded-xl border transition-colors h-10 pl-0 pr-4 w-24 border-muted bg-default"
             >
               <input
                 class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-4 pr-2 truncate"
