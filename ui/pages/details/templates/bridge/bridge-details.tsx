@@ -15,8 +15,8 @@ import { isValidTransactionHash } from '../../../../../shared/lib/transactions.u
 import { Footer, Row, Section } from '../../components/shared';
 import { TokenRow } from '../../components/token-row';
 import { FeesRows, TotalAmountRow } from '../../components/amounts-section';
-import { BridgeExplorerButtons } from '../../components/bridge-explorer-buttons';
-import { SwapAgainButton } from '../../components/swap-again-button';
+import { BridgeExplorerButtons } from './bridge-explorer-buttons';
+import { SwapAgainButton } from './swap-again-button';
 import { useHistoryTokens, useBridgeHistoryItem } from './hooks';
 import { BridgeNetworkRow } from './bridge-network-row';
 import { getBridgeDisplayStatus } from './utils';
