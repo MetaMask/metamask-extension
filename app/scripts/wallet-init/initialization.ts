@@ -11,6 +11,10 @@ import {
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
+import {
+  getAssetsControllerInstanceOptions,
+  subscribeToArcTransactionConfirmedRefresh,
+} from './instance-options/assets-controller';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -23,6 +27,7 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
+import { getAssetsControllerInitMessenger } from './messengers/assets-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
@@ -68,6 +73,8 @@ export function initializeWallet(request: InitializeWalletRequest) {
     getTransactionControllerInitMessenger(messenger);
   const seedlessOnboardingControllerInitMessenger =
     getSeedlessOnboardingControllerInitMessenger(messenger);
+  const assetsControllerInitMessenger =
+    getAssetsControllerInitMessenger(messenger);
 
   // TC event listeners must be set up before the wallet is initialized.
   // So that the TC can emit events to the wallet's messenger during initialization.
@@ -85,6 +92,10 @@ export function initializeWallet(request: InitializeWalletRequest) {
       }),
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
+      }),
+      assetsController: getAssetsControllerInstanceOptions({
+        initMessenger: assetsControllerInitMessenger,
+        persistedState: state,
       }),
       claimsService: getClaimsServiceInstanceOptions(),
       configRegistryApiService: getConfigRegistryApiServiceInstanceOptions(),
@@ -130,6 +141,10 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
   });
+
+  subscribeToArcTransactionConfirmedRefresh(
+    wallet.getInstance('AssetsController'),
+  );
 
   // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
   // networks, so they would otherwise come up with Arc selected. Fixtures that

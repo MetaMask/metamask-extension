@@ -1,20 +1,14 @@
-import {
-  AssetsController,
-  type AssetsControllerMessenger,
-} from '@metamask/assets-controller';
-import { ClientController } from '@metamask/client-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
-import { MessengerClientInitRequest } from '../types';
-import { buildControllerInitRequestMock } from '../test/utils';
+import { MessengerClientInitRequest } from '../../messenger-client-init/types';
+import { buildControllerInitRequestMock } from '../../messenger-client-init/test/utils';
 import { getRootMessenger } from '../../lib/messenger';
 import {
-  getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
   AssetsControllerInitMessenger,
-} from '../messengers/assets/assets-controller-messenger';
+} from '../messengers/assets-controller-messenger';
 import { ASSETS_UNIFY_STATE_FLAG } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
-import { AssetsControllerInit } from './assets-controller-init';
+import { getAssetsControllerInstanceOptions } from './assets-controller';
 
 jest.mock('../../../../shared/lib/trace', () => ({
   traceAsControllerCallback: jest.fn((_req, fn) =>
@@ -22,38 +16,22 @@ jest.mock('../../../../shared/lib/trace', () => ({
   ),
 }));
 
-jest.mock('@metamask/assets-controller', () => ({
-  AssetsController: jest.fn().mockImplementation(() => ({
-    state: {},
-  })),
-}));
-
 jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
-
-function buildClientControllerMock(isUiOpen = true): ClientController {
-  return { state: { isUiOpen } } as ClientController;
-}
 
 function getInitRequestMock(
   options: {
     useTokenDetection?: boolean;
     completedOnboarding?: boolean;
   } = {},
-): jest.Mocked<
-  MessengerClientInitRequest<
-    AssetsControllerMessenger,
-    AssetsControllerInitMessenger
-  >
-> {
+) {
   const { useTokenDetection = true, completedOnboarding = true } = options;
 
   const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getAssetsControllerMessenger(baseMessenger),
     initMessenger: getAssetsControllerInitMessenger(baseMessenger),
   };
 
@@ -72,8 +50,6 @@ function getInitRequestMock(
     }
     throw new Error(`Unexpected action: ${action}`);
   });
-
-  requestMock.getMessengerClient.mockReturnValue(buildClientControllerMock());
 
   return requestMock;
 }
@@ -100,7 +76,6 @@ function buildSubscribeTestSetup(
   const baseMessenger = getRootMessenger<never, never>();
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getAssetsControllerMessenger(baseMessenger),
     initMessenger: getAssetsControllerInitMessenger(baseMessenger),
   };
 
@@ -123,85 +98,32 @@ function buildSubscribeTestSetup(
   return { baseMessenger, requestMock };
 }
 
-describe('AssetsControllerInit', () => {
+function getOptions(requestMock: {
+  getMessengerClient: MessengerClientInitRequest<
+    never,
+    AssetsControllerInitMessenger
+  >['getMessengerClient'];
+  initMessenger: AssetsControllerInitMessenger;
+  persistedState: MessengerClientInitRequest<
+    never,
+    AssetsControllerInitMessenger
+  >['persistedState'];
+}) {
+  return getAssetsControllerInstanceOptions({
+    initMessenger: requestMock.initMessenger,
+    persistedState: requestMock.persistedState,
+  });
+}
+
+describe('getAssetsControllerInstanceOptions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('initializes the controller', () => {
-    const { messengerClient } = AssetsControllerInit(getInitRequestMock());
-    expect(messengerClient).toBeDefined();
-  });
-
-  it('creates AssetsController with correct parameters', () => {
-    const requestMock = getInitRequestMock();
-    AssetsControllerInit(requestMock);
-
-    expect(AssetsController).toHaveBeenCalledWith({
-      messenger: expect.any(Object),
-      state: undefined,
-      isEnabled: expect.any(Function),
-      isBasicFunctionality: expect.any(Function),
-      subscribeToBasicFunctionalityChange: expect.any(Function),
-      queryApiClient: expect.any(Object),
-      rpcDataSourceConfig: {
-        tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 30_000,
-        detectionInterval: 180_000,
-      },
-      priceDataSourceConfig: { pollInterval: 180_000 },
-      stakedBalanceDataSourceConfig: {
-        pollInterval: 30_000,
-        enabled: false,
-      },
-      isOnboarded: expect.any(Function),
-      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
-      trace: expect.any(Function),
-    });
-  });
-
-  it('uses persisted state when available', () => {
-    const persistedState = {
-      AssetsController: {
-        assetsMetadata: {},
-        assetsBalance: {},
-        assetsPrice: {},
-      },
-    };
-
-    const requestMock = getInitRequestMock();
-    requestMock.persistedState = persistedState;
-
-    AssetsControllerInit(requestMock);
-
-    expect(AssetsController).toHaveBeenCalledWith({
-      messenger: expect.any(Object),
-      state: persistedState.AssetsController,
-      isEnabled: expect.any(Function),
-      isBasicFunctionality: expect.any(Function),
-      subscribeToBasicFunctionalityChange: expect.any(Function),
-      queryApiClient: expect.any(Object),
-      rpcDataSourceConfig: {
-        tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 30_000,
-        detectionInterval: 180_000,
-      },
-      priceDataSourceConfig: { pollInterval: 180_000 },
-      stakedBalanceDataSourceConfig: {
-        pollInterval: 30_000,
-        enabled: false,
-      },
-      isOnboarded: expect.any(Function),
-      tempMigrateAssetsInfoMetadataAssets3346: expect.any(Function),
-      trace: expect.any(Function),
-    });
-  });
-
   it('passes tokenDetectionEnabled from preferences', () => {
     const requestMock = getInitRequestMock({ useTokenDetection: false });
-    AssetsControllerInit(requestMock);
+    const constructorCall = getOptions(requestMock);
 
-    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
     const config = constructorCall.rpcDataSourceConfig;
     if (!config?.tokenDetectionEnabled) {
       throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
@@ -228,9 +150,8 @@ describe('AssetsControllerInit', () => {
       throw new Error(`Unexpected action: ${action}`);
     });
 
-    AssetsControllerInit(requestMock);
+    const constructorCall = getOptions(requestMock);
 
-    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
     const config = constructorCall.rpcDataSourceConfig;
     if (!config?.tokenDetectionEnabled) {
       throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
@@ -254,9 +175,8 @@ describe('AssetsControllerInit', () => {
       throw new Error(`Unexpected action: ${action}`);
     });
 
-    AssetsControllerInit(requestMock);
+    const constructorCall = getOptions(requestMock);
 
-    const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
     const config = constructorCall.rpcDataSourceConfig;
     if (!config?.tokenDetectionEnabled) {
       throw new Error('Expected rpcDataSourceConfig.tokenDetectionEnabled');
@@ -267,42 +187,11 @@ describe('AssetsControllerInit', () => {
     expect(tokenDetectionEnabledGetter()).toBe(true);
   });
 
-  describe('isEnabled', () => {
-    it('returns ClientController isUiOpen state when UI is open', () => {
-      const requestMock = getInitRequestMock();
-
-      AssetsControllerInit(requestMock);
-
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(true);
-      expect(requestMock.getMessengerClient).toHaveBeenCalledWith(
-        'ClientController',
-      );
-    });
-
-    it('returns false when ClientController isUiOpen is false', () => {
-      const requestMock = getInitRequestMock();
-      requestMock.getMessengerClient.mockReturnValue(
-        buildClientControllerMock(false),
-      );
-
-      AssetsControllerInit(requestMock);
-
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(false);
-    });
-  });
-
   describe('isBasicFunctionality function', () => {
     it('returns false during onboarding', () => {
       const requestMock = getInitRequestMock({ completedOnboarding: false });
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isBasicFunctionality =
         constructorCall.isBasicFunctionality as () => boolean;
 
@@ -326,9 +215,8 @@ describe('AssetsControllerInit', () => {
           throw new Error(`Unexpected action: ${action}`);
         });
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isBasicFunctionality =
         constructorCall.isBasicFunctionality as () => boolean;
 
@@ -352,9 +240,8 @@ describe('AssetsControllerInit', () => {
           throw new Error(`Unexpected action: ${action}`);
         });
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isBasicFunctionality =
         constructorCall.isBasicFunctionality as () => boolean;
 
@@ -378,9 +265,8 @@ describe('AssetsControllerInit', () => {
           throw new Error(`Unexpected action: ${action}`);
         });
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isBasicFunctionality =
         constructorCall.isBasicFunctionality as () => boolean;
 
@@ -405,9 +291,8 @@ describe('AssetsControllerInit', () => {
           throw new Error(`Unexpected action: ${action}`);
         });
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isBasicFunctionality =
         constructorCall.isBasicFunctionality as () => boolean;
 
@@ -418,9 +303,8 @@ describe('AssetsControllerInit', () => {
   describe('isOnboarded function', () => {
     it('returns true when onboarding is completed', () => {
       const requestMock = getInitRequestMock({ completedOnboarding: true });
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isOnboarded = constructorCall.isOnboarded as () => boolean;
 
       expect(isOnboarded()).toBe(true);
@@ -428,9 +312,8 @@ describe('AssetsControllerInit', () => {
 
     it('returns false when onboarding is not completed', () => {
       const requestMock = getInitRequestMock({ completedOnboarding: false });
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isOnboarded = constructorCall.isOnboarded as () => boolean;
 
       expect(isOnboarded()).toBe(false);
@@ -453,9 +336,8 @@ describe('AssetsControllerInit', () => {
           throw new Error(`Unexpected action: ${action}`);
         });
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isOnboarded = constructorCall.isOnboarded as () => boolean;
 
       expect(isOnboarded()).toBe(false);
@@ -465,9 +347,8 @@ describe('AssetsControllerInit', () => {
   describe('trace feature flag (assetsUnifyState.tracesEnabled)', () => {
     it('skips Sentry tracing when tracesEnabled is absent / off', async () => {
       const requestMock = getInitRequestMock();
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const { trace } = constructorCall;
       if (!trace) {
         throw new Error('Expected trace callback to be defined');
@@ -508,9 +389,8 @@ describe('AssetsControllerInit', () => {
           throw new Error(`Unexpected action: ${action}`);
         });
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const { trace } = constructorCall;
       if (!trace) {
         throw new Error('Expected trace callback to be defined');
@@ -557,9 +437,8 @@ describe('AssetsControllerInit', () => {
       requestMock.persistedState =
         persistedState as unknown as typeof requestMock.persistedState;
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const getMigrationState =
         constructorCall.tempMigrateAssetsInfoMetadataAssets3346;
       if (!getMigrationState) {
@@ -580,12 +459,15 @@ describe('AssetsControllerInit', () => {
 
   describe('queryApiClient', () => {
     it('creates the API client with correct clientProduct', () => {
-      // Use jest.isolateModules so assets-controller-init gets a fresh module
+      // Use jest.isolateModules so the options builder gets a fresh module
       // instance with apiClient = null, guaranteeing createApiPlatformClient is called.
       jest.isolateModules(() => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(getInitRequestMock());
+        const freshModule = require('./assets-controller') as any;
+        freshModule.getAssetsControllerInstanceOptions({
+          initMessenger: getInitRequestMock().initMessenger,
+          persistedState: getInitRequestMock().persistedState,
+        });
       });
 
       expect(createApiPlatformClient).toHaveBeenCalledWith({
@@ -598,9 +480,15 @@ describe('AssetsControllerInit', () => {
     it('reuses the cached API client across multiple init calls', () => {
       jest.isolateModules(() => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(getInitRequestMock());
-        freshModule.AssetsControllerInit(getInitRequestMock());
+        const freshModule = require('./assets-controller') as any;
+        freshModule.getAssetsControllerInstanceOptions({
+          initMessenger: getInitRequestMock().initMessenger,
+          persistedState: getInitRequestMock().persistedState,
+        });
+        freshModule.getAssetsControllerInstanceOptions({
+          initMessenger: getInitRequestMock().initMessenger,
+          persistedState: getInitRequestMock().persistedState,
+        });
       });
 
       expect(createApiPlatformClient).toHaveBeenCalledTimes(1);
@@ -609,8 +497,11 @@ describe('AssetsControllerInit', () => {
     it('getBearerToken resolves with the bearer token on success', async () => {
       jest.isolateModules(() => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(getInitRequestMock());
+        const freshModule = require('./assets-controller') as any;
+        freshModule.getAssetsControllerInstanceOptions({
+          initMessenger: getInitRequestMock().initMessenger,
+          persistedState: getInitRequestMock().persistedState,
+        });
       });
 
       const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
@@ -643,8 +534,11 @@ describe('AssetsControllerInit', () => {
 
       jest.isolateModules(() => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(requestMock);
+        const freshModule = require('./assets-controller') as any;
+        freshModule.getAssetsControllerInstanceOptions({
+          initMessenger: requestMock.initMessenger,
+          persistedState: requestMock.persistedState,
+        });
       });
 
       const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
@@ -663,8 +557,11 @@ describe('AssetsControllerInit', () => {
 
       jest.isolateModules(() => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(requestMock);
+        const freshModule = require('./assets-controller') as any;
+        freshModule.getAssetsControllerInstanceOptions({
+          initMessenger: requestMock.initMessenger,
+          persistedState: requestMock.persistedState,
+        });
       });
 
       const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
@@ -688,8 +585,11 @@ describe('AssetsControllerInit', () => {
 
       jest.isolateModules(() => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(requestMock);
+        const freshModule = require('./assets-controller') as any;
+        freshModule.getAssetsControllerInstanceOptions({
+          initMessenger: requestMock.initMessenger,
+          persistedState: requestMock.persistedState,
+        });
       });
 
       const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
@@ -714,8 +614,11 @@ describe('AssetsControllerInit', () => {
 
         jest.isolateModules(() => {
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-          const freshModule = require('./assets-controller-init') as any;
-          freshModule.AssetsControllerInit(requestMock);
+          const freshModule = require('./assets-controller') as any;
+          freshModule.getAssetsControllerInstanceOptions({
+            initMessenger: requestMock.initMessenger,
+            persistedState: requestMock.persistedState,
+          });
         });
 
         const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
@@ -754,13 +657,6 @@ describe('AssetsControllerInit', () => {
       const listeners: Record<string, (selectedValue: unknown) => void> = {};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (requestMock.controllerMessenger as any).subscribe = jest
-        .fn()
-        .mockImplementation((event: string, listener: (v: unknown) => void) => {
-          listeners[event] = listener;
-        });
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (requestMock.initMessenger as any).subscribe = jest
         .fn()
         .mockImplementation((event: string, listener: (v: unknown) => void) => {
@@ -777,9 +673,8 @@ describe('AssetsControllerInit', () => {
       });
       const listeners = captureSubscribeListeners(requestMock);
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const subscribeToBasicFunctionalityChange =
         constructorCall.subscribeToBasicFunctionalityChange as (
           onChange: (value: boolean) => void,
@@ -803,9 +698,8 @@ describe('AssetsControllerInit', () => {
       });
       const listeners = captureSubscribeListeners(requestMock);
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const subscribeToBasicFunctionalityChange =
         constructorCall.subscribeToBasicFunctionalityChange as (
           onChange: (value: boolean) => void,
@@ -828,9 +722,8 @@ describe('AssetsControllerInit', () => {
       });
       const listeners = captureSubscribeListeners(requestMock);
 
-      AssetsControllerInit(requestMock);
+      const constructorCall = getOptions(requestMock);
 
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const subscribeToBasicFunctionalityChange =
         constructorCall.subscribeToBasicFunctionalityChange as (
           onChange: (value: boolean) => void,

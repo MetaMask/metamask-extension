@@ -289,7 +289,6 @@ import {
 } from './messenger-client-init/multichain';
 import {
   AssetsContractControllerInit,
-  AssetsControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -352,7 +351,7 @@ import { BridgeControllerInit } from './messenger-client-init/bridge-controller-
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
 import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
-import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
+import { getNetworkEnablementControllerInitMessenger } from './messenger-client-init/messengers/assets';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
@@ -389,6 +388,7 @@ import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
+import { setupNetworkEnablementController } from './wallet-init/instance-options/network-enablement-controller';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
@@ -593,7 +593,6 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
       MultichainNetworkController: MultichainNetworkControllerInit,
-      NetworkEnablementController: NetworkEnablementControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
@@ -635,7 +634,6 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
-      AssetsController: AssetsControllerInit,
       LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
     };
 
@@ -724,7 +722,7 @@ export default class MetamaskController extends EventEmitter {
     this.nftDetectionController = messengerClientsByName.NftDetectionController;
     this.assetsContractController =
       messengerClientsByName.AssetsContractController;
-    this.assetsController = messengerClientsByName.AssetsController;
+    this.assetsController = this.wallet.getInstance('AssetsController');
     this.multichainAssetsController =
       messengerClientsByName.MultichainAssetsController;
     this.multichainTransactionsController =
@@ -764,8 +762,9 @@ export default class MetamaskController extends EventEmitter {
       'SubscriptionController',
     );
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
-    this.networkEnablementController =
-      messengerClientsByName.NetworkEnablementController;
+    this.networkEnablementController = this.wallet.getInstance(
+      'NetworkEnablementController',
+    );
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
       messengerClientsByName.GatorPermissionsController;
@@ -917,6 +916,19 @@ export default class MetamaskController extends EventEmitter {
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
+    // `wallet.init()` runs before MultichainNetworkController exists, so
+    // NetworkEnablementController.init() is deferred until messenger clients
+    // are registered. Must run before the UI first opens, because
+    // AssetsController starts fetching on the first
+    // `ClientController:setUiOpen(true)` and reads the enabled networks from
+    // NetworkEnablementController state for each fetch.
+    setupNetworkEnablementController({
+      networkEnablementController: this.networkEnablementController,
+      initMessenger: getNetworkEnablementControllerInitMessenger(
+        this.controllerMessenger,
+      ),
+      persistedState: initState,
+    });
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',

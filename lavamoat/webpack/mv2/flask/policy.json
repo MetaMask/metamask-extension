@@ -1449,6 +1449,23 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
+    "@metamask/network-enablement-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
     "@metamask/notification-services-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -2131,7 +2148,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "ethereumjs-util>bn.js": true,
-        "uuid": true
+        "@metamask/wallet>@metamask/gas-fee-controller>uuid": true
       }
     },
     "@metamask/gator-permissions-controller": {
@@ -2571,6 +2588,11 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2603,7 +2625,7 @@
         "@metamask/network-connection-banner-controller>@metamask/client-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/network-controller": true,
-        "@metamask/network-enablement-controller": true,
+        "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": true,
         "@metamask/utils": true,
         "reselect": true
       }
@@ -2650,10 +2672,16 @@
     "@metamask/network-enablement-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/config-registry-controller": true,
+        "@metamask/network-enablement-controller>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": {
+      "packages": {
         "@metamask/utils": true,
         "reselect": true
       }
@@ -3505,6 +3533,7 @@
         "@metamask/wallet>@metamask/address-book-controller": true,
         "@metamask/analytics-controller": true,
         "@metamask/wallet>@metamask/approval-controller": true,
+        "@metamask/assets-controller": true,
         "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/wallet>@metamask/claims-controller": true,
@@ -3518,6 +3547,7 @@
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
+        "@metamask/network-enablement-controller": true,
         "@metamask/passkey-controller": true,
         "@metamask/permission-controller": true,
         "@metamask/remote-feature-flag-controller": true,
@@ -7704,7 +7734,8 @@
     },
     "@metamask/assets-controllers>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/base-data-service>uuid": {
@@ -7724,7 +7755,8 @@
     },
     "@metamask/core-backend>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/eth-qr-keyring>uuid": {
@@ -7739,8 +7771,12 @@
     },
     "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/wallet>@metamask/gas-fee-controller>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/keyring-sdk>uuid": {
