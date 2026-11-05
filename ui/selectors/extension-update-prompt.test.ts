@@ -2,6 +2,7 @@ import type { MetaMaskReduxState } from '../store/store';
 import {
   EXTENSION_UPDATE_PROMPT_COOLDOWN_MS,
   getExtensionUpdatePromptType,
+  getIsExtensionUpdatePromptOnNotificationEnabled,
   getShowUpdateModal,
   resolveExtensionUpdatePromptType,
 } from './extension-update-prompt';
@@ -14,6 +15,7 @@ type PromptStateInput = {
   deprecatedVersion?: unknown;
   lastUpdatedAt?: number | null;
   minimumVersion?: unknown;
+  notificationFlag?: unknown;
   pendingExtensionVersion?: string | null;
   updateModalLastDismissedAt?: number | null;
 };
@@ -23,6 +25,7 @@ function buildState(input: PromptStateInput = {}): MetaMaskReduxState {
     currentVersion = '9.0.0',
     deprecatedVersion,
     lastUpdatedAt = null,
+    notificationFlag,
     pendingExtensionVersion = '12.0.0',
     updateModalLastDismissedAt = null,
   } = input;
@@ -45,6 +48,9 @@ function buildState(input: PromptStateInput = {}): MetaMaskReduxState {
         }),
         ...(deprecatedVersion !== undefined && {
           extensionUpdatePromptDeprecatedVersion: deprecatedVersion,
+        }),
+        ...(notificationFlag !== undefined && {
+          extensionUpdatePromptOnNotification: notificationFlag,
         }),
       },
       updateModalLastDismissedAt,
@@ -242,6 +248,30 @@ describe('getExtensionUpdatePromptType', () => {
       getShowUpdateModal(buildState({ pendingExtensionVersion: null })),
     ).toBe(false);
   });
+});
+
+describe('getIsExtensionUpdatePromptOnNotificationEnabled', () => {
+  afterEach(() => {
+    global.platform = originalPlatform;
+  });
+
+  it('is enabled only when the flag is exactly true', () => {
+    expect(
+      getIsExtensionUpdatePromptOnNotificationEnabled(
+        buildState({ notificationFlag: true }),
+      ),
+    ).toBe(true);
+  });
+
+  for (const flag of [undefined, false, 'true', 1]) {
+    it(`is disabled when the flag is ${String(flag)}`, () => {
+      expect(
+        getIsExtensionUpdatePromptOnNotificationEnabled(
+          buildState(flag === undefined ? {} : { notificationFlag: flag }),
+        ),
+      ).toBe(false);
+    });
+  }
 });
 
 describe('resolveExtensionUpdatePromptType', () => {

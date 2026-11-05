@@ -126,17 +126,54 @@ export const selectDisplayUpdateModal = createSelector(
 );
 
 /**
- * Returns true when a flow the user is in the middle of should keep the update
- * takeover from covering it. The takeover appears as soon as all of these have
- * closed.
+ * Returns true when an open dialog other than a confirmation should keep the
+ * update takeover from covering it:
  *
- * - a pending confirmation (including add-network confirmations)
  * - an active QR hardware scan
  * - the network menu
  * - the IPFS modal
  * - the basic functionality modal
  * - the keyring snap removal result
  * - the deprecated network modal
+ *
+ * Notification windows use this on its own. A pending confirmation is why that
+ * window exists, so it must not hide the takeover there.
+ *
+ * @param state - Redux state object.
+ * @returns Whether an open dialog should make the takeover wait.
+ */
+export const selectIsUpdateModalDeferredByOpenFlow = createSelector(
+  [
+    getActiveQrCodeScanRequest,
+    (state: MetaMaskReduxState) => state.appState.isNetworkMenuOpen,
+    (state: MetaMaskReduxState) => state.appState.showIpfsModalOpen,
+    (state: MetaMaskReduxState) => state.appState.showBasicFunctionalityModal,
+    (state: MetaMaskReduxState) => state.appState.showKeyringRemovalSnapModal,
+    (state: MetaMaskReduxState) => state.appState.deprecatedNetworkModalOpen,
+  ],
+  (
+    activeQrCodeScanRequest,
+    isNetworkMenuOpen,
+    isIpfsModalOpen,
+    isBasicFunctionalityModalOpen,
+    isKeyringRemovalResultOpen,
+    isDeprecatedNetworkModalOpen,
+  ) =>
+    Boolean(
+      activeQrCodeScanRequest ||
+      isNetworkMenuOpen ||
+      isIpfsModalOpen ||
+      isBasicFunctionalityModalOpen ||
+      isKeyringRemovalResultOpen ||
+      isDeprecatedNetworkModalOpen,
+    ),
+);
+
+/**
+ * Returns true when a flow the user is in the middle of should keep the update
+ * takeover from covering it. Adds pending confirmations (including add-network
+ * confirmations) on top of {@link selectIsUpdateModalDeferredByOpenFlow}. The
+ * takeover appears as soon as all of these have closed.
  *
  * This is deliberately separate from `selectDisplayUpdateModal`, which keeps
  * the lower-priority home modals suppressed while the takeover waits.
@@ -147,31 +184,10 @@ export const selectDisplayUpdateModal = createSelector(
 export const selectIsUpdateModalDeferred = createSelector(
   [
     (state: MetaMaskReduxState) => getUnapprovedConfirmations(state).length > 0,
-    getActiveQrCodeScanRequest,
-    (state: MetaMaskReduxState) => state.appState.isNetworkMenuOpen,
-    (state: MetaMaskReduxState) => state.appState.showIpfsModalOpen,
-    (state: MetaMaskReduxState) => state.appState.showBasicFunctionalityModal,
-    (state: MetaMaskReduxState) => state.appState.showKeyringRemovalSnapModal,
-    (state: MetaMaskReduxState) => state.appState.deprecatedNetworkModalOpen,
+    selectIsUpdateModalDeferredByOpenFlow,
   ],
-  (
-    hasPendingConfirmation,
-    activeQrCodeScanRequest,
-    isNetworkMenuOpen,
-    isIpfsModalOpen,
-    isBasicFunctionalityModalOpen,
-    isKeyringRemovalResultOpen,
-    isDeprecatedNetworkModalOpen,
-  ) =>
-    Boolean(
-      hasPendingConfirmation ||
-      activeQrCodeScanRequest ||
-      isNetworkMenuOpen ||
-      isIpfsModalOpen ||
-      isBasicFunctionalityModalOpen ||
-      isKeyringRemovalResultOpen ||
-      isDeprecatedNetworkModalOpen,
-    ),
+  (hasPendingConfirmation, isDeferredByOpenFlow) =>
+    hasPendingConfirmation || isDeferredByOpenFlow,
 );
 
 /**

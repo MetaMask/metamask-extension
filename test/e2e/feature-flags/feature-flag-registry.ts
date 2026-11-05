@@ -3289,6 +3289,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  extensionUpdatePromptOnNotification: {
+    inProd: false,
+    name: 'extensionUpdatePromptOnNotification',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   [ACTIVE_TAB_DOMAIN_METRICS_FLAG]: {
     inProd: true,
     name: ACTIVE_TAB_DOMAIN_METRICS_FLAG,

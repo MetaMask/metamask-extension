@@ -11,6 +11,9 @@ export const EXTENSION_UPDATE_PROMPT_MINIMUM_VERSION_FLAG =
 export const EXTENSION_UPDATE_PROMPT_DEPRECATED_VERSION_FLAG =
   'extensionUpdatePromptDeprecatedVersion';
 
+export const EXTENSION_UPDATE_PROMPT_ON_NOTIFICATION_FLAG =
+  'extensionUpdatePromptOnNotification';
+
 /** The prompt reappears only after strictly more than 24 hours. */
 export const EXTENSION_UPDATE_PROMPT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
@@ -148,6 +151,26 @@ export function getExtensionUpdatePromptType(
     lastUpdatedAt,
     now: Date.now(),
   });
+}
+
+/**
+ * Returns true only when the notification takeover flag is exactly `true`.
+ * Missing, false, and non-boolean values all keep notification windows on the
+ * confirmation, which is how this ships.
+ *
+ * @param state - Redux state.
+ * @returns Whether the takeover may appear in a notification window.
+ */
+export function getIsExtensionUpdatePromptOnNotificationEnabled(
+  state: MetaMaskReduxState,
+): boolean {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state) as Record<
+    string,
+    unknown
+  >;
+  return (
+    remoteFeatureFlags[EXTENSION_UPDATE_PROMPT_ON_NOTIFICATION_FLAG] === true
+  );
 }
 
 /**
