@@ -93,7 +93,7 @@ export const Loading: Story = {
 export const SwapField: Story = {
   render: () => (
     <PopupFrame>
-      <StatefulAmount value="1.5" maxFontSize={40} align="start" />
+      <StatefulAmount value="1.5" maxFontSize={48} align="start" />
     </PopupFrame>
   ),
 };
