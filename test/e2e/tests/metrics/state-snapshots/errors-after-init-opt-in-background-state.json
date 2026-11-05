@@ -64,6 +64,8 @@
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
+    "moneyEarnBannerDismissedTokenKeys": "object",
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -183,6 +185,7 @@
     "metaMetricsDataDeletionTimestamp": 0
   },
   "MoneyAccountController": {
+    "defaultMoneyAccountId": null,
     "moneyAccounts": "object"
   },
   "MoneyAccountUpgradeController": {
@@ -193,11 +196,6 @@
     "allIgnoredAssets": "object",
     "assetsMetadata": "object"
   },
-  "MultichainAssetsRatesController": {
-    "conversionRates": "object",
-    "historicalPrices": "object"
-  },
-  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "cryptocurrencies": ["btc", "sol"],
@@ -253,6 +251,7 @@
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
     "hasSeenOnboardingCompletionPage": true,
+    "onboardingJourneyEnded": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
@@ -365,7 +364,7 @@
   },
   "RewardsController": {
     "rewardsAccounts": "object",
-    "rewardsActiveAccount": null,
+    "rewardsActiveAccount": "object",
     "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
@@ -374,6 +373,7 @@
     "rewardsVipPerpsFees": "object"
   },
   "RewardsDataService": "undefined",
+  "RewardsMoneyController": "object",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
@@ -412,9 +412,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": { "tokensChainsCache": {} },
-  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},
     "allIgnoredTokens": {},

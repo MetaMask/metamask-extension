@@ -3,7 +3,18 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navi
 import { captureException } from '../../../../shared/lib/sentry';
 import { extensionMfaControllerAdapter } from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
+import type { MfaReason } from './engine/types';
 import { useMfa } from './useMfa';
+
+const mockTrackEvent = jest.fn(async () => undefined);
+jest.mock('../../useAnalytics', () => ({
+  useAnalytics: () => ({
+    trackEvent: mockTrackEvent,
+    createEventBuilder: jest.requireActual(
+      '../../../../shared/lib/analytics/create-event-builder',
+    ).createEventBuilder,
+  }),
+}));
 
 jest.mock('./engine/activeFlow', () => ({
   startMfaFlow: jest.fn(),
@@ -21,7 +32,7 @@ jest.mock('../../../../shared/lib/sentry', () => ({
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
 
 const enrolledCredentials: EnrolledCredential[] = [
-  { type: 'email_otp', status: 'active', verified: true },
+  { id: 'email_otp', type: 'email_otp', status: 'active', verified: true },
 ];
 
 const renderUseMfa = () =>
@@ -39,7 +50,10 @@ describe('useMfa', () => {
   });
 
   it('starts a verifyOrEnroll flow on the extension with the feature reason', async () => {
-    const reason = { operation: 'vba.activate', enrollDescription: 'Why' };
+    const reason: MfaReason = {
+      operation: 'vba.activate',
+      enrollDescription: 'Why',
+    };
 
     await renderUseMfa().verifyOrEnroll({
       reason,
@@ -57,11 +71,12 @@ describe('useMfa', () => {
       platform: 'extension',
       controller: extensionMfaControllerAdapter,
       reportError: expect.any(Function),
+      trackEvent: expect.any(Function),
     });
   });
 
   it('starts an enroll flow with the caller reason', async () => {
-    const reason = { operation: 'settings.addEmail' };
+    const reason: MfaReason = { operation: 'settings.addEmail' };
 
     await renderUseMfa().enroll({ method: 'email_otp', reason });
 
@@ -71,6 +86,7 @@ describe('useMfa', () => {
       platform: 'extension',
       controller: extensionMfaControllerAdapter,
       reportError: expect.any(Function),
+      trackEvent: expect.any(Function),
     });
   });
 
@@ -96,5 +112,25 @@ describe('useMfa', () => {
       },
       extra: { step: 'otp' },
     });
+  });
+
+  it('sends the kit events as MetaMetrics events', async () => {
+    await renderUseMfa().enroll({
+      method: 'email_otp',
+      reason: { operation: 'settings.addEmail' },
+    });
+    const { trackEvent } = mockStartMfaFlow.mock.calls[0][0];
+
+    trackEvent?.('MFA Flow Status Updated', { status: 'started' });
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MFA Flow Status Updated',
+        properties: expect.objectContaining({
+          category: 'Auth',
+          status: 'started',
+        }),
+      }),
+    );
   });
 });

@@ -91,11 +91,16 @@ const baseHardwareWalletConfig = {
 };
 
 setBackgroundConnection({
-  submitTx: jest.fn(),
-  setEnabledAllPopularNetworks: jest.fn(),
+  messengerCall: jest.fn((actionType: string) => {
+    if (actionType === 'BridgeController:getLocation') {
+      return Promise.resolve('Main View');
+    }
+    if (actionType === 'BridgeController:resetState') {
+      return Promise.resolve(mockResetState());
+    }
+    return Promise.resolve(undefined);
+  }),
   getStatePatches: jest.fn(),
-  getLocation: jest.fn().mockResolvedValue('Main View'),
-  resetState: () => mockResetState(),
 } as never);
 
 describe('BridgeCTAButton', () => {

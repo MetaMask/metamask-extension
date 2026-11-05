@@ -92,7 +92,6 @@ import {
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
-import { isMfaKitEnabled } from '../../hooks/identity/mfa';
 import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
@@ -103,6 +102,7 @@ import {
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
+import { useUiInteractionReporter } from '../../hooks/useUiInteractionReporter';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
@@ -132,6 +132,7 @@ import { BasicFunctionalityMigrationModal } from '../../components/app/basic-fun
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
+import { MoneyFtueSplash } from '../../components/app/money/money-ftue-splash';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -159,6 +160,7 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
+import { ALLOWED_CAPABILITIES as ASSET_ROUTE_ALLOWED_CAPABILITIES } from '../asset/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
@@ -262,6 +264,9 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
+export const PageNotFound = mmLazy(
+  () => import('../../components/app/page-not-found/page-not-found.tsx'),
+);
 const BasicFunctionalityOff = mmLazy(
   () =>
     import('../basic-functionality-required/basic-functionality-required.tsx'),
@@ -438,14 +443,10 @@ export const routeConfig = [
             },
           ]
         : []),
-      ...(isMfaKitEnabled()
-        ? [
-            {
-              path: MFA_FLOW_ROUTE,
-              element: <MfaFlowHost />,
-            },
-          ]
-        : []),
+      {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
@@ -498,10 +499,11 @@ export const routeConfig = [
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
       },
-      {
+      createRouteWithMessenger({
         path: ASSET_DETAILS_ROUTE,
+        capabilities: ASSET_ROUTE_ALLOWED_CAPABILITIES,
         element: <Asset />,
-      },
+      }),
       {
         path: PERMISSIONS,
         element: (
@@ -742,6 +744,12 @@ export const routeConfig = [
       },
     ],
   },
+  // Unmatched hashes stay in the address bar so route metrics still see them,
+  // and render the missing-page screen instead of the crash page.
+  {
+    path: '*',
+    element: <PageNotFound />,
+  },
 ];
 
 export default function Routes() {
@@ -855,6 +863,8 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
+  useUiInteractionReporter();
+
   const handleIdleAction = useCallback(() => {
     dispatch(setLastActiveTime());
   }, [dispatch]);
@@ -923,7 +933,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked && isMfaKitEnabled() ? <MfaFlowLauncher /> : null}
+      {isUnlocked ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}
@@ -956,6 +966,8 @@ export default function Routes() {
       {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
 
       {renderRoutes()}
+
+      {isUnlocked ? <MoneyFtueSplash /> : null}
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />

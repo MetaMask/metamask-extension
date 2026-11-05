@@ -9,7 +9,7 @@ import { NetworkSelectorCustomImport } from '.';
 describe('NetworkSelectorCustomImport', () => {
   const store = configureStore()(mockState);
 
-  it('should match snapshot', () => {
+  it('renders the network name as a button', () => {
     const props = {
       title: 'Test Title',
       ariaLabel: 'Network: Test Title',
@@ -18,13 +18,11 @@ describe('NetworkSelectorCustomImport', () => {
       onSelectNetwork: jest.fn(),
     };
 
-    const { container } = renderWithProvider(
-      <NetworkSelectorCustomImport {...props} />,
-      store,
-    );
+    renderWithProvider(<NetworkSelectorCustomImport {...props} />, store);
 
-    expect(screen.getByText('Test Title')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    expect(
+      screen.getByRole('button', { name: 'Network: Test Title' }),
+    ).toHaveTextContent('Test Title');
   });
 
   it('should call onSelectNetwork when container is clicked', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,

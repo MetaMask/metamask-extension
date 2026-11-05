@@ -22,6 +22,7 @@ import {
   SensitiveText,
   TextVariant,
   TextColor,
+  FontFamily,
   FontWeight,
   Icon,
   IconName,
@@ -59,6 +60,7 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
@@ -856,7 +858,7 @@ const PerpsMarketDetailPage = () => {
       navigate(PREVIOUS_ROUTE);
       return;
     }
-    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
+    navigate(PERPS_HOME_PAGE_ROUTE, { replace: true });
   }, [navigate]);
 
   const handleMarketListClick = useCallback(() => {
@@ -1357,8 +1359,8 @@ const PerpsMarketDetailPage = () => {
         data-testid="perps-market-detail-summary"
       >
         <Text
-          variant={TextVariant.HeadingLg}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           data-testid="perps-market-detail-price"
         >
           {displayPrice}
