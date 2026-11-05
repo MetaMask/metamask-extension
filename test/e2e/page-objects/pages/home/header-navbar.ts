@@ -226,11 +226,10 @@ class HeaderNavbar {
     const trigger = await container.findElement({
       css: '[data-testid="multichain-address-rows-trigger"]',
     });
+    // WebDriver's pointer move fires mouseenter. Do not synthesize a
+    // MouseEvent in the page: LavaMoat scuttling blocks globalThis.MouseEvent
+    // in the test build.
     await this.driver.hoverElement(trigger);
-    await this.driver.executeScript((element: HTMLElement) => {
-      element.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
-      element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: false }));
-    }, trigger);
   }
 
   async clickNotificationCount(count: number): Promise<void> {
