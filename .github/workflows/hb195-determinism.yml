@@ -163,8 +163,10 @@ jobs:
           python3 - "${RUNNER_TEMP}/hashdump.json" "${out}" "${runtime}" "${dist_digest}" <<'PY'
           import json, sys
           dump = json.load(open(sys.argv[1]))
-          ctx = dump['context']
-          mods = {m['ident'].replace(ctx, '<ctx>'): m.get('buildHash') for m in dump['modules']}
+          # Identifiers carry absolute paths (loaders under the repo root, the
+          # resource under the webpack context <root>/app); normalise the root.
+          root = '${{ steps.dir.outputs.abs }}'
+          mods = {m['ident'].replace(root, '<root>'): m.get('buildHash') for m in dump['modules']}
           result = {
               'variant': '${{ matrix.variant }}',
               'iteration': ${{ matrix.iteration }},
@@ -224,9 +226,16 @@ jobs:
               digests = collections.Counter(r['dist_digest'] for r in rs)
               # modules whose build hash is not the same in every build
               per_module = collections.defaultdict(set)
+              seen = collections.Counter()
               for r in rs:
                   for ident, h in r['modules'].items():
                       per_module[ident].add(h)
+                      seen[ident] += 1
+              # Only modules present in every build can be compared; report
+              # any that are not so a normalisation problem cannot hide.
+              missing = sum(1 for i in per_module if seen[i] != len(rs))
+              if missing:
+                  print(f'WARNING: {missing} module identifiers are not present in every build\n')
               unstable = sorted(i for i, hs in per_module.items() if len(hs) > 1)
               summary[variant] = (len(rs), len(runtimes), len(digests), len(per_module), unstable)
               print(f'## {variant}: {len(rs)} builds, '
@@ -239,7 +248,7 @@ jobs:
               if unstable:
                   print('Modules whose build hash differs between paths:\n')
                   for i in unstable[:40]:
-                      print(f'- `{i}`')
+                      print(f'- `{i.split("!")[-1]}`')
                   if len(unstable) > 40:
                       print(f'- ... and {len(unstable) - 40} more')
                   print()
