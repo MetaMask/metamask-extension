@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'clsx';
 import { BigNumber } from 'bignumber.js';
 import { debounce } from 'lodash';
 import {
@@ -572,7 +571,7 @@ const PrepareBridgePage = ({
           }}
         >
           <Box
-            className="prepare-bridge-page__switch-tokens flex"
+            className="flex"
             backgroundColor={BoxBackgroundColor.BackgroundSection}
             style={{
               position: 'absolute',
@@ -587,10 +586,15 @@ const PrepareBridgePage = ({
             }}
           >
             <LegacyButtonIcon
+              className="group enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
               iconProps={{
-                className: classnames({
-                  rotate: rotateSwitchTokens,
-                }),
+                className:
+                  'transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default',
+                // Tailwind has no 360° rotate utility; the full turn is what
+                // animates the spin on each switch.
+                style: rotateSwitchTokens
+                  ? { transform: 'rotate(360deg)' }
+                  : undefined,
               }}
               style={{
                 alignSelf: 'center',
