@@ -75,7 +75,7 @@ describe('Bitcoin Send', function (this: Suite) {
         await activityTab.checkWaitForTransactionStatusByAmount(
           expectedAmount,
           'confirmed',
-          { timeout: 90_000 },
+          { timeout: 20_000 },
         );
       },
     );
