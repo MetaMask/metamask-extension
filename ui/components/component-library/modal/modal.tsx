@@ -1,6 +1,10 @@
 import React, { forwardRef, Ref } from 'react';
 import ReactDOM from 'react-dom';
 import classnames from 'clsx';
+import {
+  ModalLayerContext,
+  useModalLayer,
+} from '#ui/components/app/modal-layer/modal-layer';
 
 import { ModalProps } from './modal.types';
 import { ModalContext } from './modal.context';
@@ -29,6 +33,7 @@ export const Modal = forwardRef(
     }: ModalProps,
     ref: Ref<HTMLDivElement>,
   ) => {
+    const layer = useModalLayer(isOpen);
     const context = {
       isOpen,
       onClose,
@@ -41,15 +46,22 @@ export const Modal = forwardRef(
     };
     return isOpen
       ? ReactDOM.createPortal(
-          <ModalContext.Provider value={context}>
-            <div
-              className={classnames('mm-modal', className)}
-              ref={ref}
-              {...props}
-            >
-              {children}
-            </div>
-          </ModalContext.Provider>,
+          <ModalLayerContext.Provider value={layer}>
+            <ModalContext.Provider value={context}>
+              <div
+                className={classnames('mm-modal', className)}
+                ref={ref}
+                {...props}
+                {...(!layer.isActive && {
+                  hidden: true,
+                  'aria-hidden': true,
+                  style: { display: 'none' },
+                })}
+              >
+                {children}
+              </div>
+            </ModalContext.Provider>
+          </ModalLayerContext.Provider>,
           document.body,
         )
       : null;

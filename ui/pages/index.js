@@ -8,6 +8,7 @@ import {
   useRouteError,
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ModalProvider } from '#ui/components/app/modal-layer';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider } from '../contexts/i18n';
 import { MetaMetricsProvider } from '../contexts/metametrics';
@@ -52,7 +53,9 @@ function AppProviders() {
                 <HardwareWalletErrorProvider>
                   <ShieldSubscriptionProvider>
                     <RiveWasmProvider>
-                      <Routes />
+                      <ModalProvider>
+                        <Routes />
+                      </ModalProvider>
                     </RiveWasmProvider>
                   </ShieldSubscriptionProvider>
                 </HardwareWalletErrorProvider>

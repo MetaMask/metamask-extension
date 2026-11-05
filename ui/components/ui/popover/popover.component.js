@@ -2,6 +2,11 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
+import { ModalFocus } from '#ui/components/app/modal-layer';
+import {
+  ModalLayerContext,
+  useModalLayer,
+} from '#ui/components/app/modal-layer/modal-layer';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../box';
 import {
@@ -81,6 +86,7 @@ const Popover = ({
   footerProps = defaultFooterProps,
 }) => {
   const t = useI18nContext();
+  const layer = useModalLayer(true);
   const showHeader = title || onBack || subtitle || onClose;
   const Header = () => (
     <Box
@@ -135,58 +141,66 @@ const Popover = ({
   );
 
   return (
-    <div className="popover-container">
-      {CustomBackground ? (
-        <CustomBackground onClose={onClose} />
-      ) : (
-        <div className="popover-bg" onClick={onClose} />
-      )}
-      <section
-        className={classnames('popover-wrap', className)}
-        ref={popoverRef}
-      >
-        {showArrow ? <div className="popover-arrow" /> : null}
-        {showHeader && <Header />}
-        {children ? (
-          <Box
-            className={classnames('popover-content', contentClassName)}
-            onScroll={onScroll}
-            {...{ ...defaultContentProps, ...contentProps }}
+    <ModalLayerContext.Provider value={layer}>
+      <ModalFocus autoFocus>
+        <div
+          className="popover-container"
+          hidden={!layer.isActive}
+          style={layer.isActive ? undefined : { display: 'none' }}
+        >
+          {CustomBackground ? (
+            <CustomBackground onClose={onClose} />
+          ) : (
+            <div className="popover-bg" onClick={onClose} />
+          )}
+          <section
+            className={classnames('popover-wrap', className)}
+            ref={popoverRef}
           >
-            {children}
-          </Box>
-        ) : null}
-        {showScrollDown ? (
-          <Box
-            display={DISPLAY.FLEX}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            borderColor={BorderColor.borderDefault}
-            backgroundColor={BackgroundColor.backgroundDefault}
-            color={Color.iconDefault}
-            onClick={onScrollDownButtonClick}
-            className="popover-scroll-button"
-            style={{ bottom: footer ? '140px' : '12px' }}
-            data-testid="popover-scroll-button"
-          >
-            <Icon
-              name={IconName.ArrowDown}
-              color={IconColor.primaryDefault}
-              size={IconSize.Md}
-              aria-label={t('scrollDown')}
-            />
-          </Box>
-        ) : null}
-        {footer ? (
-          <Box
-            className={classnames('popover-footer', footerClassName)}
-            {...{ ...defaultFooterProps, ...footerProps }}
-          >
-            {footer}
-          </Box>
-        ) : null}
-      </section>
-    </div>
+            {showArrow ? <div className="popover-arrow" /> : null}
+            {showHeader && <Header />}
+            {children ? (
+              <Box
+                className={classnames('popover-content', contentClassName)}
+                onScroll={onScroll}
+                {...{ ...defaultContentProps, ...contentProps }}
+              >
+                {children}
+              </Box>
+            ) : null}
+            {showScrollDown ? (
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                borderColor={BorderColor.borderDefault}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                color={Color.iconDefault}
+                onClick={onScrollDownButtonClick}
+                className="popover-scroll-button"
+                style={{ bottom: footer ? '140px' : '12px' }}
+                data-testid="popover-scroll-button"
+              >
+                <Icon
+                  name={IconName.ArrowDown}
+                  color={IconColor.primaryDefault}
+                  size={IconSize.Md}
+                  aria-label={t('scrollDown')}
+                />
+              </Box>
+            ) : null}
+            {footer ? (
+              <Box
+                className={classnames('popover-footer', footerClassName)}
+                {...{ ...defaultFooterProps, ...footerProps }}
+              >
+                {footer}
+              </Box>
+            ) : null}
+          </section>
+        </div>
+      </ModalFocus>
+    </ModalLayerContext.Provider>
   );
 };
 

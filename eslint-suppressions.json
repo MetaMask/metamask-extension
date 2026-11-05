@@ -365,16 +365,6 @@
       "count": 4
     }
   },
-  "ui/components/component-library/modal-content/deprecated/modal-content.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/components/component-library/modal-content/modal-content.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/components/component-library/select-wrapper/select-wrapper.stories.tsx": {
     "react-hooks/static-components": {
       "count": 1
