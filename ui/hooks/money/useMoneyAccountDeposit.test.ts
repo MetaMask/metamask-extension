@@ -9,7 +9,10 @@ import {
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
+import {
+  MONEY_DEPOSIT_ROUTE,
+  MONEY_HOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
 import { selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
 import {
@@ -332,6 +335,54 @@ describe('useMoneyAccountDeposit', () => {
     });
   });
 
+  it('resolves true once the confirmation is opened', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await expect(result.current.initiateDeposit()).resolves.toBe(true);
+    });
+  });
+
+  it('resolves false for an initiation ignored while one is in flight', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      const [first, second] = await Promise.all([
+        result.current.initiateDeposit(),
+        result.current.initiateDeposit(),
+      ]);
+      expect(first).toBe(true);
+      expect(second).toBe(false);
+    });
+  });
+
+  it('replaces the current page and uses an explicit goBackTo when requested', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+      MONEY_DEPOSIT_ROUTE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({
+        replaceConfirmation: true,
+        goBackTo: MONEY_HOME_ROUTE,
+      });
+    });
+
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: MONEY_HOME_ROUTE,
+      replace: true,
+    });
+  });
+
   it('forwards the preferred payment token to the confirmation', async () => {
     const { result } = renderHookWithProvider(
       () => useMoneyAccountDeposit(),
@@ -405,7 +456,7 @@ describe('useMoneyAccountDeposit', () => {
     await act(async () => {
       await expect(
         result.current.initiateDeposit({ intent: 'card' }),
-      ).resolves.toBeUndefined();
+      ).resolves.toBe(false);
     });
 
     expect(getMoneyAccountDepositIntent(failedBatchId)).toBeUndefined();
@@ -492,7 +543,7 @@ describe('useMoneyAccountDeposit', () => {
     );
 
     await act(async () => {
-      await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
+      await expect(result.current.initiateDeposit()).resolves.toBe(false);
     });
 
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
@@ -514,7 +565,7 @@ describe('useMoneyAccountDeposit', () => {
     });
 
     await act(async () => {
-      await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
+      await expect(result.current.initiateDeposit()).resolves.toBe(false);
     });
 
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
@@ -634,7 +685,7 @@ describe('useMoneyAccountDeposit', () => {
       );
 
       await act(async () => {
-        await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
+        await expect(result.current.initiateDeposit()).resolves.toBe(false);
       });
 
       expect(createDepositTransactionMock).not.toHaveBeenCalled();

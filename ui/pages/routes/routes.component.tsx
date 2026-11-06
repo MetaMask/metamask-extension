@@ -85,6 +85,7 @@ import {
   MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
   MONEY_EARN_ROUTE,
+  MONEY_DEPOSIT_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -303,6 +304,9 @@ const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
 const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
+const MoneyDepositDeeplinkPage = mmLazy(
+  () => import('../money/money-deposit-deeplink-page.tsx'),
+);
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -748,6 +752,11 @@ export const routeConfig = [
                 path: MONEY_EARN_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyEarnPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_DEPOSIT_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyDepositDeeplinkPage />,
               }),
             ],
           },
