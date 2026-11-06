@@ -672,9 +672,7 @@ async function initialize(backup: Backup | null) {
     getState: initializedController.getState.bind(initializedController),
   })
     .on('navigate', async ({ url, parsed }) => {
-      // Don't track deep links that end in an external redirect: the extension
-      // does not handle the resulting navigation. Links routed into the extension
-      // — including `/buy` — count as used.
+      // Don't track deep links that are immediately redirected.
       if (shouldTrackDeepLinkNavigation(parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }
