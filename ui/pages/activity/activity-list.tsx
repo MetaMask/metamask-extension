@@ -191,7 +191,6 @@ export function ActivityList({
       {!filter && (
         <AssetListControlBar
           showSortControl={false}
-          showImportTokenButton={false}
           onNetworkSelect={setNetworks}
           data-testid="parent-selector-activity-tab"
         />
