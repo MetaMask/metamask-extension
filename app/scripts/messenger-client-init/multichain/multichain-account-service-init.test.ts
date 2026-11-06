@@ -17,9 +17,14 @@ import {
   MultichainAccountServiceInitMessenger,
 } from '../messengers/accounts';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { trace } from '../../../../shared/lib/trace';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
 
 jest.mock('@metamask/multichain-account-service');
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn((_request, fn) => fn?.()),
+}));
 
 const PREFERENCES_STATE = { useExternalServices: false };
 
@@ -126,6 +131,41 @@ describe('MultichainAccountServiceInit', () => {
       expect(callArg.config).toBeDefined();
       expect(typeof (callArg.config as { trace: unknown }).trace).toBe(
         'function',
+      );
+    });
+    it.each(['Provider Create Accounts (v2 - batched)', 'Wallet Alignment'])(
+      'lets %s nest under the active span',
+      (name) => {
+        MultichainAccountServiceInit(buildInitRequestMock());
+        const { trace: configTrace } = multichainAccountServiceClassMock.mock
+          .calls[0][0].config as {
+          trace: (request: { name: string }, fn: () => void) => void;
+        };
+
+        configTrace({ name }, () => undefined);
+
+        expect(trace).toHaveBeenCalledWith(
+          { name, allowActiveSpanFallback: true },
+          expect.any(Function),
+        );
+      },
+    );
+
+    it('roots other multichain account traces', () => {
+      MultichainAccountServiceInit(buildInitRequestMock());
+      const { trace: configTrace } = multichainAccountServiceClassMock.mock
+        .calls[0][0].config as {
+        trace: (request: { name: string }, fn: () => void) => void;
+      };
+
+      configTrace(
+        { name: 'Wallet Create Multichain Account Group' },
+        () => undefined,
+      );
+
+      expect(trace).toHaveBeenCalledWith(
+        { name: 'Wallet Create Multichain Account Group' },
+        expect.any(Function),
       );
     });
   });
