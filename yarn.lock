@@ -10612,10 +10612,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@metamask/solana-wallet-snap@npm:7.2.0"
-  checksum: 10/dde7895f40ac0e29490336c60b14479129c25471341127dc784c4f40b92959fa3714024730524802f614f36d637e4a63c8ff7d97b25eed96ec6c7cf164602db7
+"@metamask/solana-wallet-snap@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "@metamask/solana-wallet-snap@npm:7.3.0"
+  checksum: 10/91306254161447d1661909966992f2268838c06d753fefa12ad5afb1c8292542c83c1a434f0c0f291df62fa077dcb6b52e47cb3bad9f3f0d8b66e2789175e401
   languageName: node
   linkType: hard
 
@@ -10633,10 +10633,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/stellar-wallet-snap@npm:2.0.0"
-  checksum: 10/c2e065eb8f0abef2b2697dfc7f29cc1ebbbc3da64c4abceadb2f9634165b5891458349822f072c32c318ac26184c821e16416f03919345c15e0144e01aca6959
+"@metamask/stellar-wallet-snap@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/stellar-wallet-snap@npm:2.1.0"
+  checksum: 10/615dacab7718a3b1d60fd8f2fb02e548e8025cadcfc5048fa7a30d9d1de78c031519f677be9f89d2380fb1a19509401177e6390ae613f8ed13b8de0382de82b8
   languageName: node
   linkType: hard
 
@@ -10919,10 +10919,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "@metamask/tron-wallet-snap@npm:4.3.1"
-  checksum: 10/b2612a384a1767b4a528379d7003d00c1d1526d1c0bcb813fc6e0b5e473b409048bfd6ca767f73673bab2deb5bfd4abf9ea341decac2f23dd12858eea852b6da
+"@metamask/tron-wallet-snap@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@metamask/tron-wallet-snap@npm:4.4.0"
+  checksum: 10/f5e53a7b7b6f918b40c866ad724414cf178818dd4cb21b93e436ae30536a1d96dc603e3b399463ef29feed55db5f14c1ce6b3df3aa080d80838e734afa3dd311
   languageName: node
   linkType: hard
 
@@ -35631,9 +35631,9 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^12.1.0"
     "@metamask/snaps-utils": "npm:^12.6.1"
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
-    "@metamask/solana-wallet-snap": "npm:^7.2.0"
+    "@metamask/solana-wallet-snap": "npm:^7.3.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:^2.0.0"
+    "@metamask/stellar-wallet-snap": "npm:^2.1.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^8.0.1"
     "@metamask/superstruct": "npm:^3.2.1"
@@ -35647,7 +35647,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^72.3.0"
     "@metamask/transaction-pay-controller": "npm:^31.0.0"
     "@metamask/transaction-pay-middleware": "npm:^2.0.0"
-    "@metamask/tron-wallet-snap": "npm:^4.3.1"
+    "@metamask/tron-wallet-snap": "npm:^4.4.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
     "@metamask/wallet": "npm:^20.0.0"
