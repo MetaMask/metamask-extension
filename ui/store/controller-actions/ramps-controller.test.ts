@@ -30,6 +30,30 @@ describe('ramps-controller actions', () => {
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
   });
 
+  describe('getRampsProviders', () => {
+    it('returns the messenger response', async () => {
+      const response = { providers: [{ id: '/providers/transak' }] };
+      mockSubmitRequestToBackground.mockResolvedValue(response);
+
+      const result = await getRampsProviders('us-ca');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'RampsController:getProviders',
+        ['us-ca'],
+      );
+      expect(result).toBe(response);
+    });
+
+    it('propagates messenger failures', async () => {
+      const error = new Error('Provider lookup failed');
+      mockSubmitRequestToBackground.mockRejectedValue(error);
+
+      const promiseForFetching = getRampsProviders('us-ca');
+
+      await expect(promiseForFetching).rejects.toBe(error);
+    });
+  });
+
   it('matches snapshot for background action calls', async () => {
     const quoteParams = {
       amount: 100,

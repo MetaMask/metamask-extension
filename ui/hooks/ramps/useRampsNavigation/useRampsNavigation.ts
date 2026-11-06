@@ -56,7 +56,9 @@ type TokensState = ResourceState<TokensResponse | null, unknown>;
 // Resolve geolocation on demand; a failed lookup fails closed (undefined).
 async function resolveGeolocation(): Promise<string | undefined> {
   try {
-    return await submitRequestToBackground<string>('getGeolocation');
+    return await submitRequestToBackground(
+      'GeolocationController:getGeolocation',
+    );
   } catch {
     return undefined;
   }
@@ -111,7 +113,9 @@ function findCatalogToken(
 // failed selection does not leave build-quote waiting on an unmet intent.
 async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
   try {
-    await submitRequestToBackground('setRampsSelectedToken', [assetId]);
+    await submitRequestToBackground('RampsController:setSelectedToken', [
+      assetId,
+    ]);
     return true;
   } catch {
     return false;

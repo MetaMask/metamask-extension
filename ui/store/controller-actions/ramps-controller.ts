@@ -14,18 +14,23 @@ export async function setRampsUserRegion(
   region: string,
   options?: ExecuteRequestOptions,
 ): Promise<UserRegion | null> {
-  return submitRequestToBackground('setRampsUserRegion', [region, options]);
+  return submitRequestToBackground('RampsController:setUserRegion', [
+    region,
+    options,
+  ]);
 }
 
 export async function setRampsSelectedToken(assetId: string): Promise<void> {
-  return submitRequestToBackground('setRampsSelectedToken', [assetId]);
+  return submitRequestToBackground('RampsController:setSelectedToken', [
+    assetId,
+  ]);
 }
 
 export async function setRampsSelectedProvider(
   provider: Provider | string | null,
   options?: { autoSelected?: boolean },
 ): Promise<void> {
-  return submitRequestToBackground('setRampsSelectedProvider', [
+  return submitRequestToBackground('RampsController:setSelectedProvider', [
     provider,
     options,
   ]);
@@ -34,7 +39,7 @@ export async function setRampsSelectedProvider(
 export async function setRampsSelectedPaymentMethod(
   paymentMethod: PaymentMethod | string | null,
 ): Promise<void> {
-  return submitRequestToBackground('setRampsSelectedPaymentMethod', [
+  return submitRequestToBackground('RampsController:setSelectedPaymentMethod', [
     paymentMethod,
   ]);
 }
@@ -42,12 +47,15 @@ export async function setRampsSelectedPaymentMethod(
 export async function getRampsTokens(
   region: string,
   action: 'buy' | 'sell' = 'buy',
-): Promise<void> {
-  return submitRequestToBackground('getRampsTokens', [region, action]);
+) {
+  return submitRequestToBackground('RampsController:getTokens', [
+    region,
+    action,
+  ]);
 }
 
 export async function getRampsProviders(region: string) {
-  return submitRequestToBackground('getRampsProviders', [region]);
+  return submitRequestToBackground('RampsController:getProviders', [region]);
 }
 
 export async function getRampsPaymentMethods(
@@ -58,7 +66,10 @@ export async function getRampsPaymentMethods(
     provider?: string;
   },
 ) {
-  return submitRequestToBackground('getRampsPaymentMethods', [region, options]);
+  return submitRequestToBackground('RampsController:getPaymentMethods', [
+    region,
+    options,
+  ]);
 }
 
 export type GetRampsQuotesParams = {
@@ -77,13 +88,13 @@ export type GetRampsQuotesParams = {
 export async function getRampsQuotes(
   options: GetRampsQuotesParams,
 ): Promise<QuotesResponse> {
-  return submitRequestToBackground('getRampsQuotes', [options]);
+  return submitRequestToBackground('RampsController:getQuotes', [options]);
 }
 
 export async function getRampsBuyWidgetData(
   quote: Quote,
 ): Promise<BuyWidget | null> {
-  return submitRequestToBackground('getRampsBuyWidgetData', [quote]);
+  return submitRequestToBackground('RampsController:getBuyWidgetData', [quote]);
 }
 
 export async function addRampsPrecreatedOrder(params: {
@@ -93,15 +104,19 @@ export async function addRampsPrecreatedOrder(params: {
   // Required since ramps-controller v20: precreated stubs must carry a network.
   chainId: string;
 }): Promise<void> {
-  return submitRequestToBackground('addRampsPrecreatedOrder', [params]);
+  return submitRequestToBackground('RampsController:addPrecreatedOrder', [
+    params,
+  ]);
 }
 
 export async function addRampsOrder(order: RampsOrder): Promise<void> {
-  return submitRequestToBackground('addRampsOrder', [order]);
+  return submitRequestToBackground('RampsController:addOrder', [order]);
 }
 
 export async function removeRampsOrder(providerOrderId: string): Promise<void> {
-  return submitRequestToBackground('removeRampsOrder', [providerOrderId]);
+  return submitRequestToBackground('RampsController:removeOrder', [
+    providerOrderId,
+  ]);
 }
 
 export async function refreshRampsOrder(
@@ -109,7 +124,7 @@ export async function refreshRampsOrder(
   orderCode: string,
   wallet: string,
 ): Promise<RampsOrder> {
-  return submitRequestToBackground('refreshRampsOrder', [
+  return submitRequestToBackground('RampsController:getOrder', [
     providerCode,
     orderCode,
     wallet,
@@ -121,7 +136,7 @@ export async function getRampsOrderFromCallback(
   callbackUrl: string,
   wallet: string,
 ): Promise<RampsOrder> {
-  return submitRequestToBackground('getRampsOrderFromCallback', [
+  return submitRequestToBackground('RampsController:getOrderFromCallback', [
     providerCode,
     callbackUrl,
     wallet,
@@ -129,7 +144,7 @@ export async function getRampsOrderFromCallback(
 }
 
 export async function syncRampsOrdersWithUserStorage(): Promise<void> {
-  return submitRequestToBackground('syncRampsOrdersWithUserStorage');
+  return submitRequestToBackground('RampsController:syncOrdersWithUserStorage');
 }
 
 export async function watchRampsCheckoutTab(params: {
