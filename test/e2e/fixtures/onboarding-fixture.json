@@ -2018,6 +2018,7 @@
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
+        "shouldShowSupportConsent": true,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
@@ -2029,6 +2030,7 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
         "tokenNetworkFilter": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",

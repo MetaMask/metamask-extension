@@ -69,6 +69,16 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: () => unknown) => selector(),
 }));
 
+jest.mock(
+  '../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => null,
+    useOpenSupport: () => jest.fn(),
+  }),
+);
+
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
   selectMoneyEarningSectionEnabled: jest.fn(),

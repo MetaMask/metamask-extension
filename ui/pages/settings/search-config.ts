@@ -71,6 +71,7 @@ export const PRIVACY_ITEMS = {
   metametrics: 'participateInMetaMetrics',
   'data-collection': 'dataCollectionForMarketing',
   'delete-metametrics-data': 'deleteMetaMetricsData',
+  'remember-support-preference': 'rememberSupportPreference',
   'download-state-logs': 'downloadStateLogs',
   'export-your-data': 'exportYourData',
 } as const;

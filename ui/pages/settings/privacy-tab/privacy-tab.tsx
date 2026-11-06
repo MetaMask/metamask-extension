@@ -18,6 +18,7 @@ import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
 import { ExportYourDataItem } from './export-your-data-item';
 import { IpfsGatewayItem } from './ipfs-gateway-item';
+import { RememberSupportPreferenceToggleItem } from './remember-support-preference-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
@@ -59,6 +60,10 @@ export const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'data-collection', component: DataCollectionToggleItem },
   { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
   {
+    id: 'remember-support-preference',
+    component: RememberSupportPreferenceToggleItem,
+  },
+  {
     id: 'download-state-logs',
     component: DownloadStateLogsItem,
     hasDividerBefore: true,
@@ -81,6 +86,10 @@ export const CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS: SettingItemConfig[]
     },
     { id: 'data-collection', component: DataCollectionToggleItem },
     { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
+    {
+      id: 'remember-support-preference',
+      component: RememberSupportPreferenceToggleItem,
+    },
     {
       id: 'download-state-logs',
       component: DownloadStateLogsItem,

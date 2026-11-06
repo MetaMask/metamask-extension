@@ -34,7 +34,7 @@ exports[`VisitSupportDataConsentModal renders the modal correctly when open 1`] 
             <h4
               class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
             >
-              Share device details with support
+              Share your User ID with Support
             </h4>
           </div>
         </header>
@@ -44,8 +44,40 @@ exports[`VisitSupportDataConsentModal renders the modal correctly when open 1`] 
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional.
+            By continuing, you agree to share your User ID and app version with our Support Center. This will help us better solve your problem.
           </p>
+          <label
+            class="inline-flex items-center self-start mt-4"
+            data-testid="visit-support-data-consent-modal-save-preference-checkbox"
+            for="visit-support-data-consent-modal-save-preference"
+          >
+            <div
+              class="relative inline-flex size-6 items-center justify-center"
+            >
+              <input
+                aria-invalid="false"
+                checked=""
+                class="peer size-6 shrink-0 cursor-pointer appearance-none rounded-full border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
+                id="visit-support-data-consent-modal-save-preference"
+                type="checkbox"
+              />
+              <svg
+                class="inline-block w-4 h-4 text-icon-inverse pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition peer-enabled:peer-active:scale-95 opacity-100"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
+                />
+              </svg>
+            </div>
+            <span
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default ml-3"
+            >
+              Save my preference
+            </span>
+          </label>
         </div>
         <div
           class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
@@ -63,7 +95,7 @@ exports[`VisitSupportDataConsentModal renders the modal correctly when open 1`] 
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
               data-testid="visit-support-data-consent-modal-accept-button"
             >
-              Confirm
+              Continue
             </button>
           </div>
           <div
