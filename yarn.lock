@@ -7390,16 +7390,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^20.0.1, @metamask/assets-controller@npm:^20.2.2":
-  version: 20.2.2
-  resolution: "@metamask/assets-controller@npm:20.2.2"
+"@metamask/assets-controller@npm:^20.0.1, @metamask/assets-controller@npm:^20.2.2, @metamask/assets-controller@npm:^20.2.3":
+  version: 20.2.3
+  resolution: "@metamask/assets-controller@npm:20.2.3"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.8.0"
     "@metamask/account-tree-controller": "npm:^11.2.0"
     "@metamask/accounts-controller": "npm:^40.1.0"
-    "@metamask/assets-controllers": "npm:^113.1.1"
+    "@metamask/assets-controllers": "npm:^113.2.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/client-controller": "npm:^2.0.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
@@ -7425,13 +7425,13 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/878b94d85a8b3cec8ccbe9fc8decccaaecc66702c07a6a903c8d8492524ca55345c89b28dbbf306b6995ec1fbdeae6dbb798ead33f20311113502f020e2b0746
+  checksum: 10/9c083b848d17b37a2c831fd56466407a90bd3c7c418742de76d8f1b6bafc5e2e9ba5b7e05f326455559b0c1f01da4a8115e072290ffe9fdb706160ed09c781a8
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.1.1":
-  version: 113.1.1
-  resolution: "@metamask/assets-controllers@npm:113.1.1"
+"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.2.0":
+  version: 113.2.0
+  resolution: "@metamask/assets-controllers@npm:113.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -7478,11 +7478,11 @@ __metadata:
     multiformats: "npm:^9.9.0"
     reselect: "npm:^5.3.0"
     single-call-balance-checker-abi: "npm:^1.0.0"
-    uuid: "npm:^14.0.1"
+    uuid: "npm:^14.0.2"
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/379b859f93f67794fec4781ea4d955d828882f6de34bff53331b3f2ffc2fa7fe1dc451e155aff03afe21da996db7294dc76a786a7c7eb4d5230d49ea3f0abe0a
+  checksum: 10/c79851f7ebd75aa1691fa780711cefa41616572ddbb932ce491114e42a6a8f9c4a3badbbd691d8efd2de29898ea1fd241329123e1c4f3ee662afbec8d728cf18
   languageName: node
   linkType: hard
 
@@ -8064,59 +8064,59 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.47.0":
-  version: 0.47.0
-  resolution: "@metamask/design-system-react@npm:0.47.0"
+"@metamask/design-system-react@npm:^0.51.0":
+  version: 0.51.0
+  resolution: "@metamask/design-system-react@npm:0.51.0"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask/design-system-shared": "npm:^0.41.0"
+    "@metamask/design-system-shared": "npm:^0.45.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
     react-focus-lock: "npm:^2.9.4"
     tailwind-merge: "npm:^2.0.0"
   peerDependencies:
-    "@metamask/design-system-tailwind-preset": ^0.15.0
-    "@metamask/design-tokens": ^12.0.0
+    "@metamask/design-system-tailwind-preset": ^0.16.0
+    "@metamask/design-tokens": ^13.0.0
     "@metamask/utils": ^11.12.1
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/4cb233ea6419f4fd08494ae597e8bfb7ff07ed69251a099f760c6ff61097ee33c40695725978c5fe057088ffa4e05fb0a95e5f8bab7482b73997a20b9a184eca
+  checksum: 10/f7d3e4af17ddcfaa5c72dc3ece3259902597d84139f597704d6d00dc586d0588631c38a2f6fb28086b152dfa6dcc9781039b1bb61753ddba974e96c0b3c6f95a
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.41.0":
-  version: 0.41.0
-  resolution: "@metamask/design-system-shared@npm:0.41.0"
+"@metamask/design-system-shared@npm:^0.45.0":
+  version: 0.45.0
+  resolution: "@metamask/design-system-shared@npm:0.45.0"
   dependencies:
     "@metamask/utils": "npm:^11.12.1"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/4639080551ba926806aaa76c24f6b8786711d815114189e83db5c0ce8a5976163d237de25f999ded5b44531fd5bf591b46ef9aa68b178a2734c1a77cf89b9412
+  checksum: 10/522922b87353a5b0b16adc5157bcfbea153741d6818a60516280d5aa5a2eeb0ae55e22240eba37febe4198f9e553fc2ef9aa7f277ea9ad4d7de7db2e412a6243
   languageName: node
   linkType: hard
 
-"@metamask/design-system-tailwind-preset@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "@metamask/design-system-tailwind-preset@npm:0.15.0"
+"@metamask/design-system-tailwind-preset@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@metamask/design-system-tailwind-preset@npm:0.16.0"
   peerDependencies:
-    "@metamask/design-tokens": ^12.0.0
+    "@metamask/design-tokens": ^13.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/837c42c0bb77623074989a747aee1417856f70c5c5d2a2283cc11ee618bba860a6bc2eec0be31e2c5035d911a878ceeb27843feaaaa7b2ce03b3f5f324a711fe
+  checksum: 10/2cbc9aef29d36c2382d05c4b430068ca3fa9052d76fa6cec3100932816fb772b70119537e08c0951e786d69474b3a63d159d59e67c27894926946140019c0edd
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/design-tokens@npm:12.0.0"
-  checksum: 10/ef7e51c07ac952ca9280d40ea6b5a1407069d5adca74b8aaaefdeaa9281b9e38389ca396a7957fa79fac4cc2e225cd57939a9aed69e29348122edc981ee4ce43
+"@metamask/design-tokens@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/design-tokens@npm:13.0.0"
+  checksum: 10/5b88c001a486a200dee6f50b33957b24a66cbaf56b7b297c85a99ae4e792d966db0654a8f4321a91c0b3452b9ed3ad4f29845ba7b90e3d702ce65be9037fc3dc
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/design-tokens@npm:7.1.0"
-  checksum: 10/a4f1379bdf5f6b99c9a228ce4f5bb07ace4ed5abc61384e7f04cf5bdf943b32dd13ec9676a88f6b6c7314cdba6e2967b9fd99707a64a645865f21f8d8a2566d9
+"@metamask/design-tokens@npm:^8.0.0":
+  version: 8.7.0
+  resolution: "@metamask/design-tokens@npm:8.7.0"
+  checksum: 10/5fa880ef16c2225d378a3dddf6e73b5b260cdd49722337ab894228df33b905042279252da52c5634897cbd2beb81bd93f7dda7cbb2dd94f17c2bd0aa3e6d1295
   languageName: node
   linkType: hard
 
@@ -9848,18 +9848,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@metamask/phishing-warning@npm:5.1.0"
+"@metamask/phishing-warning@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/phishing-warning@npm:6.0.0"
   dependencies:
-    "@metamask/design-tokens": "npm:^7.1.0"
+    "@metamask/design-tokens": "npm:^8.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
-  checksum: 10/64c01a4a9ec1b6604f8ea532673b0f71d2884c543fc6daad2b3d5395599373f90a4dd220195da7b58f1b98202b546b6f8f7e67091e1543237f04589c933bb840
+  checksum: 10/2f50321cdf7fa89da8134dc6b5e6347cf6df5a786673986bdb148be5fe7bbe3c7c0de689bbe8b2d463387c9b2d3fef57132cb81ef6c8dcc07ae4c31146aa0c0c
   languageName: node
   linkType: hard
 
@@ -10612,10 +10612,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@metamask/solana-wallet-snap@npm:7.2.0"
-  checksum: 10/dde7895f40ac0e29490336c60b14479129c25471341127dc784c4f40b92959fa3714024730524802f614f36d637e4a63c8ff7d97b25eed96ec6c7cf164602db7
+"@metamask/solana-wallet-snap@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "@metamask/solana-wallet-snap@npm:7.3.0"
+  checksum: 10/91306254161447d1661909966992f2268838c06d753fefa12ad5afb1c8292542c83c1a434f0c0f291df62fa077dcb6b52e47cb3bad9f3f0d8b66e2789175e401
   languageName: node
   linkType: hard
 
@@ -10633,10 +10633,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/stellar-wallet-snap@npm:2.0.0"
-  checksum: 10/c2e065eb8f0abef2b2697dfc7f29cc1ebbbc3da64c4abceadb2f9634165b5891458349822f072c32c318ac26184c821e16416f03919345c15e0144e01aca6959
+"@metamask/stellar-wallet-snap@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/stellar-wallet-snap@npm:2.1.0"
+  checksum: 10/615dacab7718a3b1d60fd8f2fb02e548e8025cadcfc5048fa7a30d9d1de78c031519f677be9f89d2380fb1a19509401177e6390ae613f8ed13b8de0382de82b8
   languageName: node
   linkType: hard
 
@@ -10919,10 +10919,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "@metamask/tron-wallet-snap@npm:4.3.1"
-  checksum: 10/b2612a384a1767b4a528379d7003d00c1d1526d1c0bcb813fc6e0b5e473b409048bfd6ca767f73673bab2deb5bfd4abf9ea341decac2f23dd12858eea852b6da
+"@metamask/tron-wallet-snap@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@metamask/tron-wallet-snap@npm:4.4.0"
+  checksum: 10/f5e53a7b7b6f918b40c866ad724414cf178818dd4cb21b93e436ae30536a1d96dc603e3b399463ef29feed55db5f14c1ce6b3df3aa080d80838e734afa3dd311
   languageName: node
   linkType: hard
 
@@ -35492,8 +35492,8 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^20.2.2"
-    "@metamask/assets-controllers": "npm:^113.1.1"
+    "@metamask/assets-controller": "npm:^20.2.3"
+    "@metamask/assets-controllers": "npm:^113.2.0"
     "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^10.0.0"
@@ -35520,10 +35520,10 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.1.0"
-    "@metamask/design-system-react": "npm:^0.47.0"
-    "@metamask/design-system-shared": "npm:^0.41.0"
-    "@metamask/design-system-tailwind-preset": "npm:^0.15.0"
-    "@metamask/design-tokens": "npm:^12.0.0"
+    "@metamask/design-system-react": "npm:^0.51.0"
+    "@metamask/design-system-shared": "npm:^0.45.0"
+    "@metamask/design-system-tailwind-preset": "npm:^0.16.0"
+    "@metamask/design-tokens": "npm:^13.0.0"
     "@metamask/dummy-package": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
@@ -35597,7 +35597,7 @@ __metadata:
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
     "@metamask/perps-controller": "npm:^22.1.1"
     "@metamask/phishing-controller": "npm:^18.2.1"
-    "@metamask/phishing-warning": "npm:^5.1.0"
+    "@metamask/phishing-warning": "npm:^6.0.0"
     "@metamask/platform-api-docs": "npm:^0.2.1"
     "@metamask/polling-controller": "npm:^16.0.7"
     "@metamask/post-message-stream": "npm:^10.0.0"
@@ -35631,9 +35631,9 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^12.1.0"
     "@metamask/snaps-utils": "npm:^12.6.1"
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
-    "@metamask/solana-wallet-snap": "npm:^7.2.0"
+    "@metamask/solana-wallet-snap": "npm:^7.3.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:^2.0.0"
+    "@metamask/stellar-wallet-snap": "npm:^2.1.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^8.0.1"
     "@metamask/superstruct": "npm:^3.2.1"
@@ -35647,7 +35647,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^72.3.0"
     "@metamask/transaction-pay-controller": "npm:^31.0.0"
     "@metamask/transaction-pay-middleware": "npm:^2.0.0"
-    "@metamask/tron-wallet-snap": "npm:^4.3.1"
+    "@metamask/tron-wallet-snap": "npm:^4.4.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
     "@metamask/wallet": "npm:^20.0.0"
@@ -47633,7 +47633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0.1":
+"uuid@npm:^14.0.1, uuid@npm:^14.0.2":
   version: 14.0.3
   resolution: "uuid@npm:14.0.3"
   bin:

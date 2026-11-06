@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Interaksyon ng kontrata"
   },
-  "convertAgain": {
-    "message": "Mag-convert muli"
-  },
   "convertTokenToNFTDescription": {
     "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang MetaMask ay mayroon na ngayong ganap na native support para sa mga NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
   },
@@ -6343,19 +6340,6 @@
     "message": "Na-convert sa mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Nabigong palitan ang mUSD"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Ikino-convert ang $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Matagumpay ang pag-convert ng mUSD"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Puwedeng ma-claim ang bonus sa loob ng isang araw."
-  },
   "musdConvert": {
     "message": "I-convert"
   },
@@ -8447,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "makipag-ugnayan sa suporta",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Pansamantalang hindi available ang ilang serbisyo.$1, o $2.",
@@ -8455,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Tingnan ang iyong mga opsyon sa Mga FAQ",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Nakakaranas kami ng outage",

@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση συμβολαίου"
   },
-  "convertAgain": {
-    "message": "Μετατροπή ξανά"
-  },
   "convertTokenToNFTDescription": {
     "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο είναι NFT. Το MetaMask υποστηρίζει πλέον εξ'ορισμού πλήρως τα NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας και να το προσθέσετε ως NFT;"
   },
@@ -6343,19 +6340,6 @@
     "message": "Έγινε μετατροπή σε mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Η μετατροπή σε mUSD απέτυχε"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Μετατροπή $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Η μετατροπή σε mUSD ολοκληρώθηκε με επιτυχία"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Το μπόνους θα είναι διαθέσιμο για εξαργύρωση μέσα σε μία ημέρα."
-  },
   "musdConvert": {
     "message": "Μετατροπή"
   },
@@ -8447,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "επικοινωνήστε με την υποστήριξη",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Ορισμένες υπηρεσίες είναι προσωρινά μη διαθέσιμες. $1, ή $2.",
@@ -8455,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Δείτε τις επιλογές σας στις Συχνές Ερωτήσεις",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Αντιμετωπίζουμε διακοπή λειτουργίας",
