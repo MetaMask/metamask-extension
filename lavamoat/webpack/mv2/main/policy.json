@@ -1374,7 +1374,6 @@
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -2155,7 +2154,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/geolocation-controller>@metamask/controller-utils": true
+        "@metamask/base-data-service": true,
+        "@metamask/geolocation-controller>@metamask/controller-utils": true,
+        "@metamask/superstruct": true
       }
     },
     "@metamask/jazzicon": {
@@ -3048,7 +3049,8 @@
       "packages": {
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
-        "@tanstack/react-query": true
+        "@tanstack/react-query": true,
+        "@metamask/react-data-query>uuid": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -7710,7 +7712,8 @@
     },
     "@metamask/base-data-service>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/bridge-controller>uuid": {
@@ -7833,6 +7836,12 @@
     "@metamask/profile-metrics-controller>uuid": {
       "globals": {
         "crypto": true
+      }
+    },
+    "@metamask/react-data-query>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/transaction-controller>uuid": {
