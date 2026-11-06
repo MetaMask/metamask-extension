@@ -338,7 +338,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
@@ -587,7 +586,6 @@ export default class MetamaskController extends EventEmitter {
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
       RatesController: RatesControllerInit,
-      TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
       MultichainNetworkController: MultichainNetworkControllerInit,
@@ -730,8 +728,6 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
-    this.tokenDetectionController =
-      messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
@@ -945,7 +941,6 @@ export default class MetamaskController extends EventEmitter {
           // Safely read the selected account and entropy id. In some test or
           // edge flows the selected account may not yet be available.
           const selected = this.accountsController.getSelectedAccount();
-          const address = selected?.address;
           // After onboarding, default selected account will be an EVM
           // account, and those accounts are `Bip44Account`s which should have
           // an `entropy` property.
@@ -974,10 +969,17 @@ export default class MetamaskController extends EventEmitter {
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
 
-          // execute once the token detection on the post-onboarding
-          await this.tokenDetectionController.detectTokens({
-            selectedAddress: address,
-          });
+          // Force an assets refresh once after onboarding completes.
+          if (selected && this.assetsController) {
+            await this.assetsController
+              .getAssets([selected], {
+                assetTypes: ['token', 'metadata'],
+                forceUpdate: true,
+              })
+              .catch((err) => {
+                log.error('Error refreshing assets after onboarding', { err });
+              });
+          }
         }
       }, this.onboardingController.state),
     );
@@ -1653,7 +1655,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.tokenDetectionController.enable();
     if (
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
@@ -1670,7 +1671,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   stopNetworkRequests() {
-    this.tokenDetectionController.disable();
     if (getIsPerpsIncludedInBuild()) {
       this.messengerClientApi
         .perpsStopEligibilityMonitoring?.()
@@ -1855,16 +1855,24 @@ export default class MetamaskController extends EventEmitter {
       (assetId) => {
         const { chain } = parseCaipAssetType(assetId);
 
-        if (chain.namespace === KnownCaipNamespace.Eip155) {
-          const chainId = toHex(chain?.reference);
-
-          if (chainId) {
-            this.tokenDetectionController
-              .detectTokens({ chainIds: [chainId] })
-              .catch((err) => {
-                log.error('Error detecting tokens', { err });
-              });
+        if (
+          chain.namespace === KnownCaipNamespace.Eip155 &&
+          this.assetsController
+        ) {
+          const account = this.accountsController.getSelectedAccount();
+          if (!account) {
+            return;
           }
+          const caipChainId = `${chain.namespace}:${chain.reference}`;
+          this.assetsController
+            .getAssets([account], {
+              chainIds: [caipChainId],
+              assetTypes: ['token', 'metadata'],
+              forceUpdate: true,
+            })
+            .catch((err) => {
+              log.error('Error refreshing assets after bridge', { err });
+            });
         }
       },
     );
@@ -2387,7 +2395,6 @@ export default class MetamaskController extends EventEmitter {
       appStateController,
       nftController,
       nftDetectionController,
-      tokenDetectionController,
       gasFeeController,
       gatorPermissionsController,
       announcementController,
@@ -2715,14 +2722,6 @@ export default class MetamaskController extends EventEmitter {
         announcementController,
       ),
 
-      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
-        tokenDetectionController,
-      ),
-      tokenDetectionStopPollingByPollingToken:
-        tokenDetectionController.stopPollingByPollingToken.bind(
-          tokenDetectionController,
-        ),
-
       staticAssetsStartPolling: staticAssetsController.startPolling.bind(
         staticAssetsController,
       ),
@@ -2752,6 +2751,7 @@ export default class MetamaskController extends EventEmitter {
       restoreUserData: backup.restoreUserData.bind(backup),
 
       // NftDetectionController
+
       detectNfts: nftDetectionController.detectNfts.bind(
         nftDetectionController,
       ),
@@ -5449,7 +5449,6 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopAllPolling();
-      this.tokenDetectionController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
@@ -5475,7 +5474,6 @@ export default class MetamaskController extends EventEmitter {
       // We don't know which controller the token is associated with, so try them all.
       // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
-      this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
