@@ -1,7 +1,12 @@
+/* eslint-disable jest/no-standalone-expect -- `it` is retyped below, matching deep-link.router.test.ts. The Jest rule only treats the global binding as a test. */
 import { HomeQueryParams } from './home';
 import { DEFAULT_ROUTE, type Destination } from './route';
 import { social, socialProfile } from './social';
 import { routes } from '.';
+
+// the Jest type for it is wrong
+// eslint-disable-next-line @typescript-eslint/no-shadow
+const it = globalThis.it as unknown as jest.It;
 
 function assertPathDestination(
   result: Destination,
@@ -19,7 +24,6 @@ describe('social deep link route', () => {
     expect(social.pathname).toBe('/social');
   });
 
-  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
     ['trending', 'https://link.metamask.io/social?tab=trending'],
     ['following', 'https://link.metamask.io/social?tab=following'],
