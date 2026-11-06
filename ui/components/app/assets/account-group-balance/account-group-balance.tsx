@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type { Asset } from '@metamask/assets-controllers';
 import classnames from 'clsx';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
@@ -14,10 +15,16 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import {
+  getAssetsBySelectedAccountGroup,
   getMultichainNativeTokenBalance,
   selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
+import {
+  liveFiatDelta,
+  useLiveAssetPrices,
+} from '../../../../hooks/assets/live-asset-prices';
+import { toCaipAssetId } from '../util/to-caip-asset-id';
 
 import {
   getEnabledNetworksByNamespace,
@@ -58,6 +65,8 @@ export const AccountGroupBalance = ({
   const selectedGroupBalance = useSelector(
     selectUnifiedBalanceBySelectedAccountGroup,
   );
+  const assetsByChain = useSelector(getAssetsBySelectedAccountGroup);
+  const livePrices = useLiveAssetPrices();
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
@@ -124,7 +133,14 @@ export const AccountGroupBalance = ({
     fallbackCurrency,
   ]);
 
-  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+  const polledTotal = selectedGroupBalance?.totalBalanceInUserCurrency;
+  const total = useMemo(() => {
+    if (polledTotal === undefined) {
+      return undefined;
+    }
+    const assets = Object.values(assetsByChain ?? {}).flat() as Asset[];
+    return polledTotal + liveFiatDelta(assets, livePrices, toCaipAssetId);
+  }, [assetsByChain, livePrices, polledTotal]);
 
   let formattedNativeBalance = null;
   if (showNativeTokenAsMain || isTestnetSelected) {

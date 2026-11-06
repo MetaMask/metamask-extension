@@ -319,6 +319,7 @@ import {
 import {
   BackendWebSocketServiceInit,
   AccountActivityServiceInit,
+  MarketStatsServiceInit,
 } from './messenger-client-init/core-backend';
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
@@ -568,6 +569,7 @@ export default class MetamaskController extends EventEmitter {
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
+      MarketStatsService: MarketStatsServiceInit,
       AccountActivityService: AccountActivityServiceInit,
       SentinelApiService: SentinelApiServiceInit,
       ComplianceService: ComplianceServiceInit,
@@ -719,6 +721,7 @@ export default class MetamaskController extends EventEmitter {
     this.bridgeStatusController = messengerClientsByName.BridgeStatusController;
     this.backendWebSocketService =
       messengerClientsByName.BackendWebSocketService;
+    this.marketStatsService = messengerClientsByName.MarketStatsService;
     this.accountActivityService = messengerClientsByName.AccountActivityService;
     this.nftController = messengerClientsByName.NftController;
     this.nftDetectionController = messengerClientsByName.NftDetectionController;

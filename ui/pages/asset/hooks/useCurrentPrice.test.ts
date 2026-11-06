@@ -7,6 +7,13 @@ import { apiClient } from '../../../helpers/api-client';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from './useCurrentPrice';
 
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(() => Promise.resolve(undefined)),
+  subscribeToMessengerEvent: jest.fn(() =>
+    Promise.resolve(async () => undefined),
+  ),
+}));
+
 jest.mock('../../../helpers/api-client', () => ({
   apiClient: {
     prices: {

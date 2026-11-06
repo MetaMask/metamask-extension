@@ -43,6 +43,8 @@ export const TokenCellPercentChange = React.memo(
     // eslint-disable-next-line no-eq-null
     if (price != null && comparePrice != null) {
       tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
+    } else if (typeof token.pricePercentChange1d === 'number') {
+      tokenPercentageChange = token.pricePercentChange1d;
     } else {
       tokenPercentageChange = isEvm
         ? multiChainMarketData?.[token.chainId as Hex]?.[
@@ -59,6 +61,8 @@ export const TokenCellPercentChange = React.memo(
   (prevProps, nextProps) =>
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.isFiatLoading === nextProps.token.isFiatLoading &&
+    prevProps.token.pricePercentChange1d ===
+      nextProps.token.pricePercentChange1d &&
     prevProps.price === nextProps.price &&
     prevProps.comparePrice === nextProps.comparePrice,
 );

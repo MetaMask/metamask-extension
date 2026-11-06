@@ -83,6 +83,7 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
+import { useLiveAssetPrice } from '../../../hooks/assets/live-asset-prices';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
 import { useAssetPerpsMarket } from '../hooks/useAssetPerpsMarket';
@@ -268,7 +269,6 @@ const AssetPage = ({
   address = assetWithBalance?.assetId || address;
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
-  const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
   const shouldShowSpendingCaps = isEvm;
@@ -297,6 +297,14 @@ const AssetPage = ({
   const caipAssetId = isEvm
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
+  // Holding value follows the messenger tick. `fiat.balance` stays the last poll.
+  const liveUnitPrice = useLiveAssetPrice(caipAssetId);
+  const heldAmount = Number(balance);
+  const polledFiat = assetWithBalance?.fiat?.balance ?? 0;
+  const tokenFiatAmount =
+    liveUnitPrice !== undefined && Number.isFinite(heldAmount)
+      ? heldAmount * liveUnitPrice
+      : polledFiat;
 
   const securityTrustToken = useMemo(
     () => ({
