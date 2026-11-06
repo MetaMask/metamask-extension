@@ -36,7 +36,7 @@ describe('legacy-background-api.ts', () => {
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain(
-        'Updated legacy background API snapshot with current members',
+        'Updated legacy-background-api-snapshot.json with current set of legacy API methods.',
       );
     } finally {
       writeFileSync(SNAPSHOT_PATH, originalSnapshot);
