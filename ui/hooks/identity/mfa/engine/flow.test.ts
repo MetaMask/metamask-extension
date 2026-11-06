@@ -500,6 +500,33 @@ describe('createMfaFlow', () => {
       await expect(flow.result).resolves.toBeDefined();
     });
 
+    it('asks the user for a new code after too many wrong ones, instead of sending one', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.controller.completeCredentialVerification.mockRejectedValueOnce(
+        new MfaError('too_many_attempts', 'too many'),
+      );
+      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+
+      await act(flow, { type: 'submitCode', code: '111111' });
+      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(flow.getState()).toMatchObject({
+        step: { name: 'otp', codeSent: true },
+        busy: false,
+        error: 'too_many_attempts',
+        // The wait left from the code already sent.
+        resendAvailableAt: NOW + 60_000,
+      });
+      expect(flow.getState().codeResent).toBeUndefined();
+
+      await act(flow, { type: 'resend' });
+      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
+        2,
+      );
+      expect(flow.getState().error).toBeUndefined();
+    });
+
     it('shows a countdown when a code was sent less than a minute ago', async () => {
       const fake = createFakeController([activeEmail]);
       fake.controller.beginCredentialVerification.mockRejectedValueOnce(
@@ -1463,6 +1490,37 @@ describe('createMfaFlow analytics', () => {
     expect(
       sentEvents(trackEvent, 'MFA Code Resent').map(({ trigger }) => trigger),
     ).toStrictEqual(['user', 'auto', 'auto', 'auto']);
+  });
+
+  it('tracks nothing after the flow ends while a new code is being sent', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    fake.controller.completeCredentialVerification.mockRejectedValueOnce(
+      new MfaError('flow_expired', 'expired'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent,
+    });
+    let sendCode: () => void = () => undefined;
+    fake.controller.beginCredentialVerification.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          sendCode = () =>
+            resolve({ type: 'email_otp', flowId: 'verify-2', expiresAt: NOW });
+        }),
+    );
+
+    flow.dispatch({ type: 'submitCode', code: '111111' });
+    await flush();
+    await act(flow, { type: 'cancel' });
+    sendCode();
+    await flush();
+
+    expect(trackEvent.mock.calls.at(-1)).toStrictEqual([
+      'MFA Flow Status Updated',
+      expect.objectContaining({ status: 'cancelled' }),
+    ]);
+    expect(sentEvents(trackEvent, 'MFA Code Resent')).toHaveLength(0);
   });
 
   it('keeps the flow running when analytics throws', async () => {
