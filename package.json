@@ -177,15 +177,15 @@
   "previewBuilds": {
     "@metamask/base-data-service": {
       "type": "non-breaking",
-      "previewVersion": "2.1.0-preview-9fd631f7d"
+      "previewVersion": "2.1.0-preview-6ebaf4e52"
     },
     "@metamask/geolocation-controller": {
       "type": "non-breaking",
-      "previewVersion": "2.0.0-preview-9fd631f7d"
+      "previewVersion": "2.0.0-preview-6ebaf4e52"
     },
     "@metamask/react-data-query": {
       "type": "breaking",
-      "previewVersion": "2.0.0-preview-9fd631f7d"
+      "previewVersion": "2.0.0-preview-6ebaf4e52"
     }
   },
   "resolutions": {

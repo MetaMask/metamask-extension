@@ -7587,9 +7587,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-data-service@npm:@metamask-previews/base-data-service@2.1.0-preview-9fd631f7d":
-  version: 2.1.0-preview-9fd631f7d
-  resolution: "@metamask-previews/base-data-service@npm:2.1.0-preview-9fd631f7d"
+"@metamask/base-data-service@npm:@metamask-previews/base-data-service@2.1.0-preview-6ebaf4e52":
+  version: 2.1.0-preview-6ebaf4e52
+  resolution: "@metamask-previews/base-data-service@npm:2.1.0-preview-6ebaf4e52"
   dependencies:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/storage-service": "npm:^2.0.0"
@@ -7599,8 +7599,8 @@ __metadata:
     cockatiel: "npm:^3.2.1"
     fast-deep-equal: "npm:^3.1.3"
     lodash-es: "npm:^4.18.1"
-    uuid: "npm:^11.1.1"
-  checksum: 10/64ced557c9cfa2f6861da00b5f7ef7299157021fd4dcd1058751533b79753c6e7e090c76a98f13bdbadd86a4121fdc7a5788eb2cd4f0766efcbf88d8684d03cb
+    uuid: "npm:^14.0.2"
+  checksum: 10/26d06897d2a05b5ac565af29364f4f2b27eb1d0ffb466dada940c8b21ba1b6215c78703c625e2f2c3fca619830cbfc3dd948fe20b321a80f0f1a40220aaa926a
   languageName: node
   linkType: hard
 
@@ -8828,16 +8828,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@2.0.0-preview-9fd631f7d":
-  version: 2.0.0-preview-9fd631f7d
-  resolution: "@metamask-previews/geolocation-controller@npm:2.0.0-preview-9fd631f7d"
+"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@2.0.0-preview-6ebaf4e52":
+  version: 2.0.0-preview-6ebaf4e52
+  resolution: "@metamask-previews/geolocation-controller@npm:2.0.0-preview-6ebaf4e52"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-  checksum: 10/ab6fc3d7c04d456a2d6d5aabe99f6c35f11ed77e4f9ffc3efcefa83c0f49b81fd3e43d10d8df5833775481f866a19a4f569302284dc25e4b643acab64b41d260
+  checksum: 10/095b7d3140261107816fe3cee9fcf8bf73e990dd199c4047249987820b787d6856586132317ea582ef23726005d83e8ae8274d5f7efe4ffcf293e5f44c2ed57e
   languageName: node
   linkType: hard
 
@@ -10150,15 +10150,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/react-data-query@npm:@metamask-previews/react-data-query@2.0.0-preview-9fd631f7d":
-  version: 2.0.0-preview-9fd631f7d
-  resolution: "@metamask-previews/react-data-query@npm:2.0.0-preview-9fd631f7d"
+"@metamask/react-data-query@npm:@metamask-previews/react-data-query@2.0.0-preview-6ebaf4e52":
+  version: 2.0.0-preview-6ebaf4e52
+  resolution: "@metamask-previews/react-data-query@npm:2.0.0-preview-6ebaf4e52"
   dependencies:
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/utils": "npm:^12.0.1"
     "@tanstack/query-core": "npm:^5.103.2"
     "@tanstack/react-query": "npm:^5.103.2"
-    uuid: "npm:^11.1.1"
+    uuid: "npm:^14.0.2"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -10168,7 +10168,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 10/9efd2ced1930adb1e4c96ffc1c1e4aecae5fdb56a76d4df3db219d901ae04c6f5c43c901fe27460abb0b4dbd167733782713f724cc5a4b0f4400faccff579ef5
+  checksum: 10/64976e3802228e6b96244cebef520a1aa44f3c39023fb0e9c003c72511c314946ae5f21cdae5b9e667b782440936636cca629e1880c837fb73396a25729006dc
   languageName: node
   linkType: hard
 
@@ -47680,6 +47680,15 @@ __metadata:
   bin:
     uuid: dist/esm/bin/uuid
   checksum: 10/16411d3dc12a08d6691616c09a75e66a7f900ba1beef6628a76fe0602f82fae2ee537b564d0b7bc95c24f58d059ca9b58c75a1e806118efb50e17822ff00ddd2
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^14.0.2":
+  version: 14.0.3
+  resolution: "uuid@npm:14.0.3"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: 10/a6ab4e6ef84ff77b574846215c425c915de035395710e09f083f3bc1d4744df63db78598da0d04619a0a60a15a9cce2bc7c1ef10bf302349e761838816d798a7
   languageName: node
   linkType: hard
 

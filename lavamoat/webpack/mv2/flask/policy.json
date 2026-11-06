@@ -7845,7 +7845,8 @@
     },
     "@metamask/base-data-service>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/bridge-controller>uuid": {
@@ -7956,7 +7957,8 @@
     },
     "@metamask/react-data-query>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/transaction-controller>uuid": {
