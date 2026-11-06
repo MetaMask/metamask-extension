@@ -18,7 +18,6 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -61,12 +60,10 @@ export const AppHeaderUnlockedContent = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const showNavbar = useBottomNavBar();
   const [searchParams, setSearchParams] = useSearchParams();
   const disableAccountPicker = Boolean(
     matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
-    (matchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname) &&
-      !showNavbar),
+    matchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname),
   );
   // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
   const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';

@@ -8,6 +8,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
+import { ContentLayout } from '#ui/layouts/content-layout';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
@@ -722,6 +723,16 @@ export const routeConfig = [
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyHomePage />,
               }),
+            ],
+          },
+        ],
+      },
+      {
+        element: <ContentLayout />,
+        children: [
+          {
+            element: <RequireBasicFunctionality />,
+            children: [
               createRouteWithMessenger({
                 path: MONEY_ACTIVITY_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
