@@ -4,13 +4,13 @@ import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
 import {
   setRewardsModalOpen,
-  setRewardsDeeplinkUrl,
+  setRewardsDeepLinkUrl,
 } from '../../../ducks/rewards';
-import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
+import { selectRewardsDeepLinkUrl } from '../../../ducks/rewards/selectors';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useDispatch } from '../../../store/hooks';
 import RewardsQRCode from './RewardsQRCode';
-import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
+import { REWARDS_DEEP_LINK_BASE_URL } from './utils/constants';
 
 jest.mock('../../../store/hooks', () => ({
   useDispatch: jest.fn(),
@@ -75,7 +75,7 @@ describe('RewardsQRCode', () => {
 
   it('renders the container and logo image', () => {
     mockUseSelector.mockImplementation((selector) => {
-      if (selector === selectRewardsDeeplinkUrl) {
+      if (selector === selectRewardsDeepLinkUrl) {
         return null;
       }
       return null;
@@ -87,14 +87,14 @@ describe('RewardsQRCode', () => {
       screen.getByTestId('rewards-onboarding-qrcode-container'),
     ).toBeInTheDocument();
     expect(screen.getByAltText('Logo')).toBeInTheDocument();
-    expect(mockUseSelector).toHaveBeenCalledWith(selectRewardsDeeplinkUrl);
+    expect(mockUseSelector).toHaveBeenCalledWith(selectRewardsDeepLinkUrl);
   });
 
-  it('encodes the stored deeplink URL in the QR code when present', () => {
-    const deeplink = 'https://link.metamask.io/rewards?referral=ABC123';
+  it('encodes the stored deepLink URL in the QR code when present', () => {
+    const deepLink = 'https://link.metamask.io/rewards?referral=ABC123';
     mockUseSelector.mockImplementation((selector) => {
-      if (selector === selectRewardsDeeplinkUrl) {
-        return deeplink;
+      if (selector === selectRewardsDeepLinkUrl) {
+        return deepLink;
       }
       return null;
     });
@@ -102,12 +102,12 @@ describe('RewardsQRCode', () => {
     render(<RewardsQRCode />);
 
     const qrImageContainer = screen.getByTestId('qr-code-image');
-    expect(qrImageContainer.innerHTML).toContain(`data-qr="${deeplink}"`);
+    expect(qrImageContainer.innerHTML).toContain(`data-qr="${deepLink}"`);
   });
 
-  it('falls back to REWARDS_DEEPLINK_BASE_URL when no deeplink is stored', () => {
+  it('falls back to REWARDS_DEEP_LINK_BASE_URL when no deepLink is stored', () => {
     mockUseSelector.mockImplementation((selector) => {
-      if (selector === selectRewardsDeeplinkUrl) {
+      if (selector === selectRewardsDeepLinkUrl) {
         return null;
       }
       return null;
@@ -117,13 +117,13 @@ describe('RewardsQRCode', () => {
 
     const qrImageContainer = screen.getByTestId('qr-code-image');
     expect(qrImageContainer.innerHTML).toContain(
-      `data-qr="${REWARDS_DEEPLINK_BASE_URL}"`,
+      `data-qr="${REWARDS_DEEP_LINK_BASE_URL}"`,
     );
   });
 
   it('dispatches close action when clicking Done', () => {
     mockUseSelector.mockImplementation((selector) => {
-      if (selector === selectRewardsDeeplinkUrl) {
+      if (selector === selectRewardsDeepLinkUrl) {
         return null;
       }
       return null;
@@ -140,6 +140,6 @@ describe('RewardsQRCode', () => {
     fireEvent.click(closeButton);
 
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsModalOpen(false));
-    expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeeplinkUrl(null));
+    expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeepLinkUrl(null));
   });
 });

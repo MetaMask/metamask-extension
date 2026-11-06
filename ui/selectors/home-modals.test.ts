@@ -1,4 +1,4 @@
-import type { HomeDeepLinkQrCode } from '../pages/home/HomeDeepLinkActions';
+import type { HomeDeepLinkQrCode } from '../pages/home/home-deep-link-actions';
 import {
   selectCanShowLowPriorityModal,
   getHomeDeepLinkQrCode,
@@ -119,14 +119,14 @@ describe('selectCanShowLowPriorityModal', () => {
 });
 
 describe('getHomeDeepLinkQrCode', () => {
-  it('returns null when no deeplink QR code is pending', () => {
+  it('returns null when no deep link QR code is pending', () => {
     const state = buildState({ homeDeepLinkQrCode: null });
     expect(getHomeDeepLinkQrCode(state)).toBeNull();
   });
 
-  it('returns the deeplink QR code object when one is pending', () => {
+  it('returns the deep link QR code object when one is pending', () => {
     const qrCode = {
-      deeplinkUrl: 'metamask://predict?token=ETH',
+      deepLinkUrl: 'metamask://predict?token=ETH',
       titleKey: 'deepLinkQrPredictTitle',
       descriptionKey: 'deepLinkQrPredictDescription',
     };

@@ -92,7 +92,7 @@ describe('MusdConversionPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('redirects to home when geo-blocked and not a deeplink', () => {
+  it('redirects to home when geo-blocked and not a deep link', () => {
     mockUseMusdGeoBlocking.mockReturnValue({
       isBlocked: true,
       isLoading: false,
@@ -107,7 +107,7 @@ describe('MusdConversionPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not redirect when geo-blocked but IS a deeplink', () => {
+  it('does not redirect when geo-blocked but IS a deep link', () => {
     mockUseMusdGeoBlocking.mockReturnValue({
       isBlocked: true,
       isLoading: false,

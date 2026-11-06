@@ -117,7 +117,7 @@ type AppState = {
     hasUserInteractedWithModal?: boolean;
   };
   homeDeepLinkQrCode: {
-    deeplinkUrl: string;
+    deepLinkUrl: string;
     descriptionKey: string;
     titleKey: string;
   } | null;
@@ -812,7 +812,7 @@ export function hideDataDeletionErrorModal(): Action {
 }
 
 export function setHomeDeepLinkQrCode(payload: {
-  deeplinkUrl: string;
+  deepLinkUrl: string;
   descriptionKey: string;
   titleKey: string;
 }): PayloadAction<typeof payload> {

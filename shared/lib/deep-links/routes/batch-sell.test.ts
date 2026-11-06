@@ -3,7 +3,7 @@ import { HomeQueryParams } from './home';
 import { DEFAULT_ROUTE } from './route';
 
 describe('batch-sell deep link route', () => {
-  it('opens the default route with QR modal params for the batch sell deeplink', () => {
+  it('opens the default route with QR modal params for the batch sell deep link', () => {
     const params = new URLSearchParams();
 
     const destination = batchSell.handler(params);
@@ -12,7 +12,7 @@ describe('batch-sell deep link route', () => {
     expect((destination as { path: string }).path).toBe(DEFAULT_ROUTE);
     expect(
       (destination as { query: URLSearchParams }).query.get(
-        HomeQueryParams.BatchSellDeeplinkUrl,
+        HomeQueryParams.BatchSellDeepLinkUrl,
       ),
     ).toBe('https://link.metamask.io/batch-sell');
   });

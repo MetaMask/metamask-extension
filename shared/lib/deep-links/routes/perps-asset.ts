@@ -1,7 +1,7 @@
 import { PERPS_MARKET_DETAIL_ROUTE, Route } from './route';
 
 /**
- * Shorthand deeplink for a specific perps market asset detail page.
+ * Shorthand deep link for a specific perps market asset detail page.
  * Mirrors mobile's ACTIONS.PERPS_ASSET. Equivalent to /perps?screen=asset&symbol=<symbol>.
  *
  * Supported URL formats:

@@ -82,7 +82,7 @@ export function PerpsTab() {
   return (
     // Provide perps attribution so the wallet_home_perps_tab PERPS_SCREEN_VIEWED
     // (and the compliance / tutorial screen views rendered here) merge UTM /
-    // deeplink attribution — this path is not under the perps-layout provider.
+    // deep link attribution — this path is not under the perps-layout provider.
     <PerpsAttributionProvider locationSearch={search}>
       <AccessRestrictedProvider>
         <PerpsToastProvider>
