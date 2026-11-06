@@ -55,11 +55,14 @@ import {
   getFromTokenBalance,
   getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
-import { ButtonIcon, IconName } from '../../../components/component-library';
+import {
+  ButtonIcon as LegacyButtonIcon,
+  IconName as LegacyIconName,
+} from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  IconColor,
+  IconColor as LegacyIconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -583,7 +586,7 @@ const PrepareBridgePage = ({
               justifyContent: JustifyContent.center,
             }}
           >
-            <ButtonIcon
+            <LegacyButtonIcon
               iconProps={{
                 className: classnames({
                   rotate: rotateSwitchTokens,
@@ -597,8 +600,8 @@ const PrepareBridgePage = ({
               }}
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
-              iconName={IconName.SwapVertical}
-              color={IconColor.iconAlternative}
+              iconName={LegacyIconName.SwapVertical}
+              color={LegacyIconColor.iconAlternative}
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
@@ -685,9 +688,6 @@ const PrepareBridgePage = ({
               disabled: true,
               value: destinationAmount,
               autoFocus: false,
-              className: destinationTokenAmount
-                ? 'amount-input defined'
-                : 'amount-input',
             }}
             showAmountSkeleton={isInitialQuoteLoading}
             buttonProps={{ testId: 'bridge-destination-button' }}
