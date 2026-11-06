@@ -130,7 +130,7 @@ function reportNewApiMembersError(
   { stdout, stderr }: { stdout: Writable; stderr: Writable },
 ): void {
   stderr.write(
-    `${chalk.red('ERROR: New methods have been added to some UI<->background APIs which are deprecated. More details below.')}\n\n`,
+    `${chalk.red('ERROR: New methods have been added to some background<->UI APIs which are deprecated. More details below.')}\n\n`,
   );
 
   for (const result of results) {
@@ -165,7 +165,7 @@ function reportOutdatedSnapshotError(
   stderr: Writable,
 ): void {
   stderr.write(
-    `${chalk.red(`ERROR: \`${SNAPSHOT_PATH}\` is out of date, referring to methods in the legacy background API that no longer exist:`)}\n\n`,
+    `${chalk.red(`ERROR: \`${SNAPSHOT_PATH}\` is out of date, referring to legacy background<->UI API methods that no longer exist:`)}\n\n`,
   );
 
   for (const result of results) {

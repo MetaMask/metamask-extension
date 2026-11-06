@@ -88,7 +88,7 @@ describe('check', () => {
     expect(() => check({ stdout, stderr })).toThrow(CommandError);
 
     expect(stderr.getWrittenText()).toContain(
-      'ERROR: New methods have been added to some UI<->background APIs which are deprecated. More details below.',
+      'ERROR: New methods have been added to some background<->UI APIs which are deprecated. More details below.',
     );
     expect(stderr.getWrittenText()).toContain('getApiMethod');
   });
@@ -192,7 +192,7 @@ describe('check', () => {
     expect(() => check({ stdout, stderr })).toThrow(CommandError);
 
     expect(stderr.getWrittenText()).toContain(
-      'ERROR: `legacy-background-api-snapshot.json` is out of date, referring to methods in the legacy background API that no longer exist:',
+      'ERROR: `legacy-background-api-snapshot.json` is out of date, referring to legacy background<->UI API methods that no longer exist:',
     );
     expect(stderr.getWrittenText()).toContain('removedMethod');
   });
