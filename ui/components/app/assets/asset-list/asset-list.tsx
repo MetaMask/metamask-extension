@@ -4,20 +4,20 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { IconName } from '@metamask/design-system-react';
 import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
+import { getSelectedInternalAccount } from '#shared/lib/selectors/accounts';
+import { TOKEN_MANAGEMENT_ROUTE } from '#ui/helpers/constants/routes';
+import { selectEnabledNetworksAsCaipChainIds } from '#ui/selectors/multichain/networks';
+import { refreshAssetsForSelectedAccount } from '#ui/store/actions';
+import { useDispatch } from '#ui/store/hooks';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   ScreenViewedEntryPoint,
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
-import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
-import { TOKEN_MANAGEMENT_ROUTE } from '../../../../helpers/constants/routes';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../../selectors/multichain/networks';
-import { refreshAssetsForSelectedAccount } from '../../../../store/actions';
-import { useDispatch } from '../../../../store/hooks';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';

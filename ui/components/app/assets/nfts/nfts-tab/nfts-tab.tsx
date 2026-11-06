@@ -15,6 +15,13 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { getAllEnabledNetworksForAllNamespaces } from '#ui/selectors/multichain/networks';
+import {
+  checkAndUpdateAllNftsOwnershipStatus,
+  detectNfts,
+} from '#ui/store/actions';
+import { useDispatch } from '#ui/store/hooks';
+import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getAllChainsToPoll,
@@ -46,13 +53,6 @@ import {
   MetaMetricsEventName,
   ScreenViewedEntryPoint,
 } from '../../../../../../shared/constants/metametrics';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../../selectors/multichain/networks';
-import {
-  checkAndUpdateAllNftsOwnershipStatus,
-  detectNfts,
-} from '../../../../../store/actions';
-import { useDispatch } from '../../../../../store/hooks';
-import { OverflowMenu } from '../../../../ui/overflow-menu/overflow-menu';
 
 export default function NftsTab({
   entryPoint,
