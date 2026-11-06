@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -33,7 +34,7 @@ const dialogClassNameBase = classnames(
 
   // Reset + clip stencil
   'box-border border-0 bg-transparent p-0',
-  'm-0 ms-auto me-[max(0px,calc((100vw-var(--width-max))/2))]',
+  'm-0 ms-auto',
   'h-full max-h-full w-[min(400px,100%)] overflow-clip [translate:none]',
 
   // Dialog enter/exit
@@ -51,8 +52,23 @@ const dialogClassNameBase = classnames(
   'max-[575px]:mx-0 max-[575px]:w-full max-[575px]:max-w-full',
 );
 
-const dialogClassNameFullscreen =
-  'min-[576px]:top-[91px] min-[576px]:h-[calc(100%-91px)] min-[576px]:max-h-[calc(100%-91px)]';
+const dialogClassNamePlacement = classnames(
+  'me-[max(0px,calc((100vw-var(--drawer-column-width))/2))]',
+  'min-[768px]:top-[var(--drawer-header-height)] min-[768px]:h-[calc(100%-var(--drawer-header-height))] min-[768px]:max-h-[calc(100%-var(--drawer-header-height))]',
+);
+
+const getDialogLayoutClassName = (
+  isWideLayout: boolean,
+  isFullscreen: boolean,
+) =>
+  classnames(
+    isWideLayout
+      ? '[--drawer-column-width:var(--width-max)]'
+      : '[--drawer-column-width:var(--width-md)]',
+    isFullscreen && !isWideLayout
+      ? '[--drawer-header-height:var(--header-height)]'
+      : '[--drawer-header-height:0px]',
+  );
 
 const frameClassName = classnames(
   'h-full w-full',
@@ -92,6 +108,7 @@ export const GlobalMenuDrawer = ({
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isLargeDrawer = isFullscreen || isSidepanel;
+  const { isWideLayout } = useAppLayout();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -151,7 +168,8 @@ export const GlobalMenuDrawer = ({
   const titleId = 'global-menu-drawer-title';
   const dialogClassName = classnames(
     dialogClassNameBase,
-    isFullscreen && dialogClassNameFullscreen,
+    dialogClassNamePlacement,
+    getDialogLayoutClassName(isWideLayout, isFullscreen),
   );
 
   const panel = (
