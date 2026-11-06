@@ -173,6 +173,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/perps-controller": {
+      "type": "non-breaking",
+      "previewVersion": "22.1.2-preview-2c49dc768"
+    }
+  },
   "resolutions": {
     "@metamask/design-system-react": "0.53.0",
     "@metamask/network-controller": "^38.0.1",
