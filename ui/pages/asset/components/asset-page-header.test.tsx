@@ -263,13 +263,17 @@ describe('AssetPageHeader', () => {
       expect(mockHandleCopy).toHaveBeenCalledWith(CONTRACT_ADDRESS);
     });
 
-    it('shows the copied message in place of the address after copying', () => {
+    it('shows the copied message in place of the ticker and address', () => {
       (useCopyToClipboard as jest.Mock).mockReturnValue([true, mockHandleCopy]);
-      renderHeader();
+      renderHeader({ name: 'USD Coin', symbol: 'USDC' });
 
-      const addressButton = screen.getByTestId('asset-page-header-address');
-      expect(addressButton).toHaveTextContent('tokenContractAddressCopied');
-      expect(addressButton).not.toHaveTextContent('0x..5831');
+      const subtitle = screen.getByTestId('asset-page-header-subtitle');
+      expect(subtitle).toHaveTextContent('tokenContractAddressCopied');
+      expect(subtitle).not.toHaveTextContent('USDC');
+      expect(subtitle).not.toHaveTextContent('0x..5831');
+      expect(
+        screen.queryByTestId('asset-page-header-ticker'),
+      ).not.toBeInTheDocument();
     });
 
     it('is omitted for native assets without a contract address', () => {

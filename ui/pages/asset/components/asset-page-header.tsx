@@ -70,6 +70,7 @@ const formatCompactContractAddress = (address: string): string => {
  *
  * The ticker uses the title color. The address stays muted and does not
  * shrink, so a long ticker ellipsizes instead of pushing the address away.
+ * After a copy, the success message replaces both.
  *
  * @param props - Component props
  * @param props.ticker - Symbol shown when it differs from the token name
@@ -92,7 +93,7 @@ const AssetPageHeaderSubtitle = ({
       className="flex w-full min-w-0 items-center gap-1"
       data-testid="asset-page-header-subtitle"
     >
-      {ticker ? (
+      {ticker && !copied ? (
         <Text
           ellipsis
           variant={TextVariant.BodySm}
