@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { getReferralCode } from '#shared/lib/deep-links/referral';
+import { setPendingReferralCode } from '#ui/ducks/rewards-money';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -105,10 +107,16 @@ export function useOnboardingCompletion() {
       }
 
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        const url = new URL(deferredDeepLinkToUse.referringLink);
+        if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          dispatch(setPendingReferralCode(getReferralCode(url.searchParams)));
+        }
         await trackEvent(
           createEvent({
             signature: deferredDeepLinkResult.signature,
-            url: new URL(deferredDeepLinkToUse.referringLink),
+            url,
           }),
         );
       }
