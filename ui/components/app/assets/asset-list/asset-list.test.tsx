@@ -274,15 +274,15 @@ describe('AssetList', () => {
       });
     });
 
-    it('disables the asset options control when showTokensLinks is false', async () => {
+    it('does not render the asset options control when showTokensLinks is false', async () => {
       await act(async () => {
         renderAssetList({ showTokensLinks: false });
       });
 
       await waitFor(() => {
         expect(
-          screen.getByTestId('asset-list-control-bar-action-button'),
-        ).toBeDisabled();
+          screen.queryByTestId('asset-list-control-bar-action-button'),
+        ).not.toBeInTheDocument();
       });
     });
   });

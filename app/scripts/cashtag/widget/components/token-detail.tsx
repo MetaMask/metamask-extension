@@ -11,7 +11,7 @@ import {
   TextButtonSize,
 } from '@metamask/design-system-react';
 import browser from 'webextension-polyfill';
-// eslint-disable-next-line import-x/no-restricted-paths -- cashtag widget reuses extension UI overflow menu
+// eslint-disable-next-line import-x/no-restricted-paths
 import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
 import {
   formatPercent,

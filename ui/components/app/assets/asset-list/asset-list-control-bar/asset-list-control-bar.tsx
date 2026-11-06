@@ -19,6 +19,7 @@ import {
   getUseExternalServices,
   getUseNftDetection,
 } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
@@ -92,24 +93,16 @@ import { useDispatch } from '../../../../../store/hooks';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
-  showTokensLinks?: boolean;
-  showImportTokenButton?: boolean;
   showSortControl?: boolean;
   onNetworkSelect?: (networks: string[]) => void;
-  /**
-   * When provided with `showImportTokenButton={false}`, shows the more-options
-   * menu containing only a "Refresh list" action that invokes this callback.
-   */
-  onRefresh?: () => void;
+  actionMenu?: React.ReactNode;
   'data-testid'?: string;
 };
 
 const AssetListControlBar = ({
-  showTokensLinks,
-  showImportTokenButton = true,
   showSortControl = true,
   onNetworkSelect,
-  onRefresh,
+  actionMenu,
   'data-testid': dataTestId,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
@@ -132,27 +125,26 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
-  const selectedAccountGroupAccounts = useSelector(
+  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+  const isEvmOnlySelectedAccountGroup = useSelector(
     (state: MetaMaskReduxState) => {
       const multichainAccountsState =
         state as unknown as MultichainAccountsState;
       const selectedAccountGroup = getSelectedAccountGroup(
         multichainAccountsState,
       );
-      return getInternalAccountsFromGroupById(
+      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
         multichainAccountsState,
         selectedAccountGroup,
       );
-    },
-  );
 
-  const isEvmOnlySelectedAccountGroup = useMemo(
-    () =>
-      selectedAccountGroupAccounts.length > 0 &&
-      selectedAccountGroupAccounts.every((account) =>
-        isEvmAccountType(account.type),
-      ),
-    [selectedAccountGroupAccounts],
+      return (
+        selectedAccountGroupAccounts.length > 0 &&
+        selectedAccountGroupAccounts.every((account) =>
+          isEvmAccountType(account.type),
+        )
+      );
+    },
   );
 
   const { collections } = useNftsCollections();
@@ -308,132 +300,6 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
   };
 
-  const handleOpenTokenManagement = useCallback(() => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'HOME',
-        })
-        .build(),
-    );
-    setIsTokenSortPopoverOpen(false);
-    navigate(TOKEN_MANAGEMENT_ROUTE, {
-      state: {
-        globalMenuTransition: 'forward',
-      },
-    });
-  }, [createEventBuilder, navigate, trackEvent]);
-
-  const handleNftImportModal = () => {
-    navigate(IMPORT_NFTS_ROUTE);
-    closePopover();
-  };
-
-  const handleRefresh = () => {
-    if (selectedAccountGroupAccounts.length > 0) {
-      dispatch(
-        refreshAssetsForSelectedAccount(selectedAccountGroupAccounts, {
-          chainIds: selectedCaipChainIds,
-          assetTypes: ['token', 'price', 'metadata'],
-        }),
-      );
-    }
-    closePopover();
-  };
-
-  const handleRefreshListOnly = () => {
-    onRefresh?.();
-    closePopover();
-  };
-
-  const onEnableAutoDetect = () => {
-    navigate(`${ASSETS_ROUTE}#autodetect-tokens`);
-  };
-
-  const handleNftRefresh = () => {
-    if (isMainnet || isLineaMainnet) {
-      dispatch(detectNfts(allChainIds));
-    }
-    // loop through allNetworkClientIds and call checkAndUpdateAllNftsOwnershipStatus for each one
-    allNetworkClientIds.forEach((networkClientId) => {
-      checkAndUpdateAllNftsOwnershipStatus(networkClientId);
-    });
-    closePopover();
-  };
-
-  const overflowTriggerClassName =
-    'asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed';
-
-  const tokenMenuItems = [
-    {
-      key: 'manage-tokens',
-      label: t('manageTokens'),
-      iconName: IconName.Setting,
-      'data-testid': 'manageTokens__button',
-      onClick: handleOpenTokenManagement,
-    },
-    {
-      key: 'refresh-list',
-      label: t('refreshList'),
-      iconName: IconName.Refresh,
-      'data-testid': 'refreshList',
-      onClick: handleRefresh,
-    },
-  ];
-
-  const nftMenuItems = [
-    {
-      key: 'import-nft',
-      label: t('importNFT'),
-      iconName: IconName.Add,
-      'data-testid': 'import-nfts__button',
-      onClick: handleNftImportModal,
-    },
-    ...(shouldShowRefreshButtons
-      ? [
-          {
-            key: 'refresh-nfts',
-            label: t('refreshList'),
-            iconName: IconName.Refresh,
-            'data-testid': 'refresh-list-button',
-            onClick: handleNftRefresh,
-          },
-        ]
-      : []),
-    ...(shouldShowEnableAutoDetect
-      ? [
-          {
-            key: 'enable-autodetect',
-            label: t('enableAutoDetect'),
-            iconName: IconName.Setting,
-            'data-testid': 'enable-autodetect-button',
-            onClick: onEnableAutoDetect,
-          },
-        ]
-      : []),
-  ];
-
-  const refreshOnlyMenuItems = [
-    {
-      key: 'refresh-list',
-      label: t('refreshList'),
-      iconName: IconName.Refresh,
-      'data-testid': 'refreshList',
-      onClick: handleRefreshListOnly,
-    },
-  ];
-
-  const showTokenOrNftMenu = Boolean(
-    showImportTokenButton &&
-    (isEvm || showTokensLinks) &&
-    selectedAccountGroupAccounts.length > 0,
-  );
-  const showRefreshOnlyMenu =
-    !showImportTokenButton &&
-    Boolean(onRefresh) &&
-    selectedAccountGroupAccounts.length > 0;
-
   let networkFilterTextColor = TextColor.textDefault;
   if (isNetworkSwitchPending) {
     networkFilterTextColor = TextColor.transparent;
@@ -520,37 +386,7 @@ const AssetListControlBar = ({
             </Tooltip>
           )}
 
-          {showTokenOrNftMenu ? (
-            <OverflowMenu
-              ariaLabel={t('assetOptions')}
-              disabled={showTokensLinks === false}
-              items={showTokensLinks ? tokenMenuItems : nftMenuItems}
-              size={ButtonIconSize.Sm}
-              testId="asset-list-control-bar-action-button"
-            />
-          ) : null}
-
-          {showImportTokenButton && !isEvm && !showTokensLinks ? (
-            <Tooltip title={t('manageTokens')} position="bottom" distance={20}>
-              <ButtonIcon
-                data-testid="importTokens-button"
-                className={overflowTriggerClassName}
-                onClick={handleOpenTokenManagement}
-                size={ButtonIconSize.Sm}
-                iconName={IconName.MoreVertical}
-                ariaLabel={t('manageTokens')}
-              />
-            </Tooltip>
-          ) : null}
-
-          {showRefreshOnlyMenu ? (
-            <OverflowMenu
-              ariaLabel={t('assetOptions')}
-              items={refreshOnlyMenuItems}
-              size={ButtonIconSize.Sm}
-              testId="asset-list-control-bar-action-button"
-            />
-          ) : null}
+          {actionMenu}
         </Box>
       </Box>
 
