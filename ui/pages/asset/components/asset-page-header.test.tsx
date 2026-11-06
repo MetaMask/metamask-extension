@@ -253,6 +253,7 @@ describe('AssetPageHeader', () => {
       const address = screen.getByTestId('asset-page-header-address');
       expect(address).toHaveTextContent('0x..5831');
       expect(address).toHaveClass('h-6', 'px-2', 'py-1');
+      expect(address).toHaveAttribute('aria-label', 'copyToClipboard');
     });
 
     it('copies the full contract address when clicked', () => {
@@ -277,6 +278,13 @@ describe('AssetPageHeader', () => {
       const address = screen.getByTestId('asset-page-header-address');
       expect(address).toHaveClass('h-6', 'px-2', 'py-1');
       expect(address).not.toHaveClass('w-full');
+      expect(address).toHaveAttribute(
+        'aria-label',
+        'tokenContractAddressCopied',
+      );
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'tokenContractAddressCopied',
+      );
     });
 
     it('is omitted for native assets without a contract address', () => {

@@ -109,7 +109,9 @@ const AssetPageHeaderSubtitle = ({
         <button
           type="button"
           onClick={() => handleCopy(address)}
-          aria-label={t('copyToClipboard')}
+          aria-label={
+            copied ? t('tokenContractAddressCopied') : t('copyToClipboard')
+          }
           className={classnames(
             // Same box as the home address pill (h-6, px-2, py-1, rounded-lg)
             // in every state, so hover and copy don't move the row.
@@ -139,9 +141,13 @@ const AssetPageHeaderSubtitle = ({
             color={
               copied ? IconColor.SuccessDefault : IconColor.IconAlternative
             }
+            aria-hidden
           />
         </button>
       ) : null}
+      <span className="sr-only" role="status">
+        {copied ? t('tokenContractAddressCopied') : null}
+      </span>
     </div>
   );
 };
