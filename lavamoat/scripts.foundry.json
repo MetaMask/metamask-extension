@@ -1,0 +1,10 @@
+{
+  "nodeOptions": {
+    "--permission": true,
+    "--allow-fs-write": "*",
+    "--allow-fs-read": "*",
+    "--allow-child-process": true,
+    "--disable-warning": ["SecurityWarning"]
+  },
+  "notes": "Allows all filesystem access because of complex symlinking going on"
+}

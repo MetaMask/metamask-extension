@@ -3048,7 +3048,7 @@
       "packages": {
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
-        "@tanstack/react-query": true
+        "@metamask/react-data-query>@tanstack/react-query": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -4373,6 +4373,15 @@
       }
     },
     "@tanstack/react-query": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "react": true
+      }
+    },
+    "@metamask/react-data-query>@tanstack/react-query": {
       "globals": {
         "console.error": true
       },
@@ -5808,7 +5817,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "viem": true,
-        "openai>zod": true
+        "eth-lattice-keyring>gridplus-sdk>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -7977,7 +7986,7 @@
         "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "openai>zod": {
+    "eth-lattice-keyring>gridplus-sdk>zod": {
       "globals": {
         "File": true,
         "URL": true,

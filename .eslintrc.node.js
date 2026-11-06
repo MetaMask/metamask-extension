@@ -1,8 +1,14 @@
 const nodeConfig = require('@metamask/eslint-config-nodejs').default;
+const { devEngines } = require('./package.json');
 
 module.exports = [
   ...nodeConfig,
   {
+    settings: {
+      n: {
+        version: devEngines.runtime.version,
+      },
+    },
     rules: {
       'n/no-process-env': 'off',
       // eslint-plugin-n@17 started treating these browser globals as Node builtins

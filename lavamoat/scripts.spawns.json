@@ -1,0 +1,9 @@
+{
+  "extends": "scripts.strict-base.json",
+  "nodeOptions": {
+    "--permission": true,
+    "--allow-child-process": true,
+    "--disable-warning": "SecurityWarning"
+  },
+  "notes": "Our linters use processes or workers to parallelize"
+}
