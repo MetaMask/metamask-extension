@@ -200,7 +200,6 @@ export const getDefaultPreferencesControllerState =
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
-      transactionToastsEnabled: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       useSidePanelAsDefault: true,
       gasSponsorshipOptOutByChainId: {},

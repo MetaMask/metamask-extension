@@ -1057,7 +1057,6 @@
           "order": "dsc",
           "sortCallback": "stringNumeric"
         },
-        "transactionToastsEnabled": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
         "useSidePanelAsDefault": true
       },

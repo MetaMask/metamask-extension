@@ -979,7 +979,6 @@
         "order": "string",
         "sortCallback": "string"
       },
-      "transactionToastsEnabled": "boolean",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
     },

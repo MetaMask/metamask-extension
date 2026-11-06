@@ -25,10 +25,8 @@ import {
   perpsToggleTestnet,
   resetOnboarding,
   resetViewedNotifications,
-  setTransactionToastsEnabled,
 } from '../../../../store/actions';
 import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
-import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
@@ -194,14 +192,6 @@ const DebugContent = () => {
     await perpsToggleTestnet();
   }, []);
 
-  const { transactionToastsEnabled } = useSelector(getPreferences);
-  const handleToggleTransactionToasts = useCallback(
-    (value: boolean) => {
-      dispatch(setTransactionToastsEnabled(!value));
-    },
-    [dispatch],
-  );
-
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 
   const renderRemoteFeatureFlags = () => {
@@ -252,13 +242,6 @@ const DebugContent = () => {
       </Text>
       <div className="settings-page__content-padded">
         {renderRemoteFeatureFlags()}
-        <ToggleRow
-          title="Transaction toasts"
-          description="Show submitted, confirmed, and failed toasts for transactions."
-          isEnabled={transactionToastsEnabled !== false}
-          onToggle={handleToggleTransactionToasts}
-          dataTestId="transaction-toasts-toggle"
-        />
       </div>
       <Text
         className="settings-page__security-tab-sub-header"

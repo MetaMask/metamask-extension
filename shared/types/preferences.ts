@@ -29,7 +29,6 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
-  transactionToastsEnabled: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   useSidePanelAsDefault?: boolean;
   perpsSelectedCandlePeriod?: string;

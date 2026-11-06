@@ -1,16 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { act, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import DebugContent from '.';
 
 const mockPerpsToggleTestnet = jest.fn().mockResolvedValue(undefined);
-const mockSetTransactionToastsEnabled = jest.fn((value: boolean) => ({
-  type: 'SET_TRANSACTION_TOASTS_ENABLED',
-  value,
-}));
 const mockRemoteFeatureFlags = { feature1: 'value1' };
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
@@ -30,8 +26,6 @@ jest.mock('webextension-polyfill', () => ({
 
 jest.mock('../../../../store/actions.ts', () => ({
   perpsToggleTestnet: () => mockPerpsToggleTestnet(),
-  setTransactionToastsEnabled: (value: boolean) =>
-    mockSetTransactionToastsEnabled(value),
 }));
 
 jest.mock('../../../../../shared/lib/selectors/remote-feature-flags', () => ({
@@ -50,37 +44,6 @@ describe('Debug tab', () => {
     expect(
       getByTestId('developer-options-remote-feature-flags').textContent,
     ).toEqual(JSON.stringify(mockRemoteFeatureFlags, null, 2));
-  });
-
-  describe('Transaction toasts toggle', () => {
-    const clickToggle = async (transactionToastsEnabled: boolean) => {
-      const store = configureMockStore([thunk])({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          preferences: {
-            ...mockState.metamask.preferences,
-            transactionToastsEnabled,
-          },
-        },
-      });
-      let getByTestId!: ReturnType<typeof renderWithProvider>['getByTestId'];
-      await act(async () => {
-        ({ getByTestId } = renderWithProvider(<DebugContent />, store));
-      });
-
-      fireEvent.click(getByTestId('transaction-toasts-toggle'));
-    };
-
-    it('turns transaction toasts off when they are on', async () => {
-      await clickToggle(true);
-      expect(mockSetTransactionToastsEnabled).toHaveBeenCalledWith(false);
-    });
-
-    it('turns transaction toasts on when they are off', async () => {
-      await clickToggle(false);
-      expect(mockSetTransactionToastsEnabled).toHaveBeenCalledWith(true);
-    });
   });
 
   describe('Perps Testnet toggle (METAMASK_DEBUG only)', () => {

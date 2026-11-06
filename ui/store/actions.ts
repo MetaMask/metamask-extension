@@ -4194,10 +4194,6 @@ export function setHideZeroBalanceTokens(value: boolean) {
   return setPreference('hideZeroBalanceTokens', value);
 }
 
-export function setTransactionToastsEnabled(value: boolean) {
-  return setPreference('transactionToastsEnabled', value);
-}
-
 export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
 }

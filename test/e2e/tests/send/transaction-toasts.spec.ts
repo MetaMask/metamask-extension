@@ -1,5 +1,5 @@
 /**
- * Generic transaction toasts are off in the default fixture.
+ * Generic transaction toasts are off by default in E2E (see `setManifestFlags`).
  * This spec turns them on and covers the EVM and non-EVM toast paths
  * (submitted, confirmed, failed).
  */
@@ -98,7 +98,8 @@ describe('Transaction toasts', function (this: Suite) {
   it('dismisses the confirmed toast and stays on the home page', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
+        fixtures: new FixtureBuilderV2().build(),
+        manifestFlags: { testing: { disableTransactionToasts: false } },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -119,7 +120,8 @@ describe('Transaction toasts', function (this: Suite) {
   it('opens transaction details from the confirmed toast', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
+        fixtures: new FixtureBuilderV2().build(),
+        manifestFlags: { testing: { disableTransactionToasts: false } },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -143,7 +145,8 @@ describe('Transaction toasts', function (this: Suite) {
   it('shows the submitted toast for a non-EVM (Bitcoin) send', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
+        fixtures: new FixtureBuilderV2().build(),
+        manifestFlags: { testing: { disableTransactionToasts: false } },
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSendMocks,
       },
@@ -185,8 +188,8 @@ describe('Transaction toasts', function (this: Suite) {
               '20',
             ),
           )
-          .withTransactionToastsEnabled()
           .build(),
+        manifestFlags: { testing: { disableTransactionToasts: false } },
         localNodeOptions: { hardfork: 'london', chainId: '1' },
         unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: '20' },
         title: this.test?.fullTitle(),

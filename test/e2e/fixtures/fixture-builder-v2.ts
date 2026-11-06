@@ -1300,14 +1300,6 @@ class FixtureBuilderV2 {
     });
   }
 
-  withTransactionToastsEnabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        transactionToastsEnabled: true,
-      },
-    });
-  }
-
   withSnapsPrivacyWarningAlreadyShown(): this {
     return this.withAppStateController({
       snapsInstallPrivacyWarningShown: true,
