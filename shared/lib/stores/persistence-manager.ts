@@ -497,43 +497,50 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     failure: string,
     writeDetails?: { controllers: string[]; coalescedUpdates?: number },
   ) {
-    const snapshot = await this.#getActivitySnapshot();
-    const activity = buildActivityAttributes(
-      snapshot.currentActivity,
-      snapshot.lastActivity,
-      snapshot.idleStatus,
-      snapshot.environmentType,
-    );
+    // Callers intentionally do not await this method so reporting cannot hold
+    // STATE_LOCK. Swallow failures so the floating promise never rejects.
+    try {
+      const snapshot = await this.#getActivitySnapshot();
+      const activity = buildActivityAttributes(
+        snapshot.currentActivity,
+        snapshot.lastActivity,
+        snapshot.idleStatus,
+        snapshot.environmentType,
+      );
 
-    const extra: Record<string, number | string | boolean> = {};
-    for (const [key, value] of Object.entries(activity)) {
-      if (key === 'idle_status' || key === 'environment_type') {
-        continue;
+      const extra: Record<string, number | string | boolean> = {};
+      for (const [key, value] of Object.entries(activity)) {
+        if (key === 'idle_status' || key === 'environment_type') {
+          continue;
+        }
+        extra[`persistence.${key}`] = value;
       }
-      extra[`persistence.${key}`] = value;
-    }
 
-    if (writeDetails) {
-      extra['persistence.controllers'] = writeDetails.controllers.join(',');
-      extra['persistence.controller_count'] = writeDetails.controllers.length;
-      if (writeDetails.coalescedUpdates !== undefined) {
-        extra['persistence.coalesced_updates'] = writeDetails.coalescedUpdates;
+      if (writeDetails) {
+        extra['persistence.controllers'] = writeDetails.controllers.join(',');
+        extra['persistence.controller_count'] = writeDetails.controllers.length;
+        if (writeDetails.coalescedUpdates !== undefined) {
+          extra['persistence.coalesced_updates'] =
+            writeDetails.coalescedUpdates;
+        }
       }
-    }
 
-    // Custom fingerprint prevents Sentry's deduplication from dropping
-    // this event when other persistence errors with the same underlying
-    // error message (e.g., "An unexpected error occurred") are reported.
-    // `idle_status` and `environment_type` are tags so they can be filtered.
-    captureException(error, {
-      tags: {
-        'persistence.error': failure,
-        'persistence.environment_type': snapshot.environmentType,
-        'persistence.idle_status': snapshot.idleStatus,
-      },
-      extra,
-      fingerprint: ['persistence-error', failure],
-    });
+      // Custom fingerprint prevents Sentry's deduplication from dropping
+      // this event when other persistence errors with the same underlying
+      // error message (e.g., "An unexpected error occurred") are reported.
+      // `idle_status` and `environment_type` are tags so they can be filtered.
+      captureException(error, {
+        tags: {
+          'persistence.error': failure,
+          'persistence.environment_type': snapshot.environmentType,
+          'persistence.idle_status': snapshot.idleStatus,
+        },
+        extra,
+        fingerprint: ['persistence-error', failure],
+      });
+    } catch {
+      // Telemetry must not surface reporting failures.
+    }
   }
 
   async #captureWriteFailure(
