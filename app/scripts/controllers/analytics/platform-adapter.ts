@@ -379,6 +379,15 @@ export function createPlatformAdapter(
       }
 
       const enrichedContext = enrichEventContext(context, enrichmentContext);
+      // Traits are deltas, so `traits.canonical_profile_id` is only present when
+      // it changes. Braze Cloud Mode resolves `external_id` from this context
+      // field on every identify call.
+      const canonicalProfileId =
+        enrichmentContext.getProfileIdentityProperties().canonical_profile_id;
+      if (canonicalProfileId) {
+        enrichedContext.canonical_profile_id = canonicalProfileId;
+      }
+
       const payload = {
         ...buildBasePayload({ userId }, enrichedContext, options),
         ...(traits ? { traits } : {}),
