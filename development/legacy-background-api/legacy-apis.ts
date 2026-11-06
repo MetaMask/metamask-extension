@@ -29,6 +29,11 @@ export type LegacyApi = {
    * those methods were added.
    */
   newMethodsExplanation: string;
+  /**
+   * Describes which methods the snapshot entry lists, shown when the snapshot
+   * refers to methods that the API no longer has.
+   */
+  snapshotEntryDescription: string;
 };
 
 /**
@@ -55,21 +60,28 @@ export const LEGACY_APIS = {
     name: 'legacyBackgroundApiServiceMethods',
     newMethodsExplanation:
       'New methods have been added to LegacyBackgroundApiService',
+    snapshotEntryDescription: 'LegacyBackgroundApiService methods',
   },
   messengerClientApiMethods: {
     name: 'messengerClientApiMethods',
     newMethodsExplanation:
       'Some controller/service init functions return an `api` object that includes new methods',
+    snapshotEntryDescription:
+      'all methods from `api` objects returned by controller/service init functions',
   },
   getApiMethods: {
     name: 'getApiMethods',
     newMethodsExplanation:
       'New methods have been added to the API object returned by MetamaskController.getApi()',
+    snapshotEntryDescription:
+      'methods from the API object returned by MetamaskController.getApi()',
   },
   adhocControllerConnectionMethods: {
     name: 'adhocControllerConnectionMethods',
     newMethodsExplanation:
       'New methods have been directly (or indirectly) added to the API object returned by MetamaskController.setupControllerConnection()',
+    snapshotEntryDescription:
+      'methods directly/indirectly defined in MetamaskController.setupControllerConnection()',
   },
 } as const satisfies Record<LegacyApiName, LegacyApi>;
 

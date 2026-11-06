@@ -192,9 +192,50 @@ describe('check', () => {
     expect(() => check({ stdout, stderr })).toThrow(CommandError);
 
     expect(stderr.getWrittenText()).toContain(
-      'Methods have been removed from some legacy background APIs',
+      'ERROR: `legacy-background-api-snapshot.json` is out of date, referring to methods in the legacy background API that no longer exist:',
     );
     expect(stderr.getWrittenText()).toContain('removedMethod');
+  });
+
+  it('lists the removed members of each API under a description of its snapshot entry', () => {
+    mockFiles({
+      snapshot: {
+        legacyBackgroundApiServiceMethods: ['addPermittedAccounts'],
+        messengerClientApiMethods: ['updateMoneyAccountWithdrawAmount'],
+        getApiMethods: ['isPublicEndpointUrl'],
+        adhocControllerConnectionMethods: ['perpsDeactivatePriceStream'],
+      },
+      controllerSource: `class MetamaskController {
+        constructor() {
+          const messengerClientInitFunctions = {};
+        }
+
+        getApi() { return {}; }
+
+        setupControllerConnection() {
+          const api = { ...this.getApi(), ...this.messengerClientApi };
+        }
+      }`,
+      serviceSource: 'class LegacyBackgroundApiService {}',
+    });
+    const { stdout, stderr } = createStreams();
+
+    expect(() => check({ stdout, stderr })).toThrow(CommandError);
+
+    expect(stderr.getWrittenText()).toContain(
+      [
+        '- legacyBackgroundApiServiceMethods (LegacyBackgroundApiService methods):',
+        '  - addPermittedAccounts',
+        '- messengerClientApiMethods (all methods from `api` objects returned by controller/service init functions):',
+        '  - updateMoneyAccountWithdrawAmount',
+        '- getApiMethods (methods from the API object returned by MetamaskController.getApi()):',
+        '  - isPublicEndpointUrl',
+        '- adhocControllerConnectionMethods (methods directly/indirectly defined in MetamaskController.setupControllerConnection()):',
+        '  - perpsDeactivatePriceStream',
+        '',
+        'You can run `yarn legacy-background-api:update` to refresh the snapshot.',
+      ].join('\n'),
+    );
   });
 });
 

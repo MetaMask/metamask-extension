@@ -165,17 +165,17 @@ function reportOutdatedSnapshotError(
   stderr: Writable,
 ): void {
   stderr.write(
-    `${chalk.red('ERROR: Methods have been removed from some legacy background APIs which are not reflected in the snapshot:\n')}\n`,
+    `${chalk.red(`ERROR: \`${SNAPSHOT_PATH}\` is out of date, referring to methods in the legacy background API that no longer exist:`)}\n\n`,
   );
 
   for (const result of results) {
     stderr.write(
-      `- ${result.legacyApi.name}\n${formatList(result.namesToRemoveFromSnapshot)}\n`,
+      `- ${result.legacyApi.name} (${result.legacyApi.snapshotEntryDescription}):\n${formatList(result.namesToRemoveFromSnapshot)}\n`,
     );
   }
   stderr.write('\n');
   stderr.write(
-    'Please run `yarn legacy-background-api:update` to remove them from the snapshot.\n',
+    'You can run `yarn legacy-background-api:update` to refresh the snapshot.\n',
   );
 }
 
