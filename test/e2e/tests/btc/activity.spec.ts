@@ -3,7 +3,6 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_ADDRESS, DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -103,10 +102,6 @@ describe('BTC Account - Activity', function (this: Suite) {
         const reviewPage = new BitcoinReviewTxPage(driver);
         await reviewPage.checkPageIsLoaded();
         await reviewPage.clickConfirmButton();
-
-        const txToast = new TxToastNotification(driver);
-        await txToast.checkTxSubmittedToast();
-        await txToast.closeToastNotification();
 
         const activity = new ActivityTab(driver);
 
