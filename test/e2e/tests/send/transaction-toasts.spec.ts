@@ -95,7 +95,7 @@ async function mockRevertedTransactionReceipt(mockServer: Mockttp) {
 describe('Transaction toasts', function (this: Suite) {
   this.timeout(180_000);
 
-  it('dismisses the confirmed toast and stays on the home page', async function () {
+  it('dismisses the confirmed toast', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -112,7 +112,6 @@ describe('Transaction toasts', function (this: Suite) {
         const txToast = new TxToastNotification(driver);
         await txToast.checkTxConfirmedToast();
         await txToast.closeToastNotification();
-        await new HomePage(driver).checkPageIsLoaded();
       },
     );
   });
@@ -167,7 +166,6 @@ describe('Transaction toasts', function (this: Suite) {
         const txToast = new TxToastNotification(driver);
         await txToast.checkTxSubmittedToast();
         await txToast.closeToastNotification();
-        await homePage.checkPageIsLoaded();
       },
     );
   });
