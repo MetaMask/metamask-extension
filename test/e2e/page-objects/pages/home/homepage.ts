@@ -21,8 +21,9 @@ export type CheckExpectedBalanceOptions = {
 
 // TODO: Remove this widened wait once #43958 completes the Solana discovery
 // mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
+// past the default 10s wait. 45s because the bitcoin icon can land after the
+// Solana one on loaded CI runners (5 shards in parallel).
+const NON_EVM_ICON_TIMEOUT = 45_000;
 
 /**
  * Wallet home / account overview: balance, primary CTAs, and tab navigation.
