@@ -12,7 +12,7 @@ export function getBuyPortfolioRedirectDestination(query: URLSearchParams): {
   redirectTo: URL;
 } {
   const buyUrl = new URL('/buy', BaseUrl.Portfolio);
-  query.forEach((value, key) => buyUrl.searchParams.append(key, value));
+  buyUrl.search = query.toString();
   return { redirectTo: buyUrl };
 }
 
