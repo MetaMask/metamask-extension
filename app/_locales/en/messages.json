@@ -12668,6 +12668,10 @@
   "tronEnergyCoverageDescriptionSingular": {
     "message": "Covers 1 USDT transfer"
   },
+  "tronSelfTransferError": {
+    "message": "You can't send this asset to your own address",
+    "description": "Error shown when the user tries to send native TRX or a TRC-10 token on Tron to their own address, which the Tron protocol rejects."
+  },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
     "description": "$1 is a link to the wallet connection guide;"
