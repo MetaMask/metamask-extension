@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "कॉन्ट्रैक्ट इंटरैक्शन"
   },
-  "convertAgain": {
-    "message": "फिर से कन्वर्ट करें"
-  },
   "convertTokenToNFTDescription": {
     "message": "हमने पाया है कि यह संपत्ति एक NFT है। MetaMask के पास अब NFT के लिए फुल नेटिव सपोर्ट है। क्या आप इसे अपनी टोकन लिस्ट से हटाना चाहते हैं और इसे NFT के रूप में जोड़ना चाहते हैं?"
   },
@@ -6342,19 +6339,6 @@
   "musdConversionTitle": {
     "message": "mUSD में कन्वर्ट किया गया",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSD कन्वर्शन नहीं हो पाया"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSD में कन्वर्ट किया जा रहा है",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD कन्वर्शन सफल रहा"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "बोनस एक दिन के भीतर क्लेम किया जा सकेगा।"
   },
   "musdConvert": {
     "message": "कन्वर्ट करें"
