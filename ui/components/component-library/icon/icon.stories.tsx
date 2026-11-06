@@ -89,6 +89,7 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
             onChange={handleSearch}
             clearButtonOnClick={handleOnClear}
             value={search}
+            inputAriaLabel="Search icon name"
             placeholder="Search icon name"
           />
         </Box>

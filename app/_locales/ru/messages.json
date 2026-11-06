@@ -8447,7 +8447,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "обратитесь в поддержку",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Некоторые службы временно недоступны. $1 или $2.",
@@ -8455,7 +8455,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Посмотрите варианты действий в разделе часто задаваемых вопросов",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Произошел сбой",

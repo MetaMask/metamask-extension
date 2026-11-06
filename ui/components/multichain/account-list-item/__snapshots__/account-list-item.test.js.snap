@@ -435,7 +435,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         style="margin-left: 0px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                         >
                           <img
                             alt="Polygon"
@@ -450,7 +450,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                         >
                           <img
                             alt="BNB Chain"
@@ -479,7 +479,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                         >
                           <img
                             alt="Custom Mainnet RPC"
