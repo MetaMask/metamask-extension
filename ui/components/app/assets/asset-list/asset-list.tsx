@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { IconName } from '@metamask/design-system-react';
+import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,7 +18,6 @@ import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../../selectors/multichain/networks';
 import { refreshAssetsForSelectedAccount } from '../../../../store/actions';
 import { useDispatch } from '../../../../store/hooks';
-import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';

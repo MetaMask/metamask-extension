@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { IconName } from '@metamask/design-system-react';
+import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
 import { RouteMessengerProvider } from '../../../contexts/route-messenger';
@@ -9,7 +10,6 @@ import AssetListControlBar from '../../../components/app/assets/asset-list/asset
 import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
 import DefiList from '../../../components/app/assets/defi-list/defi-list';
 import { useDefiPositionsList } from '../../../components/app/assets/defi-list/useDefiPositionsList';
-import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useDeFiListItemsV2 } from '../hooks/useDeFiListItemsV2';
 import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
