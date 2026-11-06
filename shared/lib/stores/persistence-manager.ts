@@ -484,10 +484,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // Keep unknown status.
     }
 
-    const href = globalThis.self?.location?.href;
-    const environmentType = (
-      href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
-    ) as EnvironmentType | 'unknown';
+    let environmentType: EnvironmentType | 'unknown' = 'unknown';
+    try {
+      const href = globalThis.self?.location?.href;
+      if (href !== undefined && href !== '') {
+        environmentType = getEnvironmentType(href);
+      }
+    } catch {
+      // Keep unknown. `getEnvironmentType` parses with `new URL`.
+    }
 
     return { currentActivity, environmentType, idleStatus, lastActivity };
   }

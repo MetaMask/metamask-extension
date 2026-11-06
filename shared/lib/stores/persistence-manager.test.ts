@@ -2264,5 +2264,42 @@ describe('PersistenceManager', () => {
         );
       });
     });
+
+    it('reports unknown environment type when location href is malformed', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'not a url' } },
+        configurable: true,
+      });
+      try {
+        manager = new PersistenceManager({
+          getIsIdle: () => 'idle',
+          localStore: new ExtensionStore(),
+        });
+        const error = new Error('store.get error');
+        mockStoreGet.mockRejectedValueOnce(error);
+
+        await expect(manager.get({ validateVault: false })).rejects.toThrow(
+          error,
+        );
+
+        expect(mockedCaptureException).toHaveBeenCalledWith(
+          error,
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.error': 'get-failed',
+              'persistence.environment_type': 'unknown',
+              'persistence.idle_status': 'idle',
+            }),
+          }),
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
+    });
   });
 });
