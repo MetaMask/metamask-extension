@@ -242,27 +242,23 @@ export default function Home() {
 
   if (location.pathname === CONNECTED_ROUTE) {
     return (
-      <>
-        <div className="flex flex-col flex-1 min-h-0">
-          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
-            <ConnectedSites navigate={navigate} />
-          </ScrollContainer>
-          <DappConnectionControlBar />
-        </div>
-      </>
+      <div className="flex flex-col flex-1 min-h-0">
+        <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
+          <ConnectedSites navigate={navigate} />
+        </ScrollContainer>
+        <DappConnectionControlBar />
+      </div>
     );
   }
 
   if (location.pathname === CONNECTED_ACCOUNTS_ROUTE) {
     return (
-      <>
-        <div className="flex flex-col flex-1 min-h-0">
-          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
-            <ConnectedAccounts navigate={navigate} />
-          </ScrollContainer>
-          <DappConnectionControlBar />
-        </div>
-      </>
+      <div className="flex flex-col flex-1 min-h-0">
+        <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
+          <ConnectedAccounts navigate={navigate} />
+        </ScrollContainer>
+        <DappConnectionControlBar />
+      </div>
     );
   }
 
@@ -301,13 +297,11 @@ export default function Home() {
   );
 
   return (
-    <>
-      <div className="flex min-h-full flex-col">
-        <div className="grow">{homeBody}</div>
-        <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 z-10">
-          <DappConnectionControlBar />
-        </div>
+    <div className="flex min-h-full flex-col">
+      <div className="grow">{homeBody}</div>
+      <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 z-10">
+        <DappConnectionControlBar />
       </div>
-    </>
+    </div>
   );
 }
