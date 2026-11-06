@@ -29,10 +29,8 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  type UpdateNetworkFields,
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
+import type { UpdateNetworkFields } from '@metamask/network-controller';
 import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -91,9 +89,9 @@ import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { useDispatch } from '../../../store/hooks';
 import {
   ChainlistNetworkPicker,
-  type ChainlistNetwork,
   getUsableUrls,
 } from '../../../pages/networks/chainlist-network-picker';
+import type { ChainlistNetwork } from '../../../pages/networks/chainlist-network-picker';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -793,6 +791,8 @@ export const NetworksForm = ({
                 maxHeight={chainlistMaxHeight}
                 searchValue={name}
                 showSearchField={false}
+                comboboxInputId="networkName"
+                onDismiss={closeChainlist}
                 onSelect={(network, searchQuery) => {
                   setSource('chainlist');
                   closeChainlist();
@@ -980,6 +980,8 @@ export const NetworksForm = ({
                   maxHeight={chainlistMaxHeight}
                   searchValue={chainId}
                   showSearchField={false}
+                  comboboxInputId="chainId"
+                  onDismiss={closeChainlist}
                   onSelect={(network, searchQuery) => {
                     setSource('chainlist');
                     closeChainlist();
