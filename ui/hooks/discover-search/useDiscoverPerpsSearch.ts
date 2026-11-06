@@ -51,8 +51,9 @@ export const useDiscoverPerpsSearch = ({
     }
 
     const trimmedQuery = query.trim();
-    // Empty query ("trending"): keep the data source order (volume-descending
-    // from usePerpsLiveMarketData) rather than re-sorting client-side.
+    // Empty query ("trending"): keep the data source order — the 24h volume
+    // descending sort applied to activeMarkets in usePerpsLiveMarketData
+    // (pinned by its test) — rather than re-sorting client-side here.
     if (!trimmedQuery) {
       return markets;
     }

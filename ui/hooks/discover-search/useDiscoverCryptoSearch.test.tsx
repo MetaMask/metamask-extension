@@ -227,14 +227,14 @@ describe('useDiscoverCryptoSearch', () => {
         serviceProfile: 'assets--trending-search',
       }),
     );
-    // API relevance order is preserved as-is, including the duplicate WETH
-    // the server returned on page 2 — no client-side merge, re-sort, or dedupe.
+    // API relevance order is preserved across pages. The duplicate WETH the
+    // server returned on page 2 is dropped (first occurrence wins) so list
+    // rows stay unique — no trending merge, no market-cap re-sort.
     expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
       'ETH',
       'WETH',
       'DOGE',
       'BTC',
-      'WETH',
     ]);
     // Locally cached trending matches are not merged into search results.
     expect(result.current.data).not.toEqual(

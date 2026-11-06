@@ -139,10 +139,22 @@ export const useDiscoverCryptoSearch = ({
 
   if (isSearch) {
     // Active search: pass the API pages through in server relevance order —
-    // no client-side merge of trending matches, re-sort, or cross-page dedupe
-    // (the server is trusted to order and deduplicate its search results).
+    // no client-side merge of trending matches and no market-cap re-sort.
+    // Cursor pages over live market data can repeat an asset, so exact
+    // assetId repeats across pages are dropped (first occurrence wins) to
+    // keep list rows unique; ordering is otherwise untouched.
     const pages = searchQuery.data?.pages ?? [];
-    const data = pages.flatMap((page) => page.data);
+    const seenAssetIds = new Set<string>();
+    const data = pages
+      .flatMap((page) => page.data)
+      .filter((asset) => {
+        if (seenAssetIds.has(asset.assetId)) {
+          return false;
+        }
+
+        seenAssetIds.add(asset.assetId);
+        return true;
+      });
     const lastPage = pages.at(-1);
 
     return {

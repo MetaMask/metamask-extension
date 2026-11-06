@@ -247,7 +247,7 @@ describe('usePerpsLiveMarketData', () => {
     expect(result.current.hip3Markets[0].symbol).toBe('xyz:TSLA');
   });
 
-  it('sorts cryptoMarkets and hip3Markets by 24h volume descending', () => {
+  it('sorts markets, cryptoMarkets, and hip3Markets by 24h volume descending', () => {
     const allMarkets = [
       createMockMarket({ symbol: 'DOGE', volume: '$50M' }),
       createMockMarket({ symbol: 'BTC', volume: '$1.2B' }),
@@ -280,6 +280,14 @@ describe('usePerpsLiveMarketData', () => {
 
     const { result } = renderHook(() => usePerpsLiveMarketData());
 
+    expect(result.current.markets.map((m) => m.symbol)).toEqual([
+      'BTC',
+      'ETH',
+      'xyz:NVDA',
+      'xyz:GOOG',
+      'DOGE',
+      'xyz:TSLA',
+    ]);
     expect(result.current.cryptoMarkets.map((m) => m.symbol)).toEqual([
       'BTC',
       'ETH',
