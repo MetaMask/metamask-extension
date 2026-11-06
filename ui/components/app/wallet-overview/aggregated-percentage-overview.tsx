@@ -184,7 +184,6 @@ export const AggregatedMultichainPercentageOverview = ({
   );
 
   const {
-    singleDayPercentChange,
     singleDayAmountChange,
     signPrefix,
     color,

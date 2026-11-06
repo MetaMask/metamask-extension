@@ -806,12 +806,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/transaction-pay-middleware>@metamask/perps-controller>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2137,7 +2131,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "ethereumjs-util>bn.js": true,
-        "uuid": true
+        "@metamask/wallet>@metamask/gas-fee-controller>uuid": true
       }
     },
     "@metamask/gator-permissions-controller": {
@@ -2774,12 +2768,6 @@
         "@metamask/perps-controller>bignumber.js": true,
         "@metamask/perps-controller>reselect": true,
         "@metamask/perps-controller>uuid": true
-      }
-    },
-    "@metamask/transaction-pay-middleware>@metamask/perps-controller": {
-      "packages": {
-        "@metamask/transaction-pay-middleware>@metamask/perps-controller>@metamask/abi-utils": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/phishing-controller": {
@@ -3465,7 +3453,7 @@
       },
       "packages": {
         "@metamask/transaction-pay-middleware>@metamask/controller-utils": true,
-        "@metamask/transaction-pay-middleware>@metamask/perps-controller": true,
+        "@metamask/perps-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
@@ -7716,7 +7704,8 @@
     },
     "@metamask/assets-controllers>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/base-data-service>uuid": {
@@ -7736,7 +7725,8 @@
     },
     "@metamask/core-backend>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/eth-qr-keyring>uuid": {
@@ -7751,8 +7741,12 @@
     },
     "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/wallet>@metamask/gas-fee-controller>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/keyring-sdk>uuid": {
@@ -7802,7 +7796,8 @@
     },
     "@metamask/perps-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/assets-controllers>@metamask/polling-controller>uuid": {

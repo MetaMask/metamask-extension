@@ -1,5 +1,10 @@
 import { getMfaErrorCode } from '@metamask/profile-sync-controller/sdk';
-import type { MfaFlowErrorCode, MfaMethod, MfaErrorHandling } from './types';
+import type {
+  MfaFlowErrorCode,
+  MfaFlowState,
+  MfaMethod,
+  MfaErrorHandling,
+} from './types';
 
 // Keys are the server's error codes, which are snake_case.
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -89,3 +94,25 @@ export class MfaFlowError extends Error {
     this.data = { completed };
   }
 }
+
+/**
+ * Whether the email code screen shows the state's error as the countdown on
+ * its resend button instead of as an error: a cooldown that came with a wait
+ * time, also once that wait ended.
+ *
+ * @param state - The flow's state.
+ * @param state.step - The screen shown.
+ * @param state.error - The error, if any.
+ * @param state.resendAvailableAt - When the next code may be requested.
+ * @returns Whether the error is the countdown.
+ */
+export const isCooldownCountdown = ({
+  step,
+  error,
+  resendAvailableAt,
+}: MfaFlowState): boolean =>
+  step.name === 'otp' &&
+  step.method === 'email_otp' &&
+  error !== undefined &&
+  resendAvailableAt !== undefined &&
+  getErrorHandling(error) === 'cooldown';
