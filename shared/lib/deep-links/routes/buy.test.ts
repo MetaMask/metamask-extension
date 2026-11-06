@@ -11,7 +11,7 @@ function assertPathDestination(
 describe('buyRoute', () => {
   const params = new URLSearchParams({ address: '0xabc', chainId: '137' });
 
-  it('routes to the in-app entry page with the link params forwarded', () => {
+  it('routes to the buy interstitial with the link params forwarded', () => {
     const result = buy.handler(params);
 
     assertPathDestination(result);
@@ -21,7 +21,7 @@ describe('buyRoute', () => {
     );
   });
 
-  it('routes to the in-app entry page with an empty query when the link has no params', () => {
+  it('routes to the buy interstitial with an empty query when the link has no params', () => {
     const result = buy.handler(new URLSearchParams());
 
     assertPathDestination(result);

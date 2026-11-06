@@ -33,7 +33,7 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
 }));
 
 describe('BuyInterstitial', () => {
-  const renderEntry = (search: string) => {
+  const renderInterstitial = (search: string) => {
     mockSearch = search;
     return render(<BuyInterstitial />);
   };
@@ -44,7 +44,7 @@ describe('BuyInterstitial', () => {
   });
 
   it('calls goToBuy with the intent built from deep link params, once across re-renders', () => {
-    const { rerender } = renderEntry(DAI_SEARCH);
+    const { rerender } = renderInterstitial(DAI_SEARCH);
     rerender(<BuyInterstitial />);
 
     expect(
@@ -60,7 +60,7 @@ describe('BuyInterstitial', () => {
   });
 
   it('calls goToBuy with no intent when there are no intent params', async () => {
-    renderEntry('?utm_source=promo');
+    renderInterstitial('?utm_source=promo');
 
     await waitFor(() => {
       expect(mockGoToBuy).toHaveBeenCalledTimes(1);
@@ -83,7 +83,7 @@ describe('BuyInterstitial', () => {
   for (const [label, arrange] of navigateHomeCases) {
     it(`navigates home when goToBuy ${label}`, async () => {
       arrange();
-      renderEntry(DAI_SEARCH);
+      renderInterstitial(DAI_SEARCH);
 
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
@@ -106,7 +106,7 @@ describe('BuyInterstitial', () => {
           resolveGoToBuy = resolve;
         }),
     );
-    const { rerender } = renderEntry(DAI_SEARCH);
+    const { rerender } = renderInterstitial(DAI_SEARCH);
     rerender(<BuyInterstitial />);
 
     resolveGoToBuy(false);
@@ -127,7 +127,7 @@ describe('BuyInterstitial', () => {
           resolveGoToBuy = resolve;
         }),
     );
-    const { unmount } = renderEntry(DAI_SEARCH);
+    const { unmount } = renderInterstitial(DAI_SEARCH);
     unmount();
 
     await act(async () => {
