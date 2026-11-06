@@ -44,6 +44,16 @@ const HARDCODED_SLIPPAGE_OPTIONS = [
   SlippageValue.BridgeDefault,
 ];
 
+// The important modifier is needed to beat the legacy ButtonSecondary
+// `:hover:not(--disabled)` background, which has higher specificity.
+const getSlippageOptionButtonProps = (isSelected: boolean) =>
+  isSelected
+    ? { variant: ButtonVariant.Primary }
+    : {
+        variant: ButtonVariant.Secondary,
+        className: 'hover:!bg-default-hover',
+      };
+
 export const BridgeTransactionSettingsModal = ({
   onClose,
   isOpen,
@@ -150,7 +160,7 @@ export const BridgeTransactionSettingsModal = ({
   const notificationConfig = getNotificationConfig();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="bridge-settings-modal">
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -174,11 +184,7 @@ export const BridgeTransactionSettingsModal = ({
             {shouldShowAutoOption && (
               <Button
                 size={ButtonSize.Md}
-                variant={
-                  slippageValue === undefined
-                    ? ButtonVariant.Primary
-                    : ButtonVariant.Secondary
-                }
+                {...getSlippageOptionButtonProps(slippageValue === undefined)}
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -194,9 +200,7 @@ export const BridgeTransactionSettingsModal = ({
                 <Button
                   key={hardcodedSlippage}
                   size={ButtonSize.Md}
-                  variant={
-                    isSelected ? ButtonVariant.Primary : ButtonVariant.Secondary
-                  }
+                  {...getSlippageOptionButtonProps(isSelected)}
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -211,11 +215,7 @@ export const BridgeTransactionSettingsModal = ({
               <Button
                 size={ButtonSize.Md}
                 data-testid="bridge__tx-settings-modal-custom-button"
-                variant={
-                  isCustomSlippage
-                    ? ButtonVariant.Primary
-                    : ButtonVariant.Secondary
-                }
+                {...getSlippageOptionButtonProps(isCustomSlippage)}
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -232,6 +232,7 @@ export const BridgeTransactionSettingsModal = ({
                 borderColor={BorderColor.borderMuted}
                 testId="bridge__tx-settings-modal-custom-input"
                 borderRadius={BorderRadius.XL}
+                className="w-24"
                 type={TextFieldType.Text}
                 value={inputValue}
                 inputProps={{ inputMode: 'decimal' }}

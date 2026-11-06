@@ -2,7 +2,7 @@
 
 exports[`BridgeTransactionSettingsModal should render the component, with initial Solana state 1`] = `
 <div
-  class="mm-modal bridge-settings-modal"
+  class="mm-modal"
 >
   <div
     aria-hidden="true"
@@ -85,7 +85,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               Auto
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
@@ -95,7 +95,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               </span>
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
@@ -105,7 +105,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               </span>
             </button>
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate w-24 mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -151,7 +151,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
 
 exports[`BridgeTransactionSettingsModal should render the component, with initial state 1`] = `
 <div
-  class="mm-modal bridge-settings-modal"
+  class="mm-modal"
 >
   <div
     aria-hidden="true"
@@ -229,7 +229,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
             class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
@@ -239,7 +239,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               </span>
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
@@ -249,7 +249,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               </span>
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
               data-testid="bridge__tx-settings-modal-custom-button"
             >
               Custom

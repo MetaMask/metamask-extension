@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'clsx';
 import { BigNumber } from 'bignumber.js';
 import { debounce } from 'lodash';
 import {
@@ -567,36 +566,22 @@ const PrepareBridgePage = ({
           padding={4}
           gap={4}
           backgroundColor={BackgroundColor.backgroundDefault}
-          style={{
-            position: 'relative',
-          }}
+          className="relative"
         >
           <Box
-            className="prepare-bridge-page__switch-tokens flex"
+            className="absolute -top-5 left-1/2 flex size-10 -translate-x-1/2 justify-center rounded-full border-2 border-background-default"
             backgroundColor={BoxBackgroundColor.BackgroundSection}
-            style={{
-              position: 'absolute',
-              top: '-20px',
-              right: 'calc(50% - 20px)',
-              border: '2px solid var(--color-background-default)',
-              borderRadius: '100%',
-              opacity: 1,
-              width: 40,
-              height: 40,
-              justifyContent: JustifyContent.center,
-            }}
           >
             <LegacyButtonIcon
+              className="group size-full self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
               iconProps={{
-                className: classnames({
-                  rotate: rotateSwitchTokens,
-                }),
-              }}
-              style={{
-                alignSelf: 'center',
-                borderRadius: '100%',
-                width: '100%',
-                height: '100%',
+                className:
+                  'transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default',
+                // Tailwind has no 360° rotate utility; the full turn is what
+                // animates the spin on each switch.
+                style: rotateSwitchTokens
+                  ? { transform: 'rotate(360deg)' }
+                  : undefined,
               }}
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
@@ -664,13 +649,7 @@ const PrepareBridgePage = ({
             />
           </Box>
 
-          <Box
-            className="px-4"
-            style={{
-              borderTop: '1px solid var(--color-border-muted)',
-              marginTop: '-16px',
-            }}
-          />
+          <Box className="-mt-4 border-t border-muted px-4" />
 
           <BridgeInputGroup
             setIsAssetPickerOpen={(isOpen) =>
