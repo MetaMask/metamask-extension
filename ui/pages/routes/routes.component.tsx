@@ -8,6 +8,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
+import { ContentLayout } from '#ui/layouts/content-layout';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
@@ -718,28 +719,33 @@ export const routeConfig = [
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyHomePage />,
               }),
-              createRouteWithMessenger({
-                path: MONEY_ACTIVITY_ROUTE,
-                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-                element: <MoneyActivityPage />,
-              }),
-              createRouteWithMessenger({
-                path: MONEY_HOW_IT_WORKS_ROUTE,
-                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-                element: <MoneyHowItWorksPage />,
-              }),
-              createRouteWithMessenger({
-                path: MONEY_TRANSACTION_DETAILS_ROUTE,
-                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-                element: <MoneyTransactionDetailsPage />,
-              }),
-              createRouteWithMessenger({
-                path: MONEY_EARN_ROUTE,
-                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-                element: <MoneyEarnPage />,
-              }),
             ],
           },
+        ],
+      },
+      {
+        element: <ContentLayout />,
+        children: [
+          createRouteWithMessenger({
+            path: MONEY_ACTIVITY_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyActivityPage />,
+          }),
+          createRouteWithMessenger({
+            path: MONEY_HOW_IT_WORKS_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyHowItWorksPage />,
+          }),
+          createRouteWithMessenger({
+            path: MONEY_TRANSACTION_DETAILS_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyTransactionDetailsPage />,
+          }),
+          createRouteWithMessenger({
+            path: MONEY_EARN_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyEarnPage />,
+          }),
         ],
       },
     ],
