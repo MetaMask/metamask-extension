@@ -976,6 +976,28 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissSidePanelMigrationToast', () => {
+    it('sets showSidePanelMigrationToast to false', () => {
+      const { controller } = setupController({
+        state: { showSidePanelMigrationToast: true },
+      });
+
+      controller.dismissSidePanelMigrationToast();
+
+      expect(controller.state.showSidePanelMigrationToast).toBe(false);
+    });
+
+    it('can be called through the controller messenger', () => {
+      const { controller, messenger } = setupController({
+        state: { showSidePanelMigrationToast: true },
+      });
+
+      messenger.call('PreferencesController:dismissSidePanelMigrationToast');
+
+      expect(controller.state.showSidePanelMigrationToast).toBe(false);
+    });
+  });
+
   describe('manageInstitutionalWallets', () => {
     it('defaults manageInstitutionalWallets to false', () => {
       const { controller } = setupController({});

@@ -843,6 +843,7 @@
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
     "moneyEarnBannerDismissedTokenKeys": [],
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -1326,6 +1327,12 @@
   },
   "moneyBalance": {
     "lastKnownBalance": "null"
+  },
+  "moneyFtue": {
+    "acknowledged": "boolean",
+    "isOpen": "boolean",
+    "pendingDeposit": "null",
+    "source": "null"
   },
   "perpsTutorial": {
     "tutorialModalOpen": "boolean",

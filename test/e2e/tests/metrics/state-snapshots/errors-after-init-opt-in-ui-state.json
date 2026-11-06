@@ -257,6 +257,7 @@
     "mode": "string",
     "moneyAccounts": "object",
     "moneyEarnBannerDismissedTokenKeys": "object",
+    "moneyFtueSeen": "boolean",
     "multichainNetworkConfigurationsByChainId": "object",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
@@ -467,6 +468,7 @@
     "withdrawalRequests": "object"
   },
   "moneyBalance": "object",
+  "moneyFtue": "object",
   "perpsTutorial": "object",
   "rewards": "object",
   "rewardsMoney": "object",
