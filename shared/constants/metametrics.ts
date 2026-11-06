@@ -844,7 +844,6 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
-  ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
   ForceUpgradeUpdateNeededPromptViewed = 'Force Upgrade Update Needed Prompt Viewed',
   ForceUpgradeSkipped = 'Force Upgrade Skipped',

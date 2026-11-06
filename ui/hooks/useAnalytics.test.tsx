@@ -6,7 +6,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { trackAnalyticsEvent } from '../store/actions';
+import { trackAnalyticsEvent, trackErrorAsAnalytics } from '../store/actions';
 import { useAnalytics } from './useAnalytics';
 
 jest.mock('./useSegmentContext', () => ({
@@ -15,6 +15,7 @@ jest.mock('./useSegmentContext', () => ({
 
 jest.mock('../store/actions', () => ({
   trackAnalyticsEvent: jest.fn().mockResolvedValue(undefined),
+  trackErrorAsAnalytics: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockStore = configureMockStore([]);
@@ -60,9 +61,49 @@ const renderHookConsumer = ({
 
 describe('useAnalytics', () => {
   const mockedTrackAnalyticsEvent = jest.mocked(trackAnalyticsEvent);
+  const mockedTrackErrorAsAnalytics = jest.mocked(trackErrorAsAnalytics);
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('trackErrorAsAnalytics', () => {
+    it('forwards errors when participation is enabled and analyticsId exists', async () => {
+      const store = mockStore({
+        metamask: {
+          analyticsId: '0x123',
+          consentDecisionMade: true,
+          optedIn: true,
+        },
+      });
+      const error = new Error('Deletion failed');
+      let trackPromise: Promise<void> | undefined;
+
+      const TestComponent = () => {
+        const { trackErrorAsAnalytics: trackError } = useAnalytics();
+
+        useEffect(() => {
+          trackPromise = trackError(error, {
+            source: 'clear-metametrics-data',
+          });
+        }, [trackError]);
+
+        return null;
+      };
+
+      render(
+        <Provider store={store}>
+          <TestComponent />
+        </Provider>,
+      );
+
+      await waitFor(() => {
+        expect(mockedTrackErrorAsAnalytics).toHaveBeenCalledWith(error, {
+          source: 'clear-metametrics-data',
+        });
+      });
+      await expect(trackPromise).resolves.toBeUndefined();
+    });
   });
 
   describe('trackEvent', () => {

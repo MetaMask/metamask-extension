@@ -6393,6 +6393,16 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
+export function trackErrorAsAnalytics(
+  error: unknown,
+  options: { source: string; volumeControls?: object },
+) {
+  return submitRequestToBackground(
+    'AnalyticsController:trackErrorAsAnalytics',
+    [error, options],
+  );
+}
+
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
   payload: MetaMetricsEventFragmentPayload,
