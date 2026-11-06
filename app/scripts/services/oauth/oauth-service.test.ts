@@ -906,15 +906,28 @@ describe('OAuthService - getNewRefreshToken', () => {
     expect(error.statusCode).toBe(401);
   });
 
-  it.each([
-    ['neither rotated token', {}],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ['only refresh_token', { refresh_token: 'MOCK_NEW_REFRESH_TOKEN' }],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ['only revoke_token', { revoke_token: 'MOCK_NEW_REVOKE_TOKEN' }],
-  ])(
-    'omits refreshToken and revokeToken when the response has %s',
-    async (_, rotatedTokens) => {
+  it('omits refreshToken and revokeToken unless the response has both', async () => {
+    const incompleteResponses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      refresh_token?: string;
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revoke_token?: string;
+    }[] = [
+      {},
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { refresh_token: 'MOCK_NEW_REFRESH_TOKEN' },
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { revoke_token: 'MOCK_NEW_REVOKE_TOKEN' },
+    ];
+
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      trackEvent: mockTrackEvent,
+    });
+
+    for (const rotatedTokens of incompleteResponses) {
       jest.spyOn(global, 'fetch').mockImplementation(
         jest.fn(() =>
           Promise.resolve({
@@ -929,13 +942,6 @@ describe('OAuthService - getNewRefreshToken', () => {
         ) as jest.Mock,
       );
 
-      const oauthService = new OAuthService({
-        messenger,
-        webAuthenticator: mockWebAuthenticator,
-        platform: mockPlatform,
-        trackEvent: mockTrackEvent,
-      });
-
       const result = await oauthService.getNewRefreshToken({
         connection: AuthConnection.Google,
         refreshToken: 'MOCK_REFRESH_TOKEN',
@@ -946,8 +952,8 @@ describe('OAuthService - getNewRefreshToken', () => {
         accessToken: undefined,
         metadataAccessToken: undefined,
       });
-    },
-  );
+    }
+  });
 
   describe('OAuthService:getNewRefreshToken action', () => {
     it('gets a new refresh token', async () => {
