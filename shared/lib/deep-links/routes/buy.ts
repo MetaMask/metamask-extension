@@ -1,5 +1,5 @@
 import { BaseUrl } from '../../../constants/urls';
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH, Route } from './route';
+import { RAMPS_BUY_INTERSTITIAL_ROUTE, Route } from './route';
 
 /**
  * Builds the legacy `/buy` destination: an external redirect to the Portfolio
@@ -20,7 +20,7 @@ export const buy = new Route({
   pathname: '/buy',
   getTitle: (_: URLSearchParams) => 'deepLink_theBuyPage',
   handler: (params: URLSearchParams) => ({
-    path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+    path: RAMPS_BUY_INTERSTITIAL_ROUTE,
     query: params,
   }),
 });

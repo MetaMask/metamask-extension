@@ -5,7 +5,7 @@ import React from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import type { RampsNavigationResult } from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { BuyDeepLinkEntry } from './buy-deeplink-entry';
+import { BuyInterstitial } from './buy-interstitial';
 
 const DAI_SEARCH =
   '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
@@ -32,10 +32,10 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   }),
 }));
 
-describe('BuyDeepLinkEntry', () => {
+describe('BuyInterstitial', () => {
   const renderEntry = (search: string) => {
     mockSearch = search;
-    return render(<BuyDeepLinkEntry />);
+    return render(<BuyInterstitial />);
   };
 
   beforeEach(() => {
@@ -45,10 +45,10 @@ describe('BuyDeepLinkEntry', () => {
 
   it('calls goToBuy with the intent built from deep link params, once across re-renders', () => {
     const { rerender } = renderEntry(DAI_SEARCH);
-    rerender(<BuyDeepLinkEntry />);
+    rerender(<BuyInterstitial />);
 
     expect(
-      screen.getByTestId('ramps-buy-deeplink-entry-loading'),
+      screen.getByTestId('ramps-buy-interstitial-loading'),
     ).toBeInTheDocument();
     expect(mockGoToBuy).toHaveBeenCalledTimes(1);
     expect(mockGoToBuy).toHaveBeenCalledWith(
@@ -107,7 +107,7 @@ describe('BuyDeepLinkEntry', () => {
         }),
     );
     const { rerender } = renderEntry(DAI_SEARCH);
-    rerender(<BuyDeepLinkEntry />);
+    rerender(<BuyInterstitial />);
 
     resolveGoToBuy(false);
 

@@ -1,5 +1,5 @@
 import { buy, getBuyPortfolioRedirectDestination } from './buy';
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from './route';
+import { RAMPS_BUY_INTERSTITIAL_ROUTE } from './route';
 import type { Destination } from './route';
 
 function assertPathDestination(
@@ -15,7 +15,7 @@ describe('buyRoute', () => {
     const result = buy.handler(params);
 
     assertPathDestination(result);
-    expect(result.path).toBe(RAMPS_BUY_DEEP_LINK_ENTRY_PATH);
+    expect(result.path).toBe(RAMPS_BUY_INTERSTITIAL_ROUTE);
     expect(Object.fromEntries(result.query)).toStrictEqual(
       Object.fromEntries(params),
     );
@@ -25,7 +25,7 @@ describe('buyRoute', () => {
     const result = buy.handler(new URLSearchParams());
 
     assertPathDestination(result);
-    expect(result.path).toBe(RAMPS_BUY_DEEP_LINK_ENTRY_PATH);
+    expect(result.path).toBe(RAMPS_BUY_INTERSTITIAL_ROUTE);
     expect(result.query.toString()).toBe('');
   });
 

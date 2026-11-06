@@ -14,13 +14,12 @@ import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-
 import { parseRampIntent } from './parse-ramp-intent';
 
 /**
- * Entry page for `/buy` deep links: maps the params to a buy intent and hands
- * it to the shared `goToBuy` gate, keeping the params on any Portfolio
- * redirect.
+ * Resolves a `/buy` intent and hands it to the shared `goToBuy` gate, keeping
+ * the params on any Portfolio redirect.
  *
  * @returns The loading page shown while the buy flow is being resolved.
  */
-export function BuyDeepLinkEntry() {
+export function BuyInterstitial() {
   const location = useLocation();
   const navigate = useNavigate();
   const t = useI18nContext();
@@ -77,7 +76,7 @@ export function BuyDeepLinkEntry() {
       justifyContent={BoxJustifyContent.Center}
       aria-busy="true"
       aria-label={t('loading')}
-      data-testid="ramps-buy-deeplink-entry-loading"
+      data-testid="ramps-buy-interstitial-loading"
     >
       <Spinner className="h-8 w-8" />
     </Box>
