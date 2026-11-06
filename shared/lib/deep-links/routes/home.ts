@@ -9,6 +9,7 @@ export enum HomeQueryParams {
   LimitOrderDeeplinkUrl = 'limitOrderDeeplinkUrl',
   OpenNetworkSelector = 'openNetworkSelector',
   PredictDeeplinkUrl = 'predictDeeplinkUrl',
+  SocialDeeplinkUrl = 'socialDeeplinkUrl',
   TrendingDeeplinkUrl = 'trendingDeeplinkUrl',
 }
 
@@ -17,6 +18,7 @@ export function createHomeQrCodeDestination(
     | HomeQueryParams.BatchSellDeeplinkUrl
     | HomeQueryParams.LimitOrderDeeplinkUrl
     | HomeQueryParams.PredictDeeplinkUrl
+    | HomeQueryParams.SocialDeeplinkUrl
     | HomeQueryParams.TrendingDeeplinkUrl,
   deeplinkUrl: string,
 ): Destination {

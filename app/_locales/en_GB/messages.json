@@ -3470,6 +3470,12 @@
   "deepLinkQrPredictTitle": {
     "message": "Open Prediction Markets on mobile"
   },
+  "deepLinkQrSocialDescription": {
+    "message": "To access MetaMask Social, scan the QR code with your mobile device."
+  },
+  "deepLinkQrSocialTitle": {
+    "message": "Open Social on mobile"
+  },
   "deepLinkQrTrendingDescription": {
     "message": "Explore is available on MetaMask mobile. Scan this code with your mobile device to use it."
   },
@@ -3575,6 +3581,12 @@
   },
   "deepLink_theSellPage": {
     "message": "the sell page"
+  },
+  "deepLink_theSocialPage": {
+    "message": "the Social page"
+  },
+  "deepLink_theSocialProfilePage": {
+    "message": "the Social profile page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"

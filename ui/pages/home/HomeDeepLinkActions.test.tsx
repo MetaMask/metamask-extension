@@ -367,6 +367,45 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
+  jestIt.each([
+    ['the trending tab', 'https://link.metamask.io/social?tab=trending'],
+    ['the following tab', 'https://link.metamask.io/social?tab=following'],
+    ['the leaderboard tab', 'https://link.metamask.io/social?tab=leaderboard'],
+    ['the live trades tab', 'https://link.metamask.io/social?tab=live-trades'],
+    [
+      'a profile',
+      'https://link.metamask.io/social/profile?traderId=trader-123',
+    ],
+    [
+      'the link.metamask.com host',
+      'https://link.metamask.com/social?tab=following',
+    ],
+  ])(
+    'dispatches setHomeDeepLinkQrCode for a Social deeplink for %s',
+    async (_, deeplinkUrl) => {
+      const { Wrapper, store } = createWrapper({
+        pathname: DEFAULT_ROUTE,
+        search: `?${new URLSearchParams({
+          [HomeQueryParams.SocialDeeplinkUrl]: deeplinkUrl,
+        }).toString()}`,
+        isNetworkMenuOpen: false,
+      });
+
+      render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+      await waitFor(() => {
+        const qrCode = (
+          store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+        ).appState.homeDeepLinkQrCode;
+        expect(qrCode).toEqual({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrSocialDescription',
+          titleKey: 'deepLinkQrSocialTitle',
+        });
+      });
+    },
+  );
+
   it('ignores predict QR deeplink params that do not point to /predict', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
@@ -409,6 +448,31 @@ describe('HomeDeepLinkActions', () => {
       search: `?${new URLSearchParams({
         [HomeQueryParams.PredictDeeplinkUrl]:
           'https://link.metamask.com:444/predict',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
+  });
+
+  jestIt.each([
+    ['the wrong path', 'https://link.metamask.io/social/feed?tab=trending'],
+    [
+      'a configured subdomain',
+      'https://links.link.metamask.com/social?tab=trending',
+    ],
+    ['a nonstandard port', 'https://link.metamask.com:444/social?tab=trending'],
+    ['a non-https URL', 'http://link.metamask.io/social?tab=trending'],
+  ])('ignores a Social QR deeplink URL with %s', (_, deeplinkUrl) => {
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.SocialDeeplinkUrl]: deeplinkUrl,
       }).toString()}`,
       isNetworkMenuOpen: false,
     });
