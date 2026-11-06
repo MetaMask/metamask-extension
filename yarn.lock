@@ -9548,47 +9548,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-transactions-controller@npm:^7.1.2":
-  version: 7.1.2
-  resolution: "@metamask/multichain-transactions-controller@npm:7.1.2"
+"@metamask/multichain-transactions-controller@npm:@metamask-previews/multichain-transactions-controller@8.0.0-preview-375cee475":
+  version: 8.0.0-preview-375cee475
+  resolution: "@metamask-previews/multichain-transactions-controller@npm:8.0.0-preview-375cee475"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.7"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-internal-api": "npm:^12.0.0"
-    "@metamask/keyring-snap-client": "npm:^10.0.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/polling-controller": "npm:^16.0.9"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-sdk": "npm:^11.0.0"
-    "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/utils": "npm:^11.11.0"
-    "@types/uuid": "npm:^8.3.0"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  checksum: 10/b2a72005dc2445b921955ad065b2209ae41844e5797b86cf8f4572195b08323b1e913f68cd13945705a9c02986f7db390fb31e4596512f8b38cadffcab348380
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-transactions-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/multichain-transactions-controller@npm:8.0.0"
-  dependencies:
-    "@metamask/accounts-controller": "npm:^40.0.0"
-    "@metamask/base-controller": "npm:^10.0.0"
-    "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-internal-api": "npm:^12.0.0"
-    "@metamask/keyring-snap-client": "npm:^10.0.0"
+    "@metamask/accounts-controller": "npm:^40.1.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/core-backend": "npm:^13.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/keyring-internal-api": "npm:^12.1.2"
+    "@metamask/keyring-snap-client": "npm:^10.0.1"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/polling-controller": "npm:^17.0.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-controllers": "npm:^19.0.1"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/utils": "npm:^11.12.0"
-    "@types/uuid": "npm:^8.3.0"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  checksum: 10/8e655f6ece533eeda445e08b34533647a608c1c668c9923ab7982bea0368fdeb0d81bf9d3b8707526e465d252aa2530cde42eaaa74cf64354fb9c05d1003aec7
+    "@metamask/utils": "npm:^12.0.1"
+    immer: "npm:^11.1.18"
+    uuid: "npm:^14.0.0"
+  checksum: 10/4121f44b5db0d387847dfc5714e952b471bc0e06026552ed92f1136acd912dda02aefb68828c3902ed25d0b53d4090fc448169966a511353d9f5e84f2a8b7094
   languageName: node
   linkType: hard
 
@@ -10612,10 +10590,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@metamask/solana-wallet-snap@npm:7.2.0"
-  checksum: 10/dde7895f40ac0e29490336c60b14479129c25471341127dc784c4f40b92959fa3714024730524802f614f36d637e4a63c8ff7d97b25eed96ec6c7cf164602db7
+"@metamask/solana-wallet-snap@npm:@metamask-previews/solana-wallet-snap@7.2.0-preview-042d864f":
+  version: 7.2.0-preview-042d864f
+  resolution: "@metamask-previews/solana-wallet-snap@npm:7.2.0-preview-042d864f"
+  checksum: 10/9af6e0ec9cd4533085c8fb1ca4ae786039e100d3fe128185dc997c8b4068c41809ebe8e83ec8f6e8f2d234cd7c8cf320982788a09c832009caab0e489c8a0cda
   languageName: node
   linkType: hard
 
