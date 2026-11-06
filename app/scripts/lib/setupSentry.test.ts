@@ -1,3 +1,5 @@
+import { runInNewContext } from 'node:vm';
+import * as Sentry from '@sentry/browser';
 import { cloneDeep } from 'lodash';
 import { eventFiltersIntegration } from '@sentry/core';
 import {
@@ -11,6 +13,7 @@ import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
   rewriteTransactionReport,
+  sentryDataCollection,
   shouldCreateSpanForRequest,
 } from './setupSentry';
 
@@ -63,6 +66,84 @@ type TestReport = Parameters<typeof rewriteReport>[0] & {
 };
 
 describe('Setup Sentry', () => {
+  describe('SDK compatibility', () => {
+    it('preserves and sanitizes causes from another JavaScript realm', async () => {
+      const events: Parameters<typeof rewriteReport>[0][] = [];
+      const client = new Sentry.BrowserClient({
+        dsn: 'https://public@fake.ingest.sentry.io/1',
+        integrations: [Sentry.linkedErrorsIntegration()],
+        stackParser: Sentry.defaultStackParser,
+        transport: () => ({
+          send: async () => ({}),
+          flush: async () => true,
+        }),
+        beforeSend: (event) => {
+          events.push(
+            rewriteReport(event as Parameters<typeof rewriteReport>[0]),
+          );
+          return null;
+        },
+      });
+      const scope = new Sentry.Scope();
+      scope.setClient(client);
+      client.init();
+      const error = runInNewContext(
+        "new Error('outer failure https://example.test', { cause: new TypeError('inner failure https://example.test') })",
+      ) as Error;
+      expect(error).not.toBeInstanceOf(Error);
+
+      try {
+        scope.captureException(error);
+        await client.flush(2000);
+
+        expect(events).toHaveLength(1);
+        expect(events[0].exception?.values).toMatchObject([
+          { type: 'TypeError', value: 'inner failure **' },
+          { type: 'Error', value: 'outer failure **' },
+        ]);
+      } finally {
+        await client.close();
+      }
+    });
+
+    it('rejects runtime integration loading before creating a remote script', async () => {
+      const createElement = jest.spyOn(document, 'createElement');
+
+      try {
+        await expect(
+          Sentry.lazyLoadIntegration('extraErrorDataIntegration'),
+        ).rejects.toThrow('lazyLoadIntegration function is not supported');
+        expect(createElement).not.toHaveBeenCalledWith('script');
+      } finally {
+        createElement.mockRestore();
+      }
+    });
+  });
+
+  describe('sentryDataCollection', () => {
+    it('preserves the restrictive v10 data collection defaults', () => {
+      expect(sentryDataCollection).toStrictEqual({
+        cookies: false,
+        databaseQueryData: false,
+        frameContextLines: 7,
+        genAI: { inputs: false, outputs: false },
+        graphQL: { document: false, variables: false },
+        httpBodies: [],
+        mcp: { inputs: false, outputs: false },
+        httpHeaders: {
+          request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+          response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+        },
+        queues: false,
+        stackFrameVariables: true,
+        urlQueryParams: {
+          deny: ['forwarded', '-ip', 'remote-', 'via', '-user'],
+        },
+        userInfo: false,
+      });
+    });
+  });
+
   describe('rewriteReport', () => {
     it('should remove urls from error messages', () => {
       const testReport: TestReport = {

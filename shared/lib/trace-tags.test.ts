@@ -26,12 +26,13 @@ describe('trace tags', () => {
         });
         return null;
       },
+      traceLifecycle: 'static',
       beforeSendTransaction: (event) => {
         sent.push({ name: event.transaction, tags: event.tags });
         return null;
       },
     });
-    Sentry.getIsolationScope().clear();
+    Sentry.getIsolationScope().setTag('feature', undefined);
     Sentry.getCurrentScope().setClient(client);
     client.init();
     globalThis.sentry = Sentry as unknown as typeof globalThis.sentry;
