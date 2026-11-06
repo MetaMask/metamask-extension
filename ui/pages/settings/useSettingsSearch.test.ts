@@ -5,6 +5,10 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { useSettingsSearch } from './useSettingsSearch';
 
+jest.mock('#shared/lib/mv3.utils', () => ({
+  isManifestV3: true,
+}));
+
 jest.mock('../../../shared/lib/passkey', () => ({
   getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
 }));

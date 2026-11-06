@@ -66,7 +66,7 @@ export function TokenDetail({
   const securityBadge = getSecurityStatusBadge(data.resultType);
 
   return (
-    <div className="flex flex-col h-full p-6 gap-2">
+    <div className="flex flex-col h-full py-6 px-4 gap-2">
       <header className="mb-4 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-4">
           <TokenAvatar asset={data} size="lg" />

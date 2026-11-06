@@ -11,6 +11,7 @@ export enum MoneyScreenName {
   MoneyActivityDetails = 'money_activity_details',
   MoneyPotentialEarnings = 'money_potential_earnings',
   MoneyHowItWorks = 'money_how_it_works',
+  MoneyFtue = 'money_ftue',
 }
 
 export enum MoneyBottomSheetName {
@@ -52,6 +53,7 @@ export enum MoneyComponentName {
   TokenListItemCta = 'money_token_list_item_cta',
   EarnBanner = 'money_earn_banner',
   AssetOverviewBalanceCta = 'money_asset_overview_balance_cta',
+  FtueSplash = 'money_ftue_splash',
 }
 
 export enum MoneyButtonIntent {

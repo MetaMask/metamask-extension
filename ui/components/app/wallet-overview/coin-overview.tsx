@@ -12,16 +12,8 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxFlexWrap,
-  Skeleton,
-} from '@metamask/design-system-react';
+import { Box, Skeleton } from '@metamask/design-system-react';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
-import { ButtonLink, IconName } from '../../component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -45,10 +37,6 @@ import {
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
-  getDataCollectionForMarketing,
-  getAnalyticsId,
-  getConsentDecisionMade,
-  getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
@@ -117,7 +105,7 @@ const BalanceOverviewSkeleton = () => {
           getBalanceAlignmentClassName(),
         )}
       >
-        <Skeleton className="h-[50px] w-full rounded-lg" />
+        <Skeleton className="h-14 w-full rounded-lg md:h-[75px]" />
         <Skeleton className="h-6 w-[180px] rounded-lg" />
       </Box>
     </Box>
@@ -237,15 +225,6 @@ export const CoinOverview = ({
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
   const { trackEvent, createEventBuilder } = useAnalytics();
-
-  const analyticsId = useSelector(getAnalyticsId);
-  const consentDecisionMade = useSelector(getConsentDecisionMade);
-  const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = useMemo(
-    () => consentDecisionMade && isOptedIn,
-    [consentDecisionMade, isOptedIn],
-  );
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -393,32 +372,6 @@ export const CoinOverview = ({
     dispatch(setPrivacyMode(!privacyMode));
   }, [dispatch, privacyMode]);
 
-  const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl(
-      'explore/tokens',
-      'ext_portfolio_button',
-      analyticsId,
-      isMetaMetricsEnabled === true,
-      isMarketingEnabled === true,
-    );
-    global.platform.openTab({ url });
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'Home',
-          text: 'Portfolio',
-        })
-        .build(),
-    );
-  }, [
-    isMarketingEnabled,
-    isMetaMetricsEnabled,
-    analyticsId,
-    trackEvent,
-    createEventBuilder,
-  ]);
-
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
     trackEvent(
@@ -442,34 +395,9 @@ export const CoinOverview = ({
     }
   }, [selectedAccountGroup, navigate, trackEvent, chainId, createEventBuilder]);
 
-  const renderPercentageAndAmountChange = () => {
-    const renderPercentageAndAmountChangeTrail = () => {
-      return (
-        <ButtonLink
-          endIconName={IconName.Export}
-          onClick={handlePortfolioOnClick}
-          as="a"
-          data-testid="portfolio-link"
-          textProps={{ variant: TextVariant.bodyMdMedium }}
-        >
-          {t('discover')}
-        </ButtonLink>
-      );
-    };
-
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        flexWrap={BoxFlexWrap.Wrap}
-        gap={2}
-      >
-        <AccountGroupBalanceChange
-          period={period}
-          trailingChild={renderPercentageAndAmountChangeTrail}
-        />
-      </Box>
-    );
-  };
+  const renderPercentageAndAmountChange = () => (
+    <AccountGroupBalanceChange period={period} />
+  );
 
   const balanceSection: React.ReactNode = (
     <AccountGroupBalance

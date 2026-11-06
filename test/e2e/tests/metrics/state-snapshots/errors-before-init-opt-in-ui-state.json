@@ -66,6 +66,7 @@
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
       "moneyEarnBannerDismissedTokenKeys": "object",
+      "moneyFtueSeen": "boolean",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -132,7 +133,10 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
+      "moneyAccounts": "object"
+    },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {},
     "MultichainNetworkController": "object",
@@ -337,7 +341,6 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenRatesController": {},
     "TokensController": {},
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
@@ -359,6 +362,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 233
+    "version": 234
   }
 }
