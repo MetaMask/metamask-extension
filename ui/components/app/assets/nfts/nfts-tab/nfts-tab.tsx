@@ -15,21 +15,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  MetaMetricsEventName,
-  ScreenViewedEntryPoint,
-} from '#shared/constants/metametrics';
-import { endTrace, TraceName } from '#shared/lib/trace';
-import { getPreferences } from '#shared/lib/selectors/preferences';
-import {
-  ASSET_ROUTE,
-  ASSETS_ROUTE,
-  IMPORT_NFTS_ROUTE,
-  PRIVACY_ROUTE,
-} from '#ui/helpers/constants/routes';
-import { useNfts } from '#ui/hooks/useNfts';
-import { useNftsCollections } from '#ui/hooks/useNftsCollections';
-import { useScreenViewedEvent } from '#ui/hooks/useScreenViewedEvent';
+import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -37,21 +23,35 @@ import {
   getUseNftDetection,
   getNftIsStillFetchingIndication,
   getUseExternalServices,
-} from '#ui/selectors';
-import { getAllEnabledNetworksForAllNamespaces } from '#ui/selectors/multichain/networks';
-import {
-  checkAndUpdateAllNftsOwnershipStatus,
-  detectNfts,
-} from '#ui/store/actions';
-import { useDispatch } from '#ui/store/hooks';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+} from '../../../../../selectors';
+import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
+import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
+import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import {
+  ASSET_ROUTE,
+  ASSETS_ROUTE,
+  IMPORT_NFTS_ROUTE,
+  PRIVACY_ROUTE,
+} from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state/nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
+import { useScreenViewedEvent } from '../../../../../hooks/useScreenViewedEvent';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  MetaMetricsEventName,
+  ScreenViewedEntryPoint,
+} from '../../../../../../shared/constants/metametrics';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../../selectors/multichain/networks';
+import {
+  checkAndUpdateAllNftsOwnershipStatus,
+  detectNfts,
+} from '../../../../../store/actions';
+import { useDispatch } from '../../../../../store/hooks';
 import { OverflowMenu } from '../../../../ui/overflow-menu/overflow-menu';
 
 export default function NftsTab({
