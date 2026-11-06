@@ -9,6 +9,8 @@
  * @see {@link ./launch.ts}
  */
 
+import { notifyParentOfBuildCompletion } from '../lib/child-process-shutdown.js';
+
 const PPID = Number(process.env.PPID);
 if (isNaN(PPID) || PPID !== process.ppid) {
   throw new Error(
@@ -16,13 +18,12 @@ if (isNaN(PPID) || PPID !== process.ppid) {
   );
 }
 
-require('./build').build(() => {
+require('./build').build(detachFromParent);
+
+function detachFromParent() {
   // stop writing now because the parent process is still listening to these
   // streams and we don't want any more output to be shown to the user.
   process.stdout.write = process.stderr.write = () => true;
 
-  // use IPC if we have it, otherwise send a POSIX signal
-  process.send?.('SIGUSR2') || process.kill(PPID, 'SIGUSR2');
-});
-
-export {};
+  notifyParentOfBuildCompletion(process, PPID);
+}
