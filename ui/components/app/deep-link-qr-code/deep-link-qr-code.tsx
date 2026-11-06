@@ -10,7 +10,7 @@ import {
 import qrCode from 'qrcode-generator';
 import { ModalBody } from '../../component-library/modal-body/modal-body';
 
-export type DeeplinkQRCodeProps = {
+export type DeepLinkQRCodeProps = {
   title: string;
   description: string;
   data: string;
@@ -45,14 +45,14 @@ export const QRCodeImage = ({ data }: { data: string }) => {
   );
 };
 
-export function DeeplinkQRCode({
+export function DeepLinkQRCode({
   title,
   description,
   data,
   onDone,
   doneLabel,
   testId,
-}: DeeplinkQRCodeProps) {
+}: DeepLinkQRCodeProps) {
   return (
     <ModalBody
       className="w-full h-full pt-8 pb-4 flex flex-col"

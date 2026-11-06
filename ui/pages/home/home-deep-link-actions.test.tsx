@@ -13,7 +13,7 @@ import {
 import {
   HomeDeepLinkActions,
   useHomeDeepLinkEffects,
-} from './HomeDeepLinkActions';
+} from './home-deep-link-actions';
 
 jest.mock('../../store/actions', () => ({
   toggleNetworkMenu: jest
@@ -197,13 +197,13 @@ describe('HomeDeepLinkActions', () => {
   );
 
   jestIt.each(['link.metamask.io', 'link.metamask.com'])(
-    'dispatches setHomeDeepLinkQrCode for a valid predict deeplink URL from %s',
+    'dispatches setHomeDeepLinkQrCode for a valid predict deep link URL from %s',
     async (host) => {
-      const deeplinkUrl = `https://${host}/predict?marketId=30615&sig_params=marketId&sig=signature&utm_source=twitter`;
+      const deepLinkUrl = `https://${host}/predict?marketId=30615&sig_params=marketId&sig=signature&utm_source=twitter`;
       const { Wrapper, store } = createWrapper({
         pathname: DEFAULT_ROUTE,
         search: `?${new URLSearchParams({
-          [HomeQueryParams.PredictDeeplinkUrl]: deeplinkUrl,
+          [HomeQueryParams.PredictDeepLinkUrl]: deepLinkUrl,
         }).toString()}`,
         isNetworkMenuOpen: false,
       });
@@ -215,7 +215,7 @@ describe('HomeDeepLinkActions', () => {
           store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
         ).appState.homeDeepLinkQrCode;
         expect(qrCode).toEqual({
-          deeplinkUrl,
+          deepLinkUrl,
           descriptionKey: 'deepLinkQrPredictDescription',
           titleKey: 'deepLinkQrPredictTitle',
         });
@@ -224,13 +224,13 @@ describe('HomeDeepLinkActions', () => {
   );
 
   jestIt.each(['link.metamask.io', 'link.metamask.com'])(
-    'dispatches setHomeDeepLinkQrCode for a valid Limit Order deeplink URL from %s',
+    'dispatches setHomeDeepLinkQrCode for a valid Limit Order deep link URL from %s',
     async (host) => {
-      const deeplinkUrl = `https://${host}/swap?tab=limit&from=eip155%3A1%2Fslip44%3A60&to=eip155%3A1%2Ferc20%3A0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&amount=100000000000000000&expiresInMinutes=10080&priceTolerance=0.5`;
+      const deepLinkUrl = `https://${host}/swap?tab=limit&from=eip155%3A1%2Fslip44%3A60&to=eip155%3A1%2Ferc20%3A0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&amount=100000000000000000&expiresInMinutes=10080&priceTolerance=0.5`;
       const { Wrapper, store } = createWrapper({
         pathname: DEFAULT_ROUTE,
         search: `?${new URLSearchParams({
-          [HomeQueryParams.LimitOrderDeeplinkUrl]: deeplinkUrl,
+          [HomeQueryParams.LimitOrderDeepLinkUrl]: deepLinkUrl,
         }).toString()}`,
         isNetworkMenuOpen: false,
       });
@@ -242,7 +242,7 @@ describe('HomeDeepLinkActions', () => {
           store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
         ).appState.homeDeepLinkQrCode;
         expect(qrCode).toEqual({
-          deeplinkUrl,
+          deepLinkUrl,
           descriptionKey: 'deepLinkQrLimitOrderDescription',
           titleKey: 'deepLinkQrLimitOrderTitle',
         });
@@ -259,11 +259,11 @@ describe('HomeDeepLinkActions', () => {
       'https://links.link.metamask.com/swap?tab=limit',
     ],
     ['a nonstandard port', 'https://link.metamask.com:444/swap?tab=limit'],
-  ])('ignores a Limit Order QR deeplink URL with %s', (_, deeplinkUrl) => {
+  ])('ignores a Limit Order QR deep link URL with %s', (_, deepLinkUrl) => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.LimitOrderDeeplinkUrl]: deeplinkUrl,
+        [HomeQueryParams.LimitOrderDeepLinkUrl]: deepLinkUrl,
       }).toString()}`,
       isNetworkMenuOpen: false,
     });
@@ -276,12 +276,12 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
-  it('shows the QR code for a valid batch sell deeplink URL when the feature is unavailable in the extension', async () => {
-    const deeplinkUrl = 'https://link.metamask.io/batch-sell';
+  it('shows the QR code for a valid batch sell deep link URL when the feature is unavailable in the extension', async () => {
+    const deepLinkUrl = 'https://link.metamask.io/batch-sell';
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
+        [HomeQueryParams.BatchSellDeepLinkUrl]: deepLinkUrl,
       }).toString()}`,
       isNetworkMenuOpen: false,
       batchSellEnabled: false,
@@ -294,7 +294,7 @@ describe('HomeDeepLinkActions', () => {
         store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
       ).appState.homeDeepLinkQrCode;
       expect(qrCode).toEqual({
-        deeplinkUrl,
+        deepLinkUrl,
         descriptionKey: 'deepLinkQrBatchSellDescription',
         titleKey: 'deepLinkQrBatchSellTitle',
       });
@@ -302,12 +302,12 @@ describe('HomeDeepLinkActions', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('navigates to the batch sell select page for a valid batch sell deeplink URL when the feature is available in the extension', async () => {
-    const deeplinkUrl = 'https://link.metamask.io/batch-sell';
+  it('navigates to the batch sell select page for a valid batch sell deep link URL when the feature is available in the extension', async () => {
+    const deepLinkUrl = 'https://link.metamask.io/batch-sell';
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
+        [HomeQueryParams.BatchSellDeepLinkUrl]: deepLinkUrl,
       }).toString()}`,
       isNetworkMenuOpen: false,
       batchSellEnabled: true,
@@ -325,12 +325,12 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
-  it('dispatches setHomeDeepLinkQrCode for a valid trending deeplink URL', async () => {
-    const deeplinkUrl = 'https://link.metamask.io/trending?tab=crypto';
+  it('dispatches setHomeDeepLinkQrCode for a valid trending deep link URL', async () => {
+    const deepLinkUrl = 'https://link.metamask.io/trending?tab=crypto';
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.TrendingDeeplinkUrl]: deeplinkUrl,
+        [HomeQueryParams.TrendingDeepLinkUrl]: deepLinkUrl,
       }).toString()}`,
       isNetworkMenuOpen: false,
     });
@@ -342,18 +342,18 @@ describe('HomeDeepLinkActions', () => {
         store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
       ).appState.homeDeepLinkQrCode;
       expect(qrCode).toEqual({
-        deeplinkUrl,
+        deepLinkUrl,
         descriptionKey: 'deepLinkQrTrendingDescription',
         titleKey: 'deepLinkQrTrendingTitle',
       });
     });
   });
 
-  it('ignores batch sell QR deeplink params that do not point to /batch-sell', () => {
+  it('ignores batch sell QR deep link params that do not point to /batch-sell', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.BatchSellDeeplinkUrl]:
+        [HomeQueryParams.BatchSellDeepLinkUrl]:
           'https://link.metamask.io/rewards?referral=ABC123',
       }).toString()}`,
       isNetworkMenuOpen: false,
@@ -367,11 +367,11 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
-  it('ignores predict QR deeplink params that do not point to /predict', () => {
+  it('ignores predict QR deep link params that do not point to /predict', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.PredictDeeplinkUrl]:
+        [HomeQueryParams.PredictDeepLinkUrl]:
           'https://link.metamask.io/rewards?referral=ABC123',
       }).toString()}`,
       isNetworkMenuOpen: false,
@@ -385,11 +385,11 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
-  it('ignores predict QR deeplink params from a configured subdomain', () => {
+  it('ignores predict QR deep link params from a configured subdomain', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.PredictDeeplinkUrl]:
+        [HomeQueryParams.PredictDeepLinkUrl]:
           'https://links.link.metamask.com/predict',
       }).toString()}`,
       isNetworkMenuOpen: false,
@@ -403,11 +403,11 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
-  it('ignores predict QR deeplink params that use a nonstandard port', () => {
+  it('ignores predict QR deep link params that use a nonstandard port', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.PredictDeeplinkUrl]:
+        [HomeQueryParams.PredictDeepLinkUrl]:
           'https://link.metamask.com:444/predict',
       }).toString()}`,
       isNetworkMenuOpen: false,
@@ -421,11 +421,11 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
-  it('ignores trending QR deeplink params that do not point to /trending', () => {
+  it('ignores trending QR deep link params that do not point to /trending', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
       search: `?${new URLSearchParams({
-        [HomeQueryParams.TrendingDeeplinkUrl]:
+        [HomeQueryParams.TrendingDeepLinkUrl]:
           'https://link.metamask.io/rewards?referral=ABC123',
       }).toString()}`,
       isNetworkMenuOpen: false,

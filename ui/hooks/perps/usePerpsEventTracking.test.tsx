@@ -247,7 +247,7 @@ describe('usePerpsEventTracking', () => {
       );
     });
 
-    it('includes UTM/deeplink on a screen view emitted on the first render', () => {
+    it('includes UTM/deep link on a screen view emitted on the first render', () => {
       // Regression: attribution must be ready synchronously, because the
       // declarative screen-view effect runs (child-first) before the provider's
       // locationSearch effect — an effect-seeded attribution would miss the
@@ -276,7 +276,7 @@ describe('usePerpsEventTracking', () => {
       );
     });
 
-    it('overrides the call-site source with deeplink when entered via deeplink', () => {
+    it('overrides the call-site source with deep link when entered via deep link', () => {
       const { result } = renderHook(() => usePerpsEventTracking(), {
         wrapper: wrapperWith('?source=deeplink'),
       });
@@ -298,7 +298,7 @@ describe('usePerpsEventTracking', () => {
     });
 
     it('reads utm from window.location.hash when router search still lags', () => {
-      // The real deeplink race: window.location.hash is already the utm-bearing
+      // The real deep link race: window.location.hash is already the utm-bearing
       // market route the instant it renders, but react-router applies the
       // destination useLocation().search one render LATER. Emulate that by
       // seeding the provider with an EMPTY search while the hash carries utm —
@@ -408,14 +408,14 @@ describe('usePerpsEventTracking', () => {
     });
   });
 
-  // Faithful deeplink repro (same document, provider stays mounted): the
-  // provider is already mounted at a non-utm perps route when the deeplink
+  // Faithful deep link repro (same document, provider stays mounted): the
+  // provider is already mounted at a non-utm perps route when the deep link
   // Continue navigates to the utm-bearing market route. The provider's
   // locationSearch updates in place (no remount), and the market screen-view
   // fires immediately (warm markets). The mount-time useState seed captured the
   // OLD search, so the first (fire-once) emit must get UTM from the render-time
   // derivation of the current search — not the effect-back-filled state.
-  describe('deeplink nav race (provider mounted before utm search)', () => {
+  describe('deep link nav race (provider mounted before utm search)', () => {
     function LayoutProvider() {
       const { search } = useLocation();
       return (
@@ -475,11 +475,11 @@ describe('usePerpsEventTracking', () => {
     });
   });
 
-  // Cross-provider session attribution: a deeplink to the wallet perps tab
+  // Cross-provider session attribution: a deep link to the wallet perps tab
   // mounts one provider (utm in its search); navigating deeper into /perps/*
   // mounts a FRESH provider on a bare URL. UTM is session-sticky (last-touch) so
   // the second instance inherits it — but `source=deeplink` is PER-ENTRY, so the
-  // second instance reports its own (non-deeplink) source.
+  // second instance reports its own (non-deep-link) source.
   describe('cross-provider session attribution', () => {
     function Emitter() {
       usePerpsEventTracking({
@@ -493,8 +493,8 @@ describe('usePerpsEventTracking', () => {
       return null;
     }
 
-    it('inherits utm but not deeplink source on a fresh non-deeplink entry', () => {
-      // Provider A — deeplink entry with utm (e.g. wallet perps tab).
+    it('inherits utm but not deep link source on a fresh non-deep-link entry', () => {
+      // Provider A — deep link entry with utm (e.g. wallet perps tab).
       const entry = render(
         <PerpsAttributionProvider locationSearch="?source=deeplink&utm_source=cdp_test&utm_medium=push&utm_campaign=q3_launch">
           <div />
@@ -503,7 +503,7 @@ describe('usePerpsEventTracking', () => {
       // User navigates deeper — the entry provider unmounts.
       entry.unmount();
 
-      // Provider B — a new instance on a bare in-app URL (no deeplink markers in
+      // Provider B — a new instance on a bare in-app URL (no deep link markers in
       // the search or the hash) emits a screen view.
       render(
         <PerpsAttributionProvider locationSearch="">
@@ -513,7 +513,7 @@ describe('usePerpsEventTracking', () => {
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       const { properties } = mockTrackEvent.mock.calls[0][0];
-      // Per-entry: this non-deeplink entry keeps its own call-site source.
+      // Per-entry: this non-deep-link entry keeps its own call-site source.
       expect(properties[PERPS_EVENT_PROPERTY.SOURCE]).toBe('market_list');
       // Last-touch: the campaign utm still carries over.
       expect(properties[PERPS_EVENT_PROPERTY.UTM_SOURCE]).toBe('cdp_test');

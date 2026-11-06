@@ -8,19 +8,19 @@ jest.mock('./useCandidateSubscriptionId', () => ({
 
 type StateOverrides = {
   rewardsEnabled?: boolean;
-  deeplinkUrl?: string | null;
+  deepLinkUrl?: string | null;
 };
 
 const buildState = ({
   rewardsEnabled = true,
-  deeplinkUrl = null,
+  deepLinkUrl = null,
 }: StateOverrides = {}) => ({
   metamask: {
     useExternalServices: rewardsEnabled,
     remoteFeatureFlags: { rewardsEnabled },
   },
   rewards: {
-    rewardsDeeplinkUrl: deeplinkUrl,
+    rewardsDeepLinkUrl: deepLinkUrl,
     rewardsModalOpen: false,
   },
 });
@@ -33,12 +33,12 @@ const getRewardsModalOpen = (store: unknown): boolean => {
 };
 
 describe('useRewardsModal', () => {
-  it('opens the rewards modal when rewards are enabled and a deeplink is present', async () => {
+  it('opens the rewards modal when rewards are enabled and a deep link is present', async () => {
     const { store } = renderHookWithProvider(
       () => useRewardsModal(),
       buildState({
         rewardsEnabled: true,
-        deeplinkUrl: 'https://link.metamask.io/rewards',
+        deepLinkUrl: 'https://link.metamask.io/rewards',
       }),
     );
 
@@ -52,17 +52,17 @@ describe('useRewardsModal', () => {
       () => useRewardsModal(),
       buildState({
         rewardsEnabled: false,
-        deeplinkUrl: 'https://link.metamask.io/rewards',
+        deepLinkUrl: 'https://link.metamask.io/rewards',
       }),
     );
 
     expect(getRewardsModalOpen(store)).toBe(false);
   });
 
-  it('does not open the modal when no deeplink URL is present', () => {
+  it('does not open the modal when no deep link URL is present', () => {
     const { store } = renderHookWithProvider(
       () => useRewardsModal(),
-      buildState({ rewardsEnabled: true, deeplinkUrl: null }),
+      buildState({ rewardsEnabled: true, deepLinkUrl: null }),
     );
 
     expect(getRewardsModalOpen(store)).toBe(false);

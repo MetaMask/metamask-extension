@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd';
 import { useMusdGeoBlocking } from '../../hooks/musd';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { MUSD_DEEPLINK_PARAM } from '../../../shared/lib/deep-links/routes/musd';
+import { MUSD_DEEP_LINK_PARAM } from '../../../shared/lib/deep-links/routes/musd';
 import { MUSD_CONVERSION_ROUTES } from './constants/routes';
 import MusdEducationScreen from './screens/education';
 
@@ -24,7 +24,7 @@ import MusdEducationScreen from './screens/education';
 const MusdConversionPage = () => {
   const isFeatureEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const [searchParams] = useSearchParams();
-  const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
+  const isDeepLink = searchParams.get(MUSD_DEEP_LINK_PARAM) === 'true';
   const { isBlocked, isLoading: isGeoLoading } = useMusdGeoBlocking();
 
   // Redirect if feature is disabled
@@ -32,8 +32,8 @@ const MusdConversionPage = () => {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
-  // Redirect geo-blocked users to home (deeplink users see education with a home CTA instead)
-  if (isBlocked && !isGeoLoading && !isDeeplink) {
+  // Redirect geo-blocked users to home (deep link users see education with a home CTA instead)
+  if (isBlocked && !isGeoLoading && !isDeepLink) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 

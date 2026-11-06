@@ -2616,7 +2616,7 @@ const PerpsOrderEntryPage = () => {
 
   // The market and position lookups above are case-insensitive, but the
   // controller resolves positions by exact symbol. Canonicalize a mis-cased
-  // route (deeplink or typed URL) so close and TP/SL submits don't fail with
+  // route (deep link or typed URL) so close and TP/SL submits don't fail with
   // POSITION_NOT_FOUND for an open position.
   if (market.symbol !== decodedSymbol) {
     return (

@@ -7,7 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
+import { DeepLinkQRCode } from '../../components/app/deep-link-qr-code';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getHomeDeepLinkQrCode,
@@ -16,7 +16,7 @@ import {
 import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
 import { useDispatch } from '../../store/hooks';
 
-export function DeeplinkQrCodeModalContainer() {
+export function DeepLinkQrCodeModalContainer() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const deepLinkQrCode = useSelector(getHomeDeepLinkQrCode);
@@ -31,7 +31,7 @@ export function DeeplinkQrCodeModalContainer() {
   }
 
   return (
-    <Modal data-testid="deeplink-qrcode-modal" isOpen onClose={onClose}>
+    <Modal data-testid="deep-link-qr-code-modal" isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
         className="items-center justify-center"
@@ -58,13 +58,13 @@ export function DeeplinkQrCodeModalContainer() {
           }}
           onClose={onClose}
         />
-        <DeeplinkQRCode
+        <DeepLinkQRCode
           title={t(deepLinkQrCode.titleKey)}
           description={t(deepLinkQrCode.descriptionKey)}
-          data={deepLinkQrCode.deeplinkUrl}
+          data={deepLinkQrCode.deepLinkUrl}
           onDone={onClose}
           doneLabel={t('done')}
-          testId="deeplink-qrcode-container"
+          testId="deep-link-qr-code-container"
         />
       </ModalContent>
     </Modal>

@@ -19,7 +19,7 @@ import {
 import { isDeepLinkHost } from '../../../shared/lib/deep-links/common';
 
 export type HomeDeepLinkQrCode = {
-  deeplinkUrl: string;
+  deepLinkUrl: string;
   descriptionKey: string;
   titleKey: string;
 };
@@ -75,7 +75,7 @@ export const useHomeDeepLinkEffects = () => {
   }, [dispatch, isNetworkMenuOpen]);
 
   const handleBatchSellDeepLink = useCallback(
-    (deeplinkUrl: string) => {
+    (deepLinkUrl: string) => {
       if (batchSellEnabled) {
         navigate(BATCH_SELL_SELECT_ROUTE);
         return;
@@ -83,7 +83,7 @@ export const useHomeDeepLinkEffects = () => {
 
       dispatch(
         setHomeDeepLinkQrCode({
-          deeplinkUrl,
+          deepLinkUrl,
           descriptionKey: 'deepLinkQrBatchSellDescription',
           titleKey: 'deepLinkQrBatchSellTitle',
         }),
@@ -93,10 +93,10 @@ export const useHomeDeepLinkEffects = () => {
   );
 
   const openLimitOrderQrCodeModal = useCallback(
-    (deeplinkUrl: string) => {
+    (deepLinkUrl: string) => {
       dispatch(
         setHomeDeepLinkQrCode({
-          deeplinkUrl,
+          deepLinkUrl,
           descriptionKey: 'deepLinkQrLimitOrderDescription',
           titleKey: 'deepLinkQrLimitOrderTitle',
         }),
@@ -106,10 +106,10 @@ export const useHomeDeepLinkEffects = () => {
   );
 
   const openPredictQrCodeModal = useCallback(
-    (deeplinkUrl: string) => {
+    (deepLinkUrl: string) => {
       dispatch(
         setHomeDeepLinkQrCode({
-          deeplinkUrl,
+          deepLinkUrl,
           descriptionKey: 'deepLinkQrPredictDescription',
           titleKey: 'deepLinkQrPredictTitle',
         }),
@@ -119,10 +119,10 @@ export const useHomeDeepLinkEffects = () => {
   );
 
   const openTrendingQrCodeModal = useCallback(
-    (deeplinkUrl: string) => {
+    (deepLinkUrl: string) => {
       dispatch(
         setHomeDeepLinkQrCode({
-          deeplinkUrl,
+          deepLinkUrl,
           descriptionKey: 'deepLinkQrTrendingDescription',
           titleKey: 'deepLinkQrTrendingTitle',
         }),
@@ -139,12 +139,12 @@ export const useHomeDeepLinkEffects = () => {
     }
   > = useMemo(
     () => ({
-      [HomeQueryParams.BatchSellDeeplinkUrl]: {
+      [HomeQueryParams.BatchSellDeepLinkUrl]: {
         isValidParam: (param?: string) =>
           isDeepLinkUrlForPath(param, '/batch-sell'),
         action: handleBatchSellDeepLink,
       },
-      [HomeQueryParams.LimitOrderDeeplinkUrl]: {
+      [HomeQueryParams.LimitOrderDeepLinkUrl]: {
         isValidParam: isLimitOrderDeepLinkUrl,
         action: openLimitOrderQrCodeModal,
       },
@@ -152,12 +152,12 @@ export const useHomeDeepLinkEffects = () => {
         isValidParam: (param?: string) => param?.toLowerCase() === 'true',
         action: openNetworkSelectorModal,
       },
-      [HomeQueryParams.PredictDeeplinkUrl]: {
+      [HomeQueryParams.PredictDeepLinkUrl]: {
         isValidParam: (param?: string) =>
           isDeepLinkUrlForPath(param, '/predict'),
         action: openPredictQrCodeModal,
       },
-      [HomeQueryParams.TrendingDeeplinkUrl]: {
+      [HomeQueryParams.TrendingDeepLinkUrl]: {
         isValidParam: (param?: string) =>
           isDeepLinkUrlForPath(param, '/trending'),
         action: openTrendingQrCodeModal,
@@ -207,7 +207,7 @@ export const useHomeDeepLinkEffects = () => {
 /**
  * Ghost component that manages the useHomeDeepLinkEffects.
  * Dispatches deep-link QR code data to Redux so
- * DeeplinkQrCodeModalContainer can render it independently.
+ * DeepLinkQrCodeModalContainer can render it independently.
  */
 export const HomeDeepLinkActions = memo(() => {
   useHomeDeepLinkEffects();
