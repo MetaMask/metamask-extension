@@ -30,6 +30,7 @@ import { AccountOverview } from '../../components/multichain';
 import { PasswordOutdatedModalContainer } from '../../components/app/password-outdated-modal';
 import { ShieldEntryModalContainer } from '../../components/app/shield-entry-modal';
 import { RewardsModalContainer } from '../../components/app/rewards/onboarding/rewards-modal-container';
+import { ReferralRebateFlow } from '../../components/app/rewards/referral-rebate';
 import { Pna25ModalContainer } from '../../components/app/modals/pna25-modal/pna25-modal-container';
 import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -272,6 +273,7 @@ export default function Home() {
         <RecoveryPhraseReminderContainer />
         <TermsOfUsePopupContainer />
         <ShieldEntryModalContainer />
+        <ReferralRebateFlow />
         <RewardsModalContainer />
         <DeeplinkQrCodeModalContainer />
         <Pna25ModalContainer />
