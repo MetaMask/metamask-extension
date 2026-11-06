@@ -216,11 +216,20 @@ class HeaderNavbar {
   }
 
   /**
-   * Click the network addresses link
+   * Hover the network addresses trigger to open the quick-copy popover.
    */
   async clickNetworkAddresses(): Promise<void> {
-    console.log('Click the network addresses link');
-    await this.driver.clickElement(this.networkAddressesLink);
+    console.log(
+      'Hover the network addresses trigger to open quick-copy popover',
+    );
+    const container = await this.driver.findElement(this.networkAddressesLink);
+    const trigger = await container.findElement({
+      css: '[data-testid="multichain-address-rows-trigger"]',
+    });
+    // WebDriver's pointer move fires mouseenter. Do not synthesize a
+    // MouseEvent in the page: LavaMoat scuttling blocks globalThis.MouseEvent
+    // in the test build.
+    await this.driver.hoverElement(trigger);
   }
 
   async clickNotificationCount(count: number): Promise<void> {
