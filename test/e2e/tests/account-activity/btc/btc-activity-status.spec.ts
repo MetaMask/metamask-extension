@@ -1,8 +1,5 @@
 import { Suite } from 'mocha';
-import {
-  DEFAULT_BTC_BALANCE,
-  DEFAULT_FIXTURE_ACCOUNT_ID,
-} from '../../../constants';
+import { DEFAULT_BTC_BALANCE } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { TxToastNotification } from '../../../page-objects/components/tx-toast-notification';
 import { openActivityTransactionDetails } from '../../../page-objects/flows/activity.flow';
@@ -16,8 +13,8 @@ import SendPage from '../../../page-objects/pages/send/send-page';
 import { BitcoinNode } from '../../../seeder/bitcoin/node';
 import { withBitcoinFixtures } from '../../btc/fixtures/with-bitcoin-fixtures';
 import {
-  bitcoinActivityControllerState,
   bitcoinSendActivityTransaction,
+  seedBitcoinActivityTransactions,
 } from './bitcoin-activity-fixtures';
 
 const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
@@ -25,28 +22,12 @@ const CONFIRMED_AMOUNT = '0.2';
 const FAILED_AMOUNT = '0.3';
 
 describe('Bitcoin - Activity status', function (this: Suite) {
-  this.timeout(180_000);
-
   it('shows confirmed and failed Bitcoin sends in the list and details', async function () {
     let bitcoinNode: BitcoinNode | undefined;
-    const failedTransaction = bitcoinSendActivityTransaction({
-      id: 'cd'.repeat(32),
-      account: DEFAULT_FIXTURE_ACCOUNT_ID,
-      amount: FAILED_AMOUNT,
-      recipient: RECIPIENT_ADDRESS,
-      status: 'failed',
-    });
 
     await withBitcoinFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withMultichainTransactionsController(
-            bitcoinActivityControllerState(
-              DEFAULT_FIXTURE_ACCOUNT_ID,
-              failedTransaction,
-            ),
-          )
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         afterLocalNodesStart: ({ localNodes }) => {
@@ -70,6 +51,13 @@ describe('Bitcoin - Activity status', function (this: Suite) {
           'BTC',
         );
 
+        const failedTransaction = bitcoinSendActivityTransaction({
+          id: 'cd'.repeat(32),
+          account: '',
+          amount: FAILED_AMOUNT,
+          recipient: RECIPIENT_ADDRESS,
+          status: 'failed',
+        });
         await homePage.startSendFlow();
         const sendPage = new SendPage(driver);
         await sendPage.selectToken(
@@ -103,8 +91,9 @@ describe('Bitcoin - Activity status', function (this: Suite) {
         await activityTab.checkWaitForTransactionStatusByAmount(
           confirmedAmount,
           'confirmed',
-          { timeout: 90_000 },
+          { timeout: 20_000 },
         );
+        await seedBitcoinActivityTransactions(driver, [failedTransaction]);
 
         await activityTab.checkTransactionActivityByText('Sent BTC');
         await activityTab.checkTransactionAmount(confirmedAmount);

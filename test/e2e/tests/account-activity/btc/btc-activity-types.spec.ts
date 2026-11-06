@@ -1,9 +1,5 @@
 import { Suite } from 'mocha';
-import {
-  DEFAULT_BTC_ADDRESS,
-  DEFAULT_BTC_BALANCE,
-  DEFAULT_FIXTURE_ACCOUNT_ID,
-} from '../../../constants';
+import { DEFAULT_BTC_ADDRESS, DEFAULT_BTC_BALANCE } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { TxToastNotification } from '../../../page-objects/components/tx-toast-notification';
 import { openActivityTransactionDetails } from '../../../page-objects/flows/activity.flow';
@@ -20,9 +16,9 @@ import SendPage from '../../../page-objects/pages/send/send-page';
 import { withBitcoinFixtures } from '../../btc/fixtures/with-bitcoin-fixtures';
 import { mockEvmActivityApi } from '../utils/mock-evm-activity-api';
 import {
-  bitcoinActivityControllerState,
   bitcoinBridgeHistoryItem,
   bitcoinSendActivityTransaction,
+  seedBitcoinActivityTransactions,
 } from './bitcoin-activity-fixtures';
 
 const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
@@ -32,12 +28,10 @@ const BRIDGE_SOURCE_AMOUNT = '0.25';
 const BRIDGE_DESTINATION_AMOUNT = '1.5';
 
 describe('Bitcoin - Activity types', function (this: Suite) {
-  this.timeout(180_000);
-
   it('renders received, sent, and bridged Bitcoin transactions', async function () {
     const bridgeTransaction = bitcoinSendActivityTransaction({
       id: BRIDGE_TRANSACTION_ID,
-      account: DEFAULT_FIXTURE_ACCOUNT_ID,
+      account: '',
       amount: BRIDGE_SOURCE_AMOUNT,
       recipient: RECIPIENT_ADDRESS,
       status: 'confirmed',
@@ -52,12 +46,6 @@ describe('Bitcoin - Activity types', function (this: Suite) {
     await withBitcoinFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMultichainTransactionsController(
-            bitcoinActivityControllerState(
-              DEFAULT_FIXTURE_ACCOUNT_ID,
-              bridgeTransaction,
-            ),
-          )
           .withBridgeStatusController({
             txHistory: { [BRIDGE_TRANSACTION_ID]: bridgeHistory },
           })
@@ -75,6 +63,7 @@ describe('Bitcoin - Activity types', function (this: Suite) {
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
+        await seedBitcoinActivityTransactions(driver, [bridgeTransaction]);
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
@@ -94,6 +83,7 @@ describe('Bitcoin - Activity types', function (this: Suite) {
         await receiveDetails.checkViewDetailsLink();
         await receiveDetails.clickBackButton();
 
+        await homePage.goToTokensTab();
         await homePage.startSendFlow();
         const sendPage = new SendPage(driver);
         await sendPage.selectToken(
