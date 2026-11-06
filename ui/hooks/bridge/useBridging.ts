@@ -4,18 +4,14 @@ import {
   FeatureId,
   formatChainIdToCaip,
   GenericQuoteRequest,
-  getNativeAssetForChainId,
-  isCrossChain,
   UnifiedSwapBridgeEventName,
   MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
-import { parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource as ExtendedMetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
-  getBip44DefaultPairsConfig,
   getFromChain,
   getFromChains,
   getLastSelectedChainId,
@@ -26,43 +22,16 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
-import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import {
+  getDefaultFromToken,
+  isSupportedBridgeChain,
+} from '../../ducks/bridge/utils';
 import { useDispatch } from '../../store/hooks';
 
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
 } from './useBridgeNavigation';
-
-/**
- * Default source asset for a chain the network filter selected.
- * Namespace bip44 pairs only describe one chain (Ethereum Mainnet for EVM).
- *
- * @param fallbackChainId - Chain selected in the network filter, or the provider chain.
- * @param bip44DefaultPairsConfig - Remote default pairs keyed by CAIP namespace.
- * @returns CAIP-19 asset id, when one can be resolved.
- */
-const getDefaultFromAssetId = (
-  fallbackChainId: string,
-  bip44DefaultPairsConfig: ReturnType<typeof getBip44DefaultPairsConfig>,
-): string | undefined => {
-  const formattedChainId = formatChainIdToCaip(fallbackChainId);
-  const { namespace } = parseCaipChainId(formattedChainId);
-  const bip44AssetId = Object.keys(
-    bip44DefaultPairsConfig?.[namespace]?.standard ?? {},
-  )[0];
-
-  const bip44ChainId = bip44AssetId?.split('/')[0];
-  if (bip44ChainId && !isCrossChain(bip44ChainId, formattedChainId)) {
-    return bip44AssetId;
-  }
-
-  try {
-    return getNativeAssetForChainId(formattedChainId)?.assetId;
-  } catch {
-    return undefined;
-  }
-};
 
 /**
  * This hook is the entrypoint for the bridge experience
@@ -76,7 +45,6 @@ const useBridging = () => {
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
   const fromChain = useSelector(getFromChain);
   const fromChains = useSelector(getFromChains);
-  const bip44DefaultPairsConfig = useSelector(getBip44DefaultPairsConfig);
 
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
@@ -162,21 +130,15 @@ const useBridging = () => {
           // Otherwise, set the `from` query param to use the bridge page's deep linking logic
           search.set(BridgeQueryParams.From, assetId);
         }
-      } else if (
-        !lastSelectedChainId ||
-        isCrossChain(lastSelectedChainId, fromChain.chainId)
-      ) {
+      } else if (lastSelectedChainId !== fromChain.chainId) {
         // The network filter is the source chain. bip44DefaultPairs has one
-        // pair per namespace, and the EVM pair is Ethereum Mainnet, so other
-        // EVM chains use their own native asset.
+        // pair per namespace (Ethereum Mainnet for EVM), so use the default
+        // token for the selected chain instead.
         const fallbackChainId = lastSelectedChainId ?? fromChain.chainId;
-        const defaultAssetId = getDefaultFromAssetId(
-          fallbackChainId,
-          bip44DefaultPairsConfig,
+        search.set(
+          BridgeQueryParams.From,
+          getDefaultFromToken(formatChainIdToCaip(fallbackChainId)).assetId,
         );
-        if (defaultAssetId) {
-          search.set(BridgeQueryParams.From, defaultAssetId);
-        }
       }
 
       if (destTokenAssetId) {
@@ -199,7 +161,6 @@ const useBridging = () => {
       lastSelectedChainId,
       fromChain?.chainId,
       isChainIdEnabledForBridging,
-      bip44DefaultPairsConfig,
       bridgeState,
       dispatch,
     ],
