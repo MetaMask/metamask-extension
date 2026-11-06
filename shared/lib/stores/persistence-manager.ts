@@ -21,6 +21,7 @@ import {
   type LastActivityContext,
 } from '../telemetry/last-activity';
 import type { CurrentActivity, IdleStatus } from '../telemetry/idle-status';
+import { buildActivityAttributes } from '../telemetry/activity-attributes';
 import { IndexedDBStore } from './indexeddb-store';
 import {
   BACKUP_INDEXED_DB_NAME,
@@ -439,10 +440,107 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return error instanceof Error ? error : new Error(String(error));
   }
 
-  #captureWriteFailure(
+  /**
+   * Activity snapshot shared by sampled write traces and storage error reports.
+   *
+   * A missing or throwing provider becomes an empty snapshot, and a throwing
+   * idle classifier becomes `'unknown'`. Session restore runs first so an
+   * early startup write still sees timestamps from before the service-worker
+   * restart.
+   *
+   * @returns The activity snapshot for this event.
+   */
+  async #getActivitySnapshot(): Promise<{
+    currentActivity: CurrentActivity;
+    environmentType: EnvironmentType | 'unknown';
+    idleStatus: IdleStatus;
+    lastActivity: LastActivityContext;
+  }> {
+    let currentActivity: CurrentActivity = {};
+    if (this.#getCurrentActivity) {
+      try {
+        currentActivity = this.#getCurrentActivity();
+      } catch {
+        // Keep empty snapshot.
+      }
+    }
+
+    let lastActivity: LastActivityContext = {};
+    try {
+      await hydrateLastActivity();
+    } catch {
+      // Snapshot whatever is already in memory.
+    }
+    try {
+      lastActivity = getLastActivityContext();
+    } catch {
+      // Keep empty snapshot.
+    }
+
+    let idleStatus: IdleStatus = 'unknown';
+    try {
+      idleStatus = this.#getIsIdle(currentActivity, lastActivity) ?? 'unknown';
+    } catch {
+      // Keep unknown status.
+    }
+
+    const href = globalThis.self?.location?.href;
+    const environmentType = (
+      href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
+    ) as EnvironmentType | 'unknown';
+
+    return { currentActivity, environmentType, idleStatus, lastActivity };
+  }
+
+  async #capturePersistenceException(
+    error: unknown,
+    failure: string,
+    writeDetails?: { controllers: string[]; coalescedUpdates?: number },
+  ) {
+    const snapshot = await this.#getActivitySnapshot();
+    const activity = buildActivityAttributes(
+      snapshot.currentActivity,
+      snapshot.lastActivity,
+      snapshot.idleStatus,
+      snapshot.environmentType,
+    );
+
+    const extra: Record<string, number | string | boolean> = {};
+    for (const [key, value] of Object.entries(activity)) {
+      if (key === 'idle_status' || key === 'environment_type') {
+        continue;
+      }
+      extra[`persistence.${key}`] = value;
+    }
+
+    if (writeDetails) {
+      extra['persistence.controllers'] = writeDetails.controllers.join(',');
+      extra['persistence.controller_count'] = writeDetails.controllers.length;
+      if (writeDetails.coalescedUpdates !== undefined) {
+        extra['persistence.coalesced_updates'] = writeDetails.coalescedUpdates;
+      }
+    }
+
+    // Custom fingerprint prevents Sentry's deduplication from dropping
+    // this event when other persistence errors with the same underlying
+    // error message (e.g., "An unexpected error occurred") are reported.
+    // `idle_status` and `environment_type` are tags so they can be filtered.
+    captureException(error, {
+      tags: {
+        'persistence.error': failure,
+        'persistence.environment_type': snapshot.environmentType,
+        'persistence.idle_status': snapshot.idleStatus,
+      },
+      extra,
+      fingerprint: ['persistence-error', failure],
+    });
+  }
+
+  async #captureWriteFailure(
     error: unknown,
     target: PersistenceWriteTarget,
     operation: PersistenceWriteOperation,
+    writeDetails: { controllers: string[]; coalescedUpdates?: number },
   ) {
     if (this.#dataPersistenceFailures.has(target)) {
       return;
@@ -454,13 +552,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         ? `${operation}-failed`
         : `${operation}-backup-failed`;
 
-    // Custom fingerprint prevents Sentry's deduplication from dropping
-    // this event when other persistence errors with the same underlying
-    // error message (e.g., "An unexpected error occurred") are reported.
-    captureException(error, {
-      tags: { 'persistence.error': failure },
-      fingerprint: ['persistence-error', failure],
-    });
+    this.#capturePersistenceException(error, failure, writeDetails);
   }
 
   #captureWriteRecovery(
@@ -814,6 +906,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             err,
             backupFailed ? 'backup' : 'primary',
             'set',
+            { controllers: Object.keys(state) },
           );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
@@ -863,44 +956,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       return;
     }
 
-    // Snapshot activity before any awaits so init / UI changes during size
-    // measurement cannot skew the write's reported context.
-    // Best-effort: missing/throwing provider → empty activity, write still emits.
-    let currentActivity: CurrentActivity = {};
-    if (this.#getCurrentActivity) {
-      try {
-        currentActivity = this.#getCurrentActivity();
-      } catch {
-        // Keep empty snapshot.
-      }
-    }
-
-    // Best-effort: throwing getter → empty activity, write still emits.
-    // Wait for session restore so an early startup write still reports
-    // timestamps from before the service-worker restart.
-    let lastActivity: LastActivityContext = {};
-    try {
-      await hydrateLastActivity();
-    } catch {
-      // Snapshot whatever is already in memory.
-    }
-    try {
-      lastActivity = getLastActivityContext();
-    } catch {
-      // Keep empty snapshot.
-    }
-
-    // Not wrapped in try/catch: a throwing provider aborts the rest of this
-    // method, matching the existing contract that telemetry failures must
-    // not emit a partial `splitStateWrite` event (the write itself already
-    // succeeded by this point).
-    const idleStatus =
-      this.#getIsIdle(currentActivity, lastActivity) ?? 'unknown';
-
-    const href = globalThis.self?.location?.href;
-    const environmentType = (
-      href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
-    ) as EnvironmentType | 'unknown';
+    // Snapshot before size measurement so init / UI changes during that await
+    // cannot skew the write's reported context.
+    const { currentActivity, environmentType, idleStatus, lastActivity } =
+      await this.#getActivitySnapshot();
 
     let bytesByController: Map<string, number> | undefined;
     let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'] =
@@ -991,9 +1050,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
+        let failedWriteControllers: string[] = [];
+        let failedCoalescedUpdates = 0;
         try {
           const clone = structuredClone(this.#pendingPairs);
           const coalescedUpdates = this.#pendingUpdateCount;
+          failedCoalescedUpdates = coalescedUpdates;
+          failedWriteControllers = [...clone.keys()].filter(
+            (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
+          );
           // reset the pendingPairs
           this.#pendingPairs.clear();
           this.#pendingUpdateCount = 0;
@@ -1085,6 +1150,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             err,
             backupFailed ? 'backup' : 'primary',
             'persist',
+            {
+              controllers: failedWriteControllers,
+              coalescedUpdates: failedCoalescedUpdates,
+            },
           );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
@@ -1137,13 +1206,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             localStoreError,
           );
           if (reportErrors) {
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(localStoreError, {
-              tags: { 'persistence.error': 'get-failed' },
-              fingerprint: ['persistence-error', 'get-failed'],
-            });
+            this.#capturePersistenceException(localStoreError, 'get-failed');
           }
 
           // A read that failed only because the browser is closing says nothing
