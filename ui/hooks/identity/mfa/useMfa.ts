@@ -9,7 +9,7 @@ import { useAnalytics } from '../../useAnalytics';
 import { selectEnrolledCredentials } from '../../../selectors/identity/authentication';
 import { extensionMfaControllerAdapter } from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
-import type { MfaEvent } from './engine/analytics';
+import type { MfaEvent, MfaTrackEvent } from './engine/analytics';
 import type {
   EnrollOptions,
   MfaFlowOptions,
@@ -63,20 +63,15 @@ export const useMfa = () => {
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const entryPoints = useMemo(() => {
-    const options = {
-      ...clientOptions,
-      trackEvent: (
-        event: MfaEvent,
-        properties: Record<string, string | boolean | string[]>,
-      ) => {
-        trackEvent(
-          createEventBuilder(EVENTS[event])
-            .addCategory(MetaMetricsEventCategory.Auth)
-            .addProperties(properties)
-            .build(),
-        ).catch(() => undefined);
-      },
+    const sendEvent: MfaTrackEvent = (event, properties) => {
+      trackEvent(
+        createEventBuilder(EVENTS[event])
+          .addCategory(MetaMetricsEventCategory.Auth)
+          .addProperties(properties)
+          .build(),
+      ).catch(() => undefined);
     };
+    const options = { ...clientOptions, trackEvent: sendEvent };
     return {
       verifyOrEnroll: ({
         reason,

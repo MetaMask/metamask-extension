@@ -424,10 +424,6 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         </Row>
 
-        <PriceImpactQuoteDetailsRow
-          onOpenPriceImpactWarningModal={onOpenPriceImpactWarningModal}
-        />
-
         {/* Minimum Received */}
         {activeQuote.quote.dest?.minAmountNormalized && (
           <Row justifyContent={JustifyContent.spaceBetween}>
@@ -460,6 +456,10 @@ export const MultichainBridgeQuoteCard = ({
             </Text>
           </Row>
         )}
+
+        <PriceImpactQuoteDetailsRow
+          onOpenPriceImpactWarningModal={onOpenPriceImpactWarningModal}
+        />
 
         {/* Recipient */}
         {isCrossChainBridge && selectedDestinationAccount && (

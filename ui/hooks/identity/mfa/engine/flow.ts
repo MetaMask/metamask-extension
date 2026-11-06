@@ -463,7 +463,9 @@ export const createMfaFlow = ({
     isRecovery: boolean,
   ): (() => Promise<void>) | undefined => {
     if (!isRecovery && current?.flowId && state.step.name === 'otp') {
-      if (current.method === 'email_otp') {
+      // Too many wrong codes: the user gets the new code themselves, once the
+      // resend limit allows it, rather than a silent send that may be refused.
+      if (current.method === 'email_otp' && code !== 'too_many_attempts') {
         return async () => {
           // Clear the previous notice first: the code screen empties the
           // boxes when `codeResent` changes, so a second expiry must change it
@@ -471,7 +473,8 @@ export const createMfaFlow = ({
           setState({ codeResent: undefined });
           await beginCodeChallenge();
           setState({ codeResent: true });
-          if (state.step.name === 'otp') {
+          // The user may have closed the flow while the code was being sent.
+          if (!settled && state.step.name === 'otp') {
             tracker.codeResent('auto', state.step);
           }
         };
