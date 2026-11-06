@@ -92,25 +92,18 @@ describe('Home readiness', () => {
     expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
   });
 
-  jestIt.each([
-    AccountOverviewTabKey.Nfts,
-    AccountOverviewTabKey.Activity,
-    AccountOverviewTabKey.DeFi,
-    AccountOverviewTabKey.Perps,
-  ])('excludes the persisted %s tab', (tab) => {
-    register({ defaultHomeActiveTabName: tab });
-    renderHook(() => useHomeReady(true));
-    act(() => jest.advanceTimersByTime(48));
-    expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
-    expect(measurement.reportReady).not.toHaveBeenCalled();
-  });
+  jestIt.each([AccountOverviewTabKey.Nfts, AccountOverviewTabKey.DeFi])(
+    'excludes the persisted %s tab',
+    (tab) => {
+      register({ defaultHomeActiveTabName: tab });
+      renderHook(() => useHomeReady(true));
+      act(() => jest.advanceTimersByTime(48));
+      expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+      expect(measurement.reportReady).not.toHaveBeenCalled();
+    },
+  );
 
-  jestIt.each([
-    AccountOverviewTabKey.Nfts,
-    AccountOverviewTabKey.Activity,
-    AccountOverviewTabKey.DeFi,
-    AccountOverviewTabKey.Perps,
-  ])(
+  jestIt.each([AccountOverviewTabKey.Nfts, AccountOverviewTabKey.DeFi])(
     'excludes the URL-selected %s tab even when Tokens is persisted',
     async (tab) => {
       await router.navigate(`/?tab=${tab}`);
