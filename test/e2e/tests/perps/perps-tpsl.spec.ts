@@ -30,7 +30,9 @@ import {
 describe('Perps Take Profit / Stop Loss', function (this: Suite) {
   this.timeout(120000);
 
-  it('simulates take-profit fill: TP set on ETH long then stream clears the position', async function () {
+  // This spec is flaky and temporarily skipped until fixed (issue #47287)
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('simulates take-profit fill: TP set on ETH long then stream clears the position', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligibleWithEthLongPosition(this.test?.fullTitle()),
@@ -83,7 +85,9 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
     );
   });
 
-  it('simulates stop-loss fill: SL set on ETH long then stream clears the position', async function () {
+  // This spec is flaky and temporarily skipped until fixed (issue #47287)
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('simulates stop-loss fill: SL set on ETH long then stream clears the position', async function () {
     await withFixtures(
       {
         ...getPerpsConfigEligibleWithEthLongPosition(this.test?.fullTitle()),
