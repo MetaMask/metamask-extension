@@ -28,7 +28,6 @@ import {
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
   BACKGROUND_LIVENESS_METHOD,
@@ -809,12 +808,7 @@ export function setupController(
   //
   // User Interface setup
   //
-  const {
-    updateBadge,
-    clearFailedTxBadge,
-    getFailedTxCount,
-    setClientLandingTab,
-  } = createBadgeManager({
+  const { updateBadge, clearFailedTxBadge } = createBadgeManager({
     getController: () =>
       // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
       metamaskController as BadgeManagerController,
@@ -940,9 +934,6 @@ export function setupController(
         onStreamFinished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (getFailedTxCount() > 0) {
-            setClientLandingTab(AccountOverviewTabKey.Activity);
-          }
           updateBadge();
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;

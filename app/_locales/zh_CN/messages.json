@@ -8453,7 +8453,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "联系支持部门",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "部分服务暂时不可用。$1，或 $2。",
@@ -8461,7 +8461,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "在常见问题解答中查看您的选项",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "我们遇到了服务中断",

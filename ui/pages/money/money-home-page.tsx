@@ -33,6 +33,7 @@ import { useScrollContainerGutterWidth } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFullScreenDesign } from '../../hooks/useFullScreenDesign';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useOpenMoneyFtueOnFirstVisit } from '../../hooks/money/use-open-money-ftue-on-first-visit';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
@@ -169,6 +170,10 @@ export function MoneyHomePage() {
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
+  useOpenMoneyFtueOnFirstVisit({
+    isAvailable: availability.isAvailable,
+    isLoading: isAvailabilityLoading,
+  });
   useUpgradeMoneyAccount();
   const {
     apyDecimal,
