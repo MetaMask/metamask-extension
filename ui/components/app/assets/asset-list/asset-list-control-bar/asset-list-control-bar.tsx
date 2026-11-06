@@ -426,8 +426,8 @@ const AssetListControlBar = ({
 
   const showTokenOrNftMenu = Boolean(
     showImportTokenButton &&
-      (isEvm || showTokensLinks) &&
-      selectedAccountGroupAccounts.length > 0,
+    (isEvm || showTokensLinks) &&
+    selectedAccountGroupAccounts.length > 0,
   );
   const showRefreshOnlyMenu =
     !showImportTokenButton &&

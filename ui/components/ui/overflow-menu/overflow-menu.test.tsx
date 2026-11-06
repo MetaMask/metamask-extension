@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { IconName } from '@metamask/design-system-react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { OverflowMenu } from './overflow-menu';
 
 describe('OverflowMenu', () => {
@@ -18,7 +19,9 @@ describe('OverflowMenu', () => {
       />,
     );
 
-    const trigger = screen.getByRole('button', { name: 'More options' });
+    const trigger = screen.getByRole('button', {
+      name: messages.moneyMoreOptions.message,
+    });
     const menu = container.querySelector('[popover="auto"]');
     const item = screen.getByRole('button', { name: 'Disable widget' });
 
@@ -40,7 +43,9 @@ describe('OverflowMenu', () => {
       />,
     );
 
-    const item = screen.getByRole('button', { name: 'Settings' });
+    const item = screen.getByRole('button', {
+      name: messages.settings.message,
+    });
     expect(item).toBeInTheDocument();
   });
 
@@ -76,7 +81,9 @@ describe('OverflowMenu', () => {
       />,
     );
 
-    const trigger = screen.getByRole('button', { name: 'More options' });
+    const trigger = screen.getByRole('button', {
+      name: messages.moneyMoreOptions.message,
+    });
     expect(trigger).toBeDisabled();
   });
 
