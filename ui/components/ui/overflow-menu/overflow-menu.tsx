@@ -1,4 +1,5 @@
 import React, { useId } from 'react';
+import { Link } from 'react-router-dom';
 import classnames from 'clsx';
 import {
   ButtonIcon,
@@ -7,13 +8,6 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import { Text } from '../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 
 type MenuItemButtonProps = Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -25,6 +19,7 @@ export type MenuItem = Readonly<
     key: string;
     label: string;
     iconName?: IconName;
+    to?: string;
     command?: string;
     commandfor?: string;
   } & MenuItemButtonProps
@@ -32,6 +27,17 @@ export type MenuItem = Readonly<
 
 const triggerClassName =
   'flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed';
+
+const itemClassName = classnames(
+  'selectable-list-item',
+  'min-h-12',
+  'flex items-center w-full',
+  'text-base font-medium text-default',
+  'no-underline',
+  'hover:no-underline hover:text-default',
+  'hover:bg-background-default-hover',
+  'active:bg-background-pressed',
+);
 
 const popoverPanelStyle = {
   inset: 'auto',
@@ -57,13 +63,13 @@ export function OverflowMenu({
   items,
   ariaLabel = 'More options',
   testId,
-  size,
+  size = ButtonIconSize.Sm,
   disabled,
 }: Props) {
   const menuId = useId();
 
   return (
-    <div className="overflow-menu relative">
+    <>
       <ButtonIcon
         ariaLabel={ariaLabel}
         className={triggerClassName}
@@ -80,7 +86,7 @@ export function OverflowMenu({
         id={menuId}
         // @ts-expect-error need to update react types
         popover="auto"
-        className="mm-popover absolute m-0 overflow-hidden p-0 z-[1050]"
+        className="overflow-menu-popover m-0 overflow-hidden p-0"
         style={popoverPanelStyle}
       >
         {items.map((item) => {
@@ -88,50 +94,58 @@ export function OverflowMenu({
             key,
             label,
             iconName,
+            to,
             onClick,
             command,
             commandfor,
             ...buttonProps
           } = item;
-          const invokerCommand =
-            command ?? (onClick ? 'hide-popover' : undefined);
-          const invokerTarget =
-            commandfor ?? (onClick && !command ? menuId : undefined);
 
           const invokerProps = {
-            command: invokerCommand,
-            commandfor: invokerTarget,
+            command: command ?? 'hide-popover',
+            commandfor: commandfor ?? menuId,
           } as Record<string, unknown>;
+
+          const content = (
+            <>
+              {iconName ? (
+                <Icon
+                  name={iconName}
+                  size={IconSize.Sm}
+                  className="mr-2 shrink-0"
+                  aria-hidden
+                />
+              ) : null}
+              {label}
+            </>
+          );
 
           return (
             <div className="selectable-list-item-wrapper" key={key}>
-              {/* @ts-expect-error need to update react types for invoker commands API */}
-              <Text
-                as="button"
-                type="button"
-                variant={TextVariant.bodySmMedium}
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                width={BlockSize.Full}
-                className={classnames('selectable-list-item', 'min-h-12')}
-                onClick={onClick}
-                {...buttonProps}
-                {...invokerProps}
-              >
-                {iconName ? (
-                  <Icon
-                    name={iconName}
-                    size={IconSize.Sm}
-                    className="mr-2 shrink-0"
-                    aria-hidden
-                  />
-                ) : null}
-                {label}
-              </Text>
+              {to ? (
+                <Link
+                  to={to}
+                  className={itemClassName}
+                  {...buttonProps}
+                  {...invokerProps}
+                >
+                  {content}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className={itemClassName}
+                  onClick={onClick}
+                  {...buttonProps}
+                  {...invokerProps}
+                >
+                  {content}
+                </button>
+              )}
             </div>
           );
         })}
       </div>
-    </div>
+    </>
   );
 }
