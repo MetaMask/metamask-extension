@@ -21,7 +21,7 @@ import {
   recordNonRpcRequests,
 } from './helpers';
 
-describe('Onboarded wallet with basic functionality off', function () {
+describe('Onboarded wallet with basic functionality off TEST', function () {
   it('only makes RPC requests after unlocking', async function () {
     let getNonRpcRequests: () => Promise<NonRpcRequests> = async () =>
       new Map();
