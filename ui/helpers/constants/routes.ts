@@ -211,6 +211,7 @@ export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
 export const RAMPS_COMPLETE_BUY_ROUTE = '/ramps/complete-buy';
+export const RAMPS_BUY_DEEP_LINK_ENTRY_PATH = '/ramps/buy-deeplink-entry';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';

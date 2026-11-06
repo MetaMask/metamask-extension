@@ -14,6 +14,7 @@ import {
   DEFAULT_ROUTE,
   DISCOVER_SEARCH_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
+  RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -21,7 +22,6 @@ import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/common';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';

@@ -1,5 +1,5 @@
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../common';
 import { buy, getBuyPortfolioRedirectDestination } from './buy';
+import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from './route';
 import type { Destination } from './route';
 
 function assertPathDestination(

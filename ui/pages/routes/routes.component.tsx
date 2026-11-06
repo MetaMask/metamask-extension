@@ -50,6 +50,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
   RAMPS_COMPLETE_BUY_ROUTE,
+  RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -91,7 +92,6 @@ import {
   MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/common';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
 import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
