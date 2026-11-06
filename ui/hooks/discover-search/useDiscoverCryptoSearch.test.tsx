@@ -136,7 +136,7 @@ describe('useDiscoverCryptoSearch', () => {
     expect(result.current.totalCount).toBe(2);
   });
 
-  it('merges, deduplicates, and sorts local trending matches into the first search page', async () => {
+  it('returns search pages in API relevance order without merging local trending matches', async () => {
     mockGetTrendingTokens.mockResolvedValue([
       {
         assetId: 'eip155:1/slip44:60',
@@ -151,14 +151,6 @@ describe('useDiscoverCryptoSearch', () => {
         symbol: 'GEM',
         decimals: 18,
         marketCap: 500,
-      },
-      {
-        assetId: 'eip155:1/erc20:0xstock',
-        name: 'Ether Stock',
-        symbol: 'ESTK',
-        decimals: 18,
-        marketCap: 1_000,
-        rwaData: { type: 'stock' },
       },
     ] as never);
     mockSearchTokens
@@ -235,20 +227,23 @@ describe('useDiscoverCryptoSearch', () => {
         serviceProfile: 'assets--trending-search',
       }),
     );
+    // API relevance order is preserved as-is, including the duplicate WETH
+    // the server returned on page 2 — no client-side merge, re-sort, or dedupe.
     expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
-      'GEM',
       'ETH',
       'WETH',
       'DOGE',
       'BTC',
+      'WETH',
     ]);
+    // Locally cached trending matches are not merged into search results.
     expect(result.current.data).not.toEqual(
-      expect.arrayContaining([expect.objectContaining({ symbol: 'ESTK' })]),
+      expect.arrayContaining([expect.objectContaining({ symbol: 'GEM' })]),
     );
     expect(result.current.totalCount).toBe(5);
   });
 
-  it('does not show local trending matches when the API search has no results', async () => {
+  it('returns an empty result list when the API search has no results', async () => {
     mockGetTrendingTokens.mockResolvedValue([
       {
         assetId: 'eip155:1/slip44:60',
@@ -277,7 +272,7 @@ describe('useDiscoverCryptoSearch', () => {
     expect(result.current.data).toStrictEqual([]);
   });
 
-  it('merges local trending matches when the API only returns RWA assets', async () => {
+  it('excludes RWA results from the crypto feed without merging local trending matches', async () => {
     mockGetTrendingTokens.mockResolvedValue([
       {
         assetId: 'eip155:1/slip44:60',
@@ -311,8 +306,6 @@ describe('useDiscoverCryptoSearch', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
-      'ETH',
-    ]);
+    expect(result.current.data).toStrictEqual([]);
   });
 });

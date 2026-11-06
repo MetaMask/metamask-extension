@@ -51,12 +51,10 @@ export const useDiscoverPerpsSearch = ({
     }
 
     const trimmedQuery = query.trim();
+    // Empty query ("trending"): keep the data source order (volume-descending
+    // from usePerpsLiveMarketData) rather than re-sorting client-side.
     if (!trimmedQuery) {
-      return [...markets].sort(
-        (left, right) =>
-          (Number.parseFloat(right.change24hPercent) || 0) -
-          (Number.parseFloat(left.change24hPercent) || 0),
-      );
+      return markets;
     }
 
     const queryFiltered = filterMarketsByQuery(markets, trimmedQuery);

@@ -5,10 +5,7 @@ import {
   type TrendingAsset,
 } from '@metamask/assets-controllers';
 import type { CaipChainId } from '@metamask/utils';
-import {
-  byMarketCap,
-  TOKEN_SEARCH_SERVICE_PROFILE,
-} from '#shared/lib/token-search/token-search-api';
+import { TOKEN_SEARCH_SERVICE_PROFILE } from '#shared/lib/token-search/token-search-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getIsStellarSupportEnabled } from '../../selectors/multichain/feature-flags';
 import {
@@ -38,7 +35,6 @@ export type UseDiscoverCryptoSearchResult = {
 type CryptoSearchPage = {
   data: TrendingAsset[];
   totalCount?: number;
-  hasSearchResults: boolean;
   pageInfo?: {
     endCursor: string | null;
     hasNextPage: boolean;
@@ -62,27 +58,6 @@ const mapSearchResultToTrendingAsset = (
   rwaData: item.rwaData,
   securityData: item.securityData,
 });
-
-const matchesSearchQuery = (asset: TrendingAsset, query: string): boolean => {
-  const normalizedQuery = query.toLowerCase();
-
-  return (
-    asset.symbol?.toLowerCase().includes(normalizedQuery) ||
-    asset.name?.toLowerCase().includes(normalizedQuery)
-  );
-};
-
-const dedupeByAssetId = (assets: TrendingAsset[]): TrendingAsset[] => {
-  const assetsById = new Map<string, TrendingAsset>();
-
-  assets.forEach((asset) => {
-    if (!assetsById.has(asset.assetId)) {
-      assetsById.set(asset.assetId, asset);
-    }
-  });
-
-  return Array.from(assetsById.values());
-};
 
 /**
  * Crypto Discover feed: trending when query is empty, market-data search otherwise.
@@ -147,7 +122,6 @@ export const useDiscoverCryptoSearch = ({
       return {
         data,
         totalCount: response.totalCount ?? data.length,
-        hasSearchResults: searchResults.length > 0,
         pageInfo: response.pageInfo,
       };
     },
@@ -164,29 +138,11 @@ export const useDiscoverCryptoSearch = ({
   });
 
   if (isSearch) {
+    // Active search: pass the API pages through in server relevance order —
+    // no client-side merge of trending matches, re-sort, or cross-page dedupe
+    // (the server is trusted to order and deduplicate its search results).
     const pages = searchQuery.data?.pages ?? [];
-    const [firstPage, ...remainingPages] = pages;
-    const firstPageData = firstPage?.data ?? [];
-    const trendingMatches = (trendingQuery.data ?? []).filter(
-      (asset) => !asset.rwaData && matchesSearchQuery(asset, trimmedQuery),
-    );
-    const sortedFirstPage = firstPage?.hasSearchResults
-      ? dedupeByAssetId([...trendingMatches, ...firstPageData]).toSorted(
-          byMarketCap,
-        )
-      : [];
-    const seenAssetIds = new Set(sortedFirstPage.map((asset) => asset.assetId));
-    const appendedData = remainingPages
-      .flatMap((page) => page.data)
-      .filter((asset) => {
-        if (seenAssetIds.has(asset.assetId)) {
-          return false;
-        }
-
-        seenAssetIds.add(asset.assetId);
-        return true;
-      });
-    const data = [...sortedFirstPage, ...appendedData];
+    const data = pages.flatMap((page) => page.data);
     const lastPage = pages.at(-1);
 
     return {
