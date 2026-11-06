@@ -19,6 +19,8 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
+import { DEFAULT_ROUTE } from '#ui/helpers/constants/routes';
+import { selectShowTermsOfUse } from '#ui/selectors/home-modals';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -63,6 +65,7 @@ export const AppHeaderUnlockedContent = ({
   const { pathname } = useLocation();
   const showNavbar = useBottomNavBar();
   const [searchParams, setSearchParams] = useSearchParams();
+  const showTermsOfUse = useSelector(selectShowTermsOfUse);
   const disableAccountPicker = Boolean(
     matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
     (matchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname) &&
@@ -260,7 +263,10 @@ export const AppHeaderUnlockedContent = ({
           </BadgeWrapper>
         </Box>
         <GlobalMenuDrawerWithList
-          isOpen={accountOptionsMenuOpen}
+          isOpen={
+            accountOptionsMenuOpen &&
+            !(pathname === DEFAULT_ROUTE && showTermsOfUse)
+          }
           onClose={closeAccountOptionsMenu}
         />
         <VisitSupportDataConsentModal

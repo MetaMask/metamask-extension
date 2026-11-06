@@ -9,13 +9,9 @@ import {
   HelpText,
   HelpTextSeverity,
   Label,
-  Modal,
   ModalBody,
-  ModalContent,
-  ModalContentSize,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Text,
   TextColor,
   TextField,
@@ -23,6 +19,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { normalizeMoneyReferralCode } from '#shared/lib/money-referral-code';
+import { ReferralDialog } from '#ui/components/app/rewards/money-referral/ReferralDialog';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -302,89 +299,82 @@ const AcceptInviteSheetContent = ({
     isValid && acceptAllowedForGeo && !isAccepting && !isAcceptCoolingDown;
 
   return (
-    <Modal isOpen onClose={handleDismiss} data-testid="money-referral-invite">
-      <ModalOverlay />
-      <ModalContent className="items-center" size={ModalContentSize.Md}>
-        <ModalHeader
-          onClose={handleDismiss}
-          closeButtonProps={{ ariaLabel: t('close') }}
-        >
-          {copy.title}
-        </ModalHeader>
-        <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            {copy.body ? (
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                {copy.body}
-              </Text>
+    <ReferralDialog onClose={handleDismiss} data-testid="money-referral-invite">
+      <ModalHeader
+        onClose={handleDismiss}
+        closeButtonProps={{ ariaLabel: t('close') }}
+      >
+        {copy.title}
+      </ModalHeader>
+      <ModalBody>
+        <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+          {copy.body ? (
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {copy.body}
+            </Text>
+          ) : null}
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Label
+              htmlFor="money-referral-code"
+              color={TextColor.TextAlternative}
+            >
+              {copy.codeLabel}
+            </Label>
+            <TextField
+              id="money-referral-code"
+              value={code}
+              size={TextFieldSize.Lg}
+              isError={Boolean(fieldError)}
+              className="h-14 w-full"
+              onChange={(event) => {
+                setCode(normalizeMoneyReferralCode(event.target.value));
+                clearError();
+              }}
+              inputProps={{
+                ...referralCodeInputProps,
+                'aria-describedby': fieldError
+                  ? MONEY_REFERRAL_CODE_ERROR_ID
+                  : undefined,
+              }}
+            />
+            {fieldError ? (
+              <HelpText severity={HelpTextSeverity.Danger} asChild>
+                <span id={MONEY_REFERRAL_CODE_ERROR_ID} role="alert">
+                  {fieldError}
+                </span>
+              </HelpText>
             ) : null}
-            <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-              <Label
-                htmlFor="money-referral-code"
-                color={TextColor.TextAlternative}
-              >
-                {copy.codeLabel}
-              </Label>
-              <TextField
-                id="money-referral-code"
-                value={code}
-                size={TextFieldSize.Lg}
-                isError={Boolean(fieldError)}
-                className="h-14 w-full"
-                onChange={(event) => {
-                  setCode(normalizeMoneyReferralCode(event.target.value));
-                  clearError();
-                }}
-                inputProps={{
-                  ...referralCodeInputProps,
-                  'aria-describedby': fieldError
-                    ? MONEY_REFERRAL_CODE_ERROR_ID
-                    : undefined,
-                }}
-              />
-              {fieldError ? (
-                <HelpText severity={HelpTextSeverity.Danger} asChild>
-                  <span id={MONEY_REFERRAL_CODE_ERROR_ID} role="alert">
-                    {fieldError}
-                  </span>
-                </HelpText>
-              ) : null}
-            </Box>
           </Box>
-        </ModalBody>
-        <ModalFooter>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-            className="w-full"
+        </Box>
+      </ModalBody>
+      <ModalFooter>
+        <Box flexDirection={BoxFlexDirection.Column} gap={2} className="w-full">
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            isFullWidth
+            isDisabled={!canAccept}
+            onClick={handleAccept}
+            data-testid="money-referral-accept"
           >
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              isDisabled={!canAccept}
-              onClick={handleAccept}
-              data-testid="money-referral-accept"
-            >
-              {copy.accept}
-            </Button>
-            <Button
-              variant={ButtonVariant.Tertiary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              onClick={handleDecline}
-              className="text-default"
-              data-testid="money-referral-decline"
-            >
-              {copy.decline}
-            </Button>
-          </Box>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+            {copy.accept}
+          </Button>
+          <Button
+            variant={ButtonVariant.Tertiary}
+            size={ButtonSize.Lg}
+            isFullWidth
+            onClick={handleDecline}
+            className="text-default"
+            data-testid="money-referral-decline"
+          >
+            {copy.decline}
+          </Button>
+        </Box>
+      </ModalFooter>
+    </ReferralDialog>
   );
 };
 
