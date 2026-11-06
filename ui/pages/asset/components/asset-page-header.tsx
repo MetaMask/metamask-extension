@@ -70,7 +70,7 @@ const formatCompactContractAddress = (address: string): string => {
  *
  * The ticker uses the title color. The address stays muted and does not
  * shrink, so a long ticker ellipsizes instead of pushing the address away.
- * After a copy, the success message replaces both.
+ * After a copy, the success message hides the ticker. The pill hugs that text.
  *
  * @param props - Component props
  * @param props.ticker - Symbol shown when it differs from the token name
@@ -111,9 +111,12 @@ const AssetPageHeaderSubtitle = ({
           onClick={() => handleCopy(address)}
           aria-label={t('copyToClipboard')}
           className={classnames(
-            'inline-flex items-center gap-1 rounded-full border-0 bg-transparent p-0',
-            'hover:bg-hover active:bg-pressed',
-            copied ? 'min-w-0' : 'shrink-0',
+            // Same box as the home address pill (h-6, px-2, py-1, rounded-lg)
+            // in every state, so hover and copy don't move the row.
+            'inline-flex h-6 items-center gap-1 rounded-lg border-0 px-2 py-1',
+            copied
+              ? 'max-w-full min-w-0 bg-success-muted'
+              : 'shrink-0 bg-transparent hover:bg-hover active:bg-pressed',
           )}
           data-testid="asset-page-header-address"
         >

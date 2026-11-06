@@ -250,9 +250,9 @@ describe('AssetPageHeader', () => {
     it('renders the compact contract address', () => {
       renderHeader();
 
-      expect(screen.getByTestId('asset-page-header-address')).toHaveTextContent(
-        '0x..5831',
-      );
+      const address = screen.getByTestId('asset-page-header-address');
+      expect(address).toHaveTextContent('0x..5831');
+      expect(address).toHaveClass('h-6', 'px-2', 'py-1');
     });
 
     it('copies the full contract address when clicked', () => {
@@ -274,6 +274,9 @@ describe('AssetPageHeader', () => {
       expect(
         screen.queryByTestId('asset-page-header-ticker'),
       ).not.toBeInTheDocument();
+      const address = screen.getByTestId('asset-page-header-address');
+      expect(address).toHaveClass('h-6', 'px-2', 'py-1');
+      expect(address).not.toHaveClass('w-full');
     });
 
     it('is omitted for native assets without a contract address', () => {
