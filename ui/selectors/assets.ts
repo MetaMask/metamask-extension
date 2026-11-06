@@ -90,6 +90,7 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
+import { getValueFromWeiHex } from '../../shared/lib/conversion.utils';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
@@ -112,6 +113,8 @@ import {
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
+  getMetaMaskCachedBalances,
+  getUSDConversionRate,
 } from './selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
@@ -1896,3 +1899,26 @@ export const selectSingleTokenByAddressAndChainId = createSelector(
     );
   },
 );
+
+// Native USD balance of the selected EVM account, as a decimal string ("8.90").
+// Same number as `useAccountTotalFiatBalance(account, _, true)`. Token balances
+// are omitted because `useTokenTracker` reports 0 for every token. Read it with
+// `store.getState()` so balance and rate updates do not re-render the caller.
+export function getSelectedEvmAccountUsdBalance(state: MetaMaskReduxState) {
+  const account = getInternalAccountBySelectedAccountGroupAndCaip(
+    state,
+    'eip155:1',
+  );
+  const cachedBalances = getMetaMaskCachedBalances(state) as Record<
+    string,
+    string
+  >;
+  const balance = account ? (cachedBalances?.[account.address] ?? 0) : 0;
+
+  return getValueFromWeiHex({
+    value: balance,
+    toCurrency: 'usd',
+    conversionRate: getUSDConversionRate(state) ?? undefined,
+    numberOfDecimals: 2,
+  });
+}
