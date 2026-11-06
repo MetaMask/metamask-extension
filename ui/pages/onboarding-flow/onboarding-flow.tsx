@@ -16,6 +16,11 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  getOnboardingRedirect,
+  setOnboardingRedirect,
+} from '#ui/ducks/app/app';
+import { getRedirectAfterUnlock } from '#ui/helpers/utils/redirect-after-unlock';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import Unlock from '../unlock-page';
 import {
@@ -132,6 +137,7 @@ const OnboardingFlowContent = () => {
   const theme = useTheme();
   const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
+  const onboardingRedirect = useSelector(getOnboardingRedirect);
   const hasSeenOnboardingCompletionPage = useSelector(
     getHasSeenOnboardingCompletionPage,
   );
@@ -189,7 +195,7 @@ const OnboardingFlowContent = () => {
   }, []);
 
   useEffect(() => {
-    // Redirect to default when onboarding is complete, except when on the completion
+    // Resume the destination when onboarding is complete, except when on the completion
     // route: CreationSuccessful handles navigation there (e.g., deferred deep links).
     // Only redirect while still in onboarding to avoid breaking deferred deep link handling.
     const isOnOnboardingRoute = pathname?.startsWith(ONBOARDING_ROUTE) ?? false;
@@ -205,7 +211,7 @@ const OnboardingFlowContent = () => {
       !isOnCompletionRoute &&
       !isOnPasskeyPrfMigrationRoute
     ) {
-      navigate(DEFAULT_ROUTE, { replace: true });
+      navigate(onboardingRedirect ?? DEFAULT_ROUTE, { replace: true });
     }
   }, [
     navigate,
@@ -213,6 +219,7 @@ const OnboardingFlowContent = () => {
     isFromReminder,
     openedWithSidepanel,
     pathname,
+    onboardingRedirect,
   ]);
 
   useEffect(() => {
@@ -345,17 +352,14 @@ const OnboardingFlowContent = () => {
         if (isSidePanelEnabled) {
           await dispatch(setUseSidePanelAsDefault(true));
           await dispatch(setCompletedOnboardingWithSidepanel());
-
-          // for sidepanel, we need to navigate to the next route (i.e. Home)
-          navigate(DEFAULT_ROUTE, { replace: true });
         } else {
           await dispatch(setCompletedOnboarding());
-          let redirectTo = DEFAULT_ROUTE;
-          const fromLocation = location.state?.from;
-          if (fromLocation?.pathname) {
-            redirectTo = fromLocation.pathname + (fromLocation.search || '');
-          }
-          navigate(redirectTo, { replace: true });
+        }
+        navigate(onboardingRedirect ?? getRedirectAfterUnlock(location.state), {
+          replace: true,
+        });
+        if (onboardingRedirect) {
+          dispatch(setOnboardingRedirect(null));
         }
       } else if (
         hasSeenOnboardingCompletionPage &&
