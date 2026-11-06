@@ -9,21 +9,16 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 
-type MenuItemButtonProps = Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  'children' | 'className' | 'type'
->;
-
-export type MenuItem = Readonly<
-  {
-    key: string;
-    label: string;
-    iconName?: IconName;
-    to?: string;
-    command?: string;
-    commandfor?: string;
-  } & MenuItemButtonProps
->;
+export type MenuItem = Readonly<{
+  key: string;
+  label: string;
+  iconName?: IconName;
+  to?: string;
+  onClick?: () => void;
+  'data-testid'?: string;
+  command?: string;
+  commandfor?: string;
+}>;
 
 const triggerClassName =
   'flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed';
@@ -96,9 +91,9 @@ export function OverflowMenu({
             iconName,
             to,
             onClick,
+            'data-testid': dataTestId,
             command,
             commandfor,
-            ...buttonProps
           } = item;
 
           const invokerProps = {
@@ -126,7 +121,7 @@ export function OverflowMenu({
                 <Link
                   to={to}
                   className={itemClassName}
-                  {...buttonProps}
+                  data-testid={dataTestId}
                   {...invokerProps}
                 >
                   {content}
@@ -136,7 +131,7 @@ export function OverflowMenu({
                   type="button"
                   className={itemClassName}
                   onClick={onClick}
-                  {...buttonProps}
+                  data-testid={dataTestId}
                   {...invokerProps}
                 >
                   {content}
