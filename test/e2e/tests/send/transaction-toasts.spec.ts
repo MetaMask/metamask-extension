@@ -7,18 +7,21 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import {
+  DEFAULT_BTC_BALANCE,
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { broadcastBitcoinSend } from '../../page-objects/flows/bitcoin-send.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
+import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import {
@@ -38,6 +41,7 @@ import {
 } from '../tokens/utils/mocks';
 
 const BTC_RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
+const BITCOIN_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
@@ -157,11 +161,21 @@ describe('Transaction toasts', function (this: Suite) {
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
 
-        await broadcastBitcoinSend({
-          driver,
+        await new TokensTab(driver).checkTokenAmountIsDisplayed(
+          `${DEFAULT_BTC_BALANCE} BTC`,
+        );
+        const sendPage = new SendPage(driver);
+        await homePage.startSendFlow();
+        await sendPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
+        await sendPage.fillRecipient({
           recipientAddress: BTC_RECIPIENT_ADDRESS,
-          amount: '0.5',
         });
+        await sendPage.fillAmount('0.5');
+        await sendPage.checkContinueButton({ state: 'enabled' });
+        await sendPage.pressContinueButton();
+        const reviewPage = new BitcoinReviewTxPage(driver);
+        await reviewPage.checkPageIsLoaded();
+        await reviewPage.clickConfirmButton();
 
         const txToast = new TxToastNotification(driver);
         await txToast.checkTxSubmittedToast();

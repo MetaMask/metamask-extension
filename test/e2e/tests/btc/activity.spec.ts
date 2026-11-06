@@ -3,11 +3,13 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_ADDRESS, DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { broadcastBitcoinSend } from '../../page-objects/flows/bitcoin-send.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
+import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import {
   mockExchangeRates,
@@ -82,11 +84,24 @@ describe('BTC Account - Activity', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
         await homePage.checkPageIsLoaded();
 
-        await broadcastBitcoinSend({
-          driver,
-          recipientAddress,
-          amount: sendAmount,
-        });
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenAmountIsDisplayed(
+          `${DEFAULT_BTC_BALANCE} BTC`,
+        );
+        await homePage.startSendFlow();
+        const sendPage = new SendPage(driver);
+        await sendPage.selectToken(
+          'bip122:000000000019d6689c085ae165831e93',
+          'BTC',
+        );
+        await sendPage.fillRecipient({ recipientAddress });
+        await sendPage.fillAmount(sendAmount);
+        await sendPage.checkContinueButton({ state: 'enabled' });
+        await sendPage.pressContinueButton();
+
+        const reviewPage = new BitcoinReviewTxPage(driver);
+        await reviewPage.checkPageIsLoaded();
+        await reviewPage.clickConfirmButton();
 
         const activity = new ActivityTab(driver);
 
