@@ -215,3 +215,15 @@ declare global {
   }
 }
 // #endregion
+
+declare global {
+  namespace JSX {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface IntrinsicElements {
+      search: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+    }
+  }
+}

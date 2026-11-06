@@ -16,6 +16,7 @@ const EVENT: SplitStateWriteEvent = {
     msSinceLastAppStart: 5_000,
     msSinceLastWrite: 1_000,
     msSinceLastUiOpen: 2_000,
+    msSinceLastUiInteraction: 4_000,
     msSinceLastWindowEvent: 3_000,
   },
   bytesByController: new Map([
@@ -73,6 +74,7 @@ describe('trackSplitStateWrite', () => {
           'state.write.ms_since_app_start': 5_000,
           'state.write.ms_since_last_write': 1_000,
           'state.write.ms_since_ui_open': 2_000,
+          'state.write.ms_since_ui_interaction': 4_000,
           'state.write.ms_since_window_event': 3_000,
           'state.write.sample_rate': 0.01,
           'state.write.size_measurement_source': 'storage_get_bytes_in_use',
@@ -142,6 +144,9 @@ describe('trackSplitStateWrite', () => {
     expect(attributes).not.toHaveProperty('state.write.ms_since_last_write');
     expect(attributes).not.toHaveProperty('state.write.ms_since_ui_open');
     expect(attributes).not.toHaveProperty('state.write.ms_since_ui_closed');
+    expect(attributes).not.toHaveProperty(
+      'state.write.ms_since_ui_interaction',
+    );
     expect(attributes).not.toHaveProperty('state.write.ms_since_window_event');
     expect(attributes).not.toHaveProperty(
       'state.write.ms_since_last_service_worker_reload',

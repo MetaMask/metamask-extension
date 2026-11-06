@@ -349,7 +349,10 @@ const PerpsMarketDetailPage = () => {
   ]);
 
   // Use stream hooks for real-time data
-  const { positions: allPositions } = usePerpsLivePositions();
+  // A seeded position may already be closed: keep its TP/SL and close
+  // controls disabled until a live update confirms it.
+  const { positions: allPositions, isSeeded: isPositionSeeded } =
+    usePerpsLivePositions();
   const orderFilledToastShownRef = useRef(false);
 
   useEffect(() => {
@@ -1603,11 +1606,12 @@ const PerpsMarketDetailPage = () => {
 
               {/* Third Row: Auto Close - Click to open modal */}
               <Box
-                className="rounded-xl bg-muted cursor-pointer px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed transition-colors"
+                className={`rounded-xl bg-muted px-4 py-3 transition-colors ${isPositionSeeded ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-muted-hover active:bg-muted-pressed'}`}
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
-                onClick={handleOpenTPSLModal}
+                onClick={isPositionSeeded ? undefined : handleOpenTPSLModal}
+                aria-disabled={isPositionSeeded}
                 data-testid="perps-auto-close-row"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
@@ -2090,6 +2094,7 @@ const PerpsMarketDetailPage = () => {
                     console.error(error);
                   });
                 }}
+                disabled={isPositionSeeded}
                 className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"
               >
@@ -2162,6 +2167,7 @@ const PerpsMarketDetailPage = () => {
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
                 onClick={handleClosePosition}
+                disabled={isPositionSeeded}
                 className="w-full"
                 data-testid="perps-close-cta-button"
               >

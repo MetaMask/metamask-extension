@@ -198,6 +198,7 @@ import {
   TraceName,
   TraceOperation,
   TraceRequest,
+  withoutTraceContext,
 } from '../../shared/lib/trace';
 import type { SerializedTraceContext } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
@@ -5739,6 +5740,29 @@ export function setLastActiveTime(): ThunkAction<
       await submitRequestToBackground('AppStateController:setLastActiveTime');
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
+    }
+  };
+}
+
+/**
+ * Forwards a trusted UI click or keypress to the background for state-write
+ * telemetry. Failures are ignored so activity tracking never breaks the UI.
+ *
+ * @returns A thunk that reports the interaction.
+ */
+export function recordUiInteraction(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await withoutTraceContext(() =>
+        submitRequestToBackground('AppStateController:recordUiInteraction'),
+      );
+    } catch {
+      // Telemetry must not surface background failures in the UI.
     }
   };
 }
