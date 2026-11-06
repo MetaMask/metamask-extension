@@ -726,26 +726,31 @@ export const routeConfig = [
       {
         element: <ContentLayout />,
         children: [
-          createRouteWithMessenger({
-            path: MONEY_ACTIVITY_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyActivityPage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_HOW_IT_WORKS_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyHowItWorksPage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_TRANSACTION_DETAILS_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyTransactionDetailsPage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_EARN_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyEarnPage />,
-          }),
+          {
+            element: <RequireBasicFunctionality />,
+            children: [
+              createRouteWithMessenger({
+                path: MONEY_ACTIVITY_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyActivityPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_HOW_IT_WORKS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHowItWorksPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_TRANSACTION_DETAILS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyTransactionDetailsPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_EARN_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyEarnPage />,
+              }),
+            ],
+          },
         ],
       },
     ],
