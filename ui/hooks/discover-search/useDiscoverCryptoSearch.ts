@@ -138,11 +138,6 @@ export const useDiscoverCryptoSearch = ({
   });
 
   if (isSearch) {
-    // Active search: pass the API pages through in server relevance order —
-    // no client-side merge of trending matches and no market-cap re-sort.
-    // Cursor pages over live market data can repeat an asset, so exact
-    // assetId repeats across pages are dropped (first occurrence wins) to
-    // keep list rows unique; ordering is otherwise untouched.
     const pages = searchQuery.data?.pages ?? [];
     const seenAssetIds = new Set<string>();
     const data = pages
