@@ -113,6 +113,7 @@ describe('getTransactionPayControllerInitMessenger', () => {
       expect.objectContaining({
         actions: expect.arrayContaining([
           'AccountsController:getSelectedAccount',
+          'AccountsController:getState',
           'NetworkController:getNetworkClientById',
           'TransactionController:getState',
           'TransactionController:updateTransactionMetadata',

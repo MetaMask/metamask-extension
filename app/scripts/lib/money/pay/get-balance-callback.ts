@@ -8,6 +8,10 @@ import {
 } from '../../../../../shared/lib/money/money-account-flow';
 import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { getMaxSourceBalance } from './max-source-balance';
+import {
+  getPayEvmAccountOverride,
+  type MoneyPayMessenger,
+} from './pay-context';
 
 /**
  * Synchronous balance override for max-amount source calculation. Runs inside
@@ -26,12 +30,13 @@ import { getMaxSourceBalance } from './max-source-balance';
  * @param request - The balance request.
  * @param request.transaction - Metadata of the transaction being resolved.
  * @param request.transactionData
+ * @param messenger - Messenger to resolve the funding account through.
  * @returns The balance override, or `undefined` to use the built-in balance.
  */
-export function getBalance({
-  transaction,
-  transactionData,
-}: GetBalanceRequest): GetBalanceResponse | undefined {
+export function getBalance(
+  { transaction, transactionData }: GetBalanceRequest,
+  messenger: MoneyPayMessenger,
+): GetBalanceResponse | undefined {
   const { paymentToken } = transactionData;
   const evmPaymentToken = getEvmPaymentToken(paymentToken);
 
@@ -46,7 +51,10 @@ export function getBalance({
 
   const balanceRaw = getMaxSourceBalance({
     transactionId: transaction.id,
-    accountAddress: transactionData.accountOverride,
+    accountAddress: getPayEvmAccountOverride(
+      messenger,
+      transactionData.accountOverride,
+    ),
     chainId: evmPaymentToken?.chainId,
     tokenAddress: evmPaymentToken?.address,
   });

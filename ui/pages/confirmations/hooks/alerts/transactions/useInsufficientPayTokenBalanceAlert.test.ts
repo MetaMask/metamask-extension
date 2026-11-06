@@ -172,7 +172,7 @@ function runHookForMoneyDeposit({
       },
       accountIdByAddress: { [PAYER_ADDRESS]: PAYER_ACCOUNT_ID },
       transactionData: {
-        [transaction.id]: { accountOverride: PAYER_ADDRESS },
+        [transaction.id]: { accountOverride: PAYER_ACCOUNT_ID },
       },
     },
   });

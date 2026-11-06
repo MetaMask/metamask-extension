@@ -13,7 +13,6 @@ import {
   MoneyAccountFlow,
 } from '../../../shared/lib/money/money-account-flow';
 import {
-  getEvmAccountOverride,
   getEvmAsset,
   isNonEvmPaymentToken,
 } from '../../../shared/lib/transaction/pay-token';
@@ -39,9 +38,10 @@ import {
   type WithdrawPaymentToken,
 } from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
-import type {
-  MoneyPayMessenger,
-  PaymentOverrideMessenger,
+import {
+  getPayEvmAccountOverride,
+  type MoneyPayMessenger,
+  type PaymentOverrideMessenger,
 } from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
@@ -78,7 +78,8 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         initMessenger as MoneyPayMessenger,
         amountDataRequest,
       ),
-    getBalance,
+    getBalance: (balanceRequest) =>
+      getBalance(balanceRequest, initMessenger as MoneyPayMessenger),
     getDelegationTransaction: getDelegationTransactionCallback,
     getPaymentOverrideData: (paymentOverrideRequest) =>
       getPaymentOverrideData(
@@ -114,7 +115,7 @@ function getApi(
   return {
     createMoneyAccountDepositTransaction: async (
       batchId: Hex,
-      accountOverride: Hex,
+      accountOverride: string,
     ) => {
       const result = await createMoneyAccountDepositTransaction(
         moneyPayMessenger,
@@ -127,10 +128,16 @@ function getApi(
       );
       return result;
     },
-    createMoneyAccountWithdrawTransaction: async (recipient: Hex) => {
+    createMoneyAccountWithdrawTransaction: async (
+      recipientAccountId: string,
+    ) => {
       const result =
         await createMoneyAccountWithdrawTransaction(moneyPayMessenger);
-      seedWithdrawPayConfig(messengerClient, result.transactionId, recipient);
+      seedWithdrawPayConfig(
+        messengerClient,
+        result.transactionId,
+        recipientAccountId,
+      );
       return result;
     },
     setTransactionPayIsMaxAmount: (
@@ -197,7 +204,7 @@ function getApi(
     },
     setTransactionPayAccountOverride: async (
       transactionId: string,
-      accountOverride: Hex,
+      accountOverride: string,
     ) => {
       const transaction = moneyPayMessenger
         .call('TransactionController:getState')
@@ -267,7 +274,10 @@ function getApi(
         transactionId,
         amountHuman,
         recipientOverride ??
-          getEvmAccountOverride(transactionData?.accountOverride),
+          getPayEvmAccountOverride(
+            moneyPayMessenger,
+            transactionData?.accountOverride,
+          ),
         getWithdrawPaymentToken(transactionData),
       );
     },
@@ -411,7 +421,10 @@ async function syncWithdrawTransfer(
   await syncMoneyAccountWithdrawTransfer(
     moneyPayMessenger,
     transactionId,
-    getEvmAccountOverride(transactionData?.accountOverride),
+    getPayEvmAccountOverride(
+      moneyPayMessenger,
+      transactionData?.accountOverride,
+    ),
     getWithdrawPaymentToken(transactionData),
   );
 }
@@ -428,15 +441,15 @@ function logWithdrawSyncError(error: unknown): void {
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Withdrawal transaction id.
- * @param recipient - Account that receives the withdrawal.
+ * @param recipientAccountId - ID of the account that receives the withdrawal.
  */
 function seedWithdrawPayConfig(
   messengerClient: TransactionPayController,
   transactionId: string,
-  recipient: Hex,
+  recipientAccountId: string,
 ): void {
   messengerClient.setTransactionConfig(transactionId, (config) => {
-    config.accountOverride = recipient;
+    config.accountOverride = recipientAccountId;
   });
 }
 
@@ -454,12 +467,12 @@ function seedWithdrawPayConfig(
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.
- * @param accountOverride - Currently selected EVM account address.
+ * @param accountOverride - ID of the funding EVM account.
  */
 function seedDepositPayConfig(
   messengerClient: TransactionPayController,
   transactionId: string,
-  accountOverride: Hex,
+  accountOverride: string,
 ): void {
   messengerClient.setTransactionConfig(transactionId, (config) => {
     config.accountOverride = accountOverride;

@@ -1,7 +1,8 @@
+import { isEvmAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import {
   hexToBigInt,
-  isStrictHexString,
   KnownCaipNamespace,
   numberToHex,
   parseCaipAssetType,
@@ -136,15 +137,22 @@ export function isNonEvmPaymentToken(
 }
 
 /**
- * The EVM account selected by a MetaMask Pay `accountOverride`. A non-EVM
- * override only selects the account holding a non-EVM payment token and does
- * not change the EVM account.
+ * Address of the EVM account selected by a MetaMask Pay `accountOverride`,
+ * which is the ID of an `InternalAccount`. A non-EVM override only selects the
+ * account holding a non-EVM payment token and does not change the EVM account.
  *
  * @param accountOverride - Account override of the transaction, if any.
- * @returns The override when it is an EVM address, otherwise `undefined`.
+ * @param accounts - Internal accounts keyed by ID.
+ * @returns The address of the override account when it is an EVM account,
+ * otherwise `undefined`.
  */
 export function getEvmAccountOverride(
   accountOverride: string | undefined,
+  accounts: Record<string, InternalAccount>,
 ): Hex | undefined {
-  return isStrictHexString(accountOverride) ? accountOverride : undefined;
+  const account = accountOverride ? accounts[accountOverride] : undefined;
+
+  return account && isEvmAccountType(account.type)
+    ? (account.address as Hex)
+    : undefined;
 }

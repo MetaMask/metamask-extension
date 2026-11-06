@@ -6,6 +6,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import {
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+} from '../../../test/data/mock-accounts';
 import { getRootMessenger } from '../lib/messenger';
 import {
   getMaxSourceBalance,
@@ -68,6 +72,12 @@ const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 const EVM_ASSET_ID_MOCK =
   'eip155:1/erc20:0x1234567890abcdef1234567890abcdef12345678';
 const SOL_ASSET_ID_MOCK = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const ACCOUNT_OVERRIDE_MOCK = MOCK_ACCOUNT_EOA.id;
+const ACCOUNT_OVERRIDE_ADDRESS_MOCK = MOCK_ACCOUNT_EOA.address;
+const ACCOUNTS_MOCK = {
+  [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+  [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+};
 
 function getInitRequestMock(
   transactions: TransactionMeta[] = [],
@@ -79,7 +89,12 @@ function getInitRequestMock(
 > {
   const baseMessenger = getRootMessenger<never, never>();
   const initMessenger = getTransactionPayControllerInitMessenger(baseMessenger);
-  jest.spyOn(initMessenger, 'call').mockReturnValue({ transactions } as never);
+  jest
+    .spyOn(initMessenger, 'call')
+    .mockImplementation(((action: string) =>
+      action === 'AccountsController:getState'
+        ? { internalAccounts: { accounts: ACCOUNTS_MOCK } }
+        : { transactions }) as never);
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
@@ -400,8 +415,7 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.setTransactionPayAccountOverride', () => {
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = ACCOUNT_OVERRIDE_MOCK;
     const WITHDRAW_TRANSACTION = {
       id: 'tx-withdraw',
       type: TransactionType.moneyAccountWithdraw,
@@ -424,7 +438,7 @@ describe('TransactionPayControllerInit', () => {
       jest.clearAllMocks();
     });
 
-    it('writes the supplied address to config.accountOverride', async () => {
+    it('writes the supplied account ID to config.accountOverride', async () => {
       const { api, setTransactionConfigMock } = initApi();
 
       await api.setTransactionPayAccountOverride('tx-1', ACCOUNT_OVERRIDE);
@@ -471,7 +485,7 @@ describe('TransactionPayControllerInit', () => {
       expect(syncWithdrawTransferMock).toHaveBeenCalledWith(
         expect.anything(),
         'tx-withdraw',
-        ACCOUNT_OVERRIDE,
+        ACCOUNT_OVERRIDE_ADDRESS_MOCK,
         undefined,
       );
     });
@@ -655,8 +669,7 @@ describe('TransactionPayControllerInit', () => {
 
   describe('api.createMoneyAccountDepositTransaction', () => {
     const BATCH_ID = '0xb47c41d0000000000000000000000000' as const;
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = ACCOUNT_OVERRIDE_MOCK;
 
     function initApi() {
       const { api, messengerClient } =
@@ -714,8 +727,7 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.createMoneyAccountWithdrawTransaction', () => {
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = ACCOUNT_OVERRIDE_MOCK;
 
     function initApi() {
       const { api, messengerClient } =
@@ -1051,14 +1063,13 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.updateMoneyAccountWithdrawAmount', () => {
-    it('forwards the Pay account override from controller state', async () => {
+    it('forwards the address of the Pay account override from controller state', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
-      const accountOverride =
-        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const accountOverride = ACCOUNT_OVERRIDE_MOCK;
       (
         messengerClient as {
           state: {
@@ -1083,7 +1094,7 @@ describe('TransactionPayControllerInit', () => {
         expect.anything(),
         'tx-1',
         '10',
-        accountOverride,
+        ACCOUNT_OVERRIDE_ADDRESS_MOCK,
         undefined,
       );
     });
@@ -1136,7 +1147,7 @@ describe('TransactionPayControllerInit', () => {
       ).state = {
         transactionData: {
           'tx-1': {
-            accountOverride: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
+            accountOverride: MOCK_ACCOUNT_SOLANA_MAINNET.id,
           },
         },
       };
@@ -1159,7 +1170,7 @@ describe('TransactionPayControllerInit', () => {
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
-      const payOverride = '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const payOverride = ACCOUNT_OVERRIDE_MOCK;
       const recipientOverride =
         '0x1111111111111111111111111111111111111111' as const;
       (
@@ -1203,7 +1214,10 @@ describe('TransactionPayControllerInit', () => {
       const request = getInitRequestMock();
       const { messengerClient } = TransactionPayControllerInit(request);
       const transactionData = {
-        'tx-1': { accountOverride: '0xabc', paymentToken: PAYMENT_TOKEN },
+        'tx-1': {
+          accountOverride: ACCOUNT_OVERRIDE_MOCK,
+          paymentToken: PAYMENT_TOKEN,
+        },
       };
       (messengerClient as { state: unknown }).state = { transactionData };
       const publishState = (data: Record<string, unknown>) =>
@@ -1224,7 +1238,8 @@ describe('TransactionPayControllerInit', () => {
         'tx-1': {
           ...transactionData['tx-1'],
           paymentToken: {
-            assetId: 'eip155:1/erc20:0x4560000000000000000000000000000000000000',
+            assetId:
+              'eip155:1/erc20:0x4560000000000000000000000000000000000000',
           },
         },
       });
@@ -1234,7 +1249,7 @@ describe('TransactionPayControllerInit', () => {
         1,
         expect.anything(),
         'tx-1',
-        '0xabc',
+        ACCOUNT_OVERRIDE_ADDRESS_MOCK,
         {
           address: '0x1234567890abcdef1234567890abcdef12345678',
           chainId: '0x1',

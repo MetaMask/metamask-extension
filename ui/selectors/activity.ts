@@ -7,6 +7,7 @@ import {
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EthScope,
   isEvmAccountType,
@@ -158,6 +159,7 @@ function getMoneyAccountPayer(
   tx: TransactionMeta,
   transactionsById: Map<string, TransactionMeta>,
   transactionPayData: TransactionPayControllerState['transactionData'],
+  internalAccountsById: Record<string, InternalAccount>,
 ) {
   const fundingFrom = tx.requiredTransactionIds
     ?.map((id) => transactionsById.get(id)?.txParams?.from)
@@ -165,8 +167,10 @@ function getMoneyAccountPayer(
 
   return getTransactionPayingAccount(
     tx,
-    getEvmAccountOverride(transactionPayData[tx.id]?.accountOverride) ??
-      fundingFrom,
+    getEvmAccountOverride(
+      transactionPayData[tx.id]?.accountOverride,
+      internalAccountsById,
+    ) ?? fundingFrom,
   )?.toLowerCase();
 }
 
@@ -200,6 +204,7 @@ export const selectLocalTransactions = createSelector(
   getSelectedAccountGroup,
   selectTransactionPayData,
   getInternalAccounts,
+  getInternalAccountsObject,
   (
     transactions,
     evmAddress,
@@ -210,6 +215,7 @@ export const selectLocalTransactions = createSelector(
     selectedAccountGroup,
     transactionPayData,
     internalAccounts,
+    internalAccountsById,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -259,6 +265,7 @@ export const selectLocalTransactions = createSelector(
         tx,
         transactionsById,
         transactionPayData,
+        internalAccountsById,
       );
       if (payer && isPayerOutsideMoneyAccountWallet(payer)) {
         return payer === selectedAddress;

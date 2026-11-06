@@ -225,7 +225,9 @@ describe('BridgeFeeRow', () => {
   it('renders a Solana quote fee from totals, including the Snap network fee', () => {
     useTransactionPayQuotesMock.mockReturnValue([
       {
-        request: { sourceChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' },
+        request: {
+          sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        },
       } as unknown as TransactionPayQuote<Json>,
     ]);
     useTransactionPayTotalsMock.mockReturnValue({

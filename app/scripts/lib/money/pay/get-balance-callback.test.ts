@@ -6,11 +6,13 @@ import type {
   GetBalanceRequest,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
-import { getBalance } from './get-balance-callback';
+import { createMockInternalAccounts } from '../../../../../test/data/mock-accounts';
+import { getBalance as getBalanceCallback } from './get-balance-callback';
 import {
   resetMaxSourceBalancesForTests,
   setMaxSourceBalance,
 } from './max-source-balance';
+import { createMoneyPayMessengerMock } from './test-mocks';
 
 const maxSourceBalanceKey = {
   transactionId: 'tx-1',
@@ -19,11 +21,28 @@ const maxSourceBalanceKey = {
   tokenAddress: '0xtoken1',
 };
 
+const ACCOUNTS_MOCK = createMockInternalAccounts([
+  { id: 'account-1', address: maxSourceBalanceKey.accountAddress },
+  { id: 'account-2', address: '0xaccount2' },
+]);
+
+const { messenger } = createMoneyPayMessengerMock({
+  handlers: {
+    'AccountsController:getState': () => ({
+      internalAccounts: { accounts: ACCOUNTS_MOCK },
+    }),
+  },
+});
+
+function getBalance(request: GetBalanceRequest) {
+  return getBalanceCallback(request, messenger);
+}
+
 function buildRequest(type: TransactionType): GetBalanceRequest {
   return {
     transaction: { id: 'tx-1', type } as TransactionMeta,
     transactionData: {
-      accountOverride: maxSourceBalanceKey.accountAddress,
+      accountOverride: 'account-1',
       paymentToken: {
         assetId: `eip155:1/erc20:${maxSourceBalanceKey.tokenAddress}`,
       },
@@ -86,7 +105,7 @@ describe('getBalance', () => {
   it('returns undefined after the funding account changes', () => {
     setMaxSourceBalance(maxSourceBalanceKey, '5879662');
     const request = buildRequest(TransactionType.moneyAccountDeposit);
-    request.transactionData.accountOverride = '0xaccount2';
+    request.transactionData.accountOverride = 'account-2';
 
     expect(getBalance(request)).toBeUndefined();
   });

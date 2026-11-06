@@ -3,6 +3,10 @@ import type { CaipAssetType, Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../constants/network';
 import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../../constants/transaction';
 import {
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+} from '../../../test/data/mock-accounts';
+import {
   getEvmAccountOverride,
   getEvmAsset,
   getEvmAssetId,
@@ -110,12 +114,26 @@ describe('pay-token', () => {
   });
 
   describe('getEvmAccountOverride', () => {
-    it('returns EVM overrides and drops non-EVM ones', () => {
-      expect(getEvmAccountOverride(USDC_ADDRESS)).toBe(USDC_ADDRESS);
+    const accounts = {
+      [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+    };
+
+    it('returns the address of an EVM override account', () => {
+      expect(getEvmAccountOverride(MOCK_ACCOUNT_EOA.id, accounts)).toBe(
+        MOCK_ACCOUNT_EOA.address,
+      );
+    });
+
+    it('returns undefined for a non-EVM override account', () => {
       expect(
-        getEvmAccountOverride('7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU'),
+        getEvmAccountOverride(MOCK_ACCOUNT_SOLANA_MAINNET.id, accounts),
       ).toBeUndefined();
-      expect(getEvmAccountOverride(undefined)).toBeUndefined();
+    });
+
+    it('returns undefined for an unknown or missing override', () => {
+      expect(getEvmAccountOverride('unknown-id', accounts)).toBeUndefined();
+      expect(getEvmAccountOverride(undefined, accounts)).toBeUndefined();
     });
   });
 });

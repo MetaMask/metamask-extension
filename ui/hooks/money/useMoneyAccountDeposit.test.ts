@@ -203,7 +203,7 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-      '0x1234567890123456789012345678901234567890',
+      ACCOUNT_ID,
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
@@ -527,7 +527,7 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-      SOFTWARE_ADDRESS,
+      SOFTWARE_ACCOUNT.id,
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(
       TRANSACTION_ID,
@@ -597,7 +597,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        '0x1234567890123456789012345678901234567890',
+        HARDWARE_ACCOUNT_ID,
       );
     });
 
@@ -622,7 +622,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
 
@@ -638,7 +638,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
       expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
         loader: ConfirmationLoader.CustomAmount,
@@ -667,7 +667,7 @@ describe('useMoneyAccountDeposit', () => {
 
       expect(createDepositTransactionMock).toHaveBeenCalledWith(
         expect.stringMatching(/^0x[0-9a-f]{32}$/u),
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
 

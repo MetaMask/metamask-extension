@@ -11,7 +11,8 @@ import {
 } from '../../../../selectors/transactionController';
 import {
   selectEvmPaymentTokenByTransactionId,
-  selectTransactionPayAccountOverrideByTransactionId,
+  selectTransactionPayEvmAccountOverrideByTransactionId,
+  type TransactionPayAccountsState,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -103,8 +104,8 @@ export function useMoneyAccountWithdrawConfirm() {
       // Read at confirm time so a recipient picked after the last render is
       // used. It never signs.
       const recipient = dispatch((_, getState) =>
-        selectTransactionPayAccountOverrideByTransactionId(
-          getState() as unknown as TransactionPayState,
+        selectTransactionPayEvmAccountOverrideByTransactionId(
+          getState() as unknown as TransactionPayAccountsState,
           transactionMeta.id,
         ),
       );
