@@ -101,6 +101,7 @@ export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
 export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
   '/multichain-account-private-key-list';
 export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
+export const WATCH_ONLY_ACCOUNT_ROUTE = '/add-watch-only-account';
 export const CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE = '/choose-new-wallet-type';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';

@@ -30,6 +30,7 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
+  WATCH_ONLY_ACCOUNT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -37,6 +38,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { getIsWatchOnlyAccountEnabled } from '../../../../shared/lib/environment';
 import {
   getIsAddSnapAccountEnabled,
   getIsWatchEthereumAccountEnabled,
@@ -107,6 +109,24 @@ export const ChooseNewWalletTypePage = () => {
   const handleImportAccount = useCallback(() => {
     navigate(ADD_WALLET_PAGE_ROUTE);
   }, [navigate]);
+
+  const handleAddWatchOnlyAccount = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AccountAddSelected)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsEventAccountType.Imported,
+          location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: null,
+        })
+        .build(),
+    );
+    navigate(WATCH_ONLY_ACCOUNT_ROUTE);
+  }, [trackEvent, createEventBuilder, navigate]);
 
   const handleConnectHardwareWallet = useCallback(() => {
     trackEvent(
@@ -195,6 +215,17 @@ export const ChooseNewWalletTypePage = () => {
         iconName: IconName.Download,
         onClick: handleImportAccount,
       },
+      ...(getIsWatchOnlyAccountEnabled()
+        ? [
+            {
+              id: 'watch-only-account',
+              titleKey: 'addWatchOnlyAccount',
+              descriptionKey: 'addWatchOnlyAccountDescription',
+              iconName: IconName.Eye,
+              onClick: handleAddWatchOnlyAccount,
+            },
+          ]
+        : []),
       {
         id: 'hardware-wallet',
         titleKey: 'connectAHardwareWallet',
@@ -239,6 +270,7 @@ export const ChooseNewWalletTypePage = () => {
       isAddWatchEthereumAccountEnabled,
       handleImportWallet,
       handleImportAccount,
+      handleAddWatchOnlyAccount,
       handleConnectHardwareWallet,
       handleManageInstitutionalWallets,
       handleAddSnapAccount,

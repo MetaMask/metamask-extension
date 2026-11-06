@@ -14,6 +14,9 @@ export type { MultichainAccountServiceInitMessenger } from './multichain-account
 export type { SnapAccountServiceMessenger } from './snap-account-service-messenger';
 export { getSnapAccountServiceMessenger } from './snap-account-service-messenger';
 
+export type { WatchOnlyAccountServiceMessenger } from './watch-only-account-service-messenger';
+export { getWatchOnlyAccountServiceMessenger } from './watch-only-account-service-messenger';
+
 export type { MoneyKeyringBuilderMessenger } from './money-keyring-builder-messenger';
 export { getMoneyKeyringBuilderMessenger } from './money-keyring-builder-messenger';
 

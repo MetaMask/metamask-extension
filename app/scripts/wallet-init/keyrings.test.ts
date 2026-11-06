@@ -10,6 +10,10 @@ import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-ke
 import LatticeKeyring from 'eth-lattice-keyring';
 import { SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
 import { MoneyKeyring } from '@metamask/eth-money-keyring';
+import {
+  WatchOnlyKeyring,
+  WatchOnlyKeyringV1Adapter,
+} from '@metamask/watch-only-keyring';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
 import { getRootMessenger } from '../lib/messenger';
 import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
@@ -43,6 +47,7 @@ describe('getKeyringV2Builders', () => {
       TrezorKeyring.type,
       OneKeyKeyring.type,
       MoneyKeyring.type,
+      WatchOnlyKeyring.type,
       SnapKeyringV2.type,
     ]);
   });
@@ -84,5 +89,20 @@ describe('getKeyringBuilders', () => {
     expect(builders.map((builder) => builder.type)).toContain(
       MoneyKeyring.type,
     );
+  });
+
+  it('registers the watch-only keyring, so the vault can always be deserialized', () => {
+    const messenger = getRootMessenger<never, never>();
+
+    const builders = getKeyringBuilders(messenger as never);
+
+    const builder = builders.find(
+      (candidate) => candidate.type === WatchOnlyKeyring.type,
+    );
+    expect(builder).toBeDefined();
+
+    const keyring = builder?.();
+    expect(keyring).toBeInstanceOf(WatchOnlyKeyringV1Adapter);
+    expect(keyring?.type).toBe(WatchOnlyKeyring.type);
   });
 });

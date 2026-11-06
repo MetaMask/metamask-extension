@@ -1323,6 +1323,32 @@ export function importNewAccount(
   };
 }
 
+/**
+ * Creates a watch-only account for the given address, via the
+ * `WatchOnlyAccountService` in the background.
+ *
+ * @param address - The EVM address to watch.
+ * @returns The updated MetaMask state.
+ */
+export function importWatchOnlyAccount(
+  address: string,
+): ThunkAction<
+  Promise<MetaMaskReduxState['metamask']>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug('WatchOnlyAccountService:createAccount');
+    await submitRequestToBackground('messengerCall', [
+      'WatchOnlyAccountService:createAccount',
+      [address],
+    ]);
+
+    return await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function checkHardwareStatus(
   deviceName: HardwareDeviceNames,
   hdPath: string,

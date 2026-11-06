@@ -80,6 +80,7 @@ import {
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
   getSnapAccountServiceMessenger,
+  getWatchOnlyAccountServiceMessenger,
 } from './accounts';
 import { getOAuthServiceMessenger } from './seedless-onboarding';
 import {
@@ -597,6 +598,10 @@ export const MESSENGER_FACTORIES = {
   },
   SnapAccountService: {
     getMessenger: getSnapAccountServiceMessenger,
+    getInitMessenger: noop,
+  },
+  WatchOnlyAccountService: {
+    getMessenger: getWatchOnlyAccountServiceMessenger,
     getInitMessenger: noop,
   },
   SnapsNameProvider: {

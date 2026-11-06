@@ -83,6 +83,20 @@ export const getIsNewHardwareWalletOnboardingEnabled = (): boolean => {
   return process.env.NEW_HARDWARE_WALLET_ONBOARDING?.toString() === 'true';
 };
 
+/**
+ * Compile-time gate for the watch-only account support (`dev mode`):
+ * watch-only accounts can only be created in development builds (and
+ * non-production test builds, so E2E tests can use the feature). The gate is
+ * evaluated at build time, in both the UI (to hide the entry points) and the
+ * background (to initialize `WatchOnlyAccountService`).
+ */
+export const getIsWatchOnlyAccountEnabled = (): boolean => {
+  return (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  );
+};
+
 export const getIsSidePanelFeatureEnabled = (): boolean => {
   // In browser context, check if the API exists (Firefox doesn't have it)
   if (

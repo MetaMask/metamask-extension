@@ -56,6 +56,7 @@ import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
+  WATCH_ONLY_ACCOUNT_ROUTE,
   CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
@@ -143,6 +144,7 @@ import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { useBasicFunctionalityConsolidation } from '../../hooks/useBasicFunctionalityConsolidation';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
+import { AddWatchOnlyAccountPage } from '../multichain-accounts/add-watch-only-account';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
@@ -534,6 +536,10 @@ export const routeConfig = [
       {
         path: ADD_WALLET_PAGE_ROUTE,
         element: <AddWalletPage />,
+      },
+      {
+        path: WATCH_ONLY_ACCOUNT_ROUTE,
+        element: <AddWatchOnlyAccountPage />,
       },
       {
         path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,

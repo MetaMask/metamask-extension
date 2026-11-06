@@ -18,6 +18,10 @@ import {
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import {
+  buildWatchOnlyKeyringBuilder,
+  buildWatchOnlyKeyringV2Builder,
+} from '../lib/watch-only-keyring-builder';
+import {
   buildMoneyKeyringBuilder,
   buildMoneyKeyringV2Builder,
 } from '../lib/money/money-keyring-builder';
@@ -41,6 +45,7 @@ import {
   snapKeyringV2AdaptedAsV1Builder,
   snapKeyringV2Builder,
 } from '../lib/snap-keyring/snap-keyring-v2';
+import { getIsWatchOnlyAccountEnabled } from '../../../shared/lib/environment';
 
 /**
  * Constructor signature shared by every V2 hardware-keyring wrapper.
@@ -100,7 +105,7 @@ function buildHardwareV2Builder<Wrapper, Legacy>(
  * @returns The V2 keyring builders to register with the `KeyringController`.
  */
 export function getKeyringV2Builders(): KeyringV2Builder[] {
-  return [
+  const builders = [
     buildHardwareV2Builder(LatticeKeyringV2, LatticeKeyring.type),
     buildHardwareV2Builder(LedgerKeyringV2, LedgerKeyring.type),
     buildHardwareV2Builder(QrKeyringV2, QrKeyring.type),
@@ -114,6 +119,12 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
     // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
     snapKeyringV2Builder(),
   ];
+
+  if (getIsWatchOnlyAccountEnabled()) {
+    builders.push(buildWatchOnlyKeyringV2Builder());
+  }
+
+  return builders;
 }
 
 /**
@@ -192,6 +203,10 @@ export function getKeyringBuilders(
   keyrings.push(
     buildMoneyKeyringBuilder(getMoneyKeyringBuilderMessenger(messenger)),
   );
+
+  if (getIsWatchOnlyAccountEnabled()) {
+    keyrings.push(buildWatchOnlyKeyringBuilder());
+  }
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   keyrings.push(snapKeyringBuilder(getSnapKeyringBuilderMessenger(messenger)));

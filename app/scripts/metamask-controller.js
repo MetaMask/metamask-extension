@@ -333,6 +333,7 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
+import { WatchOnlyAccountServiceInit } from './messenger-client-init/accounts/watch-only-account-service-init';
 import { OAuthServiceInit } from './messenger-client-init/seedless-onboarding';
 import {
   getSendBundleSupportedChains,
@@ -634,6 +635,7 @@ export default class MetamaskController extends EventEmitter {
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
       SnapAccountService: SnapAccountServiceInit,
+      WatchOnlyAccountService: WatchOnlyAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
@@ -699,6 +701,8 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = this.wallet.getInstance('KeyringController');
     this.snapAccountService = messengerClientsByName.SnapAccountService;
+    this.watchOnlyAccountService =
+      messengerClientsByName.WatchOnlyAccountService;
     this.accountsController = this.wallet.getInstance('AccountsController');
     this.connectivityController = this.wallet.getInstance(
       'ConnectivityController',

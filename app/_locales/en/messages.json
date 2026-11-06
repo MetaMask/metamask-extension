@@ -1253,6 +1253,15 @@
   "addEthereumWatchOnlyAccount": {
     "message": "Watch an Ethereum account (Beta)"
   },
+  "addWatchOnlyAccount": {
+    "message": "Add a watch-only account"
+  },
+  "addWatchOnlyAccountButton": {
+    "message": "Add account"
+  },
+  "addWatchOnlyAccountDescription": {
+    "message": "Track any Ethereum address without its private key. Watch-only accounts cannot sign transactions."
+  },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
@@ -12565,6 +12574,18 @@
   },
   "watchEthereumAccountsToggle": {
     "message": "Watch Ethereum Accounts (Beta)"
+  },
+  "watchOnlyAccountAddError": {
+    "message": "Failed to add the watch-only account. Please try again."
+  },
+  "watchOnlyAccountAddressLabel": {
+    "message": "Enter the Ethereum address to watch:"
+  },
+  "watchOnlyAccountAdded": {
+    "message": "Watch-only account added"
+  },
+  "watchOnlyAccountDescription": {
+    "message": "Watch-only accounts let you track the balances and activity of any Ethereum address. They are imported by address only and cannot be used to sign transactions."
   },
   "watchOutMessage": {
     "message": "Beware of $1.",
