@@ -217,7 +217,7 @@ export const BridgeTransactionSettingsModal = ({
             {showCustomInput && (
               <TextField
                 size={TextFieldSize.Md}
-                className="w-24 bg-default"
+                className="w-24"
                 type={TextFieldType.Text}
                 value={inputValue}
                 autoFocus={true}
