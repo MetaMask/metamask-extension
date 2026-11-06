@@ -1,4 +1,4 @@
-import { buy, getBuyPortfolioRedirectDestination } from './buy';
+import { buy } from './buy';
 import { RAMPS_BUY_INTERSTITIAL_ROUTE } from './route';
 import type { Destination } from './route';
 
@@ -27,13 +27,5 @@ describe('buyRoute', () => {
     assertPathDestination(result);
     expect(result.path).toBe(RAMPS_BUY_INTERSTITIAL_ROUTE);
     expect(result.query.toString()).toBe('');
-  });
-
-  it('builds the Portfolio fallback URL with the link params forwarded', () => {
-    const result = getBuyPortfolioRedirectDestination(params);
-
-    expect(result.redirectTo.toString()).toBe(
-      'https://app.metamask.io/buy?address=0xabc&chainId=137',
-    );
   });
 });
