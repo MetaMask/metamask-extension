@@ -1,4 +1,4 @@
-import { isDeepLinkHost } from '../../../shared/lib/deep-links/constants';
+import { isDeepLinkHost } from '../../../shared/lib/deep-links/common';
 import { NavigationOrigin, parse } from '../../../shared/lib/deep-links/parse';
 
 export function isInternalRouteHref(href: string): boolean {

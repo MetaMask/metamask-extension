@@ -29,7 +29,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
-import { getIsDefaultAddressEnabled } from '../../../selectors';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
@@ -76,7 +75,6 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
@@ -189,7 +187,6 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
-              showDefaultAddressSection={isDefaultAddressEnabled}
             >
               <MultichainAccountNetworkGroupWithCopyIcon
                 groupId={selectedMultichainAccountId}
@@ -202,7 +199,6 @@ export const AppHeaderUnlockedContent = ({
   }, [
     accountName,
     disableAccountPicker,
-    isDefaultAddressEnabled,
     selectedMultichainAccountId,
     navigate,
     trackEvent,

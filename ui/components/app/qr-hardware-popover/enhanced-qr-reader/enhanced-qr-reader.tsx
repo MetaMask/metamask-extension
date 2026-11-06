@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BarcodeFormat, DecodeHintType } from '@zxing/library';
-import { BrowserQRCodeReader } from '@zxing/browser';
+import { BrowserQRCodeReader, type IScannerControls } from '@zxing/browser';
 import log from 'loglevel';
 import { MILLISECOND } from '../../../../../shared/constants/time';
+import { stopMediaStreamTracks } from '../../../../contexts/hardware-wallets/webConnectionUtils';
 import Spinner from '../../../ui/spinner';
 import type { EnhancedQrReaderProps } from './enhanced-qr-reader.types';
 
@@ -68,6 +69,13 @@ const EnhancedQrReader = ({ onFrame }: EnhancedQrReaderProps) => {
     };
   }, []);
 
+  // Keep the latest callback in a ref so a new `onFrame` identity does not
+  // restart the camera stream mid-scan.
+  const onFrameRef = useRef(onFrame);
+  useEffect(() => {
+    onFrameRef.current = onFrame;
+  }, [onFrame]);
+
   // Starts the camera stream with explicit resolution constraints and
   // continuous QR decoding. Cleanup stops the stream on unmounting.
   useEffect(() => {
@@ -76,24 +84,51 @@ const EnhancedQrReader = ({ onFrame }: EnhancedQrReaderProps) => {
       return undefined;
     }
 
-    const promise = codeReader.decodeFromConstraints(
-      VIDEO_CONSTRAINTS,
-      videoElem,
-      (result) => {
-        if (result) {
-          onFrame(result.getText());
-        }
-      },
-    );
+    let cancelled = false;
+    let controls: IScannerControls | undefined;
+
+    const start = async () => {
+      // The stream is acquired here rather than via `decodeFromConstraints`
+      // so a run that was cleaned up while `getUserMedia` was pending (e.g.
+      // React StrictMode's dev-only double mount) can release its stream
+      // before attaching it. Otherwise its late `controls.stop()` clears the
+      // shared <video> element's `srcObject` and the preview goes black.
+      const stream =
+        await globalThis.navigator.mediaDevices.getUserMedia(VIDEO_CONSTRAINTS);
+      if (cancelled) {
+        stopMediaStreamTracks(stream);
+        return;
+      }
+
+      try {
+        controls = await codeReader.decodeFromStream(
+          stream,
+          videoElem,
+          (result) => {
+            if (result) {
+              onFrameRef.current(result.getText());
+            }
+          },
+        );
+      } catch (error) {
+        stopMediaStreamTracks(stream);
+        throw error;
+      }
+
+      if (cancelled) {
+        controls.stop();
+      }
+    };
 
     // Prevent unhandled rejection if the stream fails to start (e.g.
     // camera disconnected between the permission probe and here).
-    promise.catch(log.debug);
+    start().catch(log.debug);
 
     return () => {
-      promise.then((controls) => controls?.stop()).catch(log.debug);
+      cancelled = true;
+      controls?.stop();
     };
-  }, [codeReader, onFrame]);
+  }, [codeReader]);
 
   return (
     <div className="qr-scanner__content__video-wrapper">

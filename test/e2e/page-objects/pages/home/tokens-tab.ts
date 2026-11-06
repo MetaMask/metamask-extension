@@ -29,7 +29,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * Network filter control-bar chrome belongs to `NetworkFilter` /
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
- * Related: `HomePage` (`goToTokensTab`), `NonEvmHomepage`, `NetworkFilter`,
+ * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
  * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx
@@ -107,6 +107,8 @@ class TokensTab extends HomePage {
 
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleCollapsed = `${this.lowValueAssetsToggle}[aria-expanded="false"]`;
 
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
@@ -216,6 +218,12 @@ class TokensTab extends HomePage {
     css: '.mm-label',
     text: 'Token symbol',
   };
+
+  private readonly transactionToast =
+    '[data-testid="transaction-submitted-toast"], [data-testid="transaction-confirmed-toast"], [data-testid="transaction-failed-toast"]';
+
+  private readonly transactionToastCloseButton =
+    '[data-testid="toast-close-button"]';
 
   async checkAssetIsAbsent(symbol: string): Promise<void> {
     console.log(`Checking asset is absent: ${symbol}`);
@@ -654,9 +662,9 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
     const row = await this.findTokenRowByName(tokenName);
-    assert.ok(
-      (await row.getText()).includes(expectedText),
-      `Expected "${tokenName}" row to contain "${expectedText}"`,
+    await this.driver.waitUntil(
+      async () => (await row.getText()).includes(expectedText),
+      { timeout: 10000, interval: 500 },
     );
   }
 
@@ -731,12 +739,46 @@ class TokensTab extends HomePage {
   }
 
   /**
+   * Collapses the low-value assets section when it is currently expanded.
+   * The expansion state is retained by the token list between renders.
+   */
+  async collapseLowValueAssets(): Promise<void> {
+    await this.driver.waitForSelector(this.lowValueAssetsToggle);
+    const isExpanded = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggleExpanded,
+      1000,
+    );
+    if (isExpanded) {
+      await this.driver.clickElement(this.lowValueAssetsToggle);
+    }
+    await this.driver.waitForSelector(this.lowValueAssetsToggleCollapsed);
+  }
+
+  /**
    * Dismisses the "Token imported" success message by clicking the close button
    */
   async dismissTokenImportedMessage(): Promise<void> {
     console.log('Dismissing token imported success message');
     await this.driver.clickElementSafe(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
+  }
+
+  /**
+   * Closes a transaction toast when it is covering the token list.
+   * No-op when the toast has already disappeared.
+   */
+  private async dismissTransactionToastIfPresent(): Promise<void> {
+    const toastPresent = await this.driver.isElementPresentAndVisible(
+      this.transactionToast,
+      500,
+    );
+    if (!toastPresent) {
+      return;
+    }
+
+    console.log('Dismiss transaction toast');
+    await this.driver.clickElementSafe(this.transactionToastCloseButton);
+    await this.driver.assertElementNotPresent(this.transactionToast);
   }
 
   /**
@@ -764,6 +806,7 @@ class TokensTab extends HomePage {
       return;
     }
 
+    await this.dismissTransactionToastIfPresent();
     await this.driver.clickElement(this.lowValueAssetsToggle);
     await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }

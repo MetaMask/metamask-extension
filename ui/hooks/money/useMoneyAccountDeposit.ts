@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
+import { openMoneyFtue, selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
 import {
   selectMoneyFundingAccount,
   type MoneyFundingAccountState,
@@ -20,6 +21,7 @@ import {
 import type { SetPayTokenRequest } from '../../pages/confirmations/hooks/pay/types';
 import { selectIsPayHardwareEnabled } from '../../pages/confirmations/selectors/feature-flags';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
+import { useDispatch } from '../../store/hooks';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
 export type InitiateDepositOptions = {
@@ -33,6 +35,12 @@ export type InitiateDepositOptions = {
    * Token to pre-select as the source of funds.
    */
   preferredPaymentToken?: SetPayTokenRequest;
+  /**
+   * Internal: set only by the Money FTUE splash after the user has
+   * acknowledged it, so continuing the pending deposit does not re-open the
+   * splash.
+   */
+  skipFtue?: boolean;
 };
 
 const DEPOSIT_FAILED_TOAST_COPY = {
@@ -63,6 +71,11 @@ const DEPOSIT_FAILED_TOAST_COPY = {
  */
 const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
   DEPOSIT_FAILED_TOAST_COPY[intent ?? 'addMusd'];
+
+// Shared across hook instances: several entry points can be on screen at once
+// (e.g. the token details banner and balance CTA), and each would otherwise
+// create its own placeholder batch on rapid clicks.
+let isDepositInitiationInFlight = false;
 
 /**
  * Initiates a Money Account deposit: creates the placeholder approve +
@@ -102,6 +115,8 @@ const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const hasSeenFtue = useSelector(selectHasSeenMoneyFtue);
   const isHardwareFundingEnabled = useSelector((state) =>
     selectIsPayHardwareEnabled(state, TransactionType.moneyAccountDeposit),
   );
@@ -113,6 +128,21 @@ export function useMoneyAccountDeposit() {
 
   const initiateDeposit = useCallback(
     async (options?: InitiateDepositOptions) => {
+      if (isDepositInitiationInFlight) {
+        return;
+      }
+
+      if (!hasSeenFtue && !options?.skipFtue) {
+        dispatch(
+          openMoneyFtue({
+            source: 'deposit',
+            preferredPaymentToken: options?.preferredPaymentToken,
+            intent: options?.intent,
+          }),
+        );
+        return;
+      }
+
       const batchId = bytesToHex(new Uint8Array(uuidParse(uuidv4())));
 
       // Recorded before the async work so the intent exists by the time any
@@ -121,6 +151,7 @@ export function useMoneyAccountDeposit() {
         setMoneyAccountDepositIntent(batchId, options.intent);
       }
 
+      isDepositInitiationInFlight = true;
       setIsLoading(true);
       try {
         if (!fundingAccount) {
@@ -151,11 +182,14 @@ export function useMoneyAccountDeposit() {
           },
         });
       } finally {
+        isDepositInitiationInFlight = false;
         setIsLoading(false);
       }
     },
     [
+      dispatch,
       fundingAccount,
+      hasSeenFtue,
       location.pathname,
       location.search,
       navigateToTransaction,

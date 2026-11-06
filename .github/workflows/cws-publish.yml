@@ -72,7 +72,7 @@ jobs:
           SENDER_LOGIN: ${{ github.event.sender.login }}
         run: |
           set -euo pipefail
-          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender=${SENDER_LOGIN}"
+          echo "sender.type=${SENDER_TYPE} actor=${GITHUB_ACTOR} sender=${SENDER_LOGIN}"
           if [[ "${SENDER_TYPE}" == "Bot" ]]; then
             echo "::error::CWS publish is human-initiated with GitHub Environment reviewer approval (cws-rollout-*). Bot dispatch is not permitted."
             exit 1
@@ -102,7 +102,6 @@ jobs:
           PUBLISHER_ID_FLASK: ${{ vars.PUBLISHER_ID_FLASK }}
         run: |
           set -euo pipefail
-          GITHUB_REF="${{ github.ref }}"
           if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
             echo "::error::CWS publish must run from refs/heads/main (current: ${GITHUB_REF})"
             exit 1
@@ -227,6 +226,7 @@ jobs:
           ACTION: ${{ steps.plan.outputs.action }}
           BRANCH: ${{ steps.plan.outputs.branch }}
           HTTP_CODE: ${{ steps.publish.outputs.http_code }}
+          INPUTS_VERSION: ${{ inputs.version }}
         run: |
           {
             echo "### CWS publish audit (INFRA-3881)"
@@ -234,10 +234,10 @@ jobs:
             echo "| Field | Value |"
             echo "| --- | --- |"
             echo "| GitHub Environment | \`${{ env.ROLLOUT_ENV }}\` |"
-            echo "| Triggered by | \`${{ github.actor }}\` |"
+            echo "| Triggered by | \`${GITHUB_ACTOR}\` |"
             echo "| Operation | \`${{ inputs.operation }}\` |"
             echo "| Target | \`${{ inputs.target }}\` |"
-            echo "| Version input | \`${{ inputs.version }}\` |"
+            echo "| Version input | \`${INPUTS_VERSION}\` |"
             echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"
             echo "| publish_type | \`${{ inputs.publish_type }}\` |"
             echo "| percentage | \`${{ inputs.percentage }}\` |"

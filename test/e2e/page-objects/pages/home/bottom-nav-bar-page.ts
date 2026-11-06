@@ -1,10 +1,10 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Bottom navigation bar chrome for the bottom-nav AB test treatment.
+ * Bottom navigation bar chrome.
  *
- * Screen: chrome component (not a full page), only present in the bottom nav
- * AB test treatment on applicable routes (home, perps-home, activity).
+ * Screen: chrome component (not a full page), present on applicable routes
+ * (home, perps-home, activity, money).
  * Owns: the bottom nav bar itself and tab clicks that assert navigation home.
  * Boundaries: the nav chrome only. Destination screens belong to `HomePage`,
  * swap/bridge page objects, etc. after navigation.
@@ -16,6 +16,8 @@ class BottomNavBar {
   private readonly driver: Driver;
 
   private readonly homeTab = '[data-testid="bottom-nav-home"]';
+
+  private readonly moneyTab = '[data-testid="bottom-nav-money"]';
 
   private readonly page = {
     testId: 'parent-selector-bottom-nav-bar',
@@ -41,6 +43,24 @@ class BottomNavBar {
     console.log('Click bottom nav home tab');
     await this.driver.clickElement(this.homeTab);
     await this.assertOnRoute('/');
+  }
+
+  /**
+   * Click the Money tab. Only rendered once the Money Account availability
+   * query resolves, so wait for it rather than failing on first paint.
+   *
+   * @param options - Click options.
+   * @param [options.assertRoute] - Whether to assert the Money home route. Set
+   * to `false` when the first-visit FTUE splash is expected instead.
+   */
+  async clickMoney({
+    assertRoute = true,
+  }: { assertRoute?: boolean } = {}): Promise<void> {
+    console.log('Click bottom nav money tab');
+    await this.driver.clickElement(this.moneyTab);
+    if (assertRoute) {
+      await this.assertOnRoute('/money-home');
+    }
   }
 }
 

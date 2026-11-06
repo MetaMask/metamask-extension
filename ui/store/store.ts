@@ -37,6 +37,7 @@ type RootReducerReturnType = ReturnType<typeof rootReducer>;
  */
 type ReduxState = {
   activeTab: {
+    id?: number | string;
     origin: string;
   };
   metamask: FlattenedBackgroundStateProxy;

@@ -50,6 +50,14 @@
       "all_frames": true
     },
     {
+      "matches": ["https://x.com/*", "https://www.x.com/*"],
+      "css": [
+        "scripts/cashtag/pill/page.css",
+        "scripts/cashtag/widget/page.css"
+      ],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
@@ -93,5 +101,11 @@
   "sandbox": {
     "pages": ["snaps/index.html"]
   },
-  "short_name": "__MSG_appName__"
+  "short_name": "__MSG_appName__",
+  "web_accessible_resources": [
+    {
+      "resources": ["cashtag-widget.html"],
+      "matches": ["https://x.com/*", "https://www.x.com/*"]
+    }
+  ]
 }

@@ -10,6 +10,10 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsHardwareWalletDeviceType,
+} from '../../../../../shared/constants/metametrics';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
@@ -21,10 +25,12 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
+import { usePaySourceAccountMetrics } from './usePaySourceAccountMetrics';
 
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
+jest.mock('./usePaySourceAccountMetrics');
 jest.mock('../../../../store/actions', () => ({
   upsertTransactionUIMetricsFragment: jest.fn(),
 }));
@@ -127,9 +133,17 @@ describe('useTransactionPayMetrics', () => {
   const useTransactionPayAvailableTokensMock = jest.mocked(
     useTransactionPayAvailableTokens,
   );
+  const usePaySourceAccountMetricsMock = jest.mocked(
+    usePaySourceAccountMetrics,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    usePaySourceAccountMetricsMock.mockReturnValue({
+      presented: MetaMetricsEventAccountType.Default,
+      selected: MetaMetricsEventAccountType.Default,
+    });
 
     useTransactionPayPrimaryRequiredTokenMock.mockReturnValue(undefined);
 
@@ -175,6 +189,57 @@ describe('useTransactionPayMetrics', () => {
           mm_pay_payment_token_list_size: 5,
           mm_pay_token_presented: 'TST',
           mm_pay_chain_presented: CHAIN_ID_MOCK,
+        }),
+      },
+    );
+  });
+
+  it('upserts the source account type properties', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+    usePaySourceAccountMetricsMock.mockReturnValue({
+      presented: MetaMetricsHardwareWalletDeviceType.Ledger,
+      selected: MetaMetricsHardwareWalletDeviceType.Ledger,
+    });
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(usePaySourceAccountMetricsMock).toHaveBeenCalledWith(true);
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_account_type_source_presented: 'Ledger',
+          mm_pay_account_type_source_selected: 'Ledger',
+        }),
+      },
+    );
+  });
+
+  it('reports a null presented source until it is captured', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: PAY_TOKEN_MOCK,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayToken>);
+    usePaySourceAccountMetricsMock.mockReturnValue({
+      presented: undefined,
+      selected: 'crypto',
+    });
+
+    renderHook(() => useTransactionPayMetrics(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+      TRANSACTION_ID_MOCK,
+      {
+        properties: expect.objectContaining({
+          mm_pay_account_type_source_presented: null,
+          mm_pay_account_type_source_selected: 'crypto',
         }),
       },
     );

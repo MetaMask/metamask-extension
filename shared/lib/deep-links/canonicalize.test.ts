@@ -1,5 +1,5 @@
 import { canonicalize } from './canonicalize';
-import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAM, SIG_PARAMS_PARAM } from './common';
 
 describe('canonicalize', () => {
   it('removes the sig parameter and sorts the rest', () => {

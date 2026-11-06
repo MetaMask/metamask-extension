@@ -28,11 +28,8 @@ import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,
   BRIDGE_L2_ETH_USD_SPOT_PRICE,
-  BRIDGE_L2_MOCK_CURRENCY_RATES,
   BRIDGE_L2_WITH_FIXTURES_OPTIONS,
-  BRIDGE_MOCK_CURRENCY_RATES,
   BRIDGE_MOCK_TOKEN_SPOT_PRICES,
-  BRIDGE_MONAD_MOCK_CURRENCY_RATES,
   BRIDGE_MONAD_USD_SPOT_PRICE,
   BRIDGE_MONAD_WITH_FIXTURES_OPTIONS,
   BRIDGE_SOLANA_USD_SPOT_PRICE,
@@ -1118,6 +1115,7 @@ async function mockPriceSpotPricesV3(
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
       const vsCurrency =
@@ -1526,7 +1524,6 @@ export const getBridgeFixtures = ({
       consentDecisionMade: true,
       optedIn: true,
     })
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -1539,33 +1536,6 @@ export const getBridgeFixtures = ({
               aggregators: [],
             },
           ],
-        },
-      },
-    })
-    .withTokenListController({
-      tokensChainsCache: {
-        '0xa4b1': {
-          timestamp: Date.now(),
-          data: {
-            '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              decimals: 6,
-              address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
-              name: 'Dai Stablecoin',
-              symbol: 'DAI',
-              decimals: 18,
-              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
         },
       },
     })
@@ -1687,7 +1657,6 @@ export const getQuoteNegativeCasesFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1708,6 +1677,7 @@ export const getQuoteNegativeCasesFixtures = (
         await mockTokensLinea(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1748,7 +1718,6 @@ export const getBridgeNegativeCasesFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1766,6 +1735,7 @@ export const getBridgeNegativeCasesFixtures = (
         await mockETHtoETH(mockServer, featureFlags.sse?.enabled),
         await mockGetTxStatusInvalid(mockServer, options),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1809,7 +1779,6 @@ export const getInsufficientFundsFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1826,6 +1795,7 @@ export const getInsufficientFundsFixtures = (
         await mockGetPopularTokens(mockServer),
         await mockETHtoWETH(mockServer, featureFlags.sse?.enabled),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1864,48 +1834,6 @@ export const getBridgeL2Fixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0xe708')
-    .withCurrencyController(BRIDGE_L2_MOCK_CURRENCY_RATES)
-    .withTokenListController({
-      tokensChainsCache: {
-        '0xa4b1': {
-          timestamp: Date.now(),
-          data: {
-            '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
-              name: 'Dai Stablecoin',
-              symbol: 'DAI',
-              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-              decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-        '0xe708': {
-          timestamp: Date.now(),
-          data: {
-            '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5': {
-              name: 'Bridged Dai Stablecoin Linea',
-              symbol: 'DAI',
-              address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
-              decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1995,39 +1923,6 @@ export const getMonadBaseBridgeFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x8f')
-    .withCurrencyController(BRIDGE_MONAD_MOCK_CURRENCY_RATES)
-    .withTokenListController({
-      tokensChainsCache: {
-        '0x2105': {
-          timestamp: Date.now(),
-          data: {
-            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-        '0x8f': {
-          timestamp: Date.now(),
-          data: {
-            '0x754704bc059f8c67012fed69bc8a327a5aafb603': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x754704bc059f8c67012fed69bc8a327a5aafb603',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x8f': true,
@@ -2143,22 +2038,31 @@ async function mockSentinelNetworks(
   mockServer: Mockttp,
   sendBundle: boolean = true,
 ) {
+  const network = {
+    network: 'ethereum-mainnet',
+    explorer: 'https://etherscan.io',
+    confirmations: true,
+    smartTransactions: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    hidden: false,
+    sendBundle,
+  };
+
+  await mockServer
+    .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/network')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: network,
+    }));
+
   return await mockServer
     .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        '1': {
-          network: 'ethereum-mainnet',
-          explorer: 'https://etherscan.io',
-          confirmations: true,
-          smartTransactions: true,
-          relayTransactions: true,
-          hidden: false,
-          sendBundle,
-        },
-      },
+      json: { '1': network },
     }));
 }
 
@@ -2195,7 +2099,6 @@ async function mockGasIncludedSwapUSDCtoDAI(mockServer: Mockttp) {
 export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -2327,7 +2230,6 @@ async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
 export const getGasless7702SwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FeatureId,
   RequestStatus,
@@ -12,10 +12,14 @@ import {
   en as messages,
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
-import { SWAP_PATH } from '../../../helpers/constants/routes';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../test/lib/mock-resize-observer';
 import {
   getFromChains,
   getFromToken,
@@ -34,6 +38,21 @@ const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
 const mockTrackUnifiedSwapBridgeEvent = jest.fn();
+
+/**
+ * Bridge fixtures seed AssetsController fields via createBridgeMockStore.
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -224,12 +243,179 @@ const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
 };
 
 describe('BridgeInputGroup', () => {
+  it('uses a decimal text input for the amount', () => {
+    renderBridgeInputGroup(
+      {},
+      { amountFieldProps: { testId: 'from-amount', value: '1' } },
+    );
+
+    const input = screen.getByTestId('from-amount');
+    expect(input).toHaveAttribute('type', 'text');
+    expect(input).toHaveAttribute('inputmode', 'decimal');
+  });
+
+  it('starts a short amount at 48px', () => {
+    renderBridgeInputGroup(
+      {},
+      { amountFieldProps: { testId: 'from-amount', value: '1' } },
+    );
+
+    expect(screen.getByTestId('from-amount')).toHaveStyle({
+      fontSize: '48px',
+      lineHeight: '48px',
+    });
+  });
+
+  describe('amount font size', () => {
+    const longAmount = '500000000000000000';
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    it('keeps a long amount at 48px in a wide expanded-view field', () => {
+      renderBridgeInputGroup(
+        {},
+        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
+      );
+
+      act(() => resizeObserver.resize(626));
+
+      expect(screen.getByTestId('from-amount')).toHaveStyle({
+        fontSize: '48px',
+        lineHeight: '48px',
+      });
+    });
+
+    it('shrinks the amount when the field gets narrower', () => {
+      renderBridgeInputGroup(
+        {},
+        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
+      );
+      act(() => resizeObserver.resize(626));
+
+      act(() => resizeObserver.resize(200));
+
+      expect(screen.getByTestId('from-amount')).toHaveStyle({
+        fontSize: '24px',
+      });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      const mockState = createBridgeMockStore();
+      const ControlledInputGroup = () => {
+        const [value, setValue] = useState('');
+        return (
+          <InputGroup
+            mockState={mockState}
+            amountFieldProps={{ testId: 'from-amount', value }}
+            onAmountChange={setValue}
+          />
+        );
+      };
+      renderWithProvider(<ControlledInputGroup />, configureStore(mockState));
+      act(() => resizeObserver.resize(626));
+      const input = screen.getByTestId('from-amount');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
+
+      for (const value of ['5', '50000', '5000000000', longAmount]) {
+        fireEvent.change(input, { target: { value } });
+      }
+
+      expect(input).toHaveValue(longAmount);
+      expect(input).toHaveStyle({ fontSize: '48px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
+    });
+  });
+
+  it('sets the prefix and input in Hero at the same size', () => {
+    renderBridgeInputGroup(
+      {},
+      {
+        amountInputPrefix: '$',
+        amountFieldProps: {
+          testId: 'from-amount',
+          value: '123456789012',
+        },
+      },
+    );
+
+    const input = screen.getByTestId('from-amount');
+    const prefix = screen.getByTestId('from-amount-row-prefix');
+
+    for (const element of [prefix, input]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '48px', lineHeight: '48px' });
+    }
+  });
+
+  it('dims the read-only destination until a quote replaces the placeholder', () => {
+    const mockState = createBridgeMockStore();
+    const destinationFieldProps = {
+      testId: 'to-amount',
+      readOnly: true,
+      disabled: true,
+    };
+    const view = renderWithProvider(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '' }}
+      />,
+      configureStore(mockState),
+    );
+
+    const field = view.getByTestId('to-amount');
+    expect(field).toBeDisabled();
+    expect(view.getByTestId('to-amount-row')).toHaveClass('opacity-50');
+
+    view.rerender(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '0' }}
+      />,
+    );
+
+    const placeholder = view.getByTestId('to-amount');
+    expect(placeholder).toHaveValue('0');
+    expect(view.getByTestId('to-amount-row')).toHaveClass('opacity-50');
+
+    view.rerender(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '13.98' }}
+      />,
+    );
+
+    expect(view.getByTestId('to-amount-row')).not.toHaveClass('opacity-50');
+  });
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
     mockTrackUnifiedSwapBridgeEvent.mockResolvedValue(undefined);
     setBackgroundConnection({
-      trackUnifiedSwapBridgeEvent: mockTrackUnifiedSwapBridgeEvent,
+      messengerCall: jest.fn((actionType: string, args: unknown[]) => {
+        if (actionType === 'BridgeController:trackUnifiedSwapBridgeEvent') {
+          return mockTrackUnifiedSwapBridgeEvent(...args);
+        }
+        return Promise.resolve(undefined);
+      }),
       getStatePatches: jest.fn(),
     } as never);
     mockUseVirtualizer.mockReturnValue({
@@ -341,17 +527,16 @@ describe('BridgeInputGroup', () => {
           value: '0',
           readOnly: true,
           disabled: true,
-          className: 'amount-input',
         },
       },
     );
 
-    expect(getByTestId('to-amount-loading-skeleton')).toBeInTheDocument();
+    expect(getByTestId('to-amount-row-skeleton')).toBeInTheDocument();
     expect(queryByTestId('to-amount')).not.toBeInTheDocument();
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });
 
-  it('replaces the asset picker route when closing the page', async () => {
+  it('returns to the previous page when closing the picker', async () => {
     setupFetchMock();
 
     renderAssetPickerPage();
@@ -364,10 +549,45 @@ describe('BridgeInputGroup', () => {
 
     await userEvent.click(screen.getByLabelText(messages.back.message));
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      { pathname: SWAP_PATH, search: '' },
-      { replace: true, state: { token: undefined } },
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('shows only the native representation of Arc USDC', async () => {
+    const nativeArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId: 'eip155:5042/slip44:5042' as CaipAssetType,
+      decimals: 18,
+    };
+    const erc20ArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId:
+        'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as CaipAssetType,
+      decimals: 6,
+    };
+    setupFetchMock([], false, [nativeArcUsdc, erc20ArcUsdc]);
+    mockUseVirtualizer.mockReturnValue({
+      getVirtualItems: () =>
+        [nativeArcUsdc, erc20ArcUsdc].map((token, index) => ({
+          index,
+          start: index * 78,
+          key: token.assetId,
+        })),
+      getTotalSize: () => 156,
+      measureElement: () => 78,
+    });
+
+    renderAssetPickerPage();
+
+    expect(
+      await screen.findByTestId(`bridge-asset--${nativeArcUsdc.assetId}`),
+    ).toBeVisible();
+    expect(
+      screen.queryByTestId(`bridge-asset--${erc20ArcUsdc.assetId}`),
+    ).not.toBeInTheDocument();
   });
 
   it('clears picker flags when browser navigation unmounts the page', async () => {
@@ -570,7 +790,7 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
@@ -609,11 +829,13 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
               },
@@ -628,6 +850,8 @@ describe('BridgeInputGroup', () => {
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
                 name: 'USDC',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
               },
