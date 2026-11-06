@@ -552,6 +552,11 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
+    path: RAMPS_BUY_INTERSTITIAL_ROUTE,
+    label: 'Ramps Buy Interstitial Page',
+    trackInAnalytics: false,
+  },
+  {
     path: NETWORKS_ROUTE,
     label: 'Network Settings Page',
     trackInAnalytics: true,
