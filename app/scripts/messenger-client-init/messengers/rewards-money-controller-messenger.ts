@@ -33,6 +33,7 @@ export function getRewardsMoneyControllerMessenger(
       'RewardsMoneyDataService:getRebateQuote',
       'AuthenticationController:getSessionProfile',
     ],
+    events: ['AuthenticationController:stateChange'],
   });
   return controllerMessenger;
 }

@@ -51,6 +51,9 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
+import { referralContextClient } from '../../../hooks/rewards/referral-context';
+import { buildMoneyReferralRoute } from '../../../../shared/lib/deep-links/money-referral';
+import { getPendingReferralResume } from './pending-referral';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -111,6 +114,26 @@ export function useOnboardingCompletion() {
             url: new URL(deferredDeepLinkToUse.referringLink),
           }),
         );
+      }
+
+      const resume = getPendingReferralResume({
+        pendingReferral: await referralContextClient
+          .getPending()
+          .catch(() => null),
+        deferredReferringLink: deferredDeepLinkToUse?.referringLink,
+        deferredResult: deferredDeepLinkResult,
+      });
+      if (resume.type === 'drop') {
+        await referralContextClient.drop(resume.id).catch(() => undefined);
+      } else if (resume.type === 'interstitial') {
+        navigate(resume.route);
+        return;
+      } else if (resume.type === 'handoff') {
+        if (resume.continueFirst) {
+          await referralContextClient.continue(resume.context.id);
+        }
+        navigate(buildMoneyReferralRoute(resume.context));
+        return;
       }
 
       if (deferredDeepLinkResult) {
@@ -241,7 +264,11 @@ export function useOnboardingCompletion() {
       try {
         const deferredDeepLinkResult =
           await getDeferredDeepLinkRoute(deferredDeepLink);
+        const pendingReferral = await referralContextClient
+          .getPending()
+          .catch(() => null);
         const shouldOpenSidePanel =
+          !pendingReferral &&
           deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
           deferredDeepLinkResult?.type !==
             DeferredDeepLinkRouteType.Interstitial;

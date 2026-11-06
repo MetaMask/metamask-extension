@@ -77,6 +77,7 @@ describe('DeepLinkRouter', () => {
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
+      captureReferralContext: () => null,
     });
   });
   afterEach(() => {
@@ -121,6 +122,53 @@ describe('DeepLinkRouter', () => {
     beforeEach(() => {
       router.install();
     });
+
+    it.each([true, false])(
+      'preserves the security decision when capturing a referral (warning: %s)',
+      async (warning) => {
+        router.uninstall();
+        const captureReferralContext = jest.fn(
+          (url: string, requiresInterstitial: boolean) => ({
+            id: 'context-1',
+            url,
+            code: 'ABC',
+            entryType: 'deeplink' as const,
+            status: requiresInterstitial
+              ? ('awaiting_continue' as const)
+              : ('authorized' as const),
+          }),
+        );
+        router = new DeepLinkRouter({
+          getExtensionURL: new ExtensionPlatform().getExtensionURL,
+          getState,
+          captureReferralContext,
+        });
+        router.install();
+        parseMock.mockResolvedValue({
+          signature: 'missing',
+          destination: { path: '/', query: new URLSearchParams() },
+        } as ParsedDeepLink);
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: 'https://link.metamask.io/home?ref=ABC',
+          initiator: warning ? undefined : 'https://metamask.io',
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+        expect(captureReferralContext).toHaveBeenCalledWith(
+          'https://link.metamask.io/home?ref=ABC',
+          warning,
+        );
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: expect.stringContaining(
+            warning ? '#link?' : '#/referral-invite?',
+          ),
+        });
+        if (warning) {
+          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+            url: expect.stringContaining('referralContext=context-1'),
+          });
+        }
+      },
+    );
 
     // test return values for MV2 and MV3 behavior
     it.each(['mv2', 'mv3'])(

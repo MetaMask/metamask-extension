@@ -1,3 +1,4 @@
+import { it as jestIt } from '@jest/globals';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -29,6 +30,31 @@ describe('shouldTrackDeepLinkNavigation', () => {
 });
 
 describe('createEvent', () => {
+  describe('Money referral attribution', () => {
+    it('promotes the normalized code without changing legacy attribution', () => {
+      const result = createEvent({
+        signature: MISSING,
+        url: new URL(
+          'https://link.metamask.io/home?ref=%20kol123%20&referral=OLD-CODE',
+        ),
+      });
+      expect(result.properties.referral_code).toBe('KOL123');
+      expect(result.properties.referral).toBe('OLD-CODE');
+      expect(result.sensitiveProperties).not.toHaveProperty('ref');
+    });
+
+    jestIt.each(['', '?ref=AB', '?ref=ABC-123', '?ref=ABC&ref=DEF'])(
+      'omits invalid/missing referral_code for %s',
+      (query) => {
+        const result = createEvent({
+          signature: MISSING,
+          url: new URL(`https://link.metamask.io/home${query}`),
+        });
+        expect(result.properties).not.toHaveProperty('referral_code');
+        expect(result.sensitiveProperties).not.toHaveProperty('ref');
+      },
+    );
+  });
   describe('basic functionality', () => {
     it('should create event with minimal required properties', () => {
       const url = new URL('https://example.com/test-route');

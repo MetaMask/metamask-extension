@@ -2,7 +2,7 @@ import { it } from '@jest/globals';
 import React from 'react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { act, render } from '@testing-library/react';
+import { act, render, renderHook } from '@testing-library/react';
 import { useAcceptMoneyReferralCode } from './useAcceptMoneyReferralCode';
 
 const mockRegister = jest.fn();
@@ -92,6 +92,60 @@ function serializedHttpFailure(
 describe('useAcceptMoneyReferralCode', () => {
   beforeEach(() => {
     mockRegister.mockReset();
+  });
+
+  it('does not submit if validation finishes after the invite unmounts', async () => {
+    let validate!: (error: string) => void;
+    const onAccepted = jest.fn();
+    const { result, unmount } = renderHook(() =>
+      useAcceptMoneyReferralCode({
+        validateCode: () =>
+          new Promise((resolve) => {
+            validate = resolve;
+          }),
+        fetchReferralMe: async () => ({ status: 'settled' }),
+        onAccepted,
+      }),
+    );
+    let request!: ReturnType<typeof result.current.accept>;
+    act(() => {
+      request = result.current.accept('ABC');
+    });
+    unmount();
+    await act(async () => {
+      validate('');
+      await request;
+    });
+    expect(mockRegister).not.toHaveBeenCalled();
+    expect(onAccepted).not.toHaveBeenCalled();
+  });
+
+  it('does not reopen activation after an in-flight registration unmounts', async () => {
+    let registered!: () => void;
+    mockRegister.mockReturnValue(
+      new Promise<void>((resolve) => {
+        registered = resolve;
+      }),
+    );
+    const onAccepted = jest.fn();
+    const { result, unmount } = renderHook(() =>
+      useAcceptMoneyReferralCode({
+        validateCode: async () => '',
+        fetchReferralMe: async () => ({ status: 'settled' }),
+        onAccepted,
+      }),
+    );
+    let request!: ReturnType<typeof result.current.accept>;
+    await act(async () => {
+      request = result.current.accept('ABC');
+    });
+    unmount();
+    await act(async () => {
+      registered();
+      await request;
+    });
+    expect(mockRegister).toHaveBeenCalledTimes(1);
+    expect(onAccepted).not.toHaveBeenCalled();
   });
 
   it.each([

@@ -23,6 +23,8 @@ export const MAX_REFERRAL_ME_REFRESH_ATTEMPTS = 3;
 
 export type FetchReferralMeResult = {
   status: 'settled' | 'discarded';
+  /** Present only when this read successfully returned a fresh payload. */
+  data?: ReferralMeDto;
   /** Why a read was ignored. Only set when `status` is `discarded`. */
   reason?: 'unmounted' | 'superseded' | 'session-changed' | 'busy';
 };
@@ -120,7 +122,7 @@ export function useReferralMe({
           return { status: 'discarded', reason: 'superseded' };
         }
         dispatch(setRewardsMoneyReferralMe(data));
-        return { status: 'settled' };
+        return { status: 'settled', data };
       } catch (error) {
         if (!mountedRef.current) {
           return { status: 'discarded', reason: 'unmounted' };

@@ -14,6 +14,10 @@ import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
+import {
+  buildMoneyReferralRoute,
+  type MoneyReferralContext,
+} from '../../../../shared/lib/deep-links/money-referral';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -24,6 +28,10 @@ const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
   getState: MetamaskController['getState'];
+  captureReferralContext: (
+    url: string,
+    requiresInterstitial: boolean,
+  ) => MoneyReferralContext | null;
 };
 
 /**
@@ -47,10 +55,13 @@ export class DeepLinkRouter extends EventEmitter<{
    */
   private getState: Options['getState'];
 
-  constructor({ getExtensionURL, getState }: Options) {
+  private captureReferralContext: Options['captureReferralContext'];
+
+  constructor({ getExtensionURL, getState, captureReferralContext }: Options) {
     super();
     this.getExtensionURL = getExtensionURL;
     this.getState = getState;
+    this.captureReferralContext = captureReferralContext;
   }
 
   /**
@@ -192,15 +203,25 @@ export class DeepLinkRouter extends EventEmitter<{
             Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
         });
 
+        const referralContext = this.captureReferralContext(
+          url.toString(),
+          shouldShowInterstitial,
+        );
+
         if (shouldShowInterstitial) {
           // unsigned links or signed links that don't skip the interstitial
           const search = new URLSearchParams({
             u: this.formatUrlForInterstitialPage(url),
           });
+          if (referralContext) {
+            search.set('referralContext', referralContext.id);
+          }
           link = this.getExtensionURL(
             TRIMMED_DEEP_LINK_ROUTE,
             search.toString(),
           );
+        } else if (referralContext) {
+          link = this.getExtensionURL(buildMoneyReferralRoute(referralContext));
         } else if ('redirectTo' in parsed.destination) {
           link = parsed.destination.redirectTo.toString();
         } else {

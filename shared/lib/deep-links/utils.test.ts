@@ -1,4 +1,9 @@
-import { getDeferredDeepLinkRoute, buildInterstitialRoute } from './utils';
+import {
+  buildInternalRoute,
+  buildInterstitialRoute,
+  getDeferredDeepLinkRoute,
+  getDestinationTarget,
+} from './utils';
 import { DeferredDeepLinkRouteType } from './types';
 import * as parseModule from './parse';
 import { VALID, MISSING, INVALID } from './verify';
@@ -58,6 +63,35 @@ describe('Deep link utils', () => {
       expect(result).toBe(
         '/link?u=%2Fbuy%3Faddress%3D0xacA92E438df0B2401fF60dA7E4337B687a2435DA%26amount%3D100%26chainId%3D1',
       );
+    });
+  });
+
+  describe('getDestinationTarget', () => {
+    it('returns an external redirect target', () => {
+      const url = new URL('https://app.metamask.io/buy');
+      expect(getDestinationTarget({ redirectTo: url })).toStrictEqual({
+        type: 'redirect',
+        url,
+      });
+    });
+
+    it('returns an internal target with its query string', () => {
+      expect(
+        getDestinationTarget({
+          path: '/swap',
+          query: new URLSearchParams('amount=100'),
+        }),
+      ).toStrictEqual({
+        type: 'internal',
+        path: '/swap',
+        queryString: 'amount=100',
+      });
+    });
+  });
+
+  describe('buildInternalRoute', () => {
+    it('omits the separator for an empty query string', () => {
+      expect(buildInternalRoute('/swap', '')).toBe('/swap');
     });
   });
 

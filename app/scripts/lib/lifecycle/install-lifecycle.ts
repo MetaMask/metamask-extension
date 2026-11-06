@@ -14,6 +14,7 @@ import type { AppMetadataController } from '../../controllers/app-metadata';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { onUpdate } from '../../on-update';
 import type ExtensionPlatform from '../../platforms/extension';
+import type { RewardsMoneyController } from '../../controllers/rewards-money/rewards-money-controller';
 
 type OnUpdateController = Parameters<typeof onUpdate>[0];
 type OnUpdatePlatform = Parameters<typeof onUpdate>[1];
@@ -25,6 +26,13 @@ type InstallLifecycleAppStateController =
 type InstallLifecycleController = OnUpdateController & {
   appMetadataController: Pick<AppMetadataController, 'setInstallAttribution'>;
   appStateController: InstallLifecycleAppStateController;
+  messengerClientsByName: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- controller registry key
+    RewardsMoneyController: Pick<
+      RewardsMoneyController,
+      'captureReferralContext'
+    >;
+  };
   getState: () => Pick<
     FlattenedBackgroundStateProxy,
     'consentDecisionMade' | 'optedIn'
@@ -52,7 +60,10 @@ async function addAppInstalledEvent(
   installAttributionPromise: Promise<InstallAttribution>,
   controller: Pick<
     InstallLifecycleController,
-    'appMetadataController' | 'appStateController' | 'getState'
+    | 'appMetadataController'
+    | 'appStateController'
+    | 'getState'
+    | 'messengerClientsByName'
   >,
 ): Promise<void> {
   const { deferredDeepLink, traits: installAttributionTraits } =
@@ -69,6 +80,12 @@ async function addAppInstalledEvent(
 
   if (deferredDeepLink) {
     controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+    // Security remains undecided until the existing deferred-link parser runs.
+    controller.messengerClientsByName.RewardsMoneyController.captureReferralContext(
+      deferredDeepLink.referringLink,
+      'restored_context',
+      true,
+    );
     eventProperties.install_source = 'deeplink';
     eventProperties.deeplink_path = deferredDeepLink.referringLink;
   }

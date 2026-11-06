@@ -681,6 +681,12 @@ async function initialize(backup: Backup | null) {
   new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
     getState: initializedController.getState.bind(initializedController),
+    captureReferralContext: (url, requiresInterstitial) =>
+      initializedController.messengerClientsByName.RewardsMoneyController.captureReferralContext(
+        url,
+        'deeplink',
+        requiresInterstitial,
+      ),
   })
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)

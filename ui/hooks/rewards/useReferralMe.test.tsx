@@ -145,6 +145,24 @@ describe('useReferralMe', () => {
     expect(mockGetReferralMe).not.toHaveBeenCalled();
   });
 
+  it('distinguishes a failed fresh read from an older eligible payload', async () => {
+    mockGetReferralMe
+      .mockResolvedValueOnce(referralMe)
+      .mockRejectedValueOnce(new Error('network'));
+    const { result } = renderReferralMe(false);
+    await act(async () => {
+      expect(
+        await result.current.fetchReferralMe({ forceFresh: true }),
+      ).toEqual({ status: 'settled', data: referralMe });
+    });
+    await act(async () => {
+      expect(
+        await result.current.fetchReferralMe({ forceFresh: true }),
+      ).toEqual({ status: 'settled' });
+    });
+    expect(result.current.referralMe).toBe(referralMe);
+  });
+
   it('reports a hard failure and skips a disabled controller', async () => {
     mockGetReferralMe.mockRejectedValueOnce(new Error('network'));
     const { result, unmount } = renderReferralMe();

@@ -59,6 +59,9 @@ function createController(
     remoteFeatureFlagController: {
       state: { remoteFeatureFlags: {} },
     },
+    messengerClientsByName: {
+      RewardsMoneyController: { captureReferralContext: jest.fn() },
+    },
     store: {} as MetaMaskController['store'],
   };
 }
@@ -160,6 +163,27 @@ describe('install-lifecycle', () => {
         expect(trackedEvent.properties?.install_source).toBe('deeplink');
         expect(trackedEvent.properties?.deeplink_path).toBe(
           deferredDeepLink.referringLink,
+        );
+      });
+
+      it('captures restored referral context before wallet onboarding', async () => {
+        const deps = createDeps();
+        const captureReferralContext = jest.fn();
+        deps.controller.messengerClientsByName = {
+          RewardsMoneyController: { captureReferralContext },
+        };
+        const referringLink = 'https://link.metamask.io/home?ref=ABC';
+        getInstallAttributionMock.mockResolvedValue({
+          deferredDeepLink: { createdAt: Date.now(), referringLink },
+          traits: {},
+        });
+        const pending = handleOnInstalled([installDetails], deps);
+        deps.resolveInitialization();
+        await pending;
+        expect(captureReferralContext).toHaveBeenCalledWith(
+          referringLink,
+          'restored_context',
+          true,
         );
       });
 

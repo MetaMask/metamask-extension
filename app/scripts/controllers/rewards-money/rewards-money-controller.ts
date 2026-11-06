@@ -1,4 +1,10 @@
 import { BaseController } from '@metamask/base-controller';
+import {
+  getMoneyReferralCode,
+  type MoneyReferralContext,
+  type MoneyReferralEntryType,
+  type MoneyReferralOffer,
+} from '../../../../shared/lib/deep-links/money-referral';
 import type {
   GetReferralMeDto,
   PerpsRebateTrade,
@@ -22,6 +28,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'registerReferee',
   'getSwapsRebateQuote',
   'getPerpsRebateQuote',
+  'captureReferralContext',
+  'getPendingReferralContext',
+  'continueReferralContext',
+  'takeReferralContext',
+  'dropReferralContext',
 ] as const;
 
 /**
@@ -90,6 +101,13 @@ export function getDefaultRewardsMoneyControllerState(): RewardsMoneyControllerS
 }
 
 /**
+ * How long a captured link stays eligible for the handoff. This matches the
+ * deferred deep-link window so onboarding has time to finish, while still
+ * bounding context left behind by a closed tab or a suspended worker.
+ */
+export const PENDING_REFERRAL_CONTEXT_TTL_MS = 2 * 60 * 60 * 1000;
+
+/**
  * Referral accept for Rewards Money: referral me, code validation, and
  * referee registration. The full payload stays in memory. Only
  * `excludedRegions` is published for the geo selector.
@@ -100,6 +118,10 @@ export class RewardsMoneyController extends BaseController<
   RewardsMoneyControllerMessenger
 > {
   readonly #isDisabled: () => boolean;
+
+  #pendingReferralContext: MoneyReferralContext | null = null;
+
+  #pendingReferralCapturedAt: number | null = null;
 
   readonly #referralMeCache = new Map<string, ReferralMeCacheEntry>();
 
@@ -129,6 +151,115 @@ export class RewardsMoneyController extends BaseController<
       MESSENGER_EXPOSED_METHODS,
     );
     this.#isDisabled = isDisabled;
+    let wasSignedIn = false;
+    this.messenger.subscribe('AuthenticationController:stateChange', (auth) => {
+      if (wasSignedIn && !auth.isSignedIn) {
+        this.#clearPendingReferralContext();
+      }
+      wasSignedIn = auth.isSignedIn;
+    });
+  }
+
+  /**
+   * Captures the newest link in memory without calling the referral API.
+   *
+   * @param url - Original supported deep link.
+   * @param entryType - Direct link or install attribution.
+   * @param requiresInterstitial - Whether the normal security policy requires Continue.
+   * @returns The context, or null when the code is invalid/already answered.
+   */
+  captureReferralContext(
+    url: string,
+    entryType: MoneyReferralEntryType,
+    requiresInterstitial: boolean,
+  ): MoneyReferralContext | null {
+    let code: string | null;
+    try {
+      code = getMoneyReferralCode(new URL(url));
+    } catch {
+      return null;
+    }
+    if (!code) {
+      return null;
+    }
+    this.#pendingReferralContext = {
+      id: crypto.randomUUID(),
+      url,
+      code,
+      entryType,
+      status: requiresInterstitial ? 'awaiting_continue' : 'authorized',
+    };
+    this.#pendingReferralCapturedAt = Date.now();
+    return { ...this.#pendingReferralContext };
+  }
+
+  #clearPendingReferralContext(): void {
+    this.#pendingReferralContext = null;
+    this.#pendingReferralCapturedAt = null;
+  }
+
+  #getActiveReferralContext(now = Date.now()): MoneyReferralContext | null {
+    if (!this.#pendingReferralContext) {
+      return null;
+    }
+    if (
+      this.#pendingReferralCapturedAt === null ||
+      now - this.#pendingReferralCapturedAt > PENDING_REFERRAL_CONTEXT_TTL_MS
+    ) {
+      this.#clearPendingReferralContext();
+      return null;
+    }
+    return this.#pendingReferralContext;
+  }
+
+  /**
+   * Returns the pending link so onboarding can resume it after wallet setup.
+   *
+   * @returns The pending context, if any.
+   */
+  getPendingReferralContext(): MoneyReferralContext | null {
+    const context = this.#getActiveReferralContext();
+    return context ? { ...context } : null;
+  }
+
+  /**
+   * Records Continue on the existing security interstitial.
+   *
+   * @param id - The context associated with that interstitial.
+   */
+  continueReferralContext(id: string): boolean {
+    const context = this.#getActiveReferralContext();
+    if (context?.id === id) {
+      context.status = 'authorized';
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Drops an abandoned interstitial without clearing a newer link.
+   *
+   * @param id - Context owned by the abandoned flow.
+   */
+  dropReferralContext(id: string): void {
+    if (this.#getActiveReferralContext()?.id === id) {
+      this.#clearPendingReferralContext();
+    }
+  }
+
+  /**
+   * Atomically transfers a continued link to its invite UI.
+   *
+   * @param id - Context requested by the handoff route.
+   * @returns The offer, or null if superseded, consumed, or not continued.
+   */
+  takeReferralContext(id: string): MoneyReferralOffer | null {
+    const context = this.#getActiveReferralContext();
+    if (!context || context.id !== id || context.status !== 'authorized') {
+      return null;
+    }
+    this.#clearPendingReferralContext();
+    return { ...context, canOffer: !this.#isDisabled() };
   }
 
   /**

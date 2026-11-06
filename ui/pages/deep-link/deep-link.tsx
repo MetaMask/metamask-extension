@@ -18,6 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { parse } from '../../../shared/lib/deep-links/parse';
+import { getDestinationTarget } from '../../../shared/lib/deep-links/utils';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
@@ -28,6 +29,8 @@ import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
+import { buildMoneyReferralRoute } from '../../../shared/lib/deep-links/money-referral';
+import { referralContextClient } from '../../hooks/rewards/referral-context';
 
 type TranslateFunction = (
   key: string,
@@ -79,13 +82,11 @@ async function updateStateFromUrl(
     if (parsed) {
       const { destination } = parsed;
 
+      const target = getDestinationTarget(destination);
       const href =
-        'redirectTo' in destination
-          ? destination.redirectTo.toString()
-          : getExtensionURL(
-              destination.path,
-              destination.query.toString() ?? null,
-            );
+        target.type === 'redirect'
+          ? target.url.toString()
+          : getExtensionURL(target.path, target.queryString || null);
       const title = parsed.route.getTitle(url.searchParams);
 
       const signed = parsed.signature === VALID;
@@ -159,6 +160,29 @@ export const DeepLink = () => {
 
   // Use ref to track current abort controller
   const abortControllerRef = useRef<AbortController | null>(null);
+  const continuedReferral = useRef(false);
+  const referralEffectMounted = useRef(false);
+
+  useEffect(() => {
+    referralEffectMounted.current = true;
+    continuedReferral.current = false;
+    const id = new URLSearchParams(location.search).get('referralContext');
+    const dropAbandoned = () => {
+      if (id && !continuedReferral.current) {
+        referralContextClient.drop(id).catch(() => undefined);
+      }
+    };
+    window.addEventListener('pagehide', dropAbandoned);
+    return () => {
+      referralEffectMounted.current = false;
+      window.removeEventListener('pagehide', dropAbandoned);
+      queueMicrotask(() => {
+        if (!referralEffectMounted.current) {
+          dropAbandoned();
+        }
+      });
+    };
+  }, [location.search]);
 
   useEffect(() => {
     // Cancel any previous operation
@@ -252,6 +276,36 @@ export const DeepLink = () => {
     dispatch(setSkipDeepLinkInterstitial(newValue));
   }
 
+  async function handleContinue(event: React.MouseEvent<HTMLAnchorElement>) {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('referralContext');
+    if (!id || !route) {
+      return;
+    }
+    event.preventDefault();
+    if (continuedReferral.current) {
+      return;
+    }
+    continuedReferral.current = true;
+    let destination = route.href;
+    try {
+      const continued = await referralContextClient.continue(id);
+      if (continued) {
+        destination = getExtensionURL(
+          buildMoneyReferralRoute({
+            id,
+            url: `https://${CANONICAL_DEEP_LINK_HOST}${params.get('u')}`,
+          }),
+        );
+      }
+    } catch {
+      // Continue still works if referral context is unavailable.
+    }
+    // The warning and invite are one handoff, not destinations to revisit
+    // when backing out of the product page after answering the invite.
+    window.location.replace(destination);
+  }
+
   if (pageNotFoundError && !isLoading) {
     return (
       <PageNotFound
@@ -339,6 +393,7 @@ export const DeepLink = () => {
               <a
                 href={route?.href ?? getExtensionURL('/')}
                 data-testid="deep-link-continue-button"
+                onClick={handleContinue}
               >
                 {cta}
               </a>
