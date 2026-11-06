@@ -191,6 +191,10 @@ describe('BridgeTransactionSettingsModal', () => {
         'inputmode',
         'decimal',
       );
+      expect(getByTestId(TX_MODAL.customInput)).toHaveAttribute(
+        'aria-label',
+        messages.swapsMaxSlippage.message,
+      );
       expect(baseElement.childNodes[2]).toMatchSnapshot();
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
