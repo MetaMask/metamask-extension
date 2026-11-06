@@ -74,6 +74,8 @@ export async function openDappAndSwitchChain(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+  // Guard against a queued chain-switch notification appearing instead of this connect dialog.
+  await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();
 
   // Switch back to the dapp
@@ -102,23 +104,48 @@ export async function openDappAndSwitchChain(
 
     const isAlreadyPermitted = permittedChains.includes(chainId);
 
+    const chainIdRequest = JSON.stringify({ method: 'eth_chainId' });
+    const currentChainId = await driver.executeScript(
+      `return window.ethereum.request(${chainIdRequest})`,
+    );
+    const isAlreadyActive = currentChainId === chainId;
+
     const switchChainRequest = JSON.stringify({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }],
     });
 
-    await driver.executeScript(
-      `window.ethereum.request(${switchChainRequest})`,
-    );
-
     if (!isAlreadyPermitted) {
+      // Chain is not yet permitted — fire the switch and handle the review dialog.
+      await driver.executeScript(
+        `window.ethereum.request(${switchChainRequest})`,
+      );
+
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
       await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButtonWithWaitForWindowToClose();
 
       // Switch back to the dapp
       await driver.switchToWindowWithUrl(dappUrl);
+    } else if (!isAlreadyActive) {
+      // Chain is permitted but not yet active — switch silently (no review dialog)
+      // and verify it took effect to catch any broken switch behaviour.
+      await driver.executeScript(
+        `window.ethereum.request(${switchChainRequest})`,
+      );
+      // Poll until the chain is active to confirm the switch completed.
+      // A silent switch on an already-permitted chain resolves quickly; 5 s is generous.
+      await driver.waitUntil(
+        async () => {
+          const activeChainId = await driver.executeScript(
+            `return window.ethereum.request(${chainIdRequest})`,
+          );
+          return activeChainId === chainId;
+        },
+        { interval: 100, timeout: 5000 },
+      );
     }
+    // else: already permitted and active — skip to avoid queuing a stale notification.
   }
 }
 
