@@ -59,8 +59,16 @@ export const useShieldSubscriptionContext = () => {
   return context;
 };
 
+type EvaluateCohortEligibility = (entrypointCohort: string) => Promise<void>;
+
 /**
- * Orchestrates Shield subscription eligibility evaluation and cohort assignment.
+ * Evaluates Shield subscription eligibility and assigns cohorts.
+ *
+ * Renders nothing. It owns every hook and store subscription this feature
+ * needs, and publishes the latest implementation through `implementationRef`.
+ * Keeping it separate from `ShieldSubscriptionProvider` means those
+ * subscriptions re-render only this leaf, not the provider at the root of the
+ * UI.
  *
  * Full eligibility requires (checked across the provider and its dependencies):
  * 1. Shield feature flag enabled
@@ -72,11 +80,13 @@ export const useShieldSubscriptionContext = () => {
  * 7. Cohort assignment and modal display per flowchart (MetaMask-planning#6638)
  *
  * @param props - Component props
- * @param props.children - Child elements to render
+ * @param props.implementationRef - Ref that receives the latest implementation
  */
-export const ShieldSubscriptionProvider = ({
-  children,
-}: React.PropsWithChildren) => {
+const ShieldCohortEvaluator = ({
+  implementationRef,
+}: {
+  implementationRef: React.MutableRefObject<EvaluateCohortEligibility>;
+}) => {
   const dispatch = useDispatch();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
@@ -152,18 +162,11 @@ export const ShieldSubscriptionProvider = ({
   );
 
   /**
-   * Ref to hold the latest implementation of evaluateCohortEligibility.
-   * Assigned synchronously during render (not in useEffect) so the ref
-   * is populated before commit-phase callbacks (componentDidUpdate) fire.
-   * Uses a no-op initial value so useRef returns MutableRefObject (not RefObject).
+   * Assigned synchronously during render (not in useEffect) so the ref is
+   * populated before commit-phase callbacks (componentDidUpdate) fire.
    */
-  const evaluateCohortEligibilityRef = useRef<
-    (entrypointCohort: string) => Promise<void>
-    // eslint-disable-next-line no-empty-function
-  >(async () => {});
-
   // eslint-disable-next-line react-hooks/refs
-  evaluateCohortEligibilityRef.current = async (
+  implementationRef.current = async (
     entrypointCohort: string,
   ): Promise<void> => {
     if (evaluatedShieldCohortsThisSession.has(entrypointCohort)) {
@@ -300,17 +303,6 @@ export const ShieldSubscriptionProvider = ({
     }
   };
 
-  /**
-   * Stable callback wrapper that delegates to the ref.
-   * Safe to pass as a dependency or context value without causing re-renders.
-   */
-  const evaluateCohortEligibility = useCallback(
-    async (entrypointCohort: string): Promise<void> => {
-      await evaluateCohortEligibilityRef.current(entrypointCohort);
-    },
-    [],
-  );
-
   const shouldPoll =
     isMetaMaskShieldFeatureEnabled &&
     isBasicFunctionalityEnabled &&
@@ -328,10 +320,38 @@ export const ShieldSubscriptionProvider = ({
     enabled: shouldPoll,
   });
 
+  return null;
+};
+
+/**
+ * Provides `evaluateCohortEligibility` to the UI.
+ *
+ * The provider itself subscribes to nothing, so it renders once and its
+ * context value never changes. All the work happens in `ShieldCohortEvaluator`.
+ *
+ * @param props - Component props
+ * @param props.children - Child elements to render
+ */
+export const ShieldSubscriptionProvider = ({
+  children,
+}: React.PropsWithChildren) => {
+  // No-op until the evaluator renders and publishes the real implementation.
+  const implementationRef = useRef<EvaluateCohortEligibility>(
+    // eslint-disable-next-line no-empty-function
+    async () => {},
+  );
+
   /**
-   * Memoize the context value to prevent creating a new object reference
-   * on every render, which would cause unnecessary re-renders of consuming components.
+   * Stable callback that delegates to the latest implementation. Safe to pass
+   * as a dependency or context value without causing re-renders.
    */
+  const evaluateCohortEligibility = useCallback(
+    async (entrypointCohort: string): Promise<void> => {
+      await implementationRef.current(entrypointCohort);
+    },
+    [],
+  );
+
   const contextValue = useMemo(
     () => ({ evaluateCohortEligibility }),
     [evaluateCohortEligibility],
@@ -339,6 +359,7 @@ export const ShieldSubscriptionProvider = ({
 
   return (
     <ShieldSubscriptionContext.Provider value={contextValue}>
+      <ShieldCohortEvaluator implementationRef={implementationRef} />
       {children}
     </ShieldSubscriptionContext.Provider>
   );
