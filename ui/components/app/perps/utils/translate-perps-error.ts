@@ -220,6 +220,11 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_UNSUPPORTED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_POSITION_OPEN]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_ORDER_OPEN]: 'perpsOrderFailed',
+  // Post-only rejections stay off `perpsOrderFailed`. The cancel-flow override
+  // rewrites that key to `perpsCancelOrderFailed`, and the would-cross case
+  // tells the trader how to place the order.
+  [PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS]: 'perpsPostOnlyWouldCross',
+  [PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW]: 'perpsPostOnlyWindow',
 
   // HyperLiquid client errors
   [PERPS_ERROR_CODES.EXCHANGE_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
@@ -318,6 +323,17 @@ export const API_ERROR_PATTERNS: {
   pattern: RegExp;
   code: PerpsErrorCode;
 }[] = [
+  // Post-only rejections come first. The would-cross sentence embeds raw bbo
+  // prices such as 2503.1, which a broad "503" pattern can misread as an outage.
+  {
+    pattern: /post only order would have immediately matched/iu,
+    code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+  },
+  {
+    pattern:
+      /only post-only orders allowed immediately after network upgrade/iu,
+    code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+  },
   // Order execution
   {
     pattern: /insufficient margin/iu,
