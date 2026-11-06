@@ -1,9 +1,6 @@
 import React, { StrictMode } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import {
-  ReferralDialog,
-  ReferralDialogContent,
-} from '#ui/components/app/rewards/money-referral/ReferralDialog';
+import { ReferralDialog } from '#ui/components/app/rewards/money-referral/ReferralDialog';
 
 describe('ReferralDialog', () => {
   it('opens modally, focuses the requested action, and closes on unmount', () => {
@@ -60,7 +57,7 @@ describe('ReferralDialog', () => {
     const onClose = jest.fn();
     render(
       <ReferralDialog onClose={onClose} data-testid="invite">
-        <ReferralDialogContent>Invite</ReferralDialogContent>
+        Invite
       </ReferralDialog>,
     );
     const dialog = screen.getByRole('dialog');

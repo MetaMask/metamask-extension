@@ -66,26 +66,20 @@ export function ReferralDialog({
         }
       }}
     >
-      {children}
+      {/* Keeps the existing MMDS sheet layout inside the native modal. */}
+      <Box
+        backgroundColor={BoxBackgroundColor.BackgroundElevated1}
+        borderColor={BoxBorderColor.BorderAlternative}
+        borderWidth={1}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Stretch}
+        justifyContent={BoxJustifyContent.Start}
+        paddingTop={4}
+        paddingBottom={4}
+        className="flex max-h-full w-full max-w-[480px] rounded-4xl shadow-lg motion-safe:animate-slide-up"
+      >
+        {children}
+      </Box>
     </dialog>
-  );
-}
-
-/** Keeps the existing MMDS sheet layout inside the native modal. */
-export function ReferralDialogContent({ children }: React.PropsWithChildren) {
-  return (
-    <Box
-      backgroundColor={BoxBackgroundColor.BackgroundElevated1}
-      borderColor={BoxBorderColor.BorderAlternative}
-      borderWidth={1}
-      flexDirection={BoxFlexDirection.Column}
-      alignItems={BoxAlignItems.Stretch}
-      justifyContent={BoxJustifyContent.Start}
-      paddingTop={4}
-      paddingBottom={4}
-      className="flex max-h-full w-full max-w-[480px] rounded-4xl shadow-lg motion-safe:animate-slide-up"
-    >
-      {children}
-    </Box>
   );
 }
