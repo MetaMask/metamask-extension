@@ -17,7 +17,7 @@ export const SETTING_ANCHORS = new Set([
 ]);
 
 /**
- * DeepLink to the Privacy & Security settings tab, scrolled to a specific
+ * Deep link to the Privacy & Security settings tab, scrolled to a specific
  * setting.
  *
  * Supported URL formats:

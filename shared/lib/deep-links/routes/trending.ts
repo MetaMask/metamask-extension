@@ -9,7 +9,7 @@ const SEARCH_SCREEN = 'search';
 const SEARCH_QUERY_PARAM = 'q';
 
 /**
- * DeepLink for trending content and Explore Search.
+ * Deep link for trending content and Explore Search.
  *
  * Signed `/trending` deep links with `screen=search` open Explore Search,
  * optionally pre-populated from `q`. Other `/trending` deep links retain the

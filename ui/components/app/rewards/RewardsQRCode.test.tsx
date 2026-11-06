@@ -90,7 +90,7 @@ describe('RewardsQRCode', () => {
     expect(mockUseSelector).toHaveBeenCalledWith(selectRewardsDeepLinkUrl);
   });
 
-  it('encodes the stored deepLink URL in the QR code when present', () => {
+  it('encodes the stored deep link URL in the QR code when present', () => {
     const deepLink = 'https://link.metamask.io/rewards?referral=ABC123';
     mockUseSelector.mockImplementation((selector) => {
       if (selector === selectRewardsDeepLinkUrl) {
@@ -105,7 +105,7 @@ describe('RewardsQRCode', () => {
     expect(qrImageContainer.innerHTML).toContain(`data-qr="${deepLink}"`);
   });
 
-  it('falls back to REWARDS_DEEP_LINK_BASE_URL when no deepLink is stored', () => {
+  it('falls back to REWARDS_DEEP_LINK_BASE_URL when no deep link is stored', () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === selectRewardsDeepLinkUrl) {
         return null;

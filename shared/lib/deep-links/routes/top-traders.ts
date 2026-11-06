@@ -4,7 +4,7 @@ import { Route } from './route';
 const FOLLOW_TRADING_PATH = '/news/top-traders';
 
 /**
- * DeepLink for the Follow Trading experience.
+ * Deep link for the Follow Trading experience.
  *
  * Follow Trading currently only exists in MetaMask Mobile, so on the extension
  * we redirect the deep link to the feature's web landing page rather than an

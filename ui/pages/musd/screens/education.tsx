@@ -113,7 +113,7 @@ const MusdEducationScreen = () => {
   const hasEligibleConversionTokens = conversionTokens.length > 0;
 
   /**
-   * When deep link and user has no eligible tokens: if they can buy in region
+   * When opened from a deep link with no eligible tokens: if they can buy in region
    * (not geo-blocked AND buyable on at least one enabled chain) then primary
    * CTA goes to buy flow; otherwise "Continue" goes home.
    */
@@ -154,8 +154,8 @@ const MusdEducationScreen = () => {
 
   /**
    * Handle primary CTA click.
-   * - DeepLink + no tokens + can buy: open buy flow then go home ("Buy mUSD").
-   * - DeepLink + no tokens + cannot buy: go home ("Continue").
+   * - Deep link + no tokens + can buy: open buy flow then go home ("Buy mUSD").
+   * - Deep link + no tokens + cannot buy: go home ("Continue").
    * - Geo-blocked (non-deep-link): go home ("Continue").
    * - Otherwise (including deep link + has tokens): start conversion flow ("Get started").
    */

@@ -70,7 +70,7 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-// Mock navigate and search params (isDeepLink)
+// Mock navigate and the `isDeeplink` query parameter
 const mockNavigate = jest.fn();
 const mockSearchParamsGet = jest.fn().mockReturnValue(null);
 jest.mock('react-router-dom', () => ({
@@ -287,7 +287,7 @@ describe('MusdEducationScreen', () => {
   });
 
   // -------------------------------------------------------------------
-  // DeepLink with no eligible conversion tokens
+  // Deep link with no eligible conversion tokens
   // -------------------------------------------------------------------
 
   describe('deep link with no eligible conversion tokens', () => {
@@ -312,7 +312,7 @@ describe('MusdEducationScreen', () => {
       fireEvent.click(button);
 
       expect(mockDispatch).toHaveBeenCalled();
-      // DeepLink buy branch pins the fallback chain to mainnet.
+      // Deep link buy branch pins the fallback chain to mainnet.
       expect(mockGoToBuy).toHaveBeenCalledWith({
         assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
         chainId: '0x1',
@@ -388,7 +388,7 @@ describe('MusdEducationScreen', () => {
   });
 
   // -------------------------------------------------------------------
-  // DeepLink with eligible conversion tokens
+  // Deep link with eligible conversion tokens
   // -------------------------------------------------------------------
 
   describe('deep link with eligible conversion tokens', () => {
