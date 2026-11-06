@@ -445,6 +445,7 @@ export const WINDOW_TITLES = Object.freeze({
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
   TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
+  MockRampProvider: 'Mock Ramp Provider',
   MultichainTestDApp: 'Multichain Test Dapp',
   SolanaTestDApp: 'Solana Test Dapp',
   BitcoinTestDApp: 'Bitcoin Test Dapp',

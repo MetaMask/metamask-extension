@@ -1,4 +1,5 @@
 [
+  "127.0.0.1:8000",
   "accounts.api.cx.metamask.io",
   "acl.execution.metamask.io",
   "ancient-quaint-water.base-mainnet.quiknode.pro",
@@ -120,6 +121,7 @@
   "preview.contentful.com",
   "price-api.metamask-institutional.io",
   "price.api.cx.metamask.io",
+  "provider-mock.test",
   "proxy.api.cx.metamask.io",
   "proxy.dev-api.cx.metamask.io",
   "push.api.cx.metamask.io",
