@@ -6,7 +6,7 @@
 import type { LegacyBackgroundApiService } from './legacy-background-api-service';
 
 /**
- * Sets the current currency for the CurrencyRateController and AssetsController.
+ * Sets the selected currency on the AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
  */

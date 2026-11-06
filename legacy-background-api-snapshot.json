@@ -113,8 +113,6 @@
     "createNewVaultAndGetSeedPhrase",
     "createNewVaultAndKeychain",
     "createSpeedUpTransaction",
-    "currencyRateStartPolling",
-    "currencyRateStopPollingByPollingToken",
     "deFiStartPolling",
     "deFiStopPolling",
     "deleteAllClaimDrafts",
