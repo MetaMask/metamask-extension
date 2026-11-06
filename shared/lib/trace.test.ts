@@ -7,6 +7,7 @@ import {
   extractTraceMetadata,
   getSerializedTraceContext,
   getTraceContext,
+  withoutTraceContext,
   ONBOARDING_MACHINE_TIME_ATTRIBUTE,
   trace,
   TraceName,
@@ -942,6 +943,45 @@ describe('Trace', () => {
     it('returns undefined when sentry is not initialized', () => {
       globalThis.sentry = undefined;
       expect(getSerializedTraceContext()).toBeUndefined();
+    });
+  });
+
+  describe('withoutTraceContext', () => {
+    it('runs the callback when Sentry is not initialized', () => {
+      globalThis.sentry = undefined;
+      expect(withoutTraceContext(() => 7)).toBe(7);
+    });
+
+    it('runs the callback with no active span and returns its value', () => {
+      const withActiveSpan = jest.fn(
+        (_span: Sentry.Span | null, callback: () => void) => {
+          callback();
+        },
+      );
+      globalThis.sentry = {
+        ...globalThis.sentry,
+        withActiveSpan,
+      };
+
+      expect(withoutTraceContext(() => 7)).toBe(7);
+      expect(withActiveSpan).toHaveBeenCalledWith(null, expect.any(Function));
+    });
+
+    it('does not return the callback promise from the span callback', () => {
+      let spanCallbackReturn: unknown = 'unset';
+      const withActiveSpan = jest.fn(
+        (_span: Sentry.Span | null, callback: () => unknown) => {
+          spanCallbackReturn = callback();
+        },
+      );
+      globalThis.sentry = {
+        ...globalThis.sentry,
+        withActiveSpan,
+      };
+      const pending = Promise.resolve('done');
+
+      expect(withoutTraceContext(() => pending)).toBe(pending);
+      expect(spanCallbackReturn).toBeUndefined();
     });
   });
 

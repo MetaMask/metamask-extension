@@ -48,7 +48,7 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
               class="inline-flex"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-12 w-12 bg-white"
                 data-testid="ramps-complete-buy-token-avatar"
               >
                 <img
@@ -64,7 +64,7 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
               style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg h-[34px] w-[34px] border-background-default border bg-white"
                 style="width: 24px; height: 24px; border-width: 2px;"
               >
                 <img
@@ -262,7 +262,7 @@ exports[`RampsCompleteBuyScreen matches snapshot when the token has no icon url 
               style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg h-[34px] w-[34px] border-background-default border bg-white"
                 style="width: 24px; height: 24px; border-width: 2px;"
               >
                 <img
@@ -489,7 +489,7 @@ exports[`RampsCompleteBuyScreen resolves the network badge from a non-EVM CAIP c
               class="inline-flex"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-12 w-12 bg-white"
                 data-testid="ramps-complete-buy-token-avatar"
               >
                 <img
@@ -505,7 +505,7 @@ exports[`RampsCompleteBuyScreen resolves the network badge from a non-EVM CAIP c
               style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg h-[34px] w-[34px] border-background-default border bg-white"
                 style="width: 24px; height: 24px; border-width: 2px;"
               >
                 <img

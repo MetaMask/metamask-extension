@@ -31,6 +31,7 @@ import { getChainIdFromAssetId } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
+  ACTIVITY_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -198,32 +199,6 @@ export const useBridgeNavigation = () => {
   );
 
   /**
-   * Clears the search params for the given parameters.
-   * @param paramsToRemove - The parameters to clear.
-   */
-  const resetSearchParams = useCallback(
-    (paramsToRemove: BridgeQueryParams[]) => {
-      const updatedSearchParams = new URLSearchParams(search);
-      paramsToRemove.forEach((param) => {
-        if (updatedSearchParams.get(param)) {
-          updatedSearchParams.delete(param);
-        }
-      });
-      navigate(
-        {
-          pathname,
-          search: updatedSearchParams.toString(),
-        },
-        {
-          replace: true,
-          state,
-        },
-      );
-    },
-    [navigate, search, pathname, state],
-  );
-
-  /**
    * Navigates to the bridge page.
    * @param token - The token to set after loading the bridge page.
    * @param isEntrypoint - Whether the bridge page is being loaded for the first time.
@@ -368,7 +343,7 @@ export const useBridgeNavigation = () => {
    * Navigates to the activity page and clears the navigation state.
    */
   const navigateToActivityPage = useCallback(() => {
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+    navigate(ACTIVITY_ROUTE, {
       state: clearedBridgeState(state),
       replace: true,
     });
@@ -406,7 +381,6 @@ export const useBridgeNavigation = () => {
     swapViewPrefilledAmount: state.swapViewPrefilledAmount,
     search,
     resetLocationState,
-    resetSearchParams,
     navigateToAssetPage,
     navigateToBridgePage,
     navigateToBridgeAssetPickerPage,

@@ -584,6 +584,30 @@ export function getSerializedTraceContext():
 }
 
 /**
+ * Run the callback with no active span, so a `submitRequestToBackground` call
+ * inside it carries no trace context and the background emits no wrapper spans
+ * for it. The callback runs inside a void wrapper because Sentry keeps the
+ * forked scope until a returned promise settles, which would hide the active
+ * span from unrelated UI work in the meantime.
+ *
+ * @param callback - Code whose background calls should not join the active trace.
+ * @returns The callback's return value.
+ */
+export function withoutTraceContext<ReturnValue>(
+  callback: () => ReturnValue,
+): ReturnValue {
+  const withActiveSpan = globalThis.sentry?.withActiveSpan;
+  if (!withActiveSpan) {
+    return callback();
+  }
+  let result: ReturnValue | undefined;
+  withActiveSpan(null, () => {
+    result = callback();
+  });
+  return result as ReturnValue;
+}
+
+/**
  * Extract tracing metadata appended by submitRequestToBackground.
  *
  * Only a valid trailing `_trace` wrapper is removed, preserving ordinary

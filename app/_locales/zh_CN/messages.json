@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "合约交互"
   },
-  "convertAgain": {
-    "message": "再次转换"
-  },
   "convertTokenToNFTDescription": {
     "message": "我们检测到该资产是NFT。MetaMask现在完全原生支持NFT。您想将它从您的代币列表中删除并将它添加为NFT吗？"
   },
@@ -6343,19 +6340,6 @@
     "message": "已兑换为 mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD 兑换失败"
-  },
-  "musdConversionToastInProgress": {
-    "message": "正在将 $1 兑换为 mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD 兑换成功"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "奖励将在一天内可领取。"
-  },
   "musdConvert": {
     "message": "兑换"
   },
@@ -8453,7 +8437,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "联系支持部门",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "部分服务暂时不可用。$1，或 $2。",
@@ -8461,7 +8445,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "在常见问题解答中查看您的选项",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "我们遇到了服务中断",

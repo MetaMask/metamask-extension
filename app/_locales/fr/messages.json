@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Interaction avec un contrat"
   },
-  "convertAgain": {
-    "message": "Effectuer une nouvelle conversion"
-  },
   "convertTokenToNFTDescription": {
     "message": "Nous avons détecté que cet actif est un NFT. MetaMask prend désormais nativement en charge les NFT. Voulez-vous le retirer de votre liste de jetons et l’ajouter en tant que NFT ?"
   },
@@ -6343,19 +6340,6 @@
     "message": "Converti en mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Échec de la conversion en mUSD"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Conversion de $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Conversion en mUSD effectuée avec succès"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Le bonus pourra être réclamé dans un délai d’un jour."
-  },
   "musdConvert": {
     "message": "Convertir"
   },
@@ -8447,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "contacter notre service d’assistance",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Certains services sont temporairement indisponibles. $1, ou $2.",
@@ -8455,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Découvrez les options qui s'offrent à vous dans la FAQ",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Nous subissons actuellement une panne",

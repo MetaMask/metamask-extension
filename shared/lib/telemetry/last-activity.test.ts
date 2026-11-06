@@ -132,6 +132,41 @@ describe('last-activity', () => {
       expect(getLastActivityContext(4_100).msSinceLastUiClosed).toBe(100);
     });
 
+    it('omits msSinceLastUiInteraction before the first interaction', async () => {
+      jest.setSystemTime(1_000);
+      const { getLastActivityContext, hydrateLastActivity } =
+        await import('./last-activity');
+      await hydrateLastActivity();
+
+      expect(
+        getLastActivityContext(1_500).msSinceLastUiInteraction,
+      ).toBeUndefined();
+    });
+
+    it('reports the elapsed time since the last UI interaction after the UI closes', async () => {
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordUiClosed,
+        recordUiInteraction,
+        recordUiOpen,
+      } = await import('./last-activity');
+      await hydrateLastActivity();
+
+      jest.setSystemTime(3_000);
+      recordUiOpen();
+      jest.setSystemTime(5_000);
+      recordUiInteraction();
+      jest.setSystemTime(6_000);
+      recordUiClosed();
+
+      expect(getLastActivityContext(6_050).msSinceLastUiOpen).toBeUndefined();
+      expect(getLastActivityContext(6_050).msSinceLastUiInteraction).toBe(
+        1_050,
+      );
+    });
+
     it('reports the elapsed time since the last window event', async () => {
       jest.setSystemTime(1_000);
       const { getLastActivityContext, hydrateLastActivity, recordWindowEvent } =
@@ -231,6 +266,25 @@ describe('last-activity', () => {
         msSinceLastWrite: 500,
       });
     });
+
+    it('does not write session state when recordUiInteraction runs in a UI context', async () => {
+      mockUiEnvironment();
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordUiInteraction,
+      } = await import('./last-activity');
+      await hydrateLastActivity();
+
+      jest.setSystemTime(2_000);
+      recordUiInteraction();
+      await Promise.resolve();
+
+      expect(mockStorageSessionGet).not.toHaveBeenCalled();
+      expect(mockStorageSessionSet).not.toHaveBeenCalled();
+      expect(getLastActivityContext(2_500).msSinceLastUiInteraction).toBe(500);
+    });
   });
 
   describe('session persistence', () => {
@@ -262,6 +316,24 @@ describe('last-activity', () => {
         msSinceLastServiceWorkerReload: 500,
         serviceWorkerReloadCount: 1,
       });
+    });
+
+    it('restores the last UI interaction across a service-worker reload', async () => {
+      jest.setSystemTime(1_000);
+      const first = await import('./last-activity');
+      await first.hydrateLastActivity();
+      jest.setSystemTime(4_000);
+      first.recordUiInteraction();
+      await Promise.resolve();
+
+      jest.resetModules();
+      jest.setSystemTime(9_000);
+      const second = await import('./last-activity');
+      await second.hydrateLastActivity();
+
+      expect(
+        second.getLastActivityContext(9_200).msSinceLastUiInteraction,
+      ).toBe(5_200);
     });
 
     it('restores UI-open presence across a service-worker reload', async () => {
@@ -348,6 +420,38 @@ describe('last-activity', () => {
         msSinceLastServiceWorkerReload: 1_500,
         serviceWorkerReloadCount: 5,
       });
+    });
+
+    it('keeps an in-memory UI interaction timestamp recorded before hydrate finishes', async () => {
+      let releaseGet: (() => void) | undefined;
+      mockStorageSessionGet.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            releaseGet = () => {
+              resolve({
+                lastActivity: {
+                  appStartedAt: 10,
+                  lastUiInteractionAt: 50,
+                  serviceWorkerReloadCount: 4,
+                },
+              });
+            };
+          }),
+      );
+
+      jest.setSystemTime(1_000);
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordUiInteraction,
+      } = await import('./last-activity');
+
+      jest.setSystemTime(2_000);
+      recordUiInteraction();
+      releaseGet?.();
+      await hydrateLastActivity();
+
+      expect(getLastActivityContext(2_500).msSinceLastUiInteraction).toBe(500);
     });
 
     it('does not inflate serviceWorkerReloadCount when a UI context hydrates between two background reloads', async () => {
