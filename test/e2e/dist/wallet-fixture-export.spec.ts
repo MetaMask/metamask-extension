@@ -19,6 +19,7 @@ describe('Wallet State', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        manifestFlags: { testing: { disableOnboardingAnimations: true } },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -105,6 +106,7 @@ describe('Wallet State', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        manifestFlags: { testing: { disableOnboardingAnimations: true } },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
