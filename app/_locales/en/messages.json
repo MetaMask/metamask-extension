@@ -3199,9 +3199,6 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
-  "convertAgain": {
-    "message": "Convert again"
-  },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
@@ -3536,6 +3533,9 @@
   },
   "deepLink_theHomePage": {
     "message": "the home page"
+  },
+  "deepLink_theMoneyDepositPage": {
+    "message": "the Money deposit page"
   },
   "deepLink_theMoneyPage": {
     "message": "the Money page"
@@ -6538,19 +6538,6 @@
     "message": "Converted to mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD conversion failed"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Converting $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD conversion successful"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus will be claimable within a day."
-  },
   "musdConvert": {
     "message": "Convert"
   },
@@ -8895,6 +8882,10 @@
   "perpsToastPartialLimitCloseFailed": {
     "message": "Failed to place partial close order",
     "description": "Error toast text shown when placing a partial perps limit close order fails"
+  },
+  "perpsToastPositionAlreadyClosed": {
+    "message": "This position is already closed",
+    "description": "Toast text shown when a perps TP/SL update or close targets a position that closed before the request reached the provider"
   },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",

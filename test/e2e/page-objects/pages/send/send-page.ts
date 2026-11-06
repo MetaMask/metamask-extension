@@ -9,8 +9,7 @@ import { Driver } from '../../../webdriver/driver';
  * Boundaries: the send form through Continue. Confirmation / review screens
  * (including Bitcoin snap review) belong to confirmation or
  * `BitcoinReviewTxPage`.
- * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`,
- * `flows/bitcoin-send.flow.ts`.
+ * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`.
  *
  * @see ui/pages/confirmations/send/send.tsx
  * @see ui/pages/confirmations/send/send-inner.tsx
@@ -64,6 +63,10 @@ class SendPage {
 
   private readonly invalidAddressError = {
     text: 'Invalid address',
+  };
+
+  private readonly invalidValueError = {
+    text: 'Invalid value',
   };
 
   private readonly maxButton = {
@@ -241,6 +244,11 @@ class SendPage {
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
     await this.driver.waitForSelector(this.invalidAddressError);
+  }
+
+  async checkInvalidValueError(): Promise<void> {
+    console.log('Checking for invalid value error');
+    await this.driver.waitForSelector(this.invalidValueError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
