@@ -158,11 +158,17 @@ export class OAuthService {
 
     const refreshTokenData = await loginHandler.refreshAuthToken(refreshToken);
     const idToken = refreshTokenData.id_token;
+    const { refresh_token: newRefreshToken, revoke_token: newRevokeToken } =
+      refreshTokenData;
 
     return {
       idTokens: [idToken],
       accessToken: refreshTokenData.access_token,
       metadataAccessToken: refreshTokenData.metadata_access_token,
+      // Core treats the refresh as rotated only when both tokens are present.
+      ...(newRefreshToken && newRevokeToken
+        ? { refreshToken: newRefreshToken, revokeToken: newRevokeToken }
+        : {}),
     };
   }
 

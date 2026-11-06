@@ -839,6 +839,8 @@ describe('OAuthService - getNewRefreshToken', () => {
 
     expect(result).toEqual({
       idTokens: ['MOCK_NEW_JWT_TOKEN'],
+      refreshToken: 'MOCK_NEW_REFRESH_TOKEN',
+      revokeToken: 'MOCK_NEW_REVOKE_TOKEN',
     });
 
     expect(fetch).toHaveBeenCalledWith(
@@ -890,15 +892,62 @@ describe('OAuthService - getNewRefreshToken', () => {
       trackEvent: mockTrackEvent,
     });
 
-    await expect(
-      oauthService.getNewRefreshToken({
+    const error = await oauthService
+      .getNewRefreshToken({
         connection: AuthConnection.Google,
         refreshToken: 'MOCK_REFRESH_TOKEN',
-      }),
-    ).rejects.toThrow(
+      })
+      .catch((e) => e);
+
+    expect(error.message).toContain(
       OAuthErrorMessages.FAILED_TO_GET_AUTH_TOKEN_REFRESH_ERROR,
     );
+    expect(error.name).toBe('RefreshTokenHttpError');
+    expect(error.statusCode).toBe(401);
   });
+
+  it.each([
+    ['neither rotated token', {}],
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    ['only refresh_token', { refresh_token: 'MOCK_NEW_REFRESH_TOKEN' }],
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    ['only revoke_token', { revoke_token: 'MOCK_NEW_REVOKE_TOKEN' }],
+  ])(
+    'omits refreshToken and revokeToken when the response has %s',
+    async (_, rotatedTokens) => {
+      jest.spyOn(global, 'fetch').mockImplementation(
+        jest.fn(() =>
+          Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              id_token: 'MOCK_NEW_JWT_TOKEN',
+              ...rotatedTokens,
+            }),
+            status: 200,
+            ok: true,
+          }),
+        ) as jest.Mock,
+      );
+
+      const oauthService = new OAuthService({
+        messenger,
+        webAuthenticator: mockWebAuthenticator,
+        platform: mockPlatform,
+        trackEvent: mockTrackEvent,
+      });
+
+      const result = await oauthService.getNewRefreshToken({
+        connection: AuthConnection.Google,
+        refreshToken: 'MOCK_REFRESH_TOKEN',
+      });
+
+      expect(result).toStrictEqual({
+        idTokens: ['MOCK_NEW_JWT_TOKEN'],
+        accessToken: undefined,
+        metadataAccessToken: undefined,
+      });
+    },
+  );
 
   describe('OAuthService:getNewRefreshToken action', () => {
     it('gets a new refresh token', async () => {
@@ -933,6 +982,8 @@ describe('OAuthService - getNewRefreshToken', () => {
 
       expect(result).toEqual({
         idTokens: ['MOCK_NEW_JWT_TOKEN'],
+        refreshToken: 'MOCK_NEW_REFRESH_TOKEN',
+        revokeToken: 'MOCK_NEW_REVOKE_TOKEN',
       });
     });
   });
