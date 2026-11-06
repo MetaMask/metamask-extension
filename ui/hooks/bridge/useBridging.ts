@@ -5,6 +5,7 @@ import {
   formatChainIdToCaip,
   GenericQuoteRequest,
   getNativeAssetForChainId,
+  isCrossChain,
   UnifiedSwapBridgeEventName,
   MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
@@ -32,6 +33,36 @@ import {
   BridgeNavigationOptions,
   useBridgeNavigation,
 } from './useBridgeNavigation';
+
+/**
+ * Default source asset for a chain the network filter selected.
+ * Namespace bip44 pairs only describe one chain (Ethereum Mainnet for EVM).
+ *
+ * @param fallbackChainId - Chain selected in the network filter, or the provider chain.
+ * @param bip44DefaultPairsConfig - Remote default pairs keyed by CAIP namespace.
+ * @returns CAIP-19 asset id, when one can be resolved.
+ */
+const getDefaultFromAssetId = (
+  fallbackChainId: string,
+  bip44DefaultPairsConfig: ReturnType<typeof getBip44DefaultPairsConfig>,
+): string | undefined => {
+  const formattedChainId = formatChainIdToCaip(fallbackChainId);
+  const { namespace } = parseCaipChainId(formattedChainId);
+  const bip44AssetId = Object.keys(
+    bip44DefaultPairsConfig?.[namespace]?.standard ?? {},
+  )[0];
+
+  const bip44ChainId = bip44AssetId?.split('/')[0];
+  if (bip44ChainId && !isCrossChain(bip44ChainId, formattedChainId)) {
+    return bip44AssetId;
+  }
+
+  try {
+    return getNativeAssetForChainId(formattedChainId)?.assetId;
+  } catch {
+    return undefined;
+  }
+};
 
 /**
  * This hook is the entrypoint for the bridge experience
@@ -131,18 +162,21 @@ const useBridging = () => {
           // Otherwise, set the `from` query param to use the bridge page's deep linking logic
           search.set(BridgeQueryParams.From, assetId);
         }
-      } else if (lastSelectedChainId !== fromChain.chainId) {
-        // If an unsupported network is selected in the network filter, use bridge page's default fromChain
+      } else if (
+        !lastSelectedChainId ||
+        isCrossChain(lastSelectedChainId, fromChain.chainId)
+      ) {
+        // The network filter is the source chain. bip44DefaultPairs has one
+        // pair per namespace, and the EVM pair is Ethereum Mainnet, so other
+        // EVM chains use their own native asset.
         const fallbackChainId = lastSelectedChainId ?? fromChain.chainId;
-        const { namespace } = parseCaipChainId(fallbackChainId);
-        // Use the bip44 default asset for the fallback chain if it is defined
-        const bip44AssetId = Object.keys(
-          bip44DefaultPairsConfig?.[namespace]?.standard ?? {},
-        )[0];
-        // Otherwise, use the native assetId
-        const defaultAssetId =
-          bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
-        search.set(BridgeQueryParams.From, defaultAssetId);
+        const defaultAssetId = getDefaultFromAssetId(
+          fallbackChainId,
+          bip44DefaultPairsConfig,
+        );
+        if (defaultAssetId) {
+          search.set(BridgeQueryParams.From, defaultAssetId);
+        }
       }
 
       if (destTokenAssetId) {
