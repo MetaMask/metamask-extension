@@ -141,18 +141,22 @@ describe('webpack.config.test.ts', () => {
     // first two args are always ignored.
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
-    mock.method(fs, 'readFileSync', (path: string, options?: null) => {
-      if (path === resolve(__dirname, '../../../.metamaskrc')) {
-        // mock `.metamaskrc`, as users might have customized it which may
-        // break our tests
-        return `
+    mock.method(
+      fs,
+      'readFileSync',
+      (path: string, options: Parameters<typeof fs.readFileSync>[1]) => {
+        if (path === resolve(__dirname, '../../../.metamaskrc')) {
+          // mock `.metamaskrc`, as users might have customized it which may
+          // break our tests
+          return `
 ${Object.entries(env)
   .map(([key, value]) => `${key}=${value}`)
   .join('\n')}
 `;
-      }
-      return originalReadFileSync.call(fs, path, options);
-    });
+        }
+        return originalReadFileSync.call(fs, path, options);
+      },
+    );
     return require('../webpack.config.ts').default;
   }
 
