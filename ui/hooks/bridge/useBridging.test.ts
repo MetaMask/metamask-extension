@@ -10,7 +10,7 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigat
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, type ChainId } from '../../../shared/constants/network';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import * as bridgeActions from '../../ducks/bridge/actions';
@@ -597,7 +597,7 @@ describe('useBridging', () => {
   describe('single EVM network filter', () => {
     const polygonAssetId = getNativeAssetForChainId(CHAIN_IDS.POLYGON).assetId;
 
-    const singlePolygonStore = (providerChainId: string) =>
+    const singlePolygonStore = (providerChainId: ChainId) =>
       createBridgeMockStore({
         metamaskStateOverrides: {
           useExternalServices: true,
