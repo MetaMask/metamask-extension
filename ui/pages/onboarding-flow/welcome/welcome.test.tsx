@@ -17,6 +17,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
+import * as ManifestFlags from '../../../../shared/lib/manifestFlags';
 import { TraceName } from '../../../../shared/lib/trace';
 import Welcome from './welcome';
 
@@ -611,6 +612,21 @@ describe('Welcome Page', () => {
           }),
         }),
       );
+    });
+  });
+
+  describe('when the disableOnboardingAnimations manifest flag is set', () => {
+    it('shows the welcome actions without waiting for the animation', () => {
+      jest
+        .spyOn(ManifestFlags, 'getManifestFlags')
+        .mockReturnValue({ testing: { disableOnboardingAnimations: true } });
+
+      const { getByTestId } = renderWithProvider(<Welcome />, mockStore);
+
+      expect(getByTestId('get-started')).toHaveStyle({
+        opacity: '1',
+        transition: 'none',
+      });
     });
   });
 });

@@ -54,6 +54,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   isUserCancelledLoginError,
@@ -119,7 +120,8 @@ export default function OnboardingWelcome() {
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
     animationCompleted?.MetamaskWordMarkAnimation ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING ||
+    getManifestFlags().testing?.disableOnboardingAnimations,
   );
 
   // In test environments or when returning from another page, skip animations
