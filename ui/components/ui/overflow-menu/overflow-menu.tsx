@@ -42,8 +42,8 @@ const itemClassName = classnames(
 const popoverPanelStyle = {
   inset: 'auto',
   positionAnchor: '--menu-trigger',
-  top: 'anchor(bottom)',
-  right: 'anchor(right)',
+  positionArea: 'block-end span-inline-end',
+  positionTryFallbacks: 'flip-block, flip-inline',
   minWidth: 180,
   width: 'max-content',
   backgroundColor: 'var(--color-background-elevated2)',
