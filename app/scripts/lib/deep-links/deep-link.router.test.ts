@@ -59,6 +59,8 @@ const routesProtectedByInterstitial = [
   '/perps-asset',
   '/rewards',
   '/predict',
+  '/social',
+  '/social/profile',
   '/trending',
   '/shield',
 ] as const;

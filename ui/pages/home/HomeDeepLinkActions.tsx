@@ -55,6 +55,13 @@ function isLimitOrderDeepLinkUrl(urlString: string | undefined) {
   );
 }
 
+function isSocialDeepLinkUrl(urlString: string | undefined) {
+  return (
+    isDeepLinkUrlForPath(urlString, '/social') ||
+    isDeepLinkUrlForPath(urlString, '/social/profile')
+  );
+}
+
 /**
  * Reusable hook to handle deep link actions for the home route.
  */
@@ -118,6 +125,19 @@ export const useHomeDeepLinkEffects = () => {
     [dispatch],
   );
 
+  const openSocialQrCodeModal = useCallback(
+    (deeplinkUrl: string) => {
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrSocialDescription',
+          titleKey: 'deepLinkQrSocialTitle',
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const openTrendingQrCodeModal = useCallback(
     (deeplinkUrl: string) => {
       dispatch(
@@ -157,6 +177,10 @@ export const useHomeDeepLinkEffects = () => {
           isDeepLinkUrlForPath(param, '/predict'),
         action: openPredictQrCodeModal,
       },
+      [HomeQueryParams.SocialDeeplinkUrl]: {
+        isValidParam: isSocialDeepLinkUrl,
+        action: openSocialQrCodeModal,
+      },
       [HomeQueryParams.TrendingDeeplinkUrl]: {
         isValidParam: (param?: string) =>
           isDeepLinkUrlForPath(param, '/trending'),
@@ -168,6 +192,7 @@ export const useHomeDeepLinkEffects = () => {
       openLimitOrderQrCodeModal,
       openNetworkSelectorModal,
       openPredictQrCodeModal,
+      openSocialQrCodeModal,
       openTrendingQrCodeModal,
     ],
   );

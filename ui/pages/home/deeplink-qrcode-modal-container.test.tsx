@@ -82,6 +82,24 @@ describe('DeeplinkQrCodeModalContainer', () => {
     expect(queryByTestId('deeplink-qrcode-modal')).toBeNull();
   });
 
+  it('renders Social open-on-mobile copy when a Social deeplink is set', () => {
+    const { getByText } = renderContainer({
+      homeDeepLinkQrCode: {
+        deeplinkUrl:
+          'https://link.metamask.io/social/profile?traderId=trader-123',
+        titleKey: 'deepLinkQrSocialTitle',
+        descriptionKey: 'deepLinkQrSocialDescription',
+      },
+    });
+
+    expect(
+      getByText(messages.deepLinkQrSocialTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.deepLinkQrSocialDescription.message),
+    ).toBeInTheDocument();
+  });
+
   it('renders the modal when homeDeepLinkQrCode is set and canShow is true', () => {
     const { getByTestId } = renderContainer({
       homeDeepLinkQrCode: {
