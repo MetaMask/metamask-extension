@@ -311,6 +311,11 @@ jest.mock('../../shared/lib/mv3.utils', () => ({
   },
 }));
 
+jest.mock('../../shared/lib/braze', () => ({
+  ...jest.requireActual('../../shared/lib/braze'),
+  isBrazeConfigured: jest.fn(() => false),
+}));
+
 jest.mock('./controllers/permissions', () => ({
   ...jest.requireActual('./controllers/permissions'),
   getAuthorizedScopesByOrigin: jest.fn(() => new Map()),
