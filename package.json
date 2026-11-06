@@ -542,7 +542,7 @@
     "@metamask/tron-wallet-snap": "^4.4.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^12.0.0",
-    "@metamask/wallet": "^20.0.0",
+    "@metamask/wallet": "patch:@metamask/wallet@npm%3A20.0.0#~/.yarn/patches/@metamask-wallet-npm-20.0.0-c9cad52e9f.patch",
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",

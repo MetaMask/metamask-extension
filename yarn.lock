@@ -10967,7 +10967,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^20.0.0":
+"@metamask/wallet@npm:20.0.0":
   version: 20.0.0
   resolution: "@metamask/wallet@npm:20.0.0"
   dependencies:
@@ -11000,6 +11000,42 @@ __metadata:
     "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/utils": "npm:^12.0.0"
   checksum: 10/1e45709cfa32901d0d4f9ac950f4cde8733cd0d25b9fbca2e89e72113916adcd314e5768402fa45776efde7dea57106f2a2815696e398d6411916e44a4cae9bd
+  languageName: node
+  linkType: hard
+
+"@metamask/wallet@patch:@metamask/wallet@npm%3A20.0.0#~/.yarn/patches/@metamask-wallet-npm-20.0.0-c9cad52e9f.patch":
+  version: 20.0.0
+  resolution: "@metamask/wallet@patch:@metamask/wallet@npm%3A20.0.0#~/.yarn/patches/@metamask-wallet-npm-20.0.0-c9cad52e9f.patch::version=20.0.0&hash=dc0bc9"
+  dependencies:
+    "@metamask/accounts-controller": "npm:^40.1.0"
+    "@metamask/address-book-controller": "npm:^8.0.0"
+    "@metamask/analytics-controller": "npm:^4.1.0"
+    "@metamask/approval-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/claims-controller": "npm:^1.0.4"
+    "@metamask/client-controller": "npm:^2.0.0"
+    "@metamask/config-registry-controller": "npm:^5.0.0"
+    "@metamask/connectivity-controller": "npm:^1.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/gas-fee-controller": "npm:^27.0.0"
+    "@metamask/geolocation-controller": "npm:^2.0.0"
+    "@metamask/keyring-controller": "npm:^28.2.0"
+    "@metamask/logging-controller": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^37.1.1"
+    "@metamask/passkey-controller": "npm:^4.1.0"
+    "@metamask/permission-controller": "npm:^14.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/scure-bip39": "npm:^2.1.1"
+    "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
+    "@metamask/selected-network-controller": "npm:^27.0.0"
+    "@metamask/shield-controller": "npm:^7.0.5"
+    "@metamask/storage-service": "npm:^2.0.0"
+    "@metamask/subscription-controller": "npm:^15.0.0"
+    "@metamask/transaction-controller": "npm:^72.2.1"
+    "@metamask/utils": "npm:^12.0.0"
+  checksum: 10/6eea59707b8984cf57bd0e97b52677f4b81493e09ef664af3bc41a51ae37f8256ab2c2fc9c7fc45c2670a80e0f2383f4ea0a10fbd6ab30b70182468bb5cfb7e8
   languageName: node
   linkType: hard
 
@@ -35836,7 +35872,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^4.4.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
-    "@metamask/wallet": "npm:^20.0.0"
+    "@metamask/wallet": "patch:@metamask/wallet@npm%3A20.0.0#~/.yarn/patches/@metamask-wallet-npm-20.0.0-c9cad52e9f.patch"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"
