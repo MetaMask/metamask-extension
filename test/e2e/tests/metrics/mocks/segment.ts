@@ -1,6 +1,66 @@
 import { Mockttp } from 'mockttp';
 
 /**
+ * Mocks Segment identify batches. Event-name constants are intentionally
+ * omitted so a rename in source fails these tests instead of silently
+ * tracking a new payload shape.
+ *
+ * @param mockServer - The mock server instance.
+ * @returns The mocked endpoints.
+ */
+export async function mockSegmentIdentify(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [{ type: 'identify' }],
+      })
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
+
+/**
+ * Mocks the Settings Updated track emitted when Basic Functionality is turned
+ * off. Event-name constants are intentionally omitted so a rename in source
+ * fails these tests instead of silently tracking a new payload shape.
+ *
+ * @param mockServer - The mock server instance.
+ * @returns The mocked endpoints.
+ */
+export async function mockBasicFunctionalityTurnedOff(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [
+          {
+            type: 'track',
+            event: 'Settings Updated',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              settings_type: 'basic_functionality',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              old_value: true,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_value: false,
+            },
+          },
+        ],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
+
+/**
  * Mocks the segment API for specific payloads that we expect to see when these tests are run.
  * This handles both single events and batched events with multiple events.
  *
