@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -12,14 +11,9 @@ import {
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
-  getAllChainsToPoll,
-  getIsLineaMainnet,
-  getIsMainnet,
   getTokenNetworkFilter,
   getUseExternalServices,
-  getUseNftDetection,
 } from '../../../../../selectors';
-import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
@@ -45,44 +39,26 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { OverflowMenu } from '../../../../ui/overflow-menu/overflow-menu';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { useBoolean } from '../../../../../hooks/useBoolean';
 import {
   CHAIN_IDS,
   TEST_CHAINS,
 } from '../../../../../../shared/constants/network';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
 import {
-  checkAndUpdateAllNftsOwnershipStatus,
-  detectNfts,
-  refreshAssetsForSelectedAccount,
   setActiveNetwork,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../../selectors/multichain';
-import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
-import {
-  ASSETS_ROUTE,
-  IMPORT_NFTS_ROUTE,
-  TOKEN_MANAGEMENT_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { getMultichainNetwork } from '../../../../../selectors/multichain';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import {
   getInternalAccountsFromGroupById,
@@ -107,25 +83,17 @@ const AssetListControlBar = ({
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const navigate = useNavigate();
   const [sortReferenceElement, setSortReferenceElement] =
     useState<HTMLButtonElement | null>(null);
   const setSortButtonRef = useCallback((node: HTMLButtonElement | null) => {
     setSortReferenceElement(node);
   }, []);
-  const useNftDetection = useSelector(getUseNftDetection);
   const useExternalServices = useSelector(getUseExternalServices);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const isMainnet = useSelector(getIsMainnet);
-  const isLineaMainnet = useSelector(getIsLineaMainnet);
-  const allChainIds = useSelector(getAllChainsToPoll);
-  const isEvm = useSelector(getMultichainIsEvm);
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
-  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
   const isEvmOnlySelectedAccountGroup = useSelector(
     (state: MetaMaskReduxState) => {
       const multichainAccountsState =
@@ -147,8 +115,6 @@ const AssetListControlBar = ({
     },
   );
 
-  const { collections } = useNftsCollections();
-
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -161,35 +127,12 @@ const AssetListControlBar = ({
     useBoolean();
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
 
-  const allNetworkClientIds = useMemo(() => {
-    return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
-      const entry = allNetworks[chainId as `0x${string}`];
-      if (!entry) {
-        return [];
-      }
-      const index = entry.defaultRpcEndpointIndex;
-      const endpoint = entry.rpcEndpoints[index];
-      return endpoint?.networkClientId ? [endpoint.networkClientId] : [];
-    });
-  }, [tokenNetworkFilter, allNetworks]);
   const currentNamespaceNetworkCount = Object.keys(
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
   const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
   const networkButtonText = useNetworkFilterButtonLabel();
-
-  const shouldShowRefreshButtons = useMemo(
-    () =>
-      (isMainnet || isLineaMainnet || Object.keys(collections).length > 0) &&
-      useNftDetection,
-    [isMainnet, isLineaMainnet, collections, useNftDetection],
-  );
-
-  const shouldShowEnableAutoDetect = useMemo(
-    () => !shouldShowRefreshButtons && !useNftDetection,
-    [shouldShowRefreshButtons, useNftDetection],
-  );
 
   useEffect(() => {
     if (!onNetworkSelect) {

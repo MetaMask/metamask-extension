@@ -118,7 +118,7 @@ const AssetList = ({
     }
   }, [dispatch, selectedInternalAccount, selectedCaipChainIds]);
 
-  const tokenMenuItems = useMemo(
+  const menuItems = useMemo(
     () => [
       {
         key: 'manage-tokens',
@@ -144,7 +144,7 @@ const AssetList = ({
           shouldShowTokensLinks ? (
             <OverflowMenu
               ariaLabel={t('assetOptions')}
-              items={tokenMenuItems}
+              items={menuItems}
               testId="asset-list-control-bar-action-button"
             />
           ) : null
