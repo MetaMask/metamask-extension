@@ -40,7 +40,7 @@ describe('useDiscoverPerpsSearch', () => {
     });
   });
 
-  it('returns markets in source order for empty queries', () => {
+  it('sorts an empty query by 24-hour price change descending', () => {
     mockUsePerpsLiveMarketListData.mockReturnValue({
       markets: [
         createMarket({ symbol: 'LOW', change24hPercent: '-2.5%' }),
@@ -59,9 +59,9 @@ describe('useDiscoverPerpsSearch', () => {
     const { result } = renderHook(() => useDiscoverPerpsSearch({ query: '' }));
 
     expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
-      'LOW',
       'HIGH',
       'MID',
+      'LOW',
     ]);
   });
 
