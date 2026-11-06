@@ -1,0 +1,150 @@
+# Weekday release Slack summaries (Jira MCRM-155).
+#
+# Replaces Zapier Zaps 596 (release blocker summary) and 597 (release
+# validation summary, including the release PR body sign-off rewrite).
+# The logic lives in MetaMask/github-tools
+# `.github/actions/release-slack-summaries`. This workflow only calls it.
+#
+# Token exchange allows exactly this file at refs/heads/main in the
+# `release-notifications` environment
+# (consensys-vertical-apps/token-exchange-service#221). The file name,
+# the environment, and the permissions below must stay in lockstep with
+# that policy. Schedules run from the default branch only.
+#
+# Safe by default. A supplied test channel is normalized (U+FEFF, U+200B,
+# U+2060, and U+180E removed anywhere; JavaScript whitespace trimmed from
+# the ends) and must be a Slack name (`#?` plus lowercase letters, digits,
+# `.`, `_`, `-`) or a Slack ID (`C`, `G`, or `D` plus at least 8 letters
+# or digits). Anything else, including a value that normalizes to empty,
+# fails the job. `release-*` and `#release-*` names are rejected in every
+# mode, so a test channel cannot name a real release channel.
+# When GA_MODE is not exactly `live`, a Slack ID is accepted only when it
+# equals the normalized RELEASE_SUMMARY_TEST_CHANNEL. Other non-live
+# channels must be a `#name` or `name`. Unset or `test` with no channel
+# forces dry-run and never writes a PR body.
+# GA_MODE=live reaches real release channels only when no test channel is
+# set, and may rewrite the release PR body only for release-validation
+# when dry-run is false. A test channel never writes a PR body.
+# That live post also requires RELEASE_SUMMARY_BLOCKER_JQL and
+# RELEASE_SUMMARY_REGRESSION_JQL to be set. Dry runs and test-channel
+# runs may preview with built-in bases when those variables are empty.
+
+name: Release Slack summaries
+
+on:
+  schedule:
+    # 10:16 UTC, Monday–Friday: blocker summary (Zap 596).
+    - cron: '16 10 * * 1-5'
+    # 10:21 UTC, Monday–Friday: release validation summary (Zap 597).
+    - cron: '21 10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'blocker-summary (Zap 596) or release-validation (Zap 597)'
+        required: true
+        type: choice
+        options:
+          - blocker-summary
+          - release-validation
+      dry-run:
+        description: 'Build the Slack message and PR-body diff into the job summary only. Posts and writes nothing.'
+        required: false
+        type: boolean
+        default: true
+      test-channel:
+        description: 'Slack channel override. After normalization it must be a Slack name (#name or name) or a Slack ID (C/G/D…). release-* names are rejected. When GA_MODE is not live, an ID is accepted only if it equals RELEASE_SUMMARY_TEST_CHANNEL. When set, the run does not write a PR body. Leave empty to follow GA_MODE.'
+        required: false
+        type: string
+        default: ''
+
+# Least privilege for the OIDC token exchange. The exchanged repository
+# token still requests pull_requests: write on every run; see the
+# get-token step. GITHUB_TOKEN itself stays read-only.
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  # Schedule and workflow_dispatch of the same mode share this group.
+  # github.run_id must stay out of the key: it let the two events overlap.
+  group: release-slack-summaries-${{ github.event.schedule == '16 10 * * 1-5' && 'blocker-summary' || github.event.schedule == '21 10 * * 1-5' && 'release-validation' || inputs.mode }}
+  cancel-in-progress: false
+
+jobs:
+  release-slack-summaries:
+    name: Release Slack summaries
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Policy pin: environment name must stay `release-notifications`.
+    environment: release-notifications
+    steps:
+      - name: Checkout flag script
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/scripts/release-slack-summaries-flags.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Resolve mode and safety flags
+        id: flags
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ inputs.mode }}
+          # github.event.inputs keeps workflow_dispatch values as strings.
+          # inputs.dry-run is a boolean, and `false || ''` is empty, so an
+          # unchecked box would not be the string "false".
+          INPUT_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry-run || '' }}
+          INPUT_TEST_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.test-channel || '' }}
+          GA_MODE: ${{ vars.GA_MODE }}
+          TEST_CHANNEL_VAR: ${{ vars.RELEASE_SUMMARY_TEST_CHANNEL }}
+          # Passed through unset. A live post with no test channel fails
+          # unless both are set. Dry runs and test-channel runs fill
+          # preview bases in the flag script when these are empty.
+          BLOCKER_JQL: ${{ vars.RELEASE_SUMMARY_BLOCKER_JQL }}
+          REGRESSION_JQL: ${{ vars.RELEASE_SUMMARY_REGRESSION_JQL }}
+        run: bash .github/scripts/release-slack-summaries-flags.sh
+
+      - name: Get repository token
+        id: repo-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: ${{ github.repository }}
+          # pull_requests: write on every run, including blocker-summary
+          # and dry runs. Policy PR 221 allowlists this workflow and
+          # environment, and a narrower pull_requests: read request is
+          # not confirmed to be accepted. An exact permission match would
+          # fail those runs before they can read the release pull requests.
+          permissions: |
+            pull_requests: write
+
+      - name: Get planning token
+        id: planning-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/MetaMask-planning
+          permissions: |
+            contents: read
+
+      # TODO(MCRM-155): Move this pin to the merged commit SHA or release
+      # tag once https://github.com/MetaMask/github-tools/pull/306 merges.
+      # github-tools-ref is the same SHA so the action's second checkout
+      # follows this commit, not a branch tip.
+      - name: Publish release Slack summary
+        uses: MetaMask/github-tools/.github/actions/release-slack-summaries@f99347bfb23bbbd352d199be7b58b3d7cb9f9bb9 # cursor/release-slack-summaries-a324 (github-tools#306)
+        with:
+          mode: ${{ steps.flags.outputs.mode }}
+          platform: extension
+          github-token: ${{ steps.repo-token.outputs.token }}
+          planning-token: ${{ steps.planning-token.outputs.token }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          jira-base-url: https://consensyssoftware.atlassian.net
+          jira-email: ${{ secrets.JIRA_EMAIL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          jira-release-blocker-jql: ${{ steps.flags.outputs.blocker-jql }}
+          jira-regression-jql: ${{ steps.flags.outputs.regression-jql }}
+          test-channel: ${{ steps.flags.outputs.test-channel }}
+          dry-run: ${{ steps.flags.outputs.dry-run }}
+          allow-pr-write: ${{ steps.flags.outputs.allow-pr-write }}
+          github-tools-ref: f99347bfb23bbbd352d199be7b58b3d7cb9f9bb9
