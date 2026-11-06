@@ -573,10 +573,12 @@ const PrepareBridgePage = ({
             backgroundColor={BoxBackgroundColor.BackgroundSection}
           >
             <LegacyButtonIcon
-              className="group size-full self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
+              // Important modifiers beat unlayered `.mm-button-icon` size/hover
+              // rules that load after `@tailwind utilities`.
+              className="group !size-full !min-w-0 self-center rounded-full enabled:hover:!bg-muted-hover enabled:active:!bg-muted-pressed"
               iconProps={{
                 className:
-                  'transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default',
+                  'transition-all duration-300 ease-in-out group-enabled:group-hover:!text-icon-default group-active:!text-icon-default',
                 // Tailwind has no 360° rotate utility; the full turn is what
                 // animates the spin on each switch.
                 style: rotateSwitchTokens

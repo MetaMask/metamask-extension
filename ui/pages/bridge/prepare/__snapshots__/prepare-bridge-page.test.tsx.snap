@@ -114,12 +114,12 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       >
         <button
           aria-label="switch-tokens"
-          class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled group size-full self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled group !size-full !min-w-0 self-center rounded-full enabled:hover:!bg-muted-hover enabled:active:!bg-muted-pressed mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="switch-tokens"
           disabled=""
         >
           <span
-            class="mm-box transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box transition-all duration-300 ease-in-out group-enabled:group-hover:!text-icon-default group-active:!text-icon-default mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/swap-vertical.svg');"
           />
         </button>
@@ -366,12 +366,12 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       >
         <button
           aria-label="switch-tokens"
-          class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled group size-full self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+          class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled group !size-full !min-w-0 self-center rounded-full enabled:hover:!bg-muted-hover enabled:active:!bg-muted-pressed mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="switch-tokens"
           disabled=""
         >
           <span
-            class="mm-box transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box transition-all duration-300 ease-in-out group-enabled:group-hover:!text-icon-default group-active:!text-icon-default mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/swap-vertical.svg');"
           />
         </button>
