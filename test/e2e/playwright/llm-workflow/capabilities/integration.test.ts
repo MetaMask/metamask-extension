@@ -83,10 +83,6 @@ describe('Capability Integration', () => {
         'click',
         'type',
         'wait_for',
-        'knowledge_last',
-        'knowledge_search',
-        'knowledge_summarize',
-        'knowledge_sessions',
         'seed_contract',
         'seed_contracts',
         'get_contract_address',
@@ -114,13 +110,15 @@ describe('Capability Integration', () => {
         undefined as unknown as WorkflowContext,
       );
 
-      const handler = toolRegistry.get('knowledge_sessions');
+      const handler = toolRegistry.get('get_context');
       expect(handler).toBeDefined();
       if (!handler) {
         throw new Error('Handler not found');
       }
 
-      const result = await handler({ limit: 5 }, {} as ToolContext);
+      const result = await handler({}, {
+        sessionManager,
+      } as unknown as ToolContext);
 
       expect(result).toBeDefined();
       expect(typeof result.ok).toBe('boolean');

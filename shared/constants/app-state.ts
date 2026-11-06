@@ -3,9 +3,7 @@ import { TraceName } from '../lib/trace';
 export enum AccountOverviewTabKey {
   Tokens = 'tokens',
   Nfts = 'nfts',
-  Activity = 'activity',
   DeFi = 'defi',
-  Perps = 'perps',
 }
 
 export type AccountOverviewTab = `${AccountOverviewTabKey}`;
@@ -13,9 +11,7 @@ export type AccountOverviewTab = `${AccountOverviewTabKey}`;
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: TraceName.AccountOverviewAssetListTab,
   [AccountOverviewTabKey.Nfts]: TraceName.AccountOverviewNftsTab,
-  [AccountOverviewTabKey.Activity]: TraceName.AccountOverviewActivityTab,
   [AccountOverviewTabKey.DeFi]: TraceName.AccountOverviewDeFiTab,
-  [AccountOverviewTabKey.Perps]: TraceName.AccountOverviewPerpsTab,
 } as const;
 
 export type CarouselSlide = {
