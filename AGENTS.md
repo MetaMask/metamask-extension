@@ -71,6 +71,14 @@ Read these files for detailed coding standards:
 - Code style: `.cursor/rules/mms-coding-guidelines/RULE.md`
 - Official guidelines: `.github/guidelines/CODING_GUIDELINES.md`
 
+### User-facing copy
+
+Before writing or changing any user-facing string (`app/_locales/en/messages.json`, UI text, errors, buttons, notifications), read and follow `.claude/skills/mms-content-guidelines/SKILL.md`. If that file is missing, run `yarn skills`.
+
+That skill is the agent-readable implementation of the MetaMask Content Design Style Guide. If the skill and the Style Guide disagree, flag it to the content owner. Do not invent a rule.
+
+Edit English source strings in `app/_locales/en/messages.json`. Do not edit the generated skill copy (`.claude/skills/mms-content-guidelines/`, `.cursor/rules/mms-content-guidelines/`, or `.agents/skills/mms-content-guidelines/`); `yarn skills` overwrites it. To change a content rule, change [MetaMask/skills](https://github.com/MetaMask/skills), not this repo.
+
 ---
 
 ## Quick Setup
