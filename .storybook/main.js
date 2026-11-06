@@ -92,6 +92,10 @@ module.exports = {
     };
     config.module.strictExportPresence = true;
     config.module.rules.push({
+      test: /\.riv$/u,
+      type: 'asset/resource',
+    });
+    config.module.rules.push({
       test: /\.scss$/,
       use: [
         'style-loader',
