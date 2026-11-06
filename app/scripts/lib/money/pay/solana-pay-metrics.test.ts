@@ -76,27 +76,12 @@ describe('trackSolanaPayLifecycle', () => {
     });
 
     const event = jest.mocked(trackEvent).mock.calls[0][0];
+    expect(event.properties).toHaveProperty(
+      'mm_pay_source_asset_class',
+      'token',
+    );
     expect(event.properties).not.toHaveProperty('mm_pay_error_code');
     expect(event.properties).not.toHaveProperty('mm_pay_analytics_id');
     expect(event.sensitiveProperties).toStrictEqual({});
-  });
-
-  it('omits the source asset class when Core has no source', () => {
-    trackSolanaPayLifecycle({
-      followUpStatus: 'not-required',
-      followUpTransactionIdPresent: false,
-      isRecovery: false,
-      notificationStatus: 'not-ready',
-      outcome: 'ready',
-      phase: 'ready',
-      provider: 'relay',
-      relayStatus: 'not-observed',
-      sourceStatus: 'not-observed',
-      sourceTransactionIdPresent: false,
-      targetTransactionIdPresent: false,
-    });
-
-    const event = jest.mocked(trackEvent).mock.calls[0][0];
-    expect(event.properties).not.toHaveProperty('mm_pay_source_asset_class');
   });
 });

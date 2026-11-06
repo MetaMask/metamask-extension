@@ -37,9 +37,7 @@ export function trackSolanaPayLifecycle(
         mm_pay_phase: payload.phase,
         mm_pay_provider: payload.provider,
         mm_pay_relay_status: payload.relayStatus,
-        ...(payload.sourceAssetClass && {
-          mm_pay_source_asset_class: payload.sourceAssetClass,
-        }),
+        mm_pay_source_asset_class: payload.sourceAssetClass,
         mm_pay_source_status: payload.sourceStatus,
         mm_pay_source_transaction_id_present:
           payload.sourceTransactionIdPresent,
