@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Interaksyon ng kontrata"
   },
-  "convertAgain": {
-    "message": "Mag-convert muli"
-  },
   "convertTokenToNFTDescription": {
     "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang MetaMask ay mayroon na ngayong ganap na native support para sa mga NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
   },
@@ -6342,19 +6339,6 @@
   "musdConversionTitle": {
     "message": "Na-convert sa mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "Nabigong palitan ang mUSD"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Ikino-convert ang $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Matagumpay ang pag-convert ng mUSD"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Puwedeng ma-claim ang bonus sa loob ng isang araw."
   },
   "musdConvert": {
     "message": "I-convert"

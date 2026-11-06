@@ -3112,9 +3112,6 @@
   "contractInteraction": {
     "message": "コントラクトインタラクション"
   },
-  "convertAgain": {
-    "message": "変換を再実行"
-  },
   "convertTokenToNFTDescription": {
     "message": "このアセットはNFTであることが検出されました。MetaMaskでは現在、NFTが完全にネイティブでサポートされています。トークンリストから削除して、NFTとして追加しますか？"
   },
@@ -6301,19 +6298,6 @@
   "musdConversionTitle": {
     "message": "mUSDへの変換完了",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSDへの変換に失敗しました"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSDに変換中",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSDへの換算が完了しました"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "ボーナスは1日以内に請求できます。"
   },
   "musdConvert": {
     "message": "変換"

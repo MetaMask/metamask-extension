@@ -851,11 +851,6 @@
       "count": 2
     }
   },
-  "ui/pages/details/components/convert-again-button.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/details/templates/bridge/swap-again-button.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 2
