@@ -228,7 +228,7 @@ export const BridgeTransactionSettingsModal = ({
                   // If the user clicks outside the input, show the custom button
                   setShowCustomInput(false);
                   const newSlippage = Number(inputValue);
-                  if (!isNaN(newSlippage) && inputValue.length > 0) {
+                  if (!Number.isNaN(newSlippage) && inputValue.length > 0) {
                     const isCapped = newSlippage > 100;
                     selectSlippageOption(Math.min(newSlippage, 100));
                     if (!isCapped) {
@@ -287,7 +287,7 @@ export const BridgeTransactionSettingsModal = ({
             isDisabled:
               !isDirty ||
               (showCustomInput &&
-                (isNaN(Number(inputValue)) || inputValue === '')),
+                (Number.isNaN(Number(inputValue)) || inputValue === '')),
             onClick: () => {
               dispatch(setSlippageUserOverride(slippageValue));
               onClose();
