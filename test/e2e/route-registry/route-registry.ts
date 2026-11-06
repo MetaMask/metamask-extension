@@ -10,11 +10,11 @@
  * exist.
  *
  * Keys are route path patterns exactly as they appear in `ROUTES`. They are
- * plain strings on purpose: renaming or removing a route never breaks the
- * build, it shows up in the report instead.
+ * plain strings on purpose so renaming or removing a route never breaks the
+ * build; route-registry.test.ts fails instead and lists the paths to fix.
  *
- * When you add a route, add it here too: its page object if there is one,
- * otherwise `null`.
+ * When you add, rename or remove a route, update this registry too: use its
+ * page object if there is one, otherwise `null`.
  */
 
 import AccountAddressListPage from '../page-objects/pages/accounts/address-list-page';
