@@ -657,6 +657,7 @@ export const ARC_NATIVE_TOKEN_IMAGE_URL = './images/arc-native-token-logo.svg';
 export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
 export const GRAVITY_IMAGE_URL = './images/gravity.svg';
 export const SOMNIA_IMAGE_URL = './images/somnia.svg';
+export const MOBILENODE_IMAGE_URL = './images/mobilenode.png';
 export const SOMNIA_NATIVE_TOKEN_IMAGE_URL = './images/somnia.svg';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -1223,6 +1224,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.SOMNIA]: SOMNIA_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
+  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1336,6 +1338,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
   [MultichainNetworks.STELLAR]: STELLAR_IMAGE_URL,
+  [CHAIN_IDS.MOBILENODE]: MOBILENODE_IMAGE_URL,
 } as const;
 
 /**
