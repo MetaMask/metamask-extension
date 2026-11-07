@@ -1,5 +1,6 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -24,6 +25,7 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.TEMPO_MAINNET]).toBe('Tempo');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARC]).toBe('Arc');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BIGHIVE]).toBe('Bighive Mainnet');
   });
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
@@ -42,6 +44,7 @@ describe('NetworkConstants', () => {
         MegaETH: CHAIN_IDS.MEGAETH_MAINNET,
         Tempo: CHAIN_IDS.TEMPO_MAINNET,
         Arc: CHAIN_IDS.ARC,
+        'Bighive Mainnet': CHAIN_IDS.BIGHIVE,
         'Robinhood Chain': CHAIN_IDS.ROBINHOOD_CHAIN,
         'XDC Network': CHAIN_IDS.XDC,
       };
@@ -49,6 +52,30 @@ describe('NetworkConstants', () => {
       FEATURED_RPCS.forEach((rpc) => {
         expect(rpc.chainId).toBe(expectedChainIds[rpc.name]);
       });
+    });
+
+    it('provides one Bighive entry with its public RPC and explorer', () => {
+      const bighiveEntries = FEATURED_RPCS.filter(
+        (rpc) => rpc.chainId === CHAIN_IDS.BIGHIVE,
+      );
+
+      expect(bighiveEntries).toEqual([
+        {
+          chainId: '0x426',
+          name: 'Bighive Mainnet',
+          nativeCurrency: 'BEETS',
+          rpcEndpoints: [
+            {
+              url: 'https://rpc.bighive-beets.io/osc',
+              failoverUrls: [],
+              type: RpcEndpointType.Custom,
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: ['https://bdbs.bighive-beets.io'],
+          defaultBlockExplorerUrlIndex: 0,
+        },
+      ]);
     });
   });
 
