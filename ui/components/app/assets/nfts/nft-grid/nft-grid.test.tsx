@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import NftGrid from './nft-grid';
 
@@ -14,7 +15,14 @@ jest.mock('../../../../../selectors', () => ({
   getCurrentNetwork: jest
     .fn()
     .mockReturnValue({ chainId: '0x1', nickname: 'Mainnet' }),
+  getIpfsGateway: jest.fn().mockReturnValue('dweb.link'),
   getNftIsStillFetchingIndication: jest.fn(),
+  getOpenSeaEnabled: jest.fn().mockReturnValue(true),
+  getTestNetworkBackgroundColor: jest.fn(),
+}));
+
+jest.mock('../../../../../hooks/useFetchNftDetailsFromTokenURI', () => ({
+  default: () => ({ image: '', name: '' }),
 }));
 
 describe('NftGrid', () => {
@@ -24,7 +32,14 @@ describe('NftGrid', () => {
 
   beforeEach(() => {
     store = mockStore({
-      metamask: {},
+      metamask: {
+        ...mockNetworkState({ chainId: '0x1' }),
+        ipfsGateway: 'dweb.link',
+        openSeaEnabled: true,
+      },
+      appState: {
+        isNftStillFetchingIndication: false,
+      },
     });
   });
 
@@ -55,7 +70,7 @@ describe('NftGrid', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should handle errors in NFTGridItem when image is an array', () => {
+  it('renders an NFT when image is an array', () => {
     const mockNft = {
       tokenURI: 'fakeTokenURI_1',
       name: 'NFT 1',
@@ -68,6 +83,6 @@ describe('NftGrid', () => {
       </Provider>,
     );
 
-    expect(screen.queryByText('NFT 1')).not.toBeInTheDocument();
+    expect(screen.getByText('NFT 1')).toBeInTheDocument();
   });
 });

@@ -39,10 +39,8 @@ jest.mock('../../../../../../store/actions', () => {
   };
 });
 
-jest.mock('../../../../../../../node_modules/@metamask/snaps-utils', () => {
-  const originalUtils = jest.requireActual(
-    '../../../../../../../node_modules/@metamask/snaps-utils',
-  );
+jest.mock('@metamask/snaps-utils', () => {
+  const originalUtils = jest.requireActual('@metamask/snaps-utils');
   return {
     ...originalUtils,
     stripSnapPrefix: jest.fn().mockReturnValue('@metamask/examplesnap'),
