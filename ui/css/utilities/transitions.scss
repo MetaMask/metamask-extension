@@ -1,0 +1,32 @@
+.menu-popover .body {
+  scale: 0.95;
+  transition: scale 150ms;
+  transition-behavior: allow-discrete;
+  transform-origin: left top;
+}
+
+.menu-popover:popover-open .body {
+  scale: 1;
+
+  @starting-style {
+    scale: 0.95;
+  }
+}
+
+@container anchored(fallback: flip-inline) {
+  .menu-popover .body {
+    transform-origin: right top;
+  }
+}
+
+@container anchored(fallback: flip-block) {
+  .menu-popover .body {
+    transform-origin: left bottom;
+  }
+}
+
+@container anchored(fallback: flip-block flip-inline) {
+  .menu-popover .body {
+    transform-origin: right bottom;
+  }
+}

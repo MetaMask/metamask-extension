@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { CSSProperties, useId } from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'clsx';
 import {
@@ -8,138 +8,135 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export type MenuItem = Readonly<{
-  key: string;
-  label: string;
-  iconName?: IconName;
-  to?: string;
-  onClick?: () => void;
-  'data-testid'?: string;
-  command?: string;
-  commandfor?: string;
-}>;
+const popoverClassName = classnames(
+  'menu-popover inset-auto p-0 border-none bg-transparent',
+  'transition-[opacity,display,overlay]',
+  'transition-discrete',
+  'duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]',
+  'opacity-0',
+  'starting:[&:popover-open]:opacity-0',
+  '[&:popover-open]:opacity-100',
+  '[container-type:anchored]',
+  '[position-anchor:--menu-trigger]',
+  '[position-area:block-end_span-inline-end]',
+  '[position-try-fallbacks:flip-block,flip-inline]',
+);
 
-const triggerClassName =
-  'flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed';
+const popoverContentClassName = classnames(
+  'body min-w-44 border-muted bg-elevated2 rounded-lg',
+);
 
 const itemClassName = classnames(
   'selectable-list-item',
-  'min-h-12',
   'flex items-center w-full',
-  'text-base font-medium text-default',
   'no-underline',
   'hover:no-underline hover:text-default',
-  'hover:bg-background-default-hover',
-  'active:bg-background-pressed',
 );
 
-const popoverPanelStyle = {
-  inset: 'auto',
-  positionAnchor: '--menu-trigger',
-  positionArea: 'block-end span-inline-end',
-  positionTryFallbacks: 'flip-block, flip-inline',
-  minWidth: 180,
-  width: 'max-content',
-  backgroundColor: 'var(--color-background-elevated2)',
-  border: '1px solid var(--color-border-muted)',
-  borderRadius: 8,
-} as React.CSSProperties;
-
-type Props = Readonly<{
+type MenuItem = {
+  key: string;
+  label: string;
+  iconName?: IconName;
+  command?: string;
+  commandfor?: string;
+  'data-testid'?: string;
+  to?: string;
+  onClick?: () => void;
+};
+type Props = {
   items: readonly MenuItem[];
   ariaLabel?: string;
   testId?: string;
   size?: ButtonIconSize;
-  disabled?: boolean;
-}>;
+};
 
 export function OverflowMenu({
+  ariaLabel,
   items,
-  ariaLabel = 'More options',
-  testId,
   size = ButtonIconSize.Sm,
-  disabled,
+  testId,
 }: Props) {
   const menuId = useId();
+  const t = useI18nContext();
 
   return (
     <>
       <ButtonIcon
-        ariaLabel={ariaLabel}
-        className={triggerClassName}
-        data-testid={testId}
         iconName={IconName.MoreVertical}
-        isDisabled={disabled}
         size={size}
-        style={{ anchorName: '--menu-trigger' } as React.CSSProperties}
+        style={{ anchorName: '--menu-trigger' } as CSSProperties}
+        ariaLabel={ariaLabel || t('moneyMoreOptions')}
         // @ts-expect-error need to update react types
         command="toggle-popover"
         commandfor={menuId}
+        data-testid={testId}
       />
       <div
         id={menuId}
+        className={popoverClassName}
         // @ts-expect-error need to update react types
         popover="auto"
-        className="overflow-menu-popover m-0 overflow-hidden p-0"
-        style={popoverPanelStyle}
       >
-        {items.map((item) => {
-          const {
-            key,
-            label,
-            iconName,
-            to,
-            onClick,
-            'data-testid': dataTestId,
-            command,
-            commandfor,
-          } = item;
+        <div className={popoverContentClassName}>
+          {items.map((item) => {
+            const {
+              key,
+              label,
+              iconName,
+              to,
+              onClick,
+              'data-testid': dataTestId,
+              command,
+              commandfor,
+            } = item;
 
-          const invokerProps = {
-            command: command ?? 'hide-popover',
-            commandfor: commandfor ?? menuId,
-          } as Record<string, unknown>;
+            const invokerProps = {
+              command: command ?? 'hide-popover',
+              commandfor: commandfor ?? menuId,
+            } as Record<string, unknown>;
 
-          const content = (
-            <>
-              {iconName ? (
-                <Icon
-                  name={iconName}
-                  size={IconSize.Sm}
-                  className="mr-2 shrink-0"
-                  aria-hidden
-                />
-              ) : null}
-              {label}
-            </>
-          );
+            const content = (
+              <>
+                {iconName ? (
+                  <Icon
+                    name={iconName}
+                    size={IconSize.Sm}
+                    className="mr-2 shrink-0"
+                    aria-hidden
+                  />
+                ) : null}
+                {label}
+              </>
+            );
 
-          return (
-            <div className="selectable-list-item-wrapper" key={key}>
-              {to ? (
-                <Link
-                  to={to}
-                  className={itemClassName}
-                  data-testid={dataTestId}
-                  {...invokerProps}
-                >
-                  {content}
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  className={itemClassName}
-                  onClick={onClick}
-                  data-testid={dataTestId}
-                  {...invokerProps}
-                >
-                  {content}
-                </button>
-              )}
-            </div>
-          );
-        })}
+            return (
+              <div className="selectable-list-item-wrapper" key={key}>
+                {to ? (
+                  <Link
+                    to={to}
+                    className={itemClassName}
+                    data-testid={dataTestId}
+                    {...invokerProps}
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className={itemClassName}
+                    onClick={onClick}
+                    data-testid={dataTestId}
+                    {...invokerProps}
+                  >
+                    {content}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </>
   );
