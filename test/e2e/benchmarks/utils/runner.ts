@@ -162,6 +162,12 @@ export async function runBenchmarkWithIterations(
   let failedRuns = 0;
 
   for (let i = 0; i < iterations; i++) {
+    // Only a successful iteration emits anything below, so without this line an
+    // iteration that fails or hangs is indistinguishable from one that never
+    // started. That gap is what makes a stalled run unattributable from CI logs:
+    // the last report belongs to the previous iteration, and everything after it
+    // is silence.
+    console.log(`[${name}] iteration ${i + 1}/${iterations} started`);
     const result = await runWithRetries(benchmarkFn, retries);
     allResults.push(result);
 
@@ -174,6 +180,9 @@ export async function runBenchmarkWithIterations(
       }
     } else {
       failedRuns += 1;
+      console.log(
+        `[${name}] iteration ${i + 1}/${iterations} failed: ${result.error ?? 'unknown error'}`,
+      );
     }
   }
 
