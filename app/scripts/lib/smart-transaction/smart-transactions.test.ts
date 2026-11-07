@@ -376,6 +376,120 @@ describe('submitSmartTransactionHook', () => {
     );
   });
 
+  it('sends the signer hardware type on sentinel metadata', async () => {
+    const getAccountHardwareType = jest
+      .fn()
+      .mockResolvedValue('Ledger Hardware');
+    await withRequest(
+      {
+        options: { getAccountHardwareType },
+      },
+      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+        await submitSmartTransactionHook(request);
+        expect(getAccountHardwareType).toHaveBeenCalledWith(addressFrom);
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactionsWithMetadata: [
+              expect.objectContaining({
+                tx: request.signedTransactionInHex,
+                metadata: expect.objectContaining({
+                  accountHardwareType: 'Ledger',
+                }),
+              }),
+            ],
+          }),
+        );
+      },
+    );
+  });
+
+  it('omits account hardware type for an unknown hardware label', async () => {
+    await withRequest(
+      {
+        options: {
+          getAccountHardwareType: jest
+            .fn()
+            .mockResolvedValue('OneKey Hardware'),
+        },
+      },
+      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+        await submitSmartTransactionHook(request);
+        const { metadata } =
+          submitSignedTransactionsSpy.mock.calls[0][0]
+            .signedTransactionsWithMetadata[0];
+        expect(metadata).not.toHaveProperty('accountHardwareType');
+      },
+    );
+  });
+
+  it('still submits when the hardware type lookup fails', async () => {
+    await withRequest(
+      {
+        options: {
+          getAccountHardwareType: jest
+            .fn()
+            .mockRejectedValue(new Error('keyring down')),
+        },
+      },
+      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+        const result = await submitSmartTransactionHook(request);
+        expect(result).toEqual({ transactionHash: txHash });
+        const { metadata } =
+          submitSignedTransactionsSpy.mock.calls[0][0]
+            .signedTransactionsWithMetadata[0];
+        expect(metadata).not.toHaveProperty('accountHardwareType');
+      },
+    );
+  });
+
   it('signs and submits only the trade smart transaction', async () => {
     await withRequest(
       {
