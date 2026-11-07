@@ -41,11 +41,6 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: true,
-          },
-        },
       },
       async ({ driver }) => {
         await login(driver);
@@ -99,9 +94,7 @@ describe('Send ERC20 - Gas Customization', function () {
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
         await tokensTab.refreshErc20TokenList();
-        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('9'), {
-          amountTimeout: 20000,
-        });
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('9'));
       },
     );
   });
@@ -117,11 +110,6 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: true,
-          },
-        },
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
@@ -163,7 +151,10 @@ describe('Send ERC20 - Gas Customization', function () {
           gasPrice: GAS_PRICE,
           gasLimit: GAS_LIMIT,
         });
-        await tokenTransferRedesignedConfirmPage.clickConfirmButton();
+        await tokenTransferRedesignedConfirmPage.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         // in extension, check that transaction has completed correctly and is displayed in the activity list
         await driver.switchToWindowWithTitle(
@@ -180,9 +171,7 @@ describe('Send ERC20 - Gas Customization', function () {
         // dApp transfers do not always update AssetsController balances until
         // the ERC-20 list is refreshed (AC 15 polls Accounts API / RPC on demand).
         await tokensTab.refreshErc20TokenList();
-        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
-          amountTimeout: 20000,
-        });
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'));
       },
     );
   });
@@ -197,11 +186,6 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: true,
-          },
-        },
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
@@ -236,7 +220,10 @@ describe('Send ERC20 - Gas Customization', function () {
           symbol,
           expectedNetworkFee,
         );
-        await tokenTransferRedesignedConfirmPage.clickConfirmButton();
+        await tokenTransferRedesignedConfirmPage.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         // in extension, check that transaction has completed correctly and is displayed in the activity list
         await driver.switchToWindowWithTitle(
@@ -251,9 +238,7 @@ describe('Send ERC20 - Gas Customization', function () {
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
         await tokensTab.refreshErc20TokenList();
-        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
-          amountTimeout: 20000,
-        });
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'));
       },
     );
   });
