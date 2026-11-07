@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Aufgrund Ihres Handelsvolumens und der verfügbaren Liquidität erhalten Sie etwa $1 weniger als den Marktpreis. Dies ist bereits in Ihrem Angebot berücksichtigt."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Auf diese Weise beeinflusst Ihr Handel den Marktpreis eines Tokens. Abhängig sind dabei die Handelsgröße, die verfügbare Liquidität und die Gebühren des Anbieters. MetaMask hat keinen Einfluss auf die Preisauswirkungen."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Preiseinfluss"
   },
@@ -5479,9 +5476,6 @@
   "mfaErrorSignedOut": {
     "message": "Bitte anmelden, um fortzufahren."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Zu viele Versuche. Bitte fordern Sie einen neuen Code an."
-  },
   "mfaErrorTotpExpired": {
     "message": "Das hat zu lange gedauert. Geben Sie bitte den aktuellen Code aus Ihrer App ein."
   },
@@ -5706,9 +5700,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Der von Ihnen erhaltene Mindestbetrag, wenn sich der Kurs während der Abwicklung Ihrer Transaktion entsprechend Ihrer Slippage-Einstellung ändert. Diese Schätzung stammt von Liquiditätsanbietern, der Endbetrag kann daher abweichen."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Empfangener Mindestbetrag"
   },
   "minimumReceivedLabel": {
     "message": "Empfangenes Minimum"

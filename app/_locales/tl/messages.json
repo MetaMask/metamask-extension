@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Dahil sa laki ng trade at available na liquidity mo, mas mababa nang $1 sa market price ang makukuha mo. Naibilang na ito sa quote mo. "
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Sa ganitong paraan nababago ng trade mo ang market pirce ng isang token. Nakadepende ito sa laki ng trade, available na liquidity, at mga bayarin sa provider. Hindi kinokontrol ng MetaMask ang epekto sa presyo."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Epekto ng presyo"
   },
@@ -5479,9 +5476,6 @@
   "mfaErrorSignedOut": {
     "message": "Mag-sign in para magpatuloy."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Napakaraming pagtatangka. Humiling ng bagong code."
-  },
   "mfaErrorTotpExpired": {
     "message": "Masyadong matagal ang paghihintay. Ilagay ang kasalukuyang code mula sa iyong app."
   },
@@ -5706,9 +5700,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Ang pinakamababang halaga na iyong matatanggap kapag nagbago ang presyo habang pinoproseso ang iyong transaksyon, batay sa setting ng iyong slippage. Mula sa pagtatantiya ang mga liquidity provider, kaya psibleng mag-iba ang huling halaga."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Minimum na matatanggap"
   },
   "minimumReceivedLabel": {
     "message": "Minimum na matatanggap"

@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "En raison de la taille de votre transaction et de la liquidité disponible, vous obtiendrez environ $1 de moins que le prix du marché. Cette différence de prix est déjà reflétée dans votre devis."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Voici comment votre transaction modifie le prix du marché d’un jeton. Cela dépend de la taille de la transaction, de la liquidité disponible et des frais facturés par le fournisseur. MetaMask n’exerce aucun contrôle sur cet impact."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impact sur les prix"
   },
@@ -5479,9 +5476,6 @@
   "mfaErrorSignedOut": {
     "message": "Connectez-vous pour continuer."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Trop de tentatives infructueuses. Demandez un nouveau code."
-  },
   "mfaErrorTotpExpired": {
     "message": "Cela a pris trop de temps. Saisissez le code actuel affiché dans votre application."
   },
@@ -5706,9 +5700,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Le montant minimum que vous obtiendrez si le prix change pendant le traitement de votre transaction, en fonction de votre paramètre de slippage. L’estimation provient des fournisseurs de liquidité, le montant final peut donc différer."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Montant minimum reçu"
   },
   "minimumReceivedLabel": {
     "message": "Minimum reçu"

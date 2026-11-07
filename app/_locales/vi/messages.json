@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Do kích thước giao dịch và thanh khoản hiện có, bạn sẽ nhận ít hơn khoảng $1 so với giá thị trường. Điều này đã được tính trong báo giá của bạn."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Đây là cách giao dịch của bạn làm thay đổi giá thị trường của một token. Nó phụ thuộc vào kích thước giao dịch, thanh khoản hiện có và phí của nhà cung cấp. MetaMask không kiểm soát tác động giá."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tác động giá"
   },
@@ -5483,9 +5480,6 @@
   "mfaErrorSignedOut": {
     "message": "Đăng nhập để tiếp tục."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Bạn đã thử quá nhiều lần. Hãy yêu cầu mã mới."
-  },
   "mfaErrorTotpExpired": {
     "message": "Đã quá thời gian cho phép. Hãy nhập mã hiện tại trong ứng dụng của bạn."
   },
@@ -5710,9 +5704,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Số lượng tối thiểu bạn sẽ nhận được nếu giá thay đổi trong quá trình giao dịch, dựa trên chế độ cài đặt trượt giá của bạn. Ước tính này đến từ các nhà cung cấp thanh khoản, nên số lượng cuối cùng có thể khác."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Số tiền tối thiểu nhận được"
   },
   "minimumReceivedLabel": {
     "message": "Tối thiểu nhận được"
