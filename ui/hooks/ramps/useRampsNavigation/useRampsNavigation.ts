@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import type {
   Provider,
@@ -10,6 +11,7 @@ import type {
   TokensResponse,
 } from '@metamask/ramps-controller';
 import type { ChainId } from '../../../../shared/constants/network';
+import { isNativeCaipAssetId } from '../../../../shared/lib/asset-utils';
 import {
   RAMPS_BUILD_QUOTE_ROUTE,
   RAMPS_TOKEN_SELECTION_ROUTE,
@@ -93,6 +95,10 @@ function isCatalogEmpty(
 // Finds `assetId` in the catalog, ignoring EVM address casing: callers build
 // asset ids from a checksummed address while the API returns a mix of
 // checksummed (USDC, USDT) and lowercase (mUSD) ids.
+// Native assets can also use a different SLIP-44 coin type than the catalog
+// (Base ETH is `slip44:60` here but `slip44:8453` in the catalog), so a
+// native asset with no exact match falls back to the catalog's native
+// asset on the same chain.
 function findCatalogToken(
   tokensData: TokensResponse | null,
   assetId: CaipAssetType,
@@ -101,9 +107,24 @@ function findCatalogToken(
     ...(tokensData?.topTokens ?? []),
     ...(tokensData?.allTokens ?? []),
   ];
-  return catalog.find(
+
+  const exactMatch = catalog.find(
     (token) =>
       normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
+  );
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  if (!isNativeCaipAssetId(assetId)) {
+    return undefined;
+  }
+
+  const { chainId } = parseCaipAssetType(assetId);
+  return catalog.find(
+    (token) =>
+      isNativeCaipAssetId(token.assetId as CaipAssetType) &&
+      parseCaipAssetType(token.assetId as CaipAssetType).chainId === chainId,
   );
 }
 
