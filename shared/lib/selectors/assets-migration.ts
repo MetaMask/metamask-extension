@@ -41,6 +41,7 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import { AssetType } from '../../constants/transaction';
 import { augmentTempoCurrencyRates } from '../assets/enablement/tempo';
 import { createDeepEqualSelector } from './selector-creators';
+import { augmentTronResourceAssets } from './tron-augmentation';
 
 // Old state controllers and fields status
 //
@@ -517,6 +518,30 @@ export const getMultiChainAssetsControllerAccountsAssets =
     'accountsAssets'
   >;
 
+/**
+ * `AssetsController.assetsInfo` after client augmentations, so the mappings
+ * below see metadata for assets the controller holds a balance for but never
+ * persists metadata for. Consumers read this instead of raw `assetsInfo` and
+ * do not have to know which assets need augmenting.
+ * @param state
+ * @param state.metamask
+ */
+const getAugmentedAssetsInfo = createDeepEqualSelector(
+  [
+    (state: {
+      metamask: Pick<AssetsControllerState, 'assetsInfo' | 'assetsBalance'>;
+    }) => state.metamask?.assetsInfo ?? {},
+    (state: {
+      metamask: Pick<AssetsControllerState, 'assetsInfo' | 'assetsBalance'>;
+    }) => state.metamask?.assetsBalance ?? {},
+  ],
+  (assetsInfo, assetsBalance) =>
+    augmentTronResourceAssets({
+      assetsInfo,
+      assetsBalance,
+    } as AssetsControllerState).assetsInfo,
+);
+
 // TODO There are issues with the new image url not matching the one in assetsMetadata iconUrl
 // AssetId -> AssetMetadata
 export const getMultiChainAssetsControllerAssetsMetadata =
@@ -526,8 +551,7 @@ export const getMultiChainAssetsControllerAssetsMetadata =
       (state: {
         metamask: Pick<MultichainAssetsControllerState, 'assetsMetadata'>;
       }) => state.metamask?.assetsMetadata ?? {},
-      (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
-        state.metamask?.assetsInfo ?? {},
+      getAugmentedAssetsInfo,
     ],
     (isAssetsUnifyStateEnabled, assetsMetadata, assetsInfo) => {
       if (!isAssetsUnifyStateEnabled) {
@@ -627,8 +651,7 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
     }) => state.metamask?.balances ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
       state.metamask?.assetsBalance ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
-      state.metamask?.assetsInfo ?? {},
+    getAugmentedAssetsInfo,
     (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
