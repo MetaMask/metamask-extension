@@ -3,13 +3,16 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import {
+  getEvmPaymentToken,
+  getPaymentTokenChainId,
+} from '../../../../../shared/lib/transaction/pay-token';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import {
@@ -18,6 +21,7 @@ import {
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
+import { isMoneyAccountFunding } from '../../utils/transaction-pay';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
@@ -70,7 +74,11 @@ export function usePayWithToken(): PayWithToken {
   );
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount ||
+    isMoneyAccountFunding({
+      paymentOverride,
+      payToken,
+      transactionMeta: currentConfirmation,
+    }) ||
     (isDefaultMoneyAccount && !payToken);
   const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
     isMoneyAccountSelected,
@@ -98,8 +106,16 @@ export function usePayWithToken(): PayWithToken {
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
+  const evmPayToken = getEvmPaymentToken(payToken);
+  // Non-EVM payment tokens are identified by their CAIP-19 asset type.
+  const payTokenDisplay = payToken && {
+    address: evmPayToken?.address ?? payToken.assetId,
+    balanceUsd: payToken.balanceUsd,
+    chainId: getPaymentTokenChainId(payToken),
+    symbol: payToken.symbol,
+  };
   const resolvedToken =
-    payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
+    payTokenDisplay ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
   const hasAvailableTokens = useMemo(
     () => (availableTokens ?? []).some((token) => !token.disabled),

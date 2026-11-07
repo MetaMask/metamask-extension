@@ -12,6 +12,7 @@ import {
 } from '../../../../shared/lib/trust-signals';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
+import * as shieldModule from '../../../../shared/lib/shield';
 import { createMockMessenger } from '../test-utils';
 import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { getTransactionControllerInstanceOptions } from './transaction-controller';
@@ -19,6 +20,7 @@ import { getTransactionControllerInstanceOptions } from './transaction-controlle
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
 jest.mock('../../../../shared/lib/selectors');
+jest.mock('../../../../shared/lib/shield');
 jest.mock('../../lib/transaction/hooks', () => ({
   getTransactionControllerHooks: jest.fn(() => ({ beforeSign: jest.fn() })),
 }));
@@ -160,6 +162,19 @@ describe('TransactionController wallet instance options', () => {
     });
 
     expect(isSimulationEnabled?.()).toBe(true);
+  });
+
+  it('returns only the simulation URL from the Shield gateway config', async () => {
+    jest.mocked(shieldModule.getShieldGatewayConfig).mockResolvedValue({
+      authorization: 'Bearer token',
+      newUrl: 'https://shield.test/simulate',
+    });
+
+    const getSimulationConfig = testConstructorOption('getSimulationConfig');
+
+    expect(
+      await getSimulationConfig?.('https://sentinel.test/simulate'),
+    ).toStrictEqual({ newUrl: 'https://shield.test/simulate' });
   });
 
   it('determines transaction trust from current trust signals and accounts', () => {

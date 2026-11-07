@@ -6,6 +6,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import {
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+} from '../../../test/data/mock-accounts';
 import { getRootMessenger } from '../lib/messenger';
 import {
   getMaxSourceBalance,
@@ -65,6 +69,16 @@ const syncWithdrawTransferMock = jest.mocked(syncMoneyAccountWithdrawTransfer);
 const getMoneyAccountAmountDataMock = jest.mocked(getMoneyAccountAmountData);
 const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 
+const EVM_ASSET_ID_MOCK =
+  'eip155:1/erc20:0x1234567890abcdef1234567890abcdef12345678';
+const SOL_ASSET_ID_MOCK = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const ACCOUNT_OVERRIDE_MOCK = MOCK_ACCOUNT_EOA.id;
+const ACCOUNT_OVERRIDE_ADDRESS_MOCK = MOCK_ACCOUNT_EOA.address;
+const ACCOUNTS_MOCK = {
+  [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+  [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+};
+
 function getInitRequestMock(
   transactions: TransactionMeta[] = [],
 ): jest.Mocked<
@@ -75,11 +89,17 @@ function getInitRequestMock(
 > {
   const baseMessenger = getRootMessenger<never, never>();
   const initMessenger = getTransactionPayControllerInitMessenger(baseMessenger);
-  jest.spyOn(initMessenger, 'call').mockReturnValue({ transactions } as never);
+  jest
+    .spyOn(initMessenger, 'call')
+    .mockImplementation(((action: string) =>
+      action === 'AccountsController:getState'
+        ? { internalAccounts: { accounts: ACCOUNTS_MOCK } }
+        : { transactions }) as never);
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTransactionPayControllerMessenger(baseMessenger),
+    infuraProjectId: 'test-infura-project-id',
     initMessenger,
   };
 
@@ -87,10 +107,22 @@ function getInitRequestMock(
 }
 
 describe('TransactionPayControllerInit', () => {
+  beforeEach(() => {
+    jest
+      .mocked(TransactionPayController.prototype.recoverSolanaPayStatus)
+      .mockResolvedValue({});
+  });
+
   it('initializes the controller', () => {
     const { messengerClient } =
       TransactionPayControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
+  });
+
+  it('recovers Solana Pay status once at startup', () => {
+    const { messengerClient } =
+      TransactionPayControllerInit(getInitRequestMock());
+    expect(messengerClient.recoverSolanaPayStatus).toHaveBeenCalledTimes(1);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -104,6 +136,7 @@ describe('TransactionPayControllerInit', () => {
       getDelegationTransaction: expect.any(Function),
       getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
+      infuraProjectId: 'test-infura-project-id',
       messenger: expect.any(Object),
       state: undefined,
     });
@@ -382,8 +415,7 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.setTransactionPayAccountOverride', () => {
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = ACCOUNT_OVERRIDE_MOCK;
     const WITHDRAW_TRANSACTION = {
       id: 'tx-withdraw',
       type: TransactionType.moneyAccountWithdraw,
@@ -406,7 +438,7 @@ describe('TransactionPayControllerInit', () => {
       jest.clearAllMocks();
     });
 
-    it('writes the supplied address to config.accountOverride', async () => {
+    it('writes the supplied account ID to config.accountOverride', async () => {
       const { api, setTransactionConfigMock } = initApi();
 
       await api.setTransactionPayAccountOverride('tx-1', ACCOUNT_OVERRIDE);
@@ -453,7 +485,7 @@ describe('TransactionPayControllerInit', () => {
       expect(syncWithdrawTransferMock).toHaveBeenCalledWith(
         expect.anything(),
         'tx-withdraw',
-        ACCOUNT_OVERRIDE,
+        ACCOUNT_OVERRIDE_ADDRESS_MOCK,
         undefined,
       );
     });
@@ -637,8 +669,7 @@ describe('TransactionPayControllerInit', () => {
 
   describe('api.createMoneyAccountDepositTransaction', () => {
     const BATCH_ID = '0xb47c41d0000000000000000000000000' as const;
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = ACCOUNT_OVERRIDE_MOCK;
 
     function initApi() {
       const { api, messengerClient } =
@@ -696,8 +727,7 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.createMoneyAccountWithdrawTransaction', () => {
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = ACCOUNT_OVERRIDE_MOCK;
 
     function initApi() {
       const { api, messengerClient } =
@@ -810,26 +840,15 @@ describe('TransactionPayControllerInit', () => {
         throw new Error('Expected init result to expose an api');
       }
       (
-        messengerClient as {
+        messengerClient as unknown as {
           state: {
-            transactionData: Record<
-              string,
-              {
-                paymentToken: {
-                  address: string;
-                  chainId: string;
-                };
-              }
-            >;
+            transactionData: Record<string, { paymentToken: unknown }>;
           };
         }
       ).state = {
         transactionData: {
           'tx-1': {
-            paymentToken: {
-              address: '0x123',
-              chainId: '0x1',
-            },
+            paymentToken: { assetId: EVM_ASSET_ID_MOCK },
           },
         },
       };
@@ -849,10 +868,38 @@ describe('TransactionPayControllerInit', () => {
 
       expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith({
         transactionId: 'tx-1',
-        tokenAddress: '0x123',
-        chainId: '0x1',
+        assetId: EVM_ASSET_ID_MOCK,
       });
       expect(callOrder).toEqual(['refresh', 'updateAmount']);
+    });
+
+    it('refreshes a non-EVM payment token by asset ID', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as unknown as {
+          state: {
+            transactionData: Record<string, { paymentToken: unknown }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            paymentToken: { assetId: SOL_ASSET_ID_MOCK },
+          },
+        },
+      };
+      updateDepositAmountMock.mockResolvedValue(true);
+
+      await api.updateMoneyAccountDepositAmount('tx-1', '10');
+
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith({
+        transactionId: 'tx-1',
+        assetId: SOL_ASSET_ID_MOCK,
+      });
     });
 
     it('forwards the amount when the payment token refresh throws', async () => {
@@ -862,26 +909,15 @@ describe('TransactionPayControllerInit', () => {
         throw new Error('Expected init result to expose an api');
       }
       (
-        messengerClient as {
+        messengerClient as unknown as {
           state: {
-            transactionData: Record<
-              string,
-              {
-                paymentToken: {
-                  address: string;
-                  chainId: string;
-                };
-              }
-            >;
+            transactionData: Record<string, { paymentToken: unknown }>;
           };
         }
       ).state = {
         transactionData: {
           'tx-1': {
-            paymentToken: {
-              address: '0x123',
-              chainId: '0x1',
-            },
+            paymentToken: { assetId: EVM_ASSET_ID_MOCK },
           },
         },
       };
@@ -902,15 +938,138 @@ describe('TransactionPayControllerInit', () => {
     });
   });
 
+  describe('api.updateTransactionPaymentToken', () => {
+    const SOLANA_REQUEST = {
+      transactionId: 'tx-1',
+      assetId: SOL_ASSET_ID_MOCK,
+    } as const;
+    const EVM_REQUEST = {
+      transactionId: 'tx-1',
+      assetId: EVM_ASSET_ID_MOCK,
+    } as const;
+
+    function initApi(
+      transactionType: TransactionType,
+      currentPaymentToken?: { assetId: string },
+    ) {
+      const { api, messengerClient } = TransactionPayControllerInit(
+        getInitRequestMock([
+          { id: 'tx-1', type: transactionType } as TransactionMeta,
+        ]),
+      );
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as unknown as {
+          state: {
+            transactionData: Record<string, { paymentToken?: unknown }>;
+          };
+        }
+      ).state = {
+        transactionData: { 'tx-1': { paymentToken: currentPaymentToken } },
+      };
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
+      return { api, messengerClient, setTransactionConfigMock };
+    }
+
+    function applyConfigUpdates(
+      setTransactionConfigMock: ReturnType<
+        typeof initApi
+      >['setTransactionConfigMock'],
+    ) {
+      const config: { atomic?: boolean; paymentOverride?: string } = {
+        atomic: true,
+      };
+      for (const [, updater] of setTransactionConfigMock.mock.calls) {
+        updater(config as never);
+      }
+      return config;
+    }
+
+    it('forwards an EVM selection unchanged', () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi(
+        TransactionType.perpsDeposit,
+      );
+
+      api.updateTransactionPaymentToken(EVM_REQUEST);
+
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith(
+        EVM_REQUEST,
+      );
+      expect(setTransactionConfigMock).not.toHaveBeenCalled();
+    });
+
+    it('forwards a non-EVM selection outside Money Account deposits without config changes', () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi(
+        TransactionType.perpsDeposit,
+      );
+
+      api.updateTransactionPaymentToken(SOLANA_REQUEST);
+
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith(
+        SOLANA_REQUEST,
+      );
+      expect(setTransactionConfigMock).not.toHaveBeenCalled();
+    });
+
+    it('sets the non-atomic Money Account override before selecting a non-EVM deposit source', () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi(
+        TransactionType.moneyAccountDeposit,
+      );
+      const callOrder: string[] = [];
+      setTransactionConfigMock.mockImplementation(() => {
+        callOrder.push('config');
+      });
+      jest.mocked(messengerClient.updatePaymentToken).mockImplementation(() => {
+        callOrder.push('select');
+      });
+
+      api.updateTransactionPaymentToken(SOLANA_REQUEST);
+
+      expect(callOrder).toStrictEqual(['config', 'select']);
+      expect(applyConfigUpdates(setTransactionConfigMock)).toStrictEqual({
+        atomic: false,
+        paymentOverride: 'moneyAccount',
+      });
+    });
+
+    it('clears the Solana deposit config when switching back to an EVM token', () => {
+      const { api, setTransactionConfigMock } = initApi(
+        TransactionType.moneyAccountDeposit,
+        { assetId: SOL_ASSET_ID_MOCK },
+      );
+
+      api.updateTransactionPaymentToken(EVM_REQUEST);
+
+      expect(applyConfigUpdates(setTransactionConfigMock)).toStrictEqual({
+        atomic: undefined,
+        paymentOverride: undefined,
+      });
+    });
+
+    it('keeps the config when switching between EVM deposit tokens', () => {
+      const { api, setTransactionConfigMock } = initApi(
+        TransactionType.moneyAccountDeposit,
+        { assetId: EVM_ASSET_ID_MOCK },
+      );
+
+      api.updateTransactionPaymentToken(EVM_REQUEST);
+
+      expect(setTransactionConfigMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('api.updateMoneyAccountWithdrawAmount', () => {
-    it('forwards the Pay account override from controller state', async () => {
+    it('forwards the address of the Pay account override from controller state', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
-      const accountOverride =
-        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const accountOverride = ACCOUNT_OVERRIDE_MOCK;
       (
         messengerClient as {
           state: {
@@ -935,7 +1094,7 @@ describe('TransactionPayControllerInit', () => {
         expect.anything(),
         'tx-1',
         '10',
-        accountOverride,
+        ACCOUNT_OVERRIDE_ADDRESS_MOCK,
         undefined,
       );
     });
@@ -949,15 +1108,12 @@ describe('TransactionPayControllerInit', () => {
       (
         messengerClient as {
           state: {
-            transactionData: Record<
-              string,
-              { paymentToken: { address: string; chainId: string } }
-            >;
+            transactionData: Record<string, { paymentToken: unknown }>;
           };
         }
       ).state = {
         transactionData: {
-          'tx-1': { paymentToken: { address: '0x123', chainId: '0x1' } },
+          'tx-1': { paymentToken: { assetId: EVM_ASSET_ID_MOCK } },
         },
       };
       updateWithdrawAmountMock.mockResolvedValue(false);
@@ -969,7 +1125,42 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
         undefined,
-        { address: '0x123', chainId: '0x1' },
+        {
+          address: '0x1234567890abcdef1234567890abcdef12345678',
+          chainId: '0x1',
+        },
+      );
+    });
+
+    it('does not forward a non-EVM Pay account override as the recipient', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<string, { accountOverride?: string }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            accountOverride: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+          },
+        },
+      };
+      updateWithdrawAmountMock.mockResolvedValue(false);
+
+      await api.updateMoneyAccountWithdrawAmount('tx-1', '10');
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+        undefined,
+        undefined,
       );
     });
 
@@ -979,7 +1170,7 @@ describe('TransactionPayControllerInit', () => {
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
-      const payOverride = '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const payOverride = ACCOUNT_OVERRIDE_MOCK;
       const recipientOverride =
         '0x1111111111111111111111111111111111111111' as const;
       (
@@ -1013,7 +1204,7 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('payment token changes', () => {
-    const PAYMENT_TOKEN = { address: '0x123', chainId: '0x1' };
+    const PAYMENT_TOKEN = { assetId: EVM_ASSET_ID_MOCK };
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -1023,7 +1214,10 @@ describe('TransactionPayControllerInit', () => {
       const request = getInitRequestMock();
       const { messengerClient } = TransactionPayControllerInit(request);
       const transactionData = {
-        'tx-1': { accountOverride: '0xabc', paymentToken: PAYMENT_TOKEN },
+        'tx-1': {
+          accountOverride: ACCOUNT_OVERRIDE_MOCK,
+          paymentToken: PAYMENT_TOKEN,
+        },
       };
       (messengerClient as { state: unknown }).state = { transactionData };
       const publishState = (data: Record<string, unknown>) =>
@@ -1043,7 +1237,10 @@ describe('TransactionPayControllerInit', () => {
       publishState({
         'tx-1': {
           ...transactionData['tx-1'],
-          paymentToken: { address: '0x456', chainId: '0x1' },
+          paymentToken: {
+            assetId:
+              'eip155:1/erc20:0x4560000000000000000000000000000000000000',
+          },
         },
       });
 
@@ -1052,8 +1249,11 @@ describe('TransactionPayControllerInit', () => {
         1,
         expect.anything(),
         'tx-1',
-        '0xabc',
-        PAYMENT_TOKEN,
+        ACCOUNT_OVERRIDE_ADDRESS_MOCK,
+        {
+          address: '0x1234567890abcdef1234567890abcdef12345678',
+          chainId: '0x1',
+        },
       );
     });
 

@@ -30,15 +30,15 @@ describe('transaction-pay-controller actions', () => {
     it('calls submitRequestToBackground with correct parameters', async () => {
       const params = {
         transactionId: 'tx-123',
-        tokenAddress: '0x1234567890abcdef1234567890abcdef12345678' as const,
-        chainId: '0x1' as const,
+        assetId:
+          'eip155:1/erc20:0x1234567890abcdef1234567890abcdef12345678' as const,
       };
 
       await updateTransactionPaymentToken(params);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'TransactionPayController:updatePaymentToken',
+        'updateTransactionPaymentToken',
         [params],
       );
     });
@@ -48,8 +48,7 @@ describe('transaction-pay-controller actions', () => {
 
       const result = await updateTransactionPaymentToken({
         transactionId: 'tx-123',
-        tokenAddress: '0x1234567890abcdef1234567890abcdef12345678' as const,
-        chainId: '0x1' as const,
+        assetId: 'eip155:1/erc20:0x1234567890abcdef1234567890abcdef12345678',
       });
 
       expect(result).toBeUndefined();
@@ -115,8 +114,7 @@ describe('transaction-pay-controller actions', () => {
   describe('setAccountOverride', () => {
     it('calls submitRequestToBackground with setTransactionPayAccountOverride', async () => {
       const transactionId = 'tx-override';
-      const accountOverride =
-        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const accountOverride = 'account-id';
 
       await setAccountOverride(transactionId, accountOverride);
 
@@ -131,8 +129,7 @@ describe('transaction-pay-controller actions', () => {
   describe('createMoneyAccountDepositTransaction', () => {
     it('forwards the batch id and selected-account override', async () => {
       const batchId = '0xb47c41d0000000000000000000000000' as const;
-      const accountOverride =
-        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const accountOverride = 'account-id';
 
       mockSubmitRequestToBackground.mockResolvedValue({
         transactionId: 'tx-deposit',
@@ -150,8 +147,7 @@ describe('transaction-pay-controller actions', () => {
 
   describe('createMoneyAccountWithdrawTransaction', () => {
     it('forwards the selected-account override', async () => {
-      const accountOverride =
-        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const accountOverride = 'account-id';
 
       mockSubmitRequestToBackground.mockResolvedValue({
         transactionId: 'tx-withdraw',

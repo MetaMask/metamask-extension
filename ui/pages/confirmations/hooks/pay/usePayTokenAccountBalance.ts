@@ -10,6 +10,7 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { useSendTokens } from '../send/useSendTokens';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import type { Asset } from '../../types/send';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -122,9 +123,10 @@ export function usePayTokenAccountBalance(): {
 } {
   const { payToken } = useTransactionPayToken();
   const accountTokens = useSendTokens({ includeNoBalance: true });
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const usdRate = useTokenFiatRate(
-    (payToken?.address ?? ZERO_ADDRESS) as Hex,
-    (payToken?.chainId ?? ABSENT_CHAIN_ID) as Hex,
+    evmPayToken?.address ?? ZERO_ADDRESS,
+    evmPayToken?.chainId ?? ABSENT_CHAIN_ID,
     'usd',
   );
 
@@ -138,14 +140,25 @@ export function usePayTokenAccountBalance(): {
       };
     }
 
-    const payTokenChainId = toHexChainId(payToken.chainId);
+    // Core reads non-EVM balances and prices from AssetsController on every
+    // quote update, so the controller snapshot is the live balance.
+    if (!evmPayToken) {
+      return {
+        balanceUsd: payToken.balanceUsd,
+        balanceRaw: payToken.balanceRaw,
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
+      };
+    }
+
+    const payTokenChainId = toHexChainId(evmPayToken.chainId);
     const matchingToken = accountTokens.find((token) => {
       if (toHexChainId(token.chainId) !== payTokenChainId) {
         return false;
       }
 
-      const tokenAddress = tokenAddressForMatch(token, payToken.chainId);
-      return tokenAddress?.toLowerCase() === payToken.address.toLowerCase();
+      const tokenAddress = tokenAddressForMatch(token, evmPayToken.chainId);
+      return tokenAddress?.toLowerCase() === evmPayToken.address.toLowerCase();
     });
 
     if (!matchingToken?.rawBalance) {
@@ -204,5 +217,5 @@ export function usePayTokenAccountBalance(): {
       isLiveBalance: true,
       isBalanceUsdKnown: new BigNumber(balanceUsd).gt(0),
     };
-  }, [accountTokens, payToken, usdRate]);
+  }, [accountTokens, evmPayToken, payToken, usdRate]);
 }

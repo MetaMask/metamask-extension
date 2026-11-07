@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import type { Hex } from '@metamask/utils';
 import { selectMoneyWithdrawalRecipient } from '../../selectors/money/money-funding-account';
 import {
   ConfirmationLoader,
@@ -27,7 +26,7 @@ import { useMoneyErrorReporter } from './useMoneyErrorReporter';
  * e.g. a Solana account, but the group still holds the EVM account the user
  * expects), otherwise the user's first EVM account. Hardware accounts are
  * valid recipients: the money account signs the batch, and the recipient
- * never signs. Fails fast only when no EVM account exists. That address is
+ * never signs. Fails fast only when no EVM account exists. Its account ID is
  * passed as Pay's `accountOverride` so the confirmation defaults the To row
  * — the withdraw recipient — to that account instead of the money account
  * that executes the batch.
@@ -53,7 +52,7 @@ export function useMoneyAccountWithdrawal() {
       }
 
       const { transactionId } = await createMoneyAccountWithdrawTransaction(
-        recipientAccount.address as Hex,
+        recipientAccount.id,
       );
 
       navigateToTransaction(transactionId, {

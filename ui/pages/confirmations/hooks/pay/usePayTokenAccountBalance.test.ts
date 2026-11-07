@@ -11,17 +11,20 @@ jest.mock('./useTransactionPayToken');
 jest.mock('../send/useSendTokens');
 jest.mock('../tokens/useTokenFiatRates');
 
-const PAY_TOKEN_MOCK = {
-  address: '0xabc' as Hex,
-  chainId: '0x1' as Hex,
+const TOKEN_ADDRESS_MOCK = '0x0000000000000000000000000000000000000abc';
+
+const PAY_TOKEN_MOCK: TransactionPaymentToken = {
+  assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
+  balanceFiat: '5.00',
+  balanceHuman: '5',
   balanceUsd: '5.00',
   balanceRaw: '5000000000000000000',
   decimals: 18,
   symbol: 'ETH',
-} as TransactionPaymentToken;
+};
 
 const ACCOUNT_TOKEN_MOCK = {
-  address: '0xabc',
+  address: TOKEN_ADDRESS_MOCK,
   chainId: '0x1',
   decimals: 18,
   rawBalance: '0x1bc16d674ec80000' as Hex, // 2e18
@@ -44,6 +47,35 @@ describe('usePayTokenAccountBalance', () => {
     });
     useSendTokensMock.mockReturnValue([ACCOUNT_TOKEN_MOCK]);
     useTokenFiatRateMock.mockReturnValue(1700);
+  });
+
+  it('returns the Core snapshot as the live balance for a Solana pay token', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        balanceFiat: '150.00',
+        balanceHuman: '1.5',
+        balanceRaw: '1500000000',
+        balanceUsd: '150.00',
+        decimals: 9,
+        symbol: 'SOL',
+      },
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = renderHook(() => usePayTokenAccountBalance());
+
+    expect(result.current).toStrictEqual({
+      balanceUsd: '150.00',
+      balanceRaw: '1500000000',
+      isLiveBalance: true,
+      isBalanceUsdKnown: true,
+    });
+    expect(useTokenFiatRateMock).toHaveBeenCalledWith(
+      '0x0000000000000000000000000000000000000000',
+      '0x0',
+      'usd',
+    );
   });
 
   it('returns zero balances when no pay token is selected', () => {
@@ -99,10 +131,9 @@ describe('usePayTokenAccountBalance', () => {
     });
   });
 
-  it('matches a native account token to the native pay-token address', () => {
-    const nativeAddress = '0x0000000000000000000000000000000000000000' as Hex;
+  it('matches a native account token to the native pay-token asset', () => {
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { ...PAY_TOKEN_MOCK, address: nativeAddress },
+      payToken: { ...PAY_TOKEN_MOCK, assetId: 'eip155:1/slip44:60' },
       setPayToken: jest.fn(),
     });
     useSendTokensMock.mockReturnValue([
@@ -120,7 +151,10 @@ describe('usePayTokenAccountBalance', () => {
 
   it('matches token by address case-insensitively', () => {
     useTransactionPayTokenMock.mockReturnValue({
-      payToken: { ...PAY_TOKEN_MOCK, address: '0xABC' as Hex },
+      payToken: {
+        ...PAY_TOKEN_MOCK,
+        assetId: 'eip155:1/erc20:0x0000000000000000000000000000000000000ABC',
+      },
       setPayToken: jest.fn(),
     });
 

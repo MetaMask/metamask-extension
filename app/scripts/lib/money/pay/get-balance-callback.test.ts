@@ -2,12 +2,17 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { GetBalanceRequest } from '@metamask/transaction-pay-controller';
-import { getBalance } from './get-balance-callback';
+import type {
+  GetBalanceRequest,
+  TransactionPaymentToken,
+} from '@metamask/transaction-pay-controller';
+import { createMockInternalAccounts } from '../../../../../test/data/mock-accounts';
+import { getBalance as getBalanceCallback } from './get-balance-callback';
 import {
   resetMaxSourceBalancesForTests,
   setMaxSourceBalance,
 } from './max-source-balance';
+import { createMoneyPayMessengerMock } from './test-mocks';
 
 const maxSourceBalanceKey = {
   transactionId: 'tx-1',
@@ -16,14 +21,30 @@ const maxSourceBalanceKey = {
   tokenAddress: '0xtoken1',
 };
 
+const ACCOUNTS_MOCK = createMockInternalAccounts([
+  { id: 'account-1', address: maxSourceBalanceKey.accountAddress },
+  { id: 'account-2', address: '0xaccount2' },
+]);
+
+const { messenger } = createMoneyPayMessengerMock({
+  handlers: {
+    'AccountsController:getState': () => ({
+      internalAccounts: { accounts: ACCOUNTS_MOCK },
+    }),
+  },
+});
+
+function getBalance(request: GetBalanceRequest) {
+  return getBalanceCallback(request, messenger);
+}
+
 function buildRequest(type: TransactionType): GetBalanceRequest {
   return {
     transaction: { id: 'tx-1', type } as TransactionMeta,
     transactionData: {
-      accountOverride: maxSourceBalanceKey.accountAddress,
+      accountOverride: 'account-1',
       paymentToken: {
-        address: maxSourceBalanceKey.tokenAddress,
-        chainId: maxSourceBalanceKey.chainId,
+        assetId: `eip155:1/erc20:${maxSourceBalanceKey.tokenAddress}`,
       },
       tokens: [],
     },
@@ -84,7 +105,7 @@ describe('getBalance', () => {
   it('returns undefined after the funding account changes', () => {
     setMaxSourceBalance(maxSourceBalanceKey, '5879662');
     const request = buildRequest(TransactionType.moneyAccountDeposit);
-    request.transactionData.accountOverride = '0xaccount2';
+    request.transactionData.accountOverride = 'account-2';
 
     expect(getBalance(request)).toBeUndefined();
   });
@@ -92,11 +113,27 @@ describe('getBalance', () => {
   it('returns undefined after the pay token changes', () => {
     setMaxSourceBalance(maxSourceBalanceKey, '5879662');
     const request = buildRequest(TransactionType.moneyAccountDeposit);
-    const { paymentToken } = request.transactionData;
-    if (!paymentToken) {
-      throw new Error('Expected request to include a payment token');
-    }
-    paymentToken.address = '0xtoken2';
+    request.transactionData.paymentToken = {
+      ...request.transactionData.paymentToken,
+      assetId: 'eip155:1/erc20:0xtoken2',
+    } as TransactionPaymentToken;
+
+    expect(getBalance(request)).toBeUndefined();
+  });
+
+  it('returns undefined for a non-EVM payment token', () => {
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
+    const request = buildRequest(TransactionType.moneyAccountDeposit);
+    const solanaPaymentToken: TransactionPaymentToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceFiat: '10',
+      balanceHuman: '1',
+      balanceRaw: '1000000000',
+      balanceUsd: '10',
+      decimals: 9,
+      symbol: 'SOL',
+    };
+    request.transactionData.paymentToken = solanaPaymentToken;
 
     expect(getBalance(request)).toBeUndefined();
   });

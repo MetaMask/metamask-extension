@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
+import type { Hex } from '@metamask/utils';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import * as controllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import { ConfirmContext } from '../../context/confirm';
@@ -15,19 +16,18 @@ jest.mock(
 );
 
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
-const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
+const TOKEN_ADDRESS_MOCK = '0x1234567890AbcdEF1234567890aBcdef12345678';
 const CHAIN_ID_MOCK = '0x1';
 
-const PAY_TOKEN_MOCK = {
-  address: TOKEN_ADDRESS_MOCK,
+const PAY_TOKEN_MOCK: TransactionPaymentToken = {
+  assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
   balanceHuman: '123.456',
   balanceFiat: '456.12',
   balanceUsd: '456.123',
   balanceRaw: '123456000000000000000',
-  chainId: CHAIN_ID_MOCK,
   decimals: 4,
   symbol: 'TST',
-} as TransactionPaymentToken;
+};
 
 const mockStore = configureStore([]);
 
@@ -99,27 +99,76 @@ describe('useTransactionPayToken', () => {
     expect(result.current.isNative).toBe(false);
   });
 
-  it('sets token in state', () => {
+  it('selects an EVM token by its checksummed ERC-20 asset ID', () => {
     const { result } = renderHookWithProvider();
 
     result.current.setPayToken({
-      address: PAY_TOKEN_MOCK.address,
-      chainId: PAY_TOKEN_MOCK.chainId,
+      address: TOKEN_ADDRESS_MOCK.toLowerCase() as Hex,
+      chainId: CHAIN_ID_MOCK,
     });
 
     expect(updatePaymentTokenMock).toHaveBeenCalledWith({
       transactionId: TRANSACTION_ID_MOCK,
-      tokenAddress: PAY_TOKEN_MOCK.address,
-      chainId: PAY_TOKEN_MOCK.chainId,
+      assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
     });
   });
 
-  it('returns isNative true when pay token is native address', () => {
-    const { result } = renderHookWithProvider({
+  it('selects an EVM native token by its slip44 asset ID', () => {
+    const { result } = renderHookWithProvider();
+
+    result.current.setPayToken({
+      address: '0x0000000000000000000000000000000000001010',
+      chainId: '0x89',
+    });
+
+    expect(updatePaymentTokenMock).toHaveBeenCalledWith({
+      transactionId: TRANSACTION_ID_MOCK,
+      assetId: 'eip155:137/slip44:966',
+    });
+  });
+
+  it('selects a non-EVM token by its CAIP asset ID', () => {
+    const { result } = renderHookWithProvider();
+
+    result.current.setPayToken({
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    });
+
+    expect(updatePaymentTokenMock).toHaveBeenCalledWith({
+      transactionId: TRANSACTION_ID_MOCK,
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    });
+  });
+
+  it('returns isNative from the CAIP asset namespace for non-EVM tokens', () => {
+    const solanaPayToken: TransactionPaymentToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceFiat: '150',
+      balanceHuman: '1.5',
+      balanceRaw: '1500000000',
+      balanceUsd: '150',
+      decimals: 9,
+      symbol: 'SOL',
+    };
+
+    const { result: nativeResult } = renderHookWithProvider({
+      payToken: solanaPayToken,
+    });
+    const { result: splResult } = renderHookWithProvider({
       payToken: {
-        ...PAY_TOKEN_MOCK,
-        address: '0x0000000000000000000000000000000000000000',
-      } as TransactionPaymentToken,
+        ...solanaPayToken,
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      },
+    });
+
+    expect(nativeResult.current.isNative).toBe(true);
+    expect(splResult.current.isNative).toBe(false);
+  });
+
+  it('returns isNative true when pay token is an EVM native asset', () => {
+    const { result } = renderHookWithProvider({
+      payToken: { ...PAY_TOKEN_MOCK, assetId: 'eip155:1/slip44:60' },
     });
 
     expect(result.current.isNative).toBe(true);

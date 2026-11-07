@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   Icon,
@@ -23,6 +23,11 @@ import type {
 } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
+import { isMoneyAccountFunding } from '../../../utils/transaction-pay';
+import {
+  getEvmPaymentToken,
+  getPaymentTokenChainId,
+} from '../../../../../../shared/lib/transaction/pay-token';
 
 export const PAY_WITH_CRYPTO_SECTION_TEST_ID = 'pay-with-section-crypto';
 export const PAY_WITH_CRYPTO_SELECTED_TOKEN_ROW_TEST_ID =
@@ -49,8 +54,11 @@ export function usePayWithCryptoSection({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyAccountSelected = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
 
   const handleSelectedTokenPress = useCallback(() => {
     if (!payToken) {
@@ -61,10 +69,7 @@ export function usePayWithCryptoSection({
       return;
     }
     clearOverride();
-    setPayToken({
-      address: payToken.address,
-      chainId: payToken.chainId,
-    });
+    setPayToken({ assetId: payToken.assetId });
     onClose();
   }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
 
@@ -81,12 +86,15 @@ export function usePayWithCryptoSection({
     const rows: PayWithRowConfig[] = [];
 
     if (payToken) {
+      const evmPayToken = getEvmPaymentToken(payToken);
+
       rows.push({
         id: 'crypto-selected-token',
         icon: (
           <TokenIcon
-            chainId={payToken.chainId}
-            tokenAddress={payToken.address}
+            chainId={getPaymentTokenChainId(payToken) as Hex}
+            // Non-EVM payment tokens are identified by their CAIP-19 asset type.
+            tokenAddress={(evmPayToken?.address ?? payToken.assetId) as Hex}
             symbol={payToken.symbol}
             size="sm"
           />

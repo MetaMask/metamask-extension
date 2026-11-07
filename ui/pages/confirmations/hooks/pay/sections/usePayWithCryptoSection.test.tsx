@@ -46,16 +46,15 @@ jest.mock('../../../components/token-icon', () => ({
   TokenIcon: () => <span data-testid="token-icon" />,
 }));
 
-const PAY_TOKEN = {
-  address: '0x1111111111111111111111111111111111111111',
-  chainId: '0x1',
+const PAY_TOKEN: TransactionPaymentToken = {
+  assetId: 'eip155:1/erc20:0x1111111111111111111111111111111111111111',
   symbol: 'USDC',
   balanceUsd: '12.5',
   balanceFiat: '$12.50',
   balanceHuman: '12.5',
   balanceRaw: '12500000',
   decimals: 6,
-} as TransactionPaymentToken;
+};
 
 describe('usePayWithCryptoSection', () => {
   const useSelectorMock = jest.mocked(useSelector);
@@ -163,10 +162,7 @@ describe('usePayWithCryptoSection', () => {
     });
 
     expect(clearOverride).toHaveBeenCalled();
-    expect(setPayToken).toHaveBeenCalledWith({
-      address: PAY_TOKEN.address,
-      chainId: PAY_TOKEN.chainId,
-    });
+    expect(setPayToken).toHaveBeenCalledWith({ assetId: PAY_TOKEN.assetId });
     expect(onClose).toHaveBeenCalled();
   });
 

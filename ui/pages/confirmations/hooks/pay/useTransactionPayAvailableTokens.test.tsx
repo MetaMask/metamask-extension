@@ -6,10 +6,12 @@ import { Asset, AssetStandard } from '../../types/send';
 import { useTransactionPayBlockedTokens } from './useTransactionPayBlockedTokens';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
+import { useIsSolanaPaySourceEnabled } from './useIsSolanaPaySourceEnabled';
 
 jest.mock('../send/useSendTokens');
 jest.mock('./useTransactionPayBlockedTokens');
 jest.mock('./useTransactionPayToken');
+jest.mock('./useIsSolanaPaySourceEnabled');
 jest.mock('../../utils/transaction-pay', () => ({
   ...jest.requireActual('../../utils/transaction-pay'),
   getAvailableTokens: jest.fn(),
@@ -59,6 +61,7 @@ describe('useTransactionPayAvailableTokens', () => {
       setPayToken: jest.fn(),
     });
     getAvailableTokensMock.mockReturnValue([TOKEN_MOCK]);
+    jest.mocked(useIsSolanaPaySourceEnabled).mockReturnValue(false);
   });
 
   it('returns available tokens', () => {
@@ -79,8 +82,19 @@ describe('useTransactionPayAvailableTokens', () => {
         }),
       ]),
       blockedTokens: blockedTokensMock,
+      isSolanaPayEnabled: false,
       payToken: undefined,
     });
+  });
+
+  it('passes whether Solana sources are enabled to getAvailableTokens', () => {
+    jest.mocked(useIsSolanaPaySourceEnabled).mockReturnValue(true);
+
+    renderHook(() => useTransactionPayAvailableTokens());
+
+    expect(getAvailableTokensMock).toHaveBeenCalledWith(
+      expect.objectContaining({ isSolanaPayEnabled: true }),
+    );
   });
 
   it('returns empty array when no tokens available', () => {

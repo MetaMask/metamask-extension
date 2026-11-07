@@ -175,6 +175,8 @@ describe('useSigningOrSubmittingAlerts', () => {
 
   describe('pay token chain alerts', () => {
     const PAY_TOKEN_CHAIN_ID = '0x89';
+    const PAY_TOKEN_ASSET_ID =
+      'eip155:137/erc20:0x0000000000000000000000000000000000000001';
     const CONFIRMATION_WITH_PAY_TOKEN =
       genUnapprovedContractInteractionConfirmation({
         chainId: '0x5',
@@ -198,8 +200,7 @@ describe('useSigningOrSubmittingAlerts', () => {
         transactionData: {
           [transactionId]: {
             paymentToken: {
-              address: '0xtoken',
-              chainId: PAY_TOKEN_CHAIN_ID,
+              assetId: PAY_TOKEN_ASSET_ID,
             },
           },
         },
@@ -216,8 +217,8 @@ describe('useSigningOrSubmittingAlerts', () => {
         transactionData: {
           [transactionId]: {
             paymentToken: {
-              address: '0xtoken',
-              chainId: '0x5',
+              assetId:
+                'eip155:5/erc20:0x0000000000000000000000000000000000000001',
             },
           },
         },
@@ -244,8 +245,7 @@ describe('useSigningOrSubmittingAlerts', () => {
         transactionData: {
           [transactionId]: {
             paymentToken: {
-              address: '0xtoken',
-              chainId: PAY_TOKEN_CHAIN_ID,
+              assetId: PAY_TOKEN_ASSET_ID,
             },
           },
         },
@@ -272,8 +272,7 @@ describe('useSigningOrSubmittingAlerts', () => {
         transactionData: {
           [transactionId]: {
             paymentToken: {
-              address: '0xtoken',
-              chainId: PAY_TOKEN_CHAIN_ID,
+              assetId: PAY_TOKEN_ASSET_ID,
             },
           },
         },

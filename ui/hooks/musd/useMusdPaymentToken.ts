@@ -14,6 +14,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { getEvmAssetId } from '../../../shared/lib/transaction/pay-token';
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import {
@@ -84,8 +85,11 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
         return findNetworkClientIdByChainId(chainId);
       },
 
-      updatePaymentToken: (params) => {
-        updateTransactionPaymentToken(params);
+      updatePaymentToken: ({ transactionId, tokenAddress, chainId }) => {
+        updateTransactionPaymentToken({
+          transactionId,
+          assetId: getEvmAssetId(tokenAddress, chainId),
+        });
       },
 
       rejectApproval: async (id) => {

@@ -37,8 +37,7 @@ const createMockState = () => {
         [transaction.id]: {
           isLoading: false,
           paymentToken: {
-            address: TOKEN_ADDRESS_MOCK,
-            chainId: CHAIN_ID_MOCK,
+            assetId: `eip155:5/erc20:${TOKEN_ADDRESS_MOCK}`,
           },
           tokens: [],
           quotes: [],

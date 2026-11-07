@@ -1,29 +1,19 @@
-import type { PaymentOverride } from '@metamask/transaction-pay-controller';
+import type {
+  PaymentOverride,
+  UpdatePaymentTokenRequest,
+} from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
 
 export type { MoneyAccountWithdrawAmountUpdate };
 
-export async function updateTransactionPaymentToken({
-  transactionId,
-  tokenAddress,
-  chainId,
-}: {
-  transactionId: string;
-  tokenAddress: Hex;
-  chainId: Hex;
-}): Promise<void> {
-  return await submitRequestToBackground(
-    'TransactionPayController:updatePaymentToken',
-    [
-      {
-        transactionId,
-        tokenAddress,
-        chainId,
-      },
-    ],
-  );
+export async function updateTransactionPaymentToken(
+  request: UpdatePaymentTokenRequest,
+): Promise<void> {
+  return await submitRequestToBackground('updateTransactionPaymentToken', [
+    request,
+  ]);
 }
 
 export async function setPaymentOverride(
@@ -97,14 +87,14 @@ export async function setTransactionPayAtomic(
  * recorded against it before this call.
  *
  * @param batchId - Caller-generated batch id.
- * @param accountOverride - Currently selected EVM account, used as the
- * default funding account on the confirmation (`txParams.from` is the
+ * @param accountOverride - ID of the currently selected EVM account, used as
+ * the default funding account on the confirmation (`txParams.from` is the
  * money account, which executes the batch).
  * @returns The created transaction id and the batch id.
  */
 export async function createMoneyAccountDepositTransaction(
   batchId: Hex,
-  accountOverride: Hex,
+  accountOverride: string,
 ): Promise<{ transactionId: string; batchId: Hex }> {
   return await submitRequestToBackground(
     'createMoneyAccountDepositTransaction',
@@ -116,20 +106,20 @@ export async function createMoneyAccountDepositTransaction(
  * Creates the placeholder Money Account withdrawal batch in the background
  * and returns the created transaction's id for confirmation navigation.
  *
- * @param recipient - Default recipient on the confirmation, stored as Pay's
- * account override. `txParams.from` is the money account, which executes and
- * signs the batch.
+ * @param recipientAccountId - ID of the default recipient account on the
+ * confirmation, stored as Pay's account override. `txParams.from` is the
+ * money account, which executes and signs the batch.
  * @returns The created transaction id and the batch id.
  */
 export async function createMoneyAccountWithdrawTransaction(
-  recipient: Hex,
+  recipientAccountId: string,
 ): Promise<{
   transactionId: string;
   batchId: Hex;
 }> {
   return await submitRequestToBackground(
     'createMoneyAccountWithdrawTransaction',
-    [recipient],
+    [recipientAccountId],
   );
 }
 
@@ -252,9 +242,15 @@ export async function setPostQuote(
   ]);
 }
 
+/**
+ * Sets the MetaMask Pay account override of a transaction.
+ *
+ * @param transactionId - Confirmation transaction id.
+ * @param accountOverride - ID of the selected account.
+ */
 export async function setAccountOverride(
   transactionId: string,
-  accountOverride: Hex,
+  accountOverride: string,
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayAccountOverride', [
     transactionId,

@@ -4,6 +4,7 @@ import {
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
+  type UpdatePaymentTokenRequest,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -11,6 +12,10 @@ import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../shared/lib/money/money-account-flow';
+import {
+  getEvmAsset,
+  isNonEvmPaymentToken,
+} from '../../../shared/lib/transaction/pay-token';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -33,9 +38,10 @@ import {
   type WithdrawPaymentToken,
 } from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
-import type {
-  MoneyPayMessenger,
-  PaymentOverrideMessenger,
+import {
+  getPayEvmAccountOverride,
+  type MoneyPayMessenger,
+  type PaymentOverrideMessenger,
 } from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
@@ -72,7 +78,8 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         initMessenger as MoneyPayMessenger,
         amountDataRequest,
       ),
-    getBalance,
+    getBalance: (balanceRequest) =>
+      getBalance(balanceRequest, initMessenger as MoneyPayMessenger),
     getDelegationTransaction: getDelegationTransactionCallback,
     getPaymentOverrideData: (paymentOverrideRequest) =>
       getPaymentOverrideData(
@@ -80,6 +87,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         initMessenger as PaymentOverrideMessenger,
       ),
     getStrategy,
+    infuraProjectId: request.infuraProjectId,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
@@ -90,6 +98,10 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     messengerClient,
     initMessenger as MoneyPayMessenger,
   );
+
+  messengerClient.recoverSolanaPayStatus().catch((error) => {
+    console.error('Failed to recover Solana Pay status', error);
+  });
 
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
@@ -103,7 +115,7 @@ function getApi(
   return {
     createMoneyAccountDepositTransaction: async (
       batchId: Hex,
-      accountOverride: Hex,
+      accountOverride: string,
     ) => {
       const result = await createMoneyAccountDepositTransaction(
         moneyPayMessenger,
@@ -116,10 +128,16 @@ function getApi(
       );
       return result;
     },
-    createMoneyAccountWithdrawTransaction: async (recipient: Hex) => {
+    createMoneyAccountWithdrawTransaction: async (
+      recipientAccountId: string,
+    ) => {
       const result =
         await createMoneyAccountWithdrawTransaction(moneyPayMessenger);
-      seedWithdrawPayConfig(messengerClient, result.transactionId, recipient);
+      seedWithdrawPayConfig(
+        messengerClient,
+        result.transactionId,
+        recipientAccountId,
+      );
       return result;
     },
     setTransactionPayIsMaxAmount: (
@@ -186,7 +204,7 @@ function getApi(
     },
     setTransactionPayAccountOverride: async (
       transactionId: string,
-      accountOverride: Hex,
+      accountOverride: string,
     ) => {
       const transaction = moneyPayMessenger
         .call('TransactionController:getState')
@@ -222,8 +240,7 @@ function getApi(
         try {
           messengerClient.updatePaymentToken({
             transactionId,
-            tokenAddress: paymentToken.address,
-            chainId: paymentToken.chainId,
+            assetId: paymentToken.assetId,
           });
         } catch {
           // Balance/rates may still be settling; amount commit below still runs.
@@ -256,7 +273,11 @@ function getApi(
         moneyPayMessenger,
         transactionId,
         amountHuman,
-        recipientOverride ?? transactionData?.accountOverride,
+        recipientOverride ??
+          getPayEvmAccountOverride(
+            moneyPayMessenger,
+            transactionData?.accountOverride,
+          ),
         getWithdrawPaymentToken(transactionData),
       );
     },
@@ -298,6 +319,38 @@ function getApi(
         }
       });
     },
+    updateTransactionPaymentToken: (request: UpdatePaymentTokenRequest) => {
+      const transaction = moneyPayMessenger
+        .call('TransactionController:getState')
+        .transactions.find(({ id }) => id === request.transactionId);
+
+      const isDeposit =
+        getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
+      const isNonEvmRequest = !getEvmAsset(request.assetId);
+
+      if (isDeposit && isNonEvmRequest) {
+        setSolanaPayDepositConfig(messengerClient, request.transactionId, true);
+      }
+
+      const previousPaymentToken =
+        messengerClient.state.transactionData[request.transactionId]
+          ?.paymentToken;
+
+      messengerClient.updatePaymentToken(request);
+
+      if (
+        isDeposit &&
+        !isNonEvmRequest &&
+        previousPaymentToken &&
+        isNonEvmPaymentToken(previousPaymentToken)
+      ) {
+        setSolanaPayDepositConfig(
+          messengerClient,
+          request.transactionId,
+          false,
+        );
+      }
+    },
   };
 }
 
@@ -328,9 +381,7 @@ function subscribeWithdrawTransferSync(
       for (const [transactionId, { paymentToken }] of Object.entries(
         transactionData,
       )) {
-        const key = paymentToken
-          ? `${paymentToken.chainId}:${paymentToken.address.toLowerCase()}`
-          : undefined;
+        const key = paymentToken?.assetId.toLowerCase();
 
         if (
           paymentTokenKeys.has(transactionId) &&
@@ -356,9 +407,7 @@ function getWithdrawPaymentToken(
     | undefined,
 ): WithdrawPaymentToken | undefined {
   const paymentToken = transactionData?.paymentToken;
-  return paymentToken
-    ? { address: paymentToken.address, chainId: paymentToken.chainId }
-    : undefined;
+  return paymentToken && getEvmAsset(paymentToken.assetId);
 }
 
 async function syncWithdrawTransfer(
@@ -372,7 +421,10 @@ async function syncWithdrawTransfer(
   await syncMoneyAccountWithdrawTransfer(
     moneyPayMessenger,
     transactionId,
-    transactionData?.accountOverride,
+    getPayEvmAccountOverride(
+      moneyPayMessenger,
+      transactionData?.accountOverride,
+    ),
     getWithdrawPaymentToken(transactionData),
   );
 }
@@ -389,15 +441,15 @@ function logWithdrawSyncError(error: unknown): void {
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Withdrawal transaction id.
- * @param recipient - Account that receives the withdrawal.
+ * @param recipientAccountId - ID of the account that receives the withdrawal.
  */
 function seedWithdrawPayConfig(
   messengerClient: TransactionPayController,
   transactionId: string,
-  recipient: Hex,
+  recipientAccountId: string,
 ): void {
   messengerClient.setTransactionConfig(transactionId, (config) => {
-    config.accountOverride = recipient;
+    config.accountOverride = recipientAccountId;
   });
 }
 
@@ -415,16 +467,42 @@ function seedWithdrawPayConfig(
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.
- * @param accountOverride - Currently selected EVM account address.
+ * @param accountOverride - ID of the funding EVM account.
  */
 function seedDepositPayConfig(
   messengerClient: TransactionPayController,
   transactionId: string,
-  accountOverride: Hex,
+  accountOverride: string,
 ): void {
   messengerClient.setTransactionConfig(transactionId, (config) => {
     config.accountOverride = accountOverride;
     config.isQuoteRequired = true;
+  });
+}
+
+/**
+ * Relay cannot embed the Money Account vault calls in a Solana-origin quote,
+ * so a deposit funded from Solana bridges to the deposit account and Core runs
+ * the vault deposit as a non-atomic second leg. Core only does that when the
+ * transaction carries the Money Account override with `atomic: false`. The
+ * config is set before a non-EVM token is selected, so the first Solana quote
+ * already includes the second leg, and cleared after switching back to an EVM
+ * token.
+ *
+ * @param messengerClient - TransactionPayController to write config on.
+ * @param transactionId - Money Account deposit transaction ID.
+ * @param isSolanaSource - Whether the deposit is funded from a non-EVM token.
+ */
+function setSolanaPayDepositConfig(
+  messengerClient: TransactionPayController,
+  transactionId: string,
+  isSolanaSource: boolean,
+): void {
+  messengerClient.setTransactionConfig(transactionId, (config) => {
+    config.atomic = isSolanaSource ? false : undefined;
+    config.paymentOverride = isSolanaSource
+      ? PaymentOverride.MoneyAccount
+      : undefined;
   });
 }
 

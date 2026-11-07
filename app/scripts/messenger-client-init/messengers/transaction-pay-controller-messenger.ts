@@ -6,7 +6,10 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -38,15 +41,26 @@ export function getTransactionPayControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      // Resolve the non-EVM payment token account in the transaction account
+      // group.
+      'AccountTreeController:getAccountContext',
+      'AccountTreeController:getAccountGroupObject',
       'AccountsController:getState',
       'AssetsController:getState',
+      'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
+      'SnapController:handleRequest',
+      // Solana Pay recovery runs the Money Account second leg from the
+      // controller messenger rather than from the publish hook.
+      'TransactionController:addTransactionBatch',
+      'TransactionController:confirmTransaction',
       'TransactionController:estimateGas',
       'TransactionController:estimateGasBatch',
+      'TransactionController:failTransaction',
       'TransactionController:getGasFeeTokens',
       'TransactionController:getState',
       'TransactionController:updateTransaction',
@@ -68,6 +82,7 @@ export function getTransactionPayControllerMessenger(
 
 type InitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
   | TransactionControllerGetNonceLockAction
@@ -104,6 +119,8 @@ export function getTransactionPayControllerInitMessenger(
     messenger: controllerInitMessenger,
     actions: [
       'AccountsController:getSelectedAccount',
+      // Resolve the Pay `accountOverride` account ID to its EVM address.
+      'AccountsController:getState',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'MoneyAccountController:getMoneyAccount',

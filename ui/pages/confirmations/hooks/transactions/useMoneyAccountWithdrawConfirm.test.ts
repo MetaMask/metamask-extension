@@ -3,7 +3,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import { renderHook } from '@testing-library/react';
 
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -13,6 +13,7 @@ import {
   updateMoneyAccountWithdrawAmount,
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useDispatch } from '../../../../store/hooks';
+import { createMockInternalAccounts } from '../../../../../test/data/mock-accounts';
 import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
 
 jest.mock('../../../../store/background-connection', () => ({
@@ -45,6 +46,13 @@ const MONEY_ACCOUNT_TRANSFER_DATA =
 const ZERO_TRANSFER_DATA =
   '0xa9059cbb00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000000' as Hex;
 const TRANSACTION_ID = 'tx-1';
+const TRANSFER_TARGET_ACCOUNT_ID = 'transfer-target-account';
+const OVERRIDE_ACCOUNT_ID = 'override-account';
+
+const ACCOUNTS_MOCK = createMockInternalAccounts([
+  { id: TRANSFER_TARGET_ACCOUNT_ID, address: TRANSFER_TARGET },
+  { id: OVERRIDE_ACCOUNT_ID, address: OVERRIDE_ADDRESS },
+]);
 
 const PLACEHOLDER_NESTED = [
   { to: TELLER_ADDRESS, data: '0x' as Hex },
@@ -72,15 +80,17 @@ const MONEY_ACCOUNT_FUNDED_NESTED = buildFundedNested(
 
 type PayData = Record<
   string,
-  { accountOverride?: Hex; paymentToken?: { address: Hex; chainId: Hex } }
+  { accountOverride?: string; paymentToken?: { assetId: CaipAssetType } }
 >;
 
 const QUOTED_PAYMENT_TOKEN = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
-  chainId: '0x1' as Hex,
+  assetId:
+    'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CaipAssetType,
 };
 
-const DIRECT_PAYMENT_TOKEN = { address: MUSD_ADDRESS, chainId: CHAIN_ID };
+const DIRECT_PAYMENT_TOKEN = {
+  assetId: `eip155:143/erc20:${MUSD_ADDRESS}` as CaipAssetType,
+};
 
 function buildPayData(data: PayData[string]): PayData {
   return { [TRANSACTION_ID]: data };
@@ -137,7 +147,13 @@ function buildDispatch(
     callIndex += 1;
     return (thunk as (dispatch: unknown, getState: () => unknown) => unknown)(
       jest.fn(),
-      () => ({ metamask: { transactions, transactionData } }),
+      () => ({
+        metamask: {
+          transactions,
+          transactionData,
+          internalAccounts: { accounts: ACCOUNTS_MOCK },
+        },
+      }),
     );
   });
 }
@@ -233,7 +249,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     mockUseDispatch.mockReturnValue(
       buildDispatch(
         [buildTransaction(FUNDED_NESTED)],
-        buildPayData({ accountOverride: OVERRIDE_ADDRESS }),
+        buildPayData({ accountOverride: OVERRIDE_ACCOUNT_ID }),
       ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
@@ -259,7 +275,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     mockUseDispatch.mockReturnValue(
       buildDispatch(
         [undefined],
-        buildPayData({ accountOverride: TRANSFER_TARGET }),
+        buildPayData({ accountOverride: TRANSFER_TARGET_ACCOUNT_ID }),
       ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
@@ -278,7 +294,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
       buildDispatch(
         [undefined],
         buildPayData({
-          accountOverride: TRANSFER_TARGET,
+          accountOverride: TRANSFER_TARGET_ACCOUNT_ID,
           paymentToken: DIRECT_PAYMENT_TOKEN,
         }),
       ) as never,
@@ -299,7 +315,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
       buildDispatch(
         [undefined],
         buildPayData({
-          accountOverride: OVERRIDE_ADDRESS,
+          accountOverride: OVERRIDE_ACCOUNT_ID,
           paymentToken: QUOTED_PAYMENT_TOKEN,
         }),
       ) as never,
@@ -322,7 +338,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
       buildDispatch(
         [buildTransaction(FUNDED_NESTED)],
         buildPayData({
-          accountOverride: TRANSFER_TARGET,
+          accountOverride: TRANSFER_TARGET_ACCOUNT_ID,
           paymentToken: QUOTED_PAYMENT_TOKEN,
         }),
       ) as never,
@@ -349,7 +365,9 @@ describe('useMoneyAccountWithdrawConfirm', () => {
   });
 
   it('checks the recipient picked after the hook rendered', async () => {
-    const payData = buildPayData({ accountOverride: TRANSFER_TARGET });
+    const payData = buildPayData({
+      accountOverride: TRANSFER_TARGET_ACCOUNT_ID,
+    });
     mockUseDispatch.mockReturnValue(
       buildDispatch(
         [buildTransaction(OVERRIDE_FUNDED_NESTED)],
@@ -358,7 +376,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     const { prepareWithdrawTransaction } = runHook();
-    payData[TRANSACTION_ID].accountOverride = OVERRIDE_ADDRESS;
+    payData[TRANSACTION_ID].accountOverride = OVERRIDE_ACCOUNT_ID;
 
     const result = await prepareWithdrawTransaction(
       buildTransaction(OVERRIDE_FUNDED_NESTED),
@@ -401,7 +419,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
       buildDispatch(
         [buildTransaction(FUNDED_NESTED)],
         buildPayData({
-          accountOverride: TRANSFER_TARGET,
+          accountOverride: TRANSFER_TARGET_ACCOUNT_ID,
           paymentToken: QUOTED_PAYMENT_TOKEN,
         }),
       ) as never,
@@ -453,7 +471,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     mockUseDispatch.mockReturnValue(
       buildDispatch(
         [undefined],
-        buildPayData({ accountOverride: OVERRIDE_ADDRESS }),
+        buildPayData({ accountOverride: OVERRIDE_ACCOUNT_ID }),
       ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');

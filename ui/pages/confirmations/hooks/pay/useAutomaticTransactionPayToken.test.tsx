@@ -256,6 +256,53 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
+  it('does not auto-select a Solana source', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        accountId: 'solana-account-id',
+        accountType: 'solana:data-account',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        fiat: { balance: 100 },
+        isNative: true,
+      },
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+        fiat: { balance: 50 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.moneyAccountDeposit,
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledTimes(1);
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_2_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('does not select a token when only Solana sources have a balance', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        accountId: 'solana-account-id',
+        accountType: 'solana:data-account',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        fiat: { balance: 100 },
+        isNative: true,
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.moneyAccountDeposit,
+    });
+
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+  });
+
   it('does not select token when no tokens with balance', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
@@ -327,8 +374,7 @@ describe('useAutomaticTransactionPayToken', () => {
     ] as Asset[]);
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });
@@ -583,8 +629,7 @@ describe('useAutomaticTransactionPayToken', () => {
   it('does nothing when payToken is already set', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK as Hex,
-        chainId: CHAIN_ID_2_MOCK as Hex,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });
@@ -614,8 +659,7 @@ describe('useAutomaticTransactionPayToken', () => {
   it('re-selects the pay token when the account override changes', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK as Hex,
-        chainId: CHAIN_ID_2_MOCK as Hex,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });

@@ -1,6 +1,10 @@
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import {
+  MOCK_ACCOUNT_EOA,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+} from '../../test/data/mock-accounts';
+import {
   selectTransactionDataByTransactionId,
   selectTransactionPayTotalsByTransactionId,
   selectIsTransactionPayLoadingByTransactionId,
@@ -11,7 +15,9 @@ import {
   selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayAccountOverrideByTransactionId,
+  selectTransactionPayEvmAccountOverrideByTransactionId,
   selectPaymentOverrideByTransactionId,
+  TransactionPayAccountsState,
   TransactionPayState,
 } from './transactionPayController';
 
@@ -287,8 +293,7 @@ describe('transactionPayController selectors', () => {
   });
 
   describe('selectTransactionPayAccountOverrideByTransactionId', () => {
-    const ACCOUNT_OVERRIDE =
-      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const ACCOUNT_OVERRIDE = MOCK_ACCOUNT_EOA.id;
 
     it('returns accountOverride when present', () => {
       const state = createMockState({ accountOverride: ACCOUNT_OVERRIDE });
@@ -318,6 +323,53 @@ describe('transactionPayController selectors', () => {
       const result = selectTransactionPayAccountOverrideByTransactionId(
         state,
         'non-existent-id',
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('selectTransactionPayEvmAccountOverrideByTransactionId', () => {
+    function createAccountsState(
+      accountOverride?: string,
+    ): TransactionPayAccountsState {
+      return {
+        metamask: {
+          ...createMockState({ accountOverride }).metamask,
+          internalAccounts: {
+            accounts: {
+              [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+              [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+            },
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+          },
+          accountIdByAddress: {},
+        },
+      };
+    }
+
+    it('returns the address of an EVM account override', () => {
+      const result = selectTransactionPayEvmAccountOverrideByTransactionId(
+        createAccountsState(MOCK_ACCOUNT_EOA.id),
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(MOCK_ACCOUNT_EOA.address);
+    });
+
+    it('returns undefined for a non-EVM account override', () => {
+      const result = selectTransactionPayEvmAccountOverrideByTransactionId(
+        createAccountsState(MOCK_ACCOUNT_SOLANA_MAINNET.id),
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountOverride is absent', () => {
+      const result = selectTransactionPayEvmAccountOverrideByTransactionId(
+        createAccountsState(),
+        TRANSACTION_ID,
       );
 
       expect(result).toBeUndefined();
