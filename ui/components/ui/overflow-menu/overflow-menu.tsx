@@ -29,10 +29,14 @@ const popoverContentClassName = classnames(
 );
 
 const itemClassName = classnames(
-  'selectable-list-item',
   'flex items-center w-full',
+  'p-4', // padding: 16px (replaces .selectable-list-item padding)
+  'cursor-pointer',
+  'text-base font-medium text-default',
   'no-underline',
-  'hover:no-underline hover:text-default',
+  'hover:no-underline hover:text-default hover:bg-background-default-hover',
+  'active:bg-background-pressed',
+  'first:rounded-t-lg last:rounded-b-lg', // border-radius for first/last items
 );
 
 type MenuItem = {
@@ -111,29 +115,27 @@ export function OverflowMenu({
               </>
             );
 
-            return (
-              <div className="selectable-list-item-wrapper" key={key}>
-                {to ? (
-                  <Link
-                    to={to}
-                    className={itemClassName}
-                    data-testid={dataTestId}
-                    {...invokerProps}
-                  >
-                    {content}
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    className={itemClassName}
-                    onClick={onClick}
-                    data-testid={dataTestId}
-                    {...invokerProps}
-                  >
-                    {content}
-                  </button>
-                )}
-              </div>
+            return to ? (
+              <Link
+                key={key}
+                to={to}
+                className={itemClassName}
+                data-testid={dataTestId}
+                {...invokerProps}
+              >
+                {content}
+              </Link>
+            ) : (
+              <button
+                key={key}
+                type="button"
+                className={itemClassName}
+                onClick={onClick}
+                data-testid={dataTestId}
+                {...invokerProps}
+              >
+                {content}
+              </button>
             );
           })}
         </div>
