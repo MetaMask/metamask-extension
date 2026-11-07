@@ -7390,17 +7390,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^20.0.1, @metamask/assets-controller@npm:^20.2.2":
-  version: 20.2.2
-  resolution: "@metamask/assets-controller@npm:20.2.2"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@20.2.3-preview-2ad7fb9":
+  version: 20.2.3-preview-2ad7fb9
+  resolution: "@metamask-previews/assets-controller@npm:20.2.3-preview-2ad7fb9"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.8.0"
     "@metamask/account-tree-controller": "npm:^11.2.0"
     "@metamask/accounts-controller": "npm:^40.1.0"
-    "@metamask/assets-controllers": "npm:^113.1.1"
+    "@metamask/assets-controllers": "npm:^113.2.0"
     "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/client-controller": "npm:^2.0.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
     "@metamask/controller-utils": "npm:^13.0.0"
@@ -7420,16 +7421,17 @@ __metadata:
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.1"
     "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/transaction-controller": "npm:^73.1.1"
     "@metamask/utils": "npm:^12.0.1"
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/878b94d85a8b3cec8ccbe9fc8decccaaecc66702c07a6a903c8d8492524ca55345c89b28dbbf306b6995ec1fbdeae6dbb798ead33f20311113502f020e2b0746
+  checksum: 10/ebf04b4e3806b738428d41cb63684abaa710e4f506e12b5fefb0026b5e4a5f058509916fddbbce1bbb472a2959ffb2e067a5cb1f9713d36f556f2b53454972e0
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.1.1, @metamask/assets-controllers@npm:^113.2.0":
+"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.2.0":
   version: 113.2.0
   resolution: "@metamask/assets-controllers@npm:113.2.0"
   dependencies:
@@ -7581,9 +7583,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-data-service@npm:@metamask-previews/base-data-service@2.1.0-preview-6ebaf4e52":
-  version: 2.1.0-preview-6ebaf4e52
-  resolution: "@metamask-previews/base-data-service@npm:2.1.0-preview-6ebaf4e52"
+"@metamask/base-data-service@npm:@metamask-previews/base-data-service@2.1.0-preview-2ad7fb9":
+  version: 2.1.0-preview-2ad7fb9
+  resolution: "@metamask-previews/base-data-service@npm:2.1.0-preview-2ad7fb9"
   dependencies:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/storage-service": "npm:^2.0.0"
@@ -7594,7 +7596,7 @@ __metadata:
     fast-deep-equal: "npm:^3.1.3"
     lodash-es: "npm:^4.18.1"
     uuid: "npm:^14.0.2"
-  checksum: 10/26d06897d2a05b5ac565af29364f4f2b27eb1d0ffb466dada940c8b21ba1b6215c78703c625e2f2c3fca619830cbfc3dd948fe20b321a80f0f1a40220aaa926a
+  checksum: 10/71e16e39bb5e3a254cfd979ae0f620dda4419d5f1815d2b5785a1a2742bfeb961429bde75fd970aa586ac29728616f92aca71ee63be5d48b8b1f342b2c694ca3
   languageName: node
   linkType: hard
 
@@ -8810,16 +8812,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@2.0.0-preview-6ebaf4e52":
-  version: 2.0.0-preview-6ebaf4e52
-  resolution: "@metamask-previews/geolocation-controller@npm:2.0.0-preview-6ebaf4e52"
+"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@2.0.0-preview-2ad7fb9":
+  version: 2.0.0-preview-2ad7fb9
+  resolution: "@metamask-previews/geolocation-controller@npm:2.0.0-preview-2ad7fb9"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-  checksum: 10/095b7d3140261107816fe3cee9fcf8bf73e990dd199c4047249987820b787d6856586132317ea582ef23726005d83e8ae8274d5f7efe4ffcf293e5f44c2ed57e
+  checksum: 10/75c1db568884329c1302614e0b8f489b0d9956d44f1c8f0e2b013c4c630b43b8c5b1ab7c3f147c6b0e007b3751cc918bc3c3d498aa8550141ba885079a5726cb
   languageName: node
   linkType: hard
 
@@ -10137,9 +10139,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/react-data-query@npm:@metamask-previews/react-data-query@2.0.0-preview-6ebaf4e52":
-  version: 2.0.0-preview-6ebaf4e52
-  resolution: "@metamask-previews/react-data-query@npm:2.0.0-preview-6ebaf4e52"
+"@metamask/react-data-query@npm:@metamask-previews/react-data-query@2.0.0-preview-2ad7fb9":
+  version: 2.0.0-preview-2ad7fb9
+  resolution: "@metamask-previews/react-data-query@npm:2.0.0-preview-2ad7fb9"
   dependencies:
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/utils": "npm:^12.0.1"
@@ -10155,7 +10157,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 10/64976e3802228e6b96244cebef520a1aa44f3c39023fb0e9c003c72511c314946ae5f21cdae5b9e667b782440936636cca629e1880c837fb73396a25729006dc
+  checksum: 10/45f7aa0f6f95660631897b4ef7d1872addc65b79cf7f5057409b10d7084b3738b954a24c623b9d8909d73a76b76479e7dd41172ab84f8b84489a1186986ba160
   languageName: node
   linkType: hard
 
