@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "İşleminizin boyutundan ve kullanılabilir likiditeden dolayı piyasa fiyatından yaklaşık $1 daha az alacaksınız. Bu zaten teklifinize dahil edilmiştir."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Bu, işleminizin bir tokenın piyasa fiyatını nasıl değiştirdiğini gösterir. İşlem boyutuna, mevcut likiditeye ve sağlayıcı ücretlerine bağlıdır. MetaMask fiyat etkisini kontrol etmez."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Fiyat etkisi"
   },
@@ -5483,9 +5480,6 @@
   "mfaErrorSignedOut": {
     "message": "Devam etmek için giriş yapın."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Çok sayıda deneme yapıldı. Yeni bir kod isteyin."
-  },
   "mfaErrorTotpExpired": {
     "message": "Bu işlem çok uzun sürdü. Mevcut kodu uygulamanızdan girin."
   },
@@ -5710,9 +5704,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Kayma ayarlarınıza göre işleminiz gerçekleştirilirken fiyat değişirse alacağınız minimum tutar. Bu tahmin likidite sağlayıcılarından alınır, yani nihai tutar değişiklik gösterebilir."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Alınan minimum tutar"
   },
   "minimumReceivedLabel": {
     "message": "Alınan minimum"

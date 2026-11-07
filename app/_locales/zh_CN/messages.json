@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "由于您的交易规模和可用流动性，您的价格将比市场价格低约 $1。此差额已计入当前报价中。"
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "这是您的交易对代币市场价格产生的影响。具体取决于交易规模、可用流动性以及服务商费用。MetaMask 无法控制价格影响。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "价格影响"
   },
@@ -5479,9 +5476,6 @@
   "mfaErrorSignedOut": {
     "message": "请登录以继续。"
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "尝试次数过多。请请求新的验证码。"
-  },
   "mfaErrorTotpExpired": {
     "message": "耗时过长。请输入您应用中的当前验证码。"
   },
@@ -5706,9 +5700,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "若交易处理期间价格发生波动，根据您设置的滑点容差范围，此为您至少可获得的代币数量。该估算值由流动性提供商提供，因此实际兑换数量可能有所差异。"
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "最少可获得的代币数量"
   },
   "minimumReceivedLabel": {
     "message": "最低收款金额"

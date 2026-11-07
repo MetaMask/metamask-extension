@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "거래 규모와 유동성 상황으로 인해 시장 가격보다 약 $1 정도 적게 받게 됩니다. 이 차이는 이미 견적에 반영되어 있습니다."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "거래로 인해 토큰의 시장 가격이 어떻게 변동하는지를 보여줍니다. 시장 가격은 거래 규모, 사용 가능한 유동성, 제공업체 수수료에 따라 달라집니다. MetaMask는 가격 영향을 통제하지 않습니다."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "가격 영향"
   },
@@ -5483,9 +5480,6 @@
   "mfaErrorSignedOut": {
     "message": "계속 진행하려면 로그인하세요."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "시도 횟수가 너무 많습니다. 새 코드를 요청하세요."
-  },
   "mfaErrorTotpExpired": {
     "message": "입력 시간이 초과되었습니다. 앱에 표시된 현재 코드를 입력하세요."
   },
@@ -5710,9 +5704,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "슬리피지 설정에 따라 거래가 처리되는 동안 가격이 변동하는 경우 받을 수 있는 최소 금액입니다. 이 예상치는 유동성 공급자로부터 제공되며 최종 금액은 다를 수 있습니다."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "최소 금액 수령"
   },
   "minimumReceivedLabel": {
     "message": "최소 수령액"

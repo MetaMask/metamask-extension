@@ -2328,9 +2328,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Karena ukuran perdagangan dan likuiditas yang tersedia, Anda akan mendapatkan sekitar $1 lebih rendah dari harga pasar. Hal ini sudah diperhitungkan dalam kuotasi Anda."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Beginilah cara perdagangan Anda mengubah harga pasar suatu token. Hal ini bergantung pada ukuran perdagangan, likuiditas yang tersedia, dan biaya penyedia. MetaMask tidak mengontrol dampak harga."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Dampak harga"
   },
@@ -5483,9 +5480,6 @@
   "mfaErrorSignedOut": {
     "message": "Masuk untuk melanjutkan."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Terlalu banyak percobaan. Minta kode baru."
-  },
   "mfaErrorTotpExpired": {
     "message": "Prosesnya terlalu lama. Masukkan kode saat ini dari aplikasi Anda."
   },
@@ -5710,9 +5704,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Nilai minimum yang akan Anda dapatkan jika harga berubah selama proses transaksi, berdasarkan pengaturan selip. Estimasi ini berasal dari penyedia likuiditas, sehingga jumlah akhirnya dapat berbeda."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Jumlah minimum yang diterima"
   },
   "minimumReceivedLabel": {
     "message": "Minimum yang diterima"
