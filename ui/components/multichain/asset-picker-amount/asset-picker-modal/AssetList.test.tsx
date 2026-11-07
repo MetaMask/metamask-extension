@@ -32,6 +32,8 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../selectors', () => ({
+  getCurrentNetwork: jest.fn(),
+  getPreferences: jest.fn(),
   getSelectedAccountCachedBalance: jest.fn(),
 }));
 
