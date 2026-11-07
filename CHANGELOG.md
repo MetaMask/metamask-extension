@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated the Perps withdrawal amount input to the Grotzec typeface (#47560)
 - Updated the MetaMask Pay amount input to the Grotzec typeface (#47565)
 - Made bottom navigation available by default (#47206)
 - Showed more of recipient addresses in Send (#47533)
