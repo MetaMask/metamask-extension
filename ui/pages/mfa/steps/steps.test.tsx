@@ -1,11 +1,11 @@
 import React from 'react';
 import { it } from '@jest/globals';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import browser from 'webextension-polyfill';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import type {
   MfaFlowErrorCode,
   MfaFlowState,
@@ -21,20 +21,32 @@ import PasskeyStep from './passkey-step';
 import PickerStep from './picker-step';
 import TotpSetupStep from './totp-setup-step';
 
-jest.mock('webextension-polyfill', () => ({
-  permissions: { request: jest.fn() },
-}));
-
 const mockCopy = jest.fn();
 const mockUseCopyToClipboard = jest.fn();
+let mockIsCopied = false;
+let mockTheme: ThemeType;
+jest.mock(
+  '../../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({ supportLink }: { supportLink: string }) => (
+      <p data-testid="support-modal">{supportLink}</p>
+    ),
+  }),
+);
+
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: (...args: unknown[]) => {
     mockUseCopyToClipboard(...args);
-    return [false, mockCopy];
+    return [mockIsCopied, mockCopy];
   },
 }));
+jest.mock('../../../hooks/useTheme', () => ({
+  useTheme: () => mockTheme,
+}));
 
-const reason = { operation: 'test' };
+const reason: MfaReason = { operation: 'qa.test' };
 
 const buildState = <Step extends MfaFlowStep>(
   step: Step,
@@ -63,7 +75,7 @@ describe('IntroStep', () => {
           missing: ['passkey'],
           email: 'chris@metamask.com',
         })}
-        reason={{ operation: 'test', enrollDescription: 'Why we ask' }}
+        reason={{ operation: 'qa.test', enrollDescription: 'Why we ask' }}
         onAction={onAction}
       />,
     );
@@ -130,7 +142,7 @@ describe('IntroStep', () => {
           methods: ['email_otp'],
           missing: ['email_otp'],
         })}
-        reason={{ operation: 'test', verifyDescription: 'Not this one' }}
+        reason={{ operation: 'qa.test', verifyDescription: 'Not this one' }}
         onAction={jest.fn()}
       />,
     );
@@ -206,13 +218,13 @@ describe('PickerStep', () => {
   it.each<['verify' | 'confirm', MfaReason, boolean]>([
     [
       'verify',
-      { operation: 'test', verifyDescription: 'To send $20.00' },
+      { operation: 'qa.test', verifyDescription: 'To send $20.00' },
       true,
     ],
-    ['verify', { operation: 'test' }, false],
+    ['verify', { operation: 'qa.test' }, false],
     [
       'confirm',
-      { operation: 'test', verifyDescription: 'To send $20.00' },
+      { operation: 'qa.test', verifyDescription: 'To send $20.00' },
       false,
     ],
   ])(
@@ -277,6 +289,30 @@ describe('EmailEntryStep', () => {
     });
   });
 
+  it('links the help article when the email is already in use', () => {
+    const onAction = jest.fn();
+    render(
+      <EmailEntryStep
+        {...buildState({ name: 'emailEntry' }, { error: 'email_claimed' })}
+        reason={reason}
+        onAction={onAction}
+      />,
+    );
+
+    expect(screen.getByTestId(MfaFlowTestIds.ERROR)).toHaveTextContent(
+      messages.mfaErrorEmailTaken.message,
+    );
+    expect(screen.getByTestId(MfaFlowTestIds.ERROR_LINK)).toHaveAttribute(
+      'href',
+      'https://support.metamask.io/configure/wallet/email-in-use',
+    );
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.ERROR_LINK));
+    expect(onAction).toHaveBeenCalledWith({
+      type: 'errorCtaClicked',
+      cta: 'learn_more',
+    });
+  });
+
   it('submits with Enter', () => {
     const onAction = jest.fn();
     render(
@@ -328,6 +364,23 @@ describe('EmailEntryStep', () => {
     );
     expect(input).toHaveAttribute('aria-invalid', 'true');
     expect(onAction).not.toHaveBeenCalled();
+  });
+
+  it('shows an enrollment failure under the email field', () => {
+    render(
+      <EmailEntryStep
+        {...buildState(
+          { name: 'emailEntry', prefillEmail: 'a@b.co' },
+          { error: 'server_error' },
+        )}
+        reason={reason}
+        onAction={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      messages.mfaErrorGeneric.message,
+    );
   });
 
   it('accepts dots inside the local part', () => {
@@ -476,82 +529,6 @@ describe('CodeStep', () => {
     });
   });
 
-  it('pastes a copied code and submits it', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(true);
-    Object.assign(navigator, {
-      clipboard: { readText: jest.fn().mockResolvedValue('Code: 123456') },
-    });
-    const { onAction } = renderCode(otp(true));
-
-    fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-
-    await waitFor(() =>
-      expect(onAction).toHaveBeenCalledWith({
-        type: 'submitCode',
-        code: '123456',
-      }),
-    );
-  });
-
-  it('pastes once the page has focus again after the permission prompt', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(true);
-    const readText = jest
-      .fn()
-      .mockRejectedValueOnce(new Error('Document is not focused'))
-      .mockResolvedValue('123456');
-    Object.assign(navigator, { clipboard: { readText } });
-    const hasFocus = jest.spyOn(document, 'hasFocus').mockReturnValue(false);
-    const { onAction } = renderCode(otp(true));
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-    });
-    expect(onAction).not.toHaveBeenCalled();
-    hasFocus.mockReturnValue(true);
-    await act(async () => {
-      window.dispatchEvent(new Event('focus'));
-    });
-
-    expect(readText).toHaveBeenCalledTimes(2);
-    expect(onAction).toHaveBeenCalledWith({
-      type: 'submitCode',
-      code: '123456',
-    });
-  });
-
-  it('gives up on a paste when the page does not get focus back', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(true);
-    const readText = jest
-      .fn()
-      .mockRejectedValue(new Error('Document is not focused'));
-    Object.assign(navigator, { clipboard: { readText } });
-    jest.spyOn(document, 'hasFocus').mockReturnValue(false);
-    const removeListener = jest.spyOn(window, 'removeEventListener');
-    const { onAction } = renderCode(otp(true));
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-    });
-    await act(async () => {
-      jest.advanceTimersByTime(5_000);
-    });
-
-    expect(readText).toHaveBeenCalledTimes(1);
-    expect(removeListener).toHaveBeenCalledWith('focus', expect.any(Function));
-    expect(onAction).not.toHaveBeenCalled();
-  });
-
-  it('pastes nothing without the clipboard permission', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(false);
-    const { onAction } = renderCode(otp(true));
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-    });
-
-    expect(onAction).not.toHaveBeenCalled();
-  });
-
   it('offers a new code once the one on screen expired', () => {
     const { onAction } = renderCode(otp(true), { error: 'flow_expired' });
 
@@ -573,6 +550,18 @@ describe('CodeStep', () => {
     expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
   });
 
+  it('hides the wrong-code error once the user types again', () => {
+    renderCode(otp(true), { error: 'invalid_code' });
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '1' } });
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'aria-invalid',
+      'false',
+    );
+  });
+
   it('counts down instead of showing the cooldown error', () => {
     const { onAction } = renderCode(otp(true), {
       error: 'otp_resend_cooldown',
@@ -586,6 +575,29 @@ describe('CodeStep', () => {
     expect(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeDisabled();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
     expect(onAction).not.toHaveBeenCalled();
+  });
+
+  it('says the code is dead and counts down to a new one after too many attempts', () => {
+    const { onAction } = renderCode(otp(true), {
+      error: 'too_many_attempts',
+      resendAvailableAt: Date.now() + 30_000,
+    });
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      messages.mfaErrorTooManyAttempts.message,
+    );
+    expect(
+      screen.getByText(messages.mfaOtpGetNewCodeIn.message.replace('$1', '30')),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeDisabled();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
+    expect(onAction).not.toHaveBeenCalled();
+    act(() => {
+      jest.advanceTimersByTime(30_000);
+    });
+    expect(
+      screen.getByText(messages.mfaOtpGetNewCode.message),
+    ).toBeInTheDocument();
   });
 
   it('lets the user resend once the cooldown ends, without its error', () => {
@@ -624,7 +636,7 @@ describe('CodeStep', () => {
     act(() => {
       jest.advanceTimersByTime(2_000);
     });
-    expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
+    expect(onAction).toHaveBeenCalledWith({ type: 'resend', trigger: 'auto' });
   });
 
   it('waits out a new cooldown before sending again', () => {
@@ -670,7 +682,7 @@ describe('CodeStep', () => {
       screen.getByText(messages.mfaOtpDescriptionTotp.message),
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeNull();
-    expect(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeDisabled();
+    expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
 
     fireEvent.change(screen.getByTestId(MfaFlowTestIds.CODE_INPUT), {
       target: { value: '123456' },
@@ -680,6 +692,34 @@ describe('CodeStep', () => {
       code: '123456',
     });
   });
+
+  it.each([
+    ['email', otp(true)],
+    ['authenticator app', totpCode()],
+  ])(
+    'keeps every %s digit visible with a loading indicator while verifying',
+    (_method, step) => {
+      const onAction = jest.fn();
+      const props = buildState(step);
+      const { rerender } = render(ui(props.step, props.state, onAction));
+
+      fireEvent.change(screen.getByTestId(MfaFlowTestIds.CODE_INPUT), {
+        target: { value: '123456' },
+      });
+      expect(
+        screen.queryByTestId(MfaFlowTestIds.VERIFYING_INDICATOR),
+      ).toBeNull();
+
+      rerender(ui(props.step, { ...props.state, busy: true }, onAction));
+
+      expect(
+        screen.getByRole('status', {
+          name: messages.mfaOtpVerifying.message,
+        }),
+      ).toHaveAttribute('data-testid', MfaFlowTestIds.VERIFYING_INDICATOR);
+      expect(screen.getByText('6')).toBeInTheDocument();
+    },
+  );
 
   it.each<[MfaFlowErrorCode, string]>([
     ['flow_expired', messages.mfaErrorTotpExpired.message],
@@ -699,6 +739,10 @@ describe('CodeStep', () => {
       screen.getByText(messages.mfaErrorGeneric.message),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({
+      type: 'errorCtaClicked',
+      cta: 'try_again',
+    });
     expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
   });
 
@@ -763,33 +807,77 @@ describe('FailureStep', () => {
       screen.getByText(messages.mfaFailureTitle.message),
     ).toBeInTheDocument();
     expect(screen.queryByText(messages.mfaErrorGeneric.message)).toBeNull();
+    expect(screen.queryByTestId(MfaFlowTestIds.SECONDARY_BUTTON)).toBeNull();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
     expect(onAction).toHaveBeenCalledWith({ type: 'retry' });
-    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
-    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
 
   it('only offers to close for a final error', () => {
+    const onAction = jest.fn();
     render(
       <FailureStep
         {...buildState({
           name: 'failure',
-          code: 'max_identifiers_reached',
+          code: 'max_passkeys_reached',
           canRetry: false,
         })}
         reason={reason}
-        onAction={jest.fn()}
+        onAction={onAction}
       />,
     );
 
     expect(
+      screen.getByText(messages.mfaFailureTitle.message),
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(messages.mfaErrorLimitReached.message),
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
+
+  it.each(['multi_primary_srp', 'max_identifiers_reached'] as const)(
+    'sends %s to support',
+    (code) => {
+      const onAction = jest.fn();
+      render(
+        <FailureStep
+          {...buildState({
+            name: 'failure',
+            code,
+            canRetry: false,
+          })}
+          reason={reason}
+          onAction={onAction}
+        />,
+      );
+
+      expect(
+        screen.getByText(messages.mfaFailureSupportTitle.message),
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+      expect(onAction).toHaveBeenCalledWith({
+        type: 'errorCtaClicked',
+        cta: 'contact_support',
+      });
+      const supportLink = new URL(
+        screen.getByTestId('support-modal').textContent ?? '',
+      );
+      expect(supportLink.searchParams.get('mfa_error')).toBe(code);
+
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
+      expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
+    },
+  );
 });
 
 describe('TotpSetupStep', () => {
+  beforeEach(() => {
+    mockIsCopied = false;
+    mockTheme = ThemeType.light;
+  });
+
   const setup = (
     isRestart = false,
   ): Extract<MfaFlowStep, { name: 'totpSetup' }> => ({
@@ -819,22 +907,60 @@ describe('TotpSetupStep', () => {
   it('shows the QR code and the setup key in groups', () => {
     renderSetup();
 
-    expect(screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE)).toHaveAttribute(
-      'src',
-      'data:image/png;base64,QR',
-    );
+    const qrCode = screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE);
+    expect(qrCode).toHaveAttribute('src', 'data:image/png;base64,QR');
+    expect(qrCode).toHaveAttribute('width', '184');
+    expect(qrCode).toHaveAttribute('height', '184');
+    expect(qrCode).toHaveClass('mix-blend-multiply');
+    expect(qrCode.parentElement).toHaveClass('bg-muted');
+    expect(qrCode.parentElement).not.toHaveClass('p-4');
     expect(screen.getByTestId(MfaFlowTestIds.TOTP_SETUP_KEY)).toHaveTextContent(
       'JBSW Y3DP EHPK 3PXP',
     );
+    expect(
+      screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY),
+    ).toHaveAccessibleName(
+      `${messages.mfaTotpSetupKey.message} JBSW Y3DP EHPK 3PXP`,
+    );
+    expect(
+      screen.getByText(messages.mfaTotpSetupManual.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.mfaTotpSetupDescription.message),
+    ).not.toHaveTextContent('Then enter the 6-digit code it shows.');
   });
 
-  it('copies the setup key as sensitive data', () => {
+  it('keeps the QR card white without blending in dark mode', () => {
+    mockTheme = ThemeType.dark;
+    renderSetup();
+
+    const qrCode = screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE);
+    expect(qrCode).not.toHaveClass('mix-blend-multiply');
+    expect(qrCode.parentElement).toHaveClass('bg-white');
+    expect(qrCode.parentElement).not.toHaveClass('p-4');
+  });
+
+  it('copies the setup key as sensitive data when the key section is clicked', () => {
     renderSetup();
 
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY));
 
     expect(mockUseCopyToClipboard).toHaveBeenCalledWith({ sensitive: true });
     expect(mockCopy).toHaveBeenCalledWith('JBSWY3DPEHPK3PXP');
+  });
+
+  it('announces when the setup key is copied', () => {
+    mockIsCopied = true;
+    renderSetup();
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      messages.mfaTotpSetupCopied.message,
+    );
+    expect(
+      screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY),
+    ).toHaveAccessibleName(
+      `${messages.mfaTotpSetupKey.message} JBSW Y3DP EHPK 3PXP`,
+    );
   });
 
   it('warns that an earlier setup key stopped working', () => {

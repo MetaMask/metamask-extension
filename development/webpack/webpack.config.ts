@@ -323,13 +323,14 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
-const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+// SWC enables TSX from the filename. Default to plain TypeScript for .mts.
+const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
 const swcReactRefreshConfig = { ...swcConfig, refresh: true };
-const reactRefreshTsxLoader = getSwcLoader(
+const reactRefreshTsLoader = getSwcLoader(
   'typescript',
-  true,
+  false,
   safeVariables,
   swcReactRefreshConfig,
 );
@@ -340,7 +341,17 @@ const reactRefreshJsxLoader = getSwcLoader(
   swcReactRefreshConfig,
 );
 
-const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+// Inline public flags in .js/.mjs dependencies: IN_TEST controls E2E polling,
+// and NODE_ENV removes runtime reads before policy generation.
+const npmEnvs = {
+  // TODO: Remove vendor IN_TEST inlining once the Core changes are released and
+  // adopted in Extension (explicit test polling and gas-estimation mocks):
+  // https://github.com/MetaMask/core/pull/10831
+  // https://github.com/MetaMask/metamask-extension/pull/47090
+  IN_TEST: safeVariables.IN_TEST,
+  NODE_ENV: safeVariables.NODE_ENV,
+};
+const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
 const isChunkableInitial = (chunk: Chunk) =>
@@ -470,19 +481,19 @@ const config = {
             {
               test: TYPESCRIPT_FILE_RE,
               include: UI_DIR_RE,
-              use: reactRefreshTsxLoader,
+              use: reactRefreshTsLoader,
             },
             {
               test: TYPESCRIPT_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
-              use: tsxLoader,
+              use: tsLoader,
             },
           ]
         : [
             {
               test: TYPESCRIPT_FILE_RE,
               exclude: NODE_MODULES_RE,
-              use: tsxLoader,
+              use: tsLoader,
             },
           ]),
       // own javascript, and own javascript with jsx

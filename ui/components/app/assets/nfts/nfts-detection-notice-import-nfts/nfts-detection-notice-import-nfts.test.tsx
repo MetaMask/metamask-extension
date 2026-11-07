@@ -13,7 +13,7 @@ const mockToastSuccess = jest.fn();
 
 jest.mock('../../../../../store/actions', () => ({
   toggleBasicFunctionality: jest.fn((value: boolean) => ({
-    type: 'toggleBasicFunctionality',
+    type: 'PreferencesController:toggleBasicFunctionality',
     value,
   })),
 }));
@@ -100,7 +100,7 @@ describe('NftsDetectionNoticeImportNFTs', () => {
 
     expect(toggleBasicFunctionality).toHaveBeenCalledWith(true);
     expect(store.getActions()).toContainEqual({
-      type: 'toggleBasicFunctionality',
+      type: 'PreferencesController:toggleBasicFunctionality',
       value: true,
     });
     const enabledToast = mockToastSuccess.mock

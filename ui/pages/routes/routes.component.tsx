@@ -92,7 +92,6 @@ import {
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
-import { isMfaKitEnabled } from '../../hooks/identity/mfa';
 import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
@@ -132,6 +131,7 @@ import { BasicFunctionalityMigrationModal } from '../../components/app/basic-fun
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
+import { MoneyFtueSplash } from '../../components/app/money/money-ftue-splash';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -442,14 +442,10 @@ export const routeConfig = [
             },
           ]
         : []),
-      ...(isMfaKitEnabled()
-        ? [
-            {
-              path: MFA_FLOW_ROUTE,
-              element: <MfaFlowHost />,
-            },
-          ]
-        : []),
+      {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
@@ -934,7 +930,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked && isMfaKitEnabled() ? <MfaFlowLauncher /> : null}
+      {isUnlocked ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}
@@ -967,6 +963,8 @@ export default function Routes() {
       {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
 
       {renderRoutes()}
+
+      {isUnlocked ? <MoneyFtueSplash /> : null}
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />

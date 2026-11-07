@@ -13,8 +13,6 @@ import {
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-    tokenBalancesStopPollingByPollingToken: jest.fn(),
     setTokenNetworkFilter: jest.fn(),
     updateSlides: jest.fn(),
     removeSlide: jest.fn(),
@@ -88,7 +86,6 @@ const expectStandardTabs = (
 ) => {
   expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
   expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
-  expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
 };
 
 const expectAllTabs = (queryByTestId: (id: string) => HTMLElement | null) => {
@@ -98,9 +95,7 @@ const expectAllTabs = (queryByTestId: (id: string) => HTMLElement | null) => {
 
 describe('AccountOverviewBtc', () => {
   beforeEach(() => {
-    setBackgroundConnection({
-      tokenBalancesStartPolling: jest.fn(),
-    } as never);
+    setBackgroundConnection({} as never);
   });
 
   describe('when no EVM networks are enabled', () => {

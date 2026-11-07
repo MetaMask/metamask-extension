@@ -81,8 +81,6 @@ jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../store/controller-actions/transaction-controller');
@@ -409,8 +407,12 @@ describe('AssetPage', () => {
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
-      getTokenSymbol: jest.fn(),
-      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
+      messengerCall: jest.fn((actionType: string) => {
+        if (actionType === 'AuthenticationController:getBearerToken') {
+          return Promise.resolve('mock-bearer-token');
+        }
+        return Promise.resolve(undefined);
+      }),
     } as never);
   });
 
@@ -702,6 +704,23 @@ describe('AssetPage', () => {
       '/0x1',
     );
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
+  });
+
+  it('renders the token name with the ticker and compact address under it', () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <AssetPage
+        asset={{ ...token, name: 'Test Token' }}
+        optionsButton={null}
+      />,
+      store,
+    );
+
+    expect(getByTestId('asset-name')).toHaveTextContent('Test Token');
+    expect(getByTestId('asset-page-header-ticker')).toHaveTextContent('TEST');
+    expect(getByTestId('asset-page-header-address')).toHaveTextContent(
+      '0x..25C0',
+    );
+    expect(queryByTestId('asset-page-header-subtitle')).toBeInTheDocument();
   });
 
   describe('Perps actions on the native asset page', () => {

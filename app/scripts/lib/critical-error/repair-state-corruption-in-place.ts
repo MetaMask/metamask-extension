@@ -5,6 +5,10 @@ import type {
   PersistenceManager,
 } from '../../../../shared/lib/stores/persistence-manager';
 import { hasVault } from '../../../../shared/lib/stores/persistence-manager';
+import {
+  setStartupPhase,
+  StartupPhase,
+} from '../../../../shared/lib/telemetry/startup-phase';
 
 export type RepairStateCorruptionInPlaceOptions = {
   repairAction: CriticalErrorRepairAction;
@@ -72,8 +76,10 @@ export async function repairStateCorruptionInPlace({
         `Unexpected state corruption repair action: ${repairAction}`,
       );
     }
-
+    // Marks repair in session so initialize()'s later phases stay repair-.
+    await setStartupPhase(StartupPhase.Repairing);
     if (shouldReset) {
+      await setStartupPhase(StartupPhase.Resetting);
       await persistenceManager.reset();
     }
 

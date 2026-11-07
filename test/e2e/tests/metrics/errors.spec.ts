@@ -1467,6 +1467,7 @@ describe('Sentry errors', function () {
       accountsAssets: false,
       assetsMetadata: false,
       allIgnoredAssets: false,
+      tokenBalances: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {

@@ -7,9 +7,6 @@
     "message": "로딩이 평소보다 오래 걸립니다.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "더 이상 계정이 없습니다. 아래 목록에 없는 다른 계정에 액세스하려면 하드웨어 지갑을 다시 연결하고 선택하세요."
-  },
   "QRHardwareScanInstructions": {
     "message": "QR 코드를 카메라 앞에 놓으세요. 화면이 흐릿하지만 판독에 영향을 미치지 않습니다."
   },
@@ -1263,17 +1260,11 @@
   "add_device_error_expired": {
     "message": "동기화 세션이 만료되었습니다. 새 QR 코드를 생성하려면 다시 시작하세요."
   },
-  "add_device_error_generic": {
-    "message": "휴대전화와 동기화하는 동안 오류가 발생했습니다. 다시 시도하세요."
-  },
   "add_device_error_invalid_code": {
     "message": "인증 코드가 정확하지 않습니다. 휴대전화를 동기화하려면 다시 시작하세요."
   },
   "add_device_error_rejected": {
     "message": "휴대전화에서 동기화가 취소되었습니다. 동기화하려면 다시 시작하세요."
-  },
-  "add_device_error_sync_failed": {
-    "message": "계정을 휴대전화로 동기화할 수 없습니다. 다시 시도하세요."
   },
   "add_device_error_title": {
     "message": "동기화를 완료할 수 없습니다"
@@ -1507,6 +1498,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "보안 파트너가 이 주소를 악성 활동과 관련된 주소로 표시했습니다."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "보안 파트너가 이 주소($1)를 악성 활동과 관련된 것으로 식별했습니다."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "신뢰할 수 있는 기록이 충분하지 않아 보안 파트너가 이 주소($1)를 검증할 수 없습니다."
+  },
   "alertMessageBurnAddress": {
     "message": "지금 자산을 소각 주소로 전송하고 있습니다. 계속 진행하면 자산을 잃게 됩니다."
   },
@@ -1524,6 +1521,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "계정에 네트워크 수수료를 지불할 만큼의 $1(이)가 부족합니다."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "보안 파트너가 중첩 트랜잭션에 포함된 주소 $1에서 악성 활동을 식별했습니다."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "신뢰할 수 있는 기록이 충분하지 않아 보안 파트너가 중첩 트랜잭션에 포함된 이 주소($1)를 검증할 수 없습니다."
   },
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
@@ -1599,6 +1602,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "불필요한 승인"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "중첩 주소가 고위험으로 표시됨"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "중첩 주소 관련 신호가 제한적임"
   },
   "alertReasonNoGasPrice": {
     "message": "수수료 견적 제공 불가"
@@ -1919,11 +1928,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 MetaMask 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "토큰 세부 정보와 가스 설정 같은 기본 기능이 포함됩니다. 최고의 사용 경험을 원한다면 이 기능을 켜 두세요. 자세한 내용은 $1을(를) 참고하세요.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "기본 기능"
@@ -2484,9 +2493,6 @@
   },
   "bridgeSelectDestinationAccount": {
     "message": "대상 계정 선택"
-  },
-  "bridgeSelectDifferentQuote": {
-    "message": "다른 견적을 선택해 주세요."
   },
   "bridgeSelectNetwork": {
     "message": "네트워크 선택"
@@ -3573,7 +3579,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "분석 시스템 서버 문제로 지금 요청을 처리할 수 없습니다. 나중에 다시 시도하세요."
+    "message": "분석 시스템 서버 문제로 지금 요청을 처리할 수 없습니다. 나중에 다시 시도해 주세요."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "지금은 데이터를 삭제할 수 없습니다"
@@ -3659,9 +3665,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "이 작업을 하면 사용자의 모든 계정과 디앱과의 연결이 해제됩니다. 다시 사용하려면 다시 연결해야 합니다."
-  },
-  "disconnectAllSitesError": {
-    "message": "일부 디앱은 연결을 해제할 수 없습니다. 다시 시도해 주세요."
   },
   "disconnectAllSitesQuestion": {
     "message": "모두 연결 해제?"
@@ -3883,9 +3886,6 @@
   "enableSmartContractAccountDescription": {
     "message": "지원되는 네트워크에서 빠른 트랜잭션, 낮은 네트워크 수수료, 강화된 보안과 같은 혜택을 누려보세요."
   },
-  "enableSnap": {
-    "message": "활성화"
-  },
   "enableToken": {
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3970,9 +3970,6 @@
   "enter_verification_code_desc": {
     "message": "보안을 위해 기기의 MetaMask 앱에 표시된 코드를 입력하세요."
   },
-  "enter_verification_code_error": {
-    "message": "잘못된 코드입니다. 다시 시도하세요."
-  },
   "enter_verification_code_expired": {
     "message": "인증 코드 만료됨"
   },
@@ -3995,9 +3992,6 @@
   "errorCode": {
     "message": "코드: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "안전 체인 목록을 가져오는 동안 오류가 발생했습니다. 주의하여 계속 진행하세요."
   },
   "errorLegalTextFirstInfo": {
     "message": "기술 진단 정보입니다."
@@ -4168,13 +4162,6 @@
   "fileUploaderDescription": {
     "message": "클릭하여 업로드하거나 끌어다 놓으세요"
   },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "잘못된 파일 유형입니다. 지원되는 형식의 파일을 업로드하세요."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "파일 크기가 $1MB를 초과합니다. 더 작은 파일을 업로드하세요.",
-    "description": "$1 is the maximum file size in MB"
-  },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -4201,9 +4188,6 @@
   },
   "floatAmountToken": {
     "message": "토큰 금액은 정수여야 합니다"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "금지된 IPFS 게이트웨이: CID 게이트웨이를 지정하세요."
   },
   "forgetDevice": {
     "message": "이 기기 제거"
@@ -4298,6 +4282,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "이 네트워크를 이용하려면 거래 후 계정에 최소 $1 $2의 잔액을 유지해야 합니다. 스마트 계정의 잔액은 이 금액보다 적어질 수 없습니다.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 시간",
@@ -4429,9 +4417,6 @@
   },
   "general": {
     "message": "일반"
-  },
-  "generalCameraError": {
-    "message": "카메라에 액세스할 수 없습니다. 다시 시도하세요."
   },
   "generalCameraErrorTitle": {
     "message": "문제가 발생했습니다...."
@@ -4627,9 +4612,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "장치 검색 중..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "장치를 찾을 수 없습니다. 이전 단계를 확인한 후 다시 시도하세요."
   },
   "hardwareWalletRepairLink": {
     "message": "처음부터 다시 연결"
@@ -4890,9 +4872,6 @@
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
   },
-  "importTokensError": {
-    "message": "토큰을 가져올 수 없습니다. 나중에 다시 시도하세요."
-  },
   "importWalletSuccess": {
     "message": "지갑 $1 가져오기 완료",
     "description": "$1 is the index of the secret recovery phrase"
@@ -5143,7 +5122,7 @@
     "message": "Ledger 장치를 연결하고 이더리움 앱을 선택하세요."
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "계속하려면 Ledger 장치에서 앱을 열어 주세요"
+    "message": "계속하려면 Ledger 장치에서 열어 주세요"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "이더리움 앱이 닫혀 있습니다"
@@ -5173,7 +5152,7 @@
     "message": "장치 찾을 수 없음"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "장치를 분리한 후 다시 연결하세요"
+    "message": "장치의 연결을 해제한 후 다시 연결하세요"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger 응답 없음"
@@ -5189,9 +5168,6 @@
   },
   "ledgerConnectionStatusSearchingTitle": {
     "message": "장치 찾는 중"
-  },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Ledger 장치를 열지 못했습니다. Ledger가 다른 소프트웨어에 연결되어 있을 수 있습니다. Ledger Live 또는 Ledger 장치에 연결된 다른 응용 프로그램을 닫고 다시 연결하세요."
   },
   "ledgerErrorConnectionIssue": {
     "message": "Ledger를 다시 연결하고, ETH 앱을 열어 다시 시도하세요."
@@ -5223,15 +5199,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox 지원되지 않음"
   },
-  "ledgerLocked": {
-    "message": "Ledger 장치에 연결할 수 없습니다. 장치의 잠금이 해제되어 있고 이더리움 앱이 열려 있는지 확인하세요."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Ledger 장치가 연결되지 않았습니다. Ledger를 연결하려면 '계속'을 다시 클릭하고 HID 연결을 승인하세요.",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "밝게"
@@ -5253,9 +5222,6 @@
   },
   "loading": {
     "message": "로딩 중..."
-  },
-  "loadingScreenSnapMessage": {
-    "message": "Snap에서 트랜잭션을 완료하세요."
   },
   "loadingTokenList": {
     "message": "토큰 목록 불러오는 중"
@@ -5301,17 +5267,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "로그인"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "계속 진행하려면 다시 로그인하세요."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "세션이 만료되었습니다"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Telegram 업데이트"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Telegram에 연결할 수 없습니다. Telegram 앱이 오래된 경우 주로 발생합니다. Telegram을 업데이트한 후 다시 시도하세요."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Telegram으로 로그인할 수 없음"
@@ -5463,9 +5423,6 @@
   "metamaskSwap": {
     "message": "MetaMask 스왑"
   },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask 스왑 기능이 현재 점검 중입니다. 나중에 다시 확인해 주세요."
-  },
   "metamaskVersion": {
     "message": "MetaMask 버전"
   },
@@ -5511,8 +5468,14 @@
   "mfaErrorGeneric": {
     "message": "문제가 발생했습니다. 다시 시도해 주세요."
   },
+  "mfaErrorInvalidCode": {
+    "message": "잘못된 코드입니다. 다시 시도하세요"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "패스키를 인증할 수 없습니다. 다시 시도하세요."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "잘못된 코드입니다. 다시 시도하세요"
   },
   "mfaErrorLimitReached": {
     "message": "이 수단으로 시도할 수 있는 횟수를 초과했습니다."
@@ -5541,8 +5504,20 @@
   "mfaFailureClose": {
     "message": "닫기"
   },
+  "mfaFailureContactSupport": {
+    "message": "지원팀에 문의"
+  },
+  "mfaFailureDone": {
+    "message": "완료"
+  },
   "mfaFailureRetry": {
     "message": "다시 시도"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "계속 진행하려면 고객지원팀에 문의하세요."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "사용자 정보를 인증할 수 없습니다"
   },
   "mfaFailureTitle": {
     "message": "문제가 발생했습니다"
@@ -5619,6 +5594,9 @@
   "mfaOtpTitle": {
     "message": "인증 코드 입력"
   },
+  "mfaOtpVerifying": {
+    "message": "코드 확인 중"
+  },
   "mfaPasskeyTitleSetup": {
     "message": "패스키 생성"
   },
@@ -5646,8 +5624,14 @@
   "mfaSettingsAddedOn": {
     "message": "$1 추가함"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "인증 앱 추가됨"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "이메일 인증 제거됨"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "이메일 인증됨"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "해당 이메일 주소는 이 계정의 유일한 보안 수단입니다. 삭제하려면 먼저 다른 보안 수단을 추가하세요."
@@ -5706,8 +5690,17 @@
   "mfaTotpSetupContinue": {
     "message": "계속"
   },
+  "mfaTotpSetupCopied": {
+    "message": "설정 키 복사됨"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "인증 앱으로 QR 코드를 스캔하거나 설정 키를 입력하세요."
+  },
   "mfaTotpSetupKey": {
     "message": "설정 키"
+  },
+  "mfaTotpSetupManual": {
+    "message": "또는 직접 입력하세요"
   },
   "mfaTotpSetupQrAlt": {
     "message": "MetaMask를 인증 앱에 추가하는 QR 코드"
@@ -6374,7 +6367,7 @@
     "message": "시작하기"
   },
   "musdEducationHeadline": {
-    "message": "스테이블 코인의\n$1% 받기",
+    "message": "스테이블코인으로\n$1%의 수익을 얻으세요",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6480,10 +6473,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "네트워크 세부 정보 편집"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "토큰의 네이티브 심볼이 체인 ID와 연관된 네트워크의 토큰의 네이티브 심볼과 일치하지 않습니다. $1을(를) 입력하셨지만 예상되는 토큰의 네이티브 심볼은 $2입니다. 올바른 체인에 연결되어 있는지 확인해 주세요.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "다른 선택",
@@ -7212,6 +7201,10 @@
   },
   "paidByMetaMask": {
     "message": "MetaMask가 지불함"
+  },
+  "paidBySponsor": {
+    "message": "$1에서 지불",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "결제 수단:"
@@ -8458,7 +8451,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "지원팀에 연락하여",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "일부 서비스를 일시적으로 이용할 수 없습니다. $1 또는 $2.",
@@ -8466,7 +8459,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "FAQ에서 이용 가능한 옵션을 확인하세요",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "서비스 장애가 발생했습니다",
@@ -9681,6 +9674,33 @@
   "rewardsLinkAccountError": {
     "message": "계정 추가 실패"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "최근 거래 활동으로 인해 추천을 받을 수 없습니다."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "이미 다른 사용자의 추천을 받았습니다."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "잘못된 추천 코드"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "추천 코드"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "추천 코드를 확인할 수 없습니다."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "본인의 추천 코드는 사용할 수 없습니다."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "다른 사람의 추천을 받을 수 없습니다."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "시도 횟수가 너무 많습니다. 잠시 기다리세요."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "지역 확인 중..."
   },
@@ -9718,24 +9738,6 @@
   "rewardsOnboardingOptInError": {
     "message": "참여 실패"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "잘못된 추천 코드"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "추천 코드(선택 사항)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "추천 코드를 확인할 수 없습니다."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "연결 상태를 확인하고 다시 시도하세요."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "코드 숨기기"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "추천 코드가 있으세요?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "보상 프로그램 가입"
   },
@@ -9744,10 +9746,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "보상 적립 시작하기"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "추천인 코드 확인 중...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1포인트",

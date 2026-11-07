@@ -7,9 +7,6 @@
     "message": "Das Laden dauert länger als gewöhnlich.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "Keine weiteren Konten. Wenn Sie auf ein Konto zugreifen möchten, das unten nicht aufgelistet ist, verbinden Sie bitte erneut Ihr Hardware-Wallet und wählen Sie dieses."
-  },
   "QRHardwareScanInstructions": {
     "message": "Platzieren Sie den QR-Code vor Ihrer Kamera. Der Bildschirm ist verschwommen, das wirkt sich aber nicht auf das Scannen aus."
   },
@@ -1263,17 +1260,11 @@
   "add_device_error_expired": {
     "message": "Diese Synchronisierungssitzung ist abgelaufen. Zur Generierung eines neuen QR-Codes starten Sie bitte erneut."
   },
-  "add_device_error_generic": {
-    "message": "Bei der Synchronisierung mit Ihrem Smartphone ist etwas schiefgelaufen. Bitte versuchen Sie es erneut."
-  },
   "add_device_error_invalid_code": {
     "message": "Der Verifizierungscode war falsch. Bitte versuchen Sie erneut, Ihr Smartphone zu synchronisieren."
   },
   "add_device_error_rejected": {
     "message": "Die Synchronisierung wurde auf Ihrem Smartphone abgebrochen. Versuchen Sie die Synchronisierung erneut."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Das Synchronisieren Ihrer Konten mit Ihrem Smartphone konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut."
   },
   "add_device_error_title": {
     "message": "Synchronisierung konnte nicht abgeschlossen werden"
@@ -1507,6 +1498,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Sicherheitspartner haben diese Adresse aufgrund bösartiger Aktivitäten als verdächtig gemeldet."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Sicherheitspartner haben diese Adresse $1 aufgrund bösartiger Aktivitäten als verdächtig markiert."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Sicherheitspartner verfügen nicht über ausreichende zuverlässige Daten, um diese Adresse $1 zu überprüfen."
+  },
   "alertMessageBurnAddress": {
     "message": "Sie senden Ihre Vermögenswerte an eine Burn-Adresse. Wenn Sie fortfahren, verlieren Sie Ihre Vermögenswerte."
   },
@@ -1524,6 +1521,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Sicherheitspartner haben eine verschachtelte Transaktionsadresse $1 wegen böswilliger Aktivitäten gemeldet."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Sicherheitspartner verfügen nicht über ausreichende zuverlässige Daten, um diese verschachtelte Transaktionsadresse $1 zu überprüfen."
   },
   "alertMessageNoGasPrice": {
     "message": "Wir können mit dieser Transaktion nicht fortfahren, bis Sie die Gebühr manuell aktualisieren."
@@ -1599,6 +1602,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Unnötige Genehmigung"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "Verschachtelte Adresse als hochriskant markiert"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Begrenzte verschachtelte Adresssignale"
   },
   "alertReasonNoGasPrice": {
     "message": "Gebührenschätzung nicht verfügbar"
@@ -1919,11 +1928,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask bietet grundlegende Funktionen wie Token-Details und Gas-Einstellungen über Internetdienste. Wenn Sie Internetdienste nutzen, wird Ihre IP-Adresse weitergegeben, in diesem Fall an MetaMask. Das ist genau so, wie wenn Sie eine beliebige Website besuchen. MetaMask verwendet diese Daten vorübergehend und verkauft Ihre Daten niemals. Sie können ein VPN verwenden oder diese Dienste abschalten, aber das kann Ihr MetaMask-Erlebnis beeinträchtigen. Um mehr zu erfahren, lesen Sie unsere $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Enthält grundlegende Funktionen wie Token-Details und Gaseinstellungen. Lassen Sie diese Funktion für ein optimales Erlebnis eingeschaltet.  Lesen Sie unsere $1, um mehr zu erfahren.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Grundfunktionalität"
@@ -2484,9 +2493,6 @@
   },
   "bridgeSelectDestinationAccount": {
     "message": "Wählen Sie ein Zielkonto aus"
-  },
-  "bridgeSelectDifferentQuote": {
-    "message": "Wählen Sie bitte ein anderes Angebot."
   },
   "bridgeSelectNetwork": {
     "message": "Netzwerk wählen"
@@ -3573,7 +3579,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Die Anfrage kann aktuell nicht abgeschlossen werden, da ein Problem mit dem Analytik-System des Servers vorliegt. Bitte versuchen Sie es später erneut."
+    "message": "Die Anfrage kann aktuell nicht abgeschlossen werden, da ein Problem mit dem Analytik-System des Servers vorliegt. Versuchen Sie es später erneut."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Wir können diese Daten im Moment nicht löschen"
@@ -3659,9 +3665,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "Dadurch werden alle Ihre Konten von allen dApps getrennt. Sie müssen die Verbindung zur erneuten Nutzung wiederherstellen."
-  },
-  "disconnectAllSitesError": {
-    "message": "Einige dApp konnten nicht getrennt werden. Bitte versuchen Sie es erneut."
   },
   "disconnectAllSitesQuestion": {
     "message": "Alle trennen?"
@@ -3883,9 +3886,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Schalten Sie schnellere Transaktionen, niedrigere Netzwerkgebühren und zusätzliche Sicherheit in unterstützten Netzwerken frei."
   },
-  "enableSnap": {
-    "message": "Aktivieren"
-  },
   "enableToken": {
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3970,9 +3970,6 @@
   "enter_verification_code_desc": {
     "message": "Geben Sie aus Sicherheitsgründen den Code ein, der in der MetaMask-App auf Ihrem Gerät angezeigt wird."
   },
-  "enter_verification_code_error": {
-    "message": "Falscher Code. Bitte versuchen Sie es erneut."
-  },
   "enter_verification_code_expired": {
     "message": "Verifizierungscode abgelaufen"
   },
@@ -3995,9 +3992,6 @@
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Fehler beim Abrufen der Liste sicherer Ketten, bitte mit Vorsicht fortfahren."
   },
   "errorLegalTextFirstInfo": {
     "message": "Technische Diagnoseinformationen."
@@ -4168,13 +4162,6 @@
   "fileUploaderDescription": {
     "message": "Anklicken und hochladen oder ziehen und ablegen"
   },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "Ungültiger Dateityp. Bitte laden Sie ein unterstütztes Dateiformat hoch."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "Die Dateigröße überschreitet $1 MB. Bitte laden Sie eine kleinere Datei hoch.",
-    "description": "$1 is the maximum file size in MB"
-  },
   "flaskWelcomeUninstall": {
     "message": "Diese Erweiterung sollte deinstalliert werden",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -4201,9 +4188,6 @@
   },
   "floatAmountToken": {
     "message": "Token-Betrag muss eine ganze Zahl sein"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "Verbotene IPFS-Gateway: Bitte geben Sie ein CID-Gateway an."
   },
   "forgetDevice": {
     "message": "Dieses Gerät entfernen"
@@ -4298,6 +4282,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "Für dieses Netzwerk müssen nach der Transaktion mindestens $1 $2 auf Ihrem Konto verbleiben. Bei Smart-Konten darf dieser Mindestbetrag nicht unterschritten werden.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 übernimmt die Netzwerkgebühr für diese Transaktion. Dies beinhaltet die einmalige Aktivierung des Smart-Kontos.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 Stunden",
@@ -4425,9 +4413,6 @@
   },
   "general": {
     "message": "Allgemeines"
-  },
-  "generalCameraError": {
-    "message": "Wir konnten nicht auf Ihre Kamera zugreifen. Bitte versuchen Sie es erneut."
   },
   "generalCameraErrorTitle": {
     "message": "Etwas ist schiefgelaufen...."
@@ -4623,9 +4608,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "Gerät wird gesucht ..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Gerät nicht erkannt. Bitte überprüfen Sie die vorherigen Schritte und versuchen Sie es erneut."
   },
   "hardwareWalletRepairLink": {
     "message": "Von Beginn an wieder verbinden"
@@ -4886,9 +4868,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase importieren"
   },
-  "importTokensError": {
-    "message": "Wir konnten die Tokens nicht importieren. Bitte versuchen Sie es später erneut."
-  },
   "importWalletSuccess": {
     "message": "Wallet $1 importiert",
     "description": "$1 is the index of the secret recovery phrase"
@@ -5139,7 +5118,7 @@
     "message": "Stellen Sie sicher, dass Ihr Ledger angeschlossen ist und die Ethereum-App ausgewählt ist."
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Bitte öffnen Sie sie auf Ihrem Ledger-Gerät, um fortzufahren."
+    "message": "Öffnen Sie sie auf Ihrem Ledger-Gerät, um fortzufahren"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "Ethereum-App ist geschlossen"
@@ -5148,7 +5127,7 @@
     "message": "Ledger-Gerät gefunden"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Bitte entsperren Sie Ihr Ledger-Gerät, um fortzufahren."
+    "message": "Entsperren Sie Ihr Ledger-Gerät, um fortzufahren"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Ledger ist gesperrt"
@@ -5169,7 +5148,7 @@
     "message": "Geräte nicht gefunden"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Bitte trennen Sie Ihr Gerät und schließen Sie es erneut an."
+    "message": "Trennen Sie Ihr Gerät und schließen Sie es erneut an"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger reagiert nicht"
@@ -5185,9 +5164,6 @@
   },
   "ledgerConnectionStatusSearchingTitle": {
     "message": "Suche nach Ihrem Gerät"
-  },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Das Ledger-Gerät konnte nicht geöffnet werden. Ihr Ledger könnte mit anderer Software verbunden sein. Bitte schließen Sie Ledger Live oder andere Anwendungen, die mit Ihrem Ledger-Gerät verbunden sind, und versuchen Sie es erneut."
   },
   "ledgerErrorConnectionIssue": {
     "message": "Verbinden Sie Ihr Ledger nochmals, öffnen Sie die ETH-App und versuchen Sie es erneut."
@@ -5219,15 +5195,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox wird nicht unterstützt"
   },
-  "ledgerLocked": {
-    "message": "Keine Verbindung zum Ledger-Gerät. Bitte stellen Sie sicher, dass Ihr Gerät entsperrt ist und die Ethereum-App geöffnet ist."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live braucht zu lange für eine Reaktion oder um eine Verbindung herzustellen. Stellen Sie sicher, dass die Ledger Live-App geöffnet und Ihr Gerät entsperrt ist."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Das Gerät wurde nicht verbunden. Wenn Sie Ihren Ledger verbinden möchten, klicken Sie bitte erneut auf „Weiter“ und genehmigen Sie die HID-Verbindung",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "Leicht"
@@ -5249,9 +5218,6 @@
   },
   "loading": {
     "message": "Wird geladen ..."
-  },
-  "loadingScreenSnapMessage": {
-    "message": "Bitte schließen Sie die Transaktion im Snap ab."
   },
   "loadingTokenList": {
     "message": "Token-Liste wird geladen"
@@ -5297,17 +5263,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "Anmelden"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Bitte erneut anmelden, um fortzufahren."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Sitzung ist abgelaufen"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Telegram aktualisieren"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Wir konnten keine Verbindung zu Telegram herstellen. Dies geschieht normalerweise, wenn Ihre Telegram-App veraltet ist. Bitte aktualisieren Sie Telegram und versuchen Sie es erneut."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Anmeldung mit Telegram fehlgeschlagen"
@@ -5459,9 +5419,6 @@
   "metamaskSwap": {
     "message": "MetaMask-Swap"
   },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps wird zur Zeit gewartet. Bitte versuchen Sie es später."
-  },
   "metamaskVersion": {
     "message": "MetaMask-Version"
   },
@@ -5507,8 +5464,14 @@
   "mfaErrorGeneric": {
     "message": "Hoppla! Etwas ist schiefgelaufen! Versuchen Sie es erneut."
   },
+  "mfaErrorInvalidCode": {
+    "message": "Dieser Code ist falsch. Erneut versuchen"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "Ihr Passwort konnte nicht verifiziert werden. Bitte versuchen Sie es erneut."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "Dieser Code ist falsch. Erneut versuchen"
   },
   "mfaErrorLimitReached": {
     "message": "Sie haben das Limit für diese Methode erreicht."
@@ -5537,8 +5500,20 @@
   "mfaFailureClose": {
     "message": "Schließen"
   },
+  "mfaFailureContactSupport": {
+    "message": "Support kontaktieren"
+  },
+  "mfaFailureDone": {
+    "message": "Fertig"
+  },
   "mfaFailureRetry": {
     "message": "Erneut versuchen"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Wenden Sie sich an den Support, um fortzufahren."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "Wir konnten Ihre Angaben nicht überprüfen"
   },
   "mfaFailureTitle": {
     "message": "Etwas ist schiefgelaufen"
@@ -5615,6 +5590,9 @@
   "mfaOtpTitle": {
     "message": "Geben Sie Ihren Verifizierungscode ein"
   },
+  "mfaOtpVerifying": {
+    "message": "Code wird verifiziert"
+  },
   "mfaPasskeyTitleSetup": {
     "message": "Ein Passwort erstellen"
   },
@@ -5642,8 +5620,14 @@
   "mfaSettingsAddedOn": {
     "message": "$1 hinzugefügt"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Authenticator-App hinzugefügt"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "E-Mail-Verifizierung entfernt"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "E-Mail-Adresse verifiziert"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "Diese E-Mail-Adresse ist die einzige Sicherheitsmethode dieses Kontos. Fügen Sie eine zweite Sicherheitsmethode hinzu, bevor Sie diese entfernen."
@@ -5702,8 +5686,17 @@
   "mfaTotpSetupContinue": {
     "message": "Fortfahren"
   },
+  "mfaTotpSetupCopied": {
+    "message": "Einrichtungsschlüssel kopiert"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Scannen Sie den QR-Code mit Ihrer Authenticator-App oder geben Sie den Einrichtungsschlüssel ein."
+  },
   "mfaTotpSetupKey": {
     "message": "Einrichtungsschlüssel"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Oder geben Sie diesen manuell ein"
   },
   "mfaTotpSetupQrAlt": {
     "message": "QR-Code zum Hinzufügen von MetaMask zu Ihrer Authentifizierungs-App"
@@ -6370,7 +6363,7 @@
     "message": "Erste Schritte"
   },
   "musdEducationHeadline": {
-    "message": "ERHALTEN SIE $1 % \nAUF STABLECOINS",
+    "message": "Erhalten Sie $1 % auf \nStablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6476,10 +6469,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "Netzwerkdetails bearbeiten"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "Das native Token-Symbol stimmt nicht mit dem erwarteten Symbol des nativen Tokens für das Netzwerk mit der zugehörigen Chain-ID überein. Sie haben $1 eingegeben, während das erwartete Token-Symbol $2 ist. Überprüfen Sie bitte, ob Sie mit der richtigen Chain verbunden sind.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "etwas anderes",
@@ -7208,6 +7197,10 @@
   },
   "paidByMetaMask": {
     "message": "Bezahlt von MetaMask"
+  },
+  "paidBySponsor": {
+    "message": "Bezahlt von $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "Bezahlt mit"
@@ -8454,7 +8447,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "wenden Sie sich an den Support,",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Einige Dienste sind vorübergehend nicht verfügbar. $1 oder $2.",
@@ -8462,7 +8455,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Informieren Sie sich in den FAQs über Ihre Optionen",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Wir haben einen Ausfall",
@@ -9673,6 +9666,33 @@
   "rewardsLinkAccountError": {
     "message": "Hinzufügen des Kontos fehlgeschlagen"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Aufgrund Ihrer jüngsten Handelsaktivitäten können Sie nicht empfohlen werden."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Sie wurden bereits von einem anderen Nutzer empfohlen."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Ungültiger Empfehlungscode"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Empfehlungscode"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Empfehlungscode konnte nicht validiert werden."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Sie können nicht Ihren eigenen Empfehlungscode verwenden."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Sie können nicht von einer anderen Person empfohlen werden."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Etwas ist schiefgelaufen. Versuchen Sie es in Kürze erneut."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Zu viele Versuche. Einen Moment bitte."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Region wird überprüft ..."
   },
@@ -9710,24 +9730,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Anmeldung fehlgeschlagen"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Ungültiger Empfehlungscode"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Empfehlungscode (optional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Empfehlungscode konnte nicht validiert werden."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Code verbergen"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Sie haben einen Empfehlungscode?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Belohnungen beitreten"
   },
@@ -9736,10 +9738,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Beginnen Sie, Belohnungen zu sammeln"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verifizierung des Empfehlungscodes läuft ...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 Punkte",

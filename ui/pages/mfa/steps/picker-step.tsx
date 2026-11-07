@@ -55,6 +55,7 @@ const PickerStep = ({ step, state, reason, onAction }: StepProps<'picker'>) => {
 
   return (
     <StepLayout
+      onAction={onAction}
       top={<MfaShield />}
       title={t('mfaPickerTitle')}
       description={

@@ -1,6 +1,5 @@
 import type {
   MultichainAssetsControllerState,
-  MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
 } from '@metamask/assets-controllers';
@@ -82,12 +81,8 @@ export type AssetsState = {
 };
 
 export type AssetsRatesState = {
-  metamask: Partial<
-    Pick<MultichainAssetsRatesControllerState, 'conversionRates'>
-  > &
-    Partial<Pick<AssetsControllerState, 'assetsPrice'>>;
+  metamask: Pick<AssetsControllerState, 'assetsPrice'>;
 };
-
 export type RatesState = {
   metamask: RatesControllerState;
 };
@@ -420,7 +415,9 @@ export function getMultichainConversionRate(
   const { chainId } = getMultichainNetwork(state, account);
 
   const conversionRate = getMultichainIsEvm(state, account)
-    ? getConversionRate(state as Parameters<typeof getConversionRate>[0])
+    ? getConversionRate(
+        state as unknown as Parameters<typeof getConversionRate>[0],
+      )
     : getConversionRatesForNativeAsset({
         conversionRates:
           getMultichainAssetsRatesControllerConversionRates(state),
