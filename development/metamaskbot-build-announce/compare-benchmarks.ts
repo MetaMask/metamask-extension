@@ -8,12 +8,19 @@
  *
  * Usage:
  * node development/metamaskbot-build-announce/compare-benchmarks.ts \
- * --current <path-to-benchmark-json-directory>
+ * --current <path-to-benchmark-json-directory> [--require-complete]
+ *
+ * `--require-complete` additionally asserts that every artifact a full CI run
+ * produces is present. Pass it only where the directory is meant to hold all of
+ * them — the aggregate `quality-gate` job — never in a per-leg invocation,
+ * where one artifact is the correct and complete contents.
  *
  * Exit codes:
- * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
- * 1 — at least one allowlisted metric exceeded its fail threshold;
- * non-allowlisted breaches are degraded to warnings and do not block
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold, and
+ * every expected benchmark artifact was present
+ * 1 — at least one allowlisted metric exceeded its fail threshold, or an
+ * expected artifact carrying an allowlisted metric was missing;
+ * non-allowlisted breaches and absences are degraded to warnings
  * 2 — usage error or fatal crash
  */
 
@@ -28,6 +35,8 @@ import type {
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
 import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics';
+import { expectedBenchmarkArtifacts } from '../../test/e2e/benchmarks/utils/presets';
+import type { ExpectedArtifact } from '../../test/e2e/benchmarks/utils/presets';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
@@ -66,6 +75,63 @@ export async function loadCurrentBenchmarks(
     results.push({ name, data });
   }
   return results;
+}
+
+export type MissingArtifact = ExpectedArtifact & {
+  /** Allowlisted metrics this artifact would have carried, if any. */
+  gatedMetrics: string[];
+};
+
+/**
+ * Finds expected benchmark artifacts that the run did not produce.
+ *
+ * A benchmark that crashes, times out, or exhausts its retries can upload no
+ * artifact at all. The gate reads its input by listing a directory, so without
+ * this check that benchmark is indistinguishable from one that was never meant
+ * to run — its metrics quietly drop out of the comparison and the remaining
+ * browsers' numbers are reported as a clean pass.
+ *
+ * @param loaded - Benchmarks actually found on disk.
+ * @returns One entry per absent artifact, with the allowlisted metrics it owns.
+ */
+export function findMissingArtifacts(
+  loaded: LoadedBenchmark[],
+): MissingArtifact[] {
+  const present = new Set(loaded.map((b) => b.name));
+
+  return expectedBenchmarkArtifacts()
+    .filter((expected) => !present.has(expected.artifactName))
+    .map((expected) => ({
+      ...expected,
+      gatedMetrics: expected.benchmarkNames.flatMap((benchmarkName) =>
+        [...GATED_METRICS].filter((metric) =>
+          metric.startsWith(`${benchmarkName}.`),
+        ),
+      ),
+    }));
+}
+
+/**
+ * Decides whether the gate blocks.
+ *
+ * A threshold breach blocks when the metric is allowlisted, which
+ * `applyGatingPolicy` has already resolved into `anyFailed`. An absent artifact
+ * blocks on the same principle: the gate cannot vouch for a metric it never
+ * measured, but only an allowlisted one is worth stopping a merge over.
+ *
+ * @param args - The two independent grounds for blocking.
+ * @param args.anyFailed - Whether a measured allowlisted metric breached.
+ * @param args.missing - Artifacts the run was expected to produce and did not.
+ * @returns True when the run must not merge.
+ */
+export function isBlocking({
+  anyFailed,
+  missing,
+}: {
+  anyFailed: boolean;
+  missing: MissingArtifact[];
+}): boolean {
+  return anyFailed || missing.some((m) => m.gatedMetrics.length > 0);
 }
 
 /**
@@ -310,10 +376,12 @@ function formatName(comparison: BenchmarkEntryComparison): string {
  * @param result - Comparison results.
  * @param result.comparisons
  * @param result.anyFailed
+ * @param result.missing
  */
 export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
   anyFailed: boolean;
+  missing?: MissingArtifact[];
 }): void {
   console.log('\n═══════════════════════════════════════');
   console.log('  Performance Benchmark Quality Gate');
@@ -342,6 +410,24 @@ export function printReport(result: {
       ) &&
       !w.lines.some((l) => l.hasIssue),
   );
+
+  const missing = result.missing ?? [];
+  const blockingMissing = missing.filter((m) => m.gatedMetrics.length > 0);
+
+  // Show absent artifacts first: a metric that was never measured is a more
+  // basic problem than one that was measured and breached.
+  for (const artifact of missing) {
+    const label = artifact.gatedMetrics.length > 0 ? 'ERROR' : 'WARN ';
+    console.log(`\n${label} ${artifact.artifactName} produced no results`);
+    console.log(
+      `      ${artifact.browser}/${artifact.buildType}/${artifact.preset} — expected ${artifact.benchmarkNames.join(', ') || 'no known benchmarks'}`,
+    );
+    if (artifact.gatedMetrics.length > 0) {
+      console.log(
+        `      gated metrics not measured: ${artifact.gatedMetrics.join(', ')}`,
+      );
+    }
+  }
 
   // Show failed entries with details
   for (const { comparison, lines } of failed) {
@@ -383,12 +469,24 @@ export function printReport(result: {
 
   console.log('\n───────────────────────────────────────');
   console.log(
-    `Total: ${result.comparisons.length} benchmarks | ${failCount} failed | ${warnCount} warnings`,
+    `Total: ${result.comparisons.length} benchmarks | ${failCount} failed | ${warnCount} warnings | ${missing.length} no results`,
   );
 
+  const causes: string[] = [];
   if (result.anyFailed) {
+    causes.push('at least one benchmark exceeds constant fail limit');
+  }
+  if (blockingMissing.length > 0) {
+    causes.push(
+      `${blockingMissing.length} expected artifact(s) carrying gated metrics produced no results`,
+    );
+  }
+
+  if (causes.length > 0) {
+    console.log(`\nRESULT: FAIL — ${causes.join('; ')}`);
+  } else if (missing.length > 0) {
     console.log(
-      '\nRESULT: FAIL — at least one benchmark exceeds constant fail limit',
+      '\nRESULT: PASS — all benchmarks within constant limits (with reduced coverage, see WARN above)',
     );
   } else {
     console.log('\nRESULT: PASS — all benchmarks within constant limits');
@@ -399,6 +497,7 @@ async function main(): Promise<void> {
   const { values } = parseArgs({
     options: {
       current: { type: 'string' },
+      'require-complete': { type: 'boolean', default: false },
     },
     strict: true,
   });
@@ -416,10 +515,15 @@ async function main(): Promise<void> {
 
   const baseline = await loadBaseline();
 
+  // Only the aggregate invocation sees every artifact. A per-leg run is handed
+  // its own single result, where the other sixteen are absent by design.
+  const missing = values['require-complete']
+    ? findMissingArtifacts(benchmarks)
+    : [];
   const result = runComparison(benchmarks, baseline);
-  printReport(result);
+  printReport({ ...result, missing });
 
-  process.exit(result.anyFailed ? 1 : 0);
+  process.exit(isBlocking({ anyFailed: result.anyFailed, missing }) ? 1 : 0);
 }
 
 if (require.main === module) {
