@@ -153,7 +153,7 @@ Linting is exactly the same as the rest of the MetaMask project. To lint the bui
 yarn lint
 ```
 
-That said, the webpack build has its [own eslint configuration](./.eslintrc.js) that overrides some restrictive rules
+That said, the webpack build has its [eslint overrides in the repo-root `.eslintrc.js`](../../.eslintrc.js) that overrides some restrictive rules
 that either: don't work well when optimizing for performance, or disable JavaScript features that are useful and
 generally necessary.
 
