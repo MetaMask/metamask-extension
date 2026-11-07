@@ -15,6 +15,7 @@
 @import '../pages/pages';
 @import './errors.scss';
 @import './loading.scss';
+@import './utilities/transitions.scss'; /* Until we get to Tailwind v4 */
 
 /*
   ITCSS

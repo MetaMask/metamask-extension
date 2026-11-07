@@ -1,5 +1,7 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { IconName } from '@metamask/design-system-react';
+import { OverflowMenu } from '#ui/components/ui/overflow-menu/overflow-menu';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
 import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { AssetListProps } from '../../../components/app/assets/asset-list/asset-list';
@@ -8,6 +10,7 @@ import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import DefiList from '../../../components/app/assets/defi-list/defi-list';
 import { useDefiPositionsList } from '../../../components/app/assets/defi-list/useDefiPositionsList';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useDeFiListItemsV2 } from '../hooks/useDeFiListItemsV2';
 import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
 import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../messenger';
@@ -25,22 +28,29 @@ import DefiListV2 from './defi-list-v2';
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
+  const t = useI18nContext();
   const { positions, isLoading, isError, refresh } = useDeFiPositionsV2();
   const listItems = useDeFiListItemsV2({ positions, isLoading, isError });
   const isEmpty = listItems?.length === 0;
 
-  const handleRefresh = useCallback(() => {
-    refresh().catch(() => {
-      // Fire-and-forget: errors surface via isError / the list's error UI.
-    });
-  }, [refresh]);
-
   return (
     <>
       <AssetListControlBar
-        showImportTokenButton={false}
         showSortControl={!isEmpty}
-        onRefresh={handleRefresh}
+        actionMenu={
+          <OverflowMenu
+            ariaLabel={t('assetOptions')}
+            items={[
+              {
+                key: 'refresh-list',
+                label: t('refreshList'),
+                iconName: IconName.Refresh,
+                onClick: refresh,
+              },
+            ]}
+            testId="asset-list-control-bar-action-button"
+          />
+        }
         data-testid="parent-selector-defi-tab"
       />
       <DefiListV2 items={listItems} onClick={onClickAsset} />
@@ -63,7 +73,6 @@ function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
   return (
     <>
       <AssetListControlBar
-        showImportTokenButton={false}
         showSortControl={!isEmpty}
         data-testid="parent-selector-defi-tab"
       />

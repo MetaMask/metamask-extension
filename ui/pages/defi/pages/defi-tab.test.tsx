@@ -317,7 +317,7 @@ describe('DefiList', () => {
     );
     fireEvent.click(actionButton);
 
-    const refreshListButton = await screen.findByTestId('refreshList__button');
+    const refreshListButton = await screen.findByTestId('refreshList');
     expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
     expect(
       screen.queryByTestId('manageTokens__button'),
