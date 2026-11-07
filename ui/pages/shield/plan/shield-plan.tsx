@@ -281,8 +281,9 @@ const ShieldPlan = () => {
     },
   );
 
-  // Derive payment method from token availability until the user starts checkout;
-  // after that, keep the local choice unless tokens disappear.
+  // Derive payment method from token availability until the user selects a
+  // payment method or starts checkout; after that, keep the local choice unless
+  // tokens disappear.
   let selectedPaymentMethod: PaymentType = PAYMENT_TYPES.byCard;
   if (selectedTokenAddress) {
     if (hasInitializedPaymentMethod) {
@@ -294,6 +295,7 @@ const ShieldPlan = () => {
 
   const setSelectedPaymentMethod = useCallback((method: PaymentType) => {
     setPaymentMethodLocal(method);
+    setHasInitializedPaymentMethod(true);
   }, []);
 
   const tokensSupported = useMemo(() => {
