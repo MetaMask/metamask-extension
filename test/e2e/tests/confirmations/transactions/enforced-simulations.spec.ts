@@ -350,7 +350,14 @@ describe('Enforced Simulations', function (this: Suite) {
 function setupMocks(trustResultType: ResultType) {
   return async (mockServer: MockttpServer): Promise<MockedEndpoint[]> => {
     const eip7702Mocks = await mockEip7702FeatureFlag(mockServer);
-    const trustMocks = await mockTrustSignal(mockServer, trustResultType);
+    // Scoped to the token contract so the decoded transfer recipient (a
+    // plain destination address, not under test here) isn't also flagged.
+    const trustMocks = await mockTrustSignal(
+      mockServer,
+      trustResultType,
+      '',
+      USDC_ADDRESS,
+    );
     await mockSpotPrices(mockServer, ENFORCED_SIMULATIONS_SPOT_PRICES);
     await mockSimulationApi(mockServer, {
       sender: SENDER_ADDRESS_MOCK,
