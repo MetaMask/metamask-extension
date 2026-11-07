@@ -1,5 +1,6 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
+  activityMatchesAssetId,
   dedupeItems,
   getActivityItemIdentifier,
   getItemKey,
@@ -346,5 +347,62 @@ describe('getLastEvmItemIndex', () => {
     ]);
 
     expect(getLastEvmItemIndex(grouped, [])).toBe(-1);
+  });
+});
+
+describe('activityMatchesAssetId', () => {
+  const ARC_NATIVE_USDC = 'eip155:5042/slip44:5042';
+  const ARC_ERC20_USDC =
+    'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+  const ARC_EURC =
+    'eip155:5042/erc20:0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1';
+
+  const arcSwap = makeItem({
+    timestamp: 1,
+    status: 'success',
+    type: 'swap',
+    chainId: 'eip155:5042',
+    data: {
+      sourceToken: { direction: 'out', assetId: ARC_ERC20_USDC },
+      destinationToken: { direction: 'in', assetId: ARC_EURC },
+    },
+  });
+  const arcNativeSend = makeItem({
+    timestamp: 1,
+    status: 'success',
+    type: 'send',
+    chainId: 'eip155:5042',
+    data: {
+      from: '0x1',
+      to: '0x2',
+      token: { direction: 'out', assetId: ARC_NATIVE_USDC },
+    },
+  });
+
+  it('matches an Arc ERC-20 USDC activity against the native USDC asset', () => {
+    expect(activityMatchesAssetId(arcSwap, ARC_NATIVE_USDC)).toBe(true);
+  });
+
+  it('matches a native Arc USDC activity against the native USDC asset', () => {
+    expect(activityMatchesAssetId(arcNativeSend, ARC_NATIVE_USDC)).toBe(true);
+  });
+
+  it('matches a native Arc USDC activity against the ERC-20 USDC asset', () => {
+    expect(activityMatchesAssetId(arcNativeSend, ARC_ERC20_USDC)).toBe(true);
+  });
+
+  it('matches regardless of asset id casing', () => {
+    expect(
+      activityMatchesAssetId(arcSwap, ARC_ERC20_USDC.toUpperCase() as never),
+    ).toBe(true);
+  });
+
+  it('matches the destination token of a swap', () => {
+    expect(activityMatchesAssetId(arcSwap, ARC_EURC)).toBe(true);
+  });
+
+  it('does not match an unrelated asset', () => {
+    expect(activityMatchesAssetId(arcSwap, 'eip155:1/slip44:60')).toBe(false);
+    expect(activityMatchesAssetId(arcNativeSend, ARC_EURC)).toBe(false);
   });
 });
