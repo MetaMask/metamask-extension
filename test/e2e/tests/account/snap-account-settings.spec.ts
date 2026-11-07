@@ -17,7 +17,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         // Make sure the "Add snap account" button is not visible.
         const headerNavbar = new HeaderNavbar(driver);
