@@ -19,7 +19,7 @@ function createSocialQrCodeDestination(
   params: URLSearchParams,
 ) {
   const deeplinkUrl = new URL(pathname, DEEP_LINK_ORIGIN);
-  params.forEach((value, key) => deeplinkUrl.searchParams.append(key, value));
+  deeplinkUrl.search = params.toString();
 
   return createHomeQrCodeDestination(
     HomeQueryParams.SocialDeeplinkUrl,
@@ -30,7 +30,7 @@ function createSocialQrCodeDestination(
 /**
  * Deeplink for the MetaMask Social feed.
  *
- * Social is mobile-only in Extension, so `/social` opens the open-on-mobile
+ * Social is available only on mobile, so `/social` opens the open-on-mobile
  * QR modal. `tab` selects trending, following, leaderboard, or live trades
  * on mobile. Missing or unknown tabs are left unchanged; mobile falls back
  * to trending.
@@ -53,7 +53,7 @@ export const social = new Route({
 /**
  * Deeplink for a MetaMask Social profile.
  *
- * Profiles are mobile-only in Extension. The QR preserves `traderId` so
+ * Profiles are available only on mobile. The QR preserves `traderId` so
  * scanning opens that profile on mobile.
  *
  * Supported URL formats:
