@@ -50,6 +50,7 @@ export const SearchInput = ({
       className="w-full"
       clearButtonOnClick={onClear}
       data-testid="search-input-container"
+      inputAriaLabel={t('perpsSearchMarkets')}
       inputProps={
         {
           'data-testid': 'search-input',

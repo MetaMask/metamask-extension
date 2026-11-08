@@ -62,6 +62,7 @@ const baseState = {
   metamask: {
     ...mockState.metamask,
     completedOnboarding: true,
+    moneyFtueSeen: true,
     remoteFeatureFlags: {
       ...mockState.metamask.remoteFeatureFlags,
       perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.1' },
@@ -73,6 +74,7 @@ const stateWithPerpsDisabled = {
   metamask: {
     ...mockState.metamask,
     completedOnboarding: true,
+    moneyFtueSeen: true,
     remoteFeatureFlags: {
       ...mockState.metamask.remoteFeatureFlags,
       perpsEnabledVersion: { enabled: false, minimumVersion: '0.0.1' },
@@ -203,7 +205,6 @@ describe('BottomNavBar', () => {
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
@@ -218,7 +219,6 @@ describe('BottomNavBar', () => {
       expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
@@ -227,18 +227,14 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-perps'));
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE);
     });
 
     it('navigates to Money Home when Money is clicked', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-money'));
-      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
       expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
         componentName: MoneyComponentName.HomeTab,
       });
@@ -257,7 +253,6 @@ describe('BottomNavBar', () => {
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });

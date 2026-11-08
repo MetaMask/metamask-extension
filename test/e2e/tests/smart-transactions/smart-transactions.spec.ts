@@ -169,9 +169,12 @@ describe('Smart Transactions', function () {
         await swapPage.submitSwap();
 
         await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
+        const txToastNotification = new TxToastNotification(driver);
+        await txToastNotification.checkTxConfirmedToast();
+        await txToastNotification.closeToastNotification();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
@@ -202,9 +205,12 @@ describe('Smart Transactions', function () {
         await swapPage.submitSwap();
 
         await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
+        const txToastNotification = new TxToastNotification(driver);
+        await txToastNotification.checkTxConfirmedToast();
+        await txToastNotification.closeToastNotification();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
