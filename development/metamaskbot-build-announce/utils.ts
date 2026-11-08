@@ -81,6 +81,7 @@ export async function postCommentWithMetamaskBot({
       'User-Agent': 'metamaskbot',
       Authorization: `token ${commentToken}`,
       'Content-Type': 'application/json',
+      'X-GitHub-Api-Version': '2026-03-10',
     },
   });
 
