@@ -32,7 +32,9 @@ export function filterWalletsByGroupNameOrAddress(
         Record<AccountGroupId, AccountGroupObject>
       >((groupsResult, [groupId, group]) => {
         const metadata = groupsMetadata[groupId as AccountGroupId];
-        const matchesName = metadata?.name.includes(normalizedSearchPattern);
+        const matchesName = metadata?.name
+          .toLowerCase()
+          .includes(normalizedSearchPattern);
         const matchesAddress = metadata?.accounts.some((account: string) =>
           account.includes(normalizedSearchPattern),
         );
