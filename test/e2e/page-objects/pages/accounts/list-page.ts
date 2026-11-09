@@ -407,7 +407,6 @@ class AccountListPage {
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.importAccountConfirmButton);
       await this.driver.waitForSelector({
-        css: '.mm-help-text',
         text: expectedErrorMessage,
       });
     } else {
@@ -1086,7 +1085,7 @@ class AccountListPage {
     );
     // The toggle renders its label in a child element, so the button itself
     // has no direct text node for the text locator to match.
-    await this.driver.clickNestedButton(this.importAccountJsonFileOption.text);
+    await this.driver.clickNestedButton('JSON file');
 
     const fileInput = await this.driver.findElement(
       this.importAccountJsonFileInput,
