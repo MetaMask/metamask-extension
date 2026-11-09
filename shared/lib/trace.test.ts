@@ -1414,12 +1414,13 @@ describe('Trace', () => {
           name: TraceName.BackgroundPoll,
           op: 'background.poll',
           parentSpan: null,
+          attributes: { controller: 'StaticAssetsController' },
         }),
         expect.any(Function),
       );
-      expect(setTagMock).toHaveBeenCalledWith(
+      expect(setTagMock).not.toHaveBeenCalledWith(
         'controller',
-        'StaticAssetsController',
+        expect.anything(),
       );
     });
   });

@@ -517,9 +517,9 @@ export function traceBackgroundPoll<ResultType>(
     {
       name: TraceName.BackgroundPoll,
       op: 'background.poll',
-      tags: {
-        controller: controllerName,
-      },
+      // Span data, not a scope tag: a tag stays on the scope while the poll is
+      // pending and lands on unrelated concurrent transactions.
+      data: { controller: controllerName },
       root: true,
     },
     fn,
