@@ -138,7 +138,7 @@ const Name = memo(
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
-            style={{ textAlign: fillWidth ? 'left' : 'right' }}
+            style={{ textAlign: 'right' }}
           >
             {subtitle}
           </Text>

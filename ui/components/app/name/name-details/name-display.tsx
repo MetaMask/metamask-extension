@@ -99,10 +99,7 @@ const NameDisplay = memo(
         return (
           <Text
             ref={fillRef}
-            className={classnames(
-              'flex-1',
-              fillName ? 'name__name' : 'name__value',
-            )}
+            className={fillName ? 'name__name' : 'name__value'}
             variant={TextVariant.bodyMd}
             {...props}
           >
@@ -131,6 +128,7 @@ const NameDisplay = memo(
       <div
         className={classnames({
           name: true,
+          'justify-end': fillWidth,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           name__clickable:

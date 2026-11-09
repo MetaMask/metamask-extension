@@ -14,15 +14,15 @@ describe('useStartTruncatedText', () => {
   let rowWidth: number;
 
   beforeEach(() => {
-    // jsdom has no layout: text is 10px per character, the element is rowWidth.
+    // jsdom has no layout: text is 10px per character, and the element sizes
+    // to its text unless it grows to fill its row of rowWidth.
     jest
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
       .mockImplementation(function (this: HTMLElement) {
         return {
-          width:
-            this.style.position === 'absolute'
-              ? (this.textContent?.length ?? 0) * 10
-              : rowWidth,
+          width: this.style.flexGrow
+            ? rowWidth
+            : (this.textContent?.length ?? 0) * 10,
         } as DOMRect;
       });
   });

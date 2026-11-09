@@ -160,14 +160,14 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
             </p>
@@ -304,14 +304,14 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
             </p>
@@ -529,14 +529,14 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
             </p>
@@ -673,14 +673,14 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
             </p>
@@ -868,14 +868,14 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
             </p>
@@ -1564,14 +1564,14 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
             </p>
@@ -2017,14 +2017,14 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
             </p>

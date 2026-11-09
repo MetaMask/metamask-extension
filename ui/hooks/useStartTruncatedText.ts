@@ -6,8 +6,9 @@ const ELLIPSIS = '\u2026';
  * Fits text on one line in an element by shortening its start. Keeps the last
  * `endChars` characters, then as many leading characters as fit.
  *
- * The element must not wrap and must take its width from its container, not
- * from its text.
+ * The element must not wrap. It is measured at the width it can grow to, so it
+ * may size to its text inside a flex row that takes its width from its
+ * container.
  *
  * @param text - The full text.
  * @param endChars - Characters always kept at the end. Defaults to all.
@@ -23,7 +24,13 @@ export function useStartTruncatedText(text: string, endChars = Infinity) {
     }
 
     const fit = () => {
+      element.style.setProperty('flex-grow', '1');
       const maxWidth = element.getBoundingClientRect().width;
+      element.style.removeProperty('flex-grow');
+      // Check the attribute, not style.length, or Chrome re-adds it.
+      if (!element.getAttribute('style')) {
+        element.removeAttribute('style');
+      }
       const probe = element.appendChild(document.createElement('span'));
       probe.style.cssText =
         'position:absolute;visibility:hidden;white-space:nowrap';
@@ -65,6 +72,7 @@ export function useStartTruncatedText(text: string, endChars = Infinity) {
     document.fonts?.ready.then(() => active && fit());
     const observer = new ResizeObserver(fit);
     observer.observe(element);
+    observer.observe(element.parentElement ?? element);
 
     return () => {
       active = false;

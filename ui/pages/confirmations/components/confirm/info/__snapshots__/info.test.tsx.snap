@@ -155,14 +155,14 @@ exports[`Info renders info section for approve request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
             </p>
@@ -303,14 +303,14 @@ exports[`Info renders info section for approve request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0x076146c765189d51bE3160A2140cF80BFC73ad68
             </p>
@@ -667,14 +667,14 @@ exports[`Info renders info section for contract interaction request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0x88AA6343307EC9a652CCddDa3646E62b2f1A5125
             </p>
@@ -1142,14 +1142,14 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
             </p>
@@ -1290,14 +1290,14 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0x076146c765189d51bE3160A2140cF80BFC73ad68
             </p>
@@ -1593,14 +1593,14 @@ exports[`Info renders info section for typed sign request 1`] = `
           class="mm-box flex-1 overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="name name__clickable name__missing"
+            class="name justify-end name__clickable name__missing"
           >
             <span
               class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text flex-1 name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
               0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
             </p>
