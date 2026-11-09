@@ -1713,7 +1713,7 @@ Performance Checks (React Components):
 
 - **MetaMask Contributor Docs:** https://github.com/MetaMask/contributor-docs
 - **MetaMask Developer Docs:** https://docs.metamask.io/
-- **Community Forum:** https://community.metamask.io/
+- **Community Forum:** https://community.metamask.com/
 - **User Support:** https://support.metamask.io/
 
 ---
