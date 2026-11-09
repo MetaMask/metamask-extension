@@ -76,6 +76,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         chainId,
         type: AssetType.native,
         symbol,
+        name: token.name,
         image,
         decimals: token.decimals,
         isOriginalNativeSymbol: isOriginalNativeSymbol === true,

@@ -154,12 +154,12 @@ ui/components/app/import-token                                 @MetaMask/core-ex
 ui/components/app/toast-listener                               @MetaMask/core-extension-ux
 ui/components/ui/toast                                         @MetaMask/core-extension-ux
 ui/css                                                         @MetaMask/core-extension-ux
+ui/hooks/activity/                                             @MetaMask/core-extension-ux
 shared/lib/activity                                            @MetaMask/core-extension-ux
 ui/pages/home                                                  @MetaMask/core-extension-ux
 ui/pages/activity                                              @MetaMask/core-extension-ux
 ui/pages/core                                                  @MetaMask/core-extension-ux
 ui/pages/details                                               @MetaMask/core-extension-ux
-ui/pages/details/templates/ramps/                              @MetaMask/money-movement
 ui/pages/permissions-connect/                                  @MetaMask/core-extension-ux
 ui/pages/settings                                              @MetaMask/core-extension-ux
 ui/pages/settings/mfa-settings                                 @MetaMask/accounts-engineers
@@ -281,6 +281,17 @@ app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/
 shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 ui/selectors/money/                  @MetaMask/earn
 ui/components/app/money/             @MetaMask/earn
+
+# Activity
+ui/selectors/activity.ts                                        @MetaMask/core-extension-ux
+ui/selectors/activity/                                         @MetaMask/core-extension-ux
+ui/components/app/activity-list-item-avatar/                   @MetaMask/core-extension-ux
+ui/components/app/transaction-activity-empty-state/            @MetaMask/core-extension-ux
+ui/pages/details/templates/ramps/                              @MetaMask/core-extension-ux @MetaMask/money-movement
+ui/pages/details/templates/perps/                              @MetaMask/core-extension-ux @MetaMask/perps
+ui/pages/details/templates/money/                              @MetaMask/core-extension-ux @MetaMask/earn
+ui/pages/details/templates/bridge/                             @MetaMask/swaps-engineers @MetaMask/core-extension-ux
+ui/selectors/activity/musd/                                    @MetaMask/core-extension-ux @MetaMask/earn
 
 
 # Extension Platform owns build, development tooling,

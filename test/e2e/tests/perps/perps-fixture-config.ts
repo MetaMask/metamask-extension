@@ -10,7 +10,6 @@ import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
-import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatUnits } from '../../../../shared/lib/unit';
 import {
@@ -38,15 +37,17 @@ const {
 const ARBITRUM_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.ARBITRUM);
 const MAINNET_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.MAINNET);
 const ARBITRUM_USDC_ADDRESS: Hex = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
-const ARBITRUM_USDC_ASSET_ID =
-  'eip155:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831';
 const ARBITRUM_NATIVE_ASSET_ID = 'eip155:42161/slip44:60';
 const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
 const MAINNET_MUSD_ADDRESS: Hex = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
-const MAINNET_MUSD_ASSET_ID =
-  'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+// AssetsController 20 keys ERC-20 state by EIP-55 asset ids. A lowercase seed
+// is left next to the checksummed entry the pipeline writes, and Pay reads the
+// checksummed key. That key then has metadata and no price, so the withdraw
+// button stays on its loading spinner.
+const ARBITRUM_USDC_ASSET_ID =
+  `eip155:42161/erc20:${ARBITRUM_USDC_ADDRESS}` as const;
+const MAINNET_MUSD_ASSET_ID = `eip155:1/erc20:${MAINNET_MUSD_ADDRESS}` as const;
 const MAINNET_MUSD_DECIMALS = 6;
-const MAINNET_MUSD_PRICE_IN_ETH = 1 / 1700;
 const HYPERCORE_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.LOCALHOST);
 const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
 const RELAY_API_BASE_URL = 'https://api.relay.link';
@@ -71,52 +72,6 @@ const PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG = {
   },
 };
 
-const ARBITRUM_USDC_MARKET_DATA = {
-  tokenAddress: ARBITRUM_USDC_ADDRESS,
-  currency: 'ETH',
-  allTimeHigh: 1,
-  allTimeLow: 1,
-  circulatingSupply: 0,
-  dilutedMarketCap: 0,
-  high1d: 1,
-  low1d: 1,
-  marketCap: 0,
-  marketCapPercentChange1d: 0,
-  price: ARBITRUM_USDC_PRICE_IN_ETH,
-  priceChange1d: 0,
-  pricePercentChange1d: 0,
-  pricePercentChange1h: 0,
-  pricePercentChange1y: 0,
-  pricePercentChange7d: 0,
-  pricePercentChange14d: 0,
-  pricePercentChange30d: 0,
-  pricePercentChange200d: 0,
-  totalVolume: 0,
-};
-
-const MAINNET_MUSD_MARKET_DATA = {
-  tokenAddress: MAINNET_MUSD_ADDRESS,
-  currency: 'ETH',
-  allTimeHigh: 1,
-  allTimeLow: 1,
-  circulatingSupply: 0,
-  dilutedMarketCap: 0,
-  high1d: 1,
-  low1d: 1,
-  marketCap: 0,
-  marketCapPercentChange1d: 0,
-  price: MAINNET_MUSD_PRICE_IN_ETH,
-  priceChange1d: 0,
-  pricePercentChange1d: 0,
-  pricePercentChange1h: 0,
-  pricePercentChange1y: 0,
-  pricePercentChange7d: 0,
-  pricePercentChange14d: 0,
-  pricePercentChange30d: 0,
-  pricePercentChange200d: 0,
-  totalVolume: 0,
-};
-
 type RelayQuoteRequestBody = {
   amount?: string;
   user?: string;
@@ -137,7 +92,6 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   // is on in production (registry value), so it stays registered; tests that
   // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
   perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
-  [BOTTOM_NAV_AB_TEST_KEY]: 'control',
 };
 
 /**
@@ -196,8 +150,6 @@ const PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS = {
     PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
-  [BOTTOM_NAV_AB_TEST_KEY]:
-    PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
 };
 
 const PERPS_GEO_BLOCKED_FLAG = {
@@ -258,8 +210,6 @@ export function getPerpsGeoBlockConfig(title?: string) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay: { name: 'empty' },
         perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
-        [BOTTOM_NAV_AB_TEST_KEY]:
-          PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
       });
       await server
         .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -320,8 +270,6 @@ async function mockEligibleFeatureFlags(
     // market submit disabled without order-book estimates.
     perpsSlippageConfig2:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
-    [BOTTOM_NAV_AB_TEST_KEY]:
-      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
     ...overrides,
   });
   await server
@@ -436,14 +384,14 @@ async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
               ARBITRUM_NATIVE_ASSET_ID,
               MAINNET_MUSD_ASSET_ID,
             ];
-      const priceByAssetId: Record<string, number> = {
-        [ARBITRUM_USDC_ASSET_ID]: 1,
-        [ARBITRUM_NATIVE_ASSET_ID]: 1700,
-        [MAINNET_MUSD_ASSET_ID]: 1,
+      const priceByLowerAssetId: Record<string, number> = {
+        [ARBITRUM_USDC_ASSET_ID.toLowerCase()]: 1,
+        [ARBITRUM_NATIVE_ASSET_ID.toLowerCase()]: 1700,
+        [MAINNET_MUSD_ASSET_ID.toLowerCase()]: 1,
       };
       const prices = Object.fromEntries(
         assetIds.flatMap((assetId) => {
-          const price = priceByAssetId[assetId];
+          const price = priceByLowerAssetId[assetId.toLowerCase()];
           if (price === undefined) {
             return [];
           }
@@ -764,16 +712,6 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
                 name: 'USD Coin',
               },
             ],
-          },
-        },
-      })
-      .withTokenRatesController({
-        marketData: {
-          [CHAIN_IDS.MAINNET]: {
-            [MAINNET_MUSD_ADDRESS]: MAINNET_MUSD_MARKET_DATA,
-          },
-          [CHAIN_IDS.ARBITRUM]: {
-            [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
           },
         },
       })

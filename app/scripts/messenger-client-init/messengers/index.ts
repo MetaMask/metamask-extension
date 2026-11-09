@@ -46,8 +46,6 @@ import {
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
-  getTokenRatesControllerInitMessenger,
-  getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
@@ -116,6 +114,11 @@ import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
+import {
+  getRewardsMoneyControllerInitMessenger,
+  getRewardsMoneyControllerMessenger,
+} from './rewards-money-controller-messenger';
+import { getRewardsMoneyDataServiceMessenger } from './rewards-money-data-service-messenger';
 import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
@@ -261,6 +264,12 @@ export {
   getSignatureControllerInitMessenger,
 } from './signature-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
+export {
+  getRewardsMoneyControllerInitMessenger,
+  getRewardsMoneyControllerMessenger,
+} from './rewards-money-controller-messenger';
+export type { RewardsMoneyControllerInitMessenger } from './rewards-money-controller-messenger';
+export { getRewardsMoneyDataServiceMessenger } from './rewards-money-data-service-messenger';
 export type { StaticAssetsControllerInitMessenger } from './static-assets-controller-messenger';
 export {
   getStaticAssetsControllerMessenger,
@@ -543,6 +552,14 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
   },
+  RewardsMoneyDataService: {
+    getMessenger: getRewardsMoneyDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RewardsMoneyController: {
+    getMessenger: getRewardsMoneyControllerMessenger,
+    getInitMessenger: getRewardsMoneyControllerInitMessenger,
+  },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
@@ -582,10 +599,6 @@ export const MESSENGER_FACTORIES = {
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,
     getInitMessenger: getUserStorageControllerInitMessenger,
-  },
-  TokenRatesController: {
-    getMessenger: getTokenRatesControllerMessenger,
-    getInitMessenger: getTokenRatesControllerInitMessenger,
   },
   NftController: {
     getMessenger: getNftControllerMessenger,

@@ -26,7 +26,10 @@ import {
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
+  Button,
   ButtonBase,
+  ButtonSize,
+  ButtonVariant,
   FontWeight,
   Icon,
   IconColor,
@@ -224,6 +227,10 @@ type CoinButtonsProps = {
    * while the lookup is still pending would flash the wrong row.
    */
   perpsMarketSymbol?: string;
+  /**
+   * Renders every action as its own pill button, left-aligned.
+   */
+  showAsPills?: boolean;
 };
 
 const CoinButtons = ({
@@ -237,6 +244,7 @@ const CoinButtons = ({
   disableSendForNonEvm = false,
   buyAssetId,
   perpsMarketSymbol,
+  showAsPills = false,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -568,6 +576,149 @@ const CoinButtons = ({
    */
   const showReceiveOnActionRow = Boolean(perpsMarketSymbol) && !hasBalance;
 
+  const moreActions = [
+    // Buy and Swap move into the More menu when the Perps row replaces
+    // them with Long / Short.
+    {
+      label: t('buy'),
+      onClick: handleBuyAndSellOnClick,
+      testId: `${classPrefix}-overview-more-buy`,
+      iconName: IconName.AttachMoney,
+      enabled: Boolean(perpsMarketSymbol),
+    },
+    {
+      label: t('swap'),
+      onClick: handleSwapOnClick,
+      testId: `${classPrefix}-overview-more-swap`,
+      iconName: IconName.SwapVertical,
+      enabled:
+        Boolean(perpsMarketSymbol) &&
+        isSigningEnabled &&
+        isExternalServicesEnabled,
+    },
+    {
+      label: t('batchSell'),
+      onClick: handleBatchSellOnClick,
+      testId: `${classPrefix}-overview-batchSell`,
+      iconName: IconName.Merge,
+      iconClassName: 'rotate-180',
+      tagProps: {
+        label: t('perpsFilterNew'),
+        labelProps: {
+          color: IconColorLegacy.primaryDefault,
+        },
+        backgroundColor: BackgroundColor.primaryMuted,
+      },
+      enabled: batchSellEnabled,
+    },
+    {
+      label: t('receive'),
+      onClick: handleReceiveOnClick,
+      testId: perpsMarketSymbol
+        ? `${classPrefix}-overview-more-receive`
+        : `${classPrefix}-overview-receive`,
+      iconName: IconName.Received,
+      enabled: !showReceiveOnActionRow,
+    },
+  ];
+
+  if (showAsPills) {
+    const renderActionButton = ({
+      iconName,
+      iconClassName,
+      label,
+      testId,
+      onClick,
+      isDisabled = false,
+      tooltipKey,
+    }: {
+      iconName: IconName;
+      iconClassName?: string;
+      label: string;
+      testId: string;
+      onClick: () => void;
+      isDisabled?: boolean;
+      tooltipKey?: keyof typeof buttonTooltips;
+    }) => {
+      const button = (
+        <Button
+          key={testId}
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          className="w-auto shrink-0"
+          startIconName={iconName}
+          startIconProps={{ className: iconClassName }}
+          isDisabled={isDisabled}
+          onClick={onClick}
+          data-testid={testId}
+        >
+          {label}
+        </Button>
+      );
+      return tooltipKey ? generateTooltip(tooltipKey, button) : button;
+    };
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        className="flex relative w-full flex-wrap justify-start"
+        gap={2}
+        ref={containerRef}
+      >
+        {perpsMarketSymbol ? (
+          <PerpsTradeButtons
+            marketSymbol={perpsMarketSymbol}
+            classPrefix={classPrefix}
+          />
+        ) : (
+          <>
+            {renderActionButton({
+              iconName: IconName.AttachMoney,
+              label: t('buy'),
+              testId: `${classPrefix}-overview-buy`,
+              onClick: handleBuyAndSellOnClick,
+            })}
+            {renderActionButton({
+              iconName: IconName.SwapVertical,
+              label: t('swap'),
+              testId: `${classPrefix}-overview-swap`,
+              onClick: handleSwapOnClick,
+              isDisabled: !isSigningEnabled || !isExternalServicesEnabled,
+              tooltipKey: 'swapButton',
+            })}
+          </>
+        )}
+        {renderActionButton({
+          iconName: IconName.Arrow2UpRight,
+          label: t('send'),
+          testId: `${classPrefix}-overview-send`,
+          onClick: handleSendOnClick,
+          isDisabled:
+            !isSigningEnabled ||
+            (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled),
+          tooltipKey: 'sendButton',
+        })}
+        {moreActions
+          .filter(({ enabled }) => enabled)
+          .map(({ label, testId, iconName, iconClassName, onClick }) =>
+            renderActionButton({
+              iconName,
+              iconClassName,
+              label,
+              testId: testId ?? label,
+              onClick,
+            }),
+          )}
+        {showReceiveModal && (
+          <ReceiveModal
+            address={selectedAddress}
+            onClose={() => setShowReceiveModal(false)}
+          />
+        )}
+      </Box>
+    );
+  }
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -666,51 +817,7 @@ const CoinButtons = ({
         onClick={handleMoreOptionsButtonClick}
         modalIsOpen={isMoreOptionsDropdownOpen}
         classPrefix={classPrefix}
-        actions={[
-          // Buy and Swap move into the More menu when the Perps row replaces
-          // them with Long / Short.
-          {
-            label: t('buy'),
-            onClick: handleBuyAndSellOnClick,
-            testId: `${classPrefix}-overview-more-buy`,
-            iconName: IconName.AttachMoney,
-            enabled: Boolean(perpsMarketSymbol),
-          },
-          {
-            label: t('swap'),
-            onClick: handleSwapOnClick,
-            testId: `${classPrefix}-overview-more-swap`,
-            iconName: IconName.SwapVertical,
-            enabled:
-              Boolean(perpsMarketSymbol) &&
-              isSigningEnabled &&
-              isExternalServicesEnabled,
-          },
-          {
-            label: t('batchSell'),
-            onClick: handleBatchSellOnClick,
-            testId: `${classPrefix}-overview-batchSell`,
-            iconName: IconName.Merge,
-            iconClassName: 'rotate-180',
-            tagProps: {
-              label: t('perpsFilterNew'),
-              labelProps: {
-                color: IconColorLegacy.primaryDefault,
-              },
-              backgroundColor: BackgroundColor.primaryMuted,
-            },
-            enabled: batchSellEnabled,
-          },
-          {
-            label: t('receive'),
-            onClick: handleReceiveOnClick,
-            testId: perpsMarketSymbol
-              ? `${classPrefix}-overview-more-receive`
-              : `${classPrefix}-overview-receive`,
-            iconName: IconName.Received,
-            enabled: !showReceiveOnActionRow,
-          },
-        ]}
+        actions={moreActions}
       />
     </Box>
   );

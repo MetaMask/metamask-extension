@@ -716,6 +716,23 @@ describe('AssetPage', () => {
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
   });
 
+  it('renders the token name with the ticker and compact address under it', () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <AssetPage
+        asset={{ ...token, name: 'Test Token' }}
+        optionsButton={null}
+      />,
+      store,
+    );
+
+    expect(getByTestId('asset-name')).toHaveTextContent('Test Token');
+    expect(getByTestId('asset-page-header-ticker')).toHaveTextContent('TEST');
+    expect(getByTestId('asset-page-header-address')).toHaveTextContent(
+      '0x..25C0',
+    );
+    expect(queryByTestId('asset-page-header-subtitle')).toBeInTheDocument();
+  });
+
   describe('Perps actions on the native asset page', () => {
     const renderNative = () =>
       renderWithProvider(

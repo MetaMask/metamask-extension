@@ -236,11 +236,6 @@ describe('state-inspector', () => {
       ).toBe('onboarding-complete');
       expect(
         detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/help-us-improve',
-        ),
-      ).toBe('onboarding-metametrics');
-      expect(
-        detectScreenFromUrl(
           `chrome-extension://id/home.html#${ONBOARDING_METAMETRICS}`,
         ),
       ).toBe('onboarding-metametrics');

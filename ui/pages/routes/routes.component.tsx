@@ -8,6 +8,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
+import { ContentLayout } from '#ui/layouts/content-layout';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
@@ -85,6 +86,7 @@ import {
   MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
   MONEY_EARN_ROUTE,
+  MONEY_DEPOSIT_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -103,6 +105,7 @@ import {
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
+import { useUiInteractionReporter } from '../../hooks/useUiInteractionReporter';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
@@ -132,6 +135,7 @@ import { BasicFunctionalityMigrationModal } from '../../components/app/basic-fun
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
+import { MoneyFtueSplash } from '../../components/app/money/money-ftue-splash';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -304,6 +308,9 @@ const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
 const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
+const MoneyDepositDeeplinkPage = mmLazy(
+  () => import('../money/money-deposit-deeplink-page.tsx'),
+);
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -725,6 +732,16 @@ export const routeConfig = [
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyHomePage />,
               }),
+            ],
+          },
+        ],
+      },
+      {
+        element: <ContentLayout />,
+        children: [
+          {
+            element: <RequireBasicFunctionality />,
+            children: [
               createRouteWithMessenger({
                 path: MONEY_ACTIVITY_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
@@ -744,6 +761,11 @@ export const routeConfig = [
                 path: MONEY_EARN_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyEarnPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_DEPOSIT_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyDepositDeeplinkPage />,
               }),
             ],
           },
@@ -870,6 +892,8 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
+  useUiInteractionReporter();
+
   const handleIdleAction = useCallback(() => {
     dispatch(setLastActiveTime());
   }, [dispatch]);
@@ -971,6 +995,8 @@ export default function Routes() {
       {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
 
       {renderRoutes()}
+
+      {isUnlocked ? <MoneyFtueSplash /> : null}
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
