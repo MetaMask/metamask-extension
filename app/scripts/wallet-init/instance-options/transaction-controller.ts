@@ -175,35 +175,9 @@ export function getTransactionControllerApi(
   transactionController: TransactionController,
 ) {
   return {
-    getLayer1GasFee: transactionController.getLayer1GasFee.bind(
-      transactionController,
-    ),
-    getTransactions: transactionController.getTransactions.bind(
-      transactionController,
-    ),
-    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-      transactionController,
-    ),
-    updateAtomicBatchData: transactionController.updateAtomicBatchData.bind(
-      transactionController,
-    ),
     updateBatchTransactions: transactionController.updateBatchTransactions.bind(
       transactionController,
     ),
-    updateEditableParams: transactionController.updateEditableParams.bind(
-      transactionController,
-    ),
-    updatePreviousGasParams: transactionController.updatePreviousGasParams.bind(
-      transactionController,
-    ),
-    updateSelectedGasFeeToken:
-      transactionController.updateSelectedGasFeeToken.bind(
-        transactionController,
-      ),
-    updateTransactionGasFees:
-      transactionController.updateTransactionGasFees.bind(
-        transactionController,
-      ),
     checkFirstTimeInteraction,
   };
 }

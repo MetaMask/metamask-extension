@@ -103,11 +103,6 @@ describe('GlobalMenuDrawer', () => {
     }
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    getEnvironmentType.mockReturnValue('popup');
-  });
-
   it('renders children when open', async () => {
     const onClose = jest.fn();
     const { getByText, getByTestId } = renderWithProvider(

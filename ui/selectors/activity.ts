@@ -12,7 +12,6 @@ import {
   isEvmAccountType,
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
-import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import {
   mapKeyringTransaction,
   mapLocalTransaction,
@@ -30,7 +29,6 @@ import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
-import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
 import {
@@ -565,14 +563,12 @@ function getBridgeActivityStatus(
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
   selectBridgeHistory,
-  selectTransactionPayData,
   getNetworkConfigurationsByChainId,
   selectEvmAddress,
   getTokensControllerAllTokens,
   (
     transactionGroups,
     getBridgeHistory,
-    transactionPayData,
     networkConfigurationsByChainId,
     evmAddress,
     allTokens,
@@ -608,62 +604,6 @@ export const selectLocalActivityItems = createSelector(
         chainId,
         transactionGroup.initialTransaction.txParams.to,
       );
-      const sourceToken = (() => {
-        if (type !== TransactionType.musdConversion) {
-          return undefined;
-        }
-
-        const { metamaskPay } = transactionGroup.initialTransaction;
-        const transactionPay =
-          transactionPayData[transactionGroup.initialTransaction.id];
-        const paymentToken = transactionPay?.paymentToken;
-        const payTokenAddress =
-          metamaskPay?.tokenAddress ?? paymentToken?.address;
-        const payTokenChainId = metamaskPay?.chainId ?? paymentToken?.chainId;
-        const sourceTokenMetadata = resolveContractTokenMetadata(
-          payTokenChainId,
-          payTokenAddress,
-        );
-        const sourceAmount =
-          transactionPay?.totals?.sourceAmount.raw ??
-          transactionPay?.sourceAmounts?.find((sourceAmountData) => {
-            const targetTokenAddress =
-              transactionGroup.initialTransaction.txParams.to;
-
-            return (
-              targetTokenAddress &&
-              sourceAmountData.targetTokenAddress.toLowerCase() ===
-                targetTokenAddress.toLowerCase()
-            );
-          })?.sourceAmountRaw ??
-          transactionPay?.sourceAmounts?.[0]?.sourceAmountRaw;
-        const sourceTokenCaipChainId = payTokenChainId
-          ? toCaipChainId(
-              KnownCaipNamespace.Eip155,
-              Number.parseInt(payTokenChainId, 16).toString(),
-            )
-          : undefined;
-        const sourceTokenAssetId =
-          payTokenAddress && sourceTokenCaipChainId
-            ? toAssetId(payTokenAddress, sourceTokenCaipChainId)
-            : undefined;
-        const sourceTokenSymbol =
-          sourceTokenMetadata?.symbol ?? paymentToken?.symbol;
-        const sourceTokenDecimals =
-          sourceTokenMetadata?.decimals ?? paymentToken?.decimals;
-
-        return sourceTokenMetadata || paymentToken || sourceTokenAssetId
-          ? {
-              direction: 'out' as const,
-              ...(sourceAmount ? { amount: sourceAmount } : {}),
-              ...(sourceTokenSymbol ? { symbol: sourceTokenSymbol } : {}),
-              ...(sourceTokenDecimals === undefined
-                ? {}
-                : { decimals: sourceTokenDecimals }),
-              ...(sourceTokenAssetId ? { assetId: sourceTokenAssetId } : {}),
-            }
-          : undefined;
-      })();
 
       if (
         type === TransactionType.swap ||
@@ -692,7 +632,6 @@ export const selectLocalActivityItems = createSelector(
         ...transactionGroup,
         nativeAssetSymbol,
         contractTokenMetadata,
-        ...(sourceToken ? { sourceToken } : {}),
       };
 
       return enrichLocalActivity(mapLocalTransaction(prepared), prepared);

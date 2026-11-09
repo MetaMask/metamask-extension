@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Contract-Interaktion"
   },
-  "convertAgain": {
-    "message": "Erneut konvertieren"
-  },
   "convertTokenToNFTDescription": {
     "message": "Wir haben festgestellt, dass dieses Asset eine NFT ist. MetaMask hat jetzt volle native Unterstützung für NFTs. Möchten Sie es aus Ihrer Tokenliste entfernen und als NFT hinzufügen?"
   },
@@ -6343,19 +6340,6 @@
     "message": "Zu mUSD konvertiert",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD-Konvertierung fehlgeschlagen"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Konvertierung von $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD-Konvertierung erfolgreich"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Der Bonus kann innerhalb eines Tages eingefordert werden."
-  },
   "musdConvert": {
     "message": "Konvertieren"
   },
@@ -8447,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "wenden Sie sich an den Support,",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Einige Dienste sind vorübergehend nicht verfügbar. $1 oder $2.",
@@ -8455,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Informieren Sie sich in den FAQs über Ihre Optionen",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Wir haben einen Ausfall",
@@ -8882,7 +8866,7 @@
     "message": "Auszahlung abgesendet"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask swappt den Token für Sie in den gewünschten Token um. Beim Swap in mUSD fallen keine MetaMask-Gebühren an.",
+    "message": "MetaMask swappt den Token für Sie in den gewünschten Token um.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11945,9 +11929,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "hier",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Beinhaltet"
   },
   "swapGasFeesSplit": {
     "message": "Die Netzwerkgebühren auf dem vorherigen Bildschirm werden auf diese beiden Transaktionen aufgeteilt."

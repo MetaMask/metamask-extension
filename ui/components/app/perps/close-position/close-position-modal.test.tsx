@@ -30,6 +30,27 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // gate is a passthrough here; real gating behavior is covered in
 // useComplianceGate.test.tsx.
+jest.mock('../../modals/visit-support-data-consent-modal', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const { createPortal } =
+    jest.requireActual<typeof import('react-dom')>('react-dom');
+
+  return {
+    __esModule: true,
+    default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
+      isOpen
+        ? createPortal(
+            ReactActual.createElement('button', {
+              type: 'button',
+              'data-testid': 'visit-support-data-consent-modal',
+              onClick: onClose,
+            }),
+            globalThis.document.body,
+          )
+        : null,
+  };
+});
+
 jest.mock('../../compliance', () => {
   // Stable references so components that put `gate` in effect/callback deps
   // don't re-run on every render.
@@ -83,6 +104,7 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -143,10 +165,16 @@ const PARTIAL_MIN_NOTIONAL_MESSAGE = tEn('perpsClosePartialMinNotional', [
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
+const mockRefreshPositions = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('../../../../providers/perps', () => ({
+  ...jest.requireActual('../../../../providers/perps'),
+  getPerpsStreamManager: () => ({ refreshPositions: mockRefreshPositions }),
 }));
 
 jest.mock('../../rewards/RewardsVipBadge', () => ({
@@ -213,6 +241,7 @@ jest.mock('../perps-toast', () => ({
     PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
     PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
     PARTIAL_LIMIT_CLOSE_FAILED: 'perpsToastPartialLimitCloseFailed',
+    POSITION_ALREADY_CLOSED: 'perpsToastPositionAlreadyClosed',
     ORDER_PLACED: 'perpsToastOrderPlaced',
     ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
@@ -311,6 +340,74 @@ describe('ClosePositionModal', () => {
       );
 
       fireEvent.click(screen.getByTestId('perps-close-position-back-button'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('service interruption support consent', () => {
+    const renderWithOutageBanner = (onClose: () => void) => {
+      const store = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            perpsPerpTradingServiceInterruptionBannerEnabled: true,
+          },
+        },
+      });
+
+      return renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={onClose}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        store,
+      );
+    };
+
+    it('keeps the close flow open when the support consent action is pressed', () => {
+      const onClose = jest.fn();
+      renderWithOutageBanner(onClose);
+
+      fireEvent.click(
+        screen.getByTestId('perps-service-interruption-banner-support-link'),
+      );
+      const consentButton = screen.getByTestId(
+        'visit-support-data-consent-modal',
+      );
+
+      // Consent is portaled outside this dialog. Parent ModalContent treats
+      // that mousedown as an outside click unless the host ignores it.
+      fireEvent.mouseDown(consentButton);
+
+      expect(onClose).not.toHaveBeenCalled();
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(consentButton);
+
+      expect(onClose).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('visit-support-data-consent-modal'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('still dismisses the close flow from an outside click after consent closes', () => {
+      const onClose = jest.fn();
+      renderWithOutageBanner(onClose);
+
+      fireEvent.click(
+        screen.getByTestId('perps-service-interruption-banner-support-link'),
+      );
+      fireEvent.click(screen.getByTestId('visit-support-data-consent-modal'));
+      fireEvent.mouseDown(document.body);
 
       expect(onClose).toHaveBeenCalledTimes(1);
     });
@@ -1215,6 +1312,36 @@ describe('ClosePositionModal', () => {
         expect(successCall).toBeDefined();
         expect(successCall[0].description).toBeDefined();
       });
+    });
+
+    it('reports an already-closed position and refreshes positions', async () => {
+      mockRefreshPositions.mockResolvedValue(undefined);
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'POSITION_NOT_FOUND',
+      });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+      });
+      expect(mockRefreshPositions).toHaveBeenCalledTimes(1);
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastCloseFailed' }),
+      );
     });
 
     it('emits close failed toast on full close background failure', async () => {

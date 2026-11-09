@@ -11,6 +11,7 @@ import {
 } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { AppLayoutProvider } from '../../contexts/app-layout';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
 import {
@@ -40,6 +41,7 @@ const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
 const mockUseUpgradeMoneyAccount = jest.fn();
+const mockUseOpenMoneyFtueOnFirstVisit = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -128,6 +130,10 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
 }));
 jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
   useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
+}));
+jest.mock('../../hooks/money/use-open-money-ftue-on-first-visit', () => ({
+  useOpenMoneyFtueOnFirstVisit: (options: unknown) =>
+    mockUseOpenMoneyFtueOnFirstVisit(options),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -281,6 +287,15 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
+  });
+
+  it('passes availability to the FTUE auto-open hook', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: true,
+      isLoading: false,
+    });
   });
 
   it('keeps groundwork actions other than the transfer entry points inert', () => {
@@ -1428,5 +1443,47 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-potential-earnings-projection-trigger'),
     ).toHaveTextContent('+$0.50');
+  });
+
+  describe('fullscreen design', () => {
+    it('keeps the centred, stacked layout, with wide-layout overrides', () => {
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(screen.getByTestId('money-balance').parentElement).toHaveClass(
+        'max-w-[784px]',
+        'sm:items-center',
+        'wide-layout:max-w-none',
+        'wide-layout:items-start',
+      );
+      expect(screen.getByTestId('money-add-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-send-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-fund-card')).toHaveClass(
+        'flex-col',
+        'max-w-[389px]',
+        'wide-layout:flex-row',
+        'wide-layout:max-w-none',
+      );
+    });
+
+    it('uses the button defaults in the wide layout', () => {
+      renderWithLocalization(
+        <AppLayoutProvider isWideLayout>
+          <MoneyHomePage />
+        </AppLayoutProvider>,
+      );
+
+      expect(screen.getByTestId('money-add-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+      expect(screen.getByTestId('money-send-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+    });
   });
 });
