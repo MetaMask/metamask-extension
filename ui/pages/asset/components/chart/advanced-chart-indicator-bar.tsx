@@ -49,6 +49,9 @@ const IndicatorBar = ({
     fontWeight: isSelected ? 600 : 500,
     background: 'transparent',
     color: isSelected ? toolbarText : toolbarMuted,
+    // The row scrolls when it runs out of width; squashing the labels to
+    // illegible widths instead would be worse.
+    flexShrink: 0,
   });
 
   const selectedMAs = [...activeIndicators].filter(isMovingAverage);
@@ -81,29 +84,80 @@ const IndicatorBar = ({
     <div
       data-testid="advanced-chart-indicator-bar"
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0px',
-        padding: '6px 16px',
         borderTop: '1px solid var(--color-border-muted)',
         borderBottom: '1px solid var(--color-border-muted)',
+        // Anchors the MA popover. It sits outside the scrolling row below so
+        // that row's `overflow` cannot clip it.
         position: 'relative',
+        minWidth: 0,
       }}
     >
-      {/* MA dropdown trigger */}
-      <button
-        onClick={() => setShowMADropdown((v) => !v)}
+      <div
+        data-testid="advanced-chart-indicator-pills"
         style={{
-          ...pillStyle(selectedMAs.length > 0),
           display: 'flex',
           alignItems: 'center',
-          gap: '2px',
-          paddingRight: '14px',
-          marginRight: '8px',
+          gap: '0px',
+          padding: '6px 16px',
+          // The pills need roughly 300px between them and none of them
+          // shrink, which is more than a narrowed side panel has. Scroll the
+          // row rather than let it push the whole page wider.
+          minWidth: 0,
+          overflowX: 'auto',
         }}
       >
-        {maLabel} ▾
-      </button>
+        {/* MA dropdown trigger */}
+        <button
+          onClick={() => setShowMADropdown((v) => !v)}
+          style={{
+            ...pillStyle(selectedMAs.length > 0),
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2px',
+            paddingRight: '14px',
+            marginRight: '8px',
+          }}
+        >
+          {maLabel} ▾
+        </button>
+
+        {/* Divider after MA */}
+        <div
+          style={{
+            width: '1px',
+            height: '16px',
+            background: 'var(--color-border-muted)',
+            marginRight: '4px',
+            flexShrink: 0,
+          }}
+        />
+
+        {/* Indicator toggle pills */}
+        {TOGGLE_INDICATORS.map((name) => {
+          const isActive = activeIndicators.has(name);
+          return (
+            <React.Fragment key={name}>
+              <button
+                onClick={() => onIndicatorToggle(name)}
+                style={pillStyle(isActive)}
+              >
+                {name}
+              </button>
+              {name === 'BOL' && (
+                <div
+                  style={{
+                    width: '1px',
+                    height: '16px',
+                    background: 'var(--color-border-muted)',
+                    margin: '0 2px',
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
 
       {/* MA dropdown popover */}
       {showMADropdown && (
@@ -164,41 +218,6 @@ const IndicatorBar = ({
           })}
         </div>
       )}
-
-      {/* Divider after MA */}
-      <div
-        style={{
-          width: '1px',
-          height: '16px',
-          background: 'var(--color-border-muted)',
-          marginRight: '4px',
-        }}
-      />
-
-      {/* Indicator toggle pills */}
-      {TOGGLE_INDICATORS.map((name) => {
-        const isActive = activeIndicators.has(name);
-        return (
-          <React.Fragment key={name}>
-            <button
-              onClick={() => onIndicatorToggle(name)}
-              style={pillStyle(isActive)}
-            >
-              {name}
-            </button>
-            {name === 'BOL' && (
-              <div
-                style={{
-                  width: '1px',
-                  height: '16px',
-                  background: 'var(--color-border-muted)',
-                  margin: '0 2px',
-                }}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
     </div>
   );
 };

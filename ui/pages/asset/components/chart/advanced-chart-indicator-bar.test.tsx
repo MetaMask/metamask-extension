@@ -476,14 +476,40 @@ describe('IndicatorBar', () => {
 
   describe('Layout and Styling', () => {
     it('renders with correct container styling', () => {
-      const { container } = render(<IndicatorBar {...defaultProps} />);
+      render(<IndicatorBar {...defaultProps} />);
 
-      const mainDiv = container.firstChild;
-      expect(mainDiv).toHaveStyle({
+      expect(screen.getByTestId('advanced-chart-indicator-pills')).toHaveStyle({
         display: 'flex',
         alignItems: 'center',
+      });
+      expect(screen.getByTestId('advanced-chart-indicator-bar')).toHaveStyle({
         position: 'relative',
       });
+    });
+
+    it('scrolls the pills instead of widening the page in a narrow panel', () => {
+      render(<IndicatorBar {...defaultProps} />);
+
+      // None of the pills shrink, and together they need more width than a
+      // narrowed side panel has. Left unconstrained they overflow their box
+      // and give the whole page a horizontal scrollbar.
+      expect(screen.getByTestId('advanced-chart-indicator-pills')).toHaveStyle({
+        minWidth: '0',
+        overflowX: 'auto',
+      });
+    });
+
+    it('keeps the MA dropdown outside the scrolling row so it is not clipped', () => {
+      render(<IndicatorBar {...defaultProps} />);
+
+      fireEvent.click(screen.getByText('MA ▾'));
+
+      const dropdown = screen.getByText('MA5').closest('div');
+      expect(
+        screen
+          .getByTestId('advanced-chart-indicator-pills')
+          .contains(dropdown as Node),
+      ).toBe(false);
     });
 
     it('renders MA dropdown with correct positioning', () => {

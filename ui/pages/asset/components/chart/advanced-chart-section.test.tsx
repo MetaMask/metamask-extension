@@ -372,6 +372,25 @@ describe('AdvancedChartSection', () => {
     });
   });
 
+  describe('following the panel width', () => {
+    it('lets the shared cell shrink past the width the charts last measured', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      const legacySlot = screen.getByTestId('legacy-chart-slot');
+      const frame = screen.getByTestId('advanced-chart-frame');
+
+      // Without these the cell is floored at its items' min-content, and
+      // Chart.js writes a pixel width onto its canvas, so narrowing the side
+      // panel would push the whole page wider instead of resizing the chart.
+      expect(legacySlot.parentElement?.style.gridTemplateColumns).toBe(
+        'minmax(0, 1fr)',
+      );
+      expect(legacySlot.style.minWidth).toBe('0');
+      expect(frame.style.minWidth).toBe('0');
+    });
+  });
+
   describe('failure handling', () => {
     beforeEach(() => {
       setupPreferences(CHART_TYPE_CANDLE);

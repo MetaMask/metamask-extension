@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
+  Box,
   Icon,
   IconName,
   IconSize,
@@ -63,39 +64,71 @@ const IntervalBar = ({
     fontWeight: isSelected ? 600 : 500,
     background: isSelected ? activeBg : 'transparent',
     color: isSelected ? toolbarText : toolbarMuted,
+    // The row scrolls when the intervals outgrow it; squashing the labels
+    // would be worse, and a half-width pill reads as a rendering bug.
+    flexShrink: 0,
   });
+
+  // A persisted selection near the end of the list, `1w` say, would otherwise
+  // open scrolled out of sight with nothing to say which interval is active.
+  const selectedPillRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    selectedPillRef.current?.scrollIntoView({
+      inline: 'nearest',
+      block: 'nearest',
+    });
+  }, [selectedInterval, intervals]);
 
   return (
     <div
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '4px',
-        padding: '6px 16px',
+        // Only the right edge is padded here. The scrolling row owns the left
+        // inset so the first pill scrolls under it rather than being clipped
+        // by it, and `tablist-fade` positions its gradients against the same
+        // 16px. Both match the action buttons below the chart.
+        paddingBlock: '6px',
+        paddingRight: '16px',
       }}
     >
-      {intervals.map((interval) => (
-        <button
-          key={interval}
-          onClick={() => onIntervalSelect(interval)}
-          style={pillStyle(
-            selectedInterval.toLowerCase() === interval.toLowerCase(),
-          )}
-        >
-          {interval}
-        </button>
-      ))}
-
-      <div style={{ flex: 1 }} />
+      {/* Seven candle intervals plus the toggle do not fit a narrowed side
+          panel, and none of them shrink. Scroll them instead of letting the
+          row push the toggle out past the padding. `tablist-fade` is the same
+          treatment the account overview tab list uses: the scrollbar is
+          hidden, so the gradient is what says there is more to see. */}
+      <Box
+        data-testid="advanced-chart-intervals"
+        className="flex min-w-0 flex-1 gap-1 overflow-x-auto overscroll-x-contain px-4 [scrollbar-width:none] tablist-fade"
+      >
+        {intervals.map((interval) => {
+          const isSelected =
+            selectedInterval.toLowerCase() === interval.toLowerCase();
+          return (
+            <button
+              key={interval}
+              ref={isSelected ? selectedPillRef : undefined}
+              onClick={() => onIntervalSelect(interval)}
+              style={pillStyle(isSelected)}
+            >
+              {interval}
+            </button>
+          );
+        })}
+      </Box>
 
       {/* Chart type toggle — mirrors mobile's ChartTypeToggle.tsx */}
       <div
+        data-testid="advanced-chart-type-toggle"
         style={{
           display: 'flex',
           gap: '2px',
           padding: '2px',
           borderRadius: '8px',
           border: '1px solid var(--color-border-muted)',
+          // Pinned: the toggle is not part of the scrolling row, and must
+          // keep its full width so it stays inside the 16px right padding.
+          flexShrink: 0,
         }}
       >
         <button

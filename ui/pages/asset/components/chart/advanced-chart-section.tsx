@@ -37,11 +37,17 @@ const PRICE_LABEL_ROW_HEIGHT = 28;
  * cell, so the row is as tall as the taller of the two and neither one's
  * presence moves the other. `start` alignment matters: grid items stretch by
  * default, which would override the candle frame's aspect ratio.
+ *
+ * `minWidth: 0` releases the automatic minimum size. Without it a grid item
+ * cannot be narrower than its min-content, and Chart.js writes a pixel width
+ * onto its canvas from the last measurement, so the cell would stay pinned to
+ * whatever width the panel used to be.
  */
 const STACKED: CSSProperties = {
   gridRow: 1,
   gridColumn: 1,
   alignSelf: 'start',
+  minWidth: 0,
 };
 
 /**
@@ -113,16 +119,22 @@ export const AdvancedChartSection = ({
     setHasEnteredCandleMode(true);
   }
 
-  // A different token or interval deserves a fresh attempt: without this, one
-  // transient failure would pin the error state for the rest of the session.
-  // Done during render rather than in an effect so the stale error is never
+  // Clear a stale error when the token or interval changes, so one transient
+  // failure does not pin the error state for the rest of the session. Done
+  // during render rather than in an effect so the stale error is never
   // painted. https://react.dev/reference/react/useState#storing-information-from-previous-renders
+  //
+  // `chartReady` is deliberately NOT reset here: the iframe is kept mounted
+  // across token/interval changes (those are sent via postMessage, not a
+  // reload), so the engine stays ready and only re-emits CHART_READY on an
+  // actual reload. Resetting it would hide the indicator bar on every interval
+  // switch with nothing to turn it back on. Instead it is a one-way "has been
+  // ready" latch, mirroring mobile's `hasChartBeenRevealed`.
   const seriesKey = `${caipAssetId ?? ''}|${interval}`;
   const [renderedSeriesKey, setRenderedSeriesKey] = useState(seriesKey);
   if (renderedSeriesKey !== seriesKey) {
     setRenderedSeriesKey(seriesKey);
     setChartError(null);
-    setChartReady(false);
   }
 
   const handleChartReady = useCallback(() => {
@@ -229,8 +241,11 @@ export const AdvancedChartSection = ({
 
       {/* Both modes share one grid cell rather than taking turns in the tree.
           Swapping them would tear down the TradingView engine and replay its
-          whole load, so the inactive one is hidden in place instead. */}
-      <Box style={{ display: 'grid' }}>
+          whole load, so the inactive one is hidden in place instead.
+          `minmax(0, 1fr)` rather than the implicit `auto`: an `auto` track is
+          floored at its items' min-content, which stops the chart following
+          the panel as it narrows. */}
+      <Box style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}>
         <Box
           data-testid="legacy-chart-slot"
           style={isLineChart ? STACKED : { ...STACKED, ...OFFSCREEN }}
