@@ -31,10 +31,7 @@ describe('Interactive UI Snap', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectInteractiveButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectInteractiveButton',
-          'Reconnect to Interactive UI Snap',
+          { expectedMessage: 'Reconnect to Interactive UI Snap' },
         );
 
         // click create dialog button

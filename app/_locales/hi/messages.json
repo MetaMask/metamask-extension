@@ -7,9 +7,6 @@
     "message": "लोडिंग सामान्य से अधिक समय ले रही है।",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "कोई और अकाउंट नहीं। यदि आप नीचे अलिस्टेड किसी अन्य अकाउंट तक पहुंचना चाहते हैं, तो कृपया अपने hardware wallet को फिर से कनेक्ट करें और उसे चुनें।"
-  },
   "QRHardwareScanInstructions": {
     "message": "QR कोड को अपने कैमरे के सामने रखें। स्क्रीन धुंधली है, लेकिन इससे रीडिंग प्रभावित नहीं होगी।"
   },
@@ -1263,17 +1260,11 @@
   "add_device_error_expired": {
     "message": "यह सिंक सत्र समाप्त हो गया है। नया QR कोड जनरेट करने के लिए फिर से शुरू करें।"
   },
-  "add_device_error_generic": {
-    "message": "आपके फ़ोन के साथ सिंक करते समय कुछ गड़बड़ी हुई। कृपया फिर से प्रयास करें।"
-  },
   "add_device_error_invalid_code": {
     "message": "सत्यापन कोड गलत था। अपने फ़ोन को सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
   },
   "add_device_error_rejected": {
     "message": "आपके फ़ोन पर सिंक कैंसिल कर दिया गया था। सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
-  },
-  "add_device_error_sync_failed": {
-    "message": "हम आपके एकाउंट्स को आपके फ़ोन के साथ सिंक करना पूरा नहीं कर सके। कृपया फिर से प्रयास करें।"
   },
   "add_device_error_title": {
     "message": "सिंक पूरा नहीं हो सका"
@@ -1507,6 +1498,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "सिक्योरिटी पार्टनर्स ने इस एड्रेस को गलत एक्टिविटी के लिए फ़्लैग कर दिया है।"
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "सिक्योरिटी पार्टनर्स ने इस एड्रेस $1 को गलत एक्टिविटी के लिए फ़्लैग कर दिया है।"
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "सिक्योरिटी पार्टनर्स के पास इस एड्रेस $1 को वेरिफ़ाई करने के लिए काफ़ी भरोसेमंद हिस्ट्री नहीं है।"
+  },
   "alertMessageBurnAddress": {
     "message": "आप अपनी एसेट्स एक बर्न एड्रेस पर भेज रहे हैं। यदि आप जारी रखते हैं, तो आप अपनी एसेट्स खो देंगे।"
   },
@@ -1524,6 +1521,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "नेटवर्क फीस का भुगतान करने के लिए आपके अकाउंट में पर्याप्त $1 नहीं है।"
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "सिक्योरिटी पार्टनर्स ने नेस्टेड ट्रांसेक्शन एड्रेस $1 को गलत एक्टिविटी के लिए फ़्लैग कर दिया है।"
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "सिक्योरिटी पार्टनर्स के पास इस नेस्टेड ट्रांसेक्शन $1 को वेरिफ़ाई करने के लिए काफ़ी भरोसेमंद हिस्ट्री नहीं है।"
   },
   "alertMessageNoGasPrice": {
     "message": "जब तक आप शुल्क को मैन्युअल रूप से अपडेट नहीं करते, हम इस ट्रांसेक्शन को आगे नहीं बढ़ा सकते।"
@@ -1599,6 +1602,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "अनावश्यक अनुमति"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "नेस्टेड एड्रेस को हाई रिस्क के तौर पर फ़्लैग किया गया है"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "नेस्टेड एड्रेस के सीमित सिग्नल"
   },
   "alertReasonNoGasPrice": {
     "message": "शुल्क अनुमान अनुपलब्ध है"
@@ -1919,11 +1928,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask इंटरनेट सेवाओं के ज़रिए टोकन की जानकारी और गैस सेटिंग्स जैसे बुनियादी फ़ीचर्स उपलब्ध कराता है। इंटरनेट सेवाओं का इस्तेमाल करते समय आपका IP एड्रेस MetaMask के साथ शेयर किया जाता है, ठीक वैसे ही जैसे किसी वेबसाइट को खोलते समय होता है। MetaMask इस डेटा को थोड़े समय के लिए इस्तेमाल करता है और इसे कभी बेचता नहीं है। ज़रूरत के मुताबिक VPN का इस्तेमाल किया जा सकता है या इन सेवाओं को बंद किया जा सकता है, लेकिन याद रहे इससे MetaMask के संबंध में आपके अनुभव पर असर पड़ सकता है। ज़्यादा जानकारी के लिए हमारी $1 पढ़ें।",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "इसमें टोकन डिटेल्स और गैस सेटिंग जैसे बेसिक फ़ीचर्स शामिल हैं। सबसे अच्छे अनुभव के लिए इस फ़ीचर को चालू रखें। ज़्यादा जानने के लिए हमारा $1 पढ़ें।",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "बुनियादी सुविधाएं"
@@ -2484,9 +2493,6 @@
   },
   "bridgeSelectDestinationAccount": {
     "message": "एक डेस्टिनेशन अकाउंट चुनें"
-  },
-  "bridgeSelectDifferentQuote": {
-    "message": "कृपया कोई अलग कोटेशन चुनें।"
   },
   "bridgeSelectNetwork": {
     "message": "नेटवर्क चुनें"
@@ -3573,7 +3579,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "एनालिटिक्स सिस्टम सर्वर की समस्या के कारण यह रिक्वेस्ट अभी पूरा नहीं किया जा सकता है, कृपया बाद में फिर से प्रयास करें।"
+    "message": "एनालिटिक्स सिस्टम सर्वर की समस्या के कारण यह रिक्वेस्ट अभी पूरा नहीं किया जा सकता है। बाद में फिर से प्रयास करें।"
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "हम अभी इस डेटा को डिलीट करने में असमर्थ हैं"
@@ -3659,9 +3665,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "इससे आपके सभी अकाउंट्स सभी dapps से डिस्कनेक्ट हो जाएंगे। उनका दोबारा उपयोग करने के लिए आपको उन्हें फिर से कनेक्ट करना होगा।"
-  },
-  "disconnectAllSitesError": {
-    "message": "कुछ dapps डिसकनेक्ट नहीं किए जा सके। कृपया फिर से कोशिश करें।"
   },
   "disconnectAllSitesQuestion": {
     "message": "सभी को डिस्कनेक्ट करें?"
@@ -3883,9 +3886,6 @@
   "enableSmartContractAccountDescription": {
     "message": "तेज़ ट्रांसेक्शन, कम नेटवर्क फीस, और सपोर्टेड नेटवर्क पर अतिरिक्त सुरक्षा अनलॉक करें।"
   },
-  "enableSnap": {
-    "message": "चालू करें"
-  },
   "enableToken": {
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3970,9 +3970,6 @@
   "enter_verification_code_desc": {
     "message": "सुरक्षा के लिए, अपने डिवाइस पर MetaMask ऐप में दिखाया गया कोड दर्ज करें।"
   },
-  "enter_verification_code_error": {
-    "message": "गलत कोड। कृपया फिर से प्रयास करें।"
-  },
   "enter_verification_code_expired": {
     "message": "वेरिफिकेशन कोड एक्सपायर हो गया है"
   },
@@ -3995,9 +3992,6 @@
   "errorCode": {
     "message": "कोड: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "सेफ चेन लिस्ट पाते समय गड़बड़ी हुई, कृपया सावधानी के साथ जारी रखें।"
   },
   "errorLegalTextFirstInfo": {
     "message": "तकनीकी नैदानिक जानकारी।"
@@ -4168,13 +4162,6 @@
   "fileUploaderDescription": {
     "message": "अपलोड करने के लिए क्लिक करें या ड्रैग एंड ड्रॉप करें"
   },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "फ़ाइल टाइप ग़लत है। कृपया सपोर्टेड फ़ाइल फ़ॉर्मेट अपलोड करें।"
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "फ़ाइल का साइज़ $1MB से अधिक है। कृपया छोटी फ़ाइल अपलोड करें।",
-    "description": "$1 is the maximum file size in MB"
-  },
   "flaskWelcomeUninstall": {
     "message": "आपको यह एक्सटेंशन अनइंस्टॉल कर देना चाहिए",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -4201,9 +4188,6 @@
   },
   "floatAmountToken": {
     "message": "टोकन अमाउंट एक पूर्णांक होना चाहिए"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "निषिद्ध IPFS गेटवे: कृपया एक CID गेटवे बताएं"
   },
   "forgetDevice": {
     "message": "इस डिवाइस को भूल जाएं"
@@ -4298,6 +4282,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "इस नेटवर्क के लिए ट्रांसेक्शन के बाद आपके अकाउंट में कम से कम $1 $2 रखना ज़रूरी है। स्मार्ट अकाउंट इस रिज़र्व से नीचे नहीं जा सकते।",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 इस ट्रांसेक्शन के लिए नेटवर्क फ़ीस कवर करता है। इसमें एक बार का स्मार्ट अकाउंट एक्टिवेशन शामिल है।",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
@@ -4425,9 +4413,6 @@
   },
   "general": {
     "message": "सामान्य"
-  },
-  "generalCameraError": {
-    "message": "हम आपके कैमरे को ऐक्सेस नहीं कर पाए। कृपया दोबारा कोशिश करें।"
   },
   "generalCameraErrorTitle": {
     "message": "कुछ गलत हो गया..."
@@ -4623,9 +4608,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "डिवाइस डिटेक्ट किया जा रहा है..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "डिवाइस डिटेक्ट नहीं हुआ। कृपया पिछले स्टेप्स चेक करें और फिर से कोशिश करें।"
   },
   "hardwareWalletRepairLink": {
     "message": "शुरू से रिकनेक्ट करें"
@@ -4885,9 +4867,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
-  },
-  "importTokensError": {
-    "message": "हम टोकनों को इंपोर्ट नहीं कर सके। कृपया बाद में फिर से कोशिश करें।"
   },
   "importWalletSuccess": {
     "message": "वॉलेट $1 को इंपोर्ट किया गया",
@@ -5186,9 +5165,6 @@
   "ledgerConnectionStatusSearchingTitle": {
     "message": "आपका डिवाइस खोज रहा है"
   },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Ledger डिवाइस खोलने में नहीं हो पाया। आपका Ledger अन्य सॉफ्टवेयर से कनेक्ट हो सकता है। कृपया Ledger लाइव या अपने Ledger डिवाइस से जुड़े अन्य ऐप्लिकेशन को बंद करें, और फिर से कनेक्ट करने की कोशिश करें।"
-  },
   "ledgerErrorConnectionIssue": {
     "message": "अपने Ledger को फिर से कनेक्ट करें, ETH ऐप खोलें और फिर से प्रयास करें।"
   },
@@ -5219,15 +5195,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox सपोर्टेड नहीं है"
   },
-  "ledgerLocked": {
-    "message": "Ledger डिवाइस से कनेक्ट नहीं हो सकता। कृपया पक्का करें कि आपका डिवाइस अनलॉक है और Ethereum ऐप खुला है।"
-  },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Ledger डिवाइस कनेक्ट नहीं था। यदि आप अपना Ledger कनेक्ट करना चाहते हैं, तो कृपया 'जारी रखें' पर फिर से क्लिक करें और HID कनेक्शन को एप्रूव करें",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "हल्का"
@@ -5249,9 +5218,6 @@
   },
   "loading": {
     "message": "लोड हो रहा है..."
-  },
-  "loadingScreenSnapMessage": {
-    "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
   },
   "loadingTokenList": {
     "message": "टोकन लिस्ट लोड हो रहा है"
@@ -5297,17 +5263,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "लॉग इन करें"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "जारी रखने के लिए फिर से लॉग इन करें।"
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "सत्र समाप्त हो गया है"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "टेलीग्राम अपडेट करें"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "हम टेलीग्राम से कनेक्ट नहीं कर पाए। ऐसा आमतौर पर तब होता है जब आपका टेलीग्राम ऐप आउट ऑफ़ डेट हो। कृपया टेलीग्राम अपडेट करें और फिर से कोशिश करें।"
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "टेलीग्राम से साइन इन नहीं कर पाए"
@@ -5459,9 +5419,6 @@
   "metamaskSwap": {
     "message": "MetaMask स्वैप"
   },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask स्वैप में रख-रखाव का काम चल रहा है। कृपया बाद में जांचें।"
-  },
   "metamaskVersion": {
     "message": "MetaMask वर्शन"
   },
@@ -5507,8 +5464,14 @@
   "mfaErrorGeneric": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
   },
+  "mfaErrorInvalidCode": {
+    "message": "यह कोड सही नहीं है। दोबारा प्रयास करें"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "आपकी पासकी वेरिफ़ाई नहीं हो सकी। फिर से कोशिश करें।"
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "यह कोड सही नहीं है। दोबारा प्रयास करें"
   },
   "mfaErrorLimitReached": {
     "message": "आप इस तरीके की लिमिट तक पहुँच गए हैं।"
@@ -5537,8 +5500,20 @@
   "mfaFailureClose": {
     "message": "बंद करें"
   },
+  "mfaFailureContactSupport": {
+    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "mfaFailureDone": {
+    "message": "पूरा हुआ"
+  },
   "mfaFailureRetry": {
     "message": "फिर से प्रयास करें"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "जारी रखने के लिए सपोर्ट से संपर्क करें।"
+  },
+  "mfaFailureSupportTitle": {
+    "message": "हम आपके विवरण को वेरिफ़ाई नहीं कर सके"
   },
   "mfaFailureTitle": {
     "message": "कुछ गलत हो गया"
@@ -5615,6 +5590,9 @@
   "mfaOtpTitle": {
     "message": "अपना वेरिफ़िकेशन कोड दर्ज करें"
   },
+  "mfaOtpVerifying": {
+    "message": "कोड वेरिफ़ाई किया जा रहा है"
+  },
   "mfaPasskeyTitleSetup": {
     "message": "एक पासकी बनाएं"
   },
@@ -5642,8 +5620,14 @@
   "mfaSettingsAddedOn": {
     "message": "$1 जोड़ा गया"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "ऑथेंटिकेटर ऐप जोड़ दिया गया"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "ईमेल वेरिफ़िकेशन हटा दिया गया"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "ईमेल वेरिफ़ाई किया गया"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "यह ईमेल इस अकाउंट के लिए सिक्योरिटी का एकमात्र तरीका है। इसे हटाने से पहले दूसरा तरीका जोड़ें।"
@@ -5702,8 +5686,17 @@
   "mfaTotpSetupContinue": {
     "message": "जारी रखें"
   },
+  "mfaTotpSetupCopied": {
+    "message": "सेटअप की कॉपी हो गई"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "अपने ऑथेंटिकेटर ऐप से QR कोड स्कैन करें या सेटअप की दर्ज करें।"
+  },
   "mfaTotpSetupKey": {
     "message": "सेटअप की (key)"
+  },
+  "mfaTotpSetupManual": {
+    "message": "या मैन्युअल रूप से दर्ज करें"
   },
   "mfaTotpSetupQrAlt": {
     "message": "अपने ऑथेंटिकेटर ऐप में MetaMask जोड़ने के लिए QR कोड"
@@ -6370,7 +6363,7 @@
     "message": "शुरू करें"
   },
   "musdEducationHeadline": {
-    "message": "स्टेबलकॉइन्स पर $1% पाएं",
+    "message": "स्टेबलकॉइन्स\nपर $1% पाएं",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6476,10 +6469,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "नेटवर्क का ब्यौरा बदलें"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "मूल टोकन सिंबल, संबंधित चेन ID वाले नेटवर्क के लिए मूल टोकन के अपेक्षित सिंबल से मेल नहीं खाता। आपने $1 डाला है जबकि अपेक्षित टोकन सिंबल $2 है। कृपया वेरीफाई करें कि आप सही चेन से जुड़े हैं।",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "कुछ और",
@@ -7208,6 +7197,10 @@
   },
   "paidByMetaMask": {
     "message": "MetaMask द्वारा भुगतान किया गया"
+  },
+  "paidBySponsor": {
+    "message": "$1 द्वारा भुगतान किया गया",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "के साथ भुगतान किया गया"
@@ -9673,6 +9666,33 @@
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "आपको हाल की ट्रेडिंग एक्टिविटी की वजह से रेफ़र नहीं किया जा सकता।"
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "आप पहले ही किसी अन्य उपयोगकर्ता द्वारा रेफर किए जा चुके हैं।"
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "रेफरल कोड ग़लत है"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "रेफरल कोड"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "आप अपना स्वयं का रेफरल कोड उपयोग नहीं कर सकते।"
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "आपको कोई और रेफ़र नहीं कर सकता।"
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "कुछ गलत हो गया। थोड़ी देर में फिर से कोशिश करें।"
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "बहुत ज़्यादा कोशिशें की गईं। थोड़ा इंतज़ार करें।"
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "क्षेत्र की जांच की जा रही है…"
   },
@@ -9710,24 +9730,6 @@
   "rewardsOnboardingOptInError": {
     "message": "ऑप्ट-इन नहीं हो पाया"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "रेफरल कोड ग़लत है"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "रेफरल कोड (वैकल्पिक)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "कोड छिपाएँ"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "क्या आपके पास रेफ़रल कोड है?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "रिवॉर्ड में शामिल हों"
   },
@@ -9736,10 +9738,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "रिवॉर्ड कमाना शुरू करें"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 पॉइंट",

@@ -1,11 +1,15 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react';
-import browser from 'webextension-polyfill';
 import {
   Box,
+  BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -34,51 +38,6 @@ const getCodeDigits = (text: string) =>
 
 const COOLDOWN_CODES = new Set(['otp_resend_cooldown', 'rate_limited']);
 
-const FOCUS_TIMEOUT_MS = 5000;
-
-/**
- * Waits for the page to get focus back, for a few seconds at most.
- *
- * @returns Resolves once the page has focus; rejects when it did not come back.
- */
-const waitForFocus = (): Promise<void> => {
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-  return new Promise<void>((resolve, reject) => {
-    const onFocus = () => {
-      clearTimeout(timeout);
-      window.removeEventListener('focus', onFocus);
-      resolve();
-    };
-    timeout = setTimeout(() => {
-      window.removeEventListener('focus', onFocus);
-      reject(new Error('The page did not get focus back'));
-    }, FOCUS_TIMEOUT_MS);
-    window.addEventListener('focus', onFocus);
-    // Focus can come back before the listener is added.
-    if (document.hasFocus()) {
-      onFocus();
-    }
-  });
-};
-
-/**
- * Reads the clipboard. Right after the browser's permission prompt the page
- * has no focus and the read fails: it is read again once focus is back.
- *
- * @returns The clipboard's text.
- */
-const readClipboard = async (): Promise<string> => {
-  try {
-    return await navigator.clipboard.readText();
-  } catch (error) {
-    if (document.hasFocus()) {
-      throw error;
-    }
-    await waitForFocus();
-    return navigator.clipboard.readText();
-  }
-};
-
 // The clock is state, as the React Compiler caches what render computes:
 // `Date.now()` read during render would never move. Being up to a second
 // behind never reads 0 for a cooldown that just started, so the auto-send
@@ -104,6 +63,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   // resent.
   const isTotp = step.method === 'totp';
   const isCoolingDown = secondsLeft > 0;
+  // Every OTP method uses this shared screen, so future phone/SMS codes get
+  // the same progress state as email and authenticator app codes.
+  const isVerifying = busy && codeSent && code.length === CODE_LENGTH;
 
   const [clearedFor, setClearedFor] = useState({ error, codeResent });
   if (clearedFor.error !== error || clearedFor.codeResent !== codeResent) {
@@ -153,23 +115,6 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     setCode(getCodeDigits(text));
   };
 
-  // Reading the clipboard needs the optional `clipboardRead` permission, and
-  // focus on this page (see srp-input-import).
-  const paste = async () => {
-    try {
-      if (
-        !(await browser.permissions.request({ permissions: ['clipboardRead'] }))
-      ) {
-        return;
-      }
-      window.focus();
-      inputRef.current?.focus();
-      handleChange(await readClipboard());
-    } catch {
-      // Nothing to paste: the user can still type or paste in the boxes.
-    }
-  };
-
   // An email cooldown with a wait time shows as the countdown on the resend
   // button, also once it ended. Authenticator app errors always show.
   const showError =
@@ -213,22 +158,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
           ? t('mfaOtpRetryIn', [String(secondsLeft)])
           : t('mfaOtpRetry')}
       </Button>
-    ) : (
-      <Button
-        variant={ButtonVariant.Primary}
-        size={ButtonSize.Lg}
-        isFullWidth
-        // A complete code is submitted as it is typed; this shows the
-        // verification starting or the code being checked, or submits it again
-        // after an error.
-        isLoading={busy}
-        isDisabled={!codeSent || code.length < CODE_LENGTH}
-        onClick={() => onAction({ type: 'submitCode', code })}
-        data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
-      >
-        {t('mfaOtpVerify')}
-      </Button>
-    );
+    ) : null;
 
   return (
     <StepLayout
@@ -255,17 +185,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         )
       }
     >
-      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-        <Button
-          variant={ButtonVariant.Tertiary}
-          // The hover pill keeps its padding; the margin lines the text up
-          // with the last box.
-          className="self-end -mr-4"
-          onClick={paste}
-          data-testid={MfaFlowTestIds.PASTE_BUTTON}
-        >
-          {t('mfaOtpPaste')}
-        </Button>
+      <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingTop={2}>
         {/* One input for typing, pasting and one-time-code autofill, over
             the six boxes that show the code. */}
         <Box className="relative">
@@ -303,6 +223,26 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             data-testid={MfaFlowTestIds.CODE_INPUT}
           />
         </Box>
+        {isVerifying ? (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            gap={2}
+            paddingTop={2}
+            role="status"
+            aria-label={t('mfaOtpVerifying')}
+            data-testid={MfaFlowTestIds.VERIFYING_INDICATOR}
+          >
+            <Icon
+              name={IconName.Loading}
+              size={IconSize.Sm}
+              className="animate-spin"
+              aria-hidden
+            />
+            <Text variant={TextVariant.BodySm}>{t('mfaOtpVerifying')}</Text>
+          </Box>
+        ) : null}
         {showError && error ? (
           <StepError code={error} method={step.method} />
         ) : null}

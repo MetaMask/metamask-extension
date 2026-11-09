@@ -890,7 +890,7 @@ export enum FontWeight {
 export enum FontFamily {
   Default = 'default', // Inter
   Accent = 'accent', // MMSans
-  Hero = 'hero', // MMPoly
+  Hero = 'hero', // Grotzec Cond
 }
 
 /**

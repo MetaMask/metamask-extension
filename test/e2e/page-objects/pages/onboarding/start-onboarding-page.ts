@@ -61,9 +61,9 @@ class StartOnboardingPage {
 
   private readonly page = '[data-testid="parent-selector-onboarding-welcome"]';
 
-  private readonly privacyNoticeUrl = 'https://consensys.io/privacy-notice';
+  private readonly privacyNoticeUrl = 'https://metamask.com/privacy-notice';
 
-  private readonly termsOfUseUrl = 'https://consensys.io/terms-of-use';
+  private readonly termsOfUseUrl = 'https://metamask.com/terms-of-use';
 
   constructor(driver: Driver) {
     this.driver = driver;

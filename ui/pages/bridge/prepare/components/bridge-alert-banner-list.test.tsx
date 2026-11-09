@@ -63,9 +63,8 @@ jest.mock(
 );
 
 setBackgroundConnection({
-  resetState: async () => jest.fn(),
+  messengerCall: jest.fn().mockResolvedValue(undefined),
   getStatePatches: async () => jest.fn(),
-  updateBridgeQuoteRequestParams: async () => jest.fn(),
 } as never);
 
 describe('BridgeAlertBannerList', () => {
