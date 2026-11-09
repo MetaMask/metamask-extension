@@ -118,12 +118,10 @@ describe('Text', () => {
     const { getByText } = render(
       <>
         <Text fontFamily={FontFamily.Default}>default</Text>
-        <Text fontFamily={FontFamily.Accent}>accent</Text>
         <Text fontFamily={FontFamily.Hero}>hero</Text>
       </>,
     );
     expect(getByText('default')).toHaveClass('mm-text--font-family-default');
-    expect(getByText('accent')).toHaveClass('mm-text--font-family-accent');
     expect(getByText('hero')).toHaveClass('mm-text--font-family-hero');
   });
 

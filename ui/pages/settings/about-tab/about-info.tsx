@@ -33,7 +33,7 @@ export default function AboutInfo(): React.ReactElement {
   const version = process.env.METAMASK_VERSION ?? '';
 
   function renderInfoLinks(): React.ReactElement {
-    const privacyUrl = 'https://metamask.io/privacy.html';
+    const privacyUrl = 'https://metamask.com/privacy.html';
     const siteUrl = 'https://metamask.io/';
 
     const linkProps = {
@@ -64,7 +64,7 @@ export default function AboutInfo(): React.ReactElement {
         <Box {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a
-              href="https://metamask.io/terms.html"
+              href="https://metamask.com/terms.html"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -76,7 +76,7 @@ export default function AboutInfo(): React.ReactElement {
           <Box {...linkItemProps}>
             <TextButton asChild {...linkProps}>
               <a
-                href="https://metamask.io/beta-terms"
+                href="https://metamask.com/beta-terms"
                 target="_blank"
                 rel="noopener noreferrer"
               >

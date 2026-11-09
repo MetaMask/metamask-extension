@@ -62,7 +62,6 @@ const excludedTransactionTypes: TransactionType[] = [
 
 // Ported from custom toasts that included pre-broadcast (approved/signed) stage
 const earlyPendingToastTypes = new Set([
-  TransactionType.musdConversion,
   TransactionType.musdClaim,
   TransactionType.perpsDeposit,
 ]);

@@ -7,9 +7,6 @@
     "message": "Η φόρτωση διαρκεί περισσότερο από το συνηθισμένο.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "Δεν υπάρχουν άλλοι λογαριασμοί. Αν θέλετε να αποκτήσετε πρόσβαση σε έναν άλλο λογαριασμό που δεν περιλαμβάνεται στην παρακάτω λίστα, παρακαλούμε συνδέστε ξανά το πορτοφόλι υλικού σας και επιλέξτε το."
-  },
   "QRHardwareScanInstructions": {
     "message": "Τοποθετήστε τον κωδικό QR μπροστά από την κάμερα. Η οθόνη είναι θολή, αλλά δεν θα επηρεάσει την ανάγνωση."
   },
@@ -1263,17 +1260,11 @@
   "add_device_error_expired": {
     "message": "Η συνεδρία συγχρονισμού έληξε. Ξεκινήστε ξανά για να δημιουργήσετε έναν νέο κωδικό QR."
   },
-  "add_device_error_generic": {
-    "message": "Παρουσιάστηκε πρόβλημα κατά τον συγχρονισμό με το τηλέφωνό σας. Προσπαθήστε ξανά."
-  },
   "add_device_error_invalid_code": {
     "message": "Ο κωδικός επαλήθευσης ήταν λανθασμένος. Ξεκινήστε ξανά για να προσπαθήσετε να συγχρονίσετε το τηλέφωνό σας."
   },
   "add_device_error_rejected": {
     "message": "Ο συγχρονισμός ακυρώθηκε στο τηλέφωνό σας. Ξεκινήστε ξανά για να προσπαθήσετε να συγχρονίσετε."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Δεν μπορέσαμε να ολοκληρώσουμε τον συγχρονισμό των λογαριασμών σας με το τηλέφωνό σας. Προσπαθήστε ξανά."
   },
   "add_device_error_title": {
     "message": "Ο συγχρονισμός δεν ολοκληρώθηκε"
@@ -1507,6 +1498,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Οι τεχνικοί σύμβουλοι ασφαλείας έχουν επισημάνει αυτήν τη διεύθυνση για κακόβουλη δραστηριότητα."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας έχουν επισημάνει τη διεύθυνση $1 για κακόβουλη δραστηριότητα."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας δεν διαθέτουν επαρκές αξιόπιστο ιστορικό για να επαληθεύσουν τη διεύθυνση $1."
+  },
   "alertMessageBurnAddress": {
     "message": "Στέλνετε τα περιουσιακά σας στοιχεία σε διεύθυνση καύσης. Αν συνεχίσετε, θα τα χάσετε."
   },
@@ -1524,6 +1521,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας έχουν επισημάνει μια διεύθυνση ($1) που περιλαμβάνεται σε αυτή τη σύνθετη συναλλαγή για κακόβουλη δραστηριότητα."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας δεν διαθέτουν επαρκές αξιόπιστο ιστορικό για να επαληθεύσουν τη διεύθυνση $1 που περιλαμβάνεται σε αυτή τη σύνθετη συναλλαγή."
   },
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
@@ -1599,6 +1602,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Μη αναγκαία άδεια"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "Η ενσωματωμένη διεύθυνση επισημάνθηκε ως υψηλού κινδύνου"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Ανεπαρκείς πληροφορίες για την ενσωματωμένη διεύθυνση"
   },
   "alertReasonNoGasPrice": {
     "message": "Δεν είναι διαθέσιμη η εκτίμηση των τελών"
@@ -2485,9 +2494,6 @@
   "bridgeSelectDestinationAccount": {
     "message": "Επιλέξτε λογαριασμό προορισμού"
   },
-  "bridgeSelectDifferentQuote": {
-    "message": "Επιλέξτε άλλη προσφορά."
-  },
   "bridgeSelectNetwork": {
     "message": "Επιλέξτε δίκτυο"
   },
@@ -3124,9 +3130,6 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση συμβολαίου"
   },
-  "convertAgain": {
-    "message": "Μετατροπή ξανά"
-  },
   "convertTokenToNFTDescription": {
     "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο είναι NFT. Το MetaMask υποστηρίζει πλέον εξ'ορισμού πλήρως τα NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας και να το προσθέσετε ως NFT;"
   },
@@ -3573,7 +3576,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Αυτό το αίτημα δεν μπορεί να ολοκληρωθεί αυτή τη στιγμή λόγω προβλήματος του διακομιστή του συστήματος ανάλυσης, παρακαλούμε προσπαθήστε ξανά αργότερα."
+    "message": "Δεν είναι δυνατή η ολοκλήρωση του αιτήματος αυτήν τη στιγμή λόγω προβλήματος στον διακομιστή του συστήματος αναλυτικών στοιχείων. Προσπαθήστε ξανά αργότερα."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Δεν μπορούμε να διαγράψουμε αυτά τα δεδομένα προς το παρόν"
@@ -3659,9 +3662,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "Αυτό θα αποσυνδέσει όλους τους λογαριασμούς σας από όλες τις αποκεντρωμένες εφαρμογές. Θα πρέπει να συνδεθείτε ξανά για να τις χρησιμοποιήσετε."
-  },
-  "disconnectAllSitesError": {
-    "message": "Ορισμένες αποκεντρωμένες εφαρμογές (dapps) δεν ήταν δυνατό να αποσυνδεθούν. Παρακαλώ δοκιμάστε ξανά."
   },
   "disconnectAllSitesQuestion": {
     "message": "Αποσύνδεση όλων των?"
@@ -3967,9 +3967,6 @@
   "enter_verification_code_desc": {
     "message": "Για λόγους ασφαλείας, εισάγετε τον κωδικό που εμφανίζεται στην εφαρμογή MetaMask στη συσκευή σας."
   },
-  "enter_verification_code_error": {
-    "message": "Λανθασμένος κωδικός. Προσπαθήστε ξανά."
-  },
   "enter_verification_code_expired": {
     "message": "Ο κωδικός επαλήθευσης έληξε"
   },
@@ -3992,9 +3989,6 @@
   "errorCode": {
     "message": "Κωδικός: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Σφάλμα κατά τη λήψη της λίστας ασφαλών αλυσίδων, συνεχίστε με προσοχή."
   },
   "errorLegalTextFirstInfo": {
     "message": "Τεχνικές διαγνωστικές πληροφορίες."
@@ -4165,13 +4159,6 @@
   "fileUploaderDescription": {
     "message": "Κάντε κλικ για μεταφόρτωση ή σύρετε και αφήστε"
   },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "Μη έγκυρος τύπος αρχείου. Παρακαλώ ανεβάστε ένα υποστηριζόμενο μορφότυπο αρχείου."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "Το μέγεθος του αρχείου υπερβαίνει τα $1MB. Παρακαλούμε ανεβάστε ένα μικρότερο αρχείο.",
-    "description": "$1 is the maximum file size in MB"
-  },
   "flaskWelcomeUninstall": {
     "message": "θα πρέπει να απεγκαταστήσετε αυτήν την επέκταση",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -4198,9 +4185,6 @@
   },
   "floatAmountToken": {
     "message": "Η ποσότητα των Τokens πρέπει να είναι ακέραιος αριθμός"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "Απαγορευμένη πύλη IPFS: Παρακαλώ καθορίστε μια πύλη CID"
   },
   "forgetDevice": {
     "message": "Αγνοήστε αυτή τη συσκευή"
@@ -4427,9 +4411,6 @@
   "general": {
     "message": "Γενικά"
   },
-  "generalCameraError": {
-    "message": "Δεν μπορέσαμε να έχουμε πρόσβαση στην κάμερά σας. Προσπαθήστε ξανά."
-  },
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
   },
@@ -4624,9 +4605,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "Εντοπισμός συσκευής..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Η συσκευή δεν εντοπίστηκε. Ελέγξτε τα προηγούμενα βήματα και προσπαθήστε ξανά."
   },
   "hardwareWalletRepairLink": {
     "message": "Επαναλάβετε τη διαδικασία σύνδεσης από την αρχή"
@@ -4887,9 +4865,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
   },
-  "importTokensError": {
-    "message": "Δεν μπορέσαμε να εισάγουμε τα tokens. Προσπαθήστε ξανά αργότερα."
-  },
   "importWalletSuccess": {
     "message": "Έγινε εισαγωγή του πορτοφολιού $1",
     "description": "$1 is the index of the secret recovery phrase"
@@ -5140,7 +5115,7 @@
     "message": "Βεβαιωθείτε ότι το Ledger είναι συνδεδεμένο και επιλέξτε την εφαρμογή Ethereum."
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Ανοίξτε την εφαρμογή στη συσκευή Ledger για να συνεχίσετε"
+    "message": "Ανοίξτε την στη συσκευή Ledger σας για να συνεχίσετε"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "Η εφαρμογή Ethereum είναι κλειστή"
@@ -5149,7 +5124,7 @@
     "message": "Βρέθηκε η συσκευή Ledger"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Ξεκλειδώστε τη συσκευή Ledger για να συνεχίσετε"
+    "message": "Ξεκλειδώστε τη συσκευή Ledger σας για να συνεχίσετε"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Το Ledger είναι κλειδωμένο"
@@ -5170,7 +5145,7 @@
     "message": "Η συσκευή δεν βρέθηκε"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Αποσυνδέστε και συνδέστε ξανά τη συσκευή σας"
+    "message": "Αποσυνδέστε τη συσκευή σας και συνδέστε την ξανά"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Η συσκευή Ledger δεν ανταποκρίνεται"
@@ -5186,9 +5161,6 @@
   },
   "ledgerConnectionStatusSearchingTitle": {
     "message": "Αναζήτηση της συσκευής σας"
-  },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Η συσκευή Ledger απέτυχε να ανοίξει. Το Ledger σας μπορεί να είναι συνδεδεμένο με άλλο λογισμικό. Παρακαλούμε κλείστε το Ledger Live ή άλλες εφαρμογές που είναι συνδεδεμένες με τη συσκευή Ledger και προσπαθήστε να συνδεθείτε ξανά."
   },
   "ledgerErrorConnectionIssue": {
     "message": "Επανασυνδέστε το Ledger σας, ανοίξτε την εφαρμογή ETH και δοκιμάστε ξανά."
@@ -5220,15 +5192,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Το Firefox δεν υποστηρίζεται"
   },
-  "ledgerLocked": {
-    "message": "Δεν είναι δυνατή η σύνδεση με τη συσκευή Ledger. Βεβαιωθείτε ότι η συσκευή σας είναι ξεκλειδωμένη και ότι η εφαρμογή Ethereum είναι ανοιχτή."
-  },
   "ledgerTimeout": {
     "message": "Το Ledger Live χρειάζεται πολύ χρόνο για να ανταποκριθεί ή η σύνδεση έχει διακοπεί. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοιχτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Η συσκευή Ledger δεν συνδέθηκε. Εάν επιθυμείτε να συνδέσετε το Ledger σας, κάντε ξανά κλικ στο 'Συνέχεια' και εγκρίνετε τη σύνδεση HID.",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "Ανοιχτόχρωμο"
@@ -5295,17 +5260,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "Σύνδεση"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Συνδεθείτε ξανά για να συνεχίσετε."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Η συνεδρία έχει λήξει"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Ενημέρωση του Telegram"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Δεν μπορέσαμε να συνδεθούμε στο Telegram. Αυτό συνήθως συμβαίνει όταν η εφαρμογή Telegram δεν είναι ενημερωμένη. Ενημερώστε το Telegram και προσπαθήστε ξανά."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Δεν ήταν δυνατή η σύνδεση στο Telegram"
@@ -5457,9 +5416,6 @@
   "metamaskSwap": {
     "message": "MetaMask Swap"
   },
-  "metamaskSwapsOfflineDescription": {
-    "message": "Το MetaMask Swaps βρίσκεται υπό συντήρηση. Προσπαθήστε ξανά αργότερα."
-  },
   "metamaskVersion": {
     "message": "Έκδοση του MetaMask"
   },
@@ -5505,8 +5461,14 @@
   "mfaErrorGeneric": {
     "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
   },
+  "mfaErrorInvalidCode": {
+    "message": "Ο κωδικός δεν είναι σωστός. Προσπαθήστε ξανά"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "Δεν ήταν δυνατή η επαλήθευση του κλειδιού πρόσβασης. Προσπαθήστε ξανά."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "Ο κωδικός δεν είναι σωστός. Προσπαθήστε ξανά"
   },
   "mfaErrorLimitReached": {
     "message": "Έχετε φτάσει το όριο για αυτή τη μέθοδο."
@@ -5543,6 +5505,12 @@
   },
   "mfaFailureRetry": {
     "message": "Προσπαθήστε ξανά"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Επικοινωνήστε με την υποστήριξη για να συνεχίσετε."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "Δεν μπορέσαμε να επαληθεύσουμε τα στοιχεία σας"
   },
   "mfaFailureTitle": {
     "message": "Κάτι πήγε στραβά"
@@ -5649,8 +5617,14 @@
   "mfaSettingsAddedOn": {
     "message": "Προστέθηκε στις $1"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Προστέθηκε εφαρμογή ελέγχου ταυτότητας"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "Η διαδικασία επαλήθευσης μέσω email καταργήθηκε"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "Επαληθεύτηκε η διεύθυνση email"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "Αυτό το email είναι η μοναδική μέθοδος ασφαλείας για αυτόν τον λογαριασμό. Προσθέστε μια άλλη μέθοδο πριν το αφαιρέσετε."
@@ -5709,8 +5683,17 @@
   "mfaTotpSetupContinue": {
     "message": "Συνεχίστε"
   },
+  "mfaTotpSetupCopied": {
+    "message": "Αντιγράφηκε το κλειδί ρύθμισης"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Σαρώστε τον κωδικό QR με την εφαρμογή ελέγχου ταυτότητας ή πληκτρολογήστε το κλειδί ρύθμισης."
+  },
   "mfaTotpSetupKey": {
     "message": "Κλειδί ρύθμισης"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Ή πληκτρολογήστε το χειροκίνητα"
   },
   "mfaTotpSetupQrAlt": {
     "message": "Κωδικός QR για την προσθήκη του MetaMask στην εφαρμογή ελέγχου ταυτότητας"
@@ -6357,19 +6340,6 @@
     "message": "Έγινε μετατροπή σε mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Η μετατροπή σε mUSD απέτυχε"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Μετατροπή $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Η μετατροπή σε mUSD ολοκληρώθηκε με επιτυχία"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Το μπόνους θα είναι διαθέσιμο για εξαργύρωση μέσα σε μία ημέρα."
-  },
   "musdConvert": {
     "message": "Μετατροπή"
   },
@@ -6377,7 +6347,7 @@
     "message": "Ξεκινήστε"
   },
   "musdEducationHeadline": {
-    "message": "Κερδίστε $1% στα \nstablecoins",
+    "message": "Κερδίστε $1% σε\nstablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6483,10 +6453,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "Επεξεργασία λεπτομερειών δικτύου"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "Το σύμβολο του εγγενούς token δεν ταιριάζει με το αναμενόμενο σύμβολο του εγγενούς token για το δίκτυο με το σχετικό αναγνωριστικό αλυσίδας. Έχετε εισαγάγει $1 ενώ το αναμενόμενο σύμβολο του token είναι $2. Επαληθεύστε ότι έχετε συνδεθεί στη σωστή αλυσίδα.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "κάτι άλλο",
@@ -7215,6 +7181,10 @@
   },
   "paidByMetaMask": {
     "message": "Πληρωμή μέσω MetaMask"
+  },
+  "paidBySponsor": {
+    "message": "Πληρώνεται από το $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "Πληρώθηκε με"
@@ -8461,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "επικοινωνήστε με την υποστήριξη",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Ορισμένες υπηρεσίες είναι προσωρινά μη διαθέσιμες. $1, ή $2.",
@@ -8469,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Δείτε τις επιλογές σας στις Συχνές Ερωτήσεις",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Αντιμετωπίζουμε διακοπή λειτουργίας",

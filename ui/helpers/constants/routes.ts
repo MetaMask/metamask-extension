@@ -227,6 +227,7 @@ export const MONEY_HOW_IT_WORKS_ROUTE = '/money-home/how-it-works';
 export const MONEY_TRANSACTION_DETAILS_ROUTE =
   '/money-home/activity/:transactionId';
 export const MONEY_EARN_ROUTE = '/money-home/earn';
+export const MONEY_DEPOSIT_ROUTE = '/money-home/deposit';
 
 /**
  * Builds the Money transaction details path for a given activity item id.

@@ -497,6 +497,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'addReferralDeclinedAccount',
   'removeReferralDeclinedAccount',
   'setAccountsReferralApproved',
+  'dismissSidePanelMigrationToast',
 ] as const;
 
 export class PreferencesController extends BaseController<

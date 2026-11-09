@@ -11,6 +11,7 @@ import {
 } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { useFullScreenDesign } from '../../hooks/useFullScreenDesign';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
 import {
@@ -40,6 +41,7 @@ const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
 const mockUseUpgradeMoneyAccount = jest.fn();
+const mockUseOpenMoneyFtueOnFirstVisit = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -139,6 +141,10 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
 jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
   useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
 }));
+jest.mock('../../hooks/money/use-open-money-ftue-on-first-visit', () => ({
+  useOpenMoneyFtueOnFirstVisit: (options: unknown) =>
+    mockUseOpenMoneyFtueOnFirstVisit(options),
+}));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
   useMoneyActivityItemClick: (options: unknown) =>
@@ -149,6 +155,10 @@ jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
   useMoneyAnalytics: jest.fn(),
 }));
 const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+jest.mock('../../hooks/useFullScreenDesign', () => ({
+  useFullScreenDesign: jest.fn(),
+}));
+const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 jest.mock('./components/money-transfer-sheet', () => ({
   MoneyTransferSheet: ({
     isOpen,
@@ -173,6 +183,7 @@ jest.mock('../../helpers/money/report-money-error', () => ({
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseFullScreenDesign.mockReturnValue(false);
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
     mockGetPrivacyMode.mockReturnValue(false);
@@ -291,6 +302,15 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
+  });
+
+  it('passes availability to the FTUE auto-open hook', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: true,
+      isLoading: false,
+    });
   });
 
   it('keeps groundwork actions other than the transfer entry points inert', () => {
@@ -1438,5 +1458,53 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-potential-earnings-projection-trigger'),
     ).toHaveTextContent('+$0.50');
+  });
+
+  describe('fullscreen design', () => {
+    it('keeps the centred, stacked layout when the fullscreen design is off', () => {
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(screen.getByTestId('money-balance').parentElement).toHaveClass(
+        'sm:items-center',
+      );
+      expect(screen.getByTestId('money-add-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-send-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-fund-card')).toHaveClass(
+        'flex-col',
+        'max-w-[389px]',
+      );
+    });
+
+    it('left-aligns the balance and uses plain action buttons when fullscreen design is on', () => {
+      mockUseFullScreenDesign.mockReturnValue(true);
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      const balanceColumn = screen.getByTestId('money-balance').parentElement;
+      expect(balanceColumn).not.toHaveClass('sm:items-center');
+      expect(balanceColumn).not.toHaveClass('max-w-[784px]');
+      expect(screen.getByTestId('money-add-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+      expect(screen.getByTestId('money-send-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+    });
+
+    it('lays the fund card out in a full-width row when fullscreen design is on', () => {
+      mockUseFullScreenDesign.mockReturnValue(true);
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      const card = screen.getByTestId('money-fund-card');
+      expect(card).toHaveClass('flex-row', 'w-full');
+      expect(card).not.toHaveClass('max-w-[389px]');
+    });
   });
 });
