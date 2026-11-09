@@ -26,8 +26,7 @@ type CapturedTxn = { transaction: string; traceId: string };
 const captured: CapturedTxn[] = [];
 
 /**
- * Extract `{ transaction, trace_id }` from a Sentry envelope body (newline-
- * delimited JSON; transaction payloads carry `contexts.trace.trace_id`).
+ * Extract `{ transaction, traceId }` from a Sentry envelope (NDJSON).
  *
  * @param body - Raw envelope POST body.
  */
@@ -74,13 +73,8 @@ async function captureSentryTransactions(mockServer: Mockttp) {
 
 describe('Sentry sync trace-root evidence (#43929)', function () {
   it('roots account-sync and contact-sync full ops in their own trace ids', async function () {
-    // Local evidence-capture harness, not a CI regression test: the sync
-    // timing depends on the identity mock round-trips and envelope flush
-    // windows, and the regression falsifiers for this PR live in the unit
-    // suites (`shared/lib/trace.test.ts`,
-    // `account-tree-controller-init.test.ts`,
-    // `user-storage-controller-init.test.ts`). Run locally per the PR's
-    // Validation Run instructions to reproduce the captured evidence log.
+    // Evidence capture, not a regression test: sync timing depends on mocked
+    // identity round-trips and envelope flushes, so CI skips it.
     if (process.env.CI) {
       this.skip();
     }
@@ -96,10 +90,8 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
       return captureSentryTransactions(server);
     };
 
-    // Phase 1: add a second account so mocked user storage differs from a
-    // fresh wallet's local state. `Multichain Account Syncing - Full` is only
-    // emitted when the full sync actually mutates local state
-    // (mutationTracker.hasOccurred()), so an in-sync wallet emits nothing.
+    // Phase 1: make mocked user storage differ from a fresh wallet, since the
+    // account full sync emits its trace only when it mutates local state.
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -133,11 +125,8 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
         await waitUntilSyncedAccountsNumberEquals(2);
         await waitUntilEventsEmittedNumberEquals(1);
 
-        // Rename the new account so mocked user storage carries a custom
-        // name. Wallet alignment in phase 2 pre-creates the second group
-        // with a DEFAULT name, so a default-named remote group makes the
-        // full sync a no-op (no mutation, no trace); the custom name forces
-        // a remote -> local metadata pull.
+        // A custom name makes phase 2's full sync pull remote metadata; with a
+        // default name it is a no-op and emits no trace.
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
         });
@@ -150,13 +139,8 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
       },
     );
 
-    // Phase 2: onboard from scratch against the same mocked user storage.
-    // The FIRST full sync of a fresh wallet creates the second group and
-    // pulls its custom name INSIDE the full-sync run (remote -> local
-    // mutations), which emits the rooted `Multichain Account Syncing - Full`
-    // trace. (On a mere relock/reboot the untraced atomic single-group sync
-    // pulls the changes first and the full sync no-ops, emitting nothing.)
-    // Contact syncing dispatches alongside it.
+    // Phase 2: onboard a fresh wallet against the same storage, so its first
+    // full sync, not the untraced single-group sync, pulls the renamed group.
     captured.length = 0;
 
     await withFixtures(
@@ -213,16 +197,9 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
             .map((t) => t.traceId),
         );
         const sharingSw = syncOps.filter((t) => swIds.has(t.traceId)).length;
-        // Ambient collapse is broader than the SW pageload alone: pre-fix,
-        // a sync op glues onto WHICHEVER trace is ambient in its process at
-        // that moment (an SW-session mega-trace full of background ops, or a
-        // UI-startup trace) — and that host trace's own pageload transaction
-        // may not be captured in the window. So assert against sharing with
-        // ANY other captured transaction, not just `/service-worker.js` —
-        // EXCEPT the sync cycle's own nested child ops (contact-sync save
-        // batch / update remote / delete remote, account save), which are
-        // EXPECTED to reuse the full-sync root's trace id: that is the
-        // correct per-cycle hierarchy, not ambient collapse.
+        // Compare against every other captured transaction, since the host
+        // trace's pageload may fall outside the capture window. Ops nested in
+        // a sync are expected to share its trace id.
         const SYNC_CHILD_OPS = new Set([
           'Contact Sync Save Batch',
           'Contact Sync Update Remote',
@@ -248,22 +225,9 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
         console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
         console.log(`EVIDENCE-ALL ${JSON.stringify(captured)}`);
 
-        // The PR's claim: each sync entry op (`Multichain Account Syncing -
-        // Full`, `Contact Sync Full`) roots its OWN trace via `startNewTrace`
-        // instead of accumulating into the SW `/service-worker.js` pageload
-        // mega-trace. Assert full pairwise distinctness — ids X, X, Y must
-        // fail — and that no sync op sits on the SW pageload trace.
-        //
-        // `Multichain Account Syncing - Full` is assert-if-present: the
-        // controller only emits it when the FULL sync run itself mutates
-        // state (`mutationTracker.hasOccurred()` in
-        // `BackupAndSyncService#performFullSyncInner`), and in this harness
-        // the untraced atomic single-group/wallet sync queue consumes the
-        // remote changes first, so the full sync usually no-ops. The rooting
-        // boundary for that name is pinned by the unit falsifier in
-        // `account-tree-controller-init.test.ts`; the shared `root: true` ->
-        // `startNewTrace` mechanism it feeds is what this spec live-proves
-        // via `Contact Sync Full`.
+        // Every sync op needs its own trace id, off the SW pageload trace. The
+        // account full sync is asserted only if present: the controller emits
+        // it only when the full sync mutates state, which this flow rarely does.
         assert.ok(
           contactSyncOps.length >= 1,
           `expected at least 1 '${CONTACT_SYNC_FULL}' op, got 0: ${JSON.stringify(captured)}`,
