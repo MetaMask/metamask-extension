@@ -117,6 +117,7 @@ export const AccountOverviewTabs = ({
     <>
       <Tabs<AccountOverviewTab>
         animated
+        hasTabEndSlot
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{

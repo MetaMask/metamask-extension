@@ -32,6 +32,7 @@ import {
 } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 import { sortAssets } from '../../util/sort';
+import { TabControls } from '../../../../ui/tabs';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state/nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
@@ -88,12 +89,12 @@ export default function NftsTab({
 
   return (
     <>
-      <div className="overview-tab-controls">
+      <TabControls>
         <AssetListControlBar
           showSortControl={false}
           data-testid="parent-selector-nfts-tab"
         />
-      </div>
+      </TabControls>
 
       <Box className="nfts-tab">
         {useExternalServices ? (

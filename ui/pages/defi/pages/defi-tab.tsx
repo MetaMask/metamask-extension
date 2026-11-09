@@ -4,6 +4,7 @@ import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller
 import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { AssetListProps } from '../../../components/app/assets/asset-list/asset-list';
 import AssetListControlBar from '../../../components/app/assets/asset-list/asset-list-control-bar';
+import { TabControls } from '../../../components/ui/tabs';
 import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import DefiList from '../../../components/app/assets/defi-list/defi-list';
@@ -37,14 +38,14 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
 
   return (
     <>
-      <div className="overview-tab-controls">
+      <TabControls>
         <AssetListControlBar
           showImportTokenButton={false}
           showSortControl={!isEmpty}
           onRefresh={handleRefresh}
           data-testid="parent-selector-defi-tab"
         />
-      </div>
+      </TabControls>
       <DefiListV2 items={listItems} onClick={onClickAsset} />
     </>
   );
@@ -64,13 +65,13 @@ function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
 
   return (
     <>
-      <div className="overview-tab-controls">
+      <TabControls>
         <AssetListControlBar
           showImportTokenButton={false}
           showSortControl={!isEmpty}
           data-testid="parent-selector-defi-tab"
         />
-      </div>
+      </TabControls>
       <DefiList items={positions} onClick={onClickAsset} />
     </>
   );

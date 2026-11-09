@@ -15,6 +15,7 @@ import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
 import { NetworkPillSelector } from '../../../multichain/network-pill-selector/network-pill-selector';
 import { TokenTable } from '../token-table/token-table';
+import { TabControls } from '../../../ui/tabs';
 import AssetListControlBar from './asset-list-control-bar';
 
 export type AssetListVariant = 'list' | 'table';
@@ -96,12 +97,12 @@ const AssetList = ({
 
   return (
     <>
-      <div className="overview-tab-controls">
+      <TabControls>
         <AssetListControlBar
           showTokensLinks={shouldShowTokensLinks}
           data-testid="parent-selector-tokens-tab"
         />
-      </div>
+      </TabControls>
       <TokenListContainer
         onClickAsset={onClickAsset}
         safeChains={safeChains}
