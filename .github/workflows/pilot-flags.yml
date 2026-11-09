@@ -21,7 +21,7 @@ env:
   DONOR_RUN: '42666092993'
   DONOR_VERSION: 13.58.0
   DONOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
-  BROWSER_LOADS: '5'
+  BROWSER_LOADS: '10'
 
 jobs:
   flags:
@@ -31,10 +31,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-26.04]
-        group: [0, 1, 2]
-        shard: [1, 2, 3]
+        group: [0]
+        shard: [1, 2, 3, 4, 5, 6]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 50
+    timeout-minutes: 65
     env:
       SELENIUM_BROWSER: chrome
       SELENIUM_HEADLESS: true
@@ -69,7 +69,7 @@ jobs:
           unzip -q donor.zip -d dist/chrome
 
       - name: Run the arms in rotated order
-        timeout-minutes: 45
+        timeout-minutes: 60
         env:
           SHARD: ${{ matrix.shard }}
           GROUP: ${{ matrix.group }}
@@ -77,27 +77,26 @@ jobs:
         run: |
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
-          # Forced GC on and off (nogc) for Chrome 126 and one test version per group,
+          # Forced GC on and off (nogc) for Chrome 126 and 142 on the power-user preset,
           # all with the jsvis workaround.
-          versions=(128 141 142)
+          versions=(142)
           v=${versions[$GROUP]}
           arms=("base126=jsvis" "base126nogc=jsvis,nogc" "chrome${v}=v${v},jsvis" "chrome${v}nogc=v${v},jsvis,nogc")
           n=${#arms[@]}
           mkdir -p test-artifacts/benchmarks
           for (( i = 0; i < n; i++ )); do
-            # shard 1 forward from the start, shard 2 reversed, shard 3 forward from the middle
-            if (( SHARD == 2 )); then idx=$(( (n - 1 - i) % n ));
-            elif (( SHARD == 3 )); then idx=$(( (n / 2 + i) % n ));
-            else idx=$i; fi
+            # rotate the start by shard and reverse on even shards
+            if (( SHARD % 2 == 0 )); then idx=$(( ((SHARD / 2) % n - i + n) % n ));
+            else idx=$(( (SHARD / 2 + i) % n )); fi
             name="${arms[$idx]%%=*}"
             tokens="${arms[$idx]#*=}"
             [[ "$tokens" == none ]] && tokens=""
             echo "::group::arm $name (position $i): BENCH_CHROME_ARM=$tokens"
             nogc=""
             [[ "$tokens" == *nogc* ]] && nogc=1
-            BENCH_NOGC="$nogc" BENCH_CHROME_ARM="$tokens" timeout -k 10 480 yarn test:e2e:benchmark \
-              --preset startupStandardHome \
-              --browserLoads "$BROWSER_LOADS" --pageLoads 10 --retries 2 \
+            BENCH_NOGC="$nogc" BENCH_CHROME_ARM="$tokens" timeout -k 10 720 yarn test:e2e:benchmark \
+              --preset startupPowerUserHome \
+              --browserLoads "$BROWSER_LOADS" --pageLoads 7 --retries 2 \
               --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-g$GROUP-s$SHARD.json" \
               || echo "::warning::arm $name failed"
             pkill -f chromedriver || true; pkill -f chrome || true; pkill anvil || true
