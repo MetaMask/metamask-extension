@@ -184,7 +184,7 @@ const IndicatorBar = ({
             border: '1px solid var(--color-border-muted)',
             borderRadius: '8px', // BorderRadius.LG
             padding: '4px 0',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
             minWidth: '120px',
           }}
         >
