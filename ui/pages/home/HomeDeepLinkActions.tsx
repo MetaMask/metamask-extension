@@ -57,9 +57,14 @@ function isLimitOrderDeepLinkUrl(urlString: string | undefined) {
 
 function isSocialDeepLinkUrl(urlString: string | undefined) {
   return (
-    isDeepLinkUrlForPath(urlString, '/social') ||
-    isDeepLinkUrlForPath(urlString, '/social/profile')
-  );
+    [
+      '/social',
+      '/social/post',
+      '/social/profile',
+      '/social/profile/position',
+      '/social-trader-position',
+    ] as const
+  ).some((pathname) => isDeepLinkUrlForPath(urlString, pathname));
 }
 
 /**

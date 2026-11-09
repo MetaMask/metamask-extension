@@ -1,7 +1,13 @@
 /* eslint-disable jest/no-standalone-expect -- `it` is retyped below, matching deep-link.router.test.ts. The Jest rule only treats the global binding as a test. */
 import { HomeQueryParams } from './home';
 import { DEFAULT_ROUTE, type Destination } from './route';
-import { social, socialProfile } from './social';
+import {
+  social,
+  socialPost,
+  socialProfile,
+  socialProfilePosition,
+  socialTraderPosition,
+} from './social';
 import { routes } from '.';
 
 // the Jest type for it is wrong
@@ -15,9 +21,12 @@ function assertPathDestination(
 }
 
 describe('social deep link route', () => {
-  it('registers the Social feed and profile routes', () => {
+  it('registers the Social feed, profile, position, and post routes', () => {
     expect(routes.get('/social')).toBe(social);
     expect(routes.get('/social/profile')).toBe(socialProfile);
+    expect(routes.get('/social/profile/position')).toBe(socialProfilePosition);
+    expect(routes.get('/social/post')).toBe(socialPost);
+    expect(routes.get('/social-trader-position')).toBe(socialTraderPosition);
   });
 
   it('has the Social feed pathname', () => {
@@ -91,6 +100,55 @@ describe('social profile deep link route', () => {
     assertPathDestination(destination);
     expect(destination.query.get(HomeQueryParams.SocialDeeplinkUrl)).toBe(
       'https://link.metamask.io/social/profile?traderId=id%2Fwith+spaces%26symbols',
+    );
+  });
+});
+
+describe('social position deep link route', () => {
+  it('preserves positionId and traderId in the QR deeplink', () => {
+    const params = new URLSearchParams({
+      positionId: 'position-1',
+      traderId: 'trader-1',
+    });
+    params.append('deduplication_id', 'dedup-1');
+
+    const destination = socialProfilePosition.handler(params);
+
+    assertPathDestination(destination);
+    expect(destination.path).toBe(DEFAULT_ROUTE);
+    expect(destination.query.get(HomeQueryParams.SocialDeeplinkUrl)).toBe(
+      'https://link.metamask.io/social/profile/position?positionId=position-1&traderId=trader-1&deduplication_id=dedup-1',
+    );
+  });
+
+  it('keeps the legacy social-trader-position path and its params', () => {
+    const destination = socialTraderPosition.handler(
+      new URLSearchParams({
+        positionId: 'position-1',
+        traderId: 'trader-1',
+      }),
+    );
+
+    assertPathDestination(destination);
+    expect(destination.query.get(HomeQueryParams.SocialDeeplinkUrl)).toBe(
+      'https://link.metamask.io/social-trader-position?positionId=position-1&traderId=trader-1',
+    );
+  });
+});
+
+describe('social post deep link route', () => {
+  it('preserves positionId and traderId in the post QR deeplink', () => {
+    const destination = socialPost.handler(
+      new URLSearchParams({
+        positionId: 'position-1',
+        traderId: 'trader-1',
+      }),
+    );
+
+    assertPathDestination(destination);
+    expect(destination.path).toBe(DEFAULT_ROUTE);
+    expect(destination.query.get(HomeQueryParams.SocialDeeplinkUrl)).toBe(
+      'https://link.metamask.io/social/post?positionId=position-1&traderId=trader-1',
     );
   });
 });

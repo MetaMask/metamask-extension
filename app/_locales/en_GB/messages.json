@@ -3585,6 +3585,12 @@
   "deepLink_theSocialPage": {
     "message": "the Social page"
   },
+  "deepLink_theSocialPositionPage": {
+    "message": "the Social position page"
+  },
+  "deepLink_theSocialPostPage": {
+    "message": "the Social post page"
+  },
   "deepLink_theSocialProfilePage": {
     "message": "the Social profile page"
   },

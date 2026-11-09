@@ -373,6 +373,18 @@ describe('HomeDeepLinkActions', () => {
       'a Social profile',
       'https://link.metamask.io/social/profile?traderId=trader-123',
     ],
+    [
+      'a Social position',
+      'https://link.metamask.io/social/profile/position?positionId=position-1&traderId=trader-1',
+    ],
+    [
+      'a Social post',
+      'https://link.metamask.io/social/post?positionId=position-1&traderId=trader-1',
+    ],
+    [
+      'a legacy Social position',
+      'https://link.metamask.io/social-trader-position?positionId=position-1&traderId=trader-1',
+    ],
   ])('dispatches setHomeDeepLinkQrCode for %s', async (_, deeplinkUrl) => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,

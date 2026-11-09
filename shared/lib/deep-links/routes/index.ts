@@ -19,7 +19,13 @@ import { rewards } from './rewards';
 import type { Route } from './route';
 import { sell } from './sell';
 import { shield } from './shield';
-import { social, socialProfile } from './social';
+import {
+  social,
+  socialPost,
+  socialProfile,
+  socialProfilePosition,
+  socialTraderPosition,
+} from './social';
 import { swap } from './swap';
 import { topTraders } from './top-traders';
 import { trending } from './trending';
@@ -71,7 +77,10 @@ addRoute(perpsMarkets);
 addRoute(predict);
 addRoute(privacy);
 addRoute(social);
+addRoute(socialPost);
 addRoute(socialProfile);
+addRoute(socialProfilePosition);
+addRoute(socialTraderPosition);
 addRoute(rewards);
 addRoute(shield);
 addRoute(asset);
