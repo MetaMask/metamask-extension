@@ -2,6 +2,9 @@ import React from 'react';
 import { render, waitFor, act } from '@testing-library/react';
 import AdvancedChartIframe, {
   CHART_ORIGIN,
+  CHART_ORIGIN_PRD,
+  CHART_ORIGIN_UAT,
+  getChartOrigin,
   LOAD_TIMEOUT_MS,
 } from './advanced-chart-iframe';
 
@@ -12,6 +15,49 @@ jest.mock('../../../../hooks/useTheme', () => ({
 
 const mockUseTheme = jest.requireMock('../../../../hooks/useTheme')
   .useTheme as jest.Mock;
+
+describe('getChartOrigin', () => {
+  const originalChartOriginUrl = process.env.CHART_ORIGIN_URL;
+  const originalEnvironment = process.env.METAMASK_ENVIRONMENT;
+
+  afterEach(() => {
+    process.env.CHART_ORIGIN_URL = originalChartOriginUrl;
+    process.env.METAMASK_ENVIRONMENT = originalEnvironment;
+  });
+
+  it('prefers an explicit CHART_ORIGIN_URL override', () => {
+    process.env.CHART_ORIGIN_URL = 'http://localhost:8001';
+    process.env.METAMASK_ENVIRONMENT = 'production';
+
+    expect(getChartOrigin()).toBe('http://localhost:8001');
+  });
+
+  it('uses the production origin for production and release-candidate builds', () => {
+    delete process.env.CHART_ORIGIN_URL;
+
+    process.env.METAMASK_ENVIRONMENT = 'production';
+    expect(getChartOrigin()).toBe(CHART_ORIGIN_PRD);
+
+    process.env.METAMASK_ENVIRONMENT = 'release-candidate';
+    expect(getChartOrigin()).toBe(CHART_ORIGIN_PRD);
+  });
+
+  it('uses the UAT origin for non-production environments', () => {
+    delete process.env.CHART_ORIGIN_URL;
+
+    for (const environment of [
+      'staging',
+      'development',
+      'testing',
+      'pull-request',
+      'other',
+      undefined,
+    ]) {
+      process.env.METAMASK_ENVIRONMENT = environment;
+      expect(getChartOrigin()).toBe(CHART_ORIGIN_UAT);
+    }
+  });
+});
 
 describe('AdvancedChartIframe', () => {
   const mockOHLCVData = [

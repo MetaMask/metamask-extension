@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { Skeleton } from '@metamask/design-system-react';
+import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
@@ -24,8 +25,40 @@ import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
  * Price.advanced.tsx composes IntervalBar + AdvancedChart + IndicatorBar.
  */
 
-export const CHART_ORIGIN =
-  process.env.CHART_ORIGIN_URL || 'https://chart.uat.metamask-charts.com';
+export const CHART_ORIGIN_UAT = 'https://chart.uat.metamask-charts.com';
+export const CHART_ORIGIN_PRD = 'https://chart.metamask-charts.com';
+
+/**
+ * Resolves the Advanced Charts iframe origin for the current MetaMask
+ * environment. Production and release-candidate builds use the production
+ * origin; every other environment (staging, dev, CI, PR, local) uses UAT.
+ *
+ * `CHART_ORIGIN_URL` (set via `.metamaskrc`/env) overrides the mapping so a
+ * developer can point at a local chart-origin server (e.g.
+ * `http://localhost:8001`).
+ *
+ * @returns The chart origin for the current build.
+ */
+export function getChartOrigin(): string {
+  if (process.env.CHART_ORIGIN_URL) {
+    return process.env.CHART_ORIGIN_URL;
+  }
+
+  switch (process.env.METAMASK_ENVIRONMENT) {
+    case ENVIRONMENT.PRODUCTION:
+    case ENVIRONMENT.RELEASE_CANDIDATE:
+      return CHART_ORIGIN_PRD;
+    case ENVIRONMENT.STAGING:
+    case ENVIRONMENT.DEVELOPMENT:
+    case ENVIRONMENT.TESTING:
+    case ENVIRONMENT.PULL_REQUEST:
+    case ENVIRONMENT.OTHER:
+    default:
+      return CHART_ORIGIN_UAT;
+  }
+}
+
+export const CHART_ORIGIN = getChartOrigin();
 
 // If the chart hasn't emitted CHART_READY within this window, fall back to legacy.
 // Sized for a cold CDN cache fetching the ~20 MB TradingView library, not for

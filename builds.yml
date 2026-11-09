@@ -242,10 +242,14 @@ env:
   ###
   # Origin serving the Advanced Charts iframe. Must stay in the chart origin's
   # own CSP frame-ancestors / allowedEmbedderOrigins allowlist, keyed on the
-  # extension id. Point at http://localhost:8001 to work against the local
-  # chart-origin server.
-  # Production origin is https://chart.metamask-charts.com.
-  - CHART_ORIGIN_URL: https://chart.uat.metamask-charts.com
+  # extension id.
+  #
+  # Leave this null: the origin is selected per build environment in
+  # getChartOrigin() (production/release-candidate -> chart.metamask-charts.com,
+  # everything else -> chart.uat.metamask-charts.com). Set an explicit value
+  # here or in .metamaskrc (e.g. http://localhost:8001) only to override the
+  # mapping against a local chart-origin server.
+  - CHART_ORIGIN_URL: null
 
   ###
   # Notifications Feature
