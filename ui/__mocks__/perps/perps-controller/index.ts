@@ -515,7 +515,7 @@ export const FEEDBACK_CONFIG = {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
+    'https://support.metamask.com/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
 } as const;
 
 /**

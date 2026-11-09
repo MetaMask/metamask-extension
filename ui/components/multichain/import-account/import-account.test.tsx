@@ -75,7 +75,7 @@ describe('ImportAccount', () => {
       expect(helpLink).toBeInTheDocument();
       expect(helpLink).toHaveAttribute(
         'href',
-        expect.stringContaining('support.metamask.io'),
+        expect.stringContaining('support.metamask.com'),
       );
     });
 

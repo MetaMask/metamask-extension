@@ -13,21 +13,21 @@ export const AUTO_DETECT_TOKEN_LEARN_MORE_LINK =
 export const CONSENSYS_TERMS_OF_USE = 'https://metamask.com/terms-of-use';
 
 export const SECURITY_ALERTS_LEARN_MORE_LINK =
-  'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension';
+  'https://support.metamask.com/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension';
 
 export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
-  'https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension';
+  'https://support.metamask.com/transactions-and-gas/transactions/simulations/?utm_source=extension';
 
-export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/?utm_source=extension#step-two-locate-your-vault`;
+export const VAULT_RECOVERY_LINK = `https://support.metamask.com/configure/wallet/how-to-recover-your-secret-recovery-phrase/?utm_source=extension#step-two-locate-your-vault`;
 
 export const REINSTALL_METAMASK_RECOVERY_LINK =
-  'https://support.metamask.io/configure/wallet/how-to-restore-your-metamask-wallet-from-secret-recovery-phrase/?utm_source=extension';
+  'https://support.metamask.com/configure/wallet/how-to-restore-your-metamask-wallet-from-secret-recovery-phrase/?utm_source=extension';
 
 export const SHIELD_TERMS_OF_USE_URL =
   'https://metamask.com/metamask-transaction-shield-limited-supplemental-terms-of-use';
 
 export const TESTNET_ETH_SCAMS_LEARN_MORE_LINK =
-  'https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension';
+  'https://support.metamask.com/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension';
 
 export const REQUEST_SETTING_URL =
   'https://community.metamask.io/c/feature-requests-ideas/13';
