@@ -8866,7 +8866,7 @@
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
   },
   "perpsWithdrawTooltip": {
-    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
+    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {

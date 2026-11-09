@@ -8880,7 +8880,7 @@
     "message": "Yêu cầu rút tiền đã được gửi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
+    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
