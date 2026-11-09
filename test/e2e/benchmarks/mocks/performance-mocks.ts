@@ -13,6 +13,7 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../../tests/btc/mocks/tokens-api';
+import { DEFI_POSITIONS_EMPTY_RESPONSE } from '../../mock-response-data/defi-positions';
 import { POWER_USER_PRICES } from './price-data';
 import { buildSseResponseBody } from './swap-mocks';
 import bridgeNetworkTokens from './bridge-network-tokens.json';
@@ -612,16 +613,11 @@ export async function mockBenchmarkEndpoints(
       .forGet(/defiadapters\.api\.cx\.metamask\.io\/positions/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(50, { statusCode: 200, json: [] })),
-  );
-
-  endpoints.push(
-    await server
-      .forGet(/on-ramp-content\.api\.cx\.metamask\.io/u)
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
-      .always()
       .thenCallback(
-        delayedResponse(100, { statusCode: 200, json: { networks: [] } }),
+        delayedResponse(50, {
+          statusCode: 200,
+          json: DEFI_POSITIONS_EMPTY_RESPONSE,
+        }),
       ),
   );
 

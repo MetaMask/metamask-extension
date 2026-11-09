@@ -39,6 +39,11 @@ const {
   PRICE_API_V3_SPOT_PRICES_MOCKS,
   buildFallbackSpotPricesResponse,
 } = require('./mock-response-data/price-api');
+const {
+  CONTENTFUL_PROMOTIONAL_BANNERS_EMPTY_RESPONSE,
+  NOTIFICATION_API_V4_LIST_EMPTY_RESPONSE,
+  RAMPS_REGIONS_COUNTRIES_EMPTY_RESPONSE,
+} = require('./mock-response-data/global-api-responses');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -1749,7 +1754,10 @@ async function setupMocking(
   await server
     .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
-    .thenCallback(() => ({ statusCode: 200, json: [] }));
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: NOTIFICATION_API_V4_LIST_EMPTY_RESPONSE,
+    }));
 
   // Identity APIs
   await mockIdentityServices(server);
@@ -1762,17 +1770,6 @@ async function setupMocking(
       statusCode: 404,
     };
   });
-
-  // On Ramp Content
-  const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
-  await server
-    .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(ON_RAMP_CONTENT),
-      };
-    });
 
   // Chains Metadata
   const CHAIN_ID_NETWORKS = fs.readFileSync(CHAIN_ID_NETWORKS_PATH);
@@ -2124,7 +2121,7 @@ async function setupMocking(
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: [],
+          json: RAMPS_REGIONS_COUNTRIES_EMPTY_RESPONSE,
         };
       });
   }
@@ -2558,10 +2555,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          items: [],
-          includes: { Asset: [] },
-        },
+        json: CONTENTFUL_PROMOTIONAL_BANNERS_EMPTY_RESPONSE,
       };
     });
 

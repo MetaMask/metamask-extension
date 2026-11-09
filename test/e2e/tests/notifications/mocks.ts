@@ -96,7 +96,7 @@ export function getMockNotificationPreferences(): NotificationPreferences {
   };
 }
 
-const mockNotifications: NormalisedAPINotification[] = [
+export const mockNotifications: NormalisedAPINotification[] = [
   createMockNotificationEthSent(),
   createMockNotificationEthReceived(),
   createMockNotificationERC20Sent(),
