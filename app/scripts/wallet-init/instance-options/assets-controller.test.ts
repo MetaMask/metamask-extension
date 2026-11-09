@@ -113,6 +113,15 @@ describe('getAssetsControllerInstanceOptions', () => {
     expect(options).not.toHaveProperty('isEnabled');
   });
 
+  it('leaves price and staked balance poll intervals to the wallet defaults', () => {
+    const options = getAssetsControllerInstanceOptions(buildRequest());
+
+    expect(options).not.toHaveProperty('priceDataSourceConfig');
+    expect(options.stakedBalanceDataSourceConfig).toStrictEqual({
+      enabled: false,
+    });
+  });
+
   it('skips Sentry tracing when assetsUnifyState.tracesEnabled is off', async () => {
     const options = getAssetsControllerInstanceOptions(buildRequest());
     const fn = jest.fn(() => 'result');

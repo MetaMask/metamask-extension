@@ -11,7 +11,7 @@ import type {
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { WalletOptions } from '@metamask/wallet';
+import type { AssetsControllerInstanceOptions } from '@metamask/wallet';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 import type { PreferencesControllerState } from '../../controllers/preferences-controller';
@@ -28,10 +28,6 @@ import {
   isBackendAuthDisabled,
 } from '../../../../shared/lib/core-backend-api-urls';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
-
-type AssetsControllerInstanceOptions = NonNullable<
-  WalletOptions['instanceOptions']['assetsController']
->;
 
 type GetAssetsControllerInstanceOptionsRequest = {
   initMessenger: AssetsControllerInitMessenger;
@@ -177,7 +173,7 @@ function getApiClient(
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
       ...getBackendApiUrlsOption(),
-    }) as unknown as AssetsControllerInstanceOptions['queryApiClient'];
+    });
   }
   return apiClient;
 }
@@ -235,11 +231,7 @@ export function getAssetsControllerInstanceOptions({
       balanceInterval: 30_000,
       detectionInterval: 180_000,
     },
-    priceDataSourceConfig: {
-      pollInterval: 180_000,
-    },
     stakedBalanceDataSourceConfig: {
-      pollInterval: 30_000,
       enabled: false,
     },
     isOnboarded: () => {
