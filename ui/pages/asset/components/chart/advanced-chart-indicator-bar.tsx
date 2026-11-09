@@ -64,19 +64,26 @@ const IndicatorBar = ({
     maLabel = `MA ×${selectedMAs.length}`;
   }
 
-  // Close MA dropdown when clicking outside
+  // Close MA dropdown when clicking outside or pressing Escape
   useEffect(() => {
     if (!showMADropdown) {
-      return;
+      return undefined;
     }
     const handleClickOutside = () => setShowMADropdown(false);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowMADropdown(false);
+      }
+    };
     const timer = setTimeout(
       () => document.addEventListener('click', handleClickOutside),
       0,
     );
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
       clearTimeout(timer);
       document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [showMADropdown]);
 
@@ -108,6 +115,9 @@ const IndicatorBar = ({
       >
         {/* MA dropdown trigger */}
         <button
+          type="button"
+          aria-haspopup="menu"
+          aria-expanded={showMADropdown}
           onClick={() => setShowMADropdown((v) => !v)}
           style={{
             ...pillStyle(selectedMAs.length > 0),
@@ -138,6 +148,8 @@ const IndicatorBar = ({
           return (
             <React.Fragment key={name}>
               <button
+                type="button"
+                aria-pressed={isActive}
                 onClick={() => onIndicatorToggle(name)}
                 style={pillStyle(isActive)}
               >
@@ -162,6 +174,7 @@ const IndicatorBar = ({
       {/* MA dropdown popover */}
       {showMADropdown && (
         <div
+          role="menu"
           style={{
             position: 'absolute',
             top: '100%',
@@ -180,6 +193,9 @@ const IndicatorBar = ({
             return (
               <button
                 key={ma}
+                type="button"
+                role="menuitemcheckbox"
+                aria-checked={isActive}
                 onClick={() => onMAToggle(ma)}
                 style={{
                   display: 'flex',
