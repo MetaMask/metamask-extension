@@ -3,11 +3,11 @@ import { brandColor } from '@metamask/design-tokens';
 import { useTheme } from '../../../../hooks/useTheme';
 
 /**
- * [POC — THROWAWAY] IndicatorBar
+ * IndicatorBar
  *
- * Mirrors mobile's IndicatorBar.tsx.
- * Renders MA dropdown + BOL/RSI/Volume/MACD toggle pills.
- * Displayed BELOW the chart, as a separate component in the parent layout.
+ * Renders the moving-average dropdown and the BOL/RSI/Volume/MACD toggle
+ * pills. Rendered below the chart as a separate component in the parent
+ * layout, mirroring mobile's IndicatorBar.
  */
 
 const TOGGLE_INDICATORS = ['BOL', 'RSI', 'Volume', 'MACD'] as const;
