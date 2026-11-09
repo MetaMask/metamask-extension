@@ -193,7 +193,10 @@ async function mockDisabledRpcFailover(
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: getProductionRemoteFlagApiResponse(),
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
     }));
 }
 

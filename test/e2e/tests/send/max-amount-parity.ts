@@ -3,7 +3,8 @@
  *
  * Both the send and swap specs use the same account, native balance, and gas
  * mocks. There is no local chain: JSON-RPC, the gas API, accounts balances,
- * and tx-sentinel are served by Mockttp.
+ * and tx-sentinel are served by Mockttp. RPC failover is disabled so a down
+ * Infura redirect cannot leak a Monad QuickNode host into the privacy report.
  */
 
 import { strict as assert } from 'assert';
@@ -267,7 +268,7 @@ export async function mockMaxAmountParityApis(
   network: MaxAmountNetwork,
   { includeBridgeMocks = false }: { includeBridgeMocks?: boolean } = {},
 ): Promise<void> {
-  await mockClientConfigFlags(mockServer);
+  await mockDisabledRpcFailover(mockServer);
   await mockInfuraRpc(mockServer, network);
   await mockGasApi(mockServer, network);
   await mockAccountsApi(mockServer, network);
@@ -279,31 +280,46 @@ export async function mockMaxAmountParityApis(
 }
 
 /**
- * Production flags with `backendWebSocketConnection` pinned to the boolean the
- * shared E2E mock uses. A threshold array would leave the websocket service
- * off.
+ * Production flags with RPC failover turned off.
+ *
+ * These specs run with no Anvil node. Unmocked Infura hosts are redirected to
+ * localhost:8545, which is down, so an enabled failover forwards Monad to its
+ * QuickNode URL. That host is not in the privacy snapshot. Bitcoin, Tron, and
+ * Solana specs disable the same flag when they cannot answer every popular
+ * chain's RPC.
+ *
+ * `backendWebSocketConnection` stays pinned to the boolean the shared E2E
+ * mock uses. A threshold array would leave the websocket service off.
  *
  * @returns Client-config `/v1/flags` body.
  */
-function flagsWithWebSocketEnabled(): Json[] {
+function flagsWithRpcFailoverDisabled(): Json[] {
+  const overridden = new Set([
+    'corePlatformRpcFailoverMode',
+    'backendWebSocketConnection',
+  ]);
   const retained = getProductionRemoteFlagApiResponse().filter(
     (entry) =>
       entry === null ||
       typeof entry !== 'object' ||
       Array.isArray(entry) ||
-      !Object.keys(entry).includes('backendWebSocketConnection'),
+      !Object.keys(entry).some((name) => overridden.has(name)),
   );
 
-  return [...retained, { backendWebSocketConnection: true }];
+  return [
+    ...retained,
+    { backendWebSocketConnection: true },
+    { corePlatformRpcFailoverMode: 'disabled' },
+  ];
 }
 
 /**
- * Serves the pinned flags for the whole test, including a second flags fetch
+ * Keeps RPC failover off for the whole test, including a second flags fetch
  * when the UI opens.
  *
  * @param mockServer - Mockttp server for this test.
  */
-async function mockClientConfigFlags(mockServer: Mockttp): Promise<void> {
+async function mockDisabledRpcFailover(mockServer: Mockttp): Promise<void> {
   await mockServer
     .forGet(CLIENT_CONFIG_FLAGS_URL)
     .withQuery({
@@ -314,7 +330,7 @@ async function mockClientConfigFlags(mockServer: Mockttp): Promise<void> {
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
-      json: flagsWithWebSocketEnabled(),
+      json: flagsWithRpcFailoverDisabled(),
     }));
 }
 

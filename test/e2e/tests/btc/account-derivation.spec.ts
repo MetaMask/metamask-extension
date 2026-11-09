@@ -41,7 +41,12 @@ async function mockFeatureFlags(mockServer: Mockttp) {
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: getProductionRemoteFlagApiResponse(),
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        // Account discovery queries popular EVM chains, while these Bitcoin
+        // tests only mock Bitcoin. Disable failover to avoid unrelated hosts.
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
     }));
 }
 
