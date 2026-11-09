@@ -98,6 +98,8 @@ export function TooltipText({
         position={position}
         referenceElement={referenceElement}
         hasArrow
+        preventOverflow
+        flip
         onPressEscKey={handleClose}
         isPortal
         style={{ ...TOOLTIP_POPOVER_STYLE, ...popoverStyle }}

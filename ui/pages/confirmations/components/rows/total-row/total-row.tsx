@@ -16,6 +16,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useConfirmContext } from '../../../context/confirm';
 import {
   getUserPaidNetworkFeeUsd,
   type SponsoredNetworkFeeFlags,
@@ -36,7 +37,11 @@ export function TotalRow({
 }: TotalRowProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
-  const isLoading = useIsTransactionPayLoading();
+  const isPayLoading = useIsTransactionPayLoading();
+  const { isAmountPending } = useConfirmContext();
+  // Totals come from the executable quote. While a typed amount is still
+  // pending, that quote is the previous amount, so show the skeleton.
+  const isLoading = isPayLoading || isAmountPending;
   const totals = useTransactionPayTotals();
   const isPaidByMetaMask = useIsPaidByMetaMask();
   const sponsoredNetworkFees = useSponsoredNetworkFeeFlags();

@@ -18,6 +18,7 @@ import {
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../providers/perps';
@@ -25,6 +26,7 @@ import {
   selectPerpsIsFirstTimeUser,
   selectPerpsIsTestnet,
 } from '../../../selectors/perps-controller';
+import { getIsPerpsServiceInterruptionBannerEnabled } from '../../../selectors/perps/feature-flags';
 import {
   selectTutorialCompleted,
   setTutorialModalOpen,
@@ -82,10 +84,14 @@ type BatchCloseResult = {
 
 export const PerpsView = () => {
   const t = useI18nContext();
+  const { isWideLayout } = useAppLayout();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const bottomNavSource = usePerpsBottomNavSource();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { isEligible } = usePerpsEligibility();
@@ -419,6 +425,8 @@ export const PerpsView = () => {
       [PERPS_EVENT_PROPERTY.SOURCE]:
         bottomNavSource ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
   });
 
@@ -499,6 +507,7 @@ export const PerpsView = () => {
           onAddFunds={triggerDeposit}
           onWithdraw={triggerWithdraw}
           onLearnMore={() => dispatch(setTutorialModalOpen(true))}
+          layout={isWideLayout ? 'row' : 'column'}
         />
       </Box>
 

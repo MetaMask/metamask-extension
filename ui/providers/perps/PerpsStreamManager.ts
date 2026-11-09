@@ -198,13 +198,29 @@ class PerpsStreamManager {
     this.positions = new PerpsDataChannel<Position[]>({
       connectFn: (push) => {
         let cancelled = false;
+        // A seeded snapshot may hold positions that have since closed, so it
+        // does not count as hydrated: fall back to REST like an empty cache.
+        const hasLivePositions = () =>
+          this.positions.hasCachedData() && !this.positions.isSeeded();
         const timer = setTimeout(() => {
-          if (cancelled || this.positions.hasCachedData()) {
+          if (cancelled || hasLivePositions()) {
             return;
           }
-          submitRequestToBackground<Position[]>('perpsGetPositions', [])
+          // Replace a seed with fresh REST data: the provider's WebSocket
+          // cache has not confirmed it either.
+          const params = this.positions.isSeeded() ? [{ skipCache: true }] : [];
+          // The response belongs to the account and network it was requested
+          // for: a cache clear or account switch bumps the generation.
+          const generation = this.positions.getGeneration();
+          const isCurrent = () =>
+            !cancelled && generation === this.positions.getGeneration();
+          submitRequestToBackground<Position[]>('perpsGetPositions', params)
             .then((data) => {
-              if (!cancelled && !this.positions.hasCachedData()) {
+              // A nullish response leaves the seeded snapshot unconfirmed.
+              if (!data && this.positions.isSeeded()) {
+                return;
+              }
+              if (isCurrent() && !hasLivePositions()) {
                 push(data ?? EMPTY_POSITIONS);
               }
             })
@@ -213,7 +229,7 @@ class PerpsStreamManager {
                 '[PerpsStreamManager] Failed to fetch positions',
                 err,
               );
-              if (!cancelled && !this.positions.hasCachedData()) {
+              if (isCurrent() && !this.positions.hasCachedData()) {
                 push(EMPTY_POSITIONS);
               }
             });
@@ -276,10 +292,17 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
-              console.error(
-                '[PerpsStreamManager] Failed to fetch account',
-                err,
-              );
+              // Only report a failed fetch while the channel is still live. A
+              // rejection that lands after the last subscriber unsubscribes is
+              // teardown noise — the fetch started while it still mattered, and
+              // by the time it settles nobody is watching. Logging it anyway
+              // makes unrelated E2E suites fail on console errors (#46623).
+              if (!cancelled) {
+                console.error(
+                  '[PerpsStreamManager] Failed to fetch account',
+                  err,
+                );
+              }
               // Deliberately do NOT push here. `null` is this channel's own
               // initialValue, so pushing it leaves hasCachedData() false while
               // still notifying subscribers — usePerpsChannel then clears
@@ -468,6 +491,26 @@ class PerpsStreamManager {
   pushPositionsWithOverrides(positions: Position[]): void {
     const withOverrides = this.applyOptimisticOverrides(positions, false);
     this.positions.pushData(withOverrides);
+  }
+
+  /**
+   * Refetch positions over REST, bypassing the WebSocket cache, and push them
+   * so views drop a position that closed outside the stream's latest update.
+   */
+  async refreshPositions(): Promise<void> {
+    const generation = this.positions.getGeneration();
+    const positions = await submitRequestToBackground<Position[]>(
+      'perpsGetPositions',
+      [{ skipCache: true }],
+    );
+    // The response belongs to the account and network it was requested for.
+    // Drop it if either changed (or the manager reset) while it was in flight.
+    // A nullish response is missing data, not an empty account: keep whatever
+    // the channel holds, like the REST fallback does for a seeded snapshot.
+    if (generation !== this.positions.getGeneration() || !positions) {
+      return;
+    }
+    this.pushPositionsWithOverrides(positions);
   }
 
   /**
@@ -1113,7 +1156,7 @@ class PerpsStreamManager {
     }
 
     if (snapshot.positions?.length && !this.positions.hasCachedData()) {
-      this.positions.pushData(snapshot.positions);
+      this.positions.seedData(snapshot.positions);
     }
     if (snapshot.orders?.length && !this.orders.hasCachedData()) {
       this.orders.pushData(snapshot.orders);

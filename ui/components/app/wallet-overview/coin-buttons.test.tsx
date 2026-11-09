@@ -1,10 +1,10 @@
 import React from 'react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, screen } from '@testing-library/react';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../assets/enablement/arc';
 import CoinButtons from './coin-buttons';
 
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -23,8 +23,7 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
-    goToBuy: jest.fn(),
-    isRampsEnabled: false,
+    goToBuy: jest.fn().mockResolvedValue('native'),
   })),
 }));
 
@@ -101,8 +100,6 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   setActiveNetworkWithError: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 const mockAccount = {
@@ -165,16 +162,17 @@ describe('CoinButtons – asset page swap token', () => {
     });
   });
 
-  it('uses the Arc ERC20 USDC wrapper for the asset page native swap button', () => {
+  it('uses Arc native USDC for the asset page native swap button', () => {
     renderAssetPageCoinButtons('0x13b2');
+    const arcNativeAsset = getNativeAssetForChainId('0x13b2');
 
     expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
       currentToken: {
-        symbol: ARC_ERC20_USDC_BRIDGE_ASSET.symbol,
-        address: ARC_ERC20_USDC_BRIDGE_ASSET.address,
+        symbol: arcNativeAsset.symbol,
+        address: arcNativeAsset.address,
         chainId: 'eip155:5042',
-        decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
-        name: ARC_ERC20_USDC_BRIDGE_ASSET.name,
+        decimals: arcNativeAsset.decimals,
+        name: arcNativeAsset.name,
       },
     });
   });
@@ -251,5 +249,53 @@ describe('CoinButtons – asset page swap token', () => {
     expect(
       screen.queryByTestId('coin-overview-receive'),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('CoinButtons – pills design', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const renderCoinButtons = (
+    props: Partial<React.ComponentProps<typeof CoinButtons>> = {},
+  ) =>
+    renderWithProvider(
+      <CoinButtons
+        account={mockAccount as Parameters<typeof CoinButtons>[0]['account']}
+        chainId="0x1"
+        trackingLocation="home"
+        isSwapsChain
+        isSigningEnabled
+        showAsPills
+        {...props}
+      />,
+      configureStore(mockState),
+      '/',
+    );
+
+  it('shows every action as its own button', () => {
+    renderCoinButtons();
+
+    expect(
+      screen
+        .getAllByRole('button')
+        .map((button) => button.getAttribute('data-testid')),
+    ).toStrictEqual([
+      'coin-overview-buy',
+      'coin-overview-swap',
+      'coin-overview-send',
+      'coin-overview-batchSell',
+      'coin-overview-receive',
+    ]);
+    expect(screen.queryByTestId('coin-overview-more')).not.toBeInTheDocument();
+  });
+
+  it('disables Swap and Send when signing is not enabled', () => {
+    renderCoinButtons({ isSigningEnabled: false });
+
+    expect(screen.getByTestId('coin-overview-swap')).toBeDisabled();
+    expect(screen.getByTestId('coin-overview-send')).toBeDisabled();
+    expect(screen.getByTestId('coin-overview-buy')).toBeEnabled();
   });
 });

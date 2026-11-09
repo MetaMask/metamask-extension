@@ -18,7 +18,10 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  PERPS_ERROR_CODES,
+  type Position as PerpsPosition,
+} from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
@@ -45,6 +48,7 @@ import {
 } from '../../../../hooks/perps';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
@@ -68,6 +72,8 @@ import {
   getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
+import { isPerpsErrorCode } from '../utils/translate-perps-error';
+import { usePerpsPositionAlreadyClosed } from '../hooks/usePerpsPositionAlreadyClosed';
 import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
@@ -127,11 +133,8 @@ export const UpdateTPSLModalContent = ({
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const notifyPositionAlreadyClosed = usePerpsPositionAlreadyClosed();
   const { privacyMode } = useSelector(getPreferences);
-  const { feeRate: closingFeeRate } = usePerpsOrderFees({
-    symbol: position.symbol,
-    orderType: 'market',
-  });
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [editingTpPrice, setEditingTpPrice] = useState(
@@ -262,6 +265,18 @@ export const UpdateTPSLModalContent = ({
     () => Number.parseFloat(position.size.replaceAll(',', '')) || 0,
     [position.size],
   );
+
+  // TradingService applies one fee resolution to the entire TP/SL batch.
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+    amount: String(
+      getPerpsNotionalUsd({
+        size: signedSize,
+        price: [editingTpPrice, editingSlPrice],
+      }),
+    ),
+  });
 
   const estimatedPnlAtTp = useMemo(() => {
     if (closingFeeRate === undefined) {
@@ -500,6 +515,16 @@ export const UpdateTPSLModalContent = ({
           ],
         );
 
+        if (
+          !result.success &&
+          isPerpsErrorCode(result, PERPS_ERROR_CODES.POSITION_NOT_FOUND)
+        ) {
+          // The position closed after this modal rendered. Say so and drop it
+          // from the view instead of reporting a failed update.
+          notifyPositionAlreadyClosed();
+          onClose();
+          return;
+        }
         if (!result.success) {
           const failMessage = result.error || 'Failed to update TP/SL';
           replacePerpsToastByKey({
@@ -588,6 +613,7 @@ export const UpdateTPSLModalContent = ({
     onClose,
     position,
     replacePerpsToastByKey,
+    notifyPositionAlreadyClosed,
     track,
     buildTpslTrackingData,
   ]);

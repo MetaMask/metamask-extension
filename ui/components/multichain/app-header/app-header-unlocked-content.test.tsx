@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { SUPPORT_LINK } from '#shared/lib/ui-utils';
 import { openWindow } from '#ui/helpers/utils/window';
 import configureStore from '../../../store/store';
@@ -97,19 +97,18 @@ describe('AppHeaderUnlockedContent trace', () => {
 });
 
 describe('Default address section', () => {
-  it('renders the default address when feature flag and preference is on', async () => {
-    const stateWithFlagOn = {
+  it('renders the default address when the preference is on', async () => {
+    const stateWithPreferenceOn = {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: true,
         },
       },
     };
-    const store = configureStore(stateWithFlagOn);
+    const store = configureStore(stateWithPreferenceOn);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
 
@@ -125,7 +124,6 @@ describe('Default address section', () => {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: false,
@@ -234,6 +232,103 @@ describe('Global menu', () => {
       await waitFor(() => {
         expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
       });
+    });
+  });
+});
+
+describe('Fullscreen design', () => {
+  const stateWithSearchEnabled = {
+    ...mockDefaultState,
+    metamask: {
+      ...mockDefaultState.metamask,
+      remoteFeatureFlags: { extensionUXSearch: true },
+    },
+  };
+
+  // Wait for the header's effects to settle so their updates run inside act.
+  const renderHeader = async (isWideLayout: boolean) => {
+    const store = configureStore(stateWithSearchEnabled);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    await act(async () => {
+      renderWithProvider(
+        <AppHeaderUnlockedContent
+          menuRef={menuRef}
+          isWideLayout={isWideLayout}
+        />,
+        store,
+      );
+    });
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('when the fullscreen design is off', () => {
+    it('renders the account picker button and the search icon button', async () => {
+      await renderHeader(false);
+
+      expect(screen.getByTestId('account-menu-icon')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('app-header-account-name'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('discover-search-button').tagName).toBe(
+        'BUTTON',
+      );
+    });
+  });
+
+  describe('when the fullscreen design is on', () => {
+    it('renders the account name as plain text instead of the account picker', async () => {
+      await renderHeader(true);
+
+      expect(screen.getByTestId('app-header-account-name')).toHaveTextContent(
+        'Account 1',
+      );
+      expect(screen.queryByTestId('account-menu-icon')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('app-header-account-name').closest('button'),
+      ).toBe(null);
+    });
+
+    it('renders an open search field instead of the search icon button', async () => {
+      await renderHeader(true);
+
+      const searchInput = screen.getByTestId('discover-search-button');
+      expect(searchInput.tagName).toBe('INPUT');
+      expect(searchInput).toHaveAttribute('readonly');
+      expect(searchInput).toHaveAttribute(
+        'placeholder',
+        messages.searchTokens.message,
+      );
+      expect(searchInput).toHaveAttribute(
+        'aria-label',
+        messages.searchTokens.message,
+      );
+    });
+
+    it('opens the discover search page when the search field is clicked', async () => {
+      await renderHeader(true);
+
+      fireEvent.click(screen.getByTestId('discover-search-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/discover-search',
+        expect.anything(),
+      );
+    });
+
+    it('opens the discover search page when Enter is pressed in the search field', async () => {
+      await renderHeader(true);
+
+      fireEvent.keyDown(screen.getByTestId('discover-search-button'), {
+        key: 'Enter',
+      });
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/discover-search',
+        expect.anything(),
+      );
     });
   });
 });

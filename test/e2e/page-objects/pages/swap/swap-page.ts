@@ -109,10 +109,10 @@ class SwapPage {
     tag: 'p',
   };
 
-  private readonly quotesModal = '.quotes-modal';
+  private readonly quotesModal = '[data-testid="quotes-modal"]';
 
   private readonly quotesModalRow =
-    '.quotes-modal [style*="position: relative"]';
+    '[data-testid="quotes-modal"] [data-testid="bridge-quote-option"]';
 
   private readonly rateMessage = {
     text: `Includes 0.875% MetaMask fee`,
@@ -146,11 +146,6 @@ class SwapPage {
 
   private readonly transactionStatusHeader =
     '[data-testid="swap-smart-transaction-status-header"]';
-
-  private readonly viewActivityButton = {
-    tag: 'button',
-    text: 'View activity',
-  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -267,10 +262,6 @@ class SwapPage {
     await this.driver.clickElement(this.moreQuotesButton);
   }
 
-  async clickViewActivity(): Promise<void> {
-    await this.driver.clickElementSafe(this.viewActivityButton);
-  }
-
   async closeQuotes(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.closeQuotesButton);
   }
@@ -337,8 +328,8 @@ class SwapPage {
 
   async enterSwapAmount(amount: string): Promise<void> {
     console.log('Entering swap amount');
-    const stxToggle = await this.driver.findElement(this.reviewFromAmount);
-    stxToggle.sendKeys(amount);
+    await this.driver.waitForSelector(this.reviewFromAmount);
+    await this.driver.fill(this.reviewFromAmount, amount);
   }
 
   async fillSwapAmount(amount: string): Promise<void> {
@@ -354,6 +345,10 @@ class SwapPage {
   async getToAmountValue(): Promise<string> {
     const element = await this.driver.waitForSelector(this.reviewToAmount);
     return element.getAttribute('value');
+  }
+
+  async goBackAfterSubmit(): Promise<void> {
+    await new BridgeQuotePage(this.driver).goBackAfterSubmit();
   }
 
   async reviewQuote(options: SwapReviewOptions) {
@@ -492,7 +487,10 @@ class SwapPage {
 
   async waitForQuote(): Promise<void> {
     console.log('Wait for quote to be displayed');
-    await this.driver.waitForSelector(this.swapButton, { timeout: 30000 });
+    await this.driver.waitUntil(
+      async () => this.driver.isElementPresentAndVisible(this.swapButton, 500),
+      { timeout: 10000, interval: 200, stableFor: 500 },
+    );
   }
 
   async waitForSmartTransactionToComplete(): Promise<void> {

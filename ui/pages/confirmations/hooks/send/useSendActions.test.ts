@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
 
@@ -5,6 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
+  ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../../helpers/constants/routes';
@@ -12,7 +14,15 @@ import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
+import { toast } from '../../../../components/ui/toast/toast';
+import { NonEvmSendUnknownValue } from './metrics/useNonEvmSendMetrics';
 import { useSendActions } from './useSendActions';
+
+jest.mock('../../../../components/ui/toast/toast', () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}));
 
 const MOCK_ADDRESS_1 = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 const MOCK_ADDRESS_2 = '0xd12662965960f3855a09f85396459429a595d741';
@@ -37,10 +47,52 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
+const mockTrackEvent = jest.fn();
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+const NON_EVM_SEND_CONTEXT = {
+  asset: SOLANA_ASSET,
+  chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  from: MOCK_ADDRESS_3,
+  fromAccount: {
+    id: 'mock-account-id',
+    metadata: { snap: { id: 'npm:@metamask/solana-wallet-snap' } },
+  },
+  to: MOCK_ADDRESS_4,
+  value: '10',
+};
+
+const trackedEventNames = () =>
+  mockTrackEvent.mock.calls.map(([event]) => event.name);
+
+const trackedEventProperties = (eventName: string) =>
+  mockTrackEvent.mock.calls.find(([event]) => event.name === eventName)?.[0]
+    .properties;
+
+const GENERIC_TRANSACTION_ERROR =
+  'Transaction error. Exception thrown in contract code.';
+
 beforeEach(() => {
   mockUseNavigate.mockClear();
   mockDispatch.mockClear();
+  mockTrackEvent.mockClear();
+  jest.mocked(toast.error).mockClear();
   mockUseLocation.mockReturnValue({ key: 'in-app-entry' });
+  window.location.hash = '#/send/loader';
+});
+
+afterEach(() => {
+  window.location.hash = '';
 });
 
 function renderHook() {
@@ -208,7 +260,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
+      expect(mockUseNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
     });
   });
 
@@ -241,10 +293,7 @@ describe('useSendQueryParams', () => {
   it('handleSubmit handles snap validation errors for non-evm send', async () => {
     const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: SOLANA_ASSET,
-      from: MOCK_ADDRESS_3,
-      to: MOCK_ADDRESS_4,
-      value: '10',
+      ...NON_EVM_SEND_CONTEXT,
       updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
     } as unknown as SendContext.SendContextType);
 
@@ -264,15 +313,56 @@ describe('useSendQueryParams', () => {
       expect(mockUpdateNonEVMSubmitError).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
+
+    expect(trackedEventNames()).toStrictEqual(['Send Failed']);
+    expect(trackedEventProperties('Send Failed')).toMatchObject({
+      failure_phase: 'validation',
+      error_code: 'InsufficientBalance',
+      client: 'extension',
+      chain_id_caip: NON_EVM_SEND_CONTEXT.chainId,
+      snap_id: 'npm:@metamask/solana-wallet-snap',
+    });
+  });
+
+  it('records an unknown sentinel rather than undefined when the account has no snap metadata', async () => {
+    const mockUpdateNonEVMSubmitError = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      ...NON_EVM_SEND_CONTEXT,
+      fromAccount: { id: 'mock-account-id' },
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
+    } as unknown as SendContext.SendContextType);
+
+    jest
+      .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+      .mockImplementation(() =>
+        Promise.resolve({
+          valid: false,
+          errors: [{ code: 'InsufficientBalance' }],
+        }),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_4);
+
+    await waitFor(() => {
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenCalled();
+    });
+
+    expect(trackedEventProperties('Send Failed')).toMatchObject({
+      failure_phase: 'validation',
+      error_code: 'InsufficientBalance',
+      snap_id: NonEvmSendUnknownValue,
+    });
+    expect(trackedEventProperties('Send Failed')).not.toHaveProperty(
+      'snap_id',
+      undefined,
+    );
   });
 
   it('handleSubmit handles valid: false without errors array for non-evm send', async () => {
     const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: SOLANA_ASSET,
-      from: MOCK_ADDRESS_3,
-      to: MOCK_ADDRESS_4,
-      value: '10',
+      ...NON_EVM_SEND_CONTEXT,
       updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
     } as unknown as SendContext.SendContextType);
 
@@ -293,15 +383,18 @@ describe('useSendQueryParams', () => {
       expect(mockUpdateNonEVMSubmitError).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
+
+    expect(trackedEventNames()).toStrictEqual(['Send Failed']);
+    expect(trackedEventProperties('Send Failed')).toMatchObject({
+      failure_phase: 'validation',
+      error_code: 'unknown',
+    });
   });
 
   it('handleSubmit handles user rejection (code 4001) for non-evm send', async () => {
     const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: SOLANA_ASSET,
-      from: MOCK_ADDRESS_3,
-      to: MOCK_ADDRESS_4,
-      value: '10',
+      ...NON_EVM_SEND_CONTEXT,
       updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
     } as unknown as SendContext.SendContextType);
 
@@ -320,22 +413,28 @@ describe('useSendQueryParams', () => {
       expect(mockUpdateNonEVMSubmitError).toHaveBeenCalledWith(undefined);
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
+
+    // User rejection is classified, not dropped, so the attempt stays countable
+    expect(trackedEventNames()).toStrictEqual(['Send Failed']);
+    expect(trackedEventProperties('Send Failed')).toMatchObject({
+      failure_phase: 'confirmation',
+      error_code: 'user_rejected',
+    });
   });
 
   it('handleSubmit displays generic error for non-rejection snap errors', async () => {
     const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: SOLANA_ASSET,
-      from: MOCK_ADDRESS_3,
-      to: MOCK_ADDRESS_4,
-      value: '10',
+      ...NON_EVM_SEND_CONTEXT,
       updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
     } as unknown as SendContext.SendContextType);
 
     jest
       .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
       .mockImplementation(() =>
-        Promise.reject(new Error('Unexpected snap error')),
+        Promise.reject(
+          Object.assign(new Error('Unexpected snap error'), { code: -32603 }),
+        ),
       );
 
     const result = renderHook();
@@ -354,5 +453,110 @@ describe('useSendQueryParams', () => {
       expect(lastCall[0]).not.toBeUndefined();
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
+
+    expect(trackedEventNames()).toStrictEqual(['Send Failed']);
+    expect(trackedEventProperties('Send Failed')).toMatchObject({
+      failure_phase: 'snap_rpc',
+      error_code: '-32603',
+    });
+  });
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each([
+    {
+      testcase: 'Snap Returned a Validation Error',
+      mockImp: () =>
+        Promise.resolve({
+          valid: false,
+          errors: [{ code: 'InsufficientBalance' }],
+        }),
+    },
+    {
+      testcase: 'Snap threw an error',
+      mockImp: () =>
+        Promise.reject(
+          Object.assign(new Error('Unexpected snap error'), { code: -32603 }),
+        ),
+    },
+  ])(
+    'when the loader has left the send screen, handleSubmit shows a toast for a validation error when the loader has left the send screen - $testcase',
+    async ({
+      mockImp,
+    }: {
+      mockImp: () => Promise<{ valid: boolean; errors: { code: string }[] }>;
+    }) => {
+      window.location.hash = '#/confirmation/pending-send';
+
+      const mockUpdateNonEVMSubmitError = jest.fn();
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        ...NON_EVM_SEND_CONTEXT,
+        updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
+      } as unknown as SendContext.SendContextType);
+
+      jest
+        .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+        .mockImplementation(mockImp);
+
+      const result = renderHook();
+      result.handleSubmit(MOCK_ADDRESS_4);
+
+      await waitFor(() => {
+        expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
+        expect(toast.error).toHaveBeenCalledWith(GENERIC_TRANSACTION_ERROR);
+        expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+      });
+    },
+  );
+
+  it('when the loader has left the send screen, handleSubmit does not show a toast when the user rejects the confirmation', async () => {
+    window.location.hash = '#/confirmation/pending-send';
+
+    const mockUpdateNonEVMSubmitError = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      ...NON_EVM_SEND_CONTEXT,
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
+    } as unknown as SendContext.SendContextType);
+
+    jest
+      .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+      .mockImplementation(() =>
+        Promise.reject(
+          Object.assign(new Error('User rejected'), { code: 4001 }),
+        ),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_4);
+
+    await waitFor(() => {
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    });
+    expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it('handleSubmit does not emit a client submit/complete event on success', async () => {
+    const mockUpdateNonEVMSubmitError = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      ...NON_EVM_SEND_CONTEXT,
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
+    } as unknown as SendContext.SendContextType);
+
+    jest
+      .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+      .mockImplementation(() =>
+        Promise.resolve({ valid: true, transactionId: '0xdeadbeef' }),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_4);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
+    });
+
+    // The Snap emits the post-submit lifecycle events itself, so the client
+    // does not track a duplicate submit/complete event on success.
+    expect(trackedEventNames()).toStrictEqual([]);
   });
 });

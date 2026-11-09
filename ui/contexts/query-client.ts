@@ -18,10 +18,16 @@ const adapter = {
   call: (method: string, ...params: Json[]) =>
     submitRequestToBackground<Json>('messengerCall', [method, params]),
   subscribe: (event: string, callback: DataServiceHandler) => {
-    subscribeToMessengerEvent(
-      event as NamespacedName,
-      callback as (data: Json) => void,
-    )
+    // MessengerSubscriptions forwards each event's arguments as one array.
+    // `cacheUpdated` publishes a single payload object; passing the array
+    // through makes `hydrate` read `.mutations` on undefined (query-core 5.103).
+    subscribeToMessengerEvent(event as NamespacedName, (payload) => {
+      const update = Array.isArray(payload) ? payload[0] : payload;
+      if (!update || typeof update !== 'object') {
+        return;
+      }
+      callback(update as DataServiceGranularCacheUpdatedPayload);
+    })
       .then((unsubscribe) => subscriptions.set(callback, unsubscribe))
       .catch(console.error);
   },

@@ -74,6 +74,18 @@ export const SUPPORT_CONFIG = {
 } as const;
 
 /**
+ * Outage banner links. The FAQ opens the Perps troubleshoot article so users
+ * can manage positions while trading is degraded. The support link opens the
+ * MetaMask help center through the data-consent modal, the same destination
+ * as the general contact-support button, matching mobile.
+ */
+export const SERVICE_INTERRUPTION_CONFIG = {
+  FaqUrl:
+    'https://support.metamask.io/trade/perps/troubleshoot/?utm_source=extension',
+  SupportUrl: SUPPORT_CONFIG.Url,
+} as const;
+
+/**
  * Perps feedback survey (third-party). Single source of truth aligned with mobile perpsConfig.
  */
 export const FEEDBACK_CONFIG = {

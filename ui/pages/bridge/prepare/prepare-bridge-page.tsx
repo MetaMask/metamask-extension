@@ -13,7 +13,13 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+  Box,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import { toast, ToastContent } from '#ui/components/ui/toast/toast';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
@@ -23,6 +29,7 @@ import {
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
+  setToTokenSecurityData,
   setWasTxDeclined,
 } from '../../../ducks/bridge/actions';
 import {
@@ -49,15 +56,13 @@ import {
   getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  ButtonIcon,
-  IconName,
+  ButtonIcon as LegacyButtonIcon,
+  IconName as LegacyIconName,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  IconColor,
+  IconColor as LegacyIconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -69,12 +74,10 @@ import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainProviderConfig } from '../../../selectors/multichain';
-import { Toast, ToastContainer } from '../../../components/multichain';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
 import {
   MultichainBridgeQuoteCard,
   MultichainBridgeQuoteCardSkeleton,
@@ -84,6 +87,7 @@ import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
+import { calculateMaxAmountWithReserve } from '../utils/minimum-reserve';
 import { useDispatch } from '../../../store/hooks';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getCurrencySymbol } from '../../../helpers/utils/common.util';
@@ -118,6 +122,19 @@ const PrepareBridgePage = ({
     fromToken,
     toToken,
   );
+  const toTokenSecurityData =
+    selectedTokenSecurityData[getTokenSecurityAssetKey(toToken.assetId)];
+
+  useEffect(() => {
+    if (toTokenSecurityData) {
+      dispatch(
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          ...toTokenSecurityData,
+        }),
+      );
+    }
+  }, [dispatch, toTokenSecurityData, toToken.assetId]);
 
   const fromChains = useSelector(getFromChains);
   const toChain = useSelector(getToChain);
@@ -162,9 +179,7 @@ const PrepareBridgePage = ({
     useGasIncludedSupport();
 
   const shouldShowMaxButton =
-    fromToken &&
-    // Always show for non-native tokens. Arc ERC20 USDC considered as native.
-    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
+    fromToken && isNativeAddress(fromToken.assetId)
       ? !isSolanaChainId(fromToken.chainId) &&
         (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;
@@ -448,11 +463,19 @@ const PrepareBridgePage = ({
     [],
   );
 
-  const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
-  const [blockExplorerToken, setBlockExplorerToken] =
-    useState<BridgeToken | null>(null);
-  const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
+
+  const handleBlockExplorerClick = (token: BridgeToken) => {
+    toast.success(<ToastContent title={t('bridgeBlockExplorerLinkCopied')} />, {
+      icon: (
+        <AvatarFavicon
+          name={token.symbol}
+          size={AvatarFaviconSize.Sm}
+          src={token.iconUrl ?? undefined}
+        />
+      ),
+    });
+  };
 
   const [alertModalProps, setAlertModalProps] = useState<
     Pick<
@@ -503,7 +526,15 @@ const PrepareBridgePage = ({
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
-                  dispatch(setFromTokenInputValue(value));
+                  dispatch(
+                    setFromTokenInputValue(
+                      calculateMaxAmountWithReserve({
+                        balanceAmount: value,
+                        caipAssetId: fromToken?.assetId,
+                        decimals: fromToken?.decimals ?? 0,
+                      }),
+                    ),
+                  );
                 }
               : undefined
           }
@@ -528,11 +559,7 @@ const PrepareBridgePage = ({
             paddingInline: 4,
           }}
           buttonProps={{ testId: 'bridge-source-button' }}
-          onBlockExplorerClick={(token) => {
-            setBlockExplorerToken(token);
-            setShowBlockExplorerToast(true);
-            setToastTriggerCounter((prev) => prev + 1);
-          }}
+          onBlockExplorerClick={handleBlockExplorerClick}
           isDestination={false}
         />
 
@@ -559,7 +586,7 @@ const PrepareBridgePage = ({
               justifyContent: JustifyContent.center,
             }}
           >
-            <ButtonIcon
+            <LegacyButtonIcon
               iconProps={{
                 className: classnames({
                   rotate: rotateSwitchTokens,
@@ -573,8 +600,8 @@ const PrepareBridgePage = ({
               }}
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
-              iconName={IconName.SwapVertical}
-              color={IconColor.iconAlternative}
+              iconName={LegacyIconName.SwapVertical}
+              color={LegacyIconColor.iconAlternative}
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
@@ -650,11 +677,7 @@ const PrepareBridgePage = ({
               dispatch(setIsDestAssetPickerOpen(isOpen))
             }
             token={toToken}
-            tokenSecurityData={
-              selectedTokenSecurityData[
-                getTokenSecurityAssetKey(toToken.assetId)
-              ]
-            }
+            tokenSecurityData={toTokenSecurityData}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined
@@ -665,17 +688,10 @@ const PrepareBridgePage = ({
               disabled: true,
               value: destinationAmount,
               autoFocus: false,
-              className: destinationTokenAmount
-                ? 'amount-input defined'
-                : 'amount-input',
             }}
             showAmountSkeleton={isInitialQuoteLoading}
             buttonProps={{ testId: 'bridge-destination-button' }}
-            onBlockExplorerClick={(token) => {
-              setBlockExplorerToken(token);
-              setShowBlockExplorerToast(true);
-              setToastTriggerCounter((prev) => prev + 1);
-            }}
+            onBlockExplorerClick={handleBlockExplorerClick}
             isDestination={true}
           />
         </Column>
@@ -710,7 +726,7 @@ const PrepareBridgePage = ({
 
         {!isInitialQuoteLoading && (
           <Column
-            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16"
+            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 cta-footer"
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
             gap={3}
@@ -778,37 +794,6 @@ const PrepareBridgePage = ({
         )}
         <div ref={footerRef} />
       </Column>
-
-      {showBlockExplorerToast && blockExplorerToken && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 50,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 1000,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <ToastContainer>
-            <Toast
-              key={toastTriggerCounter}
-              text={t('bridgeBlockExplorerLinkCopied')}
-              onClose={() => setShowBlockExplorerToast(false)}
-              autoHideTime={2500}
-              startAdornment={
-                <AvatarFavicon
-                  name={blockExplorerToken.symbol}
-                  size={AvatarFaviconSize.Sm}
-                  src={toToken.iconUrl ?? undefined}
-                />
-              }
-            />
-          </ToastContainer>
-        </div>
-      )}
     </>
   );
 };

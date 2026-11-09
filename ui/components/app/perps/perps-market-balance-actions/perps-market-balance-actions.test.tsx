@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
@@ -81,6 +82,20 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.getByTestId('perps-balance-actions-add-funds'),
     ).toBeInTheDocument();
+  });
+
+  it.each<['column' | 'row', string]>([
+    ['column', 'w-full'],
+    ['row', 'max-w-sm'],
+  ])('lays the action buttons out in a %s', (layout, className) => {
+    renderWithProvider(
+      <PerpsMarketBalanceActions showActionButtons layout={layout} />,
+      mockStore,
+    );
+
+    const actions = screen.getByTestId('perps-balance-actions-add-funds')
+      .parentElement?.parentElement;
+    expect(actions).toHaveClass(className);
   });
 
   it('shows the Withdraw button and the "available" line once the account has a balance', () => {
@@ -260,7 +275,7 @@ describe('PerpsMarketBalanceActions', () => {
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -316,7 +331,7 @@ describe('PerpsMarketBalanceActions', () => {
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -337,7 +352,7 @@ describe('PerpsMarketBalanceActions', () => {
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -384,7 +399,7 @@ describe('PerpsMarketBalanceActions', () => {
       expect(mockTrack).toHaveBeenCalledWith(
         MetaMetricsEventName.PerpsUiInteraction,
         expect.objectContaining({
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
         }),
       );

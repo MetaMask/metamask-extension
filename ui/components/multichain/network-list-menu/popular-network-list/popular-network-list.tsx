@@ -8,16 +8,13 @@ import {
   IconName,
   IconSize,
   IconColor,
+  Popover,
+  PopoverPosition,
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Box,
-  Text,
-  Popover,
-  PopoverPosition,
-} from '../../../component-library';
+import { Box, Text } from '../../../component-library';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import {
   setEnabledNetworks,
@@ -91,13 +88,11 @@ const PopularNetworkList = ({
             <Popover
               referenceElement={referenceElement}
               position={PopoverPosition.TopStart}
-              paddingTop={3}
-              paddingBottom={3}
               offset={[16, 12]}
               isOpen={isOpen}
               flip
-              backgroundColor={BackgroundColor.backgroundSection}
               onMouseLeave={close}
+              className="bg-section pt-3 pb-3"
               style={{
                 width: '326px',
               }}

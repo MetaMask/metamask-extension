@@ -297,4 +297,58 @@ describe('setupMocking', () => {
       },
     ]);
   });
+
+  it('serves v6 unified EVM balances with the v6 response contract', async () => {
+    const server = createMockServerStub();
+    const accountId = 'eip155:1:0xabc';
+
+    await setupMocking(server, async () => [], {
+      chainId: '0x1',
+      unifiedEvmAccountsApiBalances: {
+        nativeBalance: '25',
+        mainnetAdditionalBalances: [
+          {
+            assetId:
+              'eip155:1/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
+            balance: '10',
+          },
+        ],
+      },
+    });
+
+    const balancesRule = findRule(
+      server,
+      'forGet',
+      (matcher) =>
+        matcher ===
+        'https://accounts.api.cx.metamask.io/v6/multiaccount/balances',
+    );
+    const pinnedAssetId =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const response = balancesRule.callback({
+      url: `https://accounts.api.cx.metamask.io/v6/multiaccount/balances?accountIds=${accountId}&includeAssetIds=${pinnedAssetId}`,
+    });
+
+    expect(response.json.unprocessedIncludeAssetIds).toEqual([]);
+    expect(response.json.balances).toEqual([
+      {
+        accountId,
+        assetId: 'eip155:1/slip44:60',
+        balance: '25',
+        object: 'token',
+      },
+      {
+        accountId,
+        assetId: 'eip155:1/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+        balance: '10',
+        object: 'token',
+      },
+      {
+        accountId,
+        assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        balance: '0',
+        object: 'token',
+      },
+    ]);
+  });
 });

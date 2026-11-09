@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { Mockttp } from 'mockttp';
 import {
   DEFAULT_BTC_ADDRESS,
@@ -38,6 +39,87 @@ const FUNDING_BLOCK_HASH =
   '000000000000000000013d73c3bd23225714f2fd8b801ed076818f2971897748';
 const GENESIS_BLOCK_HASH =
   '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
+const PRE_BROADCAST_TIP_HASH =
+  '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
+
+type EsploraTransactionOutput = {
+  scriptpubkey: string;
+  scriptpubkey_address?: string;
+  scriptpubkey_asm: string;
+  scriptpubkey_type: string;
+  value: number;
+};
+
+const E2E_FUNDING_OUTPUT: EsploraTransactionOutput = {
+  scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
+  scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
+  scriptpubkey_type: 'v0_p2wpkh',
+  scriptpubkey_address: DEFAULT_BTC_ADDRESS,
+  value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
+};
+
+function readVarInt(
+  buffer: Buffer,
+  offset: number,
+): {
+  size: number;
+  value: number;
+} {
+  const prefix = buffer[offset];
+  if (prefix < 0xfd) {
+    return { size: 1, value: prefix };
+  }
+  if (prefix === 0xfd) {
+    return { size: 3, value: buffer.readUInt16LE(offset + 1) };
+  }
+  if (prefix === 0xfe) {
+    return { size: 5, value: buffer.readUInt32LE(offset + 1) };
+  }
+  throw new Error('Unexpected 64-bit Bitcoin varint');
+}
+
+function getTransactionId(transactionWithoutWitness: Buffer): string {
+  return createHash('sha256')
+    .update(createHash('sha256').update(transactionWithoutWitness).digest())
+    .digest()
+    .reverse()
+    .toString('hex');
+}
+
+function getBroadcastTransactionId(rawTransaction: string): string {
+  const transaction = Buffer.from(rawTransaction, 'hex');
+  const hasWitness = transaction[4] === 0 && transaction[5] !== 0;
+  if (!hasWitness) {
+    return getTransactionId(transaction);
+  }
+
+  // Only locate the serialized inputs/outputs: txids exclude marker, flag,
+  // and witness stacks, so decoding values, scripts, or fees is unnecessary.
+  let offset = 6;
+  const inputCount = readVarInt(transaction, offset);
+  offset += inputCount.size;
+  for (let index = 0; index < inputCount.value; index += 1) {
+    offset += 36; // Previous transaction hash and output index.
+    const script = readVarInt(transaction, offset);
+    offset += script.size + script.value + 4; // ScriptSig and sequence.
+  }
+
+  const outputCount = readVarInt(transaction, offset);
+  offset += outputCount.size;
+  for (let index = 0; index < outputCount.value; index += 1) {
+    offset += 8; // Output value.
+    const script = readVarInt(transaction, offset);
+    offset += script.size + script.value;
+  }
+
+  return getTransactionId(
+    Buffer.concat([
+      transaction.subarray(0, 4),
+      transaction.subarray(6, offset),
+      transaction.subarray(-4), // Locktime follows all witness stacks.
+    ]),
+  );
+}
 
 /**
  * Funding transaction that sends DEFAULT_BTC_BALANCE to the E2E test address.
@@ -72,16 +154,7 @@ const FUNDING_TX = {
       sequence: 4294967293,
     },
   ],
-  vout: [
-    {
-      // Output to the E2E test address (P2WPKH)
-      scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
-      scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
-      scriptpubkey_type: 'v0_p2wpkh',
-      scriptpubkey_address: DEFAULT_BTC_ADDRESS,
-      value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC, // 1 BTC = 100,000,000 sats
-    },
-  ],
+  vout: [E2E_FUNDING_OUTPUT],
   size: 191,
   weight: 437,
   fee: 1000,
@@ -111,7 +184,7 @@ const mockBlocks = (mockServer: Mockttp) =>
         statusCode: 200,
         json: [
           {
-            id: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
+            id: PRE_BROADCAST_TIP_HASH,
             height: 932936,
             version: 1073676288,
             timestamp: 1768825157,
@@ -496,7 +569,7 @@ const mockTxOutspends = (mockServer: Mockttp) =>
 
 /**
  * Mock POST /tx endpoint for broadcasting transactions.
- * Returns a fake txid on success.
+ * Returns the actual transaction ID (excluding witness data) on success.
  *
  * @param mockServer - The mock server instance
  */
@@ -506,11 +579,11 @@ const mockBroadcastTx = (mockServer: Mockttp) =>
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx$/u,
     )
     .always()
-    .thenCallback(() => {
-      // Return a fake txid for the broadcast transaction
+    .thenCallback(async (request) => {
+      const rawTransaction = (await request.body.getText()) ?? '';
       return {
         statusCode: 200,
-        body: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        body: getBroadcastTransactionId(rawTransaction),
       };
     });
 
@@ -527,7 +600,10 @@ const mockBlocksTipHeight = (mockServer: Mockttp) =>
     )
     .always()
     .thenCallback(() => {
-      return { statusCode: 200, body: '932936' };
+      return {
+        statusCode: 200,
+        body: '932936',
+      };
     });
 
 /**
@@ -545,7 +621,7 @@ const mockBlocksTipHash = (mockServer: Mockttp) =>
     .thenCallback(() => {
       return {
         statusCode: 200,
-        body: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
+        body: PRE_BROADCAST_TIP_HASH,
       };
     });
 

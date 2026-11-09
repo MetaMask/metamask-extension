@@ -1,0 +1,18 @@
+export const MfaFlowTestIds = {
+  CONTAINER: 'mfa-flow',
+  BACK_BUTTON: 'mfa-flow-back-button',
+  CLOSE_BUTTON: 'mfa-flow-close-button',
+  PRIMARY_BUTTON: 'mfa-flow-primary-button',
+  SECONDARY_BUTTON: 'mfa-flow-secondary-button',
+  ERROR: 'mfa-flow-error',
+  ERROR_LINK: 'mfa-flow-error-link',
+  EMAIL_INPUT: 'mfa-flow-email-input',
+  CODE_INPUT: 'mfa-flow-code-input',
+  RESEND_BUTTON: 'mfa-flow-resend-button',
+  VERIFYING_INDICATOR: 'mfa-flow-verifying-indicator',
+  PICKER_OPTION: 'mfa-flow-picker-option',
+  INTRO_METHOD: 'mfa-flow-intro-method',
+  TOTP_SETUP_KEY: 'mfa-flow-totp-setup-key',
+  TOTP_COPY_KEY: 'mfa-flow-totp-copy-key',
+  TOTP_QR_IMAGE: 'mfa-flow-totp-qr-image',
+} as const;

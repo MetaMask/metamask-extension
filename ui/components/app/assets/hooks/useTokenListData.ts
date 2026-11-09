@@ -1,0 +1,390 @@
+import { useCallback, useDeferredValue, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+  isCaipAssetType,
+  isStrictHexString,
+} from '@metamask/utils';
+import type { Asset } from '@metamask/assets-controllers';
+import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
+import {
+  getNativeAssetId,
+  isEvmChainId,
+  isTronSpecialAsset,
+  normalizeTokenAssetId,
+} from '#shared/lib/asset-utils';
+import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
+import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
+import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
+import {
+  getShouldHideZeroBalanceTokens,
+  getTokenSortConfig,
+  getUseExternalServices,
+} from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import {
+  endTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../../shared/lib/trace';
+import { type TokenWithFiatAmount } from '../types';
+import {
+  getSelectedMultichainNetworkConfiguration,
+  getIsEvmMultichainNetworkSelected,
+  getAllEnabledNetworksForAllNamespaces,
+} from '../../../../selectors/multichain/networks';
+import {
+  getAssetsBySelectedAccountGroup,
+  selectAccountGroupBalanceForEmptyState,
+  selectIsAssetsLoadingForSelectedAccountGroup,
+} from '../../../../selectors/assets';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
+import { isMusdToken } from '../../musd/constants';
+import { useBoolean } from '../../../../hooks/useBoolean';
+import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
+
+export type TokenListDisplayItem =
+  | {
+      type: 'token';
+      token: TokenWithFiatAmount;
+    }
+  | {
+      type: 'low-value-toggle';
+      count: number;
+    };
+
+type UseTokenListDataOptions = {
+  onTokenClick: (
+    chainId: string,
+    address: string,
+    assetId?: CaipAssetType,
+  ) => void;
+};
+
+let lowValueAssetsExpandedSessionValue = false;
+
+const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
+  const { assetId, chainId, isNative } = asset;
+
+  if (assetId && isCaipAssetType(assetId)) {
+    return normalizeTokenAssetId(assetId);
+  }
+
+  if (isNative) {
+    const nativeAssetId = getNativeAssetId(chainId as Hex | undefined);
+    return nativeAssetId ? normalizeTokenAssetId(nativeAssetId) : undefined;
+  }
+
+  const evmAddress = 'address' in asset ? asset.address : assetId;
+  if (evmAddress && isStrictHexString(chainId)) {
+    return buildEvmCaip19AssetId(evmAddress, chainId) as CaipAssetType;
+  }
+
+  return undefined;
+};
+
+export const getTokenListItemKey = (
+  item: TokenListDisplayItem,
+  index: number,
+) => {
+  if (item.type === 'low-value-toggle') {
+    return `low-value-assets-toggle-${index}`;
+  }
+
+  return `${item.token.chainId}-${item.token.symbol}-${item.token.address}`;
+};
+
+/**
+ * Prepares the account's tokens for display: filtering, sorting, the low value
+ * partition, security results and click analytics. Shared by every surface
+ * that lists the account's tokens, so each only has to render the result.
+ *
+ * @param options - The hook options.
+ * @param options.onTokenClick - Called when a token is opened.
+ * @returns The display items and the handlers to render them.
+ */
+export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
+  const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
+  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
+  const { privacyMode } = useSelector(getPreferences);
+  const tokenSortConfig = useSelector(getTokenSortConfig);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const isAssetsLoading = useSelector(
+    selectIsAssetsLoadingForSelectedAccountGroup,
+  );
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
+    useBoolean(lowValueAssetsExpandedSessionValue);
+  const { isStockToken } = useRWAToken();
+
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+
+  // Defer only the hide-zero-balance preference so Settings toggles stay
+  // responsive while this list recomputes. Account assets must update
+  // immediately on account switch to avoid showing stale tokens.
+  const deferredShouldHideZeroBalanceTokens = useDeferredValue(
+    shouldHideZeroBalanceTokens,
+  );
+
+  const useExternalServices = useSelector(getUseExternalServices);
+
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
+
+  const sortedFilteredTokens = useMemo(() => {
+    const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
+      ([chainId, assets]) => {
+        if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
+          return [];
+        }
+
+        // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
+        return assets.filter((asset) => {
+          if (isTronSpecialAsset(asset.assetId)) {
+            return false;
+          }
+          if (deferredShouldHideZeroBalanceTokens && asset.balance === '0') {
+            return false;
+          }
+          return true;
+        });
+      },
+    );
+
+    const accountAssets = sortAssetsWithPriority(
+      accountAssetsPreSort,
+      tokenSortConfig,
+    );
+
+    // Filter out non-EVM assets when basic functionality toggle is OFF
+    // Exception: Keep assets for the currently selected non-EVM chain
+    const finalAccountAssets = useExternalServices
+      ? accountAssets
+      : accountAssets.filter(
+          (asset) =>
+            isEvmChainId(asset.chainId) ||
+            (!isEvm && asset.chainId === currentNetwork.chainId),
+        );
+
+    return finalAccountAssets.map((asset) => {
+      const token: TokenWithFiatAmount = {
+        ...asset,
+        tokenFiatAmount: asset.fiat?.balance,
+        secondary: null,
+        title: asset.name,
+        address: 'address' in asset ? asset.address : (asset.assetId as Hex),
+        chainId: asset.chainId as Hex,
+        caipAssetId: toCaipAssetId(asset),
+      };
+
+      return token;
+    });
+  }, [
+    isEvm,
+    currentNetwork.chainId,
+    tokenSortConfig,
+    accountGroupIdAssets,
+    allEnabledNetworksForAllNamespaces,
+    deferredShouldHideZeroBalanceTokens,
+    useExternalServices,
+  ]);
+
+  // Skeletons stand in for the native gas token and mUSD that render before
+  // the rest of the account's tokens. Tokens already in state stay visible,
+  // including when a token-list request fails and the load never settles.
+  const showLoadingSkeleton =
+    isAssetsLoading &&
+    sortedFilteredTokens.every(
+      (token) => token.isNative || isMusdToken(token.address),
+    );
+
+  useCoordinatedTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    ready: !showLoadingSkeleton,
+    sectionId: 'tokens',
+    data: {
+      success: true,
+      contentState: sortedFilteredTokens.length ? 'filled' : 'empty',
+    },
+  });
+
+  // Low value collapse only applies to declining-balance sort.
+  const shouldPartitionLowValueTokens =
+    tokenSortConfig?.key === 'tokenFiatAmount' &&
+    tokenSortConfig?.order === 'dsc' &&
+    tokenSortConfig?.sortCallback === 'stringNumeric';
+  const { visibleTokens, lowValueTokens } = useLowValueTokenPartition({
+    tokens: sortedFilteredTokens,
+    enabled: shouldPartitionLowValueTokens,
+  });
+
+  const lowValueAssetCount = lowValueTokens.length;
+
+  const displayedAssetIds = useMemo(
+    () =>
+      [
+        ...visibleTokens,
+        ...(isLowValueAssetsExpanded ? lowValueTokens : []),
+      ].flatMap((token) =>
+        token.caipAssetId && !isStockToken(token) ? [token.caipAssetId] : [],
+      ),
+    [isLowValueAssetsExpanded, isStockToken, lowValueTokens, visibleTokens],
+  );
+
+  const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
+
+  const securityResultByAssetId = useTokenAssetSecurityResults({
+    assetIds: deferredDisplayedAssetIds,
+  });
+
+  const tokenListItems = useMemo<TokenListDisplayItem[]>(() => {
+    const visibleTokenItems: TokenListDisplayItem[] = visibleTokens.map(
+      (token) => ({
+        type: 'token',
+        token: {
+          ...token,
+          safetyResult: token.caipAssetId
+            ? securityResultByAssetId[token.caipAssetId]
+            : undefined,
+        },
+      }),
+    );
+
+    if (lowValueAssetCount === 0) {
+      return visibleTokenItems;
+    }
+
+    return [
+      ...visibleTokenItems,
+      {
+        type: 'low-value-toggle',
+        count: lowValueAssetCount,
+      },
+      ...(isLowValueAssetsExpanded
+        ? lowValueTokens.map((token) => ({
+            type: 'token' as const,
+            token: {
+              ...token,
+              safetyResult: token.caipAssetId
+                ? securityResultByAssetId[token.caipAssetId]
+                : undefined,
+            },
+          }))
+        : []),
+    ];
+  }, [
+    isLowValueAssetsExpanded,
+    lowValueAssetCount,
+    lowValueTokens,
+    securityResultByAssetId,
+    visibleTokens,
+  ]);
+
+  const displayedTokens = useMemo(
+    () =>
+      tokenListItems.flatMap((item) =>
+        item.type === 'token' ? [item.token] : [],
+      ),
+    [tokenListItems],
+  );
+
+  useEffect(() => {
+    if (sortedFilteredTokens) {
+      endTrace({ name: TraceName.AccountOverviewAssetListTab });
+    }
+  }, [sortedFilteredTokens]);
+
+  const handleTokenClick = useCallback(
+    (token: TokenWithFiatAmount) => () => {
+      // Ensure token has a valid chainId before proceeding
+      if (!token.chainId) {
+        return;
+      }
+
+      // TODO BIP44 Refactor: The route requires evm native tokens to not pass the address
+      const tokenAddress =
+        isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
+
+      const routeAssetId =
+        token.assetId && isCaipAssetType(token.assetId)
+          ? token.assetId
+          : undefined;
+
+      onTokenClick(token.chainId, tokenAddress, routeAssetId);
+
+      // Track event: token details
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenDetailsOpened)
+          .addCategory(MetaMetricsEventCategory.Tokens)
+          .addProperties({
+            location: 'Home',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: token.symbol ?? 'unknown',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: token.chainId,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, onTokenClick, trackEvent],
+  );
+
+  /**
+   * Returns the click handler for a token, or `undefined` when the token can't
+   * be opened (non-EVM testnets have no asset page).
+   */
+  const getTokenClickHandler = useCallback(
+    (token: TokenWithFiatAmount) =>
+      NON_EVM_TESTNET_IDS.includes(token.chainId as CaipChainId)
+        ? undefined
+        : handleTokenClick(token),
+    [handleTokenClick],
+  );
+
+  const handleLowValueAssetsToggle = useCallback(() => {
+    toggleLowValueAssets();
+    lowValueAssetsExpandedSessionValue = !isLowValueAssetsExpanded;
+
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.LowValueAssetsToggled)
+        .addCategory(MetaMetricsEventCategory.Home)
+        .addProperties({
+          state: isLowValueAssetsExpanded ? 'collapsed' : 'expanded',
+          count: lowValueAssetCount,
+        })
+        .build(),
+    );
+  }, [
+    createEventBuilder,
+    isLowValueAssetsExpanded,
+    lowValueAssetCount,
+    toggleLowValueAssets,
+    trackEvent,
+  ]);
+
+  return {
+    tokenListItems,
+    displayedTokens,
+    showLoadingSkeleton,
+    hasBalance,
+    privacyMode,
+    isLowValueAssetsExpanded,
+    handleLowValueAssetsToggle,
+    getTokenClickHandler,
+  };
+}

@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Portfolio Buy migration attempt marker reads supported marker values 1`] = `
+{
+  "results": [
+    {
+      "attempted": false,
+      "label": "missing",
+    },
+    {
+      "attempted": true,
+      "label": "boolean marker",
+    },
+    {
+      "attempted": true,
+      "label": "legacy string marker",
+    },
+  ],
+  "storageCalls": [
+    [
+      "portfolio-buy-migration-attempted-v13",
+    ],
+    [
+      "portfolio-buy-migration-attempted-v13",
+    ],
+    [
+      "portfolio-buy-migration-attempted-v13",
+    ],
+  ],
+}
+`;

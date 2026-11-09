@@ -99,6 +99,7 @@ describe('AssetMarketDetails', () => {
             circulatingSupply: mockCirculatingSupply,
             allTimeHigh: 100,
             allTimeLow: 10,
+            dilutedMarketCap: 80000,
           },
         },
       })
@@ -127,6 +128,8 @@ describe('AssetMarketDetails', () => {
     expect(getByText(messages.circulatingSupply.message)).toBeInTheDocument();
     expect(getByText(messages.allTimeHigh.message)).toBeInTheDocument();
     expect(getByText(messages.allTimeLow.message)).toBeInTheDocument();
+    expect(getByText(messages.volumeToMarketCap.message)).toBeInTheDocument();
+    expect(getByText(messages.fullyDiluted.message)).toBeInTheDocument();
   });
 
   it('should correctly multiply market cap by exchange rate for EVM tokens', () => {
@@ -159,6 +162,26 @@ describe('AssetMarketDetails', () => {
     expect(circulatingSupplyRow).not.toHaveTextContent('15000.00B');
   });
 
+  it('derives volume to market cap from volume and market cap', () => {
+    const { getByTestId } = renderWithI18n(
+      <AssetMarketDetails asset={evmAsset} address="0xTokenAddress" />,
+    );
+
+    // 1,000 / 50,000 = 2%, unchanged by the exchange rate
+    expect(getByTestId('asset-volume-to-market-cap')).toHaveTextContent(
+      '2.00%',
+    );
+  });
+
+  it('multiplies fully diluted value by the exchange rate for EVM tokens', () => {
+    const { getByTestId } = renderWithI18n(
+      <AssetMarketDetails asset={evmAsset} address="0xTokenAddress" />,
+    );
+
+    // 80,000 * 1,000 = 80,000,000 -> $80.00M
+    expect(getByTestId('asset-fully-diluted')).toHaveTextContent('$80.00M');
+  });
+
   it('should multiply allTimeHigh and allTimeLow by exchange rate for EVM tokens', () => {
     const { getByText } = renderWithI18n(
       <AssetMarketDetails asset={evmAsset} address="0xTokenAddress" />,
@@ -173,6 +196,91 @@ describe('AssetMarketDetails', () => {
     // allTimeLow: 10 * 1000 = 10,000 -> $10000
     const allTimeLowRow = getByText(messages.allTimeLow.message).parentElement;
     expect(allTimeLowRow).toHaveTextContent('$10000');
+  });
+
+  describe('when the wallet has no cached market data for the asset', () => {
+    // Values as the Price API returns them: already in the selected currency.
+    const fallbackMarketData = {
+      marketCap: 50000000,
+      totalVolume: 1000000,
+      circulatingSupply: mockCirculatingSupply,
+      allTimeHigh: 100000,
+      allTimeLow: 10000,
+      dilutedMarketCap: 80000000,
+    };
+
+    beforeEach(() => {
+      // Re-queue only the redux selectors so that getMarketData is empty,
+      // leaving the formatter mocks from the module factory intact.
+      mockUseSelector.mockReset();
+      mockUseSelector
+        .mockReturnValueOnce('usd') // getCurrentCurrency
+        .mockReturnValueOnce({}) // getMarketData
+        .mockReturnValueOnce({ ETH: { conversionRate: mockTokenExchangeRate } }) // getCurrencyRates
+        .mockReturnValueOnce({}); // getAssetsRates
+    });
+
+    it('renders market details from the fallback prop', () => {
+      const { getByText, getByTestId } = renderWithI18n(
+        <AssetMarketDetails
+          asset={evmAsset}
+          address="0xTokenAddress"
+          fallbackMarketData={fallbackMarketData}
+        />,
+      );
+
+      expect(getByText(messages.marketDetails.message)).toBeInTheDocument();
+      expect(getByTestId('asset-market-cap')).toHaveTextContent('$50.00M');
+      expect(getByTestId('asset-fully-diluted')).toHaveTextContent('$80.00M');
+      expect(getByTestId('asset-volume-to-market-cap')).toHaveTextContent(
+        '2.00%',
+      );
+    });
+
+    it('does not apply the native exchange rate to fallback values', () => {
+      const { getByText, getByTestId } = renderWithI18n(
+        <AssetMarketDetails
+          asset={evmAsset}
+          address="0xTokenAddress"
+          fallbackMarketData={fallbackMarketData}
+        />,
+      );
+
+      // Already in fiat, so the 1,000x rate must not be applied again.
+      expect(getByTestId('asset-market-cap')).not.toHaveTextContent('$50.00B');
+
+      // Anchored, because a substring match would also accept $100000000.
+      const allTimeHighRow = getByText(
+        messages.allTimeHigh.message,
+      ).parentElement;
+      expect(allTimeHighRow).toHaveTextContent(/\$100000$/u);
+
+      const allTimeLowRow = getByText(
+        messages.allTimeLow.message,
+      ).parentElement;
+      expect(allTimeLowRow).toHaveTextContent(/\$10000$/u);
+    });
+
+    it('renders nothing when there is no fallback data either', () => {
+      const { container } = renderWithI18n(
+        <AssetMarketDetails asset={evmAsset} address="0xTokenAddress" />,
+      );
+
+      expect(container.firstChild).toBeNull();
+    });
+  });
+
+  it('prefers cached market data over the fallback prop', () => {
+    const { getByTestId } = renderWithI18n(
+      <AssetMarketDetails
+        asset={evmAsset}
+        address="0xTokenAddress"
+        fallbackMarketData={{ marketCap: 999, totalVolume: 1 }}
+      />,
+    );
+
+    // The cached 50,000 * 1,000 rate, not the fallback's 999.
+    expect(getByTestId('asset-market-cap')).toHaveTextContent('$50.00M');
   });
 
   it('should not render when conversionRate is 0', () => {
