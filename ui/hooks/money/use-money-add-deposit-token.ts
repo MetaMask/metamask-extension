@@ -31,7 +31,7 @@ type AddTokenTracking = {
  * @param options - Where the token list lives, for analytics.
  * @param options.screenName
  * @param options.tokenRowComponentName
- * @param options.ftueEntryPoint
+ * @param options.ftueEntryPoint - Entry point recorded when this deposit opens the FTUE.
  * @returns The Add handler, the underlying deposit initiator, and loading state.
  */
 export function useMoneyAddDepositToken({
