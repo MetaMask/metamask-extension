@@ -9,7 +9,11 @@ beforeEach(() => {
   nock(ACCOUNTS_API_BASE_URL)
     .get('/v5/multiaccount/transactions')
     .query(true)
-    .reply(200, { data: [], pageInfo: { hasNextPage: false, count: 0 } });
+    .reply(200, {
+      data: [],
+      unprocessedAccounts: [],
+      pageInfo: { hasNextPage: false, count: 0 },
+    });
 
   // Mock surveys API, this is being called when metametrics-id is minted in the integration tests
   // so, need to mock it to avoid the test from failing

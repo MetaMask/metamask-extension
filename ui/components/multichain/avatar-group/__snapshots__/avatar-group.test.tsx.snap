@@ -18,7 +18,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         >
           <img
             alt="AVAX"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/avax-token.svg"
           />
         </div>
@@ -32,7 +32,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         >
           <img
             alt="OP"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/optimism.svg"
           />
         </div>
@@ -46,7 +46,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         >
           <img
             alt="MATIC"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/pol-token.svg"
           />
         </div>
@@ -60,7 +60,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
         >
           <img
             alt="ETH"
-            class="size-full object-contain"
+            class="size-full object-cover"
             src="./images/eth_logo.svg"
           />
         </div>
