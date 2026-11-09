@@ -176,6 +176,7 @@
   },
   "resolutions": {
     "@metamask/client-utils@npm:^3.2.0": "npm:@metamask-previews/client-utils@3.1.1-preview-04cf473",
+    "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^37.1.1",

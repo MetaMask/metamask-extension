@@ -27,7 +27,7 @@ function transaction({
   from?: string;
   to?: string | null;
   value?: string;
-  methodId?: string | null;
+  methodId?: string;
   valueTransfers?: V5TransactionRecord['valueTransfers'];
 } = {}): V5TransactionRecord {
   return {
