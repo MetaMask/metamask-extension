@@ -377,6 +377,7 @@ describe('PerpsTransactionDetailsPage', () => {
       if (!transaction.fill) {
         throw new Error('Missing test fill');
       }
+
       renderWithTransaction({
         ...transaction,
         fill: {
@@ -397,6 +398,7 @@ describe('PerpsTransactionDetailsPage', () => {
       if (!transaction.fill) {
         throw new Error('Missing test fill');
       }
+
       renderWithTransaction({
         ...transaction,
         fill: {

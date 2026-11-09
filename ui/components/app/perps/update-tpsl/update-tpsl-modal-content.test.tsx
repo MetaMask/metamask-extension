@@ -748,12 +748,14 @@ describe('UpdateTPSLModalContent', () => {
       const slPercentInput = screen.getByTestId(
         'perps-update-tpsl-sl-percent-input',
       ) as HTMLInputElement;
+
       fireEvent.focus(slPercentInput);
       fireEvent.change(slPercentInput, { target: { value: '-5000' } });
 
       const slPriceInput = screen.getAllByPlaceholderText(
         '0.00',
       )[1] as HTMLInputElement;
+
       expect(slPriceInput.value).toBe('0.95');
     });
 
@@ -1008,6 +1010,47 @@ describe('UpdateTPSLModalContent', () => {
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
       });
+    });
+
+    it('keeps the exact trigger price through blur and save', async () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+      const tpInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+
+      fireEvent.change(tpInput, { target: { value: '28624.98' } });
+      fireEvent.blur(tpInput);
+
+      expect(tpInput.value).toBe('28624.98');
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [expect.objectContaining({ takeProfitPrice: '28624.98' })],
+        );
+      });
+    });
+
+    it('keeps a Core-derived trigger price unchanged when its price field blurs', () => {
+      renderTpslModalContent({ position: positionWithoutTPSL });
+      const tpPercentInput = screen.getByTestId(
+        'perps-update-tpsl-tp-percent-input',
+      );
+      const tpPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+
+      fireEvent.focus(tpPercentInput);
+      fireEvent.change(tpPercentInput, { target: { value: '12.345' } });
+      fireEvent.blur(tpPercentInput);
+      const corePrice = tpPriceInput.value;
+
+      fireEvent.focus(tpPriceInput);
+      fireEvent.blur(tpPriceInput);
+
+      expect(tpPriceInput.value).toBe(corePrice);
     });
 
     it('sends undefined for empty TP/SL prices (clearing them)', async () => {

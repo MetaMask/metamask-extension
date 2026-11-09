@@ -31,7 +31,6 @@ import {
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
-  PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
@@ -183,21 +182,6 @@ export const UpdateTPSLModalContent = ({
     );
     return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
   }, [position.liquidationPrice]);
-
-  // Presets populate the input with a raw numeric string (the `$` renders as a
-  // sibling icon). Use PRICE_RANGES_UNIVERSAL so BTC collapses to no decimals
-  // ("78975") while PUMP keeps 6 ("0.001824") — matches mobile's preset output
-  // and avoids the `.toFixed(2)` behaviour that produced "$0.00" for sub-cent
-  // assets and 2-decimal BTC prices.
-  const formatEditPrice = useCallback((value: number): string => {
-    if (!Number.isFinite(value) || value <= 0) {
-      return '';
-    }
-    return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }).replace(
-      /[$,]/gu,
-      '',
-    );
-  }, []);
 
   /**
    * Convert a target price to a signed RoE% for display, with Core's TP/SL
@@ -451,19 +435,21 @@ export const UpdateTPSLModalContent = ({
     if (editingTpPrice) {
       const numValue = Number.parseFloat(editingTpPrice.replaceAll(',', ''));
       if (!Number.isNaN(numValue) && numValue > 0) {
-        setEditingTpPrice(formatEditPrice(numValue));
+        // Keep the executable precision; only normalize the typed string.
+        setEditingTpPrice(numValue.toString());
       }
     }
-  }, [editingTpPrice, formatEditPrice]);
+  }, [editingTpPrice]);
 
   const handleSlPriceBlur = useCallback(() => {
     if (editingSlPrice) {
       const numValue = Number.parseFloat(editingSlPrice.replaceAll(',', ''));
       if (!Number.isNaN(numValue) && numValue > 0) {
-        setEditingSlPrice(formatEditPrice(numValue));
+        // Keep the executable precision; only normalize the typed string.
+        setEditingSlPrice(numValue.toString());
       }
     }
-  }, [editingSlPrice, formatEditPrice]);
+  }, [editingSlPrice]);
 
   const handleSave = useCallback(async () => {
     await gate(async () => {

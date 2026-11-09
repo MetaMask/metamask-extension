@@ -20,7 +20,7 @@ import {
 import type { FeeCalculationResult } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
-  PRICE_RANGES_UNIVERSAL,
+  PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../../../shared/lib/perps-formatters';
 import { PERPS_FALLBACK_FEE_RATES } from '../../../../../shared/constants/perps';
 import {
@@ -93,9 +93,10 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 }) => {
   const t = useI18nContext();
 
+  // Summary amounts keep the cents Core rounds them to.
   const formatFiat = useCallback(
     (value: number | string) =>
-      formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
+      formatPerpsFiat(value, { ranges: PRICE_RANGES_MINIMAL_VIEW }),
     [],
   );
 
@@ -189,6 +190,10 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
               metamaskFeeRate: result?.metamaskFeeRate,
             },
           ])
+          // A failed quote uses the published protocol rate and the
+          // discounted fallback MetaMask rate, as the single-close fee hook
+          // does, so one symbol's quote error cannot block closing every
+          // position. The fee is still shown and charged at that estimate.
           .catch((): [string, SymbolFeeRates] => [
             symbol,
             { protocolFeeRate: PERPS_FALLBACK_FEE_RATES.protocolFeeRate },
@@ -258,8 +263,13 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [formatFiat, hasInvalidNotional],
   );
 
+  // Close all waits for every fee quote, as a single close does, so the user
+  // never confirms against an unquoted fee or receive.
   const isSubmitDisabled =
-    isSubmitting || positions.length === 0 || hasInvalidNotional;
+    isSubmitting ||
+    positions.length === 0 ||
+    hasInvalidNotional ||
+    totalFees === undefined;
 
   return (
     <Modal

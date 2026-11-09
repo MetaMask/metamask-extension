@@ -33,6 +33,7 @@ import {
 import {
   formatPerpsFiat,
   formatPnl,
+  PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import {
@@ -122,27 +123,31 @@ type FormatPerpsFiat = (value: number | string) => string;
 
 type FormatPercentWithMinThreshold = (value: number) => string | undefined;
 
-const buildCloseRequestParams = ({
-  symbol,
-  currentPrice,
+/**
+ * The size a close submits, quantized to the market's size step once so the
+ * fee quote, the estimate and the order all describe the same close.
+ *
+ * @param options - Close inputs.
+ * @param options.isPartialClose - Whether the slider is below 100%.
+ * @param options.closeSize - Unrounded close size from the slider.
+ * @param options.positionSize - Absolute position size.
+ * @param options.sizeDecimals - Market size decimals, when known.
+ * @returns The order size for a partial close, or undefined for a full close.
+ */
+export const getExecutablePartialCloseSize = ({
   isPartialClose,
   closeSize,
   positionSize,
   sizeDecimals,
-  orderType,
-  limitPrice,
-  position,
 }: {
-  symbol: string;
-  currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
   positionSize: number;
   sizeDecimals?: number;
-  orderType: OrderType;
-  limitPrice?: string;
-  position: Position;
-}): ClosePositionParams => {
+}): string | undefined => {
+  if (!isPartialClose) {
+    return undefined;
+  }
   // Round-half-up can lift a partial size onto the whole position — closing
   // 99.999% of 2.5 at 4 decimals formats as "2.5000". A partial close must stay
   // strictly under the position, so step the last decimal back when it does.
@@ -151,21 +156,37 @@ const buildCloseRequestParams = ({
       ? closeSize.toString()
       : closeSize.toFixed(sizeDecimals);
   const roundsOntoWholePosition =
-    isPartialClose &&
     sizeDecimals !== undefined &&
     Number.parseFloat(roundedSize) >= positionSize;
-  const flooredSize =
-    sizeDecimals === undefined
-      ? roundedSize
-      : (positionSize - 10 ** -sizeDecimals).toFixed(sizeDecimals);
+  if (!roundsOntoWholePosition) {
+    return roundedSize;
+  }
+  const flooredSize = (positionSize - 10 ** -sizeDecimals).toFixed(
+    sizeDecimals,
+  );
   // On a market whose smallest step is the position itself — a 1-unit position
   // on an integer-size market — stepping back lands on zero, which the venue
   // rejects or treats as a no-op. The trader asked for all but a rounding
   // sliver, so send it as the full close it effectively is.
-  const closesWholePosition =
-    roundsOntoWholePosition && Number.parseFloat(flooredSize) <= 0;
-  const size = roundsOntoWholePosition ? flooredSize : roundedSize;
-  const includeSize = isPartialClose && !closesWholePosition;
+  return Number.parseFloat(flooredSize) <= 0 ? undefined : flooredSize;
+};
+
+const buildCloseRequestParams = ({
+  symbol,
+  currentPrice,
+  size,
+  orderType,
+  limitPrice,
+  position,
+}: {
+  symbol: string;
+  currentPrice: number;
+  size?: string;
+  orderType: OrderType;
+  limitPrice?: string;
+  position: Position;
+}): ClosePositionParams => {
+  const includeSize = size !== undefined;
 
   if (orderType === 'limit') {
     return {
@@ -422,10 +443,13 @@ export const ClosePositionModal = ({
     [],
   );
   // A figure Core cannot compute yet shows as unavailable, never as $0.
+  // Amounts keep the cents Core rounds them to, as the fee row does.
   const formatCloseUsd = useCallback(
     (value: number | undefined) =>
-      value === undefined ? PERPS_CLOSE_UNAVAILABLE_DISPLAY : formatFiat(value),
-    [formatFiat],
+      value === undefined
+        ? PERPS_CLOSE_UNAVAILABLE_DISPLAY
+        : formatPerpsFiat(value, { ranges: PRICE_RANGES_MINIMAL_VIEW }),
+    [],
   );
 
   const vipTier = useVipTier();
@@ -502,10 +526,20 @@ export const ClosePositionModal = ({
     [position.size],
   );
 
-  const closeSize = useMemo(
-    () => positionSize * closeFraction,
-    [positionSize, closeFraction],
+  const partialCloseSize = useMemo(
+    () =>
+      getExecutablePartialCloseSize({
+        isPartialClose,
+        closeSize: positionSize * closeFraction,
+        positionSize,
+        sizeDecimals,
+      }),
+    [isPartialClose, positionSize, closeFraction, sizeDecimals],
   );
+  const closeSize =
+    partialCloseSize === undefined
+      ? positionSize
+      : Number.parseFloat(partialCloseSize);
 
   const parsedLimitPrice = useMemo(
     () => parsePositivePrice(limitPrice),
@@ -733,10 +767,7 @@ export const ClosePositionModal = ({
         const closeRequestParams = buildCloseRequestParams({
           symbol: position.symbol,
           currentPrice,
-          isPartialClose,
-          closeSize,
-          positionSize,
-          sizeDecimals,
+          size: partialCloseSize,
           orderType: effectiveOrderType,
           limitPrice:
             effectiveOrderType === 'limit'
@@ -855,12 +886,11 @@ export const ClosePositionModal = ({
     isPartialClose,
     position,
     closeSize,
-    positionSize,
+    partialCloseSize,
     displayName,
     t,
     formatNumber,
     currentPrice,
-    sizeDecimals,
     limitPrice,
     closeFee,
     protocolFeeRate,

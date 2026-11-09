@@ -67,32 +67,45 @@ jest.mock('../../compliance', () => {
   };
 });
 
-jest.mock('../../../../../shared/lib/perps-formatters', () => ({
-  PRICE_RANGES_UNIVERSAL: [],
-  formatPerpsFiat: (value: number | string) => {
-    const amount = Number(value);
-    return `$${amount
-      .toLocaleString('en-US', {
+jest.mock('../../../../../shared/lib/perps-formatters', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../../../shared/lib/perps-formatters')
+  >('../../../../../shared/lib/perps-formatters');
+  return {
+    PRICE_RANGES_UNIVERSAL: [],
+    PRICE_RANGES_MINIMAL_VIEW: actual.PRICE_RANGES_MINIMAL_VIEW,
+    // Close cash rows use the real cents formatter; other values keep the stub.
+    formatPerpsFiat: (
+      value: number | string,
+      options?: Parameters<typeof actual.formatPerpsFiat>[1],
+    ) => {
+      if (options?.ranges === actual.PRICE_RANGES_MINIMAL_VIEW) {
+        return actual.formatPerpsFiat(value, options);
+      }
+      const amount = Number(value);
+      return `$${amount
+        .toLocaleString('en-US', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 6,
+        })
+        .replace(/(\.\d*?[1-9])0+$/u, '$1')
+        .replace(/\.0+$/u, '')}`;
+    },
+    formatPnl: (value: number | string) => {
+      const amount = Number(value);
+      const abs = Math.abs(amount).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      return amount >= 0 ? `+$${abs}` : `-$${abs}`;
+    },
+    formatPositionSize: (value: number, decimals?: number) =>
+      Number(value).toLocaleString('en-US', {
         minimumFractionDigits: 0,
-        maximumFractionDigits: 6,
-      })
-      .replace(/(\.\d*?[1-9])0+$/u, '$1')
-      .replace(/\.0+$/u, '')}`;
-  },
-  formatPnl: (value: number | string) => {
-    const amount = Number(value);
-    const abs = Math.abs(amount).toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-    return amount >= 0 ? `+$${abs}` : `-$${abs}`;
-  },
-  formatPositionSize: (value: number, decimals?: number) =>
-    Number(value).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: decimals ?? 4,
-    }),
-}));
+        maximumFractionDigits: decimals ?? 4,
+      }),
+  };
+});
 
 jest.mock('@metamask/perps-controller', () => ({
   ...jest.requireActual('@metamask/perps-controller'),
@@ -2455,8 +2468,8 @@ describe('ClosePositionModal', () => {
       expect(rows()).toStrictEqual({
         margin: '$2,000',
         pnl: '+$500.00',
-        fees: '$31.9',
-        receive: '$1,968.1',
+        fees: '$31.90',
+        receive: '$1,968.10',
       });
     });
 
@@ -2465,13 +2478,55 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
+
       fireEvent.change(slider, { target: { value: '50' } });
 
       expect(rows()).toStrictEqual({
-        margin: '$1,062.5',
+        margin: '$1,062.50',
         pnl: '+$62.50',
         fees: '$5.26',
         receive: '$1,057.24',
+      });
+    });
+
+    it('quotes the partial size the order submits, not the off-grid slider size', async () => {
+      // 50% of 0.03 is 0.015, but a 2-decimal market submits 0.01.
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{
+            ...basePosition,
+            size: '0.03',
+            positionValue: '85.50',
+            unrealizedPnl: '0',
+            marginUsed: '28.50',
+          }}
+          currentPrice={2900}
+          sizeDecimals={2}
+        />,
+        mockStore,
+      );
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(rows()).toStrictEqual({
+        margin: '$10',
+        pnl: '+$0.50',
+        fees: '$0.04',
+        receive: '$9.96',
+      });
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '0.01' })],
+        );
       });
     });
 
@@ -2527,8 +2582,7 @@ describe('ClosePositionModal', () => {
         80,
       );
 
-      // The suite's formatPerpsFiat stub writes the sign after the `$`.
-      expect(rows().receive).toBe('$-10.12');
+      expect(rows().receive).toBe('-$10.12');
       expect(
         screen.getByTestId('perps-close-position-modal-submit'),
       ).toBeDisabled();

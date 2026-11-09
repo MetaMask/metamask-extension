@@ -19,6 +19,10 @@ import {
 } from '../types/transactionHistory';
 import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
 import {
+  enLocale as messages,
+  tEn,
+} from '../../../../../test/lib/i18n-helpers';
+import {
   aggregateFillsByTimestamp,
   transformFillsToTransactions,
   transformOrdersToTransactions,
@@ -422,27 +426,51 @@ describe('Transaction Transform Utilities', () => {
         expect(transaction.fill?.amountNumber).toBe(-0.75);
       });
 
-      it('keeps the PnL unknown when the fee is unknown', () => {
+      it('groups thousands in a large net PnL', () => {
         const [transaction] = transformFillsToTransactions([
-          closeAt({ pnl: '10', fee: '' }),
+          closeAt({ pnl: '1240', fee: '5.44' }),
         ]);
 
-        expect(transaction.fill?.amount).toBe('Unknown');
+        expect(transaction.fill?.amount).toBe('+$1,234.56');
+      });
+
+      it('rounds a net PnL half up to the cent', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ pnl: '-1.005', fee: '0' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('-$1.01');
+      });
+
+      it('shows a sub-cent net PnL as $0.00 rather than below a threshold', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ pnl: '0.004', fee: '0' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('+$0.00');
+      });
+
+      it('keeps the PnL unknown when the fee is unknown', () => {
+        const [transaction] = transformFillsToTransactions(
+          [closeAt({ pnl: '10', fee: '' })],
+          tEn,
+        );
+
+        expect(transaction.fill?.amount).toBe(messages.unknown.message);
         expect(transaction.fill?.amountNumber).toBeUndefined();
       });
 
       it('keeps an aggregated fee unknown when one split fill has no fee', () => {
-        const [aggregated] = aggregateFillsByTimestamp([
+        const fills = [
           closeAt({ orderId: 'a', size: '0.4', pnl: '30', fee: '1.25' }),
           closeAt({ orderId: 'b', size: '0.6', pnl: '45', fee: '' }),
-        ]);
-        expect(aggregated.fee).toBe('');
+        ];
 
-        const [transaction] = transformFillsToTransactions([
-          closeAt({ orderId: 'a', size: '0.4', pnl: '30', fee: '1.25' }),
-          closeAt({ orderId: 'b', size: '0.6', pnl: '45', fee: '' }),
-        ]);
-        expect(transaction.fill?.amount).toBe('Unknown');
+        const [aggregated] = aggregateFillsByTimestamp(fills);
+        const [transaction] = transformFillsToTransactions(fills, tEn);
+
+        expect(aggregated.fee).toBe('');
+        expect(transaction.fill?.amount).toBe(messages.unknown.message);
         expect(transaction.fill?.amountNumber).toBeUndefined();
       });
     });

@@ -18,25 +18,6 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../../../shared/lib/perps-formatters', () => ({
-  PRICE_RANGES_UNIVERSAL: [],
-  formatPerpsFiat: (
-    value: number | string,
-    options?: { minimumDecimals?: number; maximumDecimals?: number },
-  ) => {
-    const amount = Number(value);
-    const minDec = options?.minimumDecimals ?? 0;
-    const maxDec = options?.maximumDecimals ?? 6;
-    return `$${amount
-      .toLocaleString('en-US', {
-        minimumFractionDigits: minDec,
-        maximumFractionDigits: maxDec,
-      })
-      .replace(/(\.\d*?[1-9])0+$/u, '$1')
-      .replace(/\.0+$/u, '')}`;
-  },
-}));
-
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -328,6 +309,59 @@ describe('CloseAllPositionsModal', () => {
     ).toBeDisabled();
   });
 
+  it('keeps Close all disabled until the fee quote resolves', async () => {
+    let resolveFees: (value: typeof defaultFeeResult) => void = () => undefined;
+    mockSubmitRequestToBackground.mockReturnValue(
+      new Promise<typeof defaultFeeResult>((resolve) => {
+        resolveFees = resolve;
+      }),
+    );
+    renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[twoPositions[0]]}
+      />,
+      mockStore,
+    );
+    const submitButton = screen.getByTestId(
+      'perps-close-all-positions-modal-submit',
+    );
+
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '--',
+    );
+    expect(submitButton).toBeDisabled();
+
+    await act(async () => resolveFees(defaultFeeResult));
+
+    expect(submitButton).not.toBeDisabled();
+  });
+
+  it('disables Close all again while a changed position set is re-quoted', async () => {
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[twoPositions[0]]}
+      />,
+      mockStore,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      ).not.toBeDisabled(),
+    );
+    mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
+
+    rerender(<CloseAllPositionsModal {...defaultProps} />);
+
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '--',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
+  });
+
   it('fetches fees per unique symbol rather than using a single rate', async () => {
     const feesBySymbol: Record<
       string,
@@ -512,16 +546,15 @@ describe('CloseAllPositionsModal', () => {
         screen.getByTestId('perps-close-all-fees-value'),
       ).toHaveTextContent('-$0.12');
     });
-    // The suite's formatPerpsFiat stub writes the sign after the `$`.
     expect(
       screen.getByTestId('perps-close-all-total-margin-value'),
-    ).toHaveTextContent('$-10');
+    ).toHaveTextContent('-$10');
     expect(screen.getByTestId('perps-close-all-pnl-value')).toHaveTextContent(
       '-$20',
     );
     expect(
       screen.getByTestId('perps-close-all-receive-value'),
-    ).toHaveTextContent('$-10.12');
+    ).toHaveTextContent('-$10.12');
   });
 
   it('shows margin with PnL, fees and receive that add up across positions', async () => {

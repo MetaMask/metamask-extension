@@ -614,6 +614,7 @@ describe('AutoCloseSection', () => {
     it("caps a stop-loss RoE beyond the venue's limit with Core's 99% per 1x", () => {
       // -5000% at 3x is past -297%: Core prices the cap, 45000 * (1 - 0.99).
       const onStopLossPriceChange = jest.fn();
+
       renderWithProvider(
         <AutoCloseSection
           {...defaultProps}
@@ -629,6 +630,7 @@ describe('AutoCloseSection', () => {
       const input = screen
         .getByTestId('sl-percent-input')
         .querySelector('input') as HTMLInputElement;
+
       fireEvent.change(input, { target: { value: '-5000' } });
 
       expect(onStopLossPriceChange).toHaveBeenLastCalledWith('450');
@@ -648,6 +650,7 @@ describe('AutoCloseSection', () => {
       const input = screen
         .getByTestId('tp-percent-input')
         .querySelector('input') as HTMLInputElement;
+
       expect(input.value).toBe('');
     });
 

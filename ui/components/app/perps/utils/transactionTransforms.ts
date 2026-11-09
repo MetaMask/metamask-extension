@@ -25,7 +25,10 @@ import {
   PerpsOrderTransactionStatusType,
   type PerpsTransaction,
 } from '../types/transactionHistory';
-import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
+import {
+  formatPerpsFiat,
+  formatPositionSize,
+} from '../../../../../shared/lib/perps-formatters';
 import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
 import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
 import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
@@ -295,25 +298,33 @@ export function transformFillsToTransactions(
       displayAmount = `-$${Math.abs(amountBN.toNumber()).toFixed(2)}`;
       isPositive = false; // Fee is always a cost
     } else if (isClosed || isSell || isFlipped || isAutoDeleveraging) {
-      // For closing positions: show PnL net of the fee, unknown when either is
+      // For closing positions: show PnL net of the fee, unknown when either
+      // the PnL or the fee is missing
       const netPnl = calculateNetClosedPnl({ pnl: fill.pnl, fee: fill.fee });
       hasKnownAmount = netPnl !== undefined;
       if (netPnl !== undefined) {
         amountBN = new BigNumber(String(netPnl));
       }
       const netPnL = amountBN.toNumber();
+      // Round to cents before the shared Perps formatter so a sub-cent amount
+      // reads as $0.00 rather than "<$0.01"; the activity row and the details
+      // page both render this string.
+      const formattedNetPnl = formatPerpsFiat(
+        amountBN.absoluteValue().toFixed(2),
+        { minimumDecimals: 2, maximumDecimals: 2, stripTrailingZeros: false },
+      );
       // For display, show + for positive, - for negative, nothing for 0
       if (!hasKnownAmount) {
         displayAmount = t ? t('unknown') : 'Unknown';
         isPositive = false;
       } else if (netPnL > 0) {
-        displayAmount = `+$${Math.abs(netPnL).toFixed(2)}`;
+        displayAmount = `+${formattedNetPnl}`;
         isPositive = true;
       } else if (netPnL < 0) {
-        displayAmount = `-$${Math.abs(netPnL).toFixed(2)}`;
+        displayAmount = `-${formattedNetPnl}`;
         isPositive = false;
       } else {
-        displayAmount = `$${Math.abs(netPnL).toFixed(2)}`;
+        displayAmount = formattedNetPnl;
         isPositive = true; // Treat break-even as positive (green)
       }
     } else {
