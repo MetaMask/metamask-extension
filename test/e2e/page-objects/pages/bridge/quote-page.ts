@@ -534,20 +534,50 @@ class BridgeQuotePage {
     });
   };
 
+  /**
+   * Waits until the source amount input holds a stable non-empty value.
+   * Use this after Max, which writes the balance asynchronously.
+   *
+   * @returns The source amount input value.
+   */
+  async getSourceAmount(): Promise<string> {
+    console.log('Reading swap source amount');
+    let stableValue = '';
+    let stableReads = 0;
+    await this.driver.waitUntil(
+      async () => {
+        const input = await this.driver.findElement(this.sourceAmount);
+        const value = await input.getAttribute('value');
+        if (!value) {
+          stableValue = '';
+          stableReads = 0;
+          return false;
+        }
+        if (value === stableValue) {
+          stableReads += 1;
+        } else {
+          stableValue = value;
+          stableReads = 1;
+        }
+        return stableReads >= 2;
+      },
+      { interval: 200, timeout: 15000 },
+    );
+    console.log(`Swap source amount is ${stableValue}`);
+    return stableValue;
+  }
+
   goBack = async () => {
     await this.driver.waitForSelector(this.backButton);
     await this.driver.clickElement(this.backButton);
   };
 
   /**
-   * Navigates away from the bridge page via the bottom nav bar home tab.
-   * Use this instead of `goBack` when the user is in the bottom nav AB test
-   * treatment, where the back button is removed on the swap/bridge page.
+   * Waits for the submitted swap to clear the amount, then leaves Swaps.
    */
-  goBackViaBottomNavHome = async () => {
-    const homeTab = '[data-testid="bottom-nav-home"]';
-    await this.driver.waitForSelector(homeTab);
-    await this.driver.clickElement(homeTab);
+  goBackAfterSubmit = async () => {
+    await this.driver.waitForSelector(`${this.sourceAmount}[value=""]`);
+    await this.goBack();
   };
 
   /**
@@ -692,10 +722,29 @@ class BridgeQuotePage {
   }
 
   async selectSrcToken(token: string): Promise<void> {
+    console.log(`Selecting source token ${token}`);
     await this.driver.waitForSelector(this.sourceAssetPickerButton);
     await this.driver.clickElement(this.sourceAssetPickerButton);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     await this.selectAssetFromPicker(token);
+  }
+
+  /**
+   * Selects the source token when it is not already selected.
+   * Re-selecting the current token clears the balance and hides Max.
+   *
+   * @param token - Token symbol, such as ETH or MON.
+   */
+  async selectSrcTokenIfNeeded(token: string): Promise<void> {
+    console.log(`Selecting source token ${token} if needed`);
+    const sourceButton = await this.driver.findElement(
+      this.sourceAssetPickerButton,
+    );
+    const label = await sourceButton.getText();
+    if (label.includes(token)) {
+      return;
+    }
+    await this.selectSrcToken(token);
   }
 
   async setCustomSlippage(value: string): Promise<void> {

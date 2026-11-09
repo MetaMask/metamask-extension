@@ -19,3 +19,17 @@ export const REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES =
 export type RewardsMoneyInviteMessenger = RouteMessengerFromCapabilities<
   typeof REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES
 >;
+
+/**
+ * Actions the Swaps rebate banner may call on RewardsMoneyController.
+ */
+export const SWAPS_REBATE_ALLOWED_CAPABILITIES = defineAllowedRouteCapabilities(
+  {
+    actions: ['RewardsMoneyController:getSwapsRebateQuote'],
+    events: [],
+  },
+);
+
+export type SwapsRebateMessenger = RouteMessengerFromCapabilities<
+  typeof SWAPS_REBATE_ALLOWED_CAPABILITIES
+>;
