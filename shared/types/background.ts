@@ -143,6 +143,7 @@ export type ControllerStatePropertiesEnumerated = {
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   moneyEarnBannerDismissedTokenKeys: AppStateControllerState['moneyEarnBannerDismissedTokenKeys'];
+  moneyFtueSeen: AppStateControllerState['moneyFtueSeen'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];

@@ -152,7 +152,7 @@ describe('MUSD Constants', () => {
 
     it('should point to MetaMask terms', () => {
       expect(MUSD_CONVERSION_BONUS_TERMS_OF_USE).toBe(
-        'https://metamask.io/musd-bonus-terms-of-use',
+        'https://metamask.com/musd-bonus-terms-of-use',
       );
     });
   });
