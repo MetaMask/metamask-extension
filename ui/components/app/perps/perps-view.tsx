@@ -18,6 +18,7 @@ import {
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../providers/perps';
@@ -83,6 +84,7 @@ type BatchCloseResult = {
 
 export const PerpsView = () => {
   const t = useI18nContext();
+  const { isWideLayout } = useAppLayout();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const bottomNavSource = usePerpsBottomNavSource();
@@ -505,6 +507,7 @@ export const PerpsView = () => {
           onAddFunds={triggerDeposit}
           onWithdraw={triggerWithdraw}
           onLearnMore={() => dispatch(setTutorialModalOpen(true))}
+          layout={isWideLayout ? 'row' : 'column'}
         />
       </Box>
 
