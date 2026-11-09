@@ -2285,7 +2285,7 @@ async function setupMocking(
 
   // Accounts API: transactions
   await server
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
     .always()
     .thenCallback(() => {
       return {

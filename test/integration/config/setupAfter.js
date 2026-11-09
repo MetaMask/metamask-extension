@@ -7,7 +7,7 @@ import '../../helpers/setup-after-helper';
 
 beforeEach(() => {
   nock(ACCOUNTS_API_BASE_URL)
-    .get('/v4/multiaccount/transactions')
+    .get('/v5/multiaccount/transactions')
     .query(true)
     .reply(200, { data: [], pageInfo: { hasNextPage: false, count: 0 } });
 

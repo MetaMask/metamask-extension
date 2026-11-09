@@ -6,6 +6,7 @@ import type {
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
 import { parseValueTransfers } from '../../../../shared/lib/activity/adapters/helpers';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../../../shared/lib/string-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useApiTransaction } from '../../../hooks/activity/useApiTransaction';
@@ -38,12 +39,22 @@ function useSentToken(
     if (!baseToken) {
       return baseToken;
     }
+    const sentV5Amount =
+      sourceTransaction && 'tx' in sourceTransaction
+        ? sourceTransaction.valueTransfers.find((transfer) =>
+            equalsIgnoreCase(transfer.from, userAddress ?? ''),
+          )?.amount
+        : undefined;
     const { sentTransfer } = parseValueTransfers(
-      sourceTransaction?.valueTransfers,
+      sourceTransaction && 'tx' in sourceTransaction
+        ? undefined
+        : sourceTransaction?.valueTransfers,
       userAddress ?? '',
     );
-    return sentTransfer?.amount
-      ? { ...baseToken, amount: sentTransfer.amount }
+    const sentAmount = sentV5Amount ?? sentTransfer?.amount;
+
+    return sentAmount
+      ? { ...baseToken, amount: String(sentAmount) }
       : baseToken;
   }, [baseToken, sourceTransaction, userAddress]);
 }

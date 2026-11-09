@@ -175,6 +175,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/client-utils@npm:^3.2.0": "npm:@metamask-previews/client-utils@3.1.1-preview-04cf473",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^37.1.1",
@@ -430,13 +431,13 @@
     "@metamask/chomp-api-service": "^4.0.2",
     "@metamask/claims-controller": "^0.6.1",
     "@metamask/client-controller": "^2.0.0",
-    "@metamask/client-utils": "^3.1.0",
+    "@metamask/client-utils": "^3.2.0",
     "@metamask/compliance-controller": "^2.1.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/connectivity-controller": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^12.3.0",
-    "@metamask/core-backend": "^12.3.0",
+    "@metamask/core-backend": "^14.0.0",
     "@metamask/delegation-controller": "^3.0.2",
     "@metamask/delegation-core": "^2.0.0",
     "@metamask/delegation-deployments": "^2.1.0",

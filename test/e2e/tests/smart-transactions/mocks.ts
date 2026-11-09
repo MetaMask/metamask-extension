@@ -1144,7 +1144,7 @@ export async function mockAccountsApiSwapTransaction(
   mockServer: MockttpServer,
 ): Promise<void> {
   await mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
