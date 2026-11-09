@@ -17,6 +17,7 @@
   .overview-tab-controls {
     position: sticky;
     top: 0;
+    z-index: 10;
     width: fit-content;
     margin-top: -40px;
     margin-left: auto;
