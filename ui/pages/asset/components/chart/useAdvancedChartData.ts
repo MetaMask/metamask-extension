@@ -57,10 +57,15 @@ export function useAdvancedChartData({
     enabled: needsHistory,
   });
 
+  // Realtime follows the currency the history actually resolved to, not the
+  // requested one. The price API does not quote every fiat for OHLCV, so a
+  // rejected currency falls back to USD for the history and header; the live
+  // bar must use the same resolved currency or it would plot and label ticks
+  // in a different fiat than the surrounding candles.
   const { latestBar } = useOHLCVRealtime({
     assetId,
     interval,
-    currency: currency.toLowerCase(),
+    currency: resolvedCurrency,
     enabled: Boolean(assetId),
   });
 
