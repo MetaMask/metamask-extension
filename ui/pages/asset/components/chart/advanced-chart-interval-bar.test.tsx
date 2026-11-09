@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import IntervalBar, {
   CHART_TYPE_CANDLE,
   CHART_TYPE_LINE,
@@ -118,7 +119,9 @@ describe('IntervalBar', () => {
     it('reports a switch to line', () => {
       renderBar();
 
-      fireEvent.click(screen.getByRole('button', { name: 'Line chart' }));
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.chartTypeLine.message }),
+      );
 
       expect(DEFAULT_PROPS.onChartTypeSelect).toHaveBeenCalledWith(
         CHART_TYPE_LINE,
@@ -129,7 +132,9 @@ describe('IntervalBar', () => {
       renderBar({ chartType: CHART_TYPE_LINE });
 
       fireEvent.click(
-        screen.getByRole('button', { name: 'Candlestick chart' }),
+        screen.getByRole('button', {
+          name: messages.chartTypeCandlestick.message,
+        }),
       );
 
       expect(DEFAULT_PROPS.onChartTypeSelect).toHaveBeenCalledWith(
@@ -141,10 +146,12 @@ describe('IntervalBar', () => {
       renderBar({ chartType: CHART_TYPE_LINE });
 
       expect(
-        screen.getByRole('button', { name: 'Line chart' }),
+        screen.getByRole('button', { name: messages.chartTypeLine.message }),
       ).toHaveAttribute('aria-pressed', 'true');
       expect(
-        screen.getByRole('button', { name: 'Candlestick chart' }),
+        screen.getByRole('button', {
+          name: messages.chartTypeCandlestick.message,
+        }),
       ).toHaveAttribute('aria-pressed', 'false');
     });
   });
