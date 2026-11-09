@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import type { CaipAssetType } from '@metamask/utils';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -6,7 +7,9 @@ import { selectStellarNetwork } from '../../page-objects/flows/stellar-network.f
 import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import {
+  STELLAR_USDC_ASSET_ID,
   XLM_BALANCE_DISPLAY,
   buildStellarFixture,
   mockStellarApisZeroBalance,
@@ -110,11 +113,17 @@ describe('Stellar - Assets', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await landOnStellarHome(driver);
 
-        const tokensTab = new TokensTab(driver);
-        await tokensTab.checkTokenExistsInList('USD Coin', undefined, {
-          timeout: STELLAR_ASSET_LIST_TIMEOUT_MS,
-        });
-        await tokensTab.clickOnAsset('USD Coin');
+        // Snap keyring balances omit classic trustlines with limit 0, so an
+        // inactive USDC row never appears from Horizon alone. Deep-link the
+        // USDC asset route (full navigation so createHashRouter mounts on it);
+        // missing trustline metadata requires activation.
+        const assetPath = buildAssetRoutePath(
+          STELLAR_USDC_ASSET_ID as CaipAssetType,
+        );
+        const currentUrl = await driver.getCurrentUrl();
+        const baseUrl = currentUrl.replace(/#.*$/u, '');
+        await driver.driver.get(`${baseUrl}#${assetPath}`);
+        await driver.waitForControllersLoaded();
 
         const details = new AssetDetailsPage(driver);
         await details.checkPageIsLoaded();
