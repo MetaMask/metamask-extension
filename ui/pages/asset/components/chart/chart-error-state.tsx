@@ -45,8 +45,9 @@ export const ChartErrorState: React.FC<ChartErrorStateProps> = ({
 
   return (
     <Box
-      className="chart-error-state"
       data-testid={testId}
+      marginTop={4}
+      marginBottom={4}
       style={{
         position: 'relative',
         width: '100%',
