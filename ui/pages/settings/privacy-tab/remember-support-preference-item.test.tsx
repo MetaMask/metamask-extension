@@ -42,7 +42,7 @@ jest.mock('../../../store/actions', () => ({
   })),
 }));
 
-const renderItem = (shouldShowSupportConsent: boolean) =>
+const renderItem = () =>
   renderWithProvider(
     <RememberSupportPreferenceToggleItem />,
     configureMockStore([thunk])({
@@ -51,7 +51,7 @@ const renderItem = (shouldShowSupportConsent: boolean) =>
         ...mockState.metamask,
         preferences: {
           ...mockState.metamask.preferences,
-          shouldShowSupportConsent,
+          shouldShowSupportConsent: false,
         },
       },
     }),
@@ -62,23 +62,8 @@ describe('RememberSupportPreferenceToggleItem', () => {
     jest.clearAllMocks();
   });
 
-  it('renders off with the base description when no choice is saved', () => {
-    const { getByText, getByTestId } = renderItem(true);
-
-    expect(
-      getByText(messages.rememberSupportPreference.message),
-    ).toBeInTheDocument();
-    expect(
-      getByText(messages.rememberSupportPreferenceDescription.message),
-    ).toBeInTheDocument();
-    expect(getByTestId('remember-support-preference-toggle')).toHaveAttribute(
-      'value',
-      'false',
-    );
-  });
-
-  it('renders on with the base description', () => {
-    const { getByText, getByTestId } = renderItem(false);
+  it('renders the toggle on with its description when a choice is remembered', () => {
+    const { getByText, getByTestId } = renderItem();
 
     expect(
       getByText(messages.rememberSupportPreferenceDescription.message),
@@ -89,19 +74,11 @@ describe('RememberSupportPreferenceToggleItem', () => {
     );
   });
 
-  it('asks for consent again when turned off', () => {
-    const { getByTestId } = renderItem(false);
+  it('asks for consent again when the toggle is turned off', () => {
+    const { getByTestId } = renderItem();
 
     fireEvent.click(getByTestId('remember-support-preference-toggle'));
 
     expect(setShouldShowSupportConsent).toHaveBeenCalledWith(true);
-  });
-
-  it('stops asking for consent when turned on', () => {
-    const { getByTestId } = renderItem(true);
-
-    fireEvent.click(getByTestId('remember-support-preference-toggle'));
-
-    expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
   });
 });

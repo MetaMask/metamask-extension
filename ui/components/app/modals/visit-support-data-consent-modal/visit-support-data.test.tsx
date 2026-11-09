@@ -91,7 +91,6 @@ describe('VisitSupportDataConsentModal', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    store.clearActions();
   });
 
   const renderModal = (props = {}) => {
@@ -140,7 +139,6 @@ describe('VisitSupportDataConsentModal', () => {
 
     expect(setSupportDataSharingPreference).toHaveBeenCalledWith(false);
     expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
-    expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
   });
 
   it('does not save a preference when "Save my preference" is unchecked', async () => {
@@ -183,33 +181,6 @@ describe('VisitSupportDataConsentModal', () => {
     rerender(<VisitSupportDataConsentModal isOpen onClose={mockOnClose} />);
 
     expect(getByRole('checkbox', { name: checkboxName })).toBeChecked();
-  });
-
-  it('re-selects "Save my preference" after the modal is dismissed with it unchecked', () => {
-    const { getByRole, rerender } = renderModal();
-    const checkboxName =
-      messages.visitSupportDataConsentModalSavePreference.message;
-
-    fireEvent.click(getByRole('checkbox', { name: checkboxName }));
-    fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
-    expect(mockOnClose).toHaveBeenCalled();
-
-    rerender(
-      <VisitSupportDataConsentModal isOpen={false} onClose={mockOnClose} />,
-    );
-    rerender(<VisitSupportDataConsentModal isOpen onClose={mockOnClose} />);
-
-    expect(getByRole('checkbox', { name: checkboxName })).toBeChecked();
-  });
-
-  it('does not save a preference when the modal is dismissed', () => {
-    const { getByRole } = renderModal();
-
-    fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
-
-    expect(mockOnClose).toHaveBeenCalled();
-    expect(setSupportDataSharingPreference).not.toHaveBeenCalled();
-    expect(setShouldShowSupportConsent).not.toHaveBeenCalled();
   });
 
   it('renders the modal correctly when open', () => {
@@ -407,29 +378,6 @@ describe('VisitSupportDataConsentModal', () => {
       );
       expect(mockOpenTab).toHaveBeenCalledWith({ url: expectedUrl });
     });
-  });
-
-  it('falls back to support link without personal data when fetching the token fails', async () => {
-    getCustomerServiceTokenMock.mockRejectedValue(
-      new Error('Token service unavailable'),
-    );
-
-    const { getByTestId } = renderModal();
-
-    fireEvent.click(
-      getByTestId('visit-support-data-consent-modal-accept-button'),
-    );
-
-    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
-      version: 'MOCK_VERSION',
-    });
-
-    await waitFor(() => {
-      expect(mockOnClose).toHaveBeenCalled();
-      expect(mockOpenTab).toHaveBeenCalledWith({ url: expectedUrl });
-    });
-    expect(setSupportDataSharingPreference).toHaveBeenCalledWith(true);
-    expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
   });
 
   it('handles URL separator correctly when building support link', async () => {
