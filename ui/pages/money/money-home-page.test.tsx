@@ -667,7 +667,10 @@ describe('MoneyHomePage', () => {
       screen.getByRole('link', {
         name: messages.moneyExploreBenefits.message,
       }),
-    ).toHaveAttribute('href', 'https://metamask.com/money?utm_source=extension');
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.com/money?utm_source=extension',
+    );
     expect(
       screen.getByRole('link', {
         name: messages.moneyHowYourMoneyGrows.message,

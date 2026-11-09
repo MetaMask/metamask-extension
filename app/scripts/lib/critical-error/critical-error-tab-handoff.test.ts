@@ -185,7 +185,7 @@ describe('openRestoringTabAndReload', () => {
       expect(browser.tabs.create).toHaveBeenCalledWith(
         expect.objectContaining({
           active: true,
-          url: expect.stringMatching(/^https:\/\/metamask\.io\/restoring#/u),
+          url: expect.stringMatching(/^https:\/\/metamask\.com\/restoring#/u),
         }),
       );
 
