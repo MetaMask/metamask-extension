@@ -237,7 +237,7 @@ export const CoinOverview = ({
     () =>
       Boolean(
         showNativeTokenAsMainBalance &&
-          Object.keys(enabledNetworks).length === 1,
+        Object.keys(enabledNetworks).length === 1,
       ),
     [showNativeTokenAsMainBalance, enabledNetworks],
   );
