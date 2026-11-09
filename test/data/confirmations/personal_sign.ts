@@ -51,7 +51,7 @@ export const signatureRequestSIWE = {
         requestId: 'some_id',
         scheme: null,
         statement:
-          'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+          'I accept the MetaMask Terms of Service: https://community.metamask.com/tos',
         uri: 'https://metamask.github.io',
         version: '1',
         resources: null,
@@ -91,7 +91,7 @@ export const SignatureRequestSIWEWithResources = {
         requestId: 'some_id',
         scheme: null,
         statement:
-          'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+          'I accept the MetaMask Terms of Service: https://community.metamask.com/tos',
         uri: 'https://metamask.github.io',
         version: '1',
         resources: [

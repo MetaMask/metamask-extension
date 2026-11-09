@@ -45,7 +45,7 @@ export default class PersonalSignConfirmation extends Confirmation {
   };
 
   private readonly siweMessage: RawLocator = {
-    text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+    text: 'I accept the MetaMask Terms of Service: https://community.metamask.com/tos',
   };
 
   constructor(driver: Driver) {

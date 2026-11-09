@@ -30,4 +30,4 @@ export const TESTNET_ETH_SCAMS_LEARN_MORE_LINK =
   'https://support.metamask.com/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension';
 
 export const REQUEST_SETTING_URL =
-  'https://community.metamask.io/c/feature-requests-ideas/13';
+  'https://community.metamask.com/c/feature-requests-ideas/13';

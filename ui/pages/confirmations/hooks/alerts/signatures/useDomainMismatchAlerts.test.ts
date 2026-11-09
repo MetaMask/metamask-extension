@@ -20,7 +20,7 @@ const mockSiwe = {
     domain: MOCK_SUSPICIOUS_DOMAIN,
     address: MOCK_ADDRESS,
     statement:
-      'Click to sign in and accept the Terms of Service: https://community.metamask.io/tos',
+      'Click to sign in and accept the Terms of Service: https://community.metamask.com/tos',
     uri: 'http://localhost:8080',
     version: '1',
     nonce: 'STMt6KQMwwdOXE306',
