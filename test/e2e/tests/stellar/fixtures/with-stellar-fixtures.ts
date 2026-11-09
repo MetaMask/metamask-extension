@@ -8,6 +8,11 @@ import {
   type MockStellarApisOptions,
   type StellarAccountTransactionFixture,
 } from '../mocks/common-stellar';
+import {
+  createStellarSubmittedTxStore,
+  getSubmittedHorizonRecordsForAccount,
+  mockStellarSendNetwork,
+} from '../mocks/stellar-send-mocks';
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
@@ -23,7 +28,15 @@ export type WithStellarFixturesOptions = Omit<
 > & {
   accounts?: StellarFixtureAccount[];
   fixtures?: unknown;
-  horizonOptions?: Omit<MockStellarApisOptions, 'transactions'>;
+  horizonOptions?: Omit<
+    MockStellarApisOptions,
+    'transactions' | 'getExtraTransactionRecords'
+  >;
+  /**
+   * When true, mocks Soroban RPC submit + Horizon fee/tx endpoints so Send can
+   * progress Pending → Confirmed without a live Stellar node.
+   */
+  enableSend?: boolean;
   testSpecificMock?: (
     mockServer: Mockttp,
   ) => Promise<MockedEndpoint[] | MockedEndpoint>;
@@ -43,6 +56,7 @@ export async function withStellarFixtures(
     accounts = [{ address: STELLAR_ACCOUNT_ADDRESS }],
     fixtures = buildStellarFixture().build(),
     horizonOptions = {},
+    enableSend = false,
     testSpecificMock,
     ...rest
   } = options;
@@ -54,6 +68,10 @@ export async function withStellarFixtures(
     }),
   );
 
+  const submittedTxStore = enableSend
+    ? createStellarSubmittedTxStore()
+    : undefined;
+
   await withFixtures(
     stellarFixtureOptions({
       ...rest,
@@ -62,11 +80,22 @@ export async function withStellarFixtures(
         const stellarMocks = await mockStellarApis(mockServer, {
           ...horizonOptions,
           transactions,
+          getExtraTransactionRecords: submittedTxStore
+            ? (address) =>
+                getSubmittedHorizonRecordsForAccount(submittedTxStore, address)
+            : undefined,
         });
+        const sendMocks = submittedTxStore
+          ? await mockStellarSendNetwork(mockServer, submittedTxStore)
+          : [];
         const extra = testSpecificMock
           ? await testSpecificMock(mockServer)
           : [];
-        return [...stellarMocks, ...(Array.isArray(extra) ? extra : [extra])];
+        return [
+          ...stellarMocks,
+          ...sendMocks,
+          ...(Array.isArray(extra) ? extra : [extra]),
+        ];
       },
     }),
     testSuite,

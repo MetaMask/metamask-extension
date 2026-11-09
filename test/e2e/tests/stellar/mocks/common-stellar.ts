@@ -320,27 +320,37 @@ const HORIZON_ACCOUNT_TRANSACTIONS_RE =
  * Mocks Horizon account transactions list. Defaults to an empty page so sync
  * does not fall through to the empty FALLBACK 200.
  *
+ * When `getExtraRecords` is provided (Send E2E), those rows are appended after
+ * the seeded fixtures so TrackTransaction → synchronize can see submitted txs.
+ *
  * @param mockServer - Mockttp server.
  * @param fixtures - Optional per-account Horizon transaction pages.
+ * @param options - Optional dynamic record source for live submits.
+ * @param options.getExtraRecords - Extra Horizon records per account address.
  */
 export async function mockHorizonAccountTransactions(
   mockServer: Mockttp,
   fixtures: StellarAccountTransactionFixture[] = [],
+  options: {
+    getExtraRecords?: (address: string) => object[];
+  } = {},
 ): Promise<MockedEndpoint> {
   const byAddress = new Map(
     fixtures.map((fixture) => [fixture.address, fixture.records]),
   );
+  const { getExtraRecords } = options;
 
   return mockServer
     .forGet(HORIZON_ACCOUNT_TRANSACTIONS_RE)
     .always()
     .thenCallback((req) => {
       const address = req.url.match(HORIZON_ACCOUNT_TRANSACTIONS_RE)?.[1] ?? '';
-      const records = byAddress.get(address) ?? [];
+      const seeded = byAddress.get(address) ?? [];
+      const extras = getExtraRecords?.(address) ?? [];
       return {
         statusCode: 200,
         json: {
-          _embedded: { records },
+          _embedded: { records: [...extras, ...seeded] },
           _links: { self: { href: req.url } },
         },
       };
@@ -569,6 +579,11 @@ export async function mockStellarFiatExchangeRates(
 export type MockStellarApisOptions = StellarHorizonBalanceOptions & {
   /** Per-account Horizon `/transactions` pages (default: empty). */
   transactions?: StellarAccountTransactionFixture[];
+  /**
+   * Optional dynamic Horizon rows appended after seeded fixtures (Send E2E
+   * uses this for live Soroban RPC submits).
+   */
+  getExtraTransactionRecords?: (address: string) => object[];
 };
 
 /**
@@ -581,11 +596,14 @@ export async function mockStellarApis(
   mockServer: Mockttp,
   options: MockStellarApisOptions = {},
 ): Promise<MockedEndpoint[]> {
-  const { transactions, ...horizonAccountOptions } = options;
+  const { transactions, getExtraTransactionRecords, ...horizonAccountOptions } =
+    options;
   return [
     await mockStellarFeatureFlags(mockServer),
     await mockHorizonAccounts(mockServer, horizonAccountOptions),
-    await mockHorizonAccountTransactions(mockServer, transactions),
+    await mockHorizonAccountTransactions(mockServer, transactions, {
+      getExtraRecords: getExtraTransactionRecords,
+    }),
     await mockStellarTokensV2SupportedNetworks(mockServer),
     await mockStellarTokensV3Assets(mockServer),
     await mockStellarTokenApiAssets(mockServer),
