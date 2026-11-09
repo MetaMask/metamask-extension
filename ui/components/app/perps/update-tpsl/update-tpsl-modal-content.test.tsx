@@ -1045,6 +1045,7 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.focus(tpPercentInput);
       fireEvent.change(tpPercentInput, { target: { value: '12.345' } });
       fireEvent.blur(tpPercentInput);
+
       const corePrice = tpPriceInput.value;
 
       fireEvent.focus(tpPriceInput);

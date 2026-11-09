@@ -316,6 +316,7 @@ describe('CloseAllPositionsModal', () => {
         resolveFees = resolve;
       }),
     );
+
     renderWithProvider(
       <CloseAllPositionsModal
         {...defaultProps}
@@ -345,11 +346,13 @@ describe('CloseAllPositionsModal', () => {
       />,
       mockStore,
     );
+
     await waitFor(() =>
       expect(
         screen.getByTestId('perps-close-all-positions-modal-submit'),
       ).not.toBeDisabled(),
     );
+
     mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
 
     rerender(<CloseAllPositionsModal {...defaultProps} />);
