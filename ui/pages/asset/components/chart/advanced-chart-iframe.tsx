@@ -107,6 +107,11 @@ type AdvancedChartIframeProps = {
   assetId: string;
   chartType: number;
   selectedInterval: string;
+  /**
+   * The currency the bars are priced in. Part of the series identity: a fiat
+   * change re-prices every bar, which must rebuild the chart rather than tick.
+   */
+  currency?: string;
   /** Persisted indicator selection, re-applied to each freshly loaded chart. */
   activeIndicators?: Set<string>;
   /** OHLCV data from parent (includes merged realtime updates) */
@@ -133,6 +138,7 @@ const AdvancedChartIframe = forwardRef<
       assetId,
       chartType,
       selectedInterval,
+      currency,
       activeIndicators,
       ohlcvData,
       onError,
@@ -366,8 +372,9 @@ const AdvancedChartIframe = forwardRef<
 
     // Identifies which series `ohlcvData` belongs to. Bar counts alone cannot
     // distinguish "one more candle on the same series" from "a different token
-    // that happens to return the same number of candles".
-    const seriesKey = `${assetId}|${selectedInterval}`;
+    // that happens to return the same number of candles". Currency is part of
+    // the identity because a fiat change re-prices every bar.
+    const seriesKey = `${assetId}|${selectedInterval}|${currency ?? ''}`;
     const seriesKeyRef = useRef(seriesKey);
 
     // Smart diffing: avoid full SET_OHLCV_DATA on every WS tick so the chart
@@ -387,12 +394,27 @@ const AdvancedChartIframe = forwardRef<
 
       const prevData = prevOhlcvDataRef.current;
 
-      // First load or bulk change (new asset, interval change, pagination)
-      // → full SET_OHLCV_DATA
-      if (
-        prevData.length === 0 ||
-        Math.abs(ohlcvData.length - prevData.length) > 1
-      ) {
+      // `useOHLCVChart` keeps the previous series' bars until the next fetch
+      // lands, so when a token/interval/currency switch returns a similar bar
+      // count the `seriesKey` reset alone cannot be trusted — the stale bars
+      // can be stamped under the new key for one render. The leading bar is
+      // the reliable tell: its time and price only stay identical within one
+      // continuous series, so a change there means a wholesale replacement.
+      const first = ohlcvData[0];
+      const prevFirst = prevData[0];
+      const sameSeries =
+        prevData.length > 0 &&
+        Boolean(first) &&
+        Boolean(prevFirst) &&
+        first.time === prevFirst.time &&
+        first.open === prevFirst.open &&
+        first.high === prevFirst.high &&
+        first.low === prevFirst.low &&
+        first.close === prevFirst.close;
+
+      // First load, a different series, or a bulk change (interval change,
+      // pagination) → full SET_OHLCV_DATA.
+      if (!sameSeries || Math.abs(ohlcvData.length - prevData.length) > 1) {
         postToChart({
           type: 'SET_OHLCV_DATA',
           // Strategy B (host-backed): the engine asks us for older bars via
