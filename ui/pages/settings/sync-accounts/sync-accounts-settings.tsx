@@ -50,17 +50,15 @@ const SyncAccountsSettings = () => {
   > | null>(null);
 
   const cancelQrSyncSession = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:cancelSync',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:cancelSync', []).catch(
+      () => undefined,
+    );
   }, []);
 
   const createQrSyncSession = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:createSession', []).catch(
+      () => undefined,
+    );
   }, []);
 
   const startNewSession = useCallback(async () => {
@@ -114,9 +112,9 @@ const SyncAccountsSettings = () => {
 
       setSyncSummary({ syncedAccountCount, syncedWalletCount });
 
-      await submitRequestToBackground<void>('messengerCall', [
-        'QrSyncController:syncAccounts',
-        [password, selectedAccountGroupIds],
+      await submitRequestToBackground('QrSyncController:syncAccounts', [
+        password,
+        selectedAccountGroupIds,
       ]);
     },
     [password],

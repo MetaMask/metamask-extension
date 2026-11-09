@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 import {
   TransactionEnvelopeType,
@@ -93,7 +94,8 @@ describe('useEIP7702Account', () => {
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([undefined, '', '0x'])(
       'returns false if code is %s',
-      async (code: string) => {
+      async (code: Hex | undefined) => {
+        // @ts-expect-error Intentionally forcing `LegacyBackgroundApiService:getCode` to return nothing.
         getCodeMock.mockResolvedValue(code);
         const result = await runHook().isUpgraded(ADDRESS_MOCK);
         expect(result).toBe(false);

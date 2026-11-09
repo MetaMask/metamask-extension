@@ -30,6 +30,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const activeEmail: EnrolledCredential = {
+  id: 'email_otp',
   type: 'email_otp',
   status: 'active',
   email: 'a@b.co',
@@ -92,7 +93,7 @@ const start = async (
 ) => {
   const outcome = startMfaFlow({
     request,
-    reason: { operation: 'test', enrollDescription: 'Why we ask' },
+    reason: { operation: 'qa.test', enrollDescription: 'Why we ask' },
     platform: passkey ? 'mobile' : 'extension',
     controller,
     passkey,
@@ -299,7 +300,10 @@ describe('MfaFlowHost', () => {
         methods: ['email_otp', 'passkey'],
         verifyWith: ['email_otp', 'passkey'],
       },
-      createController([activeEmail, { type: 'passkey', status: 'active' }]),
+      createController([
+        activeEmail,
+        { id: 'passkey', type: 'passkey', status: 'active' },
+      ]),
       { create: jest.fn(), get: jest.fn() },
     );
     renderHost();

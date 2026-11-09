@@ -21,9 +21,11 @@ import {
 import { transitionForward } from '../../../components/ui/transition';
 import { toast } from '../../../components/ui/toast/toast';
 import { getIsSocialLoginFlow } from '../../../selectors';
+import { getMfaUiKitMethods } from '../../../selectors/identity/mfa-ui-kit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
+import { isMfaDevBuild, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
+import type { MfaReason } from '../../../hooks/identity/mfa/engine/types';
 import type { MfaDetailsMethod } from './mfa-method-details';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaQaPresets from './mfa-qa-presets';
@@ -32,7 +34,7 @@ const ROWS: {
   method: MfaDetailsMethod;
   label: string;
   route: string;
-  operation: string;
+  operation: MfaReason['operation'];
   successMessage: string;
   testId: string;
 }[] = [
@@ -65,6 +67,7 @@ const MfaSettings = () => {
   const navigate = useNavigate();
   const { credentials, enroll } = useMfa();
   const isSocialLogin = useSelector(getIsSocialLoginFlow);
+  const methods = useSelector(getMfaUiKitMethods);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const activeTypes = new Set(
     credentials
@@ -78,8 +81,13 @@ const MfaSettings = () => {
       .catch(() => undefined);
   }, []);
 
-  const rows = ROWS.filter(
-    ({ method }) => !(isSocialLogin && method === 'email_otp'),
+  const rows = ROWS.map((row) => ({
+    ...row,
+    isSetUp: activeTypes.has(row.method),
+  })).filter(
+    ({ method, isSetUp }) =>
+      !(isSocialLogin && method === 'email_otp') &&
+      (isSetUp || methods.includes(method)),
   );
 
   const open = ({
@@ -87,8 +95,9 @@ const MfaSettings = () => {
     route,
     operation,
     successMessage,
-  }: (typeof ROWS)[number]) => {
-    if (activeTypes.has(method)) {
+    isSetUp,
+  }: (typeof rows)[number]) => {
+    if (isSetUp) {
       transitionForward(() => navigate(route));
       return;
     }
@@ -137,7 +146,7 @@ const MfaSettings = () => {
               alignItems={BoxAlignItems.Center}
               gap={1}
             >
-              {activeTypes.has(row.method) ? null : (
+              {row.isSetUp ? null : (
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
@@ -155,7 +164,7 @@ const MfaSettings = () => {
           </button>
         </Box>
       ))}
-      {isMfaKitEnabled() ? (
+      {isMfaDevBuild() ? (
         <Box padding={4}>
           <MfaQaPresets />
         </Box>

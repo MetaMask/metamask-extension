@@ -4,8 +4,10 @@ import { it as jestIt } from '@jest/globals';
 import {
   annotateTrace,
   endTrace,
+  extractTraceMetadata,
   getSerializedTraceContext,
   getTraceContext,
+  withoutTraceContext,
   ONBOARDING_MACHINE_TIME_ATTRIBUTE,
   trace,
   TraceName,
@@ -943,6 +945,106 @@ describe('Trace', () => {
       expect(getSerializedTraceContext()).toBeUndefined();
     });
   });
+
+  describe('withoutTraceContext', () => {
+    it('runs the callback when Sentry is not initialized', () => {
+      globalThis.sentry = undefined;
+      expect(withoutTraceContext(() => 7)).toBe(7);
+    });
+
+    it('runs the callback with no active span and returns its value', () => {
+      const withActiveSpan = jest.fn(
+        (_span: Sentry.Span | null, callback: () => void) => {
+          callback();
+        },
+      );
+      globalThis.sentry = {
+        ...globalThis.sentry,
+        withActiveSpan,
+      };
+
+      expect(withoutTraceContext(() => 7)).toBe(7);
+      expect(withActiveSpan).toHaveBeenCalledWith(null, expect.any(Function));
+    });
+
+    it('does not return the callback promise from the span callback', () => {
+      let spanCallbackReturn: unknown = 'unset';
+      const withActiveSpan = jest.fn(
+        (_span: Sentry.Span | null, callback: () => unknown) => {
+          spanCallbackReturn = callback();
+        },
+      );
+      globalThis.sentry = {
+        ...globalThis.sentry,
+        withActiveSpan,
+      };
+      const pending = Promise.resolve('done');
+
+      expect(withoutTraceContext(() => pending)).toBe(pending);
+      expect(spanCallbackReturn).toBeUndefined();
+    });
+  });
+
+  // We intentionally use lots of underscore-prefixed properties in these tests.
+  /* eslint-disable @typescript-eslint/naming-convention */
+  describe('extractTraceMetadata', () => {
+    it('extracts trace data from the given params', () => {
+      const _trace = {
+        context: { _traceId: 'trace123', _spanId: 'span456' },
+        messengerAction: 'AppStateController:getState',
+        spanName: 'Background RPC: AppStateController:getState',
+      };
+      const params = ['AppStateController:getState', [], { _trace }];
+
+      const result = extractTraceMetadata(params);
+
+      expect(result).toStrictEqual({
+        cleanParams: ['AppStateController:getState', []],
+        traceMetadata: _trace,
+      });
+      expect(params).toHaveLength(3);
+    });
+
+    jestIt.each([
+      { context: { _traceId: 'trace123' }, spanName: 'Background RPC: foo' },
+      { context: { _traceId: 'trace123', _spanId: 'span456' } },
+      { context: { _traceId: 'trace123', _spanId: 'span456' }, spanName: 1 },
+      {
+        context: { _traceId: 'trace123', _spanId: 'span456' },
+        spanName: 'other',
+      },
+      {
+        context: { _traceId: 'trace123', _spanId: 'span456' },
+        spanName: 'Background RPC: foo',
+        messengerAction: 1,
+      },
+    ])(
+      'does not extract anything from params containing invalid tracing metadata: %j',
+      (metadata) => {
+        const params = ['bar', { _trace: metadata }];
+
+        const result = extractTraceMetadata(params);
+
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
+      },
+    );
+
+    jestIt.each([undefined, {}, []])(
+      'does not extract anything from params that have no _trace argument: %j',
+      (params) => {
+        const result = extractTraceMetadata(params);
+
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
+      },
+    );
+  });
+  /* eslint-enable @typescript-eslint/naming-convention */
 });
 
 describe('concurrent trace() calls (MetaMask-planning#7523)', () => {

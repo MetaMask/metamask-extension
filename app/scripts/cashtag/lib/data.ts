@@ -2,6 +2,7 @@ import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { priceApiBaseUrl } from '#shared/constants/price-api';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
 import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
+import { byMarketCap } from '#shared/lib/token-search/token-search-api';
 import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
@@ -12,6 +13,7 @@ type SearchHit = {
   assetId: CaipAssetType;
   symbol: string;
   name: string;
+  rwaData?: { ticker?: string | null } | null;
   securityData?: { resultType?: string };
   price?: string | number | null;
   marketCap?: string | number | null;
@@ -60,6 +62,7 @@ async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
     query: symbol,
     first: '25',
     includeMarketData: 'true',
+    includeRwaData: 'true',
     includeTokenSecurityData: 'true',
   });
   const response = await globalThis.fetch(`${tokenSearchUrl}?${params}`, {
@@ -131,14 +134,16 @@ export async function resolveTicker(
   }
 
   const matches = await searchBySymbol(ticker);
-  const symbolMatches = matches.filter((match) =>
-    match.symbol.trim().toUpperCase().startsWith(ticker),
+  const symbolMatches = matches.filter(
+    (match) =>
+      match.symbol.trim().toUpperCase() === ticker ||
+      match.rwaData?.ticker?.trim().toUpperCase() === ticker,
   );
   if (symbolMatches.length === 0) {
     return null;
   }
 
-  const assets = symbolMatches.map(toAssetData);
+  const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
   return {
     primary: assets[0],
     similar: assets.slice(1),

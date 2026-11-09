@@ -1,6 +1,5 @@
 import { lightTheme } from '@metamask/design-tokens';
 import type { ApprovalController } from '@metamask/approval-controller';
-import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -28,9 +27,6 @@ export type BadgeManagerBrowser = {
 
 export type BadgeManagerController = {
   approvalController: ApprovalController;
-  appStateController: {
-    setDefaultHomeActiveTabName: (tab: string | null) => void;
-  };
   controllerMessenger: {
     subscribe: (event: string, handler: (...args: unknown[]) => void) => void;
   };
@@ -71,7 +67,6 @@ export type BadgeManagerApi = {
   updateBadge: () => void;
   clearFailedTxBadge: () => void;
   getFailedTxCount: () => number;
-  setClientLandingTab: (tab?: string | null) => void;
 };
 
 type TransactionStatusUpdatedPayload = {
@@ -164,16 +159,6 @@ export function createBadgeManager({
     }
   };
 
-  const setClientLandingTab = (tab?: string | null) => {
-    try {
-      getController().appStateController.setDefaultHomeActiveTabName(
-        tab ?? null,
-      );
-    } catch (error) {
-      console.error('Error setting landing tab:', error);
-    }
-  };
-
   const onTransactionStatusUpdated = (
     payload: TransactionStatusUpdatedPayload,
   ) => {
@@ -192,7 +177,8 @@ export function createBadgeManager({
       return;
     }
 
-    // Skip if a persistent UI is open, transaction status is in the Activity tab
+    // Skip if a persistent UI is open. The user can already see the failure
+    // on the Activity page.
     if (hasPersistentUiOpen()) {
       return;
     }
@@ -205,11 +191,6 @@ export function createBadgeManager({
     }
 
     failedTxCount += 1;
-
-    // Defer landing page until notification closes; close handler re-applies
-    if (!isOnlyNotificationOpen()) {
-      setClientLandingTab(AccountOverviewTabKey.Activity);
-    }
 
     updateBadge();
   };
@@ -290,6 +271,5 @@ export function createBadgeManager({
     updateBadge,
     clearFailedTxBadge,
     getFailedTxCount: () => failedTxCount,
-    setClientLandingTab,
   };
 }
