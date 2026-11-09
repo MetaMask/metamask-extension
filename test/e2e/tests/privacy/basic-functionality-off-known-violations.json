@@ -3,6 +3,7 @@
     "accounts.api.cx.metamask.io",
     "acl.execution.metamask.io",
     "authentication.api.cx.metamask.io",
+    "bitcoin-mainnet.infura.io",
     "chainid.network",
     "client-side-detection.api.cx.metamask.io",
     "geolocation.dev-api.cx.metamask.io",
