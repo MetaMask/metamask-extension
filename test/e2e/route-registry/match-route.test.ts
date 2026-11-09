@@ -2,6 +2,7 @@ import AccountListPage from '../page-objects/pages/accounts/list-page';
 import ActivityTab from '../page-objects/pages/home/activity-tab';
 import HomePage from '../page-objects/pages/home/homepage';
 import { matchRoute } from './match-route';
+import { NOT_A_SCREEN } from './route-registry';
 
 describe('matchRoute', () => {
   it('matches static routes to their page object', () => {
@@ -38,9 +39,16 @@ describe('matchRoute', () => {
   });
 
   it('returns null for routes without a page object', () => {
+    expect(matchRoute('/rewards')).toStrictEqual({
+      path: '/rewards',
+      pageObject: null,
+    });
+  });
+
+  it('returns NOT_A_SCREEN for routes that render no screen', () => {
     expect(matchRoute('/lock')).toStrictEqual({
       path: '/lock',
-      pageObject: null,
+      pageObject: NOT_A_SCREEN,
     });
   });
 

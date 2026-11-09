@@ -2,13 +2,14 @@ import { matchRoutes } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../ui/helpers/constants/routes';
 import {
   ROUTE_PAGE_OBJECT_REGISTRY,
-  type PageObjectClass,
+  type RoutePageObjectRegistry,
 } from './route-registry';
 
 export type MatchedRoute = {
   /** Route path pattern, as keyed in the registry. */
   path: string;
-  pageObject: PageObjectClass | null;
+  /** The page object, `NOT_A_SCREEN`, or `null` when there is none yet. */
+  pageObject: RoutePageObjectRegistry[string];
 };
 
 const ROUTE_OBJECTS = [
