@@ -2,6 +2,8 @@ import type { AccountGroupBalance as AccountGroupBalanceType } from '@metamask/a
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { CaipChainId, Hex } from '@metamask/utils';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -373,8 +375,12 @@ describe('AccountGroupBalance', () => {
       expect(
         getByTestId('account-group-balance-unavailable'),
       ).toBeInTheDocument();
-      expect(getByText('Balance unavailable')).toBeInTheDocument();
-      expect(getByText('Retry')).toBeInTheDocument();
+      expect(
+        getByText(messages.balanceUnavailable.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.balanceUnavailableRetry.message),
+      ).toBeInTheDocument();
       expect(queryByText('$0.00')).not.toBeInTheDocument();
     });
 
