@@ -26,6 +26,11 @@ function getProxyServer(proxyPort) {
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
+// TEMPORARY (1/1): flag A/B for the Chrome 137 harness change. BENCH_CHROME_ARM is a comma-separated list of
+// v137 (browser version), unsafe (--enable-unsafe-extension-debugging), targets (enableExtensionTargets) and
+// viewport (taller headless window). Unset keeps the pilot harness. Remove with the trigger-ci-pilot branch.
+const ARM = new Set((process.env.BENCH_CHROME_ARM || '').split(','));
+
 class ChromeDriver {
   static async build({
     openDevToolsForTabs,
@@ -43,6 +48,10 @@ class ChromeDriver {
       '--disable-dev-shm-usage',
       '--no-sandbox',
     ];
+
+    if (ARM.has('unsafe')) {
+      args.push('--enable-unsafe-extension-debugging');
+    }
 
     if (isBenchmark) {
       args.push('--js-flags=--expose-gc');
@@ -62,7 +71,8 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (constrainWindowSize) {
+    const fixedViewport = ARM.has('viewport') && isHeadless('SELENIUM');
+    if (constrainWindowSize && !fixedViewport) {
       args.push('--window-size=320,600');
     }
 
@@ -93,7 +103,11 @@ class ChromeDriver {
       },
     });
 
-    options.setBrowserVersion(PINNED_CHROME_VERSION);
+    options.setBrowserVersion(ARM.has('v137') ? '137' : PINNED_CHROME_VERSION);
+
+    if (ARM.has('targets')) {
+      options.get('goog:chromeOptions').enableExtensionTargets = true;
+    }
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
@@ -125,6 +139,13 @@ class ChromeDriver {
     // Ensure Chrome is cleaned up if anything below fails (extension ID
     // lookup, etc.).  Without this, a partial failure orphans the browser.
     try {
+      if (fixedViewport) {
+        await driver
+          .manage()
+          .window()
+          .setRect({ width: constrainWindowSize ? 320 : 800, height: 1080 });
+      }
+
       // When the manifest has a `key`, the extension ID is deterministic and can
       // be computed locally — skipping the chrome://extensions round-trip (~880ms).
       let extensionId = ChromeDriver._computeExtensionId(

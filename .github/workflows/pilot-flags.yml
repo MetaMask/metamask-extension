@@ -1,0 +1,115 @@
+name: Pilot flag A/B
+
+# TEMPORARY (1/1): finds which part of the Chrome 137 harness change (#47453)
+# slowed the Chrome startup benchmark. One donor build; every job runs seven
+# harness arms on the same runner (pre-#47453 baseline, each single change on
+# top of it, all flags on Chrome 126, Chrome 137 alone, and the current main
+# harness), in an order rotated by shard (reversed for shards 8-14), so runner
+# speed cancels. Runs only on trigger-ci-pilot*
+# branches, which main.yml ignores; results are artifacts only.
+# Remove this file and test/e2e/webdriver/chrome.js's BENCH_CHROME_ARM when done.
+
+on:
+  push:
+    branches:
+      - 'trigger-ci-pilot*'
+
+permissions:
+  contents: read
+
+env:
+  DONOR_RUN: '42666092993'
+  DONOR_VERSION: 13.58.0
+  DONOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+  BROWSER_LOADS: '5'
+
+jobs:
+  flags:
+    name: ${{ matrix.os }}-s${{ matrix.shard }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      BRANCH: ${{ github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      BENCHMARK_RUNNER_LABEL: ${{ matrix.os }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download the donor build
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 5 --retry-all-errors \
+            --output donor.zip \
+            "$DONOR_HOST/$DONOR_RUN/build-test-webpack/builds/metamask-chrome-$DONOR_VERSION.zip"
+          mkdir -p dist/chrome
+          unzip -q donor.zip -d dist/chrome
+
+      - name: Run the arms in rotated order
+        timeout-minutes: 45
+        env:
+          SHARD: ${{ matrix.shard }}
+          OS: ${{ matrix.os }}
+        run: |
+          set -uo pipefail
+          # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
+          arms=(
+            "base126=none"
+            "unsafe=unsafe"
+            "targets=targets"
+            "viewport=viewport"
+            "flags126=unsafe,targets,viewport"
+            "chrome137=v137"
+            "all137=v137,unsafe,targets,viewport"
+          )
+          n=${#arms[@]}
+          start=$(( (SHARD - 1) % n ))
+          mkdir -p test-artifacts/benchmarks
+          for (( i = 0; i < n; i++ )); do
+            if (( SHARD > n )); then
+              idx=$(( (start - i + n) % n ))
+            else
+              idx=$(( (start + i) % n ))
+            fi
+            name="${arms[$idx]%%=*}"
+            tokens="${arms[$idx]#*=}"
+            [[ "$tokens" == none ]] && tokens=""
+            echo "::group::arm $name (position $i): BENCH_CHROME_ARM=$tokens"
+            BENCH_CHROME_ARM="$tokens" yarn test:e2e:benchmark \
+              --preset startupStandardHome \
+              --browserLoads "$BROWSER_LOADS" --pageLoads 10 --retries 2 \
+              --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-s$SHARD.json" \
+              || echo "::warning::arm $name failed"
+            echo "::endgroup::"
+          done
+
+      - name: Upload results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: flags-${{ matrix.os }}-s${{ matrix.shard }}
+          path: test-artifacts/benchmarks/*.json
+          retention-days: 7
+          if-no-files-found: ignore
