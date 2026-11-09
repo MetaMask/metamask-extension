@@ -8,10 +8,20 @@ import {
   getNativeAssetForChainId,
   sumAmounts,
 } from '@metamask/bridge-controller';
-import { Skeleton } from '@metamask/design-system-react';
 import {
   AvatarToken,
   AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  FontWeight,
+  Skeleton,
+  Text as DsText,
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
+import {
   SuccessPill,
   Text,
   PopoverPosition,
@@ -35,9 +45,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  BackgroundColor,
-  BorderRadius,
-  FontWeight,
   IconColor,
   JustifyContent,
   TextColor,
@@ -347,10 +354,11 @@ export const MultichainBridgeQuoteCard = ({
                     ? formatNetworkFee(includedTxFees.valueInCurrency, currency)
                     : formatNetworkFee(gasFees?.valueInCurrency, currency)}
                 </Text>
-                <Row
-                  className="gap-0.5 px-1.5"
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                  borderRadius={BorderRadius.MD}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+                  className="gap-0.5 px-1.5 rounded-md"
                   data-testid="network-fees-included-token"
                 >
                   <AvatarToken
@@ -358,14 +366,14 @@ export const MultichainBridgeQuoteCard = ({
                     src={fromToken?.iconUrl ?? undefined}
                     name={fromToken?.symbol}
                   />
-                  <Text
-                    variant={TextVariant.bodyXs}
+                  <DsText
+                    variant={DsTextVariant.BodyXs}
                     fontWeight={FontWeight.Medium}
-                    color={TextColor.textAlternative}
+                    color={DsTextColor.TextAlternative}
                   >
                     {fromToken?.symbol}
-                  </Text>
-                </Row>
+                  </DsText>
+                </Box>
               </Row>
             )}
             {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
