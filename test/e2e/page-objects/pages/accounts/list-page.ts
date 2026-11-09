@@ -197,11 +197,6 @@ class AccountListPage {
   private readonly importAccountJsonFileInput =
     'input[data-testid="file-input"]';
 
-  private readonly importAccountJsonFileOption = {
-    text: 'JSON file',
-    tag: 'button',
-  };
-
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
 
@@ -1089,7 +1084,9 @@ class AccountListPage {
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
-    await this.driver.clickElement(this.importAccountJsonFileOption);
+    // The toggle renders its label in a child element, so the button itself
+    // has no direct text node for the text locator to match.
+    await this.driver.clickNestedButton(this.importAccountJsonFileOption.text);
 
     const fileInput = await this.driver.findElement(
       this.importAccountJsonFileInput,
