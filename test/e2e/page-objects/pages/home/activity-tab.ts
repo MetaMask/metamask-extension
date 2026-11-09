@@ -45,7 +45,7 @@ class ActivityTab extends HomePage {
   private readonly failedTransactions = '[data-tx-status="failed"]';
 
   private readonly pendingTransactionItems =
-    '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
+    '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"], [data-tx-status="unconfirmed"]';
 
   private readonly popoverClose = '[data-testid="popover-close"]';
 
