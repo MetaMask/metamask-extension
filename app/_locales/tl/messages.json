@@ -4152,10 +4152,6 @@
   "fieldRequired": {
     "message": "Kinakailangan ang $1"
   },
-  "fileImportFail": {
-    "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "I-click para mag-upload o mag-drag and drop"
   },
@@ -7384,10 +7380,6 @@
   },
   "paste": {
     "message": "I-paste"
-  },
-  "pastePrivateKey": {
-    "message": "I-paste ang string ng iyong pribadong key dito:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Magbayad gamit ang",
@@ -12679,9 +12671,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
-  },
-  "usedByClients": {
-    "message": "Ginagamit ng iba't ibang kliyente"
   },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"

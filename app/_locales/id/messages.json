@@ -4152,10 +4152,6 @@
   "fieldRequired": {
     "message": "$1 wajib diisi"
   },
-  "fileImportFail": {
-    "message": "Impor file tidak bekerja? Klik di sini!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "Klik untuk mengunggah atau seret dan lepas"
   },
@@ -7388,10 +7384,6 @@
   },
   "paste": {
     "message": "Tempel"
-  },
-  "pastePrivateKey": {
-    "message": "Tempel string kunci pribadi Anda di sini:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Bayar melalui",
@@ -12687,9 +12679,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
-  },
-  "usedByClients": {
-    "message": "Digunakan oleh berbagai klien yang berbeda"
   },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"

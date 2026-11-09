@@ -4152,10 +4152,6 @@
   "fieldRequired": {
     "message": "$1 ist erforderlich"
   },
-  "fileImportFail": {
-    "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "Anklicken und hochladen oder ziehen und ablegen"
   },
@@ -7384,10 +7380,6 @@
   },
   "paste": {
     "message": "Einfügen"
-  },
-  "pastePrivateKey": {
-    "message": "Geben Sie hier die Zeichenfolge Ihres privaten Schlüssels ein:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Bezahlen mit",
@@ -12679,9 +12671,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Die automatische Anzeige von Tokens, die an Ihr Konto gesendet werden, erfordert die Kommunikation mit Servern von Drittanbietern, um Token-Bilder abzurufen. Diese Server erhalten Zugriff auf Ihre IP-Adresse."
-  },
-  "usedByClients": {
-    "message": "Verwendet von einer Reihe von Kunden"
   },
   "userOpContractDeployError": {
     "message": "Contract-Bereitstellung von einem Smart-Konto wird nicht unterstützt"

@@ -4152,10 +4152,6 @@
   "fieldRequired": {
     "message": "Απαιτείται η $1"
   },
-  "fileImportFail": {
-    "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "Κάντε κλικ για μεταφόρτωση ή σύρετε και αφήστε"
   },
@@ -7384,10 +7380,6 @@
   },
   "paste": {
     "message": "Επικόλληση"
-  },
-  "pastePrivateKey": {
-    "message": "Εισάγετε τη συμβολοσειρά του ιδιωτικού σας κλειδιού εδώ:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Πληρωμή με",
@@ -12679,9 +12671,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."
-  },
-  "usedByClients": {
-    "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"

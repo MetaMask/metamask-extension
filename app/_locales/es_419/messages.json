@@ -4152,10 +4152,6 @@
   "fieldRequired": {
     "message": "Se requiere $1"
   },
-  "fileImportFail": {
-    "message": "¿No funciona la importación del archivo? ¡Haga clic aquí!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "Haz clic para cargar o arrastrar y soltar"
   },
@@ -7388,10 +7384,6 @@
   },
   "paste": {
     "message": "Pegar"
-  },
-  "pastePrivateKey": {
-    "message": "Pegue aquí la cadena de clave privada:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Pagar con",
@@ -12693,9 +12685,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "La visualización automática de tokens enviados a su cuenta implica la comunicación con servidores de terceros para obtener imágenes de tokens. Esos servicios tendrán acceso a su dirección IP."
-  },
-  "usedByClients": {
-    "message": "Usado por una variedad de clientes distintos"
   },
   "userOpContractDeployError": {
     "message": "No se admite la implementación de contratos desde una cuenta inteligente"

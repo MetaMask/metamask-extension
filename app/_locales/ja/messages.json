@@ -4134,10 +4134,6 @@
   "fieldRequired": {
     "message": "$1は必須項目です"
   },
-  "fileImportFail": {
-    "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "クリックしてアップロードまたはドラッグ＆ドロップ"
   },
@@ -7335,10 +7331,6 @@
   },
   "paste": {
     "message": "貼り付け"
-  },
-  "pastePrivateKey": {
-    "message": "秘密鍵の文字列をここに貼り付けます:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "支払方法:",
@@ -12630,9 +12622,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーにより、あなたのIPアドレスにアクセスされることになります。"
-  },
-  "usedByClients": {
-    "message": "さまざまな異なるクライアントによって使用されています"
   },
   "userOpContractDeployError": {
     "message": "スマートコントラクトアカウントからのコントラクトの展開はサポートされていません"
