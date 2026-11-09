@@ -301,6 +301,10 @@ describe('Fullscreen design', () => {
         'placeholder',
         messages.searchTokens.message,
       );
+      expect(searchInput).toHaveAttribute(
+        'aria-label',
+        messages.searchTokens.message,
+      );
     });
 
     it('opens the discover search page when the search field is clicked', async () => {

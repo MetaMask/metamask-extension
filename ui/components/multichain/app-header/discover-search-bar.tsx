@@ -35,6 +35,7 @@ export const DiscoverSearchBar = ({
     <TextFieldSearch
       className={classnames('max-w-lg flex-1 cursor-pointer', className)}
       placeholder={t('searchTokens')}
+      inputAriaLabel={t('searchTokens')}
       value=""
       isReadOnly
       onClick={onOpen}
