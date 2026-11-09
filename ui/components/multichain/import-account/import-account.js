@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { TextButton } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBorderColor,
+  BoxFlexDirection,
+  FontWeight,
+  Text,
+  TextButton,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -9,19 +19,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, Text } from '../../component-library';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  FontWeight,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
@@ -116,10 +114,10 @@ export const ImportAccount = ({ onActionComplete }) => {
     if (strategy === 'json') {
       return (
         <>
-          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+          <Text className="w-3/4" fontWeight={FontWeight.Bold}>
             {t('importAccountJsonLoading1')}
           </Text>
-          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+          <Text className="w-3/4" fontWeight={FontWeight.Bold}>
             {t('importAccountJsonLoading2')}
           </Text>
         </>
@@ -166,18 +164,13 @@ export const ImportAccount = ({ onActionComplete }) => {
   }
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      height={BlockSize.Full}
-      gap={4}
-    >
+    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
       {isSocialLoginFlow ? (
         <>
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('importAccountWithSocialMsg')}
           </Text>
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('importAccountWithSocialMsgLearnMore', [
               <TextButton
                 size="body-sm"
@@ -198,9 +191,9 @@ export const ImportAccount = ({ onActionComplete }) => {
         </>
       ) : (
         <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          marginTop={2}
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          className="mt-2"
         >
           {t('importAccountMsg')}{' '}
           <TextButton size="body-md" asChild className="inline">
@@ -216,12 +209,12 @@ export const ImportAccount = ({ onActionComplete }) => {
       )}
       {/* Network select stays hidden until a non-EVM import exists. */}
       <Box
-        display={Display.Flex}
-        borderColor={BorderColor.borderMuted}
-        borderRadius={BorderRadius.LG}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        borderColor={BoxBorderColor.BorderMuted}
         borderWidth={1}
         padding={1}
-        style={{ width: 'fit-content' }}
+        className="w-fit rounded-lg"
         role="group"
         aria-label={t('selectType')}
         data-testid="import-account-type-toggle"
@@ -230,21 +223,13 @@ export const ImportAccount = ({ onActionComplete }) => {
           const isSelected = type === id;
 
           return (
-            <Box
-              as="button"
+            <button
               type="button"
               key={id}
               aria-pressed={isSelected}
-              backgroundColor={
-                isSelected
-                  ? BackgroundColor.backgroundMuted
-                  : BackgroundColor.transparent
-              }
-              borderRadius={BorderRadius.LG}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={1}
-              paddingBottom={1}
+              className={`rounded-lg px-4 py-1 ${
+                isSelected ? 'bg-muted' : 'bg-transparent'
+              }`}
               data-testid={`import-account-type-${id}`}
               onClick={() => {
                 setImportErrorMessage();
@@ -252,22 +237,19 @@ export const ImportAccount = ({ onActionComplete }) => {
               }}
             >
               <Text
-                variant={TextVariant.bodySmMedium}
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
                 color={
-                  isSelected ? TextColor.textDefault : TextColor.textAlternative
+                  isSelected ? TextColor.TextDefault : TextColor.TextAlternative
                 }
               >
                 {label}
               </Text>
-            </Box>
+            </button>
           );
         })}
       </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        style={{ flex: 1, minHeight: 0 }}
-      >
+      <Box flexDirection={BoxFlexDirection.Column} className="min-h-0 flex-1">
         {type === importTypes[0].id ? (
           <PrivateKeyImportView
             importAccountFunc={importAccount}

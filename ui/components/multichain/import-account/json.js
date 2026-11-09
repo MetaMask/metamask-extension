@@ -1,31 +1,25 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FileInput from 'react-simple-file-input';
-import { TextButton } from '@metamask/design-system-react';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import {
   Box,
+  BoxFlexDirection,
+  ButtonIcon,
+  ButtonIconSize,
   FormTextField,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
+  TextButton,
+  TextColor,
   TextFieldSize,
   TextFieldType,
-} from '../../component-library';
+  TextVariant,
+} from '@metamask/design-system-react';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ShowHideToggle from '../../ui/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 
 export default function JsonImportSubview({
@@ -59,26 +53,10 @@ export default function JsonImportSubview({
   }
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      gap={4}
-      style={{ flex: 1 }}
-    >
-      <Box
-        as="label"
+    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
+      <label
         htmlFor="file-input"
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.XL}
-        gap={2}
-        paddingTop={8}
-        paddingBottom={8}
-        paddingLeft={4}
-        paddingRight={4}
-        style={{ position: 'relative', cursor: 'pointer' }}
+        className="relative flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-muted px-4 py-8"
       >
         <FileInput
           id="file-input"
@@ -104,14 +82,14 @@ export default function JsonImportSubview({
         <Icon
           name={IconName.Upload}
           size={IconSize.Sm}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
         />
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {fileName || t('chooseJsonFile')}
         </Text>
-      </Box>
+      </label>
 
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('fileImportNotWorking')}{' '}
         <TextButton size="body-md" asChild className="inline">
           <a
@@ -129,7 +107,7 @@ export default function JsonImportSubview({
         size={TextFieldSize.Lg}
         autoFocus
         helpText={helpText}
-        error={Boolean(helpText)}
+        isError={Boolean(helpText)}
         placeholder={t('enterOptionalPassword')}
         value={password}
         onChange={(event) => {
@@ -140,18 +118,15 @@ export default function JsonImportSubview({
           onKeyPress: handleKeyPress,
         }}
         type={showPassword ? TextFieldType.Text : TextFieldType.Password}
-        textFieldProps={{
-          endAccessory: (
-            <ShowHideToggle
-              shown={showPassword}
-              id="show-hide-json-password"
-              title={showPassword ? t('hide') : t('show')}
-              ariaLabelShown={t('hide')}
-              ariaLabelHidden={t('show')}
-              onChange={() => setShowPassword(!showPassword)}
-            />
-          ),
-        }}
+        endAccessory={
+          <ButtonIcon
+            iconName={showPassword ? IconName.Eye : IconName.EyeSlash}
+            size={ButtonIconSize.Md}
+            ariaLabel={showPassword ? t('hide') : t('show')}
+            data-testid="show-hide-json-password"
+            onClick={() => setShowPassword(!showPassword)}
+          />
+        }
       />
 
       <BottomButtons

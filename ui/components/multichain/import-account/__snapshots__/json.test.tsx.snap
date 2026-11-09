@@ -3,13 +3,11 @@
 exports[`Json should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
-    style="flex: 1;"
+    class="flex flex-col gap-4 flex-1"
   >
     <label
-      class="mm-box mm-box--padding-top-8 mm-box--padding-right-4 mm-box--padding-bottom-8 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-xl"
+      class="relative flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-muted px-4 py-8"
       for="file-input"
-      style="position: relative; cursor: pointer;"
     >
       <input
         accept=".json,application/json"
@@ -18,18 +16,24 @@ exports[`Json should match snapshot 1`] = `
         style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;"
         type="file"
       />
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-        style="mask-image: url('./images/icons/upload.svg');"
-      />
+      <svg
+        class="inline-block w-4 h-4 text-icon-alternative"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M21 13.5v6a.75.75 0 0 1-.75.75H3.75A.75.75 0 0 1 3 19.5v-6a.75.75 0 0 1 1.5 0v5.25h15V13.5a.75.75 0 0 1 1.5 0M8.78 7.28l2.47-2.47v8.69a.75.75 0 0 0 1.5 0V4.81l2.47 2.47a.75.75 0 0 0 1.06-1.06l-3.75-3.75a.75.75 0 0 0-1.06 0L7.72 6.22a.75.75 0 0 0 1.06 1.06"
+        />
+      </svg>
       <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Choose JSON file
       </p>
     </label>
     <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+      class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
     >
       File import not working? 
       <a
@@ -42,54 +46,39 @@ exports[`Json should match snapshot 1`] = `
       </a>
     </p>
     <div
-      class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
+      class="flex flex-col"
     >
       <div
-        class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+        class="inline-flex items-center rounded-xl border bg-muted transition-colors h-12 pl-0 pr-4 border-default"
       >
         <input
           aria-label="Enter optional password"
-          autocomplete="off"
-          class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-          focused="true"
+          class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-4 pr-2 truncate"
           id="json-password-box"
           placeholder="Enter optional password"
           type="password"
           value=""
         />
-        <div
-          class="show-hide-toggle"
+        <button
+          aria-label="Show"
+          class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          data-testid="show-hide-json-password"
         >
-          <input
-            class="show-hide-toggle__input"
-            id="show-hide-json-password"
-            type="checkbox"
-          />
-          <label
-            class="show-hide-toggle__label"
-            for="show-hide-json-password"
-            title="Show"
+          <svg
+            class="inline-block w-6 h-6 text-inherit"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              aria-label="Show"
-              class="show-hide-toggle__icon"
-              fill="currentColor"
-              height="24"
-              viewBox="0 0 640 512"
-              width="24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M634 471L36 3.51A16 16 0 0 0 13.51 6l-10 12.49A16 16 0 0 0 6 41l598 467.49a16 16 0 0 0 22.49-2.49l10-12.49A16 16 0 0 0 634 471zM296.79 146.47l134.79 105.38C429.36 191.91 380.48 144 320 144a112.26 112.26 0 0 0-23.21 2.47zm46.42 219.07L208.42 260.16C210.65 320.09 259.53 368 320 368a113 113 0 0 0 23.21-2.46zM320 112c98.65 0 189.09 55 237.93 144a285.53 285.53 0 0 1-44 60.2l37.74 29.5a333.7 333.7 0 0 0 52.9-75.11 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64c-36.7 0-71.71 7-104.63 18.81l46.41 36.29c18.94-4.3 38.34-7.1 58.22-7.1zm0 288c-98.65 0-189.08-55-237.93-144a285.47 285.47 0 0 1 44.05-60.19l-37.74-29.5a333.6 333.6 0 0 0-52.89 75.1 32.35 32.35 0 0 0 0 29.19C89.72 376.41 197.08 448 320 448c36.7 0 71.71-7.05 104.63-18.81l-46.41-36.28C359.28 397.2 339.89 400 320 400z"
-              />
-            </svg>
-          </label>
-        </div>
+            <path
+              d="M5.055 3.246a.75.75 0 1 0-1.11 1.008L5.749 6.24C2.344 8.33.879 11.55.815 11.696a.75.75 0 0 0 0 .61c.032.074.827 1.834 2.592 3.6C5.759 18.256 8.73 19.5 12 19.5a11.9 11.9 0 0 0 4.882-1.015l2.062 2.27a.75.75 0 1 0 1.11-1.01Zm4.437 7.11 3.907 4.298a3 3 0 0 1-3.907-4.298M12 18c-2.886 0-5.407-1.05-7.493-3.117A12.5 12.5 0 0 1 2.344 12c.44-.824 1.843-3.13 4.439-4.63L8.47 9.223a4.5 4.5 0 0 0 5.968 6.563l1.381 1.518A10.5 10.5 0 0 1 12 18m.563-8.947a.75.75 0 0 1 .28-1.473 4.515 4.515 0 0 1 3.635 3.997.75.75 0 0 1-.676.817 1 1 0 0 1-.07 0 .75.75 0 0 1-.75-.68 3.01 3.01 0 0 0-2.42-2.66m10.62 3.253c-.04.088-.99 2.19-3.128 4.106a.75.75 0 1 1-1-1.118A12.5 12.5 0 0 0 21.66 12a12.5 12.5 0 0 0-2.168-2.885C17.407 7.05 14.886 6 12 6a11 11 0 0 0-1.815.147.75.75 0 1 1-.248-1.48A12.6 12.6 0 0 1 12 4.5c3.27 0 6.24 1.243 8.593 3.595 1.765 1.766 2.56 3.527 2.592 3.601a.75.75 0 0 1 0 .61Z"
+            />
+          </svg>
+        </button>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-top-4"
-      style="margin-top: auto;"
+      class="pt-4 mt-auto"
     >
       <button
         aria-disabled="true"
