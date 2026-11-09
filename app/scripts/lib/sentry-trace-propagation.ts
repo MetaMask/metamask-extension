@@ -205,20 +205,11 @@ const TRACE_PARENT_HEADERS = ['sentry-trace', 'traceparent'];
 const SENTRY_BAGGAGE_PREFIX = 'sentry-';
 
 /**
- * Remove every trace header from an outbound request's effective headers:
- * `sentry-trace`, `traceparent`, and the Sentry-prefixed `baggage` entries.
- * Non-Sentry `baggage` entries and all other headers are preserved.
- *
- * Used to hold the outbound invariant when no span is active. The SDK's fetch
- * instrumentation attaches these headers whenever the URL matches
- * `tracePropagationTargets`, independently of whether a span exists; with no
- * span it derives them from the scope propagation context, so the advertised
- * parent is a freshly minted id belonging to no span.
+ * Remove `sentry-trace`, `traceparent` and Sentry-prefixed `baggage` entries
+ * from a fetch's effective headers, keeping everything else.
  *
  * @param args - The fetch arguments (`[input, init]`).
- * @returns A new `Headers` instance without trace headers, or `undefined` when
- * the request carried none — so the caller can leave the fetch arguments as
- * they are rather than rewriting them to an equivalent value.
+ * @returns The stripped headers, or `undefined` when there was nothing to strip.
  */
 export function stripTraceHeaders(args: unknown[]): Headers | undefined {
   const headers = mergeFetchHeaders(args);
@@ -279,10 +270,8 @@ function setRequestIdForTraceId(traceId: string, requestId: string): void {
  * `consensysRequestId`). The W3C `traceparent` / `sentry-trace` headers are
  * injected natively by the SDK (`propagateTraceparent` + `tracePropagationTargets`).
  *
- * Also enforces the outbound invariant: a matched request made while no span is
- * active carries no trace headers at all — the SDK's `sentry-trace` /
- * `traceparent` / Sentry `baggage` are stripped and the Consensys segment is
- * withheld, rather than advertising a parent that points at no span.
+ * With no active span, a matched request goes out with no trace headers and no
+ * Consensys `baggage`.
  *
  * Must be registered after `browserTracingIntegration` so the SDK's
  * `sentry-trace` / `baggage` headers are already attached when the fetch hook
@@ -311,13 +300,8 @@ export function consensysTracePropagationIntegration({
           return;
         }
         try {
-          // Outbound invariant: never advertise a trace parent that points at
-          // nothing. The SDK attaches `sentry-trace` / `traceparent` / Sentry
-          // `baggage` to every `tracePropagationTargets` match, including when
-          // no span is active — then the parent id comes from the scope
-          // propagation context and belongs to no span the backend can ever
-          // join. Strip what the SDK attached, and withhold the Consensys
-          // `baggage` segment, which has no trace to correlate against.
+          // The SDK attaches trace headers to matched URLs even with no active
+          // span, naming a parent that is never sent: strip them.
           if (!getActiveSpan()) {
             const strippedHeaders = stripTraceHeaders(handlerData.args);
             if (strippedHeaders) {
