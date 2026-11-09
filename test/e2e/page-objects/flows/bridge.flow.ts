@@ -31,6 +31,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
 }) => {
+  await new BridgeQuotePage(driver).goBackAfterSubmit();
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
 

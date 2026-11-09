@@ -13,7 +13,10 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';
+import {
+  getErrorHandling,
+  isCooldownCountdown,
+} from '../../../hooks/identity/mfa/engine/errors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { MfaFlowTestIds } from '../test-ids';
@@ -35,8 +38,6 @@ const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
  */
 const getCodeDigits = (text: string) =>
   text.replace(/\D/gu, '').slice(0, CODE_LENGTH);
-
-const COOLDOWN_CODES = new Set(['otp_resend_cooldown', 'rate_limited']);
 
 // The clock is state, as the React Compiler caches what render computes:
 // `Date.now()` read during render would never move. Being up to a second
@@ -90,7 +91,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
       resendAvailableAt !== undefined &&
       secondsLeft === 0
     ) {
-      onAction({ type: 'resend' });
+      onAction({ type: 'resend', trigger: 'auto' });
     }
   }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
 
@@ -117,15 +118,26 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
 
   // An email cooldown with a wait time shows as the countdown on the resend
   // button, also once it ended. Authenticator app errors always show.
-  const showError =
-    error !== undefined &&
-    (isTotp || !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error)));
+  const showError = error !== undefined && !isCooldownCountdown(state);
   // The code on screen can no longer be used: the main action is a new one.
   const needsNewCode =
     showError && error !== undefined && getErrorHandling(error) === 'restart';
+  // A wrong code clears the boxes; the error goes once the user types again.
+  const showErrorState = showError && code.length === 0;
+  // Matches the design system's text field: red on an error, else darker
+  // when focused.
+  const getCellBorder = (isCellFocused: boolean) => {
+    if (showErrorState) {
+      return 'border-error-default';
+    }
+    return isCellFocused ? 'border-default' : 'border-muted';
+  };
 
   const getResendLabel = () => {
     if (isCoolingDown) {
+      if (needsNewCode) {
+        return t('mfaOtpGetNewCodeIn', [String(secondsLeft)]);
+      }
       return t(codeSent ? 'mfaOtpResendIn' : 'mfaOtpSendIn', [
         String(secondsLeft),
       ]);
@@ -151,7 +163,10 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         size={ButtonSize.Lg}
         isFullWidth
         isDisabled={isCoolingDown}
-        onClick={() => onAction({ type: 'resend' })}
+        onClick={() => {
+          onAction({ type: 'errorCtaClicked', cta: 'try_again' });
+          onAction({ type: 'resend' });
+        }}
         data-testid={MfaFlowTestIds.RESEND_BUTTON}
       >
         {isCoolingDown
@@ -162,6 +177,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
 
   return (
     <StepLayout
+      onAction={onAction}
       title={t('mfaOtpTitle')}
       description={getDescription()}
       footer={
@@ -174,13 +190,15 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             }
             size={ButtonSize.Lg}
             isFullWidth
-            // No submit button: this shows the code being checked.
-            isLoading={busy && codeSent}
+            // A complete code submits itself; the line under the boxes shows
+            // it being checked.
             isDisabled={!canResend}
             onClick={() => onAction({ type: 'resend' })}
             data-testid={MfaFlowTestIds.RESEND_BUTTON}
           >
-            {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}
+            {needsNewCode && !isCoolingDown
+              ? t('mfaOtpGetNewCode')
+              : getResendLabel()}
           </Button>
         )
       }
@@ -194,15 +212,11 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             {CELLS.map((index) => (
               <Box
                 key={index}
-                className={`flex-1 h-14 flex items-center justify-center rounded-xl border-[1.5px] bg-muted ${
-                  isFocused && index === Math.min(code.length, CODE_LENGTH - 1)
-                    ? 'border-primary-default'
-                    : 'border-muted'
-                }`}
+                className={`flex-1 h-14 flex items-center justify-center rounded-xl border bg-muted ${getCellBorder(
+                  isFocused && index === Math.min(code.length, CODE_LENGTH - 1),
+                )}`}
               >
-                <Text variant={TextVariant.HeadingMd} className="text-[22px]">
-                  {code[index] ?? ''}
-                </Text>
+                <Text variant={TextVariant.HeadingLg}>{code[index] ?? ''}</Text>
               </Box>
             ))}
           </Box>
@@ -217,7 +231,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             inputMode="numeric"
             spellCheck={false}
             autoCorrect="off"
-            aria-invalid={showError}
+            aria-invalid={showErrorState}
             {...INPUT_A11Y_PROPS}
             className="absolute inset-0 w-full h-full opacity-0 cursor-text"
             data-testid={MfaFlowTestIds.CODE_INPUT}
@@ -243,8 +257,8 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             <Text variant={TextVariant.BodySm}>{t('mfaOtpVerifying')}</Text>
           </Box>
         ) : null}
-        {showError && error ? (
-          <StepError code={error} method={step.method} />
+        {showErrorState && error ? (
+          <StepError code={error} method={step.method} onAction={onAction} />
         ) : null}
         {codeResent && !error ? (
           <StepMessage>{t('mfaOtpResent')}</StepMessage>

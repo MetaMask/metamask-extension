@@ -13,10 +13,6 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
-jest.mock('../../components/multichain/app-header', () => ({
-  AppHeader: () => <div data-testid="mock-app-header" />,
-}));
-
 jest.mock('../../components/multichain/dapp-connection-control-bar', () => ({
   DappConnectionControlBar: () => <div data-testid="dapp-control-bar-bottom" />,
 }));
@@ -129,9 +125,8 @@ beforeEach(() => {
 });
 
 describe('Home', () => {
-  it('renders AppHeader and DappConnectionControlBar', () => {
+  it('renders DappConnectionControlBar', () => {
     const { getByTestId } = renderHome();
-    expect(getByTestId('mock-app-header')).toBeInTheDocument();
     expect(getByTestId('dapp-control-bar-bottom')).toBeInTheDocument();
   });
 
