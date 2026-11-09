@@ -129,6 +129,19 @@ describe('AssetChartBody', () => {
 
       expect(scales.y.min).toBe(1);
     });
+
+    it('pins the final point to the newest sample when the realtime timestamp is older', () => {
+      // The live OHLCV bar's timestamp is its candle bucket's start, which for
+      // a coarse interval can sit before the newest historical sample. The
+      // final point must not move backwards in time, or its closing segment
+      // draws back across the whole chart.
+      const { lastPoint, scales } = renderedChart(
+        renderBody({ realtimePrice: 42, realtimeTimestamp: 2 }).container,
+      );
+
+      expect(lastPoint).toEqual({ x: METADATA.xMax, y: 42 });
+      expect(scales.x.max).toBe(METADATA.xMax);
+    });
   });
 
   describe('onHoverPrice', () => {
