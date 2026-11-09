@@ -60,7 +60,7 @@ type SmartTransactionTxType = SmartTransactionSentinelMeta['txType'];
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
-  signedTransactionInHex?: string;
+  signedTransactionInHex?: Hex;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
@@ -86,7 +86,7 @@ class SmartTransactionHook {
 
   #transactionMeta: TransactionMeta;
 
-  #signedTransactionInHex?: string;
+  #signedTransactionInHex?: Hex;
 
   #transactions?: PublishBatchHookTransaction[];
 
@@ -370,7 +370,7 @@ class SmartTransactionHook {
     } as TransactionParams;
   }
 
-  async #createSignedTransactions(fees: Fee[]): Promise<string[]> {
+  async #createSignedTransactions(fees: Fee[]): Promise<Hex[]> {
     if (!this.#txParams || !this.#chainId) {
       throw new Error('Transaction params and chainId are required');
     }
@@ -387,7 +387,7 @@ class SmartTransactionHook {
     return (await this.#transactionController.approveTransactionsWithSameNonce(
       transactionsWithChainId as (TransactionParams & { chainId: Hex })[],
       { hasNonce: true },
-    )) as string[];
+    )) as Hex[];
   }
 }
 

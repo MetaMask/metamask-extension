@@ -10273,17 +10273,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/sentinel-api-service@npm:^2.1.0":
+"@metamask/sentinel-api-service@file:.yalc/@metamask/sentinel-api-service::locator=metamask-crx%40workspace%3A.":
   version: 2.1.0
-  resolution: "@metamask/sentinel-api-service@npm:2.1.0"
+  resolution: "@metamask/sentinel-api-service@file:.yalc/@metamask/sentinel-api-service#.yalc/@metamask/sentinel-api-service::hash=1b1609&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     "@tanstack/query-core": "npm:^5.103.2"
-  checksum: 10/6e36f8ec7b08a0fe4d7e6775a5381690870654141ba155132f6d7716c08d5344ae9cdae7cea10abc69c2e6e57a4fe50139bce394f6651cd3f722e4752fd3c106
+  checksum: 10/1ee9d85615da72ef153984bdcf4e4d48c0706dc7ecc19c7f19cbd1299ee34b8fcc450d7c92664a824f11004e6386ee0eed5ace50a6adb5eb74670547eb8245e2
   languageName: node
   linkType: hard
 
@@ -10383,30 +10383,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^27.1.0":
-  version: 27.1.0
-  resolution: "@metamask/smart-transactions-controller@npm:27.1.0"
+"@metamask/smart-transactions-controller@file:.yalc/@metamask/smart-transactions-controller::locator=metamask-crx%40workspace%3A.":
+  version: 27.2.1
+  resolution: "@metamask/smart-transactions-controller@file:.yalc/@metamask/smart-transactions-controller#.yalc/@metamask/smart-transactions-controller::hash=48e755&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@babel/runtime": "npm:^7.23.9"
+    "@babel/runtime": "npm:^7.29.7"
     "@ethersproject/bytes": "npm:^5.8.0"
     "@ethersproject/keccak256": "npm:^5.8.0"
     "@ethersproject/transactions": "npm:^5.8.0"
-    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^7.0.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^37.0.1"
+    "@metamask/network-controller": "npm:^37.1.1"
     "@metamask/polling-controller": "npm:^17.0.0"
-    "@metamask/profile-sync-controller": "npm:^34.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/sentinel-api-service": "npm:^2.1.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/transaction-controller": "npm:^72.1.0"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/transaction-controller": "npm:^73.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-    reselect: "npm:^5.1.1"
-  checksum: 10/bbfff541d20cd7a74b8d84acb93dae1fcd6c66f92834963682b7bb4d7026ae1e96b3f38cf63b8c4266a9c7c4d8c6d5eba7b46b1e3e3f67357b15a88495861bac
+    reselect: "npm:^5.3.0"
+  checksum: 10/fa5c66da7bf25db3d3fe17554cfb1de51b0916728de03103961a30a6ca57a0774f9efc4ce415062e16a9a73ce12bb586117df0740c796b2774ce70afe3debb86
   languageName: node
   linkType: hard
 
@@ -35626,11 +35626,11 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
     "@metamask/selected-network-controller": "npm:^27.0.0"
-    "@metamask/sentinel-api-service": "npm:^2.1.0"
+    "@metamask/sentinel-api-service": "file:.yalc/@metamask/sentinel-api-service"
     "@metamask/shield-controller": "npm:^6.0.1"
     "@metamask/signature-controller": "npm:^39.2.6"
     "@metamask/skills": "npm:^0.3.1"
-    "@metamask/smart-transactions-controller": "npm:^27.1.0"
+    "@metamask/smart-transactions-controller": "file:.yalc/@metamask/smart-transactions-controller"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"

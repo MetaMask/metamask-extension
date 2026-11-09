@@ -175,6 +175,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/sentinel-api-service": "file:.yalc/@metamask/sentinel-api-service",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^37.1.1",
@@ -521,10 +522,10 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/seedless-onboarding-controller": "^12.0.0",
     "@metamask/selected-network-controller": "^27.0.0",
-    "@metamask/sentinel-api-service": "^2.1.0",
+    "@metamask/sentinel-api-service": "file:.yalc/@metamask/sentinel-api-service",
     "@metamask/shield-controller": "^6.0.1",
     "@metamask/signature-controller": "^39.2.6",
-    "@metamask/smart-transactions-controller": "^27.1.0",
+    "@metamask/smart-transactions-controller": "file:.yalc/@metamask/smart-transactions-controller",
     "@metamask/snap-account-service": "^4.0.0",
     "@metamask/snaps-controllers": "^22.0.1",
     "@metamask/snaps-execution-environments": "^11.3.3",
