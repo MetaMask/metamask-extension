@@ -1622,7 +1622,7 @@ describe('PerpsMarketDetailPage', () => {
 
       const modifyMenu = screen.getByTestId('perps-modify-menu');
       expect(modifyMenu).toBeInTheDocument();
-      expect(modifyMenu.parentElement).toBe(document.body);
+      expect(modifyMenu).toHaveAttribute('popover', 'auto');
       expect(
         screen.getByTestId('perps-modify-menu-add-exposure'),
       ).toBeInTheDocument();
@@ -1648,7 +1648,7 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-margin-card'));
       const marginMenu = screen.getByTestId('perps-margin-menu');
       expect(marginMenu).toBeInTheDocument();
-      expect(marginMenu.parentElement).toBe(document.body);
+      expect(marginMenu).toHaveAttribute('popover', 'auto');
       expect(mockPerpsTrack).toHaveBeenCalledWith(
         MetaMetricsEventName.PerpsUiInteraction,
         expect.objectContaining({

@@ -6,16 +6,14 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
-import {
-  Popover,
-  PopoverPosition,
-  PopoverRole,
-} from '../../../components/component-library';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -151,15 +149,10 @@ export function MoneyMoreMenu() {
       <Popover
         referenceElement={anchorElement}
         isOpen={isMenuOpen}
-        isPortal
         role={PopoverRole.Dialog}
         position={PopoverPosition.BottomEnd}
-        preventOverflow
-        flip
-        padding={0}
-        className="min-w-[220px] rounded-lg z-[1050]"
-        onClickOutside={closeMenu}
-        onPressEscKey={closeMenu}
+        className="min-w-[220px] p-0"
+        onClose={closeMenu}
         data-testid="money-more-menu"
       >
         <div className="flex flex-col py-2">
