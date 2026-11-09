@@ -1466,8 +1466,8 @@ describe('Trace', () => {
         { _trace: { traceparent, spanName: 'Background RPC: arg' } },
       ]);
 
-      expect(traceMetadata?.traceContext.traceId).toBe(TRACE_ID_MOCK);
-      expect(traceMetadata?.traceContext.parentSpanId).toBe(SPAN_ID_MOCK);
+      expect(traceMetadata?.traceContext?.traceId).toBe(TRACE_ID_MOCK);
+      expect(traceMetadata?.traceContext?.parentSpanId).toBe(SPAN_ID_MOCK);
     });
 
     jestIt.each([
