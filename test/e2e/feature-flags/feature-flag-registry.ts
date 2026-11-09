@@ -4362,14 +4362,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
-
-  walletFrameworkRpcFailoverEnabled: {
-    inProd: true,
-    name: 'walletFrameworkRpcFailoverEnabled',
-    productionDefault: true,
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

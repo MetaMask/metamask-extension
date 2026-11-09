@@ -70,7 +70,7 @@ const buildMetamaskState = ({ isRpcFailoverEnabled } = {}) => ({
   selectedMultichainNetworkChainId: 'eip155:1',
   isEvmSelected: true,
   remoteFeatureFlags: {
-    walletFrameworkRpcFailoverEnabled: isRpcFailoverEnabled ?? false,
+    corePlatformRpcFailoverMode: isRpcFailoverEnabled ? 'enabled' : 'disabled',
   },
 });
 
