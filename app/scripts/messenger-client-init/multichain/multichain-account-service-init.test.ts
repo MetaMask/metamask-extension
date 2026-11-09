@@ -133,9 +133,11 @@ describe('MultichainAccountServiceInit', () => {
         'function',
       );
     });
-    it.each(['Provider Create Accounts (v2 - batched)', 'Wallet Alignment'])(
-      'lets %s nest under the active span',
-      (name) => {
+    for (const name of [
+      'Provider Create Accounts (v2 - batched)',
+      'Wallet Alignment',
+    ]) {
+      it(`lets ${name} nest under the active span`, () => {
         MultichainAccountServiceInit(buildInitRequestMock());
         const { trace: configTrace } = multichainAccountServiceClassMock.mock
           .calls[0][0].config as {
@@ -148,8 +150,8 @@ describe('MultichainAccountServiceInit', () => {
           { name, allowActiveSpanFallback: true },
           expect.any(Function),
         );
-      },
-    );
+      });
+    }
 
     it('roots other multichain account traces', () => {
       MultichainAccountServiceInit(buildInitRequestMock());
