@@ -170,7 +170,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
               </span>
@@ -318,7 +318,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
               </span>
@@ -547,7 +547,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
               </span>
@@ -695,7 +695,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
               </span>
@@ -894,7 +894,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
               </span>
@@ -1594,7 +1594,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
               </span>
@@ -2051,7 +2051,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
               </span>

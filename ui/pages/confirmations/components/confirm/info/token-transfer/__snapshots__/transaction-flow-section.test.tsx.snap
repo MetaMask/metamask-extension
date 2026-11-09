@@ -51,7 +51,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                     role="button"
                   >
                     <span
-                      class="block min-w-0 overflow-hidden whitespace-nowrap text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default flex-1"
+                      class="block min-w-0 overflow-hidden whitespace-nowrap text-start text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default flex-1"
                     >
                       0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc
                     </span>
@@ -151,7 +151,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                     role="button"
                   >
                     <span
-                      class="block min-w-0 overflow-hidden whitespace-nowrap text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default flex-1"
+                      class="block min-w-0 overflow-hidden whitespace-nowrap text-start text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default flex-1"
                     >
                       0x6B175474E89094C44Da98b954EedeAC495271d0F
                     </span>

@@ -100,5 +100,12 @@ describe('ConfirmInfoRowAddressDisplay', () => {
         '0x5CfE73b6021E818B776b42…474086a7e1',
       );
     });
+
+    it('left aligns the address inside its button', () => {
+      textWidth.setRowWidth(500);
+
+      const { getByText } = render();
+      expect(getByText(TEST_ADDRESS)).toHaveClass('text-start');
+    });
   });
 });

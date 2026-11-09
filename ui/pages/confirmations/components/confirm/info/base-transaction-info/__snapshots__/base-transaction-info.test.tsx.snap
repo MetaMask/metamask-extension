@@ -201,7 +201,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
               class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
               <span
-                class="block min-w-0 overflow-hidden whitespace-nowrap"
+                class="block min-w-0 overflow-hidden whitespace-nowrap text-start"
               >
                 0x88AA6343307EC9a652CCddDa3646E62b2f1A5125
               </span>

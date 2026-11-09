@@ -109,7 +109,11 @@ export const StartTruncatedText = ({
         return probe.getBoundingClientRect().width;
       });
       probe.remove();
-      setFitted({ text, value });
+      setFitted((previous) =>
+        previous?.text === text && previous.value === value
+          ? previous
+          : { text, value },
+      );
     };
     fit();
 
@@ -138,7 +142,7 @@ export const StartTruncatedText = ({
     <span
       ref={setElement}
       className={classnames(
-        'block min-w-0 overflow-hidden whitespace-nowrap',
+        'block min-w-0 overflow-hidden whitespace-nowrap text-start',
         className,
       )}
     >
