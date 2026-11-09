@@ -10,7 +10,10 @@ import {
   extractTraceContext,
   trace,
 } from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import {
+  shouldSampleRootWrapper,
+  shouldSampleWrappers,
+} from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -46,22 +49,26 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        // No UI trace context: `root: true` starts a new trace per dispatch, so
+        const callHandler = () =>
+          Array.isArray(cleanParams)
+            ? handler.call(api, ...cleanParams)
+            : handler.call(api, cleanParams);
+        // No UI trace context: a sampled dispatch roots its own trace, so
         // concurrent handlers get independent trace ids.
-        result = await trace(
-          {
-            name: spanName,
-            op: 'rpc.handler',
-            root: true,
-            data: { method: data.method, ...(controller && { controller }) },
-          },
-          () => {
-            if (Array.isArray(cleanParams)) {
-              return handler.call(api, ...cleanParams);
-            }
-            return handler.call(api, cleanParams);
-          },
-        );
+        result = shouldSampleRootWrapper()
+          ? await trace(
+              {
+                name: spanName,
+                op: 'rpc.handler',
+                root: true,
+                data: {
+                  method: data.method,
+                  ...(controller && { controller }),
+                },
+              },
+              callHandler,
+            )
+          : await callHandler();
       } else if (shouldSampleWrappers(traceContext._traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.

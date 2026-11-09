@@ -37,3 +37,20 @@ export function shouldSampleWrappers(traceId: string | undefined): boolean {
   const hashBucket = parseInt(traceId.slice(0, 8), 16) % 10000;
   return hashBucket < rate * 10000;
 }
+
+/**
+ * Sub-sampling decision for a wrapper span that starts its own trace, which has
+ * no trace id to hash yet. Uses the same rate as {@link shouldSampleWrappers}.
+ *
+ * @param random - Returns a uniform number in [0, 1).
+ * @returns true if the root wrapper span should be created.
+ */
+export function shouldSampleRootWrapper(
+  random: () => number = Math.random,
+): boolean {
+  if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
+    return false;
+  }
+  const rate = getRemoteWrapperSampleRate() ?? WRAPPER_SAMPLE_RATE;
+  return random() < rate;
+}
