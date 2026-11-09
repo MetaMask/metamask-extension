@@ -9,8 +9,7 @@ type CapturedTxn = { transaction: string; traceId: string };
 const captured: CapturedTxn[] = [];
 
 /**
- * Extract `{ transaction, trace_id }` from a Sentry envelope body (newline-
- * delimited JSON; transaction payloads carry `contexts.trace.trace_id`).
+ * Extract `transaction` and `contexts.trace.trace_id` from each envelope line.
  *
  * @param body - Raw envelope POST body.
  */
@@ -96,11 +95,8 @@ describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
         console.log(`EVIDENCE-BGRPC ${JSON.stringify(bgRpc)}`);
         console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
 
-        // The startNewTrace fix: EVERY background RPC op roots its own trace.
-        // Assert full pairwise distinctness (not merely >1 distinct — ids
-        // X, X, Y must fail) and that none shares the SW pageload's trace id.
-        // Assert only when at least two ops were observed, so the run stays
-        // informative on a light session while still failing a regression.
+        // Asserts only when two or more ops were captured: one trace id per op,
+        // none shared with the `/service-worker.js` trace.
         if (bgRpc.length >= 2) {
           assert.equal(
             distinct.length,
