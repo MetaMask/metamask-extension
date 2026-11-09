@@ -11938,9 +11938,6 @@
     "message": "확인하세요",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " 포함됨"
-  },
   "swapGasFeesSplit": {
     "message": "이전 화면에 표시된 네트워크 수수료는 이 두 건의 트랜잭션에 나뉘어 적용됩니다."
   },

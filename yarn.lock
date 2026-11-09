@@ -7390,16 +7390,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^20.0.1, @metamask/assets-controller@npm:^20.2.2, @metamask/assets-controller@npm:^20.2.3":
-  version: 20.2.3
-  resolution: "@metamask/assets-controller@npm:20.2.3"
+"@metamask/assets-controller@npm:^20.0.1, @metamask/assets-controller@npm:^20.2.2, @metamask/assets-controller@npm:^20.3.0":
+  version: 20.3.0
+  resolution: "@metamask/assets-controller@npm:20.3.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.8.0"
     "@metamask/account-tree-controller": "npm:^11.2.0"
     "@metamask/accounts-controller": "npm:^40.1.0"
-    "@metamask/assets-controllers": "npm:^113.2.0"
+    "@metamask/assets-controllers": "npm:^113.3.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/client-controller": "npm:^2.0.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
@@ -7425,13 +7425,13 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/9c083b848d17b37a2c831fd56466407a90bd3c7c418742de76d8f1b6bafc5e2e9ba5b7e05f326455559b0c1f01da4a8115e072290ffe9fdb706160ed09c781a8
+  checksum: 10/f21fcbe57eed1e0431d1584683b164e6156822c2b958623d67296e821ddd97d52e47a96ebb5496d9df7e79a8c2d10e4bb114eabdd9d725e9ccdd0b324b725442
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.2.0":
-  version: 113.2.0
-  resolution: "@metamask/assets-controllers@npm:113.2.0"
+"@metamask/assets-controllers@npm:^113.0.0, @metamask/assets-controllers@npm:^113.3.0":
+  version: 113.3.0
+  resolution: "@metamask/assets-controllers@npm:113.3.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -7439,7 +7439,7 @@ __metadata:
     "@ethersproject/bignumber": "npm:^5.8.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.8.0"
-    "@metamask/abi-utils": "npm:^2.0.4"
+    "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-tree-controller": "npm:^11.2.0"
     "@metamask/accounts-controller": "npm:^40.1.0"
     "@metamask/approval-controller": "npm:^10.0.0"
@@ -7482,7 +7482,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/c79851f7ebd75aa1691fa780711cefa41616572ddbb932ce491114e42a6a8f9c4a3badbbd691d8efd2de29898ea1fd241329123e1c4f3ee662afbec8d728cf18
+  checksum: 10/e7ba24a4fe8deb2dca8091c0876c4f97223a74bbe747d0b31ccfec4062d23f041c9a8aac4e7165a739bb3465cffd8bb0b5642c702989fba2282ad426fe2e7ca0
   languageName: node
   linkType: hard
 
@@ -35493,8 +35493,8 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^20.2.3"
-    "@metamask/assets-controllers": "npm:^113.2.0"
+    "@metamask/assets-controller": "npm:^20.3.0"
+    "@metamask/assets-controllers": "npm:^113.3.0"
     "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^10.0.0"
