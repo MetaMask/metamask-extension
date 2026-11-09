@@ -56,7 +56,7 @@ export type NameProps = {
   disableNameClick?: boolean;
 
   /**
-   * Fill the available width on one line, left aligned. See `NameDisplay`.
+   * Whether to fill the available width on one line. See `NameDisplay`.
    */
   fillWidth?: boolean;
 };
@@ -69,7 +69,7 @@ const Name = memo(
     variation,
     className,
     disableNameClick = false,
-    fillWidth = false,
+    fillWidth,
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);

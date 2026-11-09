@@ -19,10 +19,6 @@ export type ConfirmInfoRowAddressProps = {
   chainId: string;
   isSnapUsingThis?: boolean;
   showFullName?: boolean;
-  /**
-   * Fill the rest of the row after the label, left aligned, on one line.
-   * Shows the name if known, else the address with its end visible.
-   */
   fillWidth?: boolean;
 };
 
@@ -44,8 +40,7 @@ export const ConfirmInfoRowAddress = memo(
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
-        marginLeft={fillWidth ? 2 : undefined}
-        className={fillWidth ? 'min-w-0 flex-1' : undefined}
+        className={fillWidth ? 'ml-2 min-w-0 flex-1' : undefined}
       >
         {
           // PetNames on this component are disabled for snaps until the `<Name />`
@@ -86,7 +81,9 @@ export const ConfirmInfoRowAddress = memo(
               variation={chainId}
               showFullName={showFullName}
               fillWidth={fillWidth}
-              className={fillWidth ? 'min-w-0 flex-1' : 'overflow-hidden'}
+              className={
+                fillWidth ? 'flex-1 overflow-hidden' : 'overflow-hidden'
+              }
             />
           )
         }

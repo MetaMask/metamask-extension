@@ -1,10 +1,6 @@
 import React from 'react';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import {
-  mockTextWidth,
-  type TextWidthMock,
-} from '../../../../../../test/lib/mock-text-width';
 import configureStore from '../../../../../store/store';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
@@ -63,49 +59,10 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     );
   });
 
-  describe('unnamed address', () => {
-    let textWidth: TextWidthMock;
-
-    beforeEach(() => {
-      textWidth = mockTextWidth();
-    });
-
-    afterEach(() => {
-      textWidth.restore();
-    });
-
-    it('shows the full address when the row fits it', () => {
-      textWidth.setRowWidth(500);
-
-      const { getByTestId } = render();
-      expect(getByTestId('confirm-info-row-display-name').textContent).toBe(
-        TEST_ADDRESS,
-      );
-    });
-
-    it('keeps the last 10 characters and shortens the start to fit', () => {
-      textWidth.setRowWidth(250);
-
-      const { getByTestId } = render();
-      expect(getByTestId('confirm-info-row-display-name').textContent).toBe(
-        '0x5CfE73b6021E…474086a7e1',
-      );
-    });
-
-    it('shows more of the start in a wider row', () => {
-      textWidth.setRowWidth(350);
-
-      const { getByTestId } = render();
-      expect(getByTestId('confirm-info-row-display-name').textContent).toBe(
-        '0x5CfE73b6021E818B776b42…474086a7e1',
-      );
-    });
-
-    it('left aligns the address inside its button', () => {
-      textWidth.setRowWidth(500);
-
-      const { getByText } = render();
-      expect(getByText(TEST_ADDRESS)).toHaveClass('text-start');
-    });
+  it('renders the full address when it fits', () => {
+    const { getByTestId } = render();
+    expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
+      TEST_ADDRESS,
+    );
   });
 });

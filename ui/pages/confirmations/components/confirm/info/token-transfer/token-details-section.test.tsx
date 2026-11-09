@@ -6,7 +6,6 @@ import {
   getMockTokenTransferConfirmState,
 } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
-import { toChecksumHexAddress } from '../../../../../../../shared/lib/hexstring-utils';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { TokenDetailsSection } from './token-details-section';
@@ -61,9 +60,7 @@ describe('TokenDetailsSection', () => {
     );
 
     expect(
-      getByText(
-        toChecksumHexAddress(transactionMeta.txParamsOriginal.to as string),
-      ),
+      getByText('0x076146c765189d51bE3160A2140cF80BFC73ad68'),
     ).toBeInTheDocument();
     expect(
       queryByText('0x1111111111111111111111111111111111111111'),

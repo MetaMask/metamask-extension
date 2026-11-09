@@ -20,13 +20,10 @@ import {
 } from '@metamask/design-system-react';
 
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
+import { useStartTruncatedText } from '../../../../../hooks/useStartTruncatedText';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
-import {
-  ADDRESS_END_CHARS,
-  StartTruncatedText,
-} from '../../../../ui/start-truncated-text';
 
 const TrustIcon = ({
   displayState,
@@ -87,6 +84,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
     const [modalOpen, setModalOpen] = useState(false);
 
     const isClickable = !isAccount;
+    const [addressRef, fittedAddress] = useStartTruncatedText(hexAddress, 10);
 
     const handleClick = useCallback(() => {
       if (!isClickable) {
@@ -141,7 +139,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
-              className="min-w-0 flex-1 justify-start hover:bg-transparent active:bg-transparent"
+              className="flex-1 hover:bg-transparent active:bg-transparent whitespace-nowrap"
               data-testid="confirm-info-row-display-name"
             >
               <Text
@@ -150,27 +148,28 @@ export const ConfirmInfoRowAddressDisplay = memo(
                 fontWeight={FontWeight.Medium}
                 color={TextColor.Inherit}
               >
-                <StartTruncatedText
-                  text={hexAddress}
-                  endChars={ADDRESS_END_CHARS}
-                  className="flex-1"
-                />
+                <span
+                  ref={addressRef}
+                  className="flex-1 overflow-hidden text-start"
+                >
+                  {fittedAddress}
+                </span>
               </Text>
             </TextButton>
           </span>
         )}
         {!name && !isClickable && (
           <Text
+            asChild
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
-            className="min-w-0 flex-1"
+            ellipsis
             data-testid="confirm-info-row-display-name"
           >
-            <StartTruncatedText
-              text={hexAddress}
-              endChars={ADDRESS_END_CHARS}
-            />
+            <span ref={addressRef} className="flex-1">
+              {fittedAddress}
+            </span>
           </Text>
         )}
         {showAvatar && (

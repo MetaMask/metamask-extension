@@ -9,12 +9,9 @@ import classnames from 'clsx';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { useStartTruncatedText } from '../../../../hooks/useStartTruncatedText';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../preferred-avatar';
-import {
-  ADDRESS_END_CHARS,
-  StartTruncatedText,
-} from '../../../ui/start-truncated-text';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -34,9 +31,8 @@ export type NameDisplayProps = {
    */
   disableNameClick?: boolean;
   /**
-   * Fill the available width on one line and shorten the start when needed.
-   * Shows the name if known, else the value with its last 10 characters kept.
-   * A security label on an unknown address is not used as its name.
+   * Whether to fill the available width on one line, shortening the start only
+   * when needed. Shows the value when only a security label is known.
    */
   fillWidth?: boolean;
 };
@@ -60,6 +56,15 @@ const NameDisplay = memo(
       preferContractSymbol,
       variation,
     });
+
+    const fillName =
+      displayState === TrustSignalDisplayState.Unknown
+        ? fallbackName
+        : name || fallbackName;
+    const [fillRef, fillText] = useStartTruncatedText(
+      fillName || value,
+      fillName ? undefined : 10,
+    );
 
     const renderIcon = () => {
       // If icon exists, use it (trust signal /unknown)
@@ -90,30 +95,23 @@ const NameDisplay = memo(
     };
 
     const renderName = () => {
-      const nameWithFallbackValue = name || fallbackName;
-
       if (fillWidth) {
-        const knownName =
-          displayState === TrustSignalDisplayState.Unknown
-            ? fallbackName
-            : nameWithFallbackValue;
         return (
           <Text
+            ref={fillRef}
             className={classnames(
-              'min-w-0 flex-1',
-              knownName ? 'name__name' : 'name__value',
+              'flex-1',
+              fillName ? 'name__name' : 'name__value',
             )}
             variant={TextVariant.bodyMd}
             {...props}
           >
-            <StartTruncatedText
-              text={knownName || value}
-              endChars={knownName ? undefined : ADDRESS_END_CHARS}
-            />
+            {fillText}
           </Text>
         );
       }
 
+      const nameWithFallbackValue = name || fallbackName;
       if (!nameWithFallbackValue) {
         return <FormattedName value={value} type={type} {...props} />;
       }
