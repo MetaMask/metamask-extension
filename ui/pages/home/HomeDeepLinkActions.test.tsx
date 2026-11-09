@@ -408,6 +408,36 @@ describe('HomeDeepLinkActions', () => {
     });
   });
 
+  jestIt.each([
+    ['an unsupported Social subpath', 'https://link.metamask.io/social/other'],
+    [
+      'an extra profile segment',
+      'https://link.metamask.io/social/profile/other',
+    ],
+    [
+      'an extra position segment',
+      'https://link.metamask.io/social/profile/position/extra',
+    ],
+    ['a plural post path', 'https://link.metamask.io/social/posts'],
+    ['a near-miss legacy path', 'https://link.metamask.io/social-trader'],
+    ['a non-Social path', 'https://link.metamask.io/rewards?referral=ABC123'],
+  ])('does not open the Social QR modal for %s', (_, deeplinkUrl) => {
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.SocialDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
+  });
+
   it('ignores predict QR deeplink params that do not point to /predict', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,
