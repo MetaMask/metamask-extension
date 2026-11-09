@@ -119,8 +119,11 @@ export const AdvancedChartSection = ({
     setHasEnteredCandleMode(true);
   }
 
-  // Clear a stale error when the token or interval changes, so one transient
-  // failure does not pin the error state for the rest of the session. Done
+  // Clear a stale error when the token, interval, or chart type changes, so
+  // one transient failure does not pin the error state for the rest of the
+  // session. Chart type is included so toggling to Line and back — the
+  // recovery the error copy tells users to try — remounts the iframe and
+  // retries rather than leaving candle mode stuck on the error state. Done
   // during render rather than in an effect so the stale error is never
   // painted. https://react.dev/reference/react/useState#storing-information-from-previous-renders
   //
@@ -130,7 +133,7 @@ export const AdvancedChartSection = ({
   // actual reload. Resetting it would hide the indicator bar on every interval
   // switch with nothing to turn it back on. Instead it is a one-way "has been
   // ready" latch, mirroring mobile's `hasChartBeenRevealed`.
-  const seriesKey = `${caipAssetId ?? ''}|${interval}`;
+  const seriesKey = `${caipAssetId ?? ''}|${interval}|${chartType}`;
   const [renderedSeriesKey, setRenderedSeriesKey] = useState(seriesKey);
   if (renderedSeriesKey !== seriesKey) {
     setRenderedSeriesKey(seriesKey);
