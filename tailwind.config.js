@@ -1,5 +1,6 @@
 const { brandColor } = require('@metamask/design-tokens');
 const plugin = require('tailwindcss/plugin');
+const containerQueries = require('@tailwindcss/container-queries');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -34,9 +35,11 @@ module.exports = {
     },
   },
   plugins: [
+    containerQueries,
     plugin(({ addVariant, addUtilities, addBase }) => {
       addVariant('@compact', '@container list-item (max-width: 399px)');
       addVariant('light', 'html[data-theme="light"] &');
+      addVariant('wide-layout', '[data-wide-layout] &');
       // TODO: Remove these polyfills once we update to Tailwind v4
       addVariant('starting', '@starting-style');
       addUtilities({

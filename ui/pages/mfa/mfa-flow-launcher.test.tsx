@@ -44,7 +44,7 @@ const createController = (
 const start = (controller: MfaControllerAdapter) =>
   startMfaFlow({
     request: { kind: 'enroll', method: 'email_otp' },
-    reason: { operation: 'test' },
+    reason: { operation: 'qa.test' },
     platform: 'extension',
     controller,
   }).then(

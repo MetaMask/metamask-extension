@@ -1,6 +1,5 @@
 import React from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
-import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetFilterInputProps = {
@@ -17,11 +16,12 @@ export const AssetFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+    <search className="px-4 pb-2">
       <TextFieldSearch
         autoFocus
         className="w-full"
         clearButtonOnClick={() => onChange('')}
+        inputAriaLabel={placeholder ?? t('searchForAnAssetToSend')}
         inputProps={
           {
             'data-testid': 'asset-filter-search-input',
@@ -31,6 +31,6 @@ export const AssetFilterInput = ({
         placeholder={placeholder ?? t('searchForAnAssetToSend')}
         value={searchQuery}
       />
-    </Box>
+    </search>
   );
 };

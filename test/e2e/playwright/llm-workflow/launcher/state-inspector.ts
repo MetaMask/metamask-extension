@@ -8,7 +8,6 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -269,9 +268,7 @@ export function detectScreenFromUrl(
       screen: 'onboarding-complete',
     },
     {
-      matcher: (path) =>
-        hasRoutePrefix(path, ONBOARDING_METAMETRICS) ||
-        hasRoutePrefix(path, ONBOARDING_HELP_US_IMPROVE_ROUTE),
+      matcher: (path) => hasRoutePrefix(path, ONBOARDING_METAMETRICS),
       screen: 'onboarding-metametrics',
     },
     {
