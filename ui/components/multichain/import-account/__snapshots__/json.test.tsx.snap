@@ -2,70 +2,110 @@
 
 exports[`Json should match snapshot 1`] = `
 <DocumentFragment>
-  <p
-    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
-  >
-    Used by a variety of different clients
-    <a
-      class="items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed inline"
-      href="https://support.metamask.io/start/how-to-import-an-account/?utm_source=extension#how-can-i-import-my-private-key-using-a-json-file"
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      File import not working? Click here!
-    </a>
-  </p>
-  <input
-    data-testid="file-input"
-    id="file-input"
-    style="padding: 20px 0px 12px 15%; font-size: 16px; display: flex; justify-content: center; width: 100%;"
-    type="file"
-  />
   <div
-    class="box mm-form-text-field box--margin-bottom-4 box--display-flex box--flex-direction-column"
+    class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+    style="flex: 1;"
   >
-    <div
-      class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+    <label
+      class="mm-box mm-box--padding-top-8 mm-box--padding-right-4 mm-box--padding-bottom-8 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-muted mm-box--rounded-xl"
+      for="file-input"
+      style="position: relative; cursor: pointer;"
     >
       <input
-        aria-invalid="true"
-        autocomplete="off"
-        class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-        focused="true"
-        id="json-password-box"
-        placeholder="Enter optional password"
-        type="password"
-        value=""
+        accept=".json,application/json"
+        data-testid="file-input"
+        id="file-input"
+        style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;"
+        type="file"
       />
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
+        style="mask-image: url('./images/icons/upload.svg');"
+      />
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+      >
+        Choose JSON file
+      </p>
+    </label>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+    >
+      File import not working? 
+      <a
+        class="items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed inline"
+        href="https://support.metamask.io/start/how-to-import-an-account/?utm_source=extension#how-can-i-import-my-private-key-using-a-json-file"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Click here
+      </a>
+    </p>
+    <div
+      class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+      >
+        <input
+          aria-label="Enter optional password"
+          autocomplete="off"
+          class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+          focused="true"
+          id="json-password-box"
+          placeholder="Enter optional password"
+          type="password"
+          value=""
+        />
+        <div
+          class="show-hide-toggle"
+        >
+          <input
+            class="show-hide-toggle__input"
+            id="show-hide-json-password"
+            type="checkbox"
+          />
+          <label
+            class="show-hide-toggle__label"
+            for="show-hide-json-password"
+            title="Show"
+          >
+            <svg
+              aria-label="Show"
+              class="show-hide-toggle__icon"
+              fill="currentColor"
+              height="24"
+              viewBox="0 0 640 512"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M634 471L36 3.51A16 16 0 0 0 13.51 6l-10 12.49A16 16 0 0 0 6 41l598 467.49a16 16 0 0 0 22.49-2.49l10-12.49A16 16 0 0 0 634 471zM296.79 146.47l134.79 105.38C429.36 191.91 380.48 144 320 144a112.26 112.26 0 0 0-23.21 2.47zm46.42 219.07L208.42 260.16C210.65 320.09 259.53 368 320 368a113 113 0 0 0 23.21-2.46zM320 112c98.65 0 189.09 55 237.93 144a285.53 285.53 0 0 1-44 60.2l37.74 29.5a333.7 333.7 0 0 0 52.9-75.11 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64c-36.7 0-71.71 7-104.63 18.81l46.41 36.29c18.94-4.3 38.34-7.1 58.22-7.1zm0 288c-98.65 0-189.08-55-237.93-144a285.47 285.47 0 0 1 44.05-60.19l-37.74-29.5a333.6 333.6 0 0 0-52.89 75.1 32.35 32.35 0 0 0 0 29.19C89.72 376.41 197.08 448 320 448c36.7 0 71.71-7.05 104.63-18.81l-46.41-36.28C359.28 397.2 339.89 400 320 400z"
+              />
+            </svg>
+          </label>
+        </div>
+      </div>
     </div>
-  </div>
-  <div
-    class="mm-box mm-box--display-flex mm-box--gap-4"
-  >
-    <button
-      class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-      role="button"
+    <div
+      class="mm-box mm-box--padding-top-4"
+      style="margin-top: auto;"
     >
-      <span
-        class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      <button
+        aria-disabled="true"
+        class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 w-full bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
+        data-testid="import-account-confirm-button"
+        disabled=""
+        role="button"
+        tabindex="-1"
       >
-        Cancel
-      </span>
-    </button>
-    <button
-      aria-disabled="true"
-      class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 w-full bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
-      data-testid="import-account-confirm-button"
-      disabled=""
-      role="button"
-      tabindex="-1"
-    >
-      <span
-        class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        Import
-      </span>
-    </button>
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Import
+        </span>
+      </button>
+    </div>
   </div>
 </DocumentFragment>
 `;

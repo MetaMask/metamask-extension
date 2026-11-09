@@ -2765,6 +2765,10 @@
     "message": "Check network connectivity, or $1.",
     "description": "$1 is a link to update the network."
   },
+  "chooseJsonFile": {
+    "message": "Choose JSON file",
+    "description": "Button to select a JSON file when importing an account"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -2785,6 +2789,10 @@
   },
   "click": {
     "message": "Click"
+  },
+  "clickHere": {
+    "message": "Click here",
+    "description": "Link to help when a JSON account import is not working"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
@@ -4040,6 +4048,10 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
   },
+  "enterYourPrivateKey": {
+    "message": "Enter your private key",
+    "description": "Placeholder for the private key field when importing an account"
+  },
   "enter_verification_code": {
     "message": "Enter verification code"
   },
@@ -4240,6 +4252,10 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileImportNotWorking": {
+    "message": "File import not working?",
+    "description": "Prompt shown above the JSON import help link"
   },
   "fileUploaderDescription": {
     "message": "Click to upload or drag and drop"
@@ -4956,7 +4972,7 @@
     "message": "We apologize, and we will make it faster in the future."
   },
   "importAccountMsg": {
-    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
+    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase."
   },
   "importAccountWithSocialMsg": {
     "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
@@ -5148,7 +5164,7 @@
     "message": "Jazzicons"
   },
   "jsonFile": {
-    "message": "JSON File",
+    "message": "JSON file",
     "description": "format for importing an account"
   },
   "keyringAccountName": {

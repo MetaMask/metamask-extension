@@ -191,8 +191,6 @@ class AccountListPage {
   private readonly importAccountConfirmButton =
     '[data-testid="import-account-confirm-button"]';
 
-  private readonly importAccountDropdownOption = '.dropdown__select';
-
   private readonly importAccountFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-account"]';
 
@@ -200,8 +198,8 @@ class AccountListPage {
     'input[data-testid="file-input"]';
 
   private readonly importAccountJsonFileOption = {
-    text: 'JSON File',
-    tag: 'option',
+    text: 'JSON file',
+    tag: 'button',
   };
 
   private readonly importAccountJsonPasswordInput =
@@ -1091,7 +1089,6 @@ class AccountListPage {
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
-    await this.driver.clickElement(this.importAccountDropdownOption);
     await this.driver.clickElement(this.importAccountJsonFileOption);
 
     const fileInput = await this.driver.findElement(

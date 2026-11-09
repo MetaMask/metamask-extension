@@ -31,8 +31,13 @@ describe('Json', () => {
       mockStore,
     );
 
-    const fileImportLink = getByText(messages.fileImportFail.message);
-    expect(fileImportLink).toBeInTheDocument();
+    expect(
+      getByText(messages.fileImportNotWorking.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.clickHere.message).closest('a'),
+    ).toBeInTheDocument();
+    expect(getByText(messages.chooseJsonFile.message)).toBeInTheDocument();
   });
 
   it('should import file without password', async () => {

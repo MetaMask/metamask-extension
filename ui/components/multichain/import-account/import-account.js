@@ -9,13 +9,17 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, Label, Text } from '../../component-library';
-import Dropdown from '../../ui/dropdown';
+import { Box, Text } from '../../component-library';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
+  BackgroundColor,
   BlockSize,
+  BorderColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
   FontWeight,
-  JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -36,9 +40,12 @@ export const ImportAccount = ({ onActionComplete }) => {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
-  const menuItems = [t('privateKey'), t('jsonFile')];
+  const importTypes = [
+    { id: 'privateKey', label: t('privateKey') },
+    { id: 'json', label: t('jsonFile') },
+  ];
 
-  const [type, setType] = useState(menuItems[0]);
+  const [type, setType] = useState(importTypes[0].id);
   const [importErrorMessage, setImportErrorMessage] = useState();
 
   async function importAccount(strategy, importArgs) {
@@ -159,7 +166,12 @@ export const ImportAccount = ({ onActionComplete }) => {
   }
 
   return (
-    <>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      height={BlockSize.Full}
+      gap={4}
+    >
       {isSocialLoginFlow ? (
         <>
           <Text variant={TextVariant.bodySm}>
@@ -185,36 +197,78 @@ export const ImportAccount = ({ onActionComplete }) => {
           </Text>
         </>
       ) : (
-        <Text variant={TextVariant.bodySm} marginTop={2}>
+        <Text
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          marginTop={2}
+        >
           {t('importAccountMsg')}{' '}
-          <TextButton size="body-sm" asChild className="inline">
+          <TextButton size="body-md" asChild className="inline">
             <a
               href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('here')}
+              {t('learnMoreUpperCase')}
             </a>
           </TextButton>
         </Text>
       )}
-      <Box paddingTop={4} paddingBottom={8}>
-        <Label
-          width={BlockSize.Full}
-          marginBottom={4}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          {t('selectType')}
-          <Dropdown
-            options={menuItems.map((text) => ({ value: text }))}
-            selectedOption={type}
-            onChange={(value) => {
-              setImportErrorMessage();
-              setType(value);
-            }}
-          />
-        </Label>
-        {type === menuItems[0] ? (
+      {/* Network select stays hidden until a non-EVM import exists. */}
+      <Box
+        display={Display.Flex}
+        borderColor={BorderColor.borderMuted}
+        borderRadius={BorderRadius.LG}
+        borderWidth={1}
+        padding={1}
+        style={{ width: 'fit-content' }}
+        role="group"
+        aria-label={t('selectType')}
+        data-testid="import-account-type-toggle"
+      >
+        {importTypes.map(({ id, label }) => {
+          const isSelected = type === id;
+
+          return (
+            <Box
+              as="button"
+              type="button"
+              key={id}
+              aria-pressed={isSelected}
+              backgroundColor={
+                isSelected
+                  ? BackgroundColor.backgroundMuted
+                  : BackgroundColor.transparent
+              }
+              borderRadius={BorderRadius.LG}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={1}
+              paddingBottom={1}
+              data-testid={`import-account-type-${id}`}
+              onClick={() => {
+                setImportErrorMessage();
+                setType(id);
+              }}
+            >
+              <Text
+                variant={TextVariant.bodySmMedium}
+                color={
+                  isSelected ? TextColor.textDefault : TextColor.textAlternative
+                }
+              >
+                {label}
+              </Text>
+            </Box>
+          );
+        })}
+      </Box>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        style={{ flex: 1, minHeight: 0 }}
+      >
+        {type === importTypes[0].id ? (
           <PrivateKeyImportView
             importAccountFunc={importAccount}
             onActionComplete={(confirmed) => {
@@ -234,7 +288,7 @@ export const ImportAccount = ({ onActionComplete }) => {
           />
         )}
       </Box>
-    </>
+    </Box>
   );
 };
 

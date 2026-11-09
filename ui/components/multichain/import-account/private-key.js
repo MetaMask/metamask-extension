@@ -1,10 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import {
+  Box,
   FormTextField,
   TextFieldSize,
   TextFieldType,
 } from '../../component-library';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ShowHideToggle from '../../ui/show-hide-toggle';
@@ -31,31 +37,52 @@ export default function PrivateKeyImportView({
   }
 
   return (
-    <>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      style={{ flex: 1 }}
+    >
       <FormTextField
         id="private-key-box"
         size={TextFieldSize.Lg}
         autoFocus
         helpText={importErrorMessage}
         error={Boolean(importErrorMessage)}
-        label={t('pastePrivateKey')}
+        placeholder={t('enterYourPrivateKey')}
         value={privateKey}
         onChange={(event) => setPrivateKey(event.target.value)}
         inputProps={{
+          'aria-label': t('enterYourPrivateKey'),
           onKeyPress: handleKeyPress,
+          style: {
+            height: 24,
+            lineHeight: '24px',
+          },
         }}
-        marginBottom={4}
         type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
         textFieldProps={{
+          style: {
+            height: 116,
+            minHeight: 116,
+            alignItems: 'flex-start',
+            paddingTop: 12,
+            paddingBottom: 12,
+          },
           endAccessory: (
-            <ShowHideToggle
-              shown={showPrivateKey}
-              id="show-hide-private-key"
-              title={t('privateKeyShow')}
-              ariaLabelShown={t('privateKeyShown')}
-              ariaLabelHidden={t('privateKeyHidden')}
-              onChange={() => setShowPrivateKey(!showPrivateKey)}
-            />
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              style={{ height: 24 }}
+            >
+              <ShowHideToggle
+                shown={showPrivateKey}
+                id="show-hide-private-key"
+                title={t('privateKeyShow')}
+                ariaLabelShown={t('privateKeyShown')}
+                ariaLabelHidden={t('privateKeyHidden')}
+                onChange={() => setShowPrivateKey(!showPrivateKey)}
+              />
+            </Box>
           ),
         }}
       />
@@ -65,7 +92,7 @@ export default function PrivateKeyImportView({
         isPrimaryDisabled={privateKey === ''}
         onActionComplete={onActionComplete}
       />
-    </>
+    </Box>
   );
 }
 
