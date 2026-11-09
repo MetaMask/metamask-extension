@@ -6,6 +6,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /**
  * Mirrors mobile's IntervalBar.tsx + ChartTypeToggle.tsx.
@@ -51,6 +52,7 @@ const IntervalBar = ({
   chartType,
   onChartTypeSelect,
 }: IntervalBarProps) => {
+  const t = useI18nContext();
   const toolbarText = 'var(--color-text-default)';
   const toolbarMuted = 'var(--color-text-alternative)';
   const activeBg = 'var(--color-background-default-hover)';
@@ -107,6 +109,8 @@ const IntervalBar = ({
           return (
             <button
               key={interval}
+              type="button"
+              aria-pressed={isSelected}
               ref={isSelected ? selectedPillRef : undefined}
               onClick={() => onIntervalSelect(interval)}
               style={pillStyle(isSelected)}
@@ -132,8 +136,11 @@ const IntervalBar = ({
         }}
       >
         <button
+          type="button"
+          aria-label={t('chartTypeLine')}
+          aria-pressed={chartType === CHART_TYPE_LINE}
           onClick={() => onChartTypeSelect(CHART_TYPE_LINE)}
-          title="Line chart"
+          title={t('chartTypeLine')}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -157,8 +164,11 @@ const IntervalBar = ({
           />
         </button>
         <button
+          type="button"
+          aria-label={t('chartTypeCandlestick')}
+          aria-pressed={chartType === CHART_TYPE_CANDLE}
           onClick={() => onChartTypeSelect(CHART_TYPE_CANDLE)}
-          title="Candle chart"
+          title={t('chartTypeCandlestick')}
           style={{
             display: 'flex',
             alignItems: 'center',

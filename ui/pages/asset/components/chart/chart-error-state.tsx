@@ -54,8 +54,10 @@ export const ChartErrorState: React.FC<ChartErrorStateProps> = ({
         flex: 1,
       }}
     >
-      {/* SVG placeholder chart background */}
+      {/* SVG placeholder chart background — decorative; the heading and
+          description below carry the message, so hide it from assistive tech. */}
       <svg
+        aria-hidden="true"
         width="100%"
         height="100%"
         viewBox="0 0 362 202"
