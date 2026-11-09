@@ -133,8 +133,15 @@ export const AssetChartBody = ({
     if (!realtimePrice || !realtimeTimestamp || prices.length === 0) {
       return prices;
     }
+    // The live bar's timestamp is its candle bucket's start, which for a
+    // coarse interval (e.g. 1D) can sit hours behind the newest historical
+    // sample. Never move the final point backwards in time, or the closing
+    // segment draws back across the chart. Keep it pinned to the newest x and
+    // just refresh the price.
+    const lastX = prices[prices.length - 1].x;
+    const liveX = Math.max(realtimeTimestamp, lastX);
     const updated = [...prices];
-    updated[updated.length - 1] = { x: realtimeTimestamp, y: realtimePrice };
+    updated[updated.length - 1] = { x: liveX, y: realtimePrice };
     return updated;
   }, [prices, realtimePrice, realtimeTimestamp]);
 
