@@ -88,12 +88,12 @@ export default function NftsTab({
 
   return (
     <>
-      <Box>
+      <div className="overview-tab-controls">
         <AssetListControlBar
           showSortControl={false}
           data-testid="parent-selector-nfts-tab"
         />
-      </Box>
+      </div>
 
       <Box className="nfts-tab">
         {useExternalServices ? (
