@@ -20,13 +20,7 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 describe('MetaMaskController.retrySnapBalances (v6: stale snap balances)', () => {
-  const build = ({
-    assetsRetry,
-    legacyUpdate,
-  }: {
-    assetsRetry: jest.Mock;
-    legacyUpdate: jest.Mock;
-  }) => ({
+  const build = ({ assetsRetry, legacyUpdate }) => ({
     assetsController: { retrySnapBalances: assetsRetry },
     multichainBalancesController: { updateBalance: legacyUpdate },
   });

@@ -148,7 +148,6 @@
     "resetState",
     "resetViewedNotifications",
     "restoreUserData",
-    "retrySnapBalances",
     "rewardsGetPerpsDiscountForAccount",
     "rewardsGetVipTierForAccount",
     "setAccountName",
