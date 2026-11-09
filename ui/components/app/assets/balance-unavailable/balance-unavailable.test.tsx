@@ -1,6 +1,8 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { retrySnapBalances } from '../../../../store/actions';
@@ -23,7 +25,7 @@ describe('BalanceUnavailable', () => {
       mockStore,
     );
 
-    const status = getByText('Balance unavailable');
+    const status = getByText(messages.balanceUnavailable.message);
     expect(status).toBeInTheDocument();
     expect(status).toHaveAttribute('role', 'status');
     expect(status).toHaveAttribute('aria-live', 'polite');
@@ -105,11 +107,11 @@ describe('BalanceUnavailable', () => {
 
     expect(getByTestId('balance-unavailable-retry')).toHaveAttribute(
       'aria-label',
-      'Retry balance for BTC',
+      messages.retryBalanceFor.message.replace('$1', 'BTC'),
     );
     expect(
       getByText(
-        "We couldn't load the latest balance for Bitcoin. The amount shown may be out of date.",
+        messages.balanceUnavailableDescription.message.replace('$1', 'Bitcoin'),
       ),
     ).toHaveClass('sr-only');
   });
@@ -119,11 +121,19 @@ describe('BalanceUnavailable', () => {
       <BalanceUnavailable accountIds={['btc-1']} hideText />,
       mockStore,
     );
-    expect(queryByText('Balance unavailable')).not.toBeInTheDocument();
-    expect(queryByText('Retry')).toBeInTheDocument();
+    expect(
+      queryByText(messages.balanceUnavailable.message),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.balanceUnavailableRetry.message),
+    ).toBeInTheDocument();
 
     rerender(<BalanceUnavailable accountIds={['btc-1']} hideRetry />);
-    expect(queryByText('Balance unavailable')).toBeInTheDocument();
-    expect(queryByText('Retry')).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.balanceUnavailable.message),
+    ).toBeInTheDocument();
+    expect(
+      queryByText(messages.balanceUnavailableRetry.message),
+    ).not.toBeInTheDocument();
   });
 });
