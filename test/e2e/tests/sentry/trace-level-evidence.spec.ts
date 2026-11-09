@@ -30,6 +30,11 @@ function parseTransactions(body: string): CapturedTxn[] {
     } catch {
       continue;
     }
+    // Error events also carry `transaction` (the scope's name) and a trace
+    // context; only transaction items are operations.
+    if (obj.type !== 'transaction') {
+      continue;
+    }
     const transaction = obj.transaction as string | undefined;
     const trace = (obj.contexts as { trace?: Record<string, unknown> })?.trace;
     const traceId = trace?.trace_id;
