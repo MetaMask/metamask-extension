@@ -300,7 +300,11 @@ export const MultichainAccountMenu = ({
         position={PopoverPosition.LeftStart}
         referenceElement={referenceElement}
         role={PopoverRole.Dialog}
-        onClose={onToggle}
+        onClose={() => {
+          if (isOpen) {
+            onToggle?.();
+          }
+        }}
       >
         <ModalFocus restoreFocus initialFocusRef={popoverRef}>
           <MultichainAccountMenuItems menuConfig={menuConfig} />

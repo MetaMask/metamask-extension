@@ -1546,29 +1546,30 @@ const PerpsMarketDetailPage = () => {
                 </Box>
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
-                <Box
-                  ref={setMarginMenuRef}
-                  className="relative flex-1 rounded-xl bg-muted px-4 py-3 cursor-pointer hover:bg-muted-hover active:bg-muted-pressed transition-colors"
-                  flexDirection={BoxFlexDirection.Column}
-                  onClick={handleOpenMarginMenu}
-                  data-testid="perps-margin-card"
-                >
-                  <Box paddingBottom={1}>
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      {t('perpsMargin')}
-                    </Text>
-                  </Box>
-                  <SensitiveText
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                    isHidden={privacyMode}
-                    data-testid="perps-position-margin-value"
+                <Box ref={setMarginMenuRef} className="relative flex-1">
+                  <Box
+                    className="rounded-xl bg-muted px-4 py-3 cursor-pointer hover:bg-muted-hover active:bg-muted-pressed transition-colors"
+                    flexDirection={BoxFlexDirection.Column}
+                    onClick={handleOpenMarginMenu}
+                    data-testid="perps-margin-card"
                   >
-                    {formatPerpsFiatMinimal(position.marginUsed)}
-                  </SensitiveText>
+                    <Box paddingBottom={1}>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsMargin')}
+                      </Text>
+                    </Box>
+                    <SensitiveText
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                      isHidden={privacyMode}
+                      data-testid="perps-position-margin-value"
+                    >
+                      {formatPerpsFiatMinimal(position.marginUsed)}
+                    </SensitiveText>
+                  </Box>
                   <Popover
                     referenceElement={marginMenuElement}
                     isOpen={isMarginMenuOpen}
