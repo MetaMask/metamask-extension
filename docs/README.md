@@ -2,7 +2,7 @@
 
 These docs relate to how to contribute to the MetaMask project itself.
 
-You can find the latest version of MetaMask on [our official website](https://metamask.io/).
+You can find the latest version of MetaMask on [our official website](https://metamask.com/).
 
 For help using MetaMask, visit our [User Support Site](https://support.metamask.io/).
 
