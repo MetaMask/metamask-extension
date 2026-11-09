@@ -175,6 +175,24 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/assets-controller": {
+      "type": "non-breaking",
+      "previewVersion": "20.2.3-preview-2ad7fb9"
+    },
+    "@metamask/base-data-service": {
+      "type": "non-breaking",
+      "previewVersion": "2.1.0-preview-2ad7fb9"
+    },
+    "@metamask/geolocation-controller": {
+      "type": "non-breaking",
+      "previewVersion": "2.0.0-preview-2ad7fb9"
+    },
+    "@metamask/react-data-query": {
+      "type": "breaking",
+      "previewVersion": "2.0.0-preview-2ad7fb9"
+    }
+  },
   "resolutions": {
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
