@@ -611,6 +611,46 @@ describe('AutoCloseSection', () => {
       expect(onStopLossPriceChange).toHaveBeenCalledWith('44550');
     });
 
+    it("caps a stop-loss RoE beyond the venue's limit with Core's 99% per 1x", () => {
+      // -5000% at 3x is past -297%: Core prices the cap, 45000 * (1 - 0.99).
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          direction="long"
+          currentPrice={45000}
+          leverage={3}
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const input = screen
+        .getByTestId('sl-percent-input')
+        .querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '-5000' } });
+
+      expect(onStopLossPriceChange).toHaveBeenLastCalledWith('450');
+    });
+
+    it('shows no RoE for a trigger price while the leverage is unknown', () => {
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="46000"
+          leverage={Number.NaN}
+        />,
+        mockStore,
+      );
+
+      const input = screen
+        .getByTestId('tp-percent-input')
+        .querySelector('input') as HTMLInputElement;
+      expect(input.value).toBe('');
+    });
+
     it('normalizes leading-zero SL RoE% input before defaulting to negative', () => {
       // -11% RoE at leverage=10: priceChange = -11/(10*100) = -1.1% -> 45000 * 0.989 = 44505
       const onStopLossPriceChange = jest.fn();
@@ -821,18 +861,25 @@ describe('AutoCloseSection', () => {
       expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith('45675');
     });
 
-    it('formats percentage-derived TP prices with market precision', async () => {
+    it("derives TP prices with Core's trigger-price precision", async () => {
+      // Core keeps the decimals a trigger price needs at its price band
+      // (TP_SL_PRECISION_CONFIG) without trailing zeros.
       const cases = [
         { asset: 'BTC', currentPrice: 45000, expectedPrice: '45315' },
-        { asset: 'PUMP', currentPrice: 0.001958, expectedPrice: '0.001972' },
+        { asset: 'PUMP', currentPrice: 0.001958, expectedPrice: '0.00197171' },
         {
           asset: 'PUMP',
           currentPrice: 0.0019860973187686197,
-          expectedPrice: '0.002000',
+          expectedPrice: '0.002',
         },
+        // Core writes 9.1e-7, which the price field cannot show.
         { asset: 'PUMP', currentPrice: 0.0000009, expectedPrice: '' },
-        { asset: 'xyz:XYZ100', currentPrice: 28426, expectedPrice: '28625' },
-        { asset: 'ETH', currentPrice: 2359.6, expectedPrice: '2376.1' },
+        {
+          asset: 'xyz:XYZ100',
+          currentPrice: 28426,
+          expectedPrice: '28624.98',
+        },
+        { asset: 'ETH', currentPrice: 2359.6, expectedPrice: '2376.12' },
       ];
 
       for (const { asset, currentPrice, expectedPrice } of cases) {

@@ -740,6 +740,40 @@ describe('UpdateTPSLModalContent', () => {
       expect(numValue).toBeCloseTo(96.425, 0);
     });
 
+    it("caps a stop-loss RoE beyond the venue's limit with Core's 99% per 1x", () => {
+      // SOL long entered at 95 at 10x: -5000% is past -990%, so the stop
+      // sits at the cap, 95 * (1 - 0.99) = 0.95.
+      renderTpslModalContent({ position: positionWithoutTPSL });
+
+      const slPercentInput = screen.getByTestId(
+        'perps-update-tpsl-sl-percent-input',
+      ) as HTMLInputElement;
+      fireEvent.focus(slPercentInput);
+      fireEvent.change(slPercentInput, { target: { value: '-5000' } });
+
+      const slPriceInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
+      expect(slPriceInput.value).toBe('0.95');
+    });
+
+    it('shows no RoE instead of assuming 1x when the leverage is unknown', () => {
+      renderTpslModalContent({
+        position: {
+          ...positionWithTPSL,
+          leverage: { ...positionWithTPSL.leverage, value: Number.NaN },
+        },
+      });
+
+      expect(
+        (
+          screen.getByTestId(
+            'perps-update-tpsl-tp-percent-input',
+          ) as HTMLInputElement
+        ).value,
+      ).toBe('');
+    });
+
     it('preserves the positive sign after blurring an explicit positive SL RoE%', () => {
       renderTpslModalContent({ position: positionWithoutTPSL });
 

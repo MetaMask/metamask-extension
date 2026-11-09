@@ -94,10 +94,16 @@ import {
   getIsPerpsCloseLimitOrderEnabled,
   getIsPerpsServiceInterruptionBannerEnabled,
 } from '../../../../selectors/perps/feature-flags';
+import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import {
+  PERPS_CLOSE_UNAVAILABLE_DISPLAY,
+  estimateClosePositionReceive,
   getCloseLimitReferencePrice,
+  getCloseMarginWithPnl,
+  getClosePositionProviderId,
   isCloseLimitPriceOutsideDeviation,
   parsePositivePrice,
+  roundCloseUsd,
 } from './close-position-utils';
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
@@ -415,6 +421,12 @@ export const ClosePositionModal = ({
       formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
     [],
   );
+  // A figure Core cannot compute yet shows as unavailable, never as $0.
+  const formatCloseUsd = useCallback(
+    (value: number | undefined) =>
+      value === undefined ? PERPS_CLOSE_UNAVAILABLE_DISPLAY : formatFiat(value),
+    [formatFiat],
+  );
 
   const vipTier = useVipTier();
 
@@ -574,57 +586,38 @@ export const ClosePositionModal = ({
     amount: String(closeNotionalUsd),
   });
 
-  const liveUnrealizedPnl = useMemo(
-    () => Number.parseFloat(position.unrealizedPnl) || 0,
-    [position.unrealizedPnl],
+  const activeProvider = useSelector(selectPerpsActiveProvider);
+  const providerId = getClosePositionProviderId(position, activeProvider);
+  // The price the close executes at: the limit price of a limit close, else
+  // the live price. Unknown until entered or streamed.
+  const closePrice =
+    effectiveOrderType === 'limit'
+      ? (parsedLimitPrice ?? undefined)
+      : (validCurrentPrice ?? undefined);
+
+  const closeEstimate = useMemo(
+    () =>
+      estimateClosePositionReceive({
+        position,
+        providerId,
+        closeSize,
+        price: closePrice,
+        feeRate,
+      }),
+    [position, providerId, closeSize, closePrice, feeRate],
   );
 
-  const effectiveTotalPnl = useMemo(() => {
-    if (effectiveOrderType === 'market') {
-      return liveUnrealizedPnl;
-    }
-
-    const entryPrice = parsePositivePrice(position.entryPrice);
-    if (entryPrice === null || parsedLimitPrice === null) {
-      return liveUnrealizedPnl;
-    }
-
-    return isLong
-      ? (parsedLimitPrice - entryPrice) * positionSize
-      : (entryPrice - parsedLimitPrice) * positionSize;
-  }, [
-    effectiveOrderType,
-    liveUnrealizedPnl,
-    position.entryPrice,
-    parsedLimitPrice,
-    isLong,
-    positionSize,
-  ]);
-
-  const effectivePnl = useMemo(
-    () => effectiveTotalPnl * closeFraction,
-    [effectiveTotalPnl, closeFraction],
-  );
-
-  const margin = useMemo(() => {
-    const marginUsed = Number.parseFloat(position.marginUsed) || 0;
-    const effectiveMargin = marginUsed - liveUnrealizedPnl + effectiveTotalPnl;
-    return effectiveMargin * closeFraction;
-  }, [
-    position.marginUsed,
-    liveUnrealizedPnl,
-    effectiveTotalPnl,
-    closeFraction,
-  ]);
-
-  const estimatedFees = useMemo(
-    () => closeNotionalUsd * (feeRate ?? 0),
-    [closeNotionalUsd, feeRate],
-  );
-
-  const originalEstimatedFees = useMemo(
-    () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
-    [closeNotionalUsd, undiscountedFeeRate],
+  // The fee before any MetaMask discount, shown struck through beside it.
+  const originalFee = useMemo(
+    () =>
+      estimateClosePositionReceive({
+        position,
+        providerId,
+        closeSize,
+        price: closePrice,
+        feeRate: undiscountedFeeRate,
+      }).fee,
+    [position, providerId, closeSize, closePrice, undiscountedFeeRate],
   );
 
   const isPartialCloseBelowMinNotional = useMemo(() => {
@@ -635,25 +628,13 @@ export const ClosePositionModal = ({
     return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
-  // Pre-round margin and fees to cents so the same values flow into both
-  // the display rows and the "You'll receive" arithmetic, avoiding any
-  // divergence between Math.round and Intl.NumberFormat rounding modes.
-  const roundedMargin = useMemo(() => Math.round(margin * 100) / 100, [margin]);
-
-  const roundedFees = useMemo(
-    () => Math.round(estimatedFees * 100) / 100,
-    [estimatedFees],
-  );
-
-  const roundedOriginalFees = useMemo(
-    () => Math.round(originalEstimatedFees * 100) / 100,
-    [originalEstimatedFees],
-  );
-
-  const youWillReceive = useMemo(
-    () => roundedMargin - roundedFees,
-    [roundedMargin, roundedFees],
-  );
+  // Rows show Core's figures at the cents Core rounds them to, so margin with
+  // PnL minus the fee adds up to Core's receive.
+  const roundedMarginWithPnl = getCloseMarginWithPnl(closeEstimate);
+  const roundedFees = roundCloseUsd(closeEstimate.fee);
+  const roundedOriginalFees = roundCloseUsd(originalFee);
+  const youWillReceive = closeEstimate.receive;
+  const closePnl = closeEstimate.realizedPnl;
 
   const formError = useMemo(() => {
     if (
@@ -671,7 +652,7 @@ export const ClosePositionModal = ({
     if (isLimitPriceOutsideDeviation) {
       return t('perpsCloseLimitPriceOutsideOracleBand');
     }
-    if (youWillReceive < 0) {
+    if (youWillReceive !== undefined && youWillReceive < 0) {
       return t('perpsInsufficientMargin');
     }
     return null;
@@ -685,17 +666,22 @@ export const ClosePositionModal = ({
     t,
   ]);
 
+  // The close waits for its fee quote: the fee is reported with the close and
+  // is never assumed to be 0.
+  const closeFee = closeEstimate.fee;
   const isSubmitDisabled =
     formError !== null ||
     closePercent <= 0 ||
     isSubmitting ||
     closeSize <= 0 ||
-    isPartialCloseBelowMinNotional;
+    isPartialCloseBelowMinNotional ||
+    closeFee === undefined;
 
   const handleClose = useCallback(async () => {
-    if (isSubmitDisabled) {
+    if (isSubmitDisabled || closeFee === undefined) {
       return;
     }
+    const totalFee = closeFee;
     if (
       effectiveOrderType === 'limit' &&
       (parsedLimitPrice === null ||
@@ -759,7 +745,7 @@ export const ClosePositionModal = ({
           position,
         });
         closeRequestParams.trackingData = buildTrackingData({
-          totalFee: estimatedFees,
+          totalFee,
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
@@ -876,7 +862,7 @@ export const ClosePositionModal = ({
     currentPrice,
     sizeDecimals,
     limitPrice,
-    estimatedFees,
+    closeFee,
     protocolFeeRate,
     buildTrackingData,
     onClose,
@@ -1023,28 +1009,32 @@ export const ClosePositionModal = ({
                       textAlign={TextAlign.Right}
                       data-testid="perps-close-summary-margin-value"
                     >
-                      {formatFiat(roundedMargin)}
+                      {formatCloseUsd(roundedMarginWithPnl)}
                     </Text>
-                    <Text
-                      variant={TextVariant.BodyXs}
-                      color={TextColor.TextAlternative}
-                      textAlign={TextAlign.Right}
-                    >
-                      {t('perpsIncludesPnl', [
-                        <Text
-                          key="perps-close-margin-pnl"
-                          variant={TextVariant.BodyXs}
-                          color={
-                            effectivePnl >= 0
-                              ? TextColor.SuccessDefault
-                              : TextColor.ErrorDefault
-                          }
-                          asChild
-                        >
-                          <span>{formatPnl(effectivePnl)}</span>
-                        </Text>,
-                      ])}
-                    </Text>
+                    {closePnl === undefined ? null : (
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                        textAlign={TextAlign.Right}
+                      >
+                        {t('perpsIncludesPnl', [
+                          <Text
+                            key="perps-close-margin-pnl"
+                            variant={TextVariant.BodyXs}
+                            color={
+                              closePnl >= 0
+                                ? TextColor.SuccessDefault
+                                : TextColor.ErrorDefault
+                            }
+                            asChild
+                          >
+                            <span data-testid="perps-close-summary-pnl-value">
+                              {formatPnl(closePnl)}
+                            </span>
+                          </Text>,
+                        ])}
+                      </Text>
+                    )}
                   </Box>
                 </Box>
 
@@ -1068,6 +1058,7 @@ export const ClosePositionModal = ({
                     }
                     originalFee={roundedOriginalFees}
                     fee={roundedFees}
+                    placeholder={PERPS_CLOSE_UNAVAILABLE_DISPLAY}
                     feeTextFontWeight={FontWeight.Medium}
                     feeTextTestId="perps-close-summary-fees-value"
                   />
@@ -1090,7 +1081,7 @@ export const ClosePositionModal = ({
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-close-summary-receive-value"
                   >
-                    {formatFiat(youWillReceive)}
+                    {formatCloseUsd(youWillReceive)}
                   </Text>
                 </Box>
               </Box>

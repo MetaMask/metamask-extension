@@ -434,6 +434,9 @@ describe('CloseAllPositionsModal', () => {
     );
   });
 
+  // Each position's fee is rounded to cents as Core rounds it into that
+  // position's receive (ETH 6.76875 -> 6.77, BTC 21.375 -> 21.38), so the
+  // total is 28.15.
   it('uses resolved v19 rates without applying rewards twice', async () => {
     mockFeeDiscountBips.mockReturnValue(5000);
     mockSubmitRequestToBackground.mockResolvedValue({
@@ -447,11 +450,11 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(
         screen.getByTestId('perps-close-all-fees-value'),
-      ).toHaveTextContent('-$28.14');
+      ).toHaveTextContent('-$28.15');
     });
     expect(
       screen.getByTestId('perps-close-all-receive-value'),
-    ).toHaveTextContent('$3,846.86');
+    ).toHaveTextContent('$3,471.85');
   });
 
   it('discounts only the fallback portion when one symbol quote fails', async () => {
@@ -468,7 +471,7 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(
         screen.getByTestId('perps-close-all-fees-value'),
-      ).toHaveTextContent('-$28.14');
+      ).toHaveTextContent('-$28.15');
     });
   });
 
@@ -483,7 +486,58 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(
         screen.getByTestId('perps-close-all-fees-value'),
-      ).toHaveTextContent('-$28.14');
+      ).toHaveTextContent('-$28.15');
     });
+  });
+
+  // Core's estimateCloseReceive per position at its mark price
+  // (positionValue / size): a 1 BTC cross long entered at 100, marked at 80.
+  it('adds a cross position PnL to its margin and keeps a negative receive signed', async () => {
+    const crossLoss = {
+      ...mockPositions[1],
+      size: '1',
+      entryPrice: '100',
+      positionValue: '80',
+      marginUsed: '10',
+      unrealizedPnl: '-20',
+    };
+
+    renderWithProvider(
+      <CloseAllPositionsModal {...defaultProps} positions={[crossLoss]} />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$0.12');
+    });
+    // The suite's formatPerpsFiat stub writes the sign after the `$`.
+    expect(
+      screen.getByTestId('perps-close-all-total-margin-value'),
+    ).toHaveTextContent('$-10');
+    expect(screen.getByTestId('perps-close-all-pnl-value')).toHaveTextContent(
+      '-$20',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('$-10.12');
+  });
+
+  it('shows margin with PnL, fees and receive that add up across positions', async () => {
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$42.96');
+    });
+    // ETH isolated: 2,375 less its 375 unrealized PnL; BTC cross: 1,500.
+    expect(
+      screen.getByTestId('perps-close-all-total-margin-value'),
+    ).toHaveTextContent('$3,500');
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('$3,457.04');
   });
 });
