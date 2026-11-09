@@ -23,9 +23,10 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
-  isResolvableName,
-  shortenString,
-} from '../../../../../helpers/utils/util';
+  ADDRESS_END_CHARS,
+  StartTruncatedText,
+} from '../../../../../components/ui/start-truncated-text';
+import { isResolvableName } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipients } from '../../../hooks/send/useRecipients';
@@ -86,14 +87,7 @@ export const RecipientInput = ({
     const addressIsValid =
       to?.length && to === toAddressValidated && recipientError === undefined;
 
-    return addressIsValid
-      ? shortenString(recipientResolvedLookup ?? to, {
-          truncatedCharLimit: 24,
-          truncatedStartChars: 10,
-          truncatedEndChars: 10,
-          skipCharacterInEnd: false,
-        })
-      : undefined;
+    return addressIsValid ? (recipientResolvedLookup ?? to) : undefined;
   }, [recipientError, recipientResolvedLookup, toAddressValidated, to]);
 
   const recipientName = useMemo(() => {
@@ -117,8 +111,13 @@ export const RecipientInput = ({
           borderWidth={1}
           borderRadius={BorderRadius.MD}
           padding={3}
+          gap={2}
         >
-          <Box alignItems={AlignItems.center} display={Display.Flex}>
+          <Box
+            alignItems={AlignItems.center}
+            display={Display.Flex}
+            className="min-w-0 flex-1"
+          >
             <PreferredAvatar
               address={avatarSeedAddress}
               size={AvatarAccountSize.Md}
@@ -127,6 +126,7 @@ export const RecipientInput = ({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               marginLeft={3}
+              className="min-w-0 flex-1"
             >
               {recipientConfusableCharacters?.length ? (
                 <ConfusableRecipientName
@@ -142,7 +142,10 @@ export const RecipientInput = ({
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySm}
                 >
-                  {resolvedAddress}
+                  <StartTruncatedText
+                    text={resolvedAddress}
+                    endChars={ADDRESS_END_CHARS}
+                  />
                 </Text>
               )}
             </Box>

@@ -4,6 +4,10 @@ import { userEvent } from '@testing-library/user-event';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import {
+  mockTextWidth,
+  type TextWidthMock,
+} from '../../../../../../test/lib/mock-text-width';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useSendContext } from '../../../context/send';
@@ -20,6 +24,8 @@ jest.mock('../../../hooks/send/useAccountAddressSeedIconMap', () => ({
     accountAddressSeedIconMap: new Map(),
   }),
 }));
+
+const PASTED_ADDRESS = '0x36dB199F0a1cD131ad0b5Cf4Fe7FE522839a1B2C';
 
 describe('RecipientInput', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
@@ -163,38 +169,62 @@ describe('RecipientInput', () => {
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
 
-  it('shows 10 characters on each side of an unnamed address', () => {
-    const address = '0x1234567890abcdef1234567890abcdef12345678';
+  it('shows the full unnamed address so it can wrap', () => {
     mockUseSendContext.mockReturnValue({
-      to: address,
+      to: PASTED_ADDRESS,
       updateTo: mockUpdateTo,
       updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
-    const { getByText } = renderComponent({
-      recipientValidationResult: { toAddressValidated: address },
+    const { getByText, getByTestId } = renderComponent({
+      recipientValidationResult: { toAddressValidated: PASTED_ADDRESS },
     });
 
-    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
+    expect(getByText(PASTED_ADDRESS)).toHaveClass('break-all');
+    expect(getByTestId('clear-recipient-btn')).toBeInTheDocument();
   });
 
-  it('shows 10 characters on each side of the address under a contact name', () => {
-    const address = '0x1234567890abcdef1234567890abcdef12345678';
-    mockUseRecipients.mockReturnValue([
-      { address, contactName: 'Alice' },
-    ] as unknown as ReturnType<typeof useRecipients>);
-    mockUseSendContext.mockReturnValue({
-      to: address,
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
+  describe('address under a name', () => {
+    let textWidth: TextWidthMock;
 
-    const { getByText } = renderComponent({
-      recipientValidationResult: { toAddressValidated: address },
+    beforeEach(() => {
+      textWidth = mockTextWidth();
+      mockUseRecipients.mockReturnValue([
+        { address: PASTED_ADDRESS, contactName: 'Alice' },
+      ] as unknown as ReturnType<typeof useRecipients>);
+      mockUseSendContext.mockReturnValue({
+        to: PASTED_ADDRESS,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
     });
 
-    expect(getByText('Alice')).toBeInTheDocument();
-    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
+    afterEach(() => {
+      textWidth.restore();
+    });
+
+    it('keeps the last 10 characters and shortens the start to fit', () => {
+      textWidth.setRowWidth(250);
+
+      const { getByText } = renderComponent({
+        recipientValidationResult: { toAddressValidated: PASTED_ADDRESS },
+      });
+
+      expect(getByText('Alice')).toBeInTheDocument();
+      expect(getByText('0x36dB199F0a1c…22839a1B2C')).toBeInTheDocument();
+    });
+
+    it('shows more of the start in a wider field', () => {
+      textWidth.setRowWidth(350);
+
+      const { getByText } = renderComponent({
+        recipientValidationResult: { toAddressValidated: PASTED_ADDRESS },
+      });
+
+      expect(
+        getByText('0x36dB199F0a1cD131ad0b5C…22839a1B2C'),
+      ).toBeInTheDocument();
+    });
   });
 
   it('display confusable characters when they exist', () => {
