@@ -8,15 +8,17 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxFlexWrap,
+  FontFamily,
+  SensitiveText,
   Skeleton,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
+  selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
-import { TextVariant } from '../../../../helpers/constants/design-system';
-import { SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
@@ -59,6 +61,9 @@ export const AccountGroupBalance = ({
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
+  );
+  const isAssetsLoading = useSelector(
+    selectIsAssetsLoadingForSelectedAccountGroup,
   );
 
   const caipChainId = useMemo(
@@ -163,12 +168,13 @@ export const AccountGroupBalance = ({
     showConversionForTestnets,
   ]);
 
+  const totalIsUnresolved = isZeroAmount(total) || currency === undefined;
+
   return (
     <Skeleton
       hideChildren={
-        isEvm &&
-        !anyEnabledNetworksAreAvailable &&
-        (isZeroAmount(total) || currency === undefined)
+        totalIsUnresolved &&
+        ((isEvm && !anyEnabledNetworksAreAvailable) || isAssetsLoading)
       }
       className="mb-1"
       data-testid="account-group-balance-skeleton"
@@ -185,13 +191,14 @@ export const AccountGroupBalance = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         flexWrap={BoxFlexWrap.Wrap}
+        onClick={handleSensitiveToggle}
       >
         <SensitiveText
           ellipsis
-          variant={TextVariant.inherit}
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
-          onClick={handleSensitiveToggle}
           className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {/* We should always show something but the check is just to appease TypeScript */}

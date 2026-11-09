@@ -120,7 +120,7 @@ export const DataTree = ({
             label.charAt(0).toUpperCase() + label.slice(1),
           )}:`}
           style={{ paddingRight: 0 }}
-          key={`tree-data-${label}-index-${i}`}
+          key={`tree-data-${label}`}
           data-testid={`confirmation_data-${label}-index-${i}`}
         >
           {

@@ -74,7 +74,3 @@ export const getIsControllerDeprecated = (
   const featureFlag = getAssetsUnifyStateRemoteFeatureFlag(state);
   return featureFlag?.deprecatedControllers?.includes(controllerName) ?? false;
 };
-
-export const getIsTokenListControllerDeprecated = (
-  state: RemoteFeatureFlagsState,
-): boolean => getIsControllerDeprecated(state, 'TokenListController');

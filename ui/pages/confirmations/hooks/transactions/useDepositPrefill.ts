@@ -15,10 +15,10 @@ import {
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 import {
   selectDepositLimits,
-  selectRelayFixedSpread,
+  selectStablecoins,
 } from '../../selectors/feature-flags';
 import { getDepositLimitForTransaction } from '../../utils/pay-deposit-limit';
-import { isRouteToken } from '../../utils/relay-fixed-spread';
+import { isListedStablecoin } from '../../utils/stablecoins';
 import { getMarketData } from '../../../../selectors';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayAvailableTokens } from '../pay/useTransactionPayAvailableTokens';
@@ -88,8 +88,8 @@ export type DepositPrefillResult = {
   percentage: number | undefined;
   isLimitCapped: boolean;
   /**
-   * True when prefill is uncapped 100% of balance (stablecoin route token,
-   * not limited by depositLimit). Consumers should apply this via
+   * True when prefill is uncapped 100% of balance (listed stablecoin, not
+   * limited by depositLimit). Consumers should apply this via
    * `updatePendingAmountPercentage(100, { isPrefill: true })` so the
    * submitted amount uses the exact pay-token balanceRaw instead of a lossy
    * fiat roundtrip (never `isMaxAmount`).
@@ -102,7 +102,8 @@ export type DepositPrefillResult = {
  * Computes the fiat amount to pre-fill for MetaMask Pay deposit confirmations.
  * Matches mobile `useDepositPrefillAmount`:
  * - Gated by `confirmations_pay_extended.prefilledAmount`, per transaction type
- * - 100% for money-account deposits with route tokens, otherwise 50%
+ * - 100% for money-account deposits paid with a token listed in the
+ * `stableTokens` flag, otherwise 50%
  * - Capped by `confirmations_pay_extended.depositLimit` when configured
  * - Re-commits when the confirmation, pay token, or funding account changes
  * - Settles as `DepositPrefillStatus.Skipped` when no funded token can produce
@@ -116,7 +117,7 @@ export function useDepositPrefill(): DepositPrefillResult {
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const marketData = useSelector(getMarketData);
   const depositLimits = useSelector(selectDepositLimits);
-  const relayFixedSpread = useSelector(selectRelayFixedSpread);
+  const stablecoins = useSelector(selectStablecoins);
 
   const prefilledAmountConfig = useMemo(
     () => getPrefilledAmountConfig(remoteFeatureFlags, transactionMeta),
@@ -181,10 +182,11 @@ export function useDepositPrefill(): DepositPrefillResult {
         };
       }
 
-      const stable = isRouteToken(relayFixedSpread, {
-        chainId: payToken.chainId,
-        address: payToken.address,
-      });
+      const stable = isListedStablecoin(
+        stablecoins,
+        payToken.chainId,
+        payToken.address,
+      );
       const supportsMaxPrefill = hasTransactionType(
         transactionMeta,
         TRANSACTION_TYPES_MAX_PREFILL,
@@ -224,7 +226,7 @@ export function useDepositPrefill(): DepositPrefillResult {
       enabled,
       isLiveBalance,
       payToken,
-      relayFixedSpread,
+      stablecoins,
       transactionMeta,
     ]);
 

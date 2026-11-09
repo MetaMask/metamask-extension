@@ -1,6 +1,10 @@
 import { renderHook, act } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { DeepPartial, QuoteResponse } from '@metamask/bridge-controller';
+import {
+  DeepPartial,
+  QuoteResponse,
+  SwapFeatureTag,
+} from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import { getFromAccount } from '../../../../../ducks/bridge/selectors';
@@ -288,7 +292,9 @@ describe('useBatchSellSubmitQuotes', () => {
         await result.current.submitBatchSellQuotes();
       });
 
-      expect(mockCaptureException).toHaveBeenCalledWith(error);
+      expect(mockCaptureException).toHaveBeenCalledWith(error, {
+        tags: { feature: SwapFeatureTag.BATCH_SELL },
+      });
     });
 
     it('resets isSubmitting to false even when dispatch throws', async () => {

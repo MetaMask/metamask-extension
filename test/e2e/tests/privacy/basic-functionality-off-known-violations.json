@@ -1,0 +1,24 @@
+{
+  "knownViolations": [
+    "accounts.api.cx.metamask.io",
+    "acl.execution.metamask.io",
+    "authentication.api.cx.metamask.io",
+    "bitcoin-mainnet.infura.io",
+    "bridge.api.cx.metamask.io",
+    "chainid.network",
+    "client-side-detection.api.cx.metamask.io",
+    "execution.metamask.io",
+    "geolocation.dev-api.cx.metamask.io",
+    "nft.api.cx.metamask.io",
+    "oidc.api.cx.metamask.io",
+    "phishing-detection.api.cx.metamask.io",
+    "preview.contentful.com",
+    "price.api.cx.metamask.io",
+    "static.cx.metamask.io",
+    "stellar-mainnet.infura.io",
+    "token.api.cx.metamask.io",
+    "tokens.api.cx.metamask.io",
+    "tron-mainnet.infura.io",
+    "user-storage.api.cx.metamask.io"
+  ]
+}

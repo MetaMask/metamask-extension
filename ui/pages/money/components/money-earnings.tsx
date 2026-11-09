@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   FontWeight,
+  SensitiveText,
   Skeleton,
   Text,
   TextColor,
@@ -28,6 +29,7 @@ type MoneyEarningsProps = {
   lifetimeEarnings?: string;
   isMonthlyLoading: boolean;
   isLifetimeLoading: boolean;
+  privacyMode?: boolean;
   onMonthlyTooltipOpen?: () => void;
   onLifetimeTooltipOpen?: () => void;
 };
@@ -37,6 +39,7 @@ export function MoneyEarnings({
   lifetimeEarnings,
   isMonthlyLoading,
   isLifetimeLoading,
+  privacyMode = false,
   onMonthlyTooltipOpen,
   onLifetimeTooltipOpen,
 }: MoneyEarningsProps) {
@@ -96,18 +99,19 @@ export function MoneyEarnings({
                   data-testid={`money-earnings-${key}-skeleton`}
                 />
               ) : (
-                <Text
+                <SensitiveText
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
+                  isHidden={privacyMode}
                   className={
-                    earnings[key]?.startsWith('+')
+                    !privacyMode && earnings[key]?.startsWith('+')
                       ? 'text-success-default'
                       : undefined
                   }
                   data-testid={`money-earnings-${key}-value`}
                 >
                   {earnings[key]}
-                </Text>
+                </SensitiveText>
               )}
             </div>
           );

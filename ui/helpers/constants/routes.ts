@@ -62,6 +62,8 @@ export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
 export const MFA_FLOW_ROUTE = '/mfa';
 export const MFA_SETTINGS_ROUTE =
   '/settings/security-and-password/verification-methods';
+export const MFA_SETTINGS_EMAIL_ROUTE = `${MFA_SETTINGS_ROUTE}/email`;
+export const MFA_SETTINGS_TOTP_ROUTE = `${MFA_SETTINGS_ROUTE}/authenticator-app`;
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -511,6 +513,16 @@ export const ROUTES = [
   {
     path: MFA_SETTINGS_ROUTE,
     label: 'MFA Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_EMAIL_ROUTE,
+    label: 'MFA Settings Email Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_TOTP_ROUTE,
+    label: 'MFA Settings Authenticator App Page',
     trackInAnalytics: false,
   },
   {

@@ -34,6 +34,7 @@ import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
 import {
   launchMetamaskUi,
+  trackDocumentPageClose,
   CriticalStartupErrorHandler,
   connectToBackground,
   displayCriticalErrorMessage,
@@ -56,10 +57,13 @@ import {
   TraceName,
   type TraceContext,
 } from '../../shared/lib/trace';
+import { recordBackgroundInitializationTiming } from '../../shared/lib/ui-startup-timing';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+
+trackDocumentPageClose();
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
@@ -135,6 +139,7 @@ async function start(): Promise<void> {
 
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
+  extensionPort.onMessage.addListener(recordBackgroundInitializationTiming);
 
   // Set up error handlers as early as possible to ensure we are ready to
   // handle any errors that occur at any time
@@ -152,6 +157,9 @@ async function start(): Promise<void> {
   connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync(initialState: unknown): Promise<void> {
+    extensionPort.onMessage.removeListener(
+      recordBackgroundInitializationTiming,
+    );
     endTrace({ name: TraceName.BackgroundConnect });
     criticalErrorHandler.startUiSyncReceived();
 
@@ -336,29 +344,43 @@ async function queryCurrentActiveTab(
     }
   }
 
-  // Only popup queries the active tab
-  // Sidepanel uses appActiveTab from tab listeners instead
+  // Sidepanel uses appActiveTab from tab listeners, but retain the existing
+  // active-tab lookup for its initial UI state.
   if (
     windowType !== ENVIRONMENT_TYPE_POPUP &&
-    windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+    windowType !== ENVIRONMENT_TYPE_SIDEPANEL &&
+    windowType !== ENVIRONMENT_TYPE_FULLSCREEN
   ) {
     return {};
   }
 
-  const tabs =
-    (await browser.tabs
-      .query({ active: true, currentWindow: true })
-      .catch((e) => {
-        checkForLastErrorAndLog() || log.error(e);
-        return undefined;
-      })) ?? [];
+  let currentTab: browser.Tabs.Tab | undefined;
+  if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+    currentTab = await browser.tabs.getCurrent().catch((e) => {
+      checkForLastErrorAndLog() || log.error(e);
+      return undefined;
+    });
+  } else {
+    const tabs =
+      (await browser.tabs
+        .query({ active: true, currentWindow: true })
+        .catch((e) => {
+          checkForLastErrorAndLog() || log.error(e);
+          return undefined;
+        })) ?? [];
+    currentTab = tabs[0];
+  }
 
-  const [activeTab] = tabs;
-  if (!activeTab) {
+  if (!currentTab) {
     return {};
   }
 
-  const { id, title, url } = activeTab;
+  const { id } = currentTab;
+  if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+    return { id };
+  }
+
+  const { title, url } = currentTab;
   const { origin, protocol } = url ? new URL(url) : {};
 
   if (!origin || origin === 'null') {

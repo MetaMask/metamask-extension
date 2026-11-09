@@ -87,6 +87,7 @@ app/scripts/lib/offscreen-bridge                    @MetaMask/accounts-engineers
 ui/pages/create-account                             @MetaMask/accounts-engineers
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
 **/identity/**                                      @MetaMask/accounts-engineers
+ui/pages/mfa                                        @MetaMask/accounts-engineers
 **/hardware-wallets/**                              @MetaMask/accounts-engineers
 
 # Swaps-Bridge team to own code for the swaps folder
@@ -160,6 +161,7 @@ ui/pages/details                                               @MetaMask/core-ex
 ui/pages/details/templates/ramps/                              @MetaMask/money-movement
 ui/pages/permissions-connect/                                  @MetaMask/core-extension-ux
 ui/pages/settings                                              @MetaMask/core-extension-ux
+ui/pages/settings/mfa-settings                                 @MetaMask/accounts-engineers
 ui/components/multichain/                                      @MetaMask/core-extension-ux
 ui/pages/settings/notifications-tab/**                         @MetaMask/core-extension-ux @MetaMask/engagement
 ui/components/multichain/notification*/**                      @MetaMask/core-extension-ux @MetaMask/engagement

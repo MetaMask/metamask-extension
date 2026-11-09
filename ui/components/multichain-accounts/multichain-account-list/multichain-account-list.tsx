@@ -47,9 +47,12 @@ import {
 } from '../../../helpers/constants/routes';
 import { transitionBack } from '../../ui/transition';
 import {
+  MetaMetricsAccountHiddenLocation,
+  MetaMetricsAccountRemovedLocation,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { captureException } from '../../../../shared/lib/sentry';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -80,6 +83,8 @@ import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
+import { useTrackAccountHidden } from '../hooks/useTrackAccountHidden';
+import { useTrackAccountRemoved } from '../hooks/useTrackAccountRemoved';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -98,7 +103,16 @@ export type MultichainAccountListProps = {
    * @default false
    */
   isEditMode?: boolean;
+  /**
+   * Whether selecting an account with the default click handler navigates away
+   * from the list. Set to false when embedded in a persistent surface such as a
+   * side navigation. Ignored when a custom `handleAccountClick` is provided.
+   * @default true
+   */
+  shouldNavigateOnSelect?: boolean;
 };
+
+type WalletData = AccountTreeWallets[AccountWalletId];
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
 
@@ -197,6 +211,7 @@ export const MultichainAccountList = ({
   showConnectionStatus = false,
   showDefaultAddress = false,
   isEditMode = false,
+  shouldNavigateOnSelect = true,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox && !isEditMode;
 
@@ -215,6 +230,8 @@ export const MultichainAccountList = ({
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
   const internalAccountsById = useSelector(getInternalAccountsObject);
+  const trackAccountHidden = useTrackAccountHidden();
+  const trackAccountRemoved = useTrackAccountRemoved();
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -231,7 +248,9 @@ export const MultichainAccountList = ({
     groupId: AccountGroupId;
     accountName: string;
     address?: string;
-    walletType?: AccountWalletType;
+    // Captured when the removal is requested, as the wallet leaves the tree
+    // once the removal succeeds.
+    wallet?: WalletData;
   } | null>(null);
 
   // Optimistic visibility so a hide/reveal shows on the cell before Redux
@@ -304,23 +323,25 @@ export const MultichainAccountList = ({
     setAccountToDelete(null);
   }, []);
 
-  const handleAccountDeleteConfirm = useCallback(() => {
-    const address = accountToDelete?.address;
-    if (address) {
-      dispatch(removeAccount(address));
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.AccountRemoved)
-          .addCategory(MetaMetricsEventCategory.Accounts)
-          .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountToDelete?.walletType,
-          })
-          .build(),
-      );
-    }
+  const handleAccountDeleteConfirm = useCallback(async () => {
     setAccountToDelete(null);
-  }, [accountToDelete, createEventBuilder, dispatch, trackEvent]);
+    if (!accountToDelete?.address) {
+      return;
+    }
+
+    try {
+      await dispatch(removeAccount(accountToDelete.address));
+    } catch (error) {
+      // Still reported to Sentry, but the account is still there, so there is
+      // no removal to track.
+      captureException(error);
+      return;
+    }
+    trackAccountRemoved(
+      accountToDelete.wallet,
+      MetaMetricsAccountRemovedLocation.ManageAccounts,
+    );
+  }, [accountToDelete, dispatch, trackAccountRemoved]);
 
   const handleVisibilityToggle = useCallback(
     async (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
@@ -348,6 +369,12 @@ export const MultichainAccountList = ({
         }
 
         await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+
+        trackAccountHidden(
+          accountGroupId,
+          nextHidden,
+          MetaMetricsAccountHiddenLocation.ManageAccounts,
+        );
       } finally {
         // A later toggle owns the override until its own write settles, so only
         // the most recent write hands the account back to the tree.
@@ -358,7 +385,7 @@ export const MultichainAccountList = ({
         }
       }
     },
-    [disconnectAccountGroup, dispatch, wallets],
+    [disconnectAccountGroup, dispatch, trackAccountHidden, wallets],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
@@ -426,6 +453,9 @@ export const MultichainAccountList = ({
 
       startTransition(() => {
         dispatch(setSelectedMultichainAccount(accountGroupId));
+        if (!shouldNavigateOnSelect) {
+          return;
+        }
         if (isFreshTab) {
           navigate(DEFAULT_ROUTE, { replace: true });
         } else {
@@ -442,6 +472,7 @@ export const MultichainAccountList = ({
       location.key,
       location.state,
       navigate,
+      shouldNavigateOnSelect,
       startTransition,
     ],
   );
@@ -555,7 +586,7 @@ export const MultichainAccountList = ({
                       groupId: groupId as AccountGroupId,
                       accountName: groupData.metadata.name,
                       address,
-                      walletType: wallet?.type,
+                      wallet,
                     });
                   }
                 : undefined

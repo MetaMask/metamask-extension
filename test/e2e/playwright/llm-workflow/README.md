@@ -150,6 +150,23 @@ Start with a brand new wallet that requires onboarding.
 mm launch --state onboarding
 ```
 
+### Self-onboarding
+
+Import a secret recovery phrase and finish onboarding inside `launch()`. The
+launcher walks the onboarding UI with the e2e onboarding flow
+(`importSRPOnboardingFlow` and `OnboardingCompletePage`), so it breaks only when
+the e2e suite does.
+The phrase is read from stdin. A local setup writes a generated phrase; a
+pooled setup writes the leased one. An optional second line sets the vault
+password (at least 8 characters); without it the launcher uses the e2e default
+password. The wallet must start on onboarding: the prod context always does,
+and the e2e context needs `--state onboarding`.
+
+```bash
+mm launch --context prod --self-onboarding < phrase.txt
+mm launch --state onboarding --self-onboarding < phrase.txt
+```
+
 ### Custom Fixture
 
 Use a preset fixture or provide custom wallet state.
