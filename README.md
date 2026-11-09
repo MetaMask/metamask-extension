@@ -1,6 +1,6 @@
 # MetaMask Browser Extension
 
-You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://support.metamask.com/).
+You can find the latest version of MetaMask on [our official website](https://metamask.com/). For help using MetaMask, visit our [User Support Site](https://support.metamask.com/).
 
 For [general questions](https://community.metamask.com/c/learn/26), [feature requests](https://community.metamask.com/c/feature-requests-ideas/13), or [developer questions](https://community.metamask.com/c/developer-questions/11), visit our [Community Forum](https://community.metamask.com/).
 
