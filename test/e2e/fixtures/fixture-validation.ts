@@ -76,18 +76,20 @@ const getFixtureIgnoredKeys = (): string[] => [
   // because controllers are constructed from the fixture state at boot, but there is
   // nothing to validate against.
   'data.CurrencyController',
-  'data.MultichainAssetsRatesController',
   'data.MultichainAssetsController',
-  'data.MultichainBalancesController',
-  'data.TokenRatesController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
+  // MoneyAccountController populates moneyAccounts and defaultMoneyAccountId
+  // on unlock alongside the Money keyring in KeyringController.vault
+  // (which is also ignored below).
+  'data.MoneyAccountController.moneyAccounts',
+  'data.MoneyAccountController.defaultMoneyAccountId',
   'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
-  'data.TokenBalancesController',
+  'data.MetaMetricsController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.

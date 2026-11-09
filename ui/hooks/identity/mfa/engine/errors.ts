@@ -7,7 +7,9 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   aal2_required: 'refresh',
   email_socially_verified: 'refresh',
   email_already_enrolled: 'refresh',
+  totp_already_enrolled: 'refresh',
   credential_not_enrolled: 'refresh',
+  credential_not_found: 'refresh',
   mfa_identity_missing: 'refresh',
   verification_token_invalid: 'refresh',
 
@@ -16,6 +18,7 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   invalid_attestation: 'inline',
   passkey_ceremony_cancelled: 'inline',
   credential_already_enrolled: 'inline',
+  email_claimed: 'inline',
 
   flow_expired: 'restart',
   invalid_flow: 'restart',
@@ -25,8 +28,12 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   rate_limited: 'cooldown',
 
   max_passkeys_reached: 'failure',
-  max_identifiers_reached: 'failure',
-  multi_primary_srp: 'failure',
+  // The profile has paired as many wallets as it can: only support can help.
+  max_identifiers_reached: 'support',
+  multi_primary_srp: 'support',
+  // Removal only, outside the flow: the settings page shows its own error.
+  cross_type_step_up_required: 'failure',
+  last_credential: 'failure',
   invalid_response: 'failure',
   invalid_request: 'failure',
   passkey_unsupported: 'failure',

@@ -47,7 +47,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'AssetsController:getAssets',
       'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
-      'TokenListController:getState',
       'TokensController:addToken',
       'TokensController:getState',
       'KeyringController:exportSeedPhrase',

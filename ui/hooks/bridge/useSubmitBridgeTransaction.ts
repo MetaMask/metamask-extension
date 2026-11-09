@@ -3,6 +3,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   isCrossChain,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import type {
   InputPrimaryDenomination,
@@ -154,6 +155,10 @@ export default function useSubmitBridgeTransaction(
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            // @ts-expect-error We're passing an enum that has more potential
+            // properties than `BridgeStatusController.submitIntent` knows what
+            // to do with.
+            // TODO: Remove these extra properties?
             location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
             activeAbTests,
@@ -177,6 +182,10 @@ export default function useSubmitBridgeTransaction(
             quoteResponse,
             smartTransactionsEnabled,
             quotesReceivedContext,
+            // @ts-expect-error We're passing an enum that has more potential
+            // properties than `BridgeStatusController.submitBridgeTx` knows
+            // what to do with.
+            // TODO: Remove these extra properties?
             location,
             toToken?.securityData?.type ?? null,
             activeAbTests,
@@ -262,7 +271,7 @@ export default function useSubmitBridgeTransaction(
     try {
       await submitQuote(quoteResponse, options);
     } catch (e) {
-      captureException(e);
+      captureException(e, { tags: { feature: SwapFeatureTag.SWAP } });
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         // Only user rejection should set wasTxDeclined; timeouts/disconnects must not.
         dispatch(setWasTxDeclined(true));

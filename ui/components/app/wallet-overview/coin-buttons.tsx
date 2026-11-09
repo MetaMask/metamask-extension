@@ -18,6 +18,7 @@ import {
 import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  SwapFeatureTag,
   type BridgeAsset,
 } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -534,7 +535,10 @@ const CoinButtons = ({
   }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
 
   const handleBatchSellOnClick = useCallback(() => {
-    trace({ name: TraceName.BatchSellModal });
+    trace({
+      name: TraceName.BatchSellModal,
+      tags: { feature: SwapFeatureTag.BATCH_SELL },
+    });
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBatchSellButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)

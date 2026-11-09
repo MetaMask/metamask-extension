@@ -37,11 +37,14 @@ import { getCustomerServiceToken } from '../../../../store/actions';
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;
   isOpen: boolean;
+  /** The support page to open, for example with context for support. */
+  supportLink?: string;
 };
 
 const VisitSupportDataConsentModal = ({
   isOpen,
   onClose,
+  supportLink = SUPPORT_LINK as string,
 }: VisitSupportDataConsentModalProps) => {
   const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
@@ -59,7 +62,7 @@ const VisitSupportDataConsentModal = ({
         shieldCustomerId,
       };
       const supportLinkWithUserId = buildSupportLinkWithUserData(
-        SUPPORT_LINK as string,
+        supportLink,
         params,
       );
 
@@ -75,6 +78,7 @@ const VisitSupportDataConsentModal = ({
       openWindow(supportLinkWithUserId);
     },
     [
+      supportLink,
       version,
       shieldCustomerId,
       trackEvent,
@@ -121,15 +125,16 @@ const VisitSupportDataConsentModal = ({
       createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          url: SUPPORT_LINK,
+          url: supportLink,
           [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
         })
         .build(),
     );
-    openWindow(SUPPORT_LINK as string);
+    openWindow(supportLink);
   }, [
     isLoading,
     onClose,
+    supportLink,
     trackEvent,
     createEventBuilder,
     segmentContext.page?.title,

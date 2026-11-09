@@ -483,8 +483,9 @@ function getBestToken({
 
   // Same as mobile / Pay-with picker: prefer a no-fee source (subsidized
   // route or same-token Monad mUSD) that meets the fiat minimum before
-  // falling through to the first funding token.
-  if (selectableTokens.length && !isPostQuoteWithdraw) {
+  // falling through to the first funding token. Hardware payers get no
+  // no-fee routes, so there is nothing to prefer.
+  if (selectableTokens.length && !isPostQuoteWithdraw && !isHardwareWallet) {
     const noFeeCandidates = selectableTokens
       .filter((token) => {
         if (!token.chainId || !token.address) {

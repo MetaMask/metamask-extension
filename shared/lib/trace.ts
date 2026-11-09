@@ -1,4 +1,5 @@
 import type * as Sentry from '@sentry/browser';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
@@ -6,6 +7,10 @@ import type {
   TraceRequest as ControllerTraceRequest,
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
+import type {
+  SwapTraceRequest,
+  SwapRelatedTraceName,
+} from '@metamask/bridge-controller';
 import { sentryLogger } from './sentry';
 
 /**
@@ -23,8 +28,14 @@ export enum TraceName {
   AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BackgroundPoll = 'Background Poll',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
+  BridgeTransactionApprovalCompleted = 'Bridge Transaction Approval Completed',
+  BridgeTransactionCompleted = 'Bridge Transaction Completed',
+  SwapOperationCompleted = 'Swap Operation Completed',
+  SwapTransactionApprovalCompleted = 'Swap Transaction Approval Completed',
+  SwapTransactionCompleted = 'Swap Transaction Completed',
   ConnectPage = 'Connect Page',
   CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
@@ -52,13 +63,15 @@ export enum TraceName {
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  // Initial document navigation to the first screen's useful content.
+  UsefulScreenReady = 'Useful Screen Ready',
   RevealSeed = 'Reveal Seed',
   ImportSrp = 'Import Srp',
   AddAccount = 'Add Account',
   LoadCollectibles = 'Load Collectibles',
   GetAssetHistoricalPrices = 'Get Asset Historical Prices',
   OnFinishedTransaction = 'On Finished Transaction',
-  AccountSyncFull = 'Account Sync Full',
+  AccountSyncFull = 'Multichain Account Syncing - Full',
   AccountSyncSaveIndividual = 'Account Sync Save Individual',
   ContactSyncFull = 'Contact Sync Full',
   ContactSyncDeleteRemote = 'Contact Sync Delete Remote',
@@ -81,6 +94,8 @@ export enum TraceName {
   OnboardingAddSrp = 'Onboarding - Add SRP',
   OnboardingFetchSrps = 'Onboarding - Fetch SRPs',
   OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
+  OnboardingOAuthProviderLaunch = 'Onboarding - OAuth Provider Launch',
+  OnboardingOAuthProviderInteraction = 'Onboarding - OAuth Provider Interaction',
   OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
   OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
   OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
@@ -163,6 +178,7 @@ export enum TraceOperation {
   AccountDiscover = 'account.discover',
   HomepagePerformance = 'homepage.performance',
   HomepageSectionPerformance = 'homepage.section.performance',
+  UiScreenPerformance = 'ui.screen.performance',
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
@@ -190,6 +206,7 @@ export const ONBOARDING_MACHINE_TIME_ATTRIBUTE = 'onboarding.machine.ms';
 const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
   TraceName.OnboardingSRPAccountCreationTime,
   TraceName.OnboardingSRPAccountImportTime,
+  TraceName.OnboardingOAuthProviderLaunch,
   TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
   TraceName.OnboardingOAuthSeedlessAuthenticate,
   TraceName.OnboardingFetchSrps,
@@ -269,28 +286,9 @@ export type TraceRequest = {
   parentContext?: TraceContext;
 
   /**
-   * Opt in to inheriting the ambient active span when no `parentContext` is
-   * supplied. Defaults to `false`: a request without a `parentContext` starts
-   * its own root span.
-   *
-   * Parenting used to fall back to the active span implicitly, which made two
-   * different call sites indistinguishable. A call site that wants a real root
-   * trace and a call site that simply never threaded its parent through both
-   * reach this function as "no `parentContext`", and the implicit fallback
-   * grafted each of them onto whatever span happened to be active. Naming the
-   * behaviour forces every dependent call site to declare which of the two it
-   * is, instead of the resulting topology depending on what the runtime was
-   * doing at the time.
-   *
-   * Set this only where the ambient span is known to be the correct parent, for
-   * example an operation reached from inside another traced callback that
-   * cannot thread its `parentContext` through the intervening API.
-   *
-   * When the fallback applies, the span is also marked `forceTransaction`, so it
-   * stays a transaction rather than becoming a plain child span. The two are
-   * coupled deliberately: demoting an operation to a child removes it from
-   * transaction-level dashboards and alerting, which needs per-operation review
-   * rather than a blanket change. Tracked in MetaMask-planning#7549.
+   * Inherit the active span, as a transaction, when no `parentContext` is given.
+   * Defaults to `false`, which starts a root. Set it only where the active span
+   * is known to be the correct parent.
    */
   allowActiveSpanFallback?: boolean;
 
@@ -310,10 +308,8 @@ export type TraceRequest = {
   op?: string;
 
   /**
-   * Force this trace to start a new root, ignoring any currently active span.
-   * Use for independent background operations (e.g. per-operation background
-   * RPC roots) that must not nest under a concurrently in-flight operation's
-   * span. Has no effect when an explicit `parentContext` is provided.
+   * Start the span as the root of a new trace, ignoring the active span. A
+   * `parentContext` that resolves still takes precedence.
    */
   root?: boolean;
 };
@@ -337,6 +333,11 @@ export type EndTraceRequest = {
    * Override the end time of the trace.
    */
   timestamp?: number;
+
+  /**
+   * Final status to record on the span.
+   */
+  status?: 'ok' | 'error';
 
   /**
    * Custom data to associate with the trace when ending it.
@@ -378,12 +379,26 @@ export function annotateTrace(
   }
 }
 
-export function trace<ResultType>(
-  request: TraceRequest,
+type GenericTraceName = TraceRequest['name'];
+
+/**
+ * Overloads the {@link TraceRequest} type for swap-related trace names.
+ * The {@link SwapTraceRequest} type defines required properties for swap-related traces
+ */
+type TraceRequestFor<TName extends GenericTraceName> = [TName] extends [
+  SwapRelatedTraceName<TraceName>,
+]
+  ? Omit<SwapTraceRequest<TName>, 'op'> & { op?: TraceOperation }
+  : Omit<TraceRequest, 'name'> & { name: TName };
+
+export function trace<ResultType, TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
   fn: TraceCallback<ResultType>,
 ): ResultType;
 
-export function trace(request: TraceRequest): TraceContext;
+export function trace<TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
+): TraceContext;
 
 /**
  * Create a Sentry transaction to analyse the duration of a code flow.
@@ -472,6 +487,30 @@ function finalizeOnboardingMachineTime(span?: Span | null): void {
 }
 
 /**
+ * Run one background polling cycle as its own `Background Poll` root trace.
+ *
+ * @param controllerName - The polling controller, recorded as the `controller` tag.
+ * @param fn - The polling cycle to trace.
+ * @returns The result of the polling cycle.
+ */
+export function traceBackgroundPoll<ResultType>(
+  controllerName: string,
+  fn: () => ResultType,
+): ResultType {
+  return trace(
+    {
+      name: TraceName.BackgroundPoll,
+      op: 'background.poll',
+      tags: {
+        controller: controllerName,
+      },
+      root: true,
+    },
+    fn,
+  );
+}
+
+/**
  * Adapter that wraps the extension's synchronous {@link trace} function into the
  * async {@link ControllerTraceCallback} signature expected by `@metamask/assets-controller`.
  * @param req - The trace request.
@@ -510,6 +549,12 @@ export function endTrace(request: EndTraceRequest): void {
     for (const [attrKey, attrValue] of Object.entries(request.data)) {
       span.setAttribute(attrKey, attrValue);
     }
+  }
+
+  if (request.status && pendingTrace.span) {
+    pendingTrace.span.setStatus({
+      code: request.status === 'ok' ? SPAN_STATUS_OK : SPAN_STATUS_ERROR,
+    });
   }
 
   const endTime = timestamp ?? getPerformanceTimestamp();
@@ -678,7 +723,7 @@ function startTrace(request: TraceRequest): TraceContext {
     return span;
   };
 
-  return startSpan(request, (spanOptions) =>
+  return startSpan({ ...request, startTime }, (spanOptions) =>
     sentryStartSpanManual(spanOptions, callback),
   );
 }
@@ -706,7 +751,7 @@ function isValidSentrySpan(value: unknown): value is Sentry.Span {
  * @returns Resolved Sentry Span or null.
  */
 function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
-  if (!parentContext) {
+  if (parentContext === null || parentContext === undefined) {
     return null;
   }
 
@@ -729,6 +774,20 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   }
 
   return null;
+}
+
+/**
+ * Whether a parent context names a trace this process expects in `tracesByKey`.
+ *
+ * @param value - Candidate parent context.
+ * @returns True when the context names an in-process parent.
+ */
+function hasInProcessIdentity(value: unknown): value is { _name: string } {
+  return (
+    isObject(value) &&
+    hasProperty(value, '_name') &&
+    typeof value._name === 'string'
+  );
 }
 
 function hasDistributedTraceIds(
@@ -760,26 +819,15 @@ function startSpan<T>(
   } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
-  // Parenting is explicit by default: without a `parentContext`, a trace starts
-  // its own root span rather than grafting onto whatever span happens to be
-  // active. Call sites that want the ambient span (e.g. an operation reached
-  // from inside another traced callback that cannot thread its parent through
-  // the intervening API) opt in via `allowActiveSpanFallback`, so "wants a root"
-  // and "forgot to pass a parent" are distinguishable at the call site.
-  //
-  // Must capture before withIsolationScope severs the active span context chain.
-  //
-  // `forceTransaction` stays coupled to the fallback deliberately: promoting the
-  // inherited child back to a transaction preserves transaction-level visibility
-  // for monitoring. Decoupling the two would demote these operations out of
-  // transaction-level dashboards and alerting, which needs per-operation review
-  // first (see MetaMask-planning#7549) and is therefore not done here.
-  //
-  // `root: true` overrides `allowActiveSpanFallback`, and also runs the span
-  // under `startNewTrace` (below): a span with no parent still takes the scope's
-  // trace id, so only a fresh propagation context moves it off the ambient trace.
+  // `undefined` means no parent was declared; `null` means one was intended but
+  // has no span. `resolveParentSpan` returns `null` for both, so read the input.
+  const parentDeclared = parentContext !== undefined;
+
+  // Only an undeclared parent inherits the active span, and only under
+  // `allowActiveSpanFallback`; `forceTransaction` keeps it in transaction-level
+  // dashboards. `root` overrides this. Read before `withScope` forks the scope.
   let forceTransaction: boolean | undefined;
-  if (!root && !parentSpan && !parentContext && allowActiveSpanFallback) {
+  if (!root && !parentSpan && !parentDeclared && allowActiveSpanFallback) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -800,31 +848,44 @@ function startSpan<T>(
 
   // Cross-process propagation via continueTrace when we have serialized
   // trace/span IDs but couldn't resolve a local parent span from the map.
-  if (!parentSpan && hasDistributedTraceIds(parentContext)) {
+  // Only a context WITHOUT in-process identity is a genuine cross-process
+  // continuation. One that names a local trace was meant to resolve from the
+  // map; routing a lookup miss here mints a segment, and a segment is billed.
+  if (
+    !parentSpan &&
+    hasDistributedTraceIds(parentContext) &&
+    !hasInProcessIdentity(parentContext)
+  ) {
     const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
     return sentryContinueTrace(sentryTrace, () =>
-      sentryWithIsolationScope((scope: Sentry.Scope) => {
+      sentryWithScope((scope: Sentry.Scope) => {
         initScope(scope, request);
         return callback({ ...spanOptions, parentSpan: undefined });
       }),
     );
   }
 
-  const runInIsolationScope = () =>
-    sentryWithIsolationScope((scope: Sentry.Scope) => {
+  // A declared parent that did not resolve nests under the active span, without
+  // `forceTransaction`: a failed lookup is not a request for a root.
+  if (!parentSpan && parentDeclared) {
+    const activeSpan = sentryGetActiveSpan();
+    if (activeSpan) {
+      return sentryWithScope((scope: Sentry.Scope) => {
+        initScope(scope, request);
+        return callback({ ...spanOptions, parentSpan: activeSpan });
+      });
+    }
+  }
+
+  const runInScope = () =>
+    sentryWithScope((scope: Sentry.Scope) => {
       initScope(scope, request);
       return callback(spanOptions);
     });
 
-  // `root: true` severs the active-span parent (above), but `withIsolationScope`
-  // alone only clones the propagation context, so the span keeps the ambient
-  // trace id (e.g. the long-lived SW `/service-worker.js` pageload) and still
-  // accumulates into the mega-trace, which is grouped by trace id — not by
-  // parent span. `startNewTrace` resets the propagation context to a fresh trace
-  // id, so the op peels off at the trace level, not merely the span level.
-  return root
-    ? sentryStartNewTrace(runInIsolationScope)
-    : runInIsolationScope();
+  // `withScope` alone keeps the ambient trace id; `startNewTrace` issues a new
+  // one, which is what moves a `root` span off the ambient trace.
+  return root ? sentryStartNewTrace(runInScope) : runInScope();
 }
 
 function logTrace(
@@ -979,6 +1040,29 @@ function sentryStartNewTrace<T>(callback: () => T): T {
     return callback();
   }
 
+  return actual(callback);
+}
+
+/**
+ * Run the callback in a forked current scope, so tags set on it reach this
+ * trace's own events only. The browser SDK's `withIsolationScope` hands the
+ * callback the existing isolation scope rather than a fork, so a tag set there
+ * stays on every later event in the process.
+ *
+ * @param callback - Receives the forked scope.
+ * @returns The callback's return value.
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryWithScope<T>(callback: (scope: Sentry.Scope) => T): T {
+  const actual = globalThis.sentry?.withScope;
+
+  if (!actual) {
+    const scope = {
+      // eslint-disable-next-line no-empty-function
+      setTag: () => {},
+    } as unknown as Sentry.Scope;
+    return callback(scope);
+  }
   return actual(callback);
 }
 

@@ -41,6 +41,9 @@ INFURA_STORYBOOK_PROJECT_ID=
 ; Override the Bridge API base URL (e.g. to point at a local server or a
 ; one-off environment). Takes precedence over the environment-based mapping.
 ;BRIDGE_USE_CUSTOM_BASE_URL=
+; Override the Rewards Money API base URL. Takes precedence over the
+; environment mapping in getRewardsMoneyApiBaseUrl.
+;REWARDS_MONEY_API_URL=
 ;ANALYTICS_DATA_DELETION_SOURCE_ID=
 ;ANALYTICS_DATA_DELETION_ENDPOINT=
 ;SWAPS_USE_DEV_APIS=
@@ -125,6 +128,17 @@ TEST_SRP_2=
 ; (device discovery, error handling, account selection).
 ; Entry points to connecting remain unchanged regardless of this flag.
 NEW_HARDWARE_WALLET_ONBOARDING='false'
+
+; Set this to `true` to register the MPC money keyring builder with the
+; KeyringController (compile-time gate, see builds.yml). Fenced while the
+; feature is unreleased.
+MM_MONEY_MPC_KEYRING_ENABLED='false'
+
+; Optional: static hex address (all-lowercase or EIP-55 checksummed;
+; normalized to lowercase) served by the MPC money keyring stub through
+; `getAccounts`, so the keyring wiring can be verified without the MPC stack.
+; Unset by default: the stub serves no accounts.
+;MM_MONEY_MPC_ADDRESS='0x0000000000000000000000000000000000000000'
 
 ; Set this to `true` to force enforced simulations to apply whenever a
 ; transaction has balance changes, bypassing the trust signal check.

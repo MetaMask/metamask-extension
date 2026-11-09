@@ -3,6 +3,7 @@ import { MONEY_LANDING_URL, MUSD_PRICE_URL } from './urls';
 
 export enum MoneyScreenName {
   WalletHome = 'wallet_home',
+  AssetDetail = 'asset_detail',
   MoneyHome = 'money_home',
   MoneyDeposit = 'money_deposit',
   MoneyTransfer = 'money_transfer',
@@ -49,6 +50,8 @@ export enum MoneyComponentName {
   ActionButtonRow = 'money_action_button_row',
   More = 'money_more',
   TokenListItemCta = 'money_token_list_item_cta',
+  EarnBanner = 'money_earn_banner',
+  AssetOverviewBalanceCta = 'money_asset_overview_balance_cta',
 }
 
 export enum MoneyButtonIntent {
@@ -59,6 +62,7 @@ export enum MoneyButtonIntent {
   OpenMoreMenu = 'open_more_menu',
   ViewAll = 'view_all',
   Filter = 'filter',
+  Dismiss = 'dismiss',
 }
 
 export enum MoneyButtonType {
