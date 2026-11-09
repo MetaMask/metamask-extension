@@ -1,5 +1,4 @@
 import React from 'react';
-import { it } from '@jest/globals';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
@@ -130,164 +129,23 @@ const selectSolanaAccount = (state: ReturnType<typeof createMockState>) => {
   state.metamask.completedOnboarding = true;
 };
 
-describe('NFTs options', () => {
+describe('AssetListControlBar', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
-    const detectNftsSpy = jest.spyOn(actions, 'detectNfts');
-    const checkAndUpdateAllNftsOwnershipStatusSpy = jest.spyOn(
-      actions,
-      'checkAndUpdateAllNftsOwnershipStatus',
-    );
-
+  it('renders actionMenu when provided', async () => {
     const state = createMockState();
     const store = configureMockStore([thunk])(state);
+    const mockMenu = <div data-testid="mock-action-menu">Mock Menu</div>;
 
-    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
-
-    const sortButton = await findByTestId('sort-by-popover-toggle');
-    let tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
-    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'false');
-
-    fireEvent.click(sortButton);
-
-    tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
-    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'true');
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    const refreshButton = await findByTestId('refresh-list-button__button');
-
-    expect(detectNftsSpy).not.toHaveBeenCalled();
-    expect(checkAndUpdateAllNftsOwnershipStatusSpy).not.toHaveBeenCalled();
-    expect(refreshButton).toBeInTheDocument();
-
-    fireEvent.click(refreshButton);
-
-    expect(detectNftsSpy).toHaveBeenCalled();
-    expect(checkAndUpdateAllNftsOwnershipStatusSpy).toHaveBeenCalled();
-  });
-
-  it('should render a link "Refresh list" when some NFTs are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', async () => {
-    const detectNftsSpy = jest.spyOn(actions, 'detectNfts');
-    const checkAndUpdateAllNftsOwnershipStatusSpy = jest.spyOn(
-      actions,
-      'checkAndUpdateAllNftsOwnershipStatus',
-    );
-
-    const state = createMockState();
-    state.metamask.networkConfigurationsByChainId = {
-      '0xe708': {
-        chainId: '0xe708',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'selectedNetworkClientId',
-          },
-        ],
-      } as unknown as NetworkConfiguration,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    const refreshButton = await findByTestId('refresh-list-button__button');
-
-    expect(detectNftsSpy).not.toHaveBeenCalled();
-    expect(checkAndUpdateAllNftsOwnershipStatusSpy).not.toHaveBeenCalled();
-    expect(refreshButton).toBeInTheDocument();
-
-    fireEvent.click(refreshButton);
-
-    expect(detectNftsSpy).toHaveBeenCalled();
-    expect(checkAndUpdateAllNftsOwnershipStatusSpy).toHaveBeenCalled();
-  });
-
-  it('should render a link "Enable autodetect" when some NFTs are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', async () => {
-    const detectNftsSpy = jest.spyOn(actions, 'detectNfts');
-    const checkAndUpdateAllNftsOwnershipStatusSpy = jest.spyOn(
-      actions,
-      'checkAndUpdateAllNftsOwnershipStatus',
-    );
-
-    const state = createMockState();
-    // Override for disabled NFT detection and non-mainnet
-    state.metamask.useNftDetection = false;
-    state.metamask.networkConfigurationsByChainId = {
-      '0xe708': {
-        chainId: '0xe708',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'selectedNetworkClientId',
-          },
-        ],
-      } as unknown as NetworkConfiguration,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    const autodetectButton = await findByTestId(
-      'enable-autodetect-button__button',
-    );
-
-    expect(detectNftsSpy).not.toHaveBeenCalled();
-    expect(checkAndUpdateAllNftsOwnershipStatusSpy).not.toHaveBeenCalled();
-    expect(autodetectButton).toBeInTheDocument();
-
-    fireEvent.click(autodetectButton);
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${ASSETS_ROUTE}#autodetect-tokens`,
-    );
-  });
-
-  it('shows Manage tokens instead of Import tokens when the token management feature flag is enabled', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxTokenManagementFilter: true,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
+    const { findByTestId } = renderWithProvider(
+      <AssetListControlBar actionMenu={mockMenu} />,
       store,
     );
 
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    const manageTokensButton = await findByTestId('manageTokens__button');
-
-    expect(manageTokensButton).toHaveTextContent(messages.manageTokens.message);
-    expect(queryByTestId('importTokens__button')).not.toBeInTheDocument();
-
-    fireEvent.click(manageTokensButton);
-
-    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
-      state: {
-        globalMenuTransition: 'forward',
-      },
-    });
+    const actionMenu = await findByTestId('mock-action-menu');
+    expect(actionMenu).toBeInTheDocument();
   });
 
   it('navigates to the dedicated networks page from manage networks in the home modal', async () => {
@@ -565,185 +423,26 @@ describe('NFTs options', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
   });
 
-  it('shows Refresh list for non-EVM accounts on the tokens tab', async () => {
+  it('renders actionMenu when provided', async () => {
     const state = createMockState();
-    selectSolanaAccount(state);
     const store = configureMockStore([thunk])(state);
+    const mockMenu = <div data-testid="mock-action-menu">Mock Menu</div>;
 
     const { findByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
+      <AssetListControlBar actionMenu={mockMenu} />,
       store,
     );
 
-    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-
-    const refreshListButton = await findByTestId('refreshList__button');
-    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
-    expect(await findByTestId('manageTokens__button')).toBeInTheDocument();
+    const actionMenu = await findByTestId('mock-action-menu');
+    expect(actionMenu).toBeInTheDocument();
   });
 
-  it('refreshes via AssetsController', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const refreshAssetsSpy = jest.spyOn(
-      actions,
-      'refreshAssetsForSelectedAccount',
-    );
-
-    const state = createMockState();
-    state.metamask.enabledNetworkMap = {
-      eip155: {
-        '0x1': true,
-      },
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refreshList__button'));
-
-    expect(refreshAssetsSpy).toHaveBeenCalledWith(
-      [
-        expect.objectContaining({ id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3' }),
-        expect.objectContaining({ id: '07c2cfec-36c9-46c4-8115-3836d3ac9047' }),
-      ],
-      {
-        chainIds: ['eip155:1'],
-        assetTypes: ['token', 'price', 'metadata'],
-      },
-    );
-  });
-
-  it('does not refresh assets when the selected account group has no accounts', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const refreshAssetsSpy = jest.spyOn(
-      actions,
-      'refreshAssetsForSelectedAccount',
-    );
-    const state = createMockState();
-    state.metamask.accountTree.wallets[
-      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-    ].groups[DEFAULT_ACCOUNT_GROUP_ID].accounts = [];
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refreshList__button'));
-
-    expect(refreshAssetsSpy).not.toHaveBeenCalled();
-    expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
-  });
-
-  it.each([
-    {
-      networkFilter: 'all default networks',
-      enabledNetworkMap: {
-        eip155: { '0x1': true },
-        solana: { [SOLANA_CHAIN_ID]: true },
-      },
-      chainIds: ['eip155:1', SOLANA_CHAIN_ID],
-    },
-    {
-      networkFilter: 'a single non-EVM network',
-      enabledNetworkMap: { solana: { [SOLANA_CHAIN_ID]: true } },
-      chainIds: [SOLANA_CHAIN_ID],
-    },
-  ])(
-    'refreshes accounts in the selected group with $networkFilter selected',
-    async ({ enabledNetworkMap, chainIds }) => {
-      setBackgroundConnection(backgroundConnectionMock as never);
-      const refreshAssetsSpy = jest.spyOn(
-        actions,
-        'refreshAssetsForSelectedAccount',
-      );
-      const state = createMockState();
-      addSolanaAccountToSelectedGroup(state);
-      state.metamask.enabledNetworkMap = enabledNetworkMap;
-      const groupAccountIds =
-        state.metamask.accountTree.wallets['entropy:01JKAF3DSGM3AB87EM9N0K41AJ']
-          .groups[DEFAULT_ACCOUNT_GROUP_ID].accounts;
-      const store = configureMockStore([thunk])(state);
-
-      const { findByTestId } = renderWithProvider(
-        <AssetListControlBar showTokensLinks />,
-        store,
-      );
-
-      fireEvent.click(
-        await findByTestId('asset-list-control-bar-action-button'),
-      );
-      fireEvent.click(await findByTestId('refreshList__button'));
-
-      expect(refreshAssetsSpy).toHaveBeenCalledWith(
-        groupAccountIds.map((id) => expect.objectContaining({ id })),
-        {
-          chainIds,
-          assetTypes: ['token', 'price', 'metadata'],
-        },
-      );
-    },
-  );
-
-  it('keeps the original NFT overflow menu for non-EVM accounts', async () => {
-    const state = createMockState();
-    selectSolanaAccount(state);
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar />,
-      store,
-    );
-
-    fireEvent.click(await findByTestId('importTokens-button'));
-
-    expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
-    expect(queryByTestId('import-nfts')).not.toBeInTheDocument();
-    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
-      state: {
-        globalMenuTransition: 'forward',
-      },
-    });
-  });
-
-  it('shows a refresh-only menu when onRefresh is provided and import token button is hidden', async () => {
-    const onRefresh = jest.fn();
-    const state = createMockState();
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar
-        showImportTokenButton={false}
-        onRefresh={onRefresh}
-      />,
-      store,
-    );
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    const refreshListButton = await findByTestId('refreshList__button');
-    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
-    expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
-
-    fireEvent.click(refreshListButton);
-    expect(onRefresh).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not show the more-options menu when import token button is hidden and onRefresh is omitted', async () => {
+  it('does not render actionMenu when not provided', () => {
     const state = createMockState();
     const store = configureMockStore([thunk])(state);
 
     const { queryByTestId } = renderWithProvider(
-      <AssetListControlBar showImportTokenButton={false} />,
+      <AssetListControlBar />,
       store,
     );
 
