@@ -166,7 +166,7 @@ export default function TokenCell({
               size="sm"
               hideText
               retryContextLabel={token.symbol}
-              data-testid="token-cell-balance-unavailable-retry"
+              data-testid="token-cell-balance-unavailable-footer"
             />
           ) : (
             <TokenCellPrimaryDisplay
