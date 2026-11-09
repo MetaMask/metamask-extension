@@ -16,8 +16,10 @@ import {
 import {
   getMultichainNativeTokenBalance,
   selectIsAssetsLoadingForSelectedAccountGroup,
+  selectUnavailableBalancesForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
+import { BalanceUnavailable } from '../balance-unavailable';
 
 import {
   getEnabledNetworksByNamespace,
@@ -64,6 +66,9 @@ export const AccountGroupBalance = ({
   );
   const isAssetsLoading = useSelector(
     selectIsAssetsLoadingForSelectedAccountGroup,
+  );
+  const unavailableBalances = useSelector(
+    selectUnavailableBalancesForSelectedAccountGroup,
   );
 
   const caipChainId = useMemo(
@@ -170,6 +175,39 @@ export const AccountGroupBalance = ({
 
   const totalIsUnresolved = isZeroAmount(total) || currency === undefined;
 
+  // Snap (non-EVM) balances that could not be fetched: never show a stale or
+  // placeholder 0 as if it were confirmed.
+  const unavailableAccountIds = unavailableBalances?.accountIds ?? [];
+  const hasUnavailableBalances = unavailableAccountIds.length > 0;
+  const isViewedChainUnavailable =
+    hasUnavailableBalances &&
+    (unavailableBalances?.chainIds ?? []).includes(caipChainId);
+  // Replace the total when the viewed (non-EVM) network is the one failing, or
+  // when nothing else contributes to it; otherwise flag it as partial.
+  const replaceTotalWithUnavailable =
+    hasUnavailableBalances &&
+    (isViewedChainUnavailable || (!isEvm && totalIsUnresolved));
+
+  if (replaceTotalWithUnavailable) {
+    return (
+      <Box
+        className={classnames(
+          'flex',
+          `${classPrefix}-overview__primary-balance`,
+        )}
+        data-testid={`${classPrefix}-overview__primary-currency`}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        flexWrap={BoxFlexWrap.Wrap}
+      >
+        <BalanceUnavailable
+          accountIds={unavailableAccountIds}
+          data-testid="account-group-balance-unavailable"
+        />
+      </Box>
+    );
+  }
+
   return (
     <Skeleton
       hideChildren={
@@ -204,6 +242,13 @@ export const AccountGroupBalance = ({
           {/* We should always show something but the check is just to appease TypeScript */}
           {formattedTotal}
         </SensitiveText>
+        {hasUnavailableBalances && (
+          <BalanceUnavailable
+            accountIds={unavailableAccountIds}
+            size="sm"
+            data-testid="account-group-balance-partially-unavailable"
+          />
+        )}
       </Box>
     </Skeleton>
   );

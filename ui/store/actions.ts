@@ -7849,6 +7849,18 @@ export async function decodeTransactionData({
   );
 }
 
+/**
+ * Retry fetching balances for snap (non-EVM) accounts whose last balance
+ * fetch failed ("Balance unavailable").
+ *
+ * @param accountIds - The accounts to retry.
+ */
+export async function retrySnapBalances(accountIds: string[]): Promise<void> {
+  return await submitRequestToBackground<void>('retrySnapBalances', [
+    accountIds,
+  ]);
+}
+
 export async function multichainUpdateTransactions(
   accountId: string,
 ): Promise<void> {

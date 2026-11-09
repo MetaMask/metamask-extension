@@ -63,6 +63,7 @@ import {
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectBalanceBySelectedAccountGroup,
   selectIsAssetsLoadingForSelectedAccountGroup,
+  selectUnavailableBalancesForSelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -251,6 +252,12 @@ export const CoinOverview = ({
     selectIsAssetsLoadingForSelectedAccountGroup,
   );
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
+  // Non-EVM balances that failed to load: the group is not known to be empty.
+  const unavailableBalances = useSelector(
+    selectUnavailableBalancesForSelectedAccountGroup,
+  );
+  const hasUnavailableBalances =
+    (unavailableBalances?.accountIds?.length ?? 0) > 0;
   const isTestnet = useSelector(getMultichainIsTestnet);
   const isEvm = isEvmChainId(chainId);
 
@@ -351,8 +358,15 @@ export const CoinOverview = ({
       isEvm &&
       shouldCheckBalanceState &&
       !hasBalance &&
+      !hasUnavailableBalances &&
       !shouldShowBalanceLoadingState,
-    [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
+    [
+      isEvm,
+      shouldCheckBalanceState,
+      hasBalance,
+      hasUnavailableBalances,
+      shouldShowBalanceLoadingState,
+    ],
   );
   const balanceReady = !shouldShowBalanceLoadingState;
 

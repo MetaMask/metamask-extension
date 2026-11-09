@@ -1,5 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useMusdCtaVisibility } from '../../../../hooks/musd';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -11,6 +12,8 @@ import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
+import { selectUnavailableBalancesForSelectedAccountGroup } from '../../../../selectors/assets';
+import { BalanceUnavailable } from '../balance-unavailable';
 
 import {
   TokenCellPercentChange,
@@ -51,6 +54,15 @@ export default function TokenCell({
 }: TokenCellProps) {
   const isEvm = isEvmChainId(token.chainId);
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const unavailableBalances = useSelector(
+    selectUnavailableBalancesForSelectedAccountGroup,
+  );
+  // The snap could not fetch this (non-EVM) chain's balance for the selected
+  // account group: the amount is stale or a placeholder 0, so do not show it.
+  const isBalanceUnavailable =
+    !isEvm &&
+    Boolean(token.chainId) &&
+    (unavailableBalances?.chainIds ?? []).includes(token.chainId as string);
 
   const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
 
@@ -131,18 +143,37 @@ export default function TokenCell({
         }
         headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={
-          <TokenCellSecondaryDisplay
-            token={displayToken}
-            handleScamWarningModal={handleScamWarningModal}
-            privacyMode={privacyMode}
-          />
+          isBalanceUnavailable ? (
+            <BalanceUnavailable
+              accountIds={unavailableBalances?.accountIds ?? []}
+              size="sm"
+              hideRetry
+              data-testid="token-cell-balance-unavailable"
+            />
+          ) : (
+            <TokenCellSecondaryDisplay
+              token={displayToken}
+              handleScamWarningModal={handleScamWarningModal}
+              privacyMode={privacyMode}
+            />
+          )
         }
         footerLeftDisplay={renderFooterLeft()}
         footerRightDisplay={
-          <TokenCellPrimaryDisplay
-            token={displayToken}
-            privacyMode={privacyMode}
-          />
+          isBalanceUnavailable ? (
+            <BalanceUnavailable
+              accountIds={unavailableBalances?.accountIds ?? []}
+              size="sm"
+              hideText
+              retryContextLabel={token.symbol}
+              data-testid="token-cell-balance-unavailable-retry"
+            />
+          ) : (
+            <TokenCellPrimaryDisplay
+              token={displayToken}
+              privacyMode={privacyMode}
+            />
+          )
         }
       />
       {isEvm && showScamWarningModal && (
