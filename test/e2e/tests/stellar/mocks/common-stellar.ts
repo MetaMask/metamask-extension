@@ -305,23 +305,43 @@ export async function mockHorizonAccounts(
     });
 }
 
+export type StellarAccountTransactionFixture = {
+  address: string;
+  // Horizon transaction records; kept loose so fixtures can omit unused fields.
+  records: object[];
+};
+
+const HORIZON_ACCOUNT_TRANSACTIONS_RE =
+  /(?:^https:\/\/(?:horizon\.stellar\.org|stellar-(?:mainnet|testnet)\.infura\.io\/v3\/[^/?#]+\/horizon)|(?:^|\/)horizon)\/accounts\/([A-Z0-9]{56})\/transactions\/?(?:[?#].*)?$/iu;
+
 /**
- * Mocks Horizon account transactions list (empty page) so sync does not fall
- * through to the empty FALLBACK 200.
+ * Mocks Horizon account transactions list. Defaults to an empty page so sync
+ * does not fall through to the empty FALLBACK 200.
  *
  * @param mockServer - Mockttp server.
+ * @param fixtures - Optional per-account Horizon transaction pages.
  */
 export async function mockHorizonAccountTransactions(
   mockServer: Mockttp,
+  fixtures: StellarAccountTransactionFixture[] = [],
 ): Promise<MockedEndpoint> {
+  const byAddress = new Map(
+    fixtures.map((fixture) => [fixture.address, fixture.records]),
+  );
+
   return mockServer
-    .forGet(
-      /\/horizon\/accounts\/[A-Z0-9]{56}\/transactions(?:[?#].*)?$/iu,
-    )
+    .forGet(HORIZON_ACCOUNT_TRANSACTIONS_RE)
     .always()
-    .thenJson(200, {
-      _embedded: { records: [] },
-      _links: {},
+    .thenCallback((req) => {
+      const address = req.url.match(HORIZON_ACCOUNT_TRANSACTIONS_RE)?.[1] ?? '';
+      const records = byAddress.get(address) ?? [];
+      return {
+        statusCode: 200,
+        json: {
+          _embedded: { records },
+          _links: { self: { href: req.url } },
+        },
+      };
     });
 }
 
@@ -464,22 +484,26 @@ export async function mockStellarFiatExchangeRates(
     });
 }
 
-export type MockStellarApisOptions = StellarHorizonBalanceOptions;
+export type MockStellarApisOptions = StellarHorizonBalanceOptions & {
+  /** Per-account Horizon `/transactions` pages (default: empty). */
+  transactions?: StellarAccountTransactionFixture[];
+};
 
 /**
  * Full Stellar E2E mock bundle (flags + Horizon + tokens + prices).
  *
  * @param mockServer - Mockttp server.
- * @param options - Horizon balance options.
+ * @param options - Horizon balance / transaction options.
  */
 export async function mockStellarApis(
   mockServer: Mockttp,
   options: MockStellarApisOptions = {},
 ): Promise<MockedEndpoint[]> {
+  const { transactions, ...horizonAccountOptions } = options;
   return [
     await mockStellarFeatureFlags(mockServer),
-    await mockHorizonAccounts(mockServer, options),
-    await mockHorizonAccountTransactions(mockServer),
+    await mockHorizonAccounts(mockServer, horizonAccountOptions),
+    await mockHorizonAccountTransactions(mockServer, transactions),
     await mockStellarTokensV2SupportedNetworks(mockServer),
     await mockStellarTokensV3Assets(mockServer),
     await mockStellarSpotPrices(mockServer),
