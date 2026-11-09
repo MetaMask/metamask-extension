@@ -1,6 +1,8 @@
 import React, { type CSSProperties, useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
+import { getIsAdvancedChartsThemingEnabled } from '../../../../selectors/multichain/feature-flags';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { computePercentChange } from '../../../../components/app/assets/util/percentChange';
 import AdvancedChartIframe from './advanced-chart-iframe';
@@ -188,6 +190,23 @@ export const AdvancedChartSection = ({
     currency,
   };
 
+  // Colour the line by the range's overall direction rather than the hovered
+  // point, so the colour stays stable as the pointer moves across the chart.
+  // Reuses the existing success/error tokens — the same green as before and
+  // the same red the percent-change header already uses — and falls back to
+  // green when the direction is unknown (loading, flat, or missing data).
+  const isThemingEnabled = useSelector(getIsAdvancedChartsThemingEnabled);
+  const lineRangeChange = computePercentChange(
+    realtimePrice ?? currentPrice,
+    historical.isPlaceholderData ? undefined : historical.data.prices?.[0]?.y,
+  );
+  const lineColorVar =
+    isThemingEnabled &&
+    typeof lineRangeChange === 'number' &&
+    lineRangeChange < 0
+      ? '--color-error-default'
+      : '--color-success-default';
+
   const candleHeader = {
     price: ohlcvPrice,
     percentChange: ohlcvPercentChange,
@@ -281,6 +300,7 @@ export const AdvancedChartSection = ({
             realtimePrice={realtimePrice}
             realtimeTimestamp={realtimeTimestamp}
             onHoverPrice={setHovered}
+            lineColorVar={lineColorVar}
           />
         </Box>
 
