@@ -164,7 +164,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         await bridgePage.submitQuote();
         await bridgePage.approveModalIfPresent();
-        await driver.clickElementSafe({ text: 'View activity' });
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
@@ -206,6 +206,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         const bridgePage = await enterBridgeQuote(driver);
         await bridgePage.submitQuoteAndDismiss();
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
@@ -247,6 +248,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         const bridgePage = await enterBridgeQuote(driver);
         await bridgePage.submitQuoteAndDismiss();
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);

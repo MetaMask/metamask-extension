@@ -30,7 +30,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
  * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
- * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
+ * `flows/multi-srp.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx
  */

@@ -129,6 +129,7 @@ describe('useDiscoverCryptoSearch', () => {
       expect.objectContaining({
         includeMarketData: true,
         includeTokenSecurityData: true,
+        serviceProfile: 'assets--trending-search',
       }),
     );
     expect(result.current.data[0].priceChangePct?.h24).toBe('1.2');
@@ -229,7 +230,10 @@ describe('useDiscoverCryptoSearch', () => {
     expect(mockSearchTokens).toHaveBeenLastCalledWith(
       expect.any(Array),
       'eth',
-      expect.objectContaining({ after: 'next-page' }),
+      expect.objectContaining({
+        after: 'next-page',
+        serviceProfile: 'assets--trending-search',
+      }),
     );
     expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
       'GEM',

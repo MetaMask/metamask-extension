@@ -4,6 +4,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import * as ManifestFlags from '../../../../shared/lib/manifestFlags';
 import {
   registerMoneyBatchTransaction,
   resetMoneyBatchRegistry,
@@ -101,6 +102,16 @@ describe('useTransactionEventToasts', () => {
       accountsControllerEvent,
       expect.any(Function),
     );
+  });
+
+  it('does not subscribe when the disableTransactionToasts manifest flag is set', () => {
+    jest
+      .spyOn(ManifestFlags, 'getManifestFlags')
+      .mockReturnValueOnce({ testing: { disableTransactionToasts: true } });
+
+    renderHook(() => useTransactionEventToasts());
+
+    expect(mockSubscribe).not.toHaveBeenCalled();
   });
 
   it('unsubscribes on unmount', () => {

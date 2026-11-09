@@ -64,7 +64,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
                 style="margin-left: 0px;"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
                 >
                   <img
                     alt="Polygon"
@@ -78,7 +78,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
                 style="margin-left: -8px;"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
                 >
                   <img
                     alt="Ethereum Mainnet"

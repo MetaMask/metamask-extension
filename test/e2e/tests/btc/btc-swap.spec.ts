@@ -280,6 +280,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
         await bridgePage.submitQuote();
 
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(2);
@@ -331,6 +332,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
         await bridgePage.submitQuote();
 
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(2);
