@@ -11930,9 +11930,6 @@
     "message": "यहाँ",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " शामिल किया गया"
-  },
   "swapGasFeesSplit": {
     "message": "पिछली स्क्रीन पर नेटवर्क फ़ीस इन दो ट्रांसेक्शन के बीच विभाजित हैं।"
   },

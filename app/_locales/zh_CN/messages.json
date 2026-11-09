@@ -11936,9 +11936,6 @@
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " 已包含"
-  },
   "swapGasFeesSplit": {
     "message": "上一页显示的网络费用包含这两笔交易产生的费用。"
   },

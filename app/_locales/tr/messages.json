@@ -11944,9 +11944,6 @@
     "message": "Buradan",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Dahil"
-  },
   "swapGasFeesSplit": {
     "message": "Önceki ekrandaki ağ ücretleri bu iki işlem arasında bölünmüştür."
   },

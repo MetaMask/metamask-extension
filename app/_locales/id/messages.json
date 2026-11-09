@@ -11938,9 +11938,6 @@
     "message": "di sini",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Termasuk"
-  },
   "swapGasFeesSplit": {
     "message": "Biaya jaringan pada layar sebelumnya dibagi di antara kedua transaksi ini."
   },

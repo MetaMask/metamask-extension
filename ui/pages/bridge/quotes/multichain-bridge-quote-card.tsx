@@ -10,6 +10,8 @@ import {
 } from '@metamask/bridge-controller';
 import { Skeleton } from '@metamask/design-system-react';
 import {
+  AvatarToken,
+  AvatarTokenSize,
   SuccessPill,
   Text,
   PopoverPosition,
@@ -33,6 +35,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
+  BackgroundColor,
+  BorderRadius,
+  FontWeight,
   IconColor,
   JustifyContent,
   TextColor,
@@ -336,23 +341,31 @@ export const MultichainBridgeQuoteCard = ({
                       ? TextColor.warningDefault
                       : TextColor.textAlternative
                   }
-                  style={{ textDecoration: 'line-through' }}
                   data-testid="network-fees-included-original-amount"
                 >
                   {includedTxFees?.valueInCurrency
                     ? formatNetworkFee(includedTxFees.valueInCurrency, currency)
                     : formatNetworkFee(gasFees?.valueInCurrency, currency)}
                 </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textAlternative
-                  }
+                <Row
+                  className="gap-0.5 px-1.5"
+                  backgroundColor={BackgroundColor.backgroundMuted}
+                  borderRadius={BorderRadius.MD}
+                  data-testid="network-fees-included-token"
                 >
-                  {t('swapGasFeesIncluded')}
-                </Text>
+                  <AvatarToken
+                    size={AvatarTokenSize.Xs}
+                    src={fromToken?.iconUrl ?? undefined}
+                    name={fromToken?.symbol}
+                  />
+                  <Text
+                    variant={TextVariant.bodyXs}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.textAlternative}
+                  >
+                    {fromToken?.symbol}
+                  </Text>
+                </Row>
               </Row>
             )}
             {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (

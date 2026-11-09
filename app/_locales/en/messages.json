@@ -12153,9 +12153,6 @@
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Included"
-  },
   "swapGasFeesSplit": {
     "message": "Network fees on the previous screen are split between these two transactions."
   },
