@@ -54,7 +54,7 @@ jest.mock('../../store/actions', () => ({
 }));
 
 jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
-  updateTransactionPaymentToken: jest.fn(),
+  updateTransactionPaymentToken: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockUseAppDispatch = useDispatch as jest.MockedFunction<

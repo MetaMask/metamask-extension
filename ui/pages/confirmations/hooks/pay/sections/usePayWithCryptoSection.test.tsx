@@ -69,6 +69,7 @@ describe('usePayWithCryptoSection', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    setPayToken.mockResolvedValue(undefined);
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: { id: 'tx-1' },
     } as ReturnType<typeof useConfirmContext>);

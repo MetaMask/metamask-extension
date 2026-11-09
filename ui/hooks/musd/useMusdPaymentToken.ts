@@ -89,6 +89,8 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
         updateTransactionPaymentToken({
           transactionId,
           assetId: getEvmAssetId(tokenAddress, chainId),
+        }).catch((error) => {
+          console.error('Failed to update the mUSD payment token', error);
         });
       },
 

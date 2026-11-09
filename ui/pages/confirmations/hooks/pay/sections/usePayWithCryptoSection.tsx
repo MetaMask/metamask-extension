@@ -69,7 +69,9 @@ export function usePayWithCryptoSection({
       return;
     }
     clearOverride();
-    setPayToken({ assetId: payToken.assetId });
+    setPayToken({ assetId: payToken.assetId }).catch((error) => {
+      console.error('Failed to set the pay token', error);
+    });
     onClose();
   }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
 
