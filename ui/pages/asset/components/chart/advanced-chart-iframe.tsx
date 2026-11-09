@@ -118,6 +118,16 @@ type AdvancedChartIframeProps = {
   ohlcvData: OHLCVBar[];
   onError?: (error: string) => void;
   onReady?: () => void;
+  /**
+   * Fired for gesture interactions the chart engine reports: zoom, pan, and
+   * tooltip. Already debounced by the engine, so there is no throttling here.
+   */
+  onChartInteracted?: (interactionType: 'zoom' | 'pan' | 'tooltip') => void;
+  /**
+   * Fired when a TradingView attribution link inside the chart is clicked. The
+   * host already opens the (sanitised) URL; this is purely for analytics.
+   */
+  onTradingViewClicked?: () => void;
   /** Real-time candle update from useOHLCVRealtime hook */
   realtimeBar?: OHLCVRealtimeBar;
   /**
@@ -143,6 +153,8 @@ const AdvancedChartIframe = forwardRef<
       ohlcvData,
       onError,
       onReady,
+      onChartInteracted,
+      onTradingViewClicked,
       realtimeBar,
       fetchOlderBars,
     },
@@ -207,6 +219,15 @@ const AdvancedChartIframe = forwardRef<
           if (msg?.type === 'ERROR' && msg?.payload?.message) {
             onError?.(msg.payload.message);
           }
+          // Zoom, pan, and tooltip gestures. The chart bundle debounces these
+          // and sends tooltip once per crosshair session, so they arrive
+          // pre-throttled and are forwarded straight up.
+          if (
+            msg?.type === 'CHART_INTERACTED' &&
+            msg?.payload?.interaction_type
+          ) {
+            onChartInteracted?.(msg.payload.interaction_type);
+          }
           // The TradingView attribution link must stay reachable (license
           // clause 3.2), but the iframe is sandboxed without allow-popups or
           // allow-top-navigation. The engine cancels the click and hands us
@@ -215,6 +236,7 @@ const AdvancedChartIframe = forwardRef<
             global.platform.openTab({
               url: toTradingViewUrl(msg?.payload?.url),
             });
+            onTradingViewClicked?.();
           }
           // Host-backed pagination: the engine scrolled past its oldest loaded
           // bar and is asking us for an older page. Fetch it and reply with the
@@ -260,7 +282,13 @@ const AdvancedChartIframe = forwardRef<
       };
       window.addEventListener('message', handleMessage);
       return () => window.removeEventListener('message', handleMessage);
-    }, [onError, onReady, postToChart]);
+    }, [
+      onChartInteracted,
+      onError,
+      onReady,
+      onTradingViewClicked,
+      postToChart,
+    ]);
 
     // Fall back to legacy chart if chartReady isn't set within LOAD_TIMEOUT_MS.
     useEffect(() => {
