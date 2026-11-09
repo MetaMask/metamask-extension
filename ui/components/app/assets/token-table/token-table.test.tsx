@@ -29,7 +29,7 @@ jest.mock('../token-cell/cells', () => ({
   TokenCellTitle: ({ token }: { token: { title: string } }) => (
     <span>{token.title}</span>
   ),
-  TokenCellPercentChange: () => null,
+  TokenCellPercentChange: () => <span data-testid="token-percent-change" />,
   TokenCellPrice: () => <span data-testid="token-price" />,
   TokenCellPrimaryDisplay: () => null,
   TokenCellSecondaryDisplay: () => null,
@@ -90,6 +90,72 @@ describe('TokenTable', () => {
     expect(getAllByTestId('token-price')).toHaveLength(2);
     expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('USDC')).toBeInTheDocument();
+  });
+
+  it('stacks the 24h change under price below @2xl and splits them into columns at @2xl', () => {
+    mockTokenListData({
+      tokenListItems: [{ type: 'token', token: createToken('ETH') }],
+    });
+
+    const { getByTestId, getByText, getAllByTestId } = renderTable();
+
+    expect(getByTestId('token-table')).toHaveClass('@container/token-table');
+
+    const header = getByTestId('token-table-header');
+    expect(header).toHaveClass(
+      'grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]',
+      '@2xl/token-table:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]',
+    );
+
+    const priceHeader = getByText('Price');
+    expect(priceHeader).toHaveClass('text-end');
+    expect(priceHeader).not.toHaveClass('hidden');
+
+    const changeHeader = getByText('24h change');
+    expect(changeHeader).toHaveClass(
+      'hidden',
+      '@2xl/token-table:block',
+      'text-end',
+    );
+
+    const balanceHeader = getByText('Balance');
+    expect(balanceHeader).toHaveClass('text-end');
+
+    const row = getByTestId('multichain-token-list-button');
+    expect(row).toHaveStyle({ height: '62px' });
+    expect(row).toHaveClass(
+      'grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]',
+      '@2xl/token-table:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]',
+    );
+
+    const priceCell = getByTestId('token-price').parentElement;
+    expect(priceCell).toHaveClass('flex', 'flex-col', 'items-end');
+    expect(priceCell).not.toHaveClass('hidden');
+
+    const percentChanges = getAllByTestId('token-percent-change');
+    const stackedPercent = percentChanges.find((node) =>
+      node.parentElement?.classList.contains('@2xl/token-table:hidden'),
+    );
+    const columnPercent = percentChanges.find((node) =>
+      node.parentElement?.classList.contains('@2xl/token-table:flex'),
+    );
+
+    expect(percentChanges).toHaveLength(2);
+    expect(stackedPercent).toBeDefined();
+    expect(columnPercent).toBeDefined();
+
+    expect(stackedPercent?.parentElement).toHaveClass(
+      '@2xl/token-table:hidden',
+    );
+    expect(stackedPercent?.parentElement).not.toHaveClass('hidden');
+    expect(priceCell).toContainElement(stackedPercent as HTMLElement);
+
+    expect(columnPercent?.parentElement).toHaveClass(
+      'hidden',
+      '@2xl/token-table:flex',
+      '@2xl/token-table:justify-end',
+    );
+    expect(priceCell).not.toContainElement(columnPercent as HTMLElement);
   });
 
   it('renders the loading skeleton instead of the table while loading', () => {
