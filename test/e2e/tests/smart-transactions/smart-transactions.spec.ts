@@ -162,7 +162,7 @@ describe('Smart Transactions', function () {
         await swapPage.submitSwap();
 
         await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -195,7 +195,7 @@ describe('Smart Transactions', function () {
         await swapPage.submitSwap();
 
         await swapPage.waitForSmartTransactionToComplete();
-        await swapPage.clickViewActivity();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();

@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Interação com o contrato"
   },
-  "convertAgain": {
-    "message": "Converter de novo"
-  },
   "convertTokenToNFTDescription": {
     "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo a NFTs. Gostaria de removê-lo de sua lista de tokens e adicioná-lo como NFT?"
   },
@@ -6343,19 +6340,6 @@
     "message": "Convertido para mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Falha ao converter mUSD"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Convertendo $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Conversão de mUSD bem-sucedida"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "O bônus poderá ser resgatado em até um dia."
-  },
   "musdConvert": {
     "message": "Converter"
   },
@@ -8882,7 +8866,7 @@
     "message": "Saque enviado"
   },
   "perpsWithdrawTooltip": {
-    "message": "A MetaMask fará a conversão para o token desejado para você. A MetaMask não aplica taxas quando você converte para mUSD.",
+    "message": "A MetaMask fará a conversão para o token desejado para você.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
