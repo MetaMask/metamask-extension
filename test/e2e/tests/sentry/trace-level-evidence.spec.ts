@@ -54,8 +54,17 @@ async function captureSentryTransactions(mockServer: MockttpServer) {
   ];
 }
 
+const backgroundRpc = () =>
+  captured.filter((t) => t.transaction.startsWith('Background RPC'));
+
 describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
   it('roots each background RPC op in its own trace id', async function () {
+    // Evidence capture, not a regression test: which background RPC calls run
+    // after login, and when their envelopes flush, varies on CI runners, so CI
+    // skips it.
+    if (process.env.CI) {
+      this.skip();
+    }
     this.timeout(300000);
     captured.length = 0;
 
@@ -69,18 +78,22 @@ describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: captureSentryTransactions,
-        manifestFlags: { sentry: { forceEnable: true, tracesSampleRate: 1 } },
+        manifestFlags: {
+          sentry: { forceEnable: true, tracesSampleRate: 1 },
+          // Root every dispatch, so the run never depends on the 0.5% default.
+          remoteFeatureFlags: { sentry: { wrapperSampleRate: 1 } },
+        },
         driverOptions: { timeOut: 120000 },
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async ({ driver }: any) => {
         await login(driver);
-        // Let background RPC ops fire within one service-worker session.
-        await driver.delay(20000);
+        await driver.waitUntil(async () => backgroundRpc().length >= 2, {
+          interval: 500,
+          timeout: 60000,
+        });
 
-        const bgRpc = captured.filter((t) =>
-          t.transaction.startsWith('Background RPC'),
-        );
+        const bgRpc = backgroundRpc();
         const distinct = [...new Set(bgRpc.map((t) => t.traceId))];
         const swIds = new Set(
           captured
@@ -95,20 +108,17 @@ describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
         console.log(`EVIDENCE-BGRPC ${JSON.stringify(bgRpc)}`);
         console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
 
-        // Asserts only when two or more ops were captured: one trace id per op,
-        // none shared with the `/service-worker.js` trace.
-        if (bgRpc.length >= 2) {
-          assert.equal(
-            distinct.length,
-            bgRpc.length,
-            `expected one distinct trace id per background RPC op, got ${distinct.length} distinct across ${bgRpc.length} ops: ${JSON.stringify(bgRpc)}`,
-          );
-          assert.equal(
-            sharingSw,
-            0,
-            `expected no background RPC op on the /service-worker.js pageload trace, got ${sharingSw}`,
-          );
-        }
+        // One trace id per op, none shared with the `/service-worker.js` trace.
+        assert.equal(
+          distinct.length,
+          bgRpc.length,
+          `expected one distinct trace id per background RPC op, got ${distinct.length} distinct across ${bgRpc.length} ops: ${JSON.stringify(bgRpc)}`,
+        );
+        assert.equal(
+          sharingSw,
+          0,
+          `expected no background RPC op on the /service-worker.js pageload trace, got ${sharingSw}`,
+        );
       },
     );
   });

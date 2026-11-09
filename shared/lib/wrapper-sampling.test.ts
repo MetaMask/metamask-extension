@@ -14,7 +14,12 @@ describe('shouldSampleRootWrapper', () => {
   });
 
   afterAll(() => {
-    process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED = originalKillSwitch;
+    // Assigning `undefined` to `process.env` stores the string "undefined".
+    if (originalKillSwitch === undefined) {
+      delete process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
+    } else {
+      process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED = originalKillSwitch;
+    }
   });
 
   it('samples a draw below the default rate', () => {
