@@ -388,6 +388,21 @@ export const DeepLink = () => {
       <Text variant={TextVariant.BodySm} className="w-full break-all">
         {mobileShareUrl}
       </Text>
+      <Box marginTop={12} className="w-full">
+        <Button
+          asChild
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          className="w-full hover:text-primary-inverse"
+        >
+          <a
+            href={getExtensionURL('/')}
+            data-testid="deep-link-continue-button"
+          >
+            {t('deepLink_GoToTheHomePageButton')}
+          </a>
+        </Button>
+      </Box>
     </FullPageCard>
   );
 };

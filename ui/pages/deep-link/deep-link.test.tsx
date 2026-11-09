@@ -58,9 +58,22 @@ describe('DeepLink', () => {
       'data-qr-value',
       sharedUrl,
     );
-    expect(queryByTestId('deep-link-continue-button')).not.toBeInTheDocument();
     expect(queryByTestId('deep-link-checkbox')).not.toBeInTheDocument();
     expect(parseMock).not.toHaveBeenCalled();
+  });
+
+  it('links to Home from the mobile share screen', () => {
+    const { getByRole } = renderDeepLink(
+      new URLSearchParams({
+        mobileShare: 'https://link.metamask.io/mobile-only?share=1',
+      }).toString(),
+    );
+
+    expect(
+      getByRole('link', {
+        name: messages.deepLink_GoToTheHomePageButton.message,
+      }),
+    ).toHaveAttribute('href', 'home.html#/');
   });
 
   jestIt.each([
