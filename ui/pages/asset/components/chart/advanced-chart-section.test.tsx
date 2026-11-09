@@ -52,15 +52,18 @@ jest.mock('./asset-chart-body', () => ({
     prices,
     realtimePrice,
     onHoverPrice,
+    lineColorVar,
   }: {
     prices: { x: number; y: number }[];
     realtimePrice?: number;
     onHoverPrice: (point: { price?: number; date?: number } | null) => void;
+    lineColorVar?: string;
   }) => (
     <div
       data-testid="line-chart"
       data-points={prices.length}
       data-realtime={realtimePrice ?? ''}
+      data-line-color={lineColorVar ?? ''}
     >
       <button
         type="button"
@@ -157,12 +160,27 @@ function indicatorSlotVisibility(): string {
   return screen.getByTestId('advanced-chart-indicator-slot').style.visibility;
 }
 
-function render(props: Partial<typeof DEFAULT_PROPS> = {}) {
-  const store = configureStore({ metamask: { currentLocale: 'en' } });
+function render(
+  props: Partial<typeof DEFAULT_PROPS> = {},
+  { themingEnabled = false }: { themingEnabled?: boolean } = {},
+) {
+  const store = configureStore({
+    metamask: {
+      currentLocale: 'en',
+      remoteFeatureFlags: {
+        tokenDetailsAdvancedChartsTheming: themingEnabled,
+      },
+    },
+  });
   return renderWithProvider(
     <AdvancedChartSection {...DEFAULT_PROPS} {...props} />,
     store,
   );
+}
+
+/** The CSS variable the line chart was told to draw itself in. */
+function lineColor(): string | null {
+  return screen.getByTestId('line-chart').getAttribute('data-line-color');
 }
 
 describe('AdvancedChartSection', () => {
@@ -261,6 +279,52 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(screen.queryByText('+50.00%')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('line color', () => {
+    it('always draws the line green when the theming flag is off', () => {
+      // Range is down (live 50 against an opening price of 100) but the flag is
+      // off, so the colour must not change.
+      setupData({ realtimePrice: 50 });
+      render();
+
+      expect(lineColor()).toBe('--color-success-default');
+    });
+
+    it('draws the line green for an up range when the flag is on', () => {
+      setupData({ realtimePrice: 150 });
+      render({}, { themingEnabled: true });
+
+      expect(lineColor()).toBe('--color-success-default');
+    });
+
+    it('draws the line red for a down range when the flag is on', () => {
+      setupData({ realtimePrice: 50 });
+      render({}, { themingEnabled: true });
+
+      expect(lineColor()).toBe('--color-error-default');
+    });
+
+    it('falls back to green when the direction is unknown', () => {
+      // Placeholder data has no trustworthy opening price to compare against.
+      setupHistorical({ isPlaceholderData: true });
+      setupData({ realtimePrice: 50 });
+      render({}, { themingEnabled: true });
+
+      expect(lineColor()).toBe('--color-success-default');
+    });
+
+    it('colors by the range direction, not the hovered point', () => {
+      // Hovering a point below the opening price must not flip an up range red.
+      setupData({ realtimePrice: 150 });
+      render({}, { themingEnabled: true });
+
+      act(() => {
+        screen.getByTestId('simulate-hover').click();
+      });
+
+      expect(lineColor()).toBe('--color-success-default');
     });
   });
 
