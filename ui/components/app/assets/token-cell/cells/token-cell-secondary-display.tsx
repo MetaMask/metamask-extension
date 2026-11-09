@@ -29,7 +29,6 @@ type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
   handleScamWarningModal: (arg: boolean) => void;
   privacyMode: boolean;
-  textAlign?: TextAlign;
 };
 
 const secondaryDisplayStyle: CSSProperties = {
@@ -37,17 +36,11 @@ const secondaryDisplayStyle: CSSProperties = {
   paddingInlineStart: 8,
 };
 
-// Inline padding only separates the value from the title when end aligned
-const startAlignedSecondaryDisplayStyle: CSSProperties = {
-  whiteSpace: 'nowrap',
-};
-
 export const TokenCellSecondaryDisplay = React.memo(
   ({
     token,
     handleScamWarningModal,
     privacyMode,
-    textAlign = TextAlign.End,
   }: TokenCellSecondaryDisplayProps) => {
     const isEvm = isEvmChainId(token.chainId);
     const { type, rpcUrl } = useSelector(getProviderConfig);
@@ -108,16 +101,12 @@ export const TokenCellSecondaryDisplay = React.memo(
             token.secondary ? 'text-s-body-md' : 'text-s-body-sm',
             '@compact:text-s-body-sm',
           )}
-          textAlign={textAlign}
+          textAlign={TextAlign.End}
           data-testid="multichain-token-list-item-secondary-value"
           ellipsis={token.isStakeable}
           isHidden={privacyMode}
           length={SensitiveTextLength.Medium}
-          style={
-            textAlign === TextAlign.End
-              ? secondaryDisplayStyle
-              : startAlignedSecondaryDisplayStyle
-          }
+          style={secondaryDisplayStyle}
         >
           {secondaryDisplayText}
         </SensitiveText>
@@ -127,6 +116,5 @@ export const TokenCellSecondaryDisplay = React.memo(
   (prevProps, nextProps) =>
     prevProps.token.secondary === nextProps.token.secondary &&
     prevProps.token.isFiatLoading === nextProps.token.isFiatLoading &&
-    prevProps.privacyMode === nextProps.privacyMode &&
-    prevProps.textAlign === nextProps.textAlign,
+    prevProps.privacyMode === nextProps.privacyMode,
 );

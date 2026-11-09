@@ -8,7 +8,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
-import { TextAlign } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import type { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -45,7 +44,9 @@ export type TokenTableProps = {
 // by the time `lg` would apply. `@2xl` (42rem) is room for a separate price column.
 const COLUMNS_CLASS_NAME =
   'grid w-full grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] items-center gap-4 px-4 @2xl/token-table:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]';
-const PRICE_COLUMN_CLASS_NAME = 'hidden @2xl/token-table:block';
+const PRICE_COLUMN_CLASS_NAME = 'hidden @2xl/token-table:block text-end';
+const PRICE_COLUMN_CELL_CLASS_NAME =
+  'hidden @2xl/token-table:flex @2xl/token-table:justify-end';
 
 const TokenTableHeader = () => {
   const t = useI18nContext();
@@ -75,6 +76,7 @@ const TokenTableHeader = () => {
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={TextColor.TextAlternative}
+        className="text-end"
       >
         {t('24hChange')}
       </Text>
@@ -82,6 +84,7 @@ const TokenTableHeader = () => {
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={TextColor.TextAlternative}
+        className="text-end"
       >
         {t('balance')}
       </Text>
@@ -137,21 +140,21 @@ const TokenTableRow = ({
             />
             <TokenCellTitle token={displayToken} />
           </Box>
-          <div className={PRICE_COLUMN_CLASS_NAME}>
+          <div className={PRICE_COLUMN_CELL_CLASS_NAME}>
             <TokenCellPrice token={displayToken} />
           </div>
-          <TokenCellPercentChange token={displayToken} />
-          <Box className="flex min-w-0 flex-col">
+          <div className="flex justify-end">
+            <TokenCellPercentChange token={displayToken} />
+          </div>
+          <Box className="flex min-w-0 flex-col items-end">
             <TokenCellSecondaryDisplay
               token={displayToken}
               handleScamWarningModal={setShowScamWarningModal}
               privacyMode={privacyMode}
-              textAlign={TextAlign.Left}
             />
             <TokenCellPrimaryDisplay
               token={displayToken}
               privacyMode={privacyMode}
-              textAlign={TextAlign.Left}
             />
           </Box>
         </a>
