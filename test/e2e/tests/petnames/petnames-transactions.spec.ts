@@ -8,7 +8,8 @@ import { Driver } from '../../webdriver/driver';
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
-const ADDRESS_MOCK_RENDERED = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
+// End of the rendered address. The start is shortened to fit the row.
+const ADDRESS_MOCK_RENDERED_END = '15a017AaFb';
 const CUSTOM_NAME_MOCK = 'Custom Name';
 const PROPOSED_NAME_MOCK = 'test4.lens';
 
@@ -83,7 +84,7 @@ describe('Petnames - Transactions', function () {
         const confirmation = new Confirmation(driver);
         await login(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
-        await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED);
+        await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED_END);
 
         // Test custom name.
         await confirmation.saveName({

@@ -11,6 +11,10 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../preferred-avatar';
+import {
+  ADDRESS_END_CHARS,
+  StartTruncatedText,
+} from '../../../ui/start-truncated-text';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -29,6 +33,12 @@ export type NameDisplayProps = {
    * Whether to disable the onClick handler.
    */
   disableNameClick?: boolean;
+  /**
+   * Fill the available width on one line and shorten the start when needed.
+   * Shows the name if known, else the value with its last 10 characters kept.
+   * A security label on an unknown address is not used as its name.
+   */
+  fillWidth?: boolean;
 };
 
 const NameDisplay = memo(
@@ -41,6 +51,7 @@ const NameDisplay = memo(
     showFullName = false,
     fallbackName,
     disableNameClick,
+    fillWidth = false,
     ...props
   }: NameDisplayProps) => {
     const { name, image, icon, displayState, isAccount } = useDisplayName({
@@ -80,6 +91,29 @@ const NameDisplay = memo(
 
     const renderName = () => {
       const nameWithFallbackValue = name || fallbackName;
+
+      if (fillWidth) {
+        const knownName =
+          displayState === TrustSignalDisplayState.Unknown
+            ? fallbackName
+            : nameWithFallbackValue;
+        return (
+          <Text
+            className={classnames(
+              'min-w-0 flex-1',
+              knownName ? 'name__name' : 'name__value',
+            )}
+            variant={TextVariant.bodyMd}
+            {...props}
+          >
+            <StartTruncatedText
+              text={knownName || value}
+              endChars={knownName ? undefined : ADDRESS_END_CHARS}
+            />
+          </Text>
+        );
+      }
+
       if (!nameWithFallbackValue) {
         return <FormattedName value={value} type={type} {...props} />;
       }

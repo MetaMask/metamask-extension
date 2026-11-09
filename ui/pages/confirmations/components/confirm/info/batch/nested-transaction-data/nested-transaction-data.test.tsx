@@ -8,6 +8,7 @@ import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { toChecksumHexAddress } from '../../../../../../../../shared/lib/hexstring-utils';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
@@ -98,7 +99,11 @@ describe('NestedTransaction', () => {
       nestedTransactions: [BATCH_TRANSACTION_PARAMS_MOCK],
     });
 
-    expect(getByText('0x12345...67890')).toBeInTheDocument();
+    expect(
+      getByText(
+        toChecksumHexAddress(BATCH_TRANSACTION_PARAMS_MOCK.to as string),
+      ),
+    ).toBeInTheDocument();
     expect(getByText(messages.amount.message)).toBeInTheDocument();
     expect(getByText('<0.000001')).toBeInTheDocument();
     expect(getByText('GoerliETH')).toBeInTheDocument();

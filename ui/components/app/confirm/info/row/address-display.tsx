@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
@@ -19,34 +19,14 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
-
-const ELLIPSIS = '\u2026';
-
-/** Truncation config: [prefix chars to show, suffix chars to show] */
-const TRUNCATION_CONFIG = {
-  full: [Infinity, Infinity] as const,
-  truncated: [14, 10] as const,
-} as const;
-
-function getTruncatedAddress(text: string): string {
-  const environmentType = getEnvironmentType();
-  const [prefixLen, suffixLen] =
-    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
-      ? TRUNCATION_CONFIG.full
-      : TRUNCATION_CONFIG.truncated;
-
-  if (text.length <= prefixLen + suffixLen + 1) {
-    return text;
-  }
-
-  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
-}
+import {
+  ADDRESS_END_CHARS,
+  StartTruncatedText,
+} from '../../../../ui/start-truncated-text';
 
 const TrustIcon = ({
   displayState,
@@ -107,10 +87,6 @@ export const ConfirmInfoRowAddressDisplay = memo(
     const [modalOpen, setModalOpen] = useState(false);
 
     const isClickable = !isAccount;
-    const display = useMemo(
-      () => getTruncatedAddress(hexAddress),
-      [hexAddress],
-    );
 
     const handleClick = useCallback(() => {
       if (!isClickable) {
@@ -161,14 +137,25 @@ export const ConfirmInfoRowAddressDisplay = memo(
           </Text>
         )}
         {!name && isClickable && (
-          <span className="address-display-clickable">
+          <span className="address-display-clickable min-w-0 flex-1">
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
-              className="hover:bg-transparent active:bg-transparent whitespace-nowrap"
+              className="min-w-0 flex-1 justify-start hover:bg-transparent active:bg-transparent"
               data-testid="confirm-info-row-display-name"
             >
-              {display}
+              <Text
+                asChild
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.Inherit}
+              >
+                <StartTruncatedText
+                  text={hexAddress}
+                  endChars={ADDRESS_END_CHARS}
+                  className="flex-1"
+                />
+              </Text>
             </TextButton>
           </span>
         )}
@@ -177,10 +164,13 @@ export const ConfirmInfoRowAddressDisplay = memo(
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
-            ellipsis
+            className="min-w-0 flex-1"
             data-testid="confirm-info-row-display-name"
           >
-            {display}
+            <StartTruncatedText
+              text={hexAddress}
+              endChars={ADDRESS_END_CHARS}
+            />
           </Text>
         )}
         {showAvatar && (

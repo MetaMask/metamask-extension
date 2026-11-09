@@ -143,6 +143,7 @@ export function BatchedApprovalFunction({
           <ConfirmInfoRowAddress
             address={value.spender ?? ''}
             chainId={chainId}
+            fillWidth
           />
         </ConfirmInfoAlertRow>
         {value.amount && (

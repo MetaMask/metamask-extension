@@ -54,6 +54,11 @@ export type NameProps = {
    * Whether to disable the onClick handler.
    */
   disableNameClick?: boolean;
+
+  /**
+   * Fill the available width on one line, left aligned. See `NameDisplay`.
+   */
+  fillWidth?: boolean;
 };
 
 const Name = memo(
@@ -64,6 +69,7 @@ const Name = memo(
     variation,
     className,
     disableNameClick = false,
+    fillWidth = false,
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -125,13 +131,14 @@ const Name = memo(
           variation={variation}
           handleClick={handleClick}
           disableNameClick={disableNameClick}
+          fillWidth={fillWidth}
           {...props}
         />
         {subtitle && (
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
-            style={{ textAlign: 'right' }}
+            style={{ textAlign: fillWidth ? 'left' : 'right' }}
           >
             {subtitle}
           </Text>

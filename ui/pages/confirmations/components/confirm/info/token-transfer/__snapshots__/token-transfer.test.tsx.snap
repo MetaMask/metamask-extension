@@ -181,17 +181,17 @@ exports[`TokenTransferInfo renders correctly 1`] = `
                 class="flex flex-row gap-2 items-center"
               >
                 <span
-                  class="address-display-clickable"
+                  class="address-display-clickable min-w-0 flex-1"
                 >
                   <button
-                    class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
+                    class="inline-flex items-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed min-w-0 flex-1 justify-start hover:bg-transparent active:bg-transparent"
                     data-testid="confirm-info-row-display-name"
                     role="button"
                   >
                     <span
-                      class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                      class="block min-w-0 overflow-hidden whitespace-nowrap text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default flex-1"
                     >
-                      0x2e0D7E8c4522…097035d09B
+                      0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
                     </span>
                   </button>
                 </span>
@@ -432,10 +432,10 @@ exports[`TokenTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -445,9 +445,13 @@ exports[`TokenTransferInfo renders correctly 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x07614...3ad68
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0x076146c765189d51bE3160A2140cF80BFC73ad68
+              </span>
             </p>
           </div>
         </div>

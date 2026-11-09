@@ -154,10 +154,10 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -167,9 +167,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x5B38D...eddC4
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+              </span>
             </p>
           </div>
         </div>
@@ -298,10 +302,10 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -311,9 +315,13 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+              </span>
             </p>
           </div>
         </div>
@@ -523,10 +531,10 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -536,9 +544,13 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x5B38D...eddC4
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+              </span>
             </p>
           </div>
         </div>
@@ -667,10 +679,10 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -680,9 +692,13 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+              </span>
             </p>
           </div>
         </div>
@@ -862,10 +878,10 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -875,9 +891,13 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+              </span>
             </p>
           </div>
         </div>
@@ -1558,10 +1578,10 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -1571,9 +1591,13 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+              </span>
             </p>
           </div>
         </div>
@@ -2011,10 +2035,10 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box min-w-0 flex-1 mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box min-w-0 flex-1 mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -2024,9 +2048,13 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text min-w-0 flex-1 name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              <span
+                class="block min-w-0 overflow-hidden whitespace-nowrap"
+              >
+                0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+              </span>
             </p>
           </div>
         </div>

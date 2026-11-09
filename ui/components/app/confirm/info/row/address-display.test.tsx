@@ -1,23 +1,14 @@
 import React from 'react';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../../../shared/constants/app';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import {
+  mockTextWidth,
+  type TextWidthMock,
+} from '../../../../../../test/lib/mock-text-width';
 import configureStore from '../../../../../store/store';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';
-
-const getEnvironmentType = jest.requireMock(
-  '../../../../../../shared/lib/environment-type',
-).getEnvironmentType as jest.Mock;
-
-jest.mock('../../../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
-  getEnvironmentType: jest.fn(),
-}));
 
 const defaultProps = {
   address: TEST_ADDRESS,
@@ -72,30 +63,42 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     );
   });
 
-  it('renders full address in fullscreen mode', () => {
-    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+  describe('unnamed address', () => {
+    let textWidth: TextWidthMock;
 
-    const { getByTestId } = render();
-    expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
-      TEST_ADDRESS,
-    );
-  });
+    beforeEach(() => {
+      textWidth = mockTextWidth();
+    });
 
-  it('renders partially truncated address in side panel mode', () => {
-    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+    afterEach(() => {
+      textWidth.restore();
+    });
 
-    const { getByTestId } = render();
-    const textContent = getByTestId('confirm-info-row-display-name')
-      .textContent as string;
-    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
-  });
+    it('shows the full address when the row fits it', () => {
+      textWidth.setRowWidth(500);
 
-  it('renders truncated address in popup mode', () => {
-    getEnvironmentType.mockReturnValue('popup');
+      const { getByTestId } = render();
+      expect(getByTestId('confirm-info-row-display-name').textContent).toBe(
+        TEST_ADDRESS,
+      );
+    });
 
-    const { getByTestId } = render();
-    const textContent = getByTestId('confirm-info-row-display-name')
-      .textContent as string;
-    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
+    it('keeps the last 10 characters and shortens the start to fit', () => {
+      textWidth.setRowWidth(250);
+
+      const { getByTestId } = render();
+      expect(getByTestId('confirm-info-row-display-name').textContent).toBe(
+        '0x5CfE73b6021E…474086a7e1',
+      );
+    });
+
+    it('shows more of the start in a wider row', () => {
+      textWidth.setRowWidth(350);
+
+      const { getByTestId } = render();
+      expect(getByTestId('confirm-info-row-display-name').textContent).toBe(
+        '0x5CfE73b6021E818B776b42…474086a7e1',
+      );
+    });
   });
 });

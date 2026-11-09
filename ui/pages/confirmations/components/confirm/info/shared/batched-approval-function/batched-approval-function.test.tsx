@@ -13,6 +13,7 @@ import { buildPermit2ApproveTransactionData } from '../../../../../../../../test
 import { buildSetApproveForAllTransactionData } from '../../../../../../../../test/data/confirmations/set-approval-for-all';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
+import { toChecksumHexAddress } from '../../../../../../../../shared/lib/hexstring-utils';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { Confirmation } from '../../../../../types/confirm';
 import * as DappSwapContextModule from '../../../../../context/dapp-swap';
@@ -105,7 +106,11 @@ describe('BatchedApprovalFunction', () => {
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
       expect(getByText(messages.spender.message)).toBeInTheDocument();
-      expect(getByText('0x1231D...F4EaE')).toBeInTheDocument();
+      expect(
+        getByText(
+          toChecksumHexAddress('0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae'),
+        ),
+      ).toBeInTheDocument();
       expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
@@ -170,7 +175,9 @@ describe('BatchedApprovalFunction', () => {
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
       expect(getByText(messages.spender.message)).toBeInTheDocument();
-      expect(getByText('0x12345...67891')).toBeInTheDocument();
+      expect(
+        getByText(toChecksumHexAddress(ADDRESS_2_MOCK)),
+      ).toBeInTheDocument();
       expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('0.000123 ETH')).toBeInTheDocument();
     });
@@ -200,7 +207,7 @@ describe('BatchedApprovalFunction', () => {
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
       expect(getByText(messages.spender.message)).toBeInTheDocument();
-      expect(getByText('0x12345...67890')).toBeInTheDocument();
+      expect(getByText(toChecksumHexAddress(ADDRESS_MOCK))).toBeInTheDocument();
       expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText(messages.all.message)).toBeInTheDocument();
     });
