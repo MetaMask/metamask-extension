@@ -53,7 +53,9 @@ const dialogClassNameBase = classnames(
 );
 
 const dialogClassNamePlacement = classnames(
-  'me-[max(0px,calc((100vw-var(--drawer-column-width))/2))]',
+  // The root frame sets --drawer-column-width. Fall back to the column width
+  // when the drawer is rendered outside that frame.
+  'me-[max(0px,calc((100vw-var(--drawer-column-width,var(--width-md)))/2))]',
   'min-[768px]:top-[var(--drawer-header-height)] min-[768px]:h-[calc(100%-var(--drawer-header-height))] min-[768px]:max-h-[calc(100%-var(--drawer-header-height))]',
 );
 
@@ -61,14 +63,9 @@ const getDialogLayoutClassName = (
   isWideLayout: boolean,
   isFullscreen: boolean,
 ) =>
-  classnames(
-    isWideLayout
-      ? '[--drawer-column-width:var(--width-max)]'
-      : '[--drawer-column-width:var(--width-md)]',
-    isFullscreen && !isWideLayout
-      ? '[--drawer-header-height:var(--header-height)]'
-      : '[--drawer-header-height:0px]',
-  );
+  isFullscreen && !isWideLayout
+    ? '[--drawer-header-height:var(--header-height)]'
+    : '[--drawer-header-height:0px]';
 
 const frameClassName = classnames(
   'h-full w-full',

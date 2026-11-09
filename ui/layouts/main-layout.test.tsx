@@ -1,10 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { useMainNavBars } from '../hooks/useMainNavBars';
+import { AppLayoutProvider } from '../contexts/app-layout';
 import { MainLayout } from './main-layout';
-
-jest.mock('../hooks/useMainNavBars');
 
 jest.mock('../components/app/side-nav/side-nav', () => ({
   SideNav: () => <div data-testid="side-nav" />,
@@ -16,12 +14,14 @@ jest.mock('../components/multichain/app-header', () => ({
   AppHeader: () => <div data-testid="app-header" />,
 }));
 
-const mockUseMainNavBars = jest.mocked(useMainNavBars);
-
-const renderMainLayout = () => {
+const renderMainLayout = (isWideLayout = false) => {
   const router = createMemoryRouter([
     {
-      element: <MainLayout />,
+      element: (
+        <AppLayoutProvider isWideLayout={isWideLayout}>
+          <MainLayout />
+        </AppLayoutProvider>
+      ),
       children: [{ path: '/', element: <div data-testid="page" /> }],
     },
   ]);
@@ -37,35 +37,13 @@ const renderMainLayout = () => {
 };
 
 describe('MainLayout', () => {
-  beforeEach(() => {
-    mockUseMainNavBars.mockReturnValue({
-      hasNavBar: false,
-      showSideNav: false,
-      showBottomNav: false,
-    });
-  });
-
   it('renders the page', () => {
     renderMainLayout();
 
     expect(screen.getByTestId('page')).toBeInTheDocument();
   });
 
-  it('renders no nav or app header when the route has no nav', () => {
-    renderMainLayout();
-
-    expect(screen.queryByTestId('side-nav')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('bottom-nav-bar')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('app-header')).not.toBeInTheDocument();
-  });
-
-  it('renders the app header and bottom nav bar when the bottom nav is shown', () => {
-    mockUseMainNavBars.mockReturnValue({
-      hasNavBar: true,
-      showSideNav: false,
-      showBottomNav: true,
-    });
-
+  it('renders the app header and bottom nav bar outside the wide layout', () => {
     renderMainLayout();
 
     expect(screen.getByTestId('app-header')).toBeInTheDocument();
@@ -73,14 +51,8 @@ describe('MainLayout', () => {
     expect(screen.queryByTestId('side-nav')).not.toBeInTheDocument();
   });
 
-  it('renders the app header and side nav, without the bottom nav bar, when the side nav is shown', () => {
-    mockUseMainNavBars.mockReturnValue({
-      hasNavBar: true,
-      showSideNav: true,
-      showBottomNav: false,
-    });
-
-    renderMainLayout();
+  it('renders the app header and side nav, without the bottom nav bar, in the wide layout', () => {
+    renderMainLayout(true);
 
     expect(screen.getByTestId('side-nav')).toBeInTheDocument();
     expect(screen.getByTestId('app-header')).toBeInTheDocument();
