@@ -946,25 +946,8 @@ describe('Trace', () => {
 });
 
 describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
-  // startSpan() wraps every span in sentryWithIsolationScope(), which --
-  // per @sentry/browser's stack-based async-context strategy (no
-  // AsyncLocalStorage/Zone equivalent exists in a browser/service-worker
-  // realm) -- pushes onto a single, shared, mutable stack
-  // (node_modules/@sentry/core/.../asyncContext/stackStrategy.js). That
-  // stack has no concept of which logical async operation a frame belongs
-  // to; it only knows push order. When two trace() calls overlap (ordinary
-  // event-loop behavior for concurrent RPC handlers,
-  // wrapMessengerWithTracing calls, or websocket notification handling in
-  // the service worker), a later call's layer can still be on top when an
-  // earlier, still-pending call's own continuation resumes and reads "the
-  // current active span" -- misattributing it to the wrong operation.
-  //
-  // These tests exercise the real @sentry/browser SDK end-to-end (a real
-  // BrowserClient, globalThis.sentry wired to the real SDK -- the same
-  // pattern used in app/scripts/lib/sentry-traceparent-semantics.test.ts)
-  // instead of this file's default globalThis.sentry mock, because the
-  // defect lives inside the SDK's real AsyncContextStack, not in trace.ts's
-  // own logic in isolation.
+  // Real SDK in place of this file's `globalThis.sentry` mock: the overlap
+  // effect lives in Sentry's shared scope stack, not in trace.ts.
 
   function deferred<Value = void>() {
     let resolve!: (value: Value) => void;
@@ -1024,27 +1007,15 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
   });
 
   describe('when a second, unrelated trace() call starts while the first is still pending', () => {
-    // Bug confirmed via this harness; not yet fixed -- see
-    // MetaMask-planning#7523. `it.failing` rather than `it.skip`: the test
-    // runs, and passes *because* the assertion below fails today. When a fix
-    // lands it starts passing, `it.failing` goes red, and whoever landed the
-    // fix is told to flip this to `it`. A skipped test cannot do that -- it
-    // detects neither the defect nor its repair.
-    //
-    // Scoped to parentage only. Trace-id sharing is a separate defect
-    // (MetaMask-planning#7354, ambient baseline sharing that occurs with or
-    // without overlap); asserting it here would keep this test failing after
-    // a correct concurrency-only fix, so `it.failing` would keep passing and
-    // the repair would go undetected. See the dedicated coverage below.
+    // The assertion fails until overlapping calls are isolated; then use `it`.
+    // Parentage only: root spans share a trace id even without overlap.
     jestIt.failing(
       'does not parent the second span under the still-pending first one',
       async () => {
         const aGate = deferred<void>();
         let spanA: Sentry.Span | null | undefined;
 
-        // A's callback awaits an unresolved promise, so its isolation-scope
-        // and current-scope layers stay on the SDK's shared
-        // AsyncContextStack for as long as aGate is unresolved.
+        // A awaits aGate, so its scope layer stays on the stack until then.
         const aPromise = trace(
           { name: NAME_MOCK, id: 'A-pending' },
           async () => {
@@ -1054,8 +1025,6 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
           },
         );
 
-        // Sanity check: confirm A really pushed a span onto the real stack
-        // before relying on it -- otherwise this test would prove nothing.
         expect(spanA).toBeTruthy();
 
         try {
@@ -1084,10 +1053,7 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
       },
     );
 
-    // Same reasoning as above, and scoped to parentage for the same reason:
-    // `spanC` resolves under B's already-corrupted lineage instead of being
-    // independent. Passes today because the assertion fails; goes red when
-    // the defect is fixed.
+    // As above: `spanC` should not inherit B's lineage; use `it` once fixed.
     jestIt.failing(
       'does not let a third concurrent call inherit an already-corrupted lineage',
       async () => {
