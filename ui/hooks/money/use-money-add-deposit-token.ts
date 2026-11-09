@@ -3,6 +3,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
 import type { MoneyDepositToken } from './money-deposit-token-utils';
@@ -12,6 +13,7 @@ import { useMoneyAnalytics } from './useMoneyAnalytics';
 type UseMoneyAddDepositTokenOptions = {
   screenName: MoneyScreenName;
   tokenRowComponentName: MoneyComponentName;
+  ftueEntryPoint: MoneyFtueEntryPoint;
 };
 
 type AddTokenTracking = {
@@ -29,11 +31,13 @@ type AddTokenTracking = {
  * @param options - Where the token list lives, for analytics.
  * @param options.screenName
  * @param options.tokenRowComponentName
+ * @param options.ftueEntryPoint
  * @returns The Add handler, the underlying deposit initiator, and loading state.
  */
 export function useMoneyAddDepositToken({
   screenName,
   tokenRowComponentName,
+  ftueEntryPoint,
 }: UseMoneyAddDepositTokenOptions) {
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
@@ -66,9 +70,15 @@ export function useMoneyAddDepositToken({
           address: token.address,
           chainId: token.chainId,
         },
+        ftueOrigin: { entryPoint: ftueEntryPoint, componentName },
       });
     },
-    [initiateDeposit, tokenRowComponentName, trackTokenButtonClicked],
+    [
+      ftueEntryPoint,
+      initiateDeposit,
+      tokenRowComponentName,
+      trackTokenButtonClicked,
+    ],
   );
 
   return { handleAddToken, initiateDeposit, isDepositLoading };
