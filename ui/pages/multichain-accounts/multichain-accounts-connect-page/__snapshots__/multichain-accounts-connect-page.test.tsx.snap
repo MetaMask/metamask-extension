@@ -27,7 +27,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               >
                 <img
                   alt="metamask.github.io"
-                  class="size-full object-cover"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
@@ -302,7 +302,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               >
                 <img
                   alt="metamask.github.io"
-                  class="size-full object-cover"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
@@ -577,7 +577,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               >
                 <img
                   alt="metamask.github.io"
-                  class="size-full object-cover"
+                  class="size-full object-contain"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>

@@ -64,7 +64,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   >
                     <img
                       alt="ETH"
-                      class="size-full object-cover"
+                      class="size-full object-contain"
                       src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
                     />
                   </div>
@@ -79,7 +79,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   >
                     <img
                       alt="Ethereum"
-                      class="size-full object-cover"
+                      class="size-full object-contain"
                       src="./images/eth_logo.svg"
                     />
                   </div>
@@ -201,7 +201,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   >
                     <img
                       alt="mUSD"
-                      class="size-full object-cover"
+                      class="size-full object-contain"
                       src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
                     />
                   </div>
@@ -216,7 +216,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   >
                     <img
                       alt="Ethereum"
-                      class="size-full object-cover"
+                      class="size-full object-contain"
                       src="./images/eth_logo.svg"
                     />
                   </div>
@@ -350,7 +350,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                   >
                     <img
                       alt="Ethereum"
-                      class="size-full object-cover"
+                      class="size-full object-contain"
                       src="./images/eth_logo.svg"
                     />
                   </div>
@@ -472,7 +472,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                   >
                     <img
                       alt="UNI"
-                      class="size-full object-cover"
+                      class="size-full object-contain"
                       src="http://url"
                     />
                   </div>
@@ -487,7 +487,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                   >
                     <img
                       alt="Linea"
-                      class="size-full object-cover"
+                      class="size-full object-contain"
                       src="./images/linea-logo-mainnet.svg"
                     />
                   </div>

@@ -20,7 +20,7 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
           >
             <img
               alt="ETH"
-              class="size-full object-cover"
+              class="size-full object-contain"
               src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
             />
           </div>
@@ -35,7 +35,7 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
           >
             <img
               alt="Ethereum"
-              class="size-full object-cover"
+              class="size-full object-contain"
               src="./images/eth_logo.svg"
             />
           </div>
@@ -78,7 +78,7 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
           >
             <img
               alt="BTC"
-              class="size-full object-cover"
+              class="size-full object-contain"
               src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/bip122/000000000019d6689c085ae165831e93/slip44/0.png"
             />
           </div>
@@ -93,7 +93,7 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
           >
             <img
               alt="Bitcoin"
-              class="size-full object-cover"
+              class="size-full object-contain"
               src="./images/bitcoin-logo.svg"
             />
           </div>
@@ -136,7 +136,7 @@ exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
           >
             <img
               alt="mUSD"
-              class="size-full object-cover"
+              class="size-full object-contain"
               src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
             />
           </div>
@@ -151,7 +151,7 @@ exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
           >
             <img
               alt="Ethereum"
-              class="size-full object-cover"
+              class="size-full object-contain"
               src="./images/eth_logo.svg"
             />
           </div>

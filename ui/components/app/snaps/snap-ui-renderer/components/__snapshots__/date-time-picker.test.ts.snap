@@ -169,7 +169,7 @@ exports[`SnapUIDateTimePicker snapshot renders a time picker 1`] = `
             >
               <input
                 aria-invalid="false"
-                aria-label="Choose time, selected time is 5:00 AM"
+                aria-label="Choose time, selected time is 10:00 AM"
                 autocomplete="off"
                 class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd Mui-readOnly MuiInputBase-readOnly css-1x51dt5-MuiInputBase-input-MuiInput-input"
                 id=":ra:"

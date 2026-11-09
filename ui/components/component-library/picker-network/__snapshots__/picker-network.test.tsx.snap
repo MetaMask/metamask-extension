@@ -22,7 +22,7 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
           >
             <img
               alt="Network3"
-              class="size-full object-cover"
+              class="size-full object-contain"
               data-testid="avatar-group-network-image"
               src="img2"
             />
@@ -37,7 +37,7 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
           >
             <img
               alt="Network1"
-              class="size-full object-cover"
+              class="size-full object-contain"
               data-testid="avatar-group-network-image"
               src="img1"
             />
@@ -86,7 +86,7 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
           >
             <img
               alt="Network3"
-              class="size-full object-cover"
+              class="size-full object-contain"
               data-testid="avatar-group-network-image"
               src="img2"
             />
@@ -101,7 +101,7 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
           >
             <img
               alt="Network1"
-              class="size-full object-cover"
+              class="size-full object-contain"
               data-testid="avatar-group-network-image"
               src="img1"
             />

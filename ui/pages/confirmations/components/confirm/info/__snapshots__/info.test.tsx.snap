@@ -2389,7 +2389,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         >
           <img
             alt="ETH"
-            class="size-full object-cover"
+            class="size-full object-contain"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2450,7 +2450,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         >
           <img
             alt="ETH"
-            class="size-full object-cover"
+            class="size-full object-contain"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2581,7 +2581,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         >
           <img
             alt="ETH"
-            class="size-full object-cover"
+            class="size-full object-contain"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2642,7 +2642,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         >
           <img
             alt="ETH"
-            class="size-full object-cover"
+            class="size-full object-contain"
             src="./images/eth_logo.svg"
           />
         </div>
@@ -2703,7 +2703,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         >
           <img
             alt="ETH"
-            class="size-full object-cover"
+            class="size-full object-contain"
             src="./images/eth_logo.svg"
           />
         </div>

@@ -68,7 +68,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
                 >
                   <img
                     alt="Polygon"
-                    class="size-full object-cover"
+                    class="size-full object-contain"
                     src="./images/pol-token.svg"
                   />
                 </div>
@@ -82,7 +82,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
                 >
                   <img
                     alt="Ethereum Mainnet"
-                    class="size-full object-cover"
+                    class="size-full object-contain"
                     src="./images/eth_logo.svg"
                   />
                 </div>
