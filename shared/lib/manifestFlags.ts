@@ -144,6 +144,14 @@ export type ManifestFlags = {
      */
     fixtureServerPort?: number;
     /**
+     * Skip the onboarding welcome Rive animations so the login actions render
+     * immediately. Test builds already skip them; this covers E2E runs
+     * against dist builds, where loading the animations surfaces the LavaMoat
+     * error `property "Window" of globalThis is inaccessible under scuttling
+     * mode`.
+     */
+    disableOnboardingAnimations?: boolean;
+    /**
      * Whether test builds inject a PRF result the virtual authenticator
      * cannot produce. Defaults to enabled. Set false to exercise a passkey
      * authenticator that does not return PRF.

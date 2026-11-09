@@ -140,6 +140,7 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        manifestFlags: { testing: { disableOnboardingAnimations: true } },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -218,6 +219,7 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
+        manifestFlags: { testing: { disableOnboardingAnimations: true } },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
