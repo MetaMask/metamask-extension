@@ -129,6 +129,11 @@ const invokeWindowGc = () => {
 export async function collectGarbageBetweenIterations(
   driver: Driver,
 ): Promise<void> {
+  // TEMPORARY (2/2): BENCH_NOGC skips every forced GC, for the Chrome GC A/B. Remove with BENCH_CHROME_ARM.
+  if (process.env.BENCH_NOGC) {
+    return;
+  }
+
   try {
     const didRunWindowGc = await driver.executeScript(invokeWindowGc);
 

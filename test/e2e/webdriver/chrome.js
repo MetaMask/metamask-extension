@@ -66,7 +66,8 @@ class ChromeDriver {
       args.push('--enable-unsafe-extension-debugging');
     }
 
-    if (isBenchmark) {
+    // TEMPORARY (1/2): the nogc arm token drops --expose-gc. Remove with BENCH_CHROME_ARM.
+    if (isBenchmark && !ARM.has('nogc')) {
       args.push('--js-flags=--expose-gc');
     }
 
