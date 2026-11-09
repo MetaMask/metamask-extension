@@ -736,10 +736,7 @@ describe('Trace', () => {
     it('starts a new trace (fresh propagation context) when root is true', () => {
       trace({ name: NAME_MOCK, root: true }, () => true);
 
-      // startNewTrace resets the propagation-context trace id, so the op roots
-      // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
-      // withScope alone would clone the same trace id — severing the parent
-      // span but leaving the op in the mega-trace (grouped by trace id).
+      // `withScope` alone would keep the ambient trace id.
       expect(startNewTraceMock).toHaveBeenCalledTimes(1);
       expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
       expect(withScopeMock).toHaveBeenCalledTimes(1);
@@ -835,6 +832,56 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+    });
+
+    // A named in-process parent missing from `tracesByKey` must not go through
+    // `continueTrace`, which would bill a new segment.
+    it('does not promote an unresolvable in-process parent to a segment', () => {
+      continueTraceMock.mockImplementation((_opts, fn) => fn());
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      // No pending trace is created, so the map lookup misses.
+      trace(
+        {
+          name: TraceName.Middleware,
+          parentContext: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _name: TraceName.Transaction,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _id: 'absent-from-map',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _traceId: 'trace123',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _spanId: 'span456',
+          },
+        },
+        () => true,
+      );
+
+      // A parent was named. Failing to resolve it locally must not silently
+      // convert the span into a billed root.
+      expect(continueTraceMock).not.toHaveBeenCalled();
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
+      expect(spanOptions.forceTransaction).toBeUndefined();
+    });
+
+    // `undefined` and `null` are different statements; only the first may be
+    // promoted to a transaction. See MetaMask/MetaMask-planning#7569.
+    it('does not promote a null parentContext to a segment', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, parentContext: null }, () => true);
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
   });
 

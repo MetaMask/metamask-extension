@@ -1,8 +1,38 @@
 import {
   browseTokens,
   buildTokenSearchQueryString,
+  byMarketCap,
   searchTokens,
 } from './token-search-api';
+
+describe('byMarketCap', () => {
+  it('orders assets by market cap, highest first', () => {
+    const assets = [{ marketCap: 10 }, { marketCap: 100 }, { marketCap: 20 }];
+
+    expect(assets.toSorted(byMarketCap)).toStrictEqual([
+      { marketCap: 100 },
+      { marketCap: 20 },
+      { marketCap: 10 },
+    ]);
+  });
+
+  it('treats missing market caps as 0', () => {
+    const assets = [{ marketCap: null }, { marketCap: 5 }, {}];
+
+    expect(assets.toSorted(byMarketCap)[0]).toStrictEqual({
+      marketCap: 5,
+    });
+  });
+
+  it('keeps the original order for ties', () => {
+    const assets = [
+      { id: 'a', marketCap: 1 },
+      { id: 'b', marketCap: 1 },
+    ];
+
+    expect(assets.toSorted(byMarketCap)).toStrictEqual(assets);
+  });
+});
 
 describe('buildTokenSearchQueryString', () => {
   it('includes the trimmed query and the comma-joined CAIP-2 networks list', () => {

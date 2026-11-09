@@ -49,6 +49,11 @@ export class MetaMaskPayConfirmation extends Confirmation {
     testId: 'wallet-initiated-header-back-button',
   };
 
+  private readonly payWithBalance = (balanceText: string) => ({
+    testId: 'pay-with-balance',
+    text: balanceText,
+  });
+
   protected readonly payWithPill = { testId: 'pay-with-pill' };
 
   protected readonly payWithRow = { testId: 'pay-with-row' };
@@ -85,6 +90,18 @@ export class MetaMaskPayConfirmation extends Confirmation {
   async checkFromAccount(accountName: string): Promise<void> {
     console.log(`Wait for from-account pill to show "${accountName}"`);
     await this.driver.waitForSelector(this.fromAccountName(accountName));
+  }
+
+  /**
+   * Wait until the pay-with pill shows this fiat balance.
+   *
+   * @param balanceText - Pill balance text, e.g. `($100.00)`.
+   */
+  async checkPayWithBalance(balanceText: string): Promise<void> {
+    console.log(`Wait for pay-with balance to show "${balanceText}"`);
+    await this.driver.waitForSelector(this.payWithBalance(balanceText), {
+      timeout: PAY_QUOTE_READY_TIMEOUT,
+    });
   }
 
   /**
