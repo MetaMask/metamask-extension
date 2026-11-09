@@ -2,7 +2,9 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import {
   CHAIN_IDS,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
   NETWORK_TO_NAME_MAP,
 } from './network';
@@ -19,6 +21,21 @@ describe('NetworkConstants', () => {
       './images/elysium-network.png',
     );
   });
+
+  it.each([
+    ['0x753', 'Whitechain'],
+    ['0x752', 'Whitechain Sepolia'],
+  ] as const)(
+    'maps %s (%s) to its name, WBT symbol and logos',
+    (chainId, name) => {
+      expect(NETWORK_TO_NAME_MAP[chainId]).toBe(name);
+      expect(CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]).toBe('WBT');
+      expect(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]).toBe(
+        './images/whitechain.png',
+      );
+      expect(CHAIN_ID_TOKEN_IMAGE_MAP[chainId]).toBe('./images/wbt.png');
+    },
+  );
 
   it('returns network name for chain ids', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM]).toBe('Arbitrum');
