@@ -20,6 +20,7 @@ import {
   toAssetId,
   isNativeCaipAssetId,
 } from '../../../shared/lib/asset-utils';
+import { StaticAssetsControllerMethodActions } from './static-assets-controller-method-action-types';
 
 const CONTROLLER = 'StaticAssetsController' as const;
 
@@ -46,13 +47,24 @@ export type StaticAssetsPollingFeatureFlagOptions = {
 
 export type StaticAssetsControllerState = {};
 
+const MESSENGER_EXPOSED_METHODS = [
+  'startPolling',
+  'stopPollingByPollingToken',
+] as const;
+
 export type StaticAssetsControllerGetStateAction = ControllerGetStateAction<
   typeof CONTROLLER,
   StaticAssetsControllerState
 >;
 
 export type StaticAssetsControllerActions =
-  StaticAssetsControllerGetStateAction;
+  | StaticAssetsControllerGetStateAction
+  | StaticAssetsControllerMethodActions;
+
+export type AllowedActions =
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | AssetsControllerGetStateAction
+  | AssetsControllerAddCustomAssetAction;
 
 export type StaticAssetsControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof CONTROLLER,
@@ -61,11 +73,6 @@ export type StaticAssetsControllerStateChangeEvent = ControllerStateChangeEvent<
 
 export type StaticAssetsControllerEvents =
   StaticAssetsControllerStateChangeEvent;
-
-export type AllowedActions =
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | AssetsControllerGetStateAction
-  | AssetsControllerAddCustomAssetAction;
 
 export type StaticAssetsControllerMessenger = Messenger<
   typeof CONTROLLER,
@@ -189,6 +196,11 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     this.#getCacheExpirationTime = getCacheExpirationTime;
 
     this.#getTopX = getTopX;
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**

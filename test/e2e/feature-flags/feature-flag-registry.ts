@@ -3936,17 +3936,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  rampsEnabled: {
-    inProd: true,
-    name: 'rampsEnabled',
-    productionDefault: {
-      enabled: true,
-      minimumVersion: '13.48.0',
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   rampsServiceDisruption: {
     inProd: true,
     name: 'rampsServiceDisruption',
@@ -4285,6 +4274,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'swapsChainValueOrderOverride',
     productionDefault: {
       positionOverrides: [],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  swapsRebateBannerEnabled: {
+    inProd: false,
+    name: 'swapsRebateBannerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

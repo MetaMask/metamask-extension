@@ -31,6 +31,10 @@ export class PerpsDataChannel<TData> {
 
   private isConnected = false;
 
+  private seeded = false;
+
+  private generation = 0;
+
   private connectFn: ((callback: (data: TData) => void) => () => void) | null =
     null;
 
@@ -105,11 +109,28 @@ export class PerpsDataChannel<TData> {
   }
 
   /**
+   * Check if the cache holds seeded data that no live source has confirmed yet
+   */
+  isSeeded(): boolean {
+    return this.seeded;
+  }
+
+  /**
+   * Count of cache clears. Async work captures it before awaiting and drops
+   * its result when the cache was cleared (account/network change) meanwhile.
+   */
+  getGeneration(): number {
+    return this.generation;
+  }
+
+  /**
    * Clear the cache back to initial value
    * Called on account/network change
    */
   clearCache(): void {
     this.cache = this.initialValue;
+    this.seeded = false;
+    this.generation += 1;
   }
 
   /**
@@ -150,6 +171,22 @@ export class PerpsDataChannel<TData> {
    */
   pushData(data: TData): void {
     this.cache = data;
+    this.seeded = false;
+    this.subscribers.forEach((callback) => {
+      callback(data);
+    });
+  }
+
+  /**
+   * Push a snapshot that may be stale (e.g. a restored controller cache).
+   * Subscribers render it at once, but `isSeeded()` stays true until the
+   * next live or pushed update replaces it.
+   *
+   * @param data - The snapshot to cache and send to subscribers
+   */
+  seedData(data: TData): void {
+    this.cache = data;
+    this.seeded = true;
     this.subscribers.forEach((callback) => {
       callback(data);
     });
@@ -199,6 +236,7 @@ export class PerpsDataChannel<TData> {
     this.unsubscribeFromSource = this.connectFn((data: TData) => {
       // Update cache
       this.cache = data;
+      this.seeded = false;
 
       // Notify all subscribers
       this.subscribers.forEach((callback) => {

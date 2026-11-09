@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // Keep automatic @types discovery for the existing browser and test globals.
+    "types": null,
     "esModuleInterop": true,
     "isolatedModules": true,
     "outDir": "../..",
@@ -10,7 +12,7 @@
     "noCheck": true
   },
   "exclude": ["*.test.ts"],
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "@tsconfig/node24/tsconfig.json",
   "include": [
     "build-type.ts",
     "get-manifest-flag.ts",
