@@ -13,6 +13,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import * as Sentry from '@sentry/browser';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -6605,6 +6606,84 @@ describe('Actions', () => {
           [true, true],
         ),
       ).toBe(true);
+    });
+  });
+
+  describe('#recordUiInteraction', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls AppStateController:recordUiInteraction', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      await store.dispatch(actions.recordUiInteraction());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AppStateController:recordUiInteraction',
+          [],
+        ),
+      ).toBe(true);
+    });
+
+    it('swallows background errors', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon
+        .stub()
+        .rejects(new Error('background down'));
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      await expect(
+        store.dispatch(actions.recordUiInteraction()),
+      ).resolves.toBeUndefined();
+    });
+
+    describe('while a UI span is active', () => {
+      beforeEach(() => {
+        globalThis.sentry = { ...Sentry };
+      });
+
+      afterEach(() => {
+        globalThis.sentry = undefined;
+      });
+
+      it('sends no trace context', async () => {
+        const store = mockStore();
+        const messengerCallStub = sinon.stub().resolves();
+        setBackgroundConnection({ messengerCall: messengerCallStub });
+
+        await Sentry.startSpan({ name: 'ui' }, () =>
+          store.dispatch(actions.recordUiInteraction()),
+        );
+
+        expect(
+          messengerCallStub.calledOnceWithExactly(
+            'AppStateController:recordUiInteraction',
+            [],
+          ),
+        ).toBe(true);
+      });
+
+      it('keeps the span active while the call is pending', async () => {
+        const store = mockStore();
+        let resolveCall;
+        setBackgroundConnection({
+          messengerCall: () =>
+            new Promise((resolve) => {
+              resolveCall = resolve;
+            }),
+        });
+
+        await Sentry.startSpan({ name: 'ui' }, async (span) => {
+          const pending = store.dispatch(actions.recordUiInteraction());
+          expect(Sentry.getActiveSpan()).toBe(span);
+          resolveCall();
+          await pending;
+        });
+      });
     });
   });
 });
