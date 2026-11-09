@@ -60,6 +60,13 @@ describe('ExtensionUpdateTakeover', () => {
     openUpdateTabAndReload.mockResolvedValue(undefined);
     rejectAllPendingApprovals.mockResolvedValue(undefined);
     setUpdateModalLastDismissedAt.mockResolvedValue(undefined);
+    // jsdom's window.close() deletes the document and stops every timer,
+    // including Jest's own timeout, so the rest of the file never finishes.
+    jest.spyOn(window, 'close').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('renders the version update without a close button', async () => {
