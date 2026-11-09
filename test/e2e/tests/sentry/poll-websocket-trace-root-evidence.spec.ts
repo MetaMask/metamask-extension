@@ -25,9 +25,7 @@ type CapturedTxn = {
 const captured: CapturedTxn[] = [];
 
 /**
- * Extract `{ transaction, trace_id, tags }` from a Sentry envelope body
- * (newline-delimited JSON; transaction payloads carry
- * `contexts.trace.trace_id`).
+ * Extract `{ transaction, traceId, tags }` from a Sentry envelope (NDJSON).
  *
  * @param body - Raw envelope POST body.
  */
@@ -78,12 +76,8 @@ async function captureSentryTransactions(mockServer: Mockttp) {
 
 describe('Sentry poll/websocket trace-root evidence (#43930)', function (this: Suite) {
   it('roots each background poll cycle in its own trace id during bridge quote rounds', async function () {
-    // Local evidence-capture harness, not a CI regression test: the bridge
-    // quote flow's interactive timing is not reliably reachable on CI
-    // runners, and the regression falsifiers for this PR live in the unit
-    // suites (`shared/lib/trace.test.ts`, `bridge-controller-init.test.ts`,
-    // `bridge-status-controller-init.test.ts`). Run locally per the PR's
-    // Validation Run instructions to reproduce the captured evidence log.
+    // Evidence capture, not a regression test: the quote flow's timing is not
+    // reliable on CI runners, so CI skips it.
     if (process.env.CI) {
       this.skip();
     }
@@ -159,12 +153,7 @@ describe('Sentry poll/websocket trace-root evidence (#43930)', function (this: S
       console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
       console.log(`EVIDENCE-ALL ${JSON.stringify(captured)}`);
 
-      // The PR's claim: `traceBackgroundPoll` roots EVERY scheduled poll
-      // cycle (`Background Poll`, op `background.poll`, tagged with the
-      // controller) in its own trace id instead of accumulating into the SW
-      // `/service-worker.js` pageload mega-trace. Assert full pairwise
-      // distinctness — ids X, X, Y must fail — and that no cycle sits on
-      // the SW pageload trace.
+      // Each poll cycle needs its own trace id, off the SW pageload trace.
       assert.ok(
         pollCycles.length >= 2,
         `expected at least 2 background poll cycles to compare trace ids, got ${pollCycles.length}: ${JSON.stringify(captured)}`,
@@ -217,10 +206,8 @@ describe('Sentry poll/websocket trace-root evidence (#43930)', function (this: S
       async ({ driver }: any) => {
         await login(driver);
 
-        // BackendWebSocketService connects post-unlock once the feature flag
-        // and identity sign-in are satisfied; a failed/timed-out connection
-        // attempt still ends the `BackendWebSocketService Connection` root
-        // trace. Wait through the connect (and possible timeout) window.
+        // The websocket connects after unlock; a timed-out attempt still ends
+        // its `BackendWebSocketService Connection` trace, so wait out the window.
         await driver.delay(60000);
 
         const wsConnections = captured.filter(

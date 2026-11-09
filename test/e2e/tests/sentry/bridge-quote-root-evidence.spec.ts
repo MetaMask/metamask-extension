@@ -13,8 +13,7 @@ type CapturedTxn = { transaction: string; traceId: string };
 const captured: CapturedTxn[] = [];
 
 /**
- * Extract `{ transaction, trace_id }` from a Sentry envelope body (newline-
- * delimited JSON; transaction payloads carry `contexts.trace.trace_id`).
+ * Extract `{ transaction, traceId }` from a Sentry envelope (NDJSON).
  *
  * @param body - Raw envelope POST body.
  */
@@ -61,13 +60,8 @@ async function captureSentryTransactions(mockServer: Mockttp) {
 
 describe('Bridge quote-fetch trace-root evidence (#43930)', function (this: Suite) {
   it('roots each quote-fetch round in its own trace id', async function () {
-    // Local evidence-capture harness, not a CI regression test: the bridge
-    // quote flow's interactive timing is not reliably reachable on CI runners
-    // (`bridge-cta-button` render races the 10s locator budget), and the
-    // regression falsifiers for this PR live in the unit suites
-    // (`shared/lib/trace.test.ts`, `bridge-controller-init.test.ts`). Run
-    // locally per the PR's Validation Run instructions to reproduce the
-    // captured evidence log.
+    // Evidence capture, not a regression test: the quote flow's timing is not
+    // reliable on CI runners, so CI skips it.
     if (process.env.CI) {
       this.skip();
     }
@@ -145,10 +139,7 @@ describe('Bridge quote-fetch trace-root evidence (#43930)', function (this: Suit
       console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
       console.log(`EVIDENCE-NON-QUOTE ${JSON.stringify(nonQuoteBridge)}`);
 
-      // Each `* Quotes Fetched`
-      // round is its OWN trace (distinct trace_id) instead of all rounds
-      // sharing one. Assert full pairwise distinctness — ids X, X, Y must
-      // fail — and that no round sits on the SW pageload trace.
+      // Each quote round needs its own trace id, off the SW pageload trace.
       assert.ok(
         quoteRounds.length >= 2,
         `expected at least 2 quote-fetch rounds to compare trace ids, got ${quoteRounds.length}: ${JSON.stringify(captured)}`,

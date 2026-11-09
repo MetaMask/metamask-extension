@@ -508,8 +508,7 @@ function finalizeOnboardingMachineTime(span?: Span | null): void {
 }
 
 /**
- * Run one background polling cycle in its own root trace, so periodic work
- * does not accumulate under the long-lived service-worker pageload trace.
+ * Run one background polling cycle as its own `Background Poll` root trace.
  *
  * @param controllerName - The polling controller, recorded as the `controller` tag.
  * @param fn - The polling cycle to trace.
