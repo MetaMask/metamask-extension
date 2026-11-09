@@ -24,7 +24,7 @@ import {
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
   isResolvableName,
-  shortenAddress,
+  shortenString,
 } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
@@ -87,7 +87,12 @@ export const RecipientInput = ({
       to?.length && to === toAddressValidated && recipientError === undefined;
 
     return addressIsValid
-      ? shortenAddress(recipientResolvedLookup ?? to)
+      ? shortenString(recipientResolvedLookup ?? to, {
+          truncatedCharLimit: 24,
+          truncatedStartChars: 10,
+          truncatedEndChars: 10,
+          skipCharacterInEnd: false,
+        })
       : undefined;
   }, [recipientError, recipientResolvedLookup, toAddressValidated, to]);
 

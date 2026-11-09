@@ -10,6 +10,8 @@ import {
   isMoneyEarningSectionEnabled,
   isMoneyHomeScreenCardEnabled,
   isMoneyTokenListItemCtaEnabled,
+  isMoneyEarnBannerEnabled,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 } from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
@@ -185,6 +187,28 @@ export const selectMoneyActivityDetailsEnabled = createSelector(
 export const selectMoneyTokenListItemCtaEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyTokenListItemCtaEnabled,
+);
+
+/**
+ * Selects whether the token details Money earn banner is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the earn banner is enabled.
+ */
+export const selectMoneyEarnBannerEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyEarnBannerEnabled,
+);
+
+/**
+ * Selects whether the token details "Your balance" Money earn CTA is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the balance CTA is enabled.
+ */
+export const selectMoneyAssetOverviewBalanceCtaEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 );
 
 /**

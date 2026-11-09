@@ -80,10 +80,7 @@ class SwapPage {
 
   private readonly driver: Driver;
 
-  private readonly gasIncludedLabel = {
-    text: 'Included',
-    tag: 'p',
-  };
+  private readonly gasIncludedLabel = '[data-testid="network-fees-included"]';
 
   private readonly importTokensButton =
     '[data-testid="import-tokens-import-button"]';
@@ -109,10 +106,10 @@ class SwapPage {
     tag: 'p',
   };
 
-  private readonly quotesModal = '.quotes-modal';
+  private readonly quotesModal = '[data-testid="quotes-modal"]';
 
   private readonly quotesModalRow =
-    '.quotes-modal [style*="position: relative"]';
+    '[data-testid="quotes-modal"] [data-testid="bridge-quote-option"]';
 
   private readonly rateMessage = {
     text: `Includes 0.875% MetaMask fee`,
@@ -146,11 +143,6 @@ class SwapPage {
 
   private readonly transactionStatusHeader =
     '[data-testid="swap-smart-transaction-status-header"]';
-
-  private readonly viewActivityButton = {
-    tag: 'button',
-    text: 'View activity',
-  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -267,10 +259,6 @@ class SwapPage {
     await this.driver.clickElement(this.moreQuotesButton);
   }
 
-  async clickViewActivity(): Promise<void> {
-    await this.driver.clickElementSafe(this.viewActivityButton);
-  }
-
   async closeQuotes(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.closeQuotesButton);
   }
@@ -354,6 +342,10 @@ class SwapPage {
   async getToAmountValue(): Promise<string> {
     const element = await this.driver.waitForSelector(this.reviewToAmount);
     return element.getAttribute('value');
+  }
+
+  async goBackAfterSubmit(): Promise<void> {
+    await new BridgeQuotePage(this.driver).goBackAfterSubmit();
   }
 
   async reviewQuote(options: SwapReviewOptions) {

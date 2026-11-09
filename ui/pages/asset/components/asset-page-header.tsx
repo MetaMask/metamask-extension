@@ -17,10 +17,13 @@ import {
 } from '@metamask/design-system-react';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { shortenAddress } from '../../../helpers/utils/util';
+
+const COMPACT_ADDRESS_EDGE_LENGTH = 4;
 
 type AssetPageHeaderProps = {
-  /** Token symbol rendered as the header title. */
+  /** Token name rendered as the header title. Falls back to the symbol. */
+  name?: string;
+  /** Token symbol shown under the name when it differs from the title. */
   symbol: string;
   /** Token image used for the avatar. */
   image?: string;
@@ -39,53 +42,124 @@ type AssetPageHeaderProps = {
 };
 
 /**
- * Truncated contract address with an inline copy control, shown beneath the
- * token symbol for non-native assets.
+ * Compact contract address for the token details header.
+ *
+ * EVM addresses render as `0x..` plus the last four characters. Other
+ * addresses render as the first and last four characters.
+ *
+ * @param address - Contract address to display
+ * @returns The compact display form
+ */
+const formatCompactContractAddress = (address: string): string => {
+  const formatted = address.trim();
+  const tail = formatted.slice(-COMPACT_ADDRESS_EDGE_LENGTH);
+
+  if (formatted.toLowerCase().startsWith('0x')) {
+    return `0x..${tail}`;
+  }
+
+  if (formatted.length <= COMPACT_ADDRESS_EDGE_LENGTH * 2) {
+    return formatted;
+  }
+
+  return `${formatted.slice(0, COMPACT_ADDRESS_EDGE_LENGTH)}..${tail}`;
+};
+
+/**
+ * Ticker and compact contract address shown beneath the token name.
+ *
+ * The ticker uses the title color. The address stays muted and does not
+ * shrink, so a long ticker ellipsizes instead of pushing the address away.
+ * After a copy, the success message hides the ticker. The pill hugs that text.
  *
  * @param props - Component props
- * @param props.address - The contract address to display and copy
- * @returns The rendered copy control
+ * @param props.ticker - Symbol shown when it differs from the token name
+ * @param props.address - Contract address to display and copy
+ * @returns The rendered subtitle
  */
-const AssetPageHeaderAddress = ({ address }: { address: string }) => {
+const AssetPageHeaderSubtitle = ({
+  ticker,
+  address,
+}: {
+  ticker?: string;
+  address?: string;
+}) => {
   const t = useI18nContext();
   // useCopyToClipboard analysis: Copies a public token contract address
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (
-    <button
-      type="button"
-      onClick={() => handleCopy(address)}
-      aria-label={t('copyToClipboard')}
-      className={classnames(
-        'inline-flex min-w-0 items-center gap-1 rounded-full border-0 bg-transparent p-0',
-        'hover:bg-hover active:bg-pressed',
-      )}
-      data-testid="asset-page-header-address"
+    <div
+      className="flex w-full min-w-0 items-center gap-1"
+      data-testid="asset-page-header-subtitle"
     >
-      <Text
-        ellipsis
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={copied ? TextColor.SuccessDefault : TextColor.TextAlternative}
-      >
-        {shortenAddress(address)}
-      </Text>
-      <Icon
-        name={copied ? IconName.CopySuccess : IconName.Copy}
-        size={IconSize.Xs}
-        color={copied ? IconColor.SuccessDefault : IconColor.IconAlternative}
-      />
-    </button>
+      {ticker && !copied ? (
+        <Text
+          ellipsis
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+          className="min-w-0 shrink"
+          data-testid="asset-page-header-ticker"
+        >
+          {ticker}
+        </Text>
+      ) : null}
+      {address ? (
+        <button
+          type="button"
+          onClick={() => handleCopy(address)}
+          aria-label={
+            copied ? t('tokenContractAddressCopied') : t('copyToClipboard')
+          }
+          className={classnames(
+            // Same box as the home address pill (h-6, px-2, py-1, rounded-lg)
+            // in every state, so hover and copy don't move the row.
+            'inline-flex h-6 items-center gap-1 rounded-lg border-0 px-2 py-1',
+            copied
+              ? 'max-w-full min-w-0 bg-success-muted'
+              : 'shrink-0 bg-transparent hover:bg-hover active:bg-pressed',
+          )}
+          data-testid="asset-page-header-address"
+        >
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            ellipsis={copied}
+            color={
+              copied ? TextColor.SuccessDefault : TextColor.TextAlternative
+            }
+            className={copied ? 'min-w-0' : undefined}
+          >
+            {copied
+              ? t('tokenContractAddressCopied')
+              : formatCompactContractAddress(address)}
+          </Text>
+          <Icon
+            name={copied ? IconName.CopySuccess : IconName.Copy}
+            size={IconSize.Xs}
+            color={
+              copied ? IconColor.SuccessDefault : IconColor.IconAlternative
+            }
+            aria-hidden
+          />
+        </button>
+      ) : null}
+      <span className="sr-only" role="status">
+        {copied ? t('tokenContractAddressCopied') : null}
+      </span>
+    </div>
   );
 };
 
 /**
  * Subpage header for the asset (token details) page. Holds the back button, the
- * token identity (avatar with network badge, symbol, badges, and contract
- * address for non-native assets), and the asset options overflow menu.
+ * token identity (avatar with network badge, name, ticker, badges, and
+ * contract address for non-native assets), and the asset options overflow menu.
  *
  * @param props - Component props
- * @param props.symbol - Token symbol rendered as the title
+ * @param props.name - Token name rendered as the title
+ * @param props.symbol - Token symbol shown under the name when it differs
  * @param props.image - Token image used for the avatar
  * @param props.networkImage - Network image used for the avatar badge
  * @param props.networkName - Network name for the badge fallback
@@ -96,6 +170,7 @@ const AssetPageHeaderAddress = ({ address }: { address: string }) => {
  * @returns The rendered asset page header
  */
 export const AssetPageHeader = ({
+  name,
   symbol,
   image,
   networkImage,
@@ -106,34 +181,45 @@ export const AssetPageHeader = ({
   onBack,
 }: AssetPageHeaderProps) => {
   const t = useI18nContext();
+  const tokenName = name?.trim() || symbol;
+  const showTickerBelowName = Boolean(
+    symbol && tokenName && symbol !== tokenName,
+  );
 
   const avatar = useMemo(
     () => (
       <BadgeWrapper
+        // BadgeWrapper defaults to self-start, which pins the avatar to the
+        // top of the name and ticker. Center it on that text block instead.
+        className="self-center"
         badge={<BadgeNetwork name={networkName} src={networkImage} />}
       >
         <AvatarToken
-          name={symbol}
+          name={tokenName}
           src={image}
           size={AvatarTokenSize.Md}
           data-testid="asset-page-header-avatar"
         />
       </BadgeWrapper>
     ),
-    [image, networkImage, networkName, symbol],
+    [image, networkImage, networkName, tokenName],
   );
+
+  const subtitle =
+    showTickerBelowName || contractAddress ? (
+      <AssetPageHeaderSubtitle
+        ticker={showTickerBelowName ? symbol : undefined}
+        address={contractAddress}
+      />
+    ) : undefined;
 
   return (
     <HeaderSubpage
       avatar={avatar}
-      title={symbol}
+      title={tokenName}
       titleProps={{ 'data-testid': 'asset-name' }}
       titleEndAccessory={titleEndAccessory}
-      description={
-        contractAddress ? (
-          <AssetPageHeaderAddress address={contractAddress} />
-        ) : undefined
-      }
+      description={subtitle}
       onBack={onBack}
       backButtonProps={{
         ariaLabel: t('back'),

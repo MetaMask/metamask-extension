@@ -75,6 +75,7 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
 }));
 
 jest.mock('../perps-toast', () => ({
+  ...jest.requireActual('../perps-toast'),
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
@@ -1123,6 +1124,31 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('error handling', () => {
+    it('reports an already-closed position and refreshes positions', async () => {
+      const refreshPositions = jest.fn().mockResolvedValue(undefined);
+      mockGetPerpsStreamManager.mockReturnValue({ refreshPositions });
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'POSITION_NOT_FOUND',
+      });
+      const onClose = jest.fn();
+
+      renderTpslModalContent({ onClose });
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+      });
+      expect(refreshPositions).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastUpdateFailed' }),
+      );
+    });
+
     it('shows toast error when perpsUpdatePositionTPSL fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsUpdatePositionTPSL') {

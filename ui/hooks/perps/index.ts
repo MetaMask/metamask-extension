@@ -54,7 +54,6 @@ export type {
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
 export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
-export { PERPS_HOME_TAB_ROUTE, usePerpsHomeRoute } from './usePerpsHomeRoute';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

@@ -4,7 +4,6 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Box,
   BoxAlignItems,
-  BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import {

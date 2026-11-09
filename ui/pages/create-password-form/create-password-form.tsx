@@ -50,8 +50,9 @@ const CreatePasswordForm = ({
     toggle,
   } = useBoolean();
   const hasUserInteractedWithTermsRef = useRef(false);
-  const geolocation = useSelector(
-    (state: { metamask: { location: string } }) => state.metamask?.location,
+  const country = useSelector(
+    (state: { metamask: { country: string | null } }) =>
+      state.metamask?.country,
   );
 
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -60,13 +61,13 @@ const CreatePasswordForm = ({
     if (
       isSocialLoginFlow &&
       // For Social login users in US region, we set the marketing consent to true by default for the first time render
-      geolocation === 'US' &&
+      country === 'US' &&
       !hasUserInteractedWithTermsRef.current
     ) {
       setTermsChecked(true);
       hasUserInteractedWithTermsRef.current = true;
     }
-  }, [setTermsChecked, isSocialLoginFlow, geolocation]);
+  }, [setTermsChecked, isSocialLoginFlow, country]);
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

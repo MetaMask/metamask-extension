@@ -180,12 +180,12 @@ describe('MetaMetricsProvider', () => {
       await waitFor(() => {
         expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
           1,
-          'bufferedTrace',
+          'SentryTracingService:bufferedTrace',
           [{ name: TRACE_NAME_MOCK }],
         );
         expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
           2,
-          'bufferedEndTrace',
+          'SentryTracingService:bufferedEndTrace',
           [{ name: TRACE_NAME_MOCK }],
         );
       });

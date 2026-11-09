@@ -7,35 +7,48 @@ import configureStore from '../../../store/store';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  MOCK_CONFIRMATIONS_ACCOUNT_ID,
+  nativeEvmAssetId,
+  weiToAssetAmount,
+} from '../../../../test/data/confirmations/helper';
 import { useBalance } from './useBalance';
+
+const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const NATIVE_ASSET_ID = nativeEvmAssetId(CHAIN_IDS.GOERLI);
 
 const renderUseBalance = (fromAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-      currentCurrency: 'ETH',
+      selectedCurrency: 'ETH',
       tokenList: {},
-      accountsByChainId: {
-        '0x5': {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            balance: '0xa',
-          },
+      assetsInfo: {
+        [NATIVE_ASSET_ID]: {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+      },
+      assetsBalance: {
+        [MOCK_CONFIRMATIONS_ACCOUNT_ID]: {
+          // 0xa wei
+          [NATIVE_ASSET_ID]: { amount: weiToAssetAmount('0xa') },
         },
       },
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          [MOCK_CONFIRMATIONS_ACCOUNT_ID]: {
+            address: ACCOUNT_ADDRESS,
+            id: MOCK_CONFIRMATIONS_ACCOUNT_ID,
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        selectedAccount: MOCK_CONFIRMATIONS_ACCOUNT_ID,
       },
       accountIdByAddress: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc':
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        [ACCOUNT_ADDRESS]: MOCK_CONFIRMATIONS_ACCOUNT_ID,
       },
       enabledNetworkMap: {
         eip155: {
@@ -60,15 +73,13 @@ describe('useBalanceToUse', () => {
     jest.clearAllMocks();
   });
 
-  it('should return empty object if no address is passed', () => {
+  it('returns empty object if no address is passed', () => {
     const { result } = renderUseBalance();
     expect(result.current).toStrictEqual({});
   });
 
-  it('should return balance', () => {
-    const { result } = renderUseBalance(
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    );
+  it('returns balance', () => {
+    const { result } = renderUseBalance(ACCOUNT_ADDRESS);
     expect(result.current).toStrictEqual({ balance: '0xa' });
   });
 });

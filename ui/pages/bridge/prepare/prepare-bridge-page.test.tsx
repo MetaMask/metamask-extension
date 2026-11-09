@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
-import { act, render, fireEvent } from '@testing-library/react';
+import { act, render, fireEvent, waitFor } from '@testing-library/react';
 import {
   ChainId,
   formatChainIdToCaip,
@@ -27,6 +27,7 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
+import * as tokenSecurityUtils from '../utils/token-security';
 import PrepareBridgePage from './prepare-bridge-page';
 
 const mockQuoteTraceStart = jest.fn();
@@ -75,11 +76,8 @@ jest.mock(
 );
 
 setBackgroundConnection({
-  resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
-  updateBridgeQuoteRequestParams: async () => jest.fn(),
-  setInputPrimaryDenomination: async () => undefined,
-  trackUnifiedSwapBridgeEvent: async () => undefined,
+  messengerCall: jest.fn(),
 } as never);
 
 describe('PrepareBridgePage', () => {
@@ -156,6 +154,8 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('to-amount')).toBeInTheDocument();
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
+    expect(getByTestId('to-amount')).toHaveValue('0');
+    expect(getByTestId('to-amount-row')).toHaveClass('opacity-50');
 
     expect(getByTestId('switch-tokens').closest('button')).toBeDisabled();
   });
@@ -185,6 +185,7 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('from-amount')).toHaveDisplayValue('2524.21');
     expect(getByTestId('to-amount')).toHaveValue('0');
+    expect(getByTestId('to-amount-row')).toHaveClass('opacity-50');
   });
 
   it('should render the component, with inputs set', async () => {
@@ -498,14 +499,10 @@ describe('PrepareBridgePage', () => {
       .spyOn(reactRouterUtils, 'useSearchParams')
       .mockReturnValue([{ get: () => null }] as never);
 
-    const updateBridgeQuoteRequestParams = jest
-      .fn()
-      .mockResolvedValue(undefined);
+    const messengerCall = jest.fn().mockResolvedValue(undefined);
     setBackgroundConnection({
-      resetState: jest.fn().mockResolvedValue(undefined),
       getStatePatches: jest.fn().mockResolvedValue([]),
-      updateBridgeQuoteRequestParams,
-      trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
+      messengerCall,
     } as never);
 
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
@@ -598,15 +595,18 @@ describe('PrepareBridgePage', () => {
       await Promise.resolve();
     });
 
-    expect(updateBridgeQuoteRequestParams).toHaveBeenCalledWith(
-      expect.objectContaining({
-        insufficientBal: false,
-        srcChainId: btcToken.chainId,
-        srcTokenAmount: '99997000',
-      }),
-      expect.any(Object),
-      0,
-      1,
+    expect(messengerCall).toHaveBeenCalledWith(
+      'BridgeController:updateBridgeQuoteRequestParams',
+      [
+        expect.objectContaining({
+          insufficientBal: false,
+          srcChainId: btcToken.chainId,
+          srcTokenAmount: '99997000',
+        }),
+        expect.any(Object),
+        0,
+        1,
+      ],
     );
 
     jest.useRealTimers();
@@ -662,10 +662,8 @@ describe('PrepareBridgePage', () => {
         .spyOn(reactRouterUtils, 'useSearchParams')
         .mockReturnValue([{ get: () => null }] as never);
       setBackgroundConnection({
-        resetState: jest.fn(),
         getStatePatches: jest.fn().mockResolvedValue([]),
-        updateBridgeQuoteRequestParams: jest.fn().mockResolvedValue(undefined),
-        trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
+        messengerCall: jest.fn(),
       } as never);
     });
 
@@ -804,12 +802,8 @@ describe('PrepareBridgePage', () => {
       });
 
     const backgroundWithAllMethods = {
-      resetState: jest.fn(),
       getStatePatches: jest.fn(),
-      updateBridgeQuoteRequestParams: jest.fn(),
-      trackUnifiedSwapBridgeEvent: jest.fn(),
-      setEnabledAllPopularNetworks: jest.fn(),
-      setActiveNetwork: jest.fn(),
+      messengerCall: jest.fn(),
     } as never;
 
     beforeEach(() => {
@@ -901,6 +895,43 @@ describe('PrepareBridgePage', () => {
       await act(async () => {
         fireEvent.click(ctaButton);
       });
+    });
+
+    it('backfills fetched security data onto a toToken that has none', async () => {
+      setBackgroundConnection(backgroundWithAllMethods);
+      const mockState = makeStoreWithSecurityData(undefined);
+      mockState.metamask.useExternalServices = true;
+      const toTokenAssetId = toAssetId(
+        TOKEN_ADDRESS,
+        formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+      );
+      const fetchSpy = jest
+        .spyOn(tokenSecurityUtils, 'fetchCachedTokenAssets')
+        .mockResolvedValue([
+          {
+            assetId: toTokenAssetId,
+            securityData: { resultType: 'Malicious', features: [] },
+          },
+        ] as never);
+      const store = configureStore(mockState);
+
+      renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        store,
+      );
+
+      await waitFor(() =>
+        expect(store.getState().bridge.toToken?.securityData).toStrictEqual({
+          type: 'Malicious',
+          metadata: { features: [] },
+        }),
+      );
+      expect(fetchSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([toTokenAssetId]),
+      );
+      fetchSpy.mockRestore();
     });
   });
 });

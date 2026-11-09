@@ -22,8 +22,14 @@ const getSelectedGroupEvmAccount = (state: MultichainAccountsState) =>
 
 export type MoneyFundingAccountState = AccountsState & MultichainAccountsState;
 
+function isEvmAccount(
+  account: InternalAccount | null | undefined,
+): account is InternalAccount {
+  return Boolean(account && isEvmAccountType(account.type));
+}
+
 /**
- * Whether an account can fund or receive a Money Account transaction.
+ * Whether an account can fund a Money Account deposit.
  *
  * Hardware accounts are not eligible unless `allowHardware` is set, matching
  * the account picker on the confirmation and `usePayHardwareAccountAlert`.
@@ -36,13 +42,13 @@ export type MoneyFundingAccountState = AccountsState & MultichainAccountsState;
  *
  * @param account - The account to test.
  * @param allowHardware - Whether non-QR hardware accounts are eligible.
- * @returns Whether the account is a valid Money Account counterparty.
+ * @returns Whether the account is a valid Money Account funding account.
  */
 function isEligibleMoneyFundingAccount(
   account: InternalAccount | null | undefined,
   allowHardware: boolean,
 ): account is InternalAccount {
-  if (!account || !isEvmAccountType(account.type)) {
+  if (!isEvmAccount(account)) {
     return false;
   }
 
@@ -54,8 +60,34 @@ function isEligibleMoneyFundingAccount(
 }
 
 /**
- * The account used to fund a Money Account deposit, or to receive a Money
- * Account withdrawal.
+ * Picks the globally selected account, then the selected group's EVM
+ * account, then the first account in keyring order that passes `isEligible`.
+ *
+ * @param selectedAccount - The globally selected account.
+ * @param groupEvmAccount - The EVM account of the selected account group.
+ * @param accounts - All internal accounts.
+ * @param isEligible - Eligibility check for a candidate.
+ * @returns The first eligible account, if any.
+ */
+function findMoneyCounterpartyAccount(
+  selectedAccount: InternalAccount | undefined,
+  groupEvmAccount: InternalAccount | null,
+  accounts: Record<string, InternalAccount>,
+  isEligible: (account: InternalAccount | null | undefined) => boolean,
+): InternalAccount | undefined {
+  if (selectedAccount && isEligible(selectedAccount)) {
+    return selectedAccount;
+  }
+
+  if (groupEvmAccount && isEligible(groupEvmAccount)) {
+    return groupEvmAccount;
+  }
+
+  return Object.values(accounts).find((account) => isEligible(account));
+}
+
+/**
+ * The account used to fund a Money Account deposit.
  *
  * Prefers the globally selected account, which is what the user expects.
  *
@@ -97,17 +129,37 @@ export const selectMoneyFundingAccount = createSelector(
     groupEvmAccount: InternalAccount | null,
     accounts: Record<string, InternalAccount>,
     allowHardware: boolean,
-  ): InternalAccount | undefined => {
-    if (isEligibleMoneyFundingAccount(selectedAccount, allowHardware)) {
-      return selectedAccount;
-    }
+  ): InternalAccount | undefined =>
+    findMoneyCounterpartyAccount(
+      selectedAccount,
+      groupEvmAccount,
+      accounts,
+      (account) => isEligibleMoneyFundingAccount(account, allowHardware),
+    ),
+);
 
-    if (isEligibleMoneyFundingAccount(groupEvmAccount, allowHardware)) {
-      return groupEvmAccount;
-    }
-
-    return Object.values(accounts).find((account) =>
-      isEligibleMoneyFundingAccount(account, allowHardware),
-    );
-  },
+/**
+ * The account that receives a Money Account withdrawal.
+ *
+ * Any EVM account is eligible, hardware (including QR) included: the money
+ * account signs the withdrawal, and the recipient only appears in the
+ * transfer calldata. Resolution order matches `selectMoneyFundingAccount`.
+ *
+ * Returns `undefined` only when the user has no EVM account.
+ */
+export const selectMoneyWithdrawalRecipient = createSelector(
+  getMaybeSelectedInternalAccount,
+  getSelectedGroupEvmAccount,
+  getInternalAccountsMap,
+  (
+    selectedAccount: InternalAccount | undefined,
+    groupEvmAccount: InternalAccount | null,
+    accounts: Record<string, InternalAccount>,
+  ): InternalAccount | undefined =>
+    findMoneyCounterpartyAccount(
+      selectedAccount,
+      groupEvmAccount,
+      accounts,
+      isEvmAccount,
+    ),
 );

@@ -12,6 +12,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import {
+  MetaMetricsAccountHiddenLocation,
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -29,7 +31,7 @@ jest.mock('../../../../shared/lib/trace', () => {
   };
 });
 
-const mockTrackEvent = jest.fn();
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -78,11 +80,40 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
-    setAccountGroupHidden: jest.fn().mockImplementation(() => {
-      return async function () {
-        await Promise.resolve();
-      };
-    }),
+    // Like the real action, the store is refreshed before the dispatch
+    // resolves, which is what `Account Hidden` is built from.
+    setAccountGroupHidden: jest
+      .fn()
+      .mockImplementation((accountGroupId: string, hidden: boolean) => {
+        return async function (
+          dispatch: (action: unknown) => unknown,
+          getState: () => {
+            metamask: {
+              accountTree: {
+                wallets: Record<
+                  string,
+                  {
+                    groups: Record<string, { metadata: { hidden?: boolean } }>;
+                  }
+                >;
+              };
+            };
+          },
+        ) {
+          await Promise.resolve();
+          const metamask = jest
+            .requireActual('lodash')
+            .cloneDeep(getState().metamask);
+          const { wallets } = metamask.accountTree;
+          const walletId = Object.keys(wallets).find((id) =>
+            Boolean(wallets[id].groups[accountGroupId]),
+          );
+          if (walletId) {
+            wallets[walletId].groups[accountGroupId].metadata.hidden = hidden;
+            dispatch({ type: 'UPDATE_METAMASK_STATE', value: metamask });
+          }
+        };
+      }),
   };
 });
 
@@ -390,7 +421,9 @@ describe('MultichainAccountMenu', () => {
     });
 
     const hideOption = document.querySelectorAll(menuItemSelector)[4];
-    fireEvent.click(hideOption);
+    await act(async () => {
+      fireEvent.click(hideOption);
+    });
 
     expect(mockDisconnectAccountGroup).toHaveBeenCalledWith(accountGroupId);
   });
@@ -431,7 +464,9 @@ describe('MultichainAccountMenu', () => {
     );
 
     const revealOption = document.querySelectorAll(menuItemSelector)[4];
-    fireEvent.click(revealOption);
+    await act(async () => {
+      fireEvent.click(revealOption);
+    });
 
     expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
       accountGroupId,
@@ -632,12 +667,97 @@ describe('MultichainAccountMenu', () => {
       name: MetaMetricsEventName.AccountHidden,
       properties: {
         category: MetaMetricsEventCategory.Accounts,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Default,
         hidden: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hidden_count_after: 1,
+        location: MetaMetricsAccountHiddenLocation.AccountMenu,
       },
       sensitiveProperties: {},
     });
+  });
+
+  it('tracks Account Hidden event when clicking the show option on a hidden account', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+    const stateWithHiddenAccount = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        accountTree: {
+          wallets: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Test Account',
+                    pinned: false,
+                    hidden: true,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    await renderComponent(
+      {
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithHiddenAccount,
+    );
+
+    const showOption = document.querySelectorAll(menuItemSelector)[4];
+    await act(async () => {
+      fireEvent.click(showOption);
+    });
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.AccountHidden,
+      properties: {
+        category: MetaMetricsEventCategory.Accounts,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Default,
+        hidden: false,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hidden_count_after: 0,
+        location: MetaMetricsAccountHiddenLocation.AccountMenu,
+      },
+      sensitiveProperties: {},
+    });
+  });
+
+  it('does not track Account Hidden when the write does not take effect', async () => {
+    // The real action logs and swallows background errors, so a failed write
+    // resolves without changing the store.
+    mockSetAccountGroupHidden.mockImplementationOnce(() => async () => {
+      await Promise.resolve();
+    });
+    const mockOnToggle = jest.fn();
+
+    await renderComponent({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: false,
+      isOpen: true,
+      onToggle: mockOnToggle,
+    });
+
+    const hideOption = document.querySelectorAll(menuItemSelector)[4];
+    await act(async () => {
+      fireEvent.click(hideOption);
+    });
+
+    expect(mockSetAccountGroupHidden).toHaveBeenCalled();
+    expect(mockOnToggle).toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ name: MetaMetricsEventName.AccountHidden }),
+    );
   });
 
   describe('tracing', () => {
