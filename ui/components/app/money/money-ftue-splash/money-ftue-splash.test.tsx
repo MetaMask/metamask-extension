@@ -234,9 +234,16 @@ describe('MoneyFtueSplash', () => {
     const title = screen.getByTestId('money-ftue-splash-title');
     const headline = screen.getByTestId('money-ftue-splash-headline');
 
-    expect(title.className).toContain('font-medium');
-    expect(title.className).toContain('text-s-heading-md');
-    expect(headline.className).toContain('text-s-display-md');
+    expect(title).toHaveClass(
+      'text-s-heading-md',
+      'leading-s-heading-md',
+      'font-medium',
+    );
+    expect(headline).toHaveClass(
+      'text-s-display-md',
+      'leading-s-display-md',
+      'font-bold',
+    );
   });
 
   it('uses the 24px headline token in full screen', () => {
@@ -246,8 +253,8 @@ describe('MoneyFtueSplash', () => {
 
     const headline = screen.getByTestId('money-ftue-splash-headline');
 
-    expect(headline.className).toContain('text-s-heading-lg');
-    expect(headline.className).not.toContain('text-s-display-md');
+    expect(headline).toHaveClass('text-s-heading-lg', 'leading-s-heading-lg');
+    expect(headline).not.toHaveClass('text-s-display-md');
   });
 
   it('marks the splash seen and continues the pending deposit from the CTA', () => {
