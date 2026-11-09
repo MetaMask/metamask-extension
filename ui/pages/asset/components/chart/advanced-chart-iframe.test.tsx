@@ -813,6 +813,75 @@ describe('AdvancedChartIframe', () => {
         );
       });
     });
+
+    // The data lags the prop: `useOHLCVChart` keeps the previous series' bars
+    // until the new fetch lands, so the asset changes a render before its bars
+    // do. The stale bars get stamped under the new series for that render; the
+    // real bars must still rebuild the chart, not tick a single candle.
+    it('rebuilds when the new series bars arrive a render after the asset changes', async () => {
+      const { rerender } = renderLoaded();
+
+      // Render 1: asset switched, but the old asset's bars are still in hand.
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          assetId="bitcoin"
+          ohlcvData={mockOHLCVData}
+        />,
+      );
+      postMessageSpy.mockClear();
+
+      // Render 2: bitcoin's real bars land, at the same count as ethereum's.
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          assetId="bitcoin"
+          ohlcvData={sameLengthOtherValues}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'SET_OHLCV_DATA',
+            payload: { data: sameLengthOtherValues },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('REALTIME_UPDATE'),
+        CHART_ORIGIN,
+      );
+    });
+
+    it('rebuilds when the display currency changes at an identical bar count', async () => {
+      const { rerender } = renderLoaded({ currency: 'usd' });
+
+      // The same window re-priced in another fiat: same timestamps and count,
+      // every price different.
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          currency="eur"
+          ohlcvData={sameLengthOtherValues}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'SET_OHLCV_DATA',
+            payload: { data: sameLengthOtherValues },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('REALTIME_UPDATE'),
+        CHART_ORIGIN,
+      );
+    });
   });
 
   describe('Theme reload', () => {

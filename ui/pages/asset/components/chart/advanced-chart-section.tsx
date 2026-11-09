@@ -206,6 +206,7 @@ export const AdvancedChartSection = ({
         assetId={caipAssetId}
         chartType={chartType}
         selectedInterval={interval}
+        currency={resolvedCurrency}
         activeIndicators={indicators}
         ohlcvData={ohlcvData}
         onError={setChartError}
