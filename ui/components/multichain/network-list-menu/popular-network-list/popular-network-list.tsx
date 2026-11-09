@@ -90,7 +90,7 @@ const PopularNetworkList = ({
               position={PopoverPosition.TopStart}
               offset={[16, 12]}
               isOpen={isOpen}
-              flip
+              onClose={close}
               onMouseLeave={close}
               className="bg-section pt-3 pb-3"
               style={{

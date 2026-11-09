@@ -1,4 +1,9 @@
 import React, { useCallback, useContext, useState } from 'react';
+import {
+  Popover,
+  PopoverPosition,
+  PopoverRole,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   Box,
@@ -7,8 +12,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  Popover,
-  PopoverPosition,
 } from '../../../../component-library';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 import { SelectableListItem } from '../../asset-list/sort-control/sort-control';
@@ -49,17 +52,12 @@ const NftOptions = ({
         ariaLabel={t('nftOptions')}
       />
       <Popover
-        onClickOutside={closePopover}
+        onClose={closePopover}
         isOpen={nftOptionsOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={referenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-        }}
+        role={PopoverRole.Dialog}
+        className="p-0"
       >
         {showOpenSeaLink ? (
           <SelectableListItem

@@ -8,6 +8,9 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { CaipChainId, Hex } from '@metamask/utils';
@@ -30,8 +33,6 @@ import {
   Box,
   ButtonBase,
   ButtonBaseSize,
-  Popover,
-  PopoverPosition,
   Text,
 } from '../../../../component-library';
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
@@ -541,36 +542,26 @@ const AssetListControlBar = ({
       />
 
       <Popover
-        onClickOutside={closePopover}
+        onClose={closePopover}
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={sortReferenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '250px' : '',
-        }}
+        role={PopoverRole.Dialog}
+        className="p-0"
+        style={{ minWidth: isFullScreen ? '250px' : undefined }}
       >
         <SortControl handleClose={closePopover} />
       </Popover>
 
       {/* Tokens Popover */}
       <Popover
-        onClickOutside={closePopover}
+        onClose={closePopover}
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={importReferenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '158px' : '',
-        }}
+        role={PopoverRole.Dialog}
+        className="p-0"
+        style={{ minWidth: isFullScreen ? '158px' : undefined }}
       >
         <SelectableListItem
           onClick={handleOpenTokenManagement}
@@ -588,18 +579,13 @@ const AssetListControlBar = ({
 
       {/* NFT Popover */}
       <Popover
-        onClickOutside={closePopover}
+        onClose={closePopover}
         isOpen={isImportNftPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={importReferenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '158px' : '',
-        }}
+        role={PopoverRole.Dialog}
+        className="p-0"
+        style={{ minWidth: isFullScreen ? '158px' : undefined }}
       >
         <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
           <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
@@ -641,18 +627,13 @@ const AssetListControlBar = ({
 
       {/* Refresh-only Popover (e.g. DeFi) */}
       <Popover
-        onClickOutside={closePopover}
+        onClose={closePopover}
         isOpen={isRefreshListPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={importReferenceElement}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '158px' : '',
-        }}
+        role={PopoverRole.Dialog}
+        className="p-0"
+        style={{ minWidth: isFullScreen ? '158px' : undefined }}
       >
         <SelectableListItem
           onClick={handleRefreshListOnly}

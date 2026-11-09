@@ -109,15 +109,12 @@ export const NetworkListItemMenu = ({
   return (
     <Popover
       className="multichain-network-list-item-menu__popover p-0"
-      onClickOutside={onClose}
+      onClose={onClose}
       referenceElement={anchorElement}
       role={PopoverRole.Dialog}
       position={PopoverPosition.BottomEnd}
       offset={[8, 0]}
       isOpen={isOpen}
-      isPortal
-      preventOverflow
-      flip
     >
       {isClosingProp ? (
         // When closing, render without ModalFocus to prevent focus management

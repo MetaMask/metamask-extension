@@ -11,7 +11,7 @@ exports[`NetworkListItem renders properly 1`] = `
     >
       <img
         alt="Polygon"
-        class="size-full object-contain"
+        class="size-full object-cover"
         src="./images/pol-token.svg"
       />
     </div>

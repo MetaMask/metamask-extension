@@ -14,10 +14,12 @@ import {
   BoxJustifyContent,
   Icon,
   IconName,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   TextColor,
 } from '@metamask/design-system-react';
-import { ModalFocus, Popover, PopoverPosition } from '../../component-library';
-import { BorderRadius } from '../../../helpers/constants/design-system';
+import { ModalFocus } from '../../component-library';
 import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
@@ -297,11 +299,8 @@ export const MultichainAccountMenu = ({
         isOpen={isOpen}
         position={PopoverPosition.LeftStart}
         referenceElement={referenceElement}
-        matchWidth={false}
-        borderRadius={BorderRadius.LG}
-        isPortal
-        flip
-        onClickOutside={onToggle}
+        role={PopoverRole.Dialog}
+        onClose={onToggle}
       >
         <ModalFocus restoreFocus initialFocusRef={popoverRef}>
           <MultichainAccountMenuItems menuConfig={menuConfig} />

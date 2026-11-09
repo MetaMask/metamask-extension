@@ -45,7 +45,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
-const popoverOpenSelector = '.mm-popover--open';
+const popoverOpenSelector = '.multichain-account-cell-popover-menu';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
 const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';

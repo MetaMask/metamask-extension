@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import {
+  Popover,
+  PopoverPosition,
+  PopoverRole,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
   Text,
 } from '../../../component-library';
 import {
@@ -97,14 +99,9 @@ export default function SnapHomeMenu({
           isOpen={isMenuOpen}
           position={PopoverPosition.BottomEnd}
           role={PopoverRole.Dialog}
-          preventOverflow
-          padding={0}
           offset={[-12, -2]}
-          onClickOutside={closeMenu}
-          onPressEscKey={closeMenu}
-          style={{
-            zIndex: 1,
-          }}
+          onClose={closeMenu}
+          className="p-0"
         >
           <Box
             display={Display.Flex}

@@ -2,21 +2,22 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { IconName, Text, TextVariant } from '@metamask/design-system-react';
+import {
+  IconName,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useEventListener } from '../../../hooks/useEventListener';
 import {
   getPinnedAccountsList,
   getHiddenAccountsList,
 } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
-import {
-  ModalFocus,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
-} from '../../component-library';
+import { ModalFocus } from '../../component-library';
 import {
   updateAccountsList,
   updateHiddenAccountsList,
@@ -66,23 +67,6 @@ export const AccountListItemMenu = ({
     [onClose],
   );
 
-  // Handle click outside of the popover to close it
-  const popoverDialogRef = useRef(null);
-
-  const handleClickOutside = useCallback(
-    (event) => {
-      if (
-        popoverDialogRef?.current &&
-        !popoverDialogRef.current.contains(event.target)
-      ) {
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
-  useEventListener('mousedown', handleClickOutside);
-
   const handlePinning = (address) => {
     const updatedPinnedAccountList = [...pinnedAccountList, address];
     dispatch(updateAccountsList(updatedPinnedAccountList));
@@ -118,19 +102,16 @@ export const AccountListItemMenu = ({
 
   return (
     <Popover
-      className="multichain-account-list-item-menu__popover"
+      className="multichain-account-list-item-menu__popover p-0"
       referenceElement={anchorElement}
       role={PopoverRole.Dialog}
       position={PopoverPosition.Bottom}
       offset={[0, 0]}
-      padding={0}
       isOpen={isOpen}
-      isPortal
-      preventOverflow
-      flip
+      onClose={onClose}
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
+        <div onKeyDown={handleKeyDown}>
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}

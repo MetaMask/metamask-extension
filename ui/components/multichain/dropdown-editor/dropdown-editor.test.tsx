@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { closeNativePopover } from '../../../../test/lib/native-popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
 
@@ -84,12 +85,12 @@ describe('DropdownEditor', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('closes the popover when Escape is pressed', async () => {
+  it('closes the popover when the browser dismisses it', async () => {
     renderEditor();
 
     const trigger = screen.getByTestId('rpc-dropdown');
     await openDropdown(trigger);
-    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    closeNativePopover(screen.getByRole('dialog'));
 
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });

@@ -207,7 +207,7 @@ const mockRemoveAccount = jest.requireMock(
   '../../../store/actions',
 ).removeAccount;
 
-const popoverOpenSelector = '.mm-popover--open';
+const popoverOpenSelector = '.multichain-account-cell-popover-menu';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
 const modalHeaderTestId = 'account-edit-modal-header';
 const walletHeaderTestId = 'multichain-account-tree-wallet-header';

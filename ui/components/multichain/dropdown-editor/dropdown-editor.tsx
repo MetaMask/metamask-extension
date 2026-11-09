@@ -248,11 +248,10 @@ export const DropdownEditor = <Item,>({
           referenceElement={referenceElement}
           position={PopoverPosition.Bottom}
           role={PopoverRole.Dialog}
-          matchWidth
           isOpen={isDropdownOpen}
-          onClickOutside={closeDropdown}
-          onPressEscKey={closeDropdown}
-          className="z-10 rounded-xl p-0"
+          onClose={closeDropdown}
+          className="rounded-xl p-0"
+          style={{ width: referenceElement?.offsetWidth }}
         >
           {renderDropdownList()}
         </Popover>

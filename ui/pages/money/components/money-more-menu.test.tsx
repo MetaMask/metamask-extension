@@ -2,6 +2,7 @@ import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { closeNativePopover } from '../../../../test/lib/native-popover';
 import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
 import { MONEY_LANDING_URL } from '../constants/urls';
 import {
@@ -162,11 +163,11 @@ describe('MoneyMoreMenu', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('closes the menu on escape', async () => {
+  it('closes the menu when the browser dismisses the popover', async () => {
     renderWithLocalization(<MoneyMoreMenu />);
 
     await openMenu();
-    fireEvent.keyDown(document, { key: 'Escape' });
+    closeNativePopover(screen.getByTestId('money-more-menu'));
 
     expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
   });

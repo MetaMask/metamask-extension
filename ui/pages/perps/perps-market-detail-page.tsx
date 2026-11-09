@@ -32,6 +32,8 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  Popover,
+  PopoverPosition,
   Skeleton,
   twMerge,
 } from '@metamask/design-system-react';
@@ -116,7 +118,6 @@ import {
   normalizeMarketDetailsOrders,
 } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { Popover, PopoverPosition } from '../../components/component-library';
 import { useFormatters } from '../../hooks/useFormatters';
 import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
@@ -1568,40 +1569,35 @@ const PerpsMarketDetailPage = () => {
                   >
                     {formatPerpsFiatMinimal(position.marginUsed)}
                   </SensitiveText>
-                  <Popover
-                    referenceElement={marginMenuElement}
-                    isOpen={isMarginMenuOpen}
-                    isPortal
-                    onClickOutside={() => setIsMarginMenuOpen(false)}
-                    onPressEscKey={() => setIsMarginMenuOpen(false)}
-                    position={PopoverPosition.Top}
-                    preventOverflow
-                    flip
-                    offset={[0, 8]}
-                    padding={0}
-                    className="min-w-[220px] rounded-lg z-[1050]"
-                    data-testid="perps-margin-menu"
-                  >
-                    <Box flexDirection={BoxFlexDirection.Column}>
-                      <PopoverMenuItem
-                        icon={IconName.Add}
-                        label={t('perpsAddMargin')}
-                        description={t('perpsAddMarginDescription')}
-                        onClick={handleOpenAddMarginModal}
-                        className="rounded-t-lg py-3"
-                        data-testid="perps-margin-menu-add"
-                      />
-                      <PopoverMenuItem
-                        icon={IconName.Minus}
-                        label={t('perpsRemoveMargin')}
-                        description={t('perpsRemoveMarginDescription')}
-                        onClick={handleOpenDecreaseMarginModal}
-                        className="rounded-b-lg py-3"
-                        data-testid="perps-margin-menu-remove"
-                      />
-                    </Box>
-                  </Popover>
                 </Box>
+                <Popover
+                  referenceElement={marginMenuElement}
+                  isOpen={isMarginMenuOpen}
+                  onClose={() => setIsMarginMenuOpen(false)}
+                  position={PopoverPosition.Top}
+                  offset={[0, 8]}
+                  className="min-w-[220px] p-0"
+                  data-testid="perps-margin-menu"
+                >
+                  <Box flexDirection={BoxFlexDirection.Column}>
+                    <PopoverMenuItem
+                      icon={IconName.Add}
+                      label={t('perpsAddMargin')}
+                      description={t('perpsAddMarginDescription')}
+                      onClick={handleOpenAddMarginModal}
+                      className="rounded-t-lg py-3"
+                      data-testid="perps-margin-menu-add"
+                    />
+                    <PopoverMenuItem
+                      icon={IconName.Minus}
+                      label={t('perpsRemoveMargin')}
+                      description={t('perpsRemoveMarginDescription')}
+                      onClick={handleOpenDecreaseMarginModal}
+                      className="rounded-b-lg py-3"
+                      data-testid="perps-margin-menu-remove"
+                    />
+                  </Box>
+                </Popover>
               </Box>
 
               {/* Third Row: Auto Close - Click to open modal */}
@@ -2110,15 +2106,10 @@ const PerpsMarketDetailPage = () => {
               <Popover
                 referenceElement={modifyMenuElement}
                 isOpen={isModifyMenuOpen}
-                isPortal
-                onClickOutside={() => setIsModifyMenuOpen(false)}
-                onPressEscKey={() => setIsModifyMenuOpen(false)}
+                onClose={() => setIsModifyMenuOpen(false)}
                 position={PopoverPosition.Top}
-                preventOverflow
-                flip
                 offset={[0, 8]}
-                padding={0}
-                className="rounded-lg z-[1050] w-[294px]"
+                className="w-[294px] p-0"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
