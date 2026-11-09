@@ -1569,35 +1569,35 @@ const PerpsMarketDetailPage = () => {
                   >
                     {formatPerpsFiatMinimal(position.marginUsed)}
                   </SensitiveText>
-                  <Popover
-                    referenceElement={marginMenuElement}
-                    isOpen={isMarginMenuOpen}
-                    onClose={() => setIsMarginMenuOpen(false)}
-                    position={PopoverPosition.Top}
-                    offset={[0, 8]}
-                    className="min-w-[220px] p-0"
-                    data-testid="perps-margin-menu"
-                  >
-                    <Box flexDirection={BoxFlexDirection.Column}>
-                      <PopoverMenuItem
-                        icon={IconName.Add}
-                        label={t('perpsAddMargin')}
-                        description={t('perpsAddMarginDescription')}
-                        onClick={handleOpenAddMarginModal}
-                        className="rounded-t-lg py-3"
-                        data-testid="perps-margin-menu-add"
-                      />
-                      <PopoverMenuItem
-                        icon={IconName.Minus}
-                        label={t('perpsRemoveMargin')}
-                        description={t('perpsRemoveMarginDescription')}
-                        onClick={handleOpenDecreaseMarginModal}
-                        className="rounded-b-lg py-3"
-                        data-testid="perps-margin-menu-remove"
-                      />
-                    </Box>
-                  </Popover>
                 </Box>
+                <Popover
+                  referenceElement={marginMenuElement}
+                  isOpen={isMarginMenuOpen}
+                  onClose={() => setIsMarginMenuOpen(false)}
+                  position={PopoverPosition.Top}
+                  offset={[0, 8]}
+                  className="min-w-[220px] p-0"
+                  data-testid="perps-margin-menu"
+                >
+                  <Box flexDirection={BoxFlexDirection.Column}>
+                    <PopoverMenuItem
+                      icon={IconName.Add}
+                      label={t('perpsAddMargin')}
+                      description={t('perpsAddMarginDescription')}
+                      onClick={handleOpenAddMarginModal}
+                      className="rounded-t-lg py-3"
+                      data-testid="perps-margin-menu-add"
+                    />
+                    <PopoverMenuItem
+                      icon={IconName.Minus}
+                      label={t('perpsRemoveMargin')}
+                      description={t('perpsRemoveMarginDescription')}
+                      onClick={handleOpenDecreaseMarginModal}
+                      className="rounded-b-lg py-3"
+                      data-testid="perps-margin-menu-remove"
+                    />
+                  </Box>
+                </Popover>
               </Box>
 
               {/* Third Row: Auto Close - Click to open modal */}
