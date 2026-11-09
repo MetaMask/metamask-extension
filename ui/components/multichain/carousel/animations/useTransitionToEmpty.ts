@@ -21,6 +21,8 @@ export const useTransitionToEmpty = ({
   >('hidden');
 
   const foldTimeoutRef = useRef<NodeJS.Timeout>();
+  const onEmptyStateCompleteRef = useRef(onEmptyStateComplete);
+  onEmptyStateCompleteRef.current = onEmptyStateComplete;
 
   const triggerFoldAnimation = useCallback(() => {
     setEmptyStatePhase('folding');
@@ -28,9 +30,9 @@ export const useTransitionToEmpty = ({
     // Complete after fold animation
     foldTimeoutRef.current = setTimeout(() => {
       setEmptyStatePhase('complete');
-      onEmptyStateComplete();
+      onEmptyStateCompleteRef.current();
     }, ANIMATION_TIMINGS.EMPTY_STATE_DURATION);
-  }, [onEmptyStateComplete]);
+  }, []);
 
   const startEmptyStateSequence = useCallback(() => {
     setEmptyStatePhase('showing');
@@ -45,12 +47,14 @@ export const useTransitionToEmpty = ({
     };
   }, []);
 
-  // Auto-trigger fold after a brief delay to allow component to stabilize
+  // Hold the caught-up message long enough to paint, then fold. A new
+  // callback identity must not restart this timer — the home screen
+  // re-renders while the message is up.
   useEffect(() => {
     if (emptyStatePhase === 'showing') {
       const stabilizationTimer = setTimeout(() => {
         triggerFoldAnimation();
-      }, 100); // Very brief delay just to let the component render properly
+      }, 100);
 
       return () => clearTimeout(stabilizationTimer);
     }
