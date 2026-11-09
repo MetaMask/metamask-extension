@@ -22,12 +22,9 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
-import {
-  ADDRESS_END_CHARS,
-  StartTruncatedText,
-} from '../../../../../components/ui/start-truncated-text';
 import { isResolvableName } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useStartTruncatedText } from '../../../../../hooks/useStartTruncatedText';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipients } from '../../../hooks/send/useRecipients';
 import { useAccountAddressSeedIconMap } from '../../../hooks/send/useAccountAddressSeedIconMap';
@@ -89,6 +86,10 @@ export const RecipientInput = ({
 
     return addressIsValid ? (recipientResolvedLookup ?? to) : undefined;
   }, [recipientError, recipientResolvedLookup, toAddressValidated, to]);
+  const [addressRef, fittedAddress] = useStartTruncatedText(
+    resolvedAddress ?? '',
+    10,
+  );
 
   const recipientName = useMemo(() => {
     const matchingRecipient = recipients.find(
@@ -139,13 +140,12 @@ export const RecipientInput = ({
               )}
               {recipientName && (
                 <Text
+                  ref={addressRef}
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySm}
+                  ellipsis
                 >
-                  <StartTruncatedText
-                    text={resolvedAddress}
-                    endChars={ADDRESS_END_CHARS}
-                  />
+                  {fittedAddress}
                 </Text>
               )}
             </Box>
