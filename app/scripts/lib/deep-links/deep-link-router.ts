@@ -14,6 +14,7 @@ import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
+import { getMobileShareUrl } from '../../../../shared/lib/deep-links/mobile-share';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -176,8 +177,15 @@ export class DeepLinkRouter extends EventEmitter<{
     try {
       const url = new URL(urlStr);
 
-      const parsed = await parse(url);
-      if (parsed) {
+      const mobileShareUrl = getMobileShareUrl(urlStr);
+      const parsed = mobileShareUrl ? false : await parse(url);
+      if (mobileShareUrl) {
+        // This fallback only displays a QR code; it never opens a destination.
+        link = this.getExtensionURL(
+          TRIMMED_DEEP_LINK_ROUTE,
+          new URLSearchParams({ mobileShare: urlStr }).toString(),
+        );
+      } else if (parsed) {
         this.emit('navigate', { url, parsed });
 
         // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**

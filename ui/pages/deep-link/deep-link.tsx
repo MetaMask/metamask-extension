@@ -28,6 +28,8 @@ import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
+import { QRCodeImage } from '../../components/app/deeplink-qr-code';
+import { getMobileShareUrl } from '../../../shared/lib/deep-links/mobile-share';
 
 type TranslateFunction = (
   key: string,
@@ -134,7 +136,7 @@ async function updateStateFromUrl(
   }
 }
 
-export const DeepLink = () => {
+const DeepLinkInterstitial = () => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
@@ -346,6 +348,46 @@ export const DeepLink = () => {
           </Box>
         </>
       )}
+    </FullPageCard>
+  );
+};
+
+/** Displays the mobile QR fallback or the usual deep-link interstitial. */
+export const DeepLink = () => {
+  const location = useLocation();
+  const t = useI18nContext();
+  const originalUrl = new URLSearchParams(location.search).get('mobileShare');
+  const mobileShareUrl = originalUrl ? getMobileShareUrl(originalUrl) : null;
+
+  if (!mobileShareUrl) {
+    return <DeepLinkInterstitial />;
+  }
+
+  return (
+    <FullPageCard
+      pageTestId="parent-selector-deep-link-page"
+      cardTestId="deep-link-mobile-share"
+    >
+      <img
+        className="h-40 w-40"
+        alt="MetaMask logo"
+        src="./images/logo/metamask-fox.svg"
+      />
+      <Text
+        asChild
+        variant={TextVariant.HeadingLg}
+        fontWeight={FontWeight.Bold}
+        className="my-4"
+      >
+        <h1>{t('deepLink_MobileShareTitle')}</h1>
+      </Text>
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+        {t('deepLink_MobileShareDescription')}
+      </Text>
+      <QRCodeImage data={mobileShareUrl} />
+      <Text variant={TextVariant.BodySm} className="w-full break-all">
+        {mobileShareUrl}
+      </Text>
     </FullPageCard>
   );
 };
