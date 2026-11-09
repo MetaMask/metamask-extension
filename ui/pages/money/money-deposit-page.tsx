@@ -9,16 +9,15 @@ import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account
 import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
 
 /**
- * Bridge for the `money-account-deposit` deeplink, mirroring mobile's
- * `MoneyDepositDeeplinkBridge`.
+ * Starts a Money account deposit from a route.
  *
  * The deposit confirmation needs a placeholder transaction that is created in
- * the background, so the deeplink lands here first. Once the Money account is
- * available the deposit starts and the confirmation replaces this page, with
- * closing it returning to the Money home. Ineligible users, and deposits that
- * fail to set up (already reported with a toast), go to the wallet home.
+ * the background, so this page waits for the Money account and then starts the
+ * deposit, and the confirmation replaces it, with closing it returning to the
+ * Money home. Ineligible users, and deposits that fail to set up (already
+ * reported with a toast), go to the wallet home.
  */
-export function MoneyDepositDeeplinkPage() {
+export function MoneyDepositPage() {
   const navigate = useNavigate();
   const { availability, isLoading } = useMoneyAccountAvailability();
   const { initiateDeposit } = useMoneyAccountDeposit();
@@ -48,4 +47,4 @@ export function MoneyDepositDeeplinkPage() {
   return <LoadingScreen />;
 }
 
-export default MoneyDepositDeeplinkPage;
+export default MoneyDepositPage;
