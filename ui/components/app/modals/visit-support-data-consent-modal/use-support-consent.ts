@@ -98,14 +98,6 @@ export const useSupportLinks = (
         ...(customerServiceToken ? { shieldCustomerId } : {}),
       };
       const url = buildSupportLinkWithUserData(supportLink, params);
-      const redactedUrl = new URL(url);
-      if (redactedUrl.searchParams.has('customer_service_token')) {
-        redactedUrl.searchParams.set('customer_service_token', '[REDACTED]');
-      }
-      log.info(
-        '[SupportConsent] Opening enriched support URL',
-        redactedUrl.toString(),
-      );
       trackSupportLinkClicked(supportLink);
       await openUrlInNewTab(url);
     },
@@ -117,17 +109,10 @@ export const useSupportLinks = (
     openWindow(supportLink);
   }, [trackSupportLinkClicked, supportLink]);
 
-  const getCustomerServiceTokenForSupport = useCallback(async () => {
-    try {
-      return await getCustomerServiceToken();
-    } catch (error) {
-      log.info(
-        '[SupportConsent] Failed to fetch customer service token, falling back to plain URL',
-        error,
-      );
-      return undefined;
-    }
-  }, []);
+  const getCustomerServiceTokenForSupport = useCallback(
+    () => getCustomerServiceToken().catch(() => undefined),
+    [],
+  );
 
   return {
     getCustomerServiceTokenForSupport,

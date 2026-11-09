@@ -110,11 +110,7 @@ export default function AboutInfo(): React.ReactElement {
           </TextButton>
         </Box>
         <Box {...linkItemProps}>
-          <TextButton
-            onClick={openSupport}
-            data-testid="about-tab-contact-us-button"
-            {...linkProps}
-          >
+          <TextButton onClick={openSupport} {...linkProps}>
             {t('contactUs')}
           </TextButton>
         </Box>

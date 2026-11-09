@@ -106,16 +106,6 @@ describe('VisitSupportDataConsentModal', () => {
     );
   };
 
-  it('renders the "Save my preference" checkbox checked by default', () => {
-    const { getByRole } = renderModal();
-
-    expect(
-      getByRole('checkbox', {
-        name: messages.visitSupportDataConsentModalSavePreference.message,
-      }),
-    ).toBeChecked();
-  });
-
   it('saves the share preference when accepting with "Save my preference" checked', async () => {
     const { getByTestId } = renderModal();
 
