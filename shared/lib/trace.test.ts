@@ -1,12 +1,14 @@
 import type * as Sentry from '@sentry/browser';
+import { it as jestIt } from '@jest/globals';
 import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import {
   annotateTrace,
   continueTraceContext,
   endTrace,
-  extractTraceContext,
+  extractTraceMetadata,
   getSerializedTraceContext,
   getTraceContext,
+  withoutTraceContext,
   ONBOARDING_MACHINE_TIME_ATTRIBUTE,
   serializeTraceContext,
   trace,
@@ -1235,71 +1237,6 @@ describe('Trace', () => {
     });
   });
 
-  describe('extractTraceContext', () => {
-    it('strips a valid W3C traceparent last-param and returns parsed context', () => {
-      const result = extractTraceContext([
-        'arg1',
-        'arg2',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { _traceContext: TRACEPARENT_MOCK },
-      ]);
-
-      expect(result.cleanParams).toStrictEqual(['arg1', 'arg2']);
-      expect(result.traceContext).toStrictEqual({
-        traceId: TRACE_ID_MOCK,
-        parentSpanId: SPAN_ID_MOCK,
-        parentSampled: true,
-      });
-    });
-
-    it('preserves params when the last param is not a trace envelope', () => {
-      const params = ['arg1', { foo: 'bar' }];
-      const result = extractTraceContext(params);
-
-      expect(result.cleanParams).toBe(params);
-      expect(result.traceContext).toBeUndefined();
-    });
-
-    it('does not strip a `_traceContext` that is not a valid traceparent', () => {
-      const params = [
-        'arg1',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { _traceContext: 'not-a-traceparent' },
-      ];
-      const result = extractTraceContext(params);
-
-      expect(result.cleanParams).toBe(params);
-      expect(result.traceContext).toBeUndefined();
-    });
-
-    it('returns the params unchanged when not an array', () => {
-      const result = extractTraceContext(undefined);
-      expect(result.cleanParams).toBeUndefined();
-      expect(result.traceContext).toBeUndefined();
-    });
-
-    it('round-trips with getSerializedTraceContext', () => {
-      const activeSpanMock = {
-        spanContext: jest.fn().mockReturnValue({
-          traceId: TRACE_ID_MOCK,
-          spanId: SPAN_ID_MOCK,
-          traceFlags: 1,
-        }),
-      } as unknown as Sentry.Span;
-      getActiveSpanMock.mockReturnValue(activeSpanMock);
-
-      const traceparent = getSerializedTraceContext();
-      const { traceContext } = extractTraceContext([
-        'arg',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { _traceContext: traceparent },
-      ]);
-
-      expect(traceContext?.traceId).toBe(TRACE_ID_MOCK);
-      expect(traceContext?.parentSpanId).toBe(SPAN_ID_MOCK);
-    });
-  });
-
   describe('continueTraceContext', () => {
     it('resumes the parent context via continueTrace', () => {
       continueTraceMock.mockImplementation((_opts, fn) => fn());
@@ -1424,4 +1361,130 @@ describe('Trace', () => {
       );
     });
   });
+
+  describe('withoutTraceContext', () => {
+    it('runs the callback when Sentry is not initialized', () => {
+      globalThis.sentry = undefined;
+      expect(withoutTraceContext(() => 7)).toBe(7);
+    });
+
+    it('runs the callback with no active span and returns its value', () => {
+      const withActiveSpan = jest.fn(
+        (_span: Sentry.Span | null, callback: () => void) => {
+          callback();
+        },
+      );
+      globalThis.sentry = {
+        ...globalThis.sentry,
+        withActiveSpan,
+      };
+
+      expect(withoutTraceContext(() => 7)).toBe(7);
+      expect(withActiveSpan).toHaveBeenCalledWith(null, expect.any(Function));
+    });
+
+    it('does not return the callback promise from the span callback', () => {
+      let spanCallbackReturn: unknown = 'unset';
+      const withActiveSpan = jest.fn(
+        (_span: Sentry.Span | null, callback: () => unknown) => {
+          spanCallbackReturn = callback();
+        },
+      );
+      globalThis.sentry = {
+        ...globalThis.sentry,
+        withActiveSpan,
+      };
+      const pending = Promise.resolve('done');
+
+      expect(withoutTraceContext(() => pending)).toBe(pending);
+      expect(spanCallbackReturn).toBeUndefined();
+    });
+  });
+
+  // We intentionally use lots of underscore-prefixed properties in these tests.
+  /* eslint-disable @typescript-eslint/naming-convention */
+  describe('extractTraceMetadata', () => {
+    it('extracts trace data from the given params', () => {
+      const _trace = {
+        traceparent: TRACEPARENT_MOCK,
+        messengerAction: 'AppStateController:getState',
+        spanName: 'Background RPC: AppStateController:getState',
+      };
+      const params = ['AppStateController:getState', [], { _trace }];
+
+      const result = extractTraceMetadata(params);
+
+      expect(result).toStrictEqual({
+        cleanParams: ['AppStateController:getState', []],
+        traceMetadata: {
+          spanName: 'Background RPC: AppStateController:getState',
+          messengerAction: 'AppStateController:getState',
+          traceContext: {
+            traceId: TRACE_ID_MOCK,
+            parentSpanId: SPAN_ID_MOCK,
+            parentSampled: true,
+          },
+        },
+      });
+      expect(params).toHaveLength(3);
+    });
+
+    it('round-trips with getSerializedTraceContext', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: TRACE_ID_MOCK,
+          spanId: SPAN_ID_MOCK,
+          traceFlags: 1,
+        }),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      const traceparent = getSerializedTraceContext();
+      const { traceMetadata } = extractTraceMetadata([
+        'arg',
+        { _trace: { traceparent, spanName: 'Background RPC: arg' } },
+      ]);
+
+      expect(traceMetadata?.traceContext.traceId).toBe(TRACE_ID_MOCK);
+      expect(traceMetadata?.traceContext.parentSpanId).toBe(SPAN_ID_MOCK);
+    });
+
+    jestIt.each([
+      { spanName: 'Background RPC: foo' },
+      { traceparent: 'not-a-traceparent', spanName: 'Background RPC: foo' },
+      { traceparent: TRACEPARENT_MOCK },
+      { traceparent: TRACEPARENT_MOCK, spanName: 1 },
+      { traceparent: TRACEPARENT_MOCK, spanName: 'other' },
+      {
+        traceparent: TRACEPARENT_MOCK,
+        spanName: 'Background RPC: foo',
+        messengerAction: 1,
+      },
+    ])(
+      'does not extract anything from params containing invalid tracing metadata: %j',
+      (metadata) => {
+        const params = ['bar', { _trace: metadata }];
+
+        const result = extractTraceMetadata(params);
+
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
+      },
+    );
+
+    jestIt.each([undefined, {}, []])(
+      'does not extract anything from params that have no _trace argument: %j',
+      (params) => {
+        const result = extractTraceMetadata(params);
+
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
+      },
+    );
+  });
+  /* eslint-enable @typescript-eslint/naming-convention */
 });

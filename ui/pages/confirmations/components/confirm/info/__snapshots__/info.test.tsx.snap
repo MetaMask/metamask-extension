@@ -2385,7 +2385,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
@@ -2446,7 +2446,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
@@ -2577,7 +2577,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
@@ -2638,7 +2638,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"
@@ -2699,7 +2699,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
         >
           <img
             alt="ETH"

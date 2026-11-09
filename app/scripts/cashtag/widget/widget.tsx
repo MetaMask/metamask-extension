@@ -29,7 +29,7 @@ export function Widget({
   ];
 
   return (
-    <div className="mm-cashtag-card w-full h-full overflow-y-auto rounded-xl border border-muted bg-default text-default">
+    <div className="mm-cashtag-card w-full h-full overflow-y-auto rounded-xl border border-muted bg-elevated1 text-default">
       {view === 'detail' ? (
         <TokenDetail
           data={active}

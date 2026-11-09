@@ -73,6 +73,7 @@ import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
+import { usePerpsPositionAlreadyClosed } from '../hooks/usePerpsPositionAlreadyClosed';
 import {
   CloseAmountSection,
   LimitPriceInput,
@@ -364,6 +365,30 @@ export const ClosePositionModal = ({
   const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  // ModalContent binds its document mousedown listener once on mount, so this
+  // dismiss handler has to read the ref when the event fires. The support
+  // consent dialog is portaled outside this dialog; a click on it would
+  // otherwise close the flow before the support tab opens.
+  const isSupportConsentOpenRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const handleSupportConsentOpenChange = useCallback(
+    (isConsentOpen: boolean) => {
+      isSupportConsentOpenRef.current = isConsentOpen;
+    },
+    [],
+  );
+
+  const handleModalDismiss = useCallback(() => {
+    if (isSupportConsentOpenRef.current) {
+      return;
+    }
+    onCloseRef.current();
+  }, []);
   const isServiceInterruptionBannerEnabled = useSelector(
     getIsPerpsServiceInterruptionBannerEnabled,
   );
@@ -384,6 +409,7 @@ export const ClosePositionModal = ({
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const notifyPositionAlreadyClosed = usePerpsPositionAlreadyClosed();
   const formatFiat = useCallback(
     (value: number | string) =>
       formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
@@ -751,6 +777,15 @@ export const ClosePositionModal = ({
           'perpsClosePosition',
           [closeRequestParams],
         );
+        if (
+          !result.success &&
+          isPerpsErrorCode(result, PERPS_ERROR_CODES.POSITION_NOT_FOUND)
+        ) {
+          // The position closed after this modal rendered. Say so and drop it
+          // from the view instead of reporting a failed close.
+          notifyPositionAlreadyClosed();
+          return;
+        }
         if (!result.success) {
           const failure: PerpsErrorInput = {
             error: result.error || 'Failed to close position',
@@ -830,6 +865,7 @@ export const ClosePositionModal = ({
     gate,
     isEligible,
     replacePerpsToastByKey,
+    notifyPositionAlreadyClosed,
     isPartialClose,
     position,
     closeSize,
@@ -891,12 +927,14 @@ export const ClosePositionModal = ({
     <>
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleModalDismiss}
         data-testid="perps-close-position-modal"
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <PerpsServiceInterruptionBanner />
+          <PerpsServiceInterruptionBanner
+            onSupportConsentOpenChange={handleSupportConsentOpenChange}
+          />
           <OrderEntryHeader
             displayName={displayName}
             displayPrice={headerDisplayPrice}

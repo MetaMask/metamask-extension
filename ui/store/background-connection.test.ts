@@ -107,7 +107,7 @@ describe('submitRequestToBackground', () => {
     );
   });
 
-  it('passes traceContext to messengerCall when routing requests through it', async () => {
+  it('passes tracing metadata to messengerCall when routing requests through it', async () => {
     const serializedTraceContext =
       '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
     getSerializedTraceContextMock.mockReturnValue(serializedTraceContext);
@@ -126,10 +126,57 @@ describe('submitRequestToBackground', () => {
       {
         // This is what this property is called.
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        _traceContext: serializedTraceContext,
+        _trace: {
+          traceparent: serializedTraceContext,
+          messengerAction: 'SnapController:installSnaps',
+          spanName: 'Background RPC: SnapController:installSnaps',
+        },
       },
     );
     expect(result).toBe('installed');
+  });
+
+  it('includes a span name for legacy background requests', async () => {
+    const traceparent =
+      '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
+    getSerializedTraceContextMock.mockReturnValueOnce(traceparent);
+    const getState = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Only the RPC method used by this test is needed.
+    await setBackgroundConnection({ getState });
+
+    await submitRequestToBackground('getState');
+
+    expect(getState).toHaveBeenCalledWith({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _trace: { traceparent, spanName: 'Background RPC: getState' },
+    });
+  });
+
+  it('includes action metadata when messengerCall is requested directly', async () => {
+    const traceparent =
+      '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
+    getSerializedTraceContextMock.mockReturnValueOnce(traceparent);
+    const messengerCall = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Only the RPC method used by this test is needed.
+    await setBackgroundConnection({ messengerCall });
+
+    await submitRequestToBackground('messengerCall', [
+      'AppStateController:getState',
+      [],
+    ]);
+
+    expect(messengerCall).toHaveBeenCalledWith(
+      'AppStateController:getState',
+      [],
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _trace: {
+          traceparent,
+          messengerAction: 'AppStateController:getState',
+          spanName: 'Background RPC: AppStateController:getState',
+        },
+      },
+    );
   });
 
   it('continues to accept names of methods within the legacy background API', async () => {
