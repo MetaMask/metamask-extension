@@ -9694,6 +9694,10 @@
     "message": "Rename",
     "description": "Multichain account menu item for triggering account rename action modal"
   },
+  "renameAccount": {
+    "message": "Rename account",
+    "description": "Title of the modal for renaming a multichain account"
+  },
   "replace": {
     "message": "replace"
   },
