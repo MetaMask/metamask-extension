@@ -8,7 +8,19 @@ import {
   getNativeAssetForChainId,
   sumAmounts,
 } from '@metamask/bridge-controller';
-import { Skeleton } from '@metamask/design-system-react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  FontWeight,
+  Skeleton,
+  Text as DsText,
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
 import {
   SuccessPill,
   Text,
@@ -336,23 +348,32 @@ export const MultichainBridgeQuoteCard = ({
                       ? TextColor.warningDefault
                       : TextColor.textAlternative
                   }
-                  style={{ textDecoration: 'line-through' }}
                   data-testid="network-fees-included-original-amount"
                 >
                   {includedTxFees?.valueInCurrency
                     ? formatNetworkFee(includedTxFees.valueInCurrency, currency)
                     : formatNetworkFee(gasFees?.valueInCurrency, currency)}
                 </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textAlternative
-                  }
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+                  className="gap-0.5 px-1.5 rounded-md"
+                  data-testid="network-fees-included-token"
                 >
-                  {t('swapGasFeesIncluded')}
-                </Text>
+                  <AvatarToken
+                    size={AvatarTokenSize.Xs}
+                    src={fromToken?.iconUrl ?? undefined}
+                    name={fromToken?.symbol}
+                  />
+                  <DsText
+                    variant={DsTextVariant.BodyXs}
+                    fontWeight={FontWeight.Medium}
+                    color={DsTextColor.TextAlternative}
+                  >
+                    {fromToken?.symbol}
+                  </DsText>
+                </Box>
               </Row>
             )}
             {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (

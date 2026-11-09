@@ -3112,9 +3112,6 @@
   "contractInteraction": {
     "message": "コントラクトインタラクション"
   },
-  "convertAgain": {
-    "message": "変換を再実行"
-  },
   "convertTokenToNFTDescription": {
     "message": "このアセットはNFTであることが検出されました。MetaMaskでは現在、NFTが完全にネイティブでサポートされています。トークンリストから削除して、NFTとして追加しますか？"
   },
@@ -6302,19 +6299,6 @@
     "message": "mUSDへの変換完了",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSDへの変換に失敗しました"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSDに変換中",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSDへの換算が完了しました"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "ボーナスは1日以内に請求できます。"
-  },
   "musdConvert": {
     "message": "変換"
   },
@@ -8833,7 +8817,7 @@
     "message": "出金が送信されました"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。mUSDへのスワップ時にMetaMaskの手数料は発生しません。",
+    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11896,9 +11880,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "こちら",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " 込み"
   },
   "swapGasFeesSplit": {
     "message": "前の画面のネットワーク手数料は、この2つのトランザクションに分けられています。"

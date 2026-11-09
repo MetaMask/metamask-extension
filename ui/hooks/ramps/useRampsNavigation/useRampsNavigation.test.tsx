@@ -79,7 +79,6 @@ const connectedPortfolioHistory = {
 
 type MetamaskOverrides = Partial<{
   remoteFeatureFlags: {
-    rampsEnabled: boolean;
     rampsServiceDisruption: boolean;
   };
   userRegion: UserRegion | null;
@@ -96,7 +95,7 @@ type MetamaskOverrides = Partial<{
 const buildState = (over: MetamaskOverrides = {}) => ({
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    remoteFeatureFlags: { rampsEnabled: true, rampsServiceDisruption: false },
+    remoteFeatureFlags: { rampsServiceDisruption: false },
     userRegion: region,
     countries: { ...loaded, data: [region.country] },
     providers: {
@@ -159,23 +158,7 @@ beforeEach(() => {
 });
 
 describe('useRampsNavigation goToBuy', () => {
-  it('flag off → opens Portfolio (no modal, no geolocation lookup)', async () => {
-    const { result, getModalName } = run(
-      buildState({
-        remoteFeatureFlags: {
-          rampsEnabled: false,
-          rampsServiceDisruption: false,
-        },
-      }),
-    );
-    const destination = await goToBuy(result);
-    expect(destination).toBe('portfolio');
-    expect(openTab).toHaveBeenCalled();
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
-    expect(getModalName()).toBeNull();
-  });
-
-  it('flag on + connected to Portfolio + no orders → opens Portfolio once', async () => {
+  it('connected to Portfolio + no orders → opens Portfolio once', async () => {
     const { result, getModalName } = run(
       buildState({
         subjects: {
@@ -287,7 +270,7 @@ describe('useRampsNavigation goToBuy', () => {
     `);
   });
 
-  it('flag on + connected to Portfolio + migration attempted → opens native buy', async () => {
+  it('connected to Portfolio + migration attempted → opens native buy', async () => {
     mockHasAttemptedPortfolioBuyMigration.mockResolvedValue(true);
     const { result } = run(
       buildState({
@@ -317,7 +300,7 @@ describe('useRampsNavigation goToBuy', () => {
     `);
   });
 
-  it('flag on + connected to Portfolio + synced orders → opens native buy', async () => {
+  it('connected to Portfolio + synced orders → opens native buy', async () => {
     const { result } = run(
       buildState({
         permissionHistory: connectedPortfolioHistory,
@@ -347,7 +330,7 @@ describe('useRampsNavigation goToBuy', () => {
     `);
   });
 
-  it('flag on + never connected to Portfolio → in-app token selection', async () => {
+  it('never connected to Portfolio → in-app token selection', async () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
     expect(opened).toBe('native');
@@ -377,7 +360,6 @@ describe('useRampsNavigation goToBuy', () => {
     const { result, getModalName } = run(
       buildState({
         remoteFeatureFlags: {
-          rampsEnabled: true,
           rampsServiceDisruption: true,
         },
       }),

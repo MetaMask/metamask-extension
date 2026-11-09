@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "合约交互"
   },
-  "convertAgain": {
-    "message": "再次转换"
-  },
   "convertTokenToNFTDescription": {
     "message": "我们检测到该资产是NFT。MetaMask现在完全原生支持NFT。您想将它从您的代币列表中删除并将它添加为NFT吗？"
   },
@@ -6343,19 +6340,6 @@
     "message": "已兑换为 mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD 兑换失败"
-  },
-  "musdConversionToastInProgress": {
-    "message": "正在将 $1 兑换为 mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD 兑换成功"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "奖励将在一天内可领取。"
-  },
   "musdConvert": {
     "message": "兑换"
   },
@@ -8888,7 +8872,7 @@
     "message": "提现已提交"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask 将为您兑换为您想要的代币。兑换至 mUSD 时，MetaMask 不收取任何费用。",
+    "message": "MetaMask 将为您兑换为您想要的代币。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11951,9 +11935,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " 已包含"
   },
   "swapGasFeesSplit": {
     "message": "上一页显示的网络费用包含这两笔交易产生的费用。"

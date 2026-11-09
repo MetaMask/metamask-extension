@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Sözleşme Etkileşimi"
   },
-  "convertAgain": {
-    "message": "Tekrar dönüştür"
-  },
   "convertTokenToNFTDescription": {
     "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenizden çıkarmak ve NFT olarak eklemek ister misiniz?"
   },
@@ -6347,19 +6344,6 @@
     "message": "mUSD'ye dönüştürüldü",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD dönüştürme işlemi başarısız oldu"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSD dönüştürme işlemi yapılıyor",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD dönüştürme işlemi başarılı"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus bir gün içinde alınabilir olacaktır."
-  },
   "musdConvert": {
     "message": "Dönüştür"
   },
@@ -8896,7 +8880,7 @@
     "message": "Çekim gönderildi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
+    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11959,9 +11943,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "Buradan",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Dahil"
   },
   "swapGasFeesSplit": {
     "message": "Önceki ekrandaki ağ ücretleri bu iki işlem arasında bölünmüştür."

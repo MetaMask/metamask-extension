@@ -27,7 +27,7 @@ type NativeTokenScamWarningModalProps = {
 
 /**
  * Warns that a native token's symbol doesn't match the one expected for its
- * network, and offers to fix the network.
+ * network, and offers to fix the network. Shared by the token list and table.
  *
  * @param props - The component props.
  * @param props.token - The native token with the unexpected symbol.

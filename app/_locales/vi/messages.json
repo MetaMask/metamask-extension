@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Tương tác với hợp đồng"
   },
-  "convertAgain": {
-    "message": "Chuyển đổi lại"
-  },
   "convertTokenToNFTDescription": {
     "message": "Chúng tôi phát hiện tài sản này là một NFT. MetaMask hiện đã hỗ trợ toàn diện và đầy đủ cho NFT. Bạn có muốn xóa tài sản khỏi danh sách token và thêm tài sản dưới dạng NFT không?"
   },
@@ -6347,19 +6344,6 @@
     "message": "Đã chuyển đổi sang mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Chuyển đổi mUSD thất bại"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Đang chuyển đổi $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Chuyển đổi mUSD thành công"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bạn sẽ có thể nhận thưởng trong vòng một ngày."
-  },
   "musdConvert": {
     "message": "Chuyển đổi"
   },
@@ -8896,7 +8880,7 @@
     "message": "Yêu cầu rút tiền đã được gửi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
+    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11959,9 +11943,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "tại đây",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Đã bao gồm"
   },
   "swapGasFeesSplit": {
     "message": "Phí mạng trên màn hình trước được chia cho hai giao dịch này."
