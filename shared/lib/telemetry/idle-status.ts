@@ -15,9 +15,7 @@ export type CurrentActivity = {
 };
 
 /**
- * Non-steady-state {@link ReportedStartupPhase} values, snake_cased, plus the
- * literal `'unknown'` phase (renamed to avoid colliding with the overall
- * `'unknown'` {@link IdleStatus}).
+ * Non-steady-state {@link ReportedStartupPhase} values, snake_cased.
  */
 type StartupActiveReason =
   | 'initializing'
@@ -29,7 +27,7 @@ type StartupActiveReason =
   | 'repair_initializing'
   | 'repair_setting_up_controller'
   | 'shutting_down'
-  | 'unknown_startup_phase';
+  | 'unknown';
 
 type ActiveReason =
   | StartupActiveReason
@@ -184,10 +182,7 @@ export function getIdleStatus(
   }
 
   if (!STEADY_STATE_PHASES.has(currentActivity.startupPhase)) {
-    const reason =
-      currentActivity.startupPhase === 'unknown'
-        ? 'unknown_startup_phase'
-        : currentActivity.startupPhase.replaceAll('-', '_');
+    const reason = currentActivity.startupPhase.replaceAll('-', '_');
     return `active_${reason}` as IdleStatus;
   }
 

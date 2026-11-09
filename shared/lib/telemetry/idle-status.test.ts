@@ -26,7 +26,7 @@ const NON_STEADY_STATE_PHASES: [ReportedStartupPhase, IdleStatus][] = [
   ['repair-initializing', 'active_repair_initializing'],
   ['repair-setting-up-controller', 'active_repair_setting_up_controller'],
   ['shutting-down', 'active_shutting_down'],
-  ['unknown', 'active_unknown_startup_phase'],
+  ['unknown', 'active_unknown'],
 ];
 
 const EMPTY_LAST_ACTIVITY: LastActivityContext = {};
