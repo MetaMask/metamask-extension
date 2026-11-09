@@ -124,8 +124,10 @@ export type StellarHorizonBalanceOptions = {
   /** Native XLM balance as Horizon decimal string. */
   xlmBalance?: string;
   /**
-   * Optional classic USDC trustline. When `limit` is `'0'`, the UI should treat
-   * the asset as requiring activation (Inactive badge / activate card).
+   * Optional classic USDC trustline. Only `limit > 0` rows are visible in the
+   * snap keyring balances (limit `0` is a tombstone and is omitted from the
+   * token list). Inactive / activate UX is covered by navigating to a USDC
+   * asset that has no active trustline metadata.
    */
   usdc?: {
     balance: string;
@@ -370,6 +372,62 @@ export async function mockStellarTokensV2SupportedNetworks(
 }
 
 /**
+ * Builds Stellar native + USDC TokenAsset metadata for the requested asset ids.
+ *
+ * Used by both `tokens.api` v3 and `token.api` (fetchTokenAssets / deep links).
+ *
+ * @param assetIds - Comma-joined or raw assetIds query value.
+ */
+export function buildStellarTokenAssetMetadata(assetIds: string) {
+  const results: object[] = [];
+
+  if (
+    assetIds.includes(STELLAR_NATIVE_ASSET_ID) ||
+    assetIds.includes(STELLAR_CHAIN_ID)
+  ) {
+    results.push({
+      assetId: STELLAR_NATIVE_ASSET_ID,
+      name: 'Stellar',
+      symbol: 'XLM',
+      decimals: 7,
+      type: 'native',
+      iconUrl:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/slip44/148.png',
+      coingeckoId: 'stellar',
+    });
+  }
+
+  if (
+    assetIds.includes(STELLAR_USDC_ASSET_ID) ||
+    assetIds.includes(STELLAR_USDC_ISSUER) ||
+    assetIds.includes('USDC')
+  ) {
+    results.push({
+      assetId: STELLAR_USDC_ASSET_ID,
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 7,
+      iconUrl:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/asset/USDC.png',
+      coingeckoId: 'usd-coin',
+    });
+  }
+
+  return results;
+}
+
+function stellarAssetsRequestCallback(request: { url: string }) {
+  const assetIds =
+    new URL(request.url).searchParams.get('assetIds') ??
+    new URL(request.url).searchParams.getAll('assetIds').join(',');
+
+  return {
+    statusCode: 200,
+    json: buildStellarTokenAssetMetadata(assetIds),
+  };
+}
+
+/**
  * Mocks Tokens API v3 assets for Stellar native + USDC.
  *
  * @param mockServer - Mockttp server.
@@ -380,46 +438,43 @@ export async function mockStellarTokensV3Assets(
   return mockServer
     .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
     .always()
-    .thenCallback((request) => {
-      const assetIds =
-        new URL(request.url).searchParams.get('assetIds') ??
-        new URL(request.url).searchParams.getAll('assetIds').join(',');
+    .thenCallback(stellarAssetsRequestCallback);
+}
 
-      const results = [];
+/**
+ * Mocks Token API `/assets` used by `fetchTokenAssets` (asset deep links).
+ *
+ * Overrides the global mock-e2e well-known metadata (which omits Stellar USDC).
+ *
+ * @param mockServer - Mockttp server.
+ */
+export async function mockStellarTokenApiAssets(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet('https://token.api.cx.metamask.io/assets')
+    .always()
+    .thenCallback(stellarAssetsRequestCallback);
+}
 
-      if (
-        assetIds.includes(STELLAR_NATIVE_ASSET_ID) ||
-        assetIds.includes(STELLAR_CHAIN_ID)
-      ) {
-        results.push({
-          assetId: STELLAR_NATIVE_ASSET_ID,
-          name: 'Stellar',
-          symbol: 'XLM',
-          decimals: 7,
-          type: 'native',
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/slip44/148.png',
-          coingeckoId: 'stellar',
-        });
-      }
-
-      if (
-        assetIds.includes(STELLAR_USDC_ASSET_ID) ||
-        assetIds.includes(STELLAR_USDC_ISSUER) ||
-        assetIds.includes('USDC')
-      ) {
-        results.push({
-          assetId: STELLAR_USDC_ASSET_ID,
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 7,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/asset/USDC.png',
-          coingeckoId: 'usd-coin',
-        });
-      }
-
-      return { statusCode: 200, json: results };
+/**
+ * Mocks Price API supported-networks so MultichainAssetsRatesController will
+ * request Stellar spot prices (same gate Tron E2E mocks).
+ *
+ * @param mockServer - Mockttp server.
+ */
+export async function mockStellarPriceApiSupportedNetworks(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, {
+      fullSupport: [STELLAR_CHAIN_ID],
+      partialSupport: {
+        spotPricesV2: [STELLAR_CHAIN_ID],
+        spotPricesV3: [STELLAR_CHAIN_ID],
+      },
     });
 }
 
@@ -467,6 +522,33 @@ export async function mockStellarSpotPrices(
 }
 
 /**
+ * Mocks base exchange-rates (includes XLM) used by fiat conversion.
+ *
+ * @param mockServer - Mockttp server.
+ */
+export async function mockStellarExchangeRates(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
+    .thenJson(200, {
+      usd: {
+        name: 'US Dollar',
+        ticker: 'usd',
+        value: 1,
+        currencyType: 'fiat',
+      },
+      xlm: {
+        name: 'Stellar',
+        ticker: 'xlm',
+        value: 1 / XLM_TO_USD_RATE,
+        currencyType: 'crypto',
+      },
+    });
+}
+
+/**
  * Mocks fiat exchange-rates used by homepage fiat conversion.
  *
  * @param mockServer - Mockttp server.
@@ -506,7 +588,10 @@ export async function mockStellarApis(
     await mockHorizonAccountTransactions(mockServer, transactions),
     await mockStellarTokensV2SupportedNetworks(mockServer),
     await mockStellarTokensV3Assets(mockServer),
+    await mockStellarTokenApiAssets(mockServer),
+    await mockStellarPriceApiSupportedNetworks(mockServer),
     await mockStellarSpotPrices(mockServer),
+    await mockStellarExchangeRates(mockServer),
     await mockStellarFiatExchangeRates(mockServer),
   ];
 }
@@ -540,7 +625,7 @@ export async function mockStellarApisWithActiveUsdcTrustline(
 }
 
 /**
- * Convenience mock for funded XLM + inactive USDC trustline (`limit` 0).
+ * Convenience mock for funded XLM with no USDC trustline (activation required).
  *
  * @param mockServer - Mockttp server.
  */
@@ -549,10 +634,6 @@ export async function mockStellarApisWithInactiveUsdcTrustline(
 ): Promise<MockedEndpoint[]> {
   return mockStellarApis(mockServer, {
     xlmBalance: XLM_BALANCE,
-    usdc: {
-      balance: '0.0000000',
-      limit: '0.0000000',
-    },
   });
 }
 /* eslint-enable @typescript-eslint/naming-convention */

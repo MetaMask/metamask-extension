@@ -75,7 +75,8 @@ describe('Stellar account derivation', function (this: Suite) {
         const addressList = new AccountAddressListPage(driver);
 
         await homepage.checkPageIsLoaded();
-        await homepage.clickOnReceiveButton();
+        // Homepage More collapses to a single Receive control (`*-overview-default`).
+        await homepage.clickOnReceiveButton('default');
 
         await addressList.checkPageIsLoaded();
         await addressList.checkNetworkAddressIsDisplayedForNetwork({
