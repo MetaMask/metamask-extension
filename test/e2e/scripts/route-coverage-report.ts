@@ -3,9 +3,9 @@
  *
  * Compares the extension routes (`ROUTES` in ui/helpers/constants/routes.ts)
  * with the route page object registry (test/e2e/route-registry) and reports
- * which routes have an E2E page object, which have none yet, which are
- * missing from the registry, and which registry entries no longer match a
- * route.
+ * which routes have an E2E page object, which have none yet, which are not
+ * screens, which are missing from the registry, and which registry entries no
+ * longer match a route.
  *
  * Usage:
  * yarn test:e2e:route-coverage
@@ -43,9 +43,13 @@ function printReport(report: RouteCoverageReport): void {
     ['Total routes', summary.totalRoutes],
     ['With a page object', summary.withPageObject],
     ['No page object yet', summary.withoutPageObject],
+    ['Not a screen', summary.notAScreen],
     ['Not in the registry', summary.unregistered],
     ['Stale registry entries', summary.staleEntries],
-    ['Coverage', `${summary.coveragePercentage}% of routes have a page object`],
+    [
+      'Coverage',
+      `${summary.coveragePercentage}% of screen routes have a page object`,
+    ],
   ];
   for (const [label, value] of summaryRows) {
     console.log(`  ${`${label}:`.padEnd(25)}${value}`);

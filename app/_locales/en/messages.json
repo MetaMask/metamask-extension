@@ -1,4 +1,8 @@
 {
+  "24hChange": {
+    "message": "24h change",
+    "description": "Title for the 24 hour change of the token price"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "Relaunch MetaMask if the problem persists.",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
@@ -12153,9 +12157,6 @@
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Included"
-  },
   "swapGasFeesSplit": {
     "message": "Network fees on the previous screen are split between these two transactions."
   },
@@ -12456,6 +12457,9 @@
   },
   "tokenContractAddress": {
     "message": "Token contract address"
+  },
+  "tokenContractAddressCopied": {
+    "message": "Token address copied"
   },
   "tokenContractWarning": {
     "message": "Token contract warning"

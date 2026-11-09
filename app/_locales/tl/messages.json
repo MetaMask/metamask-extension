@@ -11930,9 +11930,6 @@
     "message": "dito",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Kasama na"
-  },
   "swapGasFeesSplit": {
     "message": "Ang mga bayad sa network sa nakaraang screen ay hinati sa dalawang transaksyon."
   },

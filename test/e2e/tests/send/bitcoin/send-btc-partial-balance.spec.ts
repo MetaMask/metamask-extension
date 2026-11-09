@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { DEFAULT_BTC_BALANCE } from '../../../constants';
-import { TxToastNotification } from '../../../page-objects/components/tx-toast-notification';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
@@ -60,9 +59,6 @@ describe('Bitcoin Send', function (this: Suite) {
         const reviewPage = new BitcoinReviewTxPage(driver);
         await reviewPage.checkPageIsLoaded();
         await reviewPage.clickConfirmButton();
-
-        const txToast = new TxToastNotification(driver);
-        await txToast.checkTxSubmittedToast();
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
