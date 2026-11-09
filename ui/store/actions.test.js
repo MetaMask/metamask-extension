@@ -6665,7 +6665,6 @@ describe('Actions', () => {
             'AppStateController:recordUiInteraction',
             [],
             {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               _trace: {
                 messengerAction: 'AppStateController:recordUiInteraction',
                 spanName:
