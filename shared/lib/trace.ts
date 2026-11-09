@@ -285,28 +285,9 @@ export type TraceRequest = {
   parentContext?: TraceContext;
 
   /**
-   * Opt in to inheriting the ambient active span when no `parentContext` is
-   * supplied. Defaults to `false`: a request without a `parentContext` starts
-   * its own root span.
-   *
-   * Parenting used to fall back to the active span implicitly, which made two
-   * different call sites indistinguishable. A call site that wants a real root
-   * trace and a call site that simply never threaded its parent through both
-   * reach this function as "no `parentContext`", and the implicit fallback
-   * grafted each of them onto whatever span happened to be active. Naming the
-   * behaviour forces every dependent call site to declare which of the two it
-   * is, instead of the resulting topology depending on what the runtime was
-   * doing at the time.
-   *
-   * Set this only where the ambient span is known to be the correct parent, for
-   * example an operation reached from inside another traced callback that
-   * cannot thread its `parentContext` through the intervening API.
-   *
-   * When the fallback applies, the span is also marked `forceTransaction`, so it
-   * stays a transaction rather than becoming a plain child span. The two are
-   * coupled deliberately: demoting an operation to a child removes it from
-   * transaction-level dashboards and alerting, which needs per-operation review
-   * rather than a blanket change. Tracked in MetaMask-planning#7549.
+   * Inherit the active span, as a transaction, when no `parentContext` is given.
+   * Defaults to `false`, which starts a root. Set it only where the active span
+   * is known to be the correct parent.
    */
   allowActiveSpanFallback?: boolean;
 
@@ -326,10 +307,8 @@ export type TraceRequest = {
   op?: string;
 
   /**
-   * Force this trace to start a new root, ignoring any currently active span.
-   * Use for independent background operations (e.g. per-operation background
-   * RPC roots) that must not nest under a concurrently in-flight operation's
-   * span. Has no effect when an explicit `parentContext` is provided.
+   * Start the span as the root of a new trace, ignoring the active span. A
+   * `parentContext` that resolves still takes precedence.
    */
   root?: boolean;
 };
@@ -773,9 +752,7 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
 }
 
 /**
- * Whether a parent context names a trace this process started and expects to
- * resolve from `tracesByKey`. Such a context is not a cross-process
- * continuation, even when it also carries serialized ids for propagation.
+ * Whether a parent context names a trace this process expects in `tracesByKey`.
  *
  * @param value - Candidate parent context.
  * @returns True when the context names an in-process parent.
@@ -817,41 +794,13 @@ function startSpan<T>(
   } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
-  // `resolveParentSpan` returns `null` for both `undefined` and `null`, so the
-  // distinction below is read from `parentContext` itself.
-  //
-  // `undefined` and `null` are different statements and must not be collapsed:
-  //
-  //   undefined -> no parent was declared. The ambient span is inherited
-  //                (and promoted to a transaction) only under
-  //                `allowActiveSpanFallback`; see below.
-  //   null      -> a parent WAS intended but no span exists for it.
-  //                `traceCallback` is typed `(span: Sentry.Span | null)`, so a
-  //                caller receives `null` whenever the SDK created no span and
-  //                passes it straight back. Promoting that to a transaction
-  //                bills a root for what the caller asked to be a child.
-  //
-  // See https://github.com/MetaMask/MetaMask-planning/issues/7569
+  // `undefined` means no parent was declared; `null` means one was intended but
+  // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
 
-  // Parenting is explicit by default: without a `parentContext`, a trace starts
-  // its own root span rather than grafting onto whatever span happens to be
-  // active. Call sites that want the ambient span (e.g. an operation reached
-  // from inside another traced callback that cannot thread its parent through
-  // the intervening API) opt in via `allowActiveSpanFallback`, so "wants a root"
-  // and "forgot to pass a parent" are distinguishable at the call site.
-  //
-  // Must capture before withScope forks the scope.
-  //
-  // `forceTransaction` stays coupled to the fallback deliberately: promoting the
-  // inherited child back to a transaction preserves transaction-level visibility
-  // for monitoring. Decoupling the two would demote these operations out of
-  // transaction-level dashboards and alerting, which needs per-operation review
-  // first (see MetaMask-planning#7549) and is therefore not done here.
-  //
-  // `root: true` overrides `allowActiveSpanFallback`, and also runs the span
-  // under `startNewTrace` (below): a span with no parent still takes the scope's
-  // trace id, so only a fresh propagation context moves it off the ambient trace.
+  // Only an undeclared parent inherits the active span, and only under
+  // `allowActiveSpanFallback`; `forceTransaction` keeps it in transaction-level
+  // dashboards. `root` overrides this. Read before `withScope` forks the scope.
   let forceTransaction: boolean | undefined;
   if (!root && !parentSpan && !parentDeclared && allowActiveSpanFallback) {
     const activeSpan = sentryGetActiveSpan();
@@ -891,10 +840,8 @@ function startSpan<T>(
     );
   }
 
-  // A parent was declared (`null`, or an in-process context that missed the
-  // map) but did not resolve. Nest under whatever is active rather than
-  // starting a new segment — and deliberately WITHOUT `forceTransaction`, since
-  // a failed lookup is not a statement that this operation is a root.
+  // A declared parent that did not resolve nests under the active span, without
+  // `forceTransaction`: a failed lookup is not a request for a root.
   if (!parentSpan && parentDeclared) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
@@ -911,12 +858,8 @@ function startSpan<T>(
       return callback(spanOptions);
     });
 
-  // `root: true` severs the active-span parent (above), but `withScope` alone
-  // only clones the propagation context, so the span keeps the ambient
-  // trace id (e.g. the long-lived SW `/service-worker.js` pageload) and still
-  // accumulates into the mega-trace, which is grouped by trace id — not by
-  // parent span. `startNewTrace` resets the propagation context to a fresh trace
-  // id, so the op peels off at the trace level, not merely the span level.
+  // `withScope` alone keeps the ambient trace id; `startNewTrace` issues a new
+  // one, which is what moves a `root` span off the ambient trace.
   return root ? sentryStartNewTrace(runInScope) : runInScope();
 }
 

@@ -735,10 +735,7 @@ describe('Trace', () => {
     it('starts a new trace (fresh propagation context) when root is true', () => {
       trace({ name: NAME_MOCK, root: true }, () => true);
 
-      // startNewTrace resets the propagation-context trace id, so the op roots
-      // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
-      // withScope alone would clone the same trace id — severing the parent
-      // span but leaving the op in the mega-trace (grouped by trace id).
+      // `withScope` alone would keep the ambient trace id.
       expect(startNewTraceMock).toHaveBeenCalledTimes(1);
       expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
       expect(withScopeMock).toHaveBeenCalledTimes(1);
@@ -836,19 +833,8 @@ describe('Trace', () => {
       );
     });
 
-    // Regression test for MetaMask-planning#7569.
-    //
-    // The case above covers a map-lookup HIT. This covers the MISS: an
-    // in-process parent whose span is not in `tracesByKey` (it ended, or was
-    // never registered). `resolveParentSpan` returns `null` for that, which is
-    // the same value it returns for "no parent intended" — so `startSpan`
-    // cannot tell the two apart, sees the serialized ids, and routes to
-    // `continueTrace` with `parentSpan: undefined`. That promotes the span to a
-    // segment, and a segment is a billed transaction.
-    //
-    // Measured consequence: ~44.6% of extension transactions carry a
-    // `parent_span` id while being billed as roots, across 25 families.
-    //
+    // A named in-process parent missing from `tracesByKey` must not go through
+    // `continueTrace`, which would bill a new segment.
     it('does not promote an unresolvable in-process parent to a segment', () => {
       continueTraceMock.mockImplementation((_opts, fn) => fn());
       const activeSpanMock = {
