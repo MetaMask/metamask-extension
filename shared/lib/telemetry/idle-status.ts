@@ -53,11 +53,11 @@ export type IdleStatus = 'unknown' | 'idle' | `active_${ActiveReason}`;
  * Startup phases considered steady state (not a lifecycle transition).
  * Covers cold start, warm restart, and vault repair.
  */
-const STEADY_STATE_PHASES: ReportedStartupPhase[] = [
+const STEADY_STATE_PHASES = new Set<ReportedStartupPhase>([
   'initialized',
   'reinitialized',
   'repair-initialized',
-];
+]);
 
 /**
  * Placeholder thresholds, to be tuned once `idle_status` data is collected in
@@ -183,7 +183,7 @@ export function getIdleStatus(
     return 'unknown';
   }
 
-  if (!STEADY_STATE_PHASES.includes(currentActivity.startupPhase)) {
+  if (!STEADY_STATE_PHASES.has(currentActivity.startupPhase)) {
     const reason =
       currentActivity.startupPhase === 'unknown'
         ? 'unknown_startup_phase'
