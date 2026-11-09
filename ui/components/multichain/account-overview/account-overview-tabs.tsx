@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/constants/app-state';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../networks-form/use-safe-chains';
@@ -64,6 +65,7 @@ export const AccountOverviewTabs = ({
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
+  const { isWideLayout } = useAppLayout();
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
@@ -138,6 +140,7 @@ export const AccountOverviewTabs = ({
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}
+                variant={isWideLayout ? 'table' : 'list'}
               />
             </ErrorBoundary>
           </Tab>
