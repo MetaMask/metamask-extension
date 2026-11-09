@@ -23,9 +23,12 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 const mockTrackEvent = jest.fn();
+const mockOpenTab = jest.fn();
 
 beforeEach(() => {
   mockTrackEvent.mockResolvedValue(undefined);
+  global.platform.openTab = mockOpenTab;
+  mockOpenTab.mockResolvedValue(undefined);
 });
 
 jest.mock('../../../../hooks/useAnalytics', () => {
@@ -122,7 +125,7 @@ describe('VisitSupportDataConsentModal', () => {
     );
 
     await waitFor(() => {
-      expect(openWindow).toHaveBeenCalled();
+      expect(mockOpenTab).toHaveBeenCalled();
     });
     expect(setSupportDataSharingPreference).toHaveBeenCalledWith(true);
     expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
@@ -153,7 +156,7 @@ describe('VisitSupportDataConsentModal', () => {
     );
 
     await waitFor(() => {
-      expect(openWindow).toHaveBeenCalled();
+      expect(mockOpenTab).toHaveBeenCalled();
     });
     expect(setSupportDataSharingPreference).not.toHaveBeenCalled();
     expect(setShouldShowSupportConsent).not.toHaveBeenCalled();
@@ -236,12 +239,13 @@ describe('VisitSupportDataConsentModal', () => {
           name: MetaMetricsEventName.SupportLinkClicked,
           properties: expect.objectContaining({
             category: MetaMetricsEventCategory.Settings,
-            url: expectedUrl,
+            url: SUPPORT_LINK,
             [MetaMetricsContextProp.PageTitle]: 'Settings',
           }),
         }),
       );
-      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+      expect(mockOpenTab).toHaveBeenCalledWith({ url: expectedUrl });
+      expect(openWindow).not.toHaveBeenCalled();
     });
   });
 
@@ -268,14 +272,14 @@ describe('VisitSupportDataConsentModal', () => {
       expect(acceptButton).toBeDisabled();
       expect(rejectButton).toBeDisabled();
       expect(mockOnClose).not.toHaveBeenCalled();
-      expect(openWindow).not.toHaveBeenCalled();
+      expect(mockOpenTab).not.toHaveBeenCalled();
     });
 
     resolveToken(mockCustomerServiceToken);
 
     await waitFor(() => {
       expect(mockOnClose).toHaveBeenCalled();
-      expect(openWindow).toHaveBeenCalled();
+      expect(mockOpenTab).toHaveBeenCalled();
     });
   });
 
@@ -296,7 +300,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     await waitFor(() => {
       expect(getCustomerServiceTokenMock).toHaveBeenCalled();
-      expect(openWindow).not.toHaveBeenCalled();
+      expect(mockOpenTab).not.toHaveBeenCalled();
     });
 
     fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
@@ -306,7 +310,7 @@ describe('VisitSupportDataConsentModal', () => {
     resolveToken(mockCustomerServiceToken);
 
     await waitFor(() => {
-      expect(openWindow).not.toHaveBeenCalled();
+      expect(mockOpenTab).not.toHaveBeenCalled();
       expect(mockTrackEvent).not.toHaveBeenCalled();
     });
   });
@@ -361,12 +365,12 @@ describe('VisitSupportDataConsentModal', () => {
           name: MetaMetricsEventName.SupportLinkClicked,
           properties: expect.objectContaining({
             category: MetaMetricsEventCategory.Settings,
-            url: expectedUrl,
+            url: SUPPORT_LINK,
             [MetaMetricsContextProp.PageTitle]: 'Settings',
           }),
         }),
       );
-      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+      expect(mockOpenTab).toHaveBeenCalledWith({ url: expectedUrl });
     });
   });
 
@@ -396,12 +400,12 @@ describe('VisitSupportDataConsentModal', () => {
           name: MetaMetricsEventName.SupportLinkClicked,
           properties: expect.objectContaining({
             category: MetaMetricsEventCategory.Settings,
-            url: expectedUrl,
+            url: SUPPORT_LINK,
             [MetaMetricsContextProp.PageTitle]: 'Settings',
           }),
         }),
       );
-      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+      expect(mockOpenTab).toHaveBeenCalledWith({ url: expectedUrl });
     });
   });
 
@@ -422,7 +426,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     await waitFor(() => {
       expect(mockOnClose).toHaveBeenCalled();
-      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+      expect(mockOpenTab).toHaveBeenCalledWith({ url: expectedUrl });
     });
     expect(setSupportDataSharingPreference).toHaveBeenCalledWith(true);
     expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
@@ -436,10 +440,10 @@ describe('VisitSupportDataConsentModal', () => {
     );
 
     await waitFor(() => {
-      expect(openWindow).toHaveBeenCalled();
+      expect(mockOpenTab).toHaveBeenCalled();
     });
 
-    const calledUrl = (openWindow as jest.Mock).mock.calls[0][0];
+    const { url: calledUrl } = mockOpenTab.mock.calls[0][0];
     // Verify URL is properly formed with correct separator
     expect(calledUrl).toMatch(/[?&]metamask_version=/u);
     // Should not have double separators
@@ -506,7 +510,7 @@ describe('VisitSupportDataConsentModal', () => {
     expect(modal).toBeInTheDocument();
   });
 
-  it('calls trackEvent and openWindow in correct order on accept', async () => {
+  it('calls trackEvent and openTab in correct order on accept', async () => {
     const callOrder: string[] = [];
 
     mockTrackEvent.mockImplementation(() => {
@@ -514,8 +518,9 @@ describe('VisitSupportDataConsentModal', () => {
       return Promise.resolve();
     });
 
-    (openWindow as jest.Mock).mockImplementation(() => {
-      callOrder.push('openWindow');
+    mockOpenTab.mockImplementation(() => {
+      callOrder.push('openTab');
+      return Promise.resolve();
     });
 
     const { getByTestId } = renderModal();
@@ -525,7 +530,7 @@ describe('VisitSupportDataConsentModal', () => {
     );
 
     await waitFor(() => {
-      expect(callOrder).toEqual(['trackEvent', 'openWindow']);
+      expect(callOrder).toEqual(['trackEvent', 'openTab']);
     });
   });
 

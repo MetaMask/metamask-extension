@@ -94,7 +94,7 @@ const VisitSupportDataConsentModal = ({
       }
       persistPreference(true);
       closeModal();
-      openSupportLink(customerServiceToken);
+      await openSupportLink(customerServiceToken);
     } finally {
       setIsLoading(false);
     }

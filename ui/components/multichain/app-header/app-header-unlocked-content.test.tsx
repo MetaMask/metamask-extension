@@ -219,6 +219,8 @@ describe('Global menu', () => {
     });
 
     it('opens the support site when Confirm is clicked', async () => {
+      const openTab = jest.fn().mockResolvedValue(undefined);
+      global.platform.openTab = openTab;
       fireEvent.click(
         await screen.findByTestId(
           'visit-support-data-consent-modal-accept-button',
@@ -226,7 +228,9 @@ describe('Global menu', () => {
       );
 
       await waitFor(() => {
-        expect(openWindow).toHaveBeenCalled();
+        expect(openTab).toHaveBeenCalledWith({
+          url: expect.stringContaining('customer_service_token='),
+        });
       });
     });
 

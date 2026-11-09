@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
@@ -44,6 +44,26 @@ export const getSavedSupportDataSharingPreference = (
 };
 
 /**
+ * Opens a URL in a new tab through the extension API. Unlike `window.open`, it
+ * does not depend on the user gesture, which a token fetch can outlast, and it
+ * still works when the popup closes as the tab takes focus. Falls back to
+ * `window.open` if the extension API fails.
+ *
+ * @param url - The URL to open.
+ */
+const openUrlInNewTab = async (url: string) => {
+  try {
+    await global.platform.openTab({ url });
+  } catch (error) {
+    log.warn(
+      '[SupportConsent] Failed to open support tab, falling back to window.open',
+      error,
+    );
+    openWindow(url);
+  }
+};
+
+/**
  * Opens the support site with or without the user's data, tracking the click.
  * Shared by the consent modal and by entry points that apply a saved choice.
  */
@@ -55,7 +75,7 @@ export const useSupportLinks = (
   const segmentContext = useSegmentContext();
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const trackAndOpen = useCallback(
+  const trackSupportLinkClicked = useCallback(
     (url: string) => {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
@@ -66,13 +86,12 @@ export const useSupportLinks = (
           })
           .build(),
       ).catch(() => undefined);
-      openWindow(url);
     },
     [trackEvent, createEventBuilder, segmentContext.page?.title],
   );
 
   const openSupportLink = useCallback(
-    (customerServiceToken?: string) => {
+    async (customerServiceToken?: string) => {
       const params: SupportLinkUserData = {
         version,
         customerServiceToken,
@@ -87,14 +106,16 @@ export const useSupportLinks = (
         '[SupportConsent] Opening enriched support URL',
         redactedUrl.toString(),
       );
-      trackAndOpen(url);
+      trackSupportLinkClicked(supportLink);
+      await openUrlInNewTab(url);
     },
-    [version, shieldCustomerId, trackAndOpen, supportLink],
+    [version, shieldCustomerId, trackSupportLinkClicked, supportLink],
   );
 
   const openSupportLinkWithoutUserData = useCallback(() => {
-    trackAndOpen(supportLink);
-  }, [trackAndOpen, supportLink]);
+    trackSupportLinkClicked(supportLink);
+    openWindow(supportLink);
+  }, [trackSupportLinkClicked, supportLink]);
 
   const getCustomerServiceTokenForSupport = useCallback(async () => {
     try {
@@ -118,8 +139,8 @@ export const useSupportLinks = (
 /**
  * Returns a click handler for "contact support" entry points: applies the
  * saved data sharing choice directly when there is one, otherwise shows the
- * consent modal. Runs from the click so the support tab opens from a user
- * gesture, like the modal's own buttons.
+ * consent modal. The share path waits for the customer service token, so
+ * repeated clicks while it is pending are ignored to avoid opening the tab twice.
  *
  * @param showConsentModal - Opens the entry point's consent modal.
  * @returns The click handler.
@@ -131,10 +152,19 @@ export const useOpenSupport = (showConsentModal: () => void) => {
     openSupportLink,
     openSupportLinkWithoutUserData,
   } = useSupportLinks();
+  const isOpeningRef = useRef(false);
 
   return useCallback(async () => {
     if (savedPreference === true) {
-      openSupportLink(await getCustomerServiceTokenForSupport());
+      if (isOpeningRef.current) {
+        return;
+      }
+      isOpeningRef.current = true;
+      try {
+        await openSupportLink(await getCustomerServiceTokenForSupport());
+      } finally {
+        isOpeningRef.current = false;
+      }
       return;
     }
     if (savedPreference === false) {
