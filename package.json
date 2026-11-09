@@ -785,6 +785,7 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-node": "^0.3.4",
     "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-check-file": "^3.3.2",
     "eslint-plugin-import-x": "^4.3.0",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-jsdoc": "^50.2.4",

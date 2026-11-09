@@ -7,6 +7,7 @@ const mochaConfig = require('@metamask/eslint-config-mocha').default;
 const jestConfig = require('@metamask/eslint-config-jest').default;
 const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
+const checkFilePlugin = require('eslint-plugin-check-file');
 const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const storybookPlugin = require('eslint-plugin-storybook');
@@ -42,6 +43,21 @@ module.exports = defineConfig([
     },
     linterOptions: {
       reportUnusedDisableDirectives: 'error',
+    },
+  },
+  {
+    // Deep links are spelled `deep-link` in file and folder names, and
+    // `DeepLink` where a name is PascalCase.
+    plugins: { 'check-file': checkFilePlugin },
+    rules: {
+      'check-file/filename-blocklist': [
+        'error',
+        {
+          '**/*deeplink*': '*deep-link*',
+          '**/*deeplink*/**': '*deep-link*/**',
+          '**/*Deeplink*': '*DeepLink*',
+        },
+      ],
     },
   },
 

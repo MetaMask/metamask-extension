@@ -4,7 +4,7 @@ import {
   DEFAULT_ROUTE,
   MONEY_HOME_ROUTE,
 } from '../../helpers/constants/routes';
-import { MoneyDepositDeeplinkPage } from './money-deposit-deeplink-page';
+import { MoneyDepositPage } from './money-deposit-page';
 
 const mockNavigate = jest.fn();
 const mockUseMoneyAccountAvailability = jest.fn();
@@ -33,12 +33,12 @@ const AVAILABLE = {
 };
 
 const renderPage = async () => {
-  const result = render(<MoneyDepositDeeplinkPage />);
+  const result = render(<MoneyDepositPage />);
   await act(async () => undefined);
   return result;
 };
 
-describe('MoneyDepositDeeplinkPage', () => {
+describe('MoneyDepositPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseMoneyAccountAvailability.mockReturnValue(AVAILABLE);
@@ -59,7 +59,7 @@ describe('MoneyDepositDeeplinkPage', () => {
   it('starts the deposit only once across re-renders', async () => {
     const { rerender } = await renderPage();
 
-    rerender(<MoneyDepositDeeplinkPage />);
+    rerender(<MoneyDepositPage />);
     await act(async () => undefined);
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
@@ -77,7 +77,7 @@ describe('MoneyDepositDeeplinkPage', () => {
     expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
 
     mockUseMoneyAccountAvailability.mockReturnValue(AVAILABLE);
-    rerender(<MoneyDepositDeeplinkPage />);
+    rerender(<MoneyDepositPage />);
     await act(async () => undefined);
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
