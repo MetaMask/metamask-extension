@@ -12,7 +12,7 @@ Instructions for AI coding agents working on E2E tests in the MetaMask Browser E
 - **E2E create:** `mms-extension-testing` → `references/e2e.md` → `references/e2e/writing-tests.md`
 - **E2E maintain (flake / bad practices):** `mms-extension-testing` → `references/e2e.md` → `references/e2e/maintain.md`
 - **E2E CI decision tree:** [.github/guidelines/E2E_DECISION_TREE.md](../../.github/guidelines/E2E_DECISION_TREE.md) — when E2E runs/skips, label effects, build-reuse logic
-- **E2E deprecated patterns & POM anti-patterns (local review):** [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) — sections **3.1–3.9**. Applied by **local** review (CODEBOT / `/review` / local Bugbot run) and agent self-check, **not** by Bugbot on the PR — see skill `references/e2e/pom-antipatterns.md`.
+- **E2E deprecated patterns & POM anti-patterns (local review):** [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) — sections **3.1–3.10**. Applied by **local** review (CODEBOT / `/review` / local Bugbot run) and agent self-check, **not** by Bugbot on the PR — see skill `references/e2e/pom-antipatterns.md`.
 - **Human E2E guidelines (POM best practices):** [contributor-docs extension E2E guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md#best-practices)
 - **Testing philosophy:** [docs/testing.md](../../docs/testing.md)
 - **E2E Driver API:** [webdriver/README.md](./webdriver/README.md)
@@ -28,7 +28,7 @@ Deprecated standalone skills (`mms-e2e-testing`, `mms-e2e-flakiness-patterns`) r
 
 ## POM anti-patterns (quick checklist)
 
-Write E2E correctly from the start using `mms-extension-testing`. Before submitting, run local review against [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) sections **3.3–3.9** and the skill checklist `references/e2e/pom-antipatterns.md`. Do **not** introduce:
+Write E2E correctly from the start using `mms-extension-testing`. Before submitting, run local review against [.cursor/BUGBOT.md](../../.cursor/BUGBOT.md) sections **3.3–3.10** and the skill checklist `references/e2e/pom-antipatterns.md`. Do **not** introduce:
 
 | Avoid                                                         | Prefer                                                |
 | ------------------------------------------------------------- | ----------------------------------------------------- |
@@ -39,5 +39,7 @@ Write E2E correctly from the start using `mms-extension-testing`. Before submitt
 | Hardcoded `driver.delay` / `setTimeout` without justification | Wait for a condition; comment if delay is unavoidable |
 | Page object importing/calling another page object             | Flow that owns both page objects                      |
 | `try` / `catch` in page objects or flows                      | Let failures surface via waits / `check*` messages    |
+
+**Route registry:** when you add a page object for a full screen that has its own route, map it in [route-registry/route-registry.ts](./route-registry/route-registry.ts), replacing `null`. Skip this for page objects that cover modals or components. It is optional and never blocks a PR; only adding or removing routes is enforced, by `route-registry.test.ts`.
 
 Run `yarn skills` after `yarn install` if `.cursor/rules/mms-extension-testing/` is missing locally.
