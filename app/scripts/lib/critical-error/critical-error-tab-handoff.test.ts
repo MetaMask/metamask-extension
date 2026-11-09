@@ -65,7 +65,7 @@ describe('critical-error-repair session', () => {
       CriticalErrorRepairAction.Reset,
     ]) {
       it(`returns payload with stored ${repairAction} repairAction when repair session data is valid`, async () => {
-        const tabUrl = 'https://metamask.io/restoring#abc';
+        const tabUrl = 'https://metamask.com/restoring#abc';
         (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
           [CRITICAL_ERROR_REPAIR_KEY]: {
             repairAction,
@@ -85,7 +85,7 @@ describe('critical-error-repair session', () => {
     }
 
     it('defaults to recover when repairAction is missing', async () => {
-      const tabUrl = 'https://metamask.io/restoring#abc';
+      const tabUrl = 'https://metamask.com/restoring#abc';
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
         [CRITICAL_ERROR_REPAIR_KEY]: { tabUrl, tabId: 42 },
       });
@@ -100,7 +100,7 @@ describe('critical-error-repair session', () => {
     });
 
     it('returns undefined tabId when tabId is not a number', async () => {
-      const tabUrl = 'https://metamask.io/restoring#abc';
+      const tabUrl = 'https://metamask.com/restoring#abc';
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
         [CRITICAL_ERROR_REPAIR_KEY]: { tabUrl },
       });
@@ -235,7 +235,7 @@ describe('handoffRestoringTabToExtension', () => {
 
     await handoffRestoringTabToExtension(platform, {
       tabId: undefined,
-      tabUrl: 'https://metamask.io/restoring#1',
+      tabUrl: 'https://metamask.com/restoring#1',
     });
 
     expect(browser.tabs.get).not.toHaveBeenCalled();
@@ -246,7 +246,7 @@ describe('handoffRestoringTabToExtension', () => {
   });
 
   it('updates tab when URL still matches', async () => {
-    const tabUrl = 'https://metamask.io/restoring#frag';
+    const tabUrl = 'https://metamask.com/restoring#frag';
     (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
       id: 7,
       url: tabUrl,
@@ -262,11 +262,11 @@ describe('handoffRestoringTabToExtension', () => {
     expect(browser.tabs.create).not.toHaveBeenCalled();
   });
 
-  it('updates tab when metamask.io redirected to locale-prefixed path', async () => {
-    const tabUrl = 'https://metamask.io/restoring#frag';
+  it('updates tab when metamask.com redirected to locale-prefixed path', async () => {
+    const tabUrl = 'https://metamask.com/restoring#frag';
     (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
       id: 7,
-      url: 'https://metamask.io/en-GB/restoring#frag',
+      url: 'https://metamask.com/en-GB/restoring#frag',
     });
     (browser.tabs.update as jest.Mock).mockResolvedValueOnce({});
 
@@ -289,7 +289,7 @@ describe('handoffRestoringTabToExtension', () => {
 
     await handoffRestoringTabToExtension(platform, {
       tabId: 7,
-      tabUrl: 'https://metamask.io/restoring#frag',
+      tabUrl: 'https://metamask.com/restoring#frag',
     });
 
     expect(browser.tabs.update).not.toHaveBeenCalled();
@@ -302,14 +302,14 @@ describe('handoffRestoringTabToExtension', () => {
   it('opens extension UI in a new tab when hash fragment differs', async () => {
     (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
       id: 7,
-      url: 'https://metamask.io/restoring#different',
+      url: 'https://metamask.com/restoring#different',
     });
 
     (browser.tabs.create as jest.Mock).mockResolvedValueOnce({ id: 2 });
 
     await handoffRestoringTabToExtension(platform, {
       tabId: 7,
-      tabUrl: 'https://metamask.io/restoring#frag',
+      tabUrl: 'https://metamask.com/restoring#frag',
     });
 
     expect(browser.tabs.update).not.toHaveBeenCalled();
@@ -326,7 +326,7 @@ describe('handoffRestoringTabToExtension', () => {
     await expect(
       handoffRestoringTabToExtension(platform, {
         tabId: 99,
-        tabUrl: 'https://metamask.io/restoring#frag',
+        tabUrl: 'https://metamask.com/restoring#frag',
       }),
     ).resolves.toBeUndefined();
 
@@ -337,7 +337,7 @@ describe('handoffRestoringTabToExtension', () => {
   });
 
   it('opens extension UI in a new tab when tabs.update fails', async () => {
-    const tabUrl = 'https://metamask.io/restoring#frag';
+    const tabUrl = 'https://metamask.com/restoring#frag';
     (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
       id: 7,
       url: tabUrl,
@@ -362,7 +362,7 @@ describe('handoffRestoringTabToExtension', () => {
 
     await handoffRestoringTabToExtension(platform, {
       tabId: 7,
-      tabUrl: 'https://metamask.io/restoring#frag',
+      tabUrl: 'https://metamask.com/restoring#frag',
     });
 
     expect(browser.tabs.update).not.toHaveBeenCalled();

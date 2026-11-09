@@ -488,7 +488,7 @@ export type SortButtonPreset =
  * External resources and content for Perps education
  */
 export const LEARN_MORE_CONFIG = {
-  ExternalUrl: 'https://metamask.io/perps',
+  ExternalUrl: 'https://metamask.com/perps',
   TitleKey: 'perps.tutorial.card.title',
   DescriptionKey: 'perps.learn_more.description',
   CtaKey: 'perps.learn_more.cta',

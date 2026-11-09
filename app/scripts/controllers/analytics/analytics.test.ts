@@ -484,7 +484,7 @@ describe('analytics', () => {
 
         expect(setUninstallURL).toHaveBeenCalledTimes(1);
         expect(setUninstallURL).toHaveBeenCalledWith(
-          `https://metamask.io/uninstalled?${new URLSearchParams({
+          `https://metamask.com/uninstalled?${new URLSearchParams({
             av: testVersion,
             mmi: encodedAnalyticsId,
             env: ENVIRONMENT.PRODUCTION,
@@ -501,7 +501,7 @@ describe('analytics', () => {
 
         expect(setUninstallURL).toHaveBeenCalledTimes(1);
         expect(setUninstallURL).toHaveBeenCalledWith(
-          `https://metamask.io/uninstalled?${new URLSearchParams({
+          `https://metamask.com/uninstalled?${new URLSearchParams({
             av: testVersion,
           }).toString()}`,
         );

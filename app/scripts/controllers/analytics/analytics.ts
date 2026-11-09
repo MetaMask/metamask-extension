@@ -35,7 +35,7 @@ import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment
 import { getPlatform } from '../../lib/util';
 import { ANONYMOUS_EVENT_PROPERTY } from './platform-adapter';
 
-const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+const EXTENSION_UNINSTALL_URL = 'https://metamask.com/uninstalled';
 
 type SegmentTrackPayload = Omit<
   SegmentEventPayload,
