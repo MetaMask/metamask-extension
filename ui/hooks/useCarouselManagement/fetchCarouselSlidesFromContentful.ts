@@ -69,7 +69,7 @@ type ContentfulBanner = ContentfulSysField & {
   };
 };
 
-type ContentfulBannerResponse = {
+export type ContentfulBannerResponse = {
   items: ContentfulBanner[];
   includes?: {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

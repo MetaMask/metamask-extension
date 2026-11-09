@@ -86,6 +86,7 @@ module.exports = {
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/**/*.test.(js|ts|tsx|mts)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/api-contracts/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
