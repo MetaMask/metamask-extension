@@ -7325,18 +7325,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^4.0.0, @metamask/analytics-controller@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/analytics-controller@npm:4.1.0"
+"@metamask/analytics-controller@npm:^4.0.0, @metamask/analytics-controller@npm:^4.1.0, @metamask/analytics-controller@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/analytics-controller@npm:4.2.0"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
     "@metamask/geolocation-controller": "npm:^2.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     lodash-es: "npm:^4.18.1"
-    uuid: "npm:^11.1.1"
-  checksum: 10/96db6392bb5804d25658b23ac6d7a4d4ff6d27af391bad55f5fd941a92a63ea40777a539b9a8c033f87883eac21031c67984a4e041cc291369541e654bc93203
+    uuid: "npm:^14.0.2"
+  checksum: 10/8fd5706ec7144ea16663de474a802c7d98627c5b50146ac4ab7cf7629b475277bfb2f25462dc5ffe72e5df00396173283a66a8c29526a1a4f7cf8ed2ae94e915
   languageName: node
   linkType: hard
 
@@ -9623,11 +9623,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@37.1.1-preview-3a0f39d23":
-  version: 37.1.1-preview-3a0f39d23
-  resolution: "@metamask-previews/network-controller@npm:37.1.1-preview-3a0f39d23"
+"@metamask/network-controller@npm:^38.0.0":
+  version: 38.0.0
+  resolution: "@metamask/network-controller@npm:38.0.0"
   dependencies:
-    "@metamask/analytics-controller": "npm:^4.1.0"
+    "@metamask/analytics-controller": "npm:^4.2.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
     "@metamask/connectivity-controller": "npm:^1.0.0"
@@ -9649,8 +9649,8 @@ __metadata:
     loglevel: "npm:^1.9.2"
     reselect: "npm:^5.3.0"
     uri-js: "npm:^4.4.1"
-    uuid: "npm:^14.0.1"
-  checksum: 10/753f6613e1d6fdb03ac52c36220765b4e9a3192bfe6d76da499db9c5c82273091ac333bd19428aefb98a756d8d8ddea492f880e7a4ad4a91b4043227b5974ba2
+    uuid: "npm:^14.0.2"
+  checksum: 10/9b1afe427610929265942cd1bae628ea9626585a12648b1d162463694593afb419d8b95768ecd9250af8976214e3bcfe798bc1f2ae85e77924d8a59ddee7507f
   languageName: node
   linkType: hard
 
@@ -35596,7 +35596,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^7.1.2"
     "@metamask/name-controller": "npm:^9.1.0"
     "@metamask/network-connection-banner-controller": "npm:^0.2.0"
-    "@metamask/network-controller": "npm:^37.1.1"
+    "@metamask/network-controller": "npm:^38.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
     "@metamask/notification-services-controller": "npm:^29.0.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
@@ -47642,7 +47642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0.0, uuid@npm:^14.0.1":
+"uuid@npm:^14.0.0, uuid@npm:^14.0.2":
   version: 14.0.3
   resolution: "uuid@npm:14.0.3"
   bin:

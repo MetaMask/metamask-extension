@@ -174,16 +174,10 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
-  "previewBuilds": {
-    "@metamask/network-controller": {
-      "type": "non-breaking",
-      "previewVersion": "37.1.1-preview-3a0f39d23"
-    }
-  },
   "resolutions": {
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
-    "@metamask/network-controller": "^37.1.1",
+    "@metamask/network-controller": "^38.0.0",
     "@metamask/transaction-controller": "72.3.0",
     "@metamask/bridge-controller@npm:^82.0.2": "82.0.2",
     "reselect@npm:^5.1.1": "5.1.1",
@@ -500,7 +494,7 @@
     "@metamask/multichain-transactions-controller": "^7.1.2",
     "@metamask/name-controller": "^9.1.0",
     "@metamask/network-connection-banner-controller": "^0.2.0",
-    "@metamask/network-controller": "^37.1.1",
+    "@metamask/network-controller": "^38.0.0",
     "@metamask/network-enablement-controller": "^6.0.0",
     "@metamask/notification-services-controller": "^29.0.1",
     "@metamask/object-multiplex": "^2.0.0",
