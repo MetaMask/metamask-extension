@@ -25,13 +25,14 @@ env:
 
 jobs:
   flags:
-    name: ${{ matrix.os }}-s${{ matrix.shard }}
+    name: g${{ matrix.group }}-s${{ matrix.shard }}
     continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-26.04]
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+        os: [ubuntu-26.04]
+        group: [0, 1, 2, 3, 4]
+        shard: [1, 2, 3]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 50
     env:
@@ -67,49 +68,37 @@ jobs:
           mkdir -p dist/chrome
           unzip -q donor.zip -d dist/chrome
 
-      - name: Install Xvfb if missing
-        run: command -v xvfb-run || sudo apt-get install -y xvfb
-
       - name: Run the arms in rotated order
         timeout-minutes: 45
         env:
           SHARD: ${{ matrix.shard }}
+          GROUP: ${{ matrix.group }}
           OS: ${{ matrix.os }}
         run: |
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
-          arms=(
-            "base126=none"
-            "chrome137=v137"
-            "chrome157=v157"
-            "base126h=headful"
-            "chrome137h=v137,headful"
-            "chrome157h=v157,headful"
-          )
+          # Every Chrome major 127-157 except 137 and 157 (already measured),
+          # spread over 5 groups by index so a bad runner class cannot align with a region.
+          versions=(127 128 129 130 131 132 133 134 135 136 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156)
+          arms=("base126=none")
+          for k in "${!versions[@]}"; do
+            if (( k % 5 == GROUP )); then arms+=("chrome${versions[$k]}=v${versions[$k]}"); fi
+          done
           n=${#arms[@]}
-          start=$(( (SHARD - 1) % n ))
           mkdir -p test-artifacts/benchmarks
           for (( i = 0; i < n; i++ )); do
-            if (( SHARD > n )); then
-              idx=$(( (start - i + n) % n ))
-            else
-              idx=$(( (start + i) % n ))
-            fi
+            # shard 1 forward from the start, shard 2 reversed, shard 3 forward from the middle
+            if (( SHARD == 2 )); then idx=$(( (n - 1 - i) % n ));
+            elif (( SHARD == 3 )); then idx=$(( (n / 2 + i) % n ));
+            else idx=$i; fi
             name="${arms[$idx]%%=*}"
             tokens="${arms[$idx]#*=}"
             [[ "$tokens" == none ]] && tokens=""
             echo "::group::arm $name (position $i): BENCH_CHROME_ARM=$tokens"
-            # headful token: real window under Xvfb, as before #42708
-            runner=()
-            headless=true
-            if [[ "$tokens" == *headful* ]]; then
-              runner=(xvfb-run -a --server-args="-screen 0 1280x1024x24")
-              headless=false
-            fi
-            BENCH_CHROME_ARM="$tokens" SELENIUM_HEADLESS="$headless" "${runner[@]}" yarn test:e2e:benchmark \
+            BENCH_CHROME_ARM="$tokens" yarn test:e2e:benchmark \
               --preset startupStandardHome \
               --browserLoads "$BROWSER_LOADS" --pageLoads 10 --retries 2 \
-              --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-s$SHARD.json" \
+              --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-g$GROUP-s$SHARD.json" \
               || echo "::warning::arm $name failed"
             echo "::endgroup::"
           done
@@ -118,7 +107,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
-          name: flags-${{ matrix.os }}-s${{ matrix.shard }}
+          name: flags-${{ matrix.os }}-g${{ matrix.group }}-s${{ matrix.shard }}
           path: test-artifacts/benchmarks/*.json
           retention-days: 7
           if-no-files-found: ignore
