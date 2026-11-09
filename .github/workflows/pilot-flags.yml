@@ -77,12 +77,9 @@ jobs:
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
           arms=(
             "base126=none"
-            "unsafe=unsafe"
-            "targets=targets"
-            "viewport=viewport"
-            "flags126=unsafe,targets,viewport"
             "chrome137=v137"
-            "all137=v137,unsafe,targets,viewport"
+            "chrome157=v157"
+            "all157=v157,unsafe,targets,viewport"
           )
           n=${#arms[@]}
           start=$(( (SHARD - 1) % n ))

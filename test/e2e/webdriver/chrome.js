@@ -27,7 +27,7 @@ function getProxyServer(proxyPort) {
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 // TEMPORARY (1/1): flag A/B for the Chrome 137 harness change. BENCH_CHROME_ARM is a comma-separated list of
-// v137 (browser version), unsafe (--enable-unsafe-extension-debugging), targets (enableExtensionTargets) and
+// vNNN (browser version, e.g. v137), unsafe (--enable-unsafe-extension-debugging), targets (enableExtensionTargets) and
 // viewport (taller headless window). Unset keeps the pilot harness. Remove with the trigger-ci-pilot branch.
 const ARM = new Set((process.env.BENCH_CHROME_ARM || '').split(','));
 
@@ -103,7 +103,10 @@ class ChromeDriver {
       },
     });
 
-    options.setBrowserVersion(ARM.has('v137') ? '137' : PINNED_CHROME_VERSION);
+    const armVersion = [...ARM].find((t) => /^v\d+$/u.test(t));
+    options.setBrowserVersion(
+      armVersion ? armVersion.slice(1) : PINNED_CHROME_VERSION,
+    );
 
     if (ARM.has('targets')) {
       options.get('goog:chromeOptions').enableExtensionTargets = true;
