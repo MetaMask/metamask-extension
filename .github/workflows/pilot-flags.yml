@@ -21,7 +21,7 @@ env:
   DONOR_RUN: '42666092993'
   DONOR_VERSION: 13.58.0
   DONOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
-  BROWSER_LOADS: '2'
+  BROWSER_LOADS: '5'
 
 jobs:
   flags:
@@ -31,8 +31,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-26.04]
-        group: [0]
-        shard: [1]
+        group: [0, 1, 2]
+        shard: [1, 2, 3]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 50
     env:
@@ -77,11 +77,12 @@ jobs:
         run: |
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
-          # Smoke test of the jsvis workaround on Chrome versions that failed in the sweep.
-          versions=(140 145)
+          # Chrome 138-156 with the jsvis workaround (151 crashes on launch and is skipped),
+          # spread over 3 groups by index so a bad runner class cannot align with a region.
+          versions=(138 139 140 141 142 143 144 145 146 147 148 149 150 156)
           arms=("base126=jsvis")
           for k in "${!versions[@]}"; do
-            arms+=("chrome${versions[$k]}=v${versions[$k]},jsvis")
+            if (( k % 3 == GROUP )); then arms+=("chrome${versions[$k]}=v${versions[$k]},jsvis"); fi
           done
           n=${#arms[@]}
           mkdir -p test-artifacts/benchmarks
