@@ -127,7 +127,6 @@ describe(`migration #${version}`, () => {
           nativeCurrency: network.nativeCurrency,
           rpcEndpoints: network.rpcEndpoints.map((endpoint) => ({
             url: endpoint.url,
-            failoverUrls: [],
             type: endpoint.type,
             networkClientId: 'existing-client-id',
           })),
@@ -206,10 +205,6 @@ describe(`migration #${version}`, () => {
         );
         network.rpcEndpoints.forEach((endpoint, index) => {
           expect(addedNetwork.rpcEndpoints[index].url).toBe(endpoint.url);
-          expect(
-            (addedNetwork.rpcEndpoints[index] as { failoverUrls?: string[] })
-              .failoverUrls,
-          ).toStrictEqual([]);
           expect(addedNetwork.rpcEndpoints[index].type).toBe(endpoint.type);
           expect(addedNetwork.rpcEndpoints[index].networkClientId).toBe(
             'mocked-uuid-123',
@@ -256,7 +251,6 @@ describe(`migration #${version}`, () => {
         nativeCurrency: firstSupportedNetwork.nativeCurrency,
         rpcEndpoints: firstSupportedNetwork.rpcEndpoints.map((endpoint) => ({
           url: endpoint.url,
-          failoverUrls: [],
           type: endpoint.type,
           networkClientId: 'existing-client-id',
         })),
