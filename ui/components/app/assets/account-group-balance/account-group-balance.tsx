@@ -146,9 +146,7 @@ export const AccountGroupBalance = ({
     () =>
       Boolean(
         Object.keys(enabledNetworks).length === 1 &&
-          TEST_CHAINS.includes(
-            Object.keys(enabledNetworks)[0] as `0x${string}`,
-          ),
+        TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
       ),
     [enabledNetworks],
   );
@@ -161,7 +159,7 @@ export const AccountGroupBalance = ({
     () =>
       Boolean(
         showNativeTokenAsMainBalance &&
-          Object.keys(enabledNetworks).length === 1,
+        Object.keys(enabledNetworks).length === 1,
       ),
     [showNativeTokenAsMainBalance, enabledNetworks],
   );
