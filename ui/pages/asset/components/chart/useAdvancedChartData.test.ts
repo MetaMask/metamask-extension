@@ -31,6 +31,7 @@ function setup(
     isLoading: false,
     error: null,
     resolvedCurrency: 'eur',
+    fetchOlderBars: jest.fn().mockResolvedValue({ bars: [], noData: true }),
     ...overrides.chart,
   });
   mockUseOHLCVRealtime.mockReturnValue({

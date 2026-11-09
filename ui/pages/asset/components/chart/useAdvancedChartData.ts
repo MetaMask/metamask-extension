@@ -1,5 +1,9 @@
 import { useMemo } from 'react';
-import { useOHLCVChart, type OHLCVBar } from './useOHLCVChart';
+import {
+  useOHLCVChart,
+  type FetchOlderBarsResult,
+  type OHLCVBar,
+} from './useOHLCVChart';
 import { useOHLCVRealtime, type OHLCVRealtimeBar } from './useOHLCVRealtime';
 import { useOHLCVPriceData } from './useOHLCVPriceData';
 
@@ -34,6 +38,8 @@ export type UseAdvancedChartDataResult = {
   error: string | null;
   /** The currency the candle history is actually priced in. */
   resolvedCurrency: string;
+  /** Fetches an older page of candles for the chart engine to prepend. */
+  fetchOlderBars: () => Promise<FetchOlderBarsResult>;
 };
 
 /**
@@ -50,12 +56,13 @@ export function useAdvancedChartData({
   currency,
   needsHistory,
 }: UseAdvancedChartDataOptions): UseAdvancedChartDataResult {
-  const { ohlcvData, isLoading, error, resolvedCurrency } = useOHLCVChart({
-    assetId,
-    interval,
-    currency,
-    enabled: needsHistory,
-  });
+  const { ohlcvData, isLoading, error, resolvedCurrency, fetchOlderBars } =
+    useOHLCVChart({
+      assetId,
+      interval,
+      currency,
+      enabled: needsHistory,
+    });
 
   const { latestBar } = useOHLCVRealtime({
     assetId,
@@ -91,5 +98,6 @@ export function useAdvancedChartData({
     isLoading,
     error,
     resolvedCurrency,
+    fetchOlderBars,
   };
 }
