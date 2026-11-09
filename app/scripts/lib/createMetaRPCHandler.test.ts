@@ -362,6 +362,49 @@ describe('createMetaRPCHandler', () => {
       expect(foo).toHaveBeenCalledWith('bar');
     });
 
+    it('names a root span after the messenger action sent without a traceparent', async () => {
+      const messengerCall = jest.fn().mockReturnValue('result');
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler(
+        { messengerCall } as unknown as Api,
+        streamTest,
+      );
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'messengerCall',
+        params: [
+          'NetworkController:getState',
+          [],
+          {
+            _trace: {
+              messengerAction: 'NetworkController:getState',
+              spanName: 'Background RPC: NetworkController:getState',
+            },
+          },
+        ],
+      });
+
+      expect(trace).toHaveBeenCalledWith(
+        {
+          name: 'Background RPC: NetworkController:getState',
+          op: 'rpc.handler',
+          root: true,
+          data: {
+            method: 'messengerCall',
+            action: 'NetworkController:getState',
+          },
+        },
+        expect.any(Function),
+      );
+      expect(continueTraceContext).not.toHaveBeenCalled();
+      expect(messengerCall).toHaveBeenCalledWith(
+        'NetworkController:getState',
+        [],
+      );
+    });
+
     it('calls the handler without a trace when the root sub-sample rejects', async () => {
       jest.mocked(shouldSampleRootWrapper).mockReturnValue(false);
       const foo = jest.fn().mockReturnValue('result');

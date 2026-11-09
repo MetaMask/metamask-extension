@@ -56,9 +56,60 @@ function setup() {
 
 const event = 'ExampleController:stateChange';
 
+const originalSentry = globalThis.sentry;
+
+/**
+ * Give the Sentry stub a tracing API, which `submitRequestToBackground` checks
+ * before attaching any trace metadata.
+ */
+function enableTracing() {
+  globalThis.sentry = {
+    ...originalSentry,
+    startSpan: jest.fn(),
+  } as unknown as typeof globalThis.sentry;
+}
+
 describe('submitRequestToBackground', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+  });
+
+  afterEach(() => {
+    globalThis.sentry = originalSentry;
+  });
+
+  it('attaches the action without a traceparent when no UI span is active', async () => {
+    enableTracing();
+    getSerializedTraceContextMock.mockReturnValue(undefined);
+    const messengerCallMock = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({ messengerCall: messengerCallMock });
+
+    await submitRequestToBackground('NetworkController:getState');
+
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'NetworkController:getState',
+      [],
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _trace: {
+          messengerAction: 'NetworkController:getState',
+          spanName: 'Background RPC: NetworkController:getState',
+        },
+      },
+    );
+  });
+
+  it('attaches nothing to a legacy call when no UI span is active', async () => {
+    enableTracing();
+    getSerializedTraceContextMock.mockReturnValue(undefined);
+    const getState = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Only the RPC method used by this test is needed.
+    await setBackgroundConnection({ getState });
+
+    await submitRequestToBackground('getState');
+
+    expect(getState).toHaveBeenCalledWith();
   });
 
   it('routes a UI messenger action and its arguments through messengerCall', async () => {
@@ -108,6 +159,7 @@ describe('submitRequestToBackground', () => {
   });
 
   it('passes tracing metadata to messengerCall when routing requests through it', async () => {
+    enableTracing();
     const serializedTraceContext =
       '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
     getSerializedTraceContextMock.mockReturnValue(serializedTraceContext);
@@ -137,6 +189,7 @@ describe('submitRequestToBackground', () => {
   });
 
   it('includes a span name for legacy background requests', async () => {
+    enableTracing();
     const traceparent =
       '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
     getSerializedTraceContextMock.mockReturnValueOnce(traceparent);
@@ -153,6 +206,7 @@ describe('submitRequestToBackground', () => {
   });
 
   it('includes action metadata when messengerCall is requested directly', async () => {
+    enableTracing();
     const traceparent =
       '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
     getSerializedTraceContextMock.mockReturnValueOnce(traceparent);

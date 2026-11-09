@@ -269,9 +269,9 @@ export type SerializedTraceContext = {
  */
 export type SerializedTraceMetadata = {
   /**
-   * W3C `traceparent` of the originating UI span.
+   * W3C `traceparent` of the originating UI span, present when one is active.
    */
-  traceparent: string;
+  traceparent?: string;
   /**
    * The dispatched messenger action, when the request uses the messenger.
    */
@@ -287,7 +287,7 @@ export type SerializedTraceMetadata = {
  * `traceparent` parsed.
  */
 export type TraceMetadata = Omit<SerializedTraceMetadata, 'traceparent'> & {
-  traceContext: TraceparentData;
+  traceContext?: TraceparentData;
 };
 
 /**
@@ -670,7 +670,7 @@ export function withoutTraceContext<ReturnValue>(
  *
  * Only a valid trailing `_trace` wrapper is removed, preserving ordinary
  * application arguments that happen to contain a similarly named property.
- * Its `traceparent` must be a valid W3C `traceparent` string.
+ * A `traceparent` in it must be a valid W3C `traceparent` string.
  *
  * @param params - RPC call parameters.
  * @returns Clean params and the tracing metadata, with the `traceparent`
@@ -699,7 +699,7 @@ export function extractTraceMetadata(
     const traceContext = hasProperty(lastParam._trace, 'traceparent')
       ? parseTraceparent(lastParam._trace.traceparent)
       : undefined;
-    if (traceContext) {
+    if (!hasProperty(lastParam._trace, 'traceparent') || traceContext) {
       return {
         cleanParams: params.slice(0, -1),
         traceMetadata: {
@@ -710,7 +710,7 @@ export function extractTraceMetadata(
             typeof lastParam._trace.messengerAction === 'string' && {
               messengerAction: lastParam._trace.messengerAction,
             }),
-          traceContext,
+          ...(traceContext && { traceContext }),
         },
       };
     }

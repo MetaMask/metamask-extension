@@ -1429,6 +1429,27 @@ describe('Trace', () => {
       expect(params).toHaveLength(3);
     });
 
+    it('extracts action-only metadata, sent with no active span, without a trace context', () => {
+      const params = [
+        'AppStateController:getState',
+        [],
+        {
+          _trace: {
+            messengerAction: 'AppStateController:getState',
+            spanName: 'Background RPC: AppStateController:getState',
+          },
+        },
+      ];
+
+      expect(extractTraceMetadata(params)).toStrictEqual({
+        cleanParams: ['AppStateController:getState', []],
+        traceMetadata: {
+          messengerAction: 'AppStateController:getState',
+          spanName: 'Background RPC: AppStateController:getState',
+        },
+      });
+    });
+
     it('round-trips with getSerializedTraceContext', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
@@ -1450,7 +1471,6 @@ describe('Trace', () => {
     });
 
     jestIt.each([
-      { spanName: 'Background RPC: foo' },
       { traceparent: 'not-a-traceparent', spanName: 'Background RPC: foo' },
       { traceparent: TRACEPARENT_MOCK },
       { traceparent: TRACEPARENT_MOCK, spanName: 1 },
