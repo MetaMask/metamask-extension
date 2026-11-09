@@ -218,10 +218,7 @@ const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
   TraceName.OnboardingResetPassword,
 ]);
 
-/**
- * Current W3C `traceparent` version byte. Both producer and consumer ship in
- * lockstep within the extension binary, so we always emit version `00`.
- */
+/** Version byte of every emitted `traceparent`. */
 const W3C_TRACEPARENT_VERSION = '00';
 
 /**
@@ -229,11 +226,7 @@ const W3C_TRACEPARENT_VERSION = '00';
  */
 const TRACE_FLAG_SAMPLED = 0x1;
 
-/**
- * Matches a W3C `traceparent` string:
- * `{version}-{traceId}-{parentId}-{flags}` with lowercase-hex fields of the
- * canonical lengths (2 / 32 / 16 / 2). Capture groups: traceId, parentId, flags.
- */
+/** W3C `traceparent`, lowercase hex; captures traceId, parentId, flags. */
 const W3C_TRACEPARENT_REGEXP =
   /^[0-9a-f]{2}-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/u;
 
@@ -678,13 +671,8 @@ export function continueTraceContext<ResultType>(
 }
 
 /**
- * Serialize a trace context from a specific span and request metadata.
- * Includes both name/id (for same-process map lookup) and a W3C `traceparent`
- * string (for cross-process distributed tracing).
- *
- * Note: `main` removed the pre-traceparent form of this function as dead code
- * (#44612); this branch keeps it because `metamask-controller.js` serializes
- * the snap trace context through it.
+ * Serialize a span for a later `parentContext`: name/id for same-process
+ * lookup, plus the span's W3C `traceparent`.
  *
  * @param span - The Sentry span to build the `traceparent` from.
  * @param request - Request metadata for same-process lookup fallback.
@@ -860,8 +848,7 @@ function isSampled(flags: number): boolean {
 }
 
 /**
- * Build a W3C `traceparent` string (`{version}-{traceId}-{spanId}-{flags}`)
- * from a Sentry span context. Returns undefined when the IDs are missing.
+ * Build a W3C `traceparent` from a span context, or undefined without both ids.
  *
  * @param spanContext - The span context returned by `span.spanContext()`.
  * @returns A W3C `traceparent` string, or undefined.
@@ -880,10 +867,7 @@ function spanContextToTraceparent(
 }
 
 /**
- * Validate and unpack a W3C `traceparent` string into Sentry `TraceparentData`.
- * The version byte is dropped and the 2-hex trace-flags reduced to the single
- * `parentSampled` bit. (Sentry v10 removed `@sentry/utils`'
- * `extractTraceparentData`, so the fields are read straight from the match.)
+ * Parse a W3C `traceparent`, keeping only the sampled bit of its flags.
  *
  * @param value - The candidate `_traceContext` value from the last RPC param.
  * @returns Parsed trace context, or undefined when `value` is not a valid W3C
@@ -906,9 +890,7 @@ function parseTraceparent(value: unknown): TraceparentData | undefined {
 }
 
 /**
- * Build a Sentry `sentry-trace` header (`{traceId}-{spanId}-{sampled}`) from
- * parsed trace context. Defaults the sampled bit to set, since trace context
- * only propagates from recorded traces.
+ * Build a `sentry-trace` header. An unset `parentSampled` encodes as sampled.
  *
  * @param data - Parsed trace context with `traceId` and `parentSpanId`.
  * @returns A `sentry-trace` header string.
@@ -1002,12 +984,8 @@ function startSpan<T>(
     ...(forceTransaction === undefined ? {} : { forceTransaction }),
   };
 
-  // Cross-process propagation via continueTrace when we couldn't resolve a local
-  // parent span. `parentContext` may already be parsed `TraceparentData`, or a
-  // `SerializedTraceContext` still carrying its W3C `traceparent` string — e.g. a
-  // snap whose pending parent was removed from the map after `snap_endTrace`, so
-  // the same-process lookup missed. Without parsing that string the child would
-  // orphan from the originating trace.
+  // No local parent: continue from parsed `TraceparentData`, or from the
+  // `traceparent` a snap's `SerializedTraceContext` keeps after its parent ended.
   if (!parentSpan) {
     let traceparentData;
     if (hasTraceparentData(parentContext)) {
@@ -1270,14 +1248,8 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
 }
 
 /**
- * Build the Sentry `baggage` that accompanies a `sentry-trace` header when a
- * trace is continued across the UI/background boundary.
- *
- * Without baggage, `continueTrace` freezes an empty dynamic sampling context,
- * so outbound requests in the continued trace carry a sampled `traceparent`
- * but no `sentry-sampled` entry. Backends stamp `sentry.sampled` from that
- * entry and route spans to Sentry on it, so the backend half of the trace
- * never reaches Sentry. The entry mirrors the `sentry-trace` sampled flag.
+ * Baggage for a continued trace. It must carry `sentry-sampled`, which backends
+ * route spans to Sentry on.
  *
  * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
  * @returns A `baggage` string, or undefined when the header is malformed.

@@ -5,13 +5,8 @@ import {
   consensysTracePropagationIntegration,
 } from './sentry-trace-propagation';
 
-/**
- * Pins what a backend request carries when the background continues a trace
- * that started in the UI. Backends stamp `sentry.sampled` from the request's
- * `sentry-sampled` baggage entry and route spans to Sentry on it, so a sampled
- * `traceparent` without that entry loses the backend half of the trace.
- * Uses the real SDK; only `fetch` and the transport are stubbed.
- */
+// Backends route spans to Sentry on the request's `sentry-sampled` baggage
+// entry. Real SDK; only `fetch` and the transport are stubbed.
 
 const TRACE_ID = '4bf92f3577b34da6a3ce929d0e0e4736';
 const PARENT_SPAN_ID = '00f067aa0ba902b7';

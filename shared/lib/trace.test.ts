@@ -809,10 +809,8 @@ describe('Trace', () => {
     });
 
     it('parses a `traceparent` string when the same-process map lookup misses', () => {
-      // A snap returns a SerializedTraceContext { _name, _id, traceparent } whose
-      // pending parent was already removed (e.g. after snap_endTrace), so the map
-      // lookup misses. The traceparent string must still root the child on the
-      // originating trace via continueTrace rather than orphaning it.
+      // A snap parent that already ended misses the map lookup, so its stored
+      // `traceparent` continues the originating trace.
       continueTraceMock.mockImplementation((_opts, fn) => fn());
 
       trace(
