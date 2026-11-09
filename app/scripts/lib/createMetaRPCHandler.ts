@@ -10,7 +10,10 @@ import {
   extractTraceContext,
   trace,
 } from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import {
+  shouldSampleRootWrapper,
+  shouldSampleWrappers,
+} from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -46,11 +49,26 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        if (Array.isArray(cleanParams)) {
-          result = await handler.call(api, ...cleanParams);
-        } else {
-          result = await handler.call(api, cleanParams);
-        }
+        const callHandler = () =>
+          Array.isArray(cleanParams)
+            ? handler.call(api, ...cleanParams)
+            : handler.call(api, cleanParams);
+        // No UI trace context: a sampled dispatch roots its own trace, so
+        // concurrent handlers get independent trace ids.
+        result = shouldSampleRootWrapper()
+          ? await trace(
+              {
+                name: spanName,
+                op: 'rpc.handler',
+                root: true,
+                data: {
+                  method: data.method,
+                  ...(controller && { controller }),
+                },
+              },
+              callHandler,
+            )
+          : await callHandler();
       } else if (shouldSampleWrappers(traceContext.traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.
@@ -64,10 +82,9 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
           () => handler.call(api, ...cleanParams),
         );
       } else {
-        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
-        // propagate trace context so nested auto-instrumented and core-package
-        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
-        // attach to the originating UI trace instead of becoming orphans.
+        // Sub-sample rejects: skip the `rpc.handler` span but still propagate
+        // context so nested spans (http.client, core-package trace() callers)
+        // attach to the UI trace instead of orphaning.
         result = await continueTraceContext(traceContext, () =>
           handler.call(api, ...cleanParams),
         );

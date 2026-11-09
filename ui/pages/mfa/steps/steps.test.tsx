@@ -25,6 +25,17 @@ const mockCopy = jest.fn();
 const mockUseCopyToClipboard = jest.fn();
 let mockIsCopied = false;
 let mockTheme: ThemeType;
+jest.mock(
+  '../../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({ supportLink }: { supportLink: string }) => (
+      <p data-testid="support-modal">{supportLink}</p>
+    ),
+  }),
+);
+
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: (...args: unknown[]) => {
     mockUseCopyToClipboard(...args);
@@ -278,6 +289,24 @@ describe('EmailEntryStep', () => {
     });
   });
 
+  it('links the help article when the email is already in use', () => {
+    render(
+      <EmailEntryStep
+        {...buildState({ name: 'emailEntry' }, { error: 'email_claimed' })}
+        reason={reason}
+        onAction={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId(MfaFlowTestIds.ERROR)).toHaveTextContent(
+      messages.mfaErrorEmailTaken.message,
+    );
+    expect(screen.getByTestId(MfaFlowTestIds.ERROR_LINK)).toHaveAttribute(
+      'href',
+      'https://support.metamask.io/configure/wallet/email-in-use',
+    );
+  });
+
   it('submits with Enter', () => {
     const onAction = jest.fn();
     render(
@@ -515,6 +544,18 @@ describe('CodeStep', () => {
     expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
   });
 
+  it('hides the wrong-code error once the user types again', () => {
+    renderCode(otp(true), { error: 'invalid_code' });
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '1' } });
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'aria-invalid',
+      'false',
+    );
+  });
+
   it('counts down instead of showing the cooldown error', () => {
     const { onAction } = renderCode(otp(true), {
       error: 'otp_resend_cooldown',
@@ -733,30 +774,65 @@ describe('FailureStep', () => {
       screen.getByText(messages.mfaFailureTitle.message),
     ).toBeInTheDocument();
     expect(screen.queryByText(messages.mfaErrorGeneric.message)).toBeNull();
+    expect(screen.queryByTestId(MfaFlowTestIds.SECONDARY_BUTTON)).toBeNull();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
     expect(onAction).toHaveBeenCalledWith({ type: 'retry' });
-    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
-    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
 
   it('only offers to close for a final error', () => {
+    const onAction = jest.fn();
     render(
       <FailureStep
         {...buildState({
           name: 'failure',
-          code: 'max_identifiers_reached',
+          code: 'max_passkeys_reached',
           canRetry: false,
         })}
         reason={reason}
-        onAction={jest.fn()}
+        onAction={onAction}
       />,
     );
 
     expect(
+      screen.getByText(messages.mfaFailureTitle.message),
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(messages.mfaErrorLimitReached.message),
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
+
+  it.each(['multi_primary_srp', 'max_identifiers_reached'] as const)(
+    'sends %s to support',
+    (code) => {
+      const onAction = jest.fn();
+      render(
+        <FailureStep
+          {...buildState({
+            name: 'failure',
+            code,
+            canRetry: false,
+          })}
+          reason={reason}
+          onAction={onAction}
+        />,
+      );
+
+      expect(
+        screen.getByText(messages.mfaFailureSupportTitle.message),
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+      const supportLink = new URL(
+        screen.getByTestId('support-modal').textContent ?? '',
+      );
+      expect(supportLink.searchParams.get('mfa_error')).toBe(code);
+
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
+      expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
+    },
+  );
 });
 
 describe('TotpSetupStep', () => {

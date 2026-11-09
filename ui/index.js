@@ -47,7 +47,8 @@ import {
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
 import { getIsUnlocked } from './ducks/metamask/base-selectors';
-import Root from './pages';
+import Root, { router } from './pages';
+import { registerUnlockMeasurement } from './pages/unlock-page/unlock-performance';
 import txHelper from './helpers/utils/tx-helper';
 import {
   setBackgroundConnection,
@@ -63,6 +64,7 @@ import {
 } from './helpers/perps/entry-trace';
 import { createUIMessenger } from './messengers/ui-messenger';
 
+export { trackDocumentPageClose } from './helpers/utils/useful-screen-ready';
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
   displayCriticalErrorMessage,
@@ -239,6 +241,7 @@ async function startApp(metamaskState, opts) {
   initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
+  registerUnlockMeasurement(metamaskState, router);
 
   const store = await trace(
     {

@@ -1,11 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { trace, TraceName } from './trace';
 
-/**
- * Pins how `root` and `parentContext` combine, with the real SDK. Only
- * `root` alone moves a span to a new trace; an explicit parent that resolves
- * keeps the child on the parent's trace even when `root` is also set.
- */
+// Real SDK, not mocks: the assertions read Sentry's own trace and parent ids.
 describe('trace root and parentContext (real SDK)', () => {
   let parent: Sentry.Span;
 

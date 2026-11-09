@@ -134,9 +134,9 @@ describe('MusdEducationScreen', () => {
     renderWithProvider(<MusdEducationScreen />, store);
 
     const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toHaveStyle({ whiteSpace: 'pre-line' });
+    expect(heading).toHaveClass('whitespace-pre-line');
     expect(heading.textContent?.replace(/\s+/gu, ' ').trim()).toBe(
-      'GET 3% ON STABLECOINS',
+      'Get 3% on stablecoins',
     );
   });
 
@@ -239,7 +239,7 @@ describe('MusdEducationScreen', () => {
     const { container } = renderWithProvider(<MusdEducationScreen />, store);
 
     const termsLink = container.querySelector(
-      'a[href="https://metamask.io/musd-bonus-terms-of-use"]',
+      'a[href="https://metamask.com/musd-bonus-terms-of-use"]',
     ) as HTMLElement;
     expect(termsLink).not.toBeNull();
     fireEvent.click(termsLink);

@@ -123,6 +123,16 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   // The code on screen can no longer be used: the main action is a new one.
   const needsNewCode =
     showError && error !== undefined && getErrorHandling(error) === 'restart';
+  // A wrong code clears the boxes; the error goes once the user types again.
+  const showErrorState = showError && code.length === 0;
+  // Matches the design system's text field: red on an error, else darker
+  // when focused.
+  const getCellBorder = (isCellFocused: boolean) => {
+    if (showErrorState) {
+      return 'border-error-default';
+    }
+    return isCellFocused ? 'border-default' : 'border-muted';
+  };
 
   const getResendLabel = () => {
     if (isCoolingDown) {
@@ -174,8 +184,8 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             }
             size={ButtonSize.Lg}
             isFullWidth
-            // No submit button: this shows the code being checked.
-            isLoading={busy && codeSent}
+            // A complete code submits itself; the line under the boxes shows
+            // it being checked.
             isDisabled={!canResend}
             onClick={() => onAction({ type: 'resend' })}
             data-testid={MfaFlowTestIds.RESEND_BUTTON}
@@ -194,15 +204,11 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             {CELLS.map((index) => (
               <Box
                 key={index}
-                className={`flex-1 h-14 flex items-center justify-center rounded-xl border-[1.5px] bg-muted ${
-                  isFocused && index === Math.min(code.length, CODE_LENGTH - 1)
-                    ? 'border-primary-default'
-                    : 'border-muted'
-                }`}
+                className={`flex-1 h-14 flex items-center justify-center rounded-xl border bg-muted ${getCellBorder(
+                  isFocused && index === Math.min(code.length, CODE_LENGTH - 1),
+                )}`}
               >
-                <Text variant={TextVariant.HeadingMd} className="text-[22px]">
-                  {code[index] ?? ''}
-                </Text>
+                <Text variant={TextVariant.HeadingLg}>{code[index] ?? ''}</Text>
               </Box>
             ))}
           </Box>
@@ -217,7 +223,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             inputMode="numeric"
             spellCheck={false}
             autoCorrect="off"
-            aria-invalid={showError}
+            aria-invalid={showErrorState}
             {...INPUT_A11Y_PROPS}
             className="absolute inset-0 w-full h-full opacity-0 cursor-text"
             data-testid={MfaFlowTestIds.CODE_INPUT}
@@ -243,7 +249,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             <Text variant={TextVariant.BodySm}>{t('mfaOtpVerifying')}</Text>
           </Box>
         ) : null}
-        {showError && error ? (
+        {showErrorState && error ? (
           <StepError code={error} method={step.method} />
         ) : null}
         {codeResent && !error ? (
