@@ -31,17 +31,16 @@ function getProxyServer(proxyPort) {
 // viewport (taller headless window). Unset keeps the pilot harness. Remove with the trigger-ci-pilot branch.
 const ARM = new Set((process.env.BENCH_CHROME_ARM || '').split(','));
 
-// TEMPORARY (1/1): jsvis replaces selenium's isDisplayed atom (fails on Chrome 138-151 with
-// "Cannot read properties of undefined (reading 'ka')") with a page-script check, so the Chrome
-// sweep can run those versions. Remove with BENCH_CHROME_ARM when the sweep is done.
+// TEMPORARY (1/1): jsvis types through the W3C actions API instead of the element sendKeys command,
+// which ChromeDriver 138-151 fails with "Cannot read properties of undefined (reading 'ka')". It lets the
+// Chrome sweep run those versions. Remove with BENCH_CHROME_ARM when the sweep is done.
 if (ARM.has('jsvis')) {
   // eslint-disable-next-line import/no-extraneous-dependencies
   const { WebElement } = require('selenium-webdriver');
-  WebElement.prototype.isDisplayed = function isDisplayed() {
-    return this.getDriver().executeScript(
-      'const e = arguments[0]; if (!e.isConnected) { return false; } const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && e.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });',
-      this,
-    );
+  WebElement.prototype.sendKeys = async function sendKeys(...keys) {
+    const webdriver = this.getDriver();
+    await webdriver.actions().click(this).perform();
+    await webdriver.actions().sendKeys(...keys).perform();
   };
 }
 

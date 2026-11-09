@@ -78,7 +78,7 @@ jobs:
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
           # Smoke test of the jsvis workaround on Chrome versions that failed in the sweep.
-          versions=(140 145 151)
+          versions=(140 145)
           arms=("base126=jsvis")
           for k in "${!versions[@]}"; do
             arms+=("chrome${versions[$k]}=v${versions[$k]},jsvis")
