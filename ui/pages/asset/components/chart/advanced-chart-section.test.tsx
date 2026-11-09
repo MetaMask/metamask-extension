@@ -122,6 +122,7 @@ function setupData(
     isLoading: false,
     error: null,
     resolvedCurrency: 'eur',
+    fetchOlderBars: jest.fn().mockResolvedValue({ bars: [], noData: true }),
     ...overrides,
   });
 }
@@ -462,7 +463,12 @@ describe('AdvancedChartSection', () => {
       expect(screen.queryByTestId('chart-error-state')).not.toBeInTheDocument();
     });
 
-    it('requires a fresh ready signal after switching token', () => {
+    it('keeps the indicator bar visible after switching token', () => {
+      // The iframe is not reloaded on a token change (its src is theme-only),
+      // so the engine never re-emits CHART_READY. Readiness is a one-way latch,
+      // mirroring mobile's `hasChartBeenRevealed`: once revealed, the bar stays
+      // up across token/interval changes. Resetting it would hide the bar with
+      // nothing to turn it back on.
       const { rerender } = render();
       act(() => {
         screen.getByTestId('simulate-ready').click();
@@ -476,7 +482,7 @@ describe('AdvancedChartSection', () => {
         />,
       );
 
-      expect(indicatorSlotVisibility()).toBe('hidden');
+      expect(indicatorSlotVisibility()).toBe('visible');
     });
   });
 });
