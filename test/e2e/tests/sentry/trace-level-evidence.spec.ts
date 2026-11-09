@@ -4,12 +4,17 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 
-type CapturedTxn = { transaction: string; traceId: string };
+type CapturedTxn = {
+  transaction: string;
+  traceId: string;
+  parentSpanId?: string;
+};
 
 const captured: CapturedTxn[] = [];
 
 /**
- * Extract `transaction` and `contexts.trace.trace_id` from each envelope line.
+ * Extract `transaction` and `contexts.trace.trace_id` / `parent_span_id` from
+ * each envelope line.
  *
  * @param body - Raw envelope POST body.
  */
@@ -28,8 +33,13 @@ function parseTransactions(body: string): CapturedTxn[] {
     const transaction = obj.transaction as string | undefined;
     const trace = (obj.contexts as { trace?: Record<string, unknown> })?.trace;
     const traceId = trace?.trace_id;
+    const parentSpanId = trace?.parent_span_id;
     if (typeof transaction === 'string' && typeof traceId === 'string') {
-      out.push({ transaction, traceId });
+      out.push({
+        transaction,
+        traceId,
+        ...(typeof parentSpanId === 'string' && { parentSpanId }),
+      });
     }
   }
   return out;
@@ -37,25 +47,34 @@ function parseTransactions(body: string): CapturedTxn[] {
 
 async function captureSentryTransactions(mockServer: MockttpServer) {
   return [
-    await mockServer.forPost(/sentry/u).thenCallback(async (request) => {
-      try {
-        const body = await request.body.getText();
-        for (const txn of parseTransactions(body ?? '')) {
-          captured.push(txn);
-          console.log(
-            `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)}`,
-          );
+    // `always()`: the harness also mocks the fake-DSN envelope URL, and mockttp
+    // hands every request after the first to that later rule otherwise.
+    await mockServer
+      .forPost(/sentry/u)
+      .always()
+      .thenCallback(async (request) => {
+        try {
+          const body = await request.body.getText();
+          for (const txn of parseTransactions(body ?? '')) {
+            captured.push(txn);
+            console.log(
+              `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)}`,
+            );
+          }
+        } catch (error) {
+          console.log('CAPTURE-ERR', String(error));
         }
-      } catch (error) {
-        console.log('CAPTURE-ERR', String(error));
-      }
-      return { statusCode: 200, json: {} };
-    }),
+        return { statusCode: 200, json: {} };
+      }),
   ];
 }
 
-const backgroundRpc = () =>
-  captured.filter((t) => t.transaction.startsWith('Background RPC'));
+// Roots only: a call carrying UI trace context continues the UI's trace, so it
+// has a parent span and shares that trace id by design.
+const backgroundRpcRoots = () =>
+  captured.filter(
+    (t) => t.transaction.startsWith('Background RPC') && !t.parentSpanId,
+  );
 
 describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
   it('roots each background RPC op in its own trace id', async function () {
@@ -88,12 +107,12 @@ describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async ({ driver }: any) => {
         await login(driver);
-        await driver.waitUntil(async () => backgroundRpc().length >= 2, {
+        await driver.waitUntil(async () => backgroundRpcRoots().length >= 2, {
           interval: 500,
           timeout: 60000,
         });
 
-        const bgRpc = backgroundRpc();
+        const bgRpc = backgroundRpcRoots();
         const distinct = [...new Set(bgRpc.map((t) => t.traceId))];
         const swIds = new Set(
           captured
