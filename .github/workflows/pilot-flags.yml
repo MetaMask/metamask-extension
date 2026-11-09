@@ -67,6 +67,9 @@ jobs:
           mkdir -p dist/chrome
           unzip -q donor.zip -d dist/chrome
 
+      - name: Install Xvfb if missing
+        run: command -v xvfb-run || sudo apt-get install -y xvfb
+
       - name: Run the arms in rotated order
         timeout-minutes: 45
         env:
@@ -79,7 +82,9 @@ jobs:
             "base126=none"
             "chrome137=v137"
             "chrome157=v157"
-            "all157=v157,unsafe,targets,viewport"
+            "base126h=headful"
+            "chrome137h=v137,headful"
+            "chrome157h=v157,headful"
           )
           n=${#arms[@]}
           start=$(( (SHARD - 1) % n ))
@@ -94,7 +99,14 @@ jobs:
             tokens="${arms[$idx]#*=}"
             [[ "$tokens" == none ]] && tokens=""
             echo "::group::arm $name (position $i): BENCH_CHROME_ARM=$tokens"
-            BENCH_CHROME_ARM="$tokens" yarn test:e2e:benchmark \
+            # headful token: real window under Xvfb, as before #42708
+            runner=()
+            headless=true
+            if [[ "$tokens" == *headful* ]]; then
+              runner=(xvfb-run -a --server-args="-screen 0 1280x1024x24")
+              headless=false
+            fi
+            BENCH_CHROME_ARM="$tokens" SELENIUM_HEADLESS="$headless" "${runner[@]}" yarn test:e2e:benchmark \
               --preset startupStandardHome \
               --browserLoads "$BROWSER_LOADS" --pageLoads 10 --retries 2 \
               --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-s$SHARD.json" \
