@@ -7709,7 +7709,8 @@
     },
     "@metamask/bridge-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/bridge-status-controller>uuid": {
