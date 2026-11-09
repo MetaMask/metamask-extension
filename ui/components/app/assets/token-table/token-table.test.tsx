@@ -87,6 +87,7 @@ describe('TokenTable', () => {
 
     expect(getByTestId('token-table-header')).toBeInTheDocument();
     expect(getAllByTestId('multichain-token-list-button')).toHaveLength(2);
+    expect(getAllByTestId('token-price')).toHaveLength(2);
     expect(getAllByTestId('token-percent-change')).toHaveLength(2);
     expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('USDC')).toBeInTheDocument();

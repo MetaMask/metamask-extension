@@ -45,11 +45,9 @@ export type TokenTableProps = {
 // cell stacks the 24h change under the price. At `@2xl` they are separate columns.
 const COLUMNS_CLASS_NAME =
   'grid w-full grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] items-center gap-4 px-4 @2xl/token-table:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]';
-const PERCENT_COLUMN_CLASS_NAME = 'hidden @2xl/token-table:block text-end';
-const PRICE_AND_CHANGE_CLASS_NAME =
-  'flex min-w-0 flex-col items-end @2xl/token-table:contents';
 const PRICE_AND_CHANGE_ITEM_CLASS_NAME =
   'min-w-0 @2xl/token-table:justify-self-end';
+const PERCENT_CHANGE_CLASS_NAME = `${PRICE_AND_CHANGE_ITEM_CLASS_NAME} @2xl/token-table:[&_.mm-text]:text-l-body-md`;
 
 const TokenTableHeader = () => {
   const t = useI18nContext();
@@ -79,7 +77,7 @@ const TokenTableHeader = () => {
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={TextColor.TextAlternative}
-        className={PERCENT_COLUMN_CLASS_NAME}
+        className="hidden @2xl/token-table:block text-end"
       >
         {t('24hChange')}
       </Text>
@@ -143,14 +141,14 @@ const TokenTableRow = ({
             />
             <TokenCellTitle token={displayToken} />
           </Box>
-          <div className={PRICE_AND_CHANGE_CLASS_NAME}>
-            <div className={PRICE_AND_CHANGE_ITEM_CLASS_NAME}>
+          <Box className="flex min-w-0 flex-col items-end @2xl/token-table:contents">
+            <Box className={PRICE_AND_CHANGE_ITEM_CLASS_NAME}>
               <TokenCellPrice token={displayToken} />
-            </div>
-            <div className={PRICE_AND_CHANGE_ITEM_CLASS_NAME}>
+            </Box>
+            <Box className={PERCENT_CHANGE_CLASS_NAME}>
               <TokenCellPercentChange token={displayToken} />
-            </div>
-          </div>
+            </Box>
+          </Box>
           <Box className="flex min-w-0 flex-col items-end">
             <TokenCellSecondaryDisplay
               token={displayToken}
