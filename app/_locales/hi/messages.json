@@ -8866,7 +8866,7 @@
     "message": "विदड्रॉवल सबमिट किया गया"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask आपके लिए आपके पसंदीदा टोकन में स्वैप करेगा। जब आप mUSD में स्वैप करते हैं तो कोई MetaMask शुल्क लागू नहीं होता है।",
+    "message": "MetaMask आपके लिए आपके पसंदीदा टोकन में स्वैप करेगा।",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {

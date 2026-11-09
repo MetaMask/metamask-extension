@@ -8874,7 +8874,7 @@
     "message": "출금 제출 완료"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask가 원하는 토큰으로 스왑해 드립니다. mUSD로 스왑할 때 MetaMask 수수료는 적용되지 않습니다.",
+    "message": "MetaMask가 원하는 토큰으로 스왑해 드립니다.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {

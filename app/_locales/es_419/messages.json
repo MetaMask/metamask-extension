@@ -8880,7 +8880,7 @@
     "message": "Solicitud de retiro presentada"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask realizará el canje por el token que desees. No se aplica ninguna tarifa de MetaMask al canjear a mUSD.",
+    "message": "MetaMask realizará el canje por el token que desees.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
