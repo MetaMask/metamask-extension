@@ -176,6 +176,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/design-system-react": "0.51.0",
     "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
