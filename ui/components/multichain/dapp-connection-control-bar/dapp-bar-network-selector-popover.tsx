@@ -249,14 +249,10 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
     <Popover
       referenceElement={referenceElement}
       isOpen={isOpen}
-      onClickOutside={onClose}
-      onPressEscKey={onClose}
+      onClose={onClose}
       position={PopoverPosition.TopEnd}
       role={PopoverRole.Dialog}
       offset={[0, 8]}
-      flip
-      preventOverflow
-      referenceHidden={false}
       data-testid="dapp-bar-network-selector-popover"
       className="dapp-bar-network-selector-popover p-0"
     >
