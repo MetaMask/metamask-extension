@@ -151,6 +151,7 @@ jest.mock('webextension-polyfill', () => ({
       addListener: jest.fn(),
     },
     getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
+    setUninstallURL: jest.fn(),
   },
   storage: {
     local: {
