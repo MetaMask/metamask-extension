@@ -21,7 +21,7 @@ env:
   DONOR_RUN: '42666092993'
   DONOR_VERSION: 13.58.0
   DONOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
-  BROWSER_LOADS: '5'
+  BROWSER_LOADS: '1'
 
 jobs:
   flags:
@@ -31,8 +31,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-26.04]
-        group: [0, 1, 2, 3, 4]
-        shard: [1, 2, 3]
+        group: [0]
+        shard: [1]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 50
     env:
@@ -77,12 +77,11 @@ jobs:
         run: |
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
-          # Every Chrome major 127-157 except 137 and 157 (already measured),
-          # spread over 5 groups by index so a bad runner class cannot align with a region.
-          versions=(127 128 129 130 131 132 133 134 135 136 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156)
-          arms=("base126=none")
+          # Smoke test of the jsvis workaround on Chrome versions that failed in the sweep.
+          versions=(140 145 151)
+          arms=("base126=jsvis")
           for k in "${!versions[@]}"; do
-            if (( k % 5 == GROUP )); then arms+=("chrome${versions[$k]}=v${versions[$k]}"); fi
+            arms+=("chrome${versions[$k]}=v${versions[$k]},jsvis")
           done
           n=${#arms[@]}
           mkdir -p test-artifacts/benchmarks
@@ -95,11 +94,12 @@ jobs:
             tokens="${arms[$idx]#*=}"
             [[ "$tokens" == none ]] && tokens=""
             echo "::group::arm $name (position $i): BENCH_CHROME_ARM=$tokens"
-            BENCH_CHROME_ARM="$tokens" yarn test:e2e:benchmark \
+            BENCH_CHROME_ARM="$tokens" timeout -k 10 480 yarn test:e2e:benchmark \
               --preset startupStandardHome \
               --browserLoads "$BROWSER_LOADS" --pageLoads 10 --retries 2 \
               --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-g$GROUP-s$SHARD.json" \
               || echo "::warning::arm $name failed"
+            pkill -f chromedriver || true; pkill -f chrome || true; pkill anvil || true
             echo "::endgroup::"
           done
 
