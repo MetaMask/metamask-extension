@@ -3,6 +3,11 @@ import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { unrestrictedMethods } from '../controllers/permissions';
+import { getAssetsControllerInitMessenger } from './messengers/assets-controller-messenger';
+import {
+  getAssetsControllerInstanceOptions,
+  subscribeToArcTransactionConfirmedRefresh,
+} from './instance-options/assets-controller';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -36,12 +41,30 @@ const mockWalletInit = jest.fn();
 const mockNetworkController = {
   addNetwork: jest.fn(),
 };
+const mockAssetsController = {
+  messenger: { subscribe: jest.fn() },
+  getAssets: jest.fn(),
+};
 
 jest.mock('@metamask/wallet', () => ({
   Wallet: jest.fn(() => ({
-    getInstance: jest.fn(() => mockNetworkController),
+    getInstance: jest.fn((name: string) => {
+      if (name === 'AssetsController') {
+        return mockAssetsController;
+      }
+      return mockNetworkController;
+    }),
     init: mockWalletInit,
   })),
+}));
+jest.mock('./instance-options/assets-controller', () => ({
+  getAssetsControllerInstanceOptions: jest.fn(() => 'assets-options'),
+  subscribeToArcTransactionConfirmedRefresh: jest.fn(),
+}));
+jest.mock('./messengers/assets-controller-messenger', () => ({
+  getAssetsControllerInitMessenger: jest.fn(
+    () => 'assets-controller-init-messenger',
+  ),
 }));
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
@@ -168,6 +191,7 @@ describe('initializeWallet', () => {
       instanceOptions: {
         analyticsController: 'analytics-options',
         approvalController: 'approval-options',
+        assetsController: 'assets-options',
         claimsService: 'claims-options',
         configRegistryApiService: 'config-registry-api-service-options',
         connectivityController: 'connectivity-options',
@@ -280,6 +304,15 @@ describe('initializeWallet', () => {
       state,
     });
 
+    expect(getAssetsControllerInitMessenger).toHaveBeenCalledWith(messenger);
+    expect(getAssetsControllerInstanceOptions).toHaveBeenCalledWith({
+      initMessenger: 'assets-controller-init-messenger',
+      persistedState: state,
+    });
+
+    expect(subscribeToArcTransactionConfirmedRefresh).toHaveBeenCalledWith(
+      mockAssetsController,
+    );
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
       showApprovalRequest,
     });
