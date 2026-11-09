@@ -586,57 +586,6 @@
         "process": true
       }
     },
-    "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/core": {
-      "packages": {
-        "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/utils": true
-      }
-    },
-    "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom": {
-      "globals": {
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "getComputedStyle": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/core' reexports from '@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/utils' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/core": true,
-        "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/utils": true
-      }
-    },
-    "@metamask/design-system-react>@floating-ui/react-dom": {
-      "globals": {
-        "document": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom' reexports from '@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/utils' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom": true,
-        "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/utils": true,
-        "react": true,
-        "react-dom": true
-      }
-    },
-    "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/utils": {
-      "globals": {
-        "CSS": true,
-        "Element": true,
-        "HTMLElement": true,
-        "Node": true,
-        "ShadowRoot": true,
-        "document": true
-      }
-    },
     "@hello-pangea/dnd": {
       "globals": {
         "Element.prototype": true,
@@ -774,6 +723,11 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
+      }
+    },
+    "@metamask/design-system-react>@metamask-previews/design-system-shared": {
+      "packages": {
+        "@metamask/utils": true
       }
     },
     "@metamask/7715-permission-types": {
@@ -1730,21 +1684,24 @@
     },
     "@metamask/design-system-react": {
       "globals": {
+        "HTMLButtonElement": true,
+        "HTMLInputElement": true,
+        "IntersectionObserver": true,
+        "Node": true,
         "ResizeObserver": true,
+        "addEventListener": true,
         "console.warn": true,
         "document.addEventListener": true,
         "document.body": true,
-        "document.removeEventListener": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/design-system-react>@floating-ui/react-dom' reexports from '@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom' and webpack collapsed that to a direct import."
-        ]
+        "document.documentElement.clientHeight": true,
+        "document.documentElement.clientWidth": true,
+        "document.removeEventListener": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "removeEventListener": true
       },
       "packages": {
-        "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom": true,
-        "@metamask/design-system-react>@floating-ui/react-dom": true,
-        "@metamask/design-system-shared": true,
+        "@metamask/design-system-react>@metamask-previews/design-system-shared": true,
         "@metamask/jazzicon": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
@@ -1752,11 +1709,6 @@
         "react-dom": true,
         "react-focus-lock": true,
         "@metamask/design-system-react>tailwind-merge": true
-      }
-    },
-    "@metamask/design-system-shared": {
-      "packages": {
-        "@metamask/utils": true
       }
     },
     "@metamask/eip-5792-middleware": {
