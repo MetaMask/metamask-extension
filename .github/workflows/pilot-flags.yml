@@ -21,7 +21,7 @@ env:
   DONOR_RUN: '42666092993'
   DONOR_VERSION: 13.58.0
   DONOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
-  BROWSER_LOADS: '1'
+  BROWSER_LOADS: '2'
 
 jobs:
   flags:
