@@ -7829,9 +7829,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-utils@npm:@metamask-previews/client-utils@3.1.1-preview-04cf473":
-  version: 3.1.1-preview-04cf473
-  resolution: "@metamask-previews/client-utils@npm:3.1.1-preview-04cf473"
+"@metamask/client-utils@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@metamask/client-utils@npm:3.2.0"
   dependencies:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^13.0.0"
@@ -7841,7 +7841,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^73.1.2"
     "@metamask/utils": "npm:^12.0.1"
     eth-chainlist: "npm:^0.0.873"
-  checksum: 10/455837f9d164625d7d42c2688a95c14180151d1e13abb482ef0eef3e9b045c3ebe5b54b7d016c7d0293e3fbb0c23d71b7bbe8b6148c39ab9f030a19ff4dc5069
+  checksum: 10/4933f71d24aaa01ffc52bd02fc51199cb02d7b10124124cc41a67804cd4ba7e975bea5ba387850ebd17e5a24c5c3bbc5091fe1402dbe165523b83184f2e311b1
   languageName: node
   linkType: hard
 
