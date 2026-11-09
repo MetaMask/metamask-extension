@@ -1,5 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
 import IntervalBar, {
   CHART_TYPE_CANDLE,
   CHART_TYPE_LINE,
@@ -17,7 +19,10 @@ const DEFAULT_PROPS = {
 function renderBar(
   props: Partial<React.ComponentProps<typeof IntervalBar>> = {},
 ) {
-  return render(<IntervalBar {...DEFAULT_PROPS} {...props} />);
+  return renderWithProvider(
+    <IntervalBar {...DEFAULT_PROPS} {...props} />,
+    configureStore({ metamask: { currentLocale: 'en' } }),
+  );
 }
 
 /** The interval labels on screen, in order. */
@@ -113,7 +118,7 @@ describe('IntervalBar', () => {
     it('reports a switch to line', () => {
       renderBar();
 
-      fireEvent.click(screen.getByTitle('Line chart'));
+      fireEvent.click(screen.getByRole('button', { name: 'Line chart' }));
 
       expect(DEFAULT_PROPS.onChartTypeSelect).toHaveBeenCalledWith(
         CHART_TYPE_LINE,
@@ -123,10 +128,38 @@ describe('IntervalBar', () => {
     it('reports a switch to candles', () => {
       renderBar({ chartType: CHART_TYPE_LINE });
 
-      fireEvent.click(screen.getByTitle('Candle chart'));
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Candlestick chart' }),
+      );
 
       expect(DEFAULT_PROPS.onChartTypeSelect).toHaveBeenCalledWith(
         CHART_TYPE_CANDLE,
+      );
+    });
+
+    it('exposes the pressed state of each chart type to assistive tech', () => {
+      renderBar({ chartType: CHART_TYPE_LINE });
+
+      expect(
+        screen.getByRole('button', { name: 'Line chart' }),
+      ).toHaveAttribute('aria-pressed', 'true');
+      expect(
+        screen.getByRole('button', { name: 'Candlestick chart' }),
+      ).toHaveAttribute('aria-pressed', 'false');
+    });
+  });
+
+  describe('accessibility', () => {
+    it('exposes the pressed state of the selected interval', () => {
+      renderBar({ selectedInterval: '4h' });
+
+      expect(screen.getByRole('button', { name: '4h' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.getByRole('button', { name: '1h' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
       );
     });
   });
