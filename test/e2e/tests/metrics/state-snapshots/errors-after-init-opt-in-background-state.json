@@ -65,6 +65,7 @@
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
     "moneyEarnBannerDismissedTokenKeys": "object",
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",

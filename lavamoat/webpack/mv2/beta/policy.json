@@ -788,12 +788,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/assets-controllers>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/gator-permissions-controller>@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -937,7 +931,7 @@
         "ethers>@ethersproject/address": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers>@metamask/abi-utils": true,
+        "@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/assets-controllers>@metamask/controller-utils": true,
@@ -2133,7 +2127,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "ethereumjs-util>bn.js": true,
-        "uuid": true
+        "@metamask/wallet>@metamask/gas-fee-controller>uuid": true
       }
     },
     "@metamask/gator-permissions-controller": {
@@ -7743,8 +7737,12 @@
     },
     "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/wallet>@metamask/gas-fee-controller>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/keyring-sdk>uuid": {

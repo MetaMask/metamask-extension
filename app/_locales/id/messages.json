@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Interaksi kontrak"
   },
-  "convertAgain": {
-    "message": "Konversikan lagi"
-  },
   "convertTokenToNFTDescription": {
     "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini MetaMask memiliki dukungan asli penuh untuk NFT. Ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
   },
@@ -6347,19 +6344,6 @@
     "message": "Dikonversi ke mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Konversi mUSD gagal"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Mengonversi $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Konversi mUSD berhasil"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus dapat diklaim dalam waktu satu hari."
-  },
   "musdConvert": {
     "message": "Konversikan"
   },
@@ -8451,7 +8435,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "hubungi dukungan",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Beberapa layanan tidak tersedia untuk sementara waktu. $1, atau $2.",
@@ -8459,7 +8443,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Lihat pilihan Anda di bagian Pertanyaan Umum",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Kami sedang mengalami gangguan",
@@ -8890,7 +8874,7 @@
     "message": "Penarikan dikirim"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask akan menukar token Anda ke token yang diinginkan. MetaMask tidak mengenakan biaya saat Anda menukar ke mUSD.",
+    "message": "MetaMask akan menukar token Anda ke token yang diinginkan.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {

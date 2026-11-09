@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "कॉन्ट्रैक्ट इंटरैक्शन"
   },
-  "convertAgain": {
-    "message": "फिर से कन्वर्ट करें"
-  },
   "convertTokenToNFTDescription": {
     "message": "हमने पाया है कि यह संपत्ति एक NFT है। MetaMask के पास अब NFT के लिए फुल नेटिव सपोर्ट है। क्या आप इसे अपनी टोकन लिस्ट से हटाना चाहते हैं और इसे NFT के रूप में जोड़ना चाहते हैं?"
   },
@@ -6343,19 +6340,6 @@
     "message": "mUSD में कन्वर्ट किया गया",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD कन्वर्शन नहीं हो पाया"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSD में कन्वर्ट किया जा रहा है",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD कन्वर्शन सफल रहा"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "बोनस एक दिन के भीतर क्लेम किया जा सकेगा।"
-  },
   "musdConvert": {
     "message": "कन्वर्ट करें"
   },
@@ -8447,7 +8431,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "सपोर्ट से संपर्क करें",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "कुछ सेवाएं अस्थायी रूप से उपलब्ध नहीं हैं। $1, या $2।",
@@ -8455,7 +8439,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "FAQs में अपने विकल्प देखें",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "हम सेवा बाधा का सामना कर रहे हैं",
@@ -8882,7 +8866,7 @@
     "message": "विदड्रॉवल सबमिट किया गया"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask आपके लिए आपके पसंदीदा टोकन में स्वैप करेगा। जब आप mUSD में स्वैप करते हैं तो कोई MetaMask शुल्क लागू नहीं होता है।",
+    "message": "MetaMask आपके लिए आपके पसंदीदा टोकन में स्वैप करेगा।",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {

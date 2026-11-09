@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../../../test/lib/mock-resize-observer';
 import { CustomAmount, CustomAmountSkeleton } from './custom-amount';
 
 const mockStore = configureStore([thunk]);
@@ -39,7 +43,7 @@ describe('CustomAmount', () => {
       store,
     );
 
-    expect(screen.getByText('€')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-prefix')).toHaveTextContent('€');
   });
 
   it('renders selected currency symbol if currency not specified', () => {
@@ -47,7 +51,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
-    expect(screen.getByText('$')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-prefix')).toHaveTextContent('$');
   });
 
   it('renders skeleton if loading', () => {
@@ -76,7 +80,23 @@ describe('CustomAmount', () => {
     expect(amountElement).toBeInTheDocument();
   });
 
-  it('uses smaller font size for longer amounts', () => {
+  it('sets the symbol, measuring text and input in Hero at the same size', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="100" />, store);
+
+    const symbol = screen.getByTestId('custom-amount-prefix');
+    const input = screen.getByTestId('custom-amount-input');
+    const measuringText = screen.getByTestId('custom-amount-value');
+
+    expect(measuringText).toHaveTextContent('100');
+    for (const element of [symbol, measuringText, input]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
+    }
+  });
+
+  it('steps down the shared amount scale for longer amounts', () => {
     const store = mockStore(getMockState());
 
     renderWithProvider(
@@ -84,26 +104,75 @@ describe('CustomAmount', () => {
       store,
     );
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '20px' });
-  });
-
-  it('uses larger font size for shorter amounts', () => {
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="100" />, store);
-
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '64px' });
+    expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
+      fontSize: '32px',
+      lineHeight: '32px',
+    });
   });
 
   it('accounts for the fiat symbol when choosing font size', () => {
     const store = mockStore(getMockState());
 
-    renderWithProvider(<CustomAmount amountFiat="12345.67" />, store);
+    renderWithProvider(<CustomAmount amountFiat="1234567.89" />, store);
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '40px' });
+    expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
+      fontSize: '60px',
+    });
+  });
+
+  describe('measured width', () => {
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    const renderAtWidth = (width: number) => {
+      renderWithProvider(
+        <CustomAmount amountFiat="1234567.89" />,
+        mockStore(getMockState()),
+      );
+      act(() => resizeObserver.resize(width));
+      return screen.getByTestId('custom-amount-input');
+    };
+
+    it('keeps a long amount larger in a wide layout', () => {
+      expect(renderAtWidth(600)).toHaveStyle({ fontSize: '88px' });
+    });
+
+    it('steps a long amount down in a narrow layout', () => {
+      expect(renderAtWidth(250)).toHaveStyle({ fontSize: '48px' });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      renderWithProvider(
+        <CustomAmountHarness initialAmount="0" />,
+        mockStore(getMockState()),
+      );
+      act(() => resizeObserver.resize(600));
+      const input = screen.getByTestId('custom-amount-input');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
+
+      for (const value of ['1', '1234', '1234567', '1234567.89']) {
+        fireEvent.change(input, { target: { value } });
+      }
+
+      expect(input).toHaveValue('1234567.89');
+      expect(input).toHaveStyle({ fontSize: '88px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
+    });
   });
 
   it('displays at most 2 decimals for a parent-driven amount', () => {
@@ -163,15 +232,6 @@ describe('CustomAmount', () => {
 
     fireEvent.change(input, { target: { value: '0,01' } });
     expect(onChange).toHaveBeenCalledWith('0,01');
-  });
-
-  it('counts decimal separators as half a character when calculating input width', () => {
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="1.33" />, store);
-
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ width: '3.5ch' });
   });
 
   it('auto-focuses the input when autoFocus is true', () => {

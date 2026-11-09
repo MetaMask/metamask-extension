@@ -156,9 +156,6 @@ describe('PerpsTokenLogo', () => {
     expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
       'custom-class',
     );
-    expect(screen.getByTestId('perps-token-logo-BTC')).not.toHaveClass(
-      'bg-white',
-    );
   });
 
   it('applies bg-white to ETH in dark mode', () => {
@@ -170,18 +167,6 @@ describe('PerpsTokenLogo', () => {
     });
 
     expect(screen.getByTestId('perps-token-logo-ETH')).toHaveClass('bg-white');
-  });
-
-  it('does not apply bg-white to ETH in light mode', () => {
-    renderWithProvider(<PerpsTokenLogo symbol="ETH" />, mockStore);
-
-    act(() => {
-      mockImg.onload?.();
-    });
-
-    expect(screen.getByTestId('perps-token-logo-ETH')).not.toHaveClass(
-      'bg-white',
-    );
   });
 
   it('applies bg-icon-default to S in light mode', () => {
@@ -227,9 +212,6 @@ describe('PerpsTokenLogo', () => {
     rerender(<PerpsTokenLogo symbol={symbol} />);
 
     expect(screen.getByTestId(`perps-token-logo-${symbol}`)).not.toHaveClass(
-      'bg-white',
-    );
-    expect(screen.getByTestId(`perps-token-logo-${symbol}`)).not.toHaveClass(
       'bg-icon-default',
     );
   };
@@ -251,7 +233,6 @@ describe('PerpsTokenLogo', () => {
     });
 
     const logo = screen.getByTestId('perps-token-logo-BTC');
-    expect(logo).not.toHaveClass('bg-white');
     expect(logo).not.toHaveClass('bg-icon-default');
   });
 
