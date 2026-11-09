@@ -30,7 +30,7 @@ export function useStartTruncatedText(text: string, endChars = Infinity) {
 
       const shorten = (visibleChars: number) => {
         const end = Math.min(visibleChars, endChars);
-        return `${text.slice(0, visibleChars - end)}${ELLIPSIS}${text.slice(text.length - end)}`;
+        return `${text.slice(0, visibleChars - end)}${ELLIPSIS}${text.slice(text.length - end).trimStart()}`;
       };
       const fits = (value: string) => {
         probe.textContent = value;

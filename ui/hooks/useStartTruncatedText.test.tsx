@@ -45,6 +45,12 @@ describe('useStartTruncatedText', () => {
     expect(container.textContent).toBe('…s address');
   });
 
+  it('does not leave a space after the ellipsis', () => {
+    rowWidth = 90;
+    const { container } = render(<Fitted text="Malicious address" />);
+    expect(container.textContent).toBe('…address');
+  });
+
   it('shows more of the start when the element gets wider', () => {
     const resizeObserver = mockResizeObserver();
     rowWidth = 250;
