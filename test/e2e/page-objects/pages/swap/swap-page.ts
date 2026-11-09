@@ -147,11 +147,6 @@ class SwapPage {
   private readonly transactionStatusHeader =
     '[data-testid="swap-smart-transaction-status-header"]';
 
-  private readonly viewActivityButton = {
-    tag: 'button',
-    text: 'View activity',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -267,10 +262,6 @@ class SwapPage {
     await this.driver.clickElement(this.moreQuotesButton);
   }
 
-  async clickViewActivity(): Promise<void> {
-    await this.driver.clickElementSafe(this.viewActivityButton);
-  }
-
   async closeQuotes(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.closeQuotesButton);
   }
@@ -354,6 +345,10 @@ class SwapPage {
   async getToAmountValue(): Promise<string> {
     const element = await this.driver.waitForSelector(this.reviewToAmount);
     return element.getAttribute('value');
+  }
+
+  async goBackAfterSubmit(): Promise<void> {
+    await new BridgeQuotePage(this.driver).goBackAfterSubmit();
   }
 
   async reviewQuote(options: SwapReviewOptions) {

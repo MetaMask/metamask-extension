@@ -3130,9 +3130,6 @@
   "contractInteraction": {
     "message": "Tương tác với hợp đồng"
   },
-  "convertAgain": {
-    "message": "Chuyển đổi lại"
-  },
   "convertTokenToNFTDescription": {
     "message": "Chúng tôi phát hiện tài sản này là một NFT. MetaMask hiện đã hỗ trợ toàn diện và đầy đủ cho NFT. Bạn có muốn xóa tài sản khỏi danh sách token và thêm tài sản dưới dạng NFT không?"
   },
@@ -6346,19 +6343,6 @@
   "musdConversionTitle": {
     "message": "Đã chuyển đổi sang mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "Chuyển đổi mUSD thất bại"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Đang chuyển đổi $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Chuyển đổi mUSD thành công"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bạn sẽ có thể nhận thưởng trong vòng một ngày."
   },
   "musdConvert": {
     "message": "Chuyển đổi"
