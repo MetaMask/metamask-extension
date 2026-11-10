@@ -33,7 +33,12 @@ import {
 import NftGrid from '../nft-grid/nft-grid';
 import { sortAssets } from '../../util/sort';
 import { TabControls } from '../../../../ui/tabs';
-import AssetListControlBar from '../../asset-list/asset-list-control-bar';
+import {
+  AssetControls,
+  AssetControlsActions,
+} from '../../asset-list/asset-list-control-bar/asset-controls';
+import { NetworkFilter } from '../../asset-list/asset-list-control-bar/network-filter';
+import { NftOptionsMenu } from '../../asset-list/asset-list-control-bar/nft-options-menu';
 import { NftEmptyState } from '../nft-empty-state/nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
 import { useScreenViewedEvent } from '../../../../../hooks/useScreenViewedEvent';
@@ -90,10 +95,12 @@ export default function NftsTab({
   return (
     <>
       <TabControls>
-        <AssetListControlBar
-          showSortControl={false}
-          data-testid="parent-selector-nfts-tab"
-        />
+        <AssetControls data-testid="parent-selector-nfts-tab">
+          <NetworkFilter />
+          <AssetControlsActions>
+            <NftOptionsMenu />
+          </AssetControlsActions>
+        </AssetControls>
       </TabControls>
 
       <Box className="nfts-tab">

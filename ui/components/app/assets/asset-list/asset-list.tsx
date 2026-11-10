@@ -16,7 +16,14 @@ import TokenList from '../token-list';
 import { NetworkPillSelector } from '../../../multichain/network-pill-selector/network-pill-selector';
 import { TokenTable } from '../token-table/token-table';
 import { TabControls } from '../../../ui/tabs';
-import AssetListControlBar from './asset-list-control-bar';
+import {
+  AssetControls,
+  AssetControlsActions,
+} from './asset-list-control-bar/asset-controls';
+import { NetworkFilter } from './asset-list-control-bar/network-filter';
+import { NftOptionsMenu } from './asset-list-control-bar/nft-options-menu';
+import { SortByButton } from './asset-list-control-bar/sort-by-button';
+import { TokenOptionsMenu } from './asset-list-control-bar/token-options-menu';
 
 export type AssetListVariant = 'list' | 'table';
 
@@ -98,10 +105,17 @@ const AssetList = ({
   return (
     <>
       <TabControls>
-        <AssetListControlBar
-          showTokensLinks={shouldShowTokensLinks}
-          data-testid="parent-selector-tokens-tab"
-        />
+        <AssetControls data-testid="parent-selector-tokens-tab">
+          <NetworkFilter />
+          <AssetControlsActions>
+            <SortByButton />
+            {shouldShowTokensLinks ? (
+              <TokenOptionsMenu />
+            ) : (
+              <NftOptionsMenu showTokensLinks={showTokensLinks} />
+            )}
+          </AssetControlsActions>
+        </AssetControls>
       </TabControls>
       <TokenListContainer
         onClickAsset={onClickAsset}
