@@ -16,6 +16,12 @@ import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountD
 import { useMoneyVaultApy } from '../../../../hooks/money/useMoneyVaultApy';
 import { setMoneyFtueSeen } from '../../../../store/actions';
 import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../../pages/money/constants/money-events';
+import {
   MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID,
   MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID,
   MONEY_FTUE_SPLASH_TEST_ID,
@@ -273,18 +279,31 @@ describe('MoneyFtueSplash', () => {
     });
   });
 
-  it('marks the splash seen and continues the pending deposit from the close button', () => {
+  it('marks the splash seen and cancels the pending deposit from the close button', () => {
     const { store } = renderSplash();
 
     fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));
 
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith({
-      preferredPaymentToken: PREFERRED_PAYMENT_TOKEN,
-      intent: 'addMusd',
-      skipFtue: true,
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Icon,
+      buttonIntent: MoneyButtonIntent.Dismiss,
+      componentName: MoneyComponentName.FtueSplash,
+      redirectTarget: MoneyScreenName.WalletHome,
     });
+  });
+
+  it('closes the Money-tab splash with the close button and navigates to Money home', () => {
+    const { store } = renderSplash(null);
+
+    fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));
+
+    expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
+    expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
   });
 
   it('continues an option-less deposit after acknowledgement', () => {
