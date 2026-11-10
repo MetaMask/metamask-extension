@@ -154,6 +154,29 @@ function toHeaders(existing: unknown): Headers {
 }
 
 /**
+ * Merge a fetch call's `Request` headers with its `init` headers into a single
+ * `Headers`, with `init` winning on duplicate keys — the precedence the platform
+ * applies when `fetch` receives both.
+ *
+ * @param args - The fetch arguments (`[input, init]`).
+ * @returns A new `Headers` instance holding the request's effective headers.
+ */
+function mergeFetchHeaders(args: unknown[]): Headers {
+  const [request, options] = args as [
+    unknown,
+    { headers?: unknown } | undefined,
+  ];
+  const requestHeaders = isRequest(request) ? request.headers : undefined;
+  const headers = toHeaders(requestHeaders);
+  const initHeaders = toHeaders(options?.headers);
+
+  initHeaders.forEach((value, key) => {
+    headers.set(key, value);
+  });
+  return headers;
+}
+
+/**
  * Build a new `Headers` for an outbound fetch with the Consensys `baggage`
  * appended. Seeds from the existing request headers (the SDK's `sentry-trace` /
  * `baggage` / `traceparent` are already present when this runs after Sentry's
@@ -168,21 +191,54 @@ export function buildAugmentedHeaders(
   args: unknown[],
   { requestId }: { requestId: string },
 ): Headers {
-  const [request, options] = args as [
-    unknown,
-    { headers?: unknown } | undefined,
-  ];
-  const requestHeaders = isRequest(request) ? request.headers : undefined;
-  const headers = toHeaders(requestHeaders);
-  const initHeaders = toHeaders(options?.headers);
-
-  initHeaders.forEach((value, key) => {
-    headers.set(key, value);
-  });
+  const headers = mergeFetchHeaders(args);
   // `baggage` is appended (not set): repeated baggage headers are merged by the
   // browser, so this preserves the SDK's Sentry-prefixed entries.
   headers.append('baggage', buildConsensysBaggage(requestId));
   return headers;
+}
+
+/** Headers that advertise a trace parent on an outbound request. */
+const TRACE_PARENT_HEADERS = ['sentry-trace', 'traceparent'];
+
+/** Prefix of the `baggage` entries that carry Sentry's trace context. */
+const SENTRY_BAGGAGE_PREFIX = 'sentry-';
+
+/**
+ * Remove `sentry-trace`, `traceparent` and Sentry-prefixed `baggage` entries
+ * from a fetch's effective headers, keeping everything else.
+ *
+ * @param args - The fetch arguments (`[input, init]`).
+ * @returns The stripped headers, or `undefined` when there was nothing to strip.
+ */
+export function stripTraceHeaders(args: unknown[]): Headers | undefined {
+  const headers = mergeFetchHeaders(args);
+  let removed = false;
+
+  for (const name of TRACE_PARENT_HEADERS) {
+    if (headers.has(name)) {
+      headers.delete(name);
+      removed = true;
+    }
+  }
+
+  const baggage = headers.get('baggage');
+  if (baggage !== null) {
+    const entries = baggage.split(',').map((entry) => entry.trim());
+    const kept = entries.filter(
+      (entry) => entry && !entry.startsWith(SENTRY_BAGGAGE_PREFIX),
+    );
+    if (kept.length !== entries.length) {
+      removed = true;
+      if (kept.length > 0) {
+        headers.set('baggage', kept.join(','));
+      } else {
+        headers.delete('baggage');
+      }
+    }
+  }
+
+  return removed ? headers : undefined;
 }
 
 function setRequestIdForTraceId(traceId: string, requestId: string): void {
@@ -214,9 +270,12 @@ function setRequestIdForTraceId(traceId: string, requestId: string): void {
  * `consensysRequestId`). The W3C `traceparent` / `sentry-trace` headers are
  * injected natively by the SDK (`propagateTraceparent` + `tracePropagationTargets`).
  *
+ * With no active span, a matched request goes out with no trace headers and no
+ * Consensys `baggage`.
+ *
  * Must be registered after `browserTracingIntegration` so the SDK's
  * `sentry-trace` / `baggage` headers are already attached when the fetch hook
- * augments them.
+ * augments or strips them.
  *
  * @param options - Options bag.
  * @param options.log - Function to log diagnostic messages.
@@ -241,6 +300,17 @@ export function consensysTracePropagationIntegration({
           return;
         }
         try {
+          // The SDK attaches trace headers to matched URLs even with no active
+          // span, naming a parent that is never sent: strip them.
+          if (!getActiveSpan()) {
+            const strippedHeaders = stripTraceHeaders(handlerData.args);
+            if (strippedHeaders) {
+              handlerData.args[1] = handlerData.args[1] || {};
+              handlerData.args[1].headers = strippedHeaders;
+            }
+            return;
+          }
+
           const requestId = requestIdProvider();
           currentConsensysRequestId = requestId;
 
