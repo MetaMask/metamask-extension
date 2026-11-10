@@ -243,12 +243,7 @@ export const BridgeTransactionSettingsModal = ({
                 inputProps={{
                   'aria-label': t('swapsMaxSlippage'),
                   inputMode: 'decimal',
-                  // TODO: Remove this cast once `@metamask/design-system-react`
-                  // accepts `data-*` in `inputProps`. Fix:
-                  // https://github.com/MetaMask/metamask-design-system/pull/1667
-                  ...({
-                    'data-testid': 'bridge__tx-settings-modal-custom-input',
-                  } as { 'data-testid': string }),
+                  'data-testid': 'bridge__tx-settings-modal-custom-input',
                   onPaste: (event) => {
                     handleCustomSlippage(
                       event,
