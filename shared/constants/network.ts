@@ -645,6 +645,7 @@ export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 export const ZERO_G_IMAGE_URL = './images/0g.svg';
 export const ZERO_G_NATIVE_TOKEN_IMAGE_URL = './images/0g-native.svg';
+export const ELYSIUM_NETWORK_IMAGE_URL = './images/elysium-network.png';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
@@ -1222,6 +1223,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.SOMNIA]: SOMNIA_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
+  // Kinetiq Elysium (chain 99901). Not in CHAIN_IDS, since that list is used for validation.
+  '0x1863d': ELYSIUM_NETWORK_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {

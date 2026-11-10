@@ -101,11 +101,6 @@ type AssetListControlBarProps = {
    * menu containing only a "Refresh list" action that invokes this callback.
    */
   onRefresh?: () => void;
-  /**
-   * Places the network filter button after the sort and more-options buttons,
-   * at the end of the row, instead of at the start.
-   */
-  showNetworkFilterAtEnd?: boolean;
   'data-testid'?: string;
 };
 
@@ -115,7 +110,6 @@ const AssetListControlBar = ({
   showSortControl = true,
   onNetworkSelect,
   onRefresh,
-  showNetworkFilterAtEnd = false,
   'data-testid': dataTestId,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
@@ -439,8 +433,7 @@ const AssetListControlBar = ({
           ? TextColor.primaryDefault
           : TextColor.textDefault
       }
-      marginLeft={showNetworkFilterAtEnd ? 2 : null}
-      marginRight={!showNetworkFilterAtEnd && isFullScreen ? 2 : null}
+      marginRight={isFullScreen ? 2 : null}
       borderColor={BorderColor.borderMuted}
       ellipsis
     >
@@ -539,25 +532,9 @@ const AssetListControlBar = ({
       marginRight={4}
       data-testid={dataTestId}
     >
-      <Box
-        display={Display.Flex}
-        justifyContent={
-          showNetworkFilterAtEnd
-            ? JustifyContent.flexEnd
-            : JustifyContent.spaceBetween
-        }
-      >
-        {showNetworkFilterAtEnd ? (
-          <>
-            {actionButtons}
-            {networkFilterButton}
-          </>
-        ) : (
-          <>
-            {networkFilterButton}
-            {actionButtons}
-          </>
-        )}
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        {networkFilterButton}
+        {actionButtons}
       </Box>
 
       <HomeNetworkFilterModal
