@@ -1,4 +1,8 @@
 {
+  "24hChange": {
+    "message": "24h change",
+    "description": "Title for the 24 hour change of the token price"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "Relaunch MetaMask if the problem persists.",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
@@ -2395,7 +2399,7 @@
     "message": "Because of your trade size and available liquidity, you'll get about $1 less than the market price. This is already factored into your quote."
   },
   "bridgePriceImpactNormalDescription": {
-    "message": "This is how your trade changes the market price of a token. It depends on the trade size, availale liquidity, and provider fees. MetaMask doesn't control price impact."
+    "message": "This is how your trade changes the market price of a token. It depends on the trade size, available liquidity, and provider fees. MetaMask doesn't control price impact."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Price impact"
@@ -3199,9 +3203,6 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
-  "convertAgain": {
-    "message": "Convert again"
-  },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
@@ -3536,6 +3537,9 @@
   },
   "deepLink_theHomePage": {
     "message": "the home page"
+  },
+  "deepLink_theMoneyDepositPage": {
+    "message": "the Money deposit page"
   },
   "deepLink_theMoneyPage": {
     "message": "the Money page"
@@ -5619,7 +5623,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many attempts. Request a new code."
+    "message": "Too many incorrect codes. Get a new code when it's available."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5699,6 +5703,10 @@
   },
   "mfaOtpGetNewCode": {
     "message": "Get new code"
+  },
+  "mfaOtpGetNewCodeIn": {
+    "message": "Get new code in $1s",
+    "description": "$1 is a number of seconds"
   },
   "mfaOtpResend": {
     "message": "Resend code"
@@ -5847,7 +5855,7 @@
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
   },
   "minimumReceivedExplanationTitle": {
-    "message": "Minimum amount received"
+    "message": "Minimum received"
   },
   "minimumReceivedLabel": {
     "message": "Minimum received"
@@ -6533,19 +6541,6 @@
   "musdConversionTitle": {
     "message": "Converted to mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSD conversion failed"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Converting $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD conversion successful"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus will be claimable within a day."
   },
   "musdConvert": {
     "message": "Convert"
@@ -8648,7 +8643,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "contact support",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Some services are temporarily unavailable. $1, or $2.",
@@ -8656,7 +8651,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "See your options in FAQs",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "We're experiencing an outage",
@@ -8892,6 +8887,10 @@
     "message": "Failed to place partial close order",
     "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
+  "perpsToastPositionAlreadyClosed": {
+    "message": "This position is already closed",
+    "description": "Toast text shown when a perps TP/SL update or close targets a position that closed before the request reached the provider"
+  },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",
     "description": "Subtitle shown in perps close failure toasts when the position remains open"
@@ -9087,7 +9086,7 @@
     "message": "Withdrawal submitted"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
+    "message": "MetaMask will swap to your desired token for you.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -12158,9 +12157,6 @@
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Included"
-  },
   "swapGasFeesSplit": {
     "message": "Network fees on the previous screen are split between these two transactions."
   },
@@ -12461,6 +12457,9 @@
   },
   "tokenContractAddress": {
     "message": "Token contract address"
+  },
+  "tokenContractAddressCopied": {
+    "message": "Token address copied"
   },
   "tokenContractWarning": {
     "message": "Token contract warning"

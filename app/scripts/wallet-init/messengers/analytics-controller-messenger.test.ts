@@ -43,6 +43,7 @@ describe('getAnalyticsControllerInitMessenger', () => {
           'SentryTracingService:trackTracesAfterMetricsOptIn',
           'SentryTracingService:clearTracesAfterMetricsOptIn',
           'ConfigRegistryController:getState',
+          'LegacyBackgroundApiService:setParticipateInMetaMetrics',
         ],
         events: ['ConfigRegistryController:stateChanged'],
       }),

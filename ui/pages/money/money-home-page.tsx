@@ -29,9 +29,9 @@ import {
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
+import { useAppLayout } from '../../contexts/app-layout';
 import { useScrollContainerGutterWidth } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useFullScreenDesign } from '../../hooks/useFullScreenDesign';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useOpenMoneyFtueOnFirstVisit } from '../../hooks/money/use-open-money-ftue-on-first-visit';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
@@ -124,6 +124,7 @@ type ActionButtonProps = {
   onClick?: () => void;
   disabled?: boolean;
   testId?: string;
+  isWideLayout: boolean;
 };
 
 const MoneyActionButton = ({
@@ -132,28 +133,25 @@ const MoneyActionButton = ({
   onClick,
   disabled,
   testId,
+  isWideLayout,
 }: ActionButtonProps) => {
-  const isFullScreenDesign = useFullScreenDesign();
-
   return (
     <Button
       variant={ButtonVariant.Secondary}
       size={ButtonSize.Lg}
       startIconName={icon}
       startIconProps={
-        isFullScreenDesign
+        isWideLayout
           ? undefined
           : { size: IconSize.Lg, color: IconColor.IconDefault }
       }
-      textProps={
-        isFullScreenDesign ? undefined : { variant: TextVariant.BodySm }
-      }
+      textProps={isWideLayout ? undefined : { variant: TextVariant.BodySm }}
       isDisabled={disabled}
       onClick={onClick}
       data-testid={testId}
       className={classnames(
         'flex-1',
-        !isFullScreenDesign &&
+        !isWideLayout &&
           'h-[76px] flex-col gap-y-0.5 rounded-xl px-0 opacity-100',
       )}
     >
@@ -166,7 +164,7 @@ export function MoneyHomePage() {
   const t = useI18nContext();
   const scrollbarGutterWidth = useScrollContainerGutterWidth();
   const navigate = useNavigate();
-  const isFullScreenDesign = useFullScreenDesign();
+  const { isWideLayout } = useAppLayout();
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
@@ -468,18 +466,8 @@ export function MoneyHomePage() {
           </div>
         ) : null}
 
-        <div
-          className={classnames(
-            'flex flex-col gap-2 px-4 pt-2 mb-5',
-            !isFullScreenDesign && 'items-center',
-          )}
-        >
-          <div
-            className={classnames(
-              'flex w-full flex-col gap-1',
-              !isFullScreenDesign && 'max-w-[784px] sm:items-center',
-            )}
-          >
+        <div className="mb-5 flex flex-col items-center gap-2 px-4 pt-2 wide-layout:items-start">
+          <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center wide-layout:max-w-none wide-layout:items-start">
             <SensitiveText
               variant={TextVariant.AmountDisplayLg}
               fontFamily={FontFamily.Hero}
@@ -536,20 +524,14 @@ export function MoneyHomePage() {
             </div>
           </div>
 
-          <div
-            className={classnames(
-              'mt-2 flex w-full gap-2 pt-2',
-              isFullScreenDesign
-                ? 'max-w-sm mb-2'
-                : 'max-w-[389px] self-start sm:self-center',
-            )}
-          >
+          <div className="mt-2 flex w-full max-w-[389px] gap-2 self-start pt-2 sm:self-center wide-layout:mb-2 wide-layout:max-w-sm wide-layout:self-auto">
             <MoneyActionButton
               icon={IconName.Add}
               label={t('moneyAdd')}
               onClick={handleAddFundsFromActionRow}
               disabled={isDepositLoading}
               testId="money-add-button"
+              isWideLayout={isWideLayout}
             />
             <MoneyActionButton
               icon={IconName.Arrow2UpRight}
@@ -557,33 +539,21 @@ export function MoneyHomePage() {
               onClick={handleSend}
               disabled={!IS_MONEY_TRANSFER_SHEET_ENABLED && isWithdrawLoading}
               testId="money-send-button"
+              isWideLayout={isWideLayout}
             />
           </div>
 
           {showFundedLayout ? null : (
             <section
               data-testid="money-fund-card"
-              className={classnames(
-                'mt-1 flex w-full gap-4 overflow-hidden rounded-2xl bg-background-muted p-4',
-                isFullScreenDesign ? 'flex-row' : 'max-w-[389px] flex-col',
-              )}
+              className="mt-1 flex w-full max-w-[389px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4 wide-layout:max-w-none wide-layout:flex-row"
             >
               <img
                 src={MONEY_ONBOARDING_ARTWORK}
                 alt=""
-                className={classnames(
-                  'rounded-[14px] object-cover',
-                  isFullScreenDesign
-                    ? 'w-56 shrink-0 self-stretch'
-                    : 'h-[185px] w-full',
-                )}
+                className="h-[185px] w-full rounded-[14px] object-cover wide-layout:h-auto wide-layout:w-56 wide-layout:shrink-0 wide-layout:self-stretch"
               />
-              <div
-                className={classnames(
-                  'flex min-w-0 flex-1 flex-col gap-4',
-                  isFullScreenDesign && 'items-start justify-center',
-                )}
-              >
+              <div className="flex min-w-0 flex-1 flex-col gap-4 wide-layout:items-start wide-layout:justify-center">
                 <div>
                   <h2 className="text-s-heading-lg font-bold">
                     {apyDisplay
@@ -601,7 +571,7 @@ export function MoneyHomePage() {
                   </Text>
                 </div>
                 <Button
-                  className={isFullScreenDesign ? undefined : 'w-full'}
+                  className="w-full wide-layout:w-auto"
                   isLoading={isDepositLoading}
                   onClick={handleAddFundsFromFundCard}
                 >
