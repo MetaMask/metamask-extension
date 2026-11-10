@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   TransactionContainerType,
   TransactionControllerEstimateGasAction,
@@ -89,6 +90,96 @@ describe('Container Utils', () => {
   });
 
   describe('applyTransactionContainers', () => {
+    it('preserves gas without re-estimating when no container is applied', async () => {
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { gas: '0x1000', maxFeePerGas: '0x10' },
+      } as TransactionMeta;
+
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: false,
+        messenger,
+        transactionMeta,
+        types: [],
+      });
+
+      const transactionToUpdate = cloneDeep(transactionMeta);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.txParams).toMatchObject(
+        transactionMeta.txParams,
+      );
+      expect(transactionToUpdate.containerTypes).toStrictEqual([]);
+      expect(enforceSimulationsMock).not.toHaveBeenCalled();
+      expect(estimateGasMock).not.toHaveBeenCalled();
+    });
+
+    it('restores the original gas and call when removing a container', async () => {
+      const originalParams = {
+        gas: '0x1000',
+        data: '0x1234',
+        to: '0x1234567890123456789012345678901234567890',
+        value: '0x2',
+      };
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        containerTypes: [TransactionContainerType.EnforcedSimulations],
+        txParamsOriginal: originalParams,
+        txParams: {
+          gas: '0x2000',
+          data: NEW_DATA_MOCK,
+          to: '0x2345678901234567890123456789012345678901',
+          value: '0x0',
+          maxFeePerGas: '0x10',
+        },
+      } as TransactionMeta;
+
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: false,
+        messenger,
+        transactionMeta,
+        types: [],
+      });
+
+      const transactionToUpdate = cloneDeep(transactionMeta);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.txParams).toStrictEqual({
+        ...originalParams,
+        maxFeePerGas: '0x10',
+      });
+      expect(transactionToUpdate.containerTypes).toStrictEqual([]);
+      expect(estimateGasMock).not.toHaveBeenCalled();
+    });
+
+    it.each([false, true])(
+      'retains the original gas floor when the wrapped estimate is lower (isApproved: %s)',
+      async (isApproved) => {
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { gas: '0x1000' },
+          txParamsOriginal: { gas: '0x1000' },
+        } as TransactionMeta;
+
+        const { updateTransaction } = await applyTransactionContainers({
+          isApproved,
+          messenger,
+          transactionMeta,
+          types: [TransactionContainerType.EnforcedSimulations],
+        });
+
+        const transactionToUpdate = cloneDeep(transactionMeta);
+        updateTransaction(transactionToUpdate);
+
+        expect(transactionToUpdate.txParams.gas).toBe('0x1000');
+        expect(transactionToUpdate.txParams.data).toBe(NEW_DATA_MOCK);
+        expect(estimateGasMock).toHaveBeenCalledTimes(1);
+        if (isApproved) {
+          expect(transactionToUpdate.txParams.gasLimit).toBe('0x1000');
+        }
+      },
+    );
+
     it('enforces simulations if container type includes EnforcedSimulations', async () => {
       const { updateTransaction } = await applyTransactionContainers({
         isApproved: true,
@@ -184,16 +275,23 @@ describe('Container Utils', () => {
         },
       });
 
+      const transactionMeta = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { gas: '0x1000' },
+      } as TransactionMeta;
+
       const { updateTransaction } = await applyTransactionContainers({
         isApproved: true,
         messenger,
-        transactionMeta: TRANSACTION_META_MOCK,
+        transactionMeta,
         types: [TransactionContainerType.EnforcedSimulations],
       });
 
-      const transactionToUpdate = cloneDeep(TRANSACTION_META_MOCK);
+      const transactionToUpdate = cloneDeep(transactionMeta);
       updateTransaction(transactionToUpdate);
 
+      expect(transactionToUpdate.txParams.gas).toBe('0x1000');
+      expect(transactionToUpdate.txParams.gasLimit).toBe('0x1000');
       expect(transactionToUpdate.containerTypes).toStrictEqual([
         TransactionContainerType.EnforcedSimulations,
       ]);
