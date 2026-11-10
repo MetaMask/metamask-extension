@@ -17,7 +17,7 @@ import {
 } from '../../../../shared/lib/trace';
 
 // The account service starts these without a `parentContext`, so they nest
-// under whatever span is active; for group creation that is its own trace.
+// under the active span; for group creation that is its own trace.
 const NESTED_TRACE_NAMES = new Set<string>([
   'Provider Create Accounts (v2 - batched)',
   'Wallet Alignment',
