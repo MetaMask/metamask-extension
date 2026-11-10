@@ -1,6 +1,6 @@
 import { DEFAULT_BTC_CONVERSION_RATE } from '../constants';
 import type { SpotPriceMock } from './api-response-types';
-import priceApiMockData from './price-api.json';
+import priceApiMockData from './price-api.fixture.json';
 
 export const DEFAULT_ETH_USD_PRICE = 3010;
 
@@ -10,7 +10,7 @@ type SpotTemplate = { sample: string; body: SpotPriceMock };
  * Checks that every template has the spot-price fields the wallet reads.
  * Imported JSON is not an object literal, so fields the API adds are allowed.
  *
- * @param templates - The templates loaded from `price-api.json`.
+ * @param templates - The templates loaded from `price-api.fixture.json`.
  * @returns The same templates.
  */
 function assertSpotTemplates<Templates extends Record<string, SpotTemplate>>(
@@ -31,7 +31,7 @@ const ETH_FIXTURE_PRICES = {
  * Re-applies the prices E2E assertions depend on, so a shape sync can never
  * change them.
  *
- * @param templateName - Template name from `price-api.json`.
+ * @param templateName - Template name from `price-api.fixture.json`.
  * @param body - The template body.
  * @returns The body with fixture prices applied.
  */

@@ -8,7 +8,7 @@ import type {
   NotificationListResponse,
   RampsCountriesResponse,
 } from './api-response-types';
-import globalApiResponses from './global-api-responses.json';
+import globalApiResponses from './global-api-responses.fixture.json';
 
 /** No promotional banners, so the carousel only shows local slides. */
 export const CONTENTFUL_PROMOTIONAL_BANNERS_EMPTY_RESPONSE: ContentfulPromotionalBannersResponse =

@@ -14,6 +14,26 @@ import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import { RAMPS_SDK_VERSION } from '@metamask/ramps-controller';
 
+type ApiMockEntry = { id: string; url: string; mode: string; reason: string };
+
+/**
+ * Reads the rows of `api-mock-catalog.md`.
+ *
+ * @returns One entry per catalog row.
+ */
+function readCatalog(): ApiMockEntry[] {
+  return readFileSync(path.join(__dirname, 'api-mock-catalog.md'), 'utf8')
+    .split('\n')
+    .filter((line) => /^\| [a-z0-9]/u.test(line))
+    .map((line) =>
+      line
+        .slice(1, -1)
+        .split(/(?<!\\)\|/u)
+        .map((cell) => cell.trim().replace(/^`|`$/gu, '')),
+    )
+    .map(([id, , url, , mode, reason]) => ({ id, url, mode, reason }));
+}
+
 const FIXTURE_DIR = __dirname;
 
 type Json = null | string | number | boolean | Json[] | { [key: string]: Json };
@@ -152,7 +172,7 @@ function alignFixture(
 }
 
 async function syncSpotPrices(): Promise<boolean> {
-  const fixture = readFixture('price-api.json') as {
+  const fixture = readFixture('price-api.fixture.json') as {
     templates: Record<string, { sample: string; body: Json }>;
   };
   const samples = [
@@ -189,51 +209,131 @@ async function syncSpotPrices(): Promise<boolean> {
     console.log('spot-prices: no shape drift');
     return false;
   }
-  writeFixture('price-api.json', fixture);
+  writeFixture('price-api.fixture.json', fixture);
   return true;
 }
 
-async function main(): Promise<number> {
-  console.log(
-    'notifications: skipped, the list endpoint needs a profile bearer token',
-  );
-  console.log(
-    'defi positions: skipped, tests assert the fixture in confirmations/helpers.ts',
-  );
-  const countriesUrl = `https://on-ramp-cache.api.cx.metamask.io/v2/regions/countries?sdk=${RAMPS_SDK_VERSION}&context=extension`;
-  const changed = [
-    await syncSpotPrices(),
-    await alignFixture(
-      'global-api-responses.json',
-      'countries',
-      await fetchJson(countriesUrl),
-      'ramps countries',
-    ),
-  ];
+function matchesShape(value: Json, spec: string): boolean {
+  if (spec === 'object') {
+    return isObject(value);
+  }
+  if (spec === 'array') {
+    return Array.isArray(value);
+  }
+  if (spec === 'array<object>') {
+    return Array.isArray(value) && (value.length === 0 || isObject(value[0]));
+  }
+  if (spec === 'array<string>') {
+    return (
+      Array.isArray(value) &&
+      (value.length === 0 || typeof value[0] === 'string')
+    );
+  }
+  if (spec.startsWith('{') && spec.endsWith('}') && isObject(value)) {
+    const expected = spec.slice(1, -1).split(',').filter(Boolean).sort();
+    return expected.join() === Object.keys(value).sort().join();
+  }
+  return false;
+}
 
+function describeShape(value: Json): string {
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return 'array';
+    }
+    return `array<${isObject(value[0]) ? 'object' : kindOf(value[0])}>`;
+  }
+  if (isObject(value)) {
+    return `{${Object.keys(value).sort().join(',')}}`;
+  }
+  return kindOf(value);
+}
+
+async function syncContentful(): Promise<boolean> {
   const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID;
   const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
   if (!spaceId || !accessToken) {
     console.log(
       'contentful: skipped, set CONTENTFUL_ACCESS_SPACE_ID and CONTENTFUL_ACCESS_TOKEN',
     );
-  } else {
-    const url = new URL(
-      `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries`,
-    );
-    url.searchParams.set('access_token', accessToken);
-    url.searchParams.set('content_type', 'promotionalBanner');
-    url.searchParams.set('fields.showInExtension', 'true');
-    changed.push(
-      await alignFixture(
-        'global-api-responses.json',
-        'contentful',
-        await fetchJson(url.toString()),
-        'contentful',
-      ),
+    return false;
+  }
+  const url = new URL(
+    `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries`,
+  );
+  url.searchParams.set('access_token', accessToken);
+  url.searchParams.set('content_type', 'promotionalBanner');
+  url.searchParams.set('fields.showInExtension', 'true');
+  return alignFixture(
+    'global-api-responses.fixture.json',
+    'contentful',
+    await fetchJson(url.toString()),
+    'contentful',
+  );
+}
+
+async function processEntry(entry: ApiMockEntry): Promise<boolean> {
+  const { id, mode, url, reason } = entry;
+  if (mode === 'spot') {
+    return syncSpotPrices();
+  }
+  if (mode === 'countries') {
+    const countriesUrl = `${url}?sdk=${RAMPS_SDK_VERSION}&context=extension`;
+    return alignFixture(
+      'global-api-responses.fixture.json',
+      'countries',
+      await fetchJson(countriesUrl),
+      id,
     );
   }
-  return changed.some(Boolean) ? 1 : 0;
+  if (mode === 'contentful') {
+    return syncContentful();
+  }
+  if (mode === 'skip' || mode === 'derived') {
+    console.log(`${id}: ${mode === 'skip' ? 'skipped' : 'derived'}, ${reason}`);
+    return false;
+  }
+  const live = await fetchJson(url);
+  if (mode.startsWith('write:')) {
+    const fileName = mode.slice('write:'.length);
+    const current = readFixture(fileName);
+    const aligned = alignShape(current, live);
+    if (canonical(current) === canonical(aligned)) {
+      console.log(`${id}: no shape drift`);
+      return false;
+    }
+    console.log(`${id}: ${describeChange(current, aligned)}`);
+    writeFixture(fileName, aligned);
+    return true;
+  }
+  const spec = mode.slice('report:'.length);
+  if (matchesShape(live, spec)) {
+    console.log(`${id}: no shape drift`);
+    return false;
+  }
+  console.log(
+    `${id}: DRIFT mock ${spec}, live ${describeShape(live)} (not written)`,
+  );
+  return false;
+}
+
+async function main(): Promise<number> {
+  let changed = false;
+  let failed = false;
+  for (const entry of readCatalog()) {
+    try {
+      changed = (await processEntry(entry)) || changed;
+    } catch (error) {
+      failed = true;
+      console.error(
+        `${entry.id}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+  if (failed) {
+    return 2;
+  }
+  return changed ? 1 : 0;
 }
 
 main()

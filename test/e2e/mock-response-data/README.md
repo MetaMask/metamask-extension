@@ -41,18 +41,17 @@ move the numbers E2E assertions use.
 
 The same command runs every Monday in
 [`.github/workflows/sync-e2e-api-mocks.yml`](../../../.github/workflows/sync-e2e-api-mocks.yml)
-(and on demand via workflow dispatch). When a fixture changes, the job commits
-it and opens or updates a PR for review. A fixture that no longer satisfies
-its consumer type fails `yarn lint:tsc` on that PR: update the wallet's type,
-or adjust the fixture, before merging.
+(and on demand via workflow dispatch). When a written fixture changes, the
+job commits it and opens or updates a PR. Drift in a hand-maintained fixture
+is printed and left in place.
 
-| Fixture                                  | Live call                                               | Without credentials                                                                                |
-| ---------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `price-api.json`                         | `price.api.cx.metamask.io/v3/spot-prices`               | public                                                                                             |
-| `global-api-responses.json` `countries`  | `on-ramp-cache.api.cx.metamask.io/v2/regions/countries` | public; the empty list is kept                                                                     |
-| `global-api-responses.json` `contentful` | `cdn.contentful.com` promotional banners                | skipped. Needs `CONTENTFUL_ACCESS_SPACE_ID` and `CONTENTFUL_ACCESS_TOKEN` (the build secrets)      |
-| notifications                            | not called                                              | needs a profile bearer token; the empty list is hand-maintained                                    |
-| DeFi positions                           | not called                                              | the fixture in `tests/confirmations/helpers.ts` is asserted by E2E tests, so it is hand-maintained |
+Every E2E API mock is one row in [`api-mock-catalog.md`](./api-mock-catalog.md),
+with its method, endpoint and mock file. `write:`, `spot`, `countries` and
+`contentful` rows update the fixture, `report:` rows print drift without
+writing, and `skip` rows give the reason they are not called (non-JSON,
+request-specific POST, intentional error, test-only host, or auth). Contentful
+needs `CONTENTFUL_ACCESS_SPACE_ID` and `CONTENTFUL_ACCESS_TOKEN`; without them
+it is skipped with a message. Per-spec mocks are grouped rows.
 
 Assets the price API does not list (Sepolia, localhost) follow the Ethereum
 template's shape.
