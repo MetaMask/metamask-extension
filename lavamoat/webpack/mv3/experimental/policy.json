@@ -2951,6 +2951,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "Intl.NumberFormat": true,
         "URLSearchParams": true,
         "clearInterval": true,
         "clearTimeout": true,
