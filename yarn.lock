@@ -8032,9 +8032,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:0.51.0":
-  version: 0.51.0
-  resolution: "@metamask/design-system-react@npm:0.51.0"
+"@metamask/design-system-react@npm:0.51.1":
+  version: 0.51.1
+  resolution: "@metamask/design-system-react@npm:0.51.1"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
     "@metamask/design-system-shared": "npm:^0.45.0"
@@ -8049,7 +8049,7 @@ __metadata:
     "@metamask/utils": ^11.12.1
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/f7d3e4af17ddcfaa5c72dc3ece3259902597d84139f597704d6d00dc586d0588631c38a2f6fb28086b152dfa6dcc9781039b1bb61753ddba974e96c0b3c6f95a
+  checksum: 10/021c554c1ce7a44d454400d729e9b90e4df5efc044385c06a98441f04d7aea13cd452c8fc9ad2779b5e5be4dfc08f06493a6f9791efb9234f808c6d1a1f01bab
   languageName: node
   linkType: hard
 
@@ -35580,7 +35580,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.1.0"
-    "@metamask/design-system-react": "npm:^0.51.0"
+    "@metamask/design-system-react": "npm:^0.51.1"
     "@metamask/design-system-shared": "npm:^0.45.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.16.0"
     "@metamask/design-tokens": "npm:^13.0.0"
