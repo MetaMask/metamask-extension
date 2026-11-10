@@ -158,7 +158,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
-  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
   createEventBuilder,
@@ -980,15 +979,10 @@ export async function setShieldSubscriptionError(
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
- * @param trackEvent - The track event function from MetaMetrics context.
  * @returns The seed phrase.
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-  trackEvent?: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => Promise<void>,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     // restore the vault using the seed phrase
@@ -996,20 +990,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
       'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
       [password],
     );
-
-    // sync marketing consent with metametrics
-    const marketingConsent = await getMarketingConsent();
-    dispatch(marketingConsent ? optInToMarketing() : optOutOfMarketing());
-
-    await trackEvent?.({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-      properties: {
-        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-        [MetaMetricsUserTrait.HasMarketingConsent]: marketingConsent,
-        location: 'onboarding_social_login_rehydration',
-      },
-    });
 
     await forceUpdateMetamaskState(dispatch);
     return mnemonic;

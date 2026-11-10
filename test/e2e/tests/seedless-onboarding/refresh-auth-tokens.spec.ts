@@ -7,13 +7,7 @@ import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/fl
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
-import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
-import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { AuthServer } from '../../helpers/seedless-onboarding/constants';
-import LoginPage from '../../page-objects/pages/onboarding/login-page';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { MOCK_GOOGLE_ACCOUNT } from '../../constants';
 
 async function getMockedRequests(
@@ -25,11 +19,7 @@ async function getMockedRequests(
       const pendingStatuses = await Promise.all(
         mockedEndpoints.map((mockedEndpoint) => mockedEndpoint.isPending()),
       );
-      const isSomethingPending = pendingStatuses.some(
-        (pendingStatus) => pendingStatus,
-      );
-
-      return !isSomethingPending;
+      return !pendingStatuses.some((pendingStatus) => pendingStatus);
     },
     driver.timeout,
     true,
@@ -44,101 +34,7 @@ async function getMockedRequests(
 }
 
 describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
-  it('should refresh Auth Token when tokens are expired', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        ignoredConsoleErrors: [
-          'The operation cannot be completed while the controller is locked.',
-          'Unable to enable notifications',
-        ],
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
-          const oAuthMockttpService = new OAuthMockttpService();
-          return oAuthMockttpService.setup(server, {
-            forceTokenExpiration: true,
-            userEmail: MOCK_GOOGLE_ACCOUNT,
-          });
-        },
-      },
-      async ({
-        driver,
-        mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint[];
-      }) => {
-        await importWalletWithSocialLoginOnboardingFlow({
-          driver,
-        });
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const headerNavbar = new HeaderNavbar(driver);
-
-        // Go to the Privacy & Security Settings
-        // Trigger the token refresh before locking the wallet
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        let mockedRequests = await getMockedRequests(driver, mockedEndpoints);
-
-        const authServiceTokenRequests = mockedRequests.filter((req) =>
-          req.url.includes(AuthServer.RequestToken),
-        );
-
-        // Assert that the token request API is called twice, first for social authentication and second for refresh token
-        assert.strictEqual(authServiceTokenRequests.length, 2);
-
-        // close the settings page
-        await closeSettings(driver);
-
-        // Lock the wallet and wait for login page
-        await lockAndWaitForLoginPage(driver);
-
-        // Unlock the wallet
-        const loginPage = new LoginPage(driver);
-        await loginPage.loginToHomepage();
-
-        // Go to the Privacy & Security Settings
-        await headerNavbar.openSettingsPage();
-        // const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-
-        // Inspect the marketing_opt_in API call
-        mockedRequests = await getMockedRequests(driver, mockedEndpoints);
-        const marketingOptInRequests = mockedRequests.filter((req) =>
-          req.url.includes(AuthServer.GetMarketingOptInStatus),
-        );
-        assert.strictEqual(marketingOptInRequests.length, 3);
-
-        // Extract the access token from the authorization header
-        const marketingOptInRequestAfterTokenRefresh =
-          marketingOptInRequests[1];
-        const authorizationHeaders = marketingOptInRequestAfterTokenRefresh
-          .headers.authorization as string;
-        const accessToken = authorizationHeaders.split(' ')[1];
-
-        // assert that the API call is using the latest refresh token by
-        // decoding the access token and assert that the mode is 'refreshed'
-        const decodedAccessToken = decode(accessToken);
-        assert.strictEqual(
-          (decodedAccessToken as JwtPayload).mode,
-          'refreshed',
-        );
-      },
-    );
-  });
-
-  it('should use valid Access Token after lock/unlock cycle', async function () {
+  it('renews an expired social-login auth token and uses it in later requests', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
@@ -162,58 +58,63 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await importWalletWithSocialLoginOnboardingFlow({
-          driver,
-        });
+        await importWalletWithSocialLoginOnboardingFlow({ driver });
+        await new HomePage(driver).checkPageIsLoaded();
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+        // Pairing is sent asynchronously after sign-in, so wait for it first.
+        await driver.wait(
+          async () =>
+            (
+              await Promise.all(
+                mockedEndpoints.map((endpoint) => endpoint.getSeenRequests()),
+              )
+            )
+              .flat()
+              .some((request) =>
+                request.url.includes(AuthServer.PairSocialIdentifier),
+              ),
+          driver.timeout,
+          true,
+        );
 
-        // Lock the wallet after onboarding is finished and wait for login page
-        await lockAndWaitForLoginPage(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-
-        // Unlock the wallet again
-        const loginPage = new LoginPage(driver);
-        await loginPage.loginToHomepage();
-
-        // Go to the Privacy & Security Settings
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-
-        // Inspect the marketing_opt_in network call
         const mockedRequests = await getMockedRequests(driver, mockedEndpoints);
-        const marketingOptInRequests = mockedRequests.filter((req) =>
-          req.url.includes(AuthServer.GetMarketingOptInStatus),
+        const tokenRequests = mockedRequests.filter((request) =>
+          request.url.includes(AuthServer.RequestToken),
         );
-
-        // Assert that marketing_opt_in API was called
-        assert.ok(
-          marketingOptInRequests.length >= 1,
-          'Expected at least one marketing_opt_in request',
+        const grants = await Promise.all(
+          tokenRequests.map(async (request) => {
+            const body = (await request.body.getJson()) as {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              grant_type?: string;
+            };
+            return body.grant_type;
+          }),
         );
-
-        // Extract and verify the access token from the authorization header
-        const latestMarketingOptInRequest =
-          marketingOptInRequests[marketingOptInRequests.length - 1];
-        const authorizationHeader = latestMarketingOptInRequest.headers
-          .authorization as string;
 
         assert.ok(
-          authorizationHeader,
-          'Expected authorization header to be present',
+          grants.includes('refresh_token'),
+          'Expected wallet initialization to refresh the expired auth token',
         );
 
-        const accessToken = authorizationHeader.split(' ')[1];
-        const decodedAccessToken = decode(accessToken);
-
+        // The first request that sends the social token after the refresh is
+        // the social identifier pairing, which must carry the refreshed one.
+        const [pairingRequest] = mockedRequests.filter((request) =>
+          request.url.includes(AuthServer.PairSocialIdentifier),
+        );
+        assert.ok(
+          pairingRequest,
+          'Expected the social identifier pairing request',
+        );
+        const pairingBody = (await pairingRequest.body.getJson()) as {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          social_jwt?: string;
+        };
+        assert.ok(
+          pairingBody.social_jwt,
+          'Expected pairing to send social_jwt',
+        );
         assert.strictEqual(
-          (decodedAccessToken as JwtPayload).mode,
+          (decode(pairingBody.social_jwt) as JwtPayload).mode,
           'refreshed',
         );
       },
