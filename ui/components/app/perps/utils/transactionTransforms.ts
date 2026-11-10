@@ -10,6 +10,8 @@
 import { BigNumber } from 'bignumber.js';
 import {
   calculateNetClosedPnl,
+  formatPerpsFiat,
+  formatPnl,
   type Funding,
   type Order,
   type OrderFill,
@@ -25,10 +27,7 @@ import {
   PerpsOrderTransactionStatusType,
   type PerpsTransaction,
 } from '../types/transactionHistory';
-import {
-  formatPerpsFiat,
-  formatPositionSize,
-} from '../../../../../shared/lib/perps-formatters';
+import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
 import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
 import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
 import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
@@ -306,26 +305,22 @@ export function transformFillsToTransactions(
         amountBN = new BigNumber(String(netPnl));
       }
       const netPnL = amountBN.toNumber();
-      // Round to cents before the shared Perps formatter so a sub-cent amount
-      // reads as $0.00 rather than "<$0.01"; the activity row and the details
-      // page both render this string.
-      const formattedNetPnl = formatPerpsFiat(
-        amountBN.absoluteValue().toFixed(2),
-        { minimumDecimals: 2, maximumDecimals: 2, stripTrailingZeros: false },
-      );
-      // For display, show + for positive, - for negative, nothing for 0
+      // Core's signed PnL formatter keeps cents (a sub-cent amount reads as
+      // +$0.00, not "<$0.01"); the activity row and the details page both
+      // render this string. Break-even stays unsigned.
       if (!hasKnownAmount) {
         displayAmount = t ? t('unknown') : 'Unknown';
         isPositive = false;
-      } else if (netPnL > 0) {
-        displayAmount = `+${formattedNetPnl}`;
-        isPositive = true;
-      } else if (netPnL < 0) {
-        displayAmount = `-${formattedNetPnl}`;
-        isPositive = false;
-      } else {
-        displayAmount = formattedNetPnl;
+      } else if (netPnL === 0) {
+        displayAmount = formatPerpsFiat(0, {
+          minimumDecimals: 2,
+          maximumDecimals: 2,
+          stripTrailingZeros: false,
+        });
         isPositive = true; // Treat break-even as positive (green)
+      } else {
+        displayAmount = formatPnl(netPnL);
+        isPositive = netPnL > 0;
       }
     } else {
       // Fallback: show order size value
