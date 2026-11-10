@@ -1,0 +1,294 @@
+name: Pilot A/B benchmarks
+
+# TEMPORARY (1/1): same-machine two-build pilot. Runs only on trigger-ci-pilot*
+# branches, which main.yml ignores. Each job runs two copies of one donor build
+# that differ only in a manifest marker, alternating them between browser
+# sessions. Results are uploaded as artifacts only: no Sentry, no gates.
+# Remove this file and the main.yml branch exclusion when the pilot is done.
+#
+# Shards per browser: branch ending in -smoke gives 1, -s<N> gives N, anything
+# else gives 50. The journey leg runs half as many shards (minimum 1).
+#
+# Round 2 (branches trigger-ci-pilot-r2*): StandardHome only, default 100
+# shards per browser. Build B gets a busy-wait; shard s runs arm (s-1) % 4 with
+# the duration from R2_INJECT_MS, and which build goes first alternates
+# every 4 shards so each arm is balanced.
+#
+# Round 3 (branches trigger-ci-pilot-r3*): injection-site test. StandardHome
+# only, default 100 shards per browser. Build B gets the same busy-wait
+# (Chrome 76 ms, Firefox 125 ms) in arm 0: none, 1: first script, 2: middle
+# script, 3: last script; order alternates as in round 2.
+#
+# Round 4 (branches trigger-ci-pilot-r4*): how much early work Firefox hides.
+# Firefox only, default 100 shards; shard s runs arm (s - 1) % 5 from R4_ARMS
+# (milliseconds and zero-based script index), order alternating every 5
+# shards.
+#
+# Round 5 (branches trigger-ci-pilot-r5*): identical builds (A/A) with 20
+# sessions per job instead of 10, both browsers, default 100 shards per
+# browser, order alternating by shard. Compares the noise of one 20-session
+# job with two 10-session jobs from round 1.
+#
+# Round 6 (branches trigger-ci-pilot-r6*): real base and head pairs. A run
+# covers batch R6_BATCH of R6_BATCH_SIZE pairs from R6_PAIRS, R6_SHARDS shards
+# per browser each. Build A is the base and build B is the head, both test
+# builds of main runs downloaded from CloudFront, so the two differ in real
+# code and layout. StandardHome only. Order alternates with shard + pair index.
+# To run the next batch, change R6_BATCH and push.
+
+on:
+  push:
+    branches:
+      - 'trigger-ci-pilot*'
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  # Donor run whose build artifacts both pilot builds are copied from.
+  BENCHMARK_BUILDS_FROM_RUN: '39498044798'
+  BENCHMARK_AB_PILOT: '1'
+  # Session order; a random per-job flip swaps which build goes first.
+  BENCHMARK_AB_SEQUENCE: ABBABAABAB
+  # Round 6 pairs: CloudFront run IDs of each base (b) and head (h) test build
+  # and the manifest version of each (bv, hv), a seeded random sample of
+  # consecutive main commits.
+  R6_PAIRS: '[{"b":"42874136647","h":"42877899105","bv":"13.58.0","hv":"13.58.0"}]'
+  R6_BATCH: '0'
+  R6_BATCH_SIZE: '1'
+  R6_SHARDS: '5'
+  R6_HOST: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension'
+  # Round 2 busy-wait milliseconds per arm, about 2, 4 and 8% of median
+  # uiStartup (arm 0 is the hook with no work).
+  R2_INJECT_MS: '{"chrome": [0, 19, 38, 76], "firefox": [0, 31, 62, 125]}'
+  # Round 3 busy-wait milliseconds and injection site per arm.
+  R3_INJECT_MS: '{"chrome": 76, "firefox": 125}'
+  R3_SITES: '["last", "first", "middle", "last"]'
+  # Round 4 arms: busy-wait milliseconds and which home.html script gets it.
+  R4_ARMS: '[{"ms": 0, "site": "last"}, {"ms": 250, "site": "0"}, {"ms": 125, "site": "1"}, {"ms": 125, "site": "3"}, {"ms": 125, "site": "7"}]'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      round: ${{ steps.matrix.outputs.round }}
+    steps:
+      - name: Build the shard matrix
+        id: matrix
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          round=1
+          default=50
+          if [[ "$BRANCH_NAME" == trigger-ci-pilot-r2* ]]; then
+            round=2
+            default=100
+          elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r3* ]]; then
+            round=3
+            default=100
+          elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r4* ]]; then
+            round=4
+            default=100
+          elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r5* ]]; then
+            round=5
+            default=100
+          elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r6* ]]; then
+            round=6
+            default=100
+          fi
+          if [[ "$BRANCH_NAME" =~ -smoke$ ]]; then
+            shards=1
+          elif [[ "$BRANCH_NAME" =~ -s([0-9]+)$ ]]; then
+            shards="${BASH_REMATCH[1]}"
+          else
+            shards=$default
+          fi
+          if (( shards < 1 || shards > 100 )); then
+            echo "::error::Shards per browser must be 1 to 100, got $shards"
+            exit 1
+          fi
+          if (( round == 2 )); then
+            matrix=$(jq -nc --argjson s "$shards" --argjson ms "$R2_INJECT_MS" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | (($shard - 1) % 4) as $arm
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, arm: $arm,
+                   flip: (((($shard - 1) / 4) | floor) % 2),
+                   injectMs: $ms[$browser][$arm],
+                   suffix: "-arm\($arm)",
+                   injectArg: "--inject-ms \($ms[$browser][$arm])"}
+              ]}')
+            echo "Round 2: $shards shards per browser, arm = (shard - 1) % 4"
+          elif (( round == 3 )); then
+            matrix=$(jq -nc --argjson s "$shards" --argjson ms "$R3_INJECT_MS" \
+              --argjson sites "$R3_SITES" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | (($shard - 1) % 4) as $arm
+                | (if $arm == 0 then 0 else $ms[$browser] end) as $inject
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, arm: $arm,
+                   flip: (((($shard - 1) / 4) | floor) % 2),
+                   injectMs: $inject,
+                   suffix: "-arm\($arm)-\($sites[$arm])",
+                   injectArg: "--inject-ms \($inject) --inject-site \($sites[$arm])"}
+              ]}')
+            echo "Round 3: $shards shards per browser, arm = (shard - 1) % 4"
+          elif (( round == 4 )); then
+            matrix=$(jq -nc --argjson s "$shards" --argjson arms "$R4_ARMS" '
+              {include: [
+                "firefox" as $browser
+                | range(1; $s + 1) as $shard
+                | (($shard - 1) % ($arms | length)) as $arm
+                | $arms[$arm] as $a
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, arm: $arm,
+                   flip: (((($shard - 1) / ($arms | length)) | floor) % 2),
+                   injectMs: $a.ms,
+                   suffix: "-arm\($arm)-s\($a.site)-\($a.ms)ms",
+                   injectArg: "--inject-ms \($a.ms) --inject-site \($a.site)"}
+              ]}')
+            echo "Round 4: $shards Firefox shards, arm = (shard - 1) % 5"
+          elif (( round == 5 )); then
+            matrix=$(jq -nc --argjson s "$shards" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, flip: (($shard - 1) % 2),
+                   browserLoads: 20, suffix: "-aa20"}
+              ]}')
+            echo "Round 5: $shards shards per browser, 20 sessions per job"
+          elif (( round == 6 )); then
+            matrix=$(jq -nc --argjson s "$R6_SHARDS" --argjson size "$R6_BATCH_SIZE" \
+              --argjson batch "$R6_BATCH" --argjson pairs "$R6_PAIRS" '
+              {include: [
+                range($batch * $size; ([($batch + 1) * $size, ($pairs | length)] | min)) as $p
+                | ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, pair: $p, flip: (($shard + $p) % 2),
+                   suffix: "-p\($p)",
+                   sourceArg: "--base-source pair/base --head-source pair/head"}
+              ]}')
+            echo "Round 6: batch $R6_BATCH, $R6_SHARDS shards per browser"
+          else
+            journey=$(( shards / 2 ))
+            (( journey < 1 )) && journey=1
+            matrix=$(jq -nc --argjson s "$shards" --argjson j "$journey" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | ({pageType: "startupStandardHome", n: $s},
+                   {pageType: "userJourneyOnboardingImport", n: $j}) as $leg
+                | range(1; $leg.n + 1) as $shard
+                | {browser: $browser, pageType: $leg.pageType, shard: $shard}
+              ]}')
+            echo "Shards per browser: $shards (journey $journey)"
+          fi
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "round=$round" >> "$GITHUB_OUTPUT"
+
+  pilot:
+    needs: plan
+    name: ${{ matrix.browser }}-${{ matrix.pageType }}-${{ matrix.shard }}${{ matrix.suffix }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 45
+    env:
+      SELENIUM_BROWSER: ${{ matrix.browser }}
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      BRANCH: ${{ github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      BENCHMARK_RUNNER_LABEL: ubuntu-26.04
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download donor build artifact
+        if: ${{ needs.plan.outputs.round != '6' }}
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-webpack
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.BENCHMARK_BUILDS_FROM_RUN }}
+
+      - name: Download the base and head builds
+        if: ${{ needs.plan.outputs.round == '6' }}
+        env:
+          BROWSER: ${{ matrix.browser }}
+          PAIR: ${{ matrix.pair }}
+        run: |
+          set -euo pipefail
+          pair=$(jq -c --argjson i "$PAIR" '.[$i] + {index: $i}' <<< "$R6_PAIRS")
+          for side in base head; do
+            run=$(jq -r --arg s "$side" 'if $s == "base" then .b else .h end' <<< "$pair")
+            version=$(jq -r --arg s "$side" 'if $s == "base" then .bv else .hv end' <<< "$pair")
+            if [[ "$BROWSER" == firefox ]]; then
+              path="build-test-mv2-webpack/builds/metamask-firefox-$version.zip"
+            else
+              path="build-test-webpack/builds/metamask-chrome-$version.zip"
+            fi
+            curl --fail --silent --show-error --retry 5 --retry-all-errors \
+              --output "$side.zip" "$R6_HOST/$run/$path"
+            mkdir -p "pair/$side"
+            unzip -q "$side.zip" -d "pair/$side"
+          done
+          mkdir -p test-artifacts/benchmarks
+          echo "$pair" > "test-artifacts/benchmarks/pair-$BROWSER.json"
+
+      - name: Pin geckodriver 0.36.0 (Firefox only)
+        if: ${{ matrix.browser == 'firefox' }}
+        run: .github/scripts/pin-geckodriver.sh
+
+      - name: Prepare the A and B builds
+        run: >-
+          yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts
+          --browser ${{ matrix.browser }}
+          ${{ matrix.sourceArg || format('--source dist/{0}', matrix.browser) }}
+          --out test-artifacts/benchmarks/ab-builds-${{ matrix.browser }}-${{ matrix.pageType }}-s${{ matrix.shard }}.json
+          ${{ matrix.injectArg }}
+
+      - name: Choose which build goes first
+        env:
+          MATRIX_FLIP: ${{ matrix.flip }}
+        run: echo "BENCHMARK_AB_FLIP=${MATRIX_FLIP:-$((RANDOM % 2))}" >> "$GITHUB_ENV"
+
+      - name: Run the A/B benchmark
+        timeout-minutes: 35
+        run: >-
+          yarn test:e2e:benchmark
+          --preset ${{ matrix.pageType }}
+          ${{ matrix.pageType == 'startupStandardHome' && format('--browserLoads {0} --pageLoads 10', matrix.browserLoads || 10) || '--iterations 10' }}
+          --retries 2
+          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-${{ matrix.pageType }}-s${{ matrix.shard }}.json
+
+      - name: Upload pilot result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: pilot-${{ matrix.browser }}-${{ matrix.pageType }}-s${{ matrix.shard }}${{ needs.plan.outputs.round == '6' && matrix.suffix || '' }}
+          path: test-artifacts/benchmarks/*.json
+          retention-days: 7
+          if-no-files-found: ignore

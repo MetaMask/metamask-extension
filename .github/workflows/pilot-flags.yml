@@ -10,9 +10,7 @@ name: Pilot flag A/B
 # Remove this file and test/e2e/webdriver/chrome.js's BENCH_CHROME_ARM when done.
 
 on:
-  push:
-    branches:
-      - 'trigger-ci-pilot*'
+  workflow_dispatch:
 
 permissions:
   contents: read
