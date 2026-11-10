@@ -748,6 +748,14 @@ function startTrace(request: TraceRequest): TraceContext {
 
     const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
+
+    // Same name and no `id` means the same key: this `set` drops the pending
+    // trace, whose span never ends. Tag the new span rather than send an event.
+    if (tracesByKey.has(key)) {
+      log('WARNING: trace key collision, dropping pending trace', key);
+      span?.setAttribute('trace.key_collision', true);
+    }
+
     tracesByKey.set(key, pendingTrace);
 
     log('Started trace', name, id, request);
