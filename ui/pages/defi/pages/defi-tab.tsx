@@ -37,12 +37,14 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
 
   return (
     <>
-      <AssetListControlBar
-        showImportTokenButton={false}
-        showSortControl={!isEmpty}
-        onRefresh={handleRefresh}
-        data-testid="parent-selector-defi-tab"
-      />
+      <div className="overview-tab-controls">
+        <AssetListControlBar
+          showImportTokenButton={false}
+          showSortControl={!isEmpty}
+          onRefresh={handleRefresh}
+          data-testid="parent-selector-defi-tab"
+        />
+      </div>
       <DefiListV2 items={listItems} onClick={onClickAsset} />
     </>
   );
@@ -62,11 +64,13 @@ function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
 
   return (
     <>
-      <AssetListControlBar
-        showImportTokenButton={false}
-        showSortControl={!isEmpty}
-        data-testid="parent-selector-defi-tab"
-      />
+      <div className="overview-tab-controls">
+        <AssetListControlBar
+          showImportTokenButton={false}
+          showSortControl={!isEmpty}
+          data-testid="parent-selector-defi-tab"
+        />
+      </div>
       <DefiList items={positions} onClick={onClickAsset} />
     </>
   );

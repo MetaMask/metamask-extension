@@ -8874,7 +8874,7 @@
     "message": "출금 제출 완료"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask가 원하는 토큰으로 스왑해 드립니다. mUSD로 스왑할 때 MetaMask 수수료는 적용되지 않습니다.",
+    "message": "MetaMask가 원하는 토큰으로 스왑해 드립니다.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11937,9 +11937,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "확인하세요",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " 포함됨"
   },
   "swapGasFeesSplit": {
     "message": "이전 화면에 표시된 네트워크 수수료는 이 두 건의 트랜잭션에 나뉘어 적용됩니다."

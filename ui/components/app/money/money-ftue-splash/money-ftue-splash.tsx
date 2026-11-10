@@ -57,7 +57,10 @@ export const MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID =
 export const MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID =
   'money-ftue-splash-start-earning-button';
 
-const MONEY_FTUE_ARTWORK = './images/money-onboarding-stepper-step-1.png';
+const MONEY_FTUE_HERO_BACKGROUND = './images/money-ftue-hero-background.svg';
+const MONEY_FTUE_HERO_BACKGROUND_CARD =
+  './images/money-ftue-hero-background-card.svg';
+const MONEY_FTUE_HERO_COINS = './images/money-ftue-hero-coins.png';
 const APY_FALLBACK = '—';
 
 const BENEFITS = [
@@ -179,10 +182,10 @@ const MoneyFtueSplashContent = () => {
     dialogClassName = 'h-full min-h-0 max-w-none rounded-none border-0';
   } else if (isSidepanel) {
     contentClassName = 'items-center';
-    dialogClassName = 'max-h-[min(75vh,680px)] min-h-0 max-w-[400px]';
+    dialogClassName = 'max-h-[min(75vh,680px)] min-h-0 max-w-[368px]';
   } else {
     contentClassName = undefined;
-    dialogClassName = 'max-h-[calc(100vh-32px)] min-h-0 max-w-[400px]';
+    dialogClassName = 'max-h-[calc(100vh-32px)] min-h-0 max-w-[368px]';
   }
 
   return (
@@ -208,16 +211,14 @@ const MoneyFtueSplashContent = () => {
         }}
       >
         <div className="flex min-h-0 flex-1 flex-col">
-          <header className="flex items-center justify-between gap-2 px-4 py-2">
-            <Text
-              asChild
-              variant={TextVariant.HeadingSm}
-              fontWeight={FontWeight.Bold}
+          <header className="flex items-center justify-between gap-2 py-4 pl-6 pr-4">
+            <h2
+              id={titleId}
+              className="text-default text-s-heading-md leading-s-heading-md font-medium"
+              data-testid="money-ftue-splash-title"
             >
-              <h2 id={titleId} data-testid="money-ftue-splash-title">
-                {t('moneyFtueTitle')}
-              </h2>
-            </Text>
+              {t('moneyFtueTitle')}
+            </h2>
             <ButtonIcon
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
@@ -228,27 +229,42 @@ const MoneyFtueSplashContent = () => {
           </header>
 
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-            <div className="px-4 pt-2">
-              <img
-                src={MONEY_FTUE_ARTWORK}
-                alt=""
-                className="aspect-[16/9] w-full rounded-2xl object-cover"
+            <div className="px-4 pt-1">
+              <div
+                className="relative aspect-[16/9] w-full"
                 data-testid="money-ftue-splash-artwork"
-              />
+              >
+                <img
+                  src={
+                    isPopup
+                      ? MONEY_FTUE_HERO_BACKGROUND
+                      : MONEY_FTUE_HERO_BACKGROUND_CARD
+                  }
+                  alt=""
+                  className="absolute inset-0 h-full w-full"
+                />
+                <img
+                  src={MONEY_FTUE_HERO_COINS}
+                  alt=""
+                  className="absolute left-1/2 top-1/2 w-[59%] -translate-x-1/2 -translate-y-1/2"
+                />
+              </div>
 
-              <Text
-                variant={TextVariant.HeadingLg}
-                fontWeight={FontWeight.Bold}
-                className="mt-5"
+              <h2
+                className={
+                  isPopup
+                    ? 'mt-6 text-default text-s-display-md leading-s-display-md font-bold'
+                    : 'mt-6 text-default text-s-heading-lg leading-s-heading-lg font-bold'
+                }
                 data-testid="money-ftue-splash-headline"
               >
                 {t('moneyFtueHeadline')}
-              </Text>
+              </h2>
 
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
-                className="mt-3"
+                className="mt-4"
                 data-testid="money-ftue-splash-description"
               >
                 {t('moneyFtueDescription', [

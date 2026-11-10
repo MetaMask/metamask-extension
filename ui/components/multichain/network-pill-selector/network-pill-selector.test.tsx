@@ -58,6 +58,7 @@ describe('NetworkPillSelector', () => {
       balanceByChainId: { 'eip155:1': 8.17, 'eip155:10': 8.14 },
       total: 16.31,
       currency: 'usd',
+      isLoading: false,
     });
   });
 
@@ -75,22 +76,23 @@ describe('NetworkPillSelector', () => {
     );
   });
 
-  it('shows no balance while the balances are not available', () => {
+  it('shows a skeleton instead of the pills while the balances load', () => {
     jest.mocked(useNetworkPillBalances).mockReturnValue({
       balanceByChainId: { 'eip155:1': undefined, 'eip155:10': undefined },
       total: undefined,
       currency: undefined,
+      isLoading: true,
     });
 
     renderSelector();
 
-    expect(screen.getByTestId('network-pill-all-default')).toHaveTextContent(
-      /^All default networks$/u,
-    );
-    expect(screen.getByTestId('network-pill-0x1')).toHaveTextContent(
-      /^Ethereum$/u,
-    );
-    expect(screen.queryByText('$0.00')).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('network-pill-selector-skeleton'),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('network-pill-0x1')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('network-pill-all-default'),
+    ).not.toBeInTheDocument();
   });
 
   it('selects a network or all default networks using the dropdown handlers', () => {
@@ -103,13 +105,11 @@ describe('NetworkPillSelector', () => {
     expect(mockHandleSelectAll).toHaveBeenCalledTimes(1);
   });
 
-  it('marks the selected network and disables unsupported pills', () => {
+  it('marks the selected network', () => {
     mockFilter({
       isAllDefaultSelected: false,
       isNetworkSelected: (network: MultichainNetworkConfiguration) =>
         network.chainId === 'eip155:1',
-      isNetworkDisabled: (network: MultichainNetworkConfiguration) =>
-        network.chainId === 'eip155:10',
     });
 
     renderSelector();
@@ -118,7 +118,23 @@ describe('NetworkPillSelector', () => {
       'aria-pressed',
       'true',
     );
-    expect(screen.getByTestId('network-pill-0xa')).toBeDisabled();
+    expect(screen.getByTestId('network-pill-0xa')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  it('leaves out networks the account does not support, including from the total', () => {
+    mockFilter({
+      isNetworkDisabled: (network: MultichainNetworkConfiguration) =>
+        network.chainId === 'eip155:10',
+    });
+
+    renderSelector();
+
+    expect(screen.queryByTestId('network-pill-0xa')).not.toBeInTheDocument();
+    expect(screen.getByTestId('network-pill-0x1')).toBeInTheDocument();
+    expect(useNetworkPillBalances).toHaveBeenCalledWith([ETHEREUM]);
   });
 
   describe('when pills wrap onto more than one line', () => {

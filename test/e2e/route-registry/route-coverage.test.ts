@@ -1,5 +1,5 @@
 import { getRouteCoverage } from './route-coverage';
-import type { RoutePageObjectRegistry } from './route-registry';
+import { NOT_A_SCREEN, type RoutePageObjectRegistry } from './route-registry';
 
 class HomePage {}
 
@@ -10,6 +10,7 @@ const ROUTES = [
   { path: '/send', label: 'Send Page' },
   { path: '/activity', label: 'Activity' },
   { path: '/lock', label: 'Lock Page' },
+  { path: '/unlock', label: 'Unlock Page' },
 ];
 
 describe('getRouteCoverage', () => {
@@ -17,10 +18,11 @@ describe('getRouteCoverage', () => {
     '/': HomePage,
     '/send': SendPage,
     '/activity': null,
+    '/lock': NOT_A_SCREEN,
     '/removed-route': HomePage,
   };
 
-  it('reports each route with its page object, none yet, or unregistered', () => {
+  it('reports each route with its page object, none yet, not a screen, or unregistered', () => {
     const { routes } = getRouteCoverage(ROUTES, registry);
 
     expect(routes).toStrictEqual([
@@ -37,7 +39,8 @@ describe('getRouteCoverage', () => {
         pageObject: 'SendPage',
       },
       { path: '/activity', label: 'Activity', status: 'no-page-object' },
-      { path: '/lock', label: 'Lock Page', status: 'unregistered' },
+      { path: '/lock', label: 'Lock Page', status: 'not-a-screen' },
+      { path: '/unlock', label: 'Unlock Page', status: 'unregistered' },
     ]);
   });
 
@@ -47,13 +50,14 @@ describe('getRouteCoverage', () => {
     expect(staleEntries).toStrictEqual(['/removed-route']);
   });
 
-  it('summarizes the counts and the share of routes with a page object', () => {
+  it('summarizes the counts and the share of screen routes with a page object', () => {
     const { summary } = getRouteCoverage(ROUTES, registry);
 
     expect(summary).toStrictEqual({
-      totalRoutes: 4,
+      totalRoutes: 5,
       withPageObject: 2,
       withoutPageObject: 1,
+      notAScreen: 1,
       unregistered: 1,
       staleEntries: 1,
       coveragePercentage: 50,
@@ -62,6 +66,14 @@ describe('getRouteCoverage', () => {
 
   it('reports 0% coverage when there are no routes', () => {
     const { summary } = getRouteCoverage([], {});
+
+    expect(summary.coveragePercentage).toBe(0);
+  });
+
+  it('reports 0% coverage when no route is a screen', () => {
+    const { summary } = getRouteCoverage([{ path: '/lock', label: 'Lock' }], {
+      '/lock': NOT_A_SCREEN,
+    });
 
     expect(summary.coveragePercentage).toBe(0);
   });
