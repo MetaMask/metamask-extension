@@ -1,8 +1,15 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Ref,
+} from 'react';
 import classnames from 'clsx';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  FontWeight,
   Icon,
   IconColor,
   IconName,
@@ -10,7 +17,6 @@ import {
   SensitiveText,
   Skeleton,
   Text,
-  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -23,7 +29,13 @@ import {
   getSelectableChainId,
   useHomeNetworkFilter,
 } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
+import { getHiddenPillCount } from './get-hidden-pill-count';
 import { useNetworkPillBalances } from './use-network-pill-balances';
+
+const PILL_CLASS_NAME =
+  'flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 px-4 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default';
+
+const PILL_UNSELECTED_CLASS_NAME = 'bg-muted text-default hover:bg-muted-hover';
 
 type NetworkPillProps = {
   name: string;
@@ -34,6 +46,13 @@ type NetworkPillProps = {
   icon: React.ReactNode;
   onClick: () => void;
   testId: string;
+};
+
+type ShowNetworksToggleProps = {
+  label: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+  buttonRef: Ref<HTMLButtonElement>;
 };
 
 const NetworkPill = ({
@@ -49,15 +68,15 @@ const NetworkPill = ({
   <button
     type="button"
     className={classnames(
-      'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
-      'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default',
+      PILL_CLASS_NAME,
       isSelected
         ? 'bg-icon-default text-background-default'
-        : 'bg-muted text-default hover:bg-muted-hover',
-      'cursor-pointer',
+        : PILL_UNSELECTED_CLASS_NAME,
+      isHidden && 'order-1',
     )}
     aria-pressed={isSelected}
     onClick={onClick}
+    data-network-pill=""
     data-testid={testId}
     // React 18 has no `inert` prop; the empty attribute is what enables it
     {...(isHidden ? ({ inert: '' } as object) : {})}
@@ -81,12 +100,37 @@ const NetworkPill = ({
   </button>
 );
 
+const ShowNetworksToggle = ({
+  label,
+  isExpanded,
+  onToggle,
+  buttonRef,
+}: ShowNetworksToggleProps) => (
+  <button
+    ref={buttonRef}
+    type="button"
+    className={classnames(PILL_CLASS_NAME, PILL_UNSELECTED_CLASS_NAME)}
+    aria-expanded={isExpanded}
+    onClick={onToggle}
+    data-testid="network-pill-toggle"
+  >
+    <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+      {label}
+    </Text>
+    <Icon
+      name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+      size={IconSize.Md}
+      color={IconColor.IconDefault}
+    />
+  </button>
+);
+
 /**
  * Network selector for the fullscreen design. Offers the same default networks
  * as the network filter dropdown, and selects them the same way, with each
  * pill showing the account's balance on that network. Networks the selected
- * account can't use are left out, including from the total.
- * Collapsed it shows one full row of pills; expanded it wraps.
+ * account can't use are excluded. Collapsed, it shows one row of pills with a
+ * "Show all" toggle. Expanded, it shows all pills with a "Show fewer" toggle.
  */
 export const NetworkPillSelector = () => {
   const t = useI18nContext();
@@ -111,20 +155,26 @@ export const NetworkPillSelector = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [hiddenCount, setHiddenCount] = useState(0);
   const pillsRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
-  // Pills that wrap below the first row are the ones hidden when collapsed.
+  // How many trailing pills to drop so the rest plus the toggle, fit on one row
   useLayoutEffect(() => {
     const pills = pillsRef.current;
-    if (!pills) {
+    if (!pills || isExpanded) {
       return undefined;
     }
     const measure = () => {
-      const [first, ...rest] = Array.from(pills.children) as HTMLElement[];
-      setHiddenCount(
-        first
-          ? rest.filter((pill) => pill.offsetTop > first.offsetTop).length
-          : 0,
+      const gap = Number.parseFloat(getComputedStyle(pills).columnGap);
+      const next = getHiddenPillCount(
+        Array.from(
+          pills.querySelectorAll<HTMLElement>('[data-network-pill]'),
+          (pill) => pill.offsetWidth,
+        ),
+        pills.clientWidth,
+        Number.isFinite(gap) ? gap : 0,
+        toggleRef.current?.offsetWidth ?? 0,
       );
+      setHiddenCount((current) => (current === next ? current : next));
     };
     measure();
     if (typeof ResizeObserver === 'undefined') {
@@ -132,9 +182,8 @@ export const NetworkPillSelector = () => {
     }
     const observer = new ResizeObserver(measure);
     observer.observe(pills);
-    Array.from(pills.children).forEach((pill) => observer.observe(pill));
     return () => observer.disconnect();
-  }, [isLoading, networks]);
+  }, [isExpanded, isLoading, networks, hiddenCount]);
 
   // Wrapped pills are always the trailing ones. While collapsed they are only
   // clipped, so make them inert to keep them out of the tab order and out of
@@ -163,14 +212,11 @@ export const NetworkPillSelector = () => {
   }
 
   return (
-    <div
-      className="flex flex-col gap-2 px-4 py-2"
-      data-testid="network-pill-selector"
-    >
+    <div className="px-4 py-2" data-testid="network-pill-selector">
       <div
         ref={pillsRef}
         className={classnames(
-          'flex flex-wrap gap-2',
+          'flex min-w-0 flex-wrap gap-2',
           !isExpanded && 'max-h-10 overflow-hidden',
         )}
       >
@@ -216,21 +262,17 @@ export const NetworkPillSelector = () => {
             testId={`network-pill-${getSelectableChainId(network)}`}
           />
         ))}
+        {hiddenCount > 0 && (
+          <ShowNetworksToggle
+            label={
+              isExpanded ? t('showFewer') : t('showAllNetworks', [pillCount])
+            }
+            isExpanded={isExpanded}
+            onToggle={() => setIsExpanded((expanded) => !expanded)}
+            buttonRef={toggleRef}
+          />
+        )}
       </div>
-      {hiddenCount > 0 && (
-        <div className="flex justify-center">
-          <TextButton
-            className="w-auto py-1"
-            aria-expanded={isExpanded}
-            onClick={() => setIsExpanded((expanded) => !expanded)}
-            data-testid="network-pill-toggle"
-          >
-            {isExpanded
-              ? t('showFewerNetworks')
-              : t('showMoreNetworks', [hiddenCount])}
-          </TextButton>
-        </div>
-      )}
     </div>
   );
 };

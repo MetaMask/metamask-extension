@@ -148,13 +148,18 @@ describe('NetworkPillSelector', () => {
 
       renderSelector();
       const toggle = screen.getByTestId('network-pill-toggle');
-      expect(toggle).toHaveTextContent('Show 1 more networks');
+      const pills = screen.getByTestId(
+        'network-pill-selector',
+      ).firstElementChild;
+      expect(toggle).toHaveTextContent('Show all (3)');
 
       fireEvent.click(toggle);
-      expect(toggle).toHaveTextContent('Show fewer networks');
+      const expandedToggle = screen.getByTestId('network-pill-toggle');
+      expect(expandedToggle).toHaveTextContent('Show fewer');
 
-      fireEvent.click(toggle);
-      expect(toggle).toHaveTextContent('Show 1 more networks');
+      fireEvent.click(expandedToggle);
+      const collapsedToggle = screen.getByTestId('network-pill-toggle');
+      expect(collapsedToggle).toHaveTextContent('Show all (3)');
     });
   });
 
