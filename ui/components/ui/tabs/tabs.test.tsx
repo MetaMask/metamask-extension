@@ -116,10 +116,10 @@ describe('Tabs', () => {
 
     const tabList = getByRole('tablist');
     const row = tabList.parentElement?.parentElement;
-    const endSlot = container.querySelector('.tab-end-slot');
+    const endSlot = container.querySelector<HTMLElement>('.tab-end-slot');
 
     expect(row).toHaveClass('stuck-top-border');
-    expect(row).toContainElement(endSlot);
+    expect(endSlot?.parentElement).toBe(row);
     expect(tabList).not.toHaveClass('stuck-top-border');
   });
 
