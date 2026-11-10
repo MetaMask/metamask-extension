@@ -1367,7 +1367,7 @@ describe('AdvancedChartIframe', () => {
       global.platform = {
         ...global.platform,
         openTab: openTabSpy,
-      } as typeof global.platform;
+      } as unknown as typeof global.platform;
     });
 
     afterEach(() => {
