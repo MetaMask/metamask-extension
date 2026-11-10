@@ -5194,9 +5194,6 @@
     "message": "anseo",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " San áireamh"
-  },
   "swapGasFeesSplit": {
     "message": "Tá táillí gáis ar an scáileán roimhe seo roinnte idir an dá idirbheart seo."
   },

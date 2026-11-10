@@ -11930,9 +11930,6 @@
     "message": "aqui",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " incluídas"
-  },
   "swapGasFeesSplit": {
     "message": "As taxas de rede da tela anterior estão divididas entre estas duas transações."
   },

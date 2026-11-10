@@ -29,7 +29,7 @@ jest.mock('../token-cell/cells', () => ({
   TokenCellTitle: ({ token }: { token: { title: string } }) => (
     <span>{token.title}</span>
   ),
-  TokenCellPercentChange: () => null,
+  TokenCellPercentChange: () => <span data-testid="token-percent-change" />,
   TokenCellPrice: () => <span data-testid="token-price" />,
   TokenCellPrimaryDisplay: () => null,
   TokenCellSecondaryDisplay: () => null,
@@ -88,6 +88,7 @@ describe('TokenTable', () => {
     expect(getByTestId('token-table-header')).toBeInTheDocument();
     expect(getAllByTestId('multichain-token-list-button')).toHaveLength(2);
     expect(getAllByTestId('token-price')).toHaveLength(2);
+    expect(getAllByTestId('token-percent-change')).toHaveLength(2);
     expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('USDC')).toBeInTheDocument();
   });

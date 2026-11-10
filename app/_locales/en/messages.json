@@ -9694,6 +9694,10 @@
     "message": "Rename",
     "description": "Multichain account menu item for triggering account rename action modal"
   },
+  "renameAccount": {
+    "message": "Rename account",
+    "description": "Title of the modal for renaming a multichain account"
+  },
   "replace": {
     "message": "replace"
   },
@@ -12157,9 +12161,6 @@
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Included"
-  },
   "swapGasFeesSplit": {
     "message": "Network fees on the previous screen are split between these two transactions."
   },
@@ -12460,6 +12461,9 @@
   },
   "tokenContractAddress": {
     "message": "Token contract address"
+  },
+  "tokenContractAddressCopied": {
+    "message": "Token address copied"
   },
   "tokenContractWarning": {
     "message": "Token contract warning"
