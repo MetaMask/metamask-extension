@@ -190,7 +190,7 @@ describe('MoneyFtueSplash', () => {
     renderSplash();
 
     const splash = screen.getByTestId(MONEY_FTUE_SPLASH_TEST_ID);
-    expect(splash.className).toContain('max-w-[400px]');
+    expect(splash.className).toContain('max-w-[368px]');
     expect(splash.className).toContain('max-h-[min(75vh,680px)]');
   });
 
@@ -200,8 +200,74 @@ describe('MoneyFtueSplash', () => {
     renderSplash();
 
     expect(screen.getByTestId(MONEY_FTUE_SPLASH_TEST_ID).className).toContain(
-      'max-w-[400px]',
+      'max-w-[368px]',
     );
+  });
+
+  it('renders both hero layers in the popup', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    renderSplash();
+
+    const images = screen
+      .getByTestId('money-ftue-splash-artwork')
+      .querySelectorAll('img');
+
+    expect(images).toHaveLength(2);
+    expect(images[0]).toHaveAttribute(
+      'src',
+      './images/money-ftue-hero-background.svg',
+    );
+    expect(images[1]).toHaveAttribute(
+      'src',
+      './images/money-ftue-hero-coins.png',
+    );
+  });
+
+  it('uses the card hero background in full screen', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+
+    renderSplash();
+
+    const images = screen
+      .getByTestId('money-ftue-splash-artwork')
+      .querySelectorAll('img');
+
+    expect(images[0]).toHaveAttribute(
+      'src',
+      './images/money-ftue-hero-background-card.svg',
+    );
+  });
+
+  it('matches the Figma title and popup headline typography', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    renderSplash();
+
+    const title = screen.getByTestId('money-ftue-splash-title');
+    const headline = screen.getByTestId('money-ftue-splash-headline');
+
+    expect(title).toHaveClass(
+      'text-s-heading-md',
+      'leading-s-heading-md',
+      'font-medium',
+    );
+    expect(headline).toHaveClass(
+      'text-s-display-md',
+      'leading-s-display-md',
+      'font-bold',
+    );
+  });
+
+  it('uses the 24px headline token in full screen', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+
+    renderSplash();
+
+    const headline = screen.getByTestId('money-ftue-splash-headline');
+
+    expect(headline).toHaveClass('text-s-heading-lg', 'leading-s-heading-lg');
+    expect(headline).not.toHaveClass('text-s-display-md');
   });
 
   it('tracks the splash view with its origin', () => {

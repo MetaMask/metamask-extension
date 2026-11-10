@@ -414,6 +414,117 @@ const AssetListControlBar = ({
     networkFilterTextColor = TextColor.primaryDefault;
   }
 
+  const networkFilterButton = (
+    <ButtonBase
+      data-testid="sort-by-networks"
+      variant={TextVariant.bodySmMedium}
+      className="asset-list-control-bar__button asset-list-control-bar__network_control"
+      onClick={handleNetworkFilterClick}
+      size={ButtonBaseSize.Sm}
+      loading={isNetworkSwitchPending}
+      disabled={isNetworkSwitchPending}
+      backgroundColor={
+        isNetworkFilterModalOpen
+          ? BackgroundColor.backgroundPressed
+          : BackgroundColor.backgroundDefault
+      }
+      color={
+        isSingleNetworkFilterSelected
+          ? TextColor.primaryDefault
+          : TextColor.textDefault
+      }
+      marginRight={isFullScreen ? 2 : null}
+      borderColor={BorderColor.borderMuted}
+      ellipsis
+    >
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+        {!isNetworkSwitchPending && (
+          <Icon
+            name={IconName.Filter}
+            size={IconSize.Md}
+            color={
+              isSingleNetworkFilterSelected
+                ? IconColor.PrimaryDefault
+                : IconColor.IconDefault
+            }
+          />
+        )}
+        <Text
+          variant={TextVariant.bodySmMedium}
+          color={networkFilterTextColor}
+          ellipsis
+        >
+          {networkButtonText}
+        </Text>
+      </Box>
+    </ButtonBase>
+  );
+
+  const actionButtons = (
+    <Box
+      className="asset-list-control-bar__buttons"
+      display={Display.Flex}
+      justifyContent={JustifyContent.flexEnd}
+      alignItems={AlignItems.center}
+    >
+      {showSortControl && (
+        <Tooltip
+          title={t('sortBy')}
+          position="bottom"
+          distance={20}
+          disabled={isTokenSortPopoverOpen}
+        >
+          <ButtonIcon
+            ref={setSortButtonRef}
+            data-testid="sort-by-popover-toggle"
+            className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
+              isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
+            } hover:bg-hover active:bg-pressed`}
+            onClick={toggleTokenSortPopover}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.ListArrow}
+            ariaLabel={t('sortBy')}
+          />
+        </Tooltip>
+      )}
+
+      {showImportTokenButton &&
+        (isEvm || showTokensLinks ? (
+          // Tokens (EVM and non-EVM) and EVM NFT: overflow menu with Refresh list
+          <ImportControl
+            ref={setImportButtonRef}
+            showTokensLinks={showTokensLinks}
+            onClick={
+              showTokensLinks
+                ? toggleImportTokensPopover
+                : toggleImportNftPopover
+            }
+          />
+        ) : (
+          // Non-EVM NFT: no Refresh list
+          <Tooltip title={t('manageTokens')} position="bottom" distance={20}>
+            <ButtonIcon
+              ref={setImportButtonRef}
+              data-testid="importTokens-button"
+              className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
+              onClick={handleOpenTokenManagement}
+              size={ButtonIconSize.Sm}
+              iconName={IconName.MoreVertical}
+              ariaLabel={t('manageTokens')}
+            />
+          </Tooltip>
+        ))}
+
+      {!showImportTokenButton && onRefresh ? (
+        <ImportControl
+          ref={setImportButtonRef}
+          showTokensLinks
+          onClick={toggleRefreshListPopover}
+        />
+      ) : null}
+    </Box>
+  );
+
   return (
     <Box
       className="asset-list-control-bar"
@@ -422,116 +533,8 @@ const AssetListControlBar = ({
       data-testid={dataTestId}
     >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-        <ButtonBase
-          data-testid="sort-by-networks"
-          variant={TextVariant.bodySmMedium}
-          className="asset-list-control-bar__button asset-list-control-bar__network_control"
-          onClick={handleNetworkFilterClick}
-          size={ButtonBaseSize.Sm}
-          loading={isNetworkSwitchPending}
-          disabled={isNetworkSwitchPending}
-          backgroundColor={
-            isNetworkFilterModalOpen
-              ? BackgroundColor.backgroundPressed
-              : BackgroundColor.backgroundDefault
-          }
-          color={
-            isSingleNetworkFilterSelected
-              ? TextColor.primaryDefault
-              : TextColor.textDefault
-          }
-          marginRight={isFullScreen ? 2 : null}
-          borderColor={BorderColor.borderMuted}
-          ellipsis
-        >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {!isNetworkSwitchPending && (
-              <Icon
-                name={IconName.Filter}
-                size={IconSize.Md}
-                color={
-                  isSingleNetworkFilterSelected
-                    ? IconColor.PrimaryDefault
-                    : IconColor.IconDefault
-                }
-              />
-            )}
-            <Text
-              variant={TextVariant.bodySmMedium}
-              color={networkFilterTextColor}
-              ellipsis
-            >
-              {networkButtonText}
-            </Text>
-          </Box>
-        </ButtonBase>
-
-        <Box
-          className="asset-list-control-bar__buttons"
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-        >
-          {showSortControl && (
-            <Tooltip
-              title={t('sortBy')}
-              position="bottom"
-              distance={20}
-              disabled={isTokenSortPopoverOpen}
-            >
-              <ButtonIcon
-                ref={setSortButtonRef}
-                data-testid="sort-by-popover-toggle"
-                className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
-                  isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
-                } hover:bg-hover active:bg-pressed`}
-                onClick={toggleTokenSortPopover}
-                size={ButtonIconSize.Sm}
-                iconName={IconName.ListArrow}
-                ariaLabel={t('sortBy')}
-              />
-            </Tooltip>
-          )}
-
-          {showImportTokenButton &&
-            (isEvm || showTokensLinks ? (
-              // Tokens (EVM and non-EVM) and EVM NFT: overflow menu with Refresh list
-              <ImportControl
-                ref={setImportButtonRef}
-                showTokensLinks={showTokensLinks}
-                onClick={
-                  showTokensLinks
-                    ? toggleImportTokensPopover
-                    : toggleImportNftPopover
-                }
-              />
-            ) : (
-              // Non-EVM NFT: no Refresh list
-              <Tooltip
-                title={t('manageTokens')}
-                position="bottom"
-                distance={20}
-              >
-                <ButtonIcon
-                  ref={setImportButtonRef}
-                  data-testid="importTokens-button"
-                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
-                  onClick={handleOpenTokenManagement}
-                  size={ButtonIconSize.Sm}
-                  iconName={IconName.MoreVertical}
-                  ariaLabel={t('manageTokens')}
-                />
-              </Tooltip>
-            ))}
-
-          {!showImportTokenButton && onRefresh ? (
-            <ImportControl
-              ref={setImportButtonRef}
-              showTokensLinks
-              onClick={toggleRefreshListPopover}
-            />
-          ) : null}
-        </Box>
+        {networkFilterButton}
+        {actionButtons}
       </Box>
 
       <HomeNetworkFilterModal

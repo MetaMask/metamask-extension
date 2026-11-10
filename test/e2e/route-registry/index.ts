@@ -1,4 +1,4 @@
-export { ROUTE_PAGE_OBJECT_REGISTRY } from './route-registry';
+export { NOT_A_SCREEN, ROUTE_PAGE_OBJECT_REGISTRY } from './route-registry';
 export type {
   PageObjectClass,
   RoutePageObjectRegistry,

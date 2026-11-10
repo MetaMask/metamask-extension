@@ -992,12 +992,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/assets-controllers>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/gator-permissions-controller>@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -1141,7 +1135,7 @@
         "ethers>@ethersproject/address": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers>@metamask/abi-utils": true,
+        "@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/assets-controllers>@metamask/controller-utils": true,
@@ -8033,7 +8027,8 @@
     },
     "@metamask/analytics-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/assets-controllers>uuid": {
@@ -8120,7 +8115,8 @@
     },
     "@metamask/network-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/notification-services-controller>uuid": {

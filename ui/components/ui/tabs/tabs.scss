@@ -12,6 +12,28 @@
   }
 }
 
+// Pull the home asset controls onto the tab row when wide layout is used
+[data-wide-layout] {
+  .overview-tab-controls {
+    position: sticky;
+    top: 0;
+    width: fit-content;
+    margin-top: -40px;
+    margin-left: auto;
+    margin-right: 8px;
+  }
+
+  .overview-tab-controls .asset-list-control-bar {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
 .tablist-fade {
   container-name: tablist;
   container-type: scroll-state;
