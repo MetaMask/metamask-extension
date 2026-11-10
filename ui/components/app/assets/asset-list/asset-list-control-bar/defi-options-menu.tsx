@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAssetControls } from './asset-controls';
 import { OptionsMenu } from './options-menu';
 import { RefreshItem } from './refresh-item';
 
@@ -12,15 +13,17 @@ type DeFiOptionsMenuProps = {
  * @param props - The component props.
  * @param props.onRefresh - Called when Refresh list is chosen.
  */
-export const DeFiOptionsMenu = ({ onRefresh }: DeFiOptionsMenuProps) => (
-  <OptionsMenu>
-    {(close) => (
+export const DeFiOptionsMenu = ({ onRefresh }: DeFiOptionsMenuProps) => {
+  const { close } = useAssetControls();
+
+  return (
+    <OptionsMenu>
       <RefreshItem
         onClick={() => {
           onRefresh();
           close();
         }}
       />
-    )}
-  </OptionsMenu>
-);
+    </OptionsMenu>
+  );
+};

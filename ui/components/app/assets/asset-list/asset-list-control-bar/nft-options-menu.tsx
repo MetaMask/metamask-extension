@@ -23,6 +23,7 @@ import {
   IMPORT_NFTS_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { useDispatch } from '../../../../../store/hooks';
+import { useAssetControls } from './asset-controls';
 import { ManageTokensButton } from './manage-tokens-button';
 import { OptionsMenu } from './options-menu';
 import { RefreshItem } from './refresh-item';
@@ -31,6 +32,7 @@ const EvmNftOptionsMenu = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { close } = useAssetControls();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
@@ -55,12 +57,12 @@ const EvmNftOptionsMenu = () => {
     (isMainnet || isLineaMainnet || Object.keys(collections).length > 0) &&
     useNftDetection;
 
-  const handleNftImportModal = (close: () => void) => {
+  const handleNftImportModal = () => {
     navigate(IMPORT_NFTS_ROUTE);
     close();
   };
 
-  const handleNftRefresh = (close: () => void) => {
+  const handleNftRefresh = () => {
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
     }
@@ -72,32 +74,19 @@ const EvmNftOptionsMenu = () => {
 
   return (
     <OptionsMenu>
-      {(close) => (
-        <>
-          <SelectableListItem
-            onClick={() => handleNftImportModal(close)}
-            testId="import-nfts"
-          >
-            <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
-            {t('importNFT')}
-          </SelectableListItem>
-          {shouldShowRefreshButtons && (
-            <RefreshItem onClick={() => handleNftRefresh(close)} />
-          )}
-          {!useNftDetection && (
-            <SelectableListItem
-              onClick={() => navigate(`${ASSETS_ROUTE}#autodetect-tokens`)}
-              testId="enable-autodetect-button"
-            >
-              <Icon
-                name={IconName.Setting}
-                size={IconSize.Sm}
-                className="mr-2"
-              />
-              {t('enableAutoDetect')}
-            </SelectableListItem>
-          )}
-        </>
+      <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
+        <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
+        {t('importNFT')}
+      </SelectableListItem>
+      {shouldShowRefreshButtons && <RefreshItem onClick={handleNftRefresh} />}
+      {!useNftDetection && (
+        <SelectableListItem
+          onClick={() => navigate(`${ASSETS_ROUTE}#autodetect-tokens`)}
+          testId="enable-autodetect-button"
+        >
+          <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
+          {t('enableAutoDetect')}
+        </SelectableListItem>
       )}
     </OptionsMenu>
   );

@@ -12,6 +12,7 @@ import {
 } from '../../../../../selectors/multichain-accounts/account-tree';
 import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { useDispatch } from '../../../../../store/hooks';
+import { useAssetControls } from './asset-controls';
 import { OptionsMenu } from './options-menu';
 import { RefreshItem } from './refresh-item';
 import { useOpenTokenManagement } from './use-open-token-management';
@@ -22,6 +23,7 @@ import { useOpenTokenManagement } from './use-open-token-management';
 export const TokenOptionsMenu = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { close } = useAssetControls();
   const openTokenManagement = useOpenTokenManagement();
   const selectedAccountGroupAccounts = useSelector(
     (state: MetaMaskReduxState) => {
@@ -38,7 +40,7 @@ export const TokenOptionsMenu = () => {
   );
   const selectedCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
 
-  const handleRefresh = (close: () => void) => {
+  const handleRefresh = () => {
     if (selectedAccountGroupAccounts.length > 0) {
       dispatch(
         refreshAssetsForSelectedAccount(selectedAccountGroupAccounts, {
@@ -52,19 +54,15 @@ export const TokenOptionsMenu = () => {
 
   return (
     <OptionsMenu>
-      {(close) => (
-        <>
-          <SelectableListItem
-            onClick={openTokenManagement}
-            testId="manageTokens"
-            className="min-h-12"
-          >
-            <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
-            {t('manageTokens')}
-          </SelectableListItem>
-          <RefreshItem onClick={() => handleRefresh(close)} />
-        </>
-      )}
+      <SelectableListItem
+        onClick={openTokenManagement}
+        testId="manageTokens"
+        className="min-h-12"
+      >
+        <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
+        {t('manageTokens')}
+      </SelectableListItem>
+      <RefreshItem onClick={handleRefresh} />
     </OptionsMenu>
   );
 };

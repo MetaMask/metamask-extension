@@ -118,6 +118,7 @@ export const AccountOverviewTabs = ({
         hasTabEndSlot
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
+        tabRowClassName="border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border"
         tabListProps={{
           className:
             'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade',

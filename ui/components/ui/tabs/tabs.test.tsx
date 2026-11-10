@@ -108,6 +108,21 @@ describe('Tabs', () => {
     expect(tabList).toHaveClass('custom-list-class');
   });
 
+  it('applies tabRowClassName to the row around the tab list and end slot', () => {
+    const { getByRole, container } = renderTabs({
+      hasTabEndSlot: true,
+      tabRowClassName: 'stuck-top-border',
+    });
+
+    const tabList = getByRole('tablist');
+    const row = tabList.parentElement?.parentElement;
+    const endSlot = container.querySelector('.tab-end-slot');
+
+    expect(row).toHaveClass('stuck-top-border');
+    expect(row).toContainElement(endSlot);
+    expect(tabList).not.toHaveClass('stuck-top-border');
+  });
+
   it('applies tabContentProps to the content container', () => {
     const tabContentProps = {
       'data-testid': 'tab-content',

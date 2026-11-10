@@ -6,24 +6,24 @@ import { useControlPopover } from './use-control-popover';
 const OPTIONS_MENU_MIN_WIDTH = '158px';
 
 type OptionsMenuProps = {
-  children: (close: () => void) => React.ReactNode;
+  children: React.ReactNode;
 };
 
 /**
- * More button and its popover. Menu content receives `close`.
+ * More button and its popover.
  *
  * @param props - The component props.
- * @param props.children - Render prop for the menu items.
+ * @param props.children - The menu items.
  */
 export const OptionsMenu = ({ children }: OptionsMenuProps) => {
-  const { buttonRef, toggle, close, popoverProps } = useControlPopover(
+  const { buttonRef, toggle, popoverProps } = useControlPopover(
     OPTIONS_MENU_MIN_WIDTH,
   );
 
   return (
     <>
       <OptionsButton ref={buttonRef} onClick={toggle} />
-      <Popover {...popoverProps}>{children(close)}</Popover>
+      <Popover {...popoverProps}>{children}</Popover>
     </>
   );
 };

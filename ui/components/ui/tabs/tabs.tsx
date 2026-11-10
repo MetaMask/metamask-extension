@@ -70,6 +70,7 @@ export const Tabs = <TKey extends string = string>({
   className = '',
   animated,
   hasTabEndSlot = false,
+  tabRowClassName,
   ...props
 }: TabsProps<TKey>) => {
   const tabListRef = useRef<HTMLDivElement>(null);
@@ -323,7 +324,9 @@ export const Tabs = <TKey extends string = string>({
       <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
         <div {...restTabListWrapperProps} className={tabListWrapperClassName}>
           {hasTabEndSlot ? (
-            <div className="flex min-w-0 items-center border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border">
+            <div
+              className={twMerge('flex min-w-0 items-center', tabRowClassName)}
+            >
               <div className="min-w-0 flex-1">{tabList}</div>
               <div ref={setTabEndSlot} className="tab-end-slot" />
             </div>
