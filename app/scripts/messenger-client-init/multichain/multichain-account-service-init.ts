@@ -16,8 +16,8 @@ import {
   type TraceRequest,
 } from '../../../../shared/lib/trace';
 
-// Reached from inside the `Wallet Create Multichain Account Group` callback
-// without a `parentContext`, so they keep nesting under the active span.
+// The account service starts these without a `parentContext`, so they nest
+// under whatever span is active; for group creation that is its own trace.
 const NESTED_TRACE_NAMES = new Set<string>([
   'Provider Create Accounts (v2 - batched)',
   'Wallet Alignment',
