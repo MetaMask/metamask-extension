@@ -1,13 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  ButtonIcon,
+  ButtonIconSize,
   FormTextField,
+  IconName,
   TextFieldSize,
   TextFieldType,
-} from '../../component-library';
+} from '@metamask/design-system-react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ShowHideToggle from '../../ui/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 
 export default function PrivateKeyImportView({
@@ -31,33 +36,44 @@ export default function PrivateKeyImportView({
   }
 
   return (
-    <>
+    <Box flexDirection={BoxFlexDirection.Column} className="flex-1">
       <FormTextField
         id="private-key-box"
         size={TextFieldSize.Lg}
         autoFocus
         helpText={importErrorMessage}
-        error={Boolean(importErrorMessage)}
-        label={t('pastePrivateKey')}
+        isError={Boolean(importErrorMessage)}
+        placeholder={t('enterYourPrivateKey')}
         value={privateKey}
         onChange={(event) => setPrivateKey(event.target.value)}
         inputProps={{
+          'aria-label': t('enterYourPrivateKey'),
           onKeyPress: handleKeyPress,
+          // Let the input size to its text so it sits at the container's top padding.
+          className: 'h-auto',
         }}
-        marginBottom={4}
         type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
         textFieldProps={{
-          endAccessory: (
-            <ShowHideToggle
-              shown={showPrivateKey}
-              id="show-hide-private-key"
-              title={t('privateKeyShow')}
-              ariaLabelShown={t('privateKeyShown')}
-              ariaLabelHidden={t('privateKeyHidden')}
-              onChange={() => setShowPrivateKey(!showPrivateKey)}
-            />
-          ),
+          className: 'h-[116px] min-h-[116px] items-start py-3',
         }}
+        endAccessory={
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            className="h-6"
+          >
+            <ButtonIcon
+              iconName={showPrivateKey ? IconName.Eye : IconName.EyeSlash}
+              size={ButtonIconSize.Md}
+              ariaLabel={
+                showPrivateKey ? t('privateKeyShown') : t('privateKeyHidden')
+              }
+              aria-pressed={showPrivateKey}
+              data-testid="show-hide-private-key"
+              onClick={() => setShowPrivateKey(!showPrivateKey)}
+            />
+          </Box>
+        }
       />
 
       <BottomButtons
@@ -65,7 +81,7 @@ export default function PrivateKeyImportView({
         isPrimaryDisabled={privateKey === ''}
         onActionComplete={onActionComplete}
       />
-    </>
+    </Box>
   );
 }
 

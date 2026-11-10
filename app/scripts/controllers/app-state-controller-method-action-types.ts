@@ -200,6 +200,14 @@ export type AppStateControllerSetLastActiveTimeAction = {
 };
 
 /**
+ * Records a click or keypress inside a MetaMask UI for state-write telemetry.
+ */
+export type AppStateControllerRecordUiInteractionAction = {
+  type: `AppStateController:recordUiInteraction`;
+  handler: AppStateController['recordUiInteraction'];
+};
+
+/**
  * Set the version of the pending extension update, or null when no update is available or after update is applied.
  *
  * @param version - Version string of the available update, or null to clear.
@@ -299,6 +307,17 @@ export type AppStateControllerSetHasShownMultichainAccountsIntroModalAction = {
 export type AppStateControllerSetPerpsTabBadgeSeenAction = {
   type: `AppStateController:setPerpsTabBadgeSeen`;
   handler: AppStateController['setPerpsTabBadgeSeen'];
+};
+
+/**
+ * Sets whether the Money account first-time-user-experience (FTUE) splash
+ * has been seen.
+ *
+ * @param value - Whether the Money FTUE splash has been seen
+ */
+export type AppStateControllerSetMoneyFtueSeenAction = {
+  type: `AppStateController:setMoneyFtueSeen`;
+  handler: AppStateController['setMoneyFtueSeen'];
 };
 
 /**
@@ -626,6 +645,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetSnapsInstallPrivacyWarningShownStatusAction
   | AppStateControllerSetOutdatedBrowserWarningLastShownAction
   | AppStateControllerSetLastActiveTimeAction
+  | AppStateControllerRecordUiInteractionAction
   | AppStateControllerSetPendingExtensionVersionAction
   | AppStateControllerSetUpdateModalLastDismissedAtAction
   | AppStateControllerSetLastUpdatedAtAction
@@ -636,6 +656,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerClearPollingTokensAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
   | AppStateControllerSetPerpsTabBadgeSeenAction
+  | AppStateControllerSetMoneyFtueSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction
