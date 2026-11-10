@@ -88,7 +88,6 @@ export function useMainNavItems(): MainNavItem[] {
     });
     if (!hasSeenMoneyFtue) {
       dispatch(openMoneyFtue({ source: 'moneyHome' }));
-      return;
     }
 
     transitionForward(() => navigate(MONEY_HOME_ROUTE));
