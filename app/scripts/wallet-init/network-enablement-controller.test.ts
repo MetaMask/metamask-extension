@@ -2,8 +2,13 @@ import {
   Messenger,
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
+  type ActionConstraint,
+  type EventConstraint,
 } from '@metamask/messenger';
-import type { NetworkEnablementController } from '@metamask/network-enablement-controller';
+import type {
+  NetworkEnablementController,
+  NetworkEnablementControllerStateChangeEvent,
+} from '@metamask/network-enablement-controller';
 import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
@@ -30,7 +35,16 @@ function createMessengerClient(): jest.Mocked<NetworkEnablementController> {
   } as unknown as jest.Mocked<NetworkEnablementController>;
 }
 
-function getInitRequestMock(baseMessenger = getRootMessenger<never, never>()) {
+function getInitRequestMock<
+  AllowedActions extends ActionConstraint = never,
+  AllowedEvents extends EventConstraint = never,
+>(
+  baseMessenger: Messenger<
+    MockAnyNamespace,
+    AllowedActions,
+    AllowedEvents
+  > = getRootMessenger<AllowedActions, AllowedEvents>(),
+) {
   return {
     baseMessenger,
     messengerClient: createMessengerClient(),
@@ -291,7 +305,11 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('preserves a single filter when Config Registry auto-adds Arc', async () => {
     process.env.IN_TEST = 'true';
-    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      NetworkEnablementControllerStateChangeEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
     const request = getInitRequestMock(messenger);
     messenger.registerActionHandler(
       'ConfigRegistryController:getState' as never,
@@ -335,8 +353,9 @@ describe('NetworkEnablementControllerInit', () => {
       'NetworkEnablementController:stateChange',
       {
         enabledNetworkMap: messengerClient.state.enabledNetworkMap,
-      } as never,
-      [] as never,
+        nativeAssetIdentifiers: messengerClient.state.nativeAssetIdentifiers,
+      },
+      [],
     );
 
     await new Promise<void>((resolve) => queueMicrotask(resolve));
@@ -351,7 +370,11 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('preserves all-default mode when Config Registry auto-adds Arc', async () => {
     process.env.IN_TEST = 'true';
-    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      NetworkEnablementControllerStateChangeEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
     const request = getInitRequestMock(messenger);
     messenger.registerActionHandler(
       'ConfigRegistryController:getState' as never,
@@ -396,8 +419,9 @@ describe('NetworkEnablementControllerInit', () => {
       'NetworkEnablementController:stateChange',
       {
         enabledNetworkMap: messengerClient.state.enabledNetworkMap,
-      } as never,
-      [] as never,
+        nativeAssetIdentifiers: messengerClient.state.nativeAssetIdentifiers,
+      },
+      [],
     );
 
     await new Promise<void>((resolve) => queueMicrotask(resolve));
