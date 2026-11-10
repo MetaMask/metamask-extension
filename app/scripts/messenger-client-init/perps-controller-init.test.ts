@@ -581,10 +581,8 @@ describe('PerpsControllerInit', () => {
       ['perpsFlipPosition', 'flipPosition'],
       ['perpsWithdraw', 'withdraw'],
       ['perpsValidateWithdrawal', 'validateWithdrawal'],
-      ['perpsGetWithdrawalRoutes', 'getWithdrawalRoutes'],
       ['perpsUpdateWithdrawalStatus', 'updateWithdrawalStatus'],
       ['perpsUpdateWithdrawalProgress', 'updateWithdrawalProgress'],
-      ['perpsGetWithdrawalProgress', 'getWithdrawalProgress'],
       ['perpsGetPositions', 'getPositions'],
       ['perpsGetMarkets', 'getMarkets'],
       ['perpsGetMarketDataWithPrices', 'getMarketDataWithPrices'],
@@ -598,49 +596,9 @@ describe('PerpsControllerInit', () => {
       ['perpsCalculateFees', 'calculateFees'],
       ['perpsCalculateLiquidationPrice', 'calculateLiquidationPrice'],
       ['perpsGetAvailableDexs', 'getAvailableDexs'],
-      ['perpsRefreshEligibility', 'refreshEligibility'],
       ['perpsStartEligibilityMonitoring', 'startEligibilityMonitoring'],
       ['perpsStopEligibilityMonitoring', 'stopEligibilityMonitoring'],
       ['perpsToggleTestnet', 'toggleTestnet'],
-      ['perpsSaveTradeConfiguration', 'saveTradeConfiguration'],
-      ['perpsGetTradeConfiguration', 'getTradeConfiguration'],
-      ['perpsSavePendingTradeConfiguration', 'savePendingTradeConfiguration'],
-      ['perpsGetPendingTradeConfiguration', 'getPendingTradeConfiguration'],
-      ['perpsClearPendingTradeConfiguration', 'clearPendingTradeConfiguration'],
-      ['perpsSaveMarketFilterPreferences', 'saveMarketFilterPreferences'],
-      ['perpsGetMarketFilterPreferences', 'getMarketFilterPreferences'],
-      ['perpsSetSelectedPaymentToken', 'setSelectedPaymentToken'],
-      ['perpsResetSelectedPaymentToken', 'resetSelectedPaymentToken'],
-      ['perpsMarkTutorialCompleted', 'markTutorialCompleted'],
-      ['perpsMarkFirstOrderCompleted', 'markFirstOrderCompleted'],
-      ['perpsResetFirstTimeUserState', 'resetFirstTimeUserState'],
-      [
-        'perpsClearPendingTransactionRequests',
-        'clearPendingTransactionRequests',
-      ],
-      ['perpsSaveOrderBookGrouping', 'saveOrderBookGrouping'],
-      ['perpsGetOrderBookGrouping', 'getOrderBookGrouping'],
-      ['perpsGetOrderBookPreferences', 'getOrderBookPreferences'],
-      ['perpsSetOrderBookPreferences', 'setOrderBookPreferences'],
-      ['perpsGetSelectedOrderType', 'getSelectedOrderType'],
-      ['perpsSetSelectedOrderType', 'setSelectedOrderType'],
-      ['perpsGetVisibleCandleCount', 'getVisibleCandleCount'],
-      ['perpsSetVisibleCandleCount', 'setVisibleCandleCount'],
-      ['perpsGetProLayoutPreferences', 'getProLayoutPreferences'],
-      ['perpsSetProLayoutPreferences', 'setProLayoutPreferences'],
-      ['perpsGetMaxSlippage', 'getMaxSlippage'],
-      ['perpsSetMaxSlippage', 'setMaxSlippage'],
-      ['perpsClearDepositResult', 'clearDepositResult'],
-      ['perpsClearWithdrawResult', 'clearWithdrawResult'],
-      ['perpsGetBlockExplorerUrl', 'getBlockExplorerUrl'],
-      ['perpsGetCurrentNetwork', 'getCurrentNetwork'],
-      [
-        'perpsIsFirstTimeUserOnCurrentNetwork',
-        'isFirstTimeUserOnCurrentNetwork',
-      ],
-      ['perpsGetWatchlistMarkets', 'getWatchlistMarkets'],
-      ['perpsToggleWatchlistMarket', 'toggleWatchlistMarket'],
-      ['perpsIsWatchlistMarket', 'isWatchlistMarket'],
     ];
 
     for (const [apiMethod, controllerMethod] of apiToController) {
@@ -743,22 +701,6 @@ describe('PerpsControllerInit', () => {
       // perpsInit should NOT auto-retry — it IS the init
       await expect(api.perpsInit()).rejects.toThrow('CLIENT_NOT_INITIALIZED');
       expect(init).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not wrap preference methods (perpsSaveTradeConfiguration)', async () => {
-      const { api, messengerClient } = initWithApi();
-      const save = messengerClient.saveTradeConfiguration as jest.Mock;
-      save.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'));
-
-      // Preferences are state-only — should NOT auto-retry
-      await expect(
-        api.perpsSaveTradeConfiguration(
-          ...([] as unknown as Parameters<
-            typeof messengerClient.saveTradeConfiguration
-          >),
-        ),
-      ).rejects.toThrow('CLIENT_NOT_INITIALIZED');
-      expect(messengerClient.init).not.toHaveBeenCalled();
     });
 
     it('recovers provider passthrough (perpsGetUserHistory)', async () => {
@@ -1104,30 +1046,7 @@ describe('PerpsControllerInit', () => {
     });
   });
 
-  describe('connection health APIs', () => {
-    it('exposes perpsGetConnectionState on the background API', () => {
-      const { api, messengerClient } = initWithApi();
-      (
-        messengerClient.getWebSocketConnectionState as jest.Mock
-      ).mockReturnValue('connected');
-
-      expect(api.perpsGetConnectionState()).toBe('connected');
-      expect(messengerClient.getWebSocketConnectionState).toHaveBeenCalled();
-    });
-  });
-
   describe('attribution APIs', () => {
-    it('exposes perpsSetAttributionContext on the background API', () => {
-      const { api, messengerClient } = initWithApi();
-      const context = { utmSource: 'newsletter' };
-
-      api.perpsSetAttributionContext(context);
-
-      expect(messengerClient.setAttributionContext).toHaveBeenCalledWith(
-        context,
-      );
-    });
-
     it('wires mergeAttributionContext into createPerpsInfrastructure so metrics can merge UTM', () => {
       let capturedDeps: InfrastructureDeps | undefined;
       jest

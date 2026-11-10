@@ -191,7 +191,9 @@ class AccountListPage {
   private readonly importAccountConfirmButton =
     '[data-testid="import-account-confirm-button"]';
 
-  private readonly importAccountDropdownOption = '.dropdown__select';
+  private readonly importAccountErrorMessage = (message: string) => ({
+    text: message,
+  });
 
   private readonly importAccountFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-account"]';
@@ -199,13 +201,11 @@ class AccountListPage {
   private readonly importAccountJsonFileInput =
     'input[data-testid="file-input"]';
 
-  private readonly importAccountJsonFileOption = {
-    text: 'JSON File',
-    tag: 'option',
-  };
-
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
+
+  private readonly importAccountJsonTypeButton =
+    '[data-testid="import-account-type-json"]';
 
   private readonly importAccountPrivateKeyInput = '#private-key-box';
 
@@ -413,10 +413,9 @@ class AccountListPage {
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.importAccountConfirmButton);
-      await this.driver.waitForSelector({
-        css: '.mm-help-text',
-        text: expectedErrorMessage,
-      });
+      await this.driver.waitForSelector(
+        this.importAccountErrorMessage(expectedErrorMessage),
+      );
     } else {
       // Import + forceUpdateMetamaskState can outlive the default 3s staleness
       // wait under multi-SRP / Solana load on CI before the Add Wallet page
@@ -1091,8 +1090,7 @@ class AccountListPage {
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
-    await this.driver.clickElement(this.importAccountDropdownOption);
-    await this.driver.clickElement(this.importAccountJsonFileOption);
+    await this.driver.clickElement(this.importAccountJsonTypeButton);
 
     const fileInput = await this.driver.findElement(
       this.importAccountJsonFileInput,
