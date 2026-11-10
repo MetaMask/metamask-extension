@@ -1,10 +1,4 @@
-import React, {
-  type CSSProperties,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { type CSSProperties, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
@@ -22,7 +16,7 @@ import ChartErrorState from './chart-error-state';
 import TokenPriceHeader from './token-price-header';
 import { useAdvancedChartData } from './useAdvancedChartData';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
-import { useChartAnalytics } from './useChartAnalytics';
+import { useAdvancedChartInteractions } from './useAdvancedChartInteractions';
 
 /**
  * The aspect ratio of the legacy chart's plot area, from
@@ -154,90 +148,6 @@ export const AdvancedChartSection = ({
     setChartError(null);
   }, []);
 
-  const { trackChartInteraction, trackChartEmptyDisplayed } = useChartAnalytics(
-    {
-      chartType,
-      indicators,
-    },
-  );
-
-  const handleChartTypeSelect = useCallback(
-    (next: number) => {
-      if (next === chartType) {
-        return;
-      }
-      // Report the newly selected type, not the one still in state.
-      trackChartInteraction({
-        interactionType: 'chart_type_changed',
-        chartType: next,
-      });
-      setChartType(next);
-    },
-    [chartType, setChartType, trackChartInteraction],
-  );
-
-  const handleLineTimeRangeSelect = useCallback(
-    (next: string) => {
-      trackChartInteraction({
-        interactionType: 'timeframe_changed',
-        chartTimeframe: next,
-      });
-      setLineTimeRange(next);
-    },
-    [setLineTimeRange, trackChartInteraction],
-  );
-
-  const handleCandleIntervalSelect = useCallback(
-    (next: string) => {
-      trackChartInteraction({
-        interactionType: 'granularity_changed',
-        chartGranularity: next.toLowerCase(),
-      });
-      setCandleInterval(next);
-    },
-    [setCandleInterval, trackChartInteraction],
-  );
-
-  const handleIndicatorToggle = useCallback(
-    (name: string) => {
-      // The pills apply immediately (there is no Done button), so each click
-      // emits one event in the on or off direction with the post-toggle set.
-      const wasActive = indicators.has(name);
-      const nextIndicators = new Set(indicators);
-      if (wasActive) {
-        nextIndicators.delete(name);
-      } else {
-        nextIndicators.add(name);
-      }
-      trackChartInteraction({
-        interactionType: 'indicator_toggled',
-        indicatorType: name,
-        indicatorAction: wasActive ? 'off' : 'on',
-        indicatorsActive: [...nextIndicators],
-      });
-      toggleIndicator(name);
-    },
-    [indicators, toggleIndicator, trackChartInteraction],
-  );
-
-  const handleMASelectorOpen = useCallback(() => {
-    trackChartInteraction({
-      interactionType: 'indicator_selector_opened',
-      selectorType: 'moving_averages',
-    });
-  }, [trackChartInteraction]);
-
-  const handleChartInteracted = useCallback(
-    (interactionType: 'zoom' | 'pan' | 'tooltip') => {
-      trackChartInteraction({ interactionType });
-    },
-    [trackChartInteraction],
-  );
-
-  const handleTradingViewClicked = useCallback(() => {
-    trackChartInteraction({ interactionType: 'tradingview_clicked' });
-  }, [trackChartInteraction]);
-
   const {
     ohlcvData,
     realtimeBar,
@@ -311,30 +221,29 @@ export const AdvancedChartSection = ({
   const candleFailed = Boolean(chartError ?? ohlcvError);
   const showIndicatorBar = !isLineChart && chartReady && !candleFailed;
 
-  // A completed candle fetch that returned no bars. Load failures are
-  // deliberately excluded: the event describes a chart that loaded without
-  // enough data, not one that errored. Scoped to candle mode because only
-  // there does the OHLCV series drive what is on screen.
-  const isChartEmpty =
-    !isLineChart &&
-    Boolean(caipAssetId) &&
-    !isOhlcvLoading &&
-    !candleFailed &&
-    ohlcvData.length === 0;
-
-  const chartEmptyTrackedRef = useRef(false);
-  useEffect(() => {
-    if (!isChartEmpty) {
-      // Reset so a later empty episode is reported again.
-      chartEmptyTrackedRef.current = false;
-      return;
-    }
-    if (chartEmptyTrackedRef.current) {
-      return;
-    }
-    chartEmptyTrackedRef.current = true;
-    trackChartEmptyDisplayed();
-  }, [isChartEmpty, trackChartEmptyDisplayed]);
+  // Interaction handlers and empty-state tracking live in their own hook to
+  // keep this component focused on layout.
+  const {
+    handleChartTypeSelect,
+    handleLineTimeRangeSelect,
+    handleCandleIntervalSelect,
+    handleIndicatorToggle,
+    handleMASelectorOpen,
+    handleChartInteracted,
+    handleTradingViewClicked,
+  } = useAdvancedChartInteractions({
+    chartType,
+    indicators,
+    isLineChart,
+    caipAssetId,
+    isOhlcvLoading,
+    candleFailed,
+    ohlcvBarCount: ohlcvData.length,
+    setChartType,
+    setLineTimeRange,
+    setCandleInterval,
+    toggleIndicator,
+  });
 
   let candleChart;
   if (candleFailed) {

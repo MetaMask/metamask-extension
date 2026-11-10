@@ -85,6 +85,9 @@ export function useChartAnalytics({
           ? undefined
           : (indicatorsActive ?? [...indicators]);
 
+      // Fire-and-forget: trackEvent already swallows its own errors, so the
+      // trailing no-op .catch just marks the promise as intentionally
+      // unawaited (the repo forbids the `void` operator).
       trackEvent(
         createEventBuilder(MetaMetricsEventName.ChartInteracted)
           // Undefined values are stripped by the builder, so optional
@@ -111,15 +114,16 @@ export function useChartAnalytics({
             indicators_active: resolvedIndicatorsActive,
           })
           .build(),
-      );
+      ).catch(() => undefined);
     },
     [chartType, createEventBuilder, indicators, trackEvent],
   );
 
   const trackChartEmptyDisplayed = useCallback(() => {
+    // Fire-and-forget, as above.
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ChartEmptyDisplayed).build(),
-    );
+    ).catch(() => undefined);
   }, [createEventBuilder, trackEvent]);
 
   return { trackChartInteraction, trackChartEmptyDisplayed };

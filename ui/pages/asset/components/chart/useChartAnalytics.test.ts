@@ -7,7 +7,9 @@ import {
 } from './advanced-chart-interval-bar';
 import { useChartAnalytics } from './useChartAnalytics';
 
-const mockTrackEvent = jest.fn();
+// Mirrors the real hook, whose trackEvent resolves a promise the callers
+// terminate with .catch.
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
