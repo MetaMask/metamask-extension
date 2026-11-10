@@ -91,11 +91,22 @@ export function Header({ item, onBack }: Props) {
     <ModalHeader
       startAccessory={
         <ButtonIcon
+          className="md:hidden"
           iconName={IconName.ArrowLeft}
           ariaLabel={t('back')}
           size={ButtonIconSize.Md}
           onClick={onBack}
           data-testid="transaction-details-back-button"
+        />
+      }
+      endAccessory={
+        <ButtonIcon
+          className="hidden md:block"
+          iconName={IconName.Close}
+          ariaLabel={t('close')}
+          size={ButtonIconSize.Md}
+          onClick={onBack}
+          data-testid="transaction-details-close-button"
         />
       }
     >
