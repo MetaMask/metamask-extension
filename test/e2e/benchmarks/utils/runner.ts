@@ -440,9 +440,11 @@ export async function runPageLoadBenchmark(
   }
 
   const result: Record<string, number[]> = {};
+  const samples: Record<string, number[]> = {};
   const trimmedCounts: StatisticalResult = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
     const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    samples[key] = rawSamples;
     const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
     result[key] = [...filtered].sort((a, b) => a - b);
     trimmedCounts[key] = outlierCount;
@@ -488,6 +490,8 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
+    // TEMPORARY (2/2): raw per-load values for the A/B pilot analysis. Remove with pilot-ab.yml.
+    ...(isAbPilotEnabled() && { samples }),
     ...(webVitals && { webVitals }),
   };
 }
