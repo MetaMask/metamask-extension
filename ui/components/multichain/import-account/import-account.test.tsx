@@ -340,6 +340,61 @@ describe('ImportAccount', () => {
     });
   });
 
+  describe('JSON import password errors', () => {
+    it('shows a passphrase failure under the password field', async () => {
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.reject(
+          new Error('Key derivation failed - possibly wrong passphrase'),
+        )) as unknown as ReturnType<typeof actions.importNewAccount>);
+
+      const { getByLabelText, getByRole, getByTestId, queryByText } =
+        renderImportAccount();
+
+      fireEvent.click(getByRole('button', { name: messages.jsonFile.message }));
+      fireEvent.change(getByTestId('file-input'), {
+        target: { files: [new File(['{}'], 'test.json')] },
+      });
+
+      await waitFor(() => {
+        expect(getImportButton()).not.toBeDisabled();
+      });
+
+      fireEvent.click(getImportButton());
+
+      await waitFor(() => {
+        expect(
+          queryByText(messages.jsonImportPasswordError.message),
+        ).toBeInTheDocument();
+      });
+      expect(
+        getByLabelText(messages.enterOptionalPassword.message),
+      ).toHaveAttribute('aria-describedby', 'json-password-error');
+    });
+
+    it('does not show a passphrase failure from a private key import under the password field', async () => {
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.reject(
+          new Error('Key derivation failed - possibly wrong passphrase'),
+        )) as unknown as ReturnType<typeof actions.importNewAccount>);
+
+      const { getByLabelText, queryByText } = renderImportAccount();
+
+      fireEvent.change(getByLabelText(messages.enterYourPrivateKey.message), {
+        target: { value: '0xabcdef1234567890' },
+      });
+      fireEvent.click(getImportButton());
+
+      await waitFor(() => {
+        expect(
+          queryByText('Key derivation failed - possibly wrong passphrase'),
+        ).toBeInTheDocument();
+      });
+      expect(
+        queryByText(messages.jsonImportPasswordError.message),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('KeyringController error handling', () => {
     it('handles KeyringController errors by trimming the prefix and displaying warning', async () => {
       const keyringError = new Error(

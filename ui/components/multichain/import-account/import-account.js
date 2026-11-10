@@ -76,6 +76,13 @@ export const ImportAccount = ({ onActionComplete }) => {
       const message = getErrorMessage(error);
       trackImportEvent(strategy, false);
 
+      // A V3 keystore reports a failed MAC check as a passphrase error for both
+      // a missing password and a wrong one, so there is no code to match on.
+      if (strategy === 'json' && message.includes('passphrase')) {
+        setImportErrorMessage(t('jsonImportPasswordError'));
+        return false;
+      }
+
       if (handleKeyringControllerError(error)) {
         return false;
       }

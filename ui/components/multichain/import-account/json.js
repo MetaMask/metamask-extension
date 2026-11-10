@@ -37,8 +37,14 @@ export default function JsonImportSubview({
   const [errorMessage, setErrorMessage] = useState();
 
   const isPrimaryDisabled = fileContents === '';
-  const fileError = errorMessage ?? importErrorMessage;
+  const passwordError =
+    importErrorMessage === t('jsonImportPasswordError')
+      ? importErrorMessage
+      : undefined;
+  const fileError =
+    errorMessage ?? (passwordError ? undefined : importErrorMessage);
   const fileErrorId = 'json-file-error';
+  const passwordErrorId = 'json-password-error';
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -117,12 +123,16 @@ export default function JsonImportSubview({
         id="json-password-box"
         size={TextFieldSize.Lg}
         placeholder={t('enterOptionalPassword')}
+        helpText={passwordError}
+        helpTextProps={passwordError ? { id: passwordErrorId } : undefined}
+        isError={Boolean(passwordError)}
         value={password}
         onChange={(event) => {
           setPassword(event.target.value);
         }}
         inputProps={{
           'aria-label': t('enterOptionalPassword'),
+          'aria-describedby': passwordError ? passwordErrorId : undefined,
           onKeyPress: handleKeyPress,
         }}
         type={showPassword ? TextFieldType.Text : TextFieldType.Password}

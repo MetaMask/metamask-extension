@@ -5160,6 +5160,10 @@
     "message": "JSON file",
     "description": "format for importing an account"
   },
+  "jsonImportPasswordError": {
+    "message": "The password is missing or incorrect.",
+    "description": "Shown under the JSON import password field when the keystore password is missing or wrong"
+  },
   "keyringAccountName": {
     "message": "Account name"
   },
