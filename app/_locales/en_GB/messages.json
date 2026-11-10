@@ -8576,6 +8576,14 @@
   "perpsPositions": {
     "message": "Positions"
   },
+  "perpsPostOnlyWindow": {
+    "message": "Trading is temporarily restricted after a network upgrade and will resume shortly. Try again in a few minutes.",
+    "description": "Shown when the exchange only accepts post-only orders immediately after a network upgrade."
+  },
+  "perpsPostOnlyWouldCross": {
+    "message": "This price would cross the spread, so the post-only order wasn't placed. Adjust the price or use a non-post-only order.",
+    "description": "Shown when a post-only order is rejected because its price would immediately match the book."
+  },
   "perpsPriceMoved": {
     "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
     "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"

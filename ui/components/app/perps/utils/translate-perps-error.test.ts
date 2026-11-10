@@ -84,6 +84,8 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_MARGIN_MODE_UNSUPPORTED: 'ORDER_MARGIN_MODE_UNSUPPORTED',
     ORDER_MARGIN_MODE_POSITION_OPEN: 'ORDER_MARGIN_MODE_POSITION_OPEN',
     ORDER_MARGIN_MODE_ORDER_OPEN: 'ORDER_MARGIN_MODE_ORDER_OPEN',
+    ORDER_POST_ONLY_WOULD_CROSS: 'ORDER_POST_ONLY_WOULD_CROSS',
+    ORDER_POST_ONLY_WINDOW: 'ORDER_POST_ONLY_WINDOW',
     EXCHANGE_ACCOUNT_NOT_FOUND: 'EXCHANGE_ACCOUNT_NOT_FOUND',
     EXCHANGE_MULTI_SIG_REQUIRED: 'EXCHANGE_MULTI_SIG_REQUIRED',
     EXCHANGE_INVALID_NONCE: 'EXCHANGE_INVALID_NONCE',
@@ -540,6 +542,98 @@ describe('translatePerpsError', () => {
         translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
       ).toBe('[perpsNetworkError]');
     });
+
+    it('does not rewrite post-only keys to cancel copy', () => {
+      const wouldCross = {
+        error: 'Post only order would have immediately matched',
+        errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+        errorDetails: {
+          code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+          provider: 'hyperliquid' as const,
+        },
+      };
+      const postOnlyWindow = {
+        error:
+          'Only post-only orders allowed immediately after network upgrade',
+        errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+      };
+
+      expect(
+        translatePerpsError(wouldCross, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+      ).toBe('[perpsPostOnlyWouldCross]');
+      expect(
+        translatePerpsError(
+          postOnlyWindow,
+          mockT,
+          CANCEL_ORDER_I18N_KEY_OVERRIDES,
+        ),
+      ).toBe('[perpsPostOnlyWindow]');
+    });
+  });
+
+  it('translates provider-tagged post-only codes to their own keys', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: 'ORDER_POST_ONLY_WOULD_CROSS',
+          errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS,
+            provider: 'hyperliquid',
+          },
+        },
+        mockT,
+      ),
+    ).toBe('[perpsPostOnlyWouldCross]');
+    expect(
+      translatePerpsError(
+        {
+          error: 'ORDER_POST_ONLY_WINDOW',
+          errorCode: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.ORDER_POST_ONLY_WINDOW,
+            provider: 'hyperliquid',
+          },
+        },
+        mockT,
+      ),
+    ).toBe('[perpsPostOnlyWindow]');
+  });
+
+  it('resolves raw post-only venue sentences to the same keys', () => {
+    expect(
+      translatePerpsError(
+        new Error(
+          'Post only order would have immediately matched, bbo was 2503.1',
+        ),
+        mockT,
+      ),
+    ).toBe('[perpsPostOnlyWouldCross]');
+    expect(
+      translatePerpsError(
+        new Error(
+          'Only post-only orders allowed immediately after network upgrade',
+        ),
+        mockT,
+      ),
+    ).toBe('[perpsPostOnlyWindow]');
+  });
+
+  it('does not classify a would-cross sentence with embedded prices as a service outage', () => {
+    const message =
+      'Post only order would have immediately matched, bbo was 2503.1';
+    const match = API_ERROR_PATTERNS.find(({ pattern }) =>
+      pattern.test(message),
+    );
+
+    expect(match?.code).toBe(PERPS_ERROR_CODES.ORDER_POST_ONLY_WOULD_CROSS);
+    expect(match?.code).not.toBe(PERPS_ERROR_CODES.SERVICE_UNAVAILABLE);
+    expect(translatePerpsError(new Error(message), mockT)).toBe(
+      '[perpsPostOnlyWouldCross]',
+    );
+    expect(translatePerpsError(new Error(message), mockT)).not.toBe(
+      '[perpsServiceUnavailable]',
+    );
   });
 });
 
