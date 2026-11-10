@@ -36,7 +36,12 @@ import {
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
+import { useHomeReady } from '../../../../pages/home/home-performance';
 import TokenList from './token-list';
+
+jest.mock('../../../../pages/home/home-performance', () => ({
+  useHomeReady: jest.fn(),
+}));
 
 jest.mock('../../../../hooks/money/useMoneyTokenListCta', () => ({
   useMoneyTokenListCta: jest.fn(),
@@ -122,6 +127,10 @@ jest.mock('../../../../selectors/multichain/networks', () => ({
 
 jest.mock('../../../../selectors/multichain/feature-flags', () => ({
   getIsSecurityTrustTdpEnabled: jest.fn(),
+}));
+
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
+  getSelectedAccountGroup: jest.fn(() => 'group-a'),
 }));
 
 jest.mock('../../../../selectors/assets', () => ({
@@ -270,6 +279,7 @@ describe('TokenList', () => {
 
     render();
 
+    expect(useHomeReady).toHaveBeenLastCalledWith(false);
     expect(screen.getAllByTestId('token-list-loading-row')).toHaveLength(5);
     expect(screen.getByTestId('token-list-loading')).toHaveAttribute(
       'aria-busy',
@@ -303,6 +313,7 @@ describe('TokenList', () => {
 
     render();
 
+    expect(useHomeReady).toHaveBeenLastCalledWith(true);
     expect(screen.getByTestId('token-cell-KickToken')).toBeInTheDocument();
     expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
   });
