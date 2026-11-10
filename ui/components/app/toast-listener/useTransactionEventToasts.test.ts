@@ -15,6 +15,7 @@ import {
   showPendingToast,
   showSuccessToast,
 } from './shared';
+import { clearToastPhase } from './toast-lifecycle';
 import {
   batchHelperTransactionTypes,
   useTransactionEventToasts,
@@ -127,6 +128,55 @@ describe('useTransactionEventToasts', () => {
       accountsControllerEvent,
       expect.any(Function),
     );
+  });
+
+  // The window this measures: a `transactionStatusUpdated` event is written to the UI at
+  // publish time, while the state behind it rides the 200ms-debounced `sendUpdate`. So the
+  // handler can run with the replacement transaction absent from Redux even though the
+  // background has already created it. `isSpeedUpReplacement` resolves that ambiguity as a
+  // speed-up, and these two arms differ in nothing but whether Redux has caught up.
+  describe('a replaced transaction, with and without the replacement in state', () => {
+    const pending = createTransactionMeta({
+      id: 'tx-1',
+      status: TransactionStatus.submitted,
+    });
+    const replaced = createTransactionMeta({
+      id: 'tx-1',
+      status: TransactionStatus.failed,
+      replacedById: 'tx-2',
+    });
+    const cancelReplacement = createTransactionMeta({
+      id: 'tx-2',
+      status: TransactionStatus.submitted,
+      type: TransactionType.cancel,
+    });
+
+    // A terminal toast only replaces a live one, so the pending phase has to exist first.
+    function openThenReplace(transactions: TransactionMeta[]) {
+      clearToastPhase('tx-1');
+      mockGetState.mockReturnValue({ metamask: { transactions: [pending] } });
+      const { handlers } = mountHook();
+      handlers[transactionControllerEvent]({ transactionMeta: pending });
+      mockGetState.mockReturnValue({ metamask: { transactions } });
+      handlers[transactionControllerEvent]({ transactionMeta: replaced });
+    }
+
+    it('dismisses the toast when the replacement has not reached Redux yet', () => {
+      openThenReplace([replaced]);
+
+      expect(mockDismissToast).toHaveBeenCalledWith('tx-tx-1');
+      expect(mockShowFailedToast).not.toHaveBeenCalled();
+    });
+
+    it('reports the failure once the cancellation is in Redux', () => {
+      openThenReplace([replaced, cancelReplacement]);
+
+      expect(mockShowFailedToast).toHaveBeenCalledWith(
+        'tx-tx-1',
+        expect.anything(),
+      );
+      expect(mockDismissToast).not.toHaveBeenCalled();
+    });
   });
 
   describe('EVM via TransactionController', () => {
