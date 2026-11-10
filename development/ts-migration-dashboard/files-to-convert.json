@@ -1002,7 +1002,6 @@
   "ui/pages/create-account/connect-hardware/select-hardware.stories.js",
   "ui/pages/create-account/create-account.component.js",
   "ui/pages/create-account/index.js",
-  "ui/pages/index.js",
   "ui/pages/notification-details/index.js",
   "ui/pages/notifications-settings/index.js",
   "ui/pages/notifications/index.js",
