@@ -445,14 +445,25 @@ export async function onboardingMetricsFlow(
   }
 
   await onboardingMetricsPage.clickOnContinueButton();
+  if (!optedIn) {
+    return;
+  }
+
+  // Firefox shows this screen before welcome. Playwright cannot read extension
+  // state there: page.evaluate hits LavaMoat scuttling (Float32Array). Wait
+  // for the welcome screen instead of analyticsId.
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    const startOnboardingPage = new StartOnboardingPage(driver);
+    await startOnboardingPage.checkLoginPageIsLoaded();
+    return;
+  }
+
   // Wait for the analytics ID to be present so subsequent screens track events
   // immediately and deterministically.
-  if (optedIn) {
-    await driver.wait(async () => {
-      const uiState = await getCleanAppState(driver);
-      return Boolean(uiState?.metamask?.analyticsId);
-    }, driver.timeout);
-  }
+  await driver.wait(async () => {
+    const uiState = await getCleanAppState(driver);
+    return Boolean(uiState?.metamask?.analyticsId);
+  }, driver.timeout);
 }
 
 /**
