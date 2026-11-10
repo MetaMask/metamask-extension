@@ -10,9 +10,8 @@ import {
   getUseNftDetection,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import { Box, Popover, PopoverPosition } from '../../../../component-library';
+import { Popover, PopoverPosition } from '../../../../component-library';
 import { SelectableListItem } from '../sort-control/sort-control';
-import { JustifyContent } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
@@ -64,16 +63,9 @@ const EvmNftOptionsMenu = () => {
     });
   }, [tokenNetworkFilter, allNetworks]);
 
-  const shouldShowRefreshButtons = useMemo(
-    () =>
-      (isMainnet || isLineaMainnet || Object.keys(collections).length > 0) &&
-      useNftDetection,
-    [isMainnet, isLineaMainnet, collections, useNftDetection],
-  );
-  const shouldShowEnableAutoDetect = useMemo(
-    () => !shouldShowRefreshButtons && !useNftDetection,
-    [shouldShowRefreshButtons, useNftDetection],
-  );
+  const shouldShowRefreshButtons =
+    (isMainnet || isLineaMainnet || Object.keys(collections).length > 0) &&
+    useNftDetection;
 
   const handleNftImportModal = () => {
     navigate(IMPORT_NFTS_ROUTE);
@@ -109,34 +101,24 @@ const EvmNftOptionsMenu = () => {
           <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
           {t('importNFT')}
         </SelectableListItem>
-        <Box className="nfts-tab__link" justifyContent={JustifyContent.flexEnd}>
-          {shouldShowRefreshButtons && (
-            <SelectableListItem
-              onClick={handleNftRefresh}
-              testId="refresh-list-button"
-            >
-              <Icon
-                name={IconName.Refresh}
-                size={IconSize.Sm}
-                className="mr-2"
-              />
-              {t('refreshList')}
-            </SelectableListItem>
-          )}
-          {shouldShowEnableAutoDetect && (
-            <SelectableListItem
-              onClick={onEnableAutoDetect}
-              testId="enable-autodetect-button"
-            >
-              <Icon
-                name={IconName.Setting}
-                size={IconSize.Sm}
-                className="mr-2"
-              />
-              {t('enableAutoDetect')}
-            </SelectableListItem>
-          )}
-        </Box>
+        {shouldShowRefreshButtons && (
+          <SelectableListItem
+            onClick={handleNftRefresh}
+            testId="refresh-list-button"
+          >
+            <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
+            {t('refreshList')}
+          </SelectableListItem>
+        )}
+        {!useNftDetection && (
+          <SelectableListItem
+            onClick={onEnableAutoDetect}
+            testId="enable-autodetect-button"
+          >
+            <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
+            {t('enableAutoDetect')}
+          </SelectableListItem>
+        )}
       </Popover>
     </>
   );
