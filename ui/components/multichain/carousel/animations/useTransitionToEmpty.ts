@@ -22,7 +22,13 @@ export const useTransitionToEmpty = ({
 
   const foldTimeoutRef = useRef<NodeJS.Timeout>();
   const onEmptyStateCompleteRef = useRef(onEmptyStateComplete);
-  onEmptyStateCompleteRef.current = onEmptyStateComplete;
+
+  // Keep the latest callback for the fold timer. Writing the ref during
+  // render is what react-hooks/refs rejects; an effect is allowed, and the
+  // timer is long enough that this lands before it fires.
+  useEffect(() => {
+    onEmptyStateCompleteRef.current = onEmptyStateComplete;
+  }, [onEmptyStateComplete]);
 
   const triggerFoldAnimation = useCallback(() => {
     setEmptyStatePhase('folding');
