@@ -29,7 +29,7 @@ export function SwapDetails({
 
   return (
     <>
-      <ModalBody className="divide-y divide-border-muted">
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <TokensSection
           tokens={[
             { label: t('youSent'), token: item.data.sourceToken },

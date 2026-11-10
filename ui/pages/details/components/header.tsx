@@ -2,8 +2,8 @@ import React from 'react';
 import {
   ButtonIcon,
   ButtonIconSize,
-  HeaderBase,
   IconName,
+  ModalHeader,
   Text,
   TextAlign,
   TextVariant,
@@ -88,7 +88,7 @@ export function Header({ item, onBack }: Props) {
   const titleConfig = getTitleConfig(item);
 
   return (
-    <HeaderBase
+    <ModalHeader
       startAccessory={
         <ButtonIcon
           iconName={IconName.ArrowLeft}
@@ -104,6 +104,6 @@ export function Header({ item, onBack }: Props) {
           {t(titleConfig.key, titleConfig.args)}
         </Text>
       ) : null}
-    </HeaderBase>
+    </ModalHeader>
   );
 }

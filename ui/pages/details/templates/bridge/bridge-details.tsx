@@ -108,7 +108,7 @@ export function BridgeDetails({
 
   return (
     <>
-      <ModalBody className="divide-y divide-border-muted">
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <div className="flex flex-col gap-2 pb-4">
           {sourceToken && (
             <div>

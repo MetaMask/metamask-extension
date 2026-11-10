@@ -97,10 +97,8 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   ]);
 
   return (
-    <div className="flex h-full flex-col pb-4 [container-name:list-item] [container-type:inline-size]">
-      <div className="shrink-0 px-4 py-4">
-        <Header item={transaction} onBack={onBack} />
-      </div>
+    <div className="flex h-full flex-col py-4 [container-name:list-item] [container-type:inline-size]">
+      <Header item={transaction} onBack={onBack} />
 
       <ErrorBoundary>
         <TemplateLoader item={transaction} />

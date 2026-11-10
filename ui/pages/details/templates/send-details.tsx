@@ -13,7 +13,7 @@ export function SendDetails({
 }) {
   return (
     <>
-      <ModalBody className="divide-y divide-border-muted">
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <TokensSection tokens={[{ token: item.data.token }]} />
         <MetadataSection
           item={item}

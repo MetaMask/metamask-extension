@@ -126,7 +126,7 @@ export function RampOrderDetails({
 
   return (
     <>
-      <ModalBody className="divide-y divide-border-muted">
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <RampTokensSection item={item} />
         <RampMetadataSection
           item={item}

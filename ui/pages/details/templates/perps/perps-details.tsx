@@ -72,7 +72,7 @@ export function PerpsDetails({
 
   return (
     <>
-      <ModalBody className="divide-y divide-border-muted">
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <TokensSection
           tokens={[
             { label: t('youWithdrew'), token: withdrewToken },

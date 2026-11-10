@@ -9,7 +9,7 @@ import { MetadataSection, TokensSection } from '../components/sections';
 export function DefaultDetails({ item }: { item: ActivityListItem }) {
   return (
     <>
-      <ModalBody className="divide-y divide-border-muted">
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <TokensSection
           tokens={[
             {
