@@ -171,7 +171,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
       0,
     );
 
-    void Promise.all(
+    Promise.all(
       entries.map(([symbol]) =>
         submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
           {
@@ -199,11 +199,14 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
             { protocolFeeRate: PERPS_FALLBACK_FEE_RATES.protocolFeeRate },
           ]),
       ),
-    ).then((perSymbolRates) => {
-      if (!cancelled && currentId === feeRequestId.current) {
-        setSymbolFeeRates(Object.fromEntries(perSymbolRates));
-      }
-    });
+    )
+      .then((perSymbolRates) => {
+        if (!cancelled && currentId === feeRequestId.current) {
+          setSymbolFeeRates(Object.fromEntries(perSymbolRates));
+        }
+      })
+      // Each quote already falls back on error, so nothing reaches here.
+      .catch(() => undefined);
 
     return () => {
       cancelled = true;
