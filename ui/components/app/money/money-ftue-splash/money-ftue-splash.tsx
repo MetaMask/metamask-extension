@@ -114,61 +114,58 @@ const MoneyFtueSplashContent = () => {
     ? MoneyScreenName.MoneyDeposit
     : MoneyScreenName.MoneyHome;
 
-  const continueSplash = useCallback(
-    (buttonType: MoneyButtonType) => {
-      if (buttonType === MoneyButtonType.Text) {
-        trackButtonClicked({
-          buttonType,
-          buttonIntent: MoneyButtonIntent.AddMoney,
-          componentName: MoneyComponentName.FtueSplash,
-          labelKey: 'moneyFtueStartEarning',
-          redirectTarget,
-        });
-      } else {
-        trackButtonClicked({
-          buttonType,
-          buttonIntent: MoneyButtonIntent.Dismiss,
-          componentName: MoneyComponentName.FtueSplash,
-          redirectTarget,
-        });
-      }
+  const acknowledgeSplash = useCallback(() => {
+    dispatch(setMoneyFtueSeen(true));
+    dispatch(closeMoneyFtue());
+  }, [dispatch]);
 
-      dispatch(setMoneyFtueSeen(true));
-      dispatch(closeMoneyFtue());
+  const goToMoneyHome = useCallback(() => {
+    if (source === 'moneyHome' && location.pathname !== MONEY_HOME_ROUTE) {
+      transitionForward(() => navigate(MONEY_HOME_ROUTE));
+    }
+  }, [location.pathname, navigate, source]);
 
-      if (isDeposit && buttonType === MoneyButtonType.Text) {
-        initiateDeposit({
-          ...(pendingDeposit ?? {}),
-          skipFtue: true,
-        });
-      } else if (
-        source === 'moneyHome' &&
-        location.pathname !== MONEY_HOME_ROUTE
-      ) {
-        transitionForward(() => navigate(MONEY_HOME_ROUTE));
-      }
-    },
-    [
-      dispatch,
-      initiateDeposit,
-      isDeposit,
-      location.pathname,
-      navigate,
-      pendingDeposit,
+  const handleStartEarning = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.FtueSplash,
+      labelKey: 'moneyFtueStartEarning',
       redirectTarget,
-      source,
-      trackButtonClicked,
-    ],
-  );
+    });
 
-  const handleStartEarning = useCallback(
-    () => continueSplash(MoneyButtonType.Text),
-    [continueSplash],
-  );
-  const handleClose = useCallback(
-    () => continueSplash(MoneyButtonType.Icon),
-    [continueSplash],
-  );
+    acknowledgeSplash();
+
+    if (isDeposit) {
+      initiateDeposit({
+        ...(pendingDeposit ?? {}),
+        skipFtue: true,
+      });
+      return;
+    }
+
+    goToMoneyHome();
+  }, [
+    acknowledgeSplash,
+    goToMoneyHome,
+    initiateDeposit,
+    isDeposit,
+    pendingDeposit,
+    redirectTarget,
+    trackButtonClicked,
+  ]);
+
+  const handleClose = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Icon,
+      buttonIntent: MoneyButtonIntent.Dismiss,
+      componentName: MoneyComponentName.FtueSplash,
+      redirectTarget,
+    });
+
+    acknowledgeSplash();
+    goToMoneyHome();
+  }, [acknowledgeSplash, goToMoneyHome, redirectTarget, trackButtonClicked]);
 
   const environmentType = getEnvironmentType();
   const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP;
