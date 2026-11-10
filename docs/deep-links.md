@@ -8,11 +8,13 @@ A deep link is attacker-supplied input that arrives looking like navigation. Its
 
 1. **`canonicalize(url)`** ([`canonicalize.ts`](../shared/lib/deep-links/canonicalize.ts)) builds the string the signature covers. It replaces an alternate deep-link host with the canonical signing origin. When `sig_params` is present, it keeps every value of each parameter that list names, adds `sig_params` itself, and sorts them. When `sig_params` is absent, it keeps every parameter except `sig`, for backward compatibility.
 2. **The route handler receives the canonical parameters, with `sig_params` removed.** This happens before verification and whatever the signature turns out to be, so the handler of an unsigned or invalid link still runs and still computes a destination.
-3. **`verify(url)`** ([`verify.ts`](../shared/lib/deep-links/verify.ts)) checks `sig` against the canonical string with the deep-link public key and returns `valid`, `invalid` or `missing`. The status decides which interstitial the user sees. It does not change what the handler received.
+3. **`verify(url)`** ([`verify.ts`](../shared/lib/deep-links/verify.ts)) checks `sig` against the canonical string with the deep-link public key and returns `valid`, `invalid` or `missing`. The status decides which interstitial the user sees, and `shouldShowDeepLinkInterstitial` in [`security-policy.ts`](../shared/lib/deep-links/security-policy.ts) decides whether they see one at all: a deferred link skips it only when `valid`, and an intercepted link skips it when it comes from a trusted MetaMask web origin, or when it is `valid` and the user has turned the warning off. Neither changes what the handler received.
 
 Attribution for the deep-link analytics event is computed separately, from the original URL, in [`metrics.ts`](../shared/lib/deep-links/metrics.ts).
 
 Two mechanisms that older pull requests refer to no longer exist. The per-route `handlerSearchParams: 'original'` opt-in was removed by #45103 (Prevent unsigned parameter forwarding to route handlers). The per-route `signatureRequiredSearchParams` list was proposed in #45123 (forward signed deeplink attribution) and not merged. A change that brings either back reopens that decision.
+
+The interstitial is the security boundary, and a change that would show it less often needs documented approval from the Extension Security team, as the deep-link interstitial rule in [`AGENTS.md`](../AGENTS.md) states.
 
 ## Reviewing a change
 
