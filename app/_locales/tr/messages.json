@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URL ekle"
   },
-  "addAWallet": {
-    "message": "Bir cüzdan ekleyin"
-  },
   "addAccount": {
     "message": "Hesap ekleyin"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 gereklidir"
-  },
-  "fileImportFail": {
-    "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Yüklemek için tıkla veya sürükle ve bırak"
@@ -7389,10 +7382,6 @@
   "paste": {
     "message": "Yapıştır"
   },
-  "pastePrivateKey": {
-    "message": "Özel anahtar dizinizi buraya yapıştırın:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "ile öde",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8981,10 +8970,6 @@
   "privateKeyHidden": {
     "message": "Özel anahtar gizli",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Özel anahtar girişini göster/gizle",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Özel anahtar gösteriliyor",
@@ -12690,9 +12675,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Hesabına gönderilen tokenların otomatik olarak görüntülenmesi, tokenın görüntülerini almak için üçüncü parti sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."
-  },
-  "usedByClients": {
-    "message": "Çeşitli müşteriler tarafından kullanılıyor"
   },
   "userOpContractDeployError": {
     "message": "Akıllı hesaptan sözleşme kurulumu desteklenmiyor"

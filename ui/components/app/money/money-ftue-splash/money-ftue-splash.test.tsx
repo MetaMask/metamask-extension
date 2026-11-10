@@ -305,24 +305,31 @@ describe('MoneyFtueSplash', () => {
     });
   });
 
-  it('marks the splash seen, tracks the dismiss and continues the pending deposit', () => {
+  it('marks the splash seen, tracks the dismiss and cancels the pending deposit from the close button', () => {
     const { store } = renderSplash();
 
     fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));
 
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
     expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
       buttonType: MoneyButtonType.Icon,
       buttonIntent: MoneyButtonIntent.Dismiss,
       componentName: MoneyComponentName.FtueSplash,
-      redirectTarget: MoneyScreenName.MoneyDeposit,
+      redirectTarget: MoneyScreenName.WalletHome,
     });
-    expect(mockInitiateDeposit).toHaveBeenCalledWith({
-      preferredPaymentToken: PREFERRED_PAYMENT_TOKEN,
-      intent: 'addMusd',
-      skipFtue: true,
-    });
+  });
+
+  it('closes the Money-tab splash with the close button and navigates to Money home', () => {
+    const { store } = renderSplash(null);
+
+    fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));
+
+    expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
+    expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
   });
 
   it('continues an option-less deposit after acknowledgement', () => {

@@ -97,7 +97,6 @@ export function useMainNavItems(): MainNavItem[] {
           },
         }),
       );
-      return;
     }
 
     transitionForward(() => navigate(MONEY_HOME_ROUTE));

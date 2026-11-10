@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Ajouter une URL"
   },
-  "addAWallet": {
-    "message": "Ajouter un portefeuille"
-  },
   "addAccount": {
     "message": "Ajouter un compte"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "Le champ $1 est obligatoire"
-  },
-  "fileImportFail": {
-    "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Cliquez pour télécharger ou glissez-déposez"
@@ -7385,10 +7378,6 @@
   "paste": {
     "message": "Coller"
   },
-  "pastePrivateKey": {
-    "message": "Collez votre clé privée ici :",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Payer avec",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8967,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "La clé privée est masquée",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Afficher/masquer le champ de saisie de la clé privée",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Cette clé privée est affichée",
@@ -12676,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "L’affichage automatique des jetons envoyés à votre compte implique de communiquer avec des serveurs tiers pour la récupération des images de jeton. Ces serveurs auront accès à votre adresse IP."
-  },
-  "usedByClients": {
-    "message": "Utilisé par plusieurs clients différents"
   },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"
