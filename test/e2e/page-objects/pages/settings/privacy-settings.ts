@@ -38,6 +38,14 @@ class PrivacySettings {
     testId: 'basic-configuration-checkbox',
   };
 
+  private readonly basicConfigurationModal = {
+    testId: 'dapp-permission-modal',
+  };
+
+  private readonly basicConfigurationModalCancelButton = {
+    testId: 'basic-configuration-modal-cancel-button',
+  };
+
   private readonly basicConfigurationModalToggleButton = {
     testId: 'basic-configuration-modal-toggle-button',
   };
@@ -233,6 +241,13 @@ class PrivacySettings {
     await this.driver.clickElement(this.backToSrpListButton);
   }
 
+  async cancelBasicFunctionalityModal(): Promise<void> {
+    console.log('Cancel basic functionality modal on privacy settings page');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.basicConfigurationModalCancelButton,
+    );
+  }
+
   /**
    * Check that an account belongs to a given SRP in the SRP list.
    *
@@ -281,6 +296,10 @@ class PrivacySettings {
   async checkBasicFunctionalityIsOff(): Promise<void> {
     console.log('Check basic functionality is off on privacy settings page');
     await this.driver.waitForSelector(this.basicFunctionalityToggleOff);
+  }
+
+  async checkBasicFunctionalityModalIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.basicConfigurationModal);
   }
 
   async checkDisplayedSrpCanBeCopied(): Promise<void> {
