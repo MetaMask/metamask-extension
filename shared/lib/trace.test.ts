@@ -79,7 +79,9 @@ describe('Trace', () => {
       continueTrace: continueTraceMock,
     };
 
-    startSpanMock.mockImplementation((_, fn) => fn({} as Sentry.Span));
+    startSpanMock.mockImplementation((_, fn) =>
+      fn({ setAttribute: jest.fn() } as unknown as Sentry.Span),
+    );
 
     // Pass-through: run the wrapped callback so root traces still create spans.
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -87,7 +89,7 @@ describe('Trace', () => {
     startNewTraceMock.mockImplementation((fn: any) => fn());
 
     startSpanManualMock.mockImplementation((_, fn) =>
-      fn({} as Sentry.Span, () => {
+      fn({ setAttribute: jest.fn() } as unknown as Sentry.Span, () => {
         // Intentionally empty
       }),
     );
@@ -301,6 +303,7 @@ describe('Trace', () => {
       const parentSpanMock = {
         end: spanEndMock,
         spanContext: jest.fn(),
+        setAttribute: jest.fn(),
       } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
@@ -336,6 +339,7 @@ describe('Trace', () => {
       const parentSpanMock = {
         end: spanEndMock,
         spanContext: jest.fn(),
+        setAttribute: jest.fn(),
       } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
@@ -369,7 +373,10 @@ describe('Trace', () => {
   describe('endTrace', () => {
     it('ends Sentry span matching name and specified ID', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -420,7 +427,10 @@ describe('Trace', () => {
 
     it('ends Sentry span matching name and default ID', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -442,7 +452,10 @@ describe('Trace', () => {
 
     it('ends Sentry span with custom timestamp', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -494,7 +507,10 @@ describe('Trace', () => {
 
     it('does not end Sentry span if name and ID does not match', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -798,6 +814,7 @@ describe('Trace', () => {
       const parentSpanMock = {
         end: spanEndMock,
         spanContext: jest.fn(),
+        setAttribute: jest.fn(),
       } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
@@ -1247,6 +1264,64 @@ describe('Trace', () => {
 
       expect(withoutTraceContext(() => pending)).toBe(pending);
       expect(spanCallbackReturn).toBeUndefined();
+    });
+  });
+
+  describe('trace key collision', () => {
+    it('flags the span that displaces an earlier pending trace of the same name', () => {
+      const firstSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+      const secondSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+
+      startSpanManualMock
+        .mockImplementationOnce((_, fn) =>
+          fn(firstSpan, () => {
+            // Intentionally empty
+          }),
+        )
+        .mockImplementationOnce((_, fn) =>
+          fn(secondSpan, () => {
+            // Intentionally empty
+          }),
+        );
+
+      // Same name, neither supplying an `id`, so both resolve to the key
+      // `<name>:default` and the second displaces the first.
+      trace({ name: TraceName.DisconnectAllModal });
+      trace({ name: TraceName.DisconnectAllModal });
+
+      expect(secondSpan.setAttribute).toHaveBeenCalledWith(
+        'trace.key_collision',
+        true,
+      );
+      expect(firstSpan.setAttribute).not.toHaveBeenCalledWith(
+        'trace.key_collision',
+        true,
+      );
+    });
+
+    it('does not flag distinct ids under the same name', () => {
+      const firstSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+      const secondSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+
+      startSpanManualMock
+        .mockImplementationOnce((_, fn) =>
+          fn(firstSpan, () => {
+            // Intentionally empty
+          }),
+        )
+        .mockImplementationOnce((_, fn) =>
+          fn(secondSpan, () => {
+            // Intentionally empty
+          }),
+        );
+
+      trace({ name: TraceName.ReceiveModal, id: 'a' });
+      trace({ name: TraceName.ReceiveModal, id: 'b' });
+
+      expect(secondSpan.setAttribute).not.toHaveBeenCalledWith(
+        'trace.key_collision',
+        true,
+      );
     });
   });
 
