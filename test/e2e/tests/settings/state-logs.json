@@ -250,7 +250,11 @@
     "assetsBalance": {
       "*": {
         "*": {
-          "amount": "string"
+          "amount": "string",
+          "metadata": {
+            "minimumReserveBalance": "string",
+            "spendableBalance": "string"
+          }
         }
       }
     },
