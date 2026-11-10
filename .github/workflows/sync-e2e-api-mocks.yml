@@ -39,7 +39,12 @@ jobs:
           EXIT="${PIPESTATUS[0]}"
           set -e
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift, 1: fixtures updated, anything else is a real failure
+          # 0: no drift. 1: fixtures written (the PR step runs; report-only
+          # fetch errors are in the log). 2: nothing was written and a
+          # fixture that should have been updated could not be fetched.
+          if [ -f sync-report.txt ]; then
+            cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
+          fi
           [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 1 ]
 
       - name: Open or update the review PR
@@ -56,7 +61,10 @@ jobs:
           git add test/e2e/mock-response-data/*.json
           git commit -m "test: align E2E API mocks with live response shapes"
           if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
-            git push --force-with-lease origin "${BRANCH}"
+            # The checkout is a shallow clone of main, so the lease ref does
+            # not exist until this fetch.
+            git fetch origin "${BRANCH}:refs/remotes/origin/${BRANCH}"
+            git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" origin "${BRANCH}"
           else
             git push -u origin "${BRANCH}"
           fi

@@ -6,7 +6,9 @@
  * `false`, `null`, or one placeholder element). Dropped fields are removed.
  * An empty mock array stays empty, because tests depend on it.
  *
- * Exit 0: no change. Exit 1: a fixture was written. Exit 2: a request failed.
+ * Exit 0: no change. Exit 1: a fixture was written (report-only fetch
+ * errors are logged and do not change this). Exit 2: a fixture that would
+ * be written could not be fetched, and nothing was written.
  *
  * Usage: yarn test:e2e:sync-api-mocks
  */
@@ -51,10 +53,21 @@ function kindOf(value: Json): string {
 const isObject = (value: Json): value is { [key: string]: Json } =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 
-/** Placeholder with none of the live data. */
-function placeholder(value: Json): Json {
+/**
+ * Placeholder with none of the live data. Objects keep their keys and arrays
+ * of objects keep one element, so a new field still has the live shape.
+ *
+ * @param value - A live value.
+ * @returns The placeholder.
+ */
+export function placeholder(value: Json): Json {
   if (Array.isArray(value)) {
     return value.length > 0 ? [placeholder(value[0])] : [];
+  }
+  if (isObject(value)) {
+    return Object.fromEntries(
+      Object.keys(value).map((key) => [key, placeholder(value[key])]),
+    );
   }
   if (typeof value === 'number') {
     return 0;
@@ -68,8 +81,14 @@ function placeholder(value: Json): Json {
   return null;
 }
 
-/** `mock` reshaped to `live`, keeping mock values whose kind did not change. */
-function alignShape(mock: Json, live: Json): Json {
+/**
+ * Reshapes `mock` to `live`, keeping mock values whose kind did not change.
+ *
+ * @param mock - The current fixture value.
+ * @param live - The live value.
+ * @returns The aligned value.
+ */
+export function alignShape(mock: Json, live: Json): Json {
   if (kindOf(mock) !== kindOf(live)) {
     return placeholder(live);
   }
@@ -317,6 +336,11 @@ async function processEntry(entry: ApiMockEntry): Promise<boolean> {
   return false;
 }
 
+/** A report-only row is logged, never written, so its fetch failing is not fatal. */
+function isReportOnly(mode: string): boolean {
+  return mode.startsWith('report:');
+}
+
 async function main(): Promise<number> {
   let changed = false;
   let failed = false;
@@ -324,23 +348,31 @@ async function main(): Promise<number> {
     try {
       changed = (await processEntry(entry)) || changed;
     } catch (error) {
-      failed = true;
-      console.error(
-        `${entry.id}: ${error instanceof Error ? error.message : String(error)}`,
-      );
+      const message = error instanceof Error ? error.message : String(error);
+      if (isReportOnly(entry.mode)) {
+        console.error(
+          `${entry.id}: report fetch failed, ${message} (not written)`,
+        );
+      } else {
+        failed = true;
+        console.error(`${entry.id}: ${message}`);
+      }
     }
   }
-  if (failed) {
-    return 2;
+  // Written fixtures still open the weekly PR when a later entry fails.
+  if (changed) {
+    return 1;
   }
-  return changed ? 1 : 0;
+  return failed ? 2 : 0;
 }
 
-main()
-  .then((exitCode) => {
-    process.exitCode = exitCode;
-  })
-  .catch((error: unknown) => {
-    console.error(error instanceof Error ? error.message : error);
-    process.exitCode = 2;
-  });
+if (process.argv[1]?.endsWith('sync-api-mocks.ts')) {
+  main()
+    .then((exitCode) => {
+      process.exitCode = exitCode;
+    })
+    .catch((error: unknown) => {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exitCode = 2;
+    });
+}
