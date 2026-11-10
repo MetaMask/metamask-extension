@@ -90,9 +90,10 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
           callHandler,
         );
       } else {
-        // Sub-sample rejects: skip the `rpc.handler` span but still propagate
-        // context so nested spans (http.client, core-package trace() callers)
-        // attach to the UI trace instead of orphaning.
+        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
+        // propagate trace context so nested auto-instrumented and core-package
+        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
+        // attach to the originating UI trace instead of becoming orphans.
         result = await continueTraceContext(traceContext, callHandler);
       }
     } catch (err) {

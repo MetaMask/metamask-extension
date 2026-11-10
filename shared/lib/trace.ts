@@ -325,8 +325,8 @@ export type TraceRequest = {
 
   /**
    * Inherit the active span, as a transaction, when no `parentContext` is given.
-   * Defaults to `false`, which starts a root. Set it only where the active span
-   * is known to be the correct parent.
+   * Defaults to `false`, which starts a parentless span. Set it only where the
+   * active span is known to be the correct parent.
    */
   allowActiveSpanFallback?: boolean;
 
