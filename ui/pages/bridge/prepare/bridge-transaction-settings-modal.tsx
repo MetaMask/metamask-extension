@@ -197,7 +197,7 @@ export const BridgeTransactionSettingsModal = ({
                     selectSlippageOption(hardcodedSlippage);
                   }}
                 >
-                  {hardcodedSlippage}%
+                  {`${hardcodedSlippage}%`}
                 </Button>
               );
             })}
