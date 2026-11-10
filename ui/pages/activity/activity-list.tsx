@@ -9,6 +9,7 @@ import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pe
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
+import { ResponsiveDialog } from '../../components/ui/responsive-dialog/responsive-dialog';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { useRelativeMediumDate } from '../../hooks/useRelativeMediumDate';
@@ -233,20 +234,13 @@ export function ActivityList({
         }}
       />
 
-      <dialog
-        ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default md:max-w-[480px] md:h-auto md:max-h-[90vh] md:rounded-4xl md:border md:border-alternative md:bg-background-elevated1 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 backdrop:transition-discrete backdrop:transition-all"
-        onClose={handleClose}
-        // @ts-expect-error closedby missing in React types
-        // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
-        closedby="any"
-      >
+      <ResponsiveDialog dialogRef={dialogRef} onClose={handleClose}>
         <TransactionDetails
           chainId={selectedItem?.chainId}
           txIdentifier={getActivityItemIdentifier(selectedItem)}
           onBack={handleDialogBack}
         />
-      </dialog>
+      </ResponsiveDialog>
     </PendingTransactionCancelSpeedUpProvider>
   );
 }
