@@ -1208,9 +1208,6 @@
   "addAUrl": {
     "message": "Add a URL"
   },
-  "addAWallet": {
-    "message": "Add a wallet"
-  },
   "addAccount": {
     "message": "Add account"
   },
@@ -3068,7 +3065,7 @@
     "message": "Connect a hardware wallet"
   },
   "connectAHardwareWalletDescription": {
-    "message": "Using USB or a QR Code"
+    "message": "Using USB or QR code"
   },
   "connectAnyway": {
     "message": "Connect anyway"
@@ -4935,7 +4932,7 @@
     "message": "Import a wallet"
   },
   "importAWalletDescription": {
-    "message": "Using a 12, 18 or 24-word seed phrase"
+    "message": "Using a Secret Recovery Phrase"
   },
   "importAccountError": {
     "message": "Error importing account."
@@ -4969,7 +4966,7 @@
     "message": "Import an account"
   },
   "importAnAccountDescription": {
-    "message": "Via a private key"
+    "message": "Using a private key"
   },
   "importNFT": {
     "message": "Import NFT"

@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URLを追加"
   },
-  "addAWallet": {
-    "message": "ウォレットを追加"
-  },
   "addAccount": {
     "message": "アカウントを追加"
   },
