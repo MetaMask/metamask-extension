@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
+import { resolveApprovalTokenContractAddress } from '../../../../../../../shared/lib/transaction.utils';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -26,7 +27,7 @@ const ApproveInfo = () => {
     useState(false);
 
   const { decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
+    resolveApprovalTokenContractAddress(transactionMeta),
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
     transactionMeta.chainId,

@@ -2,6 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { resolveApprovalTokenContractAddress } from '../../../../../../../shared/lib/transaction.utils';
 import { Confirmation } from '../../../../types/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../../info/approve/hooks/use-approve-token-simulation';
@@ -23,8 +24,8 @@ export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
       TransactionType.tokenMethodIncreaseAllowance,
     ].includes(currentConfirmation.type as TransactionType);
 
-  const txParamsTo = isTxWithSpendingCap
-    ? currentConfirmation.txParams.to
+  const tokenAddress = isTxWithSpendingCap
+    ? resolveApprovalTokenContractAddress(currentConfirmation)
     : null;
   const txParamsFrom = isTxWithSpendingCap
     ? currentConfirmation.txParams.from
@@ -35,7 +36,7 @@ export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
   const chainId = isTxWithSpendingCap ? currentConfirmation.chainId : null;
 
   const { decimals } = useAssetDetails(
-    txParamsTo,
+    tokenAddress,
     txParamsFrom,
     txParamsData,
     chainId,

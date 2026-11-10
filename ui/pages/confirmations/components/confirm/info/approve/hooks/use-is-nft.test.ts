@@ -5,6 +5,10 @@ import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import {
+  genUnapprovedPermit2ApproveConfirmation,
+  PERMIT2_TOKEN_ADDRESS,
+} from '../../../../../../../../test/data/confirmations/token-approve';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../../test/lib/render-helpers-navigate';
 import { getTokenStandardAndDetailsByChain } from '../../../../../../../store/actions';
@@ -70,5 +74,31 @@ describe('useIsNFT', () => {
       expect(result.current.isNFT).toBe(false);
     });
     expect(result.current.isNFT).toMatchInlineSnapshot(`false`);
+  });
+
+  it('looks up the token from the calldata for Permit2 approvals', async () => {
+    mockGetTokenStandardAndDetailsByChain.mockImplementation(() =>
+      Promise.resolve({
+        standard: TokenStandard.ERC20,
+      }),
+    );
+
+    const transactionMeta =
+      genUnapprovedPermit2ApproveConfirmation() as TransactionMeta;
+
+    const { result } = renderHookWithProvider(
+      () => useIsNFT(transactionMeta),
+      mockState,
+    );
+
+    await waitFor(() => {
+      expect(result.current.isNFT).toBe(false);
+    });
+    expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
+      PERMIT2_TOKEN_ADDRESS,
+      transactionMeta.txParams.from,
+      undefined,
+      transactionMeta.chainId,
+    );
   });
 });
