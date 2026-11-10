@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { isDeepStrictEqual } from 'util';
 import { Suite } from 'mocha';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -70,9 +71,25 @@ describe('Remote feature flag', function (this: Suite) {
       },
       async ({ driver }: TestSuiteArguments) => {
         await login(driver);
-        const uiState = await getCleanAppState(driver);
+
+        // Thresholds are first computed from the analytics ID and recomputed
+        // from the canonical profile ID once profile sign-in completes.
+        let remoteFeatureFlags: unknown;
+        await driver
+          .waitUntil(
+            async () => {
+              const uiState = await getCleanAppState(driver);
+              remoteFeatureFlags = uiState.metamask.remoteFeatureFlags;
+              return isDeepStrictEqual(
+                remoteFeatureFlags,
+                MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
+              );
+            },
+            { interval: 500, timeout: 10_000 },
+          )
+          .catch(() => undefined);
         assert.deepStrictEqual(
-          uiState.metamask.remoteFeatureFlags,
+          remoteFeatureFlags,
           MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
         );
       },
