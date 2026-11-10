@@ -7693,7 +7693,8 @@
     },
     "@metamask/analytics-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/assets-controllers>uuid": {
@@ -7780,7 +7781,8 @@
     },
     "@metamask/network-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/notification-services-controller>uuid": {
