@@ -219,12 +219,8 @@ const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
   TraceName.OnboardingResetPassword,
 ]);
 
-/** Version byte of every emitted `traceparent`. */
 const W3C_TRACEPARENT_VERSION = '00';
 
-/**
- * W3C `trace-flags` sampled bit (bit 0). When set, the trace is recorded.
- */
 const TRACE_FLAG_SAMPLED = 0x1;
 
 /** W3C `traceparent`, lowercase hex; captures traceId, parentId, flags. */
@@ -900,9 +896,6 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   return null;
 }
 
-/**
- * Subset of a Sentry span context used to build a W3C `traceparent`.
- */
 type SpanContextLike = {
   traceId?: string;
   spanId?: string;
@@ -929,12 +922,6 @@ function isSampled(flags: number): boolean {
   return flags % 2 === TRACE_FLAG_SAMPLED;
 }
 
-/**
- * Build a W3C `traceparent` from a span context, or undefined without both ids.
- *
- * @param spanContext - The span context returned by `span.spanContext()`.
- * @returns A W3C `traceparent` string, or undefined.
- */
 function spanContextToTraceparent(
   spanContext: SpanContextLike,
 ): string | undefined {
@@ -951,7 +938,7 @@ function spanContextToTraceparent(
 /**
  * Parse a W3C `traceparent`, keeping only the sampled bit of its flags.
  *
- * @param value - The candidate `traceparent` from the last RPC param's `_trace`.
+ * @param value - The candidate `traceparent`.
  * @returns Parsed trace context, or undefined when `value` is not a valid W3C
  * `traceparent` string.
  */

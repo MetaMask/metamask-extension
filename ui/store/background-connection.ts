@@ -99,7 +99,6 @@ export function submitRequestToBackground(
 
   // A messenger call carries its action even with no active span, so the
   // background can name its root span after the action, not `messengerCall`.
-  // Without Sentry tracing nothing is traced, so nothing is attached.
   const paramsWithTrace =
     globalThis.sentry?.startSpan &&
     !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED &&
