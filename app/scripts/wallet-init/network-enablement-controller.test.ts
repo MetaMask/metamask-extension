@@ -3,36 +3,25 @@ import {
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import type {
-  NetworkEnablementController,
-  NetworkEnablementControllerState,
-} from '@metamask/network-enablement-controller';
+import type { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
+import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
+import {
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+  AccountTreeControllerSelectedAccountGroupChangeEvent,
+} from '@metamask/account-tree-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import type {
-  NetworkEnablementControllerInitMessengerActions,
-  NetworkEnablementControllerInitMessengerEvents,
-} from './messengers/network-enablement-controller-messenger';
+import type { MessengerClientPersistedState } from '../messenger-client-init/types';
+import { getRootMessenger } from '../lib/messenger';
 import { setupNetworkEnablementController } from './network-enablement-controller';
 
-const ARC_CAIP_CHAIN_ID = 'eip155:5042';
-
-type TestMessenger = Messenger<
-  MockAnyNamespace,
-  NetworkEnablementControllerInitMessengerActions,
-  NetworkEnablementControllerInitMessengerEvents
->;
-
-function getMessenger(captureException = jest.fn()): TestMessenger {
-  return new Messenger({ namespace: MOCK_ANY_NAMESPACE, captureException });
-}
-
-function getNetworkEnablementControllerMock(
-  enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'] = {},
-) {
+function createMessengerClient(): jest.Mocked<NetworkEnablementController> {
   return {
-    state: { enabledNetworkMap, nativeAssetIdentifiers: {} },
+    state: {
+      enabledNetworkMap: {},
+      nativeAssetIdentifiers: {},
+    },
     init: jest.fn().mockResolvedValue(undefined),
     enableNetwork: jest.fn(),
     enableAllPopularNetworks: jest.fn(),
@@ -41,38 +30,32 @@ function getNetworkEnablementControllerMock(
   } as unknown as jest.Mocked<NetworkEnablementController>;
 }
 
-function registerConfigRegistryNetworks(
-  messenger: TestMessenger,
-  networks: Record<string, unknown>,
-) {
-  messenger.registerActionHandler(
-    'ConfigRegistryController:getState',
-    () => ({ configs: { networks } }) as never,
-  );
+function getInitRequestMock(baseMessenger = getRootMessenger<never, never>()) {
+  return {
+    baseMessenger,
+    messengerClient: createMessengerClient(),
+    persistedState: {} as MessengerClientPersistedState,
+  };
 }
 
-function setup({
-  messenger = getMessenger(),
-  networkEnablementController = getNetworkEnablementControllerMock(),
-  persistedState = {},
-}: {
-  messenger?: TestMessenger;
-  networkEnablementController?: jest.Mocked<NetworkEnablementController>;
-  persistedState?: Parameters<
-    typeof setupNetworkEnablementController
-  >[0]['persistedState'];
-} = {}) {
+function runNetworkEnablementSetup(
+  request: ReturnType<typeof getInitRequestMock>,
+) {
   setupNetworkEnablementController({
-    networkEnablementController,
-    messenger,
-    persistedState,
+    networkEnablementController: request.messengerClient,
+    messenger: request.baseMessenger as never,
+    persistedState: request.persistedState,
   });
 
-  return { messenger, networkEnablementController };
+  return { messengerClient: request.messengerClient };
 }
 
-describe('setupNetworkEnablementController', () => {
+describe('NetworkEnablementControllerInit', () => {
   const originalEnv = { ...process.env };
+
+  beforeEach(() => {
+    process.env.IN_TEST = '';
+  });
 
   afterEach(() => {
     process.env = { ...originalEnv };
@@ -80,129 +63,139 @@ describe('setupNetworkEnablementController', () => {
   });
 
   it('initializes the controller', () => {
-    const { networkEnablementController } = setup();
-
-    expect(networkEnablementController.init).toHaveBeenCalledTimes(1);
+    const { messengerClient } = runNetworkEnablementSetup(getInitRequestMock());
+    expect(messengerClient.init).toHaveBeenCalledTimes(1);
   });
 
   it('reports a failed initialization', async () => {
     const captureException = jest.fn();
-    const networkEnablementController = getNetworkEnablementControllerMock();
-    networkEnablementController.init.mockRejectedValue(new Error('failed'));
-
-    setup({
-      messenger: getMessenger(captureException),
-      networkEnablementController,
-    });
+    const request = getInitRequestMock(
+      new Messenger({ namespace: MOCK_ANY_NAMESPACE, captureException }),
+    );
+    request.messengerClient.init.mockRejectedValue(new Error('failed'));
+    runNetworkEnablementSetup(request);
     await new Promise<void>((resolve) => queueMicrotask(resolve));
-
     expect(captureException).toHaveBeenCalledWith(new Error('failed'));
   });
 
-  it('enables all popular networks on a fresh install', () => {
-    process.env.IN_TEST = '';
+  it('enables the Solana network when `AccountsController:selectedAccountChange` is emitted', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      AccountsControllerSelectedAccountChangeEvent
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+    const request = getInitRequestMock(messenger);
+    const { messengerClient } = runNetworkEnablementSetup(request);
 
-    const { networkEnablementController } = setup();
+    expect(messengerClient.enableNetworkInNamespace).not.toHaveBeenCalled();
 
-    expect(
-      networkEnablementController.enableAllPopularNetworks,
-    ).toHaveBeenCalledTimes(1);
-    expect(networkEnablementController.enableNetwork).not.toHaveBeenCalled();
-  });
-
-  it('enables only localhost on a fresh install in test builds', () => {
-    process.env.IN_TEST = 'true';
-
-    const { networkEnablementController } = setup();
-
-    expect(networkEnablementController.enableNetwork).toHaveBeenCalledWith(
-      CHAIN_IDS.LOCALHOST,
-    );
-    expect(
-      networkEnablementController.enableAllPopularNetworks,
-    ).not.toHaveBeenCalled();
-  });
-
-  it('keeps the persisted network selection', () => {
-    process.env.IN_TEST = '';
-
-    const { networkEnablementController } = setup({
-      persistedState: {
-        NetworkEnablementController: {
-          enabledNetworkMap: {
-            [KnownCaipNamespace.Eip155]: { [CHAIN_IDS.MAINNET]: true },
-          },
-          nativeAssetIdentifiers: {},
-        },
-      },
+    // @ts-expect-error: Partial mock.
+    messenger.publish('AccountsController:selectedAccountChange', {
+      type: SolAccountType.DataAccount,
     });
 
-    expect(
-      networkEnablementController.enableAllPopularNetworks,
-    ).not.toHaveBeenCalled();
-    expect(networkEnablementController.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetworkInNamespace).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      'solana',
+    );
   });
 
-  it('enables the Solana network when `AccountsController:selectedAccountChange` is emitted', () => {
-    const { messenger, networkEnablementController } = setup();
+  it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Solana mainnet, and there are no Solana accounts', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+
+    messenger.registerActionHandler(
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      () => [],
+    );
+
+    const request = getInitRequestMock(messenger);
+    const { messengerClient } = runNetworkEnablementSetup(request);
+
+    messengerClient.state = {
+      enabledNetworkMap: {
+        solana: { [SolScope.Mainnet]: true },
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
-      'AccountsController:selectedAccountChange',
-      // @ts-expect-error: Partial mock.
-      { type: SolAccountType.DataAccount },
+      'AccountTreeController:selectedAccountGroupChange',
+      '',
+      '',
     );
 
-    expect(
-      networkEnablementController.enableNetworkInNamespace,
-    ).toHaveBeenCalledWith(SolScope.Mainnet, KnownCaipNamespace.Solana);
+    expect(messengerClient.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
-  (
-    [
-      ['Solana', KnownCaipNamespace.Solana, SolScope.Mainnet],
-      ['Bitcoin', KnownCaipNamespace.Bip122, BtcScope.Mainnet],
-    ] as const
-  ).forEach(([name, namespace, chainId]) => {
-    it(`enables Ethereum when \`AccountTreeController:selectedAccountGroupChange\` is emitted, only ${name} mainnet is enabled, and there are no matching accounts`, () => {
-      const messenger = getMessenger();
-      messenger.registerActionHandler(
-        'AccountTreeController:getAccountsFromSelectedAccountGroup',
-        () => [],
-      );
-      const { networkEnablementController } = setup({
-        messenger,
-        networkEnablementController: getNetworkEnablementControllerMock({
-          [namespace]: { [chainId]: true },
-        }),
-      });
-      networkEnablementController.enableNetwork.mockClear();
-
-      messenger.publish(
-        'AccountTreeController:selectedAccountGroupChange',
-        '',
-        '',
-      );
-
-      expect(networkEnablementController.enableNetwork).toHaveBeenCalledWith(
-        '0x1',
-      );
+  it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Bitcoin mainnet, and there are no Bitcoin accounts', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
     });
+
+    messenger.registerActionHandler(
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      () => [],
+    );
+
+    const request = getInitRequestMock(messenger);
+    const { messengerClient } = runNetworkEnablementSetup(request);
+
+    messengerClient.state = {
+      enabledNetworkMap: {
+        bitcoin: { [BtcScope.Mainnet]: true },
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
+
+    messenger.publish(
+      'AccountTreeController:selectedAccountGroupChange',
+      '',
+      '',
+    );
+
+    expect(messengerClient.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
-  it('does not enable Ethereum when `AccountTreeController:selectedAccountGroupChange` is emitted and there are accounts', () => {
-    const messenger = getMessenger();
+  it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and there are accounts', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
+
     messenger.registerActionHandler(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       // @ts-expect-error: Partial mock.
       () => [{ type: SolAccountType.DataAccount }],
     );
-    const { networkEnablementController } = setup({
-      messenger,
-      networkEnablementController: getNetworkEnablementControllerMock({
-        [KnownCaipNamespace.Solana]: { [SolScope.Mainnet]: true },
-      }),
-    });
-    networkEnablementController.enableNetwork.mockClear();
+
+    const request = getInitRequestMock(messenger);
+    const { messengerClient } = runNetworkEnablementSetup(request);
+
+    messengerClient.state = {
+      enabledNetworkMap: {
+        solana: { [SolScope.Mainnet]: true },
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
       'AccountTreeController:selectedAccountGroupChange',
@@ -210,23 +203,33 @@ describe('setupNetworkEnablementController', () => {
       '',
     );
 
-    expect(networkEnablementController.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
   });
 
-  it('does not enable Ethereum when `AccountTreeController:selectedAccountGroupChange` is emitted and multiple networks are enabled', () => {
-    const messenger = getMessenger();
+  it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and multiple networks are enabled', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
+
     messenger.registerActionHandler(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       () => [],
     );
-    const { networkEnablementController } = setup({
-      messenger,
-      networkEnablementController: getNetworkEnablementControllerMock({
-        [KnownCaipNamespace.Solana]: { [SolScope.Mainnet]: true },
-        [KnownCaipNamespace.Bip122]: { [BtcScope.Mainnet]: true },
-      }),
-    });
-    networkEnablementController.enableNetwork.mockClear();
+
+    const request = getInitRequestMock(messenger);
+    const { messengerClient } = runNetworkEnablementSetup(request);
+
+    messengerClient.state = {
+      enabledNetworkMap: {
+        solana: { [SolScope.Mainnet]: true },
+        bitcoin: { [BtcScope.Mainnet]: true },
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
       'AccountTreeController:selectedAccountGroupChange',
@@ -234,115 +237,246 @@ describe('setupNetworkEnablementController', () => {
       '',
     );
 
-    expect(networkEnablementController.enableNetwork).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
   });
 
-  (
-    [
-      [
-        'a single filter',
-        {
+  [
+    ['production', ''],
+    ['production', 'true'],
+    ['testing', ''],
+  ].forEach(([environment, debug]) => {
+    it(`initialises fresh ${environment} builds with all default networks`, () => {
+      process.env.METAMASK_DEBUG = debug;
+      process.env.METAMASK_ENVIRONMENT = environment;
+      process.env.IN_TEST = '';
+
+      const { messengerClient } =
+        runNetworkEnablementSetup(getInitRequestMock());
+
+      expect(messengerClient.enableAllPopularNetworks).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('initialises the controller with only localhost enabled in test builds', () => {
+    process.env.IN_TEST = 'true';
+
+    const { messengerClient } = runNetworkEnablementSetup(getInitRequestMock());
+
+    expect(messengerClient.enableNetwork).toHaveBeenCalledWith(
+      CHAIN_IDS.LOCALHOST,
+    );
+    expect(messengerClient.enableAllPopularNetworks).not.toHaveBeenCalled();
+  });
+
+  it('keeps the persisted network selection', () => {
+    process.env.IN_TEST = '';
+
+    const request = getInitRequestMock();
+    request.persistedState = {
+      NetworkEnablementController: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: true,
+          },
+        },
+        nativeAssetIdentifiers: {},
+      },
+    };
+
+    const { messengerClient } = runNetworkEnablementSetup(request);
+
+    expect(messengerClient.enableAllPopularNetworks).not.toHaveBeenCalled();
+    expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
+  });
+
+  it('preserves a single filter when Config Registry auto-adds Arc', async () => {
+    process.env.IN_TEST = 'true';
+    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const request = getInitRequestMock(messenger);
+    messenger.registerActionHandler(
+      'ConfigRegistryController:getState' as never,
+      () =>
+        ({
+          configs: {
+            networks: {
+              'eip155:5042': {
+                chainId: 'eip155:5042',
+                config: {
+                  isActive: true,
+                  isAutoEnabled: true,
+                  isDeprecated: false,
+                },
+              },
+            },
+          },
+        }) as never,
+    );
+
+    const { messengerClient } = runNetworkEnablementSetup(request);
+    messengerClient.state = {
+      enabledNetworkMap: {
+        [KnownCaipNamespace.Eip155]: {
           [CHAIN_IDS.LOCALHOST]: true,
           [CHAIN_IDS.ARC]: false,
         },
-      ],
-      [
-        'all-default mode',
-        {
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    // @ts-expect-error: Partial mock.
+    messenger.publish('NetworkController:networkAdded', {
+      chainId: CHAIN_IDS.ARC,
+    } as never);
+
+    messengerClient.state.enabledNetworkMap[KnownCaipNamespace.Eip155][
+      CHAIN_IDS.ARC
+    ] = true;
+    request.baseMessenger.publish(
+      'NetworkEnablementController:stateChange',
+      {
+        enabledNetworkMap: messengerClient.state.enabledNetworkMap,
+      } as never,
+      [] as never,
+    );
+
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+
+    expect(messengerClient.restoreEnabledNetworkMap).toHaveBeenCalledWith({
+      [KnownCaipNamespace.Eip155]: {
+        [CHAIN_IDS.LOCALHOST]: true,
+        [CHAIN_IDS.ARC]: false,
+      },
+    });
+  });
+
+  it('preserves all-default mode when Config Registry auto-adds Arc', async () => {
+    process.env.IN_TEST = 'true';
+    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const request = getInitRequestMock(messenger);
+    messenger.registerActionHandler(
+      'ConfigRegistryController:getState' as never,
+      () =>
+        ({
+          configs: {
+            networks: {
+              'eip155:5042': {
+                chainId: 'eip155:5042',
+                config: {
+                  isActive: true,
+                  isAutoEnabled: true,
+                  isDeprecated: false,
+                },
+              },
+            },
+          },
+        }) as never,
+    );
+
+    const { messengerClient } = runNetworkEnablementSetup(request);
+    messengerClient.state = {
+      enabledNetworkMap: {
+        [KnownCaipNamespace.Eip155]: {
           [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.POLYGON]: true,
           [CHAIN_IDS.ARC]: false,
         },
-      ],
-    ] as const
-  ).forEach(([name, evmNetworks]) => {
-    it(`preserves ${name} when Config Registry auto-adds a network`, async () => {
-      const messenger = getMessenger();
-      registerConfigRegistryNetworks(messenger, {
-        [ARC_CAIP_CHAIN_ID]: {
-          chainId: ARC_CAIP_CHAIN_ID,
-          config: { isActive: true, isAutoEnabled: true, isDeprecated: false },
-        },
-      });
-      const { networkEnablementController } = setup({
-        messenger,
-        persistedState: {
-          NetworkEnablementController: {
-            enabledNetworkMap: {},
-            nativeAssetIdentifiers: {},
-          },
-        },
-        networkEnablementController: getNetworkEnablementControllerMock({
-          [KnownCaipNamespace.Eip155]: { ...evmNetworks },
-        }),
-      });
+      },
+      nativeAssetIdentifiers: {},
+    };
 
-      messenger.publish(
-        'NetworkController:networkAdded',
-        // @ts-expect-error: Partial mock.
-        { chainId: CHAIN_IDS.ARC },
-      );
-      messenger.publish(
-        'NetworkEnablementController:stateChange',
-        {
-          enabledNetworkMap: {
-            [KnownCaipNamespace.Eip155]: {
-              ...evmNetworks,
-              [CHAIN_IDS.ARC]: true,
-            },
-          },
-          nativeAssetIdentifiers: {},
-        },
-        [],
-      );
-      await new Promise<void>((resolve) => queueMicrotask(resolve));
+    // @ts-expect-error: Partial mock.
+    messenger.publish('NetworkController:networkAdded', {
+      chainId: CHAIN_IDS.ARC,
+    } as never);
 
-      expect(
-        networkEnablementController.restoreEnabledNetworkMap,
-      ).toHaveBeenCalledWith({ [KnownCaipNamespace.Eip155]: evmNetworks });
+    messengerClient.state.enabledNetworkMap[KnownCaipNamespace.Eip155][
+      CHAIN_IDS.ARC
+    ] = true;
+    request.baseMessenger.publish(
+      'NetworkEnablementController:stateChange',
+      {
+        enabledNetworkMap: messengerClient.state.enabledNetworkMap,
+      } as never,
+      [] as never,
+    );
+
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+
+    expect(messengerClient.restoreEnabledNetworkMap).toHaveBeenCalledWith({
+      [KnownCaipNamespace.Eip155]: {
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.POLYGON]: true,
+        [CHAIN_IDS.ARC]: false,
+      },
     });
   });
 
-  it('does not restore the selection when a non-registry network is added', () => {
-    const messenger = getMessenger();
-    registerConfigRegistryNetworks(messenger, {});
-    const { networkEnablementController } = setup({ messenger });
-
-    messenger.publish(
-      'NetworkController:networkAdded',
-      // @ts-expect-error: Partial mock.
-      { chainId: CHAIN_IDS.ARC },
+  it('does not preserve the filter when a non-registry network is added', () => {
+    process.env.IN_TEST = 'true';
+    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const request = getInitRequestMock(messenger);
+    messenger.registerActionHandler(
+      'ConfigRegistryController:getState' as never,
+      () => ({ configs: { networks: {} } }) as never,
     );
 
-    expect(
-      networkEnablementController.restoreEnabledNetworkMap,
-    ).not.toHaveBeenCalled();
+    const { messengerClient } = runNetworkEnablementSetup(request);
+    messengerClient.state = {
+      enabledNetworkMap: {
+        [KnownCaipNamespace.Eip155]: {
+          [CHAIN_IDS.LOCALHOST]: true,
+          [CHAIN_IDS.ARC]: false,
+        },
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    // @ts-expect-error: Partial mock.
+    messenger.publish('NetworkController:networkAdded', {
+      chainId: CHAIN_IDS.ARC,
+    } as never);
+
+    expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
   });
 
   it('reports a timeout when an auto-added network is never enabled', async () => {
     jest.useFakeTimers();
     const captureException = jest.fn();
-    const messenger = getMessenger(captureException);
-    registerConfigRegistryNetworks(messenger, {
-      [ARC_CAIP_CHAIN_ID]: {
-        chainId: ARC_CAIP_CHAIN_ID,
-        config: { isActive: true, isAutoEnabled: true, isDeprecated: false },
-      },
+    const messenger = new Messenger({
+      namespace: MOCK_ANY_NAMESPACE,
+      captureException,
     });
-    const { networkEnablementController } = setup({ messenger });
-
-    messenger.publish(
-      'NetworkController:networkAdded',
-      // @ts-expect-error: Partial mock.
-      { chainId: CHAIN_IDS.ARC },
+    const request = getInitRequestMock(messenger);
+    messenger.registerActionHandler(
+      'ConfigRegistryController:getState' as never,
+      () =>
+        ({
+          configs: {
+            networks: {
+              'eip155:5042': {
+                chainId: 'eip155:5042',
+                config: {
+                  isActive: true,
+                  isAutoEnabled: true,
+                  isDeprecated: false,
+                },
+              },
+            },
+          },
+        }) as never,
     );
+
+    const { messengerClient } = runNetworkEnablementSetup(request);
+
+    // @ts-expect-error: Partial mock.
+    messenger.publish('NetworkController:networkAdded', {
+      chainId: CHAIN_IDS.ARC,
+    } as never);
     await jest.advanceTimersByTimeAsync(30_000);
 
     expect(captureException).toHaveBeenCalledWith(
       new Error(`Timed out waiting for ${CHAIN_IDS.ARC} to be enabled`),
     );
-    expect(
-      networkEnablementController.restoreEnabledNetworkMap,
-    ).not.toHaveBeenCalled();
+    expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
   });
 });
