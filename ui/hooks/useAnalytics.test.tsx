@@ -208,28 +208,6 @@ describe('useAnalytics', () => {
       await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
     });
 
-    it('swallows background RPC failures', async () => {
-      mockedTrackErrorAsAnalytics.mockRejectedValueOnce(
-        new Error('background unavailable'),
-      );
-      const onTrack = jest.fn();
-
-      renderTrackError({
-        state: {
-          metamask: {
-            analyticsId: '0x123',
-            consentDecisionMade: true,
-            optedIn: true,
-          },
-        },
-        onTrack,
-      });
-
-      await waitFor(() => {
-        expect(mockedTrackErrorAsAnalytics).toHaveBeenCalled();
-      });
-      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
-    });
   });
 
   describe('trackEvent', () => {

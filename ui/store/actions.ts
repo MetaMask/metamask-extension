@@ -6403,7 +6403,7 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
-export function trackErrorAsAnalytics(
+export async function trackErrorAsAnalytics(
   error: unknown,
   options: {
     source: string;
@@ -6423,10 +6423,14 @@ export function trackErrorAsAnalytics(
     controllerProperties.environment_type = environmentType;
   }
 
-  return submitRequestToBackground(
-    'AnalyticsController:trackErrorAsAnalytics',
-    [getErrorMessage(error), controllerOptions, controllerProperties],
-  );
+  try {
+    await submitRequestToBackground(
+      'AnalyticsController:trackErrorAsAnalytics',
+      [getErrorMessage(error), controllerOptions, controllerProperties],
+    );
+  } catch {
+    // Swallow background RPC failures. Error reporting must not break UI.
+  }
 }
 
 export function upsertTransactionUIMetricsFragment(

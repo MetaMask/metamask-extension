@@ -85,18 +85,14 @@ export function useAnalytics(): UseAnalyticsResult {
         return;
       }
 
-      try {
-        await trackErrorAsAnalyticsAction(
-          error,
-          {
-            ...options,
-            environmentType: getEnvironmentType(),
-          },
-          properties,
-        );
-      } catch {
-        // Swallow background RPC failures. Error reporting must not break UI.
-      }
+      await trackErrorAsAnalyticsAction(
+        error,
+        {
+          ...options,
+          environmentType: getEnvironmentType(),
+        },
+        properties,
+      );
     },
     [canMaybeTrackLater, canTrackImmediately],
   );

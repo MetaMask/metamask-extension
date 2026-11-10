@@ -64,4 +64,16 @@ describe('trackErrorAsAnalytics', () => {
       ['[object Object]', { source: 'unknown-source' }, {}],
     );
   });
+
+  it('swallows background RPC failures', async () => {
+    mockedSubmitRequestToBackground.mockRejectedValueOnce(
+      new Error('background unavailable'),
+    );
+
+    await expect(
+      trackErrorAsAnalytics(new Error('Deletion failed'), {
+        source: 'clear-metametrics-data',
+      }),
+    ).resolves.toBeUndefined();
+  });
 });
