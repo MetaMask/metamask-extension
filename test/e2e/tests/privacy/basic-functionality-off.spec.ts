@@ -4,7 +4,7 @@
  * basic-functionality-off-known-violations.json.
  *
  */
-import { Mockttp } from 'mockttp';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -20,6 +20,9 @@ import {
   assertNoNewNonRpcRequests,
   recordNonRpcRequests,
 } from './helpers';
+
+const MONEY_POSITIONS_URL =
+  /^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\//u;
 
 describe('Onboarded wallet with basic functionality off', function () {
   it('only makes RPC requests after unlocking', async function () {
@@ -60,9 +63,20 @@ describe('Onboarded wallet with basic functionality off', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (server: Mockttp) => [
+          await server.forGet(MONEY_POSITIONS_URL).thenReply(200),
+        ],
       },
-      async ({ driver, mockServer }) => {
+      async ({ driver, mockServer, mockedEndpoint }) => {
         await login(driver);
+
+        // The Money balance is fetched after the availability check resolves,
+        // which can land after the toggle if the test reaches settings first.
+        const [moneyPositionsEndpoint] = mockedEndpoint as MockedEndpoint[];
+        await driver.wait(
+          async () => (await moneyPositionsEndpoint.isPending()) === false,
+          driver.timeout,
+        );
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();

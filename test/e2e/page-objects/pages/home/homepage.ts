@@ -19,11 +19,6 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
-
 /**
  * Wallet home / account overview: balance, primary CTAs, and tab navigation.
  *
@@ -58,8 +53,6 @@ class HomePage {
   // (`coin-overview__primary-currency`) balance containers.
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
-
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
   protected readonly bottomNavActivityButton =
     '[data-testid="bottom-nav-activity"]';
@@ -137,8 +130,6 @@ class HomePage {
     '[data-testid="shield-entry-modal-close-button"]';
 
   private readonly singleActionButton = '[data-testid$="-overview-default"]';
-
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
