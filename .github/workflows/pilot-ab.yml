@@ -49,6 +49,9 @@ env:
   # Donor run whose build artifacts both pilot builds are copied from.
   BENCHMARK_BUILDS_FROM_RUN: '39498044798'
   BENCHMARK_AB_PILOT: '1'
+  # TEMPORARY (1/1): Nov 10 builds do not load under the harness's default Chrome 126
+  # (controller-loaded never appears); main's harness runs Chrome 137. Remove with this file.
+  BENCH_CHROME_ARM: v137
   # Session order; a random per-job flip swaps which build goes first.
   BENCHMARK_AB_SEQUENCE: ABBABAABAB
   # Round 6 pairs: CloudFront run IDs of each base (b) and head (h) test build
