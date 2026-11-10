@@ -8,6 +8,7 @@ import * as actions from '../../../../../store/actions';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import {
   ASSETS_ROUTE,
+  IMPORT_NFTS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { AssetControls } from './asset-controls';
@@ -31,11 +32,14 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
-const renderMenu = (state: ReturnType<typeof createMockState>) => {
+const renderMenu = (
+  state: ReturnType<typeof createMockState>,
+  showTokensLinks?: boolean,
+) => {
   const store = configureMockStore([thunk])(state);
   return renderWithProvider(
     <AssetControls>
-      <NftOptionsMenu />
+      <NftOptionsMenu showTokensLinks={showTokensLinks} />
     </AssetControls>,
     store,
   );
@@ -106,6 +110,26 @@ describe('NftOptionsMenu', () => {
 
     expect(detectNftsSpy).not.toHaveBeenCalled();
     expect(checkOwnershipSpy).toHaveBeenCalledWith('polygonNetworkClientId');
+  });
+
+  it('opens the NFT import page', async () => {
+    const state = createMockState();
+    const { findByTestId, queryByTestId } = renderMenu(state);
+
+    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
+    fireEvent.click(await findByTestId('import-nfts__button'));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_NFTS_ROUTE);
+    expect(queryByTestId('import-nfts__button')).not.toBeInTheDocument();
+  });
+
+  it('disables the more button when showTokensLinks is false', async () => {
+    const state = createMockState();
+    const { findByTestId } = renderMenu(state, false);
+
+    expect(
+      await findByTestId('asset-list-control-bar-action-button'),
+    ).toBeDisabled();
   });
 
   it('opens autodetect settings when NFT detection is off', async () => {
