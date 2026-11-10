@@ -1,5 +1,5 @@
 import { act, waitFor } from '@testing-library/react';
-import { it } from '@jest/globals';
+import { describe, it } from '@jest/globals';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
