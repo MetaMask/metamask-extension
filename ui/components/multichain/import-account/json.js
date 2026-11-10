@@ -27,6 +27,7 @@ import BottomButtons from './bottom-buttons';
 export default function JsonImportSubview({
   importAccountFunc,
   onActionComplete,
+  onClearImportError,
   importErrorMessage,
 }) {
   const t = useI18nContext();
@@ -129,6 +130,9 @@ export default function JsonImportSubview({
         value={password}
         onChange={(event) => {
           setPassword(event.target.value);
+          if (passwordError) {
+            onClearImportError?.();
+          }
         }}
         inputProps={{
           'aria-label': t('enterOptionalPassword'),
@@ -169,6 +173,10 @@ JsonImportSubview.propTypes = {
    * Executes when the key is imported
    */
   onActionComplete: PropTypes.func.isRequired,
+  /**
+   * Clears the import error shown under the password field
+   */
+  onClearImportError: PropTypes.func,
   /**
    * Import error message
    */

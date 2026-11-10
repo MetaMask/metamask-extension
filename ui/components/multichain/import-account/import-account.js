@@ -273,6 +273,7 @@ export const ImportAccount = ({ onActionComplete }) => {
               setImportErrorMessage();
               onActionComplete(confirmed);
             }}
+            onClearImportError={() => setImportErrorMessage()}
             importErrorMessage={importErrorMessage}
           />
         )}
