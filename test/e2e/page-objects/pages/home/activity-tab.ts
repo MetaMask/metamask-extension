@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { Key } from 'selenium-webdriver';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import HomePage from './homepage';
 
@@ -153,7 +154,7 @@ class ActivityTab extends HomePage {
     }
 
     console.log('Navigating back to activity list');
-    await this.driver.clickElement(this.backButton);
+    await this.driver.driver.actions().sendKeys(Key.ESCAPE).perform();
   }
 
   /**

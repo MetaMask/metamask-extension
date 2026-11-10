@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Key } from 'selenium-webdriver';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 /**
@@ -127,8 +127,7 @@ class TransactionDetailsPage {
    * its WebDriver node to become stale is not reliable here.
    */
   async clickBackButton(): Promise<void> {
-    await this.driver.clickElement(this.backButton);
-    await this.waitForDetailsRouteToClose();
+    await this.driver.driver.actions().sendKeys(Key.ESCAPE).perform();
   }
 
   /**
@@ -136,15 +135,7 @@ class TransactionDetailsPage {
    * navigation may have already closed the details view.
    */
   async clickBackButtonIfPresent(): Promise<void> {
-    await this.driver.clickElementSafe(this.backButton, 1_000);
-    await this.waitForDetailsRouteToClose();
-  }
-
-  private async waitForDetailsRouteToClose(): Promise<void> {
-    await this.driver.waitUntil(
-      async () => !(await this.driver.getCurrentUrl()).includes('/tx/'),
-      { interval: 100, timeout: 10_000 },
-    );
+    await this.driver.driver.actions().sendKeys(Key.ESCAPE).perform();
   }
 }
 
