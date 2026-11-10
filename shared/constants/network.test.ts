@@ -16,7 +16,7 @@ describe('NetworkConstants', () => {
 
   it('maps Kinetiq Elysium to its network logo', () => {
     expect(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1863d']).toBe(
-      './images/elysium-network.png',
+      './images/elysium-network.svg',
     );
   });
 
