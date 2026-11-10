@@ -19,6 +19,8 @@ import { getRemoteWrapperSampleRate } from './sentry-remote-rates';
  */
 const WRAPPER_SAMPLE_RATE = 0.005;
 
+const admittedTraceIds = new Set<string>();
+
 /**
  * Deterministic per-trace sub-sampling decision for wrapper spans.
  *
@@ -32,6 +34,9 @@ const WRAPPER_SAMPLE_RATE = 0.005;
 export function shouldSampleWrappers(traceId: string | undefined): boolean {
   if (!traceId || traceId.length < 8) {
     return false;
+  }
+  if (admittedTraceIds.has(traceId)) {
+    return true;
   }
   const rate = getRemoteWrapperSampleRate() ?? WRAPPER_SAMPLE_RATE;
   const hashBucket = parseInt(traceId.slice(0, 8), 16) % 10000;
@@ -53,4 +58,21 @@ export function shouldSampleRootWrapper(
   }
   const rate = getRemoteWrapperSampleRate() ?? WRAPPER_SAMPLE_RATE;
   return random() < rate;
+}
+
+// A root wrapper is sampled before its trace id exists, so its nested wrappers
+// cannot reach the same decision by hashing that id. Admit them while it runs.
+export async function admitTraceWrappers<Result>(
+  traceId: string | undefined,
+  fn: () => Result | Promise<Result>,
+): Promise<Result> {
+  if (!traceId) {
+    return await fn();
+  }
+  admittedTraceIds.add(traceId);
+  try {
+    return await fn();
+  } finally {
+    admittedTraceIds.delete(traceId);
+  }
 }
