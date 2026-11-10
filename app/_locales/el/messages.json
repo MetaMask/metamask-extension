@@ -11930,9 +11930,6 @@
     "message": "εδώ",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Περιλαμβάνεται"
-  },
   "swapGasFeesSplit": {
     "message": "Τα τέλη δικτύου που εμφανίζονταν στην προηγούμενη οθόνη κατανέμονται σε αυτές τις δύο συναλλαγές."
   },

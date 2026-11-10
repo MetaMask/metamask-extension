@@ -107,7 +107,10 @@ export const SelectRpcUrlModal = ({
               backgroundColor={BackgroundColor.primaryDefault}
             />
           )}
-          <RpcListItem rpcEndpoint={rpcEndpoint} />
+          <RpcListItem
+            chainId={networkConfigurationToUse.chainId}
+            rpcEndpoint={rpcEndpoint}
+          />
         </button>
       ))}
     </Box>
