@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 import { getIsFullscreenRedesignEnabled } from '../selectors/multichain/feature-flags';
 
 // Minimum viewport width at which the fullscreen design is used
-// Matches the Tailwind `md` breakpoint
-export const FULL_SCREEN_DESIGN_MIN_WIDTH = 768;
+export const FULL_SCREEN_DESIGN_MIN_WIDTH = 900;
 const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${FULL_SCREEN_DESIGN_MIN_WIDTH}px)`;
 
 /**

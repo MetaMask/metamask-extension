@@ -40,7 +40,7 @@ export type TokenTableProps = {
   safeChains?: SafeChain[];
 };
 
-// Measures the table, not the viewport: the side nav has already taken 320px
+// Measures the table, not the viewport: the side nav has already taken 360px
 // by the time `lg` would apply. Below `@2xl` (42rem of this table) the price
 // cell stacks the 24h change under the price. At `@2xl` they are separate columns.
 const COLUMNS_CLASS_NAME =
