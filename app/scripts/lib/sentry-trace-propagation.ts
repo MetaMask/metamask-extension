@@ -154,9 +154,9 @@ function toHeaders(existing: unknown): Headers {
 }
 
 /**
- * Merge a fetch call's `Request` headers with its `init` headers into a single
- * `Headers`, with `init` winning on duplicate keys — the precedence the platform
- * applies when `fetch` receives both.
+ * Merge a fetch call's `Request` headers with its `init` headers, `init`
+ * winning on duplicate keys. Setting `init.headers` replaces a `Request`'s
+ * headers wholesale, so they are copied in first.
  *
  * @param args - The fetch arguments (`[input, init]`).
  * @returns A new `Headers` instance holding the request's effective headers.
@@ -198,10 +198,8 @@ export function buildAugmentedHeaders(
   return headers;
 }
 
-/** Headers that advertise a trace parent on an outbound request. */
 const TRACE_PARENT_HEADERS = ['sentry-trace', 'traceparent'];
 
-/** Prefix of the `baggage` entries that carry Sentry's trace context. */
 const SENTRY_BAGGAGE_PREFIX = 'sentry-';
 
 /**

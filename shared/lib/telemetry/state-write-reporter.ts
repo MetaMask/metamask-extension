@@ -86,9 +86,8 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
       data,
       name: TraceName.StatePersist,
       op: TraceOperation.StateWrite,
-      // Reported after a debounced, lock-gated write and an awaited size
-      // measurement, so the span active at this point is not the write's
-      // trigger. Start a trace of its own rather than join it.
+      // The write is debounced, lock-gated and size-measured before this runs,
+      // so the active span here is not what triggered it.
       root: true,
     },
     () => undefined,

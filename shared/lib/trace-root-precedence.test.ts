@@ -50,4 +50,12 @@ describe('trace root and parentContext (real SDK)', () => {
     expect(json.trace_id).toBe(parent.spanContext().traceId);
     expect(json.parent_span_id).toBe(parent.spanContext().spanId);
   });
+
+  it('starts a new trace for root when its parentContext does not resolve', () => {
+    const json = underParent(() =>
+      child({ root: true, parentContext: { _name: 'Never started' } }),
+    );
+    expect(json.trace_id).not.toBe(parent.spanContext().traceId);
+    expect(json.parent_span_id).toBeUndefined();
+  });
 });
