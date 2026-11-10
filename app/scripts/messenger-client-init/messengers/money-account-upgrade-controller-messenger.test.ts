@@ -25,7 +25,7 @@ describe('getMoneyAccountUpgradeControllerMessenger', () => {
         actions: [
           'AuthenticatedUserStorageService:createDelegation',
           'AuthenticatedUserStorageService:listDelegations',
-          'ChompApiService:associateAddress',
+          'ChompApiService:associateAddressV2',
           'ChompApiService:createIntents',
           'ChompApiService:createUpgrade',
           'ChompApiService:getAssociatedAddresses',
