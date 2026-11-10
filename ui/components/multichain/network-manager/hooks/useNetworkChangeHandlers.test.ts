@@ -150,8 +150,11 @@ describe('useNetworkChangeHandlers', () => {
     expect(trackedProperties).toMatchObject([
       {
         location: 'Network Menu',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: CHAIN_IDS.MAINNET,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         from_network: CHAIN_IDS.MAINNET,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         to_network: CHAIN_IDS.LINEA_MAINNET,
       },
     ]);
