@@ -1647,104 +1647,95 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
 
   describe('when a second, unrelated trace() call starts while the first is still pending', () => {
     // Parentage only: root spans share a trace id even without overlap.
-    it(
-      'does not parent the second span under the still-pending first one',
-      async () => {
-        const aGate = deferred<void>();
-        let spanA: Sentry.Span | null | undefined;
+    it('does not parent the second span under the still-pending first one', async () => {
+      const aGate = deferred<void>();
+      let spanA: Sentry.Span | null | undefined;
 
-        // A awaits aGate, so its scope layer stays on the stack until then.
-        const aPromise = trace(
-          { name: NAME_MOCK, id: 'A-pending' },
-          async () => {
-            spanA = Sentry.getActiveSpan();
-            await aGate.promise;
-            return spanA;
-          },
-        );
+      // A awaits aGate, so its scope layer stays on the stack until then.
+      const aPromise = trace({ name: NAME_MOCK, id: 'A-pending' }, async () => {
+        spanA = Sentry.getActiveSpan();
+        await aGate.promise;
+        return spanA;
+      });
 
-        expect(spanA).toBeTruthy();
+      expect(spanA).toBeTruthy();
 
-        try {
-          // B is a logically unrelated trace() call (no parentContext) issued
-          // while A is still pending.
-          let spanB: Sentry.Span | null | undefined;
-          const bPromise = trace(
-            { name: NAME_MOCK, id: 'B-concurrent-unrelated' },
-            () => {
-              spanB = Sentry.getActiveSpan();
-              return spanB;
-            },
-          );
-          await tick(3);
-
-          expect(spanB).toBeTruthy();
-          expect(
-            spanB && Sentry.spanToJSON(spanB).parent_span_id,
-          ).toBeUndefined();
-
-          await bPromise;
-        } finally {
-          aGate.resolve();
-          await aPromise;
-        }
-      },
-    );
-
-    // `spanC` should not inherit B's lineage.
-    it(
-      'does not let a third concurrent call inherit an already-corrupted lineage',
-      async () => {
-        const aGate = deferred<void>();
-        const bGate = deferred<void>();
-
-        let spanA: Sentry.Span | null | undefined;
-        const aPromise = trace(
-          { name: NAME_MOCK, id: 'A-pending-2' },
-          async () => {
-            spanA = Sentry.getActiveSpan();
-            await aGate.promise;
-            return spanA;
-          },
-        );
-
+      try {
+        // B is a logically unrelated trace() call (no parentContext) issued
+        // while A is still pending.
         let spanB: Sentry.Span | null | undefined;
         const bPromise = trace(
-          { name: NAME_MOCK, id: 'B-pending-2' },
-          async () => {
+          { name: NAME_MOCK, id: 'B-concurrent-unrelated' },
+          () => {
             spanB = Sentry.getActiveSpan();
-            await bGate.promise;
             return spanB;
           },
         );
+        await tick(3);
 
-        try {
-          let spanC: Sentry.Span | null | undefined;
-          const cPromise = trace(
-            { name: NAME_MOCK, id: 'C-concurrent-2' },
-            () => {
-              spanC = Sentry.getActiveSpan();
-              return spanC;
-            },
-          );
-          await tick(3);
+        expect(spanB).toBeTruthy();
+        expect(
+          spanB && Sentry.spanToJSON(spanB).parent_span_id,
+        ).toBeUndefined();
 
-          expect(spanA).toBeTruthy();
-          expect(spanB).toBeTruthy();
-          expect(spanC).toBeTruthy();
+        await bPromise;
+      } finally {
+        aGate.resolve();
+        await aPromise;
+      }
+    });
 
-          expect(
-            spanC && Sentry.spanToJSON(spanC).parent_span_id,
-          ).toBeUndefined();
+    // `spanC` should not inherit B's lineage.
+    it('does not let a third concurrent call inherit an already-corrupted lineage', async () => {
+      const aGate = deferred<void>();
+      const bGate = deferred<void>();
 
-          await cPromise;
-        } finally {
-          bGate.resolve();
-          await bPromise;
-          aGate.resolve();
-          await aPromise;
-        }
-      },
-    );
+      let spanA: Sentry.Span | null | undefined;
+      const aPromise = trace(
+        { name: NAME_MOCK, id: 'A-pending-2' },
+        async () => {
+          spanA = Sentry.getActiveSpan();
+          await aGate.promise;
+          return spanA;
+        },
+      );
+
+      let spanB: Sentry.Span | null | undefined;
+      const bPromise = trace(
+        { name: NAME_MOCK, id: 'B-pending-2' },
+        async () => {
+          spanB = Sentry.getActiveSpan();
+          await bGate.promise;
+          return spanB;
+        },
+      );
+
+      try {
+        let spanC: Sentry.Span | null | undefined;
+        const cPromise = trace(
+          { name: NAME_MOCK, id: 'C-concurrent-2' },
+          () => {
+            spanC = Sentry.getActiveSpan();
+            return spanC;
+          },
+        );
+        await tick(3);
+
+        expect(spanA).toBeTruthy();
+        expect(spanB).toBeTruthy();
+        expect(spanC).toBeTruthy();
+
+        expect(
+          spanC && Sentry.spanToJSON(spanC).parent_span_id,
+        ).toBeUndefined();
+
+        await cPromise;
+      } finally {
+        bGate.resolve();
+        await bPromise;
+        aGate.resolve();
+        await aPromise;
+      }
+    });
   });
 });
