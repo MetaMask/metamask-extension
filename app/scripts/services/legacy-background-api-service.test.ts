@@ -5261,6 +5261,62 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('persists the original parameters and gas when containers are removed', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+          txParams: {
+            data: NEW_DATA_MOCK,
+            gas: '0x30000',
+            to: '0x2',
+            value: '0x0',
+          },
+          txParamsOriginal: {
+            data: '0xabc',
+            gas: '0x20000',
+            to: '0x1',
+            value: '0x1',
+          },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        const estimateGasMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          estimateGasMock,
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:applyTransactionContainersExisting',
+          TRANSACTION_ID_MOCK,
+          [],
+        );
+
+        expect(estimateGasMock).not.toHaveBeenCalled();
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          TRANSACTION_ID_MOCK,
+          expect.objectContaining({
+            containerTypes: [],
+            data: '0xabc',
+            gas: '0x20000',
+            to: '0x1',
+            value: '0x1',
+          }),
+        );
+      });
+    });
+
     it('rejects if the transaction container update fails', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
