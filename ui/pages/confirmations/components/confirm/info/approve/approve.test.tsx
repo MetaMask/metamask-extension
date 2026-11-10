@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import { ERC20 } from '@metamask/controller-utils';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -174,7 +175,7 @@ describe('<ApproveInfo />', () => {
       const state = getMockConfirmStateForTransaction({
         ...genUnapprovedPermit2ApproveConfirmation(),
         simulationData: { tokenBalanceChanges: [] },
-      });
+      } as TransactionMeta);
       const mockStore = configureMockStore(middleware)(state);
 
       renderWithConfirmContextProvider(<ApproveInfo />, mockStore);
