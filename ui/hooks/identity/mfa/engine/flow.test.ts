@@ -921,6 +921,31 @@ describe('createMfaFlow', () => {
       });
     });
 
+    it('offers to try again when the password manager already holds a passkey', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.setSession(buildToken('email_otp'));
+      passkeyAdapter.create.mockRejectedValueOnce(
+        Object.assign(new Error('exists'), {
+          mfaCode: 'passkey_already_exists',
+        }),
+      );
+      const { flow } = await startFlow(
+        { kind: 'enroll', method: 'passkey' },
+        fake.controller,
+      );
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'failure',
+        code: 'passkey_already_exists',
+        canRetry: true,
+      });
+
+      const attempts = passkeyAdapter.create.mock.calls.length;
+      await act(flow, { type: 'retry' });
+      expect(passkeyAdapter.create).toHaveBeenCalledTimes(attempts + 1);
+      await expect(flow.result).resolves.toBeDefined();
+    });
+
     it('drops a session the server refused and confirms it is the user first', async () => {
       const fake = createFakeController([activeEmail]);
       fake.setSession(buildToken('email_otp'));
