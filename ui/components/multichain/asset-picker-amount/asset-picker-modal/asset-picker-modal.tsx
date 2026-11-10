@@ -54,6 +54,7 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { isTronSpecialAsset } from '../../../../../shared/lib/asset-utils';
 
@@ -179,6 +180,7 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(
@@ -500,7 +502,10 @@ export function AssetPickerModal({
               label={networkPickerLabel}
               src={
                 selectedNetwork?.chainId
-                  ? getImageForChainId(selectedNetwork.chainId)
+                  ? getImageForChainId(
+                      selectedNetwork.chainId,
+                      networkImageUrls,
+                    )
                   : undefined
               }
               avatarGroupProps={
@@ -508,7 +513,8 @@ export function AssetPickerModal({
                   ? {
                       limit: 2,
                       members: selectedChainIds.map((c) => ({
-                        avatarValue: getImageForChainId(c) ?? '',
+                        avatarValue:
+                          getImageForChainId(c, networkImageUrls) ?? '',
                         symbol:
                           NETWORK_TO_SHORT_NETWORK_NAME_MAP[
                             c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP

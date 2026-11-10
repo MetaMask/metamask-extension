@@ -74,12 +74,12 @@ import {
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
 import {
-  getImageForChainId,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
   getMultichainIsTron,
 } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
@@ -312,7 +312,7 @@ const AssetPage = ({
   );
 
   const networkName = networkConfigurationsByChainId[chainId]?.name;
-  const tokenChainImage = getImageForChainId(chainId);
+  const tokenChainImage = useImageForChainId(chainId);
 
   const selectBip44Asset = useMemo(
     () => (state: Parameters<typeof getAsset>[0]) =>

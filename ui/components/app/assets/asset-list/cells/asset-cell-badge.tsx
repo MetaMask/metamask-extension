@@ -9,7 +9,7 @@ import {
   BadgeWrapper,
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../../hooks/useImageForChainId';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   getAssetImageUrl,
@@ -68,7 +68,7 @@ export const AssetCellBadge = React.memo(
       tokenImage,
       assetId,
     });
-    const badgeWrapperSrc = getImageForChainId(chainId) ?? undefined;
+    const badgeWrapperSrc = useImageForChainId(chainId);
 
     return (
       <BadgeWrapper

@@ -16,6 +16,7 @@ import {
 import { useSelector } from 'react-redux';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -93,6 +94,7 @@ export const NetworkPillSelector = () => {
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
   const { privacyMode } = useSelector(getPreferences);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const {
     defaultNetworks,
     handleSelectAllDefaultNetworks,
@@ -193,7 +195,7 @@ export const NetworkPillSelector = () => {
               icon={
                 <AvatarNetwork
                   name={network.name}
-                  src={getNetworkIcon(network)}
+                  src={getNetworkIcon(network, networkImageUrls)}
                   size={AvatarNetworkSize.Sm}
                   className="rounded-full"
                 />

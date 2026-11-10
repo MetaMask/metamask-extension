@@ -20,7 +20,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import BigNumber from 'bignumber.js';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
 import { calculateMoneyProjectedEarnings } from '../../../hooks/money/money-deposit-token-utils';
@@ -54,7 +54,8 @@ export function MoneyPotentialEarningsTokenRow({
   const formattedProjection = moneyFormatUsd(
     new BigNumber(projectedEarnings.toString()),
   );
-  const networkImage = token.networkImage ?? getImageForChainId(token.chainId);
+  const chainImage = useImageForChainId(token.chainId);
+  const networkImage = token.networkImage ?? chainImage;
 
   return (
     <Box

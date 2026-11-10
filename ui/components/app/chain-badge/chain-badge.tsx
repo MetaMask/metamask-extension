@@ -11,7 +11,7 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 
 type Props = {
@@ -36,6 +36,10 @@ export const ChainBadge = ({
   size = AvatarNetworkSize.Xs,
   children,
 }: Props) => {
+  const networkImageSrc = useImageForChainId(
+    chainId ? (getMaybeHexChainId(chainId) ?? chainId) : undefined,
+  );
+
   if (!chainId) {
     return <>{children}</>;
   }
@@ -46,9 +50,6 @@ export const ChainBadge = ({
     (hexChainId
       ? NETWORK_TO_NAME_MAP[hexChainId as keyof typeof NETWORK_TO_NAME_MAP]
       : MULTICHAIN_NETWORK_TO_NICKNAME[chainId as CaipChainId]) ?? '?';
-
-  const networkImageSrc =
-    getImageForChainId(hexChainId ?? chainId) ?? undefined;
 
   return (
     <BadgeWrapper

@@ -12,10 +12,10 @@ import {
 } from '../../../../selectors';
 import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
-  getImageForChainId,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../hooks/useImageForChainId';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../hooks/useFormatters';
@@ -38,7 +38,7 @@ export const useTokenDisplayInfo = ({
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const tokenChainImage = getImageForChainId(token.chainId);
+  const tokenChainImage = useImageForChainId(token.chainId);
   const caipChainId = isCaipChainId(token.chainId)
     ? token.chainId
     : formatChainIdToCaip(token.chainId);

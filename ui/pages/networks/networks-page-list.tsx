@@ -38,6 +38,7 @@ import {
 } from '../../selectors';
 import {
   getFeaturedEvmNetworks,
+  getChainIdToNetworkImageUrlMap,
   type FeaturedNetwork,
 } from '../../selectors/config-registry/config-registry';
 import {
@@ -177,6 +178,7 @@ export const NetworksPageList = ({
   const showTestnets = useSelector(getShouldShowTestNetworks);
   const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
@@ -255,7 +257,7 @@ export const NetworksPageList = ({
           key={network.chainId}
           chainId={network.chainId}
           name={network.name}
-          iconSrc={getNetworkIcon(network)}
+          iconSrc={getNetworkIcon(network, networkImageUrls)}
           focus={false}
           selected={false}
           rpcEndpoint={
@@ -275,7 +277,13 @@ export const NetworksPageList = ({
         />
       );
     },
-    [evmNetworks, getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled],
+    [
+      evmNetworks,
+      getItemCallbacks,
+      hasMultiRpcOptions,
+      isNetworkEnabled,
+      networkImageUrls,
+    ],
   );
 
   const handleToggleTestNetworks = useCallback(

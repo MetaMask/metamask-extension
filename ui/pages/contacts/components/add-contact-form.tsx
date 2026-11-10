@@ -37,6 +37,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
@@ -82,6 +83,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
   const domainError = useSelector(getDomainError);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const domainResolutions = useSelector(getDomainResolutions);
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationsByChainId);
@@ -375,7 +377,8 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
                 className="rounded-md"
                 src={
                   typeof selectedChainId === 'string'
-                    ? getImageForChainId(selectedChainId) || undefined
+                    ? getImageForChainId(selectedChainId, networkImageUrls) ||
+                      undefined
                     : undefined
                 }
                 name={String(selectedNetworkName)}

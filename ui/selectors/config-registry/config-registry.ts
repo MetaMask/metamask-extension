@@ -5,14 +5,18 @@ import {
   InfuraRpcEndpoint,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
-import { CaipChainIdStruct } from '@metamask/utils';
+import { CaipChainIdStruct, KnownCaipNamespace } from '@metamask/utils';
 import type {
   ConfigRegistryControllerState,
   RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
 import { isInfuraNetworkType } from '@metamask/controller-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  FEATURED_RPCS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../shared/constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
@@ -22,10 +26,11 @@ import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
  *
  * @param state - The MetaMask state object
  * @param state.metamask - The MetaMask state slice
+ * @param state.metamask.configs - The registry configs
  */
 export const getRegistryConfigs = (state: {
-  metamask: ConfigRegistryControllerState;
-}) => state.metamask.configs;
+  metamask?: { configs?: ConfigRegistryControllerState['configs'] };
+}) => state.metamask?.configs;
 
 /**
  * Returns whether the Config Registry API feature flag is enabled.
@@ -161,5 +166,46 @@ export const getFeaturedEvmNetworks = createSelector(
     }, []);
 
     return evmNetworks.length > 0 ? evmNetworks : FEATURED_RPCS;
+  },
+);
+
+/**
+ * Returns a chain ID to network image URL map that layers the config
+ * registry image URLs over the static CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP and
+ * MULTICHAIN_TOKEN_IMAGE_MAP (native asset logos), so post-add network and
+ * native asset logos also honor the registry. EVM entries are keyed by both
+ * hex and CAIP-2 chain ID; non-EVM entries by CAIP-2 chain ID only. Falls
+ * back to the static maps when the config registry API is disabled or has no
+ * configs.
+ */
+export const getChainIdToNetworkImageUrlMap = createSelector(
+  getRegistryConfigs,
+  getIsConfigRegistryApiEnabled,
+  (configs, isConfigRegistryEnabled): Record<string, string> => {
+    if (!isConfigRegistryEnabled || !configs?.networks) {
+      return {
+        ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+        ...MULTICHAIN_TOKEN_IMAGE_MAP,
+      };
+    }
+
+    const merged: Record<string, string> = {
+      ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+      ...MULTICHAIN_TOKEN_IMAGE_MAP,
+    };
+    for (const network of Object.values(configs.networks)) {
+      if (!isAllowedImageUrl(network.imageUrl)) {
+        continue;
+      }
+      merged[network.chainId] = network.imageUrl;
+      if (network.chainId.startsWith(`${KnownCaipNamespace.Eip155}:`)) {
+        try {
+          merged[convertCaipToHexChainId(network.chainId)] = network.imageUrl;
+        } catch {
+          // Malformed eip155 reference; the CAIP key above still applies
+        }
+      }
+    }
+    return merged;
   },
 );

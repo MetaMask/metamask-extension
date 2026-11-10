@@ -31,6 +31,7 @@ import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
@@ -45,6 +46,7 @@ export const CustomNetworks = React.memo(() => {
   const [, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -111,7 +113,7 @@ export const CustomNetworks = React.memo(() => {
           key={network.chainId}
           chainId={network.chainId}
           name={network.name}
-          iconSrc={getNetworkIcon(network)}
+          iconSrc={getNetworkIcon(network, networkImageUrls)}
           iconSize={AvatarNetworkSize.Md}
           focus={false}
           rpcEndpoint={rpcEndpoint}
@@ -134,6 +136,7 @@ export const CustomNetworks = React.memo(() => {
       isNetworkEnabled,
       handleNetworkClick,
       isPending,
+      networkImageUrls,
     ],
   );
 

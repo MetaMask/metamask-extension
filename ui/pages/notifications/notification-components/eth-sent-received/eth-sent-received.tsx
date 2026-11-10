@@ -1,8 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -53,9 +55,12 @@ const getDescription = (n: ETHNotification) => {
 
 export const components: NotificationComponent<ETHNotification> = {
   guardFn: isETHNotification,
-  item: ({ notification, onClick }) => {
+  // eslint-disable-next-line func-name-matching, @typescript-eslint/naming-convention
+  item: function Item({ notification, onClick }) {
+    const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
     const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
       notification.payload.chain_id,
+      networkImageUrls,
     );
     const { nativeCurrencySymbol } = getNetworkDetailsFromNotifPayload(
       notification.payload.network,
@@ -125,8 +130,10 @@ export const components: NotificationComponent<ETHNotification> = {
         />
       ),
       Asset: ({ notification }) => {
+        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
+          networkImageUrls,
         );
         const { nativeCurrencySymbol } = getNetworkDetailsFromNotifPayload(
           notification.payload.network,
@@ -158,8 +165,10 @@ export const components: NotificationComponent<ETHNotification> = {
         );
       },
       Network: ({ notification }) => {
+        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
+          networkImageUrls,
         );
         const { networkName } = getNetworkDetailsFromNotifPayload(
           notification.payload.network,
