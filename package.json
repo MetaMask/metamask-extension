@@ -176,7 +176,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/design-system-react": "0.51.0",
+    "@metamask/design-system-react": "0.51.1",
     "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
@@ -442,7 +442,7 @@
     "@metamask/delegation-controller": "^3.0.2",
     "@metamask/delegation-core": "^2.0.0",
     "@metamask/delegation-deployments": "^2.1.0",
-    "@metamask/design-system-react": "^0.51.0",
+    "@metamask/design-system-react": "^0.51.1",
     "@metamask/design-system-tailwind-preset": "^0.16.0",
     "@metamask/design-tokens": "^13.0.0",
     "@metamask/dummy-package": "workspace:*",
