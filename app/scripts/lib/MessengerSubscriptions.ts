@@ -14,9 +14,16 @@ export class MessengerSubscriptions {
     { listener: (...payload: unknown[]) => void; count: number }
   >();
 
-  constructor(messenger: BaseControllerMessenger, stream: Duplex) {
+  readonly #flushPendingState: () => void;
+
+  constructor(
+    messenger: BaseControllerMessenger,
+    stream: Duplex,
+    flushPendingState: () => void = () => undefined,
+  ) {
     this.#messenger = messenger;
     this.#stream = stream;
+    this.#flushPendingState = flushPendingState;
   }
 
   /**
@@ -37,6 +44,15 @@ export class MessengerSubscriptions {
       if (!isStreamWritable(this.#stream)) {
         return;
       }
+
+      // The state this event describes reaches the UI on the debounced `sendUpdate`
+      // channel, up to 200ms after the publish and up to a second when the debounce
+      // saturates, while this write happens at publish time. A subscriber that reads
+      // Redux inside its handler therefore sees state older than the event it is
+      // handling. Flushing first puts those patches ahead of the notification on the
+      // same stream, so the order the UI observes is the order the background
+      // published in.
+      this.#flushPendingState();
 
       this.#stream.write({
         jsonrpc: '2.0',

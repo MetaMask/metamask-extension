@@ -3746,9 +3746,30 @@ export default class MetamaskController extends EventEmitter {
     // cancel the deferred disconnect so positions/markets stay hot.
     this.#cancelPerpsDisconnectTimer();
 
+    // Ordering guard for the un-debounced channel: a messenger notification is written
+    // at publish time, while the state behind it rides the 200ms-debounced `sendUpdate`.
+    // Draining the pending patches first keeps a UI handler that reads state from seeing
+    // a world older than the event that woke it. Only writes when something is pending,
+    // so an event with no state behind it costs nothing.
+    const flushPendingPatchesForEvent = () => {
+      if (!isStreamWritable(outStream) || !uiReady) {
+        return;
+      }
+      const patches = patchStore.flushPendingPatches();
+      if (patches.length === 0) {
+        return;
+      }
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'sendUpdate',
+        params: [patches],
+      });
+    };
+
     const messengerSubscriptions = new MessengerSubscriptions(
       this.controllerMessenger,
       outStream,
+      flushPendingPatchesForEvent,
     );
 
     const perpsController = this.messengerClientsByName.PerpsController;

@@ -20,7 +20,7 @@ type ExampleControllerStateChangeEvent = ControllerStateChangeEvent<
   { foo: string }
 >;
 
-function setup() {
+function setup(flushPendingState?: () => void) {
   const messenger = new Messenger<
     MockAnyNamespace,
     never,
@@ -32,7 +32,11 @@ function setup() {
       callback();
     },
   });
-  const subscriptions = new MessengerSubscriptions(messenger, stream);
+  const subscriptions = new MessengerSubscriptions(
+    messenger,
+    stream,
+    flushPendingState,
+  );
 
   return { messenger, stream, subscriptions };
 }
@@ -58,6 +62,50 @@ describe('MessengerSubscriptions', () => {
     });
   });
 
+  it('drains pending state before writing the notification', () => {
+    // A subscriber that reads state in its handler must not see a world older than
+    // the event: the notification is written at publish time, the state behind it
+    // rides the 200ms-debounced `sendUpdate`, so the order on the stream is what
+    // decides whether the two can be read together.
+    const order: string[] = [];
+    const flushPendingState = jest.fn(() => order.push('flush'));
+    const { messenger, stream, subscriptions } = setup(flushPendingState);
+    jest.spyOn(stream, 'write').mockImplementation(() => {
+      order.push('notification');
+      return true;
+    });
+
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+    subscriptions.subscribe(event);
+    messenger.publish(event, state, patches);
+
+    expect(flushPendingState).toHaveBeenCalledTimes(1);
+    expect(order).toStrictEqual(['flush', 'notification']);
+  });
+
+  it('drains once per published event', () => {
+    const flushPendingState = jest.fn();
+    const { messenger, subscriptions } = setup(flushPendingState);
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+
+    subscriptions.subscribe(event);
+    messenger.publish(event, state, patches);
+    messenger.publish(event, state, patches);
+
+    expect(flushPendingState).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not drain when the stream is no longer writable', () => {
+    const flushPendingState = jest.fn();
+    const { messenger, stream, subscriptions } = setup(flushPendingState);
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+
+    subscriptions.subscribe(event);
+    stream.destroy();
+    messenger.publish(event, state, patches);
+
+    expect(flushPendingState).not.toHaveBeenCalled();
+  });
   it('stops sending notifications for a given event when all subscriptions are removed', () => {
     const { messenger, stream, subscriptions } = setup();
     const subscribeSpy = jest.spyOn(messenger, 'subscribe');
