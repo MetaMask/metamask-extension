@@ -154,7 +154,7 @@ export const useNetworkChangeHandlers = () => {
   );
 
   const handleNetworkChange = useCallback(
-    async (chainId: CaipChainId) => {
+    async (chainId: CaipChainId, location = 'Network Menu') => {
       if (isPending) {
         return;
       }
@@ -202,7 +202,7 @@ export const useNetworkChangeHandlers = () => {
         createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
           .addCategory(MetaMetricsEventCategory.Network)
           .addProperties({
-            location: 'Network Menu',
+            location,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: currentChainIdToTrack,
