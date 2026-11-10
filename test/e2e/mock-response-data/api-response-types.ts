@@ -34,4 +34,12 @@ export type RampsCountriesResponse = Country[];
  */
 export type SpotPrice = Omit<MarketDataDetails, 'tokenAddress' | 'currency'>;
 
+/**
+ * A spot-price mock: every field the price service reads, which the live API
+ * sometimes returns as `null`, plus any extra field the API adds.
+ */
+export type SpotPriceMock = {
+  [K in keyof SpotPrice]: SpotPrice[K] | null;
+} & Record<string, string | number | boolean | null>;
+
 export type SpotPricesResponse = Record<string, SpotPrice>;

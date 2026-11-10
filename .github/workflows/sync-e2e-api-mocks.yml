@@ -1,0 +1,77 @@
+name: Sync E2E API Mocks
+
+# Fetches the live APIs behind the typed E2E mocks and, when the response
+# shape has drifted, updates the fixtures and opens a PR. See
+# test/e2e/mock-response-data/README.md.
+
+on:
+  schedule:
+    # Mondays at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-e2e-api-mocks:
+    name: Align E2E API mocks with live responses
+    environment: default-branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Align fixtures
+        id: sync
+        shell: bash
+        env:
+          CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+        run: |
+          set +e
+          yarn test:e2e:sync-api-mocks 2>&1 | tee sync-report.txt
+          EXIT="${PIPESTATUS[0]}"
+          set -e
+          echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
+          # 0: no drift, 1: fixtures updated, anything else is a real failure
+          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 1 ]
+
+      - name: Open or update the review PR
+        if: steps.sync.outputs.EXIT == '1'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="sync/e2e-api-mocks"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "${BRANCH}"
+          yarn prettier --write test/e2e/mock-response-data/*.json
+          git add test/e2e/mock-response-data/*.json
+          git commit -m "test: align E2E API mocks with live response shapes"
+          if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
+            git push --force-with-lease origin "${BRANCH}"
+          else
+            git push -u origin "${BRANCH}"
+          fi
+          {
+            echo "Weekly shape sync of the typed E2E API mocks."
+            echo
+            echo "Values the tests rely on are unchanged. New fields use placeholders (0, empty string, false, null). See test/e2e/mock-response-data/README.md."
+            echo
+            echo '```'
+            cat sync-report.txt
+            echo '```'
+          } > pr-body.md
+          EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number')"
+          if [ -n "${EXISTING}" ]; then
+            gh pr edit "${EXISTING}" --body-file pr-body.md
+          else
+            gh pr create --base main --head "${BRANCH}" --title "test: align E2E API mocks with live response shapes" --body-file pr-body.md
+          fi

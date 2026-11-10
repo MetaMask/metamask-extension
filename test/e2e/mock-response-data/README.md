@@ -21,6 +21,42 @@ controller packages already use to consume them**, declared in
 its type, for example when a package bump adds a required field or the wallet
 code changes the shape it reads.
 
+## Keeping mocks aligned with the live APIs
+
+`yarn test:e2e:sync-api-mocks` fetches the live responses and updates the
+fixture JSON so its **shape** matches:
+
+- new fields are added with a stable placeholder (`0`, `""`, `false`, `null`,
+  or a single placeholder element)
+- fields the API no longer returns are removed
+- a field whose type changed (for example `number` to `null`) is replaced with
+  that placeholder
+- values already in the fixture stay, including prices, balances and ids
+- an empty array stays empty, so the "no countries / no notifications / no
+  banners" responses tests rely on are never filled with live data
+
+Ethereum and Monad prices are then re-applied from `DEFAULT_ETH_USD_PRICE`,
+and the Bitcoin price from `DEFAULT_BTC_CONVERSION_RATE`, so a sync cannot
+move the numbers E2E assertions use.
+
+The same command runs every Monday in
+[`.github/workflows/sync-e2e-api-mocks.yml`](../../../.github/workflows/sync-e2e-api-mocks.yml)
+(and on demand via workflow dispatch). When a fixture changes, the job commits
+it and opens or updates a PR for review. A fixture that no longer satisfies
+its consumer type fails `yarn lint:tsc` on that PR: update the wallet's type,
+or adjust the fixture, before merging.
+
+| Fixture                                  | Live call                                               | Without credentials                                                                                |
+| ---------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `price-api.json`                         | `price.api.cx.metamask.io/v3/spot-prices`               | public                                                                                             |
+| `global-api-responses.json` `countries`  | `on-ramp-cache.api.cx.metamask.io/v2/regions/countries` | public; the empty list is kept                                                                     |
+| `global-api-responses.json` `contentful` | `cdn.contentful.com` promotional banners                | skipped. Needs `CONTENTFUL_ACCESS_SPACE_ID` and `CONTENTFUL_ACCESS_TOKEN` (the build secrets)      |
+| notifications                            | not called                                              | needs a profile bearer token; the empty list is hand-maintained                                    |
+| DeFi positions                           | not called                                              | the fixture in `tests/confirmations/helpers.ts` is asserted by E2E tests, so it is hand-maintained |
+
+Assets the price API does not list (Sepolia, localhost) follow the Ethereum
+template's shape.
+
 ### Adding an API
 
 1. Find the code that reads the response and the type it uses. Prefer a type
