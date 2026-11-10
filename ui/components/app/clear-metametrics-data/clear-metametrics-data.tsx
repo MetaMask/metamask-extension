@@ -62,7 +62,10 @@ export default function ClearMetaMetricsData({
       onDeletionSuccess?.();
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
-      trackErrorAsAnalytics(error, { source: 'clear-metametrics-data' });
+      trackErrorAsAnalytics(error, {
+        source: 'clear-metametrics-data',
+        excludeMetaMetricsId: true,
+      });
     } finally {
       dispatch(hideDeleteMetaMetricsDataModal());
     }

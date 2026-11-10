@@ -6371,11 +6371,27 @@ export function trackAnalyticsEvent(
 
 export function trackErrorAsAnalytics(
   error: unknown,
-  options: { source: string; volumeControls?: object },
+  options: {
+    source: string;
+    volumeControls?: object;
+    excludeMetaMetricsId?: boolean;
+    environmentType?: string;
+  },
+  properties?: Record<string, unknown>,
 ) {
+  const { excludeMetaMetricsId, environmentType, ...controllerOptions } =
+    options;
+  const controllerProperties: Record<string, unknown> = {
+    ...properties,
+    ...(excludeMetaMetricsId ? { anonymous: true } : {}),
+  };
+  if (environmentType) {
+    controllerProperties.environment_type = environmentType;
+  }
+
   return submitRequestToBackground(
     'AnalyticsController:trackErrorAsAnalytics',
-    [error, options],
+    [getErrorMessage(error), controllerOptions, controllerProperties],
   );
 }
 

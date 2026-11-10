@@ -1,6 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { TrackErrorAsAnalyticsOptions } from '@metamask/analytics-controller';
+import type {
+  AnalyticsEventProperties,
+  TrackErrorAsAnalyticsOptions,
+} from '@metamask/analytics-controller';
 import {
   createEventBuilder,
   type AnalyticsEvent,
@@ -29,12 +32,17 @@ type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
   referrer?: MetaMetricsReferrerObject;
 };
 
+type TrackErrorAsAnalyticsUiOptions = TrackErrorAsAnalyticsOptions & {
+  excludeMetaMetricsId?: boolean;
+};
+
 type UseAnalyticsResult = {
   createEventBuilder: typeof createEventBuilder;
   trackEvent: (built: AnalyticsEvent) => Promise<void>;
   trackErrorAsAnalytics: (
     error: unknown,
-    options: TrackErrorAsAnalyticsOptions,
+    options: TrackErrorAsAnalyticsUiOptions,
+    properties?: AnalyticsEventProperties,
   ) => Promise<void>;
 };
 
@@ -70,14 +78,22 @@ export function useAnalytics(): UseAnalyticsResult {
   const trackErrorAsAnalytics = useCallback(
     async (
       error: unknown,
-      options: TrackErrorAsAnalyticsOptions,
+      options: TrackErrorAsAnalyticsUiOptions,
+      properties?: AnalyticsEventProperties,
     ): Promise<void> => {
       if (!canTrackImmediately && !canMaybeTrackLater) {
         return;
       }
 
       try {
-        await trackErrorAsAnalyticsAction(error, options);
+        await trackErrorAsAnalyticsAction(
+          error,
+          {
+            ...options,
+            environmentType: getEnvironmentType(),
+          },
+          properties,
+        );
       } catch {
         // Swallow background RPC failures. Error reporting must not break UI.
       }

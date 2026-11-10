@@ -52,7 +52,10 @@ export default function DeleteMetametricsModal({
       onSuccess();
     } catch (error) {
       captureException(error);
-      trackErrorAsAnalytics(error, { source: 'delete-metametrics-modal' });
+      trackErrorAsAnalytics(error, {
+        source: 'delete-metametrics-modal',
+        excludeMetaMetricsId: true,
+      });
       onError();
     } finally {
       onClose();

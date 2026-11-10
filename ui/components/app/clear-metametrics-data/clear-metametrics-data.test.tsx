@@ -98,6 +98,7 @@ describe('ClearMetaMetricsData', () => {
     await waitFor(() => {
       expect(mockTrackErrorAsAnalytics).toHaveBeenCalledWith(deletionError, {
         source: 'clear-metametrics-data',
+        excludeMetaMetricsId: true,
       });
     });
   });

@@ -85,6 +85,7 @@ describe('useAnalytics', () => {
         useEffect(() => {
           trackPromise = trackError(error, {
             source: 'clear-metametrics-data',
+            excludeMetaMetricsId: true,
           });
         }, [trackError]);
 
@@ -98,9 +99,15 @@ describe('useAnalytics', () => {
       );
 
       await waitFor(() => {
-        expect(mockedTrackErrorAsAnalytics).toHaveBeenCalledWith(error, {
-          source: 'clear-metametrics-data',
-        });
+        expect(mockedTrackErrorAsAnalytics).toHaveBeenCalledWith(
+          error,
+          {
+            source: 'clear-metametrics-data',
+            excludeMetaMetricsId: true,
+            environmentType: expect.any(String),
+          },
+          undefined,
+        );
       });
       await expect(trackPromise).resolves.toBeUndefined();
     });
