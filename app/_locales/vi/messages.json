@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Thêm URL"
   },
-  "addAWallet": {
-    "message": "Thêm ví"
-  },
   "addAccount": {
     "message": "Thêm tài khoản"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 là bắt buộc"
-  },
-  "fileImportFail": {
-    "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Nhấn để tải lên hoặc kéo và thả"
@@ -7389,10 +7382,6 @@
   "paste": {
     "message": "Dán"
   },
-  "pastePrivateKey": {
-    "message": "Dán chuỗi khóa riêng tư của bạn vào đây:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Thanh toán bằng",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8880,7 +8869,7 @@
     "message": "Yêu cầu rút tiền đã được gửi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
+    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8981,10 +8970,6 @@
   "privateKeyHidden": {
     "message": "Khóa riêng tư bị ẩn",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Hiển thị/Ẩn đầu vào khóa riêng tư",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Khóa riêng tư này đang được hiển thị",
@@ -11944,9 +11929,6 @@
     "message": "tại đây",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Đã bao gồm"
-  },
   "swapGasFeesSplit": {
     "message": "Phí mạng trên màn hình trước được chia cho hai giao dịch này."
   },
@@ -12693,9 +12675,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Tự động hiển thị các token được gửi vào tài khoản của bạn có liên quan đến hoạt động trao đổi thông tin với các máy chủ bên thứ ba để tìm nạp hình ảnh của token. Các máy chủ đó sẽ có quyền truy cập vào địa chỉ IP của bạn."
-  },
-  "usedByClients": {
-    "message": "Được nhiều ví khác nhau sử dụng"
   },
   "userOpContractDeployError": {
     "message": "Không hỗ trợ triển khai hợp đồng từ tài khoản thông minh"
