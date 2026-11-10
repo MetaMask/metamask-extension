@@ -66,15 +66,17 @@ const TokenListContainer = React.memo(
       ],
     );
 
-    return variant === 'table' ? (
-      <>
-        <NetworkPillSelector />
-        <div className="my-1 border-b border-1 border-border-muted" />
-        <TokenTable onTokenClick={onTokenClick} safeChains={safeChains} />
-      </>
-    ) : (
-      <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />
-    );
+    if (variant === 'table') {
+      return (
+        <>
+          <NetworkPillSelector />
+          <div className="my-1 border-b border-1 border-border-muted" />
+          <TokenTable onTokenClick={onTokenClick} safeChains={safeChains} />
+        </>
+      );
+    }
+
+    return <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />;
   },
 );
 
@@ -94,11 +96,12 @@ const AssetList = ({
 
   return (
     <>
-      <AssetListControlBar
-        showTokensLinks={shouldShowTokensLinks}
-        showNetworkFilterAtEnd={variant === 'table'}
-        data-testid="parent-selector-tokens-tab"
-      />
+      <div className="overview-tab-controls">
+        <AssetListControlBar
+          showTokensLinks={shouldShowTokensLinks}
+          data-testid="parent-selector-tokens-tab"
+        />
+      </div>
       <TokenListContainer
         onClickAsset={onClickAsset}
         safeChains={safeChains}

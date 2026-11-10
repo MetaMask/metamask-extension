@@ -12458,6 +12458,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenContractAddressCopied": {
+    "message": "Token address copied"
+  },
   "tokenContractWarning": {
     "message": "Token contract warning"
   },
