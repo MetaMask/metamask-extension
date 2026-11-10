@@ -1,7 +1,10 @@
 import {
   buildLongTaskTimerResults,
+  legacyStepTimerId,
   measureStepWithLongTasks,
 } from './long-task-helper';
+import { performanceTracker } from './performance-tracker';
+import TimerHelper from './timer-helper';
 import type { LongTaskStepResult } from './types';
 
 jest.mock('./timer-helper', () => {
@@ -23,7 +26,57 @@ jest.mock('./performance-tracker', () => ({
 }));
 
 describe('long-task-helper', () => {
+  describe('legacyStepTimerId', () => {
+    it('appends Legacy to the step id', () => {
+      expect(legacyStepTimerId('openSwapPageFromHome')).toBe(
+        'openSwapPageFromHomeLegacy',
+      );
+      expect(legacyStepTimerId('bridge_load_page')).toBe(
+        'bridge_load_pageLegacy',
+      );
+    });
+  });
+
   describe('measureStepWithLongTasks', () => {
+    it('reports its timer under the step id by default', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'namedStep',
+        async () => undefined,
+      );
+
+      expect(TimerHelper).toHaveBeenLastCalledWith('namedStep');
+      expect(performanceTracker.addTimer).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: 'namedStep' }),
+      );
+      expect(result.id).toBe('namedStep');
+    });
+
+    it('reports its timer as the step id plus Legacy when asked, and returns the step id', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'namedStep',
+        async () => undefined,
+        { legacyTimerId: true },
+      );
+
+      expect(TimerHelper).toHaveBeenLastCalledWith('namedStepLegacy');
+      expect(performanceTracker.addTimer).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: 'namedStepLegacy' }),
+      );
+      expect(result.id).toBe('namedStep');
+    });
+
     it('resets metrics, runs action, and returns step result', async () => {
       const mockDriver = {
         resetLongTaskMetrics: jest.fn(),
@@ -32,6 +85,7 @@ describe('long-task-helper', () => {
           totalDuration: 180,
           maxDuration: 110,
           tbt: 80,
+          observed: true,
           tbtRating: 'good',
         }),
       } as unknown as import('../../webdriver/driver').Driver;
@@ -55,7 +109,112 @@ describe('long-task-helper', () => {
         longTaskTotalDuration: 180,
         longTaskMaxDuration: 110,
         tbt: 80,
+        longTasksObserved: true,
       });
+    });
+
+    it('resets before the action by default', async () => {
+      const order: string[] = [];
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(async () => {
+          order.push('reset');
+        }),
+        executeScript: jest.fn(),
+        collectLongTaskMetrics: jest.fn(async () => {
+          order.push('collect');
+          return null;
+        }),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      await measureStepWithLongTasks(mockDriver, 'step', async () => {
+        order.push('action');
+      });
+
+      expect(order).toStrictEqual(['reset', 'action', 'collect']);
+      expect(mockDriver.executeScript).not.toHaveBeenCalled();
+    });
+
+    it('when the window opened at the trigger, reads without resetting where the reset was, and logs what it read', async () => {
+      const log = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+      const order: string[] = [];
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        executeScript: jest.fn(async () => {
+          order.push('read');
+          return { count: 1, totalDuration: 70 };
+        }),
+        collectLongTaskMetrics: jest.fn(async () => {
+          order.push('collect');
+          return {
+            count: 3,
+            totalDuration: 250,
+            maxDuration: 120,
+            tbt: 100,
+            observed: true,
+            tbtRating: 'good',
+          };
+        }),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'step',
+        async () => {
+          order.push('action');
+        },
+        { windowOpenedAtTrigger: true },
+      );
+
+      expect(mockDriver.resetLongTaskMetrics).not.toHaveBeenCalled();
+      expect(order).toStrictEqual(['read', 'action', 'collect']);
+      // The collected window, which runs from the trigger, is the result.
+      expect(result).toMatchObject({ longTaskCount: 3, tbt: 100 });
+      expect(log).toHaveBeenCalledWith(
+        "[benchmark] step: 1 long task(s), 70 ms, between the trigger and the step timer's start",
+      );
+      log.mockRestore();
+    });
+
+    it("reads the app's metrics in the page without resetting them", async () => {
+      const getLongTaskMetricsWithTBT = jest.fn(() => ({
+        count: 2,
+        totalDuration: 90,
+      }));
+      const host = window as unknown as {
+        stateHooks?: { getLongTaskMetricsWithTBT?: unknown };
+      };
+      host.stateHooks = { getLongTaskMetricsWithTBT };
+      let pageFunction: (() => unknown) | undefined;
+      const mockDriver = {
+        executeScript: jest.fn(async (script: () => unknown) => {
+          pageFunction = script;
+          return script();
+        }),
+        collectLongTaskMetrics: jest.fn(async () => null),
+      } as unknown as import('../../webdriver/driver').Driver;
+      const log = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+
+      try {
+        await measureStepWithLongTasks(
+          mockDriver,
+          'step',
+          async () => undefined,
+          {
+            windowOpenedAtTrigger: true,
+          },
+        );
+
+        expect(getLongTaskMetricsWithTBT).toHaveBeenCalledWith(false);
+        delete host.stateHooks;
+        expect(pageFunction?.()).toBeNull();
+      } finally {
+        delete host.stateHooks;
+        log.mockRestore();
+      }
     });
 
     it('defaults to zeros when collectLongTaskMetrics returns null', async () => {
@@ -78,6 +237,60 @@ describe('long-task-helper', () => {
   });
 
   describe('buildLongTaskTimerResults', () => {
+    // extension#46664's sibling defect: `PerformanceObserver` rejects the
+    // `longtask` type outside Chromium, the metrics object keeps its
+    // initialised zeros, and a reader cannot tell that from a quiet main
+    // thread. Firefox read 0 in 60 of 60 runs on all 12 benchmarks.
+    it('omits the metrics entirely when no step had the observer attached', () => {
+      const steps = [
+        {
+          id: 'a',
+          duration: 10,
+          longTaskCount: 0,
+          longTaskTotalDuration: 0,
+          longTaskMaxDuration: 0,
+          tbt: 0,
+          longTasksObserved: false,
+        },
+        {
+          id: 'b',
+          duration: 20,
+          longTaskCount: 0,
+          longTaskTotalDuration: 0,
+          longTaskMaxDuration: 0,
+          tbt: 0,
+          longTasksObserved: false,
+        },
+      ];
+
+      expect(buildLongTaskTimerResults(steps)).toStrictEqual([]);
+    });
+
+    it('emits the metrics when at least one step observed, zeros included', () => {
+      const steps = [
+        {
+          id: 'a',
+          duration: 10,
+          longTaskCount: 0,
+          longTaskTotalDuration: 0,
+          longTaskMaxDuration: 0,
+          tbt: 0,
+          longTasksObserved: true,
+        },
+      ];
+
+      const results = buildLongTaskTimerResults(steps);
+
+      // An observed zero is a measurement and must survive.
+      expect(results.map((r) => r.id)).toStrictEqual([
+        'longTaskCount',
+        'longTaskTotalDuration',
+        'longTaskMaxDuration',
+        'tbt',
+      ]);
+      expect(results[0].value).toBe(0);
+    });
+
     it('returns run-level zeros for empty steps', () => {
       const results = buildLongTaskTimerResults([]);
 
@@ -98,6 +311,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 250,
           longTaskMaxDuration: 120,
           tbt: 100,
+          longTasksObserved: true,
         },
       ];
 
@@ -120,6 +334,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 180,
           longTaskMaxDuration: 100,
           tbt: 80,
+          longTasksObserved: true,
         },
         {
           id: 'step_b',
@@ -128,6 +343,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 420,
           longTaskMaxDuration: 150,
           tbt: 170,
+          longTasksObserved: true,
         },
         {
           id: 'step_c',
@@ -136,6 +352,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 60,
           longTaskMaxDuration: 60,
           tbt: 10,
+          longTasksObserved: true,
         },
       ];
 
@@ -158,6 +375,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 200,
           longTaskMaxDuration: 200,
           tbt: 150,
+          longTasksObserved: true,
         },
         {
           id: 'second',
@@ -166,6 +384,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 80,
           longTaskMaxDuration: 80,
           tbt: 30,
+          longTasksObserved: true,
         },
       ];
 
@@ -184,6 +403,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 0,
           longTaskMaxDuration: 0,
           tbt: 0,
+          longTasksObserved: true,
         },
         {
           id: 'slow_step',
@@ -192,6 +412,7 @@ describe('long-task-helper', () => {
           longTaskTotalDuration: 180,
           longTaskMaxDuration: 110,
           tbt: 80,
+          longTasksObserved: true,
         },
       ];
 

@@ -2141,7 +2141,10 @@ function collectMetrics() {
     });
 
   const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
-  if (longTaskData) {
+  // Gate on `observed`, not on the object: where `longtask` is unsupported
+  // (Firefox) the hook still returns an object, whose zeroed counters would
+  // read as a quiet main thread. Leave the metrics absent instead.
+  if (longTaskData?.observed) {
     results.longTaskCount = longTaskData.count;
     results.longTaskTotalDuration = longTaskData.totalDuration;
     results.longTaskMaxDuration = longTaskData.maxDuration;

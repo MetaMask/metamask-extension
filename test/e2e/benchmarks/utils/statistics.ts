@@ -11,6 +11,7 @@
 import { THRESHOLD_SEVERITY } from '../../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
+  MetricSample,
   PercentileKey,
   PercentileThreshold,
   RatingDistribution,
@@ -23,6 +24,15 @@ import type {
   WebVitalsMetrics,
   WebVitalsRating,
 } from '../../../../shared/constants/benchmarks';
+import type { SampleExclusion } from './constants';
+
+/**
+ * A retained observation, flagged when sample preparation leaves it out of the
+ * published statistics. Unflagged, it is an ordinary {@link MetricSample}.
+ */
+export type PreparedMetricSample = MetricSample & {
+  excluded?: SampleExclusion;
+};
 
 /**
  * CV (Coefficient of Variation) thresholds for data quality assessment
@@ -340,6 +350,18 @@ export type TimerStatisticsOptions = {
   maxDurationMs?: number;
   /** Override min duration (ms) for sanity check. Set to 0 for metrics that are legitimately zero (e.g. long task counts, TBT). */
   minDurationMs?: number;
+  /**
+   * Iteration index for each entry of `durations`, which keeps them as
+   * `values`. Omitted, `values` is omitted too: failed iterations leave no
+   * duration, so a position in `durations` is not an iteration number.
+   */
+  iterations?: number[];
+  /**
+   * Why each entry of `durations` is left out of the statistics, in the same
+   * order, or `undefined` to keep it. An excluded entry still appears in
+   * `values`, flagged with its reason, so the artifact keeps every observation.
+   */
+  exclusions?: (SampleExclusion | undefined)[];
 };
 
 export const calculateTimerStatistics = (
@@ -349,11 +371,16 @@ export const calculateTimerStatistics = (
 ): TimerStatistics => {
   const maxDuration = options?.maxDurationMs ?? MAX_METRIC_DURATION_MS;
   const minDuration = options?.minDurationMs ?? MIN_METRIC_DURATION_MS;
-  const sanityResult = filterBySanityChecks(
-    durations,
-    maxDuration,
-    minDuration,
-  );
+  const exclusions = options?.exclusions;
+  if (exclusions && exclusions.length !== durations.length) {
+    throw new Error(
+      `${timerId}: ${exclusions.length} exclusions for ${durations.length} durations`,
+    );
+  }
+  const included = exclusions
+    ? durations.filter((_, index) => exclusions[index] === undefined)
+    : durations;
+  const sanityResult = filterBySanityChecks(included, maxDuration, minDuration);
   const iqrResult = detectOutliersIQR(sanityResult.filtered);
   const zScoreResult = detectOutliersZScore(iqrResult.filtered);
   const { filtered } = zScoreResult;
@@ -365,6 +392,18 @@ export const calculateTimerStatistics = (
   const mean = calculateMean(filtered);
   const stdDev = calculateStdDev(filtered);
   const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
+  const { iterations } = options ?? {};
+  const values: PreparedMetricSample[] | undefined =
+    iterations && iterations.length === durations.length
+      ? durations.map((value, index) => {
+          const excluded = exclusions?.[index];
+          return {
+            iteration: iterations[index],
+            value,
+            ...(excluded && { excluded }),
+          };
+        })
+      : undefined;
 
   return {
     id: timerId,
@@ -381,6 +420,7 @@ export const calculateTimerStatistics = (
     outliers: totalExcluded,
     trimmedCount: iqrResult.outlierCount,
     dataQuality: assessDataQuality(cv),
+    ...(values && { values }),
   };
 };
 
