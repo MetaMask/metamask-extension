@@ -34,8 +34,15 @@ const {
 const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
-
-const DEFAULT_ETH_USD_PRICE = 3010;
+const {
+  PRICE_API_V3_SPOT_PRICES_MOCKS,
+  buildFallbackSpotPricesResponse,
+} = require('./mock-response-data/price-api');
+const {
+  CONTENTFUL_PROMOTIONAL_BANNERS_EMPTY_RESPONSE,
+  NOTIFICATION_LIST_EMPTY_RESPONSE,
+  RAMPS_COUNTRIES_EMPTY_RESPONSE,
+} = require('./mock-response-data/global-api-responses');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -58,7 +65,6 @@ const CHAIN_ID_NETWORKS_PATH =
   'test/e2e/mock-response-data/chain-id-network-chains.json';
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
-const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TEST_DAPP_STYLES_1_PATH =
   'test/e2e/mock-response-data/test-dapp-styles-1.txt';
 const TEST_DAPP_STYLES_2_PATH =
@@ -1585,108 +1591,14 @@ async function setupMocking(
     };
   });
 
-  // Price API: Spot prices for native token (ETH)
-  // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
+  // Price API: v3 spot prices for the native assets used in E2E fixtures.
   // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds: 'eip155:1/slip44:60',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/slip44:60': {
-            id: 'ethereum',
-            price: DEFAULT_ETH_USD_PRICE,
-            marketCap: 382623505141,
-            pricePercentChange1d: 0,
-          },
-        },
-      };
-    });
-
-  // Sepolia native — TokenDataSource / Price API request either slip44:60 or
-  // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
-  const sepoliaSpotPrice = {
-    id: 'ethereum',
-    price: DEFAULT_ETH_USD_PRICE,
-    marketCap: 382623505141,
-    pricePercentChange1d: 0,
-  };
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds: 'eip155:11155111/slip44:60',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:11155111/slip44:60': sepoliaSpotPrice,
-      },
-    }));
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds:
-        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
-          sepoliaSpotPrice,
-        'eip155:11155111/slip44:60': sepoliaSpotPrice,
-      },
-    }));
-
-  // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
-  // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds: 'eip155:1337/slip44:1',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1337/slip44:1': {
-          id: 'ethereum',
-          price: DEFAULT_ETH_USD_PRICE,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
-      },
-    }));
-
-  // Monad native — slip44:268435779 (not ETH slip44:60).
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds: 'eip155:143/slip44:268435779',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:143/slip44:268435779': {
-          id: 'monad',
-          price: DEFAULT_ETH_USD_PRICE,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
-      },
-    }));
+  for (const { assetIds, response } of PRICE_API_V3_SPOT_PRICES_MOCKS) {
+    await server
+      .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+      .withQuery({ assetIds, vsCurrency: 'usd', includeMarketData: 'true' })
+      .thenCallback(() => ({ statusCode: 200, json: response }));
+  }
 
   await server
     .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
@@ -1699,12 +1611,7 @@ async function setupMocking(
         .filter(Boolean);
       return {
         statusCode: 200,
-        json: Object.fromEntries(
-          assetIds.map((assetId) => [
-            assetId,
-            { price: 0, marketCap: 0, pricePercentChange1d: 0 },
-          ]),
-        ),
+        json: buildFallbackSpotPricesResponse(assetIds),
       };
     });
 
@@ -1804,76 +1711,6 @@ async function setupMocking(
         spotPricesV3: spotPricesSupportedChains,
       },
     });
-
-  // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
-  // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-          id: 'solana',
-          price: 112.87,
-          marketCap: 58245152246,
-          allTimeHigh: 293.31,
-          allTimeLow: 0.500801,
-          totalVolume: 6991628445,
-          high1d: 119.85,
-          low1d: 105.87,
-          circulatingSupply: 515615042.5147497,
-          dilutedMarketCap: 67566552200,
-          marketCapPercentChange1d: 6.43259,
-          priceChange1d: 6.91,
-          pricePercentChange1h: -0.10747351712871725,
-          pricePercentChange1d: 6.517062579985171,
-          pricePercentChange7d: -1.2651850097746231,
-          pricePercentChange14d: -17.42211401987578,
-          pricePercentChange30d: -7.317068682545842,
-          pricePercentChange200d: -22.09390252653303,
-          pricePercentChange1y: -31.856951873653344,
-        },
-      },
-    }));
-
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
-          id: 'bitcoin',
-          price: DEFAULT_BTC_CONVERSION_RATE,
-          marketCap: 1910000000000,
-          allTimeHigh: 124000,
-          allTimeLow: 67.81,
-          totalVolume: 45000000000,
-          high1d: 96500,
-          low1d: 94800,
-          circulatingSupply: 19800000,
-          dilutedMarketCap: 1910000000000,
-          marketCapPercentChange1d: 0.5,
-          priceChange1d: 120,
-          pricePercentChange1h: 0.01,
-          pricePercentChange1d: 0.12,
-          pricePercentChange7d: 2.1,
-          pricePercentChange14d: -1.2,
-          pricePercentChange30d: 5.3,
-          pricePercentChange200d: 40,
-          pricePercentChange1y: 85,
-        },
-      },
-    }));
 
   await server
     .forGet('https://price.api.cx.metamask.io/v1/spot-prices/bitcoin')
@@ -2007,7 +1844,10 @@ async function setupMocking(
   await server
     .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
-    .thenCallback(() => ({ statusCode: 200, json: [] }));
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: NOTIFICATION_LIST_EMPTY_RESPONSE,
+    }));
 
   // Identity APIs
   await mockIdentityServices(server);
@@ -2020,17 +1860,6 @@ async function setupMocking(
       statusCode: 404,
     };
   });
-
-  // On Ramp Content
-  const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
-  await server
-    .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(ON_RAMP_CONTENT),
-      };
-    });
 
   // Chains Metadata
   const CHAIN_ID_NETWORKS = fs.readFileSync(CHAIN_ID_NETWORKS_PATH);
@@ -2382,7 +2211,7 @@ async function setupMocking(
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: [],
+          json: RAMPS_COUNTRIES_EMPTY_RESPONSE,
         };
       });
   }
@@ -2816,10 +2645,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          items: [],
-          includes: { Asset: [] },
-        },
+        json: CONTENTFUL_PROMOTIONAL_BANNERS_EMPTY_RESPONSE,
       };
     });
 
