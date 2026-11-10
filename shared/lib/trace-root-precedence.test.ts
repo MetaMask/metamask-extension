@@ -53,6 +53,7 @@ describe('trace root and parentContext (real SDK)', () => {
 
   it('starts a new trace for root when its parentContext does not resolve', () => {
     const json = underParent(() =>
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       child({ root: true, parentContext: { _name: 'Never started' } }),
     );
     expect(json.trace_id).not.toBe(parent.spanContext().traceId);
