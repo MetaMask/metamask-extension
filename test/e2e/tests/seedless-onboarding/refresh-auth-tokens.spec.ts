@@ -34,7 +34,56 @@ async function getMockedRequests(
 }
 
 describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
-  it('renews an expired social-login auth token and uses it in later requests', async function () {
+  it('renews an expired social-login auth token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        ignoredConsoleErrors: [
+          'The operation cannot be completed while the controller is locked.',
+          'Unable to enable notifications',
+        ],
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          const oAuthMockttpService = new OAuthMockttpService();
+          return oAuthMockttpService.setup(server, {
+            forceTokenExpiration: true,
+            userEmail: MOCK_GOOGLE_ACCOUNT,
+          });
+        },
+      },
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
+        await importWalletWithSocialLoginOnboardingFlow({ driver });
+        await new HomePage(driver).checkPageIsLoaded();
+
+        const mockedRequests = await getMockedRequests(driver, mockedEndpoints);
+        const tokenRequests = mockedRequests.filter((request) =>
+          request.url.includes(AuthServer.RequestToken),
+        );
+        const grants = await Promise.all(
+          tokenRequests.map(async (request) => {
+            const body = (await request.body.getJson()) as {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              grant_type?: string;
+            };
+            return body.grant_type;
+          }),
+        );
+
+        assert.ok(
+          grants.includes('refresh_token'),
+          'Expected wallet initialization to refresh the expired auth token',
+        );
+      },
+    );
+  });
+
+  it('uses the refreshed auth token in later requests', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
@@ -78,23 +127,6 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         );
 
         const mockedRequests = await getMockedRequests(driver, mockedEndpoints);
-        const tokenRequests = mockedRequests.filter((request) =>
-          request.url.includes(AuthServer.RequestToken),
-        );
-        const grants = await Promise.all(
-          tokenRequests.map(async (request) => {
-            const body = (await request.body.getJson()) as {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              grant_type?: string;
-            };
-            return body.grant_type;
-          }),
-        );
-
-        assert.ok(
-          grants.includes('refresh_token'),
-          'Expected wallet initialization to refresh the expired auth token',
-        );
 
         // The first request that sends the social token after the refresh is
         // the social identifier pairing, which must carry the refreshed one.
