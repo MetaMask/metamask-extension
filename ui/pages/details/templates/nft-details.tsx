@@ -1,8 +1,9 @@
 import React from 'react';
+import { ModalBody, ModalFooter } from '@metamask/design-system-react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
-import { Footer, Section } from '../components/shared';
+import { Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 
@@ -19,8 +20,8 @@ export function NftDetails({
     item.type === 'nftSell' ? t('youReceived') : t('youSent');
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="divide-y divide-border-muted">
         <TokensSection
           tokens={[
             isMint
@@ -36,10 +37,10 @@ export function NftDetails({
           <FeesRows item={item} />
           <TotalAmountRow token={amountToken} />
         </Section>
-      </div>
-      <Footer>
+      </ModalBody>
+      <ModalFooter>
         <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
-      </Footer>
-    </div>
+      </ModalFooter>
+    </>
   );
 }

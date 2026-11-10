@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { ModalBody, ModalFooter } from '@metamask/design-system-react';
 import type {
   ActivityListItem,
   TokenAmount,
@@ -15,7 +16,7 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../confirmations/constants/perps';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
-import { Footer, Row, Section } from '../../components/shared';
+import { Row, Section } from '../../components/shared';
 import { TokensSection } from '../../components/sections';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
@@ -70,8 +71,8 @@ export function PerpsDetails({
   const blockExplorerHash = item.hash === '0x0' ? undefined : item.hash;
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="divide-y divide-border-muted">
         <TokensSection
           tokens={[
             { label: t('youWithdrew'), token: withdrewToken },
@@ -102,11 +103,11 @@ export function PerpsDetails({
             />
           </Section>
         ) : null}
-      </div>
+      </ModalBody>
 
-      <Footer>
+      <ModalFooter>
         <BlockExplorerButton chainId={chainId} txHash={blockExplorerHash} />
-      </Footer>
-    </div>
+      </ModalFooter>
+    </>
   );
 }

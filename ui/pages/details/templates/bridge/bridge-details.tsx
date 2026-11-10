@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { ModalBody, ModalFooter } from '@metamask/design-system-react';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
@@ -12,7 +13,7 @@ import { TransactionStatus } from '../../../../components/app/transaction/transa
 import { AccountName } from '../../../../components/app/transaction/account-name';
 import { TransactionId } from '../../../../components/app/transaction/transaction-id';
 import { isValidTransactionHash } from '../../../../../shared/lib/transactions.utils';
-import { Footer, Row, Section } from '../../components/shared';
+import { Row, Section } from '../../components/shared';
 import { TokenRow } from '../../components/token-row';
 import { FeesRows, TotalAmountRow } from '../../components/amounts-section';
 import { BridgeExplorerButtons } from './bridge-explorer-buttons';
@@ -106,8 +107,8 @@ export function BridgeDetails({
   );
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="divide-y divide-border-muted">
         <div className="flex flex-col gap-2 pb-4">
           {sourceToken && (
             <div>
@@ -172,8 +173,8 @@ export function BridgeDetails({
           <FeesRows item={item} />
           <TotalAmountRow token={sourceToken} />
         </Section>
-      </div>
-      <Footer>
+      </ModalBody>
+      <ModalFooter className="grid gap-4">
         <BridgeExplorerButtons
           sourceChainId={item.chainId}
           sourceTxHash={sourceTxHash}
@@ -184,7 +185,7 @@ export function BridgeDetails({
           sourceToken={sourceToken}
           destinationToken={destinationToken}
         />
-      </Footer>
-    </div>
+      </ModalFooter>
+    </>
   );
 }

@@ -1,14 +1,15 @@
 import React from 'react';
+import { ModalBody, ModalFooter } from '@metamask/design-system-react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { FeesRows } from '../components/amounts-section';
-import { Footer, Section } from '../components/shared';
+import { Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 
 export function DefaultDetails({ item }: { item: ActivityListItem }) {
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="divide-y divide-border-muted">
         <TokensSection
           tokens={[
             {
@@ -20,11 +21,11 @@ export function DefaultDetails({ item }: { item: ActivityListItem }) {
         <Section>
           <FeesRows item={item} />
         </Section>
-      </div>
+      </ModalBody>
 
-      <Footer>
+      <ModalFooter>
         <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
-      </Footer>
-    </div>
+      </ModalFooter>
+    </>
   );
 }

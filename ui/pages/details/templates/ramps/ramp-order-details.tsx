@@ -7,6 +7,8 @@ import {
   IconName,
   IconSize,
   Text,
+  ModalBody,
+  ModalFooter,
 } from '@metamask/design-system-react';
 import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { isCaipAssetType } from '@metamask/utils';
@@ -21,7 +23,7 @@ import { hasPositiveNumericAmount } from '../../../../hooks/ramps/utils/hasPosit
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { watchRampsProviderOrderTab } from '../../../../store/controller-actions/ramps-controller';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
-import { Footer, Row, Section } from '../../components/shared';
+import { Row, Section } from '../../components/shared';
 import { RampMetadataSection } from './ramp-metadata-section';
 import { RampTokensSection } from './ramp-tokens-section';
 
@@ -123,8 +125,8 @@ export function RampOrderDetails({
   };
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="divide-y divide-border-muted">
         <RampTokensSection item={item} />
         <RampMetadataSection
           item={item}
@@ -175,8 +177,8 @@ export function RampOrderDetails({
             )}
           </Section>
         ) : null}
-      </div>
-      <Footer>
+      </ModalBody>
+      <ModalFooter className="grid gap-4">
         {provider?.orderLink ? (
           <Button
             className="w-full"
@@ -200,7 +202,7 @@ export function RampOrderDetails({
             {t('rampsOrderDetailsBuyAgain')}
           </Button>
         ) : null}
-      </Footer>
-    </div>
+      </ModalFooter>
+    </>
   );
 }

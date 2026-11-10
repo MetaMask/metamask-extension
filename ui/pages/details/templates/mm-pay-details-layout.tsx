@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { Text } from '@metamask/design-system-react';
+import { ModalBody, ModalFooter, Text } from '@metamask/design-system-react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Status } from '../../../../shared/lib/activity/types';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
@@ -10,7 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary';
-import { Footer, Row, Section } from '../components/shared';
+import { Row, Section } from '../components/shared';
 
 type MmPayFeeFields = {
   bridgeFeeFiat?: string;
@@ -72,8 +72,8 @@ export function MmPayDetailsLayout({
   const showFees = feeSectionAlwaysVisible || hasFees;
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="divide-y divide-border-muted">
         <div
           className="flex items-center gap-2 pb-4"
           data-testid="transaction-details-hero"
@@ -122,9 +122,9 @@ export function MmPayDetailsLayout({
             </TransactionDetailsProvider>
           </Section>
         ) : null}
-      </div>
+      </ModalBody>
 
-      <Footer>{footer}</Footer>
-    </div>
+      <ModalFooter className="grid gap-4">{footer}</ModalFooter>
+    </>
   );
 }
