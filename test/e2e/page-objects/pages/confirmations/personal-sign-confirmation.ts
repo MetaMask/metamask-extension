@@ -44,8 +44,12 @@ export default class PersonalSignConfirmation extends Confirmation {
     text: 'https://127.0.0.1:8080',
   };
 
-  private readonly siweMessage: RawLocator = {
-    text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+  // Temporary dual-match: @metamask/test-dapp still emits community.metamask.io
+  // while in-repo fixtures migrate to community.metamask.com. Remove the .io
+  // branch once the test-dapp package is bumped.
+  private readonly siweMessage = {
+    xpath:
+      "//*[contains(text(), 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos') or contains(text(), 'I accept the MetaMask Terms of Service: https://community.metamask.com/tos')]",
   };
 
   constructor(driver: Driver) {
