@@ -109,6 +109,7 @@ export function useOnboardingCompletion() {
         dispatch(removeDeferredDeepLink());
       }
 
+      // Retain install attribution even when a later direct link supplies the action.
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
         await trackEvent(
           createEvent({
@@ -118,7 +119,9 @@ export function useOnboardingCompletion() {
         );
       }
 
-      if (deferredDeepLinkResult) {
+      if (onboardingRedirect) {
+        navigate(onboardingRedirect, { replace: true });
+      } else if (deferredDeepLinkResult) {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
         ) {
@@ -143,8 +146,6 @@ export function useOnboardingCompletion() {
             buildInterstitialRoute(deferredDeepLinkResult.urlPathAndQuery),
           );
         }
-      } else if (onboardingRedirect) {
-        navigate(onboardingRedirect, { replace: true });
       } else if (!completedWithSidePanelFlow) {
         navigate(DEFAULT_ROUTE);
       }
@@ -252,7 +253,7 @@ export function useOnboardingCompletion() {
         const deferredDeepLinkResult =
           await getDeferredDeepLinkRoute(deferredDeepLink);
         const shouldOpenSidePanel =
-          !(onboardingRedirect && !deferredDeepLinkResult) &&
+          !onboardingRedirect &&
           deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
           deferredDeepLinkResult?.type !==
             DeferredDeepLinkRouteType.Interstitial;

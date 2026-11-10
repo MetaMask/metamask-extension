@@ -70,6 +70,31 @@ describe('RequireAuthenticated', () => {
     },
   );
 
+  it('replaces the pending destination when this UI receives a later route', () => {
+    const state = {
+      metamask: { completedOnboarding: false, isUnlocked: false },
+    };
+    mockUseSelector.mockImplementation((selector) => selector(state as never));
+    mockUseLocation.mockReturnValue({
+      pathname: '/settings/privacy',
+      search: '',
+      hash: '#metametrics',
+    });
+    const { rerender } = render(<RequireAuthenticated />);
+
+    mockUseLocation.mockReturnValue({
+      pathname: '/bridge/prepare',
+      search: '?amount=10',
+      hash: '',
+    });
+    rerender(<RequireAuthenticated />);
+
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'SET_ONBOARDING_REDIRECT',
+      payload: '/bridge/prepare?amount=10',
+    });
+  });
+
   it('redirects to unlock with location state when locked', () => {
     const state = {
       metamask: {
