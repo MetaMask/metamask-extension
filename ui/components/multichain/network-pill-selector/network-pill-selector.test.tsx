@@ -138,12 +138,26 @@ describe('NetworkPillSelector', () => {
   });
 
   describe('when pills wrap onto more than one line', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
     it('toggles between the collapsed and expanded view', () => {
-      // The Optimism pill sits on a second line
+      // Three 100px pills in a 250px row, so the last one wraps. The toggle
+      // is 40px and still fits beside the first two.
       jest
-        .spyOn(HTMLElement.prototype, 'offsetTop', 'get')
+        .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+        .mockReturnValue(250);
+      jest
+        .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
         .mockImplementation(function mock(this: HTMLElement) {
-          return this.dataset.testid === 'network-pill-0xa' ? 56 : 0;
+          if (this.dataset.testid === 'network-pill-toggle') {
+            return 40;
+          }
+          if (this.dataset.testid?.startsWith('network-pill')) {
+            return 100;
+          }
+          return 0;
         });
 
       renderSelector();
