@@ -488,7 +488,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     try {
       const href = globalThis.self?.location?.href;
       if (href !== undefined && href !== '') {
-        environmentType = getEnvironmentType(href);
+        environmentType = getEnvironmentType(href) as EnvironmentType;
       }
     } catch {
       // Keep unknown. `getEnvironmentType` parses with `new URL`.
