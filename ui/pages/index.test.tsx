@@ -57,24 +57,55 @@ describe('Index', () => {
     mockRouterProvider.mockReturnValue(null);
   });
 
-  it('renders the app inside the store provider', () => {
+  it('calls onFirstCommit once after the first render is committed', () => {
+    const onFirstCommit = jest.fn();
+
+    const { rerender } = render(
+      <Index
+        store={store}
+        uiMessenger={uiMessenger}
+        onFirstCommit={onFirstCommit}
+      />,
+    );
+
+    expect(onFirstCommit).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <Index
+        store={store}
+        uiMessenger={uiMessenger}
+        onFirstCommit={onFirstCommit}
+      />,
+    );
+
+    expect(onFirstCommit).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders without an onFirstCommit callback', () => {
     expect(() =>
       render(<Index store={store} uiMessenger={uiMessenger} />),
     ).not.toThrow();
   });
 
-  it('renders the error page when the app throws', () => {
+  it('renders the error page and still calls onFirstCommit when the app throws', () => {
     const consoleError = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
     mockRouterProvider.mockImplementation(() => {
       throw new Error('boom');
     });
+    const onFirstCommit = jest.fn();
+
     const { getByTestId } = render(
-      <Index store={store} uiMessenger={uiMessenger} />,
+      <Index
+        store={store}
+        uiMessenger={uiMessenger}
+        onFirstCommit={onFirstCommit}
+      />,
     );
 
     expect(getByTestId('error-page')).toHaveTextContent('boom');
+    expect(onFirstCommit).toHaveBeenCalledTimes(1);
 
     consoleError.mockRestore();
   });

@@ -1,4 +1,4 @@
-import React, { Component, type ReactNode } from 'react';
+import React, { Component, useLayoutEffect, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import {
   HashRouter,
@@ -92,6 +92,7 @@ export const router = createHashRouter([
 type IndexProps = {
   store: Store;
   uiMessenger: UIMessenger;
+  onFirstCommit?: () => void;
 };
 
 type RootErrorBoundaryProps = {
@@ -121,16 +122,28 @@ class RootErrorBoundary extends Component<
   }
 }
 
-export default function Index({ store, uiMessenger }: IndexProps) {
+const renderRootError = (error: Error) => (
+  <HashRouter>
+    <ErrorPage error={error} />
+  </HashRouter>
+);
+
+export default function Index({
+  store,
+  uiMessenger,
+  onFirstCommit,
+}: Readonly<IndexProps>) {
+  // Runs in the commit phase of the first render, as the legacy synchronous
+  // `ReactDOM.render` did before `createRoot` made rendering asynchronous.
+  useLayoutEffect(() => {
+    onFirstCommit?.();
+    // Only the first commit is of interest.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Provider store={store}>
-      <RootErrorBoundary
-        fallback={(error) => (
-          <HashRouter>
-            <ErrorPage error={error} />
-          </HashRouter>
-        )}
-      >
+      <RootErrorBoundary fallback={renderRootError}>
         <UIMessengerProvider value={uiMessenger}>
           {withStrictMode(<RouterProvider router={router} />)}
         </UIMessengerProvider>
