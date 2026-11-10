@@ -4409,9 +4409,6 @@
   "getDollarMore": {
     "message": "さらに$1獲得"
   },
-  "getTheNewestFeatures": {
-    "message": "最新機能を入手"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Web3を使用できるようにウォレットを準備しましょう",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12549,9 +12546,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "このサイトがデフォルトのネットワークURLの更新を要求しています。デフォルトとネットワーク情報はいつでも編集できます。"
   },
-  "updateInformation": {
-    "message": "ウォレットがより安全かつスムーズになり、新機能が追加されました。今すぐアップデートして保護を維持し、最新の改善点をご活用ください。"
-  },
   "updateNetworkConfirmationTitle": {
     "message": "$1を更新",
     "description": "$1 represents network name"
@@ -12565,9 +12559,6 @@
   "updateRpc": {
     "message": "RPCを更新",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "最新バージョンにアップデート"
   },
   "updatedRpcForNetworks": {
     "message": "ネットワークRPCが更新されました"

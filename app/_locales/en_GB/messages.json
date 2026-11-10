@@ -4565,9 +4565,6 @@
   "getDollarMore": {
     "message": "Get $1 more"
   },
-  "getTheNewestFeatures": {
-    "message": "Get the newest features"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12865,9 +12862,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "This site is requesting to update your default network URL. You can edit defaults and network information any time."
   },
-  "updateInformation": {
-    "message": "We've made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Update $1",
     "description": "$1 represents network name"
@@ -12881,9 +12875,6 @@
   "updateRpc": {
     "message": "Update RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Update to the latest version"
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"

@@ -4423,9 +4423,6 @@
   "getDollarMore": {
     "message": "Ganhe mais $1"
   },
-  "getTheNewestFeatures": {
-    "message": "Obtenha os recursos mais recentes"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Prepare sua carteira para usar a web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12598,9 +12595,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "Este site está solicitando a atualização do URL de rede padrão. Você pode editar padrões e informações de rede quando quiser."
   },
-  "updateInformation": {
-    "message": "Tornamos sua carteira mais segura, ágil e adicionamos novos recursos. Atualize agora para continuar protegido e aproveitar nossas melhorias mais recentes."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Atualizar $1",
     "description": "$1 represents network name"
@@ -12614,9 +12608,6 @@
   "updateRpc": {
     "message": "Atualizar RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Atualizar para a versão mais recente"
   },
   "updatedRpcForNetworks": {
     "message": "RPCs de rede atualizadas"

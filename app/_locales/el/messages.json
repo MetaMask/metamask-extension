@@ -4423,9 +4423,6 @@
   "getDollarMore": {
     "message": "Κερδίστε $1 επιπλέον"
   },
-  "getTheNewestFeatures": {
-    "message": "Δείτε τις νεότερες λειτουργίες"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Ετοιμάστε το πορτοφόλι σας για χρήση στο web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12598,9 +12595,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "Αυτός ο ιστότοπος ζητά να ενημερώσει την προεπιλεγμένη διεύθυνση URL του δικτύου σας. Μπορείτε να επεξεργαστείτε τις προεπιλογές και τις πληροφορίες δικτύου ανά πάσα στιγμή."
   },
-  "updateInformation": {
-    "message": "Έχουμε κάνει το πορτοφόλι σας πιο ασφαλές, πιο εύχρηστο και προσθέσαμε νέες λειτουργίες. Κάντε ενημέρωση τώρα για να είστε προστατευμένοι και να χρησιμοποιήσετε τις τελευταίες βελτιώσεις μας."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "Ενημέρωση του $1",
     "description": "$1 represents network name"
@@ -12614,9 +12608,6 @@
   "updateRpc": {
     "message": "Ενημέρωση RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "Ενημέρωση στην τελευταία έκδοση"
   },
   "updatedRpcForNetworks": {
     "message": "Ενημέρωση του RPC δικτύου"

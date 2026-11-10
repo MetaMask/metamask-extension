@@ -4423,9 +4423,6 @@
   "getDollarMore": {
     "message": "Makakuha ng $1 pa"
   },
-  "getTheNewestFeatures": {
-    "message": "Kunin ang mga pinakabagong feature"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "Ihanda ang wallet mo upang magamit ang web3.",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12598,9 +12595,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "Hinihiling ng site na ito na i-update ang iyong default na URL ng network. Maaari mong i-edit ang mga default at impormasyon ng network anumang oras."
   },
-  "updateInformation": {
-    "message": "Ginawa naming mas ligtas, mas smooth ang iyong wallet, at nagdagdag ng ilang bagong tampok. I-update ngayon para manatiling protektado at gamitin ang aming mga pinakabagong pagpapahusay."
-  },
   "updateNetworkConfirmationTitle": {
     "message": "I-update ang $1 ",
     "description": "$1 represents network name"
@@ -12614,9 +12608,6 @@
   "updateRpc": {
     "message": "I-update ang RPC",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "I-update sa pinakabagong bersyon"
   },
   "updatedRpcForNetworks": {
     "message": "Na-update ang mga RPC ng Network"

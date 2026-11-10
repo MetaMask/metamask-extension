@@ -4423,9 +4423,6 @@
   "getDollarMore": {
     "message": "$1 ज़्यादा पाएं"
   },
-  "getTheNewestFeatures": {
-    "message": "नवीनतम फीचर्स प्राप्त करें"
-  },
   "getYourWalletReadyToUseWeb3": {
     "message": "web3 का उपयोग करने के लिए अपना वॉलेट तैयार करें",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
@@ -12598,9 +12595,6 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "यह साइट आपके डिफ़ॉल्ट नेटवर्क URL को अपडेट करने का अनुरोध कर रही है। आप किसी भी समय डिफ़ॉल्ट और नेटवर्क जानकारी बदल सकते हैं।"
   },
-  "updateInformation": {
-    "message": "हमने आपके वॉलेट को अधिक सुरक्षित और सहज बनाया है, तथा कुछ नए फीचर्स जोड़े हैं। सुरक्षित रहने और हमारे नवीनतम सुधारों का लाभ उठाने के लिए अभी अपडेट करें।"
-  },
   "updateNetworkConfirmationTitle": {
     "message": "$1 अपडेट करें",
     "description": "$1 represents network name"
@@ -12614,9 +12608,6 @@
   "updateRpc": {
     "message": "RPC अपडेट करें",
     "description": "Button text to update RPC endpoint"
-  },
-  "updateToTheLatestVersion": {
-    "message": "नवीनतम संस्करण में अपडेट करें"
   },
   "updatedRpcForNetworks": {
     "message": "नेटवर्क RPC अपडेट किया गया"
