@@ -57,17 +57,6 @@ export type RatingDistribution = {
   null: number;
 };
 
-/** One retained observation: the value and the iteration that produced it. */
-export type MetricSample = {
-  iteration: number;
-  value: number;
-};
-
-/** Per-metric retained observations, in iteration order, before filtering */
-export type MetricSamples = {
-  [key: string]: MetricSample[];
-};
-
 /** Per-metric statistics (mean, percentiles, etc.) */
 export type TimerStatistics = {
   id: string;
@@ -84,11 +73,6 @@ export type TimerStatistics = {
   outliers: number;
   trimmedCount?: number;
   dataQuality: 'good' | 'poor' | 'unreliable';
-  /**
-   * Every observation, in iteration order, before sanity, IQR and z-score
-   * filtering. The aggregates above cannot be turned back into these.
-   */
-  values?: MetricSample[];
 };
 
 /** Per-metric aggregated web vitals with full statistical analysis */
@@ -127,15 +111,7 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
   outliers?: StatisticalResult;
-  /** Per-metric observations behind `mean` and the percentiles, before filtering */
-  values?: MetricSamples;
   webVitals?: WebVitalsSummary;
-  /**
-   * Set when every iteration failed. The statistics maps are then empty
-   * rather than absent, so a reader cannot otherwise tell this entry from a
-   * healthy one by shape alone.
-   */
-  error?: string;
 };
 
 export const STAT_KEY = {

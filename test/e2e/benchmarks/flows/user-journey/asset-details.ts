@@ -14,8 +14,6 @@ import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
-  describeSpanBreakdown,
-  readSentryTransactions,
   sentryCountResult,
   sentryTimerResult,
   waitForSentryTransactions,
@@ -42,8 +40,6 @@ import type {
   LongTaskStepResult,
   TimerResult,
 } from '../../utils/types';
-
-const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 /**
  * The chart header's percent change, rendered only once real historical prices
@@ -168,19 +164,6 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
           console.error('Error collecting web vitals:', error);
-        }
-
-        // Diagnostic only: log the child spans of this iteration's
-        // `Asset Details` span. Read last, so a later-ending span has been sent.
-        try {
-          console.log(
-            `[benchmark] ${describeSpanBreakdown(
-              await readSentryTransactions(mockedEndpoint),
-              TraceName.AssetDetails,
-            )}`,
-          );
-        } catch (error) {
-          console.error('Error reading the Asset Details child spans:', error);
         }
       },
     );

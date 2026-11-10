@@ -4,6 +4,7 @@
  */
 
 import type { Mockttp } from 'mockttp';
+import type { Driver } from '../../../webdriver/driver';
 import bridgeTokensPopular from '../../mocks/bridge-tokens-popular.json';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -18,6 +19,9 @@ const mockFixtureOptions: Record<string, unknown>[] = [];
 function mockLocatorName(locator: unknown): string {
   if (locator === undefined || typeof locator === 'string') {
     return String(locator ?? '');
+  }
+  if (typeof locator === 'function') {
+    return locator.name;
   }
   const { css, text } = locator as { css?: string; text?: string };
   return text === undefined ? String(css) : `${css}:${text}`;
@@ -105,14 +109,6 @@ jest.mock('../../utils/in-page-step-timer', () => ({
     mockEvents.push(`read:${id}`);
     return [{ id, value: 1, unit: 'ms' }];
   }),
-  logRequestsWithinInPageSteps: jest.fn(async () => {
-    mockEvents.push('requestLog');
-  }),
-}));
-jest.mock('../../utils/sidepanel-onboarding', () => ({
-  waitForPageIdleBeforeStep: jest.fn(async () => {
-    mockEvents.push('pageIdle');
-  }),
 }));
 jest.mock('../../utils', () => ({
   collectWebVitals: jest.fn(async () => undefined),
@@ -136,8 +132,11 @@ import { resolveFlowIterations } from '../../utils/flow-iterations';
 import {
   BRIDGE_17_ITERATIONS,
   BRIDGE_POPULAR_TOKENS_MOCK,
+  PAGE_IDLE_BEFORE_STEP,
   iterations as bridgeIterations,
+  resolveAfterTwoIdlePeriods,
   run as runBridge,
+  waitForPageIdleBeforeStep,
 } from './bridge-user-actions';
 
 /**
@@ -179,19 +178,30 @@ function recordingMockServer() {
   return { server, rules };
 }
 
+/**
+ * Put an environment variable back as it was before the test.
+ * @param name - The variable.
+ * @param value - Its value before the test, or undefined if it was unset.
+ */
+function restoreEnv(name: string, value: string | undefined): void {
+  if (value === undefined) {
+    delete process.env[name];
+  } else {
+    process.env[name] = value;
+  }
+}
+
 describe('bridge user actions', () => {
   const original = process.env[BRIDGE_POPULAR_TOKENS_MOCK];
+  const originalPageIdle = process.env[PAGE_IDLE_BEFORE_STEP];
 
   beforeEach(() => {
     mockEvents.length = 0;
     mockFixtureOptions.length = 0;
   });
   afterEach(() => {
-    if (original === undefined) {
-      delete process.env[BRIDGE_POPULAR_TOKENS_MOCK];
-    } else {
-      process.env[BRIDGE_POPULAR_TOKENS_MOCK] = original;
-    }
+    restoreEnv(BRIDGE_POPULAR_TOKENS_MOCK, original);
+    restoreEnv(PAGE_IDLE_BEFORE_STEP, originalPageIdle);
   });
 
   async function run(): Promise<BenchmarkRunResult> {
@@ -217,15 +227,17 @@ describe('bridge user actions', () => {
   }
 
   it('waits for the page to go idle once, after the asset-picker button is clickable and before its probe and click', async () => {
+    process.env[PAGE_IDLE_BEFORE_STEP] = '1';
     await run();
 
-    expect(mockEvents.filter((event) => event === 'pageIdle')).toHaveLength(1);
-    expect(at('read:bridge_load_page')).toBeLessThan(at('pageIdle'));
+    const pageIdle = 'driver.executeAsyncScript:resolveAfterTwoIdlePeriods';
+    expect(mockEvents.filter((event) => event === pageIdle)).toHaveLength(1);
+    expect(at('read:bridge_load_page')).toBeLessThan(at(pageIdle));
     expect(
       at('driver.findClickableElement:sourceAssetPickerButton'),
-    ).toBeLessThan(at('pageIdle'));
-    expect(at('pageIdle')).toBeLessThan(at('probe:bridge_load_asset_picker'));
-    expect(at('pageIdle')).toBeLessThan(
+    ).toBeLessThan(at(pageIdle));
+    expect(at(pageIdle)).toBeLessThan(at('probe:bridge_load_asset_picker'));
+    expect(at(pageIdle)).toBeLessThan(
       at('driver.clickElement:sourceAssetPickerButton'),
     );
   });
@@ -263,7 +275,7 @@ describe('bridge user actions', () => {
       json: bridgeTokensPopular,
     });
     // A body the app can parse: what the default mocks sent was empty.
-    expect(JSON.parse(JSON.stringify(response.json))).toHaveLength(6);
+    expect(JSON.parse(JSON.stringify(response.json))).toHaveLength(4);
     // The search step's destination is not among them, so it is still absent
     // when the search starts.
     expect(JSON.stringify(response.json)).not.toContain(
@@ -327,4 +339,82 @@ describe("bridge user actions' iteration count", () => {
       expect(resolve()).toBe(5);
     },
   );
+});
+
+describe('waitForPageIdleBeforeStep', () => {
+  const original = process.env[PAGE_IDLE_BEFORE_STEP];
+  afterEach(() => {
+    restoreEnv(PAGE_IDLE_BEFORE_STEP, original);
+  });
+
+  it('does nothing in the page when the switch is unset', async () => {
+    delete process.env[PAGE_IDLE_BEFORE_STEP];
+    const executeAsyncScript = jest.fn();
+
+    await waitForPageIdleBeforeStep({
+      executeAsyncScript,
+    } as unknown as Driver);
+
+    expect(executeAsyncScript).not.toHaveBeenCalled();
+  });
+
+  it('does nothing in the page when the switch is 0', async () => {
+    process.env[PAGE_IDLE_BEFORE_STEP] = '0';
+    const executeAsyncScript = jest.fn();
+
+    await waitForPageIdleBeforeStep({
+      executeAsyncScript,
+    } as unknown as Driver);
+
+    expect(executeAsyncScript).not.toHaveBeenCalled();
+  });
+
+  it('runs the two-idle-period wait in the page when the switch is 1', async () => {
+    process.env[PAGE_IDLE_BEFORE_STEP] = '1';
+    const executeAsyncScript = jest.fn().mockResolvedValue(null);
+
+    await waitForPageIdleBeforeStep({
+      executeAsyncScript,
+    } as unknown as Driver);
+
+    expect(executeAsyncScript).toHaveBeenCalledWith(resolveAfterTwoIdlePeriods);
+  });
+});
+
+describe('resolveAfterTwoIdlePeriods', () => {
+  const pending: (() => void)[] = [];
+  const host = globalThis as unknown as {
+    requestIdleCallback?: (callback: () => void) => number;
+  };
+  const original = host.requestIdleCallback;
+
+  beforeEach(() => {
+    pending.length = 0;
+    host.requestIdleCallback = (callback) => {
+      pending.push(callback);
+      return pending.length;
+    };
+  });
+  afterEach(() => {
+    host.requestIdleCallback = original;
+  });
+
+  /** Run the callbacks queued for the current idle period. */
+  function runIdlePeriod(): void {
+    pending.splice(0).forEach((callback) => callback());
+  }
+
+  it('ends the script on the second idle period, not the first', () => {
+    const done = jest.fn();
+
+    resolveAfterTwoIdlePeriods([], done);
+    expect(done).not.toHaveBeenCalled();
+
+    runIdlePeriod();
+    expect(done).not.toHaveBeenCalled();
+
+    runIdlePeriod();
+    expect(done).toHaveBeenCalledTimes(1);
+    expect(done).toHaveBeenCalledWith(null);
+  });
 });

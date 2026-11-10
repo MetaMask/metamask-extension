@@ -53,34 +53,8 @@ export const DEFAULT_NUM_PAGE_LOADS = DEFAULT_BENCHMARK_PAGE_LOADS;
 /** Browser loads for the POWER_USER_HOME preset (higher than default to offset warm-up exclusion). */
 export const POWER_USER_NUM_BROWSER_LOADS = 15;
 
-/**
- * Number of leading runs in each job discarded as warm-up before computing
- * stats. In the startup flows a run is a browser-load session; in
- * every other flow it is an iteration of `runBenchmarkWithIterations`.
- */
+/** Number of leading browser-load sessions to discard as warm-up before computing stats. */
 export const WARMUP_RUNS = 1;
-
-/**
- * Number of leading page loads in each measured browser load that the startup
- * flows flag as excluded. The first page loads after unlock coincide with extra
- * network traffic and sit apart from the rest in nearly every run.
- */
-export const EXCLUDED_LEADING_PAGE_LOADS = 1;
-
-/**
- * Why a retained observation is left out of the published statistics. The
- * value stays in the artifact's `values` (or `webVitals.runs`) with this flag,
- * so a reader can recompute the statistic with or without it.
- */
-export const SAMPLE_EXCLUSION = {
-  /** A first run in each job, discarded as warm-up. */
-  WarmUp: 'warm-up',
-  /** The first page load of a startup browser load. */
-  FirstPageLoad: 'first-page-load',
-} as const;
-
-export type SampleExclusion =
-  (typeof SAMPLE_EXCLUSION)[keyof typeof SAMPLE_EXCLUSION];
 
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',

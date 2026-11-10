@@ -4,21 +4,6 @@ import { performanceTracker } from './performance-tracker';
 import type { LongTaskStepResult, TimerResult } from './types';
 
 /**
- * Read the app's long-task count and total duration without resetting them, or
- * null without the hook. Runs in the page in place of the reset, so it returns
- * only two numbers to keep the round trip as short as the reset's.
- */
-function readLongTaskMetricsWithoutReset(): {
-  count: number;
-  totalDuration: number;
-} | null {
-  const metrics = window.stateHooks?.getLongTaskMetricsWithTBT?.(false);
-  return metrics
-    ? { count: metrics.count, totalDuration: metrics.totalDuration }
-    : null;
-}
-
-/**
  * Name for a step's harness-clock timer when the step also has an in-page timer
  * (`in-page-step-timer.ts`), which owns the bare step id. The harness timer
  * starts after the triggering click returns, so it is not the app's latency.
@@ -29,12 +14,6 @@ export function legacyStepTimerId(stepId: string): string {
 
 export type MeasureStepWithLongTasksOptions = {
   /**
-   * Set when the in-page probe (`resetLongTasksAtStart`) already opened the
-   * long-task window at the trigger. A read that does not reset replaces the
-   * reset, so the step timer still starts after one page round trip.
-   */
-  windowOpenedAtTrigger?: boolean;
-  /**
    * Report the timer as `<stepId>Legacy` ({@link legacyStepTimerId}), leaving
    * the bare step id to the step's in-page timer.
    */
@@ -44,10 +23,9 @@ export type MeasureStepWithLongTasksOptions = {
 /**
  * Measure a benchmark step while collecting Long Task metrics delta.
  *
- * Resets long task metrics before the action, unless the window was opened
- * at the step's trigger, times the action with TimerHelper, then collects the
- * delta. The TimerHelper is also registered with performanceTracker for
- * report generation.
+ * Resets long task metrics before the action, times the action with
+ * TimerHelper, then collects the delta. The TimerHelper is also
+ * registered with performanceTracker for report generation.
  *
  * @param driver - Selenium driver instance
  * @param stepId - Unique identifier for this step (used as timer ID)
@@ -58,27 +36,13 @@ export async function measureStepWithLongTasks(
   driver: Driver,
   stepId: string,
   action: () => Promise<void>,
-  {
-    windowOpenedAtTrigger = false,
-    legacyTimerId = false,
-  }: MeasureStepWithLongTasksOptions = {},
+  { legacyTimerId = false }: MeasureStepWithLongTasksOptions = {},
 ): Promise<LongTaskStepResult> {
   const timer = new TimerHelper(
     legacyTimerId ? legacyStepTimerId(stepId) : stepId,
   );
 
-  if (windowOpenedAtTrigger) {
-    const sinceTrigger = (await driver.executeScript(
-      readLongTaskMetricsWithoutReset,
-    )) as Awaited<ReturnType<typeof readLongTaskMetricsWithoutReset>>;
-    console.log(
-      `[benchmark] ${timer.id}: ${sinceTrigger?.count ?? 'no'} long task(s), ${
-        sinceTrigger?.totalDuration ?? 0
-      } ms, between the trigger and the step timer's start`,
-    );
-  } else {
-    await driver.resetLongTaskMetrics();
-  }
+  await driver.resetLongTaskMetrics();
 
   await timer.measure(action);
   performanceTracker.addTimer(timer);

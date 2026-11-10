@@ -12,8 +12,6 @@ import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
-  describeSpanBreakdown,
-  readSentryTransactions,
   sentryCountResult,
   sentryTimerResult,
   waitForSentryTransactions,
@@ -40,8 +38,6 @@ import type {
   LongTaskStepResult,
   TimerResult,
 } from '../../utils/types';
-
-const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
 /**
  * The chart header's percent change, rendered only once real historical prices
@@ -143,19 +139,6 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
           webVitals = await collectWebVitals(driver);
         } catch (error) {
           console.error('Error collecting web vitals:', error);
-        }
-
-        // Diagnostic only: log the child spans of this iteration's
-        // `Asset Details` span. Read last, so a later-ending span has been sent.
-        try {
-          console.log(
-            `[benchmark] ${describeSpanBreakdown(
-              await readSentryTransactions(mockedEndpoint),
-              TraceName.AssetDetails,
-            )}`,
-          );
-        } catch (error) {
-          console.error('Error reading the Asset Details child spans:', error);
         }
       },
     );

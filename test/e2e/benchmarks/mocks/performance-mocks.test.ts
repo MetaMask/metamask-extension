@@ -393,7 +393,7 @@ describe('mockBenchmarkEndpoints', () => {
       const delays = await everyDelay(await registeredRules());
 
       // 77 delay sites totalling 26,550 ms, as the `mockDelayMs` comment
-      // says, plus the two quote responses at `QUOTE_RESPONSE_DELAY_MS`.
+      // says, plus the two quote responses at 2000 ms.
       expect(delays.filter((delayMs) => delayMs > 0)).toHaveLength(79);
       expect(sum(delays)).toBe(26550 + 2 * 2000);
     });

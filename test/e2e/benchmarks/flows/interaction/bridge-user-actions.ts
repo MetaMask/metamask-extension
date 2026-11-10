@@ -27,11 +27,8 @@ import bridgeTokensPopular from '../../mocks/bridge-tokens-popular.json';
 import {
   IN_PAGE_DESTINATIONS,
   finishInPageStep,
-  logRequestsWithinInPageSteps,
   startInPageStep,
-  type InPageStepReading,
 } from '../../utils/in-page-step-timer';
-import { waitForPageIdleBeforeStep } from '../../utils/sidepanel-onboarding';
 import { WARMUP_RUNS } from '../../utils/constants';
 import {
   BENCHMARK_PERSONA,
@@ -112,6 +109,38 @@ export function iterations(): number | undefined {
     : undefined;
 }
 
+/**
+ * Before the asset-picker step, wait for two consecutive idle periods of the
+ * page: see {@link waitForPageIdleBeforeStep}. Off unless set to `1`.
+ */
+export const PAGE_IDLE_BEFORE_STEP = 'BENCHMARK_PAGE_IDLE_BEFORE_STEP';
+
+/**
+ * Call `done` after two consecutive idle periods. Serialized into the page by
+ * `executeAsyncScript`, which passes `done` second, so it may reference only
+ * its body and globals on every build's LavaMoat scuttling exception list.
+ */
+export function resolveAfterTwoIdlePeriods(
+  _args: unknown,
+  done: (result: null) => void,
+): void {
+  requestIdleCallback(() => {
+    requestIdleCallback(() => done(null));
+  });
+}
+
+/**
+ * When `BENCHMARK_PAGE_IDLE_BEFORE_STEP=1`, wait for two consecutive idle
+ * periods; call it before the step's probe and trigger, outside its timers. A
+ * page that never idles fails at the script timeout rather than start busy.
+ */
+export async function waitForPageIdleBeforeStep(driver: Driver): Promise<void> {
+  if (process.env[PAGE_IDLE_BEFORE_STEP] !== '1') {
+    return;
+  }
+  await driver.executeAsyncScript(resolveAfterTwoIdlePeriods);
+}
+
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadPage: number = 0;
@@ -119,9 +148,6 @@ export async function run(): Promise<BenchmarkRunResult> {
     let searchToken: number = 0;
     const steps: LongTaskStepResult[] = [];
     const inPageTimers: TimerResult[] = [];
-    const inPageReadings: InPageStepReading[] = [];
-    const keepReading = (stepReading: InPageStepReading) =>
-      inPageReadings.push(stepReading);
     let webVitals;
 
     const fixtureBuilder = new FixtureBuilderV2().withEnabledNetworks({
@@ -140,13 +166,7 @@ export async function run(): Promise<BenchmarkRunResult> {
           },
         },
       },
-      async ({
-        driver,
-        mockServer,
-      }: {
-        driver: Driver;
-        mockServer: Mockttp;
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         await login(driver);
         const quotePage = new BridgeQuotePage(driver);
 
@@ -181,11 +201,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         });
         if (loadPageProbe) {
           inPageTimers.push(
-            ...(await finishInPageStep(
-              driver,
-              'bridge_load_page',
-              keepReading,
-            )),
+            ...(await finishInPageStep(driver, 'bridge_load_page')),
           );
         }
 
@@ -219,11 +235,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         });
         if (assetPickerProbe) {
           inPageTimers.push(
-            ...(await finishInPageStep(
-              driver,
-              'bridge_load_asset_picker',
-              keepReading,
-            )),
+            ...(await finishInPageStep(driver, 'bridge_load_asset_picker')),
           );
         }
 
@@ -273,11 +285,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         });
         if (searchProbe) {
           inPageTimers.push(
-            ...(await finishInPageStep(
-              driver,
-              'bridge_search_token',
-              keepReading,
-            )),
+            ...(await finishInPageStep(driver, 'bridge_search_token')),
           );
         }
 
@@ -286,12 +294,6 @@ export async function run(): Promise<BenchmarkRunResult> {
         } catch (error) {
           console.error('Error collecting web vitals:', error);
         }
-
-        // After everything measured: which requests each in-page interval
-        // overlapped, to compare slow iterations with fast ones. The mock
-        // server's own rules are read, not the endpoints `mockTokensEthereum`
-        // returns, so the default mocks' requests are listed too.
-        await logRequestsWithinInPageSteps(mockServer, inPageReadings);
       },
     );
 

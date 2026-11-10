@@ -24,7 +24,6 @@ import {
   aggregateWebVitals,
   MAX_METRIC_DURATION_MS,
 } from './statistics';
-import { SAMPLE_EXCLUSION } from './constants';
 
 function createMockStats(
   overrides: Partial<TimerStatistics> = {},
@@ -256,115 +255,6 @@ describe('Statistics Utils', () => {
       const stats = calculateTimerStatistics('mixedTimer', durations);
       expect(stats.samples).toBeLessThan(durations.length);
       expect(stats.outliers).toBeGreaterThan(0);
-    });
-
-    it('retains each duration against the iteration that produced it', () => {
-      const durations = [100, 110, 105];
-      const stats = calculateTimerStatistics('retained', durations, {
-        iterations: [0, 1, 2],
-      });
-
-      expect(stats.values).toStrictEqual([
-        { iteration: 0, value: 100 },
-        { iteration: 1, value: 110 },
-        { iteration: 2, value: 105 },
-      ]);
-    });
-
-    it('numbers by the supplied iteration, not by position', () => {
-      // Iterations 1 and 3 failed, so they contributed no duration. Numbering by
-      // position would report four consecutive iterations and hide the gap that
-      // a missingness model reads.
-      const stats = calculateTimerStatistics('sparse', [100, 105, 102], {
-        iterations: [0, 2, 4],
-      });
-
-      expect(stats.values?.map((sample) => sample.iteration)).toStrictEqual([
-        0, 2, 4,
-      ]);
-    });
-
-    it('retains the values a filter discarded', () => {
-      const durations = [100, 105, 102, 10000000];
-      const stats = calculateTimerStatistics('withOutlier', durations, {
-        iterations: [0, 1, 2, 3],
-      });
-
-      expect(stats.samples).toBeLessThan(durations.length);
-      expect(stats.values?.map((sample) => sample.value)).toStrictEqual(
-        durations,
-      );
-    });
-
-    it('omits values when no iteration numbering is supplied', () => {
-      const stats = calculateTimerStatistics('unnumbered', [100, 105]);
-      expect(stats.values).toBeUndefined();
-    });
-
-    it('omits values when the numbering does not cover every duration', () => {
-      const stats = calculateTimerStatistics('mismatched', [100, 105, 102], {
-        iterations: [0, 1],
-      });
-      expect(stats.values).toBeUndefined();
-    });
-
-    it('leaves an excluded duration out of every statistic', () => {
-      // The warm-up value is far above the rest. Kept, it would raise the mean
-      // and the max; excluded, the statistics are those of the other four.
-      const stats = calculateTimerStatistics(
-        'warmedUp',
-        [400, 100, 102, 104, 106],
-        {
-          iterations: [0, 1, 2, 3, 4],
-          exclusions: [
-            SAMPLE_EXCLUSION.WarmUp,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-          ],
-        },
-      );
-
-      expect(stats.samples).toBe(4);
-      expect(stats.mean).toBe(103);
-      expect(stats.max).toBe(106);
-      // The exclusion is sample preparation, not an outlier the filters found.
-      expect(stats.outliers).toBe(0);
-    });
-
-    it('keeps an excluded duration in values, flagged with its reason', () => {
-      const stats = calculateTimerStatistics('warmedUp', [400, 100, 102], {
-        iterations: [0, 1, 2],
-        exclusions: [SAMPLE_EXCLUSION.WarmUp, undefined, undefined],
-      });
-
-      expect(stats.values).toStrictEqual([
-        { iteration: 0, value: 400, excluded: 'warm-up' },
-        { iteration: 1, value: 100 },
-        { iteration: 2, value: 102 },
-      ]);
-    });
-
-    it('reports no samples when every duration is excluded', () => {
-      const stats = calculateTimerStatistics('onlyWarmUp', [400], {
-        iterations: [0],
-        exclusions: [SAMPLE_EXCLUSION.WarmUp],
-      });
-
-      expect(stats.samples).toBe(0);
-      expect(stats.mean).toBe(0);
-      expect(stats.values).toStrictEqual([
-        { iteration: 0, value: 400, excluded: 'warm-up' },
-      ]);
-    });
-
-    it('rejects exclusions that do not cover every duration', () => {
-      expect(() =>
-        calculateTimerStatistics('mismatched', [100, 105], {
-          exclusions: [SAMPLE_EXCLUSION.WarmUp],
-        }),
-      ).toThrow('mismatched: 1 exclusions for 2 durations');
     });
   });
 

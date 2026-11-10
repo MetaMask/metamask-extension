@@ -189,10 +189,13 @@ function getManifest(): ExtensionRuntime['getManifest'] {
  * @returns flags if they exist, otherwise an empty object
  */
 export function getManifestFlags(): ManifestFlags {
-  const readManifest = getManifest();
-
   // If this is running in a unit test, there's no manifest, so just return an empty object
-  if (process.env.JEST_WORKER_ID === undefined || !readManifest) {
+  if (process.env.JEST_WORKER_ID === undefined) {
+    return {};
+  }
+
+  const readManifest = getManifest();
+  if (!readManifest) {
     return {};
   }
 

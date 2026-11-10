@@ -151,11 +151,6 @@ function delayedResponse<TResponse>(
   };
 }
 
-// Env-overridable so a run can change the quote delay without a code change.
-const QUOTE_RESPONSE_DELAY_MS = Number(
-  process.env.BENCHMARK_QUOTE_RESPONSE_DELAY_MS ?? 2000,
-);
-
 function delayedCallback<TResponse>(
   delayMs: number,
   callback: (req: { url: string }) => TResponse,
@@ -1348,7 +1343,7 @@ export async function mockBenchmarkEndpoints(
         // it, so `BENCHMARK_ZERO_MOCK_DELAYS=1` zeroes the fixed delay alone.
         withKnownAnswerDelay(
           KNOWN_ANSWER_QUOTE_DELAY,
-          delayedCallback(QUOTE_RESPONSE_DELAY_MS, (req) => {
+          delayedCallback(2000, (req) => {
             const isSolana = req.url.includes('srcChainId=1151111081099710');
             const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
             return {
@@ -1369,7 +1364,7 @@ export async function mockBenchmarkEndpoints(
       .thenCallback(
         withKnownAnswerDelay(
           KNOWN_ANSWER_QUOTE_DELAY,
-          delayedCallback(QUOTE_RESPONSE_DELAY_MS, (req) => {
+          delayedCallback(2000, (req) => {
             const isSolana = req.url.includes('srcChainId=1151111081099710');
             const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
             return { statusCode: 200, json: [quote] };
