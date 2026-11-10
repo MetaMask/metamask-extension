@@ -129,7 +129,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         >
                           <img
                             alt="ETH"
-                            class="size-full object-contain"
+                            class="size-full object-cover"
                             src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
                           />
                         </div>
@@ -144,7 +144,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         >
                           <img
                             alt="Ethereum"
-                            class="size-full object-contain"
+                            class="size-full object-cover"
                             src="./images/eth_logo.svg"
                           />
                         </div>
@@ -265,7 +265,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         >
                           <img
                             alt="mUSD"
-                            class="size-full object-contain"
+                            class="size-full object-cover"
                             src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
                           />
                         </div>
@@ -280,7 +280,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         >
                           <img
                             alt="Ethereum"
-                            class="size-full object-contain"
+                            class="size-full object-cover"
                             src="./images/eth_logo.svg"
                           />
                         </div>

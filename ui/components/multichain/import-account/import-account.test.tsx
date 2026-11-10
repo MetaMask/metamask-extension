@@ -59,11 +59,16 @@ describe('ImportAccount', () => {
 
   describe('rendering', () => {
     it('renders the component with private key import by default', () => {
-      const { getByText, getByLabelText } = renderImportAccount();
+      const { getByLabelText, getByRole, queryByText } = renderImportAccount();
 
-      expect(getByText(messages.selectType.message)).toBeInTheDocument();
       expect(
-        getByLabelText(messages.pastePrivateKey.message),
+        queryByText(messages.ethereumAndEvms.message),
+      ).not.toBeInTheDocument();
+      expect(
+        getByRole('button', { name: messages.privateKey.message }),
+      ).toHaveAttribute('aria-pressed', 'true');
+      expect(
+        getByLabelText(messages.enterYourPrivateKey.message),
       ).toBeInTheDocument();
     });
 
@@ -71,7 +76,9 @@ describe('ImportAccount', () => {
       const { getByRole } = renderImportAccount();
 
       // Check that the help link is present
-      const helpLink = getByRole('link', { name: messages.here.message });
+      const helpLink = getByRole('link', {
+        name: messages.learnMoreUpperCase.message,
+      });
       expect(helpLink).toBeInTheDocument();
       expect(helpLink).toHaveAttribute(
         'href',
@@ -83,22 +90,21 @@ describe('ImportAccount', () => {
       const { getByLabelText } = renderImportAccount();
 
       expect(
-        getByLabelText(messages.pastePrivateKey.message),
+        getByLabelText(messages.enterYourPrivateKey.message),
       ).toBeInTheDocument();
     });
   });
 
-  describe('dropdown selection', () => {
-    it('switches to JSON import view when JSON File is selected', async () => {
+  describe('import type toggle', () => {
+    it('switches to JSON import view when JSON file is selected', async () => {
       const { getByRole, queryByLabelText, getByTestId } =
         renderImportAccount();
 
-      const dropdown = getByRole('combobox');
-      fireEvent.change(dropdown, { target: { value: 'JSON File' } });
+      fireEvent.click(getByRole('button', { name: messages.jsonFile.message }));
 
       await waitFor(() => {
         expect(
-          queryByLabelText(messages.pastePrivateKey.message),
+          queryByLabelText(messages.enterYourPrivateKey.message),
         ).not.toBeInTheDocument();
         expect(getByTestId('file-input')).toBeInTheDocument();
       });
@@ -112,7 +118,9 @@ describe('ImportAccount', () => {
       );
       const { getByLabelText, getByText, getByRole, queryByText } =
         renderImportAccount();
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -123,8 +131,7 @@ describe('ImportAccount', () => {
         expect(queryByText('Test error')).toBeInTheDocument();
       });
 
-      const dropdown = getByRole('combobox');
-      fireEvent.change(dropdown, { target: { value: 'JSON File' } });
+      fireEvent.click(getByRole('button', { name: messages.jsonFile.message }));
 
       await waitFor(() => {
         expect(queryByText('Test error')).not.toBeInTheDocument();
@@ -141,7 +148,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       const testPrivateKey = '0xabcdef1234567890';
 
       fireEvent.change(privateKeyInput, { target: { value: testPrivateKey } });
@@ -166,7 +175,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -187,7 +198,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -210,7 +223,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: 'invalid-key' },
       });
@@ -230,7 +245,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: 'invalid-key' },
       });
@@ -265,9 +282,7 @@ describe('ImportAccount', () => {
 
       const { getByRole, getByTestId, getByText } = renderImportAccount();
 
-      fireEvent.change(getByRole('combobox'), {
-        target: { value: 'JSON File' },
-      });
+      fireEvent.click(getByRole('button', { name: messages.jsonFile.message }));
 
       const fileInput = getByTestId('file-input');
       const mockFile = new File(['0'], 'test.json');
@@ -313,24 +328,15 @@ describe('ImportAccount', () => {
     it('enables import button when private key is entered', () => {
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
 
       const importButton = getImportButton();
       expect(importButton).not.toBeDisabled();
-    });
-  });
-
-  describe('cancel action', () => {
-    it('calls onActionComplete when cancel button is clicked', () => {
-      const { getByText } = renderImportAccount();
-
-      const cancelButton = getByText(messages.cancel.message);
-      fireEvent.click(cancelButton);
-
-      expect(mockOnActionComplete).toHaveBeenCalled();
     });
   });
 
@@ -346,7 +352,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -370,7 +378,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -394,7 +404,9 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
+      const privateKeyInput = getByLabelText(
+        messages.enterYourPrivateKey.message,
+      );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
