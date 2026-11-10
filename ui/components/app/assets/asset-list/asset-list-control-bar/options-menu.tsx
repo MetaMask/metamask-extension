@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popover } from '../../../../component-library';
+import { Popover } from '@metamask/design-system-react';
 import { OptionsButton } from './options-button';
 import { useControlPopover } from './use-control-popover';
 

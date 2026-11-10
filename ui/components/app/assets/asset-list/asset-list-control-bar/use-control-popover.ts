@@ -1,5 +1,5 @@
 import { useCallback, useId, useState } from 'react';
-import { PopoverPosition } from '../../../../component-library';
+import { PopoverPosition } from '@metamask/design-system-react';
 import {
   controlPopoverStyle,
   useAssetControl,

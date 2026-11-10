@@ -3,10 +3,16 @@ import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
-  Icon,
+  ButtonBase,
+  ButtonBaseSize,
+  FontWeight,
   IconColor,
   IconName,
   IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+  twMerge,
 } from '@metamask/design-system-react';
 import { getUseExternalServices } from '../../../../../selectors';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
@@ -16,20 +22,6 @@ import {
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import {
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
-  Text,
-} from '../../../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderColor,
-  Display,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useBoolean } from '../../../../../hooks/useBoolean';
 import {
   CHAIN_IDS,
@@ -200,57 +192,40 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
     }
   }, [allNetworks, dispatch, shouldSwitchFromHiddenNonEvmNetwork]);
 
-  let networkFilterTextColor = TextColor.textDefault;
-  if (isNetworkSwitchPending) {
-    networkFilterTextColor = TextColor.transparent;
-  } else if (isSingleNetworkFilterSelected) {
-    networkFilterTextColor = TextColor.primaryDefault;
-  }
+  const networkFilterTextColor = isSingleNetworkFilterSelected
+    ? TextColor.PrimaryDefault
+    : TextColor.TextDefault;
 
   return (
     <>
       <ButtonBase
         data-testid="sort-by-networks"
-        variant={TextVariant.bodySmMedium}
-        className="w-auto min-w-[auto] justify-between gap-1 !px-2 !py-0 hover:bg-hover"
+        className={twMerge(
+          'w-auto min-w-[auto] justify-between gap-1 border border-muted bg-background-default px-2 py-0 hover:bg-hover',
+          isFullScreen && 'mr-2',
+          isOpen && 'bg-pressed',
+          isSingleNetworkFilterSelected && 'text-primary-default',
+        )}
         onClick={toggle}
         size={ButtonBaseSize.Sm}
-        loading={isNetworkSwitchPending}
-        disabled={isNetworkSwitchPending}
-        backgroundColor={
-          isOpen
-            ? BackgroundColor.backgroundPressed
-            : BackgroundColor.backgroundDefault
-        }
-        color={
-          isSingleNetworkFilterSelected
-            ? TextColor.primaryDefault
-            : TextColor.textDefault
-        }
-        marginRight={isFullScreen ? 2 : null}
-        borderColor={BorderColor.borderMuted}
-        ellipsis
+        isLoading={isNetworkSwitchPending}
+        isDisabled={isNetworkSwitchPending}
+        startIconName={isNetworkSwitchPending ? undefined : IconName.Filter}
+        startIconProps={{
+          size: IconSize.Md,
+          color: isSingleNetworkFilterSelected
+            ? IconColor.PrimaryDefault
+            : IconColor.IconDefault,
+        }}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-          {!isNetworkSwitchPending && (
-            <Icon
-              name={IconName.Filter}
-              size={IconSize.Md}
-              color={
-                isSingleNetworkFilterSelected
-                  ? IconColor.PrimaryDefault
-                  : IconColor.IconDefault
-              }
-            />
-          )}
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={networkFilterTextColor}
-            ellipsis
-          >
-            {networkButtonText}
-          </Text>
-        </Box>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={networkFilterTextColor}
+          ellipsis
+        >
+          {networkButtonText}
+        </Text>
       </ButtonBase>
       <HomeNetworkFilterModal
         isOpen={isOpen}

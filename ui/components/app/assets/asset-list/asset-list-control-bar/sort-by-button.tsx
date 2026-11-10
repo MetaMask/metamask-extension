@@ -3,9 +3,9 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Popover,
   twMerge,
 } from '@metamask/design-system-react';
-import { Popover } from '../../../../component-library';
 import SortControl from '../sort-control/sort-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import Tooltip from '../../../../ui/tooltip';

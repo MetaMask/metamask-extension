@@ -5,12 +5,12 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Box } from '../../../../component-library';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -100,14 +100,15 @@ export const AssetControls = ({
   return (
     <AssetControlsContext.Provider value={value}>
       <Box
-        className="asset-list-control-bar pt-4 pb-1"
-        marginLeft={4}
-        marginRight={4}
+        className="asset-list-control-bar"
+        marginHorizontal={4}
+        paddingTop={4}
+        paddingBottom={1}
         data-testid={dataTestId}
       >
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
         >
           {children}
         </Box>
@@ -130,9 +131,9 @@ export const AssetControlsActions = ({
   children,
 }: AssetControlsActionsProps) => (
   <Box
-    display={Display.Flex}
-    justifyContent={JustifyContent.flexEnd}
-    alignItems={AlignItems.center}
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.End}
   >
     {children}
   </Box>
