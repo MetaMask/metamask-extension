@@ -1,0 +1,141 @@
+name: Pilot A/B benchmarks
+
+# TEMPORARY (1/2): Phase B of the main-detector plan. Runs only on
+# trigger-ci-pilot-b* branches, which main.yml ignores. Each job runs a base
+# and a head test build of main (downloaded from CloudFront) in alternating
+# browser sessions on one runner, using this branch's harness. Artifacts only:
+# no Sentry, no gates. Remove this file and the main.yml exclusion when done.
+#
+# A run covers batch PB_BATCH of PB_BATCH_SIZE pairs from PB_PAIRS, PB_SHARDS
+# shards per browser each. Pairs 0 is the LavaMoat bump, 1-20 are ordinary
+# consecutive main commits, 21-30 are A/A (base and head are the same build).
+# To run the next batch, change PB_BATCH and push.
+
+on:
+  push:
+    branches:
+      - 'trigger-ci-pilot-b*'
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  BENCHMARK_AB_PILOT: '1'
+  BENCHMARK_AB_SEQUENCE: ABBABAABAB
+  # CloudFront run IDs and manifest versions of each base (b) and head (h) build.
+  PB_PAIRS: '[{"b":"37934631830","h":"37954282242","bv":"13.54.0","hv":"13.54.0"},{"b":"39435407807","h":"39438069452","bv":"13.55.0","hv":"13.55.0"},{"b":"39482092081","h":"39497818006","bv":"13.55.0","hv":"13.55.0"},{"b":"39565922570","h":"39578037713","bv":"13.55.0","hv":"13.55.0"},{"b":"39591287066","h":"39600184629","bv":"13.55.0","hv":"13.55.0"},{"b":"39623244819","h":"39627248488","bv":"13.55.0","hv":"13.55.0"},{"b":"39668694300","h":"39672502678","bv":"13.55.0","hv":"13.55.0"},{"b":"40033856323","h":"40086226005","bv":"13.56.0","hv":"13.56.0"},{"b":"40316126497","h":"40316549510","bv":"13.56.0","hv":"13.56.0"},{"b":"40513032385","h":"40513687978","bv":"13.56.0","hv":"13.56.0"},{"b":"40521492878","h":"40523006007","bv":"13.56.0","hv":"13.56.0"},{"b":"40554476853","h":"40559133146","bv":"13.56.0","hv":"13.56.0"},{"b":"40559133146","h":"40577265267","bv":"13.56.0","hv":"13.56.0"},{"b":"40666412434","h":"40667097365","bv":"13.56.0","hv":"13.56.0"},{"b":"40667097365","h":"40675273029","bv":"13.56.0","hv":"13.56.0"},{"b":"40698226466","h":"40709148037","bv":"13.56.0","hv":"13.56.0"},{"b":"41491667507","h":"41498366219","bv":"13.56.0","hv":"13.56.0"},{"b":"41615315333","h":"41648002491","bv":"13.57.0","hv":"13.57.0"},{"b":"41713911512","h":"41736810667","bv":"13.57.0","hv":"13.57.0"},{"b":"41885045403","h":"41897745983","bv":"13.57.0","hv":"13.57.0"},{"b":"42000842239","h":"42011072978","bv":"13.57.0","hv":"13.57.0"},{"b":"39943387025","h":"39943387025","bv":"13.56.0","hv":"13.56.0"},{"b":"40559133146","h":"40559133146","bv":"13.56.0","hv":"13.56.0"},{"b":"40316549510","h":"40316549510","bv":"13.56.0","hv":"13.56.0"},{"b":"40844542936","h":"40844542936","bv":"13.56.0","hv":"13.56.0"},{"b":"42011072978","h":"42011072978","bv":"13.57.0","hv":"13.57.0"},{"b":"41648002491","h":"41648002491","bv":"13.57.0","hv":"13.57.0"},{"b":"42074369138","h":"42074369138","bv":"13.57.0","hv":"13.57.0"},{"b":"42025794502","h":"42025794502","bv":"13.57.0","hv":"13.57.0"},{"b":"40509624100","h":"40509624100","bv":"13.56.0","hv":"13.56.0"},{"b":"41897745983","h":"41897745983","bv":"13.57.0","hv":"13.57.0"}]'
+  PB_BATCH: '0'
+  PB_BATCH_SIZE: '31'
+  PB_SHARDS: '1'
+  PB_HOST: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Build the shard matrix
+        id: matrix
+        run: |
+          matrix=$(jq -nc --argjson s "$PB_SHARDS" --argjson size "$PB_BATCH_SIZE" \
+            --argjson batch "$PB_BATCH" --argjson pairs "$PB_PAIRS" '
+            {include: [
+              range($batch * $size; ([($batch + 1) * $size, ($pairs | length)] | min)) as $p
+              | ("chrome", "firefox") as $browser
+              | range(1; $s + 1) as $shard
+              | {browser: $browser, shard: $shard, pair: $p, flip: (($shard + $p) % 2)}
+            ]}')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "Batch $PB_BATCH: $(jq '.include | length' <<< "$matrix") jobs"
+
+  pilot:
+    needs: plan
+    name: ${{ matrix.browser }}-p${{ matrix.pair }}-s${{ matrix.shard }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 45
+    env:
+      SELENIUM_BROWSER: ${{ matrix.browser }}
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      BRANCH: ${{ github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      BENCHMARK_RUNNER_LABEL: ubuntu-26.04
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download the base and head builds
+        env:
+          BROWSER: ${{ matrix.browser }}
+          PAIR: ${{ matrix.pair }}
+        run: |
+          set -euo pipefail
+          pair=$(jq -c --argjson i "$PAIR" '.[$i] + {index: $i}' <<< "$PB_PAIRS")
+          for side in base head; do
+            run=$(jq -r --arg s "$side" 'if $s == "base" then .b else .h end' <<< "$pair")
+            version=$(jq -r --arg s "$side" 'if $s == "base" then .bv else .hv end' <<< "$pair")
+            if [[ "$BROWSER" == firefox ]]; then
+              path="build-test-mv2-webpack/builds/metamask-firefox-$version.zip"
+            else
+              path="build-test-webpack/builds/metamask-chrome-$version.zip"
+            fi
+            curl --fail --silent --show-error --retry 5 --retry-all-errors \
+              --output "$side.zip" "$PB_HOST/$run/$path"
+            mkdir -p "pair/$side"
+            unzip -q "$side.zip" -d "pair/$side"
+          done
+          mkdir -p test-artifacts/benchmarks
+          echo "$pair" > "test-artifacts/benchmarks/pair-$BROWSER.json"
+
+      - name: Pin geckodriver 0.36.0 (Firefox only)
+        if: ${{ matrix.browser == 'firefox' }}
+        run: .github/scripts/pin-geckodriver.sh
+
+      - name: Prepare the A and B builds
+        run: >-
+          yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts
+          --browser ${{ matrix.browser }}
+          --base-source pair/base --head-source pair/head
+          --out test-artifacts/benchmarks/ab-builds-${{ matrix.browser }}-s${{ matrix.shard }}.json
+
+      - name: Choose which build goes first
+        env:
+          MATRIX_FLIP: ${{ matrix.flip }}
+        run: echo "BENCHMARK_AB_FLIP=$MATRIX_FLIP" >> "$GITHUB_ENV"
+
+      - name: Run the A/B benchmark
+        timeout-minutes: 35
+        run: >-
+          yarn test:e2e:benchmark
+          --preset startupStandardHome
+          --browserLoads 10 --pageLoads 10
+          --retries 2
+          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-startupStandardHome-s${{ matrix.shard }}.json
+
+      - name: Upload pilot result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: pilot-${{ matrix.browser }}-s${{ matrix.shard }}-p${{ matrix.pair }}
+          path: test-artifacts/benchmarks/*.json
+          retention-days: 7
+          if-no-files-found: ignore

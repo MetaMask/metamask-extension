@@ -13,6 +13,7 @@ const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 const { getOrBuildXpi } = require('../helpers/xpi');
+const { getExtensionDir } = require('./extension-dir');
 
 // geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
 // We pin the version as a temporary patch until migration to Playwright (in progress)
@@ -195,7 +196,7 @@ class FirefoxDriver {
       // Pre-build an XPI and cache it across test runs.
       // Without this, installAddon() zips the 348MB unpacked dir on every call,
       // adding ~10s of overhead per test.
-      const xpiPath = await getOrBuildXpi('dist/firefox');
+      const xpiPath = await getOrBuildXpi(getExtensionDir('firefox'));
       const installedExtensionId = await fxDriver.installExtension(xpiPath);
       const internalExtensionId = await fxDriver.getInternalId();
 
