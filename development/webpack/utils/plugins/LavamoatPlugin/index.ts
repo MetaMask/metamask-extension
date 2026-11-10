@@ -99,7 +99,17 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   // under scuttling the detection itself throws unless excepted.
   'requestIdleCallback',
   // globals used by e2e
-  ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
+  ...(args.test
+    ? [
+        'ret_nodes',
+        'browser',
+        'chrome',
+        'indexedDB',
+        // the benchmark's in-page step timer, which `executeScript` runs in
+        // the page (test/e2e/benchmarks/utils/in-page-step-timer.ts)
+        'MutationObserver',
+      ]
+    : []),
 ];
 
 type IsolatedHtmlEntries = {

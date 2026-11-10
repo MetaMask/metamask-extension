@@ -144,6 +144,12 @@ export type ManifestFlags = {
      */
     fixtureServerPort?: number;
     /**
+     * Suppress the submitted, confirmed, and failed transaction toasts.
+     * E2E runs enable this by default so toasts don't cover elements specs
+     * interact with; specs that cover the toasts set it to `false`.
+     */
+    disableTransactionToasts?: boolean;
+    /**
      * Whether test builds inject a PRF result the virtual authenticator
      * cannot produce. Defaults to enabled. Set false to exercise a passkey
      * authenticator that does not return PRF.
@@ -162,21 +168,9 @@ type ExtensionRuntime = {
 };
 
 /**
- * `runtime.getManifest`, bound, off whichever extension global this runtime
- * has -- or `undefined` when there is no extension global at all.
- *
- * Read off `globalThis` rather than through `webextension-polyfill` because
- * that package throws at module scope when `chrome.runtime.id` is absent, and
- * this module is reachable from Node: `sentry-remote-rates` ->
- * `wrapper-sampling` -> `messenger-tracing` -> `app/scripts/lib/messenger` ->
- * `app/scripts/fixtures/generate-wallet-state.js`, which six e2e benchmark
- * flows import. A top-level value import ends that process before the
- * no-manifest guard in `getManifestFlags` can run, and every one of those six
- * flows emits `This script should only be loaded in a browser extension.`
- * instead of a measurement (extension#46664).
- *
- * `getManifest` is synchronous and returns the same object on `browser` and on
- * `chrome`, so the polyfill's promisification was never doing anything here.
+ * `runtime.getManifest`, bound, off whichever extension global exists.
+ * Never value-import `webextension-polyfill` here: it throws at module scope
+ * outside an extension, and six e2e benchmark flows load this module in Node.
  */
 function getManifest(): ExtensionRuntime['getManifest'] {
   const globals = globalThis as unknown as {

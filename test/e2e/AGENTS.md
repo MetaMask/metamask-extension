@@ -40,6 +40,6 @@ Write E2E correctly from the start using `mms-extension-testing`. Before submitt
 | Page object importing/calling another page object             | Flow that owns both page objects                      |
 | `try` / `catch` in page objects or flows                      | Let failures surface via waits / `check*` messages    |
 
-**Route registry:** when you add a page object for a full screen that has its own route, map it in [route-registry/route-registry.ts](./route-registry/route-registry.ts), replacing `null`. Skip this for page objects that cover modals or components. It is optional and never blocks a PR; only adding or removing routes is enforced, by `route-registry.test.ts`.
+**Route registry:** when you add a page object for a full screen that has its own route, map it in [route-registry/route-registry.ts](./route-registry/route-registry.ts), replacing `null`. Skip this for page objects that cover modals or components. Use `NOT_A_SCREEN` for routes that only redirect, run an action or host nested routes, so they are left out of the coverage percentage. It is optional and never blocks a PR; only adding or removing routes is enforced, by `route-registry.test.ts`.
 
 Run `yarn skills` after `yarn install` if `.cursor/rules/mms-extension-testing/` is missing locally.

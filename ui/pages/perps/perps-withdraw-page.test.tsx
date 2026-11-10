@@ -201,25 +201,28 @@ async function awaitSubmitPromisesForMethod(method: string) {
 
 /**
  * Wait for the mount `useEffect` that fetches withdrawal routes, then await those
- * RPC promises until no new `perpsGetWithdrawalRoutes` calls appear. `waitFor` alone
+ * RPC promises until no new `PerpsController:getWithdrawalRoutes` calls appear. `waitFor` alone
  * can pass before `.then(setState)` runs; a routes update can also re-trigger the
  * effect (dependency `[t]`), queueing another fetch whose promise must be awaited.
  */
 async function settleInitialWithdrawRoutesFetch() {
   await waitFor(() => {
-    expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+    expect(mockSubmit).toHaveBeenCalledWith(
+      'PerpsController:getWithdrawalRoutes',
+      [],
+    );
   });
 
   for (let i = 0; i < 10; i += 1) {
     const countBefore = mockSubmit.mock.calls.filter(
-      (call) => call[0] === 'perpsGetWithdrawalRoutes',
+      (call) => call[0] === 'PerpsController:getWithdrawalRoutes',
     ).length;
-    await awaitSubmitPromisesForMethod('perpsGetWithdrawalRoutes');
+    await awaitSubmitPromisesForMethod('PerpsController:getWithdrawalRoutes');
     await act(async () => {
       await Promise.resolve();
     });
     const countAfter = mockSubmit.mock.calls.filter(
-      (call) => call[0] === 'perpsGetWithdrawalRoutes',
+      (call) => call[0] === 'PerpsController:getWithdrawalRoutes',
     ).length;
     if (countAfter === countBefore) {
       return;
@@ -227,11 +230,13 @@ async function settleInitialWithdrawRoutesFetch() {
   }
 }
 
-/** Await rejected `perpsGetWithdrawalRoutes` promises so the effect `catch` runs in `act`. */
+/** Await rejected `PerpsController:getWithdrawalRoutes` promises so the effect `catch` runs in `act`. */
 async function flushRejectedWithdrawRoutesPromises() {
   await act(async () => {
     for (let i = 0; i < mockSubmit.mock.calls.length; i += 1) {
-      if (mockSubmit.mock.calls[i][0] !== 'perpsGetWithdrawalRoutes') {
+      if (
+        mockSubmit.mock.calls[i][0] !== 'PerpsController:getWithdrawalRoutes'
+      ) {
         continue;
       }
       const value = mockSubmit.mock.results[i]?.value;
@@ -280,7 +285,7 @@ describe('PerpsWithdrawPage', () => {
       isInitialLoading: false,
     });
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -454,7 +459,7 @@ describe('PerpsWithdrawPage', () => {
   it('clears controller withdraw result when withdrawal fails', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -488,11 +493,14 @@ describe('PerpsWithdrawPage', () => {
     await awaitSubmitPromisesForMethod('perpsWithdraw');
 
     await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
+      expect(mockSubmit).toHaveBeenCalledWith(
+        'PerpsController:clearWithdrawResult',
+        [],
+      );
     });
 
     await waitForWithdrawHandlerSettled();
-    await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+    await awaitSubmitPromisesForMethod('PerpsController:clearWithdrawResult');
   });
 
   it('shows minimum withdrawal notice when amount is below the route minimum', async () => {
@@ -584,7 +592,7 @@ describe('PerpsWithdrawPage', () => {
   it('blocks the withdrawal when the fresh balance is below the entered amount', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -650,7 +658,7 @@ describe('PerpsWithdrawPage', () => {
       isInitialLoading: false,
     });
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -706,7 +714,7 @@ describe('PerpsWithdrawPage', () => {
       isInitialLoading: false,
     });
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -754,7 +762,7 @@ describe('PerpsWithdrawPage', () => {
   it('shows the fresh balance in the available balance and Max after a block', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -805,7 +813,7 @@ describe('PerpsWithdrawPage', () => {
   it('releases the adopted fresh balance once the stream reports a new balance', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -881,7 +889,7 @@ describe('PerpsWithdrawPage', () => {
   it('does not re-pin the released fresh balance when the stream reports the earlier value again', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -959,7 +967,7 @@ describe('PerpsWithdrawPage', () => {
     const user = userEvent.setup();
     let resolveAccountState!: (value: { withdrawableBalance: string }) => void;
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -1036,7 +1044,7 @@ describe('PerpsWithdrawPage', () => {
     const user = userEvent.setup();
     let accountStateReads = 0;
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -1112,7 +1120,7 @@ describe('PerpsWithdrawPage', () => {
   it('submits the withdrawal when the fresh balance read fails', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -1156,7 +1164,7 @@ describe('PerpsWithdrawPage', () => {
   it('shows failure message and clears withdraw result when perpsWithdraw throws', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.resolve([
           {
             assetId:
@@ -1174,7 +1182,7 @@ describe('PerpsWithdrawPage', () => {
       if (method === 'perpsWithdraw') {
         return Promise.reject(new Error('network'));
       }
-      if (method === 'perpsClearWithdrawResult') {
+      if (method === 'PerpsController:clearWithdrawResult') {
         return Promise.resolve(undefined);
       }
       return Promise.resolve(undefined);
@@ -1213,11 +1221,14 @@ describe('PerpsWithdrawPage', () => {
     ).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
+      expect(mockSubmit).toHaveBeenCalledWith(
+        'PerpsController:clearWithdrawResult',
+        [],
+      );
     });
 
     await waitForWithdrawHandlerSettled();
-    await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+    await awaitSubmitPromisesForMethod('PerpsController:clearWithdrawResult');
 
     // A price tick must not take the message with it. `withdrawableBalance`
     // moves with unrealized PnL, so for anyone holding a position this fires
@@ -1241,7 +1252,7 @@ describe('PerpsWithdrawPage', () => {
 
   it('survives withdrawal routes fetch rejection', async () => {
     mockSubmit.mockImplementation((method: string) => {
-      if (method === 'perpsGetWithdrawalRoutes') {
+      if (method === 'PerpsController:getWithdrawalRoutes') {
         return Promise.reject(new Error('rpc'));
       }
       return Promise.resolve(undefined);
@@ -1250,7 +1261,10 @@ describe('PerpsWithdrawPage', () => {
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
     await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+      expect(mockSubmit).toHaveBeenCalledWith(
+        'PerpsController:getWithdrawalRoutes',
+        [],
+      );
     });
     await flushRejectedWithdrawRoutesPromises();
 
@@ -1288,7 +1302,7 @@ describe('PerpsWithdrawPage', () => {
     it('fires only PerpsError when the withdrawal fails', async () => {
       const user = userEvent.setup();
       mockSubmit.mockImplementation((method: string) => {
-        if (method === 'perpsGetWithdrawalRoutes') {
+        if (method === 'PerpsController:getWithdrawalRoutes') {
           return Promise.resolve([
             {
               assetId:
@@ -1336,13 +1350,13 @@ describe('PerpsWithdrawPage', () => {
       );
 
       await waitForWithdrawHandlerSettled();
-      await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+      await awaitSubmitPromisesForMethod('PerpsController:clearWithdrawResult');
     });
 
     it('reports the prevented withdrawal when the fresh balance blocks it', async () => {
       const user = userEvent.setup();
       mockSubmit.mockImplementation((method: string) => {
-        if (method === 'perpsGetWithdrawalRoutes') {
+        if (method === 'PerpsController:getWithdrawalRoutes') {
           return Promise.resolve([
             {
               assetId:
@@ -1395,7 +1409,7 @@ describe('PerpsWithdrawPage', () => {
         isInitialLoading: false,
       });
       mockSubmit.mockImplementation((method: string) => {
-        if (method === 'perpsGetWithdrawalRoutes') {
+        if (method === 'PerpsController:getWithdrawalRoutes') {
           return Promise.resolve([
             {
               assetId:
@@ -1434,7 +1448,7 @@ describe('PerpsWithdrawPage', () => {
       await awaitSubmitPromisesForMethod('perpsGetAccountState');
       await awaitSubmitPromisesForMethod('perpsWithdraw');
       await waitForWithdrawHandlerSettled();
-      await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+      await awaitSubmitPromisesForMethod('PerpsController:clearWithdrawResult');
 
       expect(
         await screen.findByText(
@@ -1467,7 +1481,7 @@ describe('PerpsWithdrawPage', () => {
     it('fires PerpsError when withdrawal throws an exception', async () => {
       const user = userEvent.setup();
       mockSubmit.mockImplementation((method: string) => {
-        if (method === 'perpsGetWithdrawalRoutes') {
+        if (method === 'PerpsController:getWithdrawalRoutes') {
           return Promise.resolve([
             {
               assetId:
@@ -1485,7 +1499,7 @@ describe('PerpsWithdrawPage', () => {
         if (method === 'perpsWithdraw') {
           return Promise.reject(new Error('network'));
         }
-        if (method === 'perpsClearWithdrawResult') {
+        if (method === 'PerpsController:clearWithdrawResult') {
           return Promise.resolve(undefined);
         }
         return Promise.resolve(undefined);
@@ -1527,7 +1541,7 @@ describe('PerpsWithdrawPage', () => {
       });
 
       await waitForWithdrawHandlerSettled();
-      await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+      await awaitSubmitPromisesForMethod('PerpsController:clearWithdrawResult');
     });
   });
 });

@@ -12,8 +12,12 @@ const mockSetDataCollectionForMarketing = jest.fn();
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setDataCollectionForMarketing: (value: boolean) => {
-    mockSetDataCollectionForMarketing(value);
+  optInToMarketing: () => {
+    mockSetDataCollectionForMarketing(true);
+    return { type: 'MOCK_ACTION' };
+  },
+  optOutOfMarketing: () => {
+    mockSetDataCollectionForMarketing(false);
     return { type: 'MOCK_ACTION' };
   },
 }));

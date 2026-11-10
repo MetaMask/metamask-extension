@@ -8,11 +8,9 @@ type Globals = {
 const globals = globalThis as unknown as Globals;
 
 /**
- * A `runtime.getManifest` returning a manifest that carries the given flags.
- *
- * @param flags - the value of the manifest's `_flags` key. Omit for a manifest
- * that carries none.
- * @returns an object shaped like an extension global.
+ * A `runtime.getManifest` returning a manifest whose `_flags` is `flags`.
+ * @param flags - Omit for a manifest without `_flags`.
+ * @returns An object shaped like an extension global.
  */
 function extensionGlobal(flags?: Record<string, unknown>) {
   /* eslint-disable @typescript-eslint/naming-convention -- `manifest_version`

@@ -147,7 +147,6 @@ const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
 type RenderAssetListOptions = {
   balance?: string;
   chainId?: Hex;
-  showTokensLinks?: boolean;
   onClickAsset?: typeof mockOnClickAsset;
   variant?: 'list' | 'table';
 };
@@ -155,7 +154,6 @@ type RenderAssetListOptions = {
 const renderAssetList = ({
   balance = ETH_BALANCE,
   chainId = CHAIN_IDS.MAINNET,
-  showTokensLinks = true,
   onClickAsset = mockOnClickAsset,
   variant,
 }: RenderAssetListOptions = {}) => {
@@ -190,11 +188,7 @@ const renderAssetList = ({
   };
   const store = configureMockStore([thunk])(state);
   return renderWithProvider(
-    <AssetList
-      onClickAsset={onClickAsset}
-      showTokensLinks={showTokensLinks}
-      variant={variant}
-    />,
+    <AssetList onClickAsset={onClickAsset} variant={variant} />,
     store,
     '/',
   );
@@ -291,32 +285,6 @@ describe('AssetList', () => {
             sensitiveProperties: {},
           }),
         );
-      });
-    });
-  });
-
-  describe('showTokensLinks', () => {
-    it('enables the asset options control when showTokensLinks is true', async () => {
-      await act(async () => {
-        renderAssetList({ showTokensLinks: true });
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('asset-list-control-bar-action-button'),
-        ).not.toBeDisabled();
-      });
-    });
-
-    it('disables the asset options control when showTokensLinks is false', async () => {
-      await act(async () => {
-        renderAssetList({ showTokensLinks: false });
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('asset-list-control-bar-action-button'),
-        ).toBeDisabled();
       });
     });
   });

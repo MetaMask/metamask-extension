@@ -88,9 +88,6 @@ describe('MultiRpc:', function (this: Suite) {
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
-                    failoverUrls: [
-                      'https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/',
-                    ],
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
                     type: RpcEndpointType.Custom,
                     url: 'https://arbitrum-mainnet.infura.io/',

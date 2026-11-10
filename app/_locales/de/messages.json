@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URL hinzufügen"
   },
-  "addAWallet": {
-    "message": "Wallet hinzufügen"
-  },
   "addAccount": {
     "message": "Konto hinzufügen"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 ist erforderlich"
-  },
-  "fileImportFail": {
-    "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Anklicken und hochladen oder ziehen und ablegen"
@@ -7385,10 +7378,6 @@
   "paste": {
     "message": "Einfügen"
   },
-  "pastePrivateKey": {
-    "message": "Geben Sie hier die Zeichenfolge Ihres privaten Schlüssels ein:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Bezahlen mit",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8967,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "Der private Schlüssel ist verborgen",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Eingabe des privaten Schlüssels anzeigen/ausblenden",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Dieser private Schlüssel wird angezeigt",
@@ -11930,9 +11915,6 @@
     "message": "hier",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Beinhaltet"
-  },
   "swapGasFeesSplit": {
     "message": "Die Netzwerkgebühren auf dem vorherigen Bildschirm werden auf diese beiden Transaktionen aufgeteilt."
   },
@@ -12679,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Die automatische Anzeige von Tokens, die an Ihr Konto gesendet werden, erfordert die Kommunikation mit Servern von Drittanbietern, um Token-Bilder abzurufen. Diese Server erhalten Zugriff auf Ihre IP-Adresse."
-  },
-  "usedByClients": {
-    "message": "Verwendet von einer Reihe von Kunden"
   },
   "userOpContractDeployError": {
     "message": "Contract-Bereitstellung von einem Smart-Konto wird nicht unterstützt"

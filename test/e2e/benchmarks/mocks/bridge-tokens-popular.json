@@ -18,10 +18,18 @@
     "symbol": "MUSD",
     "decimals": 6,
     "name": "MetaMask USD",
-    "aggregators": ["metamask", "liFi", "socket", "rubic", "rango"],
+    "aggregators": [
+      "metamask",
+      "liFi",
+      "socket",
+      "rubic",
+      "rango"
+    ],
     "occurrences": 5,
     "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png",
-    "metadata": { "storage": {} }
+    "metadata": {
+      "storage": {}
+    }
   },
   {
     "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -45,6 +53,30 @@
     "aggregators": [],
     "occurrences": 100,
     "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0xdac17f958d2ee523a2206206994597c13d831ec7.png",
+    "metadata": {}
+  },
+  {
+    "address": "11111111111111111111111111111111",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    "symbol": "SOL",
+    "decimals": 9,
+    "name": "Solana",
+    "aggregators": [],
+    "occurrences": 100,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+    "metadata": {}
+  },
+  {
+    "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "symbol": "USDC",
+    "decimals": 6,
+    "name": "USD Coin",
+    "aggregators": [],
+    "occurrences": 100,
+    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
     "metadata": {}
   }
 ]

@@ -7325,18 +7325,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^4.0.0, @metamask/analytics-controller@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/analytics-controller@npm:4.1.0"
+"@metamask/analytics-controller@npm:^4.0.0, @metamask/analytics-controller@npm:^4.1.0, @metamask/analytics-controller@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/analytics-controller@npm:4.2.0"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
     "@metamask/geolocation-controller": "npm:^2.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     lodash-es: "npm:^4.18.1"
-    uuid: "npm:^11.1.1"
-  checksum: 10/96db6392bb5804d25658b23ac6d7a4d4ff6d27af391bad55f5fd941a92a63ea40777a539b9a8c033f87883eac21031c67984a4e041cc291369541e654bc93203
+    uuid: "npm:^14.0.2"
+  checksum: 10/8fd5706ec7144ea16663de474a802c7d98627c5b50146ac4ab7cf7629b475277bfb2f25462dc5ffe72e5df00396173283a66a8c29526a1a4f7cf8ed2ae94e915
   languageName: node
   linkType: hard
 
@@ -9622,11 +9622,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^37.1.1":
-  version: 37.1.1
-  resolution: "@metamask/network-controller@npm:37.1.1"
+"@metamask/network-controller@npm:^38.0.0":
+  version: 38.0.0
+  resolution: "@metamask/network-controller@npm:38.0.0"
   dependencies:
-    "@metamask/analytics-controller": "npm:^4.0.0"
+    "@metamask/analytics-controller": "npm:^4.2.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
     "@metamask/connectivity-controller": "npm:^1.0.0"
@@ -9642,14 +9642,14 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/swappable-obj-proxy": "npm:^2.3.0"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     fast-deep-equal: "npm:^3.1.3"
     immer: "npm:^11.1.18"
     loglevel: "npm:^1.9.2"
     reselect: "npm:^5.3.0"
     uri-js: "npm:^4.4.1"
-    uuid: "npm:^11.1.1"
-  checksum: 10/29efedbda0cb319a10f77bf9b0c82e478481da8f61643fb22512fbf730d75407c9efd7f051473daa489ebf894d75a24c8ba6d61da6b17a6823aa708929dd1c47
+    uuid: "npm:^14.0.2"
+  checksum: 10/9b1afe427610929265942cd1bae628ea9626585a12648b1d162463694593afb419d8b95768ecd9250af8976214e3bcfe798bc1f2ae85e77924d8a59ddee7507f
   languageName: node
   linkType: hard
 
@@ -9812,11 +9812,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^22.0.0, @metamask/perps-controller@npm:^22.1.1":
-  version: 22.1.1
-  resolution: "@metamask/perps-controller@npm:22.1.1"
+"@metamask/perps-controller@npm:^22.0.0, @metamask/perps-controller@npm:^22.3.0":
+  version: 22.3.0
+  resolution: "@metamask/perps-controller@npm:22.3.0"
   dependencies:
-    "@metamask/abi-utils": "npm:^2.0.4"
+    "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
@@ -9825,8 +9825,8 @@ __metadata:
     "@nktkas/hyperliquid": "npm:^0.33.3"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.3.0"
-    uuid: "npm:^14.0.1"
-  checksum: 10/55554da0140926610f2d1e28dc7768953498421a903b1cf85a98bf1630bd733e6574c8da2eee13025d27e29de10cd873110347c7e1054e7fd72aef7b5c4dd731
+    uuid: "npm:^14.0.2"
+  checksum: 10/5f786a08f50dc992deb42c6c5d459b3729f13feea48e351f6667c57f90afa190ebdb0f5394f489b16c0cd4c1431c3784ab3dbbe6eaa442e762d2035b9d3224e4
   languageName: node
   linkType: hard
 
@@ -20678,10 +20678,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansis@npm:4.1.0":
-  version: 4.1.0
-  resolution: "ansis@npm:4.1.0"
-  checksum: 10/e2658367807edb461a4c772bdba50cef85c7b3e5f19d4d67d7a406e97b9ba222cfd4dc300fee1b05619207d4e17c809f32e97ac47429f8b4b1a6709dc6ac35ac
+"ansis@npm:4.5.0":
+  version: 4.5.0
+  resolution: "ansis@npm:4.5.0"
+  checksum: 10/d2b35da9873847a728648650b80d69d37d17d6bed3bb38ed185b916b9927bd7c53b00ce8fc012925487a170fc3bba65d4d9bd79961b4c709caa755521076efb6
   languageName: node
   linkType: hard
 
@@ -30575,16 +30575,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@npm:4.23.2":
-  version: 4.23.2
-  resolution: "html-bundler-webpack-plugin@npm:4.23.2"
+"html-bundler-webpack-plugin@npm:4.24.1":
+  version: 4.24.1
+  resolution: "html-bundler-webpack-plugin@npm:4.24.1"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
-    ansis: "npm:4.1.0"
+    ansis: "npm:4.5.0"
     enhanced-resolve: "npm:>=5.7.0"
     eta: "npm:^3.5.0"
     html-minifier-terser: "npm:^7.2.0"
   peerDependencies:
+    css-loader: ">=6.11.0"
     ejs: ">=3.1.10"
     favicons: ">=7.2.0"
     handlebars: ">=4.7.8"
@@ -30598,6 +30599,8 @@ __metadata:
     twig: ">=1.17.1"
     webpack: ">=5.81.0"
   peerDependenciesMeta:
+    css-loader:
+      optional: true
     ejs:
       optional: true
     favicons:
@@ -30620,20 +30623,21 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/fd449ca7cc15a660362482749b3726740cebb42d7fcd17dab50266c4af895bbf10f78e5c8be68e754191f3e51b3a86ff8c458616cd23e7ec2a259ca413562348
+  checksum: 10/14809712c16a35e33ad378d38065ce3e4a4bff849aa38ef7dd566f41f3ca035bd77505bb4b0de05fca416b4716a97ae1c5ae9136a25ea80e560e03283b7fd810
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch":
-  version: 4.23.2
-  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch::version=4.23.2&hash=1e814c"
+"html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.24.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.1-c360a7b7fc.patch":
+  version: 4.24.1
+  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.24.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.1-c360a7b7fc.patch::version=4.24.1&hash=1e814c"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
-    ansis: "npm:4.1.0"
+    ansis: "npm:4.5.0"
     enhanced-resolve: "npm:>=5.7.0"
     eta: "npm:^3.5.0"
     html-minifier-terser: "npm:^7.2.0"
   peerDependencies:
+    css-loader: ">=6.11.0"
     ejs: ">=3.1.10"
     favicons: ">=7.2.0"
     handlebars: ">=4.7.8"
@@ -30647,6 +30651,8 @@ __metadata:
     twig: ">=1.17.1"
     webpack: ">=5.81.0"
   peerDependenciesMeta:
+    css-loader:
+      optional: true
     ejs:
       optional: true
     favicons:
@@ -30669,7 +30675,7 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/f713eeeb07a5563221aff034596c3baa5390812727b87d382fee1667b47998c8a5f7d065ce1085dc483a46ad16dbad9d00d35b0b459dae33e2e4af7425aaaf35
+  checksum: 10/8002d06e708909c4f47655bb256aaea9e3d5c2124a3313d859d08459714388ca40d2a9e589cf0b73182d87d9df95f0ff54bd77493fa08c3a0a2fb63e90d368e5
   languageName: node
   linkType: hard
 
@@ -35586,7 +35592,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^7.1.2"
     "@metamask/name-controller": "npm:^9.1.0"
     "@metamask/network-connection-banner-controller": "npm:^0.2.0"
-    "@metamask/network-controller": "npm:^37.1.1"
+    "@metamask/network-controller": "npm:^38.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
     "@metamask/notification-services-controller": "npm:^29.0.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
@@ -35595,7 +35601,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^14.1.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^22.1.1"
+    "@metamask/perps-controller": "npm:^22.3.0"
     "@metamask/phishing-controller": "npm:^18.2.1"
     "@metamask/phishing-warning": "npm:^6.0.0"
     "@metamask/platform-api-docs": "npm:^0.2.1"
@@ -35818,7 +35824,7 @@ __metadata:
     gulp-sass: "npm:^5.1.0"
     gulp-sourcemaps: "npm:^3.0.0"
     he: "npm:^1.2.0"
-    html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch"
+    html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.24.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.24.1-c360a7b7fc.patch"
     http-server: "npm:^14.1.1"
     https-browserify: "npm:^1.0.0"
     human-standard-token-abi: "npm:^2.0.0"

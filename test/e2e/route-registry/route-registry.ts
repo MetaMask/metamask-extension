@@ -2,19 +2,22 @@
  * Route Page Object Registry
  *
  * Maps each route in `ROUTES` (ui/helpers/constants/routes.ts) to the E2E
- * page object for the screen it renders, or to `null` when there is no page
- * object for it yet. The route coverage report
+ * page object for the screen it renders, to `null` when there is no page
+ * object for it yet, or to `NOT_A_SCREEN` when the route never renders a
+ * screen of its own (it redirects, runs an action, or only hosts nested
+ * routes). The route coverage report
  * (test/e2e/scripts/route-coverage-report.ts) compares this registry with
  * `ROUTES` and lists routes with a page object, routes without one, routes
- * missing from the registry and registry entries for routes that no longer
- * exist.
+ * that are not screens, routes missing from the registry and registry entries
+ * for routes that no longer exist.
  *
  * Keys are route path patterns exactly as they appear in `ROUTES`. They are
  * plain strings on purpose so renaming or removing a route never breaks the
  * build; route-registry.test.ts fails instead and lists the paths to fix.
  *
  * When you add, rename or remove a route, update this registry too: use its
- * page object if there is one, otherwise `null`.
+ * page object if there is one, `NOT_A_SCREEN` if it renders no screen of its
+ * own, otherwise `null`.
  */
 
 import AccountAddressListPage from '../page-objects/pages/accounts/address-list-page';
@@ -86,8 +89,20 @@ import type { Driver } from '../webdriver/driver';
 /** An E2E page object class, constructed with the driver. */
 export type PageObjectClass = new (driver: Driver) => object;
 
-/** Route path pattern → its page object, or `null` when there is none yet. */
-export type RoutePageObjectRegistry = Record<string, PageObjectClass | null>;
+/**
+ * Marks a route that never renders a screen of its own, so it needs no page
+ * object: it redirects, runs an action, or only hosts nested routes.
+ */
+export const NOT_A_SCREEN = 'not-a-screen';
+
+/**
+ * Route path pattern → its page object, `NOT_A_SCREEN`, or `null` when there
+ * is no page object yet.
+ */
+export type RoutePageObjectRegistry = Record<
+  string,
+  PageObjectClass | typeof NOT_A_SCREEN | null
+>;
 
 export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   // Home and wallet
@@ -96,7 +111,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/activity': ActivityTab,
   '/tx/:caipChainId/:txIdentifier': TransactionDetailsPage,
   '/unlock': LoginPage,
-  '/lock': null,
+  '/lock': NOT_A_SCREEN,
   '/rewards': null,
   '/link': DeepLink,
   '/basic-functionality-off': BasicFunctionalityOffPage,
@@ -107,19 +122,18 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/discover-search': null,
   '/hardware-wallet-repair': null,
   '/shield-plan': ShieldPlanPage,
-  '/initialize/experimental-area': null,
 
   // Money
   '/money-home': MoneyHomePage,
   '/money-home/how-it-works': null,
   '/money-home/activity/:transactionId': MoneyTransactionDetailsPage,
   '/money-home/earn': null,
-  '/musd': null,
+  '/musd': NOT_A_SCREEN,
   '/musd/education': null,
 
   // Perps
   '/perps-home': PerpsTab,
-  '/perps': null,
+  '/perps': NOT_A_SCREEN,
   '/perps/market-list': PerpsMarketListPage,
   '/perps/market/:symbol': PerpsMarketDetailPage,
   '/perps/trade/:symbol': PerpsOrderEntryPage,
@@ -136,7 +150,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/multichain-smart-account/:address': null,
   '/multichain-account-address-list': AccountAddressListPage,
   '/multichain-account-private-key-list': PrivateKeyModal,
-  '/new-account': null,
+  '/new-account': NOT_A_SCREEN,
   '/new-account/connect': ConnectHardwareWalletPage,
   '/sync-accounts': SyncAccountsSettingsPage,
   '/mfa': null,
@@ -146,9 +160,6 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/asset/:chainId/:asset?/:id?': AssetDetailsPage,
   '/asset/:chainId/:asset?/:id?/security-trust': null,
   '/defi': DeFiDetailsPage,
-  '/import-token': null,
-  '/import-tokens': null,
-  '/confirm-import-token': null,
   '/token-management': TokenManagementPage,
   '/custom-token-import': CustomTokenImportPage,
   '/import-nfts': ImportNftPage,
@@ -169,9 +180,6 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/cross-chain/swaps/prepare-bridge-page/assets': null,
   '/swaps/awaiting-signatures': null,
   '/swaps/hardware-wallet-signatures': HardwareWalletSignaturesPage,
-  '/remote': null,
-  '/remote/setup-swaps': null,
-  '/remote/setup-daily-allowance': null,
 
   // Confirmations
   '/confirm-transaction': Confirmation,
@@ -207,9 +215,6 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
 
   // Networks and contacts
   '/networks': NetworksPage,
-  '/networks/form': null,
-  '/networks/add-network': null,
-  '/networks/add-popular-custom-network': null,
   '/contacts': ContactsSettings,
   '/contacts/add': null,
   '/contacts/view/:chainId/:address': null,
@@ -217,7 +222,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
 
   // Settings
   '/settings': SettingsPage,
-  '/settings-v2': null,
+  '/settings-v2': NOT_A_SCREEN,
   '/settings/about-us': AboutPage,
   '/settings/assets': null,
   '/settings/backup-and-sync': BackupAndSyncSettings,
@@ -258,7 +263,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/settings/transaction-shield/claims/view-history-claim': null,
 
   // Onboarding
-  '/onboarding': null,
+  '/onboarding': NOT_A_SCREEN,
   '/onboarding/welcome': StartOnboardingPage,
   '/onboarding/create-password': OnboardingPasswordPage,
   '/onboarding/review-recovery-phrase': SecureWalletPage,
@@ -268,7 +273,6 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/onboarding/unlock': LoginPage,
   '/onboarding/privacy-settings': OnboardingPrivacySettingsPage,
   '/onboarding/completion': OnboardingCompletePage,
-  '/onboarding/help-us-improve': null,
   '/onboarding/metametrics': OnboardingMetricsPage,
   '/onboarding/account-exist': null,
   '/onboarding/account-not-found': null,
