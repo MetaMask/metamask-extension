@@ -33,13 +33,7 @@ import {
 } from './asset-controls';
 import { ManageTokensButton } from './manage-tokens-button';
 
-type NftOptionsMenuProps = {
-  // Forwarded to the more button. `false` keeps the NFT menu but disables the
-  // button, matching an EVM token list that opts out of token links.
-  showTokensLinks?: boolean;
-};
-
-const EvmNftOptionsMenu = ({ showTokensLinks }: NftOptionsMenuProps) => {
+const EvmNftOptionsMenu = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,11 +96,7 @@ const EvmNftOptionsMenu = ({ showTokensLinks }: NftOptionsMenuProps) => {
 
   return (
     <>
-      <OptionsButton
-        ref={setButtonRef}
-        showTokensLinks={showTokensLinks}
-        onClick={toggle}
-      />
+      <OptionsButton ref={setButtonRef} onClick={toggle} />
       <Popover
         onClickOutside={close}
         isOpen={isOpen}
@@ -155,14 +145,11 @@ const EvmNftOptionsMenu = ({ showTokensLinks }: NftOptionsMenuProps) => {
 /**
  * NFT more-menu: import, refresh, and autodetect. A non-EVM account has no NFT
  * menu, so this renders the manage-tokens shortcut instead.
- *
- * @param props - The component props.
- * @param props.showTokensLinks - Disables the more button when explicitly false.
  */
-export const NftOptionsMenu = ({ showTokensLinks }: NftOptionsMenuProps) => {
+export const NftOptionsMenu = () => {
   const isEvm = useSelector(getMultichainIsEvm);
   if (!isEvm) {
     return <ManageTokensButton />;
   }
-  return <EvmNftOptionsMenu showTokensLinks={showTokensLinks} />;
+  return <EvmNftOptionsMenu />;
 };

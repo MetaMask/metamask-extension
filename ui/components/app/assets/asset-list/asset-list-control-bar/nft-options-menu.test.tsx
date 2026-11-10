@@ -32,14 +32,11 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
-const renderMenu = (
-  state: ReturnType<typeof createMockState>,
-  showTokensLinks?: boolean,
-) => {
+const renderMenu = (state: ReturnType<typeof createMockState>) => {
   const store = configureMockStore([thunk])(state);
   return renderWithProvider(
     <AssetControls>
-      <NftOptionsMenu showTokensLinks={showTokensLinks} />
+      <NftOptionsMenu />
     </AssetControls>,
     store,
   );
@@ -121,15 +118,6 @@ describe('NftOptionsMenu', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_NFTS_ROUTE);
     expect(queryByTestId('import-nfts__button')).not.toBeInTheDocument();
-  });
-
-  it('disables the more button when showTokensLinks is false', async () => {
-    const state = createMockState();
-    const { findByTestId } = renderMenu(state, false);
-
-    expect(
-      await findByTestId('asset-list-control-bar-action-button'),
-    ).toBeDisabled();
   });
 
   it('opens autodetect settings when NFT detection is off', async () => {

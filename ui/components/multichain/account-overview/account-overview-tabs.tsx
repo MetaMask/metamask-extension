@@ -32,14 +32,12 @@ import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
-  showTokensLinks?: boolean;
   showTokens?: boolean;
   showNfts?: boolean;
   showDefi?: boolean;
 };
 
 export const AccountOverviewTabs = ({
-  showTokensLinks,
   showTokens = true,
   showNfts = true,
   showDefi = true,
@@ -137,7 +135,6 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="tokens">
               <AssetList
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}
@@ -155,7 +152,6 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="defi">
               <DeFiTab
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}

@@ -1,6 +1,5 @@
 import type { CaipAssetType } from '@metamask/utils';
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -9,7 +8,6 @@ import {
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
@@ -21,7 +19,6 @@ import {
   AssetControlsActions,
 } from './asset-list-control-bar/asset-controls';
 import { NetworkFilter } from './asset-list-control-bar/network-filter';
-import { NftOptionsMenu } from './asset-list-control-bar/nft-options-menu';
 import { SortByButton } from './asset-list-control-bar/sort-by-button';
 import { TokenOptionsMenu } from './asset-list-control-bar/token-options-menu';
 
@@ -33,7 +30,6 @@ export type AssetListProps = {
     address: string,
     assetId?: CaipAssetType,
   ) => void;
-  showTokensLinks?: boolean;
   safeChains?: SafeChain[];
   entryPoint?: ScreenViewedEntryPoint;
   variant?: AssetListVariant;
@@ -90,16 +86,10 @@ const TokenListContainer = React.memo(
 
 const AssetList = ({
   onClickAsset,
-  showTokensLinks,
   safeChains,
   entryPoint,
   variant = 'list',
 }: AssetListProps) => {
-  const isEvm = useSelector(getMultichainIsEvm);
-  // NOTE: Since we can parametrize it now, we keep the original behavior
-  // for EVM assets
-  const shouldShowTokensLinks = showTokensLinks ?? isEvm;
-
   useScreenViewedEvent(MetaMetricsEventName.TokenScreenViewed, entryPoint);
 
   return (
@@ -109,11 +99,7 @@ const AssetList = ({
           <NetworkFilter />
           <AssetControlsActions>
             <SortByButton />
-            {shouldShowTokensLinks ? (
-              <TokenOptionsMenu />
-            ) : (
-              <NftOptionsMenu showTokensLinks={showTokensLinks} />
-            )}
+            <TokenOptionsMenu />
           </AssetControlsActions>
         </AssetControls>
       </TabControls>

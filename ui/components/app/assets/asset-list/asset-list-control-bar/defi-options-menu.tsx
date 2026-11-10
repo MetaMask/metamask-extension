@@ -37,7 +37,7 @@ export const DeFiOptionsMenu = ({ onRefresh }: DeFiOptionsMenuProps) => {
 
   return (
     <>
-      <OptionsButton ref={setButtonRef} showTokensLinks onClick={toggle} />
+      <OptionsButton ref={setButtonRef} onClick={toggle} />
       <Popover
         onClickOutside={close}
         isOpen={isOpen}
