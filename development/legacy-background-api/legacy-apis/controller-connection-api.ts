@@ -29,13 +29,10 @@ export type ControllerConnectionApiMemberNames = {
 };
 
 /**
- * Extracts the names of the properties exposed by the controller connection
- * API object (see `MetamaskController.setupControllerConnection`), grouped by
- * where they come from.
- *
- * Spreads in the API object are followed to the objects they produce. If a
- * spread cannot be followed, this throws rather than silently omitting its
- * names, so that the snapshot never misses part of the API.
+ * Extracts the names of the properties exposed by the API object returned by
+ * `MetamaskController.setupControllerConnection`, grouped by where they come
+ * from (the in-client init system, `MetamaskController.getApi`, or somewhere
+ * else).
  *
  * @param sourceFile - The parsed file that defines `MetamaskController`.
  * @param context - The resolution context.
@@ -45,11 +42,22 @@ export function getControllerConnectionApiMemberNames(
   sourceFile: ts.SourceFile,
   context: ResolutionContext,
 ): ControllerConnectionApiMemberNames {
-  const metamaskControllerClass = findMetamaskController(sourceFile);
+  // EXAMPLE:
+  //   class MetamaskController {
+  //     setupControllerConnection() {
+  //       const api = {
+  //             ^^^
+  //         ...this.getApi(),
+  //         ...this.messengerClientApi,
+  //       };
+  //     }
+  //   }
+  const metamaskControllerClass = findMetamaskControllerClass(sourceFile);
   const controllerConnectionApiObject = findControllerConnectionApiObject(
     metamaskControllerClass,
     sourceFile,
   );
+
   const messengerClientApiMethods = new Set<string>();
   const getApiMethods = new Set<string>();
   const nonGetApiMethods = new Set<string>();
@@ -75,20 +83,26 @@ export function getControllerConnectionApiMemberNames(
       continue;
     }
 
+    let namesToCapture;
+    if (
+      ts.isSpreadAssignment(objectElement) &&
+      isGetApiCall(objectElement.expression)
+    ) {
+      // EXAMPLE:
+      //   const api = { ...this.getApi() };
+      namesToCapture = getApiMethods;
+    } else {
+      // EXAMPLE:
+      //   const api = { ...getTransactionControllerApi(this.txController) };
+      namesToCapture = nonGetApiMethods;
+    }
+
     const propertyNames = resolvePropertyNamesFromObjectElement(
       objectElement,
       context,
     );
-    // EXAMPLE:
-    //   const api = { ...this.getApi() };
-    //                 ^^^^^^^^^^^^^^^^ spread assignment
-    const namesForSource =
-      ts.isSpreadAssignment(objectElement) &&
-      isGetApiCall(objectElement.expression)
-        ? getApiMethods
-        : nonGetApiMethods;
     for (const name of propertyNames) {
-      namesForSource.add(name);
+      namesToCapture.add(name);
     }
   }
 
@@ -111,7 +125,7 @@ export function getControllerConnectionApiMemberNames(
  * @param sourceFile - The parsed file that defines `MetamaskController`.
  * @returns The class declaration.
  */
-function findMetamaskController(
+function findMetamaskControllerClass(
   sourceFile: ts.SourceFile,
 ): ts.ClassDeclaration {
   // EXAMPLE:

@@ -44,52 +44,33 @@ export function getMessengerClientApiMemberNames(
   //       // ...
   //     };
   //   }
-
   const messengerClientInitFunctionsObject =
     findMessengerClientInitFunctionsObject(metamaskControllerClass);
-  const names = new Set<string>();
-
-  const messengerClientInitFunctionCandidates = collectAllPropertyValues(
+  const messengerClientInitFunctions = collectAllPropertyValues(
     messengerClientInitFunctionsObject,
     context,
-  );
-  for (const messengerClientInitFunctionCandidate of messengerClientInitFunctionCandidates) {
+  ).flatMap((candidate) => {
     // All values in `messengerClientInitFunctions` *should* be functions,
     // but we call this just to be sure.
-    const messengerClientInitFunctions = resolveFunctions(
-      messengerClientInitFunctionCandidate,
+    return resolveFunctions(candidate, context);
+  });
+
+  const names = new Set<string>();
+  for (const messengerClientInitFunction of messengerClientInitFunctions) {
+    const apiPropertyNames = collectApiPropertyNamesFromMessengerClientInit(
+      messengerClientInitFunction,
       context,
     );
-    for (const messengerClientInitFunction of messengerClientInitFunctions) {
-      const apiPropertyNames = collectApiPropertyNamesFromMessengerClientInit(
-        messengerClientInitFunction,
-        context,
-      );
-      for (const name of apiPropertyNames) {
-        names.add(name);
-      }
+    for (const name of apiPropertyNames) {
+      names.add(name);
     }
   }
-
   return names;
 }
 
 /**
- * Determines whether an expression reads `this.messengerClientApi`.
- *
- * @param expression - The expression to inspect.
- * @returns True if the expression is `this.messengerClientApi`.
- */
-export function isMessengerClientApiAccess(expression: ts.Expression): boolean {
-  return (
-    ts.isPropertyAccessExpression(expression) &&
-    expression.expression.kind === ts.SyntaxKind.ThisKeyword &&
-    getPropertyNameText(expression.name) === 'messengerClientApi'
-  );
-}
-
-/**
- * Finds the object literal that lists the init functions of messenger clients.
+ * Finds the object literal that lists the init functions of messenger clients
+ * within `MetamaskController`.
  *
  * @param metamaskControllerClass - The `MetamaskController` class declaration.
  * @returns The object literal assigned to `messengerClientInitFunctions`.
@@ -192,11 +173,8 @@ function collectAllPropertyValues(
 }
 
 /**
- * Lists the names in the `api` objects that a messenger client init function
- * returns.
- *
- * An init function that does not return an `api` property contributes no
- * names, just as `initMessengerClients` treats a missing `api` as `{}`.
+ * Gathers the names in the `api` object that a messenger client init function
+ * returns (or an empty array if no such `api` object exists).
  *
  * @param messengerClientInitFunction - The init function to inspect.
  * @param context - The resolution context.
@@ -206,11 +184,12 @@ function collectApiPropertyNamesFromMessengerClientInit(
   messengerClientInitFunction: FunctionWithBody,
   context: ResolutionContext,
 ): Set<string> {
-  const names = new Set<string>();
-
   // EXAMPLE:
-  //   return { messengerClient, api };
-  //          ^^^^^^^^^^^^^^^^^^^^^^^^ return expression
+  //   function PerpsControllerInit() {
+  //     // ...
+  //     return { messengerClient, api };
+  //            ^^^^^^^^^^^^^^^^^^^^^^^^ return expression
+  //   }
   const returnExpressions = collectReturnExpressions(
     messengerClientInitFunction,
   );
@@ -224,37 +203,70 @@ function collectApiPropertyNamesFromMessengerClientInit(
     );
   }
 
+  const names = new Set<string>();
   for (const returnExpression of returnExpressions) {
     const resultObjectLiterals = resolveGuaranteedObjectLiterals(
       returnExpression,
       context,
     );
-    for (const resultObjectLiteral of resultObjectLiterals) {
-      // EXAMPLE:
-      //   return { messengerClient, api };
-      //                             ^^^ `api` property value
-      const apiPropertyValues = collectPropertyValuesFromObject(
-        resultObjectLiteral,
-        'api',
+    // EXAMPLE:
+    //   return { messengerClient, api };
+    //                             ^^^ `api` property value
+    const apiPropertyValues = resultObjectLiterals.flatMap(
+      (resultObjectLiteral) =>
+        collectPropertyValuesFromObject(resultObjectLiteral, 'api', context),
+    );
+    for (const apiPropertyValue of apiPropertyValues) {
+      const apiPropertyNames = collectPropertyNamesFromMessengerClientApi(
+        apiPropertyValue,
         context,
       );
-      for (const apiPropertyValue of apiPropertyValues) {
-        for (const apiObjectLiteral of resolveObjectLiterals(
-          apiPropertyValue,
-          context,
-        )) {
-          const apiPropertyNames = collectPropertyNamesFromObject(
-            apiObjectLiteral,
-            context,
-          );
-          for (const name of apiPropertyNames) {
-            names.add(name);
-          }
-        }
+      for (const name of apiPropertyNames) {
+        names.add(name);
       }
     }
   }
+  return names;
+}
 
+/**
+ * Lists the property names in the `api` object that a messenger client init
+ * function returns.
+ *
+ * The `api` value is often built elsewhere, such as by a helper function or a
+ * spread of another object, so it is followed to every object it may evaluate
+ * to.
+ *
+ * @param apiPropertyValue - The value of the `api` property, such as
+ * `getApi(messengerClient)` in `{ messengerClient, api: getApi(messengerClient) }`.
+ * @param context - The resolution context.
+ * @returns The API property names.
+ */
+function collectPropertyNamesFromMessengerClientApi(
+  apiPropertyValue: ts.Expression,
+  context: ResolutionContext,
+): Set<string> {
+  const names = new Set<string>();
+  // EXAMPLE:
+  //   return {
+  //     createMoneyAccountDepositTransaction: async (batchId: Hex, accountOverride: Hex) {
+  //       // ...
+  //     },
+  //     createMoneyAccountWithdrawTransaction: async (recipient: Hex) => {
+  //       // ...
+  //     },
+  //     // ...
+  //  }
+  const apiObjectLiterals = resolveObjectLiterals(apiPropertyValue, context);
+  for (const apiObjectLiteral of apiObjectLiterals) {
+    const apiPropertyNames = collectPropertyNamesFromObject(
+      apiObjectLiteral,
+      context,
+    );
+    for (const name of apiPropertyNames) {
+      names.add(name);
+    }
+  }
   return names;
 }
 
@@ -284,4 +296,18 @@ function getFunctionName(
   }
 
   return undefined;
+}
+
+/**
+ * Determines whether an expression reads `this.messengerClientApi`.
+ *
+ * @param expression - The expression to inspect.
+ * @returns True if the expression is `this.messengerClientApi`.
+ */
+export function isMessengerClientApiAccess(expression: ts.Expression): boolean {
+  return (
+    ts.isPropertyAccessExpression(expression) &&
+    expression.expression.kind === ts.SyntaxKind.ThisKeyword &&
+    getPropertyNameText(expression.name) === 'messengerClientApi'
+  );
 }

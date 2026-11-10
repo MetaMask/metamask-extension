@@ -23,6 +23,28 @@ import { LexicalDeclaration, resolveDeclarations } from './name-resolution';
 type ResolutionStack = Set<ts.Node>;
 
 /**
+ * Collects the top-level property names of an object literal, including the
+ * names contributed by its spreads.
+ *
+ * @param objectLiteral - The object literal to inspect.
+ * @param context - The resolution context.
+ * @param stack - The nodes currently being resolved.
+ * @returns The property names.
+ */
+export function collectPropertyNamesFromObject(
+  objectLiteral: ts.ObjectLiteralExpression,
+  context: ResolutionContext,
+  stack: ResolutionStack = new Set(),
+): Set<string> {
+  const names = guardingAgainstCycles(objectLiteral, stack, () =>
+    objectLiteral.properties.flatMap((objectElement) => [
+      ...resolvePropertyNamesFromObjectElement(objectElement, context, stack),
+    ]),
+  );
+  return new Set(names);
+}
+
+/**
  * Resolves the names of the properties that one object element contributes to
  * an object. An "object element" is either a key/value pair — which
  * contributes its own name — or a spread assignment — which contributes the
@@ -88,28 +110,6 @@ export function resolvePropertyNamesFromObjectElement(
   }
 
   return new Set();
-}
-
-/**
- * Collects the top-level property names of an object literal, including the
- * names contributed by its spreads.
- *
- * @param objectLiteral - The object literal to inspect.
- * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
- * @returns The property names.
- */
-export function collectPropertyNamesFromObject(
-  objectLiteral: ts.ObjectLiteralExpression,
-  context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
-): Set<string> {
-  const names = guardingAgainstCycles(objectLiteral, stack, () =>
-    objectLiteral.properties.flatMap((objectElement) => [
-      ...resolvePropertyNamesFromObjectElement(objectElement, context, stack),
-    ]),
-  );
-  return new Set(names);
 }
 
 /**
@@ -227,103 +227,23 @@ export function resolveObjectLiterals(
 }
 
 /**
- * Finds the values that an object literal may assign to one property.
+ * Finds the expressions that a call may return.
  *
- * Properties contributed by spreads are included. All matches are returned
- * rather than only the last one, because which spread wins can depend on
- * runtime values.
- *
- * @param objectLiteral - The object literal to search.
- * @param propertyName - The name of the property to find.
+ * @param callExpression - The call to inspect.
  * @param context - The resolution context.
  * @param stack - The nodes currently being resolved.
- * @returns The expressions that may be assigned to the property.
+ * @returns The returned expressions.
  */
-export function collectPropertyValuesFromObject(
-  objectLiteral: ts.ObjectLiteralExpression,
-  propertyName: string,
-  context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
-): ts.Expression[] {
-  return guardingAgainstCycles(objectLiteral, stack, () =>
-    objectLiteral.properties.flatMap((objectElement) =>
-      resolvePropertyValuesFromObjectElement(
-        objectElement,
-        propertyName,
-        context,
-        stack,
-      ),
-    ),
-  );
-}
-
-/**
- * Finds the values that one object element may assign to a property.
- *
- * @param objectElement - The object element to inspect.
- * @param propertyName - The name of the property to find.
- * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
- * @returns The expressions that may be assigned to the property.
- */
-function resolvePropertyValuesFromObjectElement(
-  objectElement: ts.ObjectLiteralElementLike,
-  propertyName: string,
+function resolveCallResults(
+  callExpression: ts.CallExpression,
   context: ResolutionContext,
   stack: ResolutionStack,
 ): ts.Expression[] {
   // EXAMPLE:
-  //   { ...getRampsControllerApi(messengerClient, platform) }
-  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ spread assignment
-  if (ts.isSpreadAssignment(objectElement)) {
-    const objectLiterals = resolveGuaranteedObjectLiterals(
-      objectElement.expression,
-      context,
-      stack,
-    );
-    return objectLiterals.flatMap((spreadObjectLiteral) =>
-      collectPropertyValuesFromObject(
-        spreadObjectLiteral,
-        propertyName,
-        context,
-        stack,
-      ),
-    );
-  }
-
-  if (
-    objectElement.name === undefined ||
-    getPropertyNameText(objectElement.name) !== propertyName
-  ) {
-    return [];
-  }
-
-  // EXAMPLE:
-  //   { api: getApi(messengerClient) }
-  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property assignment
-  //          ^^^^^^^^^^^^^^^^^^^^^^^ initializer
-  if (ts.isPropertyAssignment(objectElement)) {
-    return [objectElement.initializer];
-  }
-
-  // EXAMPLE:
-  //   { messengerClient, api }
-  //                      ^^^ shorthand property assignment
-  if (ts.isShorthandPropertyAssignment(objectElement)) {
-    return [objectElement.name];
-  }
-
-  // EXAMPLE:
-  //   { get api() { return { ... }; } }
-  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ getter
-  if (ts.isGetAccessorDeclaration(objectElement)) {
-    return collectReturnExpressions(objectElement);
-  }
-
-  throw new UnresolvableExpressionError(
-    objectElement,
-    'Cannot determine the value of this property',
-  );
+  //   getTransactionControllerApi(this.txController)
+  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ callee (`callExpression.expression`)
+  const functions = resolveFunctions(callExpression.expression, context, stack);
+  return functions.flatMap(collectReturnExpressions);
 }
 
 /**
@@ -389,65 +309,6 @@ export function resolveFunctions(
 }
 
 /**
- * Collects the expressions that a function may return.
- *
- * Return statements in nested functions are skipped, since they return from
- * those functions instead.
- *
- * @param functionWithBody - The function to inspect.
- * @returns The returned expressions.
- */
-export function collectReturnExpressions(
-  functionWithBody: FunctionWithBody,
-): ts.Expression[] {
-  const { body } = functionWithBody;
-  if (!body) {
-    throw new UnresolvableExpressionError(
-      functionWithBody,
-      'Cannot inspect the return value of a function without a body',
-    );
-  }
-
-  // EXAMPLE:
-  //   () => ({ startSendingPatches })
-  //         ^^^^^^^^^^^^^^^^^^^^^^^^^ concise body
-  if (!ts.isBlock(body)) {
-    return [body];
-  }
-
-  const expressions: ts.Expression[] = [];
-  forEachNodeInFunctionBody(body, (node) => {
-    // EXAMPLE:
-    //   return { startSendingPatches };
-    //          ^^^^^^^^^^^^^^^^^^^^^^^ expression
-    if (ts.isReturnStatement(node) && node.expression) {
-      expressions.push(node.expression);
-    }
-  });
-  return expressions;
-}
-
-/**
- * Finds the expressions that a call may return.
- *
- * @param callExpression - The call to inspect.
- * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
- * @returns The returned expressions.
- */
-function resolveCallResults(
-  callExpression: ts.CallExpression,
-  context: ResolutionContext,
-  stack: ResolutionStack,
-): ts.Expression[] {
-  // EXAMPLE:
-  //   getTransactionControllerApi(this.txController)
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ callee (`callExpression.expression`)
-  const functions = resolveFunctions(callExpression.expression, context, stack);
-  return functions.flatMap(collectReturnExpressions);
-}
-
-/**
  * Finds the methods that a property access refers to on its receiver's classes.
  *
  * @param propertyAccessExpression - The property access, such as
@@ -499,143 +360,6 @@ function resolveMethods(
     );
   }
   return methods;
-}
-
-/**
- * Finds the values that a property access may read from its receiver's classes.
- *
- * Fields, getters, and assignments in constructors are followed. A method is
- * rejected, because the value of a method reference is the function itself,
- * not the object it returns.
- *
- * @param propertyAccessExpression - The property access, such as
- * `this.messengerClientApi`.
- * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
- * @returns The values, of which there is at least one.
- */
-function resolvePropertyValues(
-  propertyAccessExpression: ts.PropertyAccessExpression,
-  context: ResolutionContext,
-  stack: ResolutionStack,
-): ts.Expression[] {
-  const memberName = getPropertyNameText(propertyAccessExpression.name);
-  const classDeclarations = resolveRequiredReceiverClasses(
-    propertyAccessExpression.expression,
-    context,
-    stack,
-  );
-
-  const values = classDeclarations.flatMap((classDeclaration) =>
-    resolveClassPropertyValues(
-      classDeclaration,
-      propertyAccessExpression,
-      memberName,
-    ),
-  );
-
-  if (values.length === 0) {
-    throw new UnresolvableExpressionError(
-      propertyAccessExpression,
-      `Cannot find a value for "${memberName}" on the receiver's class`,
-    );
-  }
-  return values;
-}
-
-/**
- * Finds the values that one class may store under a property name.
- *
- * @param classDeclaration - The class to search.
- * @param propertyAccessExpression - The property access being resolved, used
- * for error messages.
- * @param memberName - The property name to find.
- * @returns The values, which may be empty.
- */
-function resolveClassPropertyValues(
-  classDeclaration: ts.ClassDeclaration,
-  propertyAccessExpression: ts.PropertyAccessExpression,
-  memberName: string,
-): ts.Expression[] {
-  const values: ts.Expression[] = [];
-
-  for (const member of findClassMembers(classDeclaration, memberName)) {
-    // ANTI-EXAMPLE (spreading `this.getApi` spreads a function, not its result):
-    //   class MetamaskController {
-    //     getApi() { ... }
-    //     ^^^^^^^^^^^^^^^^ method declaration
-    //   }
-    if (ts.isMethodDeclaration(member)) {
-      throw new UnresolvableExpressionError(
-        propertyAccessExpression,
-        `"${memberName}" is a method; call it to use the object it returns`,
-      );
-    }
-
-    // EXAMPLE:
-    //   class MetamaskController {
-    //     get api() { return { ... }; }
-    //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ getter
-    //   }
-    if (ts.isGetAccessorDeclaration(member)) {
-      values.push(...collectReturnExpressions(member));
-    }
-
-    // EXAMPLE:
-    //   class MetamaskController {
-    //     messengerClientApi = { ... };
-    //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property declaration
-    //   }
-    if (ts.isPropertyDeclaration(member) && member.initializer) {
-      values.push(member.initializer);
-    }
-  }
-
-  // Fields are often declared without an initializer, or not declared at all,
-  // and assigned in the constructor instead. Checking constructors only after
-  // members gives initialized fields priority.
-  if (values.length === 0) {
-    values.push(...collectConstructorAssignments(classDeclaration, memberName));
-  }
-  return values;
-}
-
-/**
- * Collects the values assigned to `this.<memberName>` in a class's constructor.
- *
- * @param classDeclaration - The class to search.
- * @param memberName - The property name to find.
- * @returns The assigned values.
- */
-function collectConstructorAssignments(
-  classDeclaration: ts.ClassDeclaration,
-  memberName: string,
-): ts.Expression[] {
-  const values: ts.Expression[] = [];
-
-  for (const member of classDeclaration.members) {
-    if (!ts.isConstructorDeclaration(member) || !member.body) {
-      continue;
-    }
-
-    forEachNodeInFunctionBody(member.body, (node) => {
-      // EXAMPLE:
-      //   this.messengerClientApi = messengerClientApi;
-      //   ^^^^^^^^^^^^^^^^^^^^^^^ left (property access on `this`)
-      //                             ^^^^^^^^^^^^^^^^^^ right
-      if (
-        ts.isBinaryExpression(node) &&
-        node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-        ts.isPropertyAccessExpression(node.left) &&
-        node.left.expression.kind === ts.SyntaxKind.ThisKeyword &&
-        getPropertyNameText(node.left.name) === memberName
-      ) {
-        values.push(node.right);
-      }
-    });
-  }
-
-  return values;
 }
 
 /**
@@ -993,6 +717,37 @@ function assertConstDeclaration(
 }
 
 /**
+ * Finds the values that an object literal may assign to one property.
+ *
+ * Properties contributed by spreads are included. All matches are returned
+ * rather than only the last one, because which spread wins can depend on
+ * runtime values.
+ *
+ * @param objectLiteral - The object literal to search.
+ * @param propertyName - The name of the property to find.
+ * @param context - The resolution context.
+ * @param stack - The nodes currently being resolved.
+ * @returns The expressions that may be assigned to the property.
+ */
+export function collectPropertyValuesFromObject(
+  objectLiteral: ts.ObjectLiteralExpression,
+  propertyName: string,
+  context: ResolutionContext,
+  stack: ResolutionStack = new Set(),
+): ts.Expression[] {
+  return guardingAgainstCycles(objectLiteral, stack, () =>
+    objectLiteral.properties.flatMap((objectElement) =>
+      resolvePropertyValuesFromObjectElement(
+        objectElement,
+        propertyName,
+        context,
+        stack,
+      ),
+    ),
+  );
+}
+
+/**
  * Resolves a node unless it is already being resolved further up the stack.
  *
  * @param node - The node about to be resolved.
@@ -1015,4 +770,258 @@ function guardingAgainstCycles<Value>(
   } finally {
     stack.delete(node);
   }
+}
+
+/**
+ * Finds the values that one object element may assign to a property.
+ *
+ * @param objectElement - The object element to inspect.
+ * @param propertyName - The name of the property to find.
+ * @param context - The resolution context.
+ * @param stack - The nodes currently being resolved.
+ * @returns The expressions that may be assigned to the property.
+ */
+function resolvePropertyValuesFromObjectElement(
+  objectElement: ts.ObjectLiteralElementLike,
+  propertyName: string,
+  context: ResolutionContext,
+  stack: ResolutionStack,
+): ts.Expression[] {
+  // EXAMPLE:
+  //   { ...getRampsControllerApi(messengerClient, platform) }
+  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ spread assignment
+  if (ts.isSpreadAssignment(objectElement)) {
+    const objectLiterals = resolveGuaranteedObjectLiterals(
+      objectElement.expression,
+      context,
+      stack,
+    );
+    return objectLiterals.flatMap((spreadObjectLiteral) =>
+      collectPropertyValuesFromObject(
+        spreadObjectLiteral,
+        propertyName,
+        context,
+        stack,
+      ),
+    );
+  }
+
+  if (
+    objectElement.name === undefined ||
+    getPropertyNameText(objectElement.name) !== propertyName
+  ) {
+    return [];
+  }
+
+  // EXAMPLE:
+  //   { api: getApi(messengerClient) }
+  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property assignment
+  //          ^^^^^^^^^^^^^^^^^^^^^^^ initializer
+  if (ts.isPropertyAssignment(objectElement)) {
+    return [objectElement.initializer];
+  }
+
+  // EXAMPLE:
+  //   { messengerClient, api }
+  //                      ^^^ shorthand property assignment
+  if (ts.isShorthandPropertyAssignment(objectElement)) {
+    return [objectElement.name];
+  }
+
+  // EXAMPLE:
+  //   { get api() { return { ... }; } }
+  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ getter
+  if (ts.isGetAccessorDeclaration(objectElement)) {
+    return collectReturnExpressions(objectElement);
+  }
+
+  throw new UnresolvableExpressionError(
+    objectElement,
+    'Cannot determine the value of this property',
+  );
+}
+
+/**
+ * Finds the values that a property access may read from its receiver's classes.
+ *
+ * Fields, getters, and assignments in constructors are followed. A method is
+ * rejected, because the value of a method reference is the function itself,
+ * not the object it returns.
+ *
+ * @param propertyAccessExpression - The property access, such as
+ * `this.messengerClientApi`.
+ * @param context - The resolution context.
+ * @param stack - The nodes currently being resolved.
+ * @returns The values, of which there is at least one.
+ */
+function resolvePropertyValues(
+  propertyAccessExpression: ts.PropertyAccessExpression,
+  context: ResolutionContext,
+  stack: ResolutionStack,
+): ts.Expression[] {
+  const memberName = getPropertyNameText(propertyAccessExpression.name);
+  const classDeclarations = resolveRequiredReceiverClasses(
+    propertyAccessExpression.expression,
+    context,
+    stack,
+  );
+
+  const values = classDeclarations.flatMap((classDeclaration) =>
+    resolveClassPropertyValues(
+      classDeclaration,
+      propertyAccessExpression,
+      memberName,
+    ),
+  );
+
+  if (values.length === 0) {
+    throw new UnresolvableExpressionError(
+      propertyAccessExpression,
+      `Cannot find a value for "${memberName}" on the receiver's class`,
+    );
+  }
+  return values;
+}
+
+/**
+ * Finds the values that one class may store under a property name.
+ *
+ * @param classDeclaration - The class to search.
+ * @param propertyAccessExpression - The property access being resolved, used
+ * for error messages.
+ * @param memberName - The property name to find.
+ * @returns The values, which may be empty.
+ */
+function resolveClassPropertyValues(
+  classDeclaration: ts.ClassDeclaration,
+  propertyAccessExpression: ts.PropertyAccessExpression,
+  memberName: string,
+): ts.Expression[] {
+  const values: ts.Expression[] = [];
+
+  for (const member of findClassMembers(classDeclaration, memberName)) {
+    // ANTI-EXAMPLE (spreading `this.getApi` spreads a function, not its result):
+    //   class MetamaskController {
+    //     getApi() { ... }
+    //     ^^^^^^^^^^^^^^^^ method declaration
+    //   }
+    if (ts.isMethodDeclaration(member)) {
+      throw new UnresolvableExpressionError(
+        propertyAccessExpression,
+        `"${memberName}" is a method; call it to use the object it returns`,
+      );
+    }
+
+    // EXAMPLE:
+    //   class MetamaskController {
+    //     get api() { return { ... }; }
+    //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ getter
+    //   }
+    if (ts.isGetAccessorDeclaration(member)) {
+      values.push(...collectReturnExpressions(member));
+    }
+
+    // EXAMPLE:
+    //   class MetamaskController {
+    //     messengerClientApi = { ... };
+    //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property declaration
+    //   }
+    if (ts.isPropertyDeclaration(member) && member.initializer) {
+      values.push(member.initializer);
+    }
+  }
+
+  // Fields are often declared without an initializer, or not declared at all,
+  // and assigned in the constructor instead. Checking constructors only after
+  // members gives initialized fields priority.
+  if (values.length === 0) {
+    values.push(...collectConstructorAssignments(classDeclaration, memberName));
+  }
+  return values;
+}
+
+/**
+ * Collects the expressions that a function may return.
+ *
+ * This lets the resolver follow a call, such as `this.getApi()` or a
+ * messenger client init function, to the objects it produces. Every `return`
+ * is collected, not just the first, because a function with several returns
+ * usually picks one of them at runtime. For example, an init function might
+ * return `{ messengerClient }` early when a feature is disabled and
+ * `{ messengerClient, api }` otherwise. Following only one return would
+ * silently drop the methods in the others, so every path is followed and
+ * the snapshot includes any method that some path could expose.
+ *
+ * Return statements in nested functions are skipped, since they return from
+ * those functions instead.
+ *
+ * @param functionWithBody - The function to inspect.
+ * @returns The returned expressions.
+ */
+export function collectReturnExpressions(
+  functionWithBody: FunctionWithBody,
+): ts.Expression[] {
+  const { body } = functionWithBody;
+  if (!body) {
+    throw new UnresolvableExpressionError(
+      functionWithBody,
+      'Cannot inspect the return value of a function without a body',
+    );
+  }
+
+  // EXAMPLE:
+  //   () => ({ startSendingPatches })
+  //         ^^^^^^^^^^^^^^^^^^^^^^^^^ concise body
+  if (!ts.isBlock(body)) {
+    return [body];
+  }
+
+  const expressions: ts.Expression[] = [];
+  forEachNodeInFunctionBody(body, (node) => {
+    // EXAMPLE:
+    //   return { startSendingPatches };
+    //          ^^^^^^^^^^^^^^^^^^^^^^^ expression
+    if (ts.isReturnStatement(node) && node.expression) {
+      expressions.push(node.expression);
+    }
+  });
+  return expressions;
+}
+
+/**
+ * Collects the values assigned to `this.<memberName>` in a class's constructor.
+ *
+ * @param classDeclaration - The class to search.
+ * @param memberName - The property name to find.
+ * @returns The assigned values.
+ */
+function collectConstructorAssignments(
+  classDeclaration: ts.ClassDeclaration,
+  memberName: string,
+): ts.Expression[] {
+  const values: ts.Expression[] = [];
+
+  for (const member of classDeclaration.members) {
+    if (!ts.isConstructorDeclaration(member) || !member.body) {
+      continue;
+    }
+
+    forEachNodeInFunctionBody(member.body, (node) => {
+      // EXAMPLE:
+      //   this.messengerClientApi = messengerClientApi;
+      //   ^^^^^^^^^^^^^^^^^^^^^^^ left (property access on `this`)
+      //                             ^^^^^^^^^^^^^^^^^^ right
+      if (
+        ts.isBinaryExpression(node) &&
+        node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+        ts.isPropertyAccessExpression(node.left) &&
+        node.left.expression.kind === ts.SyntaxKind.ThisKeyword &&
+        getPropertyNameText(node.left.name) === memberName
+      ) {
+        values.push(node.right);
+      }
+    });
+  }
+
+  return values;
 }
