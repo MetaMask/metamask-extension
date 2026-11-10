@@ -297,9 +297,8 @@ async function initializeUiWithTab(
       backgroundConnection,
       traceContext,
       initialState,
+      onFirstCommit: () => endTrace({ name: TraceName.UIStartup }),
     });
-
-    endTrace({ name: TraceName.UIStartup });
 
     if (process.env.IN_TEST) {
       window.document?.documentElement?.classList.add('controller-loaded');

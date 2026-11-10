@@ -23,7 +23,7 @@ import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { trace, TraceName } from '../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
@@ -237,7 +237,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
 }
 
 async function startApp(metamaskState, opts) {
-  const { traceContext } = opts;
+  const { traceContext, onFirstCommit } = opts;
 
   // Initialize Core Web Vitals (INP, LCP, CLS) measurement
   initWebVitals();
@@ -276,8 +276,19 @@ async function startApp(metamaskState, opts) {
   const uiMessenger = createUIMessenger();
   // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
   // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
-  trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
+  // `createRoot().render()` only schedules the render, so the trace ends when
+  // React commits it instead of when `renderUi` returns.
+  trace({ name: TraceName.FirstRender, parentContext: traceContext });
+  renderUi(
+    <Root
+      store={store}
+      uiMessenger={uiMessenger}
+      onFirstCommit={() => {
+        endTrace({ name: TraceName.FirstRender });
+        onFirstCommit?.();
+      }}
+    />,
+    opts.container,
   );
 
   return store;
