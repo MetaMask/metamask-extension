@@ -31,8 +31,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-26.04]
-        group: [0]
-        shard: [1, 2, 3, 4, 5, 6]
+        group: [0, 1]
+        shard: [1, 2, 3, 4]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 65
     env:
@@ -77,11 +77,12 @@ jobs:
         run: |
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
-          # Forced GC on and off (nogc) for Chrome 126 and 142 on the power-user preset,
-          # all with the jsvis workaround.
-          versions=(142)
-          v=${versions[$GROUP]}
-          arms=("base126=jsvis" "base126nogc=jsvis,nogc" "chrome${v}=v${v},jsvis" "chrome${v}nogc=v${v},jsvis,nogc")
+          # Forced GC on and off (nogc) for Chrome 137 and 157 against the 126 reference, all with
+          # the jsvis workaround. Group 0 is the standard preset, group 1 the power-user preset.
+          presets=(startupStandardHome startupPowerUserHome)
+          pageloads=(10 7)
+          preset=${presets[$GROUP]}
+          arms=("base126=jsvis" "chrome137=v137,jsvis" "chrome137nogc=v137,jsvis,nogc" "chrome157=v157,jsvis" "chrome157nogc=v157,jsvis,nogc")
           n=${#arms[@]}
           mkdir -p test-artifacts/benchmarks
           for (( i = 0; i < n; i++ )); do
@@ -95,8 +96,8 @@ jobs:
             nogc=""
             [[ "$tokens" == *nogc* ]] && nogc=1
             BENCH_NOGC="$nogc" BENCH_CHROME_ARM="$tokens" timeout -k 10 720 yarn test:e2e:benchmark \
-              --preset startupPowerUserHome \
-              --browserLoads "$BROWSER_LOADS" --pageLoads 7 --retries 2 \
+              --preset "$preset" \
+              --browserLoads "$BROWSER_LOADS" --pageLoads "${pageloads[$GROUP]}" --retries 2 \
               --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-g$GROUP-s$SHARD.json" \
               || echo "::warning::arm $name failed"
             pkill -f chromedriver || true; pkill -f chrome || true; pkill anvil || true
