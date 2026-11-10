@@ -8,9 +8,11 @@ import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import {
   continueTraceContext,
   extractTraceMetadata,
+  sentryGetActiveSpan,
   trace,
 } from '../../../shared/lib/trace';
 import {
+  admitTraceWrappers,
   shouldSampleRootWrapper,
   shouldSampleWrappers,
 } from '../../../shared/lib/wrapper-sampling';
@@ -68,7 +70,11 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
         result = shouldSampleRootWrapper()
           ? await trace(
               { name, op: 'rpc.handler', root: true, data: spanData },
-              callHandler,
+              () =>
+                admitTraceWrappers(
+                  sentryGetActiveSpan()?.spanContext().traceId,
+                  callHandler,
+                ),
             )
           : await callHandler();
       } else if (shouldSampleWrappers(traceContext.traceId)) {

@@ -833,8 +833,8 @@ function startTrace(request: TraceRequest): TraceContext {
     const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
 
-    // Same name and no `id` means the same key: this `set` drops the pending
-    // trace, whose span never ends. Tag the new span rather than send an event.
+    // Same name and `id` (or both without one) means the same key: this `set`
+    // drops the pending trace, whose span then never ends.
     if (tracesByKey.has(key)) {
       log('WARNING: trace key collision, dropping pending trace', key);
       span?.setAttribute('trace.key_collision', true);
@@ -1015,9 +1015,8 @@ function startSpan<T>(
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
 
-  // Only an undeclared parent inherits the active span, and only under
-  // `allowActiveSpanFallback`; `forceTransaction` keeps it in transaction-level
-  // dashboards. `root` overrides this. Read before `withScope` forks the scope.
+  // Read the active span before `withScope` forks the scope. `forceTransaction`
+  // keeps an inherited span in transaction-level dashboards.
   let forceTransaction: boolean | undefined;
   if (!root && !parentSpan && !parentDeclared && allowActiveSpanFallback) {
     const activeSpan = sentryGetActiveSpan();
@@ -1033,8 +1032,6 @@ function startSpan<T>(
     op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
-    // Omit the key entirely when the fallback did not apply, so an opted-out
-    // span carries no `forceTransaction` signal at all.
     ...(forceTransaction === undefined ? {} : { forceTransaction }),
   };
 
@@ -1066,7 +1063,7 @@ function startSpan<T>(
 
   // A declared parent that did not resolve nests under the active span, without
   // `forceTransaction`: a failed lookup is not a request for a root.
-  if (!parentSpan && parentDeclared) {
+  if (!root && !parentSpan && parentDeclared) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       return sentryWithScope((scope: Sentry.Scope) => {

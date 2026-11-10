@@ -3,6 +3,7 @@ import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import { continueTraceContext, trace } from '../../../shared/lib/trace';
 import {
+  admitTraceWrappers,
   shouldSampleRootWrapper,
   shouldSampleWrappers,
 } from '../../../shared/lib/wrapper-sampling';
@@ -14,12 +15,16 @@ jest.mock('../../../shared/lib/trace', () => {
     trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
     continueTraceContext: jest.fn((_ctx: unknown, fn: () => unknown) => fn()),
     extractTraceMetadata: actual.extractTraceMetadata,
+    sentryGetActiveSpan: jest.fn(() => ({
+      spanContext: () => ({ traceId: 'root-trace-id' }),
+    })),
   };
 });
 
 jest.mock('../../../shared/lib/wrapper-sampling', () => ({
   shouldSampleWrappers: jest.fn().mockReturnValue(true),
   shouldSampleRootWrapper: jest.fn().mockReturnValue(true),
+  admitTraceWrappers: jest.fn((_traceId: unknown, fn: () => unknown) => fn()),
 }));
 
 type Api = Record<string, TaggedApiMethod>;
@@ -357,6 +362,10 @@ describe('createMetaRPCHandler', () => {
           root: true,
           data: { method: 'foo' },
         }),
+        expect.any(Function),
+      );
+      expect(admitTraceWrappers).toHaveBeenCalledWith(
+        'root-trace-id',
         expect.any(Function),
       );
       expect(foo).toHaveBeenCalledWith('bar');

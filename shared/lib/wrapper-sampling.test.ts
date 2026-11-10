@@ -1,5 +1,9 @@
 import { getRemoteWrapperSampleRate } from './sentry-remote-rates';
-import { shouldSampleRootWrapper } from './wrapper-sampling';
+import {
+  admitTraceWrappers,
+  shouldSampleRootWrapper,
+  shouldSampleWrappers,
+} from './wrapper-sampling';
 
 jest.mock('./sentry-remote-rates', () => ({
   getRemoteWrapperSampleRate: jest.fn(),
@@ -39,5 +43,31 @@ describe('shouldSampleRootWrapper', () => {
   it('rejects everything when distributed tracing is disabled', () => {
     process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED = 'true';
     expect(shouldSampleRootWrapper(() => 0)).toBe(false);
+  });
+});
+
+describe('admitTraceWrappers', () => {
+  const traceId = 'ffffffff000000000000000000000000';
+
+  beforeEach(() => {
+    jest.mocked(getRemoteWrapperSampleRate).mockReturnValue(0);
+  });
+
+  it('admits wrapper spans in the trace while the root runs, and only then', async () => {
+    expect(shouldSampleWrappers(traceId)).toBe(false);
+    const inside = await admitTraceWrappers(traceId, () =>
+      shouldSampleWrappers(traceId),
+    );
+    expect(inside).toBe(true);
+    expect(shouldSampleWrappers(traceId)).toBe(false);
+  });
+
+  it('releases the trace when the root throws', async () => {
+    await expect(
+      admitTraceWrappers(traceId, () => {
+        throw new Error('boom');
+      }),
+    ).rejects.toThrow('boom');
+    expect(shouldSampleWrappers(traceId)).toBe(false);
   });
 });
