@@ -920,6 +920,44 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
+  it('seeded region that does not support buy → shows RAMPS_UNSUPPORTED without fetching tokens', async () => {
+    // The gate runs before a fresh install has resolved a region, so the
+    // seeded region is the first definitive eligibility answer: it must block
+    // the intent instead of reaching build-quote.
+    const assetId = 'eip155:1/erc20:0xabc';
+    const unsupportedCountry = {
+      isoCode: 'FR',
+      supported: { buy: false },
+    } as Country;
+    backgroundHandlers.getRampsCountries = () => [unsupportedCountry];
+    backgroundHandlers.setRampsUserRegion = () => ({
+      country: unsupportedCountry,
+      state: null,
+      regionCode: 'fr',
+    });
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [] },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'setRampsSelectedToken',
+      expect.anything(),
+    );
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
   it('cold fetch whose countries fetch fails → skips the fetch and shows RAMPS_UNSUPPORTED', async () => {
     // Without countries, seeding fails; preselect fails closed.
     const assetId = 'eip155:1/erc20:0xabc';

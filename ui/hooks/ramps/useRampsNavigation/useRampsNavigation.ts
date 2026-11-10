@@ -17,6 +17,7 @@ import {
   RAMPS_BUILD_QUOTE_ROUTE,
   RAMPS_TOKEN_SELECTION_ROUTE,
 } from '../../../helpers/constants/routes';
+import { isRampRegionDefinitivelyUnsupported } from '../../../pages/ramps/utils/rampRegionEligibility';
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
@@ -161,6 +162,10 @@ function getSettledCatalogData(
   return isCatalogSettled(providers, tokens) ? tokens.data : null;
 }
 
+type IntentCatalogResult =
+  | { regionUnsupported: true; tokens: null }
+  | { regionUnsupported: false; tokens: TokensResponse | null };
+
 async function fetchTokensForIntent({
   tokens,
   userRegion,
@@ -171,22 +176,36 @@ async function fetchTokensForIntent({
   userRegion: UserRegion | null;
   countries: ResourceState<Country[]>;
   location: string;
-}): Promise<TokensResponse | null> {
+}): Promise<IntentCatalogResult> {
   if (tokens.data) {
-    return null;
+    return { regionUnsupported: false, tokens: null };
   }
 
-  let region = userRegion?.regionCode;
-  if (!region) {
+  let region = userRegion;
+  if (!region?.regionCode) {
     if (!countries.data?.length) {
       // `setUserRegion` needs the countries catalog, which a fresh install may
       // not have loaded yet (countries are not persisted).
       await getRampsCountries().catch(() => null);
     }
-    region = (await setRampsUserRegion(location).catch(() => null))?.regionCode;
+    region = (await setRampsUserRegion(location).catch(() => null)) ?? null;
   }
 
-  return region ? getRampsTokens(region, 'buy').catch(() => null) : null;
+  if (!region?.regionCode) {
+    return { regionUnsupported: false, tokens: null };
+  }
+
+  // The eligibility gate runs before a fresh install has resolved a region,
+  // so the seeded region is the first definitive answer. Honour its buy
+  // eligibility instead of continuing into build-quote with the intent.
+  if (isRampRegionDefinitivelyUnsupported(region, countries.data)) {
+    return { regionUnsupported: true, tokens: null };
+  }
+
+  return {
+    regionUnsupported: false,
+    tokens: await getRampsTokens(region.regionCode, 'buy').catch(() => null),
+  };
 }
 
 async function runPortfolioMigrationOnce({
@@ -346,14 +365,20 @@ export default function useRampsNavigation() {
 
       // Only an intent needs the catalog before navigating; without one the
       // token-selection page hydrates itself.
-      const fetchedTokens = intent?.assetId
-        ? await fetchTokensForIntent({
-            tokens,
-            userRegion,
-            countries,
-            location: gate.location,
-          })
-        : null;
+      let fetchedTokens: TokensResponse | null = null;
+      if (intent?.assetId) {
+        const intentCatalog = await fetchTokensForIntent({
+          tokens,
+          userRegion,
+          countries,
+          location: gate.location,
+        });
+        if (intentCatalog.regionUnsupported) {
+          dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
+          return false;
+        }
+        fetchedTokens = intentCatalog.tokens;
+      }
 
       return navigateToNativeBuy({
         intent,
