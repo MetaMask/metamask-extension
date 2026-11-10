@@ -70,6 +70,7 @@ const formatCompactContractAddress = (address: string): string => {
  *
  * The ticker uses the title color. The address stays muted and does not
  * shrink, so a long ticker ellipsizes instead of pushing the address away.
+ * After a copy, the success message hides the ticker. The pill hugs that text.
  *
  * @param props - Component props
  * @param props.ticker - Symbol shown when it differs from the token name
@@ -92,7 +93,7 @@ const AssetPageHeaderSubtitle = ({
       className="flex w-full min-w-0 items-center gap-1"
       data-testid="asset-page-header-subtitle"
     >
-      {ticker ? (
+      {ticker && !copied ? (
         <Text
           ellipsis
           variant={TextVariant.BodySm}
@@ -108,21 +109,31 @@ const AssetPageHeaderSubtitle = ({
         <button
           type="button"
           onClick={() => handleCopy(address)}
-          aria-label={t('copyToClipboard')}
+          aria-label={
+            copied ? t('tokenContractAddressCopied') : t('copyToClipboard')
+          }
           className={classnames(
-            'inline-flex shrink-0 items-center gap-1 rounded-full border-0 bg-transparent p-0',
-            'hover:bg-hover active:bg-pressed',
+            // Same box as the home address pill (h-6, px-2, py-1, rounded-lg)
+            // in every state, so hover and copy don't move the row.
+            'inline-flex h-6 items-center gap-1 rounded-lg border-0 px-2 py-1',
+            copied
+              ? 'max-w-full min-w-0 bg-success-muted'
+              : 'shrink-0 bg-transparent hover:bg-hover active:bg-pressed',
           )}
           data-testid="asset-page-header-address"
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
+            ellipsis={copied}
             color={
               copied ? TextColor.SuccessDefault : TextColor.TextAlternative
             }
+            className={copied ? 'min-w-0' : undefined}
           >
-            {formatCompactContractAddress(address)}
+            {copied
+              ? t('tokenContractAddressCopied')
+              : formatCompactContractAddress(address)}
           </Text>
           <Icon
             name={copied ? IconName.CopySuccess : IconName.Copy}
@@ -130,9 +141,13 @@ const AssetPageHeaderSubtitle = ({
             color={
               copied ? IconColor.SuccessDefault : IconColor.IconAlternative
             }
+            aria-hidden
           />
         </button>
       ) : null}
+      <span className="sr-only" role="status">
+        {copied ? t('tokenContractAddressCopied') : null}
+      </span>
     </div>
   );
 };

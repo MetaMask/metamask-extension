@@ -16,7 +16,6 @@ import {
   AvatarFavicon,
   AvatarFaviconSize,
   Box,
-  BoxBackgroundColor,
   ButtonIcon,
   ButtonIconSize,
   IconColor,
@@ -96,6 +95,19 @@ import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 import { BridgeAlertModal } from './components/bridge-alert-modal';
 import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
+
+const inputCardProps = {
+  padding: 3,
+  backgroundColor: BackgroundColor.backgroundMuted,
+  className: 'rounded-2xl',
+} as const;
+
+// 20px-radius notch around the switch button, with 12px fillets (matching
+// Mobile) where it meets the card edges, which sit 4px above and below the centre.
+const SWITCH_TOKENS_NOTCH_PATH =
+  'M0 -20 A20 20 0 0 1 17.32 -10 A12 12 0 0 0 27.71 -4 L27.71 4 A12 12 0 0 0 17.32 10 ' +
+  'A20 20 0 0 1 -17.32 10 A12 12 0 0 0 -27.71 4 L-27.71 -4 A12 12 0 0 0 -17.32 -10 ' +
+  'A20 20 0 0 1 0 -20 Z';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -510,146 +522,168 @@ const PrepareBridgePage = ({
         gap={4}
         data-testid="parent-selector-bridge-quote"
       >
-        <BridgeInputGroup
-          setIsAssetPickerOpen={(isOpen) =>
-            dispatch(setIsSrcAssetPickerOpen(isOpen))
-          }
-          token={fromToken}
-          tokenSecurityData={
-            selectedTokenSecurityData[
-              getTokenSecurityAssetKey(fromToken.assetId)
-            ]
-          }
-          onAmountChange={sourceInputAmount.handleAmountChange}
-          onMaxButtonClick={
-            shouldShowMaxButton
-              ? (value: string) => {
+        <Column gap={2} paddingInline={4} style={{ position: 'relative' }}>
+          <BridgeInputGroup
+            setIsAssetPickerOpen={(isOpen) =>
+              dispatch(setIsSrcAssetPickerOpen(isOpen))
+            }
+            token={fromToken}
+            tokenSecurityData={
+              selectedTokenSecurityData[
+                getTokenSecurityAssetKey(fromToken.assetId)
+              ]
+            }
+            onAmountChange={sourceInputAmount.handleAmountChange}
+            onMaxButtonClick={
+              shouldShowMaxButton
+                ? (value: string) => {
+                    dispatch(
+                      setFromTokenInputValue(
+                        calculateMaxAmountWithReserve({
+                          balanceAmount: value,
+                          caipAssetId: fromToken?.assetId,
+                          decimals: fromToken?.decimals ?? 0,
+                        }),
+                      ),
+                    );
+                  }
+                : undefined
+            }
+            // Hides fiat amount string before a token quantity is entered.
+            secondaryDisplay={sourceSecondaryDisplay}
+            amountInputPrefix={
+              sourceInputAmount.isFiatPrimary
+                ? getCurrencySymbol(currency)
+                : undefined
+            }
+            onAmountTypeToggle={
+              sourceInputAmount.canToggle
+                ? sourceInputAmount.togglePrimaryDenomination
+                : undefined
+            }
+            amountFieldProps={{
+              testId: 'from-amount',
+              autoFocus: true,
+              value: sourceInputAmount.amount,
+            }}
+            containerProps={inputCardProps}
+            buttonProps={{ testId: 'bridge-source-button' }}
+            onBlockExplorerClick={handleBlockExplorerClick}
+            isDestination={false}
+          />
+
+          {/* Zero-height anchor centred in the 8px gap between the cards */}
+          <div className="relative z-10 h-0 -my-1">
+            <svg
+              className="absolute"
+              style={{ top: -20, left: 'calc(50% - 28px)' }}
+              width={56}
+              height={40}
+              viewBox="-28 -20 56 40"
+              aria-hidden
+            >
+              <path
+                d={SWITCH_TOKENS_NOTCH_PATH}
+                fill="var(--color-background-default)"
+              />
+            </svg>
+            <Box
+              className="prepare-bridge-page__switch-tokens flex"
+              style={{
+                position: 'absolute',
+                top: -14,
+                left: 'calc(50% - 14px)',
+                // background-muted is translucent, so layer it over the page background to stay opaque over the card gap
+                background:
+                  'linear-gradient(var(--color-background-muted), var(--color-background-muted)), var(--color-background-default)',
+                borderRadius: '100%',
+                width: 28,
+                height: 28,
+                justifyContent: JustifyContent.center,
+              }}
+            >
+              <ButtonIcon
+                size={ButtonIconSize.Sm}
+                className="enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
+                style={{
+                  alignSelf: 'center',
+                  width: '100%',
+                  height: '100%',
+                }}
+                iconProps={{
+                  color: IconColor.IconDefault,
+                  className: 'transition-all duration-300 ease-in-out',
+                  // Tailwind has no 360° rotate utility; the full turn is what
+                  // animates the spin on each switch.
+                  style: rotateSwitchTokens
+                    ? { transform: 'rotate(360deg)' }
+                    : undefined,
+                }}
+                data-testid="switch-tokens"
+                ariaLabel="switch-tokens"
+                iconName={IconName.Arrow2Down}
+                isDisabled={
+                  isSwitchingTemporarilyDisabled ||
+                  !isValidQuoteRequest(quoteRequest, false) ||
+                  (toChain && !isNetworkAdded(fromChains, toChain.chainId))
+                }
+                onClick={() => {
+                  const previousDestAmount = dest?.normalizedAmount;
+                  dispatch(setSelectedQuote(null));
+                  if (!toChain || !fromToken || !toToken) {
+                    return;
+                  }
+                  // Track the flip event
                   dispatch(
-                    setFromTokenInputValue(
-                      calculateMaxAmountWithReserve({
-                        balanceAmount: value,
-                        caipAssetId: fromToken?.assetId,
-                        decimals: fromToken?.decimals ?? 0,
-                      }),
+                    trackUnifiedSwapBridgeEvent(
+                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
+                      {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_source: toToken.symbol,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_destination: fromToken.symbol,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_address_source: toToken.assetId,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_address_destination: fromToken.assetId,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        chain_id_source: formatChainIdToCaip(toChain.chainId),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        chain_id_destination: fromChain?.chainId
+                          ? formatChainIdToCaip(fromChain?.chainId)
+                          : null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_security_type_destination:
+                          toToken?.securityData?.type ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        security_warnings: securityWarnings,
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+                      },
                     ),
                   );
-                }
-              : undefined
-          }
-          // Hides fiat amount string before a token quantity is entered.
-          secondaryDisplay={sourceSecondaryDisplay}
-          amountInputPrefix={
-            sourceInputAmount.isFiatPrimary
-              ? getCurrencySymbol(currency)
-              : undefined
-          }
-          onAmountTypeToggle={
-            sourceInputAmount.canToggle
-              ? sourceInputAmount.togglePrimaryDenomination
-              : undefined
-          }
-          amountFieldProps={{
-            testId: 'from-amount',
-            autoFocus: true,
-            value: sourceInputAmount.amount,
-          }}
-          containerProps={{
-            paddingInline: 4,
-          }}
-          buttonProps={{ testId: 'bridge-source-button' }}
-          onBlockExplorerClick={handleBlockExplorerClick}
-          isDestination={false}
-        />
 
-        <Column
-          padding={4}
-          gap={4}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          className="relative"
-        >
-          <Box
-            className="absolute -top-5 left-1/2 flex size-10 -translate-x-1/2 justify-center rounded-full border-2 border-background-default"
-            backgroundColor={BoxBackgroundColor.BackgroundSection}
-          >
-            <ButtonIcon
-              size={ButtonIconSize.Lg}
-              className="group size-full min-w-10 self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
-              iconProps={{
-                color: IconColor.IconAlternative,
-                className:
-                  'transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default',
-                // Tailwind has no 360° rotate utility; the full turn is what
-                // animates the spin on each switch.
-                style: rotateSwitchTokens
-                  ? { transform: 'rotate(360deg)' }
-                  : undefined,
-              }}
-              data-testid="switch-tokens"
-              ariaLabel="switch-tokens"
-              iconName={IconName.SwapVertical}
-              isDisabled={
-                isSwitchingTemporarilyDisabled ||
-                !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(fromChains, toChain.chainId))
-              }
-              onClick={() => {
-                const previousDestAmount = dest?.normalizedAmount;
-                dispatch(setSelectedQuote(null));
-                if (!toChain || !fromToken || !toToken) {
-                  return;
-                }
-                // Track the flip event
-                dispatch(
-                  trackUnifiedSwapBridgeEvent(
-                    UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
-                    {
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_source: toToken.symbol,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_destination: fromToken.symbol,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_address_source: toToken.assetId,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_address_destination: fromToken.assetId,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      chain_id_source: formatChainIdToCaip(toChain.chainId),
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      chain_id_destination: fromChain?.chainId
-                        ? formatChainIdToCaip(fromChain?.chainId)
-                        : null,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_security_type_destination:
-                        toToken?.securityData?.type ?? null,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      security_warnings: securityWarnings,
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-                    },
-                  ),
-                );
+                  setRotateSwitchTokens(!rotateSwitchTokens);
 
-                setRotateSwitchTokens(!rotateSwitchTokens);
-
-                dispatch(setFromToken(toToken));
-                previousDestAmount &&
-                  dispatch(
-                    setFromTokenInputValue(
-                      formatTokenAmount(locale, previousDestAmount),
-                    ),
-                  );
-              }}
-            />
-          </Box>
-
-          <Box className="-mt-4 border-t border-muted px-4" />
+                  dispatch(setFromToken(toToken));
+                  previousDestAmount &&
+                    dispatch(
+                      setFromTokenInputValue(
+                        formatTokenAmount(locale, previousDestAmount),
+                      ),
+                    );
+                }}
+              />
+            </Box>
+          </div>
 
           <BridgeInputGroup
             setIsAssetPickerOpen={(isOpen) =>
@@ -669,6 +703,7 @@ const PrepareBridgePage = ({
               autoFocus: false,
             }}
             showAmountSkeleton={isInitialQuoteLoading}
+            containerProps={inputCardProps}
             buttonProps={{ testId: 'bridge-destination-button' }}
             onBlockExplorerClick={handleBlockExplorerClick}
             isDestination={true}

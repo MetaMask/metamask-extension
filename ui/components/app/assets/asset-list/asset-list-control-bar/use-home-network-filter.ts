@@ -43,21 +43,23 @@ import { useDispatch } from '../../../../../store/hooks';
 export const getSelectableChainId = (network: MultichainNetworkConfiguration) =>
   network.isEvm ? convertCaipToHexChainId(network.chainId) : network.chainId;
 
+type UseHomeNetworkFilterOptions = {
+  onClose?: () => void;
+  onPendingChange?: (isPending: boolean) => void;
+};
+
 /**
- * The home network filter: which networks can be chosen, which is selected and
- * the handlers that change the selection.
+ * The home network filter: which networks can be chosen, which is selected
+ * and the handlers that change the selection.
  *
- * @param options - Hook options.
+ * @param options - The hook options.
  * @param options.onClose - Called after a selection or an add.
  * @param options.onPendingChange - Called when a network switch starts or ends.
  */
 export const useHomeNetworkFilter = ({
   onClose,
   onPendingChange,
-}: {
-  onClose?: () => void;
-  onPendingChange?: (isPending: boolean) => void;
-} = {}) => {
+}: UseHomeNetworkFilterOptions = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);

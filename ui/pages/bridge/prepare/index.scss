@@ -1,0 +1,34 @@
+@use "design-system";
+
+// The source/destination card layout anchors the flip control with these
+// class hooks. Hover, pressed, and the 360deg spin stay here because the
+// button markup from main still targets them.
+.prepare-bridge-page {
+  &__switch-tokens {
+    button {
+      &:hover:enabled {
+        background: var(--color-background-muted-hover);
+
+        .mm-icon {
+          color: var(--color-icon-default);
+        }
+      }
+
+      &:active {
+        background: var(--color-background-muted-pressed);
+
+        .mm-icon {
+          color: var(--color-icon-default);
+        }
+      }
+
+      .rotate {
+        transform: rotate(360deg);
+      }
+    }
+
+    .mm-icon {
+      transition: all 0.3s ease-in-out;
+    }
+  }
+}

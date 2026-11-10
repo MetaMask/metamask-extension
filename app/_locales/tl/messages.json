@@ -8866,7 +8866,7 @@
     "message": "Naisumite ang pagwi-withdraw"
   },
   "perpsWithdrawTooltip": {
-    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo. Walang hihinging bayad sa MetaMask kapag nag-swap ka sa mUSD.",
+    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11929,9 +11929,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "dito",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Kasama na"
   },
   "swapGasFeesSplit": {
     "message": "Ang mga bayad sa network sa nakaraang screen ay hinati sa dalawang transaksyon."
