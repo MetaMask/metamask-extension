@@ -14,6 +14,12 @@ describe('NetworkConstants', () => {
     );
   });
 
+  it('maps Kinetiq Elysium to its network logo', () => {
+    expect(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1863d']).toBe(
+      './images/elysium-network.png',
+    );
+  });
+
   it('returns network name for chain ids', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM]).toBe('Arbitrum');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.AVALANCHE]).toBe('Avalanche');
