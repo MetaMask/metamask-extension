@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/dom';
+import { screen, waitFor } from '@testing-library/react';
 import { ERC20 } from '@metamask/controller-utils';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
@@ -32,6 +32,8 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
   getTokenStandardAndDetailsByChain: jest.fn(),
 }));
+
+jest.mock('../../../../../../hooks/usePolling', () => jest.fn());
 
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -134,46 +136,61 @@ describe('<ApproveInfo />', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('shows token, spender, amount and expiration for a Permit2 approval', async () => {
-    jest
-      .mocked(useIsNFT)
-      .mockImplementation(jest.requireActual('./hooks/use-is-nft').useIsNFT);
-    jest
-      .mocked(useApproveTokenSimulation)
-      .mockImplementation(
+  describe('Permit2', () => {
+    const mockedIsNFT = jest.mocked(useIsNFT);
+    const mockedApproveTokenSimulation = jest.mocked(useApproveTokenSimulation);
+    const defaultIsNFT = mockedIsNFT.getMockImplementation();
+    const defaultApproveTokenSimulation =
+      mockedApproveTokenSimulation.getMockImplementation();
+
+    beforeEach(() => {
+      mockedIsNFT.mockImplementation(
+        jest.requireActual('./hooks/use-is-nft').useIsNFT,
+      );
+      mockedApproveTokenSimulation.mockImplementation(
         jest.requireActual('./hooks/use-approve-token-simulation')
           .useApproveTokenSimulation,
       );
-    mockedAssetDetails.mockImplementation(
-      jest.requireActual('../../../../hooks/useAssetDetails').useAssetDetails,
-    );
-    jest
-      .mocked(getTokenStandardAndDetailsByChain)
-      .mockImplementation(async (address) =>
-        address === PERMIT2_TOKEN_ADDRESS
-          ? { standard: ERC20, decimals: '6', symbol: 'USDC' }
-          : ({} as TokenStandAndDetails),
+      mockedAssetDetails.mockImplementation(
+        jest.requireActual('../../../../hooks/useAssetDetails').useAssetDetails,
       );
+      jest
+        .mocked(getTokenStandardAndDetailsByChain)
+        .mockImplementation(async (address) =>
+          address === PERMIT2_TOKEN_ADDRESS
+            ? { standard: ERC20, decimals: '6', symbol: 'USDC' }
+            : ({} as TokenStandAndDetails),
+        );
+    });
 
-    const state = getMockConfirmStateForTransaction(
-      genUnapprovedPermit2ApproveConfirmation(),
-    );
-    const mockStore = configureMockStore(middleware)(state);
-
-    renderWithConfirmContextProvider(<ApproveInfo />, mockStore);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('simulation-token-value')).toHaveTextContent(
-        '1.5',
+    afterEach(() => {
+      mockedIsNFT.mockImplementation(defaultIsNFT);
+      mockedApproveTokenSimulation.mockImplementation(
+        defaultApproveTokenSimulation,
       );
     });
-    expect(screen.getByTestId('edit-spending-cap-icon')).toBeInTheDocument();
-    expect(screen.getByText('0x11111...11111')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('confirmation__approve-spender'),
-    ).toHaveTextContent('0x22222...22222');
-    expect(
-      screen.getByTestId('confirmation__approve-expiration'),
-    ).toHaveTextContent('01 January 2026, 00:00');
+
+    it('shows token, spender, amount and expiration', async () => {
+      const state = getMockConfirmStateForTransaction(
+        genUnapprovedPermit2ApproveConfirmation(),
+      );
+      const mockStore = configureMockStore(middleware)(state);
+
+      renderWithConfirmContextProvider(<ApproveInfo />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('simulation-token-value')).toHaveTextContent(
+          '1.5',
+        );
+      });
+      expect(screen.getByTestId('edit-spending-cap-icon')).toBeInTheDocument();
+      expect(screen.getByText('0x11111...11111')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('confirmation__approve-spender'),
+      ).toHaveTextContent('0x22222...22222');
+      expect(
+        screen.getByTestId('confirmation__approve-expiration'),
+      ).toHaveTextContent('01 January 2026, 00:00');
+    });
   });
 });
