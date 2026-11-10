@@ -69,7 +69,7 @@ export function useStartTruncatedText(text: string, endChars = Infinity) {
 
     fit();
     let active = true;
-    document.fonts?.ready.then(() => active && fit());
+    document.fonts?.ready.then(() => active && fit()).catch(() => undefined);
     const observer = new ResizeObserver(fit);
     observer.observe(element);
     observer.observe(element.parentElement ?? element);
