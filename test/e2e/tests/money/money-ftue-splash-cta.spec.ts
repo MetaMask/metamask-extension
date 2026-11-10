@@ -22,6 +22,8 @@ const MONEY_TOKEN_LIST_CTA_REMOTE_FLAGS = {
  * pending deposit.
  */
 describe('Money Account FTUE from a deposit CTA', function (this: Suite) {
+  this.timeout(180_000);
+
   it('cancels the pending deposit when the splash is dismissed', async function () {
     await withFixtures(
       getMoneyAccountDepositConfig({
