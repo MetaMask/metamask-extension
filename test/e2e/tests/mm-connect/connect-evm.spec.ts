@@ -94,7 +94,9 @@ describe('MM Connect-EVM', function (this: Suite) {
     it('completes personal_sign successfully', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2().build(),
+          fixtures: new FixtureBuilderV2()
+            .withUseBasicFunctionalityDisabled()
+            .build(),
           title: this.test?.fullTitle(),
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
@@ -130,7 +132,9 @@ describe('MM Connect-EVM', function (this: Suite) {
     it('completes eth_sendTransaction successfully', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2().build(),
+          fixtures: new FixtureBuilderV2()
+            .withUseBasicFunctionalityDisabled()
+            .build(),
           title: this.test?.fullTitle(),
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
@@ -169,7 +173,9 @@ describe('MM Connect-EVM', function (this: Suite) {
     it('reflects wallet-initiated chain switch in the connected dapp', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2().build(),
+          fixtures: new FixtureBuilderV2()
+            .withUseBasicFunctionalityDisabled()
+            .build(),
           title: this.test?.fullTitle(),
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },

@@ -87,7 +87,7 @@ describe('Error Page', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
         await waitForSignedInAuth(driver);
 
         await triggerCrash(driver);

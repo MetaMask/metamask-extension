@@ -32,7 +32,6 @@ export const reloadAndUnlock = async (driver: Driver): Promise<void> => {
  * @param options.localNode - A local node instance whose balance should be verified.
  * @param options.password - The password used to unlock the wallet.
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
- * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
  * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to false.
  */
 export const login = async (
@@ -42,7 +41,6 @@ export const login = async (
     localNode?: Anvil;
     password?: string;
     validateBalance?: boolean;
-    waitForNonEvmAccounts?: boolean;
     ignorePasskeyUnlock?: boolean;
   },
 ) => {
@@ -58,10 +56,6 @@ export const login = async (
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
-  if (options?.waitForNonEvmAccounts !== false) {
-    await homePage.waitForNonEvmAccountsLoaded();
-  }
-
   if (options?.localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
   } else if (options?.expectedBalance !== undefined) {

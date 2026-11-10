@@ -78,6 +78,7 @@ describe('Dapp interactions', function () {
       {
         dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilderV2()
+          .withUseBasicFunctionalityDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockNotificationsEndpoint,

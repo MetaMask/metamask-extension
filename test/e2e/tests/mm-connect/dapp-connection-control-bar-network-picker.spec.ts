@@ -43,7 +43,9 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
     it('renders the network picker after connect-evm Legacy EVM connection', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2().build(),
+          fixtures: new FixtureBuilderV2()
+            .withUseBasicFunctionalityDisabled()
+            .build(),
           title: this.test?.fullTitle(),
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],

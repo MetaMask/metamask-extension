@@ -46,7 +46,6 @@ describe('Tron - Activity status', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         await switchToNetworkFromNetworkSelect(driver, 'Tron');
 

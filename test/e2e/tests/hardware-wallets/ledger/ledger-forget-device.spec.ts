@@ -23,7 +23,6 @@ describe('Ledger Hardware', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
