@@ -31,7 +31,6 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
-    isBenchmark = false,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager

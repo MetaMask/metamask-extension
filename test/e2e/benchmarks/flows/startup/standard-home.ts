@@ -31,7 +31,6 @@ async function measurePageStandard(
       fixtures: new FixtureBuilderV2().build(),
       disableServerMochaToBackground: true,
       title,
-      isBenchmark: true,
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await login(driver, { validateBalance: false });
