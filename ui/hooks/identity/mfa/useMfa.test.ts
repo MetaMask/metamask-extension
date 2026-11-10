@@ -1,9 +1,12 @@
 import type { EnrolledCredential } from '@metamask/profile-sync-controller/sdk';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { captureException } from '../../../../shared/lib/sentry';
-import { extensionMfaControllerAdapter } from './bindings';
+import {
+  createSocialLoginControllerAdapter,
+  extensionMfaControllerAdapter,
+} from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
-import type { MfaReason } from './engine/types';
+import type { MfaControllerAdapter, MfaReason } from './engine/types';
 import { useMfa } from './useMfa';
 
 const mockTrackEvent = jest.fn(async () => undefined);
@@ -22,6 +25,7 @@ jest.mock('./engine/activeFlow', () => ({
 
 jest.mock('./bindings', () => ({
   extensionMfaControllerAdapter: {},
+  createSocialLoginControllerAdapter: jest.fn(),
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -30,6 +34,10 @@ jest.mock('../../../../shared/lib/sentry', () => ({
 }));
 
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
+const mockRefreshSocialCredentials = jest.fn();
+const socialLoginController = {
+  refreshEnrolledCredentials: mockRefreshSocialCredentials,
+} as unknown as MfaControllerAdapter;
 
 const enrolledCredentials: EnrolledCredential[] = [
   { id: 'email_otp', type: 'email_otp', status: 'active', verified: true },
@@ -42,7 +50,12 @@ const renderUseMfa = () =>
 
 describe('useMfa', () => {
   beforeEach(() => {
+    mockStartMfaFlow.mockClear();
     mockStartMfaFlow.mockResolvedValue({ credentials: [] });
+    jest.mocked(createSocialLoginControllerAdapter).mockClear();
+    jest
+      .mocked(createSocialLoginControllerAdapter)
+      .mockReturnValue(socialLoginController);
   });
 
   it('returns the cached credentials', () => {
@@ -132,5 +145,68 @@ describe('useMfa', () => {
         }),
       }),
     );
+  });
+
+  describe('verifyForSocialLogin', () => {
+    const reason: MfaReason = { operation: 'qa.socialLogin' };
+
+    it('rejects without starting a flow when no method is active', async () => {
+      mockRefreshSocialCredentials.mockResolvedValue([
+        { id: 'p', type: 'email_otp', status: 'pending', verified: false },
+      ] as EnrolledCredential[]);
+
+      await expect(
+        renderUseMfa().verifyForSocialLogin({ reason }),
+      ).rejects.toMatchObject({ mfaCode: 'credential_not_enrolled' });
+      expect(mockStartMfaFlow).not.toHaveBeenCalled();
+    });
+
+    it('verifies with every active method through the social login adapter', async () => {
+      mockRefreshSocialCredentials.mockResolvedValue([
+        { id: 't', type: 'totp', status: 'active', verified: true },
+        { id: 'e', type: 'email_otp', status: 'active', verified: true },
+      ] as EnrolledCredential[]);
+
+      await renderUseMfa().verifyForSocialLogin({ reason });
+
+      expect(mockStartMfaFlow).toHaveBeenCalledWith({
+        request: {
+          kind: 'verifyOrEnroll',
+          methods: ['totp', 'email_otp'],
+          verifyWith: ['totp', 'email_otp'],
+        },
+        reason,
+        platform: 'extension',
+        controller: socialLoginController,
+        reportError: expect.any(Function),
+        trackEvent: expect.any(Function),
+      });
+    });
+
+    it('uses a new adapter for each verification', async () => {
+      mockRefreshSocialCredentials.mockResolvedValue(
+        enrolledCredentials as EnrolledCredential[],
+      );
+
+      await renderUseMfa().verifyForSocialLogin({ reason });
+      await renderUseMfa().verifyForSocialLogin({ reason });
+
+      expect(createSocialLoginControllerAdapter).toHaveBeenCalledTimes(2);
+    });
+
+    it('leaves out methods this platform cannot run', async () => {
+      mockRefreshSocialCredentials.mockResolvedValue([
+        { id: 'k', type: 'passkey', status: 'active', verified: true },
+        { id: 'e', type: 'email_otp', status: 'active', verified: true },
+      ] as EnrolledCredential[]);
+
+      await renderUseMfa().verifyForSocialLogin({ reason });
+
+      expect(mockStartMfaFlow.mock.calls[0][0].request).toStrictEqual({
+        kind: 'verifyOrEnroll',
+        methods: ['email_otp'],
+        verifyWith: ['email_otp'],
+      });
+    });
   });
 });

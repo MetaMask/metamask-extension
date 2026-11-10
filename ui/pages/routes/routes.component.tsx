@@ -380,6 +380,10 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
+      {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
       createRouteWithMessenger({
         path: RESTORE_VAULT_ROUTE,
         element: <RestoreVaultPage />,
@@ -443,10 +447,6 @@ export const routeConfig = [
             },
           ]
         : []),
-      {
-        path: MFA_FLOW_ROUTE,
-        element: <MfaFlowHost />,
-      },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
@@ -933,7 +933,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked ? <MfaFlowLauncher /> : null}
+      <MfaFlowLauncher />
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}

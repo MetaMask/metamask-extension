@@ -7,13 +7,19 @@ import {
 import { captureException } from '../../../../shared/lib/sentry';
 import { useAnalytics } from '../../useAnalytics';
 import { selectEnrolledCredentials } from '../../../selectors/identity/authentication';
-import { extensionMfaControllerAdapter } from './bindings';
+import {
+  createSocialLoginControllerAdapter,
+  extensionMfaControllerAdapter,
+} from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
 import type { MfaEvent, MfaTrackEvent } from './engine/analytics';
+import { MfaFlowError } from './engine/errors';
+import { getVerifiableMethods } from './engine/planner';
 import type {
   EnrollOptions,
   MfaFlowOptions,
   MfaFlowResult,
+  MfaReason,
   VerifyOrEnrollOptions,
 } from './engine/types';
 
@@ -52,6 +58,10 @@ const clientOptions: Pick<
  * the screens), and lint rejects it outside this folder.
  * - `enroll`: sets up one method, for example from settings. No intro, no
  * verification after.
+ * - `verifyForSocialLogin`: proves it's the user with one of the methods
+ * already set up, while the wallet is still locked (social-login wallet
+ * recovery). Never enrolls: rejects with `credential_not_enrolled` when
+ * no method can be used on this platform.
  * - `credentials`: the profile's methods, as last fetched from the server.
  *
  * @returns The kit's entry points and the credential list.
@@ -82,6 +92,34 @@ export const useMfa = () => {
           reason,
           ...options,
         }),
+      verifyForSocialLogin: async ({
+        reason,
+      }: {
+        reason: MfaReason;
+      }): Promise<MfaFlowResult> => {
+        // One adapter per flow: it keeps the flow's own verification token.
+        const controller = createSocialLoginControllerAdapter();
+        const credentialList = await controller.refreshEnrolledCredentials();
+        const active = getVerifiableMethods(
+          credentialList,
+          clientOptions.platform,
+        );
+        if (active.length === 0) {
+          throw new MfaFlowError('credential_not_enrolled');
+        }
+        // `methods` and `verifyWith` are the same, so nothing is missing and
+        // the flow never plans an enrollment.
+        return startMfaFlow({
+          request: {
+            kind: 'verifyOrEnroll',
+            methods: active,
+            verifyWith: active,
+          },
+          reason,
+          ...options,
+          controller,
+        });
+      },
       enroll: ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
         startMfaFlow({
           request: { kind: 'enroll', method },

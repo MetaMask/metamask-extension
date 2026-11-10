@@ -14,6 +14,7 @@ import {
   DEFAULT_ROUTE,
   DISCOVER_SEARCH_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
+  MFA_FLOW_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -23,6 +24,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
+import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import Routes, {
@@ -248,6 +250,16 @@ describe('Routes Component', () => {
       path,
     ]);
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+  });
+
+  it('registers the MFA flow page where a locked wallet can reach it', () => {
+    const matches = matchRoutes(routeConfig, MFA_FLOW_ROUTE);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      MFA_FLOW_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(LegacyLayout);
   });
 
   it('guards discover search with basic functionality', () => {

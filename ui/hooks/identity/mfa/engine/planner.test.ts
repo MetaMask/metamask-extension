@@ -5,6 +5,7 @@ import {
 import {
   getEnrollmentMaxSessionAgeMs,
   getMethodStatuses,
+  getVerifiableMethods,
   planEnroll,
   planVerifyOrEnroll,
 } from './planner';
@@ -119,6 +120,25 @@ describe('getMethodStatuses', () => {
       canVerify: false,
       canEnroll: false,
     });
+  });
+});
+
+describe('getVerifiableMethods', () => {
+  it('returns nothing for a profile with no active credential', () => {
+    expect(getVerifiableMethods([pendingEmail], 'mobile')).toStrictEqual([]);
+  });
+
+  it('returns the active methods, cheapest first', () => {
+    expect(getVerifiableMethods([passkey, email], 'mobile')).toStrictEqual([
+      'passkey',
+      'email_otp',
+    ]);
+  });
+
+  it('leaves out active methods the platform cannot run', () => {
+    expect(getVerifiableMethods([passkey, email], 'extension')).toStrictEqual([
+      'email_otp',
+    ]);
   });
 });
 

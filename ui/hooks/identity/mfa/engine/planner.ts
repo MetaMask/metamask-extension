@@ -97,6 +97,22 @@ const isYoungerThan = (
 ): boolean => now - session.obtainedAt < maxAgeMs;
 
 /**
+ * Methods that are active on the profile and supported on this platform, the
+ * ones that can prove it's the user right now, in the cost ranking's order.
+ *
+ * @param credentials - The `refreshEnrolledCredentials()` result.
+ * @param platform - The client running the kit.
+ * @returns The methods that can verify.
+ */
+export const getVerifiableMethods = (
+  credentials: EnrolledCredential[],
+  platform: MfaPlatform,
+): MfaMethod[] => {
+  const statuses = getMethodStatuses(credentials, platform);
+  return METHOD_COST_RANKING.filter((method) => statuses[method].canVerify);
+};
+
+/**
  * Age limit for a session that authorizes adding a factor: proven during this
  * flow, or within `ENROLLMENT_MAX_SESSION_AGE_MS`. The same value is passed to
  * `beginCredentialEnrollment`, so the planner and the controller agree.
