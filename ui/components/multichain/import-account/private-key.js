@@ -66,6 +66,7 @@ export default function PrivateKeyImportView({
               ariaLabel={
                 showPrivateKey ? t('privateKeyShown') : t('privateKeyHidden')
               }
+              aria-pressed={showPrivateKey}
               data-testid="show-hide-private-key"
               onClick={() => setShowPrivateKey(!showPrivateKey)}
             />

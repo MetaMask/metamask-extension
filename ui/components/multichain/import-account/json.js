@@ -7,6 +7,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FormTextField,
+  HelpText,
+  HelpTextSeverity,
   Icon,
   IconColor,
   IconName,
@@ -35,7 +37,8 @@ export default function JsonImportSubview({
   const [errorMessage, setErrorMessage] = useState();
 
   const isPrimaryDisabled = fileContents === '';
-  const helpText = errorMessage ?? importErrorMessage;
+  const fileError = errorMessage ?? importErrorMessage;
+  const fileErrorId = 'json-file-error';
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -54,40 +57,49 @@ export default function JsonImportSubview({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
-      <label
-        htmlFor="file-input"
-        className="relative flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-muted px-4 py-8"
-      >
-        <FileInput
-          id="file-input"
-          data-testid="file-input"
-          accept=".json,application/json"
-          readAs="text"
-          onChange={(file) => {
-            setFileName(file?.name ?? '');
-          }}
-          onLoad={(event) => {
-            setErrorMessage();
-            setFileContents(event.target.result);
-          }}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            opacity: 0,
-            cursor: 'pointer',
-          }}
-        />
-        <Icon
-          name={IconName.Upload}
-          size={IconSize.Sm}
-          color={IconColor.IconAlternative}
-        />
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {fileName || t('chooseJsonFile')}
-        </Text>
-      </label>
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <label
+          htmlFor="file-input"
+          className="relative flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-muted px-4 py-8"
+        >
+          <FileInput
+            id="file-input"
+            data-testid="file-input"
+            accept=".json,application/json"
+            readAs="text"
+            aria-invalid={Boolean(fileError)}
+            aria-describedby={fileError ? fileErrorId : undefined}
+            onChange={(file) => {
+              setFileName(file?.name ?? '');
+            }}
+            onLoad={(event) => {
+              setErrorMessage();
+              setFileContents(event.target.result);
+            }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              opacity: 0,
+              cursor: 'pointer',
+            }}
+          />
+          <Icon
+            name={IconName.Upload}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {fileName || t('chooseJsonFile')}
+          </Text>
+        </label>
+        {fileError ? (
+          <HelpText id={fileErrorId} severity={HelpTextSeverity.Danger}>
+            {fileError}
+          </HelpText>
+        ) : null}
+      </Box>
 
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('fileImportNotWorking')}{' '}
@@ -105,9 +117,6 @@ export default function JsonImportSubview({
       <FormTextField
         id="json-password-box"
         size={TextFieldSize.Lg}
-        autoFocus
-        helpText={helpText}
-        isError={Boolean(helpText)}
         placeholder={t('enterOptionalPassword')}
         value={password}
         onChange={(event) => {
@@ -123,6 +132,7 @@ export default function JsonImportSubview({
             iconName={showPassword ? IconName.Eye : IconName.EyeSlash}
             size={ButtonIconSize.Md}
             ariaLabel={showPassword ? t('hide') : t('show')}
+            aria-pressed={showPassword}
             data-testid="show-hide-json-password"
             onClick={() => setShowPassword(!showPassword)}
           />
