@@ -170,10 +170,11 @@ describe('<ApproveInfo />', () => {
       );
     });
 
-    it('shows token, spender, amount and expiration', async () => {
-      const state = getMockConfirmStateForTransaction(
-        genUnapprovedPermit2ApproveConfirmation(),
-      );
+    it('shows token, spender, amount and expiration with an empty simulation', async () => {
+      const state = getMockConfirmStateForTransaction({
+        ...genUnapprovedPermit2ApproveConfirmation(),
+        simulationData: { tokenBalanceChanges: [] },
+      });
       const mockStore = configureMockStore(middleware)(state);
 
       renderWithConfirmContextProvider(<ApproveInfo />, mockStore);
