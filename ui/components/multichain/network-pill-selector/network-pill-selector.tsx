@@ -182,6 +182,16 @@ export const NetworkPillSelector = () => {
     }
     const observer = new ResizeObserver(measure);
     observer.observe(pills);
+
+    // Watch each pill: a balance update can widen one without resizing the
+    // row, and a stale count would inert a visible pill or leave a clipped one
+    // in the tab order.
+    pills
+      .querySelectorAll<HTMLElement>('[data-network-pill]')
+      .forEach((pill) => observer.observe(pill));
+    if (toggleRef.current) {
+      observer.observe(toggleRef.current);
+    }
     return () => observer.disconnect();
   }, [isExpanded, isLoading, networks, hiddenCount]);
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
@@ -174,6 +174,77 @@ describe('NetworkPillSelector', () => {
       fireEvent.click(expandedToggle);
       const collapsedToggle = screen.getByTestId('network-pill-toggle');
       expect(collapsedToggle).toHaveTextContent('Show all (3)');
+    });
+
+    it('remeasures when a pill changes width', () => {
+      let notify: ResizeObserverCallback | undefined;
+      const observed: Element[] = [];
+      const originalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class {
+        constructor(callback: ResizeObserverCallback) {
+          notify = callback;
+        }
+
+        observe(target: Element) {
+          observed.push(target);
+        }
+
+        unobserve() {
+          // no-op
+        }
+
+        disconnect() {
+          // no-op
+        }
+      } as typeof ResizeObserver;
+
+      jest
+        .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+        .mockReturnValue(400);
+      const offsetWidth = jest
+        .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
+        .mockImplementation(function mock(this: HTMLElement) {
+          if (this.dataset.testid === 'network-pill-toggle') {
+            return 40;
+          }
+          if (this.dataset.testid?.startsWith('network-pill')) {
+            return 100;
+          }
+          return 0;
+        });
+
+      try {
+        renderSelector();
+        expect(
+          screen.queryByTestId('network-pill-toggle'),
+        ).not.toBeInTheDocument();
+        expect(
+          observed.some(
+            (element) =>
+              element.getAttribute('data-testid') === 'network-pill-0x1',
+          ),
+        ).toBe(true);
+
+        offsetWidth.mockImplementation(function mock(this: HTMLElement) {
+          if (this.dataset.testid === 'network-pill-toggle') {
+            return 40;
+          }
+          if (this.dataset.testid?.startsWith('network-pill')) {
+            return 200;
+          }
+          return 0;
+        });
+        act(() => {
+          notify?.([], {} as ResizeObserver);
+        });
+
+        expect(screen.getByTestId('network-pill-toggle')).toHaveTextContent(
+          'Show all (3)',
+        );
+        expect(screen.getByTestId('network-pill-0xa')).toHaveAttribute('inert');
+      } finally {
+        window.ResizeObserver = originalResizeObserver;
+      }
     });
   });
 
