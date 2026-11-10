@@ -176,6 +176,8 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/design-system-react": "0.51.0",
+    "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^38.0.0",
@@ -430,7 +432,7 @@
     "@metamask/chomp-api-service": "^4.0.2",
     "@metamask/claims-controller": "^0.6.1",
     "@metamask/client-controller": "^2.0.0",
-    "@metamask/client-utils": "^3.1.1",
+    "@metamask/client-utils": "^3.2.0",
     "@metamask/compliance-controller": "^2.1.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/connectivity-controller": "^0.3.0",
