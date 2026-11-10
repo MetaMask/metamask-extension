@@ -268,7 +268,7 @@ export const NetworkPillSelector = () => {
                 className="rounded-full"
               />
             }
-            onClick={() => handleSelectNetwork(network.chainId)}
+            onClick={() => handleSelectNetwork(network.chainId, 'Network Pill')}
             testId={`network-pill-${getSelectableChainId(network)}`}
           />
         ))}

@@ -99,7 +99,10 @@ describe('NetworkPillSelector', () => {
     renderSelector();
 
     fireEvent.click(screen.getByTestId('network-pill-0xa'));
-    expect(mockHandleSelectNetwork).toHaveBeenCalledWith('eip155:10');
+    expect(mockHandleSelectNetwork).toHaveBeenCalledWith(
+      'eip155:10',
+      'Network Pill',
+    );
 
     fireEvent.click(screen.getByTestId('network-pill-all-default'));
     expect(mockHandleSelectAll).toHaveBeenCalledTimes(1);
