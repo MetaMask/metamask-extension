@@ -136,7 +136,7 @@ const MoneyFtueSplashContent = () => {
       dispatch(setMoneyFtueSeen(true));
       dispatch(closeMoneyFtue());
 
-      if (isDeposit) {
+      if (isDeposit && buttonType === MoneyButtonType.Text) {
         initiateDeposit({
           ...(pendingDeposit ?? {}),
           skipFtue: true,
