@@ -1,11 +1,12 @@
 import log from 'loglevel';
+import { it as jestIt } from '@jest/globals';
 import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
-import { type Route, routes } from './routes';
+import { addRoute, routes } from './routes';
+import { Route } from './routes/route';
 import { SIG_PARAM } from './common';
 
 const mockVerify = verify as jest.MockedFunction<typeof verify>;
-const mockRoutes = routes as jest.Mocked<Map<string, Route>>;
 
 jest.mock('./verify', () => ({
   INVALID: 'invalid',
@@ -13,17 +14,21 @@ jest.mock('./verify', () => ({
   VALID: 'valid',
   verify: jest.fn(),
 }));
-jest.mock('./routes', () => ({
-  routes: new Map(),
-}));
 jest.mock('loglevel');
 
 describe('parse', () => {
   const mockHandler = jest.fn() as jest.MockedFunction<Route['handler']>;
+  let testRoute: Route;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockRoutes.clear();
+    mockHandler.mockReset();
+    routes.clear();
+    testRoute = new Route({
+      pathname: '/test',
+      getTitle: () => 'deepLink_theHomePage',
+      handler: mockHandler,
+    });
   });
 
   it('returns false if no route handler is found', async () => {
@@ -37,11 +42,12 @@ describe('parse', () => {
   });
 
   it('returns false if handler throws an error', async () => {
-    mockRoutes.set('/test', {
+    addRoute({
+      ...testRoute,
       handler: () => {
         throw new Error('fail');
       },
-    } as unknown as Route);
+    });
     mockVerify.mockResolvedValue(VALID);
     const urlStr = 'https://example.com/test?foo=bar';
     const result = await parse(new URL(urlStr));
@@ -53,7 +59,7 @@ describe('parse', () => {
   });
 
   it('returns a parsed deep link object with signature=valid if signature is valid', async () => {
-    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    addRoute(testRoute);
     mockHandler.mockReturnValue({
       path: 'destination-value',
       query: new URLSearchParams([[SIG_PARAM, '123']]),
@@ -68,16 +74,14 @@ describe('parse', () => {
         path: 'destination-value',
         query: new URLSearchParams([[SIG_PARAM, '123']]),
       },
-      route: {
-        handler: mockHandler,
-      },
+      route: testRoute,
       signature: VALID,
     });
     expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
   });
 
   it('returns a parsed deep link object with signature=invalid if signature is invalid', async () => {
-    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    addRoute(testRoute);
     mockHandler.mockReturnValue({
       path: 'destination-value',
       query: new URLSearchParams(),
@@ -92,15 +96,13 @@ describe('parse', () => {
         path: 'destination-value',
         query: new URLSearchParams(),
       },
-      route: {
-        handler: mockHandler,
-      },
+      route: testRoute,
       signature: INVALID,
     });
   });
 
   it('returns a parsed deep link object with signature=missing if signature is missing', async () => {
-    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    addRoute(testRoute);
     mockHandler.mockReturnValue({
       path: 'destination-value',
       query: new URLSearchParams(),
@@ -115,15 +117,13 @@ describe('parse', () => {
         path: 'destination-value',
         query: new URLSearchParams(),
       },
-      route: {
-        handler: mockHandler,
-      },
+      route: testRoute,
       signature: MISSING,
     });
   });
 
   it('calls verify with the correct URL', async () => {
-    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    addRoute(testRoute);
     mockHandler.mockReturnValue({
       path: 'destination-value',
       query: new URLSearchParams(),
@@ -137,7 +137,7 @@ describe('parse', () => {
   });
 
   it('skips signature verification when `navigationOrigin` is `NavigationOrigin.INTERNAL`', async () => {
-    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    addRoute(testRoute);
     mockHandler.mockReturnValue({
       path: 'destination-value',
       query: new URLSearchParams(),
@@ -153,15 +153,13 @@ describe('parse', () => {
         path: 'destination-value',
         query: new URLSearchParams(),
       },
-      route: {
-        handler: mockHandler,
-      },
+      route: testRoute,
     });
     expect(mockVerify).not.toHaveBeenCalled();
   });
 
   it("removes the SIG_PARAMS_PARAM from the handler's query parameters", async () => {
-    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    addRoute(testRoute);
     mockVerify.mockResolvedValue(VALID);
 
     const urlStr1 = 'https://example.com/test?sig=bar&sig_params=';
@@ -194,4 +192,55 @@ describe('parse', () => {
       new URLSearchParams([['value', '123']]),
     );
   });
+
+  jestIt.each([VALID, INVALID, MISSING])(
+    'preserves the original wildcard URL for verification with signature=%s',
+    async (signature) => {
+      const wildcardRoute = new Route({
+        ...testRoute,
+        pathname: '/social/*/whatever',
+      });
+      addRoute(wildcardRoute);
+      const destination = {
+        path: '/destination',
+        query: new URLSearchParams(),
+      };
+      mockHandler.mockReturnValue(destination);
+      mockVerify.mockResolvedValue(signature);
+      const url = new URL(
+        'https://link.metamask.io/SOCIAL/Alice%2FBob/WHATEVER?sig=example&sig_params=value&value=123&ignored=abc#details',
+      );
+      const originalUrl = url.href;
+
+      const result = await parse(url);
+
+      expect(result).toStrictEqual({
+        destination,
+        route: wildcardRoute,
+        signature,
+      });
+      expect(mockHandler).toHaveBeenCalledWith(
+        new URLSearchParams({ value: '123' }),
+      );
+      expect(mockVerify).toHaveBeenCalledWith(url);
+      expect(url.href).toBe(originalUrl);
+    },
+  );
+
+  jestIt.each([
+    '/social//whatever',
+    '/social/alice/bob/whatever',
+    '/social/alice/whatever/extra',
+  ])(
+    'does not invoke a handler for the unmatched pathname %s',
+    async (pathname) => {
+      addRoute(new Route({ ...testRoute, pathname: '/social/*/whatever' }));
+
+      expect(await parse(new URL(`https://link.metamask.io${pathname}`))).toBe(
+        false,
+      );
+      expect(mockHandler).not.toHaveBeenCalled();
+      expect(mockVerify).not.toHaveBeenCalled();
+    },
+  );
 });
