@@ -171,7 +171,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
       0,
     );
 
-    Promise.all(
+    void Promise.all(
       entries.map(([symbol]) =>
         submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
           {
