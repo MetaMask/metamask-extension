@@ -8960,10 +8960,6 @@
     "message": "Ang pribadong key ay nakatago",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "Ipakita/Itago ang pribadong key input",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "Ang pribadong key ay na ito ay ipinapakita",
     "description": "Explains that the private key input is being shown"

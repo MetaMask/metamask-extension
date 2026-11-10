@@ -8968,10 +8968,6 @@
     "message": "개인 키 입력이 표시되지 않습니다",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "개인 키 입력 표시/숨기기",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "이 개인 키 입력은 표시됩니다",
     "description": "Explains that the private key input is being shown"

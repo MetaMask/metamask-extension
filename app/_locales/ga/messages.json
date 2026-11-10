@@ -3810,10 +3810,6 @@
     "message": "Tá an eochair phríobháideach i bhfolach",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "Taispeáin/Folaigh an t-ionchur eochrach príobháideach",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "Tá an eochair phríobháideach seo á taispeáint",
     "description": "Explains that the private key input is being shown"

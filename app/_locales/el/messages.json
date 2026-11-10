@@ -8960,10 +8960,6 @@
     "message": "Το ιδιωτικό κλειδί είναι κρυφό",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "Εμφάνιση/απόκρυψη της εισαγωγής του ιδιωτικού κλειδιού",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "Αυτό το ιδιωτικό κλειδί είναι ορατό",
     "description": "Explains that the private key input is being shown"

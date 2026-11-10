@@ -8960,10 +8960,6 @@
     "message": "प्राइवेट की (key) छिपी हुई है",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "प्राइवेट की (key) इनपुट को दिखाएं/छिपाएं",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "प्राइवेट की (key) दिखाई जा रही है",
     "description": "Explains that the private key input is being shown"

@@ -8911,10 +8911,6 @@
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "秘密鍵の入力の表示・非表示を切り替えます",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
     "description": "Explains that the private key input is being shown"

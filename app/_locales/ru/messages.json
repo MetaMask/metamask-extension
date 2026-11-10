@@ -8960,10 +8960,6 @@
     "message": "Закрытый ключ скрыт",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "Показать/скрыть закрытый ключ при вводе",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "Этот закрытый ключ отображается",
     "description": "Explains that the private key input is being shown"

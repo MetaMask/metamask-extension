@@ -8960,10 +8960,6 @@
     "message": "Der private Schlüssel ist verborgen",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "Eingabe des privaten Schlüssels anzeigen/ausblenden",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "Dieser private Schlüssel wird angezeigt",
     "description": "Explains that the private key input is being shown"

@@ -8966,10 +8966,6 @@
     "message": "私钥已隐藏",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "显示/隐藏私钥输入",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "正在显示此私钥",
     "description": "Explains that the private key input is being shown"
