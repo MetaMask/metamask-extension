@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useDeferredValue, useState, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -8,7 +8,6 @@ import {
 } from '@metamask/notification-services-controller/notification-services';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useDeferredValue } from '../../hooks/useDeferredValue';
 import {
   IconName,
   IconSize,

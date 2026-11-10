@@ -16,7 +16,11 @@ export function NoFeeTag({ testId = 'no-fee-tag' }: NoFeeTagProps = {}) {
   const t = useI18nContext();
 
   return (
-    <Tag severity={TagSeverity.Info} data-testid={testId}>
+    <Tag
+      severity={TagSeverity.Info}
+      data-testid={testId}
+      className="shrink-0 whitespace-nowrap"
+    >
       {t('noFee')}
     </Tag>
   );

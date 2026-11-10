@@ -7,11 +7,9 @@ import {
   NotificationComponentType,
   type NotificationComponent,
 } from '../types/notifications/notifications';
-import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   createTextItems,
   formatAmount,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getNetworkDetailsFromNotifPayload,
 } from '../../../../helpers/utils/notification.util';
@@ -19,7 +17,6 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 
 import {
   NotificationListItem,
-  NotificationDetailTitle,
   NotificationDetailBlockExplorerButton,
   NotificationDetailAddress,
   NotificationDetailInfo,
@@ -29,6 +26,7 @@ import {
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -43,22 +41,13 @@ const isETHNotification = isOfTypeNodeGuard([
 
 const isSent = (n: ETHNotification) => n.type === TRIGGER_TYPES.ETH_SENT;
 
-const title = (n: ETHNotification) =>
-  isSent(n) ? t('notificationItemSentTo') : t('notificationItemReceivedFrom');
-
 const getTitle = (n: ETHNotification) => {
-  const address = shortenAddress(
-    isSent(n) ? n.payload.data.to : n.payload.data.from,
-  );
-  const items = createTextItems([title(n) ?? '', address], TextVariant.bodySm);
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: ETHNotification) => {
-  const { nativeCurrencySymbol } = getNetworkDetailsFromNotifPayload(
-    n.payload.network,
-  );
-  const items = createTextItems([nativeCurrencySymbol], TextVariant.bodyMd);
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -99,21 +88,7 @@ export const components: NotificationComponent<ETHNotification> = {
     );
   },
   details: {
-    title: ({ notification }) => {
-      const { nativeCurrencySymbol } = getNetworkDetailsFromNotifPayload(
-        notification.payload.network,
-      );
-      return (
-        <NotificationDetailTitle
-          title={`${
-            isSent(notification)
-              ? t('notificationItemSent')
-              : t('notificationItemReceived')
-          } ${nativeCurrencySymbol}`}
-          date={formatIsoDateString(notification.createdAt)}
-        />
-      );
-    },
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       From: ({ notification }) => (

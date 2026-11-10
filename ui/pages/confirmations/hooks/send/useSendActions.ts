@@ -1,16 +1,19 @@
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  ACTIVITY_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useInAppBack } from '../../../../hooks/useInAppBack';
+import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value';
+import { toast } from '../../../../components/ui/toast/toast';
 import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
@@ -23,6 +26,12 @@ import { useSendContext } from '../../context/send';
 import { useDispatch } from '../../../../store/hooks';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
+import {
+  classifyNonEvmSendError,
+  NonEvmSendErrorCode,
+  NonEvmSendFailurePhase,
+  useNonEvmSendMetrics,
+} from './metrics/useNonEvmSendMetrics';
 
 type SnapConfirmSendResult = {
   valid?: boolean;
@@ -46,6 +55,8 @@ export const useSendActions = () => {
     value,
   } = useSendContext();
   const { isEvmSendType } = useSendType();
+  const handleBack = useInAppBack(DEFAULT_ROUTE);
+  const { captureSendFailed } = useNonEvmSendMetrics();
 
   const handleSubmit = useCallback(async () => {
     if (!asset) {
@@ -57,7 +68,7 @@ export const useSendActions = () => {
     updateNonEVMSubmitError(undefined);
 
     if (isEvmSendType) {
-      dispatch(
+      const transactionPromise = dispatch(
         await submitEvmTransaction({
           asset,
           chainId: chainId as Hex,
@@ -68,14 +79,29 @@ export const useSendActions = () => {
         }),
       );
       const params = new URLSearchParams();
-      if (maxValueMode) {
-        params.set('maxValueMode', String(maxValueMode));
-      }
       params.set('loader', ConfirmationLoader.Send);
       const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
+
+      const transactionMeta = await transactionPromise;
+
+      if (maxValueMode && transactionMeta) {
+        dispatch(
+          setMaxValueMode({
+            transactionId: transactionMeta.id,
+            enabled: true,
+          }),
+        );
+      }
     } else {
+      const chainIdCaip = chainId as string | undefined;
+      const snapId = fromAccount?.metadata?.snap?.id;
+      const genericErrorMessage = t('transactionError');
+
+      // The Send loader replaces navigation history when the Snap
+      // confirmation dialog opens, so the user cannot return to the previous page.
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
+
       try {
         const result = (await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,
@@ -89,28 +115,47 @@ export const useSendActions = () => {
 
         // Check if the snap returned a validation error
         if (result?.valid === false) {
-          const errorMessage = result?.errors?.length
-            ? mapSnapErrorCodeIntoTranslation(result.errors[0].code, t)
-            : t('transactionError');
-          updateNonEVMSubmitError(errorMessage);
+          const errorCode = result?.errors?.[0]?.code;
+          const errorMessage = errorCode
+            ? mapSnapErrorCodeIntoTranslation(errorCode, t)
+            : genericErrorMessage;
+          captureSendFailed({
+            chainIdCaip,
+            snapId,
+            failurePhase: NonEvmSendFailurePhase.Validation,
+            errorCode: errorCode ?? NonEvmSendErrorCode.Unknown,
+          });
+
+          if (isRemainInSendScreen()) {
+            updateNonEVMSubmitError(errorMessage);
+          } else {
+            // Show generic error message rather than error message from error code mapping
+            toast.error(genericErrorMessage);
+          }
+
           navigate(PREVIOUS_ROUTE);
           return;
         }
 
-        // Success
-        navigate(`${DEFAULT_ROUTE}?tab=activity`);
+        // Success. The Snap owns the rest of the non-EVM transaction
+        // lifecycle (Submitted/Finalized) and emits those itself.
+        navigate(ACTIVITY_ROUTE);
       } catch (error) {
         // Check for user rejection using error code (4001) - this is language-independent
-        const errorCode = (error as { code?: number })?.code;
-        const isUserRejection =
-          errorCode === errorCodes.provider.userRejectedRequest;
+        const { errorCode, failurePhase } = classifyNonEvmSendError(error);
+        const isUserRejection = errorCode === NonEvmSendErrorCode.UserRejected;
+
+        captureSendFailed({ chainIdCaip, snapId, failurePhase, errorCode });
 
         if (isUserRejection) {
           // User deliberately cancelled - clear error and navigate back silently
           updateNonEVMSubmitError(undefined);
-        } else {
+        } else if (isRemainInSendScreen()) {
           // Actual snap/internal error - display error message to user
-          updateNonEVMSubmitError(t('transactionError'));
+          updateNonEVMSubmitError(genericErrorMessage);
+        } else {
+          // Show generic error message rather than error message from error code mapping
+          toast.error(genericErrorMessage);
         }
         navigate(PREVIOUS_ROUTE);
       }
@@ -129,11 +174,8 @@ export const useSendActions = () => {
     to,
     updateNonEVMSubmitError,
     value,
+    captureSendFailed,
   ]);
-
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
 
   const handleCancel = useCallback(() => {
     navigate(DEFAULT_ROUTE);
@@ -141,3 +183,17 @@ export const useSendActions = () => {
 
   return { handleSubmit, handleCancel, handleBack };
 };
+
+/**
+ * Returns whether the current route is still the send screen.
+ *
+ * The loader page replaces navigation history, so the user
+ * cannot return to the previous page while the SNAP confirmation dialog is open.
+ * Callers use this helper to decide whether an error can be shown on the send screen.
+ *
+ * @returns True when the current route is the send screen.
+ */
+function isRemainInSendScreen() {
+  const pathname = window.location.hash.replace(/^#/u, '').split('?')[0];
+  return pathname.startsWith(SEND_ROUTE);
+}

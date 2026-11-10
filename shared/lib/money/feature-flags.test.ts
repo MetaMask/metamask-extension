@@ -2,12 +2,26 @@ import packageJson from '../../../package.json';
 import {
   DEFAULT_MONEY_ACCOUNT_BLOCKED_COUNTRIES,
   MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME,
+  MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
   MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
+  MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+  MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
+  MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME,
+  MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME,
+  MONEY_EARN_BANNER_ENABLED_FLAG_NAME,
+  MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME,
   getMoneyAccountGeoBlockedCountries,
+  getMoneyDepositCtaTokenAddresses,
   isMoneyAccountEnabled,
   isMoneyAccountGeoEligible,
+  isMoneyActivityDetailsEnabled,
+  isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHomeScreenCardEnabled,
+  isMoneyTokenListItemCtaEnabled,
+  isMoneyEarnBannerEnabled,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 } from './feature-flags';
 
 const CURRENT_VERSION = packageJson.version;
@@ -239,4 +253,327 @@ describe('isMoneyEarningSectionEnabled', () => {
       }),
     ).toBe(false);
   });
+});
+
+describe('isMoneyHomeScreenCardEnabled', () => {
+  it('returns true for an enabled flag the current version satisfies', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: CURRENT_VERSION,
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true for an enabled flag inside a progressive rollout wrapper', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          name: 'home-card-rollout',
+          value: { enabled: true, minimumVersion: '0.0.0' },
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for a disabled flag', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          enabled: false,
+          minimumVersion: '0.0.0',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the current version is below the minimum', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: '9999.0.0',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is absent, malformed, or unserved', () => {
+    const cases: [string, Record<string, unknown> | undefined][] = [
+      ['unserved flags', undefined],
+      ['no card flag', { someOtherFlag: true }],
+      ['plain boolean', { [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: true }],
+      [
+        'missing minimumVersion',
+        { [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: { enabled: true } },
+      ],
+    ];
+
+    for (const [name, flags] of cases) {
+      expect({
+        name,
+        enabled: isMoneyHomeScreenCardEnabled(flags),
+      }).toStrictEqual({ name, enabled: false });
+    }
+  });
+});
+
+describe('isMoneyActivityMockDataEnabled', () => {
+  let originalEnv: string | undefined;
+
+  beforeEach(() => {
+    originalEnv = process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED;
+    delete process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED;
+  });
+
+  afterEach(() => {
+    if (originalEnv === undefined) {
+      delete process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED;
+    } else {
+      process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = originalEnv;
+    }
+  });
+
+  it('returns the remote boolean when it is true', () => {
+    expect(
+      isMoneyActivityMockDataEnabled({
+        [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: true,
+      }),
+    ).toBe(true);
+  });
+
+  it('returns the remote boolean when it is false, ignoring the env var', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'true';
+    expect(
+      isMoneyActivityMockDataEnabled({
+        [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('falls back to the env var when the remote flag is unserved', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'true';
+    expect(isMoneyActivityMockDataEnabled(undefined)).toBe(true);
+    expect(isMoneyActivityMockDataEnabled({})).toBe(true);
+  });
+
+  it('falls back to the env var when the remote flag is not a boolean', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'true';
+    expect(
+      isMoneyActivityMockDataEnabled({
+        [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: 'yes',
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is off', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'false';
+    expect(isMoneyActivityMockDataEnabled(undefined)).toBe(false);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is missing', () => {
+    expect(isMoneyActivityMockDataEnabled(undefined)).toBe(false);
+  });
+});
+
+describe('isMoneyActivityDetailsEnabled', () => {
+  let originalEnv: string | undefined;
+
+  beforeEach(() => {
+    originalEnv = process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+    delete process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+  });
+
+  afterEach(() => {
+    if (originalEnv === undefined) {
+      delete process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+    } else {
+      process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = originalEnv;
+    }
+  });
+
+  it('returns the remote boolean when it is true', () => {
+    expect(
+      isMoneyActivityDetailsEnabled({
+        [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: true,
+      }),
+    ).toBe(true);
+  });
+
+  it('returns the remote boolean when it is false, ignoring the env var', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(
+      isMoneyActivityDetailsEnabled({
+        [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('falls back to the env var when the remote flag is unserved', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(isMoneyActivityDetailsEnabled(undefined)).toBe(true);
+    expect(isMoneyActivityDetailsEnabled({})).toBe(true);
+  });
+
+  it('falls back to the env var when the remote flag is not a boolean', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(
+      isMoneyActivityDetailsEnabled({
+        [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: 'yes',
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is off', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'false';
+    expect(isMoneyActivityDetailsEnabled(undefined)).toBe(false);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is missing', () => {
+    expect(isMoneyActivityDetailsEnabled(undefined)).toBe(false);
+  });
+});
+
+// @ts-expect-error This is missing from the Mocha type definitions
+describe.each([
+  [
+    'isMoneyTokenListItemCtaEnabled',
+    isMoneyTokenListItemCtaEnabled,
+    MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME,
+  ],
+  [
+    'isMoneyEarnBannerEnabled',
+    isMoneyEarnBannerEnabled,
+    MONEY_EARN_BANNER_ENABLED_FLAG_NAME,
+  ],
+  [
+    'isMoneyAssetOverviewBalanceCtaEnabled',
+    isMoneyAssetOverviewBalanceCtaEnabled,
+    MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME,
+  ],
+])(
+  '%s',
+  (
+    _name: string,
+    isEnabled: (flags: Record<string, unknown> | undefined) => boolean,
+    flagName: string,
+  ) => {
+    const enabled = { enabled: true, minimumVersion: '0.0.1' };
+
+    it('returns true when both the CTA and Money Account flags are on', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+          [flagName]: enabled,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when the Money Account flag is off', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
+            ...enabled,
+            enabled: false,
+          },
+          [flagName]: enabled,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when the CTA flag is off', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+          [flagName]: {
+            ...enabled,
+            enabled: false,
+          },
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when the CTA flag requires a newer version', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+          [flagName]: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when the CTA flag is unserved', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+        }),
+      ).toBe(false);
+    });
+  },
+);
+
+describe('getMoneyDepositCtaTokenAddresses', () => {
+  const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+  const USDT = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+
+  it('normalizes chain IDs and lowercases addresses', () => {
+    expect(
+      getMoneyDepositCtaTokenAddresses({
+        [MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME]: {
+          '0x01': [USDC],
+          '0xE708': [USDT],
+        },
+      }),
+    ).toStrictEqual({
+      '0x1': [USDC.toLowerCase()],
+      '0xe708': [USDT.toLowerCase()],
+    });
+  });
+
+  it('accepts a JSON string', () => {
+    expect(
+      getMoneyDepositCtaTokenAddresses({
+        [MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME]: JSON.stringify({
+          '0x1': [USDC],
+        }),
+      }),
+    ).toStrictEqual({ '0x1': [USDC.toLowerCase()] });
+  });
+
+  it('merges chain IDs that normalize to the same value', () => {
+    expect(
+      getMoneyDepositCtaTokenAddresses({
+        [MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME]: {
+          '0x1': [USDC],
+          '0x01': [USDT],
+        },
+      }),
+    ).toStrictEqual({ '0x1': [USDC.toLowerCase(), USDT.toLowerCase()] });
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    ['unserved', undefined],
+    ['not an object', 42],
+    ['an array', [USDC]],
+    ['invalid JSON', '{not json'],
+    ['a non-hex chain ID', { '1': [USDC] }],
+    ['a CAIP chain ID', { 'eip155:1': [USDC] }],
+    ['an invalid address', { '0x1': ['0x1234'] }],
+    ['a non-array address list', { '0x1': USDC }],
+  ])(
+    'returns an empty list when the flag is %s',
+    (_case: string, value: unknown) => {
+      expect(
+        getMoneyDepositCtaTokenAddresses({
+          [MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME]: value,
+        }),
+      ).toStrictEqual({});
+    },
+  );
 });

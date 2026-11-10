@@ -8,7 +8,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -147,16 +147,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                   >
                     Test Account Group 1
                   </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
-                  </p>
                 </div>
               </div>
               <div
-                class="flex flex-row items-center justify-center"
+                class="flex flex-row items-center justify-center multichain-account-cell__trailing"
                 style="flex-shrink: 0;"
               >
                 <div
@@ -171,7 +165,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                      d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
                     />
                   </svg>
                 </div>
@@ -197,7 +191,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -216,7 +210,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -235,7 +229,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
               />
             </svg>
             <p
@@ -253,7 +247,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           class="flex w-full gap-4 flex-row"
         >
           <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
             data-testid="cancel-btn"
             role="button"
           >
@@ -264,7 +258,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             </span>
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
             data-testid="confirm-btn"
             role="button"
           >
@@ -289,7 +283,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -428,16 +422,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                   >
                     Test Account Group 1
                   </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
-                  </p>
                 </div>
               </div>
               <div
-                class="flex flex-row items-center justify-center"
+                class="flex flex-row items-center justify-center multichain-account-cell__trailing"
                 style="flex-shrink: 0;"
               >
                 <div
@@ -452,7 +440,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                      d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
                     />
                   </svg>
                 </div>
@@ -478,7 +466,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -497,7 +485,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -516,7 +504,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
               />
             </svg>
             <p
@@ -534,7 +522,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           class="flex w-full gap-4 flex-row"
         >
           <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
             data-testid="cancel-btn"
             role="button"
           >
@@ -545,7 +533,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             </span>
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
             data-testid="confirm-btn"
             role="button"
           >
@@ -570,7 +558,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -709,16 +697,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                   >
                     Test Account Group 1
                   </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
-                  </p>
                 </div>
               </div>
               <div
-                class="flex flex-row items-center justify-center"
+                class="flex flex-row items-center justify-center multichain-account-cell__trailing"
                 style="flex-shrink: 0;"
               >
                 <div
@@ -733,7 +715,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                      d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
                     />
                   </svg>
                 </div>
@@ -759,7 +741,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -778,7 +760,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -797,7 +779,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
               />
             </svg>
             <p
@@ -815,7 +797,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           class="flex w-full gap-4 flex-row"
         >
           <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
             data-testid="cancel-btn"
             role="button"
           >
@@ -826,7 +808,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             </span>
           </button>
           <button
-            class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+            class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
             data-testid="confirm-btn"
             role="button"
           >

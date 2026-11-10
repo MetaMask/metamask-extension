@@ -14,14 +14,13 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 
-import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
 import {
   getInternalEvmAddresses,
   isEnforcedSimulationsEligible,
 } from '../../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../../shared/types/metametrics';
-import { accountSupports7702 } from '../../account-supports-7702';
+import { accountSupports7702ForRelay } from '../../account-supports-7702';
 import {
   getSmartTransactionCommonParams,
   SmartTransactionHookMessenger,
@@ -40,6 +39,8 @@ export type TransactionControllerHookRequest = {
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
   messenger: TransactionControllerInitMessenger;
 };
+
+const STX_GET_FEES_ERROR_METRIC_NAME = 'stx_get_fees_error';
 
 const TRANSACTION_SUBMISSION_METHOD_METRIC_NAME =
   'transaction_submission_method';
@@ -152,7 +153,7 @@ function publishHook({
 
     const { isExternalSign } = transactionMeta;
 
-    const keyringSupports7702 = await accountSupports7702(
+    const keyringSupports7702 = await accountSupports7702ForRelay(
       transactionMeta.txParams?.from,
       getKeyringController(messenger),
     );
@@ -162,8 +163,6 @@ function publishHook({
 
     const isSwapGasIncluded7702 = transactionMeta.isGasFeeIncluded;
 
-    let attemptedHook = false;
-
     if (
       keyringSupports7702 &&
       !isRevokeDelegation &&
@@ -172,7 +171,6 @@ function publishHook({
         !sendBundleSupport ||
         isExternalSign)
     ) {
-      attemptedHook = true;
       const hook = new Delegation7702PublishHook({
         messenger,
       }).getHook();
@@ -200,8 +198,6 @@ function publishHook({
       isSmartTransaction &&
       (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
     ) {
-      attemptedHook = true;
-
       const result = await submitSmartTransactionHook({
         transactionMeta,
         signedTransactionInHex: signedTx as Hex,
@@ -211,6 +207,24 @@ function publishHook({
         isSmartTransaction,
         featureFlags,
       });
+
+      if (result?.getFeesError) {
+        try {
+          getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+            transactionMeta.id,
+            {
+              properties: {
+                [STX_GET_FEES_ERROR_METRIC_NAME]: result?.getFeesError,
+              },
+            },
+          );
+        } catch (e) {
+          console.error(
+            'Failed to record stx_get_fees_error metrics fragment',
+            e,
+          );
+        }
+      }
 
       if (result?.transactionHash) {
         try {
@@ -227,20 +241,6 @@ function publishHook({
           console.error('Failed to record sentinel_stx metrics fragment', e);
         }
         return result;
-      }
-    }
-
-    if (attemptedHook) {
-      try {
-        await messenger.call(
-          'AppStateController:setDefaultHomeActiveTabName',
-          AccountOverviewTabKey.Activity,
-        );
-      } catch (error) {
-        console.error(
-          'Failed to set default home active tab for fallback transaction',
-          error,
-        );
       }
     }
 

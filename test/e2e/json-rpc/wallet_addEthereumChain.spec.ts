@@ -9,7 +9,7 @@ import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import AddNetworkConfirmation from '../page-objects/pages/confirmations/add-network-confirmations';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';

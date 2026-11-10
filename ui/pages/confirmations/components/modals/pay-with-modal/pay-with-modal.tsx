@@ -17,10 +17,8 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
-import {
-  clearPaymentOverride,
-  getAvailableTokens,
-} from '../../../utils/transaction-pay';
+import { getAvailableTokens } from '../../../utils/transaction-pay';
+import { useClearPaymentOverride } from '../../../hooks/pay/useClearPaymentOverride';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
 import {
@@ -34,6 +32,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
@@ -51,10 +50,13 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const blockedTokens = useTransactionPayBlockedTokens();
+  const clearOverride = useClearPaymentOverride();
   const [showOtherAssets, setShowOtherAssets] = useState(false);
 
+  const confirmationType = getConfirmationTransactionType(currentConfirmation);
+
   const isMoneyAccountPayEnabled = useSelector((state) =>
-    selectIsMoneyAccountTransactionEnabled(state, currentConfirmation?.type),
+    selectIsMoneyAccountTransactionEnabled(state, confirmationType),
   );
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
@@ -72,11 +74,14 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
   const isMoneyAccountDeposit =
-    currentConfirmation?.type === TransactionType.moneyAccountDeposit;
+    confirmationType === TransactionType.moneyAccountDeposit;
   const { renderNoFeeTag } = usePayWithNoFeeToken();
   const tagRenderers = useMemo(
-    () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
-    [isMoneyAccountDeposit, renderNoFeeTag],
+    () =>
+      isMoneyAccountDeposit || isPostQuoteWithdraw
+        ? [renderNoFeeTag]
+        : undefined,
+    [isMoneyAccountDeposit, isPostQuoteWithdraw, renderNoFeeTag],
   );
 
   const handleClose = useCallback(() => {
@@ -158,13 +163,12 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         }
       }
 
-      if (currentConfirmation?.id) {
-        clearPaymentOverride(currentConfirmation.id);
-      }
+      clearOverride();
       setPayToken(tokenSelection);
       handleClose();
     },
     [
+      clearOverride,
       currentConfirmation,
       dispatch,
       handleClose,

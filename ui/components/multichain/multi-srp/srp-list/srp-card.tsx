@@ -169,7 +169,7 @@ export const SrpCard = ({
                 key={`account-${group.id}`}
                 accountId={group.id}
                 accountName={group.metadata.name}
-                balance={walletAccountBalance(group.id) ?? ''}
+                balance={walletAccountBalance(group.id)}
               />
             );
           })}

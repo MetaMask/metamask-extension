@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -25,7 +25,6 @@ import {
 } from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
-import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
@@ -41,6 +40,7 @@ export const ImportSrp = () => {
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [shouldClearClipboard, setShouldClearClipboard] = useState(false);
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
@@ -50,6 +50,12 @@ export const ImportSrp = () => {
     try {
       if (!secretRecoveryPhrase) {
         return;
+      }
+
+      if (shouldClearClipboard) {
+        navigator.clipboard.writeText('').catch(() => {
+          // Do not block SRP import if clipboard access remains unavailable.
+        });
       }
 
       if (isSocialLoginEnabled) {
@@ -129,6 +135,8 @@ export const ImportSrp = () => {
         error={srpError}
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
+        onClearClipboardRetry={() => setShouldClearClipboard(false)}
+        onClipboardClearFailed={() => setShouldClearClipboard(true)}
       />
       <Box className="w-full cta-footer">
         <Button

@@ -3,11 +3,11 @@
 exports[`SelectedAssetButton renders with a native asset 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+    class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     style="padding: 8px 11px 8px 8px; min-width: fit-content;"
   >
     <div
-      class="flex items-center gap-2"
+      class="flex items-center gap-1"
     >
       <div
         class="relative inline-flex self-start"
@@ -16,7 +16,7 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
           class="inline-flex"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
           >
             <img
               alt="ETH"
@@ -26,11 +26,11 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
           </div>
         </div>
         <div
-          class="absolute"
-          style="bottom: 0px; right: 0px;"
+          class="absolute inline-flex items-center justify-center"
+          style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md h-[18px] w-[18px] border-background-default border bg-white"
             style="border-width: 1px; border-radius: 6px;"
           >
             <img
@@ -42,7 +42,7 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
         </div>
       </div>
       <label
-        class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+        class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
       >
         ETH
       </label>
@@ -61,11 +61,11 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
 exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+    class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     style="padding: 8px 11px 8px 8px; min-width: fit-content;"
   >
     <div
-      class="flex items-center gap-2"
+      class="flex items-center gap-1"
     >
       <div
         class="relative inline-flex self-start"
@@ -74,7 +74,7 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
           class="inline-flex"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
           >
             <img
               alt="BTC"
@@ -84,11 +84,11 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
           </div>
         </div>
         <div
-          class="absolute"
-          style="bottom: 0px; right: 0px;"
+          class="absolute inline-flex items-center justify-center"
+          style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md h-[18px] w-[18px] border-background-default border bg-white"
             style="border-width: 1px; border-radius: 6px;"
           >
             <img
@@ -100,7 +100,7 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
         </div>
       </div>
       <label
-        class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+        class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
       >
         BTC
       </label>
@@ -119,11 +119,11 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
 exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+    class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     style="padding: 8px 11px 8px 8px; min-width: fit-content;"
   >
     <div
-      class="flex items-center gap-2"
+      class="flex items-center gap-1"
     >
       <div
         class="relative inline-flex self-start"
@@ -132,7 +132,7 @@ exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
           class="inline-flex"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-white"
           >
             <img
               alt="mUSD"
@@ -142,11 +142,11 @@ exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
           </div>
         </div>
         <div
-          class="absolute"
-          style="bottom: 0px; right: 0px;"
+          class="absolute inline-flex items-center justify-center"
+          style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md h-[18px] w-[18px] border-background-default border bg-white"
             style="border-width: 1px; border-radius: 6px;"
           >
             <img
@@ -158,7 +158,7 @@ exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
         </div>
       </div>
       <label
-        class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+        class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
       >
         mUSD
       </label>

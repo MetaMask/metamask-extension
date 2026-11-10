@@ -31,12 +31,14 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/?utm_source=extension',
   PASSKEYS:
     'https://support.metamask.io/configure/wallet/passkeys/?utm_source=extension',
+  SUPPORTED_PASSKEYS:
+    'https://support.metamask.io/configure/wallet/passkeys/?utm_source=extension#supported-passkey-providers',
   PASSWORD_ARTICLE:
     'https://support.metamask.io/configure/wallet/passwords-and-metamask/?utm_source=extension',
   PASSWORD_AND_SRP_ARTICLE:
     'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/?utm_source=extension',
   PRIVATE_KEY_GUIDE:
-    'https://support.metamask.io/start/user-guide-secret-recovery-phrase-password-and-private-keys/?utm_source=extension#private-keys',
+    'https://support.metamask.io/configure/accounts/how-to-export-an-accounts-private-key/',
   PASSWORD_RESET:
     'https://support.metamask.io/configure/wallet/how-can-i-reset-my-password/?utm_source=extension',
   SECRET_RECOVERY_PHRASE:

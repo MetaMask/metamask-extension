@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBorderColor,
+  BoxFlexDirection,
+  FontWeight,
+  Text,
+  TextButton,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -8,16 +19,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, ButtonLink, Label, Text } from '../../component-library';
-import Dropdown from '../../ui/dropdown';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import {
-  BlockSize,
-  FontWeight,
-  JustifyContent,
-  Size,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
@@ -36,9 +38,12 @@ export const ImportAccount = ({ onActionComplete }) => {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
-  const menuItems = [t('privateKey'), t('jsonFile')];
+  const importTypes = [
+    { id: 'privateKey', label: t('privateKey') },
+    { id: 'json', label: t('jsonFile') },
+  ];
 
-  const [type, setType] = useState(menuItems[0]);
+  const [type, setType] = useState(importTypes[0].id);
   const [importErrorMessage, setImportErrorMessage] = useState();
 
   async function importAccount(strategy, importArgs) {
@@ -109,10 +114,10 @@ export const ImportAccount = ({ onActionComplete }) => {
     if (strategy === 'json') {
       return (
         <>
-          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+          <Text className="w-3/4" fontWeight={FontWeight.Bold}>
             {t('importAccountJsonLoading1')}
           </Text>
-          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+          <Text className="w-3/4" fontWeight={FontWeight.Bold}>
             {t('importAccountJsonLoading2')}
           </Text>
         </>
@@ -159,56 +164,93 @@ export const ImportAccount = ({ onActionComplete }) => {
   }
 
   return (
-    <>
+    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
       {isSocialLoginFlow ? (
         <>
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('importAccountWithSocialMsg')}
           </Text>
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('importAccountWithSocialMsgLearnMore', [
-              <ButtonLink
-                size={Size.inherit}
-                href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
-                target="_blank"
-                rel="noopener noreferrer"
+              <TextButton
+                size="body-sm"
+                asChild
+                className="inline"
                 key="importAccountWithSocialMsgLearnMore"
               >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>,
+                <a
+                  href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('learnMoreUpperCase')}
+                </a>
+              </TextButton>,
             ])}
           </Text>
         </>
       ) : (
-        <Text variant={TextVariant.bodySm} marginTop={2}>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          className="mt-2"
+        >
           {t('importAccountMsg')}{' '}
-          <ButtonLink
-            size={Size.inherit}
-            href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('here')}
-          </ButtonLink>
+          <TextButton size="body-md" asChild className="inline">
+            <a
+              href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('learnMoreUpperCase')}
+            </a>
+          </TextButton>
         </Text>
       )}
-      <Box paddingTop={4} paddingBottom={8}>
-        <Label
-          width={BlockSize.Full}
-          marginBottom={4}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          {t('selectType')}
-          <Dropdown
-            options={menuItems.map((text) => ({ value: text }))}
-            selectedOption={type}
-            onChange={(value) => {
-              setImportErrorMessage();
-              setType(value);
-            }}
-          />
-        </Label>
-        {type === menuItems[0] ? (
+      {/* Network select stays hidden until a non-EVM import exists. */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        borderColor={BoxBorderColor.BorderMuted}
+        borderWidth={1}
+        padding={1}
+        className="w-fit rounded-lg"
+        role="group"
+        aria-label={t('selectType')}
+        data-testid="import-account-type-toggle"
+      >
+        {importTypes.map(({ id, label }) => {
+          const isSelected = type === id;
+
+          return (
+            <button
+              type="button"
+              key={id}
+              aria-pressed={isSelected}
+              className={`rounded-lg px-4 py-1 ${
+                isSelected ? 'bg-muted' : 'bg-transparent'
+              }`}
+              data-testid={`import-account-type-${id}`}
+              onClick={() => {
+                setImportErrorMessage();
+                setType(id);
+              }}
+            >
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={
+                  isSelected ? TextColor.TextDefault : TextColor.TextAlternative
+                }
+              >
+                {label}
+              </Text>
+            </button>
+          );
+        })}
+      </Box>
+      <Box flexDirection={BoxFlexDirection.Column} className="min-h-0 flex-1">
+        {type === importTypes[0].id ? (
           <PrivateKeyImportView
             importAccountFunc={importAccount}
             onActionComplete={(confirmed) => {
@@ -228,7 +270,7 @@ export const ImportAccount = ({ onActionComplete }) => {
           />
         )}
       </Box>
-    </>
+    </Box>
   );
 };
 

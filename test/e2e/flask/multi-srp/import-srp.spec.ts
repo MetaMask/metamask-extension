@@ -10,7 +10,7 @@ import {
   SECOND_TEST_E2E_SRP,
   verifyAccountBelongsToSrp,
 } from '../../page-objects/flows/multi-srp.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';

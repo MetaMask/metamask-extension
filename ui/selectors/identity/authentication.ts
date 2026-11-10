@@ -44,6 +44,38 @@ export const selectNeedsProfilePairing = createSelector(
 );
 
 /**
+ * Selector that exposes the `needsSocialPairing` flag from the
+ * `AuthenticationController` state.
+ *
+ * Used by `useAutoSignIn` to force a sign-in when a social-login wallet
+ * still needs its social identifier paired to the SRP profile.
+ *
+ * Defaults to `true` when the field is absent from state — this mirrors the
+ * controller's `defaultState` and matches `selectNeedsProfilePairing`.
+ *
+ * @param state - The current state of the Redux store.
+ * @returns `true` if social identifier pairing is needed, `false` otherwise.
+ */
+export const selectNeedsSocialPairing = createSelector(
+  [getMetamask],
+  (metamask) => metamask.needsSocialPairing ?? true,
+);
+
+const NO_CREDENTIALS: AuthenticationController.AuthenticationControllerState['enrolledCredentials'] =
+  [];
+
+/**
+ * The profile's MFA credentials, as last fetched from the server.
+ *
+ * @param state - The current state of the Redux store.
+ * @returns The enrolled credentials, or an empty list before the first fetch.
+ */
+export const selectEnrolledCredentials = createSelector(
+  [getMetamask],
+  (metamask) => metamask.enrolledCredentials ?? NO_CREDENTIALS,
+);
+
+/**
  * Selector to retrieve the primary SRP session data.
  *
  * This selector fetches the `srpSessionData` from the `metamask` state using the `createSelector` function, and gets the first entry.

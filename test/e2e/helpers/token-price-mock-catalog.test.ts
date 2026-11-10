@@ -112,6 +112,7 @@ describe('token-price-mock-catalog', () => {
           name: 'TST',
           symbol: 'TST',
           decimals: 4,
+          occurrences: 100,
         },
       ]);
       expect(responses.spotPrices[erc20Id]?.price).toBe(1);

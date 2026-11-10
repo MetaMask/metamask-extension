@@ -21,15 +21,10 @@ import {
   DeFiPositionsController,
   DeFiPositionsControllerV2,
   MultichainAssetsController,
-  MultichainAssetsRatesController,
-  MultichainBalancesController,
   NftController,
   NftDetectionController,
   RatesController,
-  TokenBalancesController,
   TokenDetectionController,
-  TokenListController,
-  TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
 import { AssetsController } from '@metamask/assets-controller';
@@ -85,6 +80,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
+import { ChompApiService } from '@metamask/chomp-api-service';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
 import {
@@ -113,12 +109,13 @@ import { AnalyticsController } from '@metamask/analytics-controller';
 import { SentinelApiService } from '@metamask/sentinel-api-service';
 import { MoneyAccountApiDataService } from '@metamask/money-account-api-data-service';
 import { MoneyAccountBalanceService } from '@metamask/money-account-balance-service';
+import { MoneyAccountController } from '@metamask/money-account-controller';
+import { MoneyAccountUpgradeController } from '@metamask/money-account-upgrade-controller';
 import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
-import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
@@ -129,13 +126,16 @@ import { MetaMetricsDataDeletionController } from '../controllers/metametrics-da
 import { AppMetadataController } from '../controllers/app-metadata';
 import { DecryptMessageController } from '../controllers/decrypt-message';
 import { EncryptionPublicKeyController } from '../controllers/encryption-public-key';
+import { RewardsMoneyController } from '../controllers/rewards-money/rewards-money-controller';
+import { RewardsMoneyDataService } from '../controllers/rewards-money/rewards-money-data-service';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
-import { QrSyncDataService } from '../controllers/qr-sync/qr-sync-data-service';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { UserTraitsService } from '../services/user-traits-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
+import { SentryTracingService } from '../services/sentry/sentry-tracing-service';
 
 /**
  * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
@@ -156,10 +156,12 @@ export type MessengerClient =
   | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
+  | ChompApiService
   | ClaimsController
   | CronjobController
   | CurrencyRateController
   | DataDeletionService
+  | UserTraitsService
   | DecryptMessageController
   | DecryptMessageManager
   | DelegationController
@@ -176,14 +178,13 @@ export type MessengerClient =
   | KeyringController
   | LegacyBackgroundApiService
   | LoggingController
-  | MetaMetricsController
   | MetaMetricsDataDeletionController
   | MoneyAccountApiDataService
   | MoneyAccountAvailabilityService
   | MoneyAccountBalanceService
+  | MoneyAccountController
+  | MoneyAccountUpgradeController
   | MultichainAssetsController
-  | MultichainAssetsRatesController
-  | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
   | MultichainRoutingService
@@ -205,7 +206,6 @@ export type MessengerClient =
   | PPOMController
   | PreferencesController
   | QrSyncController
-  | QrSyncDataService
   | RampsController
   | RampsService
   | RateLimitController<RateLimitedApiMap>
@@ -213,7 +213,10 @@ export type MessengerClient =
   | RemoteFeatureFlagController
   | RewardsController
   | RewardsDataService
+  | RewardsMoneyController
+  | RewardsMoneyDataService
   | SeedlessOnboardingController<EncryptionKey>
+  | SentryTracingService
   | SelectedNetworkController
   | SentinelApiService
   | ShieldController
@@ -227,16 +230,13 @@ export type MessengerClient =
   | SnapsNameProvider
   | SubjectMetadataController
   | ShieldSubscriptionService
-  | TokenBalancesController
   | TokenDetectionController
-  | TokenListController
   | TokensController
   | TransactionController
   | TransactionPayController
   | InstitutionalSnapController
   | UserOperationController
   | UserStorageController
-  | TokenRatesController
   | NftController
   | NftDetectionController
   | AssetsContractController
@@ -292,11 +292,8 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   GeolocationController['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
-  MetaMetricsController['state'] &
   MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &
-  MultichainAssetsRatesController['state'] &
-  MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
   NameController['state'] &
@@ -318,6 +315,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &
+  RewardsMoneyController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
@@ -328,16 +326,13 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   SnapInterfaceController['state'] &
   SnapRegistryController['state'] &
   SubscriptionController['state'] &
-  TokenBalancesController['state'] &
   TokenDetectionController['state'] &
-  TokenListController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &
   UserStorageController['state'] &
-  TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &

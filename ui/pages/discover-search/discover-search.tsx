@@ -261,7 +261,7 @@ export const DiscoverSearchPage = () => {
   const handleBack = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
-      runCloseTransition(() => navigate(DEFAULT_ROUTE));
+      runCloseTransition(() => navigate(-1));
     },
     [navigate, runCloseTransition],
   );
@@ -872,20 +872,23 @@ export const DiscoverSearchPage = () => {
             data-testid="discover-search-back-button"
           />
         </Link>
-        <TextFieldSearch
-          autoFocus={true}
-          className="min-w-0 flex-1"
-          placeholder={t('searchTokens')}
-          value={searchQuery}
-          onChange={handleSearchChange}
-          clearButtonOnClick={handleSearchClear}
-          inputProps={
-            {
-              'data-testid': 'discover-search-input',
-              spellCheck: false,
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
-        />
+        <search className="flex min-w-0 flex-1">
+          <TextFieldSearch
+            autoFocus={true}
+            className="w-full"
+            placeholder={t('searchTokens')}
+            value={searchQuery}
+            onChange={handleSearchChange}
+            clearButtonOnClick={handleSearchClear}
+            inputAriaLabel={t('searchTokens')}
+            inputProps={
+              {
+                'data-testid': 'discover-search-input',
+                spellCheck: false,
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+          />
+        </search>
       </Box>
 
       <Tabs

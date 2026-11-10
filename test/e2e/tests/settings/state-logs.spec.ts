@@ -7,7 +7,7 @@ import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
@@ -73,10 +73,14 @@ async function replacePlaceholderInReferenceLogs(
 ): Promise<StateLogsTypeDefinition> {
   // We'll use this mapping to replace placeholders in the reference logs with actual account IDs
   // from the downloaded logs (e.g "<bitcoin-account-1>" -> "75ad4470-156b-4f7f-b0a5-ffe6cd114ac9").
-  const accountsMapping: Record<'solana' | 'bitcoin' | 'tron', string[]> = {
+  const accountsMapping: Record<
+    'solana' | 'bitcoin' | 'tron' | 'stellar',
+    string[]
+  > = {
     tron: [],
     solana: [],
     bitcoin: [],
+    stellar: [],
   };
 
   for (const [id, account] of Object.entries(
@@ -88,6 +92,8 @@ async function replacePlaceholderInReferenceLogs(
       accountsMapping.solana.push(id);
     } else if (account.type.startsWith('tron')) {
       accountsMapping.tron.push(id);
+    } else if (account.type.startsWith('stellar')) {
+      accountsMapping.stellar.push(id);
     }
   }
 

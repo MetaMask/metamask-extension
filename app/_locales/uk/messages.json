@@ -211,10 +211,6 @@
   "fast": {
     "message": "Швидка"
   },
-  "fileImportFail": {
-    "message": "Не працює імпорт файлу? Натисніть тут!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Забути цей пристрій"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Ліміт газу"
-  },
-  "gasLimitTooLow": {
-    "message": "Ліміт газу має бути не менше 21000"
   },
   "gasUsed": {
     "message": "Пального використано"
@@ -395,10 +388,6 @@
   "passwordsDontMatch": {
     "message": "Паролі не збігаються"
   },
-  "pastePrivateKey": {
-    "message": "Вставте ваш рядок з особистим ключем сюди:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "очікує"
   },
@@ -414,9 +403,6 @@
   "privateKey": {
     "message": "Закритий ключ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Увага: Ніколи не розкривайте цей ключ. Будь-хто з вашим секретним ключем може викрасти всі статки з вашого облікового запису."
   },
   "privateNetwork": {
     "message": "Приватна мережа"
@@ -589,9 +575,6 @@
   },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
-  },
-  "usedByClients": {
-    "message": "Використовується низкою різних клієнтів"
   },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"

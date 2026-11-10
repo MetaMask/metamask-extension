@@ -23,6 +23,10 @@ class AdvancedPermissionsIntroduction {
 
   driver: Driver;
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-snap-confirmation-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -34,7 +38,10 @@ class AdvancedPermissionsIntroduction {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.cancelButton);
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.cancelButton,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Advanced Permissions Introduction page to be loaded',

@@ -93,6 +93,7 @@ export default function DeFiProtocolCellV2({
       }
       footerRightDisplay={
         <AvatarGroup
+          data-testid="avatar-group"
           variant={AvatarGroupVariant.Token}
           size={AvatarGroupSize.Xs}
           max={4}

@@ -1,6 +1,21 @@
 import { memoize } from 'lodash';
 
 import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+} from '../../../shared/lib/notifications-settings';
+
+export {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+};
 
 type AppRoute = {
   path: string;
@@ -44,6 +59,11 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
+export const MFA_FLOW_ROUTE = '/mfa';
+export const MFA_SETTINGS_ROUTE =
+  '/settings/security-and-password/verification-methods';
+export const MFA_SETTINGS_EMAIL_ROUTE = `${MFA_SETTINGS_ROUTE}/email`;
+export const MFA_SETTINGS_TOTP_ROUTE = `${MFA_SETTINGS_ROUTE}/authenticator-app`;
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -74,10 +94,6 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
 } as const;
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/networks';
-export const NETWORKS_FORM_ROUTE = '/networks/form';
-export const ADD_NETWORK_ROUTE = '/networks/add-network';
-export const ADD_POPULAR_CUSTOM_NETWORK =
-  '/networks/add-popular-custom-network';
 // Contacts (global menu)
 export const CONTACTS_ROUTE = '/contacts';
 export const CONTACTS_ADD_ROUTE = '/contacts/add';
@@ -88,12 +104,10 @@ export const BACKUPANDSYNC_ROUTE = '/settings/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
-export const IMPORT_TOKEN_ROUTE = '/import-token';
-export const IMPORT_TOKENS_ROUTE = '/import-tokens';
-export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
 export const DISCOVER_SEARCH_ROUTE = '/discover-search';
 export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
+export const IMPORT_NFTS_ROUTE = '/import-nfts';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -113,10 +127,6 @@ export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 export const HARDWARE_WALLET_REPAIR_ROUTE = '/hardware-wallet-repair';
 export const SEND_ROUTE = '/send';
 export const SEND_PAGE_ROUTE = `${SEND_ROUTE}/:page?` as const;
-export const REMOTE_ROUTE = '/remote';
-export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
-export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
-  '/remote/setup-daily-allowance';
 export const PERMISSIONS = '/permissions';
 export const GATOR_PERMISSIONS = '/gator-permissions';
 export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
@@ -135,15 +145,6 @@ export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
-export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
-export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE =
-  '/settings/notifications/wallet-activity';
-export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE =
-  '/settings/notifications/perps';
-export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE =
-  '/settings/notifications/marketing';
-export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE =
-  '/settings/notifications/agentic-cli';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -169,7 +170,6 @@ export const ONBOARDING_CONFIRM_SRP_ROUTE =
 export const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
 export const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
 export const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
-export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
 export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
@@ -178,9 +178,10 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
-export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
+export const ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE =
+  '/onboarding/passkey-prf-migration';
 export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
 export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
 export const BATCH_SELL_REVIEW_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/review`;
@@ -196,7 +197,7 @@ export const RAMPS_ROUTE = '/ramps';
 export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
-export const RAMPS_PROVIDER_SELECTION_ROUTE = '/ramps/provider-selection';
+export const RAMPS_COMPLETE_BUY_ROUTE = '/ramps/complete-buy';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
@@ -208,6 +209,22 @@ export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
+export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
+export const MONEY_HOW_IT_WORKS_ROUTE = '/money-home/how-it-works';
+export const MONEY_TRANSACTION_DETAILS_ROUTE =
+  '/money-home/activity/:transactionId';
+export const MONEY_EARN_ROUTE = '/money-home/earn';
+export const MONEY_DEPOSIT_ROUTE = '/money-home/deposit';
+
+/**
+ * Builds the Money transaction details path for a given activity item id.
+ *
+ * @param transactionId - The activity item / transaction id.
+ * @returns The concrete details route.
+ */
+export function getMoneyTransactionDetailsRoute(transactionId: string): string {
+  return `${MONEY_ACTIVITY_ROUTE}/${encodeURIComponent(transactionId)}`;
+}
 
 // Window during which reopening the extension resumes the last Perps screen
 // instead of landing on the wallet home. Keeps the cap short so stale sessions
@@ -223,6 +240,21 @@ export const ROUTES = [
   { path: ACTIVITY_ROUTE, label: 'Activity', trackInAnalytics: true },
   { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
   { path: MONEY_HOME_ROUTE, label: 'Money', trackInAnalytics: true },
+  {
+    path: MONEY_HOW_IT_WORKS_ROUTE,
+    label: 'Money How It Works',
+    trackInAnalytics: true,
+  },
+  {
+    path: MONEY_TRANSACTION_DETAILS_ROUTE,
+    label: 'Money Transaction Details',
+    trackInAnalytics: true,
+  },
+  {
+    path: MONEY_EARN_ROUTE,
+    label: 'Money Earn On Crypto',
+    trackInAnalytics: true,
+  },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   {
     path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
@@ -462,6 +494,26 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
+    path: MFA_FLOW_ROUTE,
+    label: 'MFA Flow Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_ROUTE,
+    label: 'MFA Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_EMAIL_ROUTE,
+    label: 'MFA Settings Email Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_TOTP_ROUTE,
+    label: 'MFA Settings Authenticator App Page',
+    trackInAnalytics: false,
+  },
+  {
     path: BASIC_FUNCTIONALITY_OFF_ROUTE,
     label: 'Basic Functionality Off Page',
     trackInAnalytics: false,
@@ -482,28 +534,13 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: RAMPS_PROVIDER_SELECTION_ROUTE,
-    label: 'Ramps Provider Selection Page',
+    path: RAMPS_COMPLETE_BUY_ROUTE,
+    label: 'Ramps Complete Buy Page',
     trackInAnalytics: false,
   },
   {
     path: NETWORKS_ROUTE,
     label: 'Network Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: NETWORKS_FORM_ROUTE,
-    label: 'Network Settings Page Form',
-    trackInAnalytics: true,
-  },
-  {
-    path: ADD_NETWORK_ROUTE,
-    label: 'Add Network From Settings Page Form',
-    trackInAnalytics: true,
-  },
-  {
-    path: ADD_POPULAR_CUSTOM_NETWORK,
-    label: 'Add Network From A List Of Popular Custom Networks',
     trackInAnalytics: true,
   },
   {
@@ -557,21 +594,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: IMPORT_TOKEN_ROUTE,
-    label: 'Import Token Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: IMPORT_TOKENS_ROUTE,
-    label: 'Import Tokens Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: CONFIRM_IMPORT_TOKEN_ROUTE,
-    label: 'Confirm Import Token Page',
-    trackInAnalytics: true,
-  },
-  {
     path: TOKEN_MANAGEMENT_ROUTE,
     label: 'Token Management Page',
     trackInAnalytics: true,
@@ -584,6 +606,11 @@ export const ROUTES = [
   {
     path: CUSTOM_TOKEN_IMPORT_ROUTE,
     label: 'Custom Token Import Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: IMPORT_NFTS_ROUTE,
+    label: 'Import NFTs Page',
     trackInAnalytics: true,
   },
   {
@@ -609,17 +636,6 @@ export const ROUTES = [
   {
     path: SEND_PAGE_ROUTE,
     label: 'Send Page',
-    trackInAnalytics: true,
-  },
-  { path: REMOTE_ROUTE, label: 'Remote Mode Page', trackInAnalytics: true },
-  {
-    path: REMOTE_ROUTE_SETUP_SWAPS,
-    label: 'Remote Mode Setup Swaps Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
-    label: 'Remote Mode Setup Daily Allowance Page',
     trackInAnalytics: true,
   },
   { path: PERMISSIONS, label: 'Permissions', trackInAnalytics: true },
@@ -802,11 +818,6 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: ONBOARDING_HELP_US_IMPROVE_ROUTE,
-    label: 'Onboarding Help Us Improve',
-    trackInAnalytics: false,
-  },
-  {
     path: ONBOARDING_METAMETRICS,
     label: 'Onboarding Metametrics',
     trackInAnalytics: false,
@@ -846,11 +857,6 @@ export const ROUTES = [
   {
     path: HARDWARE_WALLET_SIGNATURES_ROUTE,
     label: 'Swaps Hardware Wallet Signatures',
-    trackInAnalytics: false,
-  },
-  {
-    path: INITIALIZE_EXPERIMENTAL_AREA,
-    label: 'Initialize Experimental Area',
     trackInAnalytics: false,
   },
   {

@@ -3,8 +3,15 @@ import { isObject } from '@metamask/utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
+  getMoneyDepositCtaTokenAddresses,
   isMoneyAccountEnabled,
+  isMoneyActivityDetailsEnabled,
+  isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHomeScreenCardEnabled,
+  isMoneyTokenListItemCtaEnabled,
+  isMoneyEarnBannerEnabled,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 } from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
@@ -56,6 +63,21 @@ const parseNonNegativeFinite = (raw: unknown): number | undefined => {
 export const selectMoneyAccountFeatureEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyAccountEnabled,
+);
+
+/**
+ * Selects whether the `moneyHomeScreenCardEnabled` flag is on.
+ *
+ * This flag controls whether the money balance is shown on the extension home.
+ * If the money account is disabled generally, having this flag turned on will
+ * still not show the balance
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the home screen Money card is enabled.
+ */
+export const selectMoneyHomeScreenCardEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyHomeScreenCardEnabled,
 );
 
 /**
@@ -125,4 +147,92 @@ export const selectMoneyAccountDepositQuotePipelineEnabled = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
     getBooleanFeatureFlag(flags?.moneyAccountDepositQuotePipeline, false),
+);
+
+/**
+ * Selects whether Money Home should render curated mock activity rows.
+ *
+ * Remote `moneyActivityMockDataEnabled` (plain boolean) wins; otherwise the
+ * `MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED` env var is used. Defaults off.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether mock activity data is enabled.
+ */
+export const selectMoneyActivityMockDataEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyActivityMockDataEnabled,
+);
+
+/**
+ * Selects whether tapping a Money activity row should open transaction
+ * details.
+ *
+ * Remote `moneyEnableActivityDetails` (plain boolean) wins; otherwise the
+ * `MM_MONEY_ENABLE_ACTIVITY_DETAILS` env var is used. Defaults off.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether activity details navigation is enabled.
+ */
+export const selectMoneyActivityDetailsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyActivityDetailsEnabled,
+);
+
+/**
+ * Selects whether the token list row Money deposit CTA is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the token list row CTA is enabled.
+ */
+export const selectMoneyTokenListItemCtaEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyTokenListItemCtaEnabled,
+);
+
+/**
+ * Selects whether the token details Money earn banner is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the earn banner is enabled.
+ */
+export const selectMoneyEarnBannerEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyEarnBannerEnabled,
+);
+
+/**
+ * Selects whether the token details "Your balance" Money earn CTA is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the balance CTA is enabled.
+ */
+export const selectMoneyAssetOverviewBalanceCtaEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyAssetOverviewBalanceCtaEnabled,
+);
+
+/**
+ * @param chainId - Hex chain ID.
+ * @param address - ERC-20 address.
+ * @returns The lookup key used by {@link selectMoneyDepositCtaTokenKeys}.
+ */
+export const getMoneyTokenKey = (chainId: string, address: string) =>
+  `${chainId.toLowerCase()}:${address.toLowerCase()}`;
+
+/**
+ * Selects the tokens that get Money deposit CTAs as `chainId:address` keys,
+ * both lowercased, for constant-time row lookups.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The set of eligible token keys.
+ */
+export const selectMoneyDepositCtaTokenKeys = createSelector(
+  getRemoteFeatureFlags,
+  (flags): Set<string> =>
+    new Set(
+      Object.entries(getMoneyDepositCtaTokenAddresses(flags)).flatMap(
+        ([chainId, addresses]) =>
+          addresses.map((address) => getMoneyTokenKey(chainId, address)),
+      ),
+    ),
 );

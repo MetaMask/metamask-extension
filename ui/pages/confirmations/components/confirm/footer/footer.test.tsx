@@ -28,7 +28,10 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  ACTIVITY_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../../helpers/constants/routes';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -77,6 +80,7 @@ jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useTransactionPayPrimaryRequiredToken: jest.fn(() => undefined),
   useTransactionPayQuotes: jest.fn(() => undefined),
   useTransactionPayRequiredTokens: jest.fn(() => []),
+  useTransactionPayTotals: jest.fn(() => undefined),
 }));
 jest.mock(
   '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaireMetrics',
@@ -558,10 +562,9 @@ describe('ConfirmFooter', () => {
     });
 
     expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
-    expect(mockUseNavigate).not.toHaveBeenCalledWith(
-      `${DEFAULT_ROUTE}?tab=activity`,
-      { replace: true },
-    );
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+      replace: true,
+    });
   });
 
   it('displays a danger "Confirm" button there are danger alerts', async () => {
@@ -858,6 +861,42 @@ describe('ConfirmFooter', () => {
       expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
     });
 
+    it('runs the hardware preflight for the paying account when it differs from the sender', () => {
+      const transaction = genUnapprovedContractInteractionConfirmation();
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const { getByTestId, queryByTestId } = render(
+        getMockConfirmStateForTransaction(transaction, {
+          appState: {},
+          metamask: {
+            transactionData: {
+              [transaction.id]: {
+                accountOverride: HARDWARE_CONFIRMATION_SENDER,
+              },
+            },
+          },
+        }),
+      );
+
+      expect(
+        getByTestId('reconnect-hardware-wallet-button'),
+      ).toBeInTheDocument();
+      expect(queryByTestId('confirm-footer-button')).toBeNull();
+    });
+
     it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
       const connectionState = {
         status: ConnectionStatus.Disconnected as const,
@@ -1073,10 +1112,9 @@ describe('ConfirmFooter', () => {
       });
 
       expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        { replace: true },
-      );
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+        replace: true,
+      });
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
       expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalledTimes(1);
     });
@@ -1381,6 +1419,98 @@ describe('ConfirmFooter', () => {
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
+  it('renders SingleActionFooter for moneyAccountDeposit transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.moneyAccountDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders SingleActionFooter for moneyAccountWithdraw transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.moneyAccountWithdraw,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.send.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders SingleActionFooter for moneyAccountDeposit batch with approve companion', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('falls through to the two-button footer when a batch mixes moneyAccountDeposit with an unrelated nested type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.moneyAccountDeposit },
+          { type: TransactionType.simpleSend },
+        ],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.confirm.message,
+    );
+    expect(queryByText(messages.cancel.message)).toBeInTheDocument();
+  });
+
   describe('goBackTo navigation', () => {
     it('does not call navigateNext when cancel is clicked and goBackTo is defined', async () => {
       const navigateNextMock = jest.fn();
@@ -1394,6 +1524,7 @@ describe('ConfirmFooter', () => {
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
         goBackTo: '/asset/0x123',
+        suppressAutoExit: jest.fn(),
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();

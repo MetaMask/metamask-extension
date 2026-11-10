@@ -23,6 +23,10 @@ class SwitchNetworkConfirmation {
 
   private readonly driver: Driver;
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-template-confirmation-page',
+  };
+
   private readonly switchNetworkMessage = {
     text: 'Allow this site to switch the network',
   };
@@ -34,6 +38,7 @@ class SwitchNetworkConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.switchNetworkMessage,
         this.approveButton,
         this.cancelButton,

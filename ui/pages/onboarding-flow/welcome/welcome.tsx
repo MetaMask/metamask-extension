@@ -75,7 +75,6 @@ import LoginErrorModal from './login-error-modal';
 
 const MetaMaskWordMarkAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{
@@ -89,7 +88,6 @@ const MetaMaskWordMarkAnimation = lazy(
 
 const FoxAppearAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{
@@ -238,6 +236,10 @@ export default function OnboardingWelcome() {
     bufferedTrace?.({
       name: TraceName.OnboardingNewSrpCreateWallet,
       op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
       parentContext: onboardingParentContext?.current,
     });
 
@@ -267,6 +269,10 @@ export default function OnboardingWelcome() {
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSrpImport,
       op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
       parentContext: onboardingParentContext?.current,
     });
 
@@ -284,7 +290,11 @@ export default function OnboardingWelcome() {
   const handleSocialLogin = useCallback(
     async (socialConnectionType: LoginType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
-        bufferedTrace?.({
+        const parentTraceContext = {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          _name: TraceName.OnboardingSocialLoginAttempt,
+        };
+        await bufferedTrace?.({
           name: TraceName.OnboardingSocialLoginAttempt,
           op: TraceOperation.OnboardingUserJourney,
           tags: { provider: socialConnectionType },
@@ -296,6 +306,7 @@ export default function OnboardingWelcome() {
             bufferedTrace,
             bufferedEndTrace,
             trackLegacyEventForAction,
+            parentTraceContext,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
@@ -411,6 +422,10 @@ export default function OnboardingWelcome() {
           bufferedTrace?.({
             name: TraceName.OnboardingNewSocialCreateWallet,
             op: TraceOperation.OnboardingUserJourney,
+            data: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: accountTypeForSocialLoginMetrics,
+            },
             parentContext: onboardingParentContext?.current,
           });
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));

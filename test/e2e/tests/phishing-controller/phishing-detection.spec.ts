@@ -11,7 +11,7 @@ import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
-import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
+import PhishingWarningPage from '../../page-objects/pages/security/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {
@@ -207,7 +207,9 @@ describe('Phishing Detection', function (this: Suite) {
         // we need to wait for this selector to mitigate a race condition on the phishing page site
         // see more here https://github.com/MetaMask/phishing-warning/pull/173
         await phishingWarningPage.checkPageIsLoaded();
-        await phishingWarningPage.clickProceedAnywayButton();
+        await phishingWarningPage.clickProceedAnywayButton({
+          waitForNavigation: false,
+        });
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
         await new HomePage(driver).checkPageIsNotLoaded();

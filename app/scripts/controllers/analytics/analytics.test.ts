@@ -7,6 +7,12 @@ import {
 import type {
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptInToMarketingAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerOptOutOfMarketingAction,
+  AnalyticsControllerResetConsentDecisionAction,
+  AnalyticsControllerSetMarketingCampaignCookieIdAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
 } from '@metamask/analytics-controller';
@@ -16,22 +22,88 @@ import type {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { Browser } from 'webextension-polyfill';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
-import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
-import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
+import type {
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
+} from '../../services/sentry/sentry-tracing-service-method-action-types';
+import { getAnalyticsControllerInitMessenger } from '../../wallet-init/messengers/analytics-controller-messenger';
+import { LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction } from '../../services/legacy-background-api-service-method-action-types';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
   identify,
+  setDataCollectionForMarketing,
+  setParticipateInMetaMetrics,
   trackEvent,
   updateProfileSessionData,
 } from './analytics';
 
-function createConfiguredMessenger() {
+const TEST_ANALYTICS_ID = 'analytics-id';
+const TEST_GA_COOKIE_ID = '123456.123455';
+
+function createConfiguredMessenger({
+  optedIn = true,
+  consentDecisionMade = true,
+  marketingCampaignCookieId = 'campaign-id',
+}: {
+  optedIn?: boolean;
+  consentDecisionMade?: boolean;
+  marketingCampaignCookieId?: string | null;
+} = {}) {
+  const analyticsControllerState = {
+    analyticsId: TEST_ANALYTICS_ID,
+    optedIn,
+    consentDecisionMade,
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: false,
+    marketingCampaignCookieId,
+  };
   const trackEventHandler = jest.fn();
   const trackViewHandler = jest.fn();
   const identifyHandler = jest.fn();
+  const optInHandler = jest.fn(async () => {
+    analyticsControllerState.optedIn = true;
+    analyticsControllerState.consentDecisionMade = true;
+  });
+  const optOutHandler = jest.fn(() => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = true;
+  });
+  const optInToMarketingHandler = jest.fn(async () => {
+    analyticsControllerState.optedInToMarketing = true;
+    analyticsControllerState.marketingConsentDecisionMade = true;
+  });
+  const optOutOfMarketingHandler = jest.fn(() => {
+    analyticsControllerState.optedInToMarketing = false;
+    analyticsControllerState.marketingConsentDecisionMade = true;
+    // Core's optOutOfMarketing auto-clears the cookie ID; mirror that here.
+    analyticsControllerState.marketingCampaignCookieId = null;
+  });
+  const resetConsentDecisionHandler = jest.fn(() => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = false;
+  });
+  const setParticipateInMetaMetricsHandler = jest.fn<
+    ReturnType<
+      LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction['handler']
+    >,
+    Parameters<
+      LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction['handler']
+    >
+  >();
+  const trackTracesHandler = jest.fn();
+  const clearTracesHandler = jest.fn();
+  const setMarketingCampaignCookieIdHandler = jest.fn();
+  const setUninstallURL = jest.fn();
+  const mockExtension = {
+    runtime: {
+      setUninstallURL,
+    },
+  } as unknown as Browser;
   const rootMessenger = new Messenger<
     MockAnyNamespace,
     | PreferencesControllerGetStateAction
@@ -39,11 +111,19 @@ function createConfiguredMessenger() {
     | NetworkControllerGetStateAction
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
-    | MetaMetricsControllerGetStateAction
+    | SentryTracingServiceTrackTracesAfterMetricsOptInAction
+    | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
     | AnalyticsControllerTrackEventAction
     | AnalyticsControllerIdentifyAction
     | AnalyticsControllerTrackViewAction
+    | AnalyticsControllerOptInAction
+    | AnalyticsControllerOptInToMarketingAction
+    | AnalyticsControllerOptOutAction
+    | AnalyticsControllerOptOutOfMarketingAction
+    | AnalyticsControllerResetConsentDecisionAction
+    | AnalyticsControllerSetMarketingCampaignCookieIdAction
+    | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction
     | ActionConstraint,
     never
   >({
@@ -90,20 +170,23 @@ function createConfiguredMessenger() {
       }) as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:getState',
-    () =>
-      ({
-        dataCollectionForMarketing: false,
-        marketingCampaignCookieId: 'campaign-id',
-      }) as never,
+    'AnalyticsController:setMarketingCampaignCookieId',
+    ((cookieId: string | null) => {
+      analyticsControllerState.marketingCampaignCookieId = cookieId;
+      setMarketingCampaignCookieIdHandler(cookieId);
+    }) as never,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:trackTracesAfterMetricsOptIn',
+    trackTracesHandler,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:clearTracesAfterMetricsOptIn',
+    clearTracesHandler,
   );
   rootMessenger.registerActionHandler(
     'AnalyticsController:getState',
-    () =>
-      ({
-        analyticsId: 'analytics-id',
-        optedIn: true,
-      }) as never,
+    () => analyticsControllerState as never,
   );
   rootMessenger.registerActionHandler(
     'AnalyticsController:trackEvent',
@@ -117,17 +200,53 @@ function createConfiguredMessenger() {
     'AnalyticsController:trackView',
     trackViewHandler as never,
   );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:optIn',
+    optInHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:optOut',
+    optOutHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:optInToMarketing',
+    optInToMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:optOutOfMarketing',
+    optOutOfMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:resetConsentDecision',
+    resetConsentDecisionHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+    setParticipateInMetaMetricsHandler,
+  );
 
   const analyticsMessenger = getAnalyticsControllerInitMessenger(rootMessenger);
 
   configureAnalytics({
     messenger: analyticsMessenger,
+    extension: mockExtension,
   });
 
   return {
     identifyHandler,
     trackEventHandler,
     trackViewHandler,
+    optInHandler,
+    optOutHandler,
+    optInToMarketingHandler,
+    optOutOfMarketingHandler,
+    resetConsentDecisionHandler,
+    trackTracesHandler,
+    clearTracesHandler,
+    setMarketingCampaignCookieIdHandler,
+    setUninstallURL,
+    analyticsControllerState,
+    setParticipateInMetaMetricsHandler,
   };
 }
 
@@ -248,5 +367,28 @@ describe('analytics', () => {
     expect(getProfileIdentityProperties()).toEqual(
       PROFILE_IDENTITY_EVENT_PROPERTIES,
     );
+  });
+
+  describe('setParticipateInMetaMetrics', () => {
+    it('delegates to LegacyBackgroundApiService:setParticipateInMetaMetrics', async () => {
+      const { setParticipateInMetaMetricsHandler } =
+        createConfiguredMessenger();
+
+      await setParticipateInMetaMetrics(true);
+      expect(setParticipateInMetaMetricsHandler).toHaveBeenCalledWith(true);
+
+      await setParticipateInMetaMetrics(false);
+      expect(setParticipateInMetaMetricsHandler).toHaveBeenCalledWith(false);
+    });
+
+    it('returns what LegacyBackgroundApiService:setParticipateInMetaMetrics returns', async () => {
+      const { setParticipateInMetaMetricsHandler } =
+        createConfiguredMessenger();
+      setParticipateInMetaMetricsHandler.mockResolvedValue('some-analytics-id');
+
+      const analyticsId = await setParticipateInMetaMetrics(true);
+
+      expect(analyticsId).toBe('some-analytics-id');
+    });
   });
 });

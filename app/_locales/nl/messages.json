@@ -81,18 +81,11 @@
   "failed": {
     "message": "mislukt"
   },
-  "fileImportFail": {
-    "message": "Bestandsimport werkt niet? Klik hier!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "Van"
   },
   "gasLimit": {
     "message": "Gaslimiet"
-  },
-  "gasLimitTooLow": {
-    "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "here": {
     "message": "hier",
@@ -165,10 +158,6 @@
   "next": {
     "message": "volgende"
   },
-  "pastePrivateKey": {
-    "message": "Plak hier uw privésleutelstring:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
   },
@@ -178,9 +167,6 @@
   "privateKey": {
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Waarschuwing: open deze sleutel nooit. Iedereen met uw privésleutels kan stelen van alle items in uw account."
   },
   "privateNetwork": {
     "message": "Prive netwerk"
@@ -251,9 +237,6 @@
   },
   "urlErrorMsg": {
     "message": "Voor URI's is het juiste HTTP / HTTPS-voorvoegsel vereist."
-  },
-  "usedByClients": {
-    "message": "Gebruikt door verschillende klanten"
   },
   "visitWebSite": {
     "message": "Bezoek onze website"

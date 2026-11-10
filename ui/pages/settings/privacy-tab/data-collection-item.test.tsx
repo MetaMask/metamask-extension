@@ -9,7 +9,8 @@ import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { DataCollectionToggleItem } from './data-collection-item';
 
-const mockSetDataCollectionForMarketing = jest.fn();
+const mockOptInToMarketing = jest.fn();
+const mockOptOutOfMarketing = jest.fn();
 const mockGetMarketingConsent = jest.fn().mockResolvedValue(true);
 
 jest.mock('../../../selectors/first-time-flow', () => {
@@ -24,8 +25,12 @@ jest.mock('../../../selectors/first-time-flow', () => {
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setDataCollectionForMarketing: (val: boolean) => {
-    mockSetDataCollectionForMarketing(val);
+  optInToMarketing: () => {
+    mockOptInToMarketing();
+    return { type: 'MOCK_ACTION' };
+  },
+  optOutOfMarketing: () => {
+    mockOptOutOfMarketing();
     return { type: 'MOCK_ACTION' };
   },
   setMarketingConsent: jest.fn().mockResolvedValue(undefined),
@@ -45,7 +50,8 @@ const createMockStore = (overrides = {}) =>
       useExternalServices: true,
       consentDecisionMade: true,
       optedIn: true,
-      dataCollectionForMarketing: false,
+      marketingConsentDecisionMade: true,
+      optedInToMarketing: false,
       ...overrides,
     },
   });
@@ -76,7 +82,7 @@ describe('DataCollectionToggleItem', () => {
   });
 
   it('renders toggle in enabled state', () => {
-    const mockStore = createMockStore({ dataCollectionForMarketing: true });
+    const mockStore = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     expect(
@@ -85,7 +91,7 @@ describe('DataCollectionToggleItem', () => {
   });
 
   it('renders toggle in disabled state', () => {
-    const mockStore = createMockStore({ dataCollectionForMarketing: false });
+    const mockStore = createMockStore({ optedInToMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     expect(
@@ -93,22 +99,22 @@ describe('DataCollectionToggleItem', () => {
     ).toHaveAttribute('value', 'false');
   });
 
-  it('calls setDataCollectionForMarketing with true when toggled on', () => {
-    const mockStore = createMockStore({ dataCollectionForMarketing: false });
+  it('opts into marketing when toggled on', () => {
+    const mockStore = createMockStore({ optedInToMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
-    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
+    expect(mockOptInToMarketing).toHaveBeenCalled();
   });
 
-  it('calls setDataCollectionForMarketing with false when toggled off', () => {
-    const mockStore = createMockStore({ dataCollectionForMarketing: true });
+  it('opts out of marketing when toggled off', () => {
+    const mockStore = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
-    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+    expect(mockOptOutOfMarketing).toHaveBeenCalled();
   });
 
   it('is disabled when useExternalServices is false', () => {
@@ -119,12 +125,19 @@ describe('DataCollectionToggleItem', () => {
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 
-  it('is disabled when metrics participation is false', () => {
-    const mockStore = createMockStore({ optedIn: false });
+  it('is enabled when metrics participation is off', () => {
+    const mockStore = createMockStore({
+      optedIn: false,
+      optedInToMarketing: false,
+    });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     const toggle = screen.getByRole('checkbox');
-    expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
+    expect(toggle.closest('.toggle-button--disabled')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    expect(mockOptInToMarketing).toHaveBeenCalled();
   });
 
   it('fetches remote marketing consent on mount when social login flow is active', async () => {
@@ -135,6 +148,6 @@ describe('DataCollectionToggleItem', () => {
     await waitFor(() => {
       expect(mockGetMarketingConsent).toHaveBeenCalled();
     });
-    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
+    expect(mockOptInToMarketing).toHaveBeenCalled();
   });
 });

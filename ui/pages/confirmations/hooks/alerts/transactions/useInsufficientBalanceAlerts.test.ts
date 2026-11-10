@@ -1,15 +1,14 @@
-import {
-  ApprovalType,
-  toChecksumHexAddress,
-  toHex,
-} from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   GasFeeToken,
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  buildNativeEvmBalancePatch,
+  getMockConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
@@ -21,6 +20,10 @@ import {
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
+jest.mock('../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
 jest.mock('../../gas/useIsGaslessSupported');
 jest.mock('../../pay/useTransactionPayHasSourceAmount');
 jest.mock('../../pay/useTransactionPayData');
@@ -88,8 +91,6 @@ function buildState({
   chainId?: string;
   remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
-  const accountAddress = transaction?.txParams?.from as string;
-
   let pendingApprovals = {};
   if (currentConfirmation) {
     pendingApprovals = {
@@ -100,18 +101,17 @@ function buildState({
     };
   }
 
+  const resolvedChainId = chainId ?? '0x5';
+
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
-      accountsByChainId: {
-        [chainId ?? '0x5']: {
-          [toChecksumHexAddress(accountAddress)]: {
-            balance: toHex(balance ?? 0),
-          },
-        },
-      },
+      ...buildNativeEvmBalancePatch({
+        hexChainId: resolvedChainId,
+        amountWei: balance ?? 0,
+      }),
       transactions: transaction ? [transaction] : [],
     },
   });
@@ -222,7 +222,7 @@ describe('useInsufficientBalanceAlerts', () => {
         chainId: '0x1079',
         excludeNativeTokenForFee: true,
         gasFeeTokens: [],
-        selectedGasFeeToken: '0x20c0000000000000000000000000000000000000',
+        selectedGasFeeToken: '0x20c0000000000000000000006a37da5c996874be',
       }),
       id: TRANSACTION_ID_MOCK,
       txParams: {
@@ -250,14 +250,14 @@ describe('useInsufficientBalanceAlerts', () => {
         actions: [
           {
             key: 'buy',
-            label: 'Buy pathUSD',
+            label: 'Buy OUSD',
           },
         ],
         field: 'estimatedFee',
         isBlocking: true,
         key: 'insufficientBalance',
         message:
-          'You do not have enough pathUSD in your account to pay for network fees.',
+          'You do not have enough OUSD in your account to pay for network fees.',
         reason: 'Insufficient funds',
         severity: 'danger',
       },
@@ -384,6 +384,80 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
+  it('returns no alerts on Monad when reserve violation is the root cause', () => {
+    const monadTransaction = {
+      ...TRANSACTION_MOCK,
+      chainId: '0x8f',
+      isGasFeeSponsored: false,
+      simulationData: {
+        callTraceErrors: ['reserve balance violation'],
+        tokenBalanceChanges: [],
+      },
+    } as TransactionMeta;
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: monadTransaction,
+      transaction: monadTransaction,
+      chainId: '0x8f',
+    });
+
+    // Generic fee alert must not mask the Monad reserve-balance alert.
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns alert on Monad for an undelegated account when only the proactive reserve check would fail', () => {
+    // Undelegated accounts have no `delegationAddress` and may dip below the
+    // 10 MON reserve, so the generic fee alert must still be shown.
+    const monadTransaction = {
+      ...TRANSACTION_MOCK,
+      chainId: '0x8f',
+      delegationAddress: undefined,
+      isGasFeeSponsored: false,
+    } as TransactionMeta;
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: monadTransaction,
+      transaction: monadTransaction,
+      chainId: '0x8f',
+    });
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toStrictEqual(
+      expect.objectContaining({ key: 'insufficientBalance', isBlocking: true }),
+    );
+  });
+
+  it('returns no alerts on Monad for a delegated account when the proactive reserve check fails', () => {
+    const monadTransaction = {
+      ...TRANSACTION_MOCK,
+      chainId: '0x8f',
+      delegationAddress: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b',
+      isGasFeeSponsored: false,
+    } as TransactionMeta;
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: monadTransaction,
+      transaction: monadTransaction,
+      chainId: '0x8f',
+    });
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns no alerts for money account deposits even when native balance is insufficient', () => {
+    const moneyAccountDeposit = {
+      ...TRANSACTION_MOCK,
+      nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+    } as TransactionMeta;
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: moneyAccountDeposit,
+      transaction: moneyAccountDeposit,
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   describe('post-quote withdraws', () => {
     const WITHDRAW_TRANSACTION_MOCK = {
       ...TRANSACTION_MOCK,
@@ -409,7 +483,7 @@ describe('useInsufficientBalanceAlerts', () => {
       expect(alerts).toEqual([]);
     });
 
-    it('returns alert when post-quote is disabled for the type, since the direct transfer spends native balance', () => {
+    it('returns no alerts for a direct money-account withdraw, which is sponsored from the money account', () => {
       const alerts = runHook({
         balance: 7,
         currentConfirmation: WITHDRAW_TRANSACTION_MOCK,
@@ -417,7 +491,7 @@ describe('useInsufficientBalanceAlerts', () => {
         remoteFeatureFlags: buildPostQuoteFlags(false),
       });
 
-      expect(alerts).toEqual(ALERT);
+      expect(alerts).toEqual([]);
     });
   });
 

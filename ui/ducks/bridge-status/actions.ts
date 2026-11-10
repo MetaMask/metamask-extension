@@ -3,25 +3,13 @@ import {
   UnifiedSwapBridgeEventName,
   type RequiredEventContextFromClient,
   type InputPrimaryDenomination,
+  type MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import type { ActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const callBridgeStatusControllerMethod = <T extends unknown[]>(
-  bridgeAction: 'submitTx' | 'submitIntent' | 'submitBatchSell',
-  args?: T,
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const result = await submitRequestToBackground(bridgeAction, args);
-    await forceUpdateMetamaskState(dispatch);
-    return result;
-  };
-};
 
 /**
  * Submit a bridge or swap quote using the bridge status controller.
@@ -36,41 +24,37 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  * @param inputPrimaryDenomination - The source denomination shown at submission time.
  * @returns A thunk that dispatches the `submitTx` bridge status action.
  */
-export const submitBridgeTx = (
-  accountAddress: string,
-  quote: QuoteResponse,
-  isStxSupportedInClient: boolean,
-  context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
-  location: MetaMetricsSwapsEventSource,
-  tokenSecurityTypeDestination: string | null,
-  activeAbTests?: ActiveABTestAssignment[],
-  inputPrimaryDenomination?: InputPrimaryDenomination,
-) =>
-  callBridgeStatusControllerMethod<
-    [
-      string,
-      QuoteResponse,
-      boolean,
-      RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
-      MetaMetricsSwapsEventSource,
-      undefined,
-      ActiveABTestAssignment[] | undefined,
-      string | null,
-      undefined,
-      InputPrimaryDenomination | undefined,
-    ]
-  >('submitTx', [
-    accountAddress,
-    quote,
-    isStxSupportedInClient,
-    context,
-    location,
-    undefined,
-    activeAbTests,
-    tokenSecurityTypeDestination,
-    undefined,
-    inputPrimaryDenomination,
-  ]);
+export const submitBridgeTx =
+  (
+    accountAddress: string,
+    quote: QuoteResponse,
+    isStxSupportedInClient: boolean,
+    context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
+    location: MetaMetricsSwapsEventSource,
+    tokenSecurityTypeDestination: string | null,
+    activeAbTests?: ActiveABTestAssignment[],
+    inputPrimaryDenomination?: InputPrimaryDenomination,
+  ) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    const result = await submitRequestToBackground(
+      'BridgeStatusController:submitTx',
+      [
+        accountAddress,
+        quote,
+        isStxSupportedInClient,
+        context,
+        location,
+        undefined,
+        activeAbTests,
+        tokenSecurityTypeDestination,
+        undefined,
+        inputPrimaryDenomination,
+        BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+      ],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return result;
+  };
 
 /**
  * Submit an intent quote through the bridge status controller.
@@ -82,17 +66,32 @@ export const submitBridgeTx = (
  * @param params.tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
  * @param params.activeAbTests - Active experiment assignments for transaction attribution.
  * @param params.inputPrimaryDenomination - The source denomination shown at submission time.
+ * @param params.quotesReceivedContext - Metrics context captured when quotes were received.
  * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
-export const submitBridgeIntent = (params: {
-  quoteResponse: QuoteResponse;
-  accountAddress: string;
-  location: MetaMetricsSwapsEventSource;
-  tokenSecurityTypeDestination?: string | null;
-  activeAbTests?: ActiveABTestAssignment[];
-  inputPrimaryDenomination?: InputPrimaryDenomination;
-}) =>
-  callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
+export const submitBridgeIntent =
+  (params: {
+    quoteResponse: QuoteResponse;
+    accountAddress: string;
+    location: MetaMetricsSwapsEventSource;
+    tokenSecurityTypeDestination?: string | null;
+    activeAbTests?: ActiveABTestAssignment[];
+    inputPrimaryDenomination?: InputPrimaryDenomination;
+    quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
+  }) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    const result = await submitRequestToBackground(
+      'BridgeStatusController:submitIntent',
+      [
+        {
+          ...params,
+          migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+        },
+      ],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return result;
+  };
 
 /**
  * Submit a batch-sell trade through the bridge status controller. The
@@ -108,13 +107,24 @@ export const submitBridgeIntent = (params: {
  * @param params.tokenSecurityTypeDestination - Security classification of the destination token, or null when unavailable.
  * @returns A thunk that dispatches the `submitBatchSell` bridge status action.
  */
-export const submitBatchSellTrade = (params: {
-  quoteResponses: (QuoteResponse | null)[];
-  accountAddress: string;
-  isStxEnabled: boolean;
-  quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
-  tokenSecurityTypeDestination?: string | null;
-}) =>
-  callBridgeStatusControllerMethod<[typeof params]>('submitBatchSell', [
-    params,
-  ]);
+export const submitBatchSellTrade =
+  (params: {
+    quoteResponses: (QuoteResponse | null)[];
+    accountAddress: string;
+    isStxEnabled: boolean;
+    quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
+    tokenSecurityTypeDestination?: string | null;
+  }) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    const result = await submitRequestToBackground(
+      'BridgeStatusController:submitBatchSell',
+      [
+        {
+          ...params,
+          migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+        },
+      ],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return result;
+  };

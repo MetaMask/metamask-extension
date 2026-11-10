@@ -214,7 +214,10 @@ class ConfirmEncryptionPublicKeyBase extends Component {
     }
 
     return (
-      <div className="request-encryption-public-key__container">
+      <div
+        className="request-encryption-public-key__container"
+        data-testid="parent-selector-get-encryption-key-confirmation"
+      >
         {this.renderHeader()}
         {this.renderBody()}
         {this.renderFooter()}

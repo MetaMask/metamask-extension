@@ -6,6 +6,8 @@ import {
   CANCEL_ORDER_I18N_KEY_OVERRIDES,
   translatePerpsError,
   handlePerpsError,
+  isPerpsErrorCode,
+  isSlippageFailure,
 } from './translate-perps-error';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -13,6 +15,8 @@ jest.mock('@metamask/perps-controller', () => ({
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
     PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
+    PROVIDER_NOT_FOUND: 'PROVIDER_NOT_FOUND',
+    PROVIDER_LIFECYCLE_STALE: 'PROVIDER_LIFECYCLE_STALE',
     TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
@@ -58,6 +62,7 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_STRATEGY_PARAMS_NOT_SUPPORTED: 'ORDER_STRATEGY_PARAMS_NOT_SUPPORTED',
     ORDER_STRATEGY_FIELD_UNSUPPORTED: 'ORDER_STRATEGY_FIELD_UNSUPPORTED',
     ORDER_STRATEGY_MARKET_UNSUPPORTED: 'ORDER_STRATEGY_MARKET_UNSUPPORTED',
+    ORDER_STRATEGY_ROUTE_UNAVAILABLE: 'ORDER_STRATEGY_ROUTE_UNAVAILABLE',
     ORDER_STRATEGY_HANDLE_UNKNOWN: 'ORDER_STRATEGY_HANDLE_UNKNOWN',
     ORDER_STRATEGY_CANCEL_INCOMPLETE: 'ORDER_STRATEGY_CANCEL_INCOMPLETE',
     ORDER_EDIT_STRATEGY_UNSUPPORTED: 'ORDER_EDIT_STRATEGY_UNSUPPORTED',
@@ -71,9 +76,14 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_SCALE_NOTIONAL_TOO_SMALL: 'ORDER_SCALE_NOTIONAL_TOO_SMALL',
     ORDER_CHASE_INTERVAL_INVALID: 'ORDER_CHASE_INTERVAL_INVALID',
     ORDER_CHASE_DURATION_INVALID: 'ORDER_CHASE_DURATION_INVALID',
+    ORDER_CHASE_MAX_DISTANCE_INVALID: 'ORDER_CHASE_MAX_DISTANCE_INVALID',
     ORDER_CHASE_LIMIT_REACHED: 'ORDER_CHASE_LIMIT_REACHED',
     ORDER_CHASE_ABANDONED: 'ORDER_CHASE_ABANDONED',
     ORDER_CHASE_TOUCH_UNAVAILABLE: 'ORDER_CHASE_TOUCH_UNAVAILABLE',
+    ORDER_MARGIN_MODE_INVALID: 'ORDER_MARGIN_MODE_INVALID',
+    ORDER_MARGIN_MODE_UNSUPPORTED: 'ORDER_MARGIN_MODE_UNSUPPORTED',
+    ORDER_MARGIN_MODE_POSITION_OPEN: 'ORDER_MARGIN_MODE_POSITION_OPEN',
+    ORDER_MARGIN_MODE_ORDER_OPEN: 'ORDER_MARGIN_MODE_ORDER_OPEN',
     EXCHANGE_ACCOUNT_NOT_FOUND: 'EXCHANGE_ACCOUNT_NOT_FOUND',
     EXCHANGE_MULTI_SIG_REQUIRED: 'EXCHANGE_MULTI_SIG_REQUIRED',
     EXCHANGE_INVALID_NONCE: 'EXCHANGE_INVALID_NONCE',
@@ -94,10 +104,13 @@ jest.mock('@metamask/perps-controller', () => ({
     INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
     REDUCE_ONLY_VIOLATION: 'REDUCE_ONLY_VIOLATION',
     POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
+    TPSL_PROTECTION_LOST: 'TPSL_PROTECTION_LOST',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
+    PRICE_MOVED: 'PRICE_MOVED',
     RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
@@ -161,6 +174,35 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
     );
   });
 
+  it('translates every error code introduced after v12', () => {
+    // Controller 13.0.0-16.2.0 widened `PerpsErrorCode`. Named literally rather
+    // than derived from the enum so a code dropped from a later release fails
+    // here instead of silently shrinking the assertion to nothing.
+    const codesAddedAfterV12 = [
+      ['PROVIDER_NOT_FOUND', '[somethingWentWrong]'],
+      ['PROVIDER_LIFECYCLE_STALE', '[somethingWentWrong]'],
+      ['ORDER_STRATEGY_ROUTE_UNAVAILABLE', '[perpsOrderFailed]'],
+      ['ORDER_CHASE_MAX_DISTANCE_INVALID', '[perpsOrderFailed]'],
+      ['TPSL_PROTECTION_LOST', '[somethingWentWrong]'],
+      ['POSITION_NOT_FOUND', '[somethingWentWrong]'],
+      ['ORDER_MARGIN_MODE_INVALID', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_UNSUPPORTED', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_POSITION_OPEN', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_ORDER_OPEN', '[perpsOrderFailed]'],
+    ] as const;
+
+    const translated = codesAddedAfterV12.map(([code]) =>
+      translatePerpsError(
+        Object.assign(new Error('rejected'), { code }),
+        mockT,
+      ),
+    );
+
+    expect(translated).toStrictEqual(
+      codesAddedAfterV12.map(([, expected]) => expected),
+    );
+  });
+
   it('translates cancel-path strategy codes with the cancel wording', () => {
     const handleUnknown = Object.assign(new Error('no such handle'), {
       code: 'ORDER_STRATEGY_HANDLE_UNKNOWN',
@@ -218,6 +260,12 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
   it('maps SLIPPAGE_EXCEEDED to perpsSlippageExceeded', () => {
     expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED]).toBe(
       'perpsSlippageExceeded',
+    );
+  });
+
+  it('maps PRICE_MOVED to perpsPriceMoved', () => {
+    expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.PRICE_MOVED]).toBe(
+      'perpsPriceMoved',
     );
   });
 
@@ -379,6 +427,81 @@ describe('translatePerpsError', () => {
     expect(translatePerpsError(error, mockT)).toBe('[perpsSlippageExceeded]');
   });
 
+  it('formats structured PRICE_MOVED details for localized copy', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: 'Price moved too much',
+          errorCode: PERPS_ERROR_CODES.PRICE_MOVED,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.PRICE_MOVED,
+            priceDeltaBps: 336,
+            maxSlippageBps: 300,
+            expectedPrice: 788.71,
+            currentPrice: 815.22,
+          },
+        },
+        tEn,
+      ),
+    ).toBe(
+      'The price moved 3.36%, exceeding your 3% slippage tolerance. Review the updated price and try again.',
+    );
+  });
+
+  it('uses substitution-free copy when PRICE_MOVED details are unavailable', () => {
+    expect(translatePerpsError(PERPS_ERROR_CODES.PRICE_MOVED, tEn)).toBe(
+      tEn('perpsSlippageExceeded'),
+    );
+  });
+
+  it('uses substitution-free copy when PRICE_MOVED details are incomplete', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: 'Price moved too much',
+          errorCode: PERPS_ERROR_CODES.PRICE_MOVED,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.PRICE_MOVED,
+            priceDeltaBps: Number.NaN,
+            maxSlippageBps: 300,
+            expectedPrice: 788.71,
+            currentPrice: 815.22,
+          },
+        },
+        tEn,
+      ),
+    ).toBe(tEn('perpsSlippageExceeded'));
+  });
+
+  it('formats IOC_CANCEL with the submitted slippage tolerance', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: PERPS_ERROR_CODES.IOC_CANCEL,
+          errorCode: PERPS_ERROR_CODES.IOC_CANCEL,
+          maxSlippageBps: 500,
+        },
+        tEn,
+      ),
+    ).toBe(
+      "Your order couldn't fill within your 5% slippage tolerance. Try a limit order or adjust your slippage.",
+    );
+  });
+
+  it('uses non-numeric IOC_CANCEL copy when tolerance is unavailable', () => {
+    expect(translatePerpsError(PERPS_ERROR_CODES.IOC_CANCEL, tEn)).toBe(
+      "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage.",
+    );
+  });
+
+  it('maps insufficient liquidity to non-numeric IOC cancellation copy', () => {
+    expect(
+      translatePerpsError(new Error('Insufficient liquidity for trade'), tEn),
+    ).toBe(
+      "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage.",
+    );
+  });
+
   it('returns translated string for BATCH_CANCEL_FAILED', () => {
     const error = Object.assign(new Error('batch cancel failed'), {
       code: PERPS_ERROR_CODES.BATCH_CANCEL_FAILED,
@@ -445,5 +568,51 @@ describe('handlePerpsError', () => {
   it('returns translated message when pattern match succeeds', () => {
     const error = new Error('connection timed out waiting for server');
     expect(handlePerpsError(error, mockT)).toBe('[perpsConnectionTimeout]');
+  });
+});
+
+describe('isPerpsErrorCode', () => {
+  it('matches a structured error code', () => {
+    expect(
+      isPerpsErrorCode(
+        {
+          error: 'Price moved too much',
+          errorCode: PERPS_ERROR_CODES.PRICE_MOVED,
+        },
+        PERPS_ERROR_CODES.PRICE_MOVED,
+      ),
+    ).toBe(true);
+  });
+
+  it('matches an Error code property', () => {
+    expect(
+      isPerpsErrorCode(
+        Object.assign(new Error('rejected'), {
+          code: PERPS_ERROR_CODES.IOC_CANCEL,
+        }),
+        PERPS_ERROR_CODES.IOC_CANCEL,
+      ),
+    ).toBe(true);
+  });
+});
+
+describe('isSlippageFailure', () => {
+  [
+    PERPS_ERROR_CODES.PRICE_MOVED,
+    PERPS_ERROR_CODES.IOC_CANCEL,
+    PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED,
+  ].forEach((errorCode) => {
+    it(`matches ${errorCode}`, () => {
+      expect(isSlippageFailure({ error: errorCode, errorCode })).toBe(true);
+    });
+  });
+
+  it('does not match an unrelated error code', () => {
+    expect(
+      isSlippageFailure({
+        error: PERPS_ERROR_CODES.INSUFFICIENT_MARGIN,
+        errorCode: PERPS_ERROR_CODES.INSUFFICIENT_MARGIN,
+      }),
+    ).toBe(false);
   });
 });

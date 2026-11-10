@@ -15,6 +15,28 @@ const toMs = (value: DateLike): number | null => {
   return Number.isFinite(ms) ? ms : null;
 };
 
+/**
+ * Returns true when `nowMs` falls inside the time window defined by
+ * nextOpen/nextClose, using the same wraparound logic as regular market hours.
+ * @param nextOpen
+ * @param nextClose
+ * @param nowMs
+ */
+const isInsideWindow = (
+  nextOpen: DateLike,
+  nextClose: DateLike,
+  nowMs: number,
+): boolean => {
+  const openMs = toMs(nextOpen);
+  const closeMs = toMs(nextClose);
+  if (openMs === null || closeMs === null) {
+    return false;
+  }
+  return closeMs > openMs
+    ? nowMs >= openMs && nowMs < closeMs
+    : nowMs < closeMs || nowMs >= openMs;
+};
+
 // Interval at which components re-evaluate market open/close status.
 // Used by the useRWAToken hook to trigger periodic re-renders on surfaces
 // (token list, asset detail page) that lack other sources of re-renders.
@@ -63,6 +85,40 @@ export const isTokenTradingOpenAt = (
 };
 
 /**
+ * Pure function: returns true when the token's off-hours trading window
+ * is currently active. This is independent of whether the regular market
+ * is open or closed — it only checks the offhours window.
+ *
+ * Intentionally ignores `rwaData.nextPause`: pauses (e.g. dividends,
+ * corporate actions) apply only to regular market hours, which are gated
+ * by {@link isTokenTradingOpenAt}. Off-hours sessions remain tradable
+ * even when a regular-hours pause is present.
+ *
+ * Returns false when:
+ * - The token has no rwaData or no offhours data
+ * - The offhours window timestamps are missing/invalid
+ * - The current time is outside the offhours window
+ *
+ * @param token - A token-like object that may contain rwaData.
+ * @param nowMs - The current timestamp in milliseconds to evaluate against.
+ */
+export const isTokenInOffHoursAt = (
+  token?: RWATokenLike,
+  nowMs: number = Date.now(),
+): boolean => {
+  if (!token?.rwaData) {
+    return false;
+  }
+
+  const { offhours } = token.rwaData;
+  if (!offhours) {
+    return false;
+  }
+
+  return isInsideWindow(offhours.nextOpen, offhours.nextClose, nowMs);
+};
+
+/**
  * Pure function: returns true when the token is a stock instrument.
  *
  * @param token - A token-like object that may contain rwaData.
@@ -72,7 +128,13 @@ export const isStockRWAToken = (token?: RWATokenLike): boolean =>
 
 /**
  * Hook that provides helpers to check whether a token is a stock RWA token
- * and whether its market is currently open.
+ * and whether it is currently tradable.
+ *
+ * `isTokenTradingOpen` is true during regular market hours **or** an active
+ * off-hours session — matching `getIsStockMarketClosed`'s notion of
+ * "not closed". Callers that gate selection / show a market-closed modal
+ * (e.g. bridge asset picker) must use this so off-hours tokens remain
+ * selectable and can reach the off-hours warning.
  *
  * `nowMs` is a cached timestamp updated every {@link RWA_TIME_TICK_MS} (60 s).
  * It exists solely to trigger periodic re-renders so that market open/close
@@ -108,7 +170,11 @@ export function useRWAToken() {
       if (!isRWAEnabled) {
         return true;
       }
-      return isTokenTradingOpenAt(token, nowMs);
+      // Off-hours sessions are tradable even when regular hours are closed
+      // (and even when a regular-hours pause is present).
+      return (
+        isTokenTradingOpenAt(token, nowMs) || isTokenInOffHoursAt(token, nowMs)
+      );
     },
     [isRWAEnabled, nowMs],
   );

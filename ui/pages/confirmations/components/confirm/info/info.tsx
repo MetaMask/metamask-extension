@@ -1,11 +1,16 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { Skeleton } from '@metamask/design-system-react';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
+import { useInitialTransactionConfirmationReady } from '../../../confirmation-performance';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
@@ -15,10 +20,9 @@ import {
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
-import { MusdClaimInfo } from '../../info/musd-claim-info';
-import { MusdConversionInfo } from '../../info/musd-conversion-info';
+import { MoneyAccountDepositInfo } from '../../info/money-account-deposit-info';
 import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
-import { MoneyAccountDepositInfo } from './money-account-deposit-info';
+import { MusdConversionInfo } from '../../info/musd-conversion-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
@@ -105,6 +109,7 @@ export const InfoSkeleton = ({
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
+  useInitialTransactionConfirmationReady(currentConfirmation);
   const { loader } = useConfirmationNavigationOptions();
   const enabledPermissions = useEnabledAdvancedPermissions();
 
@@ -160,7 +165,9 @@ const Info = () => {
 
       [TransactionType.moneyAccountDeposit]: () => MoneyAccountDepositInfo,
       [TransactionType.moneyAccountWithdraw]: () => MoneyAccountWithdrawInfo,
-      [TransactionType.musdClaim]: () => MusdClaimInfo,
+      // Merkl claiming was removed (MUSD-1223); the type stays mapped so a claim
+      // still in flight across the upgrade renders instead of throwing here.
+      [TransactionType.musdClaim]: () => BaseTransactionInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
       [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
@@ -184,9 +191,14 @@ const Info = () => {
     );
   }
 
+  // Mirrors mobile's info-root routing.
+  const confirmationType = getConfirmationTransactionType(
+    currentConfirmation as TransactionMeta,
+  );
+
   const InfoComponent =
     ConfirmationInfoComponentMap[
-      currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
+      confirmationType as keyof typeof ConfirmationInfoComponentMap
     ]();
 
   return <InfoComponent />;

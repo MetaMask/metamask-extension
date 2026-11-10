@@ -138,6 +138,21 @@ export type MessengerClientInitRequest<
   infuraProjectId: string;
 
   /**
+   * The extension build type.
+   */
+  appBuildType: string;
+
+  /**
+   * The extension environment.
+   */
+  appEnvironment: string;
+
+  /**
+   * The extension version.
+   */
+  appVersion: string;
+
+  /**
    * A promise that resolves when the offscreen document is ready.
    */
   offscreenPromise: Promise<void>;
@@ -241,6 +256,11 @@ export type MessengerClientInitRequest<
    * @param url - The URL to navigate the tab to.
    */
   updateTabUrl: (tabId: number, url: string) => Promise<void>;
+
+  /**
+   * Closes the notification popup window if one is open.
+   */
+  closeNotificationPopup: () => Promise<void>;
 
   /**
    * Marks the notification popup as having been automatically closed.

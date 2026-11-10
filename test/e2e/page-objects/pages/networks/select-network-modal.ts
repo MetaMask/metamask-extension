@@ -56,7 +56,8 @@ class SelectNetworkModal {
   private readonly manageNetworksButton =
     '[data-testid="home-network-filter-manage-networks"]';
 
-  private readonly modalCloseButton = 'header button[aria-label="Close"]';
+  private readonly modalCloseButton =
+    '[data-testid="home-network-filter-modal"] [aria-label="Close"]';
 
   private readonly networkListItem = (chainId: string) =>
     `[data-testid="network-list-item-${toListItemChainId(chainId)}"]`;

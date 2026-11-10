@@ -13,8 +13,13 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+  Box,
+} from '@metamask/design-system-react';
+import { toast, ToastContent } from '#ui/components/ui/toast/toast';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -23,6 +28,7 @@ import {
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
+  setToTokenSecurityData,
   setWasTxDeclined,
 } from '../../../ducks/bridge/actions';
 import {
@@ -45,17 +51,18 @@ import {
   getIsStxEnabled,
   getValidatedFromValue,
   getQuoteRequestInsufficientBal,
+  getFromTokenBalance,
+  getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  ButtonIcon,
-  IconName,
+  ButtonIcon as LegacyButtonIcon,
+  ButtonIconSize as LegacyButtonIconSize,
+  IconName as LegacyIconName,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  IconColor,
+  IconColor as LegacyIconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -67,12 +74,10 @@ import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainProviderConfig } from '../../../selectors/multichain';
-import { Toast, ToastContainer } from '../../../components/multichain';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
 import {
   MultichainBridgeQuoteCard,
   MultichainBridgeQuoteCardSkeleton,
@@ -82,20 +87,40 @@ import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
+import { calculateMaxAmountWithReserve } from '../utils/minimum-reserve';
 import { useDispatch } from '../../../store/hooks';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getCurrencySymbol } from '../../../helpers/utils/common.util';
 import { useSourceInputAmount } from '../../../hooks/bridge/useSourceInputAmount';
+import { swapQuoteFetchTrace } from '../utils/swap-quote-fetch-trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 import { BridgeAlertModal } from './components/bridge-alert-modal';
 import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
 
+const inputCardProps = {
+  padding: 3,
+  backgroundColor: BackgroundColor.backgroundMuted,
+  className: 'rounded-2xl',
+} as const;
+
+// 20px-radius notch around the switch button, with 12px fillets (matching
+// Mobile) where it meets the card edges, which sit 4px above and below the centre.
+const SWITCH_TOKENS_NOTCH_PATH =
+  'M0 -20 A20 20 0 0 1 17.32 -10 A12 12 0 0 0 27.71 -4 L27.71 4 A12 12 0 0 0 17.32 10 ' +
+  'A20 20 0 0 1 -17.32 10 A12 12 0 0 0 -27.71 4 L-27.71 -4 A12 12 0 0 0 -17.32 -10 ' +
+  'A20 20 0 0 1 0 -20 Z';
+
 const PrepareBridgePage = ({
   onOpenSettings,
+  swapViewTrace = { id: '', prefilledAmount: false },
 }: {
   onOpenSettings: () => void;
+  swapViewTrace?: {
+    id: string;
+    prefilledAmount: boolean;
+  };
 }) => {
   const dispatch = useDispatch();
 
@@ -110,6 +135,19 @@ const PrepareBridgePage = ({
     fromToken,
     toToken,
   );
+  const toTokenSecurityData =
+    selectedTokenSecurityData[getTokenSecurityAssetKey(toToken.assetId)];
+
+  useEffect(() => {
+    if (toTokenSecurityData) {
+      dispatch(
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          ...toTokenSecurityData,
+        }),
+      );
+    }
+  }, [dispatch, toTokenSecurityData, toToken.assetId]);
 
   const fromChains = useSelector(getFromChains);
   const toChain = useSelector(getToChain);
@@ -132,9 +170,12 @@ const PrepareBridgePage = ({
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
+    quoteFetchError,
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
+  const fromTokenBalance = useSelector(getFromTokenBalance);
+  const quoteStreamComplete = useSelector(getQuoteStreamComplete);
   const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
@@ -151,9 +192,7 @@ const PrepareBridgePage = ({
     useGasIncludedSupport();
 
   const shouldShowMaxButton =
-    fromToken &&
-    // Always show for non-native tokens. Arc ERC20 USDC considered as native.
-    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
+    fromToken && isNativeAddress(fromToken.assetId)
       ? !isSolanaChainId(fromToken.chainId) &&
         (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;
@@ -322,14 +361,25 @@ const PrepareBridgePage = ({
   // The function contains reactive dependencies, but they are `dispatch` and an action,
   // making it safe not to worry about recreating this function on dependency updates.
   const debouncedUpdateQuoteRequestInController = useRef(
-    debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
-      const [params] = args;
-      if (isValidQuoteRequest(params)) {
-        endTrace({ name: TraceName.SwapQuoteFetch });
-        trace({ name: TraceName.SwapQuoteFetch });
-      }
-      dispatch(updateQuoteRequestParams(...args));
-    }, 300),
+    debounce(
+      (
+        params: Parameters<typeof updateQuoteRequestParams>[0],
+        eventProperties: Parameters<typeof updateQuoteRequestParams>[1],
+        isRefresh = false,
+      ) => {
+        if (isValidQuoteRequest(params)) {
+          swapQuoteFetchTrace.start({
+            srcChainId: params.srcChainId,
+            destChainId: params.destChainId,
+            isRefresh,
+          });
+        } else {
+          swapQuoteFetchTrace.finish('cancelled');
+        }
+        dispatch(updateQuoteRequestParams(params, eventProperties));
+      },
+      300,
+    ),
   );
   const previousSlippageRef = useRef(slippage);
 
@@ -338,6 +388,7 @@ const PrepareBridgePage = ({
     previousSlippageRef.current = slippage;
 
     if (!quoteParams) {
+      swapQuoteFetchTrace.finish('cancelled');
       return;
     }
 
@@ -371,32 +422,73 @@ const PrepareBridgePage = ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       usd_amount_source: fromAmountInCurrency.usd.toNumber(),
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      custom_slippage: isSlippageUserOverride,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
     };
     debouncedUpdateQuoteRequestInController.current(
       quoteParams,
       eventProperties,
     );
-  }, [quoteParams, isSlippageUserOverride, slippage]);
+  }, [dispatch, isSlippageUserOverride, quoteParams, slippage]);
 
-  // Trace swap/bridge view loaded
+  const isQuoteSurfaceReady = Boolean(
+    quoteFetchError || (quoteStreamComplete && !isLoading),
+  );
+  const isPageLoadReady = Boolean(
+    fromToken &&
+    toToken &&
+    fromTokenBalance !== null &&
+    (!swapViewTrace.prefilledAmount || isQuoteSurfaceReady),
+  );
+  const hasCompletedPageLoadTraceRef = useRef(false);
+
   useEffect(() => {
+    if (
+      !isPageLoadReady ||
+      !fromToken ||
+      !toToken ||
+      hasCompletedPageLoadTraceRef.current
+    ) {
+      return;
+    }
+
     endTrace({
       name: TraceName.SwapViewLoaded,
+      id: swapViewTrace.id,
       timestamp: Date.now(),
+      data: {
+        result: 'success',
+        /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
+        src_chain_id: formatChainIdToCaip(fromToken.chainId),
+        dest_chain_id: formatChainIdToCaip(toToken.chainId),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
     });
+    hasCompletedPageLoadTraceRef.current = true;
+  }, [fromToken, fromTokenBalance, isPageLoadReady, swapViewTrace.id, toToken]);
 
-    return () => {
+  useEffect(
+    () => () => {
       // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
       debouncedUpdateQuoteRequestInController.current.cancel();
-    };
-  }, []);
+    },
+    [],
+  );
 
-  const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
-  const [blockExplorerToken, setBlockExplorerToken] =
-    useState<BridgeToken | null>(null);
-  const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
+
+  const handleBlockExplorerClick = (token: BridgeToken) => {
+    toast.success(<ToastContent title={t('bridgeBlockExplorerLinkCopied')} />, {
+      icon: (
+        <AvatarFavicon
+          name={token.symbol}
+          size={AvatarFaviconSize.Sm}
+          src={token.iconUrl ?? undefined}
+        />
+      ),
+    });
+  };
 
   const [alertModalProps, setAlertModalProps] = useState<
     Pick<
@@ -429,176 +521,176 @@ const PrepareBridgePage = ({
       />
 
       <Column
-        className="prepare-bridge-page"
+        className="prepare-bridge-page flex-1"
         gap={4}
         data-testid="parent-selector-bridge-quote"
       >
-        <BridgeInputGroup
-          setIsAssetPickerOpen={(isOpen) =>
-            dispatch(setIsSrcAssetPickerOpen(isOpen))
-          }
-          token={fromToken}
-          tokenSecurityData={
-            selectedTokenSecurityData[
-              getTokenSecurityAssetKey(fromToken.assetId)
-            ]
-          }
-          onAmountChange={sourceInputAmount.handleAmountChange}
-          onMaxButtonClick={
-            shouldShowMaxButton
-              ? (value: string) => {
-                  dispatch(setFromTokenInputValue(value));
-                }
-              : undefined
-          }
-          // Hides fiat amount string before a token quantity is entered.
-          secondaryDisplay={sourceSecondaryDisplay}
-          amountInputPrefix={
-            sourceInputAmount.isFiatPrimary
-              ? getCurrencySymbol(currency)
-              : undefined
-          }
-          onAmountTypeToggle={
-            sourceInputAmount.canToggle
-              ? sourceInputAmount.togglePrimaryDenomination
-              : undefined
-          }
-          amountFieldProps={{
-            testId: 'from-amount',
-            autoFocus: true,
-            value: sourceInputAmount.amount,
-          }}
-          containerProps={{
-            paddingInline: 4,
-          }}
-          buttonProps={{ testId: 'bridge-source-button' }}
-          onBlockExplorerClick={(token) => {
-            setBlockExplorerToken(token);
-            setShowBlockExplorerToast(true);
-            setToastTriggerCounter((prev) => prev + 1);
-          }}
-          isDestination={false}
-        />
-
-        <Column
-          padding={4}
-          gap={4}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          style={{
-            position: 'relative',
-          }}
-        >
-          <Box
-            className="prepare-bridge-page__switch-tokens flex"
-            backgroundColor={BoxBackgroundColor.BackgroundSection}
-            style={{
-              position: 'absolute',
-              top: '-20px',
-              right: 'calc(50% - 20px)',
-              border: '2px solid var(--color-background-default)',
-              borderRadius: '100%',
-              opacity: 1,
-              width: 40,
-              height: 40,
-              justifyContent: JustifyContent.center,
+        <Column gap={2} paddingInline={4} style={{ position: 'relative' }}>
+          <BridgeInputGroup
+            setIsAssetPickerOpen={(isOpen) =>
+              dispatch(setIsSrcAssetPickerOpen(isOpen))
+            }
+            token={fromToken}
+            tokenSecurityData={
+              selectedTokenSecurityData[
+                getTokenSecurityAssetKey(fromToken.assetId)
+              ]
+            }
+            onAmountChange={sourceInputAmount.handleAmountChange}
+            onMaxButtonClick={
+              shouldShowMaxButton
+                ? (value: string) => {
+                    dispatch(
+                      setFromTokenInputValue(
+                        calculateMaxAmountWithReserve({
+                          balanceAmount: value,
+                          caipAssetId: fromToken?.assetId,
+                          decimals: fromToken?.decimals ?? 0,
+                        }),
+                      ),
+                    );
+                  }
+                : undefined
+            }
+            // Hides fiat amount string before a token quantity is entered.
+            secondaryDisplay={sourceSecondaryDisplay}
+            amountInputPrefix={
+              sourceInputAmount.isFiatPrimary
+                ? getCurrencySymbol(currency)
+                : undefined
+            }
+            onAmountTypeToggle={
+              sourceInputAmount.canToggle
+                ? sourceInputAmount.togglePrimaryDenomination
+                : undefined
+            }
+            amountFieldProps={{
+              testId: 'from-amount',
+              autoFocus: true,
+              value: sourceInputAmount.amount,
             }}
-          >
-            <ButtonIcon
-              iconProps={{
-                className: classnames({
-                  rotate: rotateSwitchTokens,
-                }),
-              }}
+            containerProps={inputCardProps}
+            buttonProps={{ testId: 'bridge-source-button' }}
+            onBlockExplorerClick={handleBlockExplorerClick}
+            isDestination={false}
+          />
+
+          {/* Zero-height anchor centred in the 8px gap between the cards */}
+          <div className="relative z-10 h-0 -my-1">
+            <svg
+              className="absolute"
+              style={{ top: -20, left: 'calc(50% - 28px)' }}
+              width={56}
+              height={40}
+              viewBox="-28 -20 56 40"
+              aria-hidden
+            >
+              <path
+                d={SWITCH_TOKENS_NOTCH_PATH}
+                fill="var(--color-background-default)"
+              />
+            </svg>
+            <Box
+              className="prepare-bridge-page__switch-tokens flex"
               style={{
-                alignSelf: 'center',
+                position: 'absolute',
+                top: -14,
+                left: 'calc(50% - 14px)',
+                // background-muted is translucent, so layer it over the page background to stay opaque over the card gap
+                background:
+                  'linear-gradient(var(--color-background-muted), var(--color-background-muted)), var(--color-background-default)',
                 borderRadius: '100%',
-                width: '100%',
-                height: '100%',
+                width: 28,
+                height: 28,
+                justifyContent: JustifyContent.center,
               }}
-              data-testid="switch-tokens"
-              ariaLabel="switch-tokens"
-              iconName={IconName.SwapVertical}
-              color={IconColor.iconAlternative}
-              disabled={
-                isSwitchingTemporarilyDisabled ||
-                !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(fromChains, toChain.chainId))
-              }
-              onClick={() => {
-                const previousDestAmount = dest?.normalizedAmount;
-                dispatch(setSelectedQuote(null));
-                if (!toChain || !fromToken || !toToken) {
-                  return;
+            >
+              <LegacyButtonIcon
+                size={LegacyButtonIconSize.Sm}
+                iconProps={{
+                  className: classnames({
+                    rotate: rotateSwitchTokens,
+                  }),
+                }}
+                style={{
+                  alignSelf: 'center',
+                  borderRadius: '100%',
+                  width: '100%',
+                  height: '100%',
+                }}
+                data-testid="switch-tokens"
+                ariaLabel="switch-tokens"
+                iconName={LegacyIconName.Arrow2Down}
+                color={LegacyIconColor.iconDefault}
+                disabled={
+                  isSwitchingTemporarilyDisabled ||
+                  !isValidQuoteRequest(quoteRequest, false) ||
+                  (toChain && !isNetworkAdded(fromChains, toChain.chainId))
                 }
-                // Track the flip event
-                dispatch(
-                  trackUnifiedSwapBridgeEvent(
-                    UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
-                    {
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_source: toToken.symbol,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_destination: fromToken.symbol,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_address_source: toToken.assetId,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_address_destination: fromToken.assetId,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      chain_id_source: formatChainIdToCaip(toChain.chainId),
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      chain_id_destination: fromChain?.chainId
-                        ? formatChainIdToCaip(fromChain?.chainId)
-                        : null,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_security_type_destination:
-                        toToken?.securityData?.type ?? null,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      security_warnings: securityWarnings,
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-                    },
-                  ),
-                );
-
-                setRotateSwitchTokens(!rotateSwitchTokens);
-
-                dispatch(setFromToken(toToken));
-                previousDestAmount &&
+                onClick={() => {
+                  const previousDestAmount = dest?.normalizedAmount;
+                  dispatch(setSelectedQuote(null));
+                  if (!toChain || !fromToken || !toToken) {
+                    return;
+                  }
+                  // Track the flip event
                   dispatch(
-                    setFromTokenInputValue(
-                      formatTokenAmount(locale, previousDestAmount),
+                    trackUnifiedSwapBridgeEvent(
+                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
+                      {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_source: toToken.symbol,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_destination: fromToken.symbol,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_address_source: toToken.assetId,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_address_destination: fromToken.assetId,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        chain_id_source: formatChainIdToCaip(toChain.chainId),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        chain_id_destination: fromChain?.chainId
+                          ? formatChainIdToCaip(fromChain?.chainId)
+                          : null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_security_type_destination:
+                          toToken?.securityData?.type ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        security_warnings: securityWarnings,
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+                      },
                     ),
                   );
-              }}
-            />
-          </Box>
 
-          <Box
-            className="px-4"
-            style={{
-              borderTop: '1px solid var(--color-border-muted)',
-              marginTop: '-16px',
-            }}
-          />
+                  setRotateSwitchTokens(!rotateSwitchTokens);
+
+                  dispatch(setFromToken(toToken));
+                  previousDestAmount &&
+                    dispatch(
+                      setFromTokenInputValue(
+                        formatTokenAmount(locale, previousDestAmount),
+                      ),
+                    );
+                }}
+              />
+            </Box>
+          </div>
 
           <BridgeInputGroup
             setIsAssetPickerOpen={(isOpen) =>
               dispatch(setIsDestAssetPickerOpen(isOpen))
             }
             token={toToken}
-            tokenSecurityData={
-              selectedTokenSecurityData[
-                getTokenSecurityAssetKey(toToken.assetId)
-              ]
-            }
+            tokenSecurityData={toTokenSecurityData}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined
@@ -609,17 +701,11 @@ const PrepareBridgePage = ({
               disabled: true,
               value: destinationAmount,
               autoFocus: false,
-              className: destinationTokenAmount
-                ? 'amount-input defined'
-                : 'amount-input',
             }}
             showAmountSkeleton={isInitialQuoteLoading}
+            containerProps={inputCardProps}
             buttonProps={{ testId: 'bridge-destination-button' }}
-            onBlockExplorerClick={(token) => {
-              setBlockExplorerToken(token);
-              setShowBlockExplorerToast(true);
-              setToastTriggerCounter((prev) => prev + 1);
-            }}
+            onBlockExplorerClick={handleBlockExplorerClick}
             isDestination={true}
           />
         </Column>
@@ -654,15 +740,14 @@ const PrepareBridgePage = ({
 
         {!isInitialQuoteLoading && (
           <Column
+            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 cta-footer"
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
-            height={BlockSize.Full}
             gap={3}
             paddingInline={4}
             paddingTop={4}
             paddingBottom={4}
             backgroundColor={BackgroundColor.backgroundDefault}
-            style={{ position: 'sticky', bottom: 0 }}
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
@@ -673,29 +758,33 @@ const PrepareBridgePage = ({
                   return;
                 }
                 setAlertModalProps({});
-                debouncedUpdateQuoteRequestInController.current(quoteParams, {
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  stx_enabled: smartTransactionsEnabled,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  token_symbol_source: fromToken?.symbol ?? '',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  token_symbol_destination: toToken?.symbol ?? '',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  token_security_type_destination:
-                    toToken?.securityData?.type ?? null,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  security_warnings: securityWarnings,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  usd_amount_source: fromAmountInCurrency.usd.toNumber(),
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-                });
+                debouncedUpdateQuoteRequestInController.current(
+                  quoteParams,
+                  {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    stx_enabled: smartTransactionsEnabled,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_symbol_source: fromToken?.symbol ?? '',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_symbol_destination: toToken?.symbol ?? '',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_security_type_destination:
+                      toToken?.securityData?.type ?? null,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    security_warnings: securityWarnings,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+                  },
+                  true,
+                );
               }}
               needsDestinationAddress={
                 isToOrFromNonEvm && !selectedDestinationAccount
@@ -719,37 +808,6 @@ const PrepareBridgePage = ({
         )}
         <div ref={footerRef} />
       </Column>
-
-      {showBlockExplorerToast && blockExplorerToken && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 50,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 1000,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <ToastContainer>
-            <Toast
-              key={toastTriggerCounter}
-              text={t('bridgeBlockExplorerLinkCopied')}
-              onClose={() => setShowBlockExplorerToast(false)}
-              autoHideTime={2500}
-              startAdornment={
-                <AvatarFavicon
-                  name={blockExplorerToken.symbol}
-                  size={AvatarFaviconSize.Sm}
-                  src={toToken.iconUrl ?? undefined}
-                />
-              }
-            />
-          </ToastContainer>
-        </div>
-      )}
     </>
   );
 };

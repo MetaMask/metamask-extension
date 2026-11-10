@@ -5,8 +5,8 @@ import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
+import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
 import {
   lockAndWaitForLoginPage,
   lockAndWaitForPasskeyUnlockPage,
@@ -88,6 +88,7 @@ describe('Forgot password', function () {
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
           'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.', // issue #37498
           'Legacy syncing failed for wallet', // issue #37053
+          '[PerpsStreamManager] Failed to fetch account', // issue #46623
         ],
         title: this.test?.fullTitle(),
         virtualAuthenticator: true,

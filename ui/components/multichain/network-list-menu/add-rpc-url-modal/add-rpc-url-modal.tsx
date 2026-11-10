@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
+  HelpText,
+  HelpTextSeverity,
 } from '@metamask/design-system-react';
 import {
   Box,
   FormTextField,
   FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
 } from '../../../component-library';
 import {
   BackgroundColor,
@@ -31,16 +31,16 @@ const AddRpcUrlModal = ({
   const t = useI18nContext();
 
   const [url, setUrl] = useState<string>();
-  const [error, setError] = useState<string>();
   const nameRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (url && !isWebUrl(url)) {
-      setError(isWebUrl(`https://${url}`) ? t('urlErrorMsg') : t('invalidRPC'));
-    } else {
-      setError(undefined);
+  const error = (() => {
+    if (!url || isWebUrl(url)) {
+      return undefined;
     }
-  }, [url]);
+    if (isWebUrl(`https://${url}`)) {
+      return t('urlErrorMsg');
+    }
+    return t('invalidRPC');
+  })();
 
   return (
     <Box

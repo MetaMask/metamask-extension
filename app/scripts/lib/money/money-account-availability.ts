@@ -8,16 +8,18 @@ import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
-import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import {
   getMoneyAccountGeoBlockedCountries,
-  isMoneyAccountEnabled,
   isMoneyAccountGeoEligible,
 } from '../../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
+import {
+  createMoneyChainConfigurator,
+  type EnsureMoneyChainConfigured,
+} from './money-chain-config';
 
 const log = createProjectLogger('money-account-availability');
 
@@ -43,22 +45,10 @@ export type MoneyAccountAvailabilityServiceGetAvailabilityAction = {
   handler: MoneyAccountAvailabilityService['getAvailability'];
 };
 
-/**
- * The action other clients use to call {@link MoneyAccountAvailabilityService.getAddress}
- * directly through the messenger, instead of via a controller wrapper method.
- */
-export type MoneyAccountAvailabilityServiceGetAddressAction = {
-  type: `${typeof serviceName}:getAddress`;
-  handler: MoneyAccountAvailabilityService['getAddress'];
-};
-
-type MoneyAccountAvailabilityActions =
-  | MoneyAccountAvailabilityServiceGetAvailabilityAction
-  | MoneyAccountAvailabilityServiceGetAddressAction;
-
 export type MoneyAccountAvailabilityMessenger = Messenger<
   typeof serviceName,
-  MoneyAccountAvailabilityActions | MoneyAccountAvailabilityAllowedActions,
+  | MoneyAccountAvailabilityServiceGetAvailabilityAction
+  | MoneyAccountAvailabilityAllowedActions,
   MoneyAccountAvailabilityEvents
 >;
 
@@ -69,17 +59,24 @@ const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 /**
  * Resolves whether the Money Account surface should be shown at all.
  *
- * We look at the state of the `moneyEnableMoneyAccount` flag, whether the
- * user's region is allowed (`moneyAccountGeoBlockedCountries`), and whether
- * a money address can be derived from an unlocked wallet. The configured
- * Money Account chain must also be ready for use.
+ * We look at whether the user's region is allowed
+ * (`moneyAccountGeoBlockedCountries`), and whether a money address can be
+ * derived from an unlocked wallet. The configured Money Account chain must
+ * also be ready for use.
  *
  * A money account being available doesn’t mean that the account has been
- * upgraded yet.
+ * upgraded yet, nor that the Money keyring exists in the vault yet. The
+ * address is derived straight from the seed, so it is the same whether or not
+ * `MoneyAccountController.init()` has run; creating the keyring is that
+ * controller's job, and it creates it on demand before any signing.
  *
- * The flag and geo check are never cached because they can change when
- * remote feature flags update or geolocation refreshes. Unknown or failed
- * geolocation is treated as blocked (fail closed).
+ * Callers are expected to gate on the `moneyEnableMoneyAccount` flag
+ * themselves before calling; this service does not check it, to avoid
+ * re-implementing a check every caller already has to make.
+ *
+ * The geo check is never cached because it can change when remote feature
+ * flags update or geolocation refreshes. Unknown or failed geolocation is
+ * treated as blocked (fail closed).
  *
  * The derived address is cached as a promise until the next unlock,
  * so concurrent callers share one in-flight derivation; failures are not
@@ -92,10 +89,11 @@ export class MoneyAccountAvailabilityService {
 
   #address?: Promise<Hex>;
 
-  #chainConfiguration?: Promise<void>;
+  readonly #ensureChainConfigured: EnsureMoneyChainConfigured;
 
   constructor({ messenger }: { messenger: MoneyAccountAvailabilityMessenger }) {
     this.#messenger = messenger;
+    this.#ensureChainConfigured = createMoneyChainConfigurator(messenger);
 
     // An unlock can follow a vault restore, which changes the primary seed and
     // therefore the derived address, so the cached value is dropped. A lock
@@ -108,10 +106,7 @@ export class MoneyAccountAvailabilityService {
       this.#address = undefined;
     });
 
-    this.#messenger.registerMethodActionHandlers(this, [
-      'getAvailability',
-      'getAddress',
-    ]);
+    this.#messenger.registerMethodActionHandlers(this, ['getAvailability']);
   }
 
   /**
@@ -124,16 +119,13 @@ export class MoneyAccountAvailabilityService {
       const { remoteFeatureFlags } = this.#messenger.call(
         'RemoteFeatureFlagController:getState',
       );
-      if (!isMoneyAccountEnabled(remoteFeatureFlags)) {
-        return UNAVAILABLE;
-      }
 
       if (!(await this.#isGeoEligible(remoteFeatureFlags))) {
         return UNAVAILABLE;
       }
 
-      const address = await this.getAddress();
-      await this.#ensureChainConfigured(remoteFeatureFlags);
+      const address = await this.#getAddress();
+      await this.#configureChain(remoteFeatureFlags);
 
       return { isAvailable: true, address };
     } catch (error) {
@@ -156,7 +148,7 @@ export class MoneyAccountAvailabilityService {
    *
    * @returns The money account address.
    */
-  async getAddress(): Promise<Hex> {
+  async #getAddress(): Promise<Hex> {
     if (!this.#address) {
       const address = deriveMoneyAccountAddress(this.#messenger);
 
@@ -174,25 +166,6 @@ export class MoneyAccountAvailabilityService {
     return await this.#address;
   }
 
-  async #ensureChainConfigured(
-    remoteFeatureFlags: Record<string, unknown> | undefined,
-  ): Promise<void> {
-    if (this.#chainConfiguration) {
-      return await this.#chainConfiguration;
-    }
-
-    const chainConfiguration = this.#configureChain(remoteFeatureFlags);
-    this.#chainConfiguration = chainConfiguration;
-
-    try {
-      await chainConfiguration;
-    } finally {
-      if (this.#chainConfiguration === chainConfiguration) {
-        this.#chainConfiguration = undefined;
-      }
-    }
-  }
-
   async #configureChain(
     remoteFeatureFlags: Record<string, unknown> | undefined,
   ): Promise<void> {
@@ -201,30 +174,7 @@ export class MoneyAccountAvailabilityService {
       throw new Error('Money Account vault configuration is unavailable');
     }
 
-    const { networkConfigurationsByChainId } = this.#messenger.call(
-      'NetworkController:getState',
-    );
-    if (networkConfigurationsByChainId[vaultConfig.chainId]) {
-      return;
-    }
-
-    const networkConfiguration = FEATURED_RPCS.find(
-      ({ chainId }) => chainId === vaultConfig.chainId,
-    );
-    if (!networkConfiguration) {
-      throw new Error(
-        `Money Account chain ${vaultConfig.chainId} is not a featured network`,
-      );
-    }
-
-    // TODO(MUSD-1270): Move this setup to MoneyAccountUpgradeController
-    // bootstrap when https://consensyssoftware.atlassian.net/browse/MUSD-1270
-    // is implemented.
-    await this.#messenger.call(
-      'LegacyBackgroundApiService:addNetwork',
-      networkConfiguration,
-      { setActive: false },
-    );
+    await this.#ensureChainConfigured(vaultConfig);
   }
 
   /**

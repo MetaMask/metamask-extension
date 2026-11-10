@@ -29,6 +29,7 @@ import {
   AppStateControllerSetShieldSubscriptionErrorAction,
 } from '../../controllers/app-state-controller-method-action-types';
 import {
+  RewardsControllerGetActualSubscriptionIdAction,
   RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
@@ -73,6 +74,7 @@ type AllowedActions =
   | AppStateControllerSetShieldSubscriptionErrorAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
   // Rewards Integration
+  | RewardsControllerGetActualSubscriptionIdAction // For metrics, to get the rewards subscription ID
   | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription
   | RewardsControllerGetSeasonMetadataAction // For rewards, to check if the season is active and can claim points
   | RewardsControllerGetHasAccountOptedInAction; // For rewards, to check if the account has opted in to rewards

@@ -1,42 +1,60 @@
 import { queryClient } from '../../contexts/query-client';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { invalidateMoneyAccountBalanceCaches } from './invalidate-balance-caches';
+import {
+  fetchFreshMoneyAccountBalance,
+  invalidateMoneyAccountBalanceCaches,
+} from './invalidate-balance-caches';
 
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
-}));
-
-jest.mock('../../contexts/query-client', () => ({
-  queryClient: { invalidateQueries: jest.fn() },
+  subscribeToMessengerEvent: jest.fn(),
 }));
 
 const submitRequestToBackgroundMock = jest.mocked(submitRequestToBackground);
-const invalidateQueriesMock = jest.mocked(queryClient.invalidateQueries);
 
 const ADDRESS = '0xAbC0000000000000000000000000000000000001';
 
+const FACADE_QUERY_KEY = [
+  'MoneyAccountBalanceService:fetchBalanceWithFallback',
+  ADDRESS,
+];
+
+const STALE_BALANCE = { totalBalance: '1000000' };
+const FRESH_BALANCE = { totalBalance: '2000000' };
+
+const backgroundCalls = () =>
+  submitRequestToBackgroundMock.mock.calls.map(([method, args]) => {
+    if (method === 'messengerCall') {
+      return args as [string, unknown[]];
+    }
+    return [method, args] as [string, unknown[] | undefined];
+  });
+
 describe('invalidateMoneyAccountBalanceCaches', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
-    submitRequestToBackgroundMock.mockResolvedValue(undefined);
-    invalidateQueriesMock.mockResolvedValue(undefined);
+    jest.clearAllMocks();
+    queryClient.clear();
+    submitRequestToBackgroundMock.mockImplementation(async (method, args) => {
+      const action =
+        method === 'messengerCall' ? (args as [string, unknown[]])[0] : method;
+      return action === 'MoneyAccountBalanceService:fetchBalanceWithFallback'
+        ? (FRESH_BALANCE as never)
+        : (undefined as never);
+    });
   });
 
   it('busts the RPC source cache in the balance service', async () => {
     await invalidateMoneyAccountBalanceCaches(ADDRESS);
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'messengerCall',
+      'MoneyAccountBalanceService:invalidateQueries',
       [
-        'MoneyAccountBalanceService:invalidateQueries',
-        [
-          {
-            queryKey: [
-              'MoneyAccountBalanceService:getMoneyAccountBalance',
-              ADDRESS,
-            ],
-          },
-        ],
+        {
+          queryKey: [
+            'MoneyAccountBalanceService:getMoneyAccountBalance',
+            ADDRESS,
+          ],
+        },
       ],
     );
   });
@@ -45,57 +63,105 @@ describe('invalidateMoneyAccountBalanceCaches', () => {
     await invalidateMoneyAccountBalanceCaches(ADDRESS);
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'messengerCall',
+      'MoneyAccountApiDataService:invalidateQueries',
       [
-        'MoneyAccountApiDataService:invalidateQueries',
-        [
-          {
-            queryKey: [
-              'MoneyAccountApiDataService:fetchPositions',
-              ADDRESS.toLowerCase(),
-            ],
-          },
-        ],
+        {
+          queryKey: [
+            'MoneyAccountApiDataService:fetchPositions',
+            ADDRESS.toLowerCase(),
+          ],
+        },
       ],
     );
   });
 
-  it('invalidates the UI facade query so mounted observers refetch', async () => {
-    await invalidateMoneyAccountBalanceCaches(ADDRESS);
-
-    expect(invalidateQueriesMock).toHaveBeenCalledWith({
-      queryKey: [
-        'MoneyAccountBalanceService:fetchBalanceWithFallback',
-        ADDRESS,
-      ],
-      refetchType: 'all',
-    });
-  });
-
-  it('busts both source caches before invalidating the facade', async () => {
-    const order: string[] = [];
-    submitRequestToBackgroundMock.mockImplementation(async (_method, args) => {
-      order.push(`source:${(args as [string, unknown[]])[0]}`);
-    });
-    invalidateQueriesMock.mockImplementation(async () => {
-      order.push('facade');
-    });
+  it('busts both source caches, then invalidates the cached facade query and refetches it through the background', async () => {
+    queryClient.setQueryData(FACADE_QUERY_KEY, STALE_BALANCE);
 
     await invalidateMoneyAccountBalanceCaches(ADDRESS);
 
-    expect(order).toStrictEqual([
-      'source:MoneyAccountBalanceService:invalidateQueries',
-      'source:MoneyAccountApiDataService:invalidateQueries',
-      'facade',
+    expect(backgroundCalls().map(([action]) => action)).toStrictEqual([
+      'MoneyAccountBalanceService:invalidateQueries',
+      'MoneyAccountApiDataService:invalidateQueries',
+      'MoneyAccountBalanceService:invalidateQueries',
+      'MoneyAccountBalanceService:fetchBalanceWithFallback',
     ]);
+    expect(queryClient.getQueryData(FACADE_QUERY_KEY)).toStrictEqual(
+      FRESH_BALANCE,
+    );
   });
 
-  it('rejects when a source cache cannot be busted', async () => {
+  it('forwards the facade invalidation with arguments that survive JSON-RPC serialization', async () => {
+    queryClient.setQueryData(FACADE_QUERY_KEY, STALE_BALANCE);
+
+    await invalidateMoneyAccountBalanceCaches(ADDRESS);
+
+    const forwardedParams = backgroundCalls().find(
+      ([action, params]) =>
+        action === 'MoneyAccountBalanceService:invalidateQueries' &&
+        Array.isArray(params) &&
+        params.length === 2,
+    )?.[1];
+
+    expect(forwardedParams).toStrictEqual([
+      { queryKey: FACADE_QUERY_KEY, refetchType: 'all' },
+      {},
+    ]);
+    // An `undefined` options argument would cross the UI→background boundary
+    // as `null` and crash the background's `options.cancelRefetch` read.
+    expect(JSON.parse(JSON.stringify(forwardedParams))).toStrictEqual(
+      forwardedParams,
+    );
+  });
+
+  it('rejects and leaves the facade query untouched when a source cache cannot be busted', async () => {
+    queryClient.setQueryData(FACADE_QUERY_KEY, STALE_BALANCE);
     submitRequestToBackgroundMock.mockRejectedValue(new Error('disconnected'));
 
     await expect(invalidateMoneyAccountBalanceCaches(ADDRESS)).rejects.toThrow(
       'disconnected',
     );
-    expect(invalidateQueriesMock).not.toHaveBeenCalled();
+    expect(
+      queryClient.getQueryCache().find({ queryKey: FACADE_QUERY_KEY })?.state
+        .isInvalidated,
+    ).toBe(false);
+    expect(queryClient.getQueryData(FACADE_QUERY_KEY)).toStrictEqual(
+      STALE_BALANCE,
+    );
+  });
+});
+
+describe('fetchFreshMoneyAccountBalance', () => {
+  const REQUEST_OPTIONS = { fresh: true, minBlock: 16 };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    queryClient.clear();
+    submitRequestToBackgroundMock.mockResolvedValue(FRESH_BALANCE as never);
+  });
+
+  it('calls fetchBalanceWithFallback with the freshness options and seeds the facade cache', async () => {
+    const result = await fetchFreshMoneyAccountBalance(
+      ADDRESS,
+      REQUEST_OPTIONS,
+    );
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'MoneyAccountBalanceService:fetchBalanceWithFallback',
+      [ADDRESS, REQUEST_OPTIONS],
+    );
+    expect(result).toStrictEqual(FRESH_BALANCE);
+    expect(queryClient.getQueryData(FACADE_QUERY_KEY)).toStrictEqual(
+      FRESH_BALANCE,
+    );
+  });
+
+  it('rejects and leaves the facade cache empty when the background call fails', async () => {
+    submitRequestToBackgroundMock.mockRejectedValue(new Error('disconnected'));
+
+    await expect(
+      fetchFreshMoneyAccountBalance(ADDRESS, REQUEST_OPTIONS),
+    ).rejects.toThrow('disconnected');
+    expect(queryClient.getQueryData(FACADE_QUERY_KEY)).toBeUndefined();
   });
 });

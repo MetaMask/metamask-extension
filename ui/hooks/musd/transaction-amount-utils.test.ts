@@ -8,26 +8,16 @@ import {
 import {
   extractTransactionAmount,
   decodeMerklClaimParams,
-  getUnclaimedAmountForMerklClaimTx,
   getClaimPayoutFromReceipt,
-  resolveClaimAmount,
 } from './transaction-amount-utils';
 
 jest.mock('../../../shared/lib/transaction.utils', () => ({
   parseStandardTokenTransactionData: jest.fn(),
 }));
 
-jest.mock('../../components/app/musd/merkl-client', () => ({
-  getClaimedAmountFromContract: jest.fn(),
-}));
-
 const { parseStandardTokenTransactionData } = jest.requireMock(
   '../../../shared/lib/transaction.utils',
 );
-
-const { getClaimedAmountFromContract } = jest.requireMock(
-  '../../components/app/musd/merkl-client',
-) as { getClaimedAmountFromContract: jest.Mock };
 
 const makeTx = (overrides: Partial<TransactionMeta> = {}): TransactionMeta =>
   ({
@@ -166,65 +156,6 @@ describe('decodeMerklClaimParams', () => {
 });
 
 // ---------------------------------------------------------------------------
-// getUnclaimedAmountForMerklClaimTx
-// ---------------------------------------------------------------------------
-
-describe('getUnclaimedAmountForMerklClaimTx', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('returns null when calldata cannot be decoded', async () => {
-    const result = await getUnclaimedAmountForMerklClaimTx('0xbaddata');
-    expect(result).toBeNull();
-  });
-
-  it('returns unclaimed = total - claimed when contract call succeeds', async () => {
-    getClaimedAmountFromContract.mockResolvedValue('3000000');
-    const data = encodeClaimData('10000000');
-
-    const result = await getUnclaimedAmountForMerklClaimTx(data);
-
-    expect(result).not.toBeNull();
-    expect(result?.totalAmountRaw).toBe('10000000');
-    expect(result?.unclaimedRaw).toBe('7000000');
-    expect(result?.contractCallSucceeded).toBe(true);
-  });
-
-  it('returns zero unclaimed when claimed >= total', async () => {
-    getClaimedAmountFromContract.mockResolvedValue('10000000');
-    const data = encodeClaimData('10000000');
-
-    const result = await getUnclaimedAmountForMerklClaimTx(data);
-
-    expect(result?.unclaimedRaw).toBe('0');
-    expect(result?.contractCallSucceeded).toBe(true);
-  });
-
-  it('returns full total when contract returns null (0 claimed)', async () => {
-    getClaimedAmountFromContract.mockResolvedValue(null);
-    const data = encodeClaimData('5000000');
-
-    const result = await getUnclaimedAmountForMerklClaimTx(data);
-
-    expect(result?.unclaimedRaw).toBe('5000000');
-    expect(result?.contractCallSucceeded).toBe(true);
-  });
-
-  it('falls back to total amount when contract call throws', async () => {
-    getClaimedAmountFromContract.mockRejectedValue(new Error('RPC error'));
-    const data = encodeClaimData('8000000');
-
-    const result = await getUnclaimedAmountForMerklClaimTx(data);
-
-    expect(result).not.toBeNull();
-    expect(result?.totalAmountRaw).toBe('8000000');
-    expect(result?.unclaimedRaw).toBe('8000000');
-    expect(result?.contractCallSucceeded).toBe(false);
-  });
-});
-
-// ---------------------------------------------------------------------------
 // getClaimPayoutFromReceipt
 // ---------------------------------------------------------------------------
 
@@ -329,80 +260,5 @@ describe('getClaimPayoutFromReceipt', () => {
     ];
 
     expect(getClaimPayoutFromReceipt(logs, MOCK_USER)).toBeNull();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// resolveClaimAmount
-// ---------------------------------------------------------------------------
-
-describe('resolveClaimAmount', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('returns undefined when calldata cannot be decoded', async () => {
-    const tx = {
-      id: 'tx-1',
-      txParams: { to: '0x1', from: '0x2', data: '0xbaddata' },
-    } as unknown as TransactionMeta;
-
-    const result = await resolveClaimAmount(tx);
-    expect(result).toBeUndefined();
-  });
-
-  it('uses receipt logs for confirmed transactions', async () => {
-    const distributorPadded = padAddress(MERKL_DISTRIBUTOR_ADDRESS);
-    const userPadded = padAddress(MOCK_USER);
-
-    const data = encodeClaimData('10000000');
-    const tx = {
-      id: 'tx-1',
-      txParams: { to: MERKL_DISTRIBUTOR_ADDRESS, from: MOCK_USER, data },
-      txReceipt: {
-        logs: [
-          {
-            address: MUSD_TOKEN_ADDRESS,
-            topics: [ERC20_TRANSFER_TOPIC, distributorPadded, userPadded],
-            data: '0x4c4b40', // 5_000_000
-          },
-        ],
-      },
-    } as unknown as TransactionMeta;
-
-    const result = await resolveClaimAmount(tx);
-
-    expect(result).toBe('5000000');
-    expect(getClaimedAmountFromContract).not.toHaveBeenCalled();
-  });
-
-  it('falls back to contract call when receipt has no matching logs', async () => {
-    getClaimedAmountFromContract.mockResolvedValue('2000000');
-
-    const data = encodeClaimData('8000000');
-    const tx = {
-      id: 'tx-1',
-      txParams: { to: MERKL_DISTRIBUTOR_ADDRESS, from: MOCK_USER, data },
-      txReceipt: { logs: [] },
-    } as unknown as TransactionMeta;
-
-    const result = await resolveClaimAmount(tx);
-
-    expect(result).toBe('6000000');
-    expect(getClaimedAmountFromContract).toHaveBeenCalled();
-  });
-
-  it('falls back to contract call when no receipt exists', async () => {
-    getClaimedAmountFromContract.mockResolvedValue('1000000');
-
-    const data = encodeClaimData('5000000');
-    const tx = {
-      id: 'tx-1',
-      txParams: { to: MERKL_DISTRIBUTOR_ADDRESS, from: MOCK_USER, data },
-    } as unknown as TransactionMeta;
-
-    const result = await resolveClaimAmount(tx);
-
-    expect(result).toBe('4000000');
   });
 });

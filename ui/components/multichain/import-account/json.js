@@ -2,17 +2,24 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FileInput from 'react-simple-file-input';
 import {
-  ButtonLink,
+  Box,
+  BoxFlexDirection,
+  ButtonIcon,
+  ButtonIconSize,
+  FormTextField,
+  HelpText,
+  HelpTextSeverity,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextButton,
+  TextColor,
   TextFieldSize,
   TextFieldType,
-  Text,
-} from '../../component-library';
-import {
-  Size,
-  TextAlign,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { FormTextField } from '../../component-library/form-text-field/deprecated';
+} from '@metamask/design-system-react';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
@@ -24,10 +31,14 @@ export default function JsonImportSubview({
 }) {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [fileContents, setFileContents] = useState('');
+  const [fileName, setFileName] = useState('');
   const [errorMessage, setErrorMessage] = useState();
 
   const isPrimaryDisabled = fileContents === '';
+  const fileError = errorMessage ?? importErrorMessage;
+  const fileErrorId = 'json-file-error';
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -45,52 +56,86 @@ export default function JsonImportSubview({
   }
 
   return (
-    <>
-      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-        {t('usedByClients')}
-        <ButtonLink
-          size={Size.inherit}
-          href={ZENDESK_URLS.IMPORTED_ACCOUNT_JSON}
-          target="_blank"
-          rel="noopener noreferrer"
+    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex-1">
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <label
+          htmlFor="file-input"
+          className="relative flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-muted px-4 py-8 focus-within:outline focus-within:outline-2 focus-within:outline-primary-default"
         >
-          {t('fileImportFail')}
-        </ButtonLink>
-      </Text>
+          <FileInput
+            id="file-input"
+            data-testid="file-input"
+            readAs="text"
+            aria-invalid={Boolean(fileError)}
+            aria-describedby={fileError ? fileErrorId : undefined}
+            onChange={(file) => {
+              setFileName(file?.name ?? '');
+            }}
+            onLoad={(event) => {
+              setErrorMessage();
+              setFileContents(event.target.result);
+            }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              opacity: 0,
+              cursor: 'pointer',
+            }}
+          />
+          <Icon
+            name={IconName.Upload}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {fileName || t('chooseJsonFile')}
+          </Text>
+        </label>
+        {fileError ? (
+          <HelpText id={fileErrorId} severity={HelpTextSeverity.Danger}>
+            {fileError}
+          </HelpText>
+        ) : null}
+      </Box>
 
-      <FileInput
-        id="file-input"
-        data-testid="file-input"
-        readAs="text"
-        onLoad={(event) => {
-          setErrorMessage();
-          setFileContents(event.target.result);
-        }}
-        style={{
-          padding: '20px 0px 12px 15%',
-          fontSize: '16px',
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-        }}
-      />
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+        {t('fileImportNotWorking')}{' '}
+        <TextButton size="body-md" asChild className="inline">
+          <a
+            href={ZENDESK_URLS.IMPORTED_ACCOUNT_JSON}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('clickHere')}
+          </a>
+        </TextButton>
+      </Text>
 
       <FormTextField
         id="json-password-box"
         size={TextFieldSize.Lg}
-        autoFocus
-        type={TextFieldType.Password}
-        helpText={errorMessage ?? importErrorMessage}
-        error
         placeholder={t('enterOptionalPassword')}
         value={password}
         onChange={(event) => {
           setPassword(event.target.value);
         }}
         inputProps={{
+          'aria-label': t('enterOptionalPassword'),
           onKeyPress: handleKeyPress,
         }}
-        marginBottom={4}
+        type={showPassword ? TextFieldType.Text : TextFieldType.Password}
+        endAccessory={
+          <ButtonIcon
+            iconName={showPassword ? IconName.Eye : IconName.EyeSlash}
+            size={ButtonIconSize.Md}
+            ariaLabel={showPassword ? t('hide') : t('show')}
+            aria-pressed={showPassword}
+            data-testid="show-hide-json-password"
+            onClick={() => setShowPassword(!showPassword)}
+          />
+        }
       />
 
       <BottomButtons
@@ -101,7 +146,7 @@ export default function JsonImportSubview({
           onActionComplete(confirmed);
         }}
       />
-    </>
+    </Box>
   );
 }
 

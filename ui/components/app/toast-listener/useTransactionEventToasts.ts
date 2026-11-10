@@ -12,14 +12,22 @@ import type {
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
+  isInWalletPerpsDepositTransaction,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import {
+  isMoneyAccountChildTx,
+  isMoneyAccountTx,
+} from '../../../helpers/money/money-transaction-guards';
+import { isKnownMoneyBatchChild } from '../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { selectTransactions } from '../../../selectors/transactionController';
 import {
   dismissToast,
   showPendingToast,
@@ -28,6 +36,7 @@ import {
 } from './shared';
 import {
   clearToastPhase,
+  setApprovedOrSignedToastPhase,
   shouldShowPendingToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
@@ -47,7 +56,6 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
 // Flows with custom toasts — excluded for now from generic messenger event toasts.
 const excludedTransactionTypes: TransactionType[] = [
   TransactionType.musdRelayDeposit,
-  TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
   TransactionType.perpsRelayDeposit,
   TransactionType.shieldSubscriptionApprove,
@@ -55,19 +63,35 @@ const excludedTransactionTypes: TransactionType[] = [
 
 // Ported from custom toasts that included pre-broadcast (approved/signed) stage
 const earlyPendingToastTypes = new Set([
-  TransactionType.musdConversion,
   TransactionType.musdClaim,
+  TransactionType.perpsDeposit,
 ]);
 
-function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
-  // Top-level only — nested swapApproval inside batch txs must still toast.
+// Separate batch txs that share one toast with the main send/swap/bridge tx.
+export const batchHelperTransactionTypes = [
+  TransactionType.bridgeApproval,
+  TransactionType.swapApproval,
+  TransactionType.gasPayment,
+];
+
+function isExcludedTransactionType(
+  transactionMeta: TransactionMeta,
+  transactions: TransactionMeta[],
+): boolean {
   if (
-    transactionMeta.type === TransactionType.bridgeApproval ||
-    transactionMeta.type === TransactionType.swapApproval
+    transactionMeta.type &&
+    batchHelperTransactionTypes.includes(transactionMeta.type)
   ) {
     return true;
   }
-  return hasTransactionType(transactionMeta, excludedTransactionTypes);
+  return (
+    hasTransactionType(transactionMeta, excludedTransactionTypes) ||
+    // In-wallet Perps deposits have their own toast (`PerpsDepositToast`).
+    // dApp-requested ones use the generic toasts.
+    isInWalletPerpsDepositTransaction(transactionMeta) ||
+    isMoneyAccountTx(transactionMeta) ||
+    isMoneyAccountChildTx(transactionMeta, transactions)
+  );
 }
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
@@ -149,6 +173,10 @@ export function useTransactionEventToasts(): void {
   const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
+    if (getManifestFlags().testing?.disableTransactionToasts) {
+      return undefined;
+    }
+
     // EVM via TransactionController
     const handleEvmStatusUpdate = (
       raw:
@@ -165,7 +193,11 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      if (isExcludedTransactionType(transactionMeta)) {
+      const transactions = selectTransactions(store.getState());
+      if (
+        isKnownMoneyBatchChild(id) ||
+        isExcludedTransactionType(transactionMeta, transactions)
+      ) {
         return;
       }
 
@@ -175,6 +207,13 @@ export function useTransactionEventToasts(): void {
         to: getDetailsRoute(chainId, hash),
       };
 
+      if (
+        status === TransactionStatus.approved ||
+        status === TransactionStatus.signed
+      ) {
+        setApprovedOrSignedToastPhase(id);
+      }
+
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {
           showPendingToast(toastId, props);
@@ -183,7 +222,6 @@ export function useTransactionEventToasts(): void {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
-          const transactions = store.getState().metamask?.transactions ?? [];
           if (
             isSpeedUpReplacement(transactionMeta.replacedById, transactions)
           ) {

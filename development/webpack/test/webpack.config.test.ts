@@ -4,6 +4,8 @@ import { describe, it, afterEach, before, after, mock } from 'node:test';
 import assert from 'node:assert';
 import process from 'node:process';
 import { join, resolve } from 'node:path';
+import { runInNewContext } from 'node:vm';
+import { transform } from '@swc/core';
 import {
   type Configuration,
   type FileCacheOptions,
@@ -12,7 +14,7 @@ import {
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
-import { noop, type Manifest } from '../utils/helpers';
+import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { version as packageVersion } from '../../../package.json';
@@ -22,6 +24,15 @@ import {
   DEFAULT_ZIP_MTIME,
   isValidZipMtime,
 } from '../utils/plugins/ManifestPlugin/zip-mtime';
+import type { SwcLoaderOptions } from '../utils/loaders/swcLoader';
+
+// `buildDependencies` entries are either a path or `{ dependency, optional }`.
+// The config only ever writes paths, but the type allows both.
+function buildDependencyPath(
+  item: NonNullable<FileCacheOptions['buildDependencies']>[string][number],
+) {
+  return typeof item === 'string' ? item : item.dependency;
+}
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -226,10 +237,12 @@ ${Object.entries(env)
     const cache = config.cache as FileCacheOptions;
     const configBuildDependencies = cache.buildDependencies?.config ?? [];
     assert.ok(
-      configBuildDependencies.every(
-        (path) =>
-          !path.endsWith('.metamaskrc') && !path.endsWith('.metamaskprodrc'),
-      ),
+      configBuildDependencies
+        .map(buildDependencyPath)
+        .every(
+          (path) =>
+            !path.endsWith('.metamaskrc') && !path.endsWith('.metamaskprodrc'),
+        ),
       'optional rc files should not be cache dependencies when they do not exist',
     );
 
@@ -313,7 +326,9 @@ ${Object.entries(env)
 
     const config: Configuration = getWebpackConfig();
     const cache = config.cache as FileCacheOptions;
-    const configBuildDependencies = cache.buildDependencies?.config ?? [];
+    const configBuildDependencies = (cache.buildDependencies?.config ?? []).map(
+      buildDependencyPath,
+    );
 
     assert.ok(
       configBuildDependencies.some((path) => path.endsWith('.metamaskrc')),
@@ -326,6 +341,93 @@ ${Object.entries(env)
       'missing .metamaskprodrc should not be a cache dependency',
     );
   });
+
+  for (const mode of ['development', 'production']) {
+    for (const test of [false, true]) {
+      it(`inlines public flags only for the npm loader in ${mode} with test=${test}`, async () => {
+        mockOptionalRcFiles();
+        const config: Configuration = getWebpackConfig(
+          [
+            '--mode',
+            mode,
+            '--env',
+            'testing',
+            '--no-validateEnv',
+            ...(test ? ['--test'] : []),
+          ],
+          { INFURA_PROJECT_ID: 'sentinel-build-value' },
+        );
+        const source =
+          'const flags = [process.env.IN_TEST, process.env.NODE_ENV, process.env.INFURA_PROJECT_ID];';
+        const firstPartyUse = getSwcReactRules(config)[0].use as {
+          options: SwcLoaderOptions;
+        };
+        // Warm SWC's environment cache with first-party values before vendors.
+        await transform(source, {
+          ...firstPartyUse.options,
+          filename: '/test/file.ts',
+          swcrc: false,
+        });
+        const vendorRule = config.module?.rules?.find(
+          (rule): rule is RuleSetRule =>
+            typeof rule === 'object' && Array.isArray(rule?.oneOf),
+        );
+        assert(vendorRule?.oneOf);
+        assert.strictEqual(vendorRule.oneOf.length, 2, 'npm and cjs loaders');
+
+        for (const rule of vendorRule.oneOf) {
+          assert(rule && typeof rule === 'object');
+          assert.strictEqual(String(rule.include), String(NODE_MODULES_RE));
+          const use = rule.use as { options: SwcLoaderOptions };
+          assert(use.options.module);
+          const isCjs = use.options.module.type === 'commonjs';
+          const { code } = await transform(source, {
+            ...use.options,
+            filename: `/test/node_modules/vendor/file.${isCjs ? 'cjs' : 'js'}`,
+            swcrc: false,
+          });
+          const flags: unknown = runInNewContext(`${code}\nflags;`, {
+            process: {
+              env: {
+                IN_TEST: 'runtime-test',
+                NODE_ENV: 'runtime-mode',
+                INFURA_PROJECT_ID: 'runtime-value',
+              },
+            },
+          });
+
+          assert(Array.isArray(flags));
+          assert.deepStrictEqual(
+            [...flags],
+            isCjs
+              ? ['runtime-test', 'runtime-mode', 'runtime-value']
+              : [test, mode, 'runtime-value'],
+          );
+        }
+      });
+    }
+  }
+
+  for (const watch of [false, true]) {
+    it(`compiles TypeScript files with configured loaders and watch=${watch}`, async () => {
+      const config = getWebpackConfig(watch ? ['--watch'] : []);
+      for (const extension of ['ts', 'mts', 'tsx']) {
+        const filename = resolve(__dirname, `../../../ui/test.${extension}`);
+        const rule = getSwcReactRules(config).find(
+          ({ test }) => test instanceof RegExp && test.test(filename),
+        );
+        assert(rule, `Missing loader for .${extension}`);
+        const { options } = rule.use as { options: SwcLoaderOptions };
+
+        await transform(
+          extension === 'tsx'
+            ? 'export const Component = (text: string) => <div>{text}</div>;'
+            : 'export const identity = <T>(value: T): T => value;',
+          { ...options, filename, swcrc: false },
+        );
+      }
+    });
+  }
 
   it('enables React Refresh for development watch builds', () => {
     mockOptionalRcFiles();

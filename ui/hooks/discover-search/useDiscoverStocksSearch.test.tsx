@@ -94,4 +94,41 @@ describe('useDiscoverStocksSearch', () => {
     ]);
     expect(result.current.totalCount).toBe(2);
   });
+
+  it('requests token security data and passes it through to the normalized asset', async () => {
+    mockFetchRwas.mockResolvedValue({
+      count: 1,
+      totalCount: 1,
+      data: [
+        {
+          assetId: 'eip155:1/erc20:0xstock',
+          name: 'Stock one',
+          symbol: 'STK1',
+          decimals: 18,
+          rwaData: {
+            price: '1',
+            priceChange: '1',
+            marketCap: 1,
+            aggregatedUsdVolume: 1,
+          },
+          securityData: { resultType: 'Verified' },
+        },
+      ],
+      pageInfo: { hasNextPage: false, nextCursor: null },
+    } as never);
+
+    const { result } = renderHook(
+      () => useDiscoverStocksSearch({ query: '' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(mockFetchRwas).toHaveBeenCalledWith(
+      expect.objectContaining({ includeTokenSecurityData: true }),
+    );
+    expect(result.current.data[0].securityData).toStrictEqual({
+      resultType: 'Verified',
+    });
+  });
 });

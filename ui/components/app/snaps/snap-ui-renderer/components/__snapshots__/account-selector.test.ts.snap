@@ -216,11 +216,11 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: 0px;"
                                   >
                                     <div
-                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                                     >
                                       <img
                                         alt="Polygon"
@@ -231,11 +231,11 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
-                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                                     >
                                       <img
                                         alt="BNB Chain"
@@ -246,7 +246,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
@@ -260,11 +260,11 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
-                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                                     >
                                       <img
                                         alt="Custom Mainnet RPC"
@@ -535,11 +535,11 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: 0px;"
                                   >
                                     <div
-                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                                     >
                                       <img
                                         alt="Polygon"
@@ -550,11 +550,11 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
-                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                                     >
                                       <img
                                         alt="BNB Chain"
@@ -565,7 +565,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
@@ -579,11 +579,11 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
-                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+                                      class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
                                     >
                                       <img
                                         alt="Custom Mainnet RPC"

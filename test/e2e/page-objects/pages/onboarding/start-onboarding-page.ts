@@ -61,9 +61,9 @@ class StartOnboardingPage {
 
   private readonly page = '[data-testid="parent-selector-onboarding-welcome"]';
 
-  private readonly privacyNoticeUrl = 'https://consensys.io/privacy-notice';
+  private readonly privacyNoticeUrl = 'https://metamask.com/privacy-notice';
 
-  private readonly termsOfUseUrl = 'https://consensys.io/terms-of-use';
+  private readonly termsOfUseUrl = 'https://metamask.com/terms-of-use';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -225,13 +225,6 @@ class StartOnboardingPage {
     );
   }
 
-  async createWalletWithSocialLogin(
-    authConnection = AuthConnection.Google,
-  ): Promise<void> {
-    await this.clickCreateWalletButton();
-    await this.clickCreateWalletSocialLoginButton(authConnection);
-  }
-
   async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
     await this.clickCreateWalletButton();
     if (socialLoginEnabled) {
@@ -274,13 +267,6 @@ class StartOnboardingPage {
     if (withSrpButton) {
       await this.driver.clickElement(this.onboardingImportWithSrpButton);
     }
-  }
-
-  async importWalletWithSocialLogin(
-    authConnection = AuthConnection.Google,
-  ): Promise<void> {
-    await this.clickImportWalletButton();
-    await this.clickImportWalletSocialLoginButton(authConnection);
   }
 }
 

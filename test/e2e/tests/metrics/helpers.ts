@@ -3,6 +3,12 @@ import { getEventPayloads } from '../../helpers';
 
 type IdentifyEvent = { traits: Record<string, unknown> };
 
+type TrackEvent = {
+  type?: string;
+  event?: string;
+  properties?: Record<string, unknown>;
+};
+
 function mergeTraits(events: IdentifyEvent[]): Record<string, unknown> {
   return events.reduce(
     (acc, event) => ({ ...acc, ...event.traits }),
@@ -44,4 +50,41 @@ export async function waitForExpectedTraits(
     );
   }, timeout);
   return mergeTraits(events);
+}
+
+/**
+ * Poll getEventPayloads until a Settings Updated track includes `expectedProperties`.
+ *
+ * @param driver - The WebDriver instance.
+ * @param driver.wait - Polls a condition function until it returns true or the timeout expires.
+ * @param mockedEndpoints - The mockttp mocked endpoints to retrieve seen requests from.
+ * @param expectedProperties - Key/value pairs the Settings Updated properties must include.
+ * @param timeout - Maximum time in ms to wait for the track event.
+ */
+export async function waitForSettingsUpdated(
+  driver: {
+    wait: (condition: () => Promise<boolean>, timeout: number) => Promise<void>;
+  },
+  mockedEndpoints: MockedEndpoint[],
+  expectedProperties: Record<string, unknown>,
+  timeout = 30_000,
+): Promise<void> {
+  await driver.wait(async () => {
+    let events: TrackEvent[] = [];
+    try {
+      events = await getEventPayloads(driver, mockedEndpoints, false);
+    } catch {
+      return false;
+    }
+
+    return events.some((event) => {
+      if (event?.type !== 'track' || event.event !== 'Settings Updated') {
+        return false;
+      }
+
+      return Object.entries(expectedProperties).every(
+        ([key, value]) => event.properties?.[key] === value,
+      );
+    });
+  }, timeout);
 }

@@ -62,15 +62,20 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({
-    feeRate: 0.00145,
-    isLoading: false,
-    hasError: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      feeRate: 0.00145,
+      isLoading: false,
+      hasError: false,
+    };
+  },
 }));
 
 jest.mock('../perps-toast', () => ({
+  ...jest.requireActual('../perps-toast'),
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
@@ -173,6 +178,21 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('rendering', () => {
+    it('quotes both triggers using the largest batch notional', () => {
+      renderWithProvider(
+        <UpdateTPSLModalContent {...defaultProps} />,
+        mockStore,
+      );
+      expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        orderType: 'market',
+        amount: '8000',
+      });
+      expect(mockUsePerpsOrderFees).not.toHaveBeenCalledWith(
+        expect.objectContaining({ amount: '6500' }),
+      );
+    });
+
     it('renders Take Profit and Stop Loss sections', () => {
       renderTpslModalContent();
 
@@ -1104,6 +1124,31 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('error handling', () => {
+    it('reports an already-closed position and refreshes positions', async () => {
+      const refreshPositions = jest.fn().mockResolvedValue(undefined);
+      mockGetPerpsStreamManager.mockReturnValue({ refreshPositions });
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'POSITION_NOT_FOUND',
+      });
+      const onClose = jest.fn();
+
+      renderTpslModalContent({ onClose });
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+      });
+      expect(refreshPositions).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastUpdateFailed' }),
+      );
+    });
+
     it('shows toast error when perpsUpdatePositionTPSL fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsUpdatePositionTPSL') {

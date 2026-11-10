@@ -11,13 +11,13 @@ import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransactionWithSnapAccount } from '../../page-objects/flows/transaction.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
@@ -76,11 +76,12 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await driver.delay(1000);
 
         // send 1 ETH from snap account to account 1
-        await sendRedesignedTransactionWithSnapAccount({
+        await sendTransactionWithSnapAccount({
           driver,
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('-1 ETH');
         await activityTab.waitPendingTxToNotBeVisible();
@@ -145,7 +146,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await driver.delay(1000);
 
         // send 1 ETH from snap account to account 1 and approve the transaction
-        await sendRedesignedTransactionWithSnapAccount({
+        await sendTransactionWithSnapAccount({
           driver,
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
@@ -154,6 +155,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
         const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
         await activityTab.checkTxAmountInActivity('-1 ETH');
         await activityTab.waitPendingTxToNotBeVisible();
 
@@ -206,7 +208,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         // send 1 ETH from snap account to account 1 and reject the transaction
-        await sendRedesignedTransactionWithSnapAccount({
+        await sendTransactionWithSnapAccount({
           driver,
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
