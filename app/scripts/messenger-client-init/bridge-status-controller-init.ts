@@ -100,8 +100,8 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
     },
   });
 
-  // Root each scheduled poll cycle in its own trace before the controller's
-  // internal `_executePoll` callback performs network work.
+  // Overrides the polling base class's per-cycle `_executePoll` hook. The cast
+  // and `?.` skip type checks, so an upstream rename silently drops this wrap.
   const pollingController =
     messengerClient as unknown as ControllerWithExecutePoll;
   const executePoll = pollingController._executePoll?.bind(messengerClient);

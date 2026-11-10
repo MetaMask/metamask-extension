@@ -9,9 +9,6 @@ import { TraceName } from '../../../shared/lib/trace';
  * high-volume custom transaction can be capped without lowering visibility
  * elsewhere. Seeded with the two assets-controller transactions pinned to `0`.
  *
- * `Background Poll`, the per-cycle root from `traceBackgroundPoll`, uses the
- * same 0.1% starting rate.
- *
  * Perps preload and market-fetch transactions use a 0.1% starting rate,
  * including initial loads and periodic refreshes. Remote overrides can adjust it.
  *
