@@ -49,6 +49,8 @@ export default function PrivateKeyImportView({
         inputProps={{
           'aria-label': t('enterYourPrivateKey'),
           onKeyPress: handleKeyPress,
+          // Let the input size to its text so it sits at the container's top padding.
+          className: 'h-auto',
         }}
         type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
         textFieldProps={{

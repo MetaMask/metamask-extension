@@ -65,7 +65,6 @@ export default function JsonImportSubview({
           <FileInput
             id="file-input"
             data-testid="file-input"
-            accept=".json,application/json"
             readAs="text"
             aria-invalid={Boolean(fileError)}
             aria-describedby={fileError ? fileErrorId : undefined}
