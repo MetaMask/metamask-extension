@@ -173,6 +173,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/ramps/token-selection': null,
   '/ramps/payment-method': null,
   '/ramps/complete-buy': null,
+  '/ramps/buy-interstitial': null,
 
   // Send, swap and bridge
   '/send/:page?': SendPage,
