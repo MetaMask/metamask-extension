@@ -191,6 +191,10 @@ class AccountListPage {
   private readonly importAccountConfirmButton =
     '[data-testid="import-account-confirm-button"]';
 
+  private readonly importAccountErrorMessage = (message: string) => ({
+    text: message,
+  });
+
   private readonly importAccountFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-account"]';
 
@@ -199,6 +203,9 @@ class AccountListPage {
 
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
+
+  private readonly importAccountJsonTypeButton =
+    '[data-testid="import-account-type-json"]';
 
   private readonly importAccountPrivateKeyInput = '#private-key-box';
 
@@ -406,9 +413,9 @@ class AccountListPage {
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.importAccountConfirmButton);
-      await this.driver.waitForSelector({
-        text: expectedErrorMessage,
-      });
+      await this.driver.waitForSelector(
+        this.importAccountErrorMessage(expectedErrorMessage),
+      );
     } else {
       // Import + forceUpdateMetamaskState can outlive the default 3s staleness
       // wait under multi-SRP / Solana load on CI before the Add Wallet page
@@ -1083,9 +1090,7 @@ class AccountListPage {
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
-    // The toggle renders its label in a child element, so the button itself
-    // has no direct text node for the text locator to match.
-    await this.driver.clickNestedButton('JSON file');
+    await this.driver.clickElement(this.importAccountJsonTypeButton);
 
     const fileInput = await this.driver.findElement(
       this.importAccountJsonFileInput,
