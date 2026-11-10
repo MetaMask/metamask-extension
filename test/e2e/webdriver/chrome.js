@@ -43,10 +43,6 @@ class ChromeDriver {
       '--enable-unsafe-extension-debugging', // Allow reloading extensions at runtime without developer mode
     ];
 
-    if (isBenchmark) {
-      args.push('--js-flags=--expose-gc');
-    }
-
     if (process.env.MULTIPROVIDER) {
       args.push(
         `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,
