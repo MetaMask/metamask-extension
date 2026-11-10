@@ -745,7 +745,7 @@ export function continueTraceContext<ResultType>(
  * lookup, plus the span's W3C `traceparent`.
  *
  * @param span - The Sentry span to build the `traceparent` from.
- * @param request - Request metadata for same-process lookup fallback.
+ * @param request - Request metadata for same-process lookup.
  * @param request.name - The trace name for same-process map lookup.
  * @param request.id - Optional trace ID for same-process map lookup.
  * @returns Serialized trace context.
@@ -929,8 +929,7 @@ function spanContextToTraceparent(
   if (!traceId || !spanId) {
     return undefined;
   }
-  // Spans only propagate from a recorded UI trace, so treat the sampled bit as
-  // set when `traceFlags` is unavailable.
+  // Sentry always sets `traceFlags`; treat an input without it as sampled.
   const flags = isSampled(traceFlags ?? TRACE_FLAG_SAMPLED) ? '01' : '00';
   return `${W3C_TRACEPARENT_VERSION}-${traceId}-${spanId}-${flags}`;
 }
