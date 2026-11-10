@@ -66,6 +66,7 @@
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
       "moneyEarnBannerDismissedTokenKeys": "object",
+      "moneyFtueSeen": "boolean",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -361,6 +362,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 234
+    "version": 235
   }
 }

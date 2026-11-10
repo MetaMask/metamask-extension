@@ -2,8 +2,7 @@ import React from 'react';
 import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { ACTIVITY_TAB_ROUTE } from '../../hooks/useActivityHomeRoute';
-import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import { ACTIVITY_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import TransactionDetailsRoute from './transaction-details-route';
 
 const mockNavigate = jest.fn();
@@ -18,16 +17,6 @@ jest.mock('react-router-dom', () => ({
     txIdentifier: 'transaction-1',
   }),
 }));
-
-jest.mock('../../hooks/useActivityHomeRoute', () => {
-  const actual = jest.requireActual(
-    '../../hooks/useActivityHomeRoute',
-  ) as typeof import('../../hooks/useActivityHomeRoute');
-  return {
-    ...actual,
-    useActivityHomeRoute: () => actual.ACTIVITY_TAB_ROUTE,
-  };
-});
 
 jest.mock('./transaction-details', () => ({
   TransactionDetails: ({ onBack }: { onBack: () => void }) => {
@@ -62,7 +51,7 @@ describe('TransactionDetailsRoute', () => {
       screen.getByRole('button', { name: messages.back.message }),
     );
 
-    expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_TAB_ROUTE, {
+    expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
       replace: true,
       state: { fromFreshTab: true },
     });

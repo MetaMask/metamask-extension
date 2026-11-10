@@ -129,6 +129,17 @@ jest.mock('../hooks', () => ({
   }),
 }));
 
+jest.mock('../token-table/token-table', () => ({
+  TokenTable: () => <div data-testid="token-table" />,
+}));
+
+jest.mock(
+  '../../../multichain/network-pill-selector/network-pill-selector',
+  () => ({
+    NetworkPillSelector: () => <div data-testid="network-pill-selector" />,
+  }),
+);
+
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
@@ -138,6 +149,7 @@ type RenderAssetListOptions = {
   chainId?: Hex;
   showTokensLinks?: boolean;
   onClickAsset?: typeof mockOnClickAsset;
+  variant?: 'list' | 'table';
 };
 
 const renderAssetList = ({
@@ -145,6 +157,7 @@ const renderAssetList = ({
   chainId = CHAIN_IDS.MAINNET,
   showTokensLinks = true,
   onClickAsset = mockOnClickAsset,
+  variant,
 }: RenderAssetListOptions = {}) => {
   const state = {
     ...mockState,
@@ -177,7 +190,11 @@ const renderAssetList = ({
   };
   const store = configureMockStore([thunk])(state);
   return renderWithProvider(
-    <AssetList onClickAsset={onClickAsset} showTokensLinks={showTokensLinks} />,
+    <AssetList
+      onClickAsset={onClickAsset}
+      showTokensLinks={showTokensLinks}
+      variant={variant}
+    />,
     store,
     '/',
   );
@@ -223,6 +240,23 @@ describe('AssetList', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('asset-list-control-bar-action-button'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('table variant', () => {
+    it('renders the token table instead of the token list for the table variant', async () => {
+      await act(async () => {
+        renderAssetList({ variant: 'table' });
+      });
+
+      expect(screen.getByTestId('token-table')).toBeInTheDocument();
+      expect(screen.getByTestId('network-pill-selector')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('mock-token-list-item'),
+      ).not.toBeInTheDocument();
       expect(
         screen.getByTestId('asset-list-control-bar-action-button'),
       ).toBeInTheDocument();

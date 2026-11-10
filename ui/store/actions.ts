@@ -198,6 +198,7 @@ import {
   TraceName,
   TraceOperation,
   TraceRequest,
+  withoutTraceContext,
 } from '../../shared/lib/trace';
 import type { SerializedTraceContext } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
@@ -998,7 +999,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
 
     // sync marketing consent with metametrics
     const marketingConsent = await getMarketingConsent();
-    dispatch(setDataCollectionForMarketing(marketingConsent));
+    dispatch(marketingConsent ? optInToMarketing() : optOutOfMarketing());
 
     await trackEvent?.({
       category: MetaMetricsEventCategory.Onboarding,
@@ -4521,8 +4522,8 @@ export function setParticipateInMetaMetrics(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
     try {
-      const metaMetricsId = await submitRequestToBackground<string>(
-        'setParticipateInMetaMetrics',
+      const metaMetricsId = await submitRequestToBackground(
+        'LegacyBackgroundApiService:setParticipateInMetaMetrics',
         [participationPreference],
       );
 
@@ -4539,22 +4540,32 @@ export function setParticipateInMetaMetrics(
   };
 }
 
-export function setDataCollectionForMarketing(
-  dataCollectionPreference: boolean,
-): ThunkAction<
-  Promise<[boolean, string]>,
+export function optInToMarketing(): ThunkAction<
+  Promise<void>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setDataCollectionForMarketing`);
-    await submitRequestToBackground('setDataCollectionForMarketing', [
-      dataCollectionPreference,
-    ]);
+    await submitRequestToBackground('AnalyticsController:optInToMarketing');
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-      value: dataCollectionPreference,
+      value: true,
+    });
+  };
+}
+
+export function optOutOfMarketing(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('AnalyticsController:optOutOfMarketing');
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: false,
     });
   };
 }
@@ -5739,6 +5750,29 @@ export function setLastActiveTime(): ThunkAction<
       await submitRequestToBackground('AppStateController:setLastActiveTime');
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
+    }
+  };
+}
+
+/**
+ * Forwards a trusted UI click or keypress to the background for state-write
+ * telemetry. Failures are ignored so activity tracking never breaks the UI.
+ *
+ * @returns A thunk that reports the interaction.
+ */
+export function recordUiInteraction(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await withoutTraceContext(() =>
+        submitRequestToBackground('AppStateController:recordUiInteraction'),
+      );
+    } catch {
+      // Telemetry must not surface background failures in the UI.
     }
   };
 }
@@ -7751,6 +7785,20 @@ export function setMusdConversionEducationSeen(value: boolean) {
       'AppStateController:setMusdConversionEducationSeen',
       [value],
     );
+  };
+}
+
+/**
+ * Persist that the Money account FTUE splash has been seen.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setMoneyFtueSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('AppStateController:setMoneyFtueSeen', [
+      value,
+    ]);
   };
 }
 

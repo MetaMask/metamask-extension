@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import {
   Box,
-  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
   twMerge,

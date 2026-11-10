@@ -19,6 +19,7 @@ const nullUnsafeEntries: Set<string> = new Set([
 const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by different mm deps outside of lm compartment
   'window',
+  'Window',
   'Proxy',
   'toString',
   'getComputedStyle',
