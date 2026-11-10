@@ -106,7 +106,7 @@ export function Header({ item, onBack }: Props) {
           ariaLabel={t('close')}
           size={ButtonIconSize.Md}
           onClick={onBack}
-          data-testid="transaction-details-close-button"
+          data-testid="transaction-details-back-button"
         />
       }
     >
