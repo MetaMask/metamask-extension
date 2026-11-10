@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Box, type BoxProps } from '../../../../component-library';
+import { Box } from '../../../../component-library';
 import {
   AlignItems,
   Display,
@@ -114,7 +114,7 @@ export const AssetControls = ({
 };
 
 type AssetControlsActionsProps = {
-  children: BoxProps['children'];
+  children: React.ReactNode;
 };
 
 /**
