@@ -113,6 +113,10 @@ const MoneyFtueSplashContent = () => {
   const redirectTarget = isDeposit
     ? MoneyScreenName.MoneyDeposit
     : MoneyScreenName.MoneyHome;
+  // Dismissing a deposit splash cancels the deposit, so the user stays on wallet home.
+  const dismissRedirectTarget = isDeposit
+    ? MoneyScreenName.WalletHome
+    : MoneyScreenName.MoneyHome;
 
   const acknowledgeSplash = useCallback(() => {
     dispatch(setMoneyFtueSeen(true));
@@ -160,12 +164,17 @@ const MoneyFtueSplashContent = () => {
       buttonType: MoneyButtonType.Icon,
       buttonIntent: MoneyButtonIntent.Dismiss,
       componentName: MoneyComponentName.FtueSplash,
-      redirectTarget,
+      redirectTarget: dismissRedirectTarget,
     });
 
     acknowledgeSplash();
     goToMoneyHome();
-  }, [acknowledgeSplash, goToMoneyHome, redirectTarget, trackButtonClicked]);
+  }, [
+    acknowledgeSplash,
+    dismissRedirectTarget,
+    goToMoneyHome,
+    trackButtonClicked,
+  ]);
 
   const environmentType = getEnvironmentType();
   const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP;

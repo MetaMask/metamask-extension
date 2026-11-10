@@ -16,6 +16,12 @@ import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountD
 import { useMoneyVaultApy } from '../../../../hooks/money/useMoneyVaultApy';
 import { setMoneyFtueSeen } from '../../../../store/actions';
 import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../../pages/money/constants/money-events';
+import {
   MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID,
   MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID,
   MONEY_FTUE_SPLASH_TEST_ID,
@@ -281,6 +287,12 @@ describe('MoneyFtueSplash', () => {
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
     expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Icon,
+      buttonIntent: MoneyButtonIntent.Dismiss,
+      componentName: MoneyComponentName.FtueSplash,
+      redirectTarget: MoneyScreenName.WalletHome,
+    });
   });
 
   it('closes the Money-tab splash with the close button and navigates to Money home', () => {
