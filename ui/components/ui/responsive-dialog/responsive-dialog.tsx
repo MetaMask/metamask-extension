@@ -2,8 +2,8 @@ import React, { ReactNode, ReactEventHandler, Ref } from 'react';
 
 type Props = {
   children: ReactNode;
-  dialogRef: Ref<HTMLDialogElement>;
-  onClose: ReactEventHandler<HTMLDialogElement>;
+  dialogRef?: Ref<HTMLDialogElement>;
+  onClose?: ReactEventHandler<HTMLDialogElement>;
 };
 
 export function ResponsiveDialog(props: Props) {
