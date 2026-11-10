@@ -3,12 +3,14 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  twMerge,
 } from '@metamask/design-system-react';
 import { Popover, PopoverPosition } from '../../../../component-library';
 import SortControl from '../sort-control/sort-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import Tooltip from '../../../../ui/tooltip';
 import {
+  assetControlIconButtonClassName,
   controlPopoverStyle,
   useAssetControl,
   useIsControlBarFullScreen,
@@ -38,9 +40,10 @@ export const SortByButton = () => {
         <ButtonIcon
           ref={setButtonRef}
           data-testid="sort-by-popover-toggle"
-          className={`${'flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-transparent hover:bg-hover active:bg-pressed'} ${
-            isOpen ? 'bg-pressed' : 'bg-transparent'
-          }`}
+          className={twMerge(
+            assetControlIconButtonClassName,
+            isOpen && 'bg-pressed',
+          )}
           onClick={toggle}
           size={ButtonIconSize.Sm}
           iconName={IconName.ListArrow}

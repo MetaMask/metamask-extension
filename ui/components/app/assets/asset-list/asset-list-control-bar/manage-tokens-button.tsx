@@ -6,6 +6,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import Tooltip from '../../../../ui/tooltip';
+import { assetControlIconButtonClassName } from './asset-controls';
 import { useOpenTokenManagement } from './use-open-token-management';
 
 /**
@@ -20,7 +21,7 @@ export const ManageTokensButton = () => {
     <Tooltip title={t('manageTokens')} position="bottom" distance={20}>
       <ButtonIcon
         data-testid="importTokens-button"
-        className="flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-transparent hover:bg-hover active:bg-pressed"
+        className={assetControlIconButtonClassName}
         onClick={openTokenManagement}
         size={ButtonIconSize.Sm}
         iconName={IconName.MoreVertical}

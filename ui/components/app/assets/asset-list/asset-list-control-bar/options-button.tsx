@@ -7,6 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { assetControlIconButtonClassName } from './asset-controls';
 
 type OptionsButtonProps = {
   showTokensLinks?: boolean;
@@ -32,7 +33,7 @@ export const OptionsButton = forwardRef<HTMLButtonElement, OptionsButtonProps>(
     return (
       <ButtonIcon
         ref={ref}
-        className="flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-transparent hover:bg-hover active:bg-pressed"
+        className={assetControlIconButtonClassName}
         data-testid="asset-list-control-bar-action-button"
         disabled={!shouldShowTokensLinks}
         size={ButtonIconSize.Sm}

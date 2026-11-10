@@ -27,6 +27,9 @@ const AssetControlsContext = createContext<AssetControlsContextValue | null>(
   null,
 );
 
+export const assetControlIconButtonClassName =
+  'flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-transparent hover:bg-hover active:bg-pressed';
+
 export const useAssetControls = () => {
   const context = useContext(AssetControlsContext);
   if (!context) {

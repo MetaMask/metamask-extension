@@ -304,32 +304,32 @@ export const Tabs = <TKey extends string = string>({
   const { className: tabListWrapperClassName, ...restTabListWrapperProps } =
     tabListWrapperProps;
 
+  const tabList = (
+    <Box
+      ref={tabListRef}
+      role="tablist"
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Start}
+      gap={4}
+      {...tabListProps}
+      onKeyDown={handleTabListKeyDown}
+    >
+      {renderTabs()}
+    </Box>
+  );
+
   return (
     <TabEndSlotContext.Provider value={hasTabEndSlot ? tabEndSlot : null}>
       <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
-        <div
-          {...restTabListWrapperProps}
-          className={twMerge(
-            tabListWrapperClassName,
-            hasTabEndSlot && 'flex min-w-0 items-center',
-          )}
-        >
-          <div className={hasTabEndSlot ? 'min-w-0 flex-1' : undefined}>
-            <Box
-              ref={tabListRef}
-              role="tablist"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Start}
-              gap={4}
-              {...tabListProps}
-              onKeyDown={handleTabListKeyDown}
-            >
-              {renderTabs()}
-            </Box>
-          </div>
+        <div {...restTabListWrapperProps} className={tabListWrapperClassName}>
           {hasTabEndSlot ? (
-            <div ref={setTabEndSlot} className="tab-end-slot" />
-          ) : null}
+            <div className="flex min-w-0 items-center border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border">
+              <div className="min-w-0 flex-1">{tabList}</div>
+              <div ref={setTabEndSlot} className="tab-end-slot" />
+            </div>
+          ) : (
+            tabList
+          )}
         </div>
         <Box ref={tabContentRef} role="tabpanel" {...tabContentProps}>
           {renderActiveTabContent()}

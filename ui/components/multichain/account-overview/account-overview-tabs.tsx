@@ -122,7 +122,7 @@ export const AccountOverviewTabs = ({
         onTabClick={handleTabClick}
         tabListProps={{
           className:
-            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border',
+            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade',
         }}
         tabListWrapperProps={{
           className:
