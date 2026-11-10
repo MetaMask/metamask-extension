@@ -42,6 +42,11 @@ function parseTransactions(body: string): CapturedTxn[] {
     } catch {
       continue;
     }
+    // Error events also carry `transaction` (the scope's name) and a trace
+    // context; only transaction items are operations.
+    if (obj.type !== 'transaction') {
+      continue;
+    }
     const transaction = obj.transaction as string | undefined;
     const trace = (obj.contexts as { trace?: Record<string, unknown> })?.trace;
     const traceId = trace?.trace_id;
@@ -54,20 +59,25 @@ function parseTransactions(body: string): CapturedTxn[] {
 
 async function captureSentryTransactions(mockServer: Mockttp) {
   return [
-    await mockServer.forPost(/sentry/u).thenCallback(async (request) => {
-      try {
-        const body = await request.body.getText();
-        for (const txn of parseTransactions(body ?? '')) {
-          captured.push(txn);
-          console.log(
-            `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)}`,
-          );
+    // `always()`: the harness also mocks the fake-DSN envelope URL, and mockttp
+    // hands every request after the first to that later rule otherwise.
+    await mockServer
+      .forPost(/sentry/u)
+      .always()
+      .thenCallback(async (request) => {
+        try {
+          const body = await request.body.getText();
+          for (const txn of parseTransactions(body ?? '')) {
+            captured.push(txn);
+            console.log(
+              `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)}`,
+            );
+          }
+        } catch (error) {
+          console.log('CAPTURE-ERR', String(error));
         }
-      } catch (error) {
-        console.log('CAPTURE-ERR', String(error));
-      }
-      return { statusCode: 200, json: {} };
-    }),
+        return { statusCode: 200, json: {} };
+      }),
   ];
 }
 
