@@ -948,5 +948,11 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/assets-controller": {
+      "type": "non-breaking",
+      "previewVersion": "20.3.1-preview-693aef2bf"
+    }
   }
 }

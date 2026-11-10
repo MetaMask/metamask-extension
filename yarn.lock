@@ -7390,16 +7390,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^20.0.1, @metamask/assets-controller@npm:^20.2.2, @metamask/assets-controller@npm:^20.3.0":
-  version: 20.3.0
-  resolution: "@metamask/assets-controller@npm:20.3.0"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@20.3.1-preview-693aef2bf":
+  version: 20.3.1-preview-693aef2bf
+  resolution: "@metamask-previews/assets-controller@npm:20.3.1-preview-693aef2bf"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.8.0"
     "@metamask/account-tree-controller": "npm:^11.2.0"
-    "@metamask/accounts-controller": "npm:^40.1.0"
-    "@metamask/assets-controllers": "npm:^113.3.0"
+    "@metamask/accounts-controller": "npm:^40.2.0"
+    "@metamask/assets-controllers": "npm:^113.3.1"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/client-controller": "npm:^2.0.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
@@ -7411,8 +7411,8 @@ __metadata:
     "@metamask/keyring-snap-client": "npm:^10.0.1"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/multichain-transactions-controller": "npm:^8.0.0"
-    "@metamask/network-controller": "npm:^37.1.1"
-    "@metamask/network-enablement-controller": "npm:^7.1.0"
+    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/network-enablement-controller": "npm:^7.1.1"
     "@metamask/permission-controller": "npm:^14.1.0"
     "@metamask/phishing-controller": "npm:^18.3.0"
     "@metamask/polling-controller": "npm:^17.0.0"
@@ -7420,12 +7420,12 @@ __metadata:
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.1"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^73.1.1"
+    "@metamask/transaction-controller": "npm:^73.1.2"
     "@metamask/utils": "npm:^12.0.1"
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/f21fcbe57eed1e0431d1584683b164e6156822c2b958623d67296e821ddd97d52e47a96ebb5496d9df7e79a8c2d10e4bb114eabdd9d725e9ccdd0b324b725442
+  checksum: 10/d0c5c2750febb43dac69302fee393e3ab7d73494914d41d3bc8d60feea95e4acb17a90a316427e2bb8075669f702004bf00d49982bd0cc37182e1dd9c8e7403d
   languageName: node
   linkType: hard
 
@@ -7483,6 +7483,63 @@ __metadata:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/e7ba24a4fe8deb2dca8091c0876c4f97223a74bbe747d0b31ccfec4062d23f041c9a8aac4e7165a739bb3465cffd8bb0b5642c702989fba2282ad426fe2e7ca0
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@npm:^113.3.1":
+  version: 113.3.1
+  resolution: "@metamask/assets-controllers@npm:113.3.1"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/address": "npm:^5.8.0"
+    "@ethersproject/bignumber": "npm:^5.8.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.8.0"
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/account-tree-controller": "npm:^11.2.0"
+    "@metamask/accounts-controller": "npm:^40.2.0"
+    "@metamask/approval-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/contract-metadata": "npm:^2.5.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/core-backend": "npm:^14.0.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/keyring-controller": "npm:^28.2.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain-account-service": "npm:^14.1.0"
+    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/network-enablement-controller": "npm:^7.1.1"
+    "@metamask/permission-controller": "npm:^14.1.0"
+    "@metamask/phishing-controller": "npm:^18.3.0"
+    "@metamask/polling-controller": "npm:^17.0.0"
+    "@metamask/preferences-controller": "npm:^24.0.0"
+    "@metamask/profile-sync-controller": "npm:^36.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/snaps-controllers": "npm:^19.0.1"
+    "@metamask/snaps-sdk": "npm:^11.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/storage-service": "npm:^2.0.0"
+    "@metamask/transaction-controller": "npm:^73.1.2"
+    "@metamask/utils": "npm:^12.0.1"
+    "@tanstack/query-core": "npm:^5.103.2"
+    "@types/bn.js": "npm:^5.2.0"
+    async-mutex: "npm:^0.5.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+    bn.js: "npm:^5.2.5"
+    immer: "npm:^11.1.18"
+    lodash-es: "npm:^4.18.1"
+    multiformats: "npm:^9.9.0"
+    reselect: "npm:^5.3.0"
+    single-call-balance-checker-abi: "npm:^1.0.0"
+    uuid: "npm:^14.0.2"
+  peerDependencies:
+    "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/766feaf35b7ac444ce4a3ac59659445e767e8af52af412852f61902e5e89e54c177b0933397a7e177166218a1e0fd917fd87b94eb4afbfc74ac267f6d2058866
   languageName: node
   linkType: hard
 
@@ -9548,6 +9605,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/multichain-network-controller@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "@metamask/multichain-network-controller@npm:4.1.1"
+  dependencies:
+    "@metamask/accounts-controller": "npm:^40.2.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/keyring-internal-api": "npm:^12.1.2"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.1"
+    "@solana/addresses": "npm:^2.3.0"
+    lodash-es: "npm:^4.18.1"
+  checksum: 10/ac8713a838112cb9ed67326fe3c1b21f41469502c04c81dec1e2c43c2562ff260487ca61300a4e82f772a7f04f83b1076151b104649895f392945cb86aa58542
+  languageName: node
+  linkType: hard
+
 "@metamask/multichain-transactions-controller@npm:^7.1.2":
   version: 7.1.2
   resolution: "@metamask/multichain-transactions-controller@npm:7.1.2"
@@ -9688,6 +9764,25 @@ __metadata:
     "@metamask/utils": "npm:^12.0.1"
     reselect: "npm:^5.3.0"
   checksum: 10/c3b0e1c4cadd1f0aef7194785000c037e2724f2d98ff12d67fe3feaa3f2c3f63a06027d85ac3b5b1a902be4637eac8b8422e4e82a282bcd921ccddf38f2c5fb4
+  languageName: node
+  linkType: hard
+
+"@metamask/network-enablement-controller@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "@metamask/network-enablement-controller@npm:7.1.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/config-registry-controller": "npm:^5.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/multichain-network-controller": "npm:^4.1.1"
+    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/slip44": "npm:^4.5.0"
+    "@metamask/transaction-controller": "npm:^73.1.2"
+    "@metamask/utils": "npm:^12.0.1"
+    reselect: "npm:^5.3.0"
+  checksum: 10/b0479d2e42937c441d39f78993acf20437a5026d7ea5f03cd18a6185efe6b4c5962b649e0f3d2c3c5a4cd5dc348aa932392e6740130886a0102e684801cd6630
   languageName: node
   linkType: hard
 
@@ -14577,6 +14672,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana/addresses@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@solana/addresses@npm:2.3.0"
+  dependencies:
+    "@solana/assertions": "npm:2.3.0"
+    "@solana/codecs-core": "npm:2.3.0"
+    "@solana/codecs-strings": "npm:2.3.0"
+    "@solana/errors": "npm:2.3.0"
+    "@solana/nominal-types": "npm:2.3.0"
+  peerDependencies:
+    typescript: ">=5.3.3"
+  checksum: 10/11ee6774f938dd2fe5174375b02c4e52063173ce80a895dd35beb84635dcf3e2ba2e3fe7c74a614b2322da10906abceab758c91a13415a9cda53faf91a8ea722
+  languageName: node
+  linkType: hard
+
 "@solana/assertions@npm:2.0.0-rc.4":
   version: 2.0.0-rc.4
   resolution: "@solana/assertions@npm:2.0.0-rc.4"
@@ -14596,6 +14706,17 @@ __metadata:
   peerDependencies:
     typescript: ">=5.3.3"
   checksum: 10/3424d6e5066b4abfa07a606e9ab95c4c856cf91d57bc812df2815fdd30ec84b8a85d611baa79a78021cfcc6501cac7d46a22364c7f33768f243750329e6459f6
+  languageName: node
+  linkType: hard
+
+"@solana/assertions@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/assertions@npm:2.3.0"
+  dependencies:
+    "@solana/errors": "npm:2.3.0"
+  peerDependencies:
+    typescript: ">=5.3.3"
+  checksum: 10/3b430f01d5991569059fea3e6679a4548a624ff5da6db0c2eb2eba757a9ff774c9d90941a0a2335148599aaef8e8fc004a9c5996eb3627b25dca108b05591d02
   languageName: node
   linkType: hard
 
@@ -14650,6 +14771,17 @@ __metadata:
   peerDependencies:
     typescript: ">=5.3.3"
   checksum: 10/b0c426b5028cdfc9a71d55d61ca1b9815c951cdf3557142512a89418fd5cde75b4e1214f548f0e4fd5b8d3431bd51cd5da0ddfeb1afc40742cbc041cc4a04412
+  languageName: node
+  linkType: hard
+
+"@solana/codecs-core@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/codecs-core@npm:2.3.0"
+  dependencies:
+    "@solana/errors": "npm:2.3.0"
+  peerDependencies:
+    typescript: ">=5.3.3"
+  checksum: 10/d9bba1eaa3ee38fef04e1cbfa43defeea16729a1cf1628a71cb72340558a3f2296279899680e1dda4b1756ab2b280b5f1502330c21c35e167e554f3d0c9d193d
   languageName: node
   linkType: hard
 
@@ -14715,6 +14847,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana/codecs-numbers@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/codecs-numbers@npm:2.3.0"
+  dependencies:
+    "@solana/codecs-core": "npm:2.3.0"
+    "@solana/errors": "npm:2.3.0"
+  peerDependencies:
+    typescript: ">=5.3.3"
+  checksum: 10/e661338b5eb04268a104ff2189b5d001bd2f99e1a3726deaa7157d5acbc3b24740bc25ca03b2028c52ad21fd71d5d5aa64957411c895a9dc1c132aa3bc97b336
+  languageName: node
+  linkType: hard
+
 "@solana/codecs-strings@npm:2.0.0-rc.1":
   version: 2.0.0-rc.1
   resolution: "@solana/codecs-strings@npm:2.0.0-rc.1"
@@ -14754,6 +14898,20 @@ __metadata:
     fastestsmallesttextencoderdecoder: ^1.0.22
     typescript: ">=5.3.3"
   checksum: 10/7ade3b9342f7adeb28263cced496c24228d81165da14ed4f35923a6452308bb836de154665340931614fc5e842e6d196d05afc59921beb151e56c952d93657ed
+  languageName: node
+  linkType: hard
+
+"@solana/codecs-strings@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/codecs-strings@npm:2.3.0"
+  dependencies:
+    "@solana/codecs-core": "npm:2.3.0"
+    "@solana/codecs-numbers": "npm:2.3.0"
+    "@solana/errors": "npm:2.3.0"
+  peerDependencies:
+    fastestsmallesttextencoderdecoder: ^1.0.22
+    typescript: ">=5.3.3"
+  checksum: 10/a553a891ce149a87f37ff338587980e81f9752e13039cb0d02f0fc6f21ce27af8548ad10f4c9e63f9ef74786ea0e498c91a2f5e3e996a930f581f2977bb1c215
   languageName: node
   linkType: hard
 
@@ -14826,6 +14984,20 @@ __metadata:
   bin:
     errors: bin/cli.mjs
   checksum: 10/afd9290e5e924c68dd98f5d6dd3490b28dc03d94b4063146f33eec83967686c5895d7560bc8b829ee781dfd9221ae732f2ac0cb41551f33d3baffb58efc5f645
+  languageName: node
+  linkType: hard
+
+"@solana/errors@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/errors@npm:2.3.0"
+  dependencies:
+    chalk: "npm:^5.4.1"
+    commander: "npm:^14.0.0"
+  peerDependencies:
+    typescript: ">=5.3.3"
+  bin:
+    errors: bin/cli.mjs
+  checksum: 10/0e8a329790b7d38b4bfe1fa6ec2ac60be20562a610d992031395fe9886da28b578a9d0aebb318f5357ae0d4cbc8f3d323c12b9520da2cf6adc9038f96afc3fe1
   languageName: node
   linkType: hard
 
@@ -14908,6 +15080,15 @@ __metadata:
   peerDependencies:
     typescript: ">=5.3.3"
   checksum: 10/e114329abca077ae896bad26c82fd248fdd63034912021ccc17327bacfe7639e063c743c0becdba326e95fd4fd73e99f3e8b91e1a411e37b478ca72c5efae93b
+  languageName: node
+  linkType: hard
+
+"@solana/nominal-types@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@solana/nominal-types@npm:2.3.0"
+  peerDependencies:
+    typescript: ">=5.3.3"
+  checksum: 10/0594893661f4ff2f8587689cd4b61ee15c38c455fe5cbaa7ae7e416f3a483fac97cc3f5a5b3d0a7526bfb89d7da91bc2c72e7b1790bbe59b986579ef2f76689b
   languageName: node
   linkType: hard
 
