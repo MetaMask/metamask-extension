@@ -1,7 +1,3 @@
-import {
-  AddressScanResultType,
-  type AddressScanResult,
-} from '@metamask/phishing-controller';
 import { useSelector } from 'react-redux';
 import { queryOptions, useQuery } from '@tanstack/react-query';
 import type { CaipChainId } from '@metamask/utils';
@@ -14,19 +10,6 @@ import {
   getIsAddressResolutionEnabled,
   getUseExternalServices,
 } from '../selectors';
-
-function extractLabel(scan: AddressScanResult | null) {
-  if (!scan) {
-    return '';
-  }
-
-  const { result_type: resultType, label = '' } = scan;
-
-  return resultType === AddressScanResultType.Malicious ||
-    resultType === AddressScanResultType.ErrorResult
-    ? ''
-    : label;
-}
 
 export function useAddressLabel({
   address,
@@ -42,7 +25,7 @@ export function useAddressLabel({
     getIsAddressResolutionEnabled,
   );
 
-  const { data } = useQuery({
+  return useQuery({
     ...queryOptions({
       queryKey: ['evmAddressScan', chainId, address.toLowerCase()],
       queryFn: () => fetchEvmAddressScan(chainId, address),
@@ -56,8 +39,5 @@ export function useAddressLabel({
       isAddressResolutionFeatureEnabled &&
       isSecurityAlertsAPIEnabled() &&
       hasEvmChainName(chainId),
-    select: extractLabel,
   });
-
-  return data ?? '';
 }

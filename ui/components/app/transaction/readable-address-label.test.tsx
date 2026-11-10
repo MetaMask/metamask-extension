@@ -1,5 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { AddressScanResultType } from '@metamask/phishing-controller';
+import type { AddressScanResult } from '@metamask/phishing-controller';
 import { useAddressLabel } from '#ui/hooks/useAddressLabel';
 import { ReadableAddressLabel } from './readable-address-label';
 
@@ -20,16 +22,25 @@ jest.mock('#ui/hooks/useAddressLabel');
 
 const mockUseAddressLabel = jest.mocked(useAddressLabel);
 
+const mockScan = (scan: AddressScanResult | undefined) =>
+  mockUseAddressLabel.mockReturnValue({
+    data: scan,
+  } as ReturnType<typeof useAddressLabel>);
+
 const contractAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
 describe('ReadableAddressLabel', () => {
   beforeEach(() => {
-    mockUseAddressLabel.mockReturnValue('');
+    mockScan(undefined);
     mockGetDisplayName.mockReturnValue('');
   });
 
   it('prefers a name the user already has over the resolved label', () => {
-    mockUseAddressLabel.mockReturnValue('MetaMask Swaps');
+    mockScan({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: AddressScanResultType.Benign,
+      label: 'MetaMask Swaps',
+    });
     mockGetDisplayName.mockReturnValue('My Contract');
 
     const { container } = render(
@@ -47,7 +58,11 @@ describe('ReadableAddressLabel', () => {
   });
 
   it('shows the resolved label', () => {
-    mockUseAddressLabel.mockReturnValue('MetaMask Swaps');
+    mockScan({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: AddressScanResultType.Benign,
+      label: 'MetaMask Swaps',
+    });
 
     const { container } = render(
       <ReadableAddressLabel
@@ -90,6 +105,27 @@ describe('ReadableAddressLabel', () => {
 
     expect(container).toHaveTextContent(
       'activity_contractInteraction_success_description|Contract',
+    );
+  });
+
+  it('uses the shortened address when a malicious scan label is suppressed', () => {
+    mockScan({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: AddressScanResultType.Malicious,
+      label: 'Relay',
+    });
+
+    const { container } = render(
+      <ReadableAddressLabel
+        labelKey="activity_contractInteraction_success_description"
+        address={contractAddress}
+        chainId="eip155:1"
+        fallback="Contract"
+      />,
+    );
+
+    expect(container).toHaveTextContent(
+      'activity_contractInteraction_success_description|0xc42ed...d8813',
     );
   });
 });
