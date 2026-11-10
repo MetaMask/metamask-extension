@@ -7,6 +7,7 @@ import { Transform } from 'readable-stream';
 import { JsonRpcNotification } from '@metamask/utils';
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../../shared/constants/messages';
+import type { MessengerEventWrite } from '../../../shared/lib/telemetry/messenger-event-write-reporter';
 import { MessengerSubscriptions } from './MessengerSubscriptions';
 
 const MOCK_STATE_CHANGE = {
@@ -25,11 +26,8 @@ function setup(
   telemetry?: {
     getSampleRate?: () => number;
     random?: () => number;
-    onWrite?: (measurement: {
-      event: string;
-      patchesDrained: number;
-      sampleRate: number;
-    }) => void;
+    now?: () => number;
+    onWrite?: (measurement: MessengerEventWrite) => void;
   },
 ) {
   const messenger = new Messenger<
@@ -189,8 +187,74 @@ describe('MessengerSubscriptions', () => {
       expect(onWrite).toHaveBeenCalledWith({
         event,
         patchesDrained: 3,
+        subscriberCount: 1,
+        payloadBytes: JSON.stringify([state, patches]).length,
+        msSinceLastWrite: undefined,
         sampleRate: 0.5,
       });
+    });
+
+    it('reports the subscriber count this connection holds for the event', () => {
+      // One publish fans out to every subscriber in this UI context, so the
+      // count is the multiplier between the channel's write rate and the work
+      // it causes.
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 1,
+        random: () => 0,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).toHaveBeenCalledWith(
+        expect.objectContaining({ subscriberCount: 2 }),
+      );
+    });
+
+    it('reports the gap since the previous write, which separates a burst from a rate', () => {
+      const onWrite = jest.fn();
+      const clock = [1_000, 1_040];
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 1,
+        random: () => 0,
+        now: () => clock.shift() ?? 0,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ msSinceLastWrite: undefined }),
+      );
+      expect(onWrite).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ msSinceLastWrite: 40 }),
+      );
+    });
+
+    it('omits the payload size rather than throwing on a payload that will not serialize', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 1,
+        random: () => 0,
+        onWrite,
+      });
+
+      const circular: Record<string, unknown> = {};
+      circular.self = circular;
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, circular as never, patches);
+
+      expect(onWrite).toHaveBeenCalledWith(
+        expect.objectContaining({ payloadBytes: undefined }),
+      );
     });
 
     it('reports nothing at the default rate, which is off', () => {

@@ -3,21 +3,23 @@ import { NamespacedName } from '@metamask/messenger';
 import { BaseControllerMessenger } from '../messenger-client-init/types';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../../shared/constants/messages';
 import { getMessengerEventWriteTelemetrySampleRate } from '../../../shared/lib/sentry-remote-rates';
+import type { MessengerEventWrite } from '../../../shared/lib/telemetry/messenger-event-write-reporter';
 import { isStreamWritable } from './stream-utils';
 
 /**
- * A measurement of one write on this channel. Emitted rather than reported, so
- * the class stays free of a telemetry dependency and the caller decides what a
- * measurement becomes — the same split `PersistenceManager` uses for its
- * `splitStateWrite` event.
+ * Size of a payload as the port will carry it, or `undefined` when it cannot be
+ * serialized.
+ *
+ * @param payload - The event payload.
+ * @returns The serialized length, or `undefined`.
  */
-export type MessengerEventWrite = {
-  event: string;
-  /** Patches the ordering drain wrote ahead of this notification. */
-  patchesDrained: number;
-  /** The rate this measurement was taken at, for weighting it later. */
-  sampleRate: number;
-};
+function serializedSize(payload: unknown[]): number | undefined {
+  try {
+    return JSON.stringify(payload)?.length;
+  } catch {
+    return undefined;
+  }
+}
 
 export class MessengerSubscriptions {
   readonly #messenger: BaseControllerMessenger;
@@ -35,7 +37,11 @@ export class MessengerSubscriptions {
 
   readonly #random: () => number;
 
+  readonly #now: () => number;
+
   readonly #onWrite: (measurement: MessengerEventWrite) => void;
+
+  #lastWriteAt: number | undefined;
 
   constructor(
     messenger: BaseControllerMessenger,
@@ -44,10 +50,12 @@ export class MessengerSubscriptions {
     {
       getSampleRate = getMessengerEventWriteTelemetrySampleRate,
       random = Math.random,
+      now = Date.now,
       onWrite = () => undefined,
     }: {
       getSampleRate?: () => number;
       random?: () => number;
+      now?: () => number;
       onWrite?: (measurement: MessengerEventWrite) => void;
     } = {},
   ) {
@@ -56,6 +64,7 @@ export class MessengerSubscriptions {
     this.#flushPendingState = flushPendingState;
     this.#getSampleRate = getSampleRate;
     this.#random = random;
+    this.#now = now;
     this.#onWrite = onWrite;
   }
 
@@ -96,9 +105,23 @@ export class MessengerSubscriptions {
       // Nothing else counts writes on this channel: it sits outside the
       // `sendUpdate` debounce, so neither its volume nor the drain's frequency
       // appears in any existing signal. Off until a remote rate is published.
+      const writtenAt = this.#now();
+      const msSinceLastWrite =
+        this.#lastWriteAt === undefined
+          ? undefined
+          : writtenAt - this.#lastWriteAt;
+      this.#lastWriteAt = writtenAt;
+
       const sampleRate = this.#getSampleRate();
       if (sampleRate > 0 && this.#random() < sampleRate) {
-        this.#onWrite({ event, patchesDrained, sampleRate });
+        this.#onWrite({
+          event,
+          patchesDrained,
+          subscriberCount: this.#subscriptions.get(event)?.count ?? 1,
+          payloadBytes: serializedSize(payload),
+          msSinceLastWrite,
+          sampleRate,
+        });
       }
     };
 

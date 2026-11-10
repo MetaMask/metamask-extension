@@ -374,6 +374,7 @@ import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-mone
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
+import { trackMessengerEventWrite } from '../../shared/lib/telemetry/messenger-event-write-reporter';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
 import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
@@ -3771,6 +3772,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger,
       outStream,
       flushPendingPatchesForEvent,
+      { onWrite: trackMessengerEventWrite },
     );
 
     const perpsController = this.messengerClientsByName.PerpsController;

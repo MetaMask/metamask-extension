@@ -112,6 +112,16 @@ describe('createTracesSampler', () => {
     expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
   });
 
+  it('does not re-sample the two transactions that are sampled upstream', () => {
+    // Both are emitted only on a draw already taken against a remote rate, so a
+    // rate below 1 here would discard a measurement that was already paid for.
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: TraceName.StatePersist })).toBe(1);
+    expect(sampler({ name: TraceName.MessengerEventWrite })).toBe(1);
+  });
+
   it('applies the built-in default overrides', () => {
     delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
     const sampler = createTracesSampler({ defaultSampleRate });

@@ -117,6 +117,7 @@ export enum TraceName {
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
   StatePersist = 'State Persist',
+  MessengerEventWrite = 'Messenger Event Write',
   // Perps
   PerpsOpenPosition = 'Perps Open Position',
   PerpsClosePosition = 'Perps Close Position',
@@ -182,6 +183,7 @@ export enum TraceOperation {
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
   StateWrite = 'state.write',
+  MessengerEventWrite = 'messenger.event_write',
   BridgeScreenPerformance = 'bridge.screen.performance',
   BridgeDataFetch = 'bridge.data_fetch',
   // Perps
