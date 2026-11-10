@@ -1,8 +1,10 @@
 import {
   applySentryRemoteRates,
+  getMessengerEventWriteTelemetrySampleRate,
   getPersistenceWriteTelemetrySampleRate,
   getRemoteTransactionSampleRates,
   getRemoteWrapperSampleRate,
+  MESSENGER_EVENT_WRITE_TELEMETRY_SAMPLE_RATE,
   PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
   resetSentryRemoteRates,
 } from './sentry-remote-rates';
@@ -40,6 +42,7 @@ const EMPTY_APPLIED_RATES = {
   tracesSampleRate: undefined,
   wrapperSampleRate: undefined,
   transactionSampleRates: undefined,
+  messengerEventWriteSampleRate: undefined,
   persistenceWriteSampleRate: undefined,
 };
 
@@ -65,6 +68,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.02,
       wrapperSampleRate: 0.5,
       transactionSampleRates: undefined,
+      messengerEventWriteSampleRate: undefined,
       persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.02);
@@ -101,6 +105,7 @@ describe('applySentryRemoteRates', () => {
         tracesSampleRate: undefined,
         wrapperSampleRate: undefined,
         transactionSampleRates: undefined,
+        messengerEventWriteSampleRate: undefined,
         persistenceWriteSampleRate: undefined,
       });
       expect(client.options.tracesSampleRate).toBe(0.0075);
@@ -128,6 +133,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: undefined,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      messengerEventWriteSampleRate: undefined,
       persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.0075);
@@ -161,6 +167,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.03,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      messengerEventWriteSampleRate: undefined,
       persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.03);
@@ -183,6 +190,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.04,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      messengerEventWriteSampleRate: undefined,
       persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.04);
@@ -212,6 +220,33 @@ describe('applySentryRemoteRates', () => {
     expect(getRemoteWrapperSampleRate()).toBe(0.5);
   });
 
+  describe('messengerEventWriteSampleRate', () => {
+    it('falls back to the compile-time default when absent', () => {
+      expect(MESSENGER_EVENT_WRITE_TELEMETRY_SAMPLE_RATE).toBe(0);
+      expect(getMessengerEventWriteTelemetrySampleRate()).toBe(0);
+    });
+
+    it('uses the remote override once applied', async () => {
+      mockPersistedState({ messengerEventWriteSampleRate: 0.2 });
+
+      const applied = await applySentryRemoteRates();
+
+      expect(applied.messengerEventWriteSampleRate).toBe(0.2);
+      expect(getMessengerEventWriteTelemetrySampleRate()).toBe(0.2);
+    });
+
+    it('is capped by the remote tracesSampleRate', async () => {
+      mockPersistedState({
+        messengerEventWriteSampleRate: 0.5,
+        tracesSampleRate: 0.01,
+      });
+
+      await applySentryRemoteRates();
+
+      expect(getMessengerEventWriteTelemetrySampleRate()).toBe(0.01);
+    });
+  });
+
   describe('persistenceWriteSampleRate', () => {
     it('falls back to the compile-time default when absent', () => {
       expect(PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE).toBe(0);
@@ -229,6 +264,7 @@ describe('applySentryRemoteRates', () => {
 
     it('is capped by the remote tracesSampleRate', async () => {
       mockPersistedState({
+        messengerEventWriteSampleRate: undefined,
         persistenceWriteSampleRate: 0.5,
         tracesSampleRate: 0.01,
       });
@@ -240,6 +276,7 @@ describe('applySentryRemoteRates', () => {
 
     it('drops every write when the remote tracesSampleRate is 0', async () => {
       mockPersistedState({
+        messengerEventWriteSampleRate: undefined,
         persistenceWriteSampleRate: 1,
         tracesSampleRate: 0,
       });
@@ -311,6 +348,7 @@ describe('applySentryRemoteRates', () => {
 
       await expect(applied).resolves.toStrictEqual({
         ...EMPTY_APPLIED_RATES,
+        messengerEventWriteSampleRate: undefined,
         persistenceWriteSampleRate: 1,
       });
       expect(getPersistenceWriteTelemetrySampleRate()).toBe(1);

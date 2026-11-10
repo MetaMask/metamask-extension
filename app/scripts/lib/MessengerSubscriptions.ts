@@ -2,7 +2,22 @@ import { Duplex } from 'readable-stream';
 import { NamespacedName } from '@metamask/messenger';
 import { BaseControllerMessenger } from '../messenger-client-init/types';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../../shared/constants/messages';
+import { getMessengerEventWriteTelemetrySampleRate } from '../../../shared/lib/sentry-remote-rates';
 import { isStreamWritable } from './stream-utils';
+
+/**
+ * A measurement of one write on this channel. Emitted rather than reported, so
+ * the class stays free of a telemetry dependency and the caller decides what a
+ * measurement becomes — the same split `PersistenceManager` uses for its
+ * `splitStateWrite` event.
+ */
+export type MessengerEventWrite = {
+  event: string;
+  /** Patches the ordering drain wrote ahead of this notification. */
+  patchesDrained: number;
+  /** The rate this measurement was taken at, for weighting it later. */
+  sampleRate: number;
+};
 
 export class MessengerSubscriptions {
   readonly #messenger: BaseControllerMessenger;
@@ -14,16 +29,34 @@ export class MessengerSubscriptions {
     { listener: (...payload: unknown[]) => void; count: number }
   >();
 
-  readonly #flushPendingState: () => void;
+  readonly #flushPendingState: () => number;
+
+  readonly #getSampleRate: () => number;
+
+  readonly #random: () => number;
+
+  readonly #onWrite: (measurement: MessengerEventWrite) => void;
 
   constructor(
     messenger: BaseControllerMessenger,
     stream: Duplex,
-    flushPendingState: () => void = () => undefined,
+    flushPendingState: () => number = () => 0,
+    {
+      getSampleRate = getMessengerEventWriteTelemetrySampleRate,
+      random = Math.random,
+      onWrite = () => undefined,
+    }: {
+      getSampleRate?: () => number;
+      random?: () => number;
+      onWrite?: (measurement: MessengerEventWrite) => void;
+    } = {},
   ) {
     this.#messenger = messenger;
     this.#stream = stream;
     this.#flushPendingState = flushPendingState;
+    this.#getSampleRate = getSampleRate;
+    this.#random = random;
+    this.#onWrite = onWrite;
   }
 
   /**
@@ -52,13 +85,21 @@ export class MessengerSubscriptions {
       // handling. Flushing first puts those patches ahead of the notification on the
       // same stream, so the order the UI observes is the order the background
       // published in.
-      this.#flushPendingState();
+      const patchesDrained = this.#flushPendingState();
 
       this.#stream.write({
         jsonrpc: '2.0',
         method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
         params: [event, payload],
       });
+
+      // Nothing else counts writes on this channel: it sits outside the
+      // `sendUpdate` debounce, so neither its volume nor the drain's frequency
+      // appears in any existing signal. Off until a remote rate is published.
+      const sampleRate = this.#getSampleRate();
+      if (sampleRate > 0 && this.#random() < sampleRate) {
+        this.#onWrite({ event, patchesDrained, sampleRate });
+      }
     };
 
     this.#subscriptions.set(event, { listener, count: 1 });

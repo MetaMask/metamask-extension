@@ -20,7 +20,18 @@ type ExampleControllerStateChangeEvent = ControllerStateChangeEvent<
   { foo: string }
 >;
 
-function setup(flushPendingState?: () => void) {
+function setup(
+  flushPendingState?: () => number,
+  telemetry?: {
+    getSampleRate?: () => number;
+    random?: () => number;
+    onWrite?: (measurement: {
+      event: string;
+      patchesDrained: number;
+      sampleRate: number;
+    }) => void;
+  },
+) {
   const messenger = new Messenger<
     MockAnyNamespace,
     never,
@@ -36,6 +47,7 @@ function setup(flushPendingState?: () => void) {
     messenger,
     stream,
     flushPendingState,
+    telemetry,
   );
 
   return { messenger, stream, subscriptions };
@@ -158,5 +170,55 @@ describe('MessengerSubscriptions', () => {
     expect(() => subscriptions.unsubscribe(event)).toThrow(
       'No active subscriptions found for: "ExampleController:stateChange".',
     );
+  });
+
+  describe('measuring writes on this channel', () => {
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+
+    it('reports the write and what the drain carried when sampled', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 3, {
+        getSampleRate: () => 0.5,
+        random: () => 0.1,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).toHaveBeenCalledWith({
+        event,
+        patchesDrained: 3,
+        sampleRate: 0.5,
+      });
+    });
+
+    it('reports nothing at the default rate, which is off', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 3, {
+        getSampleRate: () => 0,
+        random: () => 0,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).not.toHaveBeenCalled();
+    });
+
+    it('reports nothing when the draw falls outside the rate', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 0.25,
+        random: () => 0.9,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).not.toHaveBeenCalled();
+    });
   });
 });

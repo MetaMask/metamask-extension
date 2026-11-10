@@ -3753,17 +3753,18 @@ export default class MetamaskController extends EventEmitter {
     // so an event with no state behind it costs nothing.
     const flushPendingPatchesForEvent = () => {
       if (!isStreamWritable(outStream) || !uiReady) {
-        return;
+        return 0;
       }
       const patches = patchStore.flushPendingPatches();
       if (patches.length === 0) {
-        return;
+        return 0;
       }
       outStream.write({
         jsonrpc: '2.0',
         method: 'sendUpdate',
         params: [patches],
       });
+      return patches.length;
     };
 
     const messengerSubscriptions = new MessengerSubscriptions(

@@ -33,6 +33,13 @@ export type SentryRemoteRates = {
    * `JSON.stringify` cost.
    */
   persistenceWriteSampleRate?: number;
+  /**
+   * Sample rate for measuring writes on the messenger-subscription channel to
+   * the UI, which is otherwise uninstrumented: that channel writes once per
+   * published event, outside the `sendUpdate` debounce, so neither its volume
+   * nor its burst shape is visible in any existing signal.
+   */
+  messengerEventWriteSampleRate?: number;
 };
 
 /**
@@ -41,6 +48,15 @@ export type SentryRemoteRates = {
  * Off by default until a remote rate is published.
  */
 export const PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE = 0;
+
+/**
+ * Default probability of measuring a write on the messenger-subscription
+ * channel when `sentry.messengerEventWriteSampleRate` is absent or malformed.
+ * Off by default until a remote rate is published — and publishing one needs
+ * the key added to the flag's `variationJsonSchema` first, since that schema
+ * sets `additionalProperties: false` and is enforced on write.
+ */
+export const MESSENGER_EVENT_WRITE_TELEMETRY_SAMPLE_RATE = 0;
 
 type ControllerFlagState = {
   remoteFeatureFlags?: { sentry?: Record<string, unknown> };
@@ -198,6 +214,26 @@ export function getPersistenceWriteTelemetrySampleRate(): number {
 }
 
 /**
+ * Resolve the sample rate for measuring a messenger-subscription write.
+ *
+ * Uses `sentry.messengerEventWriteSampleRate` when a valid remote override was
+ * applied, otherwise {@link MESSENGER_EVENT_WRITE_TELEMETRY_SAMPLE_RATE}.
+ * Capped by the remote `tracesSampleRate` when set, for the same reason the
+ * persistence rate is: quota throttles should drop measurements before they are
+ * taken rather than after.
+ *
+ * @returns A sample rate in [0, 1].
+ */
+export function getMessengerEventWriteTelemetrySampleRate(): number {
+  const rates = getRemoteRates();
+  return Math.min(
+    rates.messengerEventWriteSampleRate ??
+      MESSENGER_EVENT_WRITE_TELEMETRY_SAMPLE_RATE,
+    rates.tracesSampleRate ?? 1,
+  );
+}
+
+/**
  * Test-only reset of the cached rates.
  */
 export function resetSentryRemoteRates(): void {
@@ -288,6 +324,9 @@ export async function applySentryRemoteRates(client?: {
     transactionSampleRates: asValidRateMap(sentryFlag?.transactionSampleRates),
     persistenceWriteSampleRate: asValidRate(
       sentryFlag?.persistenceWriteSampleRate,
+    ),
+    messengerEventWriteSampleRate: asValidRate(
+      sentryFlag?.messengerEventWriteSampleRate,
     ),
   };
   setRemoteRates(applied);
