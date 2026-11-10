@@ -161,6 +161,45 @@ describe('CloseAllPositionsModal', () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('blocks Close all with the insufficient margin message when the batch would receive less than zero', async () => {
+    // A 2.5 ETH long entered at 2,850 and marked at 400 loses more than its
+    // 2,375 margin.
+    renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '1000' }]}
+      />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-receive-value'),
+      ).toHaveTextContent(/^-\$/u);
+    });
+
+    expect(screen.getByTestId('perps-close-all-error')).toHaveTextContent(
+      'Insufficient margin to place this order.',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
+  });
+
+  it('shows no insufficient margin message when the batch returns funds', async () => {
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      ).not.toBeDisabled();
+    });
+
+    expect(
+      screen.queryByTestId('perps-close-all-error'),
+    ).not.toBeInTheDocument();
+  });
+
   it('disables submit button when isSubmitting is true', async () => {
     renderWithProvider(
       <CloseAllPositionsModal {...defaultProps} isSubmitting />,
@@ -258,7 +297,10 @@ describe('CloseAllPositionsModal', () => {
     rerender(
       <CloseAllPositionsModal
         {...defaultProps}
-        positions={[{ ...twoPositions[0], positionValue: '1000' }]}
+        // Marked at entry, so the close returns its margin less fees.
+        positions={[
+          { ...twoPositions[0], positionValue: '1000', entryPrice: '400' },
+        ]}
       />,
     );
     await waitFor(() =>

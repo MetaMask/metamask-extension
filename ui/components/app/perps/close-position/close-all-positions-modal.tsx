@@ -16,6 +16,11 @@ import {
   TextColor,
   TextAlign,
   FontWeight,
+  BoxBackgroundColor,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import type { FeeCalculationResult } from '@metamask/perps-controller';
 import {
@@ -266,13 +271,18 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [formatFiat, hasInvalidNotional],
   );
 
+  // As a single close does, a batch that would receive less than zero is
+  // blocked rather than submitted.
+  const hasNegativeReceive = totalReceive !== undefined && totalReceive < 0;
+
   // Close all waits for every fee quote, as a single close does, so the user
   // never confirms against an unquoted fee or receive.
   const isSubmitDisabled =
     isSubmitting ||
     positions.length === 0 ||
     hasInvalidNotional ||
-    totalFees === undefined;
+    totalFees === undefined ||
+    hasNegativeReceive;
 
   return (
     <Modal
@@ -402,6 +412,30 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                 </Text>
               </Box>
             </Box>
+
+            {hasNegativeReceive && (
+              <Box
+                backgroundColor={BoxBackgroundColor.ErrorMuted}
+                className="rounded-lg"
+                padding={3}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+                data-testid="perps-close-all-error"
+              >
+                <Icon
+                  name={IconName.Warning}
+                  size={IconSize.Sm}
+                  color={IconColor.ErrorDefault}
+                />
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
+                >
+                  {t('perpsInsufficientMargin')}
+                </Text>
+              </Box>
+            )}
           </Box>
         </ModalBody>
         <ModalFooter
