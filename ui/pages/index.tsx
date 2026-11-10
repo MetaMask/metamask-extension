@@ -1,5 +1,4 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import {
   HashRouter,
@@ -8,6 +7,7 @@ import {
   useRouteError,
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
+import type { Store } from 'redux';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider } from '../contexts/i18n';
 import { MetaMetricsProvider } from '../contexts/metametrics';
@@ -20,6 +20,7 @@ import { queryClient } from '../contexts/query-client';
 import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import { UIMessengerProvider } from '../contexts/ui-messenger';
+import type { UIMessenger } from '../messengers/ui-messenger';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
@@ -32,7 +33,7 @@ const isStrictModeEnabled =
  * exercise double-mount behavior can import `test/jest/strict-mode.js` helpers.
  */
 
-function withStrictMode(children) {
+function withStrictMode(children: ReactNode) {
   return isStrictModeEnabled ? (
     <React.StrictMode>{children}</React.StrictMode>
   ) : (
@@ -40,7 +41,7 @@ function withStrictMode(children) {
   );
 }
 
-function AppProviders() {
+const AppProviders = () => {
   return (
     <MetaMetricsProvider>
       <I18nProvider>
@@ -63,9 +64,9 @@ function AppProviders() {
       </I18nProvider>
     </MetaMetricsProvider>
   );
-}
+};
 
-function ErrorPage({ error }) {
+const ErrorPage = ({ error }: { error: Error }) => {
   return (
     <MetaMetricsProvider>
       <I18nProvider>
@@ -73,16 +74,12 @@ function ErrorPage({ error }) {
       </I18nProvider>
     </MetaMetricsProvider>
   );
-}
-
-ErrorPage.propTypes = {
-  error: PropTypes.object,
 };
 
-function RouteErrorBoundary() {
+const RouteErrorBoundary = () => {
   const error = useRouteError();
-  return <ErrorPage error={error} />;
-}
+  return <ErrorPage error={error as Error} />;
+};
 
 export const router = createHashRouter([
   {
@@ -92,44 +89,52 @@ export const router = createHashRouter([
   },
 ]);
 
-class Index extends PureComponent {
-  state = {};
+type IndexProps = {
+  store: Store;
+  uiMessenger: UIMessenger;
+};
 
-  static getDerivedStateFromError(error) {
+type RootErrorBoundaryProps = {
+  fallback: (error: Error) => ReactNode;
+  children: ReactNode;
+};
+
+// React has no hook-based error boundary, so this must be a class.
+class RootErrorBoundary extends Component<
+  RootErrorBoundaryProps,
+  { error?: Error }
+> {
+  state: { error?: Error } = {};
+
+  static getDerivedStateFromError(error: Error) {
     return { error };
   }
 
-  componentDidCatch(error) {
+  componentDidCatch(error: Error) {
     captureException(error);
   }
 
   render() {
     const { error } = this.state;
-    const { store, uiMessenger } = this.props;
-
-    if (error) {
-      return (
-        <Provider store={store}>
-          <HashRouter>
-            <ErrorPage error={error} />
-          </HashRouter>
-        </Provider>
-      );
-    }
-
-    return (
-      <Provider store={store}>
-        <UIMessengerProvider value={uiMessenger}>
-          {withStrictMode(<RouterProvider router={router} />)}
-        </UIMessengerProvider>
-      </Provider>
-    );
+    const { fallback, children } = this.props;
+    return error ? fallback(error) : children;
   }
 }
 
-Index.propTypes = {
-  store: PropTypes.object,
-  uiMessenger: PropTypes.object,
-};
-
-export default Index;
+export default function Index({ store, uiMessenger }: IndexProps) {
+  return (
+    <Provider store={store}>
+      <RootErrorBoundary
+        fallback={(error) => (
+          <HashRouter>
+            <ErrorPage error={error} />
+          </HashRouter>
+        )}
+      >
+        <UIMessengerProvider value={uiMessenger}>
+          {withStrictMode(<RouterProvider router={router} />)}
+        </UIMessengerProvider>
+      </RootErrorBoundary>
+    </Provider>
+  );
+}
