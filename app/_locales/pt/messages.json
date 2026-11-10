@@ -8866,7 +8866,7 @@
     "message": "Saque enviado"
   },
   "perpsWithdrawTooltip": {
-    "message": "A MetaMask fará a conversão para o token desejado para você. A MetaMask não aplica taxas quando você converte para mUSD.",
+    "message": "A MetaMask fará a conversão para o token desejado para você.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -11929,9 +11929,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "aqui",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " incluídas"
   },
   "swapGasFeesSplit": {
     "message": "As taxas de rede da tela anterior estão divididas entre estas duas transações."
