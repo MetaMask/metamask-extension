@@ -11,7 +11,8 @@ import {
 } from '../../../selectors';
 import {
   getMarketingConsent,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
@@ -45,7 +46,9 @@ export const DataCollectionToggleItem = () => {
     const fetchConsent = async () => {
       const marketingConsentFromRemote = await getMarketingConsent();
       if (!cancelled) {
-        dispatch(setDataCollectionForMarketing(marketingConsentFromRemote));
+        dispatch(
+          marketingConsentFromRemote ? optInToMarketing() : optOutOfMarketing(),
+        );
       }
     };
     fetchConsent();
@@ -61,7 +64,7 @@ export const DataCollectionToggleItem = () => {
       dispatch(setMarketingConsent(newValue));
     }
 
-    dispatch(setDataCollectionForMarketing(newValue));
+    dispatch(newValue ? optInToMarketing() : optOutOfMarketing());
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)

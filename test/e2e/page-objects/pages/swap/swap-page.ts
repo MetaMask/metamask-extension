@@ -80,10 +80,7 @@ class SwapPage {
 
   private readonly driver: Driver;
 
-  private readonly gasIncludedLabel = {
-    text: 'Included',
-    tag: 'p',
-  };
+  private readonly gasIncludedLabel = '[data-testid="network-fees-included"]';
 
   private readonly importTokensButton =
     '[data-testid="import-tokens-import-button"]';

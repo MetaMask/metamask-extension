@@ -1,5 +1,8 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { type CaipAssetType } from '@metamask/utils';
+import { useHomeReady } from '../../../../pages/home/home-performance';
+import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -36,6 +39,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     handleLowValueAssetsToggle,
     getTokenClickHandler,
   } = useTokenListData({ onTokenClick });
+
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  useHomeReady(Boolean(selectedAccountGroup) && !showLoadingSkeleton);
 
   const moneyTokenListCta = useMoneyTokenListCta(displayedTokens);
 

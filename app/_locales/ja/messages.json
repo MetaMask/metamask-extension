@@ -11881,9 +11881,6 @@
     "message": "こちら",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " 込み"
-  },
   "swapGasFeesSplit": {
     "message": "前の画面のネットワーク手数料は、この2つのトランザクションに分けられています。"
   },
