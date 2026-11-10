@@ -4152,10 +4152,6 @@
   "fieldRequired": {
     "message": "$1 为必填项"
   },
-  "fileImportFail": {
-    "message": "文件导入失败？点击这里！",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "点击上传或拖放"
   },
@@ -7385,10 +7381,6 @@
   "paste": {
     "message": "粘贴"
   },
-  "pastePrivateKey": {
-    "message": "请粘贴您的私钥:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "支付方式：",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8973,10 +8965,6 @@
   "privateKeyHidden": {
     "message": "私钥已隐藏",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "显示/隐藏私钥输入",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "正在显示此私钥",
@@ -12682,9 +12670,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将会获取您的 IP 地址。"
-  },
-  "usedByClients": {
-    "message": "可用于各种不同的客户端"
   },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
