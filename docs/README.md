@@ -13,6 +13,7 @@ To learn how to develop MetaMask-compatible applications, visit our [Developer D
 - [How to add custom build to Chrome](./add-to-chrome.md)
 - [How to add custom build to Firefox](./add-to-firefox.md)
 - [A/B testing guide](./ab-testing.md)
+- [Deep links: signature verification and review](./deep-links.md)
 - [Publishing Guide](./publishing.md)
 - [How to add a feature behind a secret feature flag](./secret-preferences.md)
 - [Developing on MetaMask](../development/README.md)
