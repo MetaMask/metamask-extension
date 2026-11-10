@@ -59,7 +59,6 @@ const IntervalBar = ({
 
   const pillStyle = (isSelected: boolean) => ({
     padding: '4px 10px',
-    borderRadius: '8px',
     border: 'none',
     cursor: 'pointer' as const,
     fontSize: '12px',
@@ -110,6 +109,9 @@ const IntervalBar = ({
             <button
               key={interval}
               type="button"
+              // Full-pill capsule, matching mobile's `rounded-full` pills.
+              // Shared by candle intervals and line time-range buttons.
+              className="rounded-full"
               aria-pressed={isSelected}
               ref={isSelected ? selectedPillRef : undefined}
               onClick={() => onIntervalSelect(interval)}
@@ -124,11 +126,12 @@ const IntervalBar = ({
       {/* Chart type toggle — mirrors mobile's ChartTypeToggle.tsx */}
       <div
         data-testid="advanced-chart-type-toggle"
+        // Full-pill capsule, matching mobile's `rounded-full` toggle.
+        className="rounded-full"
         style={{
           display: 'flex',
           gap: '2px',
           padding: '2px',
-          borderRadius: '8px',
           border: '1px solid var(--color-border-muted)',
           // Pinned: the toggle is not part of the scrolling row, and must
           // keep its full width so it stays inside the 16px right padding.
@@ -141,12 +144,12 @@ const IntervalBar = ({
           aria-pressed={chartType === CHART_TYPE_LINE}
           onClick={() => onChartTypeSelect(CHART_TYPE_LINE)}
           title={t('chartTypeLine')}
+          className="rounded-full"
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             padding: '4px 8px',
-            borderRadius: '6px',
             border: 'none',
             cursor: 'pointer',
             background:
@@ -169,12 +172,12 @@ const IntervalBar = ({
           aria-pressed={chartType === CHART_TYPE_CANDLE}
           onClick={() => onChartTypeSelect(CHART_TYPE_CANDLE)}
           title={t('chartTypeCandlestick')}
+          className="rounded-full"
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             padding: '4px 8px',
-            borderRadius: '6px',
             border: 'none',
             cursor: 'pointer',
             background:
