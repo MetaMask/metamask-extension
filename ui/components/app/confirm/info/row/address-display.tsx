@@ -113,11 +113,12 @@ export const ConfirmInfoRowAddressDisplay = memo(
         )}
         {name && <TrustIcon displayState={displayState} image={image} />}
         {name && isClickable && (
-          <span className="address-display-clickable">
+          <span className="address-display-clickable min-w-0">
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
               className="min-w-0 hover:bg-transparent active:bg-transparent"
+              textProps={{ ellipsis: true }}
               data-testid="confirm-info-row-display-name"
             >
               {name}
@@ -129,6 +130,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
+            ellipsis
             data-testid="confirm-info-row-display-name"
           >
             {name}

@@ -83,7 +83,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                 class="flex flex-row gap-2 items-center"
               >
                 <p
-                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate"
                   data-testid="confirm-info-row-display-name"
                 >
                   Account 1

@@ -134,7 +134,10 @@ export const RecipientInput = ({
                   confusableCharacters={recipientConfusableCharacters}
                 />
               ) : (
-                <Text variant={TextVariant.bodyMd} className="break-all">
+                <Text
+                  variant={TextVariant.bodyMd}
+                  className={recipientName ? 'truncate' : 'break-all'}
+                >
                   {recipientName ?? resolvedAddress}
                 </Text>
               )}

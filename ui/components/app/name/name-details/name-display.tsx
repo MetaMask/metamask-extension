@@ -31,8 +31,9 @@ export type NameDisplayProps = {
    */
   disableNameClick?: boolean;
   /**
-   * Whether to fill the available width on one line, shortening the start only
-   * when needed. Shows the value when only a security label is known.
+   * Whether to fill the available width on one line. Names are cut at the end
+   * and addresses at the start, only when needed. Shows the value when only a
+   * security label is known.
    */
   fillWidth?: boolean;
 };
@@ -61,10 +62,7 @@ const NameDisplay = memo(
       displayState === TrustSignalDisplayState.Unknown
         ? fallbackName
         : name || fallbackName;
-    const [fillRef, fillText] = useStartTruncatedText(
-      fillName || value,
-      fillName ? undefined : 10,
-    );
+    const [fillRef, fillValue] = useStartTruncatedText(value, 10);
 
     const renderIcon = () => {
       // If icon exists, use it (trust signal /unknown)
@@ -98,12 +96,12 @@ const NameDisplay = memo(
       if (fillWidth) {
         return (
           <Text
-            ref={fillRef}
+            ref={fillName ? undefined : fillRef}
             className={fillName ? 'name__name' : 'name__value'}
             variant={TextVariant.bodyMd}
             {...props}
           >
-            {fillText}
+            {fillName || fillValue}
           </Text>
         );
       }

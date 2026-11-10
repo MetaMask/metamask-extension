@@ -11,10 +11,10 @@ const ELLIPSIS = '\u2026';
  * container.
  *
  * @param text - The full text.
- * @param endChars - Characters always kept at the end. Defaults to all.
+ * @param endChars - Characters always kept at the end.
  * @returns A ref for the element and the text to render in it.
  */
-export function useStartTruncatedText(text: string, endChars = Infinity) {
+export function useStartTruncatedText(text: string, endChars: number) {
   const [element, setElement] = useState<HTMLElement | null>(null);
   const [fitted, setFitted] = useState({ text, value: text });
 
@@ -37,7 +37,7 @@ export function useStartTruncatedText(text: string, endChars = Infinity) {
 
       const shorten = (visibleChars: number) => {
         const end = Math.min(visibleChars, endChars);
-        return `${text.slice(0, visibleChars - end)}${ELLIPSIS}${text.slice(text.length - end).trimStart()}`;
+        return `${text.slice(0, visibleChars - end)}${ELLIPSIS}${text.slice(text.length - end)}`;
       };
       const fits = (value: string) => {
         probe.textContent = value;
