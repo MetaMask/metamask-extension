@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
-  "addAWallet": {
-    "message": "Προσθήκη πορτοφολιού"
-  },
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "Απαιτείται η $1"
-  },
-  "fileImportFail": {
-    "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Κάντε κλικ για μεταφόρτωση ή σύρετε και αφήστε"
@@ -7385,10 +7378,6 @@
   "paste": {
     "message": "Επικόλληση"
   },
-  "pastePrivateKey": {
-    "message": "Εισάγετε τη συμβολοσειρά του ιδιωτικού σας κλειδιού εδώ:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Πληρωμή με",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8866,7 +8855,7 @@
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
   },
   "perpsWithdrawTooltip": {
-    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
+    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8967,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "Το ιδιωτικό κλειδί είναι κρυφό",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Εμφάνιση/απόκρυψη της εισαγωγής του ιδιωτικού κλειδιού",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Αυτό το ιδιωτικό κλειδί είναι ορατό",
@@ -11930,9 +11915,6 @@
     "message": "εδώ",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Περιλαμβάνεται"
-  },
   "swapGasFeesSplit": {
     "message": "Τα τέλη δικτύου που εμφανίζονταν στην προηγούμενη οθόνη κατανέμονται σε αυτές τις δύο συναλλαγές."
   },
@@ -12679,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."
-  },
-  "usedByClients": {
-    "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"

@@ -67,7 +67,7 @@
   },
   ".github/scripts/collect-qa-stats.mts": {
     "@typescript-eslint/naming-convention": {
-      "count": 22
+      "count": 28
     },
     "no-plusplus": {
       "count": 3

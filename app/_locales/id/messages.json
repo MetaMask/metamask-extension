@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Tambahkan URL"
   },
-  "addAWallet": {
-    "message": "Tambahkan dompet"
-  },
   "addAccount": {
     "message": "Tambah akun"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 wajib diisi"
-  },
-  "fileImportFail": {
-    "message": "Impor file tidak bekerja? Klik di sini!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Klik untuk mengunggah atau seret dan lepas"
@@ -7389,10 +7382,6 @@
   "paste": {
     "message": "Tempel"
   },
-  "pastePrivateKey": {
-    "message": "Tempel string kunci pribadi Anda di sini:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Bayar melalui",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8874,7 +8863,7 @@
     "message": "Penarikan dikirim"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask akan menukar token Anda ke token yang diinginkan. MetaMask tidak mengenakan biaya saat Anda menukar ke mUSD.",
+    "message": "MetaMask akan menukar token Anda ke token yang diinginkan.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8975,10 +8964,6 @@
   "privateKeyHidden": {
     "message": "Kunci pribadi disembunyikan",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Tampilkan/Sembunyikan input kunci pribadi",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Kunci pribadi ini sedang ditampilkan",
@@ -11938,9 +11923,6 @@
     "message": "di sini",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Termasuk"
-  },
   "swapGasFeesSplit": {
     "message": "Biaya jaringan pada layar sebelumnya dibagi di antara kedua transaksi ini."
   },
@@ -12687,9 +12669,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
-  },
-  "usedByClients": {
-    "message": "Digunakan oleh berbagai klien yang berbeda"
   },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"
