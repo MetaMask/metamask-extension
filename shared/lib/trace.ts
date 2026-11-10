@@ -897,7 +897,7 @@ function startSpan<T>(
 
   // A declared parent that did not resolve nests under the active span, without
   // `forceTransaction`: a failed lookup is not a request for a root.
-  if (!parentSpan && parentDeclared) {
+  if (!root && !parentSpan && parentDeclared) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       return sentryWithScope((scope: Sentry.Scope) => {
