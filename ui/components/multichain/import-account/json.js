@@ -60,7 +60,7 @@ export default function JsonImportSubview({
       <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <label
           htmlFor="file-input"
-          className="relative flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-muted px-4 py-8"
+          className="relative flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-muted px-4 py-8 focus-within:outline focus-within:outline-2 focus-within:outline-primary-default"
         >
           <FileInput
             id="file-input"
