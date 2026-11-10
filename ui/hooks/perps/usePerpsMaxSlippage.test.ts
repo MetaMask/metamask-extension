@@ -11,13 +11,13 @@ jest.mock('../../store/background-connection', () => ({
 
 function setMaxSlippageResponse(value: number | undefined | Error) {
   mockSubmitRequestToBackground.mockImplementation((method: string) => {
-    if (method === 'perpsGetMaxSlippage') {
+    if (method === 'PerpsController:getMaxSlippage') {
       if (value instanceof Error) {
         return Promise.reject(value);
       }
       return Promise.resolve(value);
     }
-    if (method === 'perpsSetMaxSlippage') {
+    if (method === 'PerpsController:setMaxSlippage') {
       return Promise.resolve(undefined);
     }
     return Promise.resolve(undefined);
@@ -84,7 +84,7 @@ describe('usePerpsMaxSlippage', () => {
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsSetMaxSlippage',
+      'PerpsController:setMaxSlippage',
       [150],
     );
     expect(result.current.maxSlippageBps).toBe(150);

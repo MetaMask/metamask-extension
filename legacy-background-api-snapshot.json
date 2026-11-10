@@ -81,6 +81,7 @@
     "setEnabledAllPopularNetworks",
     "setEnabledNetworks",
     "setLocked",
+    "setParticipateInMetaMetrics",
     "setPermittedAccounts",
     "setPermittedChains",
     "setSelectedInternalAccount",
