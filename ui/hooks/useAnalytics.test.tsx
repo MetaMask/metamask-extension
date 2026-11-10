@@ -68,48 +68,167 @@ describe('useAnalytics', () => {
   });
 
   describe('trackErrorAsAnalytics', () => {
-    it('forwards errors when participation is enabled and analyticsId exists', async () => {
-      const store = mockStore({
+    const deletionError = new Error('Deletion failed');
+    const errorOptions = {
+      source: 'clear-metametrics-data',
+      excludeMetaMetricsId: true,
+    };
+
+    const renderTrackError = ({
+      state,
+      onTrack,
+    }: {
+      state: {
         metamask: {
-          analyticsId: '0x123',
-          consentDecisionMade: true,
-          optedIn: true,
-        },
-      });
-      const error = new Error('Deletion failed');
-      let trackPromise: Promise<void> | undefined;
+          analyticsId: string | null;
+          consentDecisionMade: boolean;
+          optedIn: boolean;
+        };
+      };
+      onTrack?: (trackErrorPromise: Promise<void>) => void;
+    }) => {
+      const store = mockStore(state);
 
       const TestComponent = () => {
         const { trackErrorAsAnalytics: trackError } = useAnalytics();
 
         useEffect(() => {
-          trackPromise = trackError(error, {
-            source: 'clear-metametrics-data',
-            excludeMetaMetricsId: true,
-          });
+          onTrack?.(trackError(deletionError, errorOptions));
         }, [trackError]);
 
         return null;
       };
 
-      render(
+      return render(
         <Provider store={store}>
           <TestComponent />
         </Provider>,
       );
+    };
+
+    it('forwards errors when participation is enabled and analyticsId exists', async () => {
+      const onTrack = jest.fn();
+
+      renderTrackError({
+        state: {
+          metamask: {
+            analyticsId: '0x123',
+            consentDecisionMade: true,
+            optedIn: true,
+          },
+        },
+        onTrack,
+      });
 
       await waitFor(() => {
         expect(mockedTrackErrorAsAnalytics).toHaveBeenCalledWith(
-          error,
+          deletionError,
           {
-            source: 'clear-metametrics-data',
-            excludeMetaMetricsId: true,
+            ...errorOptions,
             environmentType: expect.any(String),
           },
           undefined,
         );
       });
-      await expect(trackPromise).resolves.toBeUndefined();
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
+    });
+
+    it('does not forward errors when the user has opted out', async () => {
+      const onTrack = jest.fn();
+
+      renderTrackError({
+        state: {
+          metamask: {
+            analyticsId: '0x123',
+            consentDecisionMade: true,
+            optedIn: false,
+          },
+        },
+        onTrack,
+      });
+
+      await waitFor(() => {
+        expect(onTrack).toHaveBeenCalled();
+      });
+      expect(mockedTrackErrorAsAnalytics).not.toHaveBeenCalled();
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
+    });
+
+    it('forwards errors when consent is still undecided', async () => {
+      const onTrack = jest.fn();
+
+      renderTrackError({
+        state: {
+          metamask: {
+            analyticsId: null,
+            consentDecisionMade: false,
+            optedIn: false,
+          },
+        },
+        onTrack,
+      });
+
+      await waitFor(() => {
+        expect(mockedTrackErrorAsAnalytics).toHaveBeenCalledWith(
+          deletionError,
+          {
+            ...errorOptions,
+            environmentType: expect.any(String),
+          },
+          undefined,
+        );
+      });
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
+    });
+
+    it('forwards errors when participation is enabled but analyticsId is missing', async () => {
+      const onTrack = jest.fn();
+
+      renderTrackError({
+        state: {
+          metamask: {
+            analyticsId: null,
+            consentDecisionMade: true,
+            optedIn: true,
+          },
+        },
+        onTrack,
+      });
+
+      await waitFor(() => {
+        expect(mockedTrackErrorAsAnalytics).toHaveBeenCalledWith(
+          deletionError,
+          {
+            ...errorOptions,
+            environmentType: expect.any(String),
+          },
+          undefined,
+        );
+      });
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
+    });
+
+    it('swallows background RPC failures', async () => {
+      mockedTrackErrorAsAnalytics.mockRejectedValueOnce(
+        new Error('background unavailable'),
+      );
+      const onTrack = jest.fn();
+
+      renderTrackError({
+        state: {
+          metamask: {
+            analyticsId: '0x123',
+            consentDecisionMade: true,
+            optedIn: true,
+          },
+        },
+        onTrack,
+      });
+
+      await waitFor(() => {
+        expect(mockedTrackErrorAsAnalytics).toHaveBeenCalled();
+      });
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
     });
   });
 
