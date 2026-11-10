@@ -507,7 +507,7 @@ function finalizeOnboardingMachineTime(span?: Span | null): void {
 /**
  * Run one background polling cycle as its own `Background Poll` root trace.
  *
- * @param controllerName - The polling controller, recorded as the `controller` tag.
+ * @param controllerName - The polling controller, recorded as `controller` span data.
  * @param fn - The polling cycle to trace.
  * @returns The result of the polling cycle.
  */
