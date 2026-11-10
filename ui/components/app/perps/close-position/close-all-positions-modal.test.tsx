@@ -172,12 +172,21 @@ describe('CloseAllPositionsModal', () => {
       mockStore,
     );
 
+    // The live region is mounted before the quote lands so a screen reader
+    // announces the banner when it appears.
+    const liveRegion = screen.getByTestId('perps-close-all-error-live-region');
+    expect(liveRegion).toHaveAttribute('aria-live', 'polite');
+    expect(liveRegion).toBeEmptyDOMElement();
+
     await waitFor(() => {
       expect(
         screen.getByTestId('perps-close-all-receive-value'),
       ).toHaveTextContent(/^-\$/u);
     });
 
+    expect(liveRegion).toHaveTextContent(
+      'Insufficient margin to place this order.',
+    );
     expect(screen.getByTestId('perps-close-all-error')).toHaveTextContent(
       'Insufficient margin to place this order.',
     );

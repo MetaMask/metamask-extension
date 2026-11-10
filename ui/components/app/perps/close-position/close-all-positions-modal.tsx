@@ -411,31 +411,38 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   {formatCloseUsd(totalReceive)}
                 </Text>
               </Box>
-            </Box>
 
-            {hasNegativeReceive && (
+              {/* Mounted before the banner so screen readers announce it. */}
               <Box
-                backgroundColor={BoxBackgroundColor.ErrorMuted}
-                className="rounded-lg"
-                padding={3}
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-                data-testid="perps-close-all-error"
+                aria-live="polite"
+                aria-atomic="true"
+                data-testid="perps-close-all-error-live-region"
               >
-                <Icon
-                  name={IconName.Warning}
-                  size={IconSize.Sm}
-                  color={IconColor.ErrorDefault}
-                />
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.ErrorDefault}
-                >
-                  {t('perpsInsufficientMargin')}
-                </Text>
+                {hasNegativeReceive && (
+                  <Box
+                    backgroundColor={BoxBackgroundColor.ErrorMuted}
+                    className="mt-4 rounded-lg"
+                    padding={3}
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={2}
+                    data-testid="perps-close-all-error"
+                  >
+                    <Icon
+                      name={IconName.Warning}
+                      size={IconSize.Sm}
+                      color={IconColor.ErrorDefault}
+                    />
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.ErrorDefault}
+                    >
+                      {t('perpsInsufficientMargin')}
+                    </Text>
+                  </Box>
+                )}
               </Box>
-            )}
+            </Box>
           </Box>
         </ModalBody>
         <ModalFooter
