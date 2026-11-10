@@ -3,6 +3,7 @@ import type { EnrolledCredential } from '@metamask/profile-sync-controller/sdk';
 import type {
   MethodStatus,
   MethodStatuses,
+  MfaFlowErrorCode,
   MfaKitErrorCode,
   MfaMethod,
   MfaPlatform,
@@ -20,7 +21,7 @@ import type {
  * the ones it can run (`PLATFORM_METHODS`). An authenticator app code comes
  * before an email code, which has to arrive first.
  */
-const METHOD_COST_RANKING: readonly MfaMethod[] = [
+export const METHOD_COST_RANKING: readonly MfaMethod[] = [
   'passkey',
   'totp',
   'email_otp',
@@ -88,7 +89,7 @@ export const getMethodStatuses = (
     ]),
   ) as MethodStatuses;
 
-const fail = (code: MfaKitErrorCode): Plan => ({ ok: false, code });
+const fail = (code: MfaFlowErrorCode): Plan => ({ ok: false, code });
 
 const isYoungerThan = (
   session: SessionSnapshot,
@@ -237,12 +238,18 @@ export const planVerifyOrEnroll = (
   if (verifyWith.some((method) => !request.methods.includes(method))) {
     return fail('invalid_request');
   }
+  // Verifying is all a verify-only request is for.
+  if (request.verifyOnly && verifyWith.length === 0) {
+    return fail('invalid_request');
+  }
 
   const statuses = getMethodStatuses(context.credentials, context.platform);
-  const missing = orderSetups(
-    request.methods.filter((method) => !statuses[method].isActive),
-    verifyWith,
-  );
+  const missing = request.verifyOnly
+    ? []
+    : orderSetups(
+        request.methods.filter((method) => !statuses[method].isActive),
+        verifyWith,
+      );
   if (missing.some((method) => !statuses[method].canEnroll)) {
     return fail('passkey_unsupported');
   }
@@ -285,7 +292,11 @@ export const planVerifyOrEnroll = (
           isMethodSupported(method, context.platform),
       );
       if (options.length === 0) {
-        return fail('passkey_unsupported');
+        return fail(
+          request.verifyOnly
+            ? 'credential_not_enrolled'
+            : 'passkey_unsupported',
+        );
       }
       steps.push({ kind: 'verify', options });
     }

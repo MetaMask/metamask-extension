@@ -13,8 +13,7 @@ import {
 } from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
 import type { MfaEvent, MfaTrackEvent } from './engine/analytics';
-import { MfaFlowError } from './engine/errors';
-import { getVerifiableMethods } from './engine/planner';
+import { METHOD_COST_RANKING } from './engine/planner';
 import type {
   EnrollOptions,
   MfaFlowOptions,
@@ -92,34 +91,26 @@ export const useMfa = () => {
           reason,
           ...options,
         }),
-      verifyForSocialLogin: async ({
+      verifyForSocialLogin: ({
         reason,
       }: {
         reason: MfaReason;
-      }): Promise<MfaFlowResult> => {
-        // One adapter per flow: it keeps the flow's own verification token.
-        const controller = createSocialLoginControllerAdapter();
-        const credentialList = await controller.refreshEnrolledCredentials();
-        const active = getVerifiableMethods(
-          credentialList,
-          clientOptions.platform,
-        );
-        if (active.length === 0) {
-          throw new MfaFlowError('credential_not_enrolled');
-        }
-        // `methods` and `verifyWith` are the same, so nothing is missing and
-        // the flow never plans an enrollment.
-        return startMfaFlow({
+      }): Promise<MfaFlowResult> =>
+        startMfaFlow({
+          // Every method may verify: the flow keeps the active ones this
+          // platform runs, and never plans a setup.
           request: {
             kind: 'verifyOrEnroll',
-            methods: active,
-            verifyWith: active,
+            methods: [...METHOD_COST_RANKING],
+            verifyWith: [...METHOD_COST_RANKING],
+            verifyOnly: true,
           },
           reason,
           ...options,
-          controller,
-        });
-      },
+          whileLocked: true,
+          // One adapter per flow: it keeps the flow's own verification token.
+          controller: createSocialLoginControllerAdapter(),
+        }),
       enroll: ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
         startMfaFlow({
           request: { kind: 'enroll', method },

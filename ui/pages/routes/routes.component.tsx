@@ -380,6 +380,8 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
+      // Not behind `RequireAuthenticated`: social login recovery runs it while
+      // the wallet is locked. The page sends any other flow to unlock.
       {
         path: MFA_FLOW_ROUTE,
         element: <MfaFlowHost />,

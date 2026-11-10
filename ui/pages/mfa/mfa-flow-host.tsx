@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -9,7 +10,12 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import Spinner from '../../components/ui/spinner';
-import { DEFAULT_ROUTE, SETTINGS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  SETTINGS_ROUTE,
+  UNLOCK_ROUTE,
+} from '../../helpers/constants/routes';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useActiveMfaFlow } from '../../hooks/identity/mfa/engine/useActiveMfaFlow';
 import { MfaFlowTestIds } from './test-ids';
@@ -27,6 +33,10 @@ import FailureStep from './steps/failure-step';
  * flow; it goes back once the flow settles. Closing goes back to the page that
  * started the flow, or home when that page is in Settings, matching how
  * Settings pages close.
+ *
+ * The page is reachable while the wallet is locked, for the flows that run
+ * then (social login recovery). Any other flow ends when the wallet locks, so
+ * the user is sent to unlock, like the pages that need an unlocked wallet.
  */
 const MfaFlowHost = () => {
   const t = useI18nContext();
@@ -34,6 +44,7 @@ const MfaFlowHost = () => {
   const location = useLocation();
   const active = useActiveMfaFlow();
   const flow = active?.flow;
+  const isUnlocked = useSelector(getIsUnlocked);
   const cancelTimer = useRef<ReturnType<typeof setTimeout>>();
   const closeToHome = useRef(false);
 
@@ -62,6 +73,11 @@ const MfaFlowHost = () => {
       navigate(-1);
     }
   }, [flow, location.key, navigate]);
+
+  if (flow && !flow.whileLocked && !isUnlocked) {
+    // Leaving the page cancels the flow.
+    return <Navigate to={UNLOCK_ROUTE} state={{ from: location }} replace />;
+  }
 
   if (!active) {
     return null;
