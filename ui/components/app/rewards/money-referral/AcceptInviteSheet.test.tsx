@@ -69,7 +69,7 @@ const mockReferralState: {
 const mockT = (key: string) =>
   (
     ({
-      close: 'Close',
+      close: messages.close.message,
       rewardsMoneyReferralCodeError: 'Invalid referral code',
       rewardsMoneyReferralCodeUnknownError:
         'Referral code couldn’t be validated.',
@@ -426,7 +426,9 @@ describe('AcceptInviteSheet', () => {
       expect(view.getByTestId('money-referral-accept')).toBeDisabled();
       expect(view.getByTestId('money-referral-decline')).toBeDisabled();
       expect(view.getByTestId('money-referral-code-input')).toBeDisabled();
-      fireEvent.click(view.getByRole('button', { name: 'Close' }));
+      fireEvent.click(
+        view.getByRole('button', { name: messages.close.message }),
+      );
       fireEvent.click(view.getByTestId('money-referral-decline'));
       expect(view.onClose).not.toHaveBeenCalled();
       expect(trackedTypes()).toEqual(['viewed']);
