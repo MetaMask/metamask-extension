@@ -1,6 +1,6 @@
-import type * as Sentry from '@sentry/browser';
-import { it as jestIt } from '@jest/globals';
+import * as Sentry from '@sentry/browser';
 import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
+import { it as jestIt } from '@jest/globals';
 import {
   annotateTrace,
   endTrace,
@@ -1310,4 +1310,169 @@ describe('Trace', () => {
     );
   });
   /* eslint-enable @typescript-eslint/naming-convention */
+});
+
+describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
+  // Real SDK in place of this file's `globalThis.sentry` mock: the overlap
+  // effect lives in Sentry's shared scope stack, not in trace.ts.
+
+  function deferred<Value = void>() {
+    let resolve!: (value: Value) => void;
+    const promise = new Promise<Value>((res) => {
+      resolve = res;
+    });
+    return { promise, resolve };
+  }
+
+  function initRealSentryClient(): void {
+    const client = new Sentry.BrowserClient({
+      dsn: 'https://public@example.ingest.sentry.io/1',
+      transport: () => ({
+        send: () => Promise.resolve({}),
+        flush: () => Promise.resolve(true),
+      }),
+      stackParser: Sentry.defaultStackParser,
+      integrations: [],
+      tracesSampleRate: 1,
+    });
+    Sentry.getCurrentScope().setClient(client);
+    client.init();
+    globalThis.sentry = { ...Sentry } as typeof globalThis.sentry;
+  }
+
+  // Steps N microtask ticks so pending `.then()` continuations settle in
+  // order. Nothing here is time-based -- it's purely promise-resolution
+  // order -- so this uses plain microtask stepping rather than fake timers.
+  async function tick(times = 1) {
+    for (let i = 0; i < times; i += 1) {
+      await Promise.resolve();
+    }
+  }
+
+  beforeEach(() => {
+    initRealSentryClient();
+  });
+
+  afterEach(() => {
+    Sentry.getCurrentScope().clear();
+    Sentry.getIsolationScope().clear();
+  });
+
+  describe('when two trace() calls run sequentially', () => {
+    it('does not parent the second span under the first', async () => {
+      await trace(
+        { name: NAME_MOCK, id: 'A-sequential' },
+        async () => undefined,
+      );
+      const spanB = await trace({ name: NAME_MOCK, id: 'B-sequential' }, () =>
+        Sentry.getActiveSpan(),
+      );
+
+      expect(spanB).toBeTruthy();
+      expect(spanB && Sentry.spanToJSON(spanB).parent_span_id).toBeUndefined();
+    });
+  });
+
+  describe('when a second, unrelated trace() call starts while the first is still pending', () => {
+    // Parentage only: root spans share a trace id even without overlap.
+    it(
+      'does not parent the second span under the still-pending first one',
+      async () => {
+        const aGate = deferred<void>();
+        let spanA: Sentry.Span | null | undefined;
+
+        // A awaits aGate, so its scope layer stays on the stack until then.
+        const aPromise = trace(
+          { name: NAME_MOCK, id: 'A-pending' },
+          async () => {
+            spanA = Sentry.getActiveSpan();
+            await aGate.promise;
+            return spanA;
+          },
+        );
+
+        expect(spanA).toBeTruthy();
+
+        try {
+          // B is a logically unrelated trace() call (no parentContext) issued
+          // while A is still pending.
+          let spanB: Sentry.Span | null | undefined;
+          const bPromise = trace(
+            { name: NAME_MOCK, id: 'B-concurrent-unrelated' },
+            () => {
+              spanB = Sentry.getActiveSpan();
+              return spanB;
+            },
+          );
+          await tick(3);
+
+          expect(spanB).toBeTruthy();
+          expect(
+            spanB && Sentry.spanToJSON(spanB).parent_span_id,
+          ).toBeUndefined();
+
+          await bPromise;
+        } finally {
+          aGate.resolve();
+          await aPromise;
+        }
+      },
+    );
+
+    // `spanC` should not inherit B's lineage.
+    it(
+      'does not let a third concurrent call inherit an already-corrupted lineage',
+      async () => {
+        const aGate = deferred<void>();
+        const bGate = deferred<void>();
+
+        let spanA: Sentry.Span | null | undefined;
+        const aPromise = trace(
+          { name: NAME_MOCK, id: 'A-pending-2' },
+          async () => {
+            spanA = Sentry.getActiveSpan();
+            await aGate.promise;
+            return spanA;
+          },
+        );
+
+        let spanB: Sentry.Span | null | undefined;
+        const bPromise = trace(
+          { name: NAME_MOCK, id: 'B-pending-2' },
+          async () => {
+            spanB = Sentry.getActiveSpan();
+            await bGate.promise;
+            return spanB;
+          },
+        );
+
+        try {
+          let spanC: Sentry.Span | null | undefined;
+          const cPromise = trace(
+            { name: NAME_MOCK, id: 'C-concurrent-2' },
+            () => {
+              spanC = Sentry.getActiveSpan();
+              return spanC;
+            },
+          );
+          await tick(3);
+
+          expect(spanA).toBeTruthy();
+          expect(spanB).toBeTruthy();
+          expect(spanC).toBeTruthy();
+
+          expect(
+            spanC && Sentry.spanToJSON(spanC).parent_span_id,
+          ).toBeUndefined();
+
+          await cPromise;
+        } finally {
+          bGate.resolve();
+          await bPromise;
+          aGate.resolve();
+          await aPromise;
+        }
+      },
+    );
+  });
 });
