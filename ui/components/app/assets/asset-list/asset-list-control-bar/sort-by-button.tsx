@@ -1,33 +1,24 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
   twMerge,
 } from '@metamask/design-system-react';
-import { Popover, PopoverPosition } from '../../../../component-library';
+import { Popover } from '../../../../component-library';
 import SortControl from '../sort-control/sort-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import Tooltip from '../../../../ui/tooltip';
-import {
-  assetControlIconButtonClassName,
-  controlPopoverStyle,
-  useAssetControl,
-  useIsControlBarFullScreen,
-} from './asset-controls';
+import { assetControlIconButtonClassName } from './asset-controls';
+import { useControlPopover } from './use-control-popover';
 
 /**
  * Sort button and the sort popover. Writes the shared `tokenSortConfig`.
  */
 export const SortByButton = () => {
   const t = useI18nContext();
-  const isFullScreen = useIsControlBarFullScreen();
-  const { isOpen, toggle, close } = useAssetControl('sort');
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLButtonElement | null>(null);
-  const setButtonRef = useCallback((node: HTMLButtonElement | null) => {
-    setReferenceElement(node);
-  }, []);
+  const { buttonRef, isOpen, toggle, close, popoverProps } =
+    useControlPopover('250px');
 
   return (
     <>
@@ -38,7 +29,7 @@ export const SortByButton = () => {
         disabled={isOpen}
       >
         <ButtonIcon
-          ref={setButtonRef}
+          ref={buttonRef}
           data-testid="sort-by-popover-toggle"
           className={twMerge(
             assetControlIconButtonClassName,
@@ -50,14 +41,7 @@ export const SortByButton = () => {
           ariaLabel={t('sortBy')}
         />
       </Tooltip>
-      <Popover
-        onClickOutside={close}
-        isOpen={isOpen}
-        position={PopoverPosition.BottomEnd}
-        referenceElement={referenceElement}
-        matchWidth={false}
-        style={controlPopoverStyle(isFullScreen, '250px')}
-      >
+      <Popover {...popoverProps}>
         <SortControl handleClose={close} />
       </Popover>
     </>

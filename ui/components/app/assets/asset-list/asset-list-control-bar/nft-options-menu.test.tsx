@@ -62,7 +62,7 @@ describe('NftOptionsMenu', () => {
     const { findByTestId } = renderMenu(state);
 
     fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refresh-list-button__button'));
+    fireEvent.click(await findByTestId('refreshList__button'));
 
     expect(detectNftsSpy).toHaveBeenCalled();
     expect(checkOwnershipSpy).toHaveBeenCalled();
@@ -80,7 +80,7 @@ describe('NftOptionsMenu', () => {
     const { findByTestId } = renderMenu(state);
 
     fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refresh-list-button__button'));
+    fireEvent.click(await findByTestId('refreshList__button'));
 
     expect(detectNftsSpy).toHaveBeenCalled();
     expect(checkOwnershipSpy).toHaveBeenCalledWith('lineaNetworkClientId');
@@ -103,7 +103,7 @@ describe('NftOptionsMenu', () => {
     const { findByTestId } = renderMenu(state);
 
     fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refresh-list-button__button'));
+    fireEvent.click(await findByTestId('refreshList__button'));
 
     expect(detectNftsSpy).not.toHaveBeenCalled();
     expect(checkOwnershipSpy).toHaveBeenCalledWith('polygonNetworkClientId');

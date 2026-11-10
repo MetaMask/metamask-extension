@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
@@ -10,7 +10,6 @@ import {
   getUseNftDetection,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import { Popover, PopoverPosition } from '../../../../component-library';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -24,20 +23,14 @@ import {
   IMPORT_NFTS_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { useDispatch } from '../../../../../store/hooks';
-import { OptionsButton } from './options-button';
-import {
-  controlPopoverStyle,
-  useAssetControl,
-  useIsControlBarFullScreen,
-} from './asset-controls';
 import { ManageTokensButton } from './manage-tokens-button';
+import { OptionsMenu } from './options-menu';
+import { RefreshItem } from './refresh-item';
 
 const EvmNftOptionsMenu = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isFullScreen = useIsControlBarFullScreen();
-  const { isOpen, toggle, close } = useAssetControl('nfts');
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
@@ -45,11 +38,6 @@ const EvmNftOptionsMenu = () => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const { collections } = useNftsCollections();
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLButtonElement | null>(null);
-  const setButtonRef = useCallback((node: HTMLButtonElement | null) => {
-    setReferenceElement(node);
-  }, []);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -67,12 +55,12 @@ const EvmNftOptionsMenu = () => {
     (isMainnet || isLineaMainnet || Object.keys(collections).length > 0) &&
     useNftDetection;
 
-  const handleNftImportModal = () => {
+  const handleNftImportModal = (close: () => void) => {
     navigate(IMPORT_NFTS_ROUTE);
     close();
   };
 
-  const handleNftRefresh = () => {
+  const handleNftRefresh = (close: () => void) => {
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
     }
@@ -82,45 +70,36 @@ const EvmNftOptionsMenu = () => {
     close();
   };
 
-  const onEnableAutoDetect = () => {
-    navigate(`${ASSETS_ROUTE}#autodetect-tokens`);
-  };
-
   return (
-    <>
-      <OptionsButton ref={setButtonRef} onClick={toggle} />
-      <Popover
-        onClickOutside={close}
-        isOpen={isOpen}
-        position={PopoverPosition.BottomEnd}
-        referenceElement={referenceElement}
-        matchWidth={false}
-        style={controlPopoverStyle(isFullScreen, '158px')}
-      >
-        <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
-          <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
-          {t('importNFT')}
-        </SelectableListItem>
-        {shouldShowRefreshButtons && (
+    <OptionsMenu>
+      {(close) => (
+        <>
           <SelectableListItem
-            onClick={handleNftRefresh}
-            testId="refresh-list-button"
+            onClick={() => handleNftImportModal(close)}
+            testId="import-nfts"
           >
-            <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
-            {t('refreshList')}
+            <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
+            {t('importNFT')}
           </SelectableListItem>
-        )}
-        {!useNftDetection && (
-          <SelectableListItem
-            onClick={onEnableAutoDetect}
-            testId="enable-autodetect-button"
-          >
-            <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
-            {t('enableAutoDetect')}
-          </SelectableListItem>
-        )}
-      </Popover>
-    </>
+          {shouldShowRefreshButtons && (
+            <RefreshItem onClick={() => handleNftRefresh(close)} />
+          )}
+          {!useNftDetection && (
+            <SelectableListItem
+              onClick={() => navigate(`${ASSETS_ROUTE}#autodetect-tokens`)}
+              testId="enable-autodetect-button"
+            >
+              <Icon
+                name={IconName.Setting}
+                size={IconSize.Sm}
+                className="mr-2"
+              />
+              {t('enableAutoDetect')}
+            </SelectableListItem>
+          )}
+        </>
+      )}
+    </OptionsMenu>
   );
 };
 
