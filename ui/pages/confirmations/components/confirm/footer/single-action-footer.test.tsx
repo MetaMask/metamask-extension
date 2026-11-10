@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
+import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -426,9 +427,9 @@ describe('<SingleActionFooter />', () => {
 
   it('shows Convert [symbol] for moneyAccountDeposit when a pay token is selected', () => {
     jest.mocked(useTransactionPayToken).mockReturnValue({
-      payToken: { symbol: 'USDC' },
+      payToken: { symbol: 'USDC' } as TransactionPaymentToken,
       setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
+    });
 
     const { getByTestId } = render({ confirmation: genMoneyAccountDeposit() });
 
@@ -439,9 +440,9 @@ describe('<SingleActionFooter />', () => {
 
   it('shows Convert [symbol] for moneyAccountDeposit nested in a batch', () => {
     jest.mocked(useTransactionPayToken).mockReturnValue({
-      payToken: { symbol: 'ETH' },
+      payToken: { symbol: 'ETH' } as TransactionPaymentToken,
       setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
+    });
 
     const { getByTestId } = render({
       confirmation: genMoneyAccountDepositBatch(),
