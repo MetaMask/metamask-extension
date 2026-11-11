@@ -103,174 +103,128 @@ describe('sortTokenAssets', () => {
     order: 'dsc' as const,
     sortCallback: 'stringNumeric' as const,
   };
-  const numericSort = (
-    column: 'price' | 'change',
-    reversed: boolean,
-    getValue: (asset: Asset) => number | undefined,
-  ) => ({ column, reversed, getValue });
+  const names = ['Asset A', 'Asset B', 'Asset Z'];
 
-  it('sorts names from Z to A when the token column is reversed', () => {
-    const sortedNames = sortTokenAssets(assets, savedBalanceSort, {
-      column: 'token',
+  it.each([
+    {
+      label: 'token names from A to Z',
+      column: 'token' as const,
+      reversed: false,
+      expected: names,
+    },
+    {
+      label: 'token names from Z to A',
+      column: 'token' as const,
       reversed: true,
-    }).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset Z', 'Asset B', 'Asset A']);
-  });
-
-  it('sorts the lower fiat balance first when the balance column is reversed', () => {
-    const sortedNames = sortTokenAssets(assets, savedBalanceSort, {
-      column: 'balance',
+      expected: [...names].reverse(),
+    },
+    {
+      label: 'the highest balance first',
+      column: 'balance' as const,
+      reversed: false,
+      expected: names,
+    },
+    {
+      label: 'the lowest balance first',
+      column: 'balance' as const,
       reversed: true,
-    }).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset Z', 'Asset B', 'Asset A']);
-  });
-
-  it('keeps a native asset ahead of a token when reversed balances are equal', () => {
-    const sortedNames = sortTokenAssets(
-      [
+      expected: [...names].reverse(),
+    },
+    {
+      label: 'a native asset ahead of a token when balances are equal',
+      column: 'balance' as const,
+      reversed: true,
+      list: [
         createMockAsset({ name: 'Token', fiatBalance: 10, isNative: false }),
         createMockAsset({ name: 'Native', fiatBalance: 10, isNative: true }),
       ],
-      savedBalanceSort,
-      { column: 'balance', reversed: true },
-    ).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Native', 'Token']);
-  });
-
-  it('sorts alphabetically when the token column is selected', () => {
-    const sortedNames = sortTokenAssets(assets, savedBalanceSort, {
-      column: 'token',
+      expected: ['Native', 'Token'],
+    },
+    {
+      label: 'the highest price first and a missing price last',
+      column: 'price' as const,
       reversed: false,
-    }).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
-  });
-
-  it('sorts the highest price first and leaves missing prices last', () => {
-    const prices: Record<string, number | undefined> = {
-      'Asset A': 2,
-      'Asset B': 10,
-    };
-
+      values: { 'Asset A': 2, 'Asset B': 10 },
+      expected: ['Asset B', 'Asset A', 'Asset Z'],
+    },
+    {
+      label: 'the lowest price first and a missing price last',
+      column: 'price' as const,
+      reversed: true,
+      values: { 'Asset A': 2, 'Asset B': 10 },
+      expected: ['Asset A', 'Asset B', 'Asset Z'],
+    },
+    {
+      label: 'the largest 24h gain first and a missing change last',
+      column: 'change' as const,
+      reversed: false,
+      values: { 'Asset A': -2, 'Asset B': 4 },
+      expected: ['Asset B', 'Asset A', 'Asset Z'],
+    },
+    {
+      label: 'the largest 24h loss first and a missing change last',
+      column: 'change' as const,
+      reversed: true,
+      values: { 'Asset A': -2, 'Asset B': 4 },
+      expected: ['Asset A', 'Asset B', 'Asset Z'],
+    },
+    {
+      label: 'missing prices by name',
+      column: 'price' as const,
+      reversed: false,
+      values: {},
+      expected: names,
+    },
+    {
+      label: 'missing prices by name when reversed',
+      column: 'price' as const,
+      reversed: true,
+      values: {},
+      expected: names,
+    },
+    {
+      label: 'non-finite prices last',
+      column: 'price' as const,
+      reversed: false,
+      values: {
+        'Asset A': Number.NaN,
+        'Asset B': Number.POSITIVE_INFINITY,
+        'Asset Z': 1,
+      },
+      expected: ['Asset Z', 'Asset A', 'Asset B'],
+    },
+    {
+      label: 'non-finite prices last when reversed',
+      column: 'price' as const,
+      reversed: true,
+      values: {
+        'Asset A': Number.NaN,
+        'Asset B': Number.POSITIVE_INFINITY,
+        'Asset Z': 1,
+      },
+      expected: ['Asset Z', 'Asset A', 'Asset B'],
+    },
+    {
+      label: 'equal prices by name',
+      column: 'price' as const,
+      reversed: true,
+      values: { 'Asset A': 5, 'Asset B': 5, 'Asset Z': 5 },
+      expected: names,
+    },
+  ])('sorts $label', ({ column, reversed, values, list, expected }) => {
     const sortedNames = sortTokenAssets(
-      assets,
+      list ?? assets,
       savedBalanceSort,
-      numericSort('price', false, (asset) => prices[asset.name]),
+      column === 'price' || column === 'change'
+        ? {
+            column,
+            reversed,
+            getValue: (asset) => values[asset.name],
+          }
+        : { column, reversed },
     ).map((asset) => asset.name);
 
-    expect(sortedNames).toStrictEqual(['Asset B', 'Asset A', 'Asset Z']);
-  });
-
-  it('sorts the lowest price first when the price column is reversed', () => {
-    const prices: Record<string, number | undefined> = {
-      'Asset A': 2,
-      'Asset B': 10,
-    };
-
-    const sortedNames = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('price', true, (asset) => prices[asset.name]),
-    ).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
-  });
-
-  it('sorts non-finite prices last', () => {
-    const prices: Record<string, number> = {
-      'Asset A': Number.NaN,
-      'Asset B': Number.POSITIVE_INFINITY,
-      'Asset Z': 1,
-    };
-
-    const highestFirst = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('price', false, (asset) => prices[asset.name]),
-    ).map((asset) => asset.name);
-    const lowestFirst = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('price', true, (asset) => prices[asset.name]),
-    ).map((asset) => asset.name);
-
-    expect(highestFirst).toStrictEqual(['Asset Z', 'Asset A', 'Asset B']);
-    expect(lowestFirst).toStrictEqual(['Asset Z', 'Asset A', 'Asset B']);
-  });
-
-  it('orders assets by name when every price is missing', () => {
-    const sortedNames = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('price', false, () => undefined),
-    ).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
-  });
-
-  it('orders equal prices by name', () => {
-    const prices: Record<string, number> = {
-      'Asset A': 5,
-      'Asset B': 5,
-      'Asset Z': 5,
-    };
-
-    const sortedNames = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('price', true, (asset) => prices[asset.name]),
-    ).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
-  });
-
-  it('sorts the largest 24h gain first and leaves missing changes last', () => {
-    const changes: Record<string, number | undefined> = {
-      'Asset A': -2,
-      'Asset B': 4,
-    };
-
-    const sortedNames = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('change', false, (asset) => changes[asset.name]),
-    ).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset B', 'Asset A', 'Asset Z']);
-  });
-
-  it('sorts non-finite 24h changes last', () => {
-    const changes: Record<string, number> = {
-      'Asset A': Number.NaN,
-      'Asset B': Number.NEGATIVE_INFINITY,
-      'Asset Z': -1,
-    };
-
-    const sortedNames = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('change', true, (asset) => changes[asset.name]),
-    ).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset Z', 'Asset A', 'Asset B']);
-  });
-
-  it('sorts the largest 24h loss first when the change column is reversed', () => {
-    const changes: Record<string, number | undefined> = {
-      'Asset A': -2,
-      'Asset B': 4,
-    };
-
-    const sortedNames = sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('change', true, (asset) => changes[asset.name]),
-    ).map((asset) => asset.name);
-
-    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
+    expect(sortedNames).toStrictEqual(expected);
   });
 });
 

@@ -173,6 +173,7 @@ export const useHistoricalPrices = ({
     () => fromIso8601DurationToPriceApiTimePeriod(timeRange),
     [timeRange],
   );
+
   // The client's query options carry the canonical queryKey, queryFn (with
   // the configured base URL), staleTime, and gcTime.
   const queryOptions = useMemo(

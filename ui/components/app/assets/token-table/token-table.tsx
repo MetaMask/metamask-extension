@@ -12,9 +12,11 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type { CaipAssetType } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getTokenSortConfig } from '../../../../selectors';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import type { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import { useTokenDisplayInfo } from '../hooks';
@@ -24,7 +26,10 @@ import {
   useTokenListData,
 } from '../hooks/useTokenListData';
 import { useTokenSortOverride } from '../hooks/useTokenSortOverride';
-import type { TokenTableHeaderSort } from '../util/sortAssetsWithPriority';
+import type {
+  TokenTableHeaderSort,
+  TokenTableSort,
+} from '../util/sortAssetsWithPriority';
 import { NativeTokenScamWarningModal } from '../token-cell/native-token-scam-warning-modal';
 import {
   TokenCellPercentChange,
@@ -35,21 +40,68 @@ import {
 } from '../token-cell/cells';
 import { LowValueAssetsToggle } from '../token-list/low-value-assets-toggle';
 import { TokenListLoadingSkeleton } from '../token-list/token-list-loading-skeleton';
-import {
-  COLUMNS_CLASS_NAME,
-  HEADER_COLUMNS,
-  PERCENT_CHANGE_CLASS_NAME,
-  PRICE_AND_CHANGE_ITEM_CLASS_NAME,
-} from './token-table.constants';
-import type {
-  SortColumn,
-  SortableColumnHeaderProps,
-  TokenTableHeaderProps,
-  TokenTableProps,
-  TokenTableRowProps,
-} from './token-table.types';
+import type { TokenWithFiatAmount } from '../types';
 
-export type { TokenTableProps };
+export type TokenTableProps = {
+  onTokenClick: (
+    chainId: string,
+    address: string,
+    assetId?: CaipAssetType,
+  ) => void;
+  safeChains?: SafeChain[];
+};
+
+type TokenTableRowProps = {
+  token: TokenWithFiatAmount;
+  privacyMode: boolean;
+  onClick?: () => void;
+  safeChains?: SafeChain[];
+};
+
+type TokenTableHeaderProps = {
+  activeColumn: SortColumn | null;
+  reversed: boolean;
+  onSort: (column: SortColumn) => void;
+};
+
+type SortColumn = TokenTableSort['column'];
+
+type SortableColumnHeaderProps = {
+  label: string;
+  column: SortColumn;
+  activeColumn: SortColumn | null;
+  reversed: boolean;
+  onSort: () => void;
+  className?: string;
+};
+
+type HeaderColumn = {
+  column: SortColumn;
+  labelKey: 'token' | 'price' | '24hChange' | 'balance';
+  className: string;
+};
+
+// Measures the table, not the viewport: the side nav has already taken 320px
+// by the time `lg` would apply. Below `@2xl` (42rem of this table) the price
+// cell stacks the 24h change under the price. At `@2xl` they are separate columns.
+const COLUMNS_CLASS_NAME =
+  'grid w-full grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] items-center gap-4 px-4 @2xl/token-table:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]';
+
+const PRICE_AND_CHANGE_ITEM_CLASS_NAME =
+  'min-w-0 @2xl/token-table:justify-self-end';
+
+const PERCENT_CHANGE_CLASS_NAME = `${PRICE_AND_CHANGE_ITEM_CLASS_NAME} @2xl/token-table:[&_.mm-text]:text-l-body-md`;
+
+const HEADER_COLUMNS: HeaderColumn[] = [
+  { column: 'token', labelKey: 'token', className: 'flex' },
+  { column: 'price', labelKey: 'price', className: 'flex justify-end' },
+  {
+    column: 'change',
+    labelKey: '24hChange',
+    className: 'hidden justify-end @2xl/token-table:inline-flex',
+  },
+  { column: 'balance', labelKey: 'balance', className: 'flex justify-end' },
+];
 
 // Gets the existing active sort column based on the TokenSortConfig
 const getActiveSortColumn = (
