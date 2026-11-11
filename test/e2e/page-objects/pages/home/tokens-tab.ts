@@ -1107,11 +1107,29 @@ class TokensTab extends HomePage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    await this.expandLowValueAssetsIfPresent();
-    await this.driver.clickElement({
-      text: tokenSymbol,
-      css: this.tokenName,
-    });
+    const tokenNameLocator = { text: tokenSymbol, css: this.tokenName };
+    // The token list can still be loading right after login, and tokens without
+    // a fiat value move into the collapsed low-value section once it renders.
+    await this.driver.waitUntil(
+      async () => {
+        if (
+          await this.driver.isElementPresentAndVisible(tokenNameLocator, 500)
+        ) {
+          return true;
+        }
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.lowValueAssetsToggleCollapsed,
+            500,
+          )
+        ) {
+          await this.driver.clickElement(this.lowValueAssetsToggleCollapsed);
+        }
+        return false;
+      },
+      { timeout: 10000, interval: 500 },
+    );
+    await this.driver.clickElement(tokenNameLocator);
   }
 
   /**
