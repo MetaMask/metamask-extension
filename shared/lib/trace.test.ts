@@ -1,8 +1,10 @@
 import type * as Sentry from '@sentry/browser';
+import { it as jestIt } from '@jest/globals';
 import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import {
   annotateTrace,
   endTrace,
+  extractTraceMetadata,
   getSerializedTraceContext,
   getTraceContext,
   withoutTraceContext,
@@ -982,4 +984,65 @@ describe('Trace', () => {
       expect(spanCallbackReturn).toBeUndefined();
     });
   });
+
+  // We intentionally use lots of underscore-prefixed properties in these tests.
+  /* eslint-disable @typescript-eslint/naming-convention */
+  describe('extractTraceMetadata', () => {
+    it('extracts trace data from the given params', () => {
+      const _trace = {
+        context: { _traceId: 'trace123', _spanId: 'span456' },
+        messengerAction: 'AppStateController:getState',
+        spanName: 'Background RPC: AppStateController:getState',
+      };
+      const params = ['AppStateController:getState', [], { _trace }];
+
+      const result = extractTraceMetadata(params);
+
+      expect(result).toStrictEqual({
+        cleanParams: ['AppStateController:getState', []],
+        traceMetadata: _trace,
+      });
+      expect(params).toHaveLength(3);
+    });
+
+    jestIt.each([
+      { context: { _traceId: 'trace123' }, spanName: 'Background RPC: foo' },
+      { context: { _traceId: 'trace123', _spanId: 'span456' } },
+      { context: { _traceId: 'trace123', _spanId: 'span456' }, spanName: 1 },
+      {
+        context: { _traceId: 'trace123', _spanId: 'span456' },
+        spanName: 'other',
+      },
+      {
+        context: { _traceId: 'trace123', _spanId: 'span456' },
+        spanName: 'Background RPC: foo',
+        messengerAction: 1,
+      },
+    ])(
+      'does not extract anything from params containing invalid tracing metadata: %j',
+      (metadata) => {
+        const params = ['bar', { _trace: metadata }];
+
+        const result = extractTraceMetadata(params);
+
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
+      },
+    );
+
+    jestIt.each([undefined, {}, []])(
+      'does not extract anything from params that have no _trace argument: %j',
+      (params) => {
+        const result = extractTraceMetadata(params);
+
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
+      },
+    );
+  });
+  /* eslint-enable @typescript-eslint/naming-convention */
 });

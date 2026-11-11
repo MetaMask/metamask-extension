@@ -14,6 +14,13 @@ import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../../../hooks/money/useMoneyAnalytics.mock';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyVaultApy } from '../../../../hooks/money/useMoneyVaultApy';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyFtueEntryPoint,
+  MoneyScreenName,
+} from '../../../../pages/money/constants/money-events';
 import { setMoneyFtueSeen } from '../../../../store/actions';
 import {
   MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID,
@@ -79,6 +86,12 @@ const createState = (
   moneyFtue: {
     isOpen: true,
     source: pendingDeposit ? 'deposit' : 'moneyHome',
+    origin: pendingDeposit
+      ? {
+          entryPoint: MoneyFtueEntryPoint.WalletHome,
+          componentName: MoneyComponentName.TokenListItemCta,
+        }
+      : { entryPoint: MoneyFtueEntryPoint.MoneyHome },
     pendingDeposit,
     acknowledged: false,
   },
@@ -177,7 +190,7 @@ describe('MoneyFtueSplash', () => {
     renderSplash();
 
     const splash = screen.getByTestId(MONEY_FTUE_SPLASH_TEST_ID);
-    expect(splash.className).toContain('max-w-[400px]');
+    expect(splash.className).toContain('max-w-[368px]');
     expect(splash.className).toContain('max-h-[min(75vh,680px)]');
   });
 
@@ -187,11 +200,89 @@ describe('MoneyFtueSplash', () => {
     renderSplash();
 
     expect(screen.getByTestId(MONEY_FTUE_SPLASH_TEST_ID).className).toContain(
-      'max-w-[400px]',
+      'max-w-[368px]',
     );
   });
 
-  it('marks the splash seen and continues the pending deposit from the CTA', () => {
+  it('renders both hero layers in the popup', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    renderSplash();
+
+    const images = screen
+      .getByTestId('money-ftue-splash-artwork')
+      .querySelectorAll('img');
+
+    expect(images).toHaveLength(2);
+    expect(images[0]).toHaveAttribute(
+      'src',
+      './images/money-ftue-hero-background.svg',
+    );
+    expect(images[1]).toHaveAttribute(
+      'src',
+      './images/money-ftue-hero-coins.png',
+    );
+  });
+
+  it('uses the card hero background in full screen', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+
+    renderSplash();
+
+    const images = screen
+      .getByTestId('money-ftue-splash-artwork')
+      .querySelectorAll('img');
+
+    expect(images[0]).toHaveAttribute(
+      'src',
+      './images/money-ftue-hero-background-card.svg',
+    );
+  });
+
+  it('matches the Figma title and popup headline typography', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    renderSplash();
+
+    const title = screen.getByTestId('money-ftue-splash-title');
+    const headline = screen.getByTestId('money-ftue-splash-headline');
+
+    expect(title).toHaveClass(
+      'text-s-heading-md',
+      'leading-s-heading-md',
+      'font-medium',
+    );
+    expect(headline).toHaveClass(
+      'text-s-display-md',
+      'leading-s-display-md',
+      'font-bold',
+    );
+  });
+
+  it('uses the 24px headline token in full screen', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+
+    renderSplash();
+
+    const headline = screen.getByTestId('money-ftue-splash-headline');
+
+    expect(headline).toHaveClass('text-s-heading-lg', 'leading-s-heading-lg');
+    expect(headline).not.toHaveClass('text-s-display-md');
+  });
+
+  it('tracks the splash view with its origin', () => {
+    renderSplash();
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyFtue,
+      componentName: MoneyComponentName.FtueSplash,
+      entryPoint: MoneyFtueEntryPoint.WalletHome,
+      originatingComponentName: MoneyComponentName.TokenListItemCta,
+    });
+    expect(mockMoneyAnalytics.trackScreenViewed).toHaveBeenCalledTimes(1);
+  });
+
+  it('marks the splash seen, tracks the CTA and continues the pending deposit', () => {
     const { store } = renderSplash();
 
     fireEvent.click(
@@ -200,6 +291,13 @@ describe('MoneyFtueSplash', () => {
 
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.FtueSplash,
+      labelKey: 'moneyFtueStartEarning',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
     expect(mockInitiateDeposit).toHaveBeenCalledWith({
       preferredPaymentToken: PREFERRED_PAYMENT_TOKEN,
       intent: 'addMusd',
@@ -207,18 +305,31 @@ describe('MoneyFtueSplash', () => {
     });
   });
 
-  it('marks the splash seen and continues the pending deposit from the close button', () => {
+  it('marks the splash seen, tracks the dismiss and cancels the pending deposit from the close button', () => {
     const { store } = renderSplash();
 
     fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));
 
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith({
-      preferredPaymentToken: PREFERRED_PAYMENT_TOKEN,
-      intent: 'addMusd',
-      skipFtue: true,
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Icon,
+      buttonIntent: MoneyButtonIntent.Dismiss,
+      componentName: MoneyComponentName.FtueSplash,
+      redirectTarget: MoneyScreenName.WalletHome,
     });
+  });
+
+  it('closes the Money-tab splash with the close button and navigates to Money home', () => {
+    const { store } = renderSplash(null);
+
+    fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));
+
+    expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
+    expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
   });
 
   it('continues an option-less deposit after acknowledgement', () => {

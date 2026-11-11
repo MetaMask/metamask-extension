@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Magdagdag ng URL"
   },
-  "addAWallet": {
-    "message": "Magdagdag ng wallet"
-  },
   "addAccount": {
     "message": "Magdagdag ng account"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "Kinakailangan ang $1"
-  },
-  "fileImportFail": {
-    "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "I-click para mag-upload o mag-drag and drop"
@@ -7385,10 +7378,6 @@
   "paste": {
     "message": "I-paste"
   },
-  "pastePrivateKey": {
-    "message": "I-paste ang string ng iyong pribadong key dito:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Magbayad gamit ang",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8866,7 +8855,7 @@
     "message": "Naisumite ang pagwi-withdraw"
   },
   "perpsWithdrawTooltip": {
-    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo. Walang hihinging bayad sa MetaMask kapag nag-swap ka sa mUSD.",
+    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8967,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "Ang pribadong key ay nakatago",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Ipakita/Itago ang pribadong key input",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Ang pribadong key ay na ito ay ipinapakita",
@@ -11930,9 +11915,6 @@
     "message": "dito",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Kasama na"
-  },
   "swapGasFeesSplit": {
     "message": "Ang mga bayad sa network sa nakaraang screen ay hinati sa dalawang transaksyon."
   },
@@ -12679,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
-  },
-  "usedByClients": {
-    "message": "Ginagamit ng iba't ibang kliyente"
   },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"

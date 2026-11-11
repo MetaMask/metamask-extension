@@ -47,7 +47,7 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
-  it('delegates the AccountTreeController actions that resolve the non-EVM payment token account', () => {
+  it('delegates the AccountTreeController actions that resolve the payment token account', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 

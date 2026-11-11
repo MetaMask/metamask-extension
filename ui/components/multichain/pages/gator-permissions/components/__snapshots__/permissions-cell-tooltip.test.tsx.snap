@@ -25,7 +25,7 @@ exports[`PermissionsCellTooltip renders correctly with networks 1`] = `
           >
             <img
               alt="BNB Smart Chain"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/bnb.svg"
             />
           </div>
@@ -39,7 +39,7 @@ exports[`PermissionsCellTooltip renders correctly with networks 1`] = `
           >
             <img
               alt="Avalanche C-Chain"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/avax-token.svg"
             />
           </div>
@@ -53,7 +53,7 @@ exports[`PermissionsCellTooltip renders correctly with networks 1`] = `
           >
             <img
               alt="Polygon"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/pol-token.svg"
             />
           </div>
@@ -67,7 +67,7 @@ exports[`PermissionsCellTooltip renders correctly with networks 1`] = `
           >
             <img
               alt="Ethereum Mainnet"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/eth_logo.svg"
             />
           </div>

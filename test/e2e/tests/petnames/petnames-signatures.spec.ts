@@ -10,6 +10,9 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 
+// End of the verifying contract. The start is shortened to fit the row.
+const CONTRACT_ADDRESS_END = 'cCcccccccC';
+
 describe('Petnames - Signatures', function (this: Suite) {
   it('can save names for addresses in type 3 signatures', async function () {
     await withSignatureFixtures(
@@ -31,9 +34,9 @@ describe('Petnames - Signatures', function (this: Suite) {
           value: '0xbBbBB...bBBbB',
           proposedName: 'test2.lens',
         });
-        await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
+        await confirmation.checkNameIsDisplayed(CONTRACT_ADDRESS_END, false);
         await confirmation.saveName({
-          value: '0xCcCCc...ccccC',
+          value: CONTRACT_ADDRESS_END,
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();
@@ -74,9 +77,9 @@ describe('Petnames - Signatures', function (this: Suite) {
           value: '0xB0Bda...bEa57',
           proposedName: 'Test Token 2',
         });
-        await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
+        await confirmation.checkNameIsDisplayed(CONTRACT_ADDRESS_END, false);
         await confirmation.saveName({
-          value: '0xCcCCc...ccccC',
+          value: CONTRACT_ADDRESS_END,
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();

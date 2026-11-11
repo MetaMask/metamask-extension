@@ -2,7 +2,7 @@ import type { TransactionPayControllerState } from '@metamask/transaction-pay-co
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import {
   MOCK_ACCOUNT_EOA,
-  MOCK_ACCOUNT_SOLANA_MAINNET,
+  MOCK_ACCOUNT_BIP122_P2WPKH,
 } from '../../test/data/mock-accounts';
 import {
   selectTransactionDataByTransactionId,
@@ -339,7 +339,7 @@ describe('transactionPayController selectors', () => {
           internalAccounts: {
             accounts: {
               [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
-              [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+              [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
             },
             selectedAccount: MOCK_ACCOUNT_EOA.id,
           },
@@ -359,7 +359,7 @@ describe('transactionPayController selectors', () => {
 
     it('returns undefined for a non-EVM account override', () => {
       const result = selectTransactionPayEvmAccountOverrideByTransactionId(
-        createAccountsState(MOCK_ACCOUNT_SOLANA_MAINNET.id),
+        createAccountsState(MOCK_ACCOUNT_BIP122_P2WPKH.id),
         TRANSACTION_ID,
       );
 

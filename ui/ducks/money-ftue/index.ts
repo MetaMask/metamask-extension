@@ -1,5 +1,6 @@
 import type { MetaMaskReduxState } from '../../store/store';
 import type {
+  MoneyFtueOrigin,
   MoneyFtuePendingDeposit,
   MoneyFtueSource,
   MoneyFtueState,
@@ -12,6 +13,7 @@ export {
   initialState,
 } from './money-ftue';
 export type {
+  MoneyFtueOrigin,
   MoneyFtuePendingDeposit,
   MoneyFtueSource,
   MoneyFtueState,
@@ -36,6 +38,17 @@ export const selectMoneyFtueSource = (
   state: MetaMaskReduxState,
 ): MoneyFtueSource | null =>
   (state.moneyFtue as MoneyFtueState | undefined)?.source ?? null;
+
+/**
+ * Selects where the user was when the splash opened.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The FTUE origin, or null when closed.
+ */
+export const selectMoneyFtueOrigin = (
+  state: MetaMaskReduxState,
+): MoneyFtueOrigin | null =>
+  (state.moneyFtue as MoneyFtueState | undefined)?.origin ?? null;
 
 /**
  * Selects the deposit intent that should continue after the splash closes.

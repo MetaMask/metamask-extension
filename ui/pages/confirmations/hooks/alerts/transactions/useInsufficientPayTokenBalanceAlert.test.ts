@@ -106,14 +106,16 @@ function runHook(
   {
     paymentOverride,
     confirmationOverrides,
+    chainId = CHAIN_IDS.MAINNET,
   }: {
     paymentOverride?: PaymentOverride;
     confirmationOverrides?: Partial<TransactionMeta>;
+    chainId?: Hex;
   } = {},
 ) {
   const contractInteraction = {
     ...genUnapprovedContractInteractionConfirmation({
-      chainId: CHAIN_IDS.MAINNET,
+      chainId,
     }),
     ...confirmationOverrides,
   } as TransactionMeta;
@@ -747,9 +749,13 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         tokenFiatAmount: 0,
       });
 
+      // The deposit batch is created on the vault chain, so the parent
+      // transaction and the pay token are both on Monad: the same-chain leg
+      // that executes from the money account.
       const { result } = runHook(
         {},
         {
+          chainId: CHAIN_IDS.MONAD as Hex,
           confirmationOverrides: {
             isGasFeeSponsored: true,
             nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
@@ -792,6 +798,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         const { result } = runHook(
           {},
           {
+            chainId: CHAIN_IDS.MONAD as Hex,
             confirmationOverrides: {
               nestedTransactions: [{ type }],
             },
@@ -799,6 +806,59 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         );
 
         expect(result.current).toStrictEqual([]);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      ['deposit', TransactionType.moneyAccountDeposit],
+      ['withdraw', TransactionType.moneyAccountWithdraw],
+    ])(
+      'returns the alert for a cross-chain money-account %s when the funding chain has no native gas',
+      (_name: string, type: TransactionType) => {
+        // A cross-chain money-account transaction funds the vault from the
+        // user's own EOA on another chain. That source leg is an ordinary
+        // transaction billed to the paying account in the source chain's
+        // native token, and sponsorship cannot apply because the pay
+        // controller only zeroes source gas when source == target == parent.
+        // Suppressing here let the deposit reach `eth_sendRawTransaction`
+        // with zero native balance and fail on-chain.
+        useTransactionPayTokenMock.mockReturnValue({
+          payToken: createPayTokenMock({
+            chainId: CHAIN_IDS.MAINNET as Hex,
+          }),
+          isNative: false,
+          setPayToken: jest.fn(),
+        });
+
+        useTokenWithBalanceMock.mockReturnValue({
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: CHAIN_IDS.MAINNET,
+          symbol: 'ETH',
+          decimals: 18,
+          balance: '0',
+          balanceRaw: '0',
+          balanceFiat: '$0.00',
+          tokenFiatAmount: 0,
+        });
+
+        const { result } = runHook(
+          {},
+          {
+            chainId: CHAIN_IDS.MONAD as Hex,
+            confirmationOverrides: {
+              isGasFeeSponsored: true,
+              nestedTransactions: [{ type }],
+            },
+          },
+        );
+
+        expect(result.current).toStrictEqual([
+          expect.objectContaining({
+            key: AlertsName.InsufficientPayTokenNative,
+            isBlocking: true,
+          }),
+        ]);
       },
     );
 
@@ -902,6 +962,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       const { result } = runHook(
         {},
         {
+          chainId: CHAIN_IDS.MONAD as Hex,
           confirmationOverrides: {
             isGasFeeSponsored: true,
             nestedTransactions: [

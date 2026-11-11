@@ -4,7 +4,7 @@ import { CHAIN_IDS } from '../../constants/network';
 import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../../constants/transaction';
 import {
   MOCK_ACCOUNT_EOA,
-  MOCK_ACCOUNT_SOLANA_MAINNET,
+  MOCK_ACCOUNT_BIP122_P2WPKH,
 } from '../../../test/data/mock-accounts';
 import {
   getEvmAccountOverride,
@@ -17,6 +17,8 @@ import {
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+const BTC_ASSET_ID =
+  'bip122:000000000019d6689c085ae165831e93/slip44:0' as CaipAssetType;
 const SOLANA_MAINNET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOL_ASSET_ID = `${SOLANA_MAINNET}/slip44:501` as CaipAssetType;
 
@@ -53,7 +55,7 @@ describe('pay-token', () => {
     });
 
     it('returns undefined for a non-EVM asset', () => {
-      expect(getEvmAsset(SOL_ASSET_ID)).toBeUndefined();
+      expect(getEvmAsset(BTC_ASSET_ID)).toBeUndefined();
     });
   });
 
@@ -87,7 +89,7 @@ describe('pay-token', () => {
 
     it('returns undefined for a non-EVM or missing payment token', () => {
       expect(
-        getEvmPaymentToken(createPaymentToken(SOL_ASSET_ID)),
+        getEvmPaymentToken(createPaymentToken(BTC_ASSET_ID)),
       ).toBeUndefined();
       expect(getEvmPaymentToken(undefined)).toBeUndefined();
     });
@@ -116,7 +118,7 @@ describe('pay-token', () => {
   describe('getEvmAccountOverride', () => {
     const accounts = {
       [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
-      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+      [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
     };
 
     it('returns the address of an EVM override account', () => {
@@ -127,7 +129,7 @@ describe('pay-token', () => {
 
     it('returns undefined for a non-EVM override account', () => {
       expect(
-        getEvmAccountOverride(MOCK_ACCOUNT_SOLANA_MAINNET.id, accounts),
+        getEvmAccountOverride(MOCK_ACCOUNT_BIP122_P2WPKH.id, accounts),
       ).toBeUndefined();
     });
 
