@@ -9653,7 +9653,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^7.1.1":
+"@metamask/network-enablement-controller@npm:^7.1.0, @metamask/network-enablement-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/network-enablement-controller@npm:7.1.1"
   dependencies:
