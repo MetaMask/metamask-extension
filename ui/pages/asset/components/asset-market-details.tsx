@@ -7,16 +7,14 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
 import { getPricePrecision } from '../util';
-
-import { Text } from '../../../components/component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -31,13 +29,21 @@ import { Asset } from '../types/asset';
 import { getConversionRatesForNativeAsset } from '../../../../shared/lib/asset-conversion-rates';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { AssetMarketData } from '../hooks/useCurrentPrice';
 
 export const AssetMarketDetails = ({
   asset,
   address,
+  fallbackMarketData,
 }: {
   asset: Asset;
   address: string;
+  /**
+   * Market data fetched from the Price API, already in the selected fiat
+   * currency. Used for assets the wallet does not track, which have no cached
+   * market data in redux.
+   */
+  fallbackMarketData?: AssetMarketData;
 }) => {
   const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
@@ -45,7 +51,11 @@ export const AssetMarketDetails = ({
   const evmMarketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
-  const { formatCurrencyCompact, formatCompact } = useFormatters();
+  const {
+    formatCurrencyCompact,
+    formatCompact,
+    formatPercentWithMinThreshold,
+  } = useFormatters();
 
   const isEvm = isEvmChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
@@ -74,9 +84,18 @@ export const AssetMarketDetails = ({
       ? conversionRateForNativeToken?.marketData
       : nonEvmConversionRates?.[address as CaipAssetType]?.marketData;
 
-  const tokenMarketDetails = isEvm
+  const cachedMarketDetails = isEvm
     ? evmMarketData[chainId]?.[address as Hex]
     : nonEvmMarketData;
+
+  // Cached EVM values are stored in native units and are converted below, while
+  // the fallback arrives from the Price API already in the selected currency.
+  const isCachedMarketData = Boolean(cachedMarketDetails);
+  const tokenMarketDetails = cachedMarketDetails ?? fallbackMarketData;
+
+  const rawDilutedMarketCap = (
+    tokenMarketDetails as { dilutedMarketCap?: string | number } | undefined
+  )?.dilutedMarketCap;
 
   const shouldDisplayMarketData =
     Number(conversionRate) > 0 &&
@@ -85,7 +104,8 @@ export const AssetMarketDetails = ({
       Number(tokenMarketDetails.totalVolume) > 0 ||
       Number(tokenMarketDetails.circulatingSupply) > 0 ||
       Number(tokenMarketDetails.allTimeHigh) > 0 ||
-      Number(tokenMarketDetails.allTimeLow) > 0);
+      Number(tokenMarketDetails.allTimeLow) > 0 ||
+      Number(rawDilutedMarketCap) > 0);
 
   if (!shouldDisplayMarketData) {
     return null;
@@ -103,13 +123,18 @@ export const AssetMarketDetails = ({
   const circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
   let allTimeHigh = toNumber(tokenMarketDetails.allTimeHigh);
   let allTimeLow = toNumber(tokenMarketDetails.allTimeLow);
+  let fullyDiluted = toNumber(rawDilutedMarketCap);
 
-  if (isEvm) {
+  if (isEvm && isCachedMarketData) {
     marketCap *= tokenExchangeRate;
     totalVolume *= tokenExchangeRate;
     allTimeHigh *= tokenExchangeRate;
     allTimeLow *= tokenExchangeRate;
+    fullyDiluted *= tokenExchangeRate;
   }
+
+  const volumeToMarketCap =
+    marketCap > 0 && totalVolume > 0 ? totalVolume / marketCap : 0;
 
   return (
     <Box>
@@ -119,14 +144,9 @@ export const AssetMarketDetails = ({
         borderColor={BoxBorderColor.BorderMuted}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
-      <Text
-        variant={TextVariant.headingSm}
-        paddingInline={4}
-        paddingTop={2}
-        paddingBottom={2}
-      >
-        {t('marketDetails')}
-      </Text>
+      <Box paddingLeft={4} paddingRight={4} paddingTop={2} paddingBottom={2}>
+        <Text variant={TextVariant.HeadingSm}>{t('marketDetails')}</Text>
+      </Box>
       <Box
         className="flex px-4"
         flexDirection={BoxFlexDirection.Column}
@@ -136,7 +156,8 @@ export const AssetMarketDetails = ({
           renderRow(
             t('marketCap'),
             <Text
-              variant={TextVariant.bodyMdMedium}
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
               data-testid="asset-market-cap"
             >
               {formatCurrencyCompact(marketCap, currency)}
@@ -145,21 +166,32 @@ export const AssetMarketDetails = ({
         {totalVolume > 0 &&
           renderRow(
             t('totalVolume'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {formatCurrencyCompact(totalVolume, currency)}
+            </Text>,
+          )}
+        {volumeToMarketCap > 0 &&
+          renderRow(
+            t('volumeToMarketCap'),
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              data-testid="asset-volume-to-market-cap"
+            >
+              {formatPercentWithMinThreshold(volumeToMarketCap)}
             </Text>,
           )}
         {circulatingSupply > 0 &&
           renderRow(
             t('circulatingSupply'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {formatCompact(circulatingSupply)}
             </Text>,
           )}
         {allTimeHigh > 0 &&
           renderRow(
             t('allTimeHigh'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {formatCurrency(
                 `${allTimeHigh}`,
                 currency,
@@ -170,12 +202,23 @@ export const AssetMarketDetails = ({
         {allTimeLow > 0 &&
           renderRow(
             t('allTimeLow'),
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {formatCurrency(
                 `${allTimeLow}`,
                 currency,
                 getPricePrecision(allTimeLow),
               )}
+            </Text>,
+          )}
+        {fullyDiluted > 0 &&
+          renderRow(
+            t('fullyDiluted'),
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              data-testid="asset-fully-diluted"
+            >
+              {formatCurrencyCompact(fullyDiluted, currency)}
             </Text>,
           )}
       </Box>
@@ -187,8 +230,9 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
   return (
     <Box className="flex" justifyContent={BoxJustifyContent.Between}>
       <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMdMedium}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
       >
         {leftColumn}
       </Text>

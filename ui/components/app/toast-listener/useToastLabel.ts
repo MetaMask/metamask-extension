@@ -48,6 +48,30 @@ function getPerpsWithdrawToastContent(
   };
 }
 
+function getPerpsDepositToastContent(
+  status: ToastStatus,
+  t: TranslateFn,
+): ToastLabel {
+  if (status === 'pending') {
+    return {
+      title: t('perpsDepositToastPendingTitle'),
+      description: t('perpsDepositToastPendingDescription'),
+    };
+  }
+
+  if (status === 'success') {
+    return {
+      title: t('perpsDepositToastSuccessTitle'),
+      description: t('perpsDepositToastSuccessDescription'),
+    };
+  }
+
+  return {
+    title: t('perpsDepositToastErrorTitle'),
+    description: t('perpsDepositToastErrorDescription'),
+  };
+}
+
 // Add per-type toast content here
 function useGetToastContent(
   status: ToastStatus,
@@ -56,25 +80,6 @@ function useGetToastContent(
   const t = useI18nContext();
 
   switch (item?.type) {
-    case 'convert': {
-      const sourceSymbol = item.data.sourceToken?.symbol;
-
-      if (status === 'pending') {
-        return {
-          title: t('musdConversionToastInProgress', [sourceSymbol ?? 'Token']),
-        };
-      }
-
-      if (status === 'success') {
-        return {
-          title: t('musdConversionToastSuccess'),
-          description: t('musdConversionToastSuccessDescription'),
-        };
-      }
-
-      return { title: t('musdConversionToastFailed') };
-    }
-
     case 'claimMusdBonus': {
       if (status === 'pending') {
         return { title: t('merklRewardsToastInProgress') };
@@ -89,6 +94,9 @@ function useGetToastContent(
 
     case 'perpsWithdraw':
       return getPerpsWithdrawToastContent(status, item, t);
+
+    case 'perpsAddFunds':
+      return getPerpsDepositToastContent(status, t);
 
     default:
       return { title: t(genericToastLabels[status]) };

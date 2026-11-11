@@ -33,7 +33,6 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-123',
         consentDecisionMade: true,
       },
-      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(
@@ -55,6 +54,7 @@ describe('trackCriticalErrorEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -69,7 +69,6 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-456',
         consentDecisionMade: true,
       },
-      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(
@@ -95,6 +94,7 @@ describe('trackCriticalErrorEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);

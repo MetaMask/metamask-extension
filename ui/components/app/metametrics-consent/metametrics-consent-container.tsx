@@ -18,14 +18,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getConsentDecisionMade,
-  getDataCollectionForMarketing,
-  getOptedIn,
-} from '../../../selectors/metametrics';
-import { setDataCollectionForMarketing } from '../../../store/actions';
+import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
+import { optOutOfMarketing, optInToMarketing } from '../../../store/actions';
 import { METAMETRICS_SETTINGS_LINK } from '../../../helpers/constants/common';
-import type { MetaMaskReduxState } from '../../../store/store';
 import { useDispatch } from '../../../store/hooks';
 
 export function MetaMetricsConsentContainer() {
@@ -34,13 +29,9 @@ export function MetaMetricsConsentContainer() {
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const isMetaMetricsEnabled = useSelector(
-    (state: MetaMaskReduxState) =>
-      getConsentDecisionMade(state) && getOptedIn(state),
-  );
 
   const handleClose = useCallback(() => {
-    dispatch(setDataCollectionForMarketing(false));
+    dispatch(optOutOfMarketing());
     trackEvent(
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Home)
@@ -54,7 +45,7 @@ export function MetaMetricsConsentContainer() {
 
   const handleConsent = useCallback(
     (consent: boolean) => {
-      dispatch(setDataCollectionForMarketing(consent));
+      dispatch(consent ? optInToMarketing() : optOutOfMarketing());
       trackEvent(
         createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
           .addCategory(MetaMetricsEventCategory.Home)
@@ -68,7 +59,7 @@ export function MetaMetricsConsentContainer() {
     [createEventBuilder, dispatch, trackEvent],
   );
 
-  if (dataCollectionForMarketing !== null || !isMetaMetricsEnabled) {
+  if (dataCollectionForMarketing !== null) {
     return null;
   }
 

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getConsentDecisionMade,
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
@@ -12,7 +11,8 @@ import {
 } from '../../../selectors';
 import {
   getMarketingConsent,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
@@ -34,7 +34,6 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
 
   // Match legacy Security tab: fetch remote marketing consent when the user is in
@@ -47,7 +46,9 @@ export const DataCollectionToggleItem = () => {
     const fetchConsent = async () => {
       const marketingConsentFromRemote = await getMarketingConsent();
       if (!cancelled) {
-        dispatch(setDataCollectionForMarketing(marketingConsentFromRemote));
+        dispatch(
+          marketingConsentFromRemote ? optInToMarketing() : optOutOfMarketing(),
+        );
       }
     };
     fetchConsent();
@@ -56,9 +57,6 @@ export const DataCollectionToggleItem = () => {
     };
   }, [socialLoginEnabled, dispatch]);
 
-  const isDisabled =
-    !useExternalServices || !(consentDecisionMade && isOptedIn);
-
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
 
@@ -66,13 +64,13 @@ export const DataCollectionToggleItem = () => {
       dispatch(setMarketingConsent(newValue));
     }
 
-    dispatch(setDataCollectionForMarketing(newValue));
+    dispatch(newValue ? optInToMarketing() : optOutOfMarketing());
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: isOptedIn,
           [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
           location: 'Settings',
         })
@@ -92,7 +90,7 @@ export const DataCollectionToggleItem = () => {
       onToggle={handleToggle}
       dataTestId="data-collection-for-marketing-input"
       containerDataTestId="data-collection-for-marketing-toggle"
-      disabled={isDisabled}
+      disabled={!useExternalServices}
     />
   );
 };

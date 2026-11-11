@@ -4,15 +4,15 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import {
+  addAccounts,
   waitUntilAccountTreeSyncIdle,
-  addNHdAccountsForTronDerivation,
-} from '../../page-objects/flows/tron-account-derivation.flow';
+} from '../../page-objects/flows/add-account.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
-import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { base58AddressToHex } from '../../seeder/tron/assets';
 import {
   SUN_PER_TRX,
@@ -131,7 +131,7 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -182,9 +182,17 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addAccounts({
+          driver,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
+        });
 
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         await assertTronAddressesForAccounts(driver, 8);
       },
@@ -225,8 +233,16 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await addAccounts({
+          driver,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
+        });
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -267,7 +283,7 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -303,8 +319,16 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await addAccounts({
+          driver,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
+        });
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -320,7 +344,7 @@ describe('Tron account derivation', function (this: Suite) {
           await waitUntilAccountTreeSyncIdle(driver);
 
           await homepage.checkPageIsLoaded();
-          await homepage.clickOnReceiveButton();
+          await homepage.clickOnReceiveButton('default');
           await addressList.checkPageIsLoaded();
           await addressList.checkNetworkAddressIsDisplayedForNetwork({
             networkName: 'Tron',

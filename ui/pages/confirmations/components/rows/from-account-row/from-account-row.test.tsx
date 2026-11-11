@@ -31,18 +31,26 @@ jest.mock('../../account-select-modal', () => ({
     onClose,
     title,
     excludeHardwareAccounts,
+    excludeQrAccounts,
+    restrictHardwareAccountsToSelected,
   }: {
     selectedAddress: string;
     onSelect: (address: string) => void;
     onClose: () => void;
     title?: string;
     excludeHardwareAccounts?: boolean;
+    excludeQrAccounts?: boolean;
+    restrictHardwareAccountsToSelected?: boolean;
   }) => (
     <div data-testid="account-select-modal">
       <span data-testid="selected-address">{selectedAddress}</span>
       <span data-testid="modal-title">{title}</span>
       <span data-testid="exclude-hardware-accounts">
         {String(excludeHardwareAccounts)}
+      </span>
+      <span data-testid="exclude-qr-accounts">{String(excludeQrAccounts)}</span>
+      <span data-testid="restrict-hardware-accounts-to-selected">
+        {String(restrictHardwareAccountsToSelected ?? false)}
       </span>
       <button
         data-testid="select-other"
@@ -365,6 +373,31 @@ describe('FromAccountRow', () => {
     });
   });
 
+  it('leaves the money account withdraw transfer for the background to re-encode', async () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        txParams: { from: FROM_ADDRESS_MOCK },
+        type: TransactionType.moneyAccountWithdraw,
+        nestedTransactions: [{ data: '0xabc', to: '0x1' }],
+      },
+    } as never);
+
+    renderWithProvider(<FromAccountRow />, createStore());
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+    fireEvent.click(screen.getByTestId('select-other'));
+
+    await waitFor(() => {
+      expect(setAccountOverrideMock).toHaveBeenCalledWith(
+        TX_ID_MOCK,
+        OTHER_ADDRESS_MOCK,
+      );
+    });
+    expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
+  });
+
   it('does not set the account override when the current account is chosen', () => {
     const store = createStore();
     renderWithProvider(<FromAccountRow />, store);
@@ -400,32 +433,6 @@ describe('FromAccountRow', () => {
     );
   });
 
-  [
-    TransactionType.moneyAccountDeposit,
-    TransactionType.moneyAccountWithdraw,
-  ].forEach((type) => {
-    it(`excludes hardware accounts from the ${type} selector`, () => {
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: {
-          id: TX_ID_MOCK,
-          chainId: CHAIN_ID_MOCK,
-          type,
-          txParams: { from: FROM_ADDRESS_MOCK },
-        },
-      } as never);
-      useIsPayHardwareBlockedMock.mockReturnValue(false);
-
-      const store = createStore();
-      renderWithProvider(<FromAccountRow />, store);
-
-      fireEvent.click(screen.getByTestId('from-account-pill'));
-
-      expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
-        'true',
-      );
-    });
-  });
-
   it('allows hardware accounts in the modal when the flow permits them', () => {
     const store = createStore();
     renderWithProvider(<FromAccountRow />, store);
@@ -435,6 +442,30 @@ describe('FromAccountRow', () => {
     expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
       'false',
     );
+  });
+
+  it('excludes QR accounts from money account deposits', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-qr-accounts')).toHaveTextContent('true');
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'false',
+    );
+    expect(
+      screen.getByTestId('restrict-hardware-accounts-to-selected'),
+    ).toHaveTextContent('false');
   });
 
   it('renders nothing when there is no from address', () => {

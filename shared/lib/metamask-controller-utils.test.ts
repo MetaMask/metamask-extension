@@ -38,6 +38,7 @@ const COMPLETED_ONBOARDING_STATE: OnboardingControllerState = {
   firstTimeFlowType: null,
   completedOnboarding: true,
   hasSeenOnboardingCompletionPage: true,
+  onboardingJourneyEnded: false,
 };
 
 describe('createEnsureOnboardingCompleteCallback', () => {

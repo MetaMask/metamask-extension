@@ -82,17 +82,6 @@ const MOCK_EVM_ACCOUNT = {
   methods: [],
 };
 
-// Minimal Solana (non-EVM) account
-const MOCK_SOLANA_ACCOUNT = {
-  id: 'sol-account-1',
-  address: 'SolanaAddress',
-  type: 'solana:data-account' as const,
-  scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'] as CaipChainId[],
-  options: {},
-  metadata: { name: 'Solana', keyring: { type: 'Snap Keyring' } },
-  methods: [],
-};
-
 // Minimal network configuration – cast to unknown to avoid satisfying the full
 // MultichainNetworkConfiguration type in test fixtures (isEvm, etc.)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,23 +115,6 @@ const MOCK_OPTIMISM_NETWORK: AnyNetwork = {
   defaultRpcEndpointIndex: 0,
   blockExplorerUrls: [],
   defaultBlockExplorerUrlIndex: 0,
-};
-
-const MOCK_SOLANA_NETWORK: AnyNetwork = {
-  chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId,
-  name: 'Solana',
-  nativeCurrency: 'SOL',
-  rpcEndpoints: [],
-  defaultRpcEndpointIndex: 0,
-  blockExplorerUrls: [],
-  defaultBlockExplorerUrlIndex: 0,
-};
-
-const ALL_NETWORKS: AnyNetwork = {
-  [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
-  [CAIP_BASE]: MOCK_BASE_NETWORK,
-  [CAIP_OPTIMISM]: MOCK_OPTIMISM_NETWORK,
-  [MOCK_SOLANA_NETWORK.chainId]: MOCK_SOLANA_NETWORK,
 };
 
 /** Return a fresh state object each call so reselect never returns a cached value. */

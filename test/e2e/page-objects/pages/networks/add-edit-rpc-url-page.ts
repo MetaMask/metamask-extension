@@ -1,3 +1,4 @@
+import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -47,6 +48,16 @@ class AddEditRpcUrlPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Leave the RPC URL field. Format errors are shown after blur, not while
+   * the user is still typing.
+   */
+  async blurAddRpcUrlInput(): Promise<void> {
+    console.log('Blur the RPC URL input on the RPC URL page');
+    const rpcUrlInput = await this.driver.findElement(this.addRpcUrlInput);
+    await rpcUrlInput.sendKeys(Key.TAB);
   }
 
   /**

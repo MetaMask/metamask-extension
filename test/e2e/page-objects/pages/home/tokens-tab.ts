@@ -29,8 +29,8 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * Network filter control-bar chrome belongs to `NetworkFilter` /
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
- * Related: `HomePage` (`goToTokensTab`), `NonEvmHomepage`, `NetworkFilter`,
- * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
+ * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
+ * `flows/multi-srp.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx
  */
@@ -108,11 +108,15 @@ class TokensTab extends HomePage {
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
 
+  private readonly lowValueAssetsToggleCollapsed = `${this.lowValueAssetsToggle}[aria-expanded="false"]`;
+
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
+
+  private readonly moneyTokenListCta = '[data-testid^="money-token-list-cta-"]';
 
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
@@ -654,9 +658,9 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
     const row = await this.findTokenRowByName(tokenName);
-    assert.ok(
-      (await row.getText()).includes(expectedText),
-      `Expected "${tokenName}" row to contain "${expectedText}"`,
+    await this.driver.waitUntil(
+      async () => (await row.getText()).includes(expectedText),
+      { timeout: 10000, interval: 500 },
     );
   }
 
@@ -702,6 +706,12 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.manageTokensButton);
   }
 
+  async clickMoneyTokenListCta(): Promise<void> {
+    console.log('Click the Money deposit CTA on the first eligible token row');
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.clickElement(this.moneyTokenListCta);
+  }
+
   async clickMultichainTokenListButton(): Promise<void> {
     console.log('Clicking on multichain token list button');
     await this.driver.clickElement(this.tokenListItem);
@@ -728,6 +738,22 @@ class TokensTab extends HomePage {
   async clickTokenOptionsButton(): Promise<void> {
     console.log('Click the token options button');
     await this.driver.clickElement(this.tokenOptionsButton);
+  }
+
+  /**
+   * Collapses the low-value assets section when it is currently expanded.
+   * The expansion state is retained by the token list between renders.
+   */
+  async collapseLowValueAssets(): Promise<void> {
+    await this.driver.waitForSelector(this.lowValueAssetsToggle);
+    const isExpanded = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggleExpanded,
+      1000,
+    );
+    if (isExpanded) {
+      await this.driver.clickElement(this.lowValueAssetsToggle);
+    }
+    await this.driver.waitForSelector(this.lowValueAssetsToggleCollapsed);
   }
 
   /**

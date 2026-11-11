@@ -2,6 +2,7 @@ import { Driver } from '../../../webdriver/driver';
 import { largeDelayMs } from '../../../helpers';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../../constants';
+import { BASE_ACCOUNT_SYNC_TIMEOUT } from '../../../tests/identity/account-syncing/helpers';
 
 /**
  * Multichain account list: wallets, accounts, add/hide/pin, and related menus.
@@ -190,7 +191,9 @@ class AccountListPage {
   private readonly importAccountConfirmButton =
     '[data-testid="import-account-confirm-button"]';
 
-  private readonly importAccountDropdownOption = '.dropdown__select';
+  private readonly importAccountErrorMessage = (message: string) => ({
+    text: message,
+  });
 
   private readonly importAccountFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-account"]';
@@ -198,13 +201,11 @@ class AccountListPage {
   private readonly importAccountJsonFileInput =
     'input[data-testid="file-input"]';
 
-  private readonly importAccountJsonFileOption = {
-    text: 'JSON File',
-    tag: 'option',
-  };
-
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
+
+  private readonly importAccountJsonTypeButton =
+    '[data-testid="import-account-type-json"]';
 
   private readonly importAccountPrivateKeyInput = '#private-key-box';
 
@@ -412,10 +413,9 @@ class AccountListPage {
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.importAccountConfirmButton);
-      await this.driver.waitForSelector({
-        css: '.mm-help-text',
-        text: expectedErrorMessage,
-      });
+      await this.driver.waitForSelector(
+        this.importAccountErrorMessage(expectedErrorMessage),
+      );
     } else {
       // Import + forceUpdateMetamaskState can outlive the default 3s staleness
       // wait under multi-SRP / Solana load on CI before the Add Wallet page
@@ -1090,8 +1090,7 @@ class AccountListPage {
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
-    await this.driver.clickElement(this.importAccountDropdownOption);
-    await this.driver.clickElement(this.importAccountJsonFileOption);
+    await this.driver.clickElement(this.importAccountJsonTypeButton);
 
     const fileInput = await this.driver.findElement(
       this.importAccountJsonFileInput,
@@ -1320,7 +1319,7 @@ class AccountListPage {
    * @param timeout - Maximum time in ms to wait for the button to stay ready.
    */
   async waitForAddWalletButtonStablyReady(
-    timeout: number = 15000,
+    timeout: number = BASE_ACCOUNT_SYNC_TIMEOUT,
   ): Promise<void> {
     console.log('Waiting for add wallet button to be stably enabled');
     await this.driver.waitUntil(
@@ -1346,7 +1345,9 @@ class AccountListPage {
    *
    * @param timeout - Maximum time in ms to wait for syncing to finish.
    */
-  async waitUntilSyncingIsCompleted(timeout: number = 15000): Promise<void> {
+  async waitUntilSyncingIsCompleted(
+    timeout: number = BASE_ACCOUNT_SYNC_TIMEOUT,
+  ): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
     await this.waitForAddWalletButtonStablyReady(timeout);
   }

@@ -1,11 +1,10 @@
-import { useSelector } from 'react-redux';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import {
   PAY_HARDWARE_BLOCKED_TRANSACTION_TYPES,
   PAY_HARDWARE_FLAG_GATED_TRANSACTION_TYPES,
 } from '../../constants/pay';
-import { selectIsPayHardwareEnabled } from '../../selectors/feature-flags';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
+import { useIsPayHardwareEnabled } from './useIsPayHardwareEnabled';
 
 /**
  * Whether the current confirmation forbids funding from a hardware wallet
@@ -22,7 +21,7 @@ import { useTransactionMetadataRequestOptional } from '../transactions/useTransa
  */
 export function useIsPayHardwareBlocked(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
-  const isPayHardwareEnabled = useSelector(selectIsPayHardwareEnabled);
+  const isPayHardwareEnabled = useIsPayHardwareEnabled();
 
   const isAlwaysBlockedType = hasTransactionType(
     transactionMeta,

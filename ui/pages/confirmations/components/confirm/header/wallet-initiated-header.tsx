@@ -1,3 +1,4 @@
+import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import {
   TransactionMeta,
   TransactionType,
@@ -12,7 +13,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
 } from '../../../../../components/component-library';
 import {
   AlignItems,
@@ -21,8 +21,6 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { SHIELD_PLAN_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -148,7 +146,11 @@ export const WalletInitiatedHeader = () => {
         color={IconColor.iconDefault}
       />
       {headerTitle && (
-        <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
+        <Text
+          variant={TextVariant.HeadingSm}
+          color={TextColor.Inherit}
+          data-testid="wallet-initiated-header-title"
+        >
           {headerTitle}
         </Text>
       )}

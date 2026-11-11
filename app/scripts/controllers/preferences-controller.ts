@@ -16,6 +16,9 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  DEFAULT_TDP_CHART_INDICATORS,
+  DEFAULT_TDP_CHART_INTERVAL,
+  DEFAULT_TDP_CHART_TYPE,
   ThemeType,
 } from '../../../shared/constants/preferences';
 import type {
@@ -202,6 +205,9 @@ export const getDefaultPreferencesControllerState =
       },
       useNativeCurrencyAsPrimaryCurrency: true,
       useSidePanelAsDefault: true,
+      tdpChartType: DEFAULT_TDP_CHART_TYPE,
+      tdpChartInterval: DEFAULT_TDP_CHART_INTERVAL,
+      tdpChartIndicators: DEFAULT_TDP_CHART_INDICATORS,
       gasSponsorshipOptOutByChainId: {},
     },
     securityAlertsEnabled: true,
@@ -495,6 +501,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'addReferralDeclinedAccount',
   'removeReferralDeclinedAccount',
   'setAccountsReferralApproved',
+  'dismissSidePanelMigrationToast',
 ] as const;
 
 export class PreferencesController extends BaseController<
@@ -617,6 +624,10 @@ export class PreferencesController extends BaseController<
           ? (ownedPreferences?.[preference] ?? true)
           : false;
       }
+
+      if (!useExternalServices) {
+        state.preferences.showTickerWidget = false;
+      }
     });
   }
 
@@ -633,6 +644,10 @@ export class PreferencesController extends BaseController<
         state[preference] = useBasicFunctionality;
       }
       state.isMultiAccountBalancesEnabled = useBasicFunctionality;
+
+      if (!useBasicFunctionality) {
+        state.preferences.showTickerWidget = false;
+      }
     });
 
     this.messenger.call(

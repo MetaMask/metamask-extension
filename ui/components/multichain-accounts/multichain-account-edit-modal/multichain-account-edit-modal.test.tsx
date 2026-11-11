@@ -31,18 +31,25 @@ describe('MultichainAccountEditModal', () => {
     const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
-    expect(screen.getByText(messages.rename.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.accountName.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.renameAccount.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.accountName.message),
+    ).not.toBeInTheDocument();
 
-    const inputField = screen.getByPlaceholderText('Account 1');
-    expect(inputField).toBeInTheDocument();
+    const inputField = screen.getByLabelText(messages.accountName.message);
+    expect(inputField).toHaveValue('Account 1');
+    expect(
+      screen.getByRole('button', { name: messages.clear.message }),
+    ).toBeInTheDocument();
 
-    // Check confirm button exists and is disabled initially
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    // Save stays disabled until the name changes
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
-    expect(confirmButton).toBeInTheDocument();
-    expect(confirmButton).toBeDisabled();
+    expect(saveButton).toBeInTheDocument();
+    expect(saveButton).toBeDisabled();
   });
 
   it('does not render when isOpen is false', () => {
@@ -53,12 +60,14 @@ describe('MultichainAccountEditModal', () => {
     );
 
     // Should not find modal elements when closed
-    expect(screen.queryByText(messages.rename.message)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(messages.accountName.message),
+      screen.queryByText(messages.renameAccount.message),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: messages.confirm.message }),
+      screen.queryByLabelText(messages.accountName.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.save.message }),
     ).not.toBeInTheDocument();
   });
 
@@ -67,30 +76,30 @@ describe('MultichainAccountEditModal', () => {
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
 
     // Initially disabled
-    expect(confirmButton).toBeDisabled();
+    expect(saveButton).toBeDisabled();
 
     // Type valid text
     fireEvent.change(input, { target: { value: 'New Account Name' } });
 
     // Button should be enabled
-    expect(confirmButton).not.toBeDisabled();
+    expect(saveButton).not.toBeDisabled();
 
     // Clear input
     fireEvent.change(input, { target: { value: '' } });
 
     // Button should be disabled again
-    expect(confirmButton).toBeDisabled();
+    expect(saveButton).toBeDisabled();
 
     // Type just spaces
     fireEvent.change(input, { target: { value: '   ' } });
 
     // Button should still be disabled
-    expect(confirmButton).toBeDisabled();
+    expect(saveButton).toBeDisabled();
   });
 
   it('calls onClose when header close button is clicked', () => {
@@ -99,16 +108,6 @@ describe('MultichainAccountEditModal', () => {
 
     const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
-
-    expect(mockProps.onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onClose when back button is clicked', () => {
-    const store = configureStore(mockDefaultState);
-    renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
-
-    const backButton = screen.getByLabelText(messages.back.message);
-    fireEvent.click(backButton);
 
     expect(mockProps.onClose).toHaveBeenCalledTimes(1);
   });
@@ -132,10 +131,10 @@ describe('MultichainAccountEditModal', () => {
     const input = screen.getByPlaceholderText('Account 1');
     fireEvent.change(input, { target: { value: 'New Account Name' } });
 
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
-    fireEvent.click(confirmButton);
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(setAccountGroupName).toHaveBeenCalledWith(
@@ -160,10 +159,10 @@ describe('MultichainAccountEditModal', () => {
     });
 
     // Click the confirm button
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
-    fireEvent.click(confirmButton);
+    fireEvent.click(saveButton);
 
     // Check that dispatch was not called
     await waitFor(() => {
@@ -183,10 +182,10 @@ describe('MultichainAccountEditModal', () => {
     fireEvent.change(input, { target: { value: '  New Account Name  ' } });
 
     // Click the confirm button
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
-    fireEvent.click(confirmButton);
+    fireEvent.click(saveButton);
 
     // Check if dispatch was called with the trimmed name
     await waitFor(() => {
@@ -211,18 +210,18 @@ describe('MultichainAccountEditModal', () => {
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
 
     // Type something first to enable the button
     fireEvent.change(input, { target: { value: 'Something' } });
-    expect(confirmButton).not.toBeDisabled();
+    expect(saveButton).not.toBeDisabled();
 
     // Then clear the input
     fireEvent.change(input, { target: { value: '' } });
 
-    expect(confirmButton).toBeDisabled();
+    expect(saveButton).toBeDisabled();
   });
 
   it('handles form submission with different account name', async () => {
@@ -236,10 +235,10 @@ describe('MultichainAccountEditModal', () => {
     const differentName = 'Different Account Name';
     fireEvent.change(input, { target: { value: differentName } });
 
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
-    fireEvent.click(confirmButton);
+    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(setAccountGroupName).toHaveBeenCalledWith(
@@ -263,10 +262,10 @@ describe('MultichainAccountEditModal', () => {
     const input = screen.getByPlaceholderText('Account 1');
     fireEvent.change(input, { target: { value: 'Duplicate Account Name' } });
 
-    const confirmButton = screen.getByRole('button', {
-      name: messages.confirm.message,
+    const saveButton = screen.getByRole('button', {
+      name: messages.save.message,
     });
-    fireEvent.click(confirmButton);
+    fireEvent.click(saveButton);
 
     // Wait for the error message to appear
     await waitFor(() => {
@@ -287,6 +286,25 @@ describe('MultichainAccountEditModal', () => {
       mockProps.accountGroupId,
       'Duplicate Account Name',
     );
+  });
+
+  it('clears the input and hides the clear button when clear is clicked', () => {
+    const store = configureStore(mockDefaultState);
+    renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
+
+    const input = screen.getByPlaceholderText('Account 1');
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.clear.message }),
+    );
+
+    expect(input).toHaveValue('');
+    expect(input).toHaveFocus();
+    expect(
+      screen.queryByRole('button', { name: messages.clear.message }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: messages.save.message }),
+    ).toBeDisabled();
   });
 
   it('saves account name when Enter key is pressed in the input field', async () => {

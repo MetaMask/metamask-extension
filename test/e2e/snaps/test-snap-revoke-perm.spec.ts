@@ -35,10 +35,7 @@ describe('Test Snap revoke permission', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'ethereumProviderConnectButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'ethereumProviderConnectButton',
-          'Reconnect to Ethereum Provider Snap',
+          { expectedMessage: 'Reconnect to Ethereum Provider Snap' },
         );
 
         await testSnaps.scrollToButton('getAccountsButton');

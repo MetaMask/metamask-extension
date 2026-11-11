@@ -11,6 +11,7 @@ import {
 } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { AppLayoutProvider } from '../../contexts/app-layout';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
 import {
@@ -19,6 +20,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneyTooltipName,
@@ -40,6 +42,7 @@ const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
 const mockUseUpgradeMoneyAccount = jest.fn();
+const mockUseOpenMoneyFtueOnFirstVisit = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -128,6 +131,10 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
 }));
 jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
   useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
+}));
+jest.mock('../../hooks/money/use-open-money-ftue-on-first-visit', () => ({
+  useOpenMoneyFtueOnFirstVisit: (options: unknown) =>
+    mockUseOpenMoneyFtueOnFirstVisit(options),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -283,6 +290,15 @@ describe('MoneyHomePage', () => {
     expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
   });
 
+  it('passes availability to the FTUE auto-open hook', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
+      isAvailable: true,
+      isLoading: false,
+    });
+  });
+
   it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
@@ -389,7 +405,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.ActionButtonRow,
+      },
+    });
     expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -416,7 +437,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      },
+    });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyHome,
       componentName: MoneyComponentName.OnboardingCard,
@@ -475,6 +501,10 @@ describe('MoneyHomePage', () => {
       preferredPaymentToken: {
         address: DEPOSIT_TOKEN.address,
         chainId: DEPOSIT_TOKEN.chainId,
+      },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
       },
     });
   });
@@ -557,6 +587,32 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByRole('button', { name: messages.moneyAdd.message }),
     ).toBeDisabled();
+  });
+
+  it('hides the balance and earnings when privacy mode is on', () => {
+    mockGetPrivacyMode.mockReturnValue(true);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercent: 4.2,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-balance')).not.toHaveTextContent(
+      '$3,475.45',
+    );
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).not.toHaveTextContent('+$12.34');
+    expect(
+      screen.getByTestId('money-earnings-lifetime-value'),
+    ).not.toHaveTextContent('+$56.78');
   });
 
   it('renders the filled-state composition for a funded Money account', () => {
@@ -834,6 +890,74 @@ describe('MoneyHomePage', () => {
     expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 
+  it('hides lifetime earnings when the lifetime interest query errors', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercent: 4.2,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('10'),
+      totalFiatFormatted: '$10.00',
+      totalFiatRaw: '10',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('1.23'),
+        isLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: undefined,
+        isError: true,
+        isLoading: false,
+      },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).toHaveTextContent('+$1.23');
+    expect(
+      screen.queryByTestId('money-earnings-lifetime'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides lifetime earnings when a refetch fails with cached data', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercent: 4.2,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('10'),
+      totalFiatFormatted: '$10.00',
+      totalFiatRaw: '10',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('1.23'),
+        isLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: interestResponse('56.78'),
+        isError: true,
+        isLoading: false,
+      },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).toHaveTextContent('+$1.23');
+    expect(
+      screen.queryByTestId('money-earnings-lifetime'),
+    ).not.toBeInTheDocument();
+  });
+
   it('shows earnings skeletons during the initial interest load', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
@@ -861,7 +985,7 @@ describe('MoneyHomePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('uses Mobile-parity fallbacks when interest data is invalid', () => {
+  it('uses the monthly fallback and hides lifetime earnings when lifetime data is invalid', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.06917567309149253,
       apyPercent: 6.9,
@@ -890,8 +1014,41 @@ describe('MoneyHomePage', () => {
       screen.getByTestId('money-earnings-monthly-value'),
     ).toHaveTextContent('+$0.69');
     expect(
-      screen.getByTestId('money-earnings-lifetime-value'),
-    ).toHaveTextContent('$0.00');
+      screen.queryByTestId('money-earnings-lifetime'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides lifetime earnings when the lifetime amount is missing after loading', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.06917567309149253,
+      apyPercent: 6.9,
+      apyPercentFormatted: '6.9%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('120'),
+      totalFiatFormatted: '$120.00',
+      totalFiatRaw: '120',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('1'),
+        isLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: undefined,
+        isLoading: false,
+      },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).toHaveTextContent('+$1.00');
+    expect(
+      screen.queryByTestId('money-earnings-lifetime'),
+    ).not.toBeInTheDocument();
   });
 
   it('formats zero interest without a positive prefix', () => {
@@ -908,11 +1065,11 @@ describe('MoneyHomePage', () => {
     });
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
-        data: interestResponse('0'),
+        data: interestResponse('1.23'),
         isLoading: false,
       },
       sinceInceptionQuery: {
-        data: interestResponse('0.001'),
+        data: interestResponse('0'),
         isLoading: false,
       },
     });
@@ -921,10 +1078,58 @@ describe('MoneyHomePage', () => {
 
     expect(
       screen.getByTestId('money-earnings-monthly-value'),
-    ).toHaveTextContent('$0.00');
+    ).toHaveTextContent('+$1.23');
     expect(
       screen.getByTestId('money-earnings-lifetime-value'),
     ).toHaveTextContent('$0.00');
+  });
+
+  it('restores lifetime earnings after an error recovers', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercent: 4.2,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('10'),
+      totalFiatFormatted: '$10.00',
+      totalFiatRaw: '10',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('1.23'),
+        isLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: undefined,
+        isError: true,
+        isLoading: false,
+      },
+    });
+
+    const { rerender } = renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.queryByTestId('money-earnings-lifetime'),
+    ).not.toBeInTheDocument();
+
+    mockUseMoneyAccountInterest.mockReturnValue({
+      last30DaysQuery: {
+        data: interestResponse('1.23'),
+        isLoading: false,
+      },
+      sinceInceptionQuery: {
+        data: interestResponse('56.78'),
+        isError: false,
+        isLoading: false,
+      },
+    });
+    rerender(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-earnings-lifetime-value'),
+    ).toHaveTextContent('+$56.78');
   });
 
   it('formats negative interest with a minus sign', () => {
@@ -1253,5 +1458,47 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-potential-earnings-projection-trigger'),
     ).toHaveTextContent('+$0.50');
+  });
+
+  describe('fullscreen design', () => {
+    it('keeps the centred, stacked layout, with wide-layout overrides', () => {
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(screen.getByTestId('money-balance').parentElement).toHaveClass(
+        'max-w-[784px]',
+        'sm:items-center',
+        'wide-layout:max-w-none',
+        'wide-layout:items-start',
+      );
+      expect(screen.getByTestId('money-add-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-send-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-fund-card')).toHaveClass(
+        'flex-col',
+        'max-w-[389px]',
+        'wide-layout:flex-row',
+        'wide-layout:max-w-none',
+      );
+    });
+
+    it('uses the button defaults in the wide layout', () => {
+      renderWithLocalization(
+        <AppLayoutProvider isWideLayout>
+          <MoneyHomePage />
+        </AppLayoutProvider>,
+      );
+
+      expect(screen.getByTestId('money-add-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+      expect(screen.getByTestId('money-send-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+    });
   });
 });

@@ -173,6 +173,12 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
+      "eventsConfig": {
+        "events": {},
+        "schemaVersion": "0",
+        "timestamp": 0,
+        "version": "0"
+      },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
       "optedIn": false,
@@ -182,7 +188,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 229,
+      "currentMigrationVersion": 235,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -198,15 +204,17 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
+      "moneyFtueSeen": false,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -321,29 +329,48 @@
         }
       },
       "assetsPrice": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "allTimeHigh": 126080,
+          "allTimeLow": 67.81,
+          "assetPriceType": "fungible",
+          "circulatingSupply": 19975290,
+          "id": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+          "lastUpdated": 1776106420000,
+          "marketCap": 1836592437357,
+          "price": 106763,
+          "pricePercentChange14d": 4.795747124043681,
+          "pricePercentChange1d": 1.6980683447716627,
+          "pricePercentChange1h": -0.09840133404969334,
+          "pricePercentChange1y": -1.0484081200296924,
+          "pricePercentChange200d": -14.088182161660676,
+          "pricePercentChange30d": 2.1388997840239408,
+          "pricePercentChange7d": -1.6285705945180806,
+          "totalVolume": 45216146754,
+          "usdPrice": 106763
+        },
         "eip155:1/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:1337/slip44:1": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:42161/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:59144/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         }
       },
       "customAssets": {},
@@ -371,11 +398,18 @@
     },
     "ConfigRegistryController": {
       "configs": {
+        "eventsConfig": {
+          "events": {},
+          "schemaVersion": "0",
+          "timestamp": 0,
+          "version": "0"
+        },
         "networks": {}
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
-      "version": null
+      "version": "0"
     },
     "CurrencyController": {
       "currencyRates": {
@@ -412,6 +446,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
       "moneyAccounts": {}
     },
     "MoneyAccountUpgradeController": {
@@ -437,43 +472,6 @@
               "symbol": "SOL"
             }
           ]
-        }
-      }
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": {
-        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
-          "conversionTime": 1776106420,
-          "currency": "swift:0/iso4217:USD",
-          "expirationTime": 1776106480,
-          "marketData": {
-            "allTimeHigh": "126080",
-            "allTimeLow": "67.81",
-            "circulatingSupply": "19975290",
-            "fungible": true,
-            "marketCap": "1836592437357",
-            "pricePercentChange": {
-              "P14D": 4.795747124043681,
-              "P1D": 1.6980683447716627,
-              "P1Y": -1.0484081200296924,
-              "P200D": -14.088182161660676,
-              "P30D": 2.1388997840239408,
-              "P7D": -1.6285705945180806,
-              "PT1H": -0.09840133404969334
-            },
-            "totalVolume": "45216146754"
-          },
-          "rate": "106763"
-        }
-      }
-    },
-    "MultichainBalancesController": {
-      "balances": {
-        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
-            "amount": "0",
-            "unit": "SOL"
-          }
         }
       }
     },
@@ -598,9 +596,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://dimensional-special-breeze.quiknode.pro/d5e2d185c1561ef5ecb9aadf1ae7cc58863f4fa4/"
-              ],
               "networkClientId": "mainnet",
               "type": "infura",
               "url": "https://mainnet.infura.io/v3/{infuraProjectId}"
@@ -616,7 +611,6 @@
           "nativeCurrency": "MegaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "megaeth-testnet-v2",
               "type": "custom",
               "url": "https://carrot.megaeth.com/rpc"
@@ -632,9 +626,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://ancient-quaint-water.base-mainnet.quiknode.pro/a2cb04635063b578dba24f656fe376a55e8d9939/"
-              ],
               "networkClientId": "base-mainnet",
               "type": "infura",
               "url": "https://base-mainnet.infura.io/v3/{infuraProjectId}"
@@ -650,7 +641,6 @@
           "nativeCurrency": "MON",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "monad-testnet",
               "type": "custom",
               "url": "https://testnet-rpc.monad.xyz"
@@ -666,7 +656,6 @@
           "nativeCurrency": "BNB",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "bsc-mainnet",
               "type": "infura",
               "url": "https://bsc-mainnet.infura.io/v3/{infuraProjectId}"
@@ -697,9 +686,6 @@
           "nativeCurrency": "POL",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://powerful-radial-aura.matic.quiknode.pro/edaa1cc73ef2a19230e2e715e766b6783ad8126a/"
-              ],
               "networkClientId": "polygon-mainnet",
               "type": "infura",
               "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}"
@@ -715,7 +701,6 @@
           "nativeCurrency": "MON",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "monad-mainnet",
               "type": "infura",
               "url": "https://monad-mainnet.infura.io/v3/{infuraProjectId}"
@@ -731,9 +716,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://holy-convincing-diagram.optimism.quiknode.pro/4804f72f80b7566982ad24a7a1d8e1ae48bca208/"
-              ],
               "networkClientId": "optimism-mainnet",
               "type": "infura",
               "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}"
@@ -749,9 +731,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/"
-              ],
               "networkClientId": "arbitrum-mainnet",
               "type": "infura",
               "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}"
@@ -767,7 +746,6 @@
           "nativeCurrency": "SepoliaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "sepolia",
               "type": "infura",
               "url": "https://sepolia.infura.io/v3/{infuraProjectId}"
@@ -783,7 +761,6 @@
           "nativeCurrency": "LineaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "linea-sepolia",
               "type": "infura",
               "url": "https://linea-sepolia.infura.io/v3/{infuraProjectId}"
@@ -799,9 +776,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://patient-sleek-daylight.linea-mainnet.quiknode.pro/d0e608bf5f231ef9ae6756de4d7876cb0f5ece55/"
-              ],
               "networkClientId": "linea-mainnet",
               "type": "infura",
               "url": "https://linea-mainnet.infura.io/v3/{infuraProjectId}"
@@ -868,6 +842,7 @@
           "0x2105": false,
           "0x279f": false,
           "0x38": false,
+          "0x531": false,
           "0x539": true,
           "0x89": false,
           "0x8f": false,
@@ -954,6 +929,7 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "hasSeenOnboardingCompletionPage": true,
+      "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1050,6 +1026,9 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "tdpChartIndicators": [],
+        "tdpChartInterval": "15m",
+        "tdpChartType": 2,
         "tokenNetworkFilter": {
           "0x539": true
         },
@@ -1121,7 +1100,6 @@
         "assetsEnableNotificationsByDefaultV2": "feature is ON",
         "backendWebSocketConnection": "feature is ON",
         "coreExtensionUxCeux1096AbtestReferralUi": "treatment",
-        "coreExtensionUxCeux1141AbtestBottomNav": "control",
         "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
         "perpsTAT3382AbtestTabBadge": "control",
         "platformSplitStateGradualRollout": "feature is ON",
@@ -1178,6 +1156,13 @@
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
           "account": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
           "lastFreshOptInStatusCheck": 1780567256848,
+          "lastPerpsDiscountRateFetched": null,
+          "perpsFeeDiscount": null,
+          "subscriptionId": null
+        },
+        "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K": {
+          "account": "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
+          "lastFreshOptInStatusCheck": 1780567256841,
           "lastPerpsDiscountRateFetched": null,
           "perpsFeeDiscount": null,
           "subscriptionId": null
@@ -1256,14 +1241,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
-    "TokenRatesController": {
-      "marketData": {
-        "0x539": {}
-      }
-    },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
@@ -1289,6 +1266,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 229
+    "version": 235
   }
 }
