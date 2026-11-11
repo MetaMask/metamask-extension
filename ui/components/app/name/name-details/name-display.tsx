@@ -4,6 +4,8 @@ import {
   AvatarAccountSize,
   AvatarToken,
   AvatarTokenSize,
+  Text as DsText,
+  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { Icon, IconSize, Text } from '../../../component-library';
@@ -95,14 +97,14 @@ const NameDisplay = memo(
     const renderName = () => {
       if (fillWidth) {
         return (
-          <Text
-            ref={fillName ? undefined : fillRef}
+          <DsText
+            asChild
             className={fillName ? 'name__name' : 'name__value'}
-            variant={TextVariant.bodyMd}
+            variant={DsTextVariant.BodyMd}
             {...props}
           >
-            {fillName || fillValue}
-          </Text>
+            <p ref={fillName ? undefined : fillRef}>{fillName || fillValue}</p>
+          </DsText>
         );
       }
 

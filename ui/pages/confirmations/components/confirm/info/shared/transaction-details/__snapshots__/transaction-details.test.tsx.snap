@@ -148,7 +148,7 @@ exports[`Transaction Details <TransactionDetails /> renders component for transa
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
               0x88AA6343307EC9a652CCddDa3646E62b2f1A5125
             </p>

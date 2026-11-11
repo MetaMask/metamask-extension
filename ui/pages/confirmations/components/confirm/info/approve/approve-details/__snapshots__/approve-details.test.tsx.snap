@@ -56,7 +56,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
               0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
             </p>
@@ -204,7 +204,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
               0x076146c765189d51bE3160A2140cF80BFC73ad68
             </p>
@@ -272,7 +272,7 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
               0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
             </p>
@@ -420,7 +420,7 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default name__value"
             >
               0x076146c765189d51bE3160A2140cF80BFC73ad68
             </p>
