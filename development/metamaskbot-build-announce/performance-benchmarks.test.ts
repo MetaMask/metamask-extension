@@ -1484,10 +1484,10 @@ describe('buildPerformanceBenchmarksSection', () => {
         loadNewAccount: {
           testTitle: 'load-new-account',
           persona: 'standard',
-          mean: { load_new_account: 5000 },
-          stdDev: { load_new_account: 200 },
-          p75: { load_new_account: 9000 },
-          p95: { load_new_account: 12000 },
+          mean: { load_new_accountLegacy: 5000 },
+          stdDev: { load_new_accountLegacy: 200 },
+          p75: { load_new_accountLegacy: 9000 },
+          p95: { load_new_accountLegacy: 12000 },
         },
       };
       /* eslint-enable @typescript-eslint/naming-convention */
