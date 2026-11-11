@@ -426,9 +426,10 @@ describe('AcceptInviteSheet', () => {
       expect(view.getByTestId('money-referral-accept')).toBeDisabled();
       expect(view.getByTestId('money-referral-decline')).toBeDisabled();
       expect(view.getByTestId('money-referral-code-input')).toBeDisabled();
-      fireEvent.click(
+      expect(
         view.getByRole('button', { name: messages.close.message }),
-      );
+      ).toBeDisabled();
+      fireEvent.keyDown(document, { key: 'Escape' });
       fireEvent.click(view.getByTestId('money-referral-decline'));
       expect(view.onClose).not.toHaveBeenCalled();
       expect(trackedTypes()).toEqual(['viewed']);
@@ -475,6 +476,9 @@ describe('AcceptInviteSheet', () => {
     });
 
     expect(trackedTypes()).toEqual(['viewed', 'refused']);
+    expect(
+      view.getByRole('button', { name: messages.close.message }),
+    ).toBeEnabled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: expect.objectContaining({

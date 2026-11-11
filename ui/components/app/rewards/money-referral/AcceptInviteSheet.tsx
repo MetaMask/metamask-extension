@@ -338,7 +338,7 @@ const AcceptInviteSheetContent = ({
       <ModalContent className="items-center" size={ModalContentSize.Md}>
         <ModalHeader
           onClose={handleDismiss}
-          closeButtonProps={{ ariaLabel: t('close') }}
+          closeButtonProps={{ ariaLabel: t('close'), isDisabled: isAccepting }}
         >
           {copy.title}
         </ModalHeader>
