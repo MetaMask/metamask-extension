@@ -81,10 +81,6 @@
   "failed": {
     "message": "mislukt"
   },
-  "fileImportFail": {
-    "message": "Bestandsimport werkt niet? Klik hier!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "from": {
     "message": "Van"
   },
@@ -161,10 +157,6 @@
   },
   "next": {
     "message": "volgende"
-  },
-  "pastePrivateKey": {
-    "message": "Plak hier uw privésleutelstring:",
-    "description": "For importing an account from a private key"
   },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
@@ -245,9 +237,6 @@
   },
   "urlErrorMsg": {
     "message": "Voor URI's is het juiste HTTP / HTTPS-voorvoegsel vereist."
-  },
-  "usedByClients": {
-    "message": "Gebruikt door verschillende klanten"
   },
   "visitWebSite": {
     "message": "Bezoek onze website"

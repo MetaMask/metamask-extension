@@ -1,10 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import {
   Box,
-  Icon,
+  ButtonBase,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonIconVariant,
   IconName,
-  IconSize,
-  IconColor,
+  Text,
+  TextColor,
+  TextVariant,
+  twMerge,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -53,23 +58,8 @@ const IntervalBar = ({
   onChartTypeSelect,
 }: IntervalBarProps) => {
   const t = useI18nContext();
-  const toolbarText = 'var(--color-text-default)';
-  const toolbarMuted = 'var(--color-text-alternative)';
-  const activeBg = 'var(--color-background-default-hover)';
-
-  const pillStyle = (isSelected: boolean) => ({
-    padding: '4px 10px',
-    borderRadius: '8px',
-    border: 'none',
-    cursor: 'pointer' as const,
-    fontSize: '12px',
-    fontWeight: isSelected ? 600 : 500,
-    background: isSelected ? activeBg : 'transparent',
-    color: isSelected ? toolbarText : toolbarMuted,
-    // The row scrolls when the intervals outgrow it; squashing the labels
-    // would be worse, and a half-width pill reads as a rendering bug.
-    flexShrink: 0,
-  });
+  const isLine = chartType === CHART_TYPE_LINE;
+  const isCandle = chartType === CHART_TYPE_CANDLE;
 
   // A persisted selection near the end of the list, `1w` say, would otherwise
   // open scrolled out of sight with nothing to say which interval is active.
@@ -101,97 +91,73 @@ const IntervalBar = ({
           hidden, so the gradient is what says there is more to see. */}
       <Box
         data-testid="advanced-chart-intervals"
-        className="flex min-w-0 flex-1 gap-1 overflow-x-auto overscroll-x-contain px-4 [scrollbar-width:none] tablist-fade"
+        className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto overscroll-x-contain px-4 [scrollbar-width:none] tablist-fade"
       >
         {intervals.map((interval) => {
           const isSelected =
             selectedInterval.toLowerCase() === interval.toLowerCase();
           return (
-            <button
+            <ButtonBase
               key={interval}
               type="button"
               aria-pressed={isSelected}
               ref={isSelected ? selectedPillRef : undefined}
               onClick={() => onIntervalSelect(interval)}
-              style={pillStyle(isSelected)}
+              className={twMerge(
+                'h-auto shrink-0 rounded-full bg-transparent px-2 py-1 hover:bg-hover active:bg-pressed',
+                isSelected && 'bg-muted',
+              )}
             >
-              {interval}
-            </button>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={
+                  isSelected ? TextColor.TextDefault : TextColor.TextAlternative
+                }
+              >
+                {interval}
+              </Text>
+            </ButtonBase>
           );
         })}
       </Box>
 
-      {/* Chart type toggle — mirrors mobile's ChartTypeToggle.tsx */}
-      <div
+      {/* Chart type toggle — mirrors mobile's ChartTypeToggle.tsx. The segmented
+          container has no DS equivalent, so it is a fully-rounded `Box`; the two
+          controls are stock `ButtonIcon`s (circular by default), and the
+          selected one uses the Filled variant for its background. */}
+      <Box
         data-testid="advanced-chart-type-toggle"
-        style={{
-          display: 'flex',
-          gap: '2px',
-          padding: '2px',
-          borderRadius: '8px',
-          border: '1px solid var(--color-border-muted)',
-          // Pinned: the toggle is not part of the scrolling row, and must
-          // keep its full width so it stays inside the 16px right padding.
-          flexShrink: 0,
-        }}
+        className="flex shrink-0 items-center gap-1 rounded-full border border-muted p-1"
       >
-        <button
-          type="button"
-          aria-label={t('chartTypeLine')}
-          aria-pressed={chartType === CHART_TYPE_LINE}
-          onClick={() => onChartTypeSelect(CHART_TYPE_LINE)}
+        <ButtonIcon
+          iconName={IconName.Diagram}
+          ariaLabel={t('chartTypeLine')}
           title={t('chartTypeLine')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '4px 8px',
-            borderRadius: '6px',
-            border: 'none',
-            cursor: 'pointer',
-            background:
-              chartType === CHART_TYPE_LINE ? activeBg : 'transparent',
+          size={ButtonIconSize.Xs}
+          variant={
+            isLine ? ButtonIconVariant.Filled : ButtonIconVariant.Default
+          }
+          aria-pressed={isLine}
+          onClick={() => onChartTypeSelect(CHART_TYPE_LINE)}
+          iconProps={{
+            className: isLine ? 'text-icon-default' : 'text-icon-alternative',
           }}
-        >
-          <Icon
-            name={IconName.Diagram}
-            size={IconSize.Sm}
-            color={
-              chartType === CHART_TYPE_LINE
-                ? IconColor.IconDefault
-                : IconColor.IconAlternative
-            }
-          />
-        </button>
-        <button
-          type="button"
-          aria-label={t('chartTypeCandlestick')}
-          aria-pressed={chartType === CHART_TYPE_CANDLE}
-          onClick={() => onChartTypeSelect(CHART_TYPE_CANDLE)}
+        />
+        <ButtonIcon
+          iconName={IconName.Candlestick}
+          ariaLabel={t('chartTypeCandlestick')}
           title={t('chartTypeCandlestick')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '4px 8px',
-            borderRadius: '6px',
-            border: 'none',
-            cursor: 'pointer',
-            background:
-              chartType === CHART_TYPE_CANDLE ? activeBg : 'transparent',
+          size={ButtonIconSize.Xs}
+          variant={
+            isCandle ? ButtonIconVariant.Filled : ButtonIconVariant.Default
+          }
+          aria-pressed={isCandle}
+          onClick={() => onChartTypeSelect(CHART_TYPE_CANDLE)}
+          iconProps={{
+            className: isCandle ? 'text-icon-default' : 'text-icon-alternative',
           }}
-        >
-          <Icon
-            name={IconName.Candlestick}
-            size={IconSize.Sm}
-            color={
-              chartType === CHART_TYPE_CANDLE
-                ? IconColor.IconDefault
-                : IconColor.IconAlternative
-            }
-          />
-        </button>
-      </div>
+        />
+      </Box>
     </div>
   );
 };

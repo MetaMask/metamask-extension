@@ -101,6 +101,40 @@ describe('useAdvancedChartData', () => {
         expect.objectContaining({ currency: 'eur' }),
       );
     });
+
+    it('follows the resolved history currency in candle mode (USD fallback)', () => {
+      setup({ chart: { resolvedCurrency: 'usd' } });
+
+      renderHook(() =>
+        useAdvancedChartData({
+          ...DEFAULT_OPTIONS,
+          currency: 'EUR',
+          needsHistory: true,
+        }),
+      );
+
+      expect(mockUseOHLCVRealtime).toHaveBeenCalledWith(
+        expect.objectContaining({ currency: 'usd' }),
+      );
+    });
+
+    it('follows the live requested currency in line mode, not the stale resolved one', () => {
+      // History is disabled in line mode, so `resolvedCurrency` never updates;
+      // realtime must track the requested currency instead of a frozen value.
+      setup({ chart: { resolvedCurrency: 'usd' } });
+
+      renderHook(() =>
+        useAdvancedChartData({
+          ...DEFAULT_OPTIONS,
+          currency: 'GBP',
+          needsHistory: false,
+        }),
+      );
+
+      expect(mockUseOHLCVRealtime).toHaveBeenCalledWith(
+        expect.objectContaining({ currency: 'gbp' }),
+      );
+    });
   });
 
   // The chart engine applies the live bar itself, so the merge is only

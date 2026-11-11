@@ -15,6 +15,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../pages/money/constants/money-events';
 import { getDefaultHomeActiveTabName } from '../selectors';
@@ -87,8 +88,15 @@ export function useMainNavItems(): MainNavItem[] {
         : MoneyScreenName.MoneyFtue,
     });
     if (!hasSeenMoneyFtue) {
-      dispatch(openMoneyFtue({ source: 'moneyHome' }));
-      return;
+      dispatch(
+        openMoneyFtue({
+          source: 'moneyHome',
+          origin: {
+            entryPoint: MoneyFtueEntryPoint.MoneyTab,
+            componentName: MoneyComponentName.HomeTab,
+          },
+        }),
+      );
     }
 
     transitionForward(() => navigate(MONEY_HOME_ROUTE));

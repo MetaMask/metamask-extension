@@ -19,7 +19,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
-import { setDataCollectionForMarketing } from '../../../store/actions';
+import { optOutOfMarketing, optInToMarketing } from '../../../store/actions';
 import { METAMETRICS_SETTINGS_LINK } from '../../../helpers/constants/common';
 import { useDispatch } from '../../../store/hooks';
 
@@ -31,7 +31,7 @@ export function MetaMetricsConsentContainer() {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const handleClose = useCallback(() => {
-    dispatch(setDataCollectionForMarketing(false));
+    dispatch(optOutOfMarketing());
     trackEvent(
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Home)
@@ -45,7 +45,7 @@ export function MetaMetricsConsentContainer() {
 
   const handleConsent = useCallback(
     (consent: boolean) => {
-      dispatch(setDataCollectionForMarketing(consent));
+      dispatch(consent ? optInToMarketing() : optOutOfMarketing());
       trackEvent(
         createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
           .addCategory(MetaMetricsEventCategory.Home)

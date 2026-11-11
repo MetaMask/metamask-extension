@@ -208,7 +208,8 @@ describe('Send ETH', function () {
           await sendPage.selectToken('0x1', 'ETH');
           await sendPage.fillRecipient({ recipientAddress: 'test.eth' });
 
-          await driver.findElement({ text: '0xc0ffee25...10F9d54979' });
+          // End of the resolved address. The start is shortened to fit.
+          await driver.findElement({ text: '10F9d54979' });
         },
       );
     });

@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "एक URL जोड़ें"
   },
-  "addAWallet": {
-    "message": "एक वॉलेट जोड़ें"
-  },
   "addAccount": {
     "message": "अकाउंट जोड़ें"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 ज़रूरी है"
-  },
-  "fileImportFail": {
-    "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "अपलोड करने के लिए क्लिक करें या ड्रैग एंड ड्रॉप करें"
@@ -7385,10 +7378,6 @@
   "paste": {
     "message": "पेस्ट करें"
   },
-  "pastePrivateKey": {
-    "message": "अपनी प्राइवेट की (key) स्ट्रिंग यहाँ पेस्ट करें:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "के साथ भुगतान करें",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8967,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "प्राइवेट की (key) छिपी हुई है",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "प्राइवेट की (key) इनपुट को दिखाएं/छिपाएं",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "प्राइवेट की (key) दिखाई जा रही है",
@@ -12676,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "आपके खाते में भेजे गए टोकन को स्वतः प्रदर्शित करने के लिए थर्ड-पार्टी के सर्वर से कनेक्ट करना ज़रूरी होता है, ताकि टोकन की इमेजेज़ प्राप्त की जा सकें। इन सर्वर के पास आपके IP एड्रेस का एक्सेस होगा। "
-  },
-  "usedByClients": {
-    "message": "विभिन्न क्लाइंट द्वारा इस्तेमाल किया जाता है"
   },
   "userOpContractDeployError": {
     "message": "स्मार्ट कॉन्ट्रैक्ट अकाउंट से कॉन्ट्रैक्ट डीप्लॉयमेंट को सपोर्ट नहीं करता"
