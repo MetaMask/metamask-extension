@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
@@ -368,11 +369,13 @@ describe('AddMultichainAccount', () => {
       } as unknown as typeof globalThis.platform;
     });
 
-    const renderHardwareButton = () =>
+    const renderHardwareButton = (
+      hardwareDevice: HardwareDeviceNames = HardwareDeviceNames.ledger,
+    ) =>
       renderWithProvider(
         <AddMultichainAccount
           walletId={hardwareWalletId}
-          hardwareDevice={HardwareDeviceNames.ledger}
+          hardwareDevice={hardwareDevice}
         />,
         configureStore(initialState),
       );
@@ -386,6 +389,16 @@ describe('AddMultichainAccount', () => {
         '/new-account/connect?device=ledger',
       );
       expect(createNextMultichainAccountGroup).not.toHaveBeenCalled();
+    });
+
+    it('encodes device names containing spaces in the query', () => {
+      renderHardwareButton(HardwareDeviceNames.qr);
+
+      fireEvent.click(screen.getByTestId('add-hardware-wallet-account-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/new-account/connect?device=QR+Hardware',
+      );
     });
 
     it.each([

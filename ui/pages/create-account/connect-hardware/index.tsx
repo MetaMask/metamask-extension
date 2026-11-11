@@ -519,10 +519,15 @@ const ConnectHardwareForm = () => {
     // when opened in a new tab). If access is missing, the device is reported
     // as not connected, and picking the device from the device selection
     // requests it again.
+    // The page closed, or the user picked a device themselves, while the
+    // check was running.
+    const isStale = () =>
+      !isMounted.current ||
+      Boolean(latestDevice.current) ||
+      Boolean(latestPendingDevice.current);
+
     const connect = () => {
-      // Skip if the page closed, or the user picked a device themselves, while
-      // the check was running.
-      if (!isMounted.current || latestDevice.current) {
+      if (isStale()) {
         return;
       }
       latestConnectToHardwareWallet.current(requestedDevice, false);
@@ -544,7 +549,7 @@ const ConnectHardwareForm = () => {
     };
 
     connectIfReady().then((deviceError) => {
-      if (deviceError && isMounted.current) {
+      if (deviceError && !isStale()) {
         hasShownDeviceErrorModal.current = true;
         showErrorModal(deviceError, {
           ensureDeviceReady: async () => (await connectIfReady()) === null,

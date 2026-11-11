@@ -79,8 +79,9 @@ export const AddMultichainAccount = ({
     t,
   ]);
 
-  const handleConnectHardwareWalletClick = () => {
-    const query = `device=${hardwareDevice}`;
+  const handleConnectHardwareWalletClick = (device: HardwareDeviceNames) => {
+    // Encoded, as some device names contain spaces (e.g. 'QR Hardware').
+    const query = new URLSearchParams({ device }).toString();
     const environmentType = getEnvironmentType();
 
     // Same as the "Add wallet" flow, hardware wallets are connected from an
@@ -106,7 +107,7 @@ export const AddMultichainAccount = ({
     }
 
     if (hardwareDevice) {
-      handleConnectHardwareWalletClick();
+      handleConnectHardwareWalletClick(hardwareDevice);
       return;
     }
 

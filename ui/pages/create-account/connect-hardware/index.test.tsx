@@ -586,12 +586,12 @@ describe('ConnectHardwareForm', () => {
 
     it('shows the device selection with the error when the connection fails', async () => {
       mockSearch = `device=${HardwareDeviceNames.ledger}`;
-      mockConnectHardware.mockRejectedValue(new Error('Device not found'));
+      mockConnectHardware.mockRejectedValue(new Error('Mock connection error'));
       const mockStore = configureMockStore([thunk])(createMockState());
       renderWithProvider(<ConnectHardwareForm />, mockStore);
 
       await waitFor(() => {
-        expect(screen.getByText('Device not found')).toBeInTheDocument();
+        expect(screen.getByText('Mock connection error')).toBeInTheDocument();
       });
       expect(
         screen.getByTestId('connect-hardware-wallet-ledger'),
@@ -761,6 +761,37 @@ describe('ConnectHardwareForm', () => {
         true,
         expect.any(Function),
       );
+    });
+
+    it('does not show the recovery modal when the check fails after a device is picked', async () => {
+      let rejectReady: (error: Error) => void = () => undefined;
+      mockEnsureDeviceReady.mockReturnValue(
+        new Promise((_resolve, reject) => {
+          rejectReady = reject;
+        }),
+      );
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('trezor'));
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+      });
+
+      await act(async () => {
+        rejectReady(
+          createHardwareWalletError(
+            ErrorCode.AuthenticationDeviceLocked,
+            HardwareWalletType.Ledger,
+            'Device is locked',
+          ),
+        );
+      });
+
+      expect(mockShowErrorModal).not.toHaveBeenCalled();
+      expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
     });
 
     it('ignores unknown devices', () => {
