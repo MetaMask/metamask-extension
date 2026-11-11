@@ -183,7 +183,9 @@ export class DeepLinkRouter extends EventEmitter<{
         // This fallback only displays a QR code; it never opens a destination.
         link = this.getExtensionURL(
           TRIMMED_DEEP_LINK_ROUTE,
-          new URLSearchParams({ mobileShare: urlStr }).toString(),
+          new URLSearchParams({
+            mobileShare: this.formatUrlForInterstitialPage(url),
+          }).toString(),
         );
       } else if (parsed) {
         this.emit('navigate', { url, parsed });

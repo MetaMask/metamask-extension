@@ -226,7 +226,7 @@ describe('DeepLinkRouter', () => {
         expect(parseMock).not.toHaveBeenCalled();
         expect(getState).not.toHaveBeenCalled();
         expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams({ mobileShare: url })}`,
+          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams({ mobileShare: '/mobile-only?share=1&value=%2f' })}`,
         });
         expect(response).toEqual(
           manifestVersion === 'mv3' ? {} : { cancel: true },

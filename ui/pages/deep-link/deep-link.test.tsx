@@ -6,6 +6,7 @@ import { fireEvent } from '@testing-library/react';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { parse } from '../../../shared/lib/deep-links/parse';
+import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 
 let DeepLink: typeof import('./deep-link').DeepLink;
 
@@ -38,10 +39,9 @@ describe('DeepLink', () => {
     jest.clearAllMocks();
   });
 
-  it('shows mobile instructions and the original URL without share=1 in the QR code', () => {
-    const url =
-      'https://link.metamask.com/mobile-only?value=%2f&share=1#details';
-    const sharedUrl = 'https://link.metamask.com/mobile-only?value=%2f#details';
+  it('shows mobile instructions and the canonical URL without share=1 in the QR code', () => {
+    const url = '/mobile-only?value=%2f&share=1';
+    const sharedUrl = `https://${CANONICAL_DEEP_LINK_HOST}/mobile-only?value=%2f`;
     const { getByRole, getByText, getByTestId, queryByTestId } = renderDeepLink(
       new URLSearchParams({ mobileShare: url }).toString(),
     );
@@ -66,7 +66,7 @@ describe('DeepLink', () => {
   it('links to Home from the mobile share screen', () => {
     const { getByRole } = renderDeepLink(
       new URLSearchParams({
-        mobileShare: 'https://link.metamask.io/mobile-only?share=1',
+        mobileShare: '/mobile-only?share=1',
       }).toString(),
     );
 
@@ -85,7 +85,7 @@ describe('DeepLink', () => {
     });
     const { getByRole, findByRole } = renderDeepLink(
       new URLSearchParams({
-        mobileShare: 'https://link.metamask.io/mobile-only?share=1',
+        mobileShare: '/mobile-only?share=1',
       }).toString(),
     );
 
@@ -94,7 +94,7 @@ describe('DeepLink', () => {
     );
 
     expect(writeText).toHaveBeenCalledWith(
-      'https://link.metamask.io/mobile-only',
+      `https://${CANONICAL_DEEP_LINK_HOST}/mobile-only`,
     );
     expect(
       await findByRole('button', { name: messages.copiedExclamation.message }),
@@ -104,8 +104,9 @@ describe('DeepLink', () => {
   jestIt.each([
     'not a URL',
     'https://example.com/mobile-only?share=1',
-    'https://link.metamask.io/mobile-only?share=0',
-    'https://link.metamask.io/home?share=1',
+    'https://link.metamask.io/mobile-only?share=1',
+    '/mobile-only?share=0',
+    '/home?share=1',
   ])('does not display the QR fallback for %s', async (url) => {
     const { findByText, queryByTestId } = renderDeepLink(
       new URLSearchParams({ mobileShare: url }).toString(),

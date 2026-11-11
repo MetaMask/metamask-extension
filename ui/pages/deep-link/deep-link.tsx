@@ -355,8 +355,12 @@ const DeepLinkInterstitial = () => {
 /** Displays the mobile QR fallback or the usual deep-link interstitial. */
 export const DeepLink = () => {
   const location = useLocation();
-  const originalUrl = new URLSearchParams(location.search).get('mobileShare');
-  const mobileShareUrl = originalUrl ? getMobileShareUrl(originalUrl) : null;
+  const urlPathAndQuery = new URLSearchParams(location.search).get(
+    'mobileShare',
+  );
+  const mobileShareUrl = urlPathAndQuery
+    ? getMobileShareUrl(`https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`)
+    : null;
 
   if (!mobileShareUrl) {
     return <DeepLinkInterstitial />;
