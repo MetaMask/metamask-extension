@@ -212,9 +212,13 @@ const OnboardingFlowContent = () => {
       !isOnPasskeyPrfMigrationRoute
     ) {
       navigate(onboardingRedirect ?? DEFAULT_ROUTE, { replace: true });
+      if (onboardingRedirect) {
+        dispatch(setOnboardingRedirect(null));
+      }
     }
   }, [
     navigate,
+    dispatch,
     completedOnboarding,
     isFromReminder,
     openedWithSidepanel,

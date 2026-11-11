@@ -570,6 +570,9 @@ export default function reduceApp(
         onboardedInThisUISession: action.payload,
       };
     case actionConstants.SET_ONBOARDING_REDIRECT:
+      if (state && state.onboardingRedirect === action.payload) {
+        return state;
+      }
       return { ...appState, onboardingRedirect: action.payload };
     case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
       return {

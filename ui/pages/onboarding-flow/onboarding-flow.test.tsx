@@ -367,51 +367,68 @@ describe('Onboarding Flow', () => {
     );
   });
 
-  it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', async () => {
-    const completedOnboardingState = {
-      metamask: {
-        completedOnboarding: true,
-        seedPhraseBackedUp: true,
-        internalAccounts: {
-          accounts: {
-            accountId: {
-              address: '0x0000000000000000000000000000000000000000',
-              metadata: {
-                keyring: 'HD Key Tree',
+  it.each([null, '/settings/privacy?a=v#metametrics'])(
+    'resumes %s after onboarding completes and clears the saved destination',
+    async (onboardingRedirect) => {
+      const completedOnboardingState = {
+        appState: { onboardingRedirect },
+        metamask: {
+          completedOnboarding: true,
+          seedPhraseBackedUp: true,
+          internalAccounts: {
+            accounts: {
+              accountId: {
+                address: '0x0000000000000000000000000000000000000000',
+                metadata: {
+                  keyring: 'HD Key Tree',
+                },
               },
             },
+            selectedAccount: 'accountId',
           },
-          selectedAccount: 'accountId',
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: ['0x0000000000000000000000000000000000000000'],
+            },
+          ],
         },
-        keyrings: [
+        localeMessages: {
+          currentLocale: 'en',
+        },
+      };
+
+      const completedOnboardingStore = configureMockStore([thunk])(
+        completedOnboardingState,
+      );
+
+      renderOnboarding(
+        <OnboardingFlowWithRouteContext />,
+        completedOnboardingStore,
+        ONBOARDING_ROUTE,
+      );
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          onboardingRedirect ?? DEFAULT_ROUTE,
           {
-            type: 'HD Key Tree',
-            accounts: ['0x0000000000000000000000000000000000000000'],
+            replace: true,
           },
-        ],
-      },
-      localeMessages: {
-        currentLocale: 'en',
-      },
-    };
-
-    const completedOnboardingStore = configureMockStore([thunk])(
-      completedOnboardingState,
-    );
-
-    renderOnboarding(
-      <OnboardingFlowWithRouteContext />,
-      completedOnboardingStore,
-      ONBOARDING_ROUTE,
-    );
-
-    await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
+        );
       });
-    });
-    expect(mockStartJourney).not.toHaveBeenCalled();
-  });
+      const clearRedirect = { type: 'SET_ONBOARDING_REDIRECT', payload: null };
+      if (onboardingRedirect) {
+        expect(completedOnboardingStore.getActions()).toContainEqual(
+          clearRedirect,
+        );
+      } else {
+        expect(completedOnboardingStore.getActions()).not.toContainEqual(
+          clearRedirect,
+        );
+      }
+      expect(mockStartJourney).not.toHaveBeenCalled();
+    },
+  );
 
   describe('Create Password', () => {
     it('should render create password', () => {
