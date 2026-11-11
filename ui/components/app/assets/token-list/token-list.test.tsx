@@ -21,6 +21,7 @@ import {
   getCurrencyRates,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
+  getUseCurrencyRateCheck,
   getUseExternalServices,
 } from '../../../../selectors';
 import {
@@ -34,6 +35,7 @@ import {
   selectAccountGroupBalanceForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../../selectors/assets';
+import { sortTokenAssets } from '../util/sortAssetsWithPriority';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
 import { useHomeReady } from '../../../../pages/home/home-performance';
@@ -114,6 +116,7 @@ jest.mock('../../../../selectors', () => ({
   getMarketData: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokenSortConfig: jest.fn(),
+  getUseCurrencyRateCheck: jest.fn(),
   getUseExternalServices: jest.fn(),
 }));
 
@@ -246,6 +249,7 @@ describe('TokenList', () => {
       order: 'dsc',
       sortCallback: 'stringNumeric',
     });
+    jest.mocked(getUseCurrencyRateCheck).mockReturnValue(true);
     jest.mocked(getUseExternalServices).mockReturnValue(true);
     jest.mocked(getIsSecurityTrustTdpEnabled).mockReturnValue(true);
     jest
@@ -676,6 +680,19 @@ describe('TokenList', () => {
         'eip155:1/slip44:60',
       ],
     });
+  });
+
+  it('treats the price column as missing when currency rate checks are off', () => {
+    jest.mocked(getUseCurrencyRateCheck).mockReturnValue(false);
+    const assets = createAccountGroupAssets([
+      createAsset({ symbol: 'ETH', isNative: true, fiatBalance: 10 }),
+    ]);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(assets);
+
+    render();
+
+    const getPrice = jest.mocked(sortTokenAssets).mock.lastCall?.[3]?.getPrice;
+    expect(getPrice?.(assets[CHAIN_ID][0])).toBeUndefined();
   });
 
   it('excludes stock tokens from security fetches', () => {

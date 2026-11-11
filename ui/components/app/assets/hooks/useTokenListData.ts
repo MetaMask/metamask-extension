@@ -28,6 +28,7 @@ import {
   getMarketData,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
+  getUseCurrencyRateCheck,
   getUseExternalServices,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
@@ -157,6 +158,7 @@ export function useTokenListData({
   );
 
   const useExternalServices = useSelector(getUseExternalServices);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -188,12 +190,14 @@ export function useTokenListData({
       sortOverride,
       {
         getPrice: (asset) =>
-          getCachedTokenPrice(
-            asset,
-            marketData,
-            currencyRates,
-            conversionRates,
-          ),
+          useCurrencyRateCheck
+            ? getCachedTokenPrice(
+                asset,
+                marketData,
+                currencyRates,
+                conversionRates,
+              )
+            : undefined,
         getPercentChange: (asset) =>
           getCachedTokenPercentChange(asset, marketData, conversionRates),
       },
@@ -230,6 +234,7 @@ export function useTokenListData({
     allEnabledNetworksForAllNamespaces,
     deferredShouldHideZeroBalanceTokens,
     useExternalServices,
+    useCurrencyRateCheck,
     sortOverride,
     marketData,
     currencyRates,
