@@ -198,10 +198,21 @@ export const AdvancedChartSection = ({
 
   const header = isLineChart ? lineHeader : candleHeader;
   const candleFailed = Boolean(chartError ?? ohlcvError);
-  const showIndicatorBar = !isLineChart && chartReady && !candleFailed;
+  // A finished fetch that returned no candles is a success, not an error, so it
+  // never sets `ohlcvError`. Surface the shared "No data" placeholder instead
+  // of leaving an empty chart, and only once the fetch has actually settled so
+  // the placeholder does not flash before the first bars arrive.
+  const candleEmpty =
+    !isLineChart &&
+    !isOhlcvLoading &&
+    !candleFailed &&
+    Boolean(caipAssetId) &&
+    ohlcvData.length === 0;
+  const showIndicatorBar =
+    !isLineChart && chartReady && !candleFailed && !candleEmpty;
 
   let candleChart;
-  if (candleFailed) {
+  if (candleFailed || candleEmpty) {
     candleChart = <ChartErrorState />;
   } else if (caipAssetId) {
     candleChart = (

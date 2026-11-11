@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getTdpChartType,
@@ -74,6 +74,16 @@ export function useAdvancedChartPreferences() {
     [persistedIndicators],
   );
 
+  // The latest selection, updated synchronously on every toggle. `indicators`
+  // only refreshes after the async `setPreference` round-trips through Redux,
+  // so two quick toggles would both read the same stale set and the first
+  // change would be lost. This ref gives back-to-back toggles an up-to-date
+  // base to build on; it re-syncs whenever the persisted value settles.
+  const pendingIndicatorsRef = useRef(indicators);
+  useEffect(() => {
+    pendingIndicatorsRef.current = indicators;
+  }, [indicators]);
+
   const setChartType = useCallback((next: number) => {
     persistPreference('tdpChartType', next);
   }, []);
@@ -82,20 +92,20 @@ export function useAdvancedChartPreferences() {
     persistPreference('tdpChartInterval', next);
   }, []);
 
-  // `next` is computed outside any state updater: React may invoke an updater
-  // more than once, which would double-write the preference.
-  const toggleIndicator = useCallback(
-    (name: string) => {
-      const next = new Set(indicators);
-      if (next.has(name)) {
-        next.delete(name);
-      } else {
-        next.add(name);
-      }
-      persistPreference('tdpChartIndicators', [...next]);
-    },
-    [indicators],
-  );
+  // `next` is built from the synchronous ref (not the Redux-derived `indicators`
+  // snapshot) so rapid successive toggles accumulate instead of racing the
+  // async write. Computed outside any state updater, which React may call more
+  // than once and would otherwise double-write the preference.
+  const toggleIndicator = useCallback((name: string) => {
+    const next = new Set(pendingIndicatorsRef.current);
+    if (next.has(name)) {
+      next.delete(name);
+    } else {
+      next.add(name);
+    }
+    pendingIndicatorsRef.current = next;
+    persistPreference('tdpChartIndicators', [...next]);
+  }, []);
 
   return {
     chartType,

@@ -213,6 +213,23 @@ describe('IndicatorBar', () => {
       expect(getByTestId('advanced-chart-ma-option-MA50')).not.toBeChecked();
       expect(getByTestId('advanced-chart-ma-option-MA200')).not.toBeChecked();
     });
+
+    it('stays open after an MA option is selected so several can be toggled', () => {
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
+
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      // The outside-click listener is only armed after this tick.
+      jest.advanceTimersByTime(0);
+
+      // Clicking an option bubbles to the document; the menu must not treat its
+      // own option as an outside click and close.
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA5'));
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
+
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA10'));
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
+      expect(mockOnMAToggle).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('Edge cases', () => {

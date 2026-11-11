@@ -1,4 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
+import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 import {
   fetchOHLCV,
   useOHLCVChart,
@@ -134,6 +135,12 @@ describe('useOHLCVChart – fetchOHLCV', () => {
     await fetchOHLCV('ethereum', '1h');
 
     expect(jest.getTimerCount()).toBe(0);
+  });
+
+  it('derives the base URL from the shared prices-API base (honours MM_BACKEND_PRICES_API_URL)', () => {
+    // Guards against regressing to a hardcoded production URL that would ignore
+    // a staging/local prices backend.
+    expect(OHLCV_BASE_URL).toBe(`${priceApiBaseUrl}/v3/ohlcv-chart`);
   });
 
   it('constructs URL correctly with all params', async () => {

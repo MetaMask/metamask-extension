@@ -108,11 +108,21 @@ function setupPreferences(
   } as unknown as ReturnType<typeof useAdvancedChartPreferences>);
 }
 
+/** One candle, so the default candle-mode state is "has data" (shows chart). */
+const MOCK_OHLCV_BAR = {
+  time: 1_700_000_000,
+  open: 1,
+  high: 2,
+  low: 0.5,
+  close: 1.5,
+  volume: 100,
+};
+
 function setupData(
   overrides: Partial<ReturnType<typeof useAdvancedChartData>> = {},
 ) {
   mockUseAdvancedChartData.mockReturnValue({
-    ohlcvData: [],
+    ohlcvData: [MOCK_OHLCV_BAR],
     realtimeBar: undefined,
     realtimePrice: undefined,
     realtimeTimestamp: undefined,
@@ -477,6 +487,52 @@ describe('AdvancedChartSection', () => {
       );
 
       expect(indicatorSlotVisibility()).toBe('visible');
+    });
+  });
+
+  describe('empty candle history', () => {
+    beforeEach(() => {
+      setupPreferences(CHART_TYPE_CANDLE);
+    });
+
+    it('shows the no-data placeholder when a finished fetch returns no candles', () => {
+      setupData({ ohlcvData: [], isLoading: false, error: null });
+      render();
+
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+      expect(screen.queryByTestId('chart-iframe')).not.toBeInTheDocument();
+    });
+
+    it('keeps showing the chart while the fetch is still loading, so the placeholder does not flash', () => {
+      setupData({ ohlcvData: [], isLoading: true, error: null });
+      render();
+
+      expect(screen.getByTestId('chart-iframe')).toBeInTheDocument();
+      expect(screen.queryByTestId('chart-error-state')).not.toBeInTheDocument();
+    });
+
+    it('hides the indicator bar when there is no data', () => {
+      setupData({ ohlcvData: [], isLoading: false, error: null });
+      render();
+
+      act(() => {
+        // The engine never mounts without data, so readiness cannot arrive;
+        // the bar must stay hidden regardless.
+      });
+
+      expect(indicatorSlotVisibility()).toBe('hidden');
+    });
+
+    it('recovers to the chart once candles arrive', () => {
+      setupData({ ohlcvData: [], isLoading: false, error: null });
+      const { rerender } = render();
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+
+      setupData({ ohlcvData: [MOCK_OHLCV_BAR], isLoading: false, error: null });
+      rerender(<AdvancedChartSection {...DEFAULT_PROPS} />);
+
+      expect(screen.getByTestId('chart-iframe')).toBeInTheDocument();
+      expect(screen.queryByTestId('chart-error-state')).not.toBeInTheDocument();
     });
   });
 });
