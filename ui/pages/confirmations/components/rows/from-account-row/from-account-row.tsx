@@ -15,7 +15,6 @@ import {
   IconSize,
   Text,
 } from '@metamask/design-system-react';
-import type { Hex } from '@metamask/utils';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -25,9 +24,10 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
 import {
-  selectTransactionPayAccountOverrideByTransactionId,
-  type TransactionPayState,
+  selectTransactionPayEvmAccountOverrideByTransactionId,
+  type TransactionPayAccountsState,
 } from '../../../../../selectors/transactionPayController';
+import { getInternalAccounts } from '../../../../../selectors/accounts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
@@ -65,10 +65,10 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
  * "From <wallet>" / "To <wallet>" account selector row.
  *
  * Displays the account on the other end of the transfer and lets the user
- * switch to another EVM account via a modal. Selecting an account updates the
- * TransactionPayController's `accountOverride`. The displayed account is
- * `accountOverride ?? txParams.from`, matching how the pay controller resolves
- * the funding account.
+ * switch to another EVM account via a modal. Selecting an account sets the
+ * TransactionPayController's `accountOverride` to its account ID. The
+ * displayed account is the override account address, or `txParams.from`,
+ * matching how the pay controller resolves the funding account.
  *
  * The label direction follows the flow: funding flows (e.g. money-account
  * deposit) read "From", whereas withdraws read "To" because the selected
@@ -105,9 +105,10 @@ export function FromAccountRow({
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
 
-  const accountOverride = useSelector((state: TransactionPayState) =>
-    selectTransactionPayAccountOverrideByTransactionId(state, transactionId),
+  const accountOverride = useSelector((state: TransactionPayAccountsState) =>
+    selectTransactionPayEvmAccountOverrideByTransactionId(state, transactionId),
   );
+  const internalAccounts = useSelector(getInternalAccounts);
 
   // Prefer the pay-controller override so the pill updates when the user picks
   // a different funding account without mutating txParams.from.
@@ -136,6 +137,15 @@ export function FromAccountRow({
 
       // Withdraws re-encode the transfer in the background when the override
       // is set. Other flows rewrite nested calldata first.
+      const account = internalAccounts.find(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === address.toLowerCase(),
+      );
+
+      if (!account) {
+        return;
+      }
+
       try {
         if (!isRecipientRow) {
           await replaceAccountInNestedTransactions({
@@ -145,7 +155,7 @@ export function FromAccountRow({
             newAddress: address,
           });
         }
-        await setAccountOverride(currentConfirmation.id, address as Hex);
+        await setAccountOverride(currentConfirmation.id, account.id);
       } catch (error) {
         console.error('Failed to update pay account override', error);
       }
@@ -155,6 +165,7 @@ export function FromAccountRow({
       closeModal,
       currentConfirmation,
       from,
+      internalAccounts,
       isRecipientRow,
       txFrom,
     ],

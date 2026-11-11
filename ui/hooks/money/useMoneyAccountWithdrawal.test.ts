@@ -192,9 +192,7 @@ describe('useMoneyAccountWithdrawal', () => {
     });
 
     expect(createWithdrawTransactionMock).toHaveBeenCalledTimes(1);
-    expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
-      '0x1234567890123456789012345678901234567890',
-    );
+    expect(createWithdrawTransactionMock).toHaveBeenCalledWith(ACCOUNT_ID);
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
@@ -255,7 +253,7 @@ describe('useMoneyAccountWithdrawal', () => {
     });
 
     expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
-      SOFTWARE_ADDRESS,
+      SOFTWARE_ACCOUNT.id,
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(
       TRANSACTION_ID,
@@ -326,7 +324,7 @@ describe('useMoneyAccountWithdrawal', () => {
         });
 
         expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
-          '0x1234567890123456789012345678901234567890',
+          HARDWARE_ACCOUNT_ID,
         );
         expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
           loader: ConfirmationLoader.CustomAmount,
@@ -354,7 +352,7 @@ describe('useMoneyAccountWithdrawal', () => {
       });
 
       expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
+        HARDWARE_ACCOUNT_ID,
       );
       expect(reportErrorMock).not.toHaveBeenCalled();
     });
@@ -385,7 +383,7 @@ describe('useMoneyAccountWithdrawal', () => {
       });
 
       expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
 
@@ -413,7 +411,7 @@ describe('useMoneyAccountWithdrawal', () => {
       });
 
       expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
-        SOFTWARE_ADDRESS,
+        SOFTWARE_ACCOUNT.id,
       );
     });
   });

@@ -125,8 +125,6 @@ jest.mock('../../send/asset', () => ({
   },
 }));
 
-const CHAIN_ID_MOCK = '0x1';
-
 // `PayWithModal` calls `useDispatch()` for the perpsWithdraw `addToken`
 // import path, so the component needs a redux store at render time. The
 // non-perpsWithdraw test cases never actually dispatch — a default mock-state
@@ -194,8 +192,7 @@ describe('PayWithModal', () => {
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: '0x0000000000000000000000000000000000000000',
-        chainId: CHAIN_ID_MOCK,
+        assetId: 'eip155:1/slip44:60',
         balanceFiat: '$100.00',
         balanceHuman: '0.05',
         balanceRaw: '50000000000000000',
@@ -292,8 +289,7 @@ describe('PayWithModal', () => {
     expect(getAvailableTokensMock).toHaveBeenCalledWith(
       expect.objectContaining({
         payToken: expect.objectContaining({
-          address: '0x0000000000000000000000000000000000000000',
-          chainId: CHAIN_ID_MOCK,
+          assetId: 'eip155:1/slip44:60',
         }),
         requiredTokens: [],
       }),

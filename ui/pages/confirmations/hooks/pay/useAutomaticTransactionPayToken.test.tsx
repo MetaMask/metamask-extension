@@ -327,8 +327,7 @@ describe('useAutomaticTransactionPayToken', () => {
     ] as Asset[]);
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK,
-        chainId: CHAIN_ID_2_MOCK,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });
@@ -583,8 +582,7 @@ describe('useAutomaticTransactionPayToken', () => {
   it('does nothing when payToken is already set', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK as Hex,
-        chainId: CHAIN_ID_2_MOCK as Hex,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });
@@ -614,8 +612,7 @@ describe('useAutomaticTransactionPayToken', () => {
   it('re-selects the pay token when the account override changes', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: TOKEN_ADDRESS_2_MOCK as Hex,
-        chainId: CHAIN_ID_2_MOCK as Hex,
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
       } as never,
       setPayToken: setPayTokenMock,
     });

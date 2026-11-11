@@ -18,8 +18,7 @@ const ASSET_AMOUNT_MOCK = '100';
 const ASSET_FIAT_RATE_MOCK = 10;
 const PAY_TOKEN_FIAT_RATE_MOCK = 2;
 const PAY_TOKEN_SYMBOL_MOCK = 'TST';
-const CHAIN_ID_MOCK = '0x456';
-const ADDRESS_MOCK = '0xdef';
+const ADDRESS_MOCK = '0x0000000000000000000000000000000000000def';
 
 const mockStore = configureMockStore([]);
 
@@ -53,8 +52,7 @@ describe('PayTokenAmount', () => {
     useTransactionPayTokenMock.mockReturnValue({
       isNative: false,
       payToken: {
-        chainId: CHAIN_ID_MOCK,
-        address: ADDRESS_MOCK,
+        assetId: `eip155:1110/erc20:${ADDRESS_MOCK}`,
         symbol: PAY_TOKEN_SYMBOL_MOCK,
         decimals: 18,
         balanceFiat: '100',

@@ -7,6 +7,7 @@ import {
   PaymentOverride,
   type TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
+import { hexToNumber, type Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
@@ -112,7 +113,7 @@ function runHook({
   livePayTokenBalanceRaw?: string;
   payTokenDecimals?: number;
   payTokenAddress?: string;
-  payTokenChainId?: string;
+  payTokenChainId?: Hex;
   balanceUsdOverride?: number;
   isNoFeePayToken?: boolean;
   isMaxAmount?: boolean;
@@ -170,11 +171,10 @@ function runHook({
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
       payToken: {
-        address: payTokenAddress,
+        assetId: `eip155:${hexToNumber(payTokenChainId)}/erc20:${payTokenAddress}`,
         balanceUsd: String(payTokenBalanceUsd),
         balanceRaw: payTokenBalanceRaw,
         decimals: payTokenDecimals,
-        chainId: payTokenChainId,
       } as ReturnType<
         typeof useTransactionPayTokenModule.useTransactionPayToken
       >['payToken'],
@@ -702,11 +702,10 @@ describe('useTransactionCustomAmount', () => {
         .mocked(useTransactionPayTokenModule.useTransactionPayToken)
         .mockReturnValue({
           payToken: {
-            address,
+            assetId: `eip155:1/erc20:${address}`,
             balanceUsd: '100',
             balanceRaw: '100000000',
             decimals: 6,
-            chainId: '0x1',
           } as unknown as ReturnType<
             typeof useTransactionPayTokenModule.useTransactionPayToken
           >['payToken'],
@@ -1824,9 +1823,8 @@ describe('useTransactionCustomAmount', () => {
         .mocked(useTransactionPayTokenModule.useTransactionPayToken)
         .mockReturnValue({
           payToken: {
-            address: '0xtokenb',
+            assetId: 'eip155:1/erc20:0xtokenb',
             balanceUsd: '2000',
-            chainId: '0x1',
           } as unknown as ReturnType<
             typeof useTransactionPayTokenModule.useTransactionPayToken
           >['payToken'],
