@@ -147,10 +147,7 @@ export const usePrefillFromSearchQuery = () => {
       appliedSearch.current = search;
 
       // Seed destination token from URL before fetch so getToToken does not fall back to the default
-      if (
-        searchParamsTo &&
-        isSupportedBridgeChain(searchParamsTo.chainId)
-      ) {
+      if (searchParamsTo && isSupportedBridgeChain(searchParamsTo.chainId)) {
         dispatch(setToToken(buildPlaceholderAssetMetadata(searchParamsTo)));
       }
 
