@@ -10812,9 +10812,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@73.1.2-preview-616796faf":
-  version: 73.1.2-preview-616796faf
-  resolution: "@metamask-previews/transaction-controller@npm:73.1.2-preview-616796faf"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@73.1.2-preview-d1da3c817":
+  version: 73.1.2-preview-d1da3c817
+  resolution: "@metamask-previews/transaction-controller@npm:73.1.2-preview-d1da3c817"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
@@ -10848,13 +10848,13 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/c090f8a94cd1a982bec2d630553b26e7ae88a8c4c2d08a5ff0dcfc0ed5be7224c4a5e5cafa271ad9127de92733c5f1d7b53092df0bc77972f220710260c6f50b
+  checksum: 10/389d1a66d8840124a7efd17b87d00457b11e325c317c3307c156888edc7a3fdec56da4daf3692cfe927c340dc7d39aafaa35f0edb942f7bdb80aea2382b1319d
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:@metamask-previews/transaction-pay-controller@31.1.0-preview-616796faf":
-  version: 31.1.0-preview-616796faf
-  resolution: "@metamask-previews/transaction-pay-controller@npm:31.1.0-preview-616796faf"
+"@metamask/transaction-pay-controller@npm:@metamask-previews/transaction-pay-controller@31.1.0-preview-d1da3c817":
+  version: 31.1.0-preview-d1da3c817
+  resolution: "@metamask-previews/transaction-pay-controller@npm:31.1.0-preview-d1da3c817"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -10889,7 +10889,7 @@ __metadata:
     immer: "npm:^11.1.18"
     lodash-es: "npm:^4.18.1"
     uuid: "npm:^14.0.2"
-  checksum: 10/9586df686d22c52d1b65e9d526147541a43795dc9beffeeaf8a8951aa7aed5367f1e46b61bc08e073d25b53289d0318529c9f5eaeb74b1fdf6fa487c13e4600a
+  checksum: 10/51b71fb220a36c25c7c5cb09990e249864602ae34fa6416a43bfb5ed805eac2bd1cbe522ac3236c0af57b5afa3a82f5f335b2d03aeb9cc88258370e56cba6609
   languageName: node
   linkType: hard
 
