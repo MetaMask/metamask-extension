@@ -33,6 +33,11 @@ export type TokenTableSort =
       getValue: (asset: Asset) => number | undefined;
     };
 
+export type TokenTableHeaderSort = {
+  column: TokenTableSort['column'];
+  reversed: boolean;
+};
+
 /**
  * Sorts tokens for the table header. Without an override, this is the saved
  * preference. The override is not written back to that preference.

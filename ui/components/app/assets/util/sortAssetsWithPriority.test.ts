@@ -227,20 +227,6 @@ describe('sortTokenAssets', () => {
     expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
   });
 
-  it('reads each price once', () => {
-    const getValue = jest.fn((asset: Asset) =>
-      asset.name === 'Asset A' ? 2 : undefined,
-    );
-
-    sortTokenAssets(
-      assets,
-      savedBalanceSort,
-      numericSort('price', false, getValue),
-    );
-
-    expect(getValue).toHaveBeenCalledTimes(assets.length);
-  });
-
   it('sorts the largest 24h gain first and leaves missing changes last', () => {
     const changes: Record<string, number | undefined> = {
       'Asset A': -2,

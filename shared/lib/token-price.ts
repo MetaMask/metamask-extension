@@ -1,6 +1,5 @@
 import {
   getNativeTokenAddress,
-  type Asset,
   type CurrencyRateState,
   type MultichainAssetsRatesControllerState,
   type TokenRatesControllerState,
@@ -12,9 +11,6 @@ import { toChecksumHexAddress } from './hexstring-utils';
 type MarketData = TokenRatesControllerState['marketData'];
 type CurrencyRates = CurrencyRateState['currencyRates'];
 type ConversionRates = MultichainAssetsRatesControllerState['conversionRates'];
-
-const finiteNumber = (value: number | null | undefined) =>
-  typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 
 type CachedSpotPriceInput = {
   isNative: boolean;
@@ -53,7 +49,7 @@ export function getCachedSpotPrice({
 }: CachedSpotPriceInput): number | undefined {
   if (isEvmChainId(chainId)) {
     if (isNative) {
-      return finiteNumber(currencyRates?.[symbol]?.conversionRate);
+      return currencyRates?.[symbol]?.conversionRate ?? undefined;
     }
 
     if (!address) {
@@ -67,11 +63,9 @@ export function getCachedSpotPrice({
       : undefined;
     const price = tokenMarket?.price;
 
-    return finiteNumber(
-      exchangeRate !== undefined && price !== undefined
-        ? exchangeRate * price
-        : undefined,
-    );
+    return exchangeRate !== undefined && price !== undefined
+      ? exchangeRate * price
+      : undefined;
   }
 
   const rateKey = isNative ? getNativeAssetId(chainId) : address;
@@ -84,35 +78,7 @@ export function getCachedSpotPrice({
     return undefined;
   }
 
-  const parsed = parseFloat(rate);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
-/**
- * The cached spot price of a list asset. This is the price the token table
- * shows for that row.
- *
- * @param asset - The asset to price.
- * @param marketData - EVM market data keyed by chain id and token address.
- * @param currencyRates - Fiat conversion rates keyed by currency symbol.
- * @param conversionRates - Non-EVM rates keyed by asset id.
- * @returns The price, or `undefined` when it is not cached.
- */
-export function getCachedTokenPrice(
-  asset: Asset,
-  marketData: MarketData | undefined,
-  currencyRates: CurrencyRates | undefined,
-  conversionRates: ConversionRates | undefined,
-): number | undefined {
-  return getCachedSpotPrice({
-    isNative: Boolean(asset.isNative),
-    symbol: asset.symbol,
-    chainId: asset.chainId,
-    address: 'address' in asset ? asset.address : asset.assetId,
-    marketData,
-    currencyRates,
-    conversionRates,
-  });
+  return parseFloat(rate);
 }
 
 type CachedPercentChangeInput = {
@@ -153,37 +119,14 @@ export function getCachedPercentChange({
   }
 
   if (evm) {
-    return finiteNumber(
+    return (
       marketData?.[chainId as Hex]?.[toChecksumHexAddress(tokenAddress) as Hex]
-        ?.pricePercentChange1d,
+        ?.pricePercentChange1d ?? undefined
     );
   }
 
-  return finiteNumber(
+  return (
     conversionRates?.[tokenAddress as CaipAssetType]?.marketData
-      ?.pricePercentChange?.P1D,
+      ?.pricePercentChange?.P1D ?? undefined
   );
-}
-
-/**
- * The cached 24h percent change of a list asset. This is the change the token
- * table shows for that row.
- *
- * @param asset - The asset to read.
- * @param marketData - EVM market data keyed by chain id and token address.
- * @param conversionRates - Non-EVM rates keyed by asset id.
- * @returns The percent change, or `undefined` when it is not cached.
- */
-export function getCachedTokenPercentChange(
-  asset: Asset,
-  marketData: MarketData | undefined,
-  conversionRates: ConversionRates | undefined,
-): number | undefined {
-  return getCachedPercentChange({
-    isNative: Boolean(asset.isNative),
-    chainId: asset.chainId,
-    address: 'address' in asset ? asset.address : asset.assetId,
-    marketData,
-    conversionRates,
-  });
 }

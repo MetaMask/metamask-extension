@@ -139,159 +139,78 @@ describe('TokenTable', () => {
     expect(handleLowValueAssetsToggle).toHaveBeenCalledTimes(1);
   });
 
-  it('reverses the balance sort when the active balance header is clicked', () => {
-    mockTokenListData();
+  it.each([
+    {
+      column: 'balance',
+      label: 'Balance',
+      first: { direction: 'up', reversed: true, name: 'sorted ascending' },
+      second: { direction: 'down', reversed: false, name: 'sorted descending' },
+    },
+    {
+      column: 'token',
+      label: 'Token',
+      first: { direction: 'down', reversed: false, name: 'sorted ascending' },
+      second: { direction: 'up', reversed: true, name: 'sorted descending' },
+    },
+    {
+      column: 'price',
+      label: 'Price',
+      first: { direction: 'down', reversed: false, name: 'sorted descending' },
+      second: { direction: 'up', reversed: true, name: 'sorted ascending' },
+    },
+    {
+      column: 'change',
+      label: '24h change',
+      first: { direction: 'down', reversed: false, name: 'sorted descending' },
+      second: { direction: 'up', reversed: true, name: 'sorted ascending' },
+    },
+  ] as const)(
+    'toggles the $label header sort',
+    ({ column, label, first, second }) => {
+      mockTokenListData();
 
-    const { getByTestId } = renderTable();
-    fireEvent.click(getByTestId('token-table-sort-balance'));
+      const { getByTestId } = renderTable();
+      const header = () => getByTestId(`token-table-sort-${column}`);
+      const sortOverride = (reversed: boolean) =>
+        column === 'price' || column === 'change'
+          ? expect.objectContaining({
+              column,
+              reversed,
+              getValue: expect.any(Function),
+            })
+          : { column, reversed };
 
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-balance')),
-    ).toHaveAttribute('data-sort-direction', 'up');
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-balance')),
-    ).toHaveAttribute('aria-hidden', 'true');
-    expect(getByTestId('token-table-sort-balance')).toHaveAccessibleName(
-      'Balance, sorted ascending',
-    );
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: { column: 'balance', reversed: true },
-      }),
-    );
+      fireEvent.click(header());
 
-    fireEvent.click(getByTestId('token-table-sort-balance'));
+      expect(getSortIndicator(header())).toHaveAttribute(
+        'data-sort-direction',
+        first.direction,
+      );
+      expect(getSortIndicator(header())).toHaveAttribute('aria-hidden', 'true');
+      expect(header()).toHaveAccessibleName(`${label}, ${first.name}`);
+      if (column !== 'balance') {
+        expect(
+          getSortIndicator(getByTestId('token-table-sort-balance')),
+        ).toBeNull();
+      }
+      expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+        expect.objectContaining({ sortOverride: sortOverride(first.reversed) }),
+      );
 
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-balance')),
-    ).toHaveAttribute('data-sort-direction', 'down');
-    expect(getByTestId('token-table-sort-balance')).toHaveAccessibleName(
-      'Balance, sorted descending',
-    );
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: { column: 'balance', reversed: false },
-      }),
-    );
-  });
+      fireEvent.click(header());
 
-  it('sorts alphabetically on the first token header click, then reverses it', () => {
-    mockTokenListData();
-
-    const { getByTestId } = renderTable();
-    fireEvent.click(getByTestId('token-table-sort-token'));
-
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-token')),
-    ).toHaveAttribute('data-sort-direction', 'down');
-    expect(getByTestId('token-table-sort-token')).toHaveAccessibleName(
-      'Token, sorted ascending',
-    );
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-balance')),
-    ).toBeNull();
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: { column: 'token', reversed: false },
-      }),
-    );
-
-    fireEvent.click(getByTestId('token-table-sort-token'));
-
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-token')),
-    ).toHaveAttribute('data-sort-direction', 'up');
-    expect(getByTestId('token-table-sort-token')).toHaveAccessibleName(
-      'Token, sorted descending',
-    );
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: { column: 'token', reversed: true },
-      }),
-    );
-  });
-
-  it('sorts by the highest price on the first price header click, then reverses it', () => {
-    mockTokenListData();
-
-    const { getByTestId } = renderTable();
-    fireEvent.click(getByTestId('token-table-sort-price'));
-
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-price')),
-    ).toHaveAttribute('data-sort-direction', 'down');
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-balance')),
-    ).toBeNull();
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: expect.objectContaining({
-          column: 'price',
-          reversed: false,
-          getValue: expect.any(Function),
+      expect(getSortIndicator(header())).toHaveAttribute(
+        'data-sort-direction',
+        second.direction,
+      );
+      expect(header()).toHaveAccessibleName(`${label}, ${second.name}`);
+      expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          sortOverride: sortOverride(second.reversed),
         }),
-      }),
-    );
-
-    fireEvent.click(getByTestId('token-table-sort-price'));
-
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-price')),
-    ).toHaveAttribute('data-sort-direction', 'up');
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: expect.objectContaining({
-          column: 'price',
-          reversed: true,
-          getValue: expect.any(Function),
-        }),
-      }),
-    );
-  });
-
-  it('sorts by the largest 24h gain on the first change header click, then reverses it', () => {
-    mockTokenListData();
-
-    const { getByTestId } = renderTable();
-    fireEvent.click(getByTestId('token-table-sort-change'));
-
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-change')),
-    ).toHaveAttribute('data-sort-direction', 'down');
-    expect(getByTestId('token-table-sort-change')).toHaveAccessibleName(
-      '24h change, sorted descending',
-    );
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-balance')),
-    ).toBeNull();
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: expect.objectContaining({
-          column: 'change',
-          reversed: false,
-          getValue: expect.any(Function),
-        }),
-      }),
-    );
-
-    fireEvent.click(getByTestId('token-table-sort-change'));
-
-    expect(
-      getSortIndicator(getByTestId('token-table-sort-change')),
-    ).toHaveAttribute('data-sort-direction', 'up');
-    expect(getByTestId('token-table-sort-change')).toHaveAccessibleName(
-      '24h change, sorted ascending',
-    );
-    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sortOverride: expect.objectContaining({
-          column: 'change',
-          reversed: true,
-          getValue: expect.any(Function),
-        }),
-      }),
-    );
-  });
+      );
+    },
+  );
 
   it('drops a header sort when the saved preference changes', () => {
     mockTokenListData();

@@ -1,17 +1,11 @@
 import {
   getNativeTokenAddress,
-  type Asset,
   type CurrencyRateState,
   type MultichainAssetsRatesControllerState,
   type TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
-import {
-  getCachedPercentChange,
-  getCachedSpotPrice,
-  getCachedTokenPrice,
-  getCachedTokenPercentChange,
-} from './token-price';
+import { getCachedPercentChange, getCachedSpotPrice } from './token-price';
 
 const marketData = (data: object) =>
   data as TokenRatesControllerState['marketData'];
@@ -73,60 +67,6 @@ describe('getCachedSpotPrice', () => {
 
     expect(price).toBe(150.25);
   });
-
-  it('returns undefined for a non-finite price', () => {
-    expect(
-      getCachedSpotPrice({
-        isNative: true,
-        symbol: 'ETH',
-        chainId: '0x1',
-        currencyRates: currencyRates({ ETH: { conversionRate: Number.NaN } }),
-      }),
-    ).toBeUndefined();
-
-    expect(
-      getCachedSpotPrice({
-        isNative: false,
-        symbol: 'USDC',
-        chainId: '0x1',
-        address: USDC_ADDRESS,
-        marketData: marketData({
-          '0x1': {
-            [USDC_ADDRESS]: {
-              price: Number.POSITIVE_INFINITY,
-              currency: 'usd',
-            },
-          },
-        }),
-        currencyRates: currencyRates({ usd: { conversionRate: 1 } }),
-      }),
-    ).toBeUndefined();
-  });
-});
-
-describe('getCachedTokenPrice', () => {
-  it('prices an EVM token from the list asset address', () => {
-    const asset = {
-      chainId: '0x1',
-      symbol: 'USDC',
-      isNative: false,
-      address: USDC_ADDRESS,
-      assetId: USDC_ADDRESS,
-    } as unknown as Asset;
-
-    const price = getCachedTokenPrice(
-      asset,
-      marketData({
-        '0x1': {
-          [USDC_ADDRESS]: { price: 2, currency: 'usd' },
-        },
-      }),
-      currencyRates({ usd: { conversionRate: 1 } }),
-      undefined,
-    );
-
-    expect(price).toBe(2);
-  });
 });
 
 describe('getCachedPercentChange', () => {
@@ -175,36 +115,6 @@ describe('getCachedPercentChange', () => {
     expect(change).toBe(2.25);
   });
 
-  it('returns undefined for a non-finite change', () => {
-    expect(
-      getCachedPercentChange({
-        isNative: false,
-        chainId: '0x1',
-        address: USDC_ADDRESS,
-        marketData: marketData({
-          '0x1': {
-            [USDC_ADDRESS]: { pricePercentChange1d: Number.NaN },
-          },
-        }),
-      }),
-    ).toBeUndefined();
-
-    expect(
-      getCachedPercentChange({
-        isNative: false,
-        chainId: '0x1',
-        address: USDC_ADDRESS,
-        marketData: marketData({
-          '0x1': {
-            [USDC_ADDRESS]: {
-              pricePercentChange1d: Number.POSITIVE_INFINITY,
-            },
-          },
-        }),
-      }),
-    ).toBeUndefined();
-  });
-
   it('returns undefined when the change is missing', () => {
     const change = getCachedPercentChange({
       isNative: false,
@@ -213,29 +123,5 @@ describe('getCachedPercentChange', () => {
     });
 
     expect(change).toBeUndefined();
-  });
-});
-
-describe('getCachedTokenPercentChange', () => {
-  it('reads the change for a list asset', () => {
-    const asset = {
-      chainId: '0x1',
-      symbol: 'USDC',
-      isNative: false,
-      address: USDC_ADDRESS,
-      assetId: USDC_ADDRESS,
-    } as unknown as Asset;
-
-    const change = getCachedTokenPercentChange(
-      asset,
-      marketData({
-        '0x1': {
-          [USDC_ADDRESS]: { pricePercentChange1d: 0.4 },
-        },
-      }),
-      undefined,
-    );
-
-    expect(change).toBe(0.4);
   });
 });

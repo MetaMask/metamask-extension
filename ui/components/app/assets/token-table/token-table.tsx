@@ -23,8 +23,8 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
-import { useTokenSortValues } from '../hooks/useTokenSortValues';
-import type { TokenTableSort } from '../util/sortAssetsWithPriority';
+import { useTokenSortOverride } from '../hooks/useTokenSortOverride';
+import type { TokenTableHeaderSort } from '../util/sortAssetsWithPriority';
 import { NativeTokenScamWarningModal } from '../token-cell/native-token-scam-warning-modal';
 import {
   TokenCellPercentChange,
@@ -44,14 +44,12 @@ import {
 import type {
   SortColumn,
   SortableColumnHeaderProps,
-  HeaderProps,
+  TokenTableHeaderProps,
   TokenTableProps,
-  RowProps,
+  TokenTableRowProps,
 } from './token-table.types';
 
 export type { TokenTableProps };
-
-const noSortValue = () => undefined;
 
 // Gets the existing active sort column based on the TokenSortConfig
 const getActiveSortColumn = (
@@ -111,7 +109,11 @@ const SortableColumnHeader = ({
   );
 };
 
-const Header = ({ activeColumn, reversed, onSort }: HeaderProps) => {
+const TokenTableHeader = ({
+  activeColumn,
+  reversed,
+  onSort,
+}: TokenTableHeaderProps) => {
   const t = useI18nContext();
 
   return (
@@ -135,7 +137,12 @@ const Header = ({ activeColumn, reversed, onSort }: HeaderProps) => {
   );
 };
 
-const Row = ({ token, privacyMode, onClick, safeChains }: RowProps) => {
+const TokenTableRow = ({
+  token,
+  privacyMode,
+  onClick,
+  safeChains,
+}: TokenTableRowProps) => {
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const tokenDisplayInfo = useTokenDisplayInfo({ token });
   const displayToken = useMemo(
@@ -217,10 +224,9 @@ const Row = ({ token, privacyMode, onClick, safeChains }: RowProps) => {
 export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const preferenceKey = `${tokenSortConfig?.key ?? ''}:${tokenSortConfig?.order ?? ''}`;
-  const [headerSort, setHeaderSort] = useState<{
-    column: SortColumn;
-    reversed: boolean;
-  } | null>(null);
+  const [headerSort, setHeaderSort] = useState<TokenTableHeaderSort | null>(
+    null,
+  );
   const [headerSortPreferenceKey, setHeaderSortPreferenceKey] =
     useState(preferenceKey);
   if (headerSortPreferenceKey !== preferenceKey) {
@@ -233,35 +239,13 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
 
   const handleSort = useCallback(
     (column: SortColumn) => {
-      setHeaderSort({
-        column,
-        reversed: column === activeColumn ? !reversed : false,
-      });
+      const nextReversed = column === activeColumn ? !reversed : false;
+      setHeaderSort({ column, reversed: nextReversed });
     },
     [activeColumn, reversed],
   );
 
-  const getSortValue = useTokenSortValues(
-    headerSort?.column === 'price' || headerSort?.column === 'change'
-      ? headerSort.column
-      : null,
-  );
-  const sortOverride = useMemo((): TokenTableSort | null => {
-    if (headerSort === null) {
-      return null;
-    }
-
-    const { column, reversed: headerReversed } = headerSort;
-    if (column === 'price' || column === 'change') {
-      return {
-        column,
-        reversed: headerReversed,
-        getValue: getSortValue ?? noSortValue,
-      };
-    }
-
-    return { column, reversed: headerReversed };
-  }, [getSortValue, headerSort]);
+  const sortOverride = useTokenSortOverride(headerSort);
   const {
     tokenListItems,
     showLoadingSkeleton,
@@ -289,7 +273,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
       }
 
       return (
-        <Row
+        <TokenTableRow
           token={item.token}
           privacyMode={privacyMode}
           onClick={getTokenClickHandler(item.token)}
@@ -312,7 +296,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
 
   return (
     <div data-testid="token-table" className="@container/token-table">
-      <Header
+      <TokenTableHeader
         activeColumn={activeColumn}
         reversed={reversed}
         onSort={handleSort}

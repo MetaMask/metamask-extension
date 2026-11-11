@@ -23,7 +23,7 @@ export type SortableColumnHeaderProps = {
   className?: string;
 };
 
-export type HeaderProps = {
+export type TokenTableHeaderProps = {
   activeColumn: SortColumn | null;
   reversed: boolean;
   onSort: (column: SortColumn) => void;
@@ -35,7 +35,7 @@ export type HeaderColumn = {
   className: string;
 };
 
-export type RowProps = {
+export type TokenTableRowProps = {
   token: TokenWithFiatAmount;
   privacyMode: boolean;
   onClick?: () => void;
