@@ -46,8 +46,7 @@ export function getMoneyAccountUpgradeControllerMessenger(
     actions: [
       'AuthenticatedUserStorageService:createDelegation',
       'AuthenticatedUserStorageService:listDelegations',
-      'ChompApiService:associateAddressV2',
-      'ChompApiService:createAddressChallenge',
+      'ChompApiService:associateAddress',
       'ChompApiService:createIntents',
       'ChompApiService:createUpgrade',
       'ChompApiService:getAssociatedAddresses',
