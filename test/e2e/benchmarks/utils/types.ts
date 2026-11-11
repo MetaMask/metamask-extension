@@ -31,6 +31,17 @@ export type LongTaskStepResult = {
    * four counts above are initialized zeros rather than observations.
    */
   longTasksObserved: boolean;
+  /** Long Animation Frames in the same window as the long tasks above. */
+  longAnimationFrameCount: number;
+  /** Sum of those frames' `duration`s, in ms. */
+  longAnimationFrameTotalDuration: number;
+  /** Sum of those frames' `blockingDuration`s, in ms. */
+  longAnimationFrameBlockingDuration: number;
+  /**
+   * Whether the `long-animation-frame` observer was attached for this step.
+   * False means the three counts above are initialized zeros.
+   */
+  longAnimationFramesObserved: boolean;
 };
 
 export type PageLoadBenchmarkOptions = {

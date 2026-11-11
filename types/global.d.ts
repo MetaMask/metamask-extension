@@ -7,6 +7,7 @@ import type { Preferences } from '../shared/types/preferences';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
 import type {
+  LongAnimationFrameMetrics,
   LongTaskMetrics,
   LongTaskMetricsWithTBT,
 } from '../ui/helpers/utils/performance-observers';
@@ -89,6 +90,10 @@ type StateHooks = {
   getLongTaskMetrics?: (reset?: boolean) => LongTaskMetrics;
   getLongTaskMetricsWithTBT?: (reset?: boolean) => LongTaskMetricsWithTBT;
   resetLongTaskMetrics?: () => void;
+
+  // Long Animation Frame metrics for E2E benchmarks (test and debug builds)
+  getLongAnimationFrameMetrics?: (reset?: boolean) => LongAnimationFrameMetrics;
+  resetLongAnimationFrameMetrics?: () => void;
 
   /**
    * Initialize Core Web Vitals observers (INP, LCP, CLS).

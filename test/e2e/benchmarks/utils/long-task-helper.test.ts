@@ -2,6 +2,8 @@ import {
   buildLongTaskTimerResults,
   legacyStepTimerId,
   measureStepWithLongTasks,
+  stepLongAnimationFrameIds,
+  toLongTaskStepResult,
 } from './long-task-helper';
 import { performanceTracker } from './performance-tracker';
 import TimerHelper from './timer-helper';
@@ -24,6 +26,14 @@ jest.mock('./timer-helper', () => {
 jest.mock('./performance-tracker', () => ({
   performanceTracker: { addTimer: jest.fn() },
 }));
+
+/** A step on which the `long-animation-frame` observer did not attach. */
+const NO_FRAMES = {
+  longAnimationFrameCount: 0,
+  longAnimationFrameTotalDuration: 0,
+  longAnimationFrameBlockingDuration: 0,
+  longAnimationFramesObserved: false,
+};
 
 describe('long-task-helper', () => {
   describe('legacyStepTimerId', () => {
@@ -110,7 +120,60 @@ describe('long-task-helper', () => {
         longTaskMaxDuration: 110,
         tbt: 80,
         longTasksObserved: true,
+        longAnimationFrameCount: 0,
+        longAnimationFrameTotalDuration: 0,
+        longAnimationFrameBlockingDuration: 0,
+        longAnimationFramesObserved: false,
       });
+    });
+
+    it('runs the trigger after the windows open, then a page round trip, then starts the timer', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        executeScript: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
+      };
+      const trigger = jest.fn(async () => undefined);
+      const action = jest.fn(async () => undefined);
+
+      await measureStepWithLongTasks(
+        mockDriver as unknown as import('../../webdriver/driver').Driver,
+        'triggeredStep',
+        action,
+        { trigger },
+      );
+
+      const timer = (TimerHelper as unknown as jest.Mock).mock.results.at(-1)
+        ?.value as { measure: jest.Mock };
+      const first = (fn: jest.Mock) => fn.mock.invocationCallOrder[0];
+      expect(first(mockDriver.resetLongTaskMetrics)).toBeLessThan(
+        first(trigger),
+      );
+      expect(first(trigger)).toBeLessThan(first(mockDriver.executeScript));
+      expect(first(mockDriver.executeScript)).toBeLessThan(
+        first(timer.measure),
+      );
+      expect(first(timer.measure)).toBeLessThan(first(action));
+      expect(first(action)).toBeLessThan(
+        first(mockDriver.collectLongTaskMetrics),
+      );
+      expect(mockDriver.executeScript).toHaveBeenCalledTimes(1);
+    });
+
+    it('makes no extra page round trip without a trigger', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        executeScript: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
+      };
+
+      await measureStepWithLongTasks(
+        mockDriver as unknown as import('../../webdriver/driver').Driver,
+        'plainStep',
+        async () => undefined,
+      );
+
+      expect(mockDriver.executeScript).not.toHaveBeenCalled();
     });
 
     it('defaults to zeros when collectLongTaskMetrics returns null', async () => {
@@ -147,6 +210,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 0,
           tbt: 0,
           longTasksObserved: false,
+          ...NO_FRAMES,
         },
         {
           id: 'b',
@@ -156,6 +220,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 0,
           tbt: 0,
           longTasksObserved: false,
+          ...NO_FRAMES,
         },
       ];
 
@@ -172,6 +237,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 0,
           tbt: 0,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
       ];
 
@@ -208,6 +274,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 120,
           tbt: 100,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
       ];
 
@@ -231,6 +298,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 100,
           tbt: 80,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
         {
           id: 'step_b',
@@ -240,6 +308,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 150,
           tbt: 170,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
         {
           id: 'step_c',
@@ -249,6 +318,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 60,
           tbt: 10,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
       ];
 
@@ -272,6 +342,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 200,
           tbt: 150,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
         {
           id: 'second',
@@ -281,6 +352,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 80,
           tbt: 30,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
       ];
 
@@ -300,6 +372,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 0,
           tbt: 0,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
         {
           id: 'slow_step',
@@ -309,6 +382,7 @@ describe('long-task-helper', () => {
           longTaskMaxDuration: 110,
           tbt: 80,
           longTasksObserved: true,
+          ...NO_FRAMES,
         },
       ];
 
@@ -324,6 +398,270 @@ describe('long-task-helper', () => {
         id: 'longTaskMaxDuration',
         value: 110,
         unit: 'ms',
+      });
+    });
+  });
+
+  describe('toLongTaskStepResult', () => {
+    it('reads the Long Animation Frame metrics from the same collected object', () => {
+      expect(
+        toLongTaskStepResult('step', 120, {
+          count: 1,
+          totalDuration: 110,
+          maxDuration: 110,
+          tbt: 60,
+          observed: true,
+          longAnimationFrames: {
+            count: 2,
+            totalDuration: 230,
+            blockingDuration: 140,
+            observed: true,
+          },
+        }),
+      ).toStrictEqual({
+        id: 'step',
+        duration: 120,
+        longTaskCount: 1,
+        longTaskTotalDuration: 110,
+        longTaskMaxDuration: 110,
+        tbt: 60,
+        longTasksObserved: true,
+        longAnimationFrameCount: 2,
+        longAnimationFrameTotalDuration: 230,
+        longAnimationFrameBlockingDuration: 140,
+        longAnimationFramesObserved: true,
+      });
+    });
+
+    it('marks frames unobserved where the page exposes no frame hook', () => {
+      const result = toLongTaskStepResult('step', 120, {
+        count: 1,
+        totalDuration: 110,
+        maxDuration: 110,
+        tbt: 60,
+        observed: true,
+        longAnimationFrames: null,
+      });
+
+      expect(result.longTasksObserved).toBe(true);
+      expect(result).toMatchObject(NO_FRAMES);
+    });
+
+    it('marks both families unobserved when nothing was collected', () => {
+      const result = toLongTaskStepResult('step', 120, null);
+
+      expect(result.longTasksObserved).toBe(false);
+      expect(result).toMatchObject(NO_FRAMES);
+    });
+  });
+
+  describe('measureStepWithLongTasks, Long Animation Frames', () => {
+    it('returns the frame metrics from the one collect call that closes the step', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue({
+          count: 0,
+          totalDuration: 0,
+          maxDuration: 0,
+          tbt: 0,
+          observed: true,
+          longAnimationFrames: {
+            count: 1,
+            totalDuration: 64,
+            blockingDuration: 14,
+            observed: true,
+          },
+        }),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'framesStep',
+        async () => undefined,
+      );
+
+      expect(mockDriver.resetLongTaskMetrics).toHaveBeenCalledTimes(1);
+      expect(mockDriver.collectLongTaskMetrics).toHaveBeenCalledTimes(1);
+      expect(result).toMatchObject({
+        longAnimationFrameCount: 1,
+        longAnimationFrameTotalDuration: 64,
+        longAnimationFrameBlockingDuration: 14,
+        longAnimationFramesObserved: true,
+      });
+    });
+  });
+
+  describe('buildLongTaskTimerResults, Long Animation Frames', () => {
+    const LONG_TASKS = {
+      longTaskCount: 1,
+      longTaskTotalDuration: 120,
+      longTaskMaxDuration: 120,
+      tbt: 70,
+      longTasksObserved: true,
+    };
+
+    it('emits the run-level sums beside the long-task metrics, then each step', () => {
+      const steps: LongTaskStepResult[] = [
+        {
+          id: 'step_a',
+          duration: 300,
+          ...LONG_TASKS,
+          longAnimationFrameCount: 2,
+          longAnimationFrameTotalDuration: 180,
+          longAnimationFrameBlockingDuration: 90,
+          longAnimationFramesObserved: true,
+        },
+        {
+          id: 'step_b',
+          duration: 200,
+          ...LONG_TASKS,
+          longAnimationFrameCount: 1,
+          longAnimationFrameTotalDuration: 70,
+          longAnimationFrameBlockingDuration: 20,
+          longAnimationFramesObserved: true,
+        },
+      ];
+
+      expect(buildLongTaskTimerResults(steps)).toStrictEqual([
+        { id: 'longTaskCount', value: 2, unit: 'count' },
+        { id: 'longTaskTotalDuration', value: 240, unit: 'ms' },
+        { id: 'longTaskMaxDuration', value: 120, unit: 'ms' },
+        { id: 'tbt', value: 140, unit: 'ms' },
+        { id: 'longAnimationFrameCount', value: 3, unit: 'count' },
+        { id: 'longAnimationFrameTotalDuration', value: 250, unit: 'ms' },
+        { id: 'longAnimationFrameBlockingDuration', value: 110, unit: 'ms' },
+        { id: 'step_aLongAnimationFrameCount', value: 2, unit: 'count' },
+        { id: 'step_aLongAnimationFrameTotalDuration', value: 180, unit: 'ms' },
+        {
+          id: 'step_aLongAnimationFrameBlockingDuration',
+          value: 90,
+          unit: 'ms',
+        },
+        { id: 'step_bLongAnimationFrameCount', value: 1, unit: 'count' },
+        { id: 'step_bLongAnimationFrameTotalDuration', value: 70, unit: 'ms' },
+        {
+          id: 'step_bLongAnimationFrameBlockingDuration',
+          value: 20,
+          unit: 'ms',
+        },
+      ]);
+    });
+
+    it('keeps an observed zero, which is a measurement', () => {
+      const results = buildLongTaskTimerResults([
+        {
+          id: 'quiet',
+          duration: 50,
+          ...LONG_TASKS,
+          longAnimationFrameCount: 0,
+          longAnimationFrameTotalDuration: 0,
+          longAnimationFrameBlockingDuration: 0,
+          longAnimationFramesObserved: true,
+        },
+      ]);
+
+      expect(results).toContainEqual({
+        id: 'longAnimationFrameTotalDuration',
+        value: 0,
+        unit: 'ms',
+      });
+      expect(results).toContainEqual({
+        id: 'quietLongAnimationFrameTotalDuration',
+        value: 0,
+        unit: 'ms',
+      });
+    });
+
+    it('omits the frame metrics, and keeps the long-task ones, when no step observed frames', () => {
+      const results = buildLongTaskTimerResults([
+        { id: 'a', duration: 10, ...LONG_TASKS, ...NO_FRAMES },
+      ]);
+
+      expect(results.map((r) => r.id)).toStrictEqual([
+        'longTaskCount',
+        'longTaskTotalDuration',
+        'longTaskMaxDuration',
+        'tbt',
+      ]);
+    });
+
+    it('emits the frame metrics when frames were observed and long tasks were not', () => {
+      const results = buildLongTaskTimerResults([
+        {
+          id: 'a',
+          duration: 10,
+          longTaskCount: 0,
+          longTaskTotalDuration: 0,
+          longTaskMaxDuration: 0,
+          tbt: 0,
+          longTasksObserved: false,
+          longAnimationFrameCount: 1,
+          longAnimationFrameTotalDuration: 60,
+          longAnimationFrameBlockingDuration: 10,
+          longAnimationFramesObserved: true,
+        },
+      ]);
+
+      expect(results.map((r) => r.id)).toStrictEqual([
+        'longAnimationFrameCount',
+        'longAnimationFrameTotalDuration',
+        'longAnimationFrameBlockingDuration',
+        'aLongAnimationFrameCount',
+        'aLongAnimationFrameTotalDuration',
+        'aLongAnimationFrameBlockingDuration',
+      ]);
+    });
+
+    it('leaves out the per-step metrics of a step that did not observe frames', () => {
+      const results = buildLongTaskTimerResults([
+        {
+          id: 'seen',
+          duration: 10,
+          ...LONG_TASKS,
+          longAnimationFrameCount: 1,
+          longAnimationFrameTotalDuration: 60,
+          longAnimationFrameBlockingDuration: 10,
+          longAnimationFramesObserved: true,
+        },
+        { id: 'unseen', duration: 10, ...LONG_TASKS, ...NO_FRAMES },
+      ]);
+      const ids = results.map((r) => r.id);
+
+      expect(ids).toContain('seenLongAnimationFrameTotalDuration');
+      expect(ids.some((id) => id.startsWith('unseen'))).toBe(false);
+    });
+
+    it('tags every frame metric with a unit, keeping it out of the per-run total', () => {
+      const results = buildLongTaskTimerResults([
+        {
+          id: 'a',
+          duration: 10,
+          ...LONG_TASKS,
+          longAnimationFrameCount: 1,
+          longAnimationFrameTotalDuration: 60,
+          longAnimationFrameBlockingDuration: 10,
+          longAnimationFramesObserved: true,
+        },
+      ]);
+
+      expect(
+        results
+          .filter(
+            (r) =>
+              r.id.includes('LongAnimationFrame') ||
+              r.id.startsWith('longAnimationFrame'),
+          )
+          .every((r) => r.unit !== undefined),
+      ).toBe(true);
+    });
+  });
+
+  describe('stepLongAnimationFrameIds', () => {
+    it('suffixes the step id, as legacyStepTimerId does', () => {
+      expect(stepLongAnimationFrameIds('load_new_account')).toStrictEqual({
+        count: 'load_new_accountLongAnimationFrameCount',
+        totalDuration: 'load_new_accountLongAnimationFrameTotalDuration',
+        blockingDuration: 'load_new_accountLongAnimationFrameBlockingDuration',
       });
     });
   });

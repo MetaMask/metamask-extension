@@ -79,6 +79,16 @@ class OnboardingPasswordPage {
   }
 
   /**
+   * Submit the filled password form and wait for the submit button to go.
+   */
+  async clickCreatePasswordButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.createPasswordButton,
+      15000,
+    );
+  }
+
+  /**
    * Create a password for wallet
    *
    * @param password - The new password to create. Defaults to WALLET_PASSWORD.
@@ -88,10 +98,7 @@ class OnboardingPasswordPage {
   ): Promise<void> {
     console.log('Create password for wallet');
     await this.fillWalletPassword(password, password);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.createPasswordButton,
-      15000,
-    );
+    await this.clickCreatePasswordButton();
   }
 
   /**

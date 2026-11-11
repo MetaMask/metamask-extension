@@ -8,6 +8,11 @@ import {
   reportLongTaskMetricsToSentry,
   setupLongTaskSentryReporting,
   exposeLongTaskMetricsForTesting,
+  setupLongAnimationFrameObserver,
+  disconnectLongAnimationFrameObserver,
+  getLongAnimationFrameMetrics,
+  resetLongAnimationFrameMetrics,
+  setupLongAnimationFrameMetricsForTesting,
 } from './performance-observers';
 
 describe('performance-observers', () => {
@@ -645,6 +650,241 @@ describe('performance-observers', () => {
       exposeLongTaskMetricsForTesting();
 
       expect(globalThis.stateHooks.getLongTaskMetrics).toBeUndefined();
+    });
+  });
+
+  describe('Long Animation Frames', () => {
+    const originalPerformanceObserver = globalThis.PerformanceObserver;
+    const originalStateHooks = globalThis.stateHooks;
+    const originalInTest = process.env.IN_TEST;
+    const originalMetaMaskDebug = process.env.METAMASK_DEBUG;
+
+    type ObserverCallback = (list: { getEntries: () => object[] }) => void;
+
+    /**
+     * Install a fake `PerformanceObserver` that advertises `supported`, and
+     * return its spies and the callback the code under test registered.
+     */
+    const installObserver = (
+      supported: string[] = ['longtask', 'long-animation-frame'],
+    ) => {
+      const fake = {
+        construct: jest.fn(),
+        observe: jest.fn(),
+        disconnect: jest.fn(),
+        callback: undefined as ObserverCallback | undefined,
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        static supportedEntryTypes = supported;
+
+        constructor(cb: ObserverCallback) {
+          fake.construct();
+          fake.callback = cb;
+        }
+
+        observe = fake.observe;
+
+        disconnect = fake.disconnect;
+      };
+      return fake;
+    };
+
+    beforeEach(() => {
+      disconnectLongAnimationFrameObserver();
+      resetLongAnimationFrameMetrics();
+    });
+
+    afterEach(() => {
+      disconnectLongAnimationFrameObserver();
+      globalThis.PerformanceObserver =
+        originalPerformanceObserver as typeof PerformanceObserver;
+      globalThis.stateHooks = originalStateHooks;
+      process.env.IN_TEST = originalInTest;
+      if (originalMetaMaskDebug === undefined) {
+        delete process.env.METAMASK_DEBUG;
+      } else {
+        process.env.METAMASK_DEBUG = originalMetaMaskDebug;
+      }
+    });
+
+    describe('setupLongAnimationFrameObserver', () => {
+      it('observes buffered long-animation-frame entries where supported', () => {
+        const fake = installObserver();
+
+        const cleanup = setupLongAnimationFrameObserver();
+
+        expect(fake.observe).toHaveBeenCalledWith({
+          type: 'long-animation-frame',
+          buffered: true,
+        });
+        expect(getLongAnimationFrameMetrics().observed).toBe(true);
+        cleanup();
+        expect(fake.disconnect).toHaveBeenCalled();
+        expect(getLongAnimationFrameMetrics().observed).toBe(false);
+      });
+
+      it('reports observed: false, and constructs nothing, where the type is unsupported', () => {
+        // `observe({ type })` with an unsupported type is a silent no-op, so
+        // without the check `observed` would read true over zeros.
+        const fake = installObserver(['longtask']);
+
+        setupLongAnimationFrameObserver();
+
+        expect(fake.construct).not.toHaveBeenCalled();
+        expect(fake.observe).not.toHaveBeenCalled();
+        expect(getLongAnimationFrameMetrics().observed).toBe(false);
+      });
+
+      it('is a no-op where PerformanceObserver is unavailable', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (globalThis as any).PerformanceObserver;
+
+        const cleanup = setupLongAnimationFrameObserver();
+
+        expect(typeof cleanup).toBe('function');
+        expect(getLongAnimationFrameMetrics().observed).toBe(false);
+      });
+
+      it('observes once when set up twice', () => {
+        const fake = installObserver();
+
+        setupLongAnimationFrameObserver();
+        setupLongAnimationFrameObserver();
+
+        expect(fake.observe).toHaveBeenCalledTimes(1);
+      });
+
+      it('reports observed: false and warns when observe throws', () => {
+        const consoleWarnSpy = jest
+          .spyOn(console, 'warn')
+          .mockImplementation(() => undefined);
+        const fake = installObserver();
+        fake.observe.mockImplementation(() => {
+          throw new Error('rejected');
+        });
+
+        setupLongAnimationFrameObserver();
+
+        expect(getLongAnimationFrameMetrics().observed).toBe(false);
+        expect(consoleWarnSpy).toHaveBeenCalled();
+        consoleWarnSpy.mockRestore();
+      });
+
+      it('sums count, duration and blockingDuration over delivered entries', () => {
+        const fake = installObserver();
+        setupLongAnimationFrameObserver();
+
+        fake.callback?.({
+          getEntries: () => [
+            { duration: 120, blockingDuration: 70 },
+            { duration: 64, blockingDuration: 14 },
+            // An implementation without the field counts no blocking time.
+            { duration: 55 },
+          ],
+        });
+
+        expect(getLongAnimationFrameMetrics()).toStrictEqual({
+          count: 3,
+          totalDuration: 239,
+          blockingDuration: 84,
+          observed: true,
+        });
+      });
+
+      it('returns then clears the counters when read with reset, and stays attached', () => {
+        const fake = installObserver();
+        setupLongAnimationFrameObserver();
+        fake.callback?.({
+          getEntries: () => [{ duration: 100, blockingDuration: 50 }],
+        });
+
+        expect(getLongAnimationFrameMetrics(true).count).toBe(1);
+        expect(getLongAnimationFrameMetrics()).toStrictEqual({
+          count: 0,
+          totalDuration: 0,
+          blockingDuration: 0,
+          observed: true,
+        });
+
+        fake.callback?.({
+          getEntries: () => [{ duration: 80, blockingDuration: 30 }],
+        });
+        expect(getLongAnimationFrameMetrics().totalDuration).toBe(80);
+      });
+
+      it('clears the counters on resetLongAnimationFrameMetrics', () => {
+        const fake = installObserver();
+        setupLongAnimationFrameObserver();
+        fake.callback?.({
+          getEntries: () => [{ duration: 100, blockingDuration: 50 }],
+        });
+
+        resetLongAnimationFrameMetrics();
+
+        expect(getLongAnimationFrameMetrics().count).toBe(0);
+        expect(getLongAnimationFrameMetrics().observed).toBe(true);
+      });
+    });
+
+    describe('setupLongAnimationFrameMetricsForTesting', () => {
+      it('attaches the observer and exposes its hooks when IN_TEST is set', () => {
+        process.env.IN_TEST = 'true';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).stateHooks = {};
+        const fake = installObserver();
+
+        setupLongAnimationFrameMetricsForTesting();
+
+        expect(fake.observe).toHaveBeenCalledWith({
+          type: 'long-animation-frame',
+          buffered: true,
+        });
+        expect(globalThis.stateHooks.getLongAnimationFrameMetrics).toBe(
+          getLongAnimationFrameMetrics,
+        );
+        expect(globalThis.stateHooks.resetLongAnimationFrameMetrics).toBe(
+          resetLongAnimationFrameMetrics,
+        );
+      });
+
+      it('attaches the observer when METAMASK_DEBUG is set', () => {
+        delete process.env.IN_TEST;
+        process.env.METAMASK_DEBUG = 'true';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).stateHooks = {};
+        const fake = installObserver();
+
+        setupLongAnimationFrameMetricsForTesting();
+
+        expect(fake.observe).toHaveBeenCalledTimes(1);
+      });
+
+      it('constructs no observer and exposes nothing outside test and debug builds', () => {
+        delete process.env.IN_TEST;
+        delete process.env.METAMASK_DEBUG;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (globalThis as any).stateHooks = {};
+        const fake = installObserver();
+
+        setupLongAnimationFrameMetricsForTesting();
+
+        expect(fake.construct).not.toHaveBeenCalled();
+        expect(
+          globalThis.stateHooks.getLongAnimationFrameMetrics,
+        ).toBeUndefined();
+        expect(getLongAnimationFrameMetrics().observed).toBe(false);
+      });
+
+      it('constructs no observer when stateHooks is unavailable', () => {
+        process.env.IN_TEST = 'true';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (globalThis as any).stateHooks;
+        const fake = installObserver();
+
+        expect(() => setupLongAnimationFrameMetricsForTesting()).not.toThrow();
+        expect(fake.construct).not.toHaveBeenCalled();
+      });
     });
   });
 });

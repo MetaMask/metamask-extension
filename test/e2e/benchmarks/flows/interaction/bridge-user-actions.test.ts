@@ -98,6 +98,7 @@ jest.mock('../../../tests/bridge/constants', () => ({
 jest.mock('../../utils/long-task-helper', () => ({
   buildLongTaskTimerResults: jest.fn(() => []),
   legacyStepTimerId: (id: string) => `${id}Legacy`,
+  toLongTaskStepResult: (id: string, duration: number) => ({ id, duration }),
 }));
 jest.mock('../../utils/in-page-step-timer', () => ({
   IN_PAGE_DESTINATIONS: new Proxy({}, { get: (_target, prop) => [prop] }),

@@ -1367,15 +1367,32 @@ class Driver {
     return await this.driver.executeScript(collectMetrics);
   }
 
+  /**
+   * Reset the long-task and Long Animation Frame counters in one script, so
+   * both windows open together.
+   */
   async resetLongTaskMetrics() {
     return await this.driver.executeScript(function () {
       window.stateHooks?.resetLongTaskMetrics?.();
+      window.stateHooks?.resetLongAnimationFrameMetrics?.();
     });
   }
 
+  /**
+   * Read and reset the long-task and Long Animation Frame counters in one
+   * script, so both windows close together. The Long Animation Frame metrics
+   * ride on the long-task object as `longAnimationFrames`.
+   */
   async collectLongTaskMetrics() {
     return await this.driver.executeScript(function () {
-      return window.stateHooks?.getLongTaskMetricsWithTBT?.(true) ?? null;
+      const longTasks =
+        window.stateHooks?.getLongTaskMetricsWithTBT?.(true) ?? null;
+      const longAnimationFrames =
+        window.stateHooks?.getLongAnimationFrameMetrics?.(true) ?? null;
+      if (longTasks === null && longAnimationFrames === null) {
+        return null;
+      }
+      return { ...longTasks, longAnimationFrames };
     });
   }
 

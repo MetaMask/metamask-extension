@@ -31,6 +31,7 @@ import {
   setupLongTaskObserver,
   setupLongTaskSentryReporting,
   exposeLongTaskMetricsForTesting,
+  setupLongAnimationFrameMetricsForTesting,
 } from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
@@ -474,6 +475,9 @@ function setupStateHooks(store) {
   // Expose metrics APIs for E2E benchmark harness
   if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
     exposeLongTaskMetricsForTesting();
+    // Attaches its own observer, here only: production reports Long Animation
+    // Frames through Sentry (`enableLongAnimationFrame` in setupSentry.ts).
+    setupLongAnimationFrameMetricsForTesting();
   }
 
   // Agentic dev hooks — expose internals for CDP automation
