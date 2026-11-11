@@ -23,6 +23,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+import { NetworkId } from '../../helpers/network-constants';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
 
 const MOCK_ETH_PRICE = 1700;
@@ -157,7 +158,7 @@ describe('MultiRpc:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // check rpc number
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkNetworkRPCNumber(2);
       },
     );
@@ -290,7 +291,7 @@ describe('MultiRpc:', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkNetworkRPCNumber(2);
         await networksPage.selectRPC('Arbitrum mainnet 2');
         await networksPage.checkPageIsLoaded();
@@ -298,7 +299,7 @@ describe('MultiRpc:', function (this: Suite) {
           'Arbitrum mainnet',
         );
         // Re-open the chain's RPC list to confirm the new RPC is selected.
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkRpcIsSelected('Arbitrum mainnet 2');
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
@@ -412,7 +413,7 @@ describe('MultiRpc:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openNetworkListOptions(NetworkId.ARBITRUM);
         await networksPage.openEditNetworkPage();
 
         const editNetworkPage = new AddEditNetworkPage(driver);

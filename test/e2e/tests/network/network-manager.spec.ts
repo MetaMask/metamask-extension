@@ -384,7 +384,7 @@ describe('Network Manager', function (this: Suite) {
         await selectNetworkModal.checkNetworkIsDeselected(
           FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID,
         );
-        await selectNetworkModal.checkNetworkIsSelected('eip155:1337');
+        await selectNetworkModal.checkNetworkIsSelected(NetworkId.LOCALHOST);
         await selectNetworkModal.close();
         await networkFilter.checkLabelIs('Network: Localhost 8545');
       },
