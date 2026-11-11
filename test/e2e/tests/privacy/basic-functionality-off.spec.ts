@@ -5,7 +5,15 @@
  *
  */
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { withFixtures, veryLargeDelayMs } from '../../helpers';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
+import { STELLAR_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/stellar-wallet-snap';
+import { TRON_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/tron-wallet-snap';
+import {
+  getCleanAppState,
+  withFixtures,
+  veryLargeDelayMs,
+} from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
@@ -23,6 +31,13 @@ import {
 
 const MONEY_POSITIONS_URL =
   /^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\//u;
+
+const ACCOUNT_SNAP_IDS = [
+  BITCOIN_WALLET_SNAP_ID,
+  SOLANA_WALLET_SNAP_ID,
+  STELLAR_WALLET_SNAP_ID,
+  TRON_WALLET_SNAP_ID,
+];
 
 describe('Onboarded wallet with basic functionality off', function () {
   it('only makes RPC requests after unlocking', async function () {
