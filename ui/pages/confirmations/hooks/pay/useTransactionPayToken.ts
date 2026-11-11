@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
-import type { CaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
@@ -29,15 +29,12 @@ export function useTransactionPayToken(): {
     selectTransactionPaymentTokenByTransactionId(state, transactionId),
   );
 
-  const payTokenAsset = decodePaymentTokenAssetId(payToken);
-  const isNative =
-    payTokenAsset &&
-    payTokenAsset.address === getNativeTokenAddress(payTokenAsset.chainId);
+  const isNative = payToken && isNativePaymentToken(payToken);
 
   const setPayToken = useCallback(
     async ({ assetId }: PayTokenSelection) => {
       await updateTransactionPaymentToken({
-        transactionId: transactionId as string,
+        transactionId,
         assetId,
       });
     },
@@ -49,4 +46,14 @@ export function useTransactionPayToken(): {
     payToken,
     setPayToken,
   };
+}
+
+function isNativePaymentToken(payToken: TransactionPaymentToken): boolean {
+  const payTokenAsset = decodePaymentTokenAssetId(payToken);
+
+  if (!payTokenAsset) {
+    return parseCaipAssetType(payToken.assetId).assetNamespace === 'slip44';
+  }
+
+  return payTokenAsset.address === getNativeTokenAddress(payTokenAsset.chainId);
 }

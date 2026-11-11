@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -23,6 +22,7 @@ import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
 import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { isMoneyAccountFunding } from '../../../utils/transaction-pay';
 import { decodePaymentTokenAssetId } from '../../../../../../shared/lib/transaction/pay-token';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
 import { useIsFundingAccountBalanceSettling } from '../../pay/useIsFundingAccountBalanceSettling';
@@ -46,10 +46,14 @@ export function useInsufficientPayTokenBalanceAlert({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
+  // Core checks a non-EVM source against its network fee and rent reserve and
+  // reports a shortfall as the quote error, so only EVM tokens run the fee and
+  // native gas checks below.
   const payTokenAsset = useMemo(
     () => decodePaymentTokenAssetId(payToken),
     [payToken],
   );
+  const isNonEvmPayToken = Boolean(payToken) && !payTokenAsset;
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();
   const isLoading = useIsTransactionPayLoading();
@@ -60,8 +64,11 @@ export function useInsufficientPayTokenBalanceAlert({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyPaymentOverride =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyPaymentOverride = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
   const isMoneyAccountDeposit =
     getMoneyAccountFlow(currentConfirmation) === MoneyAccountFlow.Deposit;
   const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
@@ -247,7 +254,7 @@ export function useInsufficientPayTokenBalanceAlert({
       // commits after a funding-account switch, so neither branch below can
       // be trusted yet.
       isFundingAccountBalanceSettling ||
-      !payToken
+      !payTokenAsset
     ) {
       return false;
     }
@@ -285,7 +292,7 @@ export function useInsufficientPayTokenBalanceAlert({
     isPendingAlert,
     isPostQuote,
     isSourceGasFeeToken,
-    payToken,
+    payTokenAsset,
     totalSourceAmountRaw,
     totals,
   ]);
@@ -372,6 +379,7 @@ export function useInsufficientPayTokenBalanceAlert({
     () =>
       !isMoneyAccountGasPaidByOtherAccount &&
       !isMoneyPaymentOverride &&
+      !isNonEvmPayToken &&
       (payToken || isPostQuote) &&
       !isPayTokenNative &&
       !isPendingAlert &&
@@ -380,6 +388,7 @@ export function useInsufficientPayTokenBalanceAlert({
     [
       isMoneyAccountGasPaidByOtherAccount,
       isMoneyPaymentOverride,
+      isNonEvmPayToken,
       isPayTokenNative,
       isPendingAlert,
       isPostQuote,

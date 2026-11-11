@@ -8,19 +8,12 @@ import { submitRequestToBackground } from '../background-connection';
 
 export type { MoneyAccountWithdrawAmountUpdate };
 
-export async function updateTransactionPaymentToken({
-  transactionId,
-  assetId,
-}: UpdatePaymentTokenRequest): Promise<void> {
-  return await submitRequestToBackground(
-    'TransactionPayController:updatePaymentToken',
-    [
-      {
-        transactionId,
-        assetId,
-      },
-    ],
-  );
+export async function updateTransactionPaymentToken(
+  request: UpdatePaymentTokenRequest,
+): Promise<void> {
+  return await submitRequestToBackground('updateTransactionPaymentToken', [
+    request,
+  ]);
 }
 
 export async function setPaymentOverride(

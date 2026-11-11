@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   Icon,
@@ -23,7 +23,11 @@ import type {
 } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
-import { decodePaymentTokenAssetId } from '../../../../../../shared/lib/transaction/pay-token';
+import { isMoneyAccountFunding } from '../../../utils/transaction-pay';
+import {
+  decodePaymentTokenAssetId,
+  getPaymentTokenChainId,
+} from '../../../../../../shared/lib/transaction/pay-token';
 
 export const PAY_WITH_CRYPTO_SECTION_TEST_ID = 'pay-with-section-crypto';
 export const PAY_WITH_CRYPTO_SELECTED_TOKEN_ROW_TEST_ID =
@@ -50,8 +54,11 @@ export function usePayWithCryptoSection({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyAccountSelected = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
 
   const handleSelectedTokenPress = useCallback(() => {
     if (!payToken) {
@@ -66,7 +73,7 @@ export function usePayWithCryptoSection({
       console.error('Failed to set the pay token', error);
     });
     onClose();
-  }, [clearOverride, isMoneyAccountSelected, payToken, onClose, setPayToken]);
+  }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
 
   const handleOtherAssetsPress = useCallback(() => {
     onOtherAssetsPress();
@@ -80,15 +87,16 @@ export function usePayWithCryptoSection({
   return useMemo((): PayWithSectionConfig => {
     const rows: PayWithRowConfig[] = [];
 
-    const payTokenAsset = decodePaymentTokenAssetId(payToken);
+    if (payToken) {
+      const payTokenAsset = decodePaymentTokenAssetId(payToken);
 
-    if (payToken && payTokenAsset) {
       rows.push({
         id: 'crypto-selected-token',
         icon: (
           <TokenIcon
-            chainId={payTokenAsset.chainId}
-            tokenAddress={payTokenAsset.address}
+            chainId={getPaymentTokenChainId(payToken) as Hex}
+            // Non-EVM payment tokens are identified by their CAIP-19 asset type.
+            tokenAddress={(payTokenAsset?.address ?? payToken.assetId) as Hex}
             symbol={payToken.symbol}
             size="sm"
           />
