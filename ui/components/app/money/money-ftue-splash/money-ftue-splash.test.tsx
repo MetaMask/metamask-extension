@@ -14,13 +14,14 @@ import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../../../hooks/money/useMoneyAnalytics.mock';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyVaultApy } from '../../../../hooks/money/useMoneyVaultApy';
-import { setMoneyFtueSeen } from '../../../../store/actions';
 import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../../../../pages/money/constants/money-events';
+import { setMoneyFtueSeen } from '../../../../store/actions';
 import {
   MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID,
   MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID,
@@ -85,6 +86,12 @@ const createState = (
   moneyFtue: {
     isOpen: true,
     source: pendingDeposit ? 'deposit' : 'moneyHome',
+    origin: pendingDeposit
+      ? {
+          entryPoint: MoneyFtueEntryPoint.WalletHome,
+          componentName: MoneyComponentName.TokenListItemCta,
+        }
+      : { entryPoint: MoneyFtueEntryPoint.MoneyHome },
     pendingDeposit,
     acknowledged: false,
   },
@@ -263,7 +270,19 @@ describe('MoneyFtueSplash', () => {
     expect(headline).not.toHaveClass('text-s-display-md');
   });
 
-  it('marks the splash seen and continues the pending deposit from the CTA', () => {
+  it('tracks the splash view with its origin', () => {
+    renderSplash();
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyFtue,
+      componentName: MoneyComponentName.FtueSplash,
+      entryPoint: MoneyFtueEntryPoint.WalletHome,
+      originatingComponentName: MoneyComponentName.TokenListItemCta,
+    });
+    expect(mockMoneyAnalytics.trackScreenViewed).toHaveBeenCalledTimes(1);
+  });
+
+  it('marks the splash seen, tracks the CTA and continues the pending deposit', () => {
     const { store } = renderSplash();
 
     fireEvent.click(
@@ -272,6 +291,13 @@ describe('MoneyFtueSplash', () => {
 
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.FtueSplash,
+      labelKey: 'moneyFtueStartEarning',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
     expect(mockInitiateDeposit).toHaveBeenCalledWith({
       preferredPaymentToken: PREFERRED_PAYMENT_TOKEN,
       intent: 'addMusd',
@@ -279,7 +305,7 @@ describe('MoneyFtueSplash', () => {
     });
   });
 
-  it('marks the splash seen and cancels the pending deposit from the close button', () => {
+  it('marks the splash seen, tracks the dismiss and cancels the pending deposit from the close button', () => {
     const { store } = renderSplash();
 
     fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));

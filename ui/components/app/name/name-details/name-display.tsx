@@ -4,11 +4,14 @@ import {
   AvatarAccountSize,
   AvatarToken,
   AvatarTokenSize,
+  Text as DsText,
+  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { useStartTruncatedText } from '../../../../hooks/useStartTruncatedText';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../preferred-avatar';
 import ShortenedName from './shortened-name';
@@ -29,6 +32,12 @@ export type NameDisplayProps = {
    * Whether to disable the onClick handler.
    */
   disableNameClick?: boolean;
+  /**
+   * Whether to fill the available width on one line. Names are cut at the end
+   * and addresses at the start, only when needed. Shows the value when only a
+   * security label is known.
+   */
+  fillWidth?: boolean;
 };
 
 const NameDisplay = memo(
@@ -41,6 +50,7 @@ const NameDisplay = memo(
     showFullName = false,
     fallbackName,
     disableNameClick,
+    fillWidth = false,
     ...props
   }: NameDisplayProps) => {
     const { name, image, icon, displayState, isAccount } = useDisplayName({
@@ -49,6 +59,12 @@ const NameDisplay = memo(
       preferContractSymbol,
       variation,
     });
+
+    const fillName =
+      displayState === TrustSignalDisplayState.Unknown
+        ? fallbackName
+        : name || fallbackName;
+    const [fillRef, fillValue] = useStartTruncatedText(value, 10);
 
     const renderIcon = () => {
       // If icon exists, use it (trust signal /unknown)
@@ -79,6 +95,19 @@ const NameDisplay = memo(
     };
 
     const renderName = () => {
+      if (fillWidth) {
+        return (
+          <DsText
+            asChild
+            className={fillName ? 'name__name' : 'name__value'}
+            variant={DsTextVariant.BodyMd}
+            {...props}
+          >
+            <p ref={fillName ? undefined : fillRef}>{fillName || fillValue}</p>
+          </DsText>
+        );
+      }
+
       const nameWithFallbackValue = name || fallbackName;
       if (!nameWithFallbackValue) {
         return <FormattedName value={value} type={type} {...props} />;
@@ -99,6 +128,7 @@ const NameDisplay = memo(
       <div
         className={classnames({
           name: true,
+          'justify-end': fillWidth,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           name__clickable:
