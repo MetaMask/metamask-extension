@@ -53,7 +53,7 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
               >
                 <img
                   alt="ETH"
-                  class="size-full object-contain"
+                  class="size-full object-cover"
                   src="https://example.com/eth.png"
                 />
               </div>
@@ -69,7 +69,7 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
               >
                 <img
                   alt="ETH"
-                  class="size-full object-contain"
+                  class="size-full object-cover"
                   src="https://example.com/network.png"
                 />
               </div>
@@ -267,7 +267,7 @@ exports[`RampsCompleteBuyScreen matches snapshot when the token has no icon url 
               >
                 <img
                   alt="ETH"
-                  class="size-full object-contain"
+                  class="size-full object-cover"
                   src="https://example.com/network.png"
                 />
               </div>
@@ -494,7 +494,7 @@ exports[`RampsCompleteBuyScreen resolves the network badge from a non-EVM CAIP c
               >
                 <img
                   alt="SOL"
-                  class="size-full object-contain"
+                  class="size-full object-cover"
                   src="https://example.com/sol.png"
                 />
               </div>
@@ -510,7 +510,7 @@ exports[`RampsCompleteBuyScreen resolves the network badge from a non-EVM CAIP c
               >
                 <img
                   alt="SOL"
-                  class="size-full object-contain"
+                  class="size-full object-cover"
                   src="https://example.com/network.png"
                 />
               </div>
