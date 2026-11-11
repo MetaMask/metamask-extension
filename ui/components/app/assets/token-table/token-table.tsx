@@ -70,31 +70,43 @@ const SortableColumnHeader = ({
   reversed,
   onSort,
   className,
-}: SortableColumnHeaderProps) => (
-  <button
-    type="button"
-    className={`w-full min-w-0 items-center gap-1 border-0 bg-transparent p-0 ${className ?? ''}`}
-    data-testid={`token-table-sort-${column}`}
-    onClick={onSort}
-  >
-    <Text
-      variant={TextVariant.BodySm}
-      fontWeight={FontWeight.Medium}
-      color={TextColor.TextAlternative}
+}: SortableColumnHeaderProps) => {
+  const t = useI18nContext();
+  const isActive = activeColumn === column;
+  // Down is the default. For names that is A to Z. For numbers it is high to low
+  const isSortedDescending = column === 'token' ? reversed : !reversed;
+  const ariaLabel = isActive
+    ? `${label}, ${t(isSortedDescending ? 'sortedDescending' : 'sortedAscending')}`
+    : undefined;
+
+  return (
+    <button
+      type="button"
+      className={`w-full min-w-0 items-center gap-1 border-0 bg-transparent p-0 ${className ?? ''}`}
+      data-testid={`token-table-sort-${column}`}
+      aria-label={ariaLabel}
+      onClick={onSort}
     >
-      {label}
-    </Text>
-    {activeColumn === column && (
-      <Icon
-        name={reversed ? IconName.ArrowUp : IconName.ArrowDown}
-        size={IconSize.Xs}
-        color={IconColor.IconAlternative}
-        data-testid="token-table-sort-indicator"
-        data-sort-direction={reversed ? 'up' : 'down'}
-      />
-    )}
-  </button>
-);
+      <Text
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextAlternative}
+      >
+        {label}
+      </Text>
+      {isActive && (
+        <Icon
+          name={reversed ? IconName.ArrowUp : IconName.ArrowDown}
+          size={IconSize.Xs}
+          color={IconColor.IconAlternative}
+          aria-hidden="true"
+          data-testid="token-table-sort-indicator"
+          data-sort-direction={reversed ? 'up' : 'down'}
+        />
+      )}
+    </button>
+  );
+};
 
 const Header = ({ activeColumn, reversed, onSort }: HeaderProps) => {
   const t = useI18nContext();

@@ -143,6 +143,12 @@ describe('TokenTable', () => {
     expect(
       getSortIndicator(getByTestId('token-table-sort-balance')),
     ).toHaveAttribute('data-sort-direction', 'up');
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-balance')),
+    ).toHaveAttribute('aria-hidden', 'true');
+    expect(getByTestId('token-table-sort-balance')).toHaveAccessibleName(
+      'Balance, sorted ascending',
+    );
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
         sortOverride: { column: 'balance', reversed: true },
@@ -154,6 +160,9 @@ describe('TokenTable', () => {
     expect(
       getSortIndicator(getByTestId('token-table-sort-balance')),
     ).toHaveAttribute('data-sort-direction', 'down');
+    expect(getByTestId('token-table-sort-balance')).toHaveAccessibleName(
+      'Balance, sorted descending',
+    );
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
         sortOverride: { column: 'balance', reversed: false },
@@ -170,6 +179,9 @@ describe('TokenTable', () => {
     expect(
       getSortIndicator(getByTestId('token-table-sort-token')),
     ).toHaveAttribute('data-sort-direction', 'down');
+    expect(getByTestId('token-table-sort-token')).toHaveAccessibleName(
+      'Token, sorted ascending',
+    );
     expect(
       getSortIndicator(getByTestId('token-table-sort-balance')),
     ).toBeNull();
@@ -184,6 +196,9 @@ describe('TokenTable', () => {
     expect(
       getSortIndicator(getByTestId('token-table-sort-token')),
     ).toHaveAttribute('data-sort-direction', 'up');
+    expect(getByTestId('token-table-sort-token')).toHaveAccessibleName(
+      'Token, sorted descending',
+    );
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
         sortOverride: { column: 'token', reversed: true },
@@ -230,6 +245,9 @@ describe('TokenTable', () => {
     expect(
       getSortIndicator(getByTestId('token-table-sort-change')),
     ).toHaveAttribute('data-sort-direction', 'down');
+    expect(getByTestId('token-table-sort-change')).toHaveAccessibleName(
+      '24h change, sorted descending',
+    );
     expect(
       getSortIndicator(getByTestId('token-table-sort-balance')),
     ).toBeNull();
@@ -244,6 +262,9 @@ describe('TokenTable', () => {
     expect(
       getSortIndicator(getByTestId('token-table-sort-change')),
     ).toHaveAttribute('data-sort-direction', 'up');
+    expect(getByTestId('token-table-sort-change')).toHaveAccessibleName(
+      '24h change, sorted ascending',
+    );
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
         sortOverride: { column: 'change', reversed: true },

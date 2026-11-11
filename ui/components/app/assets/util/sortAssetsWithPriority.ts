@@ -24,9 +24,6 @@ export function sortAssetsWithPriority(
 
 export type TokenTableSort = {
   column: 'token' | 'price' | 'change' | 'balance';
-  /**
-   * Down chevron is the default direction: A to Z, or the highest value first.
-   */
   reversed: boolean;
 };
 
