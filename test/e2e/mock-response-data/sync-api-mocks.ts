@@ -53,36 +53,60 @@ export function placeholder(value: Json): Json {
 }
 
 /**
- * Fields shared by the elements of a live list. A field on only one element
- * is that element's data, and the list does not always include it.
+ * Merges `value` into `existing`. Objects and arrays of objects take the union
+ * of their fields. A field some entries omit stays, with a value from an entry
+ * that has it.
+ *
+ * @param existing - The shape so far.
+ * @param value - A value from another entry.
+ * @returns The merged shape.
+ */
+function mergeShape(existing: Json, value: Json): Json {
+  if (isObject(existing) && isObject(value)) {
+    return unionShape([existing, value]);
+  }
+  if (Array.isArray(existing) && Array.isArray(value)) {
+    const objects = [...existing, ...value].filter(isObject);
+    if (objects.length > 0) {
+      return [unionShape(objects)];
+    }
+    return existing.length > 0 ? existing : value;
+  }
+  if (existing === null) {
+    return value;
+  }
+  return existing;
+}
+
+/**
+ * Every field any list entry returns. Entries are heterogeneous: a field that
+ * only some tokens have is still part of the shape.
  *
  * @param list - Live list elements.
- * @returns One element with the shared fields.
+ * @returns One object with the union of their fields.
  */
-function sharedShape(list: { [key: string]: Json }[]): Json {
-  const minimum = list.length === 1 ? 1 : 2;
-  const seen = new Map<string, { count: number; value: Json }>();
-  for (const [key, value] of list.flatMap(Object.entries)) {
-    const entry = seen.get(key) ?? { count: 0, value };
-    entry.count += 1;
-    seen.set(key, entry);
+function unionShape(list: { [key: string]: Json }[]): { [key: string]: Json } {
+  const shape: { [key: string]: Json } = {};
+  for (const item of list) {
+    for (const [key, value] of Object.entries(item)) {
+      shape[key] = key in shape ? mergeShape(shape[key], value) : value;
+    }
   }
-  return Object.fromEntries(
-    [...seen]
-      .filter(([, { count }]) => count >= minimum)
-      .map(([key, { value }]) => [key, value]),
-  );
+  return shape;
 }
 
 /**
  * Reshapes `mock` to `live`, keeping mock values whose kind did not change.
- * An empty mock list stays empty.
+ * An empty mock list stays empty. For a list of objects, `keepExtraKeys` is
+ * set so a field only some entries have is optional: once the fixture has it,
+ * a later response that omits it is not drift.
  *
  * @param mock - The current fixture value.
  * @param live - The live value.
+ * @param keepExtraKeys - Keep fixture fields this live sample does not show.
  * @returns The aligned value.
  */
-function alignShape(mock: Json, live: Json): Json {
+function alignShape(mock: Json, live: Json, keepExtraKeys = false): Json {
   if (kindOf(mock) !== kindOf(live)) {
     return placeholder(live);
   }
@@ -90,32 +114,56 @@ function alignShape(mock: Json, live: Json): Json {
     if (mock.length === 0 || live.length === 0) {
       return mock;
     }
-    const element = live.every(isObject) ? sharedShape(live) : live[0];
-    return mock.map((item) => alignShape(item, element));
+    const objects = live.filter(isObject);
+    if (objects.length === live.length) {
+      const union = unionShape(objects);
+      return mock.map((item) => alignShape(item, union, true));
+    }
+    return mock.map((item) => alignShape(item, live[0], keepExtraKeys));
   }
   if (isObject(mock) && isObject(live)) {
-    // Numeric keys (chain ids) are data: keep the mock's own entries and give
-    // them the live entries' shape, but do not add the live chains.
-    const isId = (key: string) => /^\d+$/u.test(key);
-    const idShape = Object.entries(live).find(([key]) => isId(key))?.[1];
-    const keys = [
-      ...Object.keys(live).filter((key) => !isId(key)),
-      ...Object.keys(mock).filter(isId),
-    ];
-    return Object.fromEntries(
-      keys.map((key) => {
-        const shape = key in live ? live[key] : idShape;
-        if (!(key in mock)) {
-          return [key, placeholder(live[key])];
-        }
-        return [
-          key,
-          shape === undefined ? mock[key] : alignShape(mock[key], shape),
-        ];
-      }),
-    );
+    return alignObject(mock, live, keepExtraKeys);
   }
   return mock;
+}
+
+/**
+ * Reshapes an object. Chain-id keys are data: the mock keeps its own entries.
+ * With `keepExtraKeys`, fields the fixture already has stay even when this
+ * response has no entry that includes them.
+ *
+ * @param mock - The current object.
+ * @param live - The live object.
+ * @param keepExtraKeys - Keep fixture fields missing from `live`.
+ * @returns The aligned object.
+ */
+function alignObject(
+  mock: { [key: string]: Json },
+  live: { [key: string]: Json },
+  keepExtraKeys: boolean,
+): { [key: string]: Json } {
+  const isId = (key: string) => /^\d+$/u.test(key);
+  const idShape = Object.entries(live).find(([key]) => isId(key))?.[1];
+  const liveKeys = keepExtraKeys
+    ? Object.keys(live)
+    : Object.keys(live).filter((key) => !isId(key));
+  const extraKeys = keepExtraKeys
+    ? Object.keys(mock).filter((key) => !(key in live))
+    : Object.keys(mock).filter(isId);
+  return Object.fromEntries(
+    [...liveKeys, ...extraKeys].map((key) => {
+      if (!(key in live)) {
+        if (keepExtraKeys || idShape === undefined) {
+          return [key, mock[key]];
+        }
+        return [key, alignShape(mock[key], idShape)];
+      }
+      if (!(key in mock)) {
+        return [key, placeholder(live[key])];
+      }
+      return [key, alignShape(mock[key], live[key], keepExtraKeys)];
+    }),
+  );
 }
 
 function describeChange(before: Json, after: Json): string {

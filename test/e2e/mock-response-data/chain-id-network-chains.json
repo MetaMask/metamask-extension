@@ -49,22 +49,26 @@
       {
         "name": "etherscan",
         "url": "https://etherscan.io",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       },
       {
         "name": "blockscout",
         "url": "https://eth.blockscout.com",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       },
       {
         "name": "dexguru",
         "url": "https://ethereum.dex.guru",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       },
       {
         "name": "Routescan",
         "url": "https://ethereum.routescan.io",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
     ],
     "title": "",
@@ -108,7 +112,8 @@
       {
         "name": "orderlyscout",
         "url": "https://explorer.orderly.network",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
     ],
     "title": "",
@@ -152,7 +157,8 @@
       {
         "name": "",
         "url": "",
-        "standard": ""
+        "standard": "",
+        "icon": ""
       }
     ],
     "title": "",
@@ -196,7 +202,8 @@
       {
         "name": "blockexplorer",
         "url": "https://suite.camino.network/explorer",
-        "standard": "none"
+        "standard": "none",
+        "icon": ""
       }
     ],
     "title": "",
@@ -240,7 +247,8 @@
       {
         "name": "Atlantis explorer",
         "url": "https://blockscout.atlantischain.network",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
     ],
     "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged",
@@ -284,7 +292,8 @@
       {
         "name": "",
         "url": "",
-        "standard": ""
+        "standard": "",
+        "icon": ""
       }
     ],
     "title": "Go Ethereum (Geth) Private Testnet",
@@ -335,12 +344,14 @@
       {
         "name": "Etherscan",
         "url": "https://sepolia.lineascan.build",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       },
       {
         "name": "Blockscout",
         "url": "https://explorer.sepolia.linea.build",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
     ],
     "title": "Linea Sepolia Testnet",
@@ -384,7 +395,8 @@
       {
         "name": "",
         "url": "",
-        "standard": ""
+        "standard": "",
+        "icon": ""
       }
     ],
     "title": "",
@@ -428,7 +440,8 @@
       {
         "name": "Monad Testnet Explorer",
         "url": "https://testnet.monadexplorer.com",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
     ],
     "title": "",

@@ -7,8 +7,10 @@ mocks grouped by kind.
 `yarn test:e2e:sync-api-mocks` fetches each `write:<file>[#<key>]` row and
 aligns that fixture with the live **shape**: existing values stay, new fields
 get a placeholder (`0`, `""`, `false`, `null`), removed fields are dropped,
-and empty lists stay empty. In a list, a field counts as shape when at least
-two entries have it. `$NAME` in an endpoint comes from the environment; the
+and empty lists stay empty. In a list, the shape is the union of the
+entries' fields. A field only some entries have is optional: once the fixture
+has it, a later response that omits it is not drift. `$NAME` in an endpoint
+comes from the environment; the
 row is skipped without it. `derived` follows another row; `skip` is not
 fetched, for the reason given. With no drift it prints `No API changes
 detected`. Otherwise it prints each changed API (its id, endpoint and what
