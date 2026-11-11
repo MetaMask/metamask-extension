@@ -202,29 +202,25 @@ const Row = ({ token, privacyMode, onClick, safeChains }: RowProps) => {
 export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const preferenceKey = `${tokenSortConfig?.key ?? ''}:${tokenSortConfig?.order ?? ''}`;
-  const [headerSort, setHeaderSort] = useState<
-    (TokenTableSort & { preferenceKey: string }) | null
-  >(null);
-  const sortOverride = useMemo(
-    () =>
-      headerSort?.preferenceKey === preferenceKey
-        ? { column: headerSort.column, reversed: headerSort.reversed }
-        : null,
-    [headerSort, preferenceKey],
-  );
+  const [headerSort, setHeaderSort] = useState<TokenTableSort | null>(null);
+  const [headerSortPreferenceKey, setHeaderSortPreferenceKey] =
+    useState(preferenceKey);
+  if (headerSortPreferenceKey !== preferenceKey) {
+    setHeaderSortPreferenceKey(preferenceKey);
+    setHeaderSort(null);
+  }
   const activeColumn =
-    sortOverride?.column ?? getActiveSortColumn(tokenSortConfig?.key);
-  const reversed = sortOverride?.reversed ?? false;
+    headerSort?.column ?? getActiveSortColumn(tokenSortConfig?.key);
+  const reversed = headerSort?.reversed ?? false;
 
   const handleSort = useCallback(
     (column: TokenTableSort['column']) => {
       setHeaderSort({
         column,
         reversed: column === activeColumn ? !reversed : false,
-        preferenceKey,
       });
     },
-    [activeColumn, preferenceKey, reversed],
+    [activeColumn, reversed],
   );
 
   const {
@@ -235,7 +231,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
-  } = useTokenListData({ onTokenClick, sortOverride });
+  } = useTokenListData({ onTokenClick, sortOverride: headerSort });
 
   const renderRow = useCallback(
     (info: { item: TokenListDisplayItem }) => {
