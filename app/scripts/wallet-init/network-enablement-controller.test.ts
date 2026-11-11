@@ -465,7 +465,11 @@ describe('NetworkEnablementControllerInit', () => {
 
   it('skips restore when a user-initiated addition is marked', async () => {
     process.env.IN_TEST = 'true';
-    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      NetworkEnablementControllerStateChangeEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
     const request = getInitRequestMock(messenger);
     messenger.registerActionHandler(
       'ConfigRegistryController:getState' as never,
@@ -488,7 +492,7 @@ describe('NetworkEnablementControllerInit', () => {
 
     // Import and mock the Set
     const { userInitiatedNetworkAdditions } = jest.requireActual(
-      '../../services/legacy-background-api-service',
+      '../services/legacy-background-api-service',
     );
 
     const { messengerClient } = runNetworkEnablementSetup(request);
@@ -514,12 +518,13 @@ describe('NetworkEnablementControllerInit', () => {
       messengerClient.state.enabledNetworkMap[KnownCaipNamespace.Eip155][
         CHAIN_IDS.ARC
       ] = true;
-      request.controllerMessenger.publish(
+      request.baseMessenger.publish(
         'NetworkEnablementController:stateChange',
         {
           enabledNetworkMap: messengerClient.state.enabledNetworkMap,
-        } as never,
-        [] as never,
+          nativeAssetIdentifiers: messengerClient.state.nativeAssetIdentifiers,
+        },
+        [],
       );
 
       await new Promise<void>((resolve) => queueMicrotask(resolve));
