@@ -39,9 +39,9 @@ jobs:
           EXIT="${PIPESTATUS[0]}"
           set -e
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift. 1: fixtures written (the PR step runs; report-only
-          # fetch errors are in the log). 2: nothing was written and a
-          # fixture that should have been updated could not be fetched.
+          # 0: no drift. 1: fixtures written (the PR step runs; a later fetch
+          # error is in the log). 2: nothing was written and a fixture that
+          # should have been updated could not be fetched.
           if [ -f sync-report.txt ]; then
             cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
           fi

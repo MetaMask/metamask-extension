@@ -1,0 +1,1929 @@
+{
+  "4byte-signatures": {
+    "count": 1,
+    "next": "",
+    "previous": null,
+    "results": [
+      {
+        "id": 1,
+        "created_at": "",
+        "text_signature": "deposit()",
+        "hex_signature": "",
+        "bytes_signature": ""
+      }
+    ]
+  },
+  "accounts-supported-networks-v1": {
+    "fullSupport": [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+    "partialSupport": {}
+  },
+  "accounts-supported-networks-v2": {
+    "fullSupport": [
+      "eip155:1",
+      "eip155:137",
+      "eip155:56",
+      "eip155:59144",
+      "eip155:8453",
+      "eip155:10",
+      "eip155:42161",
+      "eip155:534352"
+    ],
+    "partialSupport": ["eip155:42220", "eip155:43114"]
+  },
+  "accounts-transactions": {
+    "data": [],
+    "unprocessedNetworks": [],
+    "pageInfo": {
+      "count": 0,
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": null,
+      "endCursor": ""
+    }
+  },
+  "bridge-tokens": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chainId": 1,
+      "assetId": "",
+      "symbol": "ETH",
+      "decimals": 18,
+      "name": "Ethereum",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    },
+    {
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "chainId": 1,
+      "assetId": "",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USD Coin",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    },
+    {
+      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "chainId": 1,
+      "assetId": "",
+      "symbol": "USDT",
+      "decimals": 6,
+      "name": "Tether USD",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    },
+    {
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "chainId": 1,
+      "assetId": "",
+      "symbol": "DAI",
+      "decimals": 18,
+      "name": "Dai Stablecoin",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    }
+  ],
+  "bridge-tokens-linea": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chainId": 59144,
+      "assetId": "",
+      "symbol": "ETH",
+      "decimals": 18,
+      "name": "Ethereum",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": ""
+    },
+    {
+      "address": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
+      "chainId": 59144,
+      "assetId": "",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USD Coin",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": ""
+    },
+    {
+      "address": "0xa219439258ca9da29e9cc4ce5596924745e12b93",
+      "chainId": 59144,
+      "assetId": "",
+      "symbol": "USDT",
+      "decimals": 6,
+      "name": "Tether USD",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": ""
+    },
+    {
+      "address": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
+      "chainId": 59144,
+      "assetId": "",
+      "symbol": "WETH",
+      "decimals": 18,
+      "name": "Wrapped Ether",
+      "coingeckoId": "",
+      "aggregators": [""],
+      "occurrences": 0,
+      "iconUrl": "",
+      "coinLabel": ""
+    }
+  ],
+  "bridge-top-assets": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "symbol": "ETH"
+    },
+    {
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "symbol": "USDC"
+    },
+    {
+      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "symbol": "USDT"
+    },
+    {
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "symbol": "DAI"
+    }
+  ],
+  "bridge-top-assets-linea": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "symbol": "ETH"
+    },
+    {
+      "address": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
+      "symbol": "USDC"
+    },
+    {
+      "address": "0xa219439258ca9da29e9cc4ce5596924745e12b93",
+      "symbol": "USDT"
+    },
+    {
+      "address": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
+      "symbol": "WETH"
+    }
+  ],
+  "chomp": {
+    "auth": {
+      "message": ""
+    },
+    "chains": {
+      "0x8f": {
+        "autoDepositDelegate": "0x0000000000000000000000000000000000000001",
+        "vaultMigrationHelperAddress": "",
+        "protocol": {
+          "vedaProtocol": {
+            "supportedTokens": [
+              {
+                "tokenAddress": "0x00000000000000000000000000000000000000aa",
+                "tokenDecimals": 6
+              }
+            ],
+            "adapterAddress": "0x0000000000000000000000000000000000000002",
+            "intentTypes": ["cash-deposit", "cash-withdrawal"]
+          }
+        }
+      }
+    }
+  },
+  "client-config-events": {
+    "data": {
+      "version": "0",
+      "timestamp": 0,
+      "schemaVersion": "0",
+      "events": {
+        "Test Marketing Purpose Event": [""],
+        "Test Product Purpose Event": [""],
+        "Test Dual Purpose Event": [""],
+        "App Installed": [""],
+        "App Opened": [""],
+        "Approval Completed": [""],
+        "Banner Display": [""],
+        "Banner Select": [""],
+        "Banner Dismissed": [""],
+        "Card Delegation Process Completed": [""],
+        "Deep Link Used": [""],
+        "InApp Notification Clicked": [""],
+        "InApp Notification Detail Clicked": [""],
+        "mUSD Conversion Status Updated": [""],
+        "mUSD Fullscreen Announcement Displayed": [""],
+        "mUSD Fullscreen Announcement Button Clicked": [""],
+        "On-ramp Purchase Completed": [""],
+        "Perp Position Close Transaction": [""],
+        "Perp Risk Management": [""],
+        "Perp Trade Transaction": [""],
+        "Predict Trade Transaction": [""],
+        "Push Notification Clicked": [""],
+        "Rewards Opt In Completed": [""],
+        "Shield Subscription Request": [""],
+        "Swap Completed": [""],
+        "Transaction Finalized": [""],
+        "Unified SwapBridge Completed": [""],
+        "Wallet Created": [""],
+        "Wallet Imported": [""]
+      }
+    }
+  },
+  "client-config-networks": {
+    "data": {
+      "version": "0",
+      "timestamp": 0,
+      "chains": []
+    }
+  },
+  "gas-prices": {
+    "SafeGasPrice": "1",
+    "ProposeGasPrice": "2",
+    "FastGasPrice": "3"
+  },
+  "geolocation-v2": {
+    "country": "US",
+    "countryIso3": "",
+    "region": "TX",
+    "timezone": "America/Chicago"
+  },
+  "money-positions": {
+    "address": "",
+    "as_of_block": 1,
+    "as_of_timestamp": "2026-01-01T00:00:00Z",
+    "data_freshness": "live",
+    "indexer_lag_seconds": 0,
+    "balance": {
+      "musd_balance": "0",
+      "vmusd_value_in_musd": "0",
+      "total_balance": "0",
+      "musd_balance_updated_at": "",
+      "by_asset": [],
+      "total_balance_usd": "0"
+    },
+    "positions": []
+  },
+  "price-supported-networks": {
+    "fullSupport": [
+      "eip155:1",
+      "eip155:10",
+      "eip155:25",
+      "eip155:30",
+      "eip155:42",
+      "eip155:50",
+      "eip155:56",
+      "eip155:57",
+      "eip155:82",
+      "eip155:88",
+      "eip155:100"
+    ],
+    "partialSupport": {
+      "spotPricesV2": [
+        "eip155:1",
+        "eip155:10",
+        "eip155:25",
+        "eip155:30",
+        "eip155:42",
+        "eip155:50",
+        "eip155:56",
+        "eip155:57",
+        "eip155:82",
+        "eip155:88",
+        "eip155:100",
+        "eip155:106",
+        "eip155:122",
+        "eip155:128",
+        "eip155:137",
+        "eip155:143",
+        "eip155:146",
+        "eip155:196",
+        "eip155:232",
+        "eip155:250",
+        "eip155:252",
+        "eip155:288",
+        "eip155:321",
+        "eip155:324",
+        "eip155:336",
+        "eip155:361",
+        "eip155:747",
+        "eip155:988",
+        "eip155:999",
+        "eip155:1088",
+        "eip155:1101",
+        "eip155:1284",
+        "eip155:1285",
+        "eip155:1329",
+        "eip155:1776",
+        "eip155:1868",
+        "eip155:2525",
+        "eip155:2741",
+        "eip155:4217",
+        "eip155:4326",
+        "eip155:5000",
+        "eip155:5031",
+        "eip155:5042",
+        "eip155:7000",
+        "eip155:8453",
+        "eip155:4663",
+        "eip155:9745",
+        "eip155:10000",
+        "eip155:33139",
+        "eip155:41923",
+        "eip155:42161",
+        "eip155:42220",
+        "eip155:42262",
+        "eip155:42431",
+        "eip155:42793",
+        "eip155:43111",
+        "eip155:43114",
+        "eip155:57073",
+        "eip155:59144",
+        "eip155:60808",
+        "eip155:68414",
+        "eip155:73115",
+        "eip155:80094",
+        "eip155:81457",
+        "eip155:88888",
+        "eip155:97741",
+        "eip155:98866",
+        "eip155:167000",
+        "eip155:333999",
+        "eip155:534352",
+        "eip155:747474",
+        "eip155:984122",
+        "eip155:1440000",
+        "eip155:1313161554",
+        "eip155:1666600000",
+        "eip155:16661"
+      ],
+      "spotPricesV3": [
+        "eip155:1",
+        "eip155:10",
+        "eip155:25",
+        "eip155:30",
+        "eip155:42",
+        "eip155:50",
+        "eip155:56",
+        "eip155:57",
+        "eip155:82",
+        "eip155:88",
+        "eip155:100",
+        "eip155:106",
+        "eip155:122",
+        "eip155:128",
+        "eip155:137",
+        "eip155:143",
+        "eip155:146",
+        "eip155:196",
+        "eip155:232",
+        "eip155:250",
+        "eip155:252",
+        "eip155:288",
+        "eip155:321",
+        "eip155:324",
+        "eip155:336",
+        "eip155:361",
+        "eip155:747",
+        "eip155:988",
+        "eip155:999",
+        "eip155:1088",
+        "eip155:1101",
+        "eip155:1284",
+        "eip155:1285",
+        "eip155:1329",
+        "eip155:1776",
+        "eip155:1868",
+        "eip155:2525",
+        "eip155:2741",
+        "eip155:4217",
+        "eip155:4326",
+        "eip155:5000",
+        "eip155:5031",
+        "eip155:5042",
+        "eip155:7000",
+        "eip155:8453",
+        "eip155:4663",
+        "eip155:9745",
+        "eip155:10000",
+        "eip155:33139",
+        "eip155:41923",
+        "eip155:42161",
+        "eip155:42220",
+        "eip155:42262",
+        "eip155:42431",
+        "eip155:42793",
+        "eip155:43111",
+        "eip155:43114",
+        "eip155:57073",
+        "eip155:59144",
+        "eip155:60808",
+        "eip155:68414",
+        "eip155:73115",
+        "eip155:80094",
+        "eip155:81457",
+        "eip155:88888",
+        "eip155:97741",
+        "eip155:98866",
+        "eip155:167000",
+        "eip155:333999",
+        "eip155:534352",
+        "eip155:747474",
+        "eip155:984122",
+        "eip155:1440000",
+        "eip155:1313161554",
+        "eip155:1666600000",
+        "eip155:16661"
+      ]
+    }
+  },
+  "price-v1-btc": {
+    "id": "bitcoin",
+    "price": 106763,
+    "marketCap": 1836592437357,
+    "allTimeHigh": 126080,
+    "allTimeLow": 67.81,
+    "totalVolume": 45216146754,
+    "high1d": 92435,
+    "low1d": 90129,
+    "circulatingSupply": 19975290,
+    "dilutedMarketCap": 1836592437357,
+    "marketCapPercentChange1d": 1.72888,
+    "priceChange1d": 1535.29,
+    "pricePercentChange1h": -0.09840133404969334,
+    "pricePercentChange1d": 1.6980683447716627,
+    "pricePercentChange7d": -1.6285705945180806,
+    "pricePercentChange14d": 4.795747124043681,
+    "pricePercentChange30d": 2.1388997840239408,
+    "pricePercentChange200d": -14.088182161660676,
+    "pricePercentChange1y": -1.0484081200296924
+  },
+  "sevenseas-performance": {
+    "Response": {
+      "aggregation_period": "",
+      "apy": 0.045,
+      "chain_allocation": {
+        "ethereum": 0
+      },
+      "fees": 0,
+      "global_apy_breakdown": {
+        "fee": 0,
+        "maturity_apy": 0,
+        "real_apy": 0
+      },
+      "maturity_apy_breakdown": [],
+      "real_apy_breakdown": [],
+      "timestamp": "2026-01-01T00:00:00Z"
+    }
+  },
+  "suggested-gas-fees": {
+    "low": {
+      "suggestedMaxPriorityFeePerGas": "1",
+      "suggestedMaxFeePerGas": "20.44436136",
+      "minWaitTimeEstimate": 15000,
+      "maxWaitTimeEstimate": 30000
+    },
+    "medium": {
+      "suggestedMaxPriorityFeePerGas": "1.5",
+      "suggestedMaxFeePerGas": "25.80554517",
+      "minWaitTimeEstimate": 15000,
+      "maxWaitTimeEstimate": 45000
+    },
+    "high": {
+      "suggestedMaxPriorityFeePerGas": "2",
+      "suggestedMaxFeePerGas": "27.277766977",
+      "minWaitTimeEstimate": 15000,
+      "maxWaitTimeEstimate": 60000
+    },
+    "estimatedBaseFee": "19.444436136",
+    "networkCongestion": 0.14685,
+    "latestPriorityFeeRange": ["0.378818859", "6.555563864"],
+    "historicalPriorityFeeRange": ["0.1", "248.262969261"],
+    "historicalBaseFeeRange": ["14.146999781", "28.825256275"],
+    "priorityFeeTrend": "down",
+    "baseFeeTrend": "up",
+    "version": ""
+  },
+  "swaps-feature-flags": {
+    "ethereum": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": true,
+      "extensionActive": true,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false,
+        "mobileActive": false,
+        "extensionActive": false,
+        "mobileActiveIos": false,
+        "mobileActiveAndroid": false
+      }
+    },
+    "bsc": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": true,
+      "extensionActive": true,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false,
+        "mobileActive": false,
+        "extensionActive": false,
+        "mobileActiveIos": false,
+        "mobileActiveAndroid": false
+      }
+    },
+    "polygon": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": true,
+      "extensionActive": true,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false,
+        "mobileActive": false,
+        "extensionActive": false,
+        "mobileActiveIos": false,
+        "mobileActiveAndroid": false
+      }
+    },
+    "avalanche": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": true,
+      "extensionActive": true,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "arbitrum": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false,
+        "mobileActive": false,
+        "extensionActive": false,
+        "mobileActiveIos": false,
+        "mobileActiveAndroid": false
+      }
+    },
+    "optimism": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "zksync": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "linea": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false,
+        "mobileActive": false,
+        "extensionActive": false,
+        "mobileActiveIos": false,
+        "mobileActiveAndroid": false
+      }
+    },
+    "base": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false,
+        "mobileActive": false,
+        "extensionActive": false,
+        "mobileActiveIos": false,
+        "mobileActiveAndroid": false
+      }
+    },
+    "sei": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "monad": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "hyperevm": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "megaeth": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "arc": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "robinhood": {
+      "mobile_active": false,
+      "extension_active": false,
+      "fallback_to_v1": false,
+      "fallbackToV1": false,
+      "mobileActive": false,
+      "extensionActive": false,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "v2": {
+        "swapAndSend": {
+          "enabled": false
+        }
+      },
+      "smartTransactions": {
+        "expectedDeadline": 0,
+        "maxDeadline": 0,
+        "returnTxHashAsap": false
+      }
+    },
+    "smart_transactions": {
+      "mobile_active": false,
+      "extension_active": false
+    },
+    "smartTransactions": {
+      "mobileActive": false,
+      "extensionActive": true,
+      "mobileActiveIOS": false,
+      "mobileActiveAndroid": false,
+      "mobileReturnTxHashAsap": false,
+      "extensionReturnTxHashAsap": false,
+      "batchStatusPollingInterval": 0
+    },
+    "transactions": {
+      "acceleratedPollingEnabled": false,
+      "acceleratedPollingInterval": 0,
+      "maxAcceleratedPolls": 0
+    },
+    "swapRedesign": {
+      "mobileActive": false,
+      "extensionActive": false
+    },
+    "migrateToV2": {
+      "extensionActive": false,
+      "mobileActive": false
+    },
+    "compliance": {
+      "merkleScienceMinThreshold": 0
+    },
+    "multiChainAssets": {
+      "pollingSeconds": 0
+    }
+  },
+  "swaps-token": {
+    "address": "0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf",
+    "chainId": 0,
+    "assetId": "",
+    "symbol": "AGLT",
+    "decimals": 0,
+    "name": "",
+    "aggregators": ["dynamic"],
+    "occurrences": 0,
+    "iconUrl": "",
+    "metadata": {
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      }
+    }
+  },
+  "swaps-tokens": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chainId": 0,
+      "assetId": "",
+      "symbol": "ETH",
+      "decimals": 18,
+      "name": "Ethereum",
+      "coingeckoId": "ethereum",
+      "aggregators": [],
+      "occurrences": 100,
+      "iconUrl": "https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    },
+    {
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "chainId": 0,
+      "assetId": "",
+      "symbol": "DAI",
+      "decimals": 18,
+      "name": "Dai Stablecoin",
+      "coingeckoId": "",
+      "aggregators": [
+        "aave",
+        "bancor",
+        "cmc",
+        "cryptocom",
+        "coinGecko",
+        "oneInch",
+        "pmm",
+        "zerion",
+        "lifi"
+      ],
+      "occurrences": 9,
+      "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    },
+    {
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "chainId": 0,
+      "assetId": "",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USD Coin",
+      "coingeckoId": "",
+      "aggregators": [
+        "aave",
+        "bancor",
+        "cryptocom",
+        "coinGecko",
+        "oneInch",
+        "pmm",
+        "zerion",
+        "lifi"
+      ],
+      "occurrences": 8,
+      "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    },
+    {
+      "address": "0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f",
+      "chainId": 0,
+      "assetId": "",
+      "symbol": "INUINU",
+      "decimals": 18,
+      "name": "Inu Inu",
+      "coingeckoId": "",
+      "aggregators": ["coinGecko"],
+      "occurrences": 1,
+      "iconUrl": "https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596",
+      "coinLabel": "",
+      "rwaData": {
+        "instrumentType": "",
+        "market": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "nextPause": {
+          "end": null,
+          "start": null
+        },
+        "ticker": "",
+        "offhours": {
+          "nextOpen": "",
+          "nextClose": ""
+        },
+        "custodians": [""],
+        "isOpen": false
+      },
+      "badgeLabel": ""
+    }
+  ],
+  "swaps-top-assets": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "symbol": "ETH"
+    },
+    {
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "symbol": "DAI"
+    },
+    {
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "symbol": "USDC"
+    },
+    {
+      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "symbol": "USDT"
+    }
+  ],
+  "token-asset-templates": [
+    {
+      "assetId": "eip155:1/slip44:60",
+      "decimals": 18,
+      "name": "Ethereum",
+      "symbol": "ETH"
+    },
+    {
+      "assetId": "eip155:11155111/slip44:60",
+      "decimals": 18,
+      "name": "Sepolia Ether",
+      "symbol": "SepoliaETH"
+    },
+    {
+      "assetId": "eip155:11155111/erc20:0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "name": "Sepolia Ether",
+      "symbol": "SepoliaETH"
+    },
+    {
+      "assetId": "eip155:1337/slip44:1",
+      "decimals": 18,
+      "name": "Ethereum",
+      "symbol": "ETH"
+    },
+    {
+      "assetId": "eip155:143/slip44:268435779",
+      "decimals": 18,
+      "name": "Monad",
+      "symbol": "MON"
+    },
+    {
+      "assetId": "eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "decimals": 18,
+      "name": "Wrapped Ether",
+      "symbol": "WETH"
+    },
+    {
+      "assetId": "eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "decimals": 6,
+      "name": "USD Coin",
+      "symbol": "USDC"
+    },
+    {
+      "assetId": "eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      "decimals": 6,
+      "name": "Tether USD",
+      "symbol": "USDT"
+    },
+    {
+      "assetId": "eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "decimals": 18,
+      "name": "Dai Stablecoin",
+      "symbol": "DAI"
+    }
+  ],
+  "token-list": [
+    {
+      "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+      "symbol": "BAT",
+      "decimals": 18,
+      "name": "Basic Attention Token",
+      "iconUrl": "https://assets.coingecko.com/coins/images/677/thumb/basic-attention-token.png?1547034427",
+      "type": "",
+      "aggregators": [
+        "aave",
+        "bancor",
+        "coinGecko",
+        "oneInch",
+        "paraswap",
+        "pmm",
+        "zapper",
+        "zerion",
+        "zeroEx"
+      ],
+      "occurrences": 9,
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "fees": {
+        "minFee": 0,
+        "avgFee": 0,
+        "maxFee": 0
+      },
+      "erc20Permit": false
+    },
+    {
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "symbol": "DAI",
+      "decimals": 18,
+      "name": "Dai Stablecoin",
+      "iconUrl": "https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg",
+      "type": "erc20",
+      "aggregators": [
+        "metamask",
+        "aave",
+        "bancor",
+        "cmc",
+        "cryptocom",
+        "coinGecko",
+        "oneInch",
+        "pmm",
+        "sushiswap",
+        "zerion",
+        "lifi",
+        "socket",
+        "squid",
+        "openswap",
+        "sonarwatch",
+        "uniswapLabs",
+        "coinmarketcap"
+      ],
+      "occurrences": 17,
+      "storage": {
+        "balance": 2,
+        "approval": 0
+      },
+      "fees": {
+        "minFee": 0,
+        "avgFee": 0,
+        "maxFee": 0
+      },
+      "erc20Permit": true
+    }
+  ],
+  "token-metadata": {
+    "address": "",
+    "symbol": "",
+    "decimals": 0,
+    "name": "",
+    "iconUrl": "",
+    "type": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "erc20Permit": false,
+    "storage": {
+      "balance": 0,
+      "approval": 0
+    },
+    "fees": {
+      "minFee": 0,
+      "avgFee": 0,
+      "maxFee": 0
+    }
+  },
+  "token-occurrence-floors": {
+    "1": 3,
+    "143": 1,
+    "204": 1,
+    "232": 1,
+    "690": 1,
+    "1329": 1,
+    "1672": 0,
+    "4153": 0,
+    "4217": 0,
+    "4326": 0,
+    "4663": 1,
+    "10143": 1,
+    "59144": 1,
+    "98866": 1,
+    "99901": 0
+  },
+  "token-supported-networks": {
+    "fullSupport": [
+      "eip155:1",
+      "eip155:10",
+      "eip155:25",
+      "eip155:56",
+      "eip155:100",
+      "eip155:137",
+      "eip155:143",
+      "eip155:250",
+      "eip155:324",
+      "eip155:1101",
+      "eip155:1284",
+      "eip155:1285",
+      "eip155:1329",
+      "eip155:8453",
+      "eip155:42161",
+      "eip155:42220",
+      "eip155:43114",
+      "eip155:59144",
+      "eip155:1313161554",
+      "eip155:1666600000",
+      "eip155:11297108109",
+      "eip155:13371",
+      "eip155:534352",
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "tron:728126428",
+      "stellar:pubnet",
+      "eip155:698",
+      "eip155:16507",
+      "eip155:41923",
+      "eip155:747474",
+      "eip155:80094",
+      "eip155:33139",
+      "eip155:2741",
+      "eip155:1868",
+      "eip155:166",
+      "eip155:1440000",
+      "eip155:252",
+      "eip155:43111",
+      "eip155:50",
+      "eip155:42",
+      "eip155:9745",
+      "eip155:999",
+      "eip155:1776",
+      "eip155:4326",
+      "eip155:196",
+      "eip155:68414",
+      "eip155:42793",
+      "eip155:60808",
+      "eip155:30",
+      "bip122:000000000019d6689c085ae165831e93",
+      "eip155:88888",
+      "eip155:988",
+      "eip155:42431",
+      "eip155:4217",
+      "eip155:5000",
+      "eip155:1337"
+    ],
+    "partialSupport": ["solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"]
+  },
+  "tokens-supported-networks": {
+    "fullSupport": [
+      "eip155:1",
+      "eip155:10",
+      "eip155:25",
+      "eip155:56",
+      "eip155:100",
+      "eip155:137",
+      "eip155:143",
+      "eip155:250",
+      "eip155:324",
+      "eip155:1101",
+      "eip155:1284",
+      "eip155:1285",
+      "eip155:1329",
+      "eip155:8453",
+      "eip155:42161",
+      "eip155:42220",
+      "eip155:43114",
+      "eip155:59144",
+      "eip155:1313161554",
+      "eip155:1666600000",
+      "eip155:11297108109",
+      "eip155:13371",
+      "eip155:534352",
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "tron:728126428",
+      "stellar:pubnet",
+      "eip155:698",
+      "eip155:16507",
+      "eip155:41923",
+      "eip155:747474",
+      "eip155:80094",
+      "eip155:33139",
+      "eip155:2741",
+      "eip155:1868",
+      "eip155:166",
+      "eip155:1440000",
+      "eip155:252",
+      "eip155:43111",
+      "eip155:50",
+      "eip155:42",
+      "eip155:9745",
+      "eip155:999",
+      "eip155:1776",
+      "eip155:4326",
+      "eip155:196",
+      "eip155:68414",
+      "eip155:42793",
+      "eip155:60808",
+      "eip155:30",
+      "bip122:000000000019d6689c085ae165831e93",
+      "eip155:88888",
+      "eip155:988",
+      "eip155:42431",
+      "eip155:4217",
+      "eip155:5000",
+      "eip155:1337"
+    ],
+    "partialSupport": ["solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"]
+  },
+  "tx-sentinel-network": {
+    "name": "Mainnet",
+    "group": "ethereum",
+    "chainID": 1,
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": ""
+    },
+    "network": "ethereum-mainnet",
+    "explorer": "https://etherscan.io",
+    "confirmations": true,
+    "smartTransactions": true,
+    "relayTransactions": false,
+    "hidden": false,
+    "sendBundle": false,
+    "simulationIncludeFees": false,
+    "cubistSigners": [""],
+    "sponsorship": {
+      "enabled": false,
+      "rules": [
+        {
+          "name": ""
+        }
+      ]
+    },
+    "gasless": {
+      "eip7702": {
+        "transactions": false,
+        "swaps": false,
+        "bridge": false
+      },
+      "stxSendBundle": {
+        "transactions": false,
+        "swaps": false,
+        "bridge": false
+      },
+      "feeTokens": [
+        {
+          "address": "",
+          "symbol": "",
+          "decimals": 0
+        }
+      ]
+    }
+  },
+  "tx-sentinel-networks": {
+    "1": {
+      "name": "Mainnet",
+      "group": "ethereum",
+      "chainID": 1,
+      "nativeCurrency": {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": ""
+      },
+      "network": "ethereum-mainnet",
+      "explorer": "https://etherscan.io",
+      "confirmations": true,
+      "smartTransactions": true,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": [
+          {
+            "name": ""
+          }
+        ]
+      }
+    },
+    "10": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "56": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "137": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "143": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": [
+          {
+            "name": ""
+          }
+        ]
+      }
+    },
+    "999": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "1329": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": [
+          {
+            "name": ""
+          }
+        ]
+      }
+    },
+    "4217": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": "",
+        "isErc": false
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "4326": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "4663": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "5042": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "8453": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "42161": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "42431": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": "",
+        "isErc": false
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [],
+      "sponsorship": {
+        "enabled": false,
+        "rules": [
+          {
+            "name": ""
+          }
+        ]
+      }
+    },
+    "43114": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "59144": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    },
+    "84532": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": [
+          {
+            "name": ""
+          }
+        ]
+      }
+    },
+    "11155111": {
+      "name": "",
+      "group": "",
+      "chainID": 0,
+      "nativeCurrency": {
+        "name": "",
+        "symbol": "",
+        "decimals": 0,
+        "address": ""
+      },
+      "network": "",
+      "explorer": "",
+      "confirmations": false,
+      "smartTransactions": false,
+      "relayTransactions": false,
+      "hidden": false,
+      "sendBundle": false,
+      "simulationIncludeFees": false,
+      "cubistSigners": [""],
+      "sponsorship": {
+        "enabled": false,
+        "rules": []
+      }
+    }
+  }
+}

@@ -29,7 +29,10 @@ fixture JSON so its **shape** matches:
 - new fields are added with a stable placeholder (`0`, `""`, `false`, `null`).
   A new object is an object of those placeholders, and a new array of objects
   gets one such object. No live values are copied.
-- fields the API no longer returns are removed
+- fields the API no longer returns are removed. On a list, a field joins
+  the shared shape when at least two entries include it, so one odd token
+  cannot add and remove a field on every run. A response with a single object
+  still contributes all of that object's fields
 - a field whose type changed (for example `number` to `null`) is replaced with
   that placeholder
 - values already in the fixture stay, including prices, balances and ids
@@ -42,16 +45,18 @@ move the numbers E2E assertions use.
 
 The same command runs every Monday in
 [`.github/workflows/sync-e2e-api-mocks.yml`](../../../.github/workflows/sync-e2e-api-mocks.yml)
-(and on demand via workflow dispatch). When a written fixture changes, the
-job commits it and opens or updates a PR. A report-only fetch that fails is
-logged and does not block that PR. Drift in a hand-maintained fixture is
-printed and left in place. The job fails only when a fixture that should have
-been written could not be fetched and nothing was written.
+(and on demand via workflow dispatch). When a fixture changes, the job
+commits it and opens or updates a PR. A fetch that fails is logged. If any
+fixture was already written, the job still opens that PR. The job fails only
+when a fixture that should have been written could not be fetched and nothing
+was written.
 
 Every E2E API mock is one row in [`api-mock-catalog.md`](./api-mock-catalog.md),
-with its method, endpoint and mock file. `write:`, `spot`, `countries` and
-`contentful` rows update the fixture, `report:` rows print drift without
-writing, and `skip` rows give the reason they are not called (non-JSON,
+with its method, endpoint and mock file. `write:<fixture>` and
+`write:<fixture>#<key>`, plus `spot`, `countries` and `contentful`, update the
+fixture. Values tests assert are pinned in `api-fixtures.js` (and the price
+and phishing helpers) after the fixture is read, so a shape sync cannot
+change them. `skip` rows give the reason they are not called (non-JSON,
 request-specific POST, intentional error, test-only host, or auth). Contentful
 needs `CONTENTFUL_ACCESS_SPACE_ID` and `CONTENTFUL_ACCESS_TOKEN`; without them
 it is skipped with a message. Per-spec mocks are grouped rows.

@@ -111,6 +111,50 @@ export function alignShape(mock: Json, live: Json): Json {
   return mock;
 }
 
+/**
+ * Aligns a curated list to the shared fields of the live elements, so each
+ * chain or token keeps its own values. A field on only one element is ignored
+ * unless the response has a single element.
+ *
+ * @param mock - The current fixture value.
+ * @param live - The live value.
+ * @returns The aligned value.
+ */
+function alignToApi(mock: Json, live: Json): Json {
+  if (
+    Array.isArray(mock) &&
+    Array.isArray(live) &&
+    mock.length > 0 &&
+    live.length > 0 &&
+    mock.every(isObject) &&
+    live.every(isObject)
+  ) {
+    // A field on only one list entry is that entry's data, not the shared
+    // shape. The token list occasionally omits that entry, which would add
+    // and remove the field on every run.
+    const seen = new Map<string, { count: number; value: Json }>();
+    for (const item of live) {
+      for (const [key, value] of Object.entries(item)) {
+        const current = seen.get(key);
+        if (current) {
+          current.count += 1;
+        } else {
+          seen.set(key, { count: 1, value });
+        }
+      }
+    }
+    const minimum = live.length === 1 ? 1 : 2;
+    const template: Record<string, Json> = {};
+    for (const [key, current] of seen) {
+      if (current.count >= minimum) {
+        template[key] = current.value;
+      }
+    }
+    return mock.map((item) => alignShape(item, template));
+  }
+  return alignShape(mock, live);
+}
+
 const canonical = (value: Json): string => {
   if (Array.isArray(value)) {
     return `[${value.map(canonical).join(',')}]`;
@@ -179,7 +223,7 @@ function alignFixture(
     console.log(`${label}: empty fixture kept so tests stay deterministic`);
     return false;
   }
-  const aligned = alignShape(current, live);
+  const aligned = alignToApi(current, live);
   if (canonical(current) === canonical(aligned)) {
     console.log(`${label}: no shape drift`);
     return false;
@@ -232,42 +276,6 @@ async function syncSpotPrices(): Promise<boolean> {
   return true;
 }
 
-function matchesShape(value: Json, spec: string): boolean {
-  if (spec === 'object') {
-    return isObject(value);
-  }
-  if (spec === 'array') {
-    return Array.isArray(value);
-  }
-  if (spec === 'array<object>') {
-    return Array.isArray(value) && (value.length === 0 || isObject(value[0]));
-  }
-  if (spec === 'array<string>') {
-    return (
-      Array.isArray(value) &&
-      (value.length === 0 || typeof value[0] === 'string')
-    );
-  }
-  if (spec.startsWith('{') && spec.endsWith('}') && isObject(value)) {
-    const expected = spec.slice(1, -1).split(',').filter(Boolean).sort();
-    return expected.join() === Object.keys(value).sort().join();
-  }
-  return false;
-}
-
-function describeShape(value: Json): string {
-  if (Array.isArray(value)) {
-    if (value.length === 0) {
-      return 'array';
-    }
-    return `array<${isObject(value[0]) ? 'object' : kindOf(value[0])}>`;
-  }
-  if (isObject(value)) {
-    return `{${Object.keys(value).sort().join(',')}}`;
-  }
-  return kindOf(value);
-}
-
 async function syncContentful(): Promise<boolean> {
   const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID;
   const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
@@ -314,31 +322,27 @@ async function processEntry(entry: ApiMockEntry): Promise<boolean> {
   }
   const live = await fetchJson(url);
   if (mode.startsWith('write:')) {
-    const fileName = mode.slice('write:'.length);
-    const current = readFixture(fileName);
-    const aligned = alignShape(current, live);
+    const spec = mode.slice('write:'.length);
+    const hash = spec.indexOf('#');
+    const fileName = hash === -1 ? spec : spec.slice(0, hash);
+    const property = hash === -1 ? undefined : spec.slice(hash + 1);
+    const fixture = readFixture(fileName);
+    const current = property === undefined ? fixture : (fixture as Record<string, Json>)[property];
+    const aligned = alignToApi(current, live);
     if (canonical(current) === canonical(aligned)) {
       console.log(`${id}: no shape drift`);
       return false;
     }
     console.log(`${id}: ${describeChange(current, aligned)}`);
-    writeFixture(fileName, aligned);
+    if (property === undefined) {
+      writeFixture(fileName, aligned);
+    } else {
+      (fixture as Record<string, Json>)[property] = aligned;
+      writeFixture(fileName, fixture);
+    }
     return true;
   }
-  const spec = mode.slice('report:'.length);
-  if (matchesShape(live, spec)) {
-    console.log(`${id}: no shape drift`);
-    return false;
-  }
-  console.log(
-    `${id}: DRIFT mock ${spec}, live ${describeShape(live)} (not written)`,
-  );
-  return false;
-}
-
-/** A report-only row is logged, never written, so its fetch failing is not fatal. */
-function isReportOnly(mode: string): boolean {
-  return mode.startsWith('report:');
+  throw new Error(`${id}: unknown sync mode ${mode}`);
 }
 
 async function main(): Promise<number> {
@@ -348,15 +352,10 @@ async function main(): Promise<number> {
     try {
       changed = (await processEntry(entry)) || changed;
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      if (isReportOnly(entry.mode)) {
-        console.error(
-          `${entry.id}: report fetch failed, ${message} (not written)`,
-        );
-      } else {
-        failed = true;
-        console.error(`${entry.id}: ${message}`);
-      }
+      failed = true;
+      console.error(
+        `${entry.id}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
   // Written fixtures still open the weekly PR when a later entry fails.
