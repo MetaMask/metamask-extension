@@ -14,6 +14,7 @@ const {
 } = require('../../shared/constants/swaps');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  DEFAULT_BTC_CONVERSION_RATE,
   LOCAL_NODE_ACCOUNT,
 } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
@@ -34,18 +35,13 @@ const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
 const {
-  apiFixture,
-  MOCK_SUGGESTED_GAS_FEES,
-} = require('./mock-response-data/api-fixtures');
-const {
-  PRICE_API_V3_SPOT_PRICES_MOCKS,
-  buildFallbackSpotPricesResponse,
-} = require('./mock-response-data/price-api');
-const {
-  CONTENTFUL_PROMOTIONAL_BANNERS_EMPTY_RESPONSE,
-  NOTIFICATION_LIST_EMPTY_RESPONSE,
-  RAMPS_COUNTRIES_EMPTY_RESPONSE,
-} = require('./mock-response-data/global-api-responses');
+  API_MOCKS,
+  SPOT_PRICE_FALLBACK,
+  withPins,
+} = require('./mock-response-data/api-mocks');
+
+const DEFAULT_ETH_USD_PRICE = 3010;
+const SPOT_PRICES = API_MOCKS['price-v3-spot'];
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -64,12 +60,11 @@ const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
-const AGGREGATOR_METADATA_LINEA_PATH =
-  'test/e2e/mock-response-data/aggregator-metadata-linea.fixture.json';
 const CHAIN_ID_NETWORKS_PATH =
   'test/e2e/mock-response-data/chain-id-network-chains.json';
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
+const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TEST_DAPP_STYLES_1_PATH =
   'test/e2e/mock-response-data/test-dapp-styles-1.txt';
 const TEST_DAPP_STYLES_2_PATH =
@@ -241,6 +236,34 @@ const TRON_JSONRPC_URL_RE = new RegExp(
 // EIP-1559 gas estimates served for every chain. Tests that predict on-chain
 // costs (e.g. bridge quote fees) derive them from these values, so keep them in
 // sync rather than duplicating the numbers.
+const MOCK_SUGGESTED_GAS_FEES = {
+  low: {
+    suggestedMaxPriorityFeePerGas: '1',
+    suggestedMaxFeePerGas: '20.44436136',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 30000,
+  },
+  medium: {
+    suggestedMaxPriorityFeePerGas: '1.5',
+    suggestedMaxFeePerGas: '25.80554517',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 45000,
+  },
+  high: {
+    suggestedMaxPriorityFeePerGas: '2',
+    suggestedMaxFeePerGas: '27.277766977',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 60000,
+  },
+  estimatedBaseFee: '19.444436136',
+  networkCongestion: 0.14685,
+  latestPriorityFeeRange: ['0.378818859', '6.555563864'],
+  historicalPriorityFeeRange: ['0.1', '248.262969261'],
+  historicalBaseFeeRange: ['14.146999781', '28.825256275'],
+  priorityFeeTrend: 'down',
+  baseFeeTrend: 'up',
+};
+
 // Zero-balance TronGrid account, mirroring the shape produced by
 // `createTronGridAccountResponse` in `test/e2e/seeder/tron/assets.ts`, which
 // the snap's response validation is known to accept.
@@ -472,6 +495,33 @@ const privateHostMatchers = [
 /** Well above TokenDataSource's default ERC-20 occurrence floor of 3. */
 const TOKEN_METADATA_OCCURRENCES = 100;
 
+const WELL_KNOWN_MAINNET_ERC20_ASSETS = [
+  {
+    assetId: 'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+    decimals: 18,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    name: 'USD Coin',
+    symbol: 'USDC',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    name: 'Dai Stablecoin',
+    symbol: 'DAI',
+    decimals: 18,
+  },
+];
+
 /**
  * Default Tokens / Token API metadata for natives and well-known ERC-20s.
  *
@@ -482,57 +532,84 @@ const TOKEN_METADATA_OCCURRENCES = 100;
  * @returns {object[]}
  */
 function getWellKnownTokenAssetMetadata(assetIds) {
-  const templates = apiFixture('token-asset-templates');
-  const byAssetId = new Map(templates.map((token) => [token.assetId, token]));
-  const wanted = new Set();
-  const add = (assetId) => {
-    if (byAssetId.has(assetId)) {
-      wanted.add(assetId);
-    }
-  };
+  const results = [];
+  const includesAssetId = (assetId) =>
+    assetIds.includes(assetId) || assetIds.includes(assetId.toLowerCase());
 
   if (assetIds.includes('eip155:1/slip44:60')) {
-    add('eip155:1/slip44:60');
+    results.push({
+      assetId: 'eip155:1/slip44:60',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
   }
+
   if (
     assetIds.includes('eip155:11155111/slip44:60') ||
     assetIds.includes('eip155:11155111')
   ) {
-    add('eip155:11155111/slip44:60');
+    results.push({
+      assetId: 'eip155:11155111/slip44:60',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
   }
+
   if (
     assetIds.includes(
       'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
     )
   ) {
-    add('eip155:11155111/erc20:0x0000000000000000000000000000000000000000');
+    results.push({
+      assetId:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
   }
-  // Chain 1337 uses slip44:1. Also accept the older slip44:60 request.
+
+  // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+  // Support both slip44:1 and slip44:60 requests for backward compat.
   if (
     assetIds.includes('eip155:1337/slip44:1') ||
     assetIds.includes('eip155:1337/slip44:60')
   ) {
-    add('eip155:1337/slip44:1');
+    results.push({
+      assetId: 'eip155:1337/slip44:1',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
   }
-  // Monad native is slip44:268435779. Also accept a slip44:60 request.
+
+  // Monad native is slip44:268435779 (not ETH slip44:60).
   if (
     assetIds.includes('eip155:143/slip44:268435779') ||
     assetIds.includes('eip155:143/slip44:60')
   ) {
-    add('eip155:143/slip44:268435779');
+    results.push({
+      assetId: 'eip155:143/slip44:268435779',
+      name: 'Monad',
+      symbol: 'MON',
+      decimals: 18,
+    });
   }
-  for (const token of templates) {
-    if (
-      assetIds.includes(token.assetId) ||
-      assetIds.includes(token.assetId.toLowerCase())
-    ) {
-      add(token.assetId);
+
+  for (const token of WELL_KNOWN_MAINNET_ERC20_ASSETS) {
+    if (includesAssetId(token.assetId)) {
+      results.push({
+        ...token,
+        occurrences: TOKEN_METADATA_OCCURRENCES,
+      });
     }
   }
 
-  return [...wanted].map((assetId) => ({
-    ...byAssetId.get(assetId),
-    occurrences: TOKEN_METADATA_OCCURRENCES,
+  return results.map((token) => ({
+    ...API_MOCKS['token-assets'][0],
+    ...token,
   }));
 }
 
@@ -745,7 +822,7 @@ async function setupMocking(
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
-      json: apiFixture('client-config-networks'),
+      json: API_MOCKS['client-config-networks'],
     }));
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/config/events-config')
@@ -753,7 +830,7 @@ async function setupMocking(
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
-      json: apiFixture('client-config-events'),
+      json: API_MOCKS['client-config-events'],
     }));
 
   // Subscriptions Polling Get Subscriptions
@@ -829,7 +906,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('chomp'),
+        json: API_MOCKS.chomp,
       };
     });
 
@@ -955,7 +1032,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('4byte-signatures'),
+        json: API_MOCKS['4byte-signatures'],
       };
     });
 
@@ -965,7 +1042,12 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('gas-prices'),
+        json: {
+          ...API_MOCKS['gas-prices'],
+          SafeGasPrice: '1',
+          ProposeGasPrice: '2',
+          FastGasPrice: '3',
+        },
       };
     });
 
@@ -975,7 +1057,13 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('swaps-token'),
+        json: {
+          ...API_MOCKS['swaps-token'],
+          symbol: 'AGLT',
+          type: 'erc20',
+          decimals: '18',
+          address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
+        },
       };
     });
 
@@ -984,25 +1072,47 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('suggested-gas-fees'),
+        json: withPins(
+          API_MOCKS['suggested-gas-fees'],
+          MOCK_SUGGESTED_GAS_FEES,
+        ),
       };
     });
 
   // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
   // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
+  const txSentinelNetworksRegistry = {
+    1: {
+      name: 'Mainnet',
+      group: 'ethereum',
+      chainID: 1,
+      nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+      network: 'ethereum-mainnet',
+      explorer: 'https://etherscan.io',
+      confirmations: true,
+      smartTransactions: true,
+      hidden: false,
+    },
+  };
   await server
     .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
-    .thenJson(200, apiFixture('tx-sentinel-networks'));
+    .thenJson(
+      200,
+      withPins(API_MOCKS['tx-sentinel-networks'], txSentinelNetworksRegistry),
+    );
   await server
     .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
-    .thenJson(200, apiFixture('tx-sentinel-network'));
+    .thenJson(
+      200,
+      withPins(API_MOCKS['tx-sentinel-network'], txSentinelNetworksRegistry[1]),
+    );
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('swaps-feature-flags'),
+        json: API_MOCKS['swaps-feature-flags'],
       };
     });
 
@@ -1029,7 +1139,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('token-list'),
+        json: API_MOCKS['token-list'],
       };
     });
 
@@ -1038,7 +1148,7 @@ async function setupMocking(
   await server
     .forGet('https://token.api.cx.metamask.io/v1/suggestedOccurrenceFloors')
     .always()
-    .thenJson(200, apiFixture('token-occurrence-floors'));
+    .thenJson(200, API_MOCKS['token-occurrence-floors']);
 
   const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
   await server
@@ -1052,9 +1162,6 @@ async function setupMocking(
     });
 
   const AGGREGATOR_METADATA = fs.readFileSync(AGGREGATOR_METADATA_PATH);
-  const AGGREGATOR_METADATA_LINEA = fs.readFileSync(
-    AGGREGATOR_METADATA_LINEA_PATH,
-  );
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
     .thenCallback(() => {
@@ -1071,7 +1178,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('bridge-top-assets'),
+        json: API_MOCKS['bridge-top-assets'],
       };
     });
 
@@ -1090,7 +1197,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('bridge-tokens'),
+        json: API_MOCKS['bridge-tokens'],
       };
     });
 
@@ -1100,7 +1207,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('bridge-top-assets-linea'),
+        json: API_MOCKS['bridge-top-assets-linea'],
       };
     });
 
@@ -1111,7 +1218,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: JSON.parse(AGGREGATOR_METADATA_LINEA),
+        json: API_MOCKS['bridge-aggregator-metadata-linea'],
       };
     });
 
@@ -1121,7 +1228,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('bridge-tokens-linea'),
+        json: API_MOCKS['bridge-tokens-linea'],
       };
     });
 
@@ -1130,7 +1237,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('swaps-tokens'),
+        json: API_MOCKS['swaps-tokens'],
       };
     });
 
@@ -1139,7 +1246,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('swaps-top-assets'),
+        json: API_MOCKS['swaps-top-assets'],
       };
     });
 
@@ -1148,7 +1255,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('token-metadata'),
+        json: API_MOCKS['token-metadata'],
       };
     });
 
@@ -1163,14 +1270,112 @@ async function setupMocking(
     };
   });
 
-  // Price API: v3 spot prices for the native assets used in E2E fixtures.
+  // Price API: Spot prices for native token (ETH)
+  // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
   // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
-  for (const { assetIds, response } of PRICE_API_V3_SPOT_PRICES_MOCKS) {
-    await server
-      .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-      .withQuery({ assetIds, vsCurrency: 'usd', includeMarketData: 'true' })
-      .thenCallback(() => ({ statusCode: 200, json: response }));
-  }
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:1/slip44:60',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'eip155:1/slip44:60': {
+            ...SPOT_PRICES['eip155:1/slip44:60'],
+            id: 'ethereum',
+            price: DEFAULT_ETH_USD_PRICE,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        },
+      };
+    });
+
+  // Sepolia native — TokenDataSource / Price API request either slip44:60 or
+  // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
+  const sepoliaSpotPrice = {
+    ...SPOT_PRICES['eip155:1/slip44:60'],
+    id: 'ethereum',
+    price: DEFAULT_ETH_USD_PRICE,
+    marketCap: 382623505141,
+    pricePercentChange1d: 0,
+  };
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:11155111/slip44:60',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
+          sepoliaSpotPrice,
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
+
+  // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
+  // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:1337/slip44:1',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1337/slip44:1': {
+          ...SPOT_PRICES['eip155:1/slip44:60'],
+          id: 'ethereum',
+          price: DEFAULT_ETH_USD_PRICE,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
+  // Monad native — slip44:268435779 (not ETH slip44:60).
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:143/slip44:268435779',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:143/slip44:268435779': {
+          ...SPOT_PRICES['eip155:143/slip44:268435779'],
+          id: 'monad',
+          price: DEFAULT_ETH_USD_PRICE,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
 
   await server
     .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
@@ -1183,7 +1388,9 @@ async function setupMocking(
         .filter(Boolean);
       return {
         statusCode: 200,
-        json: buildFallbackSpotPricesResponse(assetIds),
+        json: Object.fromEntries(
+          assetIds.map((assetId) => [assetId, SPOT_PRICE_FALLBACK]),
+        ),
       };
     });
 
@@ -1191,21 +1398,63 @@ async function setupMocking(
   // `fullSupport` and `partialSupport`; anything else (such as the empty-200
   // catch-all this used to land on) makes it silently fall back to its
   // hardcoded list without caching, so every later price fetch re-requests the
-  // endpoint. The lists below are that same hardcoded fallback
+  // endpoint. The fixture lists are that same hardcoded fallback
   // (`SPOT_PRICES_SUPPORT_INFO` in @metamask/assets-controllers), so supported
   // chains are unchanged and only the repeated requests go away.
   await server
     .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
     .asPriority(RulePriority.FALLBACK)
     .always()
-    .thenJson(200, apiFixture('price-supported-networks'));
+    .thenJson(200, API_MOCKS['price-supported-networks']);
+
+  // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
+  // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          ...SPOT_PRICES['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          id: 'solana',
+          price: 112.87,
+        },
+      },
+    }));
+
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          ...SPOT_PRICES['bip122:000000000019d6689c085ae165831e93/slip44:0'],
+          id: 'bitcoin',
+          price: DEFAULT_BTC_CONVERSION_RATE,
+        },
+      },
+    }));
 
   await server
     .forGet('https://price.api.cx.metamask.io/v1/spot-prices/bitcoin')
     .withQuery({ vsCurrency: 'usd' })
     .thenCallback(() => ({
       statusCode: 200,
-      json: apiFixture('price-v1-btc'),
+      json: {
+        ...API_MOCKS['price-v1-btc'],
+        id: 'bitcoin',
+        price: DEFAULT_BTC_CONVERSION_RATE,
+      },
     }));
 
   const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
@@ -1312,10 +1561,7 @@ async function setupMocking(
   await server
     .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: NOTIFICATION_LIST_EMPTY_RESPONSE,
-    }));
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Identity APIs
   await mockIdentityServices(server);
@@ -1328,6 +1574,17 @@ async function setupMocking(
       statusCode: 404,
     };
   });
+
+  // On Ramp Content
+  const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
+  await server
+    .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(ON_RAMP_CONTENT),
+      };
+    });
 
   // Chains Metadata
   const CHAIN_ID_NETWORKS = fs.readFileSync(CHAIN_ID_NETWORKS_PATH);
@@ -1346,7 +1603,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('accounts-supported-networks-v1'),
+        json: API_MOCKS['accounts-supported-networks-v1'],
       };
     });
 
@@ -1386,12 +1643,12 @@ async function setupMocking(
   await server
     .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, apiFixture('token-supported-networks'));
+    .thenJson(200, API_MOCKS['token-supported-networks']);
 
   await server
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, apiFixture('tokens-supported-networks'));
+    .thenJson(200, API_MOCKS['tokens-supported-networks']);
 
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
   await server
@@ -1400,7 +1657,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('accounts-supported-networks-v2'),
+        json: API_MOCKS['accounts-supported-networks-v2'],
       };
     });
 
@@ -1412,7 +1669,7 @@ async function setupMocking(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: apiFixture('sevenseas-performance'),
+      json: API_MOCKS['sevenseas-performance'],
     }));
 
   // Money API: positions for a Money account, fetched as the API leg of
@@ -1426,7 +1683,7 @@ async function setupMocking(
       const address = url.pathname.split('/').pop();
       return {
         statusCode: 200,
-        json: { ...apiFixture('money-positions'), address },
+        json: { ...API_MOCKS['money-positions'], address },
       };
     });
 
@@ -1489,7 +1746,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('accounts-transactions'),
+        json: API_MOCKS['accounts-transactions'],
       };
     });
 
@@ -1562,7 +1819,12 @@ async function setupMocking(
     await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
       return {
         statusCode: 200,
-        json: apiFixture('geolocation-v2'),
+        json: {
+          ...API_MOCKS['geolocation-v2'],
+          country: 'US',
+          region: 'TX',
+          timezone: 'America/Chicago',
+        },
       };
     });
   }
@@ -1578,7 +1840,7 @@ async function setupMocking(
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: RAMPS_COUNTRIES_EMPTY_RESPONSE,
+          json: API_MOCKS['ramps-countries'],
         };
       });
   }
@@ -2012,7 +2274,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: CONTENTFUL_PROMOTIONAL_BANNERS_EMPTY_RESPONSE,
+        json: API_MOCKS.contentful,
       };
     });
 

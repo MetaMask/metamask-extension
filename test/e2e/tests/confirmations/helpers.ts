@@ -15,7 +15,7 @@ import {
   shapeV6AccountsApiBalances,
 } from '../../helpers/accounts-api-v6-balances';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import type { DefiPositionsResponse } from '../../mock-response-data/api-response-types';
+import type { DefiPositionsResponse } from '../../mock-response-data/api-mocks';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';

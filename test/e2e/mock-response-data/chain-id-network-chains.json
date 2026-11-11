@@ -54,7 +54,6 @@
       {
         "name": "blockscout",
         "url": "https://eth.blockscout.com",
-        "icon": "blockscout",
         "standard": "EIP3091"
       },
       {
@@ -341,7 +340,6 @@
       {
         "name": "Blockscout",
         "url": "https://explorer.sepolia.linea.build",
-        "icon": "linea",
         "standard": "EIP3091"
       }
     ],

@@ -1,61 +1,41 @@
 #!/usr/bin/env tsx
 /**
- * Aligns the typed E2E mock fixtures with live API shapes.
+ * Aligns the E2E API mock fixtures with the live API shapes, as listed in
+ * `api-mock-catalog.md`.
  *
- * Existing values are kept. New fields get a placeholder (`0`, `''`,
- * `false`, `null`, or one placeholder element). Dropped fields are removed.
- * An empty mock array stays empty, because tests depend on it.
- *
- * Exit 0: no change. Exit 1: a fixture was written (report-only fetch
- * errors are logged and do not change this). Exit 2: a fixture that would
- * be written could not be fetched, and nothing was written.
- *
- * Usage: yarn test:e2e:sync-api-mocks
+ * Exit 0: no change. Exit 1: a fixture was written. Exit 2: nothing was
+ * written and a fetch failed.
  */
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
-import { RAMPS_SDK_VERSION } from '@metamask/ramps-controller';
 
-type ApiMockEntry = { id: string; url: string; mode: string; reason: string };
+export type Json =
+  | null
+  | string
+  | number
+  | boolean
+  | Json[]
+  | { [key: string]: Json };
 
-/**
- * Reads the rows of `api-mock-catalog.md`.
- *
- * @returns One entry per catalog row.
- */
-function readCatalog(): ApiMockEntry[] {
-  return readFileSync(path.join(__dirname, 'api-mock-catalog.md'), 'utf8')
-    .split('\n')
-    .filter((line) => /^\| [a-z0-9]/u.test(line))
-    .map((line) =>
-      line
-        .slice(1, -1)
-        .split(/(?<!\\)\|/u)
-        .map((cell) => cell.trim().replace(/^`|`$/gu, '')),
-    )
-    .map(([id, , url, , mode, reason]) => ({ id, url, mode, reason }));
-}
-
-const FIXTURE_DIR = __dirname;
-
-type Json = null | string | number | boolean | Json[] | { [key: string]: Json };
+const isObject = (value: Json): value is { [key: string]: Json } =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
 
 function kindOf(value: Json): string {
   if (value === null) {
     return 'null';
   }
-  if (Array.isArray(value)) {
-    return 'array';
-  }
-  return typeof value;
+  return Array.isArray(value) ? 'array' : typeof value;
 }
 
-const isObject = (value: Json): value is { [key: string]: Json } =>
-  value !== null && typeof value === 'object' && !Array.isArray(value);
+const PRIMITIVE_PLACEHOLDERS: Record<string, Json> = {
+  number: 0,
+  string: '',
+  boolean: false,
+};
 
 /**
  * Placeholder with none of the live data. Objects keep their keys and arrays
- * of objects keep one element, so a new field still has the live shape.
+ * keep one element, so a new field still has the live shape.
  *
  * @param value - A live value.
  * @returns The placeholder.
@@ -66,29 +46,43 @@ export function placeholder(value: Json): Json {
   }
   if (isObject(value)) {
     return Object.fromEntries(
-      Object.keys(value).map((key) => [key, placeholder(value[key])]),
+      Object.entries(value).map(([key, item]) => [key, placeholder(item)]),
     );
   }
-  if (typeof value === 'number') {
-    return 0;
+  return PRIMITIVE_PLACEHOLDERS[typeof value] ?? null;
+}
+
+/**
+ * Fields shared by the elements of a live list. A field on only one element
+ * is that element's data, and the list does not always include it.
+ *
+ * @param list - Live list elements.
+ * @returns One element with the shared fields.
+ */
+function sharedShape(list: { [key: string]: Json }[]): Json {
+  const minimum = list.length === 1 ? 1 : 2;
+  const seen = new Map<string, { count: number; value: Json }>();
+  for (const [key, value] of list.flatMap(Object.entries)) {
+    const entry = seen.get(key) ?? { count: 0, value };
+    entry.count += 1;
+    seen.set(key, entry);
   }
-  if (typeof value === 'string') {
-    return '';
-  }
-  if (typeof value === 'boolean') {
-    return false;
-  }
-  return null;
+  return Object.fromEntries(
+    [...seen]
+      .filter(([, { count }]) => count >= minimum)
+      .map(([key, { value }]) => [key, value]),
+  );
 }
 
 /**
  * Reshapes `mock` to `live`, keeping mock values whose kind did not change.
+ * An empty mock list stays empty.
  *
  * @param mock - The current fixture value.
  * @param live - The live value.
  * @returns The aligned value.
  */
-export function alignShape(mock: Json, live: Json): Json {
+function alignShape(mock: Json, live: Json): Json {
   if (kindOf(mock) !== kindOf(live)) {
     return placeholder(live);
   }
@@ -96,269 +90,120 @@ export function alignShape(mock: Json, live: Json): Json {
     if (mock.length === 0 || live.length === 0) {
       return mock;
     }
-    return mock.map((item, index) =>
-      alignShape(item, live[Math.min(index, live.length - 1)]),
-    );
+    const element = live.every(isObject) ? sharedShape(live) : live[0];
+    return mock.map((item) => alignShape(item, element));
   }
   if (isObject(mock) && isObject(live)) {
+    // Numeric keys (chain ids) are data: keep the mock's own entries and give
+    // them the live entries' shape, but do not add the live chains.
+    const isId = (key: string) => /^\d+$/u.test(key);
+    const idShape = Object.entries(live).find(([key]) => isId(key))?.[1];
+    const keys = [
+      ...Object.keys(live).filter((key) => !isId(key)),
+      ...Object.keys(mock).filter(isId),
+    ];
     return Object.fromEntries(
-      Object.keys(live).map((key) => [
-        key,
-        key in mock ? alignShape(mock[key], live[key]) : placeholder(live[key]),
-      ]),
+      keys.map((key) => {
+        const shape = key in live ? live[key] : idShape;
+        if (!(key in mock)) {
+          return [key, placeholder(live[key])];
+        }
+        return [
+          key,
+          shape === undefined ? mock[key] : alignShape(mock[key], shape),
+        ];
+      }),
     );
   }
   return mock;
 }
 
-/**
- * Aligns a curated list to the shared fields of the live elements, so each
- * chain or token keeps its own values. A field on only one element is ignored
- * unless the response has a single element.
- *
- * @param mock - The current fixture value.
- * @param live - The live value.
- * @returns The aligned value.
- */
-function alignToApi(mock: Json, live: Json): Json {
-  if (
-    Array.isArray(mock) &&
-    Array.isArray(live) &&
-    mock.length > 0 &&
-    live.length > 0 &&
-    mock.every(isObject) &&
-    live.every(isObject)
-  ) {
-    // A field on only one list entry is that entry's data, not the shared
-    // shape. The token list occasionally omits that entry, which would add
-    // and remove the field on every run.
-    const seen = new Map<string, { count: number; value: Json }>();
-    for (const item of live) {
-      for (const [key, value] of Object.entries(item)) {
-        const current = seen.get(key);
-        if (current) {
-          current.count += 1;
-        } else {
-          seen.set(key, { count: 1, value });
-        }
-      }
-    }
-    const minimum = live.length === 1 ? 1 : 2;
-    const template: Record<string, Json> = {};
-    for (const [key, current] of seen) {
-      if (current.count >= minimum) {
-        template[key] = current.value;
-      }
-    }
-    return mock.map((item) => alignShape(item, template));
-  }
-  return alignShape(mock, live);
-}
-
-const canonical = (value: Json): string => {
-  if (Array.isArray(value)) {
-    return `[${value.map(canonical).join(',')}]`;
-  }
-  if (isObject(value)) {
-    return `{${Object.keys(value)
-      .sort()
-      .map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`)
-      .join(',')}}`;
-  }
-  return JSON.stringify(value);
-};
-
-const readFixture = (fileName: string): Json =>
-  JSON.parse(readFileSync(path.join(FIXTURE_DIR, fileName), 'utf8'));
-
-const writeFixture = (fileName: string, value: Json): void =>
-  writeFileSync(
-    path.join(FIXTURE_DIR, fileName),
-    `${JSON.stringify(value, null, 2)}\n`,
+const canonical = (value: Json): string =>
+  JSON.stringify(value, (_key, item) =>
+    isObject(item)
+      ? Object.fromEntries(
+          Object.entries(item).sort(([a], [b]) => a.localeCompare(b)),
+        )
+      : item,
   );
 
-async function fetchJson(url: string): Promise<Json> {
-  const response = await fetch(url, {
-    headers: { 'User-Agent': 'metamask-e2e-mock-sync' },
-    signal: AbortSignal.timeout(30_000),
-  });
+/**
+ * Aligns one catalog row's fixture with its live endpoint.
+ *
+ * @param row - Catalog cells: id, endpoint and sync mode.
+ * @param row.id - Catalog id.
+ * @param row.url - Live endpoint. `$NAME` is read from the environment.
+ * @param row.mode - `write:<file>` or `write:<file>#<key>`.
+ * @returns Whether the fixture changed.
+ */
+async function syncRow({
+  id,
+  url,
+  mode,
+}: {
+  id: string;
+  url: string;
+  mode: string;
+}): Promise<boolean> {
+  const missing = [...url.matchAll(/\$([A-Z_]+)/gu)]
+    .map(([, name]) => name)
+    .filter((name) => !process.env[name]);
+  if (missing.length > 0) {
+    console.log(`${id}: skipped, set ${missing.join(' and ')}`);
+    return false;
+  }
+  const response = await fetch(
+    url.replace(/\$([A-Z_]+)/gu, (_match, name) => process.env[name] ?? ''),
+    {
+      headers: { 'User-Agent': 'metamask-e2e-mock-sync' },
+      signal: AbortSignal.timeout(30_000),
+    },
+  );
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status} for ${url.split('?')[0]}`);
+    throw new Error(`HTTP ${response.status}`);
   }
-  return (await response.json()) as Json;
-}
+  const live = (await response.json()) as Json;
 
-function describeChange(before: Json, after: Json): string {
-  if (!isObject(before) || !isObject(after)) {
-    return `type ${kindOf(before)} -> ${kindOf(after)}`;
-  }
-  const beforeKeys = new Set(Object.keys(before));
-  const afterKeys = Object.keys(after);
-  const list = (keys: string[]) => keys.join(', ') || '-';
-  return [
-    `added ${list(afterKeys.filter((key) => !beforeKeys.has(key)))}`,
-    `removed ${list([...beforeKeys].filter((key) => !afterKeys.includes(key)))}`,
-    `retyped ${list(afterKeys.filter((key) => beforeKeys.has(key) && kindOf(before[key]) !== kindOf(after[key])))}`,
-  ].join('; ');
-}
-
-/**
- * Aligns one fixture property and writes the file when the shape differs.
- *
- * @param fileName - Fixture file in this directory.
- * @param property - Property to align.
- * @param live - The live response.
- * @param label - Log label.
- * @returns Whether the file changed.
- */
-function alignFixture(
-  fileName: string,
-  property: string,
-  live: Json,
-  label: string,
-): boolean {
-  const fixture = readFixture(fileName) as Record<string, Json>;
-  const current = fixture[property];
-  if (Array.isArray(current) && current.length === 0) {
-    console.log(`${label}: empty fixture kept so tests stay deterministic`);
-    return false;
-  }
-  const aligned = alignToApi(current, live);
+  const [file, key] = mode.slice('write:'.length).split('#');
+  const filePath = path.join(__dirname, file);
+  const fixture = JSON.parse(readFileSync(filePath, 'utf8'));
+  const current = key ? fixture[key] : fixture;
+  const aligned = alignShape(current, live);
   if (canonical(current) === canonical(aligned)) {
-    console.log(`${label}: no shape drift`);
+    console.log(`${id}: no shape drift`);
     return false;
   }
-  console.log(`${label}: ${describeChange(current, aligned)}`);
-  fixture[property] = aligned;
-  writeFixture(fileName, fixture);
-  return true;
-}
-
-async function syncSpotPrices(): Promise<boolean> {
-  const fixture = readFixture('price-api.fixture.json') as {
-    templates: Record<string, { sample: string; body: Json }>;
-  };
-  const samples = [
-    ...new Set(
-      Object.values(fixture.templates).map((template) => template.sample),
-    ),
-  ];
-  const url = new URL('https://price.api.cx.metamask.io/v3/spot-prices');
-  url.searchParams.set('assetIds', samples.join(','));
-  url.searchParams.set('vsCurrency', 'usd');
-  url.searchParams.set('includeMarketData', 'true');
-  const live = (await fetchJson(url.toString())) as Record<string, Json>;
-  const ethereum = live['eip155:1/slip44:60'];
-  if (!ethereum) {
-    throw new Error('Price API returned no Ethereum sample');
-  }
-
-  let changed = false;
-  for (const [name, template] of Object.entries(fixture.templates)) {
-    const aligned = alignShape(
-      template.body,
-      live[template.sample] ?? ethereum,
-    );
-    if (canonical(template.body) === canonical(aligned)) {
-      continue;
-    }
-    console.log(
-      `spot-prices ${name}: ${describeChange(template.body, aligned)}`,
-    );
-    template.body = aligned;
-    changed = true;
-  }
-  if (!changed) {
-    console.log('spot-prices: no shape drift');
-    return false;
-  }
-  writeFixture('price-api.fixture.json', fixture);
-  return true;
-}
-
-async function syncContentful(): Promise<boolean> {
-  const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID;
-  const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
-  if (!spaceId || !accessToken) {
-    console.log(
-      'contentful: skipped, set CONTENTFUL_ACCESS_SPACE_ID and CONTENTFUL_ACCESS_TOKEN',
-    );
-    return false;
-  }
-  const url = new URL(
-    `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries`,
+  console.log(`${id}: shape updated`);
+  writeFileSync(
+    filePath,
+    `${JSON.stringify(key ? { ...fixture, [key]: aligned } : aligned, null, 2)}\n`,
   );
-  url.searchParams.set('access_token', accessToken);
-  url.searchParams.set('content_type', 'promotionalBanner');
-  url.searchParams.set('fields.showInExtension', 'true');
-  return alignFixture(
-    'global-api-responses.fixture.json',
-    'contentful',
-    await fetchJson(url.toString()),
-    'contentful',
-  );
-}
-
-async function processEntry(entry: ApiMockEntry): Promise<boolean> {
-  const { id, mode, url, reason } = entry;
-  if (mode === 'spot') {
-    return syncSpotPrices();
-  }
-  if (mode === 'countries') {
-    const countriesUrl = `${url}?sdk=${RAMPS_SDK_VERSION}&context=extension`;
-    return alignFixture(
-      'global-api-responses.fixture.json',
-      'countries',
-      await fetchJson(countriesUrl),
-      id,
-    );
-  }
-  if (mode === 'contentful') {
-    return syncContentful();
-  }
-  if (mode === 'skip' || mode === 'derived') {
-    console.log(`${id}: ${mode === 'skip' ? 'skipped' : 'derived'}, ${reason}`);
-    return false;
-  }
-  const live = await fetchJson(url);
-  if (mode.startsWith('write:')) {
-    const spec = mode.slice('write:'.length);
-    const hash = spec.indexOf('#');
-    const fileName = hash === -1 ? spec : spec.slice(0, hash);
-    const property = hash === -1 ? undefined : spec.slice(hash + 1);
-    const fixture = readFixture(fileName);
-    const current = property === undefined ? fixture : (fixture as Record<string, Json>)[property];
-    const aligned = alignToApi(current, live);
-    if (canonical(current) === canonical(aligned)) {
-      console.log(`${id}: no shape drift`);
-      return false;
-    }
-    console.log(`${id}: ${describeChange(current, aligned)}`);
-    if (property === undefined) {
-      writeFixture(fileName, aligned);
-    } else {
-      (fixture as Record<string, Json>)[property] = aligned;
-      writeFixture(fileName, fixture);
-    }
-    return true;
-  }
-  throw new Error(`${id}: unknown sync mode ${mode}`);
+  return true;
 }
 
 async function main(): Promise<number> {
+  const rows = readFileSync(path.join(__dirname, 'api-mock-catalog.md'), 'utf8')
+    .split('\n')
+    .filter((line) => /^\| [a-z0-9]/u.test(line))
+    .map((line) =>
+      line
+        .slice(1, -1)
+        .split(/(?<!\\)\|/u)
+        .map((cell) => cell.trim().replace(/^`|`$/gu, '')),
+    )
+    .map(([id, , url, , mode]) => ({ id, url, mode }))
+    .filter(({ mode }) => mode.startsWith('write:'));
+
   let changed = false;
   let failed = false;
-  for (const entry of readCatalog()) {
+  for (const row of rows) {
     try {
-      changed = (await processEntry(entry)) || changed;
+      changed = (await syncRow(row)) || changed;
     } catch (error) {
       failed = true;
-      console.error(
-        `${entry.id}: ${error instanceof Error ? error.message : String(error)}`,
-      );
+      console.error(`${row.id}: ${String(error)}`);
     }
   }
-  // Written fixtures still open the weekly PR when a later entry fails.
   if (changed) {
     return 1;
   }
@@ -371,7 +216,7 @@ if (process.argv[1]?.endsWith('sync-api-mocks.ts')) {
       process.exitCode = exitCode;
     })
     .catch((error: unknown) => {
-      console.error(error instanceof Error ? error.message : String(error));
+      console.error(String(error));
       process.exitCode = 2;
     });
 }

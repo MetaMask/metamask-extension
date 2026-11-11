@@ -13,7 +13,7 @@ import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../../tests/btc/mocks/tokens-api';
-import type { DefiPositionsResponse } from '../../mock-response-data/api-response-types';
+import type { DefiPositionsResponse } from '../../mock-response-data/api-mocks';
 import { POWER_USER_PRICES } from './price-data';
 import { buildSseResponseBody } from './swap-mocks';
 import bridgeNetworkTokens from './bridge-network-tokens.json';
@@ -618,6 +618,16 @@ export async function mockBenchmarkEndpoints(
           statusCode: 200,
           json: { data: [] } satisfies DefiPositionsResponse,
         }),
+      ),
+  );
+
+  endpoints.push(
+    await server
+      .forGet(/on-ramp-content\.api\.cx\.metamask\.io/u)
+      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .always()
+      .thenCallback(
+        delayedResponse(100, { statusCode: 200, json: { networks: [] } }),
       ),
   );
 

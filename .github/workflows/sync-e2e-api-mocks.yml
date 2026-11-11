@@ -1,8 +1,7 @@
 name: Sync E2E API Mocks
 
-# Fetches the live APIs behind the typed E2E mocks and, when the response
-# shape has drifted, updates the fixtures and opens a PR. See
-# test/e2e/mock-response-data/README.md.
+# Aligns the E2E API mock fixtures with the live response shapes and opens a
+# PR when they drift. See test/e2e/mock-response-data/api-mock-catalog.md.
 
 on:
   schedule:
@@ -39,13 +38,9 @@ jobs:
           EXIT="${PIPESTATUS[0]}"
           set -e
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift. 1: fixtures written (the PR step runs; a later fetch
-          # error is in the log). 2: nothing was written and a fixture that
-          # should have been updated could not be fetched.
-          if [ -f sync-report.txt ]; then
-            cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
-          fi
-          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 1 ]
+          cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
+          # 0: no drift. 1: fixtures written. 2: nothing written, a fetch failed.
+          [ "${EXIT}" -le 1 ]
 
       - name: Open or update the review PR
         if: steps.sync.outputs.EXIT == '1'
@@ -57,21 +52,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "${BRANCH}"
-          yarn prettier --write test/e2e/mock-response-data/*.json
-          git add test/e2e/mock-response-data/*.json
+          mapfile -t CHANGED < <(git diff --name-only)
+          yarn prettier --write "${CHANGED[@]}"
+          git add "${CHANGED[@]}"
           git commit -m "test: align E2E API mocks with live response shapes"
           if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
-            # The checkout is a shallow clone of main, so the lease ref does
-            # not exist until this fetch.
+            # Shallow checkout: fetch the branch so the lease has a ref.
             git fetch origin "${BRANCH}:refs/remotes/origin/${BRANCH}"
             git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" origin "${BRANCH}"
           else
             git push -u origin "${BRANCH}"
           fi
           {
-            echo "Weekly shape sync of the typed E2E API mocks."
-            echo
-            echo "Values the tests rely on are unchanged. New fields use placeholders (0, empty string, false, null). See test/e2e/mock-response-data/README.md."
+            echo "Weekly shape sync of the E2E API mocks. Values the tests assert are pinned in code."
             echo
             echo '```'
             cat sync-report.txt

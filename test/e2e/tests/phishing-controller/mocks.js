@@ -1,4 +1,6 @@
-const stalelistFixture = require('../../mock-response-data/phishing-stalelist.fixture.json');
+const {
+  'phishing-stalelist': syncedStalelist,
+} = require('../../mock-response-data/api-fixtures.json');
 const {
   METAMASK_STALELIST_URL,
   METAMASK_HOTLIST_DIFF_URL,
@@ -17,9 +19,7 @@ const defaultC2DomainBlocklist = {
   lastFetchedAt: '2024-08-27T15:30:45Z',
 };
 const defaultStalelist = {
-  ...stalelistFixture.data,
-  // Tests assert this version and these empty lists. A shape sync can add
-  // fields, but it cannot change these.
+  ...syncedStalelist.data,
   version: 2,
   tolerance: 2,
   lastUpdated,
