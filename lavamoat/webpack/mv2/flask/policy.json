@@ -794,12 +794,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/perps-controller>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2746,6 +2740,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "Intl.NumberFormat": true,
         "URLSearchParams": true,
         "clearInterval": true,
         "clearTimeout": true,
@@ -2755,7 +2750,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/perps-controller>@metamask/abi-utils": true,
+        "@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/perps-controller>@metamask/controller-utils": true,
         "@metamask/superstruct": true,
@@ -7695,7 +7690,8 @@
     },
     "@metamask/analytics-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/assets-controllers>uuid": {
@@ -7711,7 +7707,8 @@
     },
     "@metamask/bridge-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/bridge-status-controller>uuid": {
@@ -7782,7 +7779,8 @@
     },
     "@metamask/network-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/notification-services-controller>uuid": {

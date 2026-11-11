@@ -227,7 +227,7 @@ describe('useMainNavItems', () => {
       });
     });
 
-    it('opens the FTUE splash without navigating on the first Money click', () => {
+    it('opens the FTUE splash and navigates to Money Home on the first Money click', () => {
       const { result, store } = renderUseMainNavItems(
         createState({ moneyFtueSeen: false }),
       );
@@ -240,7 +240,7 @@ describe('useMainNavItems', () => {
         pendingDeposit: null,
         acknowledged: false,
       });
-      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
       expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
         buttonType: MoneyButtonType.Text,
         buttonIntent: MoneyButtonIntent.GoToMoneyHome,

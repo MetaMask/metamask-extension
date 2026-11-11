@@ -877,6 +877,7 @@ export default class MetamaskController extends EventEmitter {
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
             this.preferencesController,
+            this.controllerMessenger,
           );
           this.shieldController.start();
         } else {
@@ -1710,7 +1711,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (
-        this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+        this.controllerMessenger.call(
+          'PerpsController:getWebSocketConnectionState',
+        ) === 'disconnected'
       ) {
         return;
       }
@@ -6026,6 +6029,9 @@ export default class MetamaskController extends EventEmitter {
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
       getUIState: this.getState.bind(this),
+      appBuildType: process.env.METAMASK_BUILD_TYPE,
+      appEnvironment: process.env.METAMASK_ENVIRONMENT,
+      appVersion: process.env.METAMASK_VERSION,
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       requestSafeReload: this.requestSafeReload.bind(this),

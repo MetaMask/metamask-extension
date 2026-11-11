@@ -1208,9 +1208,6 @@
   "addAUrl": {
     "message": "Add a URL"
   },
-  "addAWallet": {
-    "message": "Add a wallet"
-  },
   "addAccount": {
     "message": "Add account"
   },
@@ -2781,6 +2778,10 @@
     "message": "Check network connectivity, or $1.",
     "description": "$1 is a link to update the network."
   },
+  "chooseJsonFile": {
+    "message": "Choose JSON file",
+    "description": "Button to select a JSON file when importing an account"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -2801,6 +2802,10 @@
   },
   "click": {
     "message": "Click"
+  },
+  "clickHere": {
+    "message": "Click here",
+    "description": "Link to help when a JSON account import is not working"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
@@ -3084,7 +3089,7 @@
     "message": "Connect a hardware wallet"
   },
   "connectAHardwareWalletDescription": {
-    "message": "Using USB or a QR Code"
+    "message": "Using USB or QR code"
   },
   "connectAnyway": {
     "message": "Connect anyway"
@@ -4056,6 +4061,10 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
   },
+  "enterYourPrivateKey": {
+    "message": "Enter your private key",
+    "description": "Placeholder for the private key field when importing an account"
+  },
   "enter_verification_code": {
     "message": "Enter verification code"
   },
@@ -4253,9 +4262,9 @@
   "fieldRequired": {
     "message": "$1 is required"
   },
-  "fileImportFail": {
-    "message": "File import not working? Click here!",
-    "description": "Helps user import their account from a JSON file"
+  "fileImportNotWorking": {
+    "message": "File import not working?",
+    "description": "Prompt shown above the JSON import help link"
   },
   "fileUploaderDescription": {
     "message": "Click to upload or drag and drop"
@@ -4951,7 +4960,7 @@
     "message": "Import a wallet"
   },
   "importAWalletDescription": {
-    "message": "Using a 12, 18 or 24-word seed phrase"
+    "message": "Using a Secret Recovery Phrase"
   },
   "importAccountError": {
     "message": "Error importing account."
@@ -4972,7 +4981,7 @@
     "message": "We apologize, and we will make it faster in the future."
   },
   "importAccountMsg": {
-    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
+    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase."
   },
   "importAccountWithSocialMsg": {
     "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
@@ -4985,7 +4994,7 @@
     "message": "Import an account"
   },
   "importAnAccountDescription": {
-    "message": "Via a private key"
+    "message": "Using a private key"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -5164,7 +5173,7 @@
     "message": "Jazzicons"
   },
   "jsonFile": {
-    "message": "JSON File",
+    "message": "JSON file",
     "description": "format for importing an account"
   },
   "keyringAccountName": {
@@ -7607,10 +7616,6 @@
   "paste": {
     "message": "Paste"
   },
-  "pastePrivateKey": {
-    "message": "Enter your private key string here:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Pay with",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -9204,10 +9209,6 @@
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "Show/Hide the private key input",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "This private key is being shown",
     "description": "Explains that the private key input is being shown"
@@ -9709,6 +9710,10 @@
   "rename": {
     "message": "Rename",
     "description": "Multichain account menu item for triggering account rename action modal"
+  },
+  "renameAccount": {
+    "message": "Rename account",
+    "description": "Title of the modal for renaming a multichain account"
   },
   "replace": {
     "message": "replace"
@@ -11278,6 +11283,10 @@
   "showAdvancedDetails": {
     "message": "Show advanced details"
   },
+  "showAllNetworks": {
+    "message": "Show all ($1)",
+    "description": "$1 is the number of network pills, including all networks"
+  },
   "showDefaultAddress": {
     "message": "Show default address"
   },
@@ -11290,8 +11299,8 @@
   "showExtensionInFullSizeViewDescription": {
     "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
-  "showFewerNetworks": {
-    "message": "Show fewer networks"
+  "showFewer": {
+    "message": "Show fewer"
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
@@ -11311,10 +11320,6 @@
   },
   "showMore": {
     "message": "Show more"
-  },
-  "showMoreNetworks": {
-    "message": "Show $1 more networks",
-    "description": "$1 is the number of networks that are hidden"
   },
   "showNativeTokenAsMainBalance": {
     "message": "Show native token as main balance"
@@ -12931,9 +12936,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
-  },
-  "usedByClients": {
-    "message": "Used by a variety of different clients"
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart account is not supported"

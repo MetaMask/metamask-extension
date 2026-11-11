@@ -12,7 +12,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 

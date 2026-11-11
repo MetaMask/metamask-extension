@@ -1,3 +1,8 @@
+import {
+  DEFAULT_TDP_CHART_INDICATORS,
+  DEFAULT_TDP_CHART_INTERVAL,
+  DEFAULT_TDP_CHART_TYPE,
+} from '../../constants/preferences';
 import type { Preferences } from '../../types/preferences';
 
 export type PreferencesMetaMaskState = {
@@ -13,12 +18,11 @@ export function getPreferences({
   return (metamask.preferences ?? {}) as Preferences;
 }
 
-// TDP Advanced Chart preferences — persisted via PreferencesController.
-// Chart type: 1 = Candle, 2 = Line (matches TradingView + mobile conventions).
-const CHART_TYPE_LINE_DEFAULT = 2;
-const CHART_INTERVAL_DEFAULT = '15m';
-// Stable reference so `useSelector` consumers don't re-render on every call.
-const NO_INDICATORS: string[] = [];
+// TDP Advanced Chart preference defaults are shared with the
+// `PreferencesController` default state (see `shared/constants/preferences`) so
+// the persisted defaults and these selector fallbacks can never drift apart.
+// `DEFAULT_TDP_CHART_INDICATORS` is a module-level constant, so it also gives a
+// stable reference that keeps `useSelector` consumers from re-rendering.
 
 /**
  * Returns the user's preferred chart type for Token Details Page.
@@ -27,7 +31,7 @@ const NO_INDICATORS: string[] = [];
  * @returns Chart type: 1 = Candle, 2 = Line (default)
  */
 export function getTdpChartType(state: PreferencesMetaMaskState): number {
-  return state.metamask.preferences?.tdpChartType ?? CHART_TYPE_LINE_DEFAULT;
+  return state.metamask.preferences?.tdpChartType ?? DEFAULT_TDP_CHART_TYPE;
 }
 
 /**
@@ -37,7 +41,9 @@ export function getTdpChartType(state: PreferencesMetaMaskState): number {
  * @returns Candle interval string (e.g., '15m', '1h', '1d')
  */
 export function getTdpChartInterval(state: PreferencesMetaMaskState): string {
-  return state.metamask.preferences?.tdpChartInterval ?? CHART_INTERVAL_DEFAULT;
+  return (
+    state.metamask.preferences?.tdpChartInterval ?? DEFAULT_TDP_CHART_INTERVAL
+  );
 }
 
 /**
@@ -49,5 +55,8 @@ export function getTdpChartInterval(state: PreferencesMetaMaskState): string {
 export function getTdpChartIndicators(
   state: PreferencesMetaMaskState,
 ): string[] {
-  return state.metamask.preferences?.tdpChartIndicators ?? NO_INDICATORS;
+  return (
+    state.metamask.preferences?.tdpChartIndicators ??
+    DEFAULT_TDP_CHART_INDICATORS
+  );
 }
