@@ -190,14 +190,8 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.checkSecurityAlertsErrorIsDisplayed();
         await confirmation.clickFooterButton({ button: 'confirm' });
-        // After a failed snap send, the confirmation page redirect and the send
-        // flow's back navigation race, so the UI can land on home, activity,
-        // or an empty confirmation route. Reload home to get a known route.
-        // TODO: remove this workaround once the app-side race is fixed:
-        // https://github.com/MetaMask/metamask-extension/issues/47839
-        await homePage.navigateToHome();
-        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
+        await activityTab.checkPageIsLoaded();
         await activityTab.checkFailedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({
           action: 'Interaction failed',
