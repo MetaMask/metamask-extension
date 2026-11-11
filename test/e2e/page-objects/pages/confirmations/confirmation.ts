@@ -222,6 +222,7 @@ class Confirmation {
   }
 
   async clickInlineAlert() {
+    await this.driver.waitForElementToStopMoving(this.inlineAlertButton);
     await this.driver.clickElement(this.inlineAlertButton);
   }
 

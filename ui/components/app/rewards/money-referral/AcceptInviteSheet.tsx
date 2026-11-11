@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -13,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   Text,
+  TextAlign,
   TextColor,
   TextField,
   TextFieldSize,
@@ -54,8 +55,8 @@ type Translate = (key: string) => string;
 /**
  * Invite copy, resolved per key.
  *
- * The server owns this screen's words. A missing key means referral me never
- * arrived. Title and body stay empty, and the body is omitted. The buttons
+ * The server owns this screen's words. A missing title falls back to the
+ * localized referral-code label, and a missing body is omitted. The buttons
  * reuse strings the app already has. The code label uses
  * `rewardsMoneyReferralCodeLabel`, the same words as mobile's referral-code
  * string, which extension did not already have.
@@ -69,7 +70,7 @@ function inviteCopy(
   t: Translate,
 ) {
   return {
-    title: localizedText?.inviteTitle ?? '',
+    title: localizedText?.inviteTitle || t('rewardsMoneyReferralCodeLabel'),
     body: localizedText?.inviteMessageBody ?? '',
     codeLabel:
       localizedText?.inviteReferralCode ?? t('rewardsMoneyReferralCodeLabel'),
@@ -95,6 +96,7 @@ const AcceptInviteSheetContent = ({
   initialCode,
   onClose,
 }: AcceptInviteSheetProps) => {
+  const titleId = useId();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { referralMe, isSettled, fetchReferralMe } = useReferralMe();
@@ -299,12 +301,22 @@ const AcceptInviteSheetContent = ({
     isValid && acceptAllowedForGeo && !isAccepting && !isAcceptCoolingDown;
 
   return (
-    <ReferralDialog onClose={handleDismiss} data-testid="money-referral-invite">
+    <ReferralDialog
+      onClose={handleDismiss}
+      data-testid="money-referral-invite"
+      aria-labelledby={titleId}
+    >
       <ModalHeader
         onClose={handleDismiss}
         closeButtonProps={{ ariaLabel: t('close') }}
       >
-        {copy.title}
+        <Text
+          asChild
+          variant={TextVariant.HeadingSm}
+          textAlign={TextAlign.Center}
+        >
+          <h2 id={titleId}>{copy.title}</h2>
+        </Text>
       </ModalHeader>
       <ModalBody>
         <Box flexDirection={BoxFlexDirection.Column} gap={4}>

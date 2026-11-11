@@ -12,6 +12,29 @@
   }
 }
 
+.tab-end-slot:empty {
+  display: none;
+}
+
+[data-wide-layout] {
+  .tab-end-slot:not(:empty) {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin-inline-end: 8px;
+  }
+
+  .tab-controls .asset-list-control-bar {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
 .tablist-fade {
   container-name: tablist;
   container-type: scroll-state;

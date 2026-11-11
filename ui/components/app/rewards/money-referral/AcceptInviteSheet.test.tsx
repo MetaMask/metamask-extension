@@ -212,7 +212,11 @@ describe('AcceptInviteSheet', () => {
   });
 
   it('prefills the route code and lets the user edit it', () => {
-    renderSheet({ initialCode: 'ab-12!' });
+    const view = renderSheet({ initialCode: 'ab-12!' });
+
+    expect(
+      view.getByRole('dialog', { name: copy.inviteTitle }),
+    ).toBeInTheDocument();
 
     const input = document.querySelector(
       '#money-referral-code',
@@ -255,7 +259,14 @@ describe('AcceptInviteSheet', () => {
     expect(onClose).not.toHaveBeenCalled();
     expect(view.getByTestId('money-referral-invite')).toBeInTheDocument();
     expect(
-      view.getByText(messages.rewardsMoneyReferralCodeLabel.message),
+      view.getByRole('textbox', {
+        name: messages.rewardsMoneyReferralCodeLabel.message,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      view.getByRole('dialog', {
+        name: messages.rewardsMoneyReferralCodeLabel.message,
+      }),
     ).toBeInTheDocument();
     expect(
       view.getByRole('button', { name: messages.continue.message }),

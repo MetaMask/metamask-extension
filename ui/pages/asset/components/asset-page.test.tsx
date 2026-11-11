@@ -212,6 +212,16 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   })),
 }));
 
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    goToBuy: mockGoToBuy,
+  })),
+}));
+
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
 const DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP = {
@@ -596,7 +606,7 @@ describe('AssetPage', () => {
     expect(buyButton).not.toBeDisabled();
 
     fireEvent.click(buyButton as HTMLElement);
-    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
+    expect(mockGoToBuy).toHaveBeenCalledTimes(1);
   });
 
   it('hides the Send button when token balance is zero', () => {

@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
 import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 import { resetCoalesceCacheForTests } from './coalesceBackgroundRequest';
@@ -202,18 +202,133 @@ describe('usePerpsTransactionHistory', () => {
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetOrderFills',
-      [{ accountId: 'eip155:1:0xabc', aggregateByTime: false }],
+      [
+        { accountId: 'eip155:1:0xabc', aggregateByTime: false },
+        { forceRefresh: true },
+      ],
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetOrders',
-      [{ accountId: 'eip155:1:0xabc' }],
+      [{ accountId: 'eip155:1:0xabc' }, { forceRefresh: true }],
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetFunding',
-      [{ accountId: 'eip155:1:0xabc', startTime: 1000, endTime: 2000 }],
+      [
+        { accountId: 'eip155:1:0xabc', startTime: 1000, endTime: 2000 },
+        { forceRefresh: true },
+      ],
     );
+  });
+
+  it('asks the controller to bypass its REST cache when forceFreshOnMount is set', async () => {
+    renderHook(() => usePerpsTransactionHistory({ forceFreshOnMount: true }));
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrderFills',
+        [
+          { accountId: undefined, aggregateByTime: false },
+          { forceRefresh: true },
+        ],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrders',
+        [{ accountId: undefined }, { forceRefresh: true }],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetFunding',
+        [
+          {
+            accountId: undefined,
+            startTime: undefined,
+            endTime: undefined,
+          },
+          { forceRefresh: true },
+        ],
+      );
+    });
+  });
+
+  it('sends forceRefresh while a passive read for the same key is still in flight', async () => {
+    let releasePassive: (() => void) | undefined;
+    const passiveGate = new Promise<void>((resolve) => {
+      releasePassive = resolve;
+    });
+
+    mockSubmitRequestToBackground.mockImplementation(
+      (method: string, args: unknown[]) => {
+        const resultByMethod: Record<string, unknown> = {
+          perpsGetOrderFills: mockFills,
+          perpsGetOrders: mockOrders,
+          perpsGetFunding: mockFunding,
+        };
+        const result = resultByMethod[method] ?? [];
+        const forced = Array.isArray(args) && args.length > 1;
+        return forced
+          ? Promise.resolve(result)
+          : passiveGate.then(() => result);
+      },
+    );
+
+    const passive = renderHook(() => usePerpsTransactionHistory());
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrderFills',
+        [{ accountId: undefined, aggregateByTime: false }],
+      );
+    });
+
+    const forced = renderHook(() =>
+      usePerpsTransactionHistory({ forceFreshOnMount: true }),
+    );
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrderFills',
+        [
+          { accountId: undefined, aggregateByTime: false },
+          { forceRefresh: true },
+        ],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrders',
+        [{ accountId: undefined }, { forceRefresh: true }],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetFunding',
+        [
+          {
+            accountId: undefined,
+            startTime: undefined,
+            endTime: undefined,
+          },
+          { forceRefresh: true },
+        ],
+      );
+    });
+
+    await act(async () => {
+      releasePassive?.();
+    });
+
+    await waitFor(() => {
+      expect(passive.result.current.isLoading).toBe(false);
+      expect(forced.result.current.isLoading).toBe(false);
+    });
+  });
+
+  it('keeps the controller REST cache for passive fetches', async () => {
+    renderHook(() => usePerpsTransactionHistory());
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetOrderFills',
+        [{ accountId: undefined, aggregateByTime: false }],
+      );
+    });
   });
 
   it('enriches fills with detailedOrderType from orders', async () => {
