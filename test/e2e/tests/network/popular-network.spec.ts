@@ -67,7 +67,7 @@ const MOCK_CHAINLIST_RESPONSE = [
 ];
 
 describe('Popular Networks', function (this: Suite) {
-  it('adds a popular network and includes it in the network filter', async function () {
+  it('add custom network without switching the network filter', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -76,6 +76,7 @@ describe('Popular Networks', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -87,10 +88,9 @@ describe('Popular Networks', function (this: Suite) {
         await networksPage.checkAddNetworkMessageIsDisplayed('Avalanche');
         await networksPage.clickCloseButton();
 
-        // The added network stays enabled next to Localhost, so the filter
-        // expands from a single network to all default networks.
+        // verify the additional network was added without switching the home filter
         await new Homepage(driver).checkPageIsLoaded();
-        await networkFilter.waitUntilLabelIs('All default networks');
+        await networkFilter.waitUntilLabelIs(originalFilterLabel);
       },
     );
   });
@@ -111,6 +111,7 @@ describe('Popular Networks', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
         await networksPage.disableNetwork('eip155:42161');
         await networksPage.clickCloseButton();
+        await headerNavbar.clickDrawerBackButton();
 
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();

@@ -25,6 +25,7 @@ import {
 import { NetworkEnablementControllerInitMessenger } from '../messengers/assets';
 import { MessengerClientInitFunction } from '../types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { userInitiatedNetworkAdditions } from '../../services/legacy-background-api-service';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
@@ -166,6 +167,13 @@ export const NetworkEnablementControllerInit: MessengerClientInitFunction<
         );
 
         if (!autoEnabledNetworkChainIds.includes(toEvmCaipChainId(chainId))) {
+          return;
+        }
+
+        // Skip restore for user-initiated additions (handled by
+        // LegacyBackgroundApiService). Only restore for background registry
+        // auto-additions.
+        if (userInitiatedNetworkAdditions.has(chainId)) {
           return;
         }
 

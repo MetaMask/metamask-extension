@@ -423,6 +423,14 @@ import type {
 } from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
+/**
+ * Tracks chain IDs for networks being added by user action (via
+ * LegacyBackgroundApiService.addNetwork). The network-enablement-controller-init
+ * subscriber uses this to skip its restore logic for user-initiated additions,
+ * letting this service manage the enabled state deterministically.
+ */
+export const userInitiatedNetworkAdditions = new Set<Hex>();
+
 const serviceName = 'LegacyBackgroundApiService';
 
 /**
@@ -1356,40 +1364,47 @@ export class LegacyBackgroundApiService {
       ]),
     ) as NetworkEnablementControllerState['enabledNetworkMap'];
 
-    const addedNetwork = this.#messenger.call(
-      'NetworkController:addNetwork',
-      networkConfiguration,
-    );
-    await this.lookupSelectedNetworks();
+    // Mark this as a user-initiated addition so the network-enablement-controller-init
+    // subscriber skips its restore logic.
+    userInitiatedNetworkAdditions.add(networkConfiguration.chainId);
 
-    // The NetworkEnablementController enables the newly added network
-    // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
-    // updating state). That can also disable every other network. Wait for the
-    // enablement to land, then put the previous selection back and keep the
-    // network the user just added enabled, so its balance is fetched without
-    // switching the active network.
-    //
-    // The restore runs here in the linear flow rather than from a
-    // `NetworkEnablementController:stateChange` subscriber on purpose: calling
-    // the `restoreEnabledNetworkMap` action synchronously from inside the
-    // subscriber re-enters the messenger's publish and the restore update is
-    // dropped. Awaiting first defers the restore to a microtask outside that
-    // publish. The extra timer lets the registry auto-enable undo in
-    // network-enablement init run first; this restore is the one that sticks.
-    await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    this.#messenger.call(
-      'NetworkEnablementController:restoreEnabledNetworkMap',
-      {
-        ...previousEnabledNetworkMap,
-        [KnownCaipNamespace.Eip155]: {
-          ...previousEnabledNetworkMap[KnownCaipNamespace.Eip155],
-          [networkConfiguration.chainId]: true,
+    try {
+      const addedNetwork = this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration,
+      );
+      await this.lookupSelectedNetworks();
+
+      // The NetworkEnablementController enables the newly added network
+      // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
+      // updating state). That can also disable every other network. Wait for the
+      // enablement to land, then put the previous selection back and keep the
+      // network the user just added enabled, so its balance is fetched without
+      // switching the active network.
+      //
+      // The restore runs here in the linear flow rather than from a
+      // `NetworkEnablementController:stateChange` subscriber on purpose: calling
+      // the `restoreEnabledNetworkMap` action synchronously from inside the
+      // subscriber re-enters the messenger's publish and the restore update is
+      // dropped. Awaiting first defers the restore to a microtask outside that
+      // publish.
+      await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
+      this.#messenger.call(
+        'NetworkEnablementController:restoreEnabledNetworkMap',
+        {
+          ...previousEnabledNetworkMap,
+          [KnownCaipNamespace.Eip155]: {
+            ...previousEnabledNetworkMap[KnownCaipNamespace.Eip155],
+            [networkConfiguration.chainId]: true,
+          },
         },
-      },
-    );
+      );
 
-    return addedNetwork;
+      return addedNetwork;
+    } finally {
+      // Clean up the marker after the restore is complete
+      userInitiatedNetworkAdditions.delete(networkConfiguration.chainId);
+    }
   }
 
   /**

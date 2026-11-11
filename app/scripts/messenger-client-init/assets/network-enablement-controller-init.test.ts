@@ -524,4 +524,72 @@ describe('NetworkEnablementControllerInit', () => {
 
     expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
   });
+
+  it('skips restore when a user-initiated addition is marked', async () => {
+    process.env.IN_TEST = 'true';
+    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const request = getInitRequestMock(messenger);
+    messenger.registerActionHandler(
+      'ConfigRegistryController:getState' as never,
+      () =>
+        ({
+          configs: {
+            networks: {
+              'eip155:5042': {
+                chainId: 'eip155:5042',
+                config: {
+                  isActive: true,
+                  isAutoEnabled: true,
+                  isDeprecated: false,
+                },
+              },
+            },
+          },
+        }) as never,
+    );
+
+    // Import and mock the Set
+    const { userInitiatedNetworkAdditions } = jest.requireActual(
+      '../../services/legacy-background-api-service',
+    );
+
+    const { messengerClient } = NetworkEnablementControllerInit(request);
+    messengerClient.state = {
+      enabledNetworkMap: {
+        [KnownCaipNamespace.Eip155]: {
+          [CHAIN_IDS.LOCALHOST]: true,
+          [CHAIN_IDS.ARC]: false,
+        },
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    // Mark this as a user-initiated addition
+    userInitiatedNetworkAdditions.add(CHAIN_IDS.ARC);
+
+    try {
+      // @ts-expect-error: Partial mock.
+      messenger.publish('NetworkController:networkAdded', {
+        chainId: CHAIN_IDS.ARC,
+      } as never);
+
+      messengerClient.state.enabledNetworkMap[KnownCaipNamespace.Eip155][
+        CHAIN_IDS.ARC
+      ] = true;
+      request.controllerMessenger.publish(
+        'NetworkEnablementController:stateChange',
+        {
+          enabledNetworkMap: messengerClient.state.enabledNetworkMap,
+        } as never,
+        [] as never,
+      );
+
+      await new Promise<void>((resolve) => queueMicrotask(resolve));
+
+      // Should NOT restore because this is a user-initiated addition
+      expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
+    } finally {
+      userInitiatedNetworkAdditions.delete(CHAIN_IDS.ARC);
+    }
+  });
 });

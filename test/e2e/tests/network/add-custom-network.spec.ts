@@ -38,6 +38,7 @@ describe('Add Custom network', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -71,11 +72,10 @@ describe('Add Custom network', function (this: Suite) {
         await networksPage.checkAddNetworkMessageIsDisplayed('Gnosis');
         await networksPage.clickCloseButton();
 
-        // The added network stays enabled next to Localhost, so the filter
-        // expands from a single network to all default networks.
+        // Validate the network was added
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await networkFilter.waitUntilLabelIs('All default networks');
+        await networkFilter.waitUntilLabelIs(originalFilterLabel);
       },
     );
   });
