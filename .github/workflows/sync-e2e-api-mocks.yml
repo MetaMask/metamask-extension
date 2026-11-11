@@ -88,21 +88,27 @@ jobs:
           fi
 
       - name: Commit fixtures to this pull request
+        id: pr-commit
         if: >-
           ${{
             github.event_name == 'pull_request' &&
             steps.sync.outputs.EXIT == '1'
           }}
         shell: bash
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -u
           git commit -m "test: align E2E API mocks with live response shapes"
           # Fast-forward only, so a commit pushed while this ran is not overwritten.
-          git push origin "HEAD:refs/heads/${{ github.head_ref }}"
+          git push origin "HEAD:refs/heads/${HEAD_REF}"
+          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+          echo "number=${{ github.event.pull_request.number }}" >> "${GITHUB_OUTPUT}"
 
       - name: Open or update the review PR
+        id: weekly
         if: >-
           ${{
             github.event_name != 'pull_request' &&
@@ -136,6 +142,32 @@ jobs:
           EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number')"
           if [ -n "${EXISTING}" ]; then
             gh pr edit "${EXISTING}" --body-file pr-body.md
+            NUMBER="${EXISTING}"
           else
-            gh pr create --base main --head "${BRANCH}" --title "test: align E2E API mocks with live response shapes" --body-file pr-body.md
+            URL="$(gh pr create --base main --head "${BRANCH}" --title "test: align E2E API mocks with live response shapes" --body-file pr-body.md)"
+            NUMBER="$(gh pr view "${URL}" --json number --jq .number)"
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+          echo "number=${NUMBER}" >> "${GITHUB_OUTPUT}"
+
+      - name: Comment that the mocks were updated
+        if: steps.pr-commit.outputs.sha != '' || steps.weekly.outputs.sha != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr-commit.outputs.number || steps.weekly.outputs.number }}
+          COMMIT_SHA: ${{ steps.pr-commit.outputs.sha || steps.weekly.outputs.sha }}
+        run: |
+          MARKER="<!-- e2e-api-mock-sync -->"
+          jq -n \
+            --rawfile report sync-report.txt \
+            --arg marker "${MARKER}" \
+            --arg url "https://github.com/${GITHUB_REPOSITORY}/commit/${COMMIT_SHA}" \
+            '{body: ($marker + "\nUpdated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.\n\nCommit: " + $url + "\n\n```\n" + $report + "```\n")}' \
+            > comment.json
+          COMMENT_ID="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" | head -n 1)"
+          if [ -n "${COMMENT_ID}" ]; then
+            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" --input comment.json
+          else
+            gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --input comment.json
           fi
