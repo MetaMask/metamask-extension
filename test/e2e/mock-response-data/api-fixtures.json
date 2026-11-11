@@ -431,6 +431,12 @@
     }
   },
   "contentful": {
+    "sys": {
+      "type": ""
+    },
+    "total": 0,
+    "skip": 0,
+    "limit": 0,
     "items": [],
     "includes": {
       "Asset": []
