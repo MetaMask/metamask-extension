@@ -104,11 +104,11 @@ export function useOnboardingCompletion() {
         dispatch(removeDeferredDeepLink());
       }
 
-      if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+      if (deferredDeepLinkResult && deferredDeepLinkToUse?.originalUrl) {
         await trackEvent(
           createEvent({
             signature: deferredDeepLinkResult.signature,
-            url: new URL(deferredDeepLinkToUse.referringLink),
+            url: new URL(deferredDeepLinkToUse.originalUrl),
           }),
         );
       }

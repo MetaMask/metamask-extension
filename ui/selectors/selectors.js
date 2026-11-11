@@ -4113,13 +4113,13 @@ export function getDeferredDeepLink(state) {
 export const getDeferredDeepLinkParameters = createResultEqualSelector(
   getDeferredDeepLink,
   (deferredDeepLink) => {
-    if (!deferredDeepLink?.referringLink) {
+    if (!deferredDeepLink?.originalUrl) {
       return null;
     }
 
     const utmProperties = {};
     try {
-      const url = new URL(deferredDeepLink.referringLink);
+      const url = new URL(deferredDeepLink.originalUrl);
 
       for (const utmParam of UTM_PARAMETERS) {
         const value = url.searchParams.get(utmParam);
