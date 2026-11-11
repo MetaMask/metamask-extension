@@ -159,6 +159,37 @@ export const useOHLCVChart = ({
   const [error, setError] = useState<string | null>(null);
   const [resolvedCurrency, setResolvedCurrency] = useState(requestedCurrency);
 
+  // Reset synchronously when the *data series* (asset/interval/currency)
+  // changes, before the fetch effect runs. Without this the previous series'
+  // bars linger in `ohlcvData` and `isLoading` stays false for the first render
+  // after the change, so callers either paint stale candles under the new key
+  // or flash a "no data" placeholder before loading begins. `enabled` is
+  // deliberately excluded: toggling to line mode (enabled=false) and back must
+  // keep the loaded candles so the still-mounted iframe round-trips instantly
+  // instead of blanking into a reload. Adjusting state from a changed input
+  // during render is the React-recommended pattern
+  // (https://react.dev/reference/react/useState#storing-information-from-previous-renders).
+  const seriesKey = `${assetId ?? ''}|${interval}|${requestedCurrency}`;
+  const [renderedSeriesKey, setRenderedSeriesKey] = useState(seriesKey);
+  if (renderedSeriesKey !== seriesKey) {
+    setRenderedSeriesKey(seriesKey);
+    setOhlcvData([]);
+    setError(null);
+    setIsLoading(active);
+  }
+
+  // Entering candle mode with no bars yet (a cold line→candle toggle) must show
+  // loading rather than an empty "no data" frame while the first fetch runs.
+  // This never clears existing bars, so a warm toggle back keeps the last
+  // candles on screen and only refreshes them in the background.
+  const [renderedEnabled, setRenderedEnabled] = useState(enabled);
+  if (renderedEnabled !== enabled) {
+    setRenderedEnabled(enabled);
+    if (active && ohlcvData.length === 0) {
+      setIsLoading(true);
+    }
+  }
+
   useEffect(() => {
     if (!assetId || !enabled) {
       return undefined;
