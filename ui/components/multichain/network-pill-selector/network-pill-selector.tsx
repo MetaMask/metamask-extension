@@ -1,5 +1,11 @@
-import React, { useLayoutEffect, useMemo, useRef, useState, type Ref } from "react";
-import classnames from "clsx";
+import React, {
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Ref,
+} from 'react';
+import classnames from 'clsx';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -13,24 +19,24 @@ import {
   Text,
   TextColor,
   TextVariant,
-} from "@metamask/design-system-react";
-import { useSelector } from "react-redux";
-import { getNetworkIcon } from "../../../../shared/lib/network.utils";
-import { getPreferences } from "../../../../shared/lib/selectors/preferences";
-import { getChainIdToNetworkImageUrlMap } from "../../../selectors/config-registry/config-registry";
-import { useFormatters } from "../../../hooks/useFormatters";
-import { useI18nContext } from "../../../hooks/useI18nContext";
+} from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import { getNetworkIcon } from '../../../../shared/lib/network.utils';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectableChainId,
   useHomeNetworkFilter,
-} from "../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter";
-import { getHiddenPillCount } from "./get-hidden-pill-count";
-import { useNetworkPillBalances } from "./use-network-pill-balances";
+} from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
+import { getHiddenPillCount } from './get-hidden-pill-count';
+import { useNetworkPillBalances } from './use-network-pill-balances';
 
 const PILL_CLASS_NAME =
-  "flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 px-4 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default";
+  'flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 px-4 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default';
 
-const PILL_UNSELECTED_CLASS_NAME = "bg-muted text-default hover:bg-muted-hover";
+const PILL_UNSELECTED_CLASS_NAME = 'bg-muted text-default hover:bg-muted-hover';
 
 type NetworkPillProps = {
   name: string;
@@ -64,15 +70,17 @@ const NetworkPill = ({
     type="button"
     className={classnames(
       PILL_CLASS_NAME,
-      isSelected ? "bg-icon-default text-background-default" : PILL_UNSELECTED_CLASS_NAME,
-      isHidden && "order-1",
+      isSelected
+        ? 'bg-icon-default text-background-default'
+        : PILL_UNSELECTED_CLASS_NAME,
+      isHidden && 'order-1',
     )}
     aria-pressed={isSelected}
     onClick={onClick}
     data-network-pill=""
     data-testid={testId}
     // React 18 has no `inert` prop; the empty attribute is what enables it
-    {...(isHidden ? ({ inert: "" } as object) : {})}
+    {...(isHidden ? ({ inert: '' } as object) : {})}
   >
     {icon}
     <Text
@@ -82,7 +90,11 @@ const NetworkPill = ({
       {name}
     </Text>
     {balance !== undefined && (
-      <SensitiveText variant={TextVariant.BodySm} color={TextColor.Inherit} isHidden={privacyMode}>
+      <SensitiveText
+        variant={TextVariant.BodySm}
+        color={TextColor.Inherit}
+        isHidden={privacyMode}
+      >
         {balance}
       </SensitiveText>
     )}
@@ -139,7 +151,8 @@ export const NetworkPillSelector = () => {
     () => defaultNetworks.filter((network) => !isNetworkDisabled(network)),
     [defaultNetworks, isNetworkDisabled],
   );
-  const { balanceByChainId, total, currency, isLoading } = useNetworkPillBalances(networks);
+  const { balanceByChainId, total, currency, isLoading } =
+    useNetworkPillBalances(networks);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [hiddenCount, setHiddenCount] = useState(0);
@@ -156,7 +169,7 @@ export const NetworkPillSelector = () => {
       const gap = Number.parseFloat(getComputedStyle(pills).columnGap);
       const next = getHiddenPillCount(
         Array.from(
-          pills.querySelectorAll<HTMLElement>("[data-network-pill]"),
+          pills.querySelectorAll<HTMLElement>('[data-network-pill]'),
           (pill) => pill.offsetWidth,
         ),
         pills.clientWidth,
@@ -166,7 +179,7 @@ export const NetworkPillSelector = () => {
       setHiddenCount((current) => (current === next ? current : next));
     };
     measure();
-    if (typeof ResizeObserver === "undefined") {
+    if (typeof ResizeObserver === 'undefined') {
       return undefined;
     }
     const observer = new ResizeObserver(measure);
@@ -176,7 +189,7 @@ export const NetworkPillSelector = () => {
     // row, and a stale count would inert a visible pill or leave a clipped one
     // in the tab order.
     pills
-      .querySelectorAll<HTMLElement>("[data-network-pill]")
+      .querySelectorAll<HTMLElement>('[data-network-pill]')
       .forEach((pill) => observer.observe(pill));
     if (toggleRef.current) {
       observer.observe(toggleRef.current);
@@ -188,7 +201,8 @@ export const NetworkPillSelector = () => {
   // clipped, so make them inert to keep them out of the tab order and out of
   // what screen readers read.
   const pillCount = networks.length + 1;
-  const isPillHidden = (index: number) => !isExpanded && index >= pillCount - hiddenCount;
+  const isPillHidden = (index: number) =>
+    !isExpanded && index >= pillCount - hiddenCount;
 
   const format = useMemo(
     () => (amount?: number) =>
@@ -198,7 +212,10 @@ export const NetworkPillSelector = () => {
 
   if (isLoading) {
     return (
-      <div className="flex gap-2 px-4 py-2" data-testid="network-pill-selector-skeleton">
+      <div
+        className="flex gap-2 px-4 py-2"
+        data-testid="network-pill-selector-skeleton"
+      >
         {[0, 1, 2].map((key) => (
           <Skeleton key={key} className="h-10 w-28 rounded-full" />
         ))}
@@ -211,12 +228,14 @@ export const NetworkPillSelector = () => {
       <div
         ref={pillsRef}
         className={classnames(
-          "flex min-w-0 flex-wrap gap-2",
-          !isExpanded && "max-h-10 overflow-hidden",
+          'flex min-w-0 flex-wrap gap-2',
+          !isExpanded && 'max-h-10 overflow-hidden',
         )}
       >
         <NetworkPill
-          name={hasOnlyDefaultNetworks ? t("allNetworks") : t("allDefaultNetworks")}
+          name={
+            hasOnlyDefaultNetworks ? t('allNetworks') : t('allDefaultNetworks')
+          }
           balance={format(total)}
           isSelected={isAllDefaultSelected}
           privacyMode={privacyMode}
@@ -224,7 +243,11 @@ export const NetworkPillSelector = () => {
             <Icon
               name={IconName.Global}
               size={IconSize.Md}
-              color={isAllDefaultSelected ? IconColor.IconInverse : IconColor.IconAlternative}
+              color={
+                isAllDefaultSelected
+                  ? IconColor.IconInverse
+                  : IconColor.IconAlternative
+              }
             />
           }
           isHidden={isPillHidden(0)}
@@ -247,13 +270,15 @@ export const NetworkPillSelector = () => {
                 className="rounded-full"
               />
             }
-            onClick={() => handleSelectNetwork(network.chainId, "Network Pill")}
+            onClick={() => handleSelectNetwork(network.chainId, 'Network Pill')}
             testId={`network-pill-${getSelectableChainId(network)}`}
           />
         ))}
         {hiddenCount > 0 && (
           <ShowNetworksToggle
-            label={isExpanded ? t("showFewer") : t("showAllNetworks", [pillCount])}
+            label={
+              isExpanded ? t('showFewer') : t('showAllNetworks', [pillCount])
+            }
             isExpanded={isExpanded}
             onToggle={() => setIsExpanded((expanded) => !expanded)}
             buttonRef={toggleRef}
