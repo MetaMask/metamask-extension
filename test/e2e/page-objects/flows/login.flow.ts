@@ -2,6 +2,7 @@ import LoginPage from '../pages/onboarding/login-page';
 import HomePage from '../pages/home/homepage';
 import HeaderNavbar from '../pages/home/header-navbar';
 import { WALLET_PASSWORD } from '../../constants';
+import { getCleanAppState } from '../../helpers';
 import { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { reloadExtension } from '../../tests/state-persistence/helpers';
@@ -22,6 +23,22 @@ export const reloadAndUnlock = async (driver: Driver): Promise<void> => {
 };
 
 /**
+ * Waits until AuthenticationController reports the user is signed in.
+ *
+ * @param driver - The webdriver instance.
+ */
+const waitForSignIn = async (driver: Driver): Promise<void> => {
+  console.log('Waiting for authentication sign-in to complete');
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return uiState?.metamask?.isSignedIn === true;
+    },
+    { interval: 500, timeout: 10000 },
+  );
+};
+
+/**
  * Unlocks the wallet and lands the user on the homepage.
  * By default, validates the displayed balance. Use {@link localNode} or {@link expectedBalance}
  * for specific checks, or set {@link validateBalance} to false to skip validation entirely.
@@ -33,6 +50,7 @@ export const reloadAndUnlock = async (driver: Driver): Promise<void> => {
  * @param options.password - The password used to unlock the wallet.
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
  * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to false.
+ * @param options.waitForSignIn - Whether to wait for the profile sign-in that follows unlock. Needed before triggering events that must include the profile ID. Defaults to false.
  */
 export const login = async (
   driver: Driver,
@@ -42,6 +60,7 @@ export const login = async (
     password?: string;
     validateBalance?: boolean;
     ignorePasskeyUnlock?: boolean;
+    waitForSignIn?: boolean;
   },
 ) => {
   console.log('Navigate to unlock page and try to login with password');
@@ -63,6 +82,10 @@ export const login = async (
   } else if (options?.validateBalance !== false) {
     // defaults to 25 ETH
     await homePage.checkExpectedBalanceIsDisplayed();
+  }
+
+  if (options?.waitForSignIn) {
+    await waitForSignIn(driver);
   }
 };
 

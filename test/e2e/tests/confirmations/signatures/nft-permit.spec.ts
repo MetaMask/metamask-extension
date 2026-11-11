@@ -34,7 +34,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         const confirmation = new PermitConfirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerDeploy();
         await confirmation.clickScrollToBottomButton();
         await confirmation.clickFooterButton({
@@ -91,7 +91,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         const confirmation = new PermitConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerDeploy();
         await confirmation.clickScrollToBottomButton();
         await confirmation.clickFooterButton({
