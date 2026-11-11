@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   ButtonBase,
@@ -57,6 +57,8 @@ const IndicatorBar = ({
   onMAToggle,
 }: IndicatorBarProps) => {
   const [showMADropdown, setShowMADropdown] = useState(false);
+  const maTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const maMenuRef = useRef<HTMLDivElement | null>(null);
 
   const selectedMAs = [...activeIndicators].filter(isMovingAverage);
   const hasSelectedMAs = selectedMAs.length > 0;
@@ -74,7 +76,20 @@ const IndicatorBar = ({
     if (!showMADropdown) {
       return undefined;
     }
-    const handleClickOutside = () => setShowMADropdown(false);
+    // Only close on clicks that land outside both the trigger and the menu.
+    // A bare close-on-any-click would fire when selecting an MA option (the
+    // click bubbles to the document), forcing the user to reopen the menu for
+    // every moving average they want to toggle.
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        maTriggerRef.current?.contains(target) ||
+        maMenuRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setShowMADropdown(false);
+    };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setShowMADropdown(false);
@@ -119,8 +134,9 @@ const IndicatorBar = ({
       >
         {/* MA dropdown trigger */}
         <ButtonBase
+          ref={maTriggerRef}
           type="button"
-          aria-haspopup="menu"
+          aria-haspopup="true"
           aria-expanded={showMADropdown}
           onClick={() => setShowMADropdown((v) => !v)}
           className={twMerge(PILL_CLASS, 'flex items-center gap-1')}
@@ -177,6 +193,7 @@ const IndicatorBar = ({
       {/* MA dropdown popover */}
       {showMADropdown && (
         <Box
+          ref={maMenuRef}
           role="group"
           aria-label="Moving averages"
           data-testid="advanced-chart-ma-menu"

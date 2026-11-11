@@ -882,6 +882,64 @@ describe('AdvancedChartIframe', () => {
         CHART_ORIGIN,
       );
     });
+
+    it('clears the chart when a new series returns an empty (successful) history', async () => {
+      const { rerender } = renderLoaded();
+
+      // Asset switches and the new series comes back with no candles. A
+      // successful-but-empty fetch is not an error, so nothing else clears the
+      // old asset's chart — the iframe must post an empty reset.
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          assetId="bitcoin"
+          ohlcvData={[]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'SET_OHLCV_DATA',
+            payload: { data: [] },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+    });
+
+    it('does not keep re-clearing once the chart is already empty', async () => {
+      const { rerender } = renderLoaded();
+
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          assetId="bitcoin"
+          ohlcvData={[]}
+        />,
+      );
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({ type: 'SET_OHLCV_DATA', payload: { data: [] } }),
+          CHART_ORIGIN,
+        );
+      });
+      postMessageSpy.mockClear();
+
+      // A second empty render for the same already-empty series is a no-op.
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          assetId="bitcoin"
+          ohlcvData={[]}
+        />,
+      );
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('SET_OHLCV_DATA'),
+        CHART_ORIGIN,
+      );
+    });
   });
 
   describe('Theme reload', () => {
