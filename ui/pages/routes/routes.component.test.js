@@ -14,6 +14,7 @@ import {
   DEFAULT_ROUTE,
   DISCOVER_SEARCH_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
+  RAMPS_BUY_INTERSTITIAL_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -257,6 +258,18 @@ describe('Routes Component', () => {
       undefined,
       undefined,
       DISCOVER_SEARCH_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
+  });
+
+  it('puts the buy interstitial route behind the basic functionality guard', () => {
+    const matches = matchRoutes(routeConfig, RAMPS_BUY_INTERSTITIAL_ROUTE);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      undefined,
+      RAMPS_BUY_INTERSTITIAL_ROUTE,
     ]);
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
     expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);

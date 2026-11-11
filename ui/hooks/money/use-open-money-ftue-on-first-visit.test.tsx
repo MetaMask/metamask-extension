@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { closeMoneyFtue } from '../../ducks/money-ftue';
+import { MoneyFtueEntryPoint } from '../../pages/money/constants/money-events';
 import { useOpenMoneyFtueOnFirstVisit } from './use-open-money-ftue-on-first-visit';
 
 type HookProps = {
@@ -31,6 +32,7 @@ describe('useOpenMoneyFtueOnFirstVisit', () => {
     expect(store.getState().moneyFtue).toStrictEqual({
       isOpen: true,
       source: 'moneyHome',
+      origin: { entryPoint: MoneyFtueEntryPoint.MoneyHome },
       pendingDeposit: null,
       acknowledged: false,
     });
