@@ -50,7 +50,7 @@ async function buildLocalSolanaTestSpecificMock(
   ];
 }
 
-describe('Send flow', function (this: Suite) {
+describe('Send flow TEST', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
     await withFixtures(
