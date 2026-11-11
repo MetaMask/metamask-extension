@@ -163,10 +163,7 @@ describe('usePayWithCryptoSection', () => {
     });
 
     expect(clearOverride).toHaveBeenCalled();
-    expect(setPayToken).toHaveBeenCalledWith({
-      address: '0x1111111111111111111111111111111111111111',
-      chainId: '0x1',
-    });
+    expect(setPayToken).toHaveBeenCalledWith({ assetId: PAY_TOKEN.assetId });
     expect(onClose).toHaveBeenCalled();
   });
 

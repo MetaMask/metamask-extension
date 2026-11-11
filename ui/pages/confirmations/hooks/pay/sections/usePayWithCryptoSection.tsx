@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   Icon,
@@ -23,7 +23,11 @@ import type {
 } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
-import { getEvmPaymentToken } from '../../../../../../shared/lib/transaction/pay-token';
+import { isMoneyAccountFunding } from '../../../utils/transaction-pay';
+import {
+  getEvmPaymentToken,
+  getPaymentTokenChainId,
+} from '../../../../../../shared/lib/transaction/pay-token';
 
 export const PAY_WITH_CRYPTO_SECTION_TEST_ID = 'pay-with-section-crypto';
 export const PAY_WITH_CRYPTO_SELECTED_TOKEN_ROW_TEST_ID =
@@ -45,17 +49,19 @@ export function usePayWithCryptoSection({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
   const { payToken, setPayToken } = useTransactionPayToken();
-  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const clearOverride = useClearPaymentOverride();
 
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyAccountSelected = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
 
   const handleSelectedTokenPress = useCallback(() => {
-    if (!evmPayToken) {
+    if (!payToken) {
       return;
     }
     if (!isMoneyAccountSelected) {
@@ -63,20 +69,11 @@ export function usePayWithCryptoSection({
       return;
     }
     clearOverride();
-    setPayToken({
-      address: evmPayToken.address,
-      chainId: evmPayToken.chainId,
-    }).catch((error) => {
+    setPayToken({ assetId: payToken.assetId }).catch((error) => {
       console.error('Failed to set the pay token', error);
     });
     onClose();
-  }, [
-    clearOverride,
-    evmPayToken,
-    isMoneyAccountSelected,
-    onClose,
-    setPayToken,
-  ]);
+  }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
 
   const handleOtherAssetsPress = useCallback(() => {
     onOtherAssetsPress();
@@ -90,18 +87,21 @@ export function usePayWithCryptoSection({
   return useMemo((): PayWithSectionConfig => {
     const rows: PayWithRowConfig[] = [];
 
-    if (evmPayToken) {
+    if (payToken) {
+      const evmPayToken = getEvmPaymentToken(payToken);
+
       rows.push({
         id: 'crypto-selected-token',
         icon: (
           <TokenIcon
-            chainId={evmPayToken.chainId}
-            tokenAddress={evmPayToken.address}
-            symbol={evmPayToken.symbol}
+            chainId={getPaymentTokenChainId(payToken) as Hex}
+            // Non-EVM payment tokens are identified by their CAIP-19 asset type.
+            tokenAddress={(evmPayToken?.address ?? payToken.assetId) as Hex}
+            symbol={payToken.symbol}
             size="sm"
           />
         ),
-        title: evmPayToken.symbol,
+        title: payToken.symbol,
         subtitle: `${selectedTokenBalance} ${t('available')}`,
         isSelected: !isMoneyAccountSelected,
         trailingElement: isMoneyAccountSelected ? 'none' : 'checkmark',
@@ -133,10 +133,10 @@ export function usePayWithCryptoSection({
       rows,
     };
   }, [
-    evmPayToken,
     handleOtherAssetsPress,
     handleSelectedTokenPress,
     isMoneyAccountSelected,
+    payToken,
     selectedTokenBalance,
     t,
   ]);
