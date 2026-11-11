@@ -11,25 +11,21 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
-import { twMerge } from '@metamask/design-system-react';
 import {
-  IconName as LegacyIconName,
-  Text as LegacyText,
-  ButtonLink,
-} from '../../../components/component-library';
+  FontWeight,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextButton,
+  TextColor,
+  TextVariant,
+  twMerge,
+} from '@metamask/design-system-react';
 import { HeroAmountInput } from '../../../components/ui/hero-amount-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
-import {
-  Display,
-  FontWeight as LegacyFontWeight,
-  IconColor as LegacyIconColor,
-  TextAlign as LegacyTextAlign,
-  JustifyContent,
-  TextVariant as LegacyTextVariant,
-  TextColor as LegacyTextColor,
-} from '../../../helpers/constants/design-system';
 import {
   getFromTokenBalance,
   getValidationErrors,
@@ -266,15 +262,21 @@ export const BridgeInputGroup = ({
         />
       </Row>
 
-      <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
+      <Row className="h-6">
         {onAmountTypeToggle ? (
-          <ButtonLink
-            variant={LegacyTextVariant.bodyMd}
-            color={LegacyTextColor.textAlternative}
-            endIconName={LegacyIconName.SwapVertical}
-            endIconProps={{ color: LegacyIconColor.iconAlternative }}
-            ellipsis
-            style={{ textDecoration: 'none' }}
+          <TextButton
+            className="max-w-full hover:no-underline"
+            textProps={{
+              fontWeight: FontWeight.Regular,
+              color: TextColor.TextAlternative,
+              ellipsis: true,
+            }}
+            endIconName={IconName.SwapVertical}
+            endIconProps={{
+              size: IconSize.Sm,
+              color: IconColor.IconAlternative,
+              className: 'shrink-0',
+            }}
             data-testid="bridge-input-denomination-toggle"
             aria-label={`Toggle input denomination${
               secondaryDisplay ? `, ${secondaryDisplay}` : ''
@@ -282,73 +284,62 @@ export const BridgeInputGroup = ({
             onClick={onAmountTypeToggle}
           >
             {secondaryDisplay}
-          </ButtonLink>
+          </TextButton>
         ) : (
-          <LegacyText
-            variant={LegacyTextVariant.bodyMd}
-            fontWeight={LegacyFontWeight.Normal}
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Regular}
             color={
               isAmountReadOnly && isEstimatedReturnLow
-                ? LegacyTextColor.warningDefault
-                : LegacyTextColor.textAlternative
+                ? TextColor.WarningDefault
+                : TextColor.TextAlternative
             }
-            textAlign={LegacyTextAlign.End}
+            className="text-end"
             ellipsis
           >
             {secondaryDisplay}
-          </LegacyText>
+          </Text>
         )}
         {!isAmountReadOnly && balanceAmount && token && (
-          <LegacyText
-            display={Display.Flex}
-            gap={1}
-            variant={LegacyTextVariant.bodyMd}
+          <Text
+            variant={TextVariant.BodyMd}
             color={
               isInsufficientBalance
-                ? LegacyTextColor.errorDefault
-                : LegacyTextColor.textAlternative
+                ? TextColor.ErrorDefault
+                : TextColor.TextAlternative
             }
-            style={{
-              cursor: 'default',
-              textDecoration: 'none',
-            }}
+            className="flex cursor-default gap-1"
           >
             {formattedTokenAmount}
             {onMaxButtonClick && (
-              <ButtonLink
-                variant={LegacyTextVariant.bodyMd}
+              <TextButton
+                textProps={{ fontWeight: FontWeight.Regular }}
                 onClick={() => onMaxButtonClick(balanceAmount)}
               >
                 {t('max')}
-              </ButtonLink>
+              </TextButton>
             )}
-          </LegacyText>
+          </Text>
         )}
         {isAmountReadOnly &&
           token &&
           selectedChainId &&
           !isNativeAddress(assetReference) && (
-            <LegacyText
-              display={Display.Flex}
-              gap={1}
-              variant={LegacyTextVariant.bodyMd}
-              color={LegacyTextColor.textAlternative}
-              onClick={() => {
-                handleAddressClick();
-              }}
-              as={'a'}
-              style={{
-                cursor: isAmountReadOnly ? 'pointer' : 'default',
-                textDecoration: isAmountReadOnly ? 'underline' : 'none',
-              }}
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              className="flex cursor-pointer gap-1 underline"
+              asChild
             >
-              {shortenString(assetReference, {
-                truncatedCharLimit: 11,
-                truncatedStartChars: 4,
-                truncatedEndChars: 4,
-                skipCharacterInEnd: false,
-              })}
-            </LegacyText>
+              <button type="button" onClick={handleAddressClick}>
+                {shortenString(assetReference, {
+                  truncatedCharLimit: 11,
+                  truncatedStartChars: 4,
+                  truncatedEndChars: 4,
+                  skipCharacterInEnd: false,
+                })}
+              </button>
+            </Text>
           )}
       </Row>
     </Column>
