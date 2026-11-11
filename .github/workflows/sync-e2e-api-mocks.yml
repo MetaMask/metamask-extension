@@ -25,7 +25,9 @@ permissions:
 
 concurrency:
   group: sync-e2e-api-mocks-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
+  # Do not cancel the run that just pushed. Its follow-up sees the bot commit
+  # and skips, so this run must finish and post the comment.
+  cancel-in-progress: false
 
 jobs:
   sync-e2e-api-mocks:
