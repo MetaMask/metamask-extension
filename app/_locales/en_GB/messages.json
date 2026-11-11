@@ -3516,6 +3516,12 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Go to the home page"
   },
+  "deepLink_MobileShareDescription": {
+    "message": "Scan this QR code with your mobile device to open this link in MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Continue on MetaMask Mobile"
+  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
   },
