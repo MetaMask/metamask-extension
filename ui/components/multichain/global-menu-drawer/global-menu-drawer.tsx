@@ -105,7 +105,6 @@ export const GlobalMenuDrawer = ({
     if (isOpen) {
       let blocker: HTMLDialogElement | null = null;
       const show = () => {
-        blocker?.removeEventListener('close', show);
         if (!dialog.open) {
           // Recheck after close: a native dialog may have handed off to another.
           blocker =
@@ -116,12 +115,7 @@ export const GlobalMenuDrawer = ({
             blocker.addEventListener('close', show, { once: true });
             return;
           }
-          if (typeof dialog.showModal === 'function') {
-            dialog.showModal();
-          } else {
-            // jsdom does not implement HTMLDialogElement.showModal
-            dialog.setAttribute('open', '');
-          }
+          dialog.showModal();
         }
         if (scrollRef.current) {
           scrollRef.current.scrollTop = 0;
@@ -132,12 +126,7 @@ export const GlobalMenuDrawer = ({
     }
 
     if (dialog.open) {
-      if (typeof dialog.close === 'function') {
-        dialog.close();
-      } else {
-        dialog.removeAttribute('open');
-        dialog.dispatchEvent(new Event('close'));
-      }
+      dialog.close();
     }
 
     clearDrawerOpen();
@@ -155,12 +144,7 @@ export const GlobalMenuDrawer = ({
     if (!dialog) {
       return;
     }
-    if (typeof dialog.close === 'function') {
-      dialog.close();
-      return;
-    }
-    dialog.removeAttribute('open');
-    dialog.dispatchEvent(new Event('close'));
+    dialog.close();
   }, []);
 
   const titleId = 'global-menu-drawer-title';
