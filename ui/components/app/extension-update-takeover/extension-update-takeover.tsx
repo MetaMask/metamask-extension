@@ -141,14 +141,15 @@ export function ExtensionUpdateTakeover({
           className="mx-auto h-full w-full max-w-[400px] px-6"
           title={
             <Box
-              id={TITLE_ID}
               data-testid="extension-update-takeover-title"
               className="w-full px-1 pt-6 pb-2"
             >
-              <MarketingMomentTitle className="w-full text-center">
-                {isUnsupported
-                  ? t('extensionUpdateUnsupportedTitle')
-                  : t('extensionUpdateTitle')}
+              <MarketingMomentTitle asChild className="w-full text-center">
+                <h2 id={TITLE_ID}>
+                  {isUnsupported
+                    ? t('extensionUpdateUnsupportedTitle')
+                    : t('extensionUpdateTitle')}
+                </h2>
               </MarketingMomentTitle>
             </Box>
           }
