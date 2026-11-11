@@ -61,13 +61,6 @@ class HomePage {
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
-  protected readonly bottomNavActivityButton =
-    '[data-testid="bottom-nav-activity"]';
-
-  private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
-
-  protected readonly bottomNavPerpsButton = '[data-testid="bottom-nav-perps"]';
-
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -107,6 +100,13 @@ class HomePage {
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
+
+  protected readonly mainNavActivityButton =
+    '[data-testid="bottom-nav-activity"]';
+
+  private readonly mainNavHomeButton = '[data-testid="bottom-nav-home"]';
+
+  protected readonly mainNavPerpsButton = '[data-testid="bottom-nav-perps"]';
 
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
@@ -578,8 +578,8 @@ class HomePage {
   }
 
   async goToActivityList(): Promise<void> {
-    console.log('Open the activity page from the bottom navigation bar');
-    await this.driver.clickElement(this.bottomNavActivityButton);
+    console.log('Open the activity page from the main navigation');
+    await this.driver.clickElement(this.mainNavActivityButton);
     await this.driver.waitForSelector({
       testId: 'parent-selector-activity-tab',
     });
@@ -607,7 +607,7 @@ class HomePage {
     if (alreadyOnHome) {
       return;
     }
-    await this.driver.clickElement(this.bottomNavHomeButton);
+    await this.driver.clickElement(this.mainNavHomeButton);
     await this.checkPageIsLoaded();
   }
 
