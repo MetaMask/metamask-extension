@@ -17,8 +17,9 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
 } from '../../constants';
+import { NetworkName } from '../../helpers/network-constants';
 
-const NETWORK_NAME_MAINNET = 'Ethereum';
+const NETWORK_NAME_MAINNET = NetworkName.ETHEREUM;
 const HST_TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 const MUSD_MAINNET_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS}`;

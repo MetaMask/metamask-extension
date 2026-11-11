@@ -1704,7 +1704,7 @@ describe('PerpsStreamManager', () => {
       expect(delivered[0].stopLossPrice).toBe('80');
     });
 
-    it('blocks WebSocket pushes during WEBSOCKET_BLOCK_MS window', () => {
+    it('holds WebSocket pushes during WEBSOCKET_BLOCK_MS window', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
@@ -1716,6 +1716,65 @@ describe('PerpsStreamManager', () => {
       });
 
       expect(cb).not.toHaveBeenCalled();
+    });
+
+    it('applies the latest held WebSocket push when the block window ends', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+      jest.advanceTimersByTime(1000);
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      jest.advanceTimersByTime(1999);
+      expect(cb).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(1);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(cb).toHaveBeenLastCalledWith([]);
+    });
+
+    it('keeps holding a WebSocket push while a newer optimistic update extends the block window', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      jest.advanceTimersByTime(2000);
+      manager.setOptimisticTPSL('BTC', '130', '80');
+      jest.advanceTimersByTime(1000);
+      expect(cb).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(2000);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(cb).toHaveBeenLastCalledWith([]);
+    });
+
+    it('drops a held WebSocket push when a REST snapshot is pushed after it', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      manager.pushPositionsWithOverrides([makePosition('BTC')]);
+      jest.advanceTimersByTime(3000);
+
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect((cb.mock.calls[0][0] as Position[])[0].symbol).toBe('BTC');
+    });
+
+    it('drops a held WebSocket push when the manager resets', () => {
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      manager.reset();
+      jest.advanceTimersByTime(3000);
+
+      expect(manager.positions.hasCachedData()).toBe(false);
     });
 
     it('allows WebSocket pushes after WEBSOCKET_BLOCK_MS', () => {
