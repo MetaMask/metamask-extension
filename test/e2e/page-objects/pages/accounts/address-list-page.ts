@@ -240,7 +240,10 @@ class AccountAddressListPage {
     const row = await this.driver.findElement(
       this.quickCopyRowByNetworkName(networkName),
     );
-    await row.click();
+    await this.driver.executeScript(
+      (element: HTMLElement) => element.click(),
+      row,
+    );
     await this.driver.waitForClipboardContent(expectedAddress);
   }
 
