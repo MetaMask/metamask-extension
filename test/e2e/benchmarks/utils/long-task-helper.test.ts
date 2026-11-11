@@ -127,9 +127,10 @@ describe('long-task-helper', () => {
       });
     });
 
-    it('runs the trigger after the windows open and before the timer starts', async () => {
+    it('runs the trigger after the windows open, then a page round trip, then starts the timer', async () => {
       const mockDriver = {
         resetLongTaskMetrics: jest.fn(),
+        executeScript: jest.fn(),
         collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
       };
       const trigger = jest.fn(async () => undefined);
@@ -148,11 +149,31 @@ describe('long-task-helper', () => {
       expect(first(mockDriver.resetLongTaskMetrics)).toBeLessThan(
         first(trigger),
       );
-      expect(first(trigger)).toBeLessThan(first(timer.measure));
+      expect(first(trigger)).toBeLessThan(first(mockDriver.executeScript));
+      expect(first(mockDriver.executeScript)).toBeLessThan(
+        first(timer.measure),
+      );
       expect(first(timer.measure)).toBeLessThan(first(action));
       expect(first(action)).toBeLessThan(
         first(mockDriver.collectLongTaskMetrics),
       );
+      expect(mockDriver.executeScript).toHaveBeenCalledTimes(1);
+    });
+
+    it('makes no extra page round trip without a trigger', async () => {
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        executeScript: jest.fn(),
+        collectLongTaskMetrics: jest.fn().mockResolvedValue(null),
+      };
+
+      await measureStepWithLongTasks(
+        mockDriver as unknown as import('../../webdriver/driver').Driver,
+        'plainStep',
+        async () => undefined,
+      );
+
+      expect(mockDriver.executeScript).not.toHaveBeenCalled();
     });
 
     it('defaults to zeros when collectLongTaskMetrics returns null', async () => {

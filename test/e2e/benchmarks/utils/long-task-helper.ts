@@ -99,7 +99,13 @@ export async function measureStepWithLongTasks(
   );
 
   await driver.resetLongTaskMetrics();
-  await trigger?.();
+  if (trigger) {
+    await trigger();
+    // A page script after the trigger waits for the main thread, so the timer
+    // starts after the page's synchronous response, as it did when the reset
+    // came after the trigger: step durations keep their meaning.
+    await driver.executeScript('return null;');
+  }
 
   await timer.measure(action);
   performanceTracker.addTimer(timer);
