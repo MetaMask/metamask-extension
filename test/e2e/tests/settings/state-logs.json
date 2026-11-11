@@ -1330,6 +1330,7 @@
   "moneyFtue": {
     "acknowledged": "boolean",
     "isOpen": "boolean",
+    "origin": "null",
     "pendingDeposit": "null",
     "source": "null"
   },

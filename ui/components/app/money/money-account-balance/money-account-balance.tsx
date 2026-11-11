@@ -33,6 +33,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -276,7 +277,12 @@ export const MoneyAccountBalance = () => {
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
+    initiateDeposit({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.WalletHome,
+        componentName: MoneyComponentName.BalanceCard,
+      },
+    });
   };
 
   const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
