@@ -1,9 +1,17 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
 import { MoneyPotentialEarnings } from './money-potential-earnings';
+
+const renderWithStore = (component: React.ReactElement) =>
+  renderWithLocalization(
+    <Provider store={configureStore(mockState)}>{component}</Provider>,
+  );
 
 const createToken = (
   index: number,
@@ -21,7 +29,7 @@ const createToken = (
 
 describe('MoneyPotentialEarnings', () => {
   it('renders nothing when there are no eligible tokens', () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithStore(
       <MoneyPotentialEarnings
         tokens={[]}
         apyDecimal={0.04}
@@ -43,7 +51,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('renders nothing when all tokens have zero fiat balance', () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithStore(
       <MoneyPotentialEarnings
         tokens={[
           createToken(1, { moneyFiatAmountUsd: 0 }),
@@ -65,7 +73,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('renders aggregate and per-token projected earnings', () => {
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={[createToken(50)]}
         apyDecimal={0.04}
@@ -92,7 +100,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('renders the generic description when APY is unavailable', () => {
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={[createToken(1)]}
         apyDecimal={undefined}
@@ -115,7 +123,7 @@ describe('MoneyPotentialEarnings', () => {
   it('renders at most five token rows and View all for additional tokens', () => {
     const onViewAll = jest.fn();
 
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={Array.from({ length: 6 }, (_, index) => createToken(index + 1))}
         apyDecimal={0.04}
@@ -140,7 +148,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('hides View all when all tokens are visible', () => {
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={[createToken(1)]}
         apyDecimal={0.04}
@@ -158,7 +166,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('renders No fee only for subsidized tokens', () => {
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={[createToken(1), createToken(2)]}
         apyDecimal={0.04}
@@ -176,7 +184,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('masks balances and projections in privacy mode', () => {
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={[createToken(50)]}
         apyDecimal={0.04}
@@ -200,7 +208,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('shows the projection disclaimer tooltip with the APY on hover', async () => {
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={[createToken(50)]}
         apyDecimal={0.04}
@@ -232,7 +240,7 @@ describe('MoneyPotentialEarnings', () => {
     const onAddToken = jest.fn();
     const tokens = [createToken(1), createToken(2), createToken(3)];
 
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={tokens}
         apyDecimal={0.04}
@@ -252,7 +260,7 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('disables the row Add buttons while a deposit is initiating', () => {
-    renderWithLocalization(
+    renderWithStore(
       <MoneyPotentialEarnings
         tokens={[createToken(1)]}
         apyDecimal={0.04}
