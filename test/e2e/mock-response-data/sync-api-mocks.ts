@@ -8,6 +8,7 @@
  */
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
+import { format, resolveConfig } from 'prettier';
 
 export type Json =
   | null
@@ -247,11 +248,20 @@ async function syncRow({
   if (canonical(current) === canonical(aligned)) {
     return false;
   }
+  const next = key === undefined ? aligned : { ...fixture, [key]: aligned };
+  const options = await resolveConfig(filePath);
+  // Indent first. Prettier keeps that wrapping, then applies the repo config
+  // (sorted keys, newline), matching `yarn prettier --write`.
+  const formatted = await format(`${JSON.stringify(next, null, 2)}\n`, {
+    ...options,
+    filepath: filePath,
+  });
+  // Compare the formatted text, so a run that does not change the file writes nothing.
+  if (readFileSync(filePath, 'utf8') === formatted) {
+    return false;
+  }
   console.log(`${id} ${url}: ${describeChange(current, aligned)}`);
-  writeFileSync(
-    filePath,
-    `${JSON.stringify(key ? { ...fixture, [key]: aligned } : aligned, null, 2)}\n`,
-  );
+  writeFileSync(filePath, formatted);
   return true;
 }
 
