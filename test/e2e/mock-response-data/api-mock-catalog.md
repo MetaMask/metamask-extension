@@ -10,8 +10,11 @@ get a placeholder (`0`, `""`, `false`, `null`), removed fields are dropped,
 and empty lists stay empty. In a list, a field counts as shape when at least
 two entries have it. `$NAME` in an endpoint comes from the environment; the
 row is skipped without it. `derived` follows another row; `skip` is not
-fetched, for the reason given. It runs every Monday in
-`.github/workflows/sync-e2e-api-mocks.yml`, which opens or updates one PR.
+fetched, for the reason given. With no drift it prints `No API changes
+detected`. Otherwise it prints each changed API (its id, endpoint and what
+changed) and any fetch errors. It runs every Monday in
+`.github/workflows/sync-e2e-api-mocks.yml`, which opens or updates one PR
+when a fixture changes.
 
 Values the tests assert stay as literals where `mock-e2e.js` (or the phishing
 helper) registers the mock and are applied over the fixture, so a sync cannot

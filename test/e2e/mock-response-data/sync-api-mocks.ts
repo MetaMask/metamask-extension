@@ -118,6 +118,34 @@ function alignShape(mock: Json, live: Json): Json {
   return mock;
 }
 
+function describeChange(before: Json, after: Json): string {
+  if (!isObject(before) || !isObject(after)) {
+    if (Array.isArray(before) && Array.isArray(after)) {
+      return 'list shape changed';
+    }
+    return `type ${kindOf(before)} -> ${kindOf(after)}`;
+  }
+  const beforeKeys = new Set(Object.keys(before));
+  const afterKeys = Object.keys(after);
+  const list = (keys: string[]) => keys.join(', ');
+  const parts = [
+    list(afterKeys.filter((key) => !beforeKeys.has(key))),
+    list([...beforeKeys].filter((key) => !afterKeys.includes(key))),
+    list(
+      afterKeys.filter(
+        (key) =>
+          beforeKeys.has(key) && kindOf(before[key]) !== kindOf(after[key]),
+      ),
+    ),
+  ];
+  const labels = ['added', 'removed', 'retyped'];
+  const described = parts
+    .map((keys, index) => (keys ? `${labels[index]} ${keys}` : ''))
+    .filter(Boolean)
+    .join('; ');
+  return described || 'nested fields changed';
+}
+
 const canonical = (value: Json): string =>
   JSON.stringify(value, (_key, item) =>
     isObject(item)
@@ -149,7 +177,6 @@ async function syncRow({
     .map(([, name]) => name)
     .filter((name) => !process.env[name]);
   if (missing.length > 0) {
-    console.log(`${id}: skipped, set ${missing.join(' and ')}`);
     return false;
   }
   const response = await fetch(
@@ -170,10 +197,9 @@ async function syncRow({
   const current = key ? fixture[key] : fixture;
   const aligned = alignShape(current, live);
   if (canonical(current) === canonical(aligned)) {
-    console.log(`${id}: no shape drift`);
     return false;
   }
-  console.log(`${id}: shape updated`);
+  console.log(`${id} ${url}: ${describeChange(current, aligned)}`);
   writeFileSync(
     filePath,
     `${JSON.stringify(key ? { ...fixture, [key]: aligned } : aligned, null, 2)}\n`,
@@ -201,13 +227,14 @@ async function main(): Promise<number> {
       changed = (await syncRow(row)) || changed;
     } catch (error) {
       failed = true;
-      console.error(`${row.id}: ${String(error)}`);
+      console.error(`${row.id} ${row.url}: ${String(error)}`);
     }
   }
-  if (changed) {
-    return 1;
+  if (!changed && !failed) {
+    console.log('No API changes detected');
+    return 0;
   }
-  return failed ? 2 : 0;
+  return changed ? 1 : 2;
 }
 
 if (process.argv[1]?.endsWith('sync-api-mocks.ts')) {

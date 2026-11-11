@@ -38,8 +38,11 @@ jobs:
           EXIT="${PIPESTATUS[0]}"
           set -e
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
-          # 0: no drift. 1: fixtures written. 2: nothing written, a fetch failed.
+          # 0: no drift (one line, no summary, no PR). 1: fixtures written.
+          # 2: nothing written, a fetch failed.
+          if [ "${EXIT}" -ne 0 ]; then
+            cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
+          fi
           [ "${EXIT}" -le 1 ]
 
       - name: Open or update the review PR
