@@ -8,7 +8,6 @@
  */
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
-import { format, resolveConfig } from 'prettier';
 
 export type Json =
   | null
@@ -253,6 +252,9 @@ async function syncRow({
     return false;
   }
   const next = key === undefined ? aligned : { ...fixture, [key]: aligned };
+  // Loaded only when a file is written. A static import breaks Jest, which
+  // loads this module through the E2E mocks.
+  const { format, resolveConfig } = await import('prettier');
   const options = await resolveConfig(filePath);
   // Indent first. Prettier keeps that wrapping, then applies the repo config
   // (sorted keys, newline), matching `yarn prettier --write`.
