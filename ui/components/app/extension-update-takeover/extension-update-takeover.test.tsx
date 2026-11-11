@@ -4,7 +4,9 @@
 import React from 'react';
 import log from 'loglevel';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ExtensionUpdateTakeover } from './extension-update-takeover';
 
 const mockTrackEvent = jest.fn();
@@ -31,13 +33,21 @@ jest.mock('../../../hooks/useAnalytics', () => ({
   }),
 }));
 
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'fullscreen'),
+}));
+
 jest.mock('../../../store/actions', () => ({
   openUpdateTabAndReload: jest.fn(),
+  rejectAllPendingApprovals: jest.fn(),
   setUpdateModalLastDismissedAt: jest.fn(),
 }));
 
-const { openUpdateTabAndReload, setUpdateModalLastDismissedAt } =
-  jest.requireMock('../../../store/actions');
+const {
+  openUpdateTabAndReload,
+  rejectAllPendingApprovals,
+  setUpdateModalLastDismissedAt,
+} = jest.requireMock('../../../store/actions');
 
 function eventNames(): string[] {
   return mockTrackEvent.mock.calls.map(([event]) => event.name);
@@ -46,8 +56,17 @@ function eventNames(): string[] {
 describe('ExtensionUpdateTakeover', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(getEnvironmentType).mockReturnValue('fullscreen');
     openUpdateTabAndReload.mockResolvedValue(undefined);
+    rejectAllPendingApprovals.mockResolvedValue(undefined);
     setUpdateModalLastDismissedAt.mockResolvedValue(undefined);
+    // jsdom's window.close() deletes the document and stops every timer,
+    // including Jest's own timeout, so the rest of the file never finishes.
+    jest.spyOn(window, 'close').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('renders the version update without a close button', async () => {
@@ -237,5 +256,90 @@ describe('ExtensionUpdateTakeover', () => {
         'reload',
       ]);
     });
+    expect(rejectAllPendingApprovals).not.toHaveBeenCalled();
+  });
+
+  it('rejects pending approvals before reloading from a notification window', async () => {
+    const order: string[] = [];
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    rejectAllPendingApprovals.mockImplementation(async () => {
+      order.push('reject');
+    });
+    openUpdateTabAndReload.mockImplementation(async () => {
+      order.push('reload');
+    });
+
+    render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
+    fireEvent.click(
+      screen.getByTestId('extension-update-takeover-update-button'),
+    );
+
+    await waitFor(() => {
+      expect(order).toStrictEqual(['reject', 'reload']);
+    });
+  });
+
+  it('closes a notification window after requesting the reload', async () => {
+    const order: string[] = [];
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    openUpdateTabAndReload.mockImplementation(async () => {
+      order.push('reload');
+    });
+    const closeWindow = jest.spyOn(window, 'close').mockImplementation(() => {
+      order.push('close');
+    });
+
+    render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
+    fireEvent.click(
+      screen.getByTestId('extension-update-takeover-update-button'),
+    );
+
+    await waitFor(() => {
+      expect(order).toStrictEqual(['reload', 'close']);
+    });
+    closeWindow.mockRestore();
+  });
+
+  it('keeps a full-screen tab open after requesting the reload', async () => {
+    const closeWindow = jest
+      .spyOn(window, 'close')
+      .mockImplementation(() => undefined);
+
+    render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
+    fireEvent.click(
+      screen.getByTestId('extension-update-takeover-update-button'),
+    );
+
+    await waitFor(() => {
+      expect(openUpdateTabAndReload).toHaveBeenCalledTimes(1);
+    });
+    expect(closeWindow).not.toHaveBeenCalled();
+    closeWindow.mockRestore();
+  });
+
+  it('does not reload when rejecting the pending approval fails', async () => {
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    rejectAllPendingApprovals.mockRejectedValueOnce(new Error('reject failed'));
+    const logError = jest
+      .spyOn(log, 'error')
+      .mockImplementation(() => undefined);
+
+    render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
+    fireEvent.click(
+      screen.getByTestId('extension-update-takeover-update-button'),
+    );
+
+    await waitFor(() => {
+      expect(rejectAllPendingApprovals).toHaveBeenCalledTimes(1);
+    });
+    expect(openUpdateTabAndReload).not.toHaveBeenCalled();
+    expect(logError).toHaveBeenCalled();
+    logError.mockRestore();
   });
 });

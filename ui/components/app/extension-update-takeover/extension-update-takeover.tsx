@@ -10,12 +10,15 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MarketingMoment } from '../../ui/marketing-moment';
 import { MarketingMomentTitle } from '../../ui/marketing-moment-title';
 import {
   openUpdateTabAndReload,
+  rejectAllPendingApprovals,
   setUpdateModalLastDismissedAt,
 } from '../../../store/actions';
 import type { ExtensionUpdatePromptType } from '../../../selectors/extension-update-prompt';
@@ -88,7 +91,21 @@ export function ExtensionUpdateTakeover({
           .addCategory(MetaMetricsEventCategory.App)
           .build(),
       );
+      // A notification window exists to show a confirmation. Reject it before
+      // the reload, which would otherwise drop the request with no answer.
+      // The rejection is sent while analytics flush, so it leaves first.
+      const isNotification =
+        getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
+      if (isNotification) {
+        await rejectAllPendingApprovals();
+      }
       await openUpdateTabAndReload();
+      // The reload is scheduled a moment after the request returns. Close the
+      // window first, or Chromium turns it into a stray New Tab window
+      // (issue #29151). See `reloadExtensionFromUi`.
+      if (isNotification) {
+        window.close();
+      }
     } catch (error) {
       log.error('[ExtensionUpdateTakeover] update failed', error);
       setIsBusy(false);

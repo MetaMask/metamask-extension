@@ -455,10 +455,7 @@ class TestDapp {
   async checkFailedPersonalSign(expectedFailedMessage: string) {
     console.log('Verify failed personal sign signature');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-    await this.driver.waitForSelector({
-      css: this.personalSignButton,
-      text: expectedFailedMessage,
-    });
+    await this.checkPersonalSignResultInCurrentWindow(expectedFailedMessage);
   }
 
   /**
@@ -584,6 +581,19 @@ class TestDapp {
       throw e;
     }
     console.log('Test Dapp page is loaded');
+  }
+
+  /**
+   * Verify the personal sign result without switching windows. Use this when
+   * the background socket that `switchToWindowWithTitle` relies on is gone.
+   *
+   * @param expectedMessage - The expected personal sign result.
+   */
+  async checkPersonalSignResultInCurrentWindow(expectedMessage: string) {
+    await this.driver.waitForSelector({
+      css: this.personalSignButton,
+      text: expectedMessage,
+    });
   }
 
   /**

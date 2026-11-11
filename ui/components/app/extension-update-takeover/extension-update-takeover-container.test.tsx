@@ -5,10 +5,14 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { getExtensionUpdatePromptType } from '../../../selectors/extension-update-prompt';
+import {
+  getExtensionUpdatePromptType,
+  getIsExtensionUpdatePromptOnNotificationEnabled,
+} from '../../../selectors/extension-update-prompt';
 import {
   selectDisplayUpdateModal,
   selectIsUpdateModalDeferred,
+  selectIsUpdateModalDeferredByOpenFlow,
 } from '../../../selectors/home-modals';
 import { ExtensionUpdateTakeoverContainer } from './extension-update-takeover-container';
 
@@ -22,11 +26,13 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 
 jest.mock('../../../selectors/extension-update-prompt', () => ({
   getExtensionUpdatePromptType: jest.fn(),
+  getIsExtensionUpdatePromptOnNotificationEnabled: jest.fn(),
 }));
 
 jest.mock('../../../selectors/home-modals', () => ({
   selectDisplayUpdateModal: jest.fn(),
   selectIsUpdateModalDeferred: jest.fn(),
+  selectIsUpdateModalDeferredByOpenFlow: jest.fn(),
 }));
 
 jest.mock('./extension-update-takeover', () => ({
@@ -41,6 +47,10 @@ describe('ExtensionUpdateTakeoverContainer', () => {
     jest.mocked(getExtensionUpdatePromptType).mockReturnValue('versionUpdate');
     jest.mocked(selectDisplayUpdateModal).mockReturnValue(true);
     jest.mocked(selectIsUpdateModalDeferred).mockReturnValue(false);
+    jest.mocked(selectIsUpdateModalDeferredByOpenFlow).mockReturnValue(false);
+    jest
+      .mocked(getIsExtensionUpdatePromptOnNotificationEnabled)
+      .mockReturnValue(false);
     jest.mocked(getEnvironmentType).mockReturnValue('fullscreen');
   });
 
@@ -80,10 +90,39 @@ describe('ExtensionUpdateTakeoverContainer', () => {
     expect(screen.queryByTestId('takeover')).not.toBeInTheDocument();
   });
 
-  it('renders nothing in a notification window', () => {
+  it('renders nothing in a notification window when the flag is off', () => {
     jest
       .mocked(getEnvironmentType)
       .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    jest.mocked(selectIsUpdateModalDeferred).mockReturnValue(true);
+
+    render(<ExtensionUpdateTakeoverContainer />);
+
+    expect(screen.queryByTestId('takeover')).not.toBeInTheDocument();
+  });
+
+  it('covers a notification confirmation when the flag is exactly enabled', () => {
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    jest
+      .mocked(getIsExtensionUpdatePromptOnNotificationEnabled)
+      .mockReturnValue(true);
+    jest.mocked(selectIsUpdateModalDeferred).mockReturnValue(true);
+
+    render(<ExtensionUpdateTakeoverContainer />);
+
+    expect(screen.getByTestId('takeover')).toHaveTextContent('versionUpdate');
+  });
+
+  it('still waits for an open dialog in a notification window', () => {
+    jest
+      .mocked(getEnvironmentType)
+      .mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    jest
+      .mocked(getIsExtensionUpdatePromptOnNotificationEnabled)
+      .mockReturnValue(true);
+    jest.mocked(selectIsUpdateModalDeferredByOpenFlow).mockReturnValue(true);
 
     render(<ExtensionUpdateTakeoverContainer />);
 
