@@ -10080,34 +10080,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^26.0.1":
-  version: 26.1.0
-  resolution: "@metamask/ramps-controller@npm:26.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^10.0.0"
-    "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^33.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
-    bignumber.js: "npm:^9.1.2"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/001934849359917e1cebe8bc590f4159ece749bf20e94787b890ecbe10fdc4d7de9812a04910152fc288d2065681cf0b73963f9ce52d255c86a5012419285d6b
-  languageName: node
-  linkType: hard
-
-"@metamask/ramps-controller@npm:^27.1.0":
-  version: 27.1.0
-  resolution: "@metamask/ramps-controller@npm:27.1.0"
+"@metamask/ramps-controller@npm:@metamask-previews/ramps-controller@29.0.0-preview-1e6f64538":
+  version: 29.0.0-preview-1e6f64538
+  resolution: "@metamask-previews/ramps-controller@npm:29.0.0-preview-1e6f64538"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^35.0.0"
+    "@metamask/profile-sync-controller": "npm:^36.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.1"
     bignumber.js: "npm:^9.1.2"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/3971281fff155236c2fc1575501b2733d42155c6ae17dd8d8bd0cc57af72df56ad57b5ae604626320deaadc21d02baba1ced66e0ffb05eb5602667eaa9942b7b
+  checksum: 10/9afd822b6b45b637ac076eb8110ad48ca5e277e35b092a010586bb228cb3ca5a0461e2f31669cc6daf31cc7941d834f647848b384b3912fc6bbb12e79262a5da
   languageName: node
   linkType: hard
 
@@ -35929,7 +35916,7 @@ __metadata:
     "@metamask/profile-metrics-controller": "npm:^5.1.0"
     "@metamask/profile-sync-controller": "npm:^35.0.0"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/ramps-controller": "npm:^26.0.1"
+    "@metamask/ramps-controller": "npm:@metamask-previews/ramps-controller@29.0.0-preview-1e6f64538"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^1.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
