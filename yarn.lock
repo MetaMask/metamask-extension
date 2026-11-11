@@ -7390,7 +7390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^20.2.2, @metamask/assets-controller@npm:^20.3.0, @metamask/assets-controller@npm:^20.3.1":
+"@metamask/assets-controller@npm:^20.3.0, @metamask/assets-controller@npm:^20.3.1":
   version: 20.3.1
   resolution: "@metamask/assets-controller@npm:20.3.1"
   dependencies:
@@ -8694,7 +8694,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^27.0.0, @metamask/gas-fee-controller@npm:^27.1.0, @metamask/gas-fee-controller@npm:^27.1.1":
+"@metamask/gas-fee-controller@npm:^27.0.0, @metamask/gas-fee-controller@npm:^27.1.1":
   version: 27.1.1
   resolution: "@metamask/gas-fee-controller@npm:27.1.1"
   dependencies:
@@ -10851,32 +10851,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:^31.0.0":
-  version: 31.0.0
-  resolution: "@metamask/transaction-pay-controller@npm:31.0.0"
+"@metamask/transaction-pay-controller@npm:@metamask-previews/transaction-pay-controller@31.1.0-preview-0c535b603":
+  version: 31.1.0-preview-0c535b603
+  resolution: "@metamask-previews/transaction-pay-controller@npm:31.1.0-preview-0c535b603"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.8.0"
-    "@metamask/accounts-controller": "npm:^40.1.0"
-    "@metamask/assets-controller": "npm:^20.2.2"
+    "@metamask/account-tree-controller": "npm:^11.2.0"
+    "@metamask/accounts-controller": "npm:^40.2.0"
+    "@metamask/assets-controller": "npm:^20.3.1"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/gas-fee-controller": "npm:^27.1.0"
+    "@metamask/gas-fee-controller": "npm:^27.1.1"
     "@metamask/keyring-controller": "npm:^28.2.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/network-controller": "npm:^37.1.1"
+    "@metamask/network-controller": "npm:^38.0.0"
     "@metamask/ramps-controller": "npm:^29.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/sentinel-api-service": "npm:^2.1.0"
-    "@metamask/transaction-controller": "npm:^73.1.1"
+    "@metamask/transaction-controller": "npm:^73.1.2"
     "@metamask/utils": "npm:^12.0.1"
     bignumber.js: "npm:^9.1.2"
     bn.js: "npm:^5.2.5"
     immer: "npm:^11.1.18"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/ed2ea2a16f3fda9dee3225c1bbdfc727eb1cbfa9714544b3d7dd7e3824d4d894c1e1098c2949c760028950e6e79f81be14755a59793df1e0299c20ea78de2bf6
+  checksum: 10/d0ba80d2476b0c7ece4d1c6f4e66f43af8e0eba0e43ec811050b7c22b3f51dd6819ce7d80b294023ccbb2eaff45643c913d337658ba253f85422977dc02dadcd
   languageName: node
   linkType: hard
 
