@@ -1,17 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { brandColor } from '@metamask/design-tokens';
-import { useTheme } from '../../../../hooks/useTheme';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Box,
+  ButtonBase,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+  twMerge,
+} from '@metamask/design-system-react';
 
 /**
  * IndicatorBar
  *
- * Renders the moving-average dropdown and the BOL/RSI/Volume/MACD toggle
- * pills. Rendered below the chart as a separate component in the parent
- * layout, mirroring mobile's IndicatorBar.
+ * Renders the moving-average dropdown plus BOL/RSI/Volume/MACD toggle pills.
+ * Displayed BELOW the chart, as a separate component in the parent layout.
  */
 
 const TOGGLE_INDICATORS = ['BOL', 'RSI', 'Volume', 'MACD'] as const;
 const MA_OPTIONS = ['MA5', 'MA10', 'MA20', 'MA50', 'MA200'] as const;
+
+// A toolbar toggle is a borderless `ButtonBase` that reads as plain text: the
+// pressed state is carried by the label colour, not a filled pill, matching the
+// compact chart toolbars in the designs (and mobile).
+const PILL_CLASS =
+  'h-auto shrink-0 rounded-lg bg-transparent px-1.5 py-1 hover:bg-hover active:bg-pressed';
 
 /**
  * Moving averages are driven by a single `SET_MA_VISIBILITY` message rather
@@ -21,6 +37,13 @@ const MA_OPTIONS = ['MA5', 'MA10', 'MA20', 'MA50', 'MA200'] as const;
  * @param name - Indicator name, e.g. `MA20` or `RSI`.
  */
 export const isMovingAverage = (name: string) => /^MA\d+$/u.test(name);
+
+const pillTextColor = (isActive: boolean) =>
+  isActive ? TextColor.TextDefault : TextColor.TextAlternative;
+
+// Selected toggles read as bold (not just a colour change) to match the designs.
+const pillFontWeight = (isActive: boolean) =>
+  isActive ? FontWeight.Bold : FontWeight.Regular;
 
 type IndicatorBarProps = {
   activeIndicators: Set<string>;
@@ -36,28 +59,12 @@ const IndicatorBar = ({
   onMAToggle,
   onMASelectorOpen,
 }: IndicatorBarProps) => {
-  const theme = useTheme();
-  const isDark = theme === 'dark';
   const [showMADropdown, setShowMADropdown] = useState(false);
-
-  const toolbarText = 'var(--color-text-default)';
-  const toolbarMuted = 'var(--color-text-alternative)';
-  const activeCheckColor = isDark ? brandColor.lime100 : brandColor.green500;
-  const pillStyle = (isSelected: boolean) => ({
-    padding: '4px 10px',
-    borderRadius: '8px',
-    border: 'none',
-    cursor: 'pointer' as const,
-    fontSize: '12px',
-    fontWeight: isSelected ? 600 : 500,
-    background: 'transparent',
-    color: isSelected ? toolbarText : toolbarMuted,
-    // The row scrolls when it runs out of width; squashing the labels to
-    // illegible widths instead would be worse.
-    flexShrink: 0,
-  });
+  const maTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const maMenuRef = useRef<HTMLDivElement | null>(null);
 
   const selectedMAs = [...activeIndicators].filter(isMovingAverage);
+  const hasSelectedMAs = selectedMAs.length > 0;
   let maLabel: string;
   if (selectedMAs.length === 0) {
     maLabel = 'MA';
@@ -72,7 +79,20 @@ const IndicatorBar = ({
     if (!showMADropdown) {
       return undefined;
     }
-    const handleClickOutside = () => setShowMADropdown(false);
+    // Only close on clicks that land outside both the trigger and the menu.
+    // A bare close-on-any-click would fire when selecting an MA option (the
+    // click bubbles to the document), forcing the user to reopen the menu for
+    // every moving average they want to toggle.
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        maTriggerRef.current?.contains(target) ||
+        maMenuRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setShowMADropdown(false);
+    };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setShowMADropdown(false);
@@ -102,24 +122,24 @@ const IndicatorBar = ({
         minWidth: 0,
       }}
     >
-      <div
+      <Box
         data-testid="advanced-chart-indicator-pills"
+        // The pills need roughly 300px between them and none of them shrink,
+        // which is more than a narrowed side panel has. Scroll the row rather
+        // than let it push the whole page wider.
+        className="flex min-w-0 items-center gap-1 overflow-x-auto px-4 py-1.5"
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '0px',
-          padding: '6px 16px',
-          // The pills need roughly 300px between them and none of them
-          // shrink, which is more than a narrowed side panel has. Scroll the
-          // row rather than let it push the whole page wider.
           minWidth: 0,
           overflowX: 'auto',
         }}
       >
         {/* MA dropdown trigger */}
-        <button
+        <ButtonBase
+          ref={maTriggerRef}
           type="button"
-          aria-haspopup="menu"
+          aria-haspopup="true"
           aria-expanded={showMADropdown}
           onClick={() => {
             // Read state outside the updater: updaters must stay pure, and
@@ -129,62 +149,64 @@ const IndicatorBar = ({
             }
             setShowMADropdown((v) => !v);
           }}
-          style={{
-            ...pillStyle(selectedMAs.length > 0),
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            paddingRight: '14px',
-            marginRight: '8px',
-          }}
+          className={twMerge(PILL_CLASS, 'flex items-center gap-1')}
+          data-testid="advanced-chart-ma-trigger"
         >
-          {maLabel} ▾
-        </button>
+          <Text
+            variant={TextVariant.BodyXs}
+            color={pillTextColor(hasSelectedMAs)}
+            fontWeight={pillFontWeight(hasSelectedMAs)}
+          >
+            {maLabel}
+          </Text>
+          <Icon
+            name={IconName.ArrowDown}
+            size={IconSize.Xs}
+            color={
+              hasSelectedMAs ? IconColor.IconDefault : IconColor.IconAlternative
+            }
+            className="shrink-0"
+          />
+        </ButtonBase>
 
         {/* Divider after MA */}
-        <div
-          style={{
-            width: '1px',
-            height: '16px',
-            background: 'var(--color-border-muted)',
-            marginRight: '4px',
-            flexShrink: 0,
-          }}
-        />
+        <Box className="mx-1 h-4 w-px shrink-0 bg-border-muted" />
 
         {/* Indicator toggle pills */}
         {TOGGLE_INDICATORS.map((name) => {
           const isActive = activeIndicators.has(name);
           return (
             <React.Fragment key={name}>
-              <button
+              <ButtonBase
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => onIndicatorToggle(name)}
-                style={pillStyle(isActive)}
+                className={PILL_CLASS}
+                data-testid={`advanced-chart-indicator-${name}`}
               >
-                {name}
-              </button>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={pillTextColor(isActive)}
+                  fontWeight={pillFontWeight(isActive)}
+                >
+                  {name}
+                </Text>
+              </ButtonBase>
               {name === 'BOL' && (
-                <div
-                  style={{
-                    width: '1px',
-                    height: '16px',
-                    background: 'var(--color-border-muted)',
-                    margin: '0 2px',
-                    flexShrink: 0,
-                  }}
-                />
+                <Box className="mx-1 h-4 w-px shrink-0 bg-border-muted" />
               )}
             </React.Fragment>
           );
         })}
-      </div>
+      </Box>
 
       {/* MA dropdown popover */}
       {showMADropdown && (
-        <div
-          role="menu"
+        <Box
+          ref={maMenuRef}
+          role="group"
+          aria-label="Moving averages"
+          data-testid="advanced-chart-ma-menu"
           style={{
             position: 'absolute',
             top: '100%',
@@ -196,53 +218,48 @@ const IndicatorBar = ({
             padding: '4px 0',
             boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
             minWidth: '120px',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {MA_OPTIONS.map((ma) => {
             const isActive = activeIndicators.has(ma);
             return (
-              <button
+              <ButtonBase
                 key={ma}
                 type="button"
-                role="menuitemcheckbox"
+                role="checkbox"
                 aria-checked={isActive}
                 onClick={() => onMAToggle(ma)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  width: '100%',
-                  padding: '6px 12px',
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: isActive ? 600 : 400,
-                  color: isActive ? toolbarText : toolbarMuted,
-                  textAlign: 'left',
-                }}
+                className="h-auto w-full justify-start gap-2 rounded-none bg-transparent px-3 py-1.5 hover:bg-hover active:bg-pressed"
+                data-testid={`advanced-chart-ma-option-${ma}`}
               >
-                <span
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderRadius: '3px',
-                    border: `1.5px solid ${isActive ? activeCheckColor : toolbarMuted}`,
-                    background: isActive ? activeCheckColor : 'transparent',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '10px',
-                    color: isDark ? brandColor.black : brandColor.white,
-                  }}
+                {/* The design uses a small square tick, not MMDS's 24px circular
+                    Checkbox, so the box is built from primitives. */}
+                <Box
+                  className={twMerge(
+                    'flex size-3.5 shrink-0 items-center justify-center rounded-sm border border-muted',
+                    isActive && 'border-success-default bg-success-default',
+                  )}
                 >
-                  {isActive ? '✓' : ''}
-                </span>
-                {ma}
-              </button>
+                  {isActive && (
+                    <Icon
+                      name={IconName.Check}
+                      size={IconSize.Xs}
+                      color={IconColor.SuccessInverse}
+                    />
+                  )}
+                </Box>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextDefault}
+                >
+                  {ma}
+                </Text>
+              </ButtonBase>
             );
           })}
-        </div>
+        </Box>
       )}
     </div>
   );

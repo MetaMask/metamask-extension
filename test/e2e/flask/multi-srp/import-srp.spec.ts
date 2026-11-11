@@ -14,7 +14,7 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import RevealSrpPage from '../../page-objects/pages/reveal-srp-page';
 import { mockActiveNetworks } from './common-multi-srp';
 
 const TEST_SRP_WORDS_FOR_UI_TEST = [
@@ -71,10 +71,11 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         await accountListPage.clickMultichainAccountMenuItem('Account details');
         const accountDetailsPage = new AccountDetailsPage(driver);
         await accountDetailsPage.clickRevealRow();
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.completeRevealSrpQuiz();
-        await privacySettings.fillPasswordToRevealSrp(testPassword);
-        await privacySettings.checkSrpTextIsDisplayed(SECOND_TEST_E2E_SRP);
+        const revealSrpPage = new RevealSrpPage(driver);
+        await revealSrpPage.checkPageIsLoaded();
+        await revealSrpPage.completeRevealSrpQuiz();
+        await revealSrpPage.fillPasswordToRevealSrp(testPassword);
+        await revealSrpPage.checkSrpTextIsDisplayed(SECOND_TEST_E2E_SRP);
       },
     );
   });

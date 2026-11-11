@@ -79,9 +79,18 @@ const withStore =
     </Provider>
   );
 
+// The story canvas is wider than the home row, so every pill fits and the
+// toggle never renders. Constrain it to the width where the row wraps.
+const withWrappedRow: Decorator = (Story) => (
+  <div style={{ maxWidth: 720 }}>
+    <Story />
+  </div>
+);
+
 const meta: Meta<typeof NetworkPillSelector> = {
   title: 'Components/Multichain/NetworkPillSelector',
   component: NetworkPillSelector,
+  decorators: [withWrappedRow],
   parameters: {
     docs: {
       description: {

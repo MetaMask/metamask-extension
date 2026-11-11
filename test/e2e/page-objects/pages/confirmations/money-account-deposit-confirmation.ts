@@ -44,6 +44,13 @@ export class MoneyAccountDepositConfirmation extends MetaMaskPayConfirmation {
     };
   }
 
+  async checkIsNotShown(): Promise<void> {
+    console.log('Check the Money Account deposit confirmation is not shown');
+    await this.driver.assertElementNotPresent(this.confirmationPage, {
+      waitAtLeastGuard: 1000,
+    });
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     console.log('Wait for Money Account deposit confirmation to load');
     await this.driver.waitForMultipleSelectors([

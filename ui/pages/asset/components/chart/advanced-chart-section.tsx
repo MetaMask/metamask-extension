@@ -1,4 +1,9 @@
-import React, { type CSSProperties, useCallback, useState } from 'react';
+import React, {
+  type CSSProperties,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
@@ -143,6 +148,11 @@ export const AdvancedChartSection = ({
     setChartError(null);
   }
 
+  // Tracks the candle series whose OHLCV fetch has been observed loading, so an
+  // empty result is only treated as "no data" after the fetch has actually run
+  // (see `candleEmpty` below).
+  const startedCandleSeriesRef = useRef<string | null>(null);
+
   const handleChartReady = useCallback(() => {
     setChartReady(true);
     setChartError(null);
@@ -219,7 +229,32 @@ export const AdvancedChartSection = ({
 
   const header = isLineChart ? lineHeader : candleHeader;
   const candleFailed = Boolean(chartError ?? ohlcvError);
-  const showIndicatorBar = !isLineChart && chartReady && !candleFailed;
+
+  // The OHLCV hook sits idle in line mode (and for the first render after a
+  // candle switch, before its fetch effect runs): `isLoading` is false and
+  // `ohlcvData` is empty, which is indistinguishable from a finished empty
+  // fetch by value alone. Remember the series whose fetch we have actually seen
+  // start, so an empty result only counts as "no data" once that series has
+  // run — otherwise the placeholder flashes before loading even begins.
+  // Writing the ref during render is safe: it is idempotent for a given render.
+  if (!isLineChart && isOhlcvLoading) {
+    startedCandleSeriesRef.current = seriesKey;
+  }
+  const candleFetchHasRun = startedCandleSeriesRef.current === seriesKey;
+
+  // A finished fetch that returned no candles is a success, not an error, so it
+  // never sets `ohlcvError`. Surface the shared "No data" placeholder instead
+  // of leaving an empty chart, but only once the fetch for this series has run
+  // and settled, so the placeholder does not flash on the idle pre-fetch frame.
+  const candleEmpty =
+    !isLineChart &&
+    !isOhlcvLoading &&
+    candleFetchHasRun &&
+    !candleFailed &&
+    Boolean(caipAssetId) &&
+    ohlcvData.length === 0;
+  const showIndicatorBar =
+    !isLineChart && chartReady && !candleFailed && !candleEmpty;
 
   // Interaction handlers and empty-state tracking live in their own hook to
   // keep this component focused on layout.
@@ -246,7 +281,7 @@ export const AdvancedChartSection = ({
   });
 
   let candleChart;
-  if (candleFailed) {
+  if (candleFailed || candleEmpty) {
     candleChart = <ChartErrorState />;
   } else if (caipAssetId) {
     candleChart = (

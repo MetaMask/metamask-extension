@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -57,7 +58,9 @@ export type UseOHLCVChartResult = {
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-export const OHLCV_BASE_URL = 'https://price.api.cx.metamask.io/v3/ohlcv-chart';
+// Derived from the shared prices-API base so the chart follows
+// `MM_BACKEND_PRICES_API_URL` (staging/local) instead of always hitting prod.
+export const OHLCV_BASE_URL = `${priceApiBaseUrl}/v3/ohlcv-chart`;
 
 export const FALLBACK_CURRENCY = 'usd';
 

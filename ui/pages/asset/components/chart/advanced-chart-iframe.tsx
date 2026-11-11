@@ -409,15 +409,29 @@ const AdvancedChartIframe = forwardRef<
     // engine can show a smooth real-time pulse via REALTIME_UPDATE instead of
     // a full resetData() rebuild. Matches mobile's AdvancedChart.tsx pattern.
     useEffect(() => {
-      if (!iframeLoaded || !ohlcvData?.length) {
+      if (!iframeLoaded) {
         return;
       }
 
       // A different token or interval is never an incremental update, however
       // similar the two bar sets look.
-      if (seriesKeyRef.current !== seriesKey) {
+      const seriesChanged = seriesKeyRef.current !== seriesKey;
+      const hadData = prevOhlcvDataRef.current.length > 0;
+      if (seriesChanged) {
         seriesKeyRef.current = seriesKey;
         prevOhlcvDataRef.current = [];
+      }
+
+      // A successful fetch that returns no candles is not an error, so nothing
+      // else clears the chart. Without this, the previous asset's/interval's
+      // candles stay stamped under the new series key. Only post the clear when
+      // the engine could actually be holding stale bars.
+      if (!ohlcvData?.length) {
+        if (seriesChanged || hadData) {
+          postToChart({ type: 'SET_OHLCV_DATA', payload: { data: [] } });
+          prevOhlcvDataRef.current = [];
+        }
+        return;
       }
 
       const prevData = prevOhlcvDataRef.current;

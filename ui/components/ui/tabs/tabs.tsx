@@ -12,6 +12,7 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { isViewTransitionSupported } from '../transition';
+import { TabEndSlotContext } from './tab-end-slot';
 import { TabsProps, TabChild } from './tabs.types';
 
 function clamp(value: number, min: number, max: number) {
@@ -68,10 +69,13 @@ export const Tabs = <TKey extends string = string>({
   tabContentProps = {},
   className = '',
   animated,
+  hasTabEndSlot = false,
+  tabRowClassName,
   ...props
 }: TabsProps<TKey>) => {
   const tabListRef = useRef<HTMLDivElement>(null);
   const tabContentRef = useRef<HTMLDivElement>(null);
+  const [tabEndSlot, setTabEndSlot] = useState<HTMLElement | null>(null);
 
   // Helper function to get valid children, filtering out null/undefined/false values
   const getValidChildren = useMemo((): TabChild<TKey>[] => {
@@ -298,24 +302,42 @@ export const Tabs = <TKey extends string = string>({
     );
   };
 
-  return (
-    <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
-      <div {...tabListWrapperProps}>
-        <Box
-          ref={tabListRef}
-          role="tablist"
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Start}
-          gap={4}
-          {...tabListProps}
-          onKeyDown={handleTabListKeyDown}
-        >
-          {renderTabs()}
-        </Box>
-      </div>
-      <Box ref={tabContentRef} role="tabpanel" {...tabContentProps}>
-        {renderActiveTabContent()}
-      </Box>
+  const { className: tabListWrapperClassName, ...restTabListWrapperProps } =
+    tabListWrapperProps;
+
+  const tabList = (
+    <Box
+      ref={tabListRef}
+      role="tablist"
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Start}
+      gap={4}
+      {...tabListProps}
+      onKeyDown={handleTabListKeyDown}
+    >
+      {renderTabs()}
     </Box>
+  );
+
+  return (
+    <TabEndSlotContext.Provider value={hasTabEndSlot ? tabEndSlot : null}>
+      <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
+        <div {...restTabListWrapperProps} className={tabListWrapperClassName}>
+          {hasTabEndSlot ? (
+            <div
+              className={twMerge('flex min-w-0 items-center', tabRowClassName)}
+            >
+              <div className="min-w-0 flex-1">{tabList}</div>
+              <div ref={setTabEndSlot} className="tab-end-slot" />
+            </div>
+          ) : (
+            tabList
+          )}
+        </div>
+        <Box ref={tabContentRef} role="tabpanel" {...tabContentProps}>
+          {renderActiveTabContent()}
+        </Box>
+      </Box>
+    </TabEndSlotContext.Provider>
   );
 };

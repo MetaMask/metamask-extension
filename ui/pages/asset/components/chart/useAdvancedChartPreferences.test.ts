@@ -173,6 +173,29 @@ describe('useAdvancedChartPreferences', () => {
       ]);
     });
 
+    it('accumulates rapid toggles fired before the write round-trips', () => {
+      // Neither toggle is followed by a state feedback, mimicking two clicks
+      // landing before the async `setPreference` updates Redux. The second must
+      // build on the first rather than recomputing from the stale empty set.
+      const { result } = renderHook(() => useAdvancedChartPreferences());
+
+      act(() => {
+        result.current.toggleIndicator('Volume');
+      });
+      act(() => {
+        result.current.toggleIndicator('MACD');
+      });
+
+      expect(mockSubmit).toHaveBeenNthCalledWith(1, SET_PREFERENCE, [
+        'tdpChartIndicators',
+        ['Volume'],
+      ]);
+      expect(mockSubmit).toHaveBeenNthCalledWith(2, SET_PREFERENCE, [
+        'tdpChartIndicators',
+        ['Volume', 'MACD'],
+      ]);
+    });
+
     it('survives a failed write instead of rejecting unhandled', () => {
       jest.spyOn(console, 'error').mockImplementation(() => undefined);
       mockSubmit.mockRejectedValueOnce(new Error('background unavailable'));
