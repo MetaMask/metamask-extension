@@ -14,6 +14,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../pages/money/constants/money-events';
 import type { MoneyAccountAvailability } from './money/use-money-account-availability';
@@ -237,6 +238,10 @@ describe('useMainNavItems', () => {
       expect(store.getState().moneyFtue).toStrictEqual({
         isOpen: true,
         source: 'moneyHome',
+        origin: {
+          entryPoint: MoneyFtueEntryPoint.MoneyTab,
+          componentName: MoneyComponentName.HomeTab,
+        },
         pendingDeposit: null,
         acknowledged: false,
       });

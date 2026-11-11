@@ -1,4 +1,4 @@
-import { Driver } from '../../../webdriver/driver';
+import { Driver } from '../../../../webdriver/driver';
 
 /**
  * Change-password flow under Security and password.
