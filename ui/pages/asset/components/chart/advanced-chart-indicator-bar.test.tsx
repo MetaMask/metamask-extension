@@ -1,16 +1,7 @@
 import React from 'react';
 import { it } from '@jest/globals';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import IndicatorBar from './advanced-chart-indicator-bar';
-
-// Mock useTheme hook
-jest.mock('../../../../hooks/useTheme', () => ({
-  useTheme: jest.fn(),
-}));
-
-const mockUseTheme = jest.requireMock('../../../../hooks/useTheme')
-  .useTheme as jest.Mock;
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import IndicatorBar, { isMovingAverage } from './advanced-chart-indicator-bar';
 
 describe('IndicatorBar', () => {
   const mockOnIndicatorToggle = jest.fn();
@@ -24,7 +15,6 @@ describe('IndicatorBar', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseTheme.mockReturnValue('light');
     jest.useFakeTimers();
   });
 
@@ -33,116 +23,76 @@ describe('IndicatorBar', () => {
   });
 
   describe('Rendering', () => {
-    it('renders all indicator buttons', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
+    it('renders the MA trigger and every toggle pill', () => {
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      // Check MA dropdown trigger (use more specific text)
-      expect(getByText('MA ▾')).toBeInTheDocument();
-
-      // Check all toggle indicators
-      expect(getByText('BOL')).toBeInTheDocument();
-      expect(getByText('RSI')).toBeInTheDocument();
-      expect(getByText(messages.perpsSortByVolume.message)).toBeInTheDocument();
-      expect(getByText('MACD')).toBeInTheDocument();
+      expect(getByTestId('advanced-chart-ma-trigger')).toHaveTextContent('MA');
+      expect(getByTestId('advanced-chart-indicator-BOL')).toBeInTheDocument();
+      expect(getByTestId('advanced-chart-indicator-RSI')).toBeInTheDocument();
+      expect(
+        getByTestId('advanced-chart-indicator-Volume'),
+      ).toBeInTheDocument();
+      expect(getByTestId('advanced-chart-indicator-MACD')).toBeInTheDocument();
     });
 
-    it('renders with correct initial MA label when no MAs are selected', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      expect(getByText('MA ▾')).toBeInTheDocument();
-    });
-
-    it('renders with single MA label when one MA is selected', () => {
-      const activeIndicators = new Set(['MA5']);
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
+    it('labels the MA trigger with the single selected MA', () => {
+      const { getByTestId } = render(
+        <IndicatorBar {...defaultProps} activeIndicators={new Set(['MA5'])} />,
       );
 
-      expect(getByText('MA5 ▾')).toBeInTheDocument();
+      expect(getByTestId('advanced-chart-ma-trigger')).toHaveTextContent('MA5');
     });
 
-    it('renders with multiple MA label when multiple MAs are selected', () => {
-      const activeIndicators = new Set(['MA5', 'MA10', 'MA20']);
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
+    it('labels the MA trigger with a count when multiple MAs are selected', () => {
+      const { getByTestId } = render(
+        <IndicatorBar
+          {...defaultProps}
+          activeIndicators={new Set(['MA5', 'MA10', 'MA20'])}
+        />,
       );
 
-      expect(getByText('MA ×3 ▾')).toBeInTheDocument();
+      expect(getByTestId('advanced-chart-ma-trigger')).toHaveTextContent(
+        'MA ×3',
+      );
     });
 
-    it('applies correct styling to active indicators', () => {
-      const activeIndicators = new Set(['BOL', 'RSI']);
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
+    it('marks active toggle pills as pressed', () => {
+      const { getByTestId } = render(
+        <IndicatorBar
+          {...defaultProps}
+          activeIndicators={new Set(['BOL', 'RSI'])}
+        />,
       );
 
-      const bolButton = getByText('BOL');
-      const rsiButton = getByText('RSI');
-      const volumeButton = getByText(messages.perpsSortByVolume.message);
-
-      // Active buttons should have higher font weight
-      expect(bolButton).toHaveStyle({ fontWeight: 600 });
-      expect(rsiButton).toHaveStyle({ fontWeight: 600 });
-      expect(volumeButton).toHaveStyle({ fontWeight: 500 }); // inactive
+      expect(getByTestId('advanced-chart-indicator-BOL')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(getByTestId('advanced-chart-indicator-RSI')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(getByTestId('advanced-chart-indicator-Volume')).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
     });
 
-    it('renders divider after MA dropdown', () => {
+    it('renders dividers after the MA trigger and after BOL', () => {
       const { container } = render(<IndicatorBar {...defaultProps} />);
 
-      const dividers = container.querySelectorAll('[style*="width: 1px"]');
-      expect(dividers.length).toBeGreaterThan(0);
-    });
-
-    it('renders divider after BOL indicator', () => {
-      const { container } = render(<IndicatorBar {...defaultProps} />);
-
-      const dividers = container.querySelectorAll('[style*="width: 1px"]');
-      // Should have at least 2 dividers: one after MA, one after BOL
+      const dividers = container.querySelectorAll('.w-px');
       expect(dividers.length).toBeGreaterThanOrEqual(2);
     });
   });
 
-  describe('Theme Support', () => {
-    it('uses light theme colors when theme is light', () => {
-      mockUseTheme.mockReturnValue('light');
-      const activeIndicators = new Set(['MA5']);
+  describe('Indicator toggle interactions', () => {
+    it.each(['BOL', 'RSI', 'Volume', 'MACD'])(
+      'calls onIndicatorToggle when %s is clicked',
+      (name: string) => {
+        const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
-      );
-
-      const maButton = getByText('MA5 ▾');
-      expect(maButton).toBeInTheDocument();
-    });
-
-    it('uses dark theme colors when theme is dark', () => {
-      mockUseTheme.mockReturnValue('dark');
-      const activeIndicators = new Set(['MA10']);
-
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
-      );
-
-      const maButton = getByText('MA10 ▾');
-      expect(maButton).toBeInTheDocument();
-    });
-  });
-
-  describe('Indicator Toggle Interactions', () => {
-    it.each([
-      { name: 'BOL', displayText: 'BOL' },
-      { name: 'RSI', displayText: 'RSI' },
-      {
-        name: 'Volume',
-        displayText: messages.perpsSortByVolume.message,
-      },
-      { name: 'MACD', displayText: 'MACD' },
-    ])(
-      'calls onIndicatorToggle when $name is clicked',
-      ({ name, displayText }: { name: string; displayText: string }) => {
-        const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-        fireEvent.click(getByText(displayText));
+        fireEvent.click(getByTestId(`advanced-chart-indicator-${name}`));
 
         expect(mockOnIndicatorToggle).toHaveBeenCalledTimes(1);
         expect(mockOnIndicatorToggle).toHaveBeenCalledWith(name);
@@ -150,10 +100,9 @@ describe('IndicatorBar', () => {
     );
 
     it('allows toggling the same indicator multiple times', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      const rsiButton = getByText('RSI');
-
+      const rsiButton = getByTestId('advanced-chart-indicator-RSI');
       fireEvent.click(rsiButton);
       fireEvent.click(rsiButton);
       fireEvent.click(rsiButton);
@@ -162,87 +111,85 @@ describe('IndicatorBar', () => {
     });
   });
 
-  describe('MA Dropdown Interactions', () => {
-    it('opens MA dropdown when MA button is clicked', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
+  describe('MA dropdown interactions', () => {
+    it('opens the MA dropdown with every option when the trigger is clicked', () => {
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      fireEvent.click(getByText('MA ▾'));
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
 
-      // Check all MA options are visible
-      expect(getByText('MA5')).toBeInTheDocument();
-      expect(getByText('MA10')).toBeInTheDocument();
-      expect(getByText('MA20')).toBeInTheDocument();
-      expect(getByText('MA50')).toBeInTheDocument();
-      expect(getByText('MA200')).toBeInTheDocument();
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
+      ['MA5', 'MA10', 'MA20', 'MA50', 'MA200'].forEach((ma) => {
+        expect(
+          getByTestId(`advanced-chart-ma-option-${ma}`),
+        ).toBeInTheDocument();
+      });
     });
 
-    it('closes MA dropdown when clicking outside', async () => {
-      const { getByText, queryByText, container } = render(
+    it('closes the MA dropdown when clicking outside', async () => {
+      const { getByTestId, queryByTestId, container } = render(
         <IndicatorBar {...defaultProps} />,
       );
 
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-      expect(getByText('MA5')).toBeInTheDocument();
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
 
-      // Advance timers to allow event listener setup
       jest.advanceTimersByTime(0);
-
-      // Click outside
       fireEvent.click(container);
 
-      // Wait for dropdown to close
-      await waitFor(
-        () => {
-          expect(queryByText('MA5')).not.toBeInTheDocument();
-        },
-        { timeout: 100 },
-      );
+      await waitFor(() => {
+        expect(queryByTestId('advanced-chart-ma-menu')).not.toBeInTheDocument();
+      });
     });
 
-    it('toggles MA dropdown open and closed on repeated clicks', () => {
-      const { getByText, queryByText } = render(
+    it('closes the MA dropdown when pressing Escape', async () => {
+      const { getByTestId, queryByTestId } = render(
         <IndicatorBar {...defaultProps} />,
       );
 
-      const maButton = getByText('MA ▾');
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
 
-      // Open
-      fireEvent.click(maButton);
-      expect(getByText('MA5')).toBeInTheDocument();
+      fireEvent.keyDown(document, { key: 'Escape' });
 
-      // Close
-      fireEvent.click(maButton);
-      expect(queryByText('MA5')).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(queryByTestId('advanced-chart-ma-menu')).not.toBeInTheDocument();
+      });
+    });
 
-      // Open again
-      fireEvent.click(maButton);
-      expect(getByText('MA5')).toBeInTheDocument();
+    it('toggles the MA dropdown open and closed on repeated clicks', () => {
+      const { getByTestId, queryByTestId } = render(
+        <IndicatorBar {...defaultProps} />,
+      );
+
+      const trigger = getByTestId('advanced-chart-ma-trigger');
+
+      fireEvent.click(trigger);
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
+
+      fireEvent.click(trigger);
+      expect(queryByTestId('advanced-chart-ma-menu')).not.toBeInTheDocument();
+
+      fireEvent.click(trigger);
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
     });
 
     it('calls onMAToggle when an MA option is clicked', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Click MA5
-      fireEvent.click(getByText('MA5'));
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA5'));
 
       expect(mockOnMAToggle).toHaveBeenCalledTimes(1);
       expect(mockOnMAToggle).toHaveBeenCalledWith('MA5');
     });
 
-    it('calls onMAToggle for different MA options', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
+    it('calls onMAToggle for each distinct MA option', () => {
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Click different MAs
-      fireEvent.click(getByText('MA10'));
-      fireEvent.click(getByText('MA20'));
-      fireEvent.click(getByText('MA50'));
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA10'));
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA20'));
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA50'));
 
       expect(mockOnMAToggle).toHaveBeenCalledTimes(3);
       expect(mockOnMAToggle).toHaveBeenNthCalledWith(1, 'MA10');
@@ -250,366 +197,138 @@ describe('IndicatorBar', () => {
       expect(mockOnMAToggle).toHaveBeenNthCalledWith(3, 'MA50');
     });
 
-    it('shows checkmarks for active MA options', () => {
-      const activeIndicators = new Set(['MA5', 'MA20']);
-
-      const { getByText, container } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
+    it('checks the options that are active and leaves the rest unchecked', () => {
+      const { getByTestId } = render(
+        <IndicatorBar
+          {...defaultProps}
+          activeIndicators={new Set(['MA5', 'MA20'])}
+        />,
       );
 
-      // Open dropdown (label shows count when multiple MAs are selected)
-      fireEvent.click(getByText('MA ×2 ▾'));
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
 
-      // Check for checkmarks (✓)
-      const checkmarks = Array.from(container.querySelectorAll('span')).filter(
-        (span) => span.textContent === '✓',
-      );
-
-      // Should have 2 checkmarks for MA5 and MA20
-      expect(checkmarks).toHaveLength(2);
+      expect(getByTestId('advanced-chart-ma-option-MA5')).toBeChecked();
+      expect(getByTestId('advanced-chart-ma-option-MA20')).toBeChecked();
+      expect(getByTestId('advanced-chart-ma-option-MA10')).not.toBeChecked();
+      expect(getByTestId('advanced-chart-ma-option-MA50')).not.toBeChecked();
+      expect(getByTestId('advanced-chart-ma-option-MA200')).not.toBeChecked();
     });
 
-    it('shows no checkmarks when no MAs are active', () => {
-      const { getByText, container } = render(
-        <IndicatorBar {...defaultProps} />,
-      );
+    it('stays open after an MA option is selected so several can be toggled', () => {
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Check for checkmarks (✓)
-      const checkmarks = Array.from(container.querySelectorAll('span')).filter(
-        (span) => span.textContent === '✓',
-      );
-
-      expect(checkmarks).toHaveLength(0);
-    });
-
-    it('applies correct styling to active MA options', () => {
-      const activeIndicators = new Set(['MA50']);
-
-      const { getByText, container } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
-      );
-
-      // Open dropdown
-      fireEvent.click(getByText('MA50 ▾'));
-
-      // Find the dropdown and verify MA50 button exists
-      const dropdown = container.querySelector('[style*="position: absolute"]');
-      expect(dropdown).toBeInTheDocument();
-
-      // Verify MA50 option is rendered in dropdown
-      const ma50Text = Array.from(
-        dropdown?.querySelectorAll('button') || [],
-      ).find((btn) => btn.textContent?.includes('MA50'));
-
-      expect(ma50Text).toBeDefined();
-    });
-
-    it('applies correct styling to inactive MA options', () => {
-      const { getByText, container } = render(
-        <IndicatorBar {...defaultProps} />,
-      );
-
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Find the MA5 button inside the dropdown
-      const dropdownButtons = container.querySelectorAll('button');
-      const ma5Button = Array.from(dropdownButtons).find(
-        (btn) =>
-          btn.textContent?.trim() === 'MA5' && btn.style.width === '100%',
-      );
-
-      expect(ma5Button).toBeDefined();
-      expect(ma5Button).toHaveStyle({ fontWeight: 400 });
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('handles empty activeIndicators set', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      // All indicators should appear inactive
-      expect(getByText('MA ▾')).toBeInTheDocument();
-      expect(getByText('BOL')).toBeInTheDocument();
-      expect(getByText('RSI')).toBeInTheDocument();
-    });
-
-    it('handles all indicators being active', () => {
-      const activeIndicators = new Set([
-        'MA5',
-        'MA10',
-        'MA20',
-        'MA50',
-        'MA200',
-        'BOL',
-        'RSI',
-        'Volume',
-        'MACD',
-      ]);
-
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
-      );
-
-      expect(getByText('MA ×5 ▾')).toBeInTheDocument();
-
-      // All toggle indicators should have higher font weight
-      const bolButton = getByText('BOL');
-      const rsiButton = getByText('RSI');
-      const volumeButton = getByText(messages.perpsSortByVolume.message);
-      const macdButton = getByText('MACD');
-
-      expect(bolButton).toHaveStyle({ fontWeight: 600 });
-      expect(rsiButton).toHaveStyle({ fontWeight: 600 });
-      expect(volumeButton).toHaveStyle({ fontWeight: 600 });
-      expect(macdButton).toHaveStyle({ fontWeight: 600 });
-    });
-
-    it('handles only non-MA indicators being active', () => {
-      const activeIndicators = new Set(['BOL', 'RSI', 'Volume', 'MACD']);
-
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
-      );
-
-      // MA label should still be 'MA' (no count)
-      expect(getByText('MA ▾')).toBeInTheDocument();
-    });
-
-    it('cleans up event listener when dropdown closes', async () => {
-      const { getByText, unmount } = render(<IndicatorBar {...defaultProps} />);
-
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Advance timers
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      // The outside-click listener is only armed after this tick.
       jest.advanceTimersByTime(0);
 
-      // Unmount component
-      unmount();
+      // Clicking an option bubbles to the document; the menu must not treat its
+      // own option as an outside click and close.
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA5'));
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
 
-      // Should not throw any errors
-      expect(true).toBe(true);
+      fireEvent.click(getByTestId('advanced-chart-ma-option-MA10'));
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
+      expect(mockOnMAToggle).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('Edge cases', () => {
+    it('keeps the MA label as "MA" when only non-MA indicators are active', () => {
+      const { getByTestId } = render(
+        <IndicatorBar
+          {...defaultProps}
+          activeIndicators={new Set(['BOL', 'RSI', 'Volume', 'MACD'])}
+        />,
+      );
+
+      expect(getByTestId('advanced-chart-ma-trigger')).toHaveTextContent('MA');
     });
 
-    it('cleans up event listener on unmount when dropdown is open', () => {
-      const { getByText, unmount } = render(<IndicatorBar {...defaultProps} />);
+    it('labels the trigger with the full count when every MA is active', () => {
+      const { getByTestId } = render(
+        <IndicatorBar
+          {...defaultProps}
+          activeIndicators={new Set(['MA5', 'MA10', 'MA20', 'MA50', 'MA200'])}
+        />,
+      );
 
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Unmount immediately
-      unmount();
-
-      // Should not throw any errors
-      expect(true).toBe(true);
+      expect(getByTestId('advanced-chart-ma-trigger')).toHaveTextContent(
+        'MA ×5',
+      );
     });
 
-    it('handles rapid clicking on MA dropdown', () => {
-      const { getByText, queryByText } = render(
+    it('cleans up listeners on unmount while the dropdown is open', () => {
+      const { getByTestId, unmount } = render(
         <IndicatorBar {...defaultProps} />,
       );
 
-      const maButton = getByText('MA ▾');
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      jest.advanceTimersByTime(0);
 
-      // Rapid clicks
-      fireEvent.click(maButton);
-      fireEvent.click(maButton);
-      fireEvent.click(maButton);
-      fireEvent.click(maButton);
-
-      // Final state should be consistent (closed since we clicked 4 times)
-      expect(queryByText('MA5')).not.toBeInTheDocument();
-    });
-
-    it('handles rapid clicks on MA options', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Rapid clicks on same option
-      const ma5Button = getByText('MA5');
-      fireEvent.click(ma5Button);
-      fireEvent.click(ma5Button);
-      fireEvent.click(ma5Button);
-
-      expect(mockOnMAToggle).toHaveBeenCalledTimes(3);
-      expect(mockOnMAToggle).toHaveBeenCalledWith('MA5');
+      expect(() => unmount()).not.toThrow();
     });
   });
 
-  describe('Accessibility', () => {
-    it('renders buttons with proper cursor pointer style', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      const bolButton = getByText('BOL');
-      expect(bolButton).toHaveStyle({ cursor: 'pointer' });
-
-      const maButton = getByText('MA ▾');
-      expect(maButton).toHaveStyle({ cursor: 'pointer' });
+  describe('MA filtering logic', () => {
+    it('recognises moving-average names via isMovingAverage', () => {
+      expect(isMovingAverage('MA5')).toBe(true);
+      expect(isMovingAverage('MA200')).toBe(true);
+      expect(isMovingAverage('MACD')).toBe(false);
+      expect(isMovingAverage('MA')).toBe(false);
+      expect(isMovingAverage('RSI')).toBe(false);
     });
 
-    it('renders MA dropdown options as buttons', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
+    it('counts only valid MA patterns in the trigger label', () => {
+      const { getByTestId } = render(
+        <IndicatorBar
+          {...defaultProps}
+          activeIndicators={
+            new Set(['MA5', 'MA10', 'BOL', 'RSI', 'SomeRandomIndicator'])
+          }
+        />,
+      );
 
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      const ma5Button = getByText('MA5');
-      expect(ma5Button.tagName).toBe('BUTTON');
-    });
-
-    it('renders indicator toggles as buttons', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      const bolButton = getByText('BOL');
-      const rsiButton = getByText('RSI');
-
-      expect(bolButton.tagName).toBe('BUTTON');
-      expect(rsiButton.tagName).toBe('BUTTON');
+      expect(getByTestId('advanced-chart-ma-trigger')).toHaveTextContent(
+        'MA ×2',
+      );
     });
   });
 
-  describe('Layout and Styling', () => {
-    it('renders with correct container styling', () => {
-      render(<IndicatorBar {...defaultProps} />);
+  describe('Interaction state', () => {
+    it('keeps the dropdown open when toggling a non-MA indicator', () => {
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      expect(screen.getByTestId('advanced-chart-indicator-pills')).toHaveStyle({
-        display: 'flex',
-        alignItems: 'center',
-      });
-      expect(screen.getByTestId('advanced-chart-indicator-bar')).toHaveStyle({
-        position: 'relative',
-      });
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
+
+      fireEvent.click(getByTestId('advanced-chart-indicator-BOL'));
+
+      expect(getByTestId('advanced-chart-ma-menu')).toBeInTheDocument();
+      expect(mockOnIndicatorToggle).toHaveBeenCalledWith('BOL');
+      expect(mockOnMAToggle).not.toHaveBeenCalled();
     });
+  });
 
+  describe('Layout', () => {
     it('scrolls the pills instead of widening the page in a narrow panel', () => {
-      render(<IndicatorBar {...defaultProps} />);
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      // None of the pills shrink, and together they need more width than a
-      // narrowed side panel has. Left unconstrained they overflow their box
-      // and give the whole page a horizontal scrollbar.
-      expect(screen.getByTestId('advanced-chart-indicator-pills')).toHaveStyle({
+      expect(getByTestId('advanced-chart-indicator-pills')).toHaveStyle({
         minWidth: '0',
         overflowX: 'auto',
       });
     });
 
-    it('keeps the MA dropdown outside the scrolling row so it is not clipped', () => {
-      render(<IndicatorBar {...defaultProps} />);
+    it('keeps the MA dropdown outside the scrolling pills row so it is not clipped', () => {
+      const { getByTestId } = render(<IndicatorBar {...defaultProps} />);
 
-      fireEvent.click(screen.getByText('MA ▾'));
+      fireEvent.click(getByTestId('advanced-chart-ma-trigger'));
 
-      const dropdown = screen.getByText('MA5').closest('div');
       expect(
-        screen
-          .getByTestId('advanced-chart-indicator-pills')
-          .contains(dropdown as Node),
+        getByTestId('advanced-chart-indicator-pills').contains(
+          getByTestId('advanced-chart-ma-menu'),
+        ),
       ).toBe(false);
-    });
-
-    it('renders MA dropdown with correct positioning', () => {
-      const { getByText, container } = render(
-        <IndicatorBar {...defaultProps} />,
-      );
-
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      const dropdown = Array.from(container.querySelectorAll('div')).find(
-        (div) => div.style.position === 'absolute',
-      );
-
-      expect(dropdown).toHaveStyle({
-        position: 'absolute',
-        top: '100%',
-        zIndex: '100',
-      });
-    });
-
-    it('renders MA dropdown options with correct layout', () => {
-      const { getByText, container } = render(
-        <IndicatorBar {...defaultProps} />,
-      );
-
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Find MA5 button in dropdown using a more specific selector
-      const dropdownButtons = container.querySelectorAll('button');
-      const ma5Button = Array.from(dropdownButtons).find(
-        (btn) => btn.textContent?.includes('MA5') && btn.style.width === '100%',
-      );
-
-      expect(ma5Button).toBeDefined();
-      expect(ma5Button).toHaveStyle({
-        width: '100%',
-        background: 'transparent',
-        textAlign: 'left',
-      });
-    });
-  });
-
-  describe('Interaction State', () => {
-    it('maintains dropdown state across indicator toggles', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-      expect(getByText('MA5')).toBeInTheDocument();
-
-      // Toggle an indicator (not MA)
-      fireEvent.click(getByText('BOL'));
-
-      // Dropdown should still be open
-      expect(getByText('MA5')).toBeInTheDocument();
-    });
-
-    it('does not interfere with indicator callbacks when dropdown is open', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      // Open dropdown
-      fireEvent.click(getByText('MA ▾'));
-
-      // Click an indicator
-      fireEvent.click(getByText('RSI'));
-
-      expect(mockOnIndicatorToggle).toHaveBeenCalledWith('RSI');
-      expect(mockOnMAToggle).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('MA Filtering Logic', () => {
-    it('correctly filters MA indicators using regex', () => {
-      const activeIndicators = new Set([
-        'MA5',
-        'MA10',
-        'BOL',
-        'RSI',
-        'SomeRandomIndicator',
-      ]);
-
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
-      );
-
-      // Should only count MA5 and MA10
-      expect(getByText('MA ×2 ▾')).toBeInTheDocument();
-    });
-
-    it('ignores invalid MA patterns', () => {
-      const activeIndicators = new Set(['MA', 'MAabc', 'MACD', 'MA5']);
-
-      const { getByText } = render(
-        <IndicatorBar {...defaultProps} activeIndicators={activeIndicators} />,
-      );
-
-      // Should only count MA5
-      expect(getByText('MA5 ▾')).toBeInTheDocument();
     });
   });
 });
