@@ -100,6 +100,17 @@ describe('ExtensionUpdateTakeover', () => {
     });
   });
 
+  it('names the dialog with its title heading', () => {
+    render(<ExtensionUpdateTakeover promptType="versionUpdate" />);
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'extensionUpdateTitle' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: 'extensionUpdateTitle' }),
+    ).toBeInTheDocument();
+  });
+
   it('renders the unsupported variant', () => {
     render(<ExtensionUpdateTakeover promptType="unsupportedVersion" />);
 
