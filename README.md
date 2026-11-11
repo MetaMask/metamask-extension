@@ -238,6 +238,18 @@ PLAYWRIGHT_HEADLESS=1 yarn test:e2e:playwright:chrome test/e2e/tests/settings/te
 PWDEBUG=1 yarn test:e2e:playwright:chrome test/e2e/tests/settings/terms-of-use.pw.spec.ts
 ```
 
+#### API mock sync
+
+Shared E2E tests mock MetaMask APIs from [`test/e2e/mock-e2e.js`](test/e2e/mock-e2e.js). Every mock is one row in [`test/e2e/mock-response-data/api-mock-catalog.md`](test/e2e/mock-response-data/api-mock-catalog.md). `write` rows are updated from the live API. `skip` rows are not fetched, and each row says why (non-JSON, request-specific POST, auth, and so on).
+
+`yarn test:e2e:sync-api-mocks` changes **shape only**. Values already in the fixture stay, so a new price does not trigger a write. New fields get placeholders (`0`, `""`, `false`, `null`). Removed fields are dropped. On a list, the shape is the union of the entries' fields, and a field only some entries have is optional. Values the tests assert (prices, gas fees, and similar) stay as literals in `mock-e2e.js`. With no drift the command prints `No API changes detected`.
+
+[`api-mocks.ts`](test/e2e/mock-response-data/api-mocks.ts) checks the synced payloads with `satisfies` against the types the wallet reads. `yarn lint:tsc` fails when one of those fields disappears.
+
+To add a mock, add one catalog row (`write:<file>` or `write:<file>#<key>`, or `skip` plus a reason) and register it in `mock-e2e.js`, then run the command above.
+
+[`.github/workflows/sync-e2e-api-mocks.yml`](.github/workflows/sync-e2e-api-mocks.yml) runs every Monday at 06:00 UTC and when someone starts it manually. It also runs on a same-repo pull request that edits the mocks. When it pushes a commit, it posts or updates one comment with the affected APIs and a link to that commit. The note on the comment says the change is shape-only.
+
 #### Running E2E tests with feature flags
 
 Feature flags used in tests fall into two categories: remote flags (runtime values fetched from client-config) and build-time flags (compile-time values set during the build). Use the workflow that matches the flag type.

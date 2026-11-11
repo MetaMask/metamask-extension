@@ -163,11 +163,29 @@ jobs:
           COMMIT_SHA: ${{ steps.pr-commit.outputs.sha || steps.weekly.outputs.sha }}
         run: |
           MARKER="<!-- e2e-api-mock-sync -->"
+          # One list item per API. Drop the query string so the comment does
+          # not become a single line that scrolls sideways.
+          READABLE="$(
+            while IFS= read -r line || [ -n "${line}" ]; do
+              [ -z "${line}" ] && continue
+              ident="${line%% *}"
+              rest="${line#* }"
+              change="${rest##*: }"
+              url="${rest%": ${change}"}"
+              short="${url%%\?*}"
+              short="${short#https://}"
+              short="${short#http://}"
+              if [ "${#short}" -gt 96 ]; then
+                short="${short:0:48}...${short: -36}"
+              fi
+              printf -- '- **%s** (`%s`): %s\n' "${ident}" "${short}" "${change}"
+            done < sync-report.txt
+          )"
           jq -n \
-            --rawfile report sync-report.txt \
+            --arg report "${READABLE}" \
             --arg marker "${MARKER}" \
             --arg url "https://github.com/${GITHUB_REPOSITORY}/commit/${COMMIT_SHA}" \
-            '{body: ($marker + "\nUpdated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.\n\nCommit: " + $url + "\n\n```\n" + $report + "```\n")}' \
+            '{body: ($marker + "\nUpdated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.\n\nCommit: " + $url + "\n\n" + $report + "\n")}' \
             > comment.json
           COMMENT_ID="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" | head -n 1)"
           if [ -n "${COMMENT_ID}" ]; then
