@@ -13,7 +13,7 @@ import {
 } from '../../../shared/lib/trace';
 import {
   admitTraceWrappers,
-  shouldSampleRootWrapper,
+  isRootWrapperEnabled,
   shouldSampleWrappers,
 } from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
@@ -65,9 +65,9 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        // No UI trace context: a sampled dispatch roots its own trace, so
+        // No UI trace context: the dispatch roots its own trace, so
         // concurrent handlers get independent trace ids.
-        result = shouldSampleRootWrapper()
+        result = isRootWrapperEnabled()
           ? await trace(
               { name, op: 'rpc.handler', root: true, data: spanData },
               () =>

@@ -1,7 +1,7 @@
 import { getRemoteWrapperSampleRate } from './sentry-remote-rates';
 import {
   admitTraceWrappers,
-  shouldSampleRootWrapper,
+  isRootWrapperEnabled,
   shouldSampleWrappers,
 } from './wrapper-sampling';
 
@@ -9,11 +9,10 @@ jest.mock('./sentry-remote-rates', () => ({
   getRemoteWrapperSampleRate: jest.fn(),
 }));
 
-describe('shouldSampleRootWrapper', () => {
+describe('isRootWrapperEnabled', () => {
   const originalKillSwitch = process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 
   beforeEach(() => {
-    jest.mocked(getRemoteWrapperSampleRate).mockReturnValue(undefined);
     delete process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
   });
 
@@ -26,23 +25,14 @@ describe('shouldSampleRootWrapper', () => {
     }
   });
 
-  it('samples a draw below the default rate', () => {
-    expect(shouldSampleRootWrapper(() => 0.004)).toBe(true);
+  it('creates the root wrapper whatever the wrapper sample rate', () => {
+    jest.mocked(getRemoteWrapperSampleRate).mockReturnValue(0);
+    expect(isRootWrapperEnabled()).toBe(true);
   });
 
-  it('rejects a draw at or above the default rate', () => {
-    expect(shouldSampleRootWrapper(() => 0.005)).toBe(false);
-  });
-
-  it('uses the remote rate when one was read', () => {
-    jest.mocked(getRemoteWrapperSampleRate).mockReturnValue(0.5);
-    expect(shouldSampleRootWrapper(() => 0.4)).toBe(true);
-    expect(shouldSampleRootWrapper(() => 0.6)).toBe(false);
-  });
-
-  it('rejects everything when distributed tracing is disabled', () => {
+  it('creates no root wrapper when distributed tracing is disabled', () => {
     process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED = 'true';
-    expect(shouldSampleRootWrapper(() => 0)).toBe(false);
+    expect(isRootWrapperEnabled()).toBe(false);
   });
 });
 

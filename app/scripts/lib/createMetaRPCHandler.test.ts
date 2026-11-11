@@ -4,7 +4,7 @@ import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import { continueTraceContext, trace } from '../../../shared/lib/trace';
 import {
   admitTraceWrappers,
-  shouldSampleRootWrapper,
+  isRootWrapperEnabled,
   shouldSampleWrappers,
 } from '../../../shared/lib/wrapper-sampling';
 import createMetaRPCHandler from './createMetaRPCHandler';
@@ -23,7 +23,7 @@ jest.mock('../../../shared/lib/trace', () => {
 
 jest.mock('../../../shared/lib/wrapper-sampling', () => ({
   shouldSampleWrappers: jest.fn().mockReturnValue(true),
-  shouldSampleRootWrapper: jest.fn().mockReturnValue(true),
+  isRootWrapperEnabled: jest.fn().mockReturnValue(true),
   admitTraceWrappers: jest.fn((_traceId: unknown, fn: () => unknown) => fn()),
 }));
 
@@ -176,7 +176,7 @@ describe('createMetaRPCHandler', () => {
       jest.mocked(trace).mockClear();
       jest.mocked(continueTraceContext).mockClear();
       jest.mocked(shouldSampleWrappers).mockReset().mockReturnValue(true);
-      jest.mocked(shouldSampleRootWrapper).mockReset().mockReturnValue(true);
+      jest.mocked(isRootWrapperEnabled).mockReset().mockReturnValue(true);
     });
 
     it('strips trace context from params and wraps call in trace', async () => {
@@ -414,8 +414,8 @@ describe('createMetaRPCHandler', () => {
       );
     });
 
-    it('calls the handler without a trace when the root sub-sample rejects', async () => {
-      jest.mocked(shouldSampleRootWrapper).mockReturnValue(false);
+    it('calls the handler without a trace when distributed tracing is disabled', async () => {
+      jest.mocked(isRootWrapperEnabled).mockReturnValue(false);
       const foo = jest.fn().mockReturnValue('result');
       const api = { foo } as unknown as Api;
       const streamTest = createStream();

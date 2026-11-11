@@ -44,20 +44,14 @@ export function shouldSampleWrappers(traceId: string | undefined): boolean {
 }
 
 /**
- * Sub-sampling decision for a wrapper span that starts its own trace, which has
- * no trace id to hash yet. Uses the same rate as {@link shouldSampleWrappers}.
+ * Whether a wrapper span that starts its own trace is created. Such a root is
+ * sampled by `tracesSampleRate` like any other root; a second draw here would
+ * hide a rate Sentry cannot see, and its extrapolated counts would read low.
  *
- * @param random - Returns a uniform number in [0, 1).
- * @returns true if the root wrapper span should be created.
+ * @returns false only when distributed tracing is disabled.
  */
-export function shouldSampleRootWrapper(
-  random: () => number = Math.random,
-): boolean {
-  if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
-    return false;
-  }
-  const rate = getRemoteWrapperSampleRate() ?? WRAPPER_SAMPLE_RATE;
-  return random() < rate;
+export function isRootWrapperEnabled(): boolean {
+  return !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 }
 
 // A root wrapper is sampled before its trace id exists, so its nested wrappers
