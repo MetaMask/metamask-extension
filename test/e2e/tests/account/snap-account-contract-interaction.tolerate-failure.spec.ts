@@ -1,3 +1,4 @@
+// Filename includes `tolerate-failure` so run-e2e-test.js logs a failure and exits 0.
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';

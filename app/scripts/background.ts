@@ -683,7 +683,7 @@ async function initialize(backup: Backup | null) {
     getState: initializedController.getState.bind(initializedController),
   })
     .on('navigate', async ({ url, parsed }) => {
-      // don't track deep links that are immediately redirected (like /buy)
+      // Don't track deep links that are immediately redirected.
       if (shouldTrackDeepLinkNavigation(parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }
