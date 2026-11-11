@@ -1,9 +1,10 @@
 import React, {
   useMemo,
   useCallback,
+  useId,
   useRef,
-  useState,
   useEffect,
+  useState,
 } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
@@ -22,7 +23,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
@@ -51,6 +51,28 @@ const MAX_NETWORK_AVATARS = 4;
 // the "View all" button and the default address section always stay visible.
 const POPOVER_CONTENT_MAX_HEIGHT = 300;
 
+/**
+ * Whether the current browser supports Interest Invokers (`interestfor`).
+ * Exposed as a mutable object so tests can exercise native and fallback paths.
+ * Firefox and Safari do not support this API yet.
+ */
+export const interestInvokerSupport = {
+  detected:
+    typeof HTMLButtonElement !== 'undefined' &&
+    'interestForElement' in HTMLButtonElement.prototype,
+};
+
+/**
+ * Whether the current browser supports Invoker Commands (`command` /
+ * `commandfor` on buttons). Exposed as a mutable object so tests can exercise
+ * native and fallback paths.
+ */
+export const commandInvokerSupport = {
+  detected:
+    typeof HTMLButtonElement !== 'undefined' &&
+    'commandForElement' in HTMLButtonElement.prototype,
+};
+
 export type MultichainAddressRowsListProps = {
   /**
    * The account group ID.
@@ -64,10 +86,6 @@ export type MultichainAddressRowsListProps = {
    * Whether to show the account header and balance.
    */
   showAccountHeaderAndBalance?: boolean;
-  /**
-   * The delay of the hover.
-   */
-  hoverCloseDelay?: number;
   /**
    * Optional callback triggered when the "View All" button is clicked,
    * before navigation occurs. Useful for analytics or tracing.
@@ -88,6 +106,11 @@ export type MultichainAddressRowsListProps = {
    * When 'click', the popover toggles on click and closes when clicking outside.
    */
   triggerMode?: 'hover' | 'click';
+  /**
+   * Delay in ms before the hover fallback closes after pointer leave.
+   * Gives the pointer time to move onto the popover (WCAG 1.4.13).
+   */
+  hoverCloseDelay?: number;
 };
 
 const Divider = () => (
@@ -131,27 +154,36 @@ const ViewAllButton = ({
 export const MultichainTriggeredAddressRowsList = ({
   children,
   groupId,
-  hoverCloseDelay = 50,
   showAccountHeaderAndBalance = true,
   onViewAllClick,
   showViewAllButton = true,
   showDefaultAddressSection = true,
   triggerMode = 'hover',
+  hoverCloseDelay = 50,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
+  const popoverId = useId().replace(/:/gu, '');
+  const anchorName = `--multichain-address-rows-${popoverId}`;
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+  const hoverCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const isPopoverOpenRef = useRef(false);
+  const wasOpenOnPointerDownRef = useRef<boolean | null>(null);
+  // Content stays unmounted until open, matching the previous Popover. The
+  // default-address toggle is a class component and warns on every mount.
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const useNativeInterest =
+    triggerMode === 'hover' && interestInvokerSupport.detected;
+  const useNativeCommand =
+    triggerMode === 'click' && commandInvokerSupport.detected;
+  const useHoverFallback = triggerMode === 'hover' && !useNativeInterest;
+  const useClickFallback = triggerMode === 'click' && !useNativeCommand;
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
-    null,
-  );
-  const [dynamicPosition, setDynamicPosition] = useState<PopoverPosition>(
-    PopoverPosition.BottomStart,
-  );
 
   const allAccountGroups = useSelector(getAllAccountGroups);
   const allBalances = useSelector(selectBalanceForAllWallets);
@@ -179,72 +211,102 @@ export const MultichainTriggeredAddressRowsList = ({
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
 
-  // Calculate whether popover should show above or below
-  const calculatePopoverPosition = useCallback(() => {
-    if (!referenceElement) {
-      return PopoverPosition.BottomStart;
+  const clearHoverCloseTimeout = useCallback(() => {
+    if (hoverCloseTimeoutRef.current) {
+      clearTimeout(hoverCloseTimeoutRef.current);
+      hoverCloseTimeoutRef.current = null;
     }
+  }, []);
 
-    const rect = referenceElement.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const popoverEstimatedHeight = POPOVER_CONTENT_MAX_HEIGHT; // Based on the maxHeight set on the popover content
-    const spaceBelow = viewportHeight - rect.bottom;
-
-    // If there's not enough space below, use TopStart
-    if (spaceBelow < popoverEstimatedHeight) {
-      return PopoverPosition.TopStart;
-    }
-
-    // Default to BottomStart
-    return PopoverPosition.BottomStart;
-  }, [referenceElement]);
-
-  const handleMouseEnter = useCallback(() => {
-    if (triggerMode !== 'hover') {
+  const showFallbackPopover = useCallback(() => {
+    clearHoverCloseTimeout();
+    const popover = popoverRef.current;
+    if (popover?.showPopover) {
+      popover.showPopover();
       return;
     }
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-    setDynamicPosition(calculatePopoverPosition());
-    setIsOpen(true);
-  }, [calculatePopoverPosition, triggerMode]);
+    // jsdom has no Popover API and does not fire `toggle`.
+    isPopoverOpenRef.current = true;
+    setIsPopoverOpen(true);
+  }, [clearHoverCloseTimeout]);
 
-  const handleMouseLeave = useCallback(() => {
-    if (triggerMode !== 'hover') {
+  const hideFallbackPopover = useCallback(() => {
+    clearHoverCloseTimeout();
+    const popover = popoverRef.current;
+    if (popover?.hidePopover) {
+      popover.hidePopover();
       return;
     }
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsOpen(false);
+    isPopoverOpenRef.current = false;
+    setIsPopoverOpen(false);
+  }, [clearHoverCloseTimeout]);
+
+  const scheduleHideFallbackPopover = useCallback(() => {
+    clearHoverCloseTimeout();
+    hoverCloseTimeoutRef.current = setTimeout(() => {
+      hideFallbackPopover();
     }, hoverCloseDelay);
-  }, [hoverCloseDelay, triggerMode]);
+  }, [clearHoverCloseTimeout, hideFallbackPopover, hoverCloseDelay]);
 
-  const handleClick = useCallback(
+  useEffect(
+    () => () => {
+      clearHoverCloseTimeout();
+    },
+    [clearHoverCloseTimeout],
+  );
+
+  useEffect(() => {
+    const popover = popoverRef.current;
+    if (!popover) {
+      return undefined;
+    }
+    const handleToggle = (event: Event) => {
+      const open = (event as Event & { newState?: string }).newState === 'open';
+      isPopoverOpenRef.current = open;
+      setIsPopoverOpen(open);
+    };
+    popover.addEventListener('toggle', handleToggle);
+    return () => popover.removeEventListener('toggle', handleToggle);
+  }, []);
+
+  // An `auto` popover light-dismisses on pointerup when the trigger is not
+  // linked via popovertarget/commandfor, so by click time it is already
+  // closed. Capture the state at pointerdown to know the click means "close".
+  const handlePointerDownTrigger = useCallback(() => {
+    if (useClickFallback) {
+      wasOpenOnPointerDownRef.current = isPopoverOpenRef.current;
+    }
+  }, [useClickFallback]);
+
+  const handleClickTrigger = useCallback(
     (e: React.MouseEvent) => {
       if (triggerMode !== 'click') {
         return;
       }
       e.stopPropagation();
-      setDynamicPosition(calculatePopoverPosition());
-      setIsOpen((prev) => !prev);
-    },
-    [calculatePopoverPosition, triggerMode],
-  );
-
-  const handlePopoverClose = useCallback(() => {
-    if (triggerMode === 'click') {
-      setIsOpen(false);
-    }
-  }, [triggerMode]);
-
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
+      if (!useClickFallback) {
+        return;
       }
-    };
-  }, []);
+      const wasOpen =
+        wasOpenOnPointerDownRef.current ?? isPopoverOpenRef.current;
+      wasOpenOnPointerDownRef.current = null;
+      const popover = popoverRef.current;
+      if (wasOpen) {
+        if (popover?.hidePopover) {
+          popover.hidePopover();
+        } else {
+          isPopoverOpenRef.current = false;
+          setIsPopoverOpen(false);
+        }
+      } else if (popover?.showPopover) {
+        popover.showPopover();
+      } else {
+        isPopoverOpenRef.current = true;
+        setIsPopoverOpen(true);
+      }
+    },
+    [triggerMode, useClickFallback],
+  );
 
   const sortByPriorityNetworks = useCallback(
     (items: typeof getAccountsSpreadByNetworkByGroupId) => {
@@ -380,77 +442,147 @@ export const MultichainTriggeredAddressRowsList = ({
     sortByPriorityNetworks,
   ]);
 
+  const trigger = useMemo(() => {
+    // Hover requires a real <button> — interestfor only activates on button/a/area.
+    // Do not cloneElement onto arbitrary children (e.g. Box/div) for hover.
+    if (triggerMode === 'hover') {
+      return (
+        <button
+          type="button"
+          className="inline-flex border-0 bg-transparent p-0 text-inherit"
+          style={{ anchorName } as React.CSSProperties}
+          // @ts-expect-error React types do not include interestfor yet.
+          interestfor={useNativeInterest ? popoverId : undefined} // eslint-disable-line react/no-unknown-property
+          onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
+          onMouseLeave={
+            useHoverFallback ? scheduleHideFallbackPopover : undefined
+          }
+          data-testid="multichain-address-rows-trigger"
+        >
+          {children}
+        </button>
+      );
+    }
+
+    // Click mode: prefer cloning onto the child when it is already a button
+    // (e.g. ButtonIcon), so we do not nest buttons.
+    if (React.isValidElement(children)) {
+      const child = children as React.ReactElement<{
+        style?: React.CSSProperties;
+        onClick?: (e: React.MouseEvent) => void;
+        onPointerDown?: (e: React.PointerEvent) => void;
+        commandfor?: string;
+        command?: string;
+      }>;
+
+      return React.cloneElement(child, {
+        style: {
+          ...child.props.style,
+          anchorName,
+        } as React.CSSProperties,
+        ...(useNativeCommand
+          ? {
+              commandfor: popoverId,
+              command: 'toggle-popover',
+            }
+          : {}),
+        onPointerDown: (e: React.PointerEvent) => {
+          handlePointerDownTrigger();
+          child.props.onPointerDown?.(e);
+        },
+        onClick: (e: React.MouseEvent) => {
+          handleClickTrigger(e);
+          child.props.onClick?.(e);
+        },
+      });
+    }
+
+    return children;
+  }, [
+    anchorName,
+    children,
+    handleClickTrigger,
+    handlePointerDownTrigger,
+    popoverId,
+    scheduleHideFallbackPopover,
+    showFallbackPopover,
+    triggerMode,
+    useHoverFallback,
+    useNativeCommand,
+    useNativeInterest,
+  ]);
+
   return (
     <>
-      <Box
-        ref={setReferenceElement}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
+      {trigger}
+      <div
+        ref={popoverRef}
+        id={popoverId}
+        // @ts-expect-error React types do not include popover yet.
+        popover="auto"
+        className="rounded-lg border border-border-muted bg-background-elevated2 p-2 inset-auto"
+        onMouseEnter={useHoverFallback ? showFallbackPopover : undefined}
+        onMouseLeave={
+          useHoverFallback ? scheduleHideFallbackPopover : undefined
+        }
+        style={
+          {
+            width: '360px',
+            margin: '2px 0 0',
+            positionAnchor: anchorName,
+            top: 'anchor(bottom)',
+            left: 'anchor(left)',
+            positionTryFallbacks: 'flip-block',
+          } as React.CSSProperties
+        }
       >
-        {children}
-      </Box>
-      <Popover
-        referenceElement={referenceElement}
-        isOpen={isOpen}
-        position={dynamicPosition}
-        hasArrow={true}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClickOutside={handlePopoverClose}
-        preventOverflow
-        isPortal={true}
-        offset={[0, 3]}
-        paddingInline={1}
-        paddingBottom={1}
-        paddingTop={1}
-        style={{
-          zIndex: 99999,
-          minWidth: '340px',
-        }}
-      >
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          style={{ maxHeight: `${POPOVER_CONTENT_MAX_HEIGHT}px` }}
-          data-testid="multichain-address-rows-list"
-        >
-          {showAccountHeaderAndBalance && (
-            <Box
-              marginBottom={2}
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              className="shrink-0"
-            >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {accountGroup?.metadata.name}
-              </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextAlternative}
+        {isPopoverOpen && (
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            style={{ maxHeight: `${POPOVER_CONTENT_MAX_HEIGHT}px` }}
+            data-testid="multichain-address-rows-list"
+          >
+            {showAccountHeaderAndBalance && (
+              <Box
+                marginBottom={2}
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                className="shrink-0"
               >
-                {balance}
-              </Text>
-            </Box>
-          )}
-          {/* Only the address rows scroll, so the footer below them keeps its
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {accountGroup?.metadata.name}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextAlternative}
+                >
+                  {balance}
+                </Text>
+              </Box>
+            )}
+            {/* Only the address rows scroll, so the footer below them keeps its
               spacing instead of being cut off by the max height. */}
-          <Box className="overflow-y-auto">{renderedRows}</Box>
-          {showViewAllButton && (
-            <ViewAllButton
-              handleViewAllClick={handleViewAllClick}
-              text={t('multichainAddressViewAll')}
-              showDefaultAddressStyles={showDefaultAddressSection}
-            />
-          )}
-          {showDefaultAddressSection && (
-            <>
-              <Divider />
-              <DefaultAddress />
-            </>
-          )}
-        </Box>
-      </Popover>
+            <Box className="overflow-y-auto">{renderedRows}</Box>
+            {showViewAllButton && (
+              <ViewAllButton
+                handleViewAllClick={handleViewAllClick}
+                text={t('multichainAddressViewAll')}
+                showDefaultAddressStyles={showDefaultAddressSection}
+              />
+            )}
+            {showDefaultAddressSection && (
+              <>
+                <Divider />
+                <DefaultAddress />
+              </>
+            )}
+          </Box>
+        )}
+      </div>
     </>
   );
 };
