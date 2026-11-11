@@ -3349,58 +3349,52 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it.each([
-      {
-        symbol: 'ETH',
-        direction: 'short',
-        // At 3x leverage, $5000 buys ~4.96 ETH and overshoots the 2.5 ETH long.
-        amount: '5000',
-        action: PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,
-      },
-      {
-        symbol: 'BTC',
-        direction: 'long',
-        // The order must overshoot the 0.5 BTC short in asset units.
-        amount: '25000',
-        action: PERPS_EVENT_VALUE.ACTION.FLIP_SHORT_TO_LONG,
-      },
-    ])(
-      'emits CONSIDERED with $action for a $direction order on $symbol',
-      async ({ symbol, direction, amount, action }) => {
-        jest.useFakeTimers();
-        mockUseParams.mockReturnValue({ symbol });
-        mockLivePositions.mockReturnValue({
-          positions: mockPositions,
-          isInitialLoading: false,
-        });
-        mockSearchParams.set('direction', direction);
+    it('emits CONSIDERED with flip_long_to_short for a short order on a long position', async () => {
+      // ETH position is long (size 2.5) at ~3025; at 3x leverage $5000 buys
+      // ~4.96 ETH, which overshoots it — a real flip.
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'short');
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
 
-        try {
-          await act(async () => {
-            renderWithProvider(
-              <PerpsOrderEntryPage />,
-              mockStore(createMockState()),
-            );
-          });
-          await act(async () => enterAmount(amount));
-          await act(async () => {
-            jest.advanceTimersByTime(1500);
-          });
+      enterAmount('5000');
 
-          expect(consideredCalls()).toHaveLength(1);
-          expect(consideredCalls()[0][0].properties).toEqual(
-            expect.objectContaining({
-              [PERPS_EVENT_PROPERTY.ACTION]: action,
-            }),
-          );
-        } finally {
-          await act(async () => {
-            jest.runOnlyPendingTimers();
-          });
-          jest.useRealTimers();
-        }
-      },
-    );
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ACTION]:
+            PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,
+        }),
+      );
+    });
+
+    it('emits CONSIDERED with flip_short_to_long for a long order on a short position', async () => {
+      // BTC position is short (size -0.5); the order must overshoot it in
+      // ASSET units to be a flip.
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'long');
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('25000');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ACTION]:
+            PERPS_EVENT_VALUE.ACTION.FLIP_SHORT_TO_LONG,
+        }),
+      );
+    });
 
     it('emits the error screen view when the market is not found', () => {
       mockLiveMarketData.mockReturnValue({
