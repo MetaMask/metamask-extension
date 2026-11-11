@@ -495,9 +495,25 @@ describe('AdvancedChartSection', () => {
       setupPreferences(CHART_TYPE_CANDLE);
     });
 
+    /**
+     * Drives the component through a real fetch lifecycle: a loading pass (so
+     * the empty result is recognised as a finished fetch, not the idle
+     * pre-fetch state) followed by the settled state the test cares about.
+     *
+     * @param settled - The `useAdvancedChartData` return once the fetch lands.
+     */
+    function renderAfterFetch(
+      settled: Partial<ReturnType<typeof useAdvancedChartData>>,
+    ) {
+      setupData({ ohlcvData: [], isLoading: true, error: null });
+      const utils = render();
+      setupData({ isLoading: false, error: null, ...settled });
+      utils.rerender(<AdvancedChartSection {...DEFAULT_PROPS} />);
+      return utils;
+    }
+
     it('shows the no-data placeholder when a finished fetch returns no candles', () => {
-      setupData({ ohlcvData: [], isLoading: false, error: null });
-      render();
+      renderAfterFetch({ ohlcvData: [] });
 
       expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
       expect(screen.queryByTestId('chart-iframe')).not.toBeInTheDocument();
@@ -511,21 +527,25 @@ describe('AdvancedChartSection', () => {
       expect(screen.queryByTestId('chart-error-state')).not.toBeInTheDocument();
     });
 
-    it('hides the indicator bar when there is no data', () => {
+    it('does not flash the placeholder on the idle frame before the fetch starts', () => {
+      // Mirrors a line→candle switch: the hook is briefly idle with no data and
+      // isLoading false before its fetch effect runs. That must render the
+      // chart/skeleton, never the no-data placeholder.
       setupData({ ohlcvData: [], isLoading: false, error: null });
       render();
 
-      act(() => {
-        // The engine never mounts without data, so readiness cannot arrive;
-        // the bar must stay hidden regardless.
-      });
+      expect(screen.getByTestId('chart-iframe')).toBeInTheDocument();
+      expect(screen.queryByTestId('chart-error-state')).not.toBeInTheDocument();
+    });
+
+    it('hides the indicator bar when there is no data', () => {
+      renderAfterFetch({ ohlcvData: [] });
 
       expect(indicatorSlotVisibility()).toBe('hidden');
     });
 
     it('recovers to the chart once candles arrive', () => {
-      setupData({ ohlcvData: [], isLoading: false, error: null });
-      const { rerender } = render();
+      const { rerender } = renderAfterFetch({ ohlcvData: [] });
       expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
 
       setupData({ ohlcvData: [MOCK_OHLCV_BAR], isLoading: false, error: null });
