@@ -7,6 +7,17 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AboutInfo from './about-info';
 
+jest.mock(
+  '../../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({ isOpen }: { isOpen: boolean }) =>
+      isOpen ? <div data-testid="visit-support-data-consent-modal" /> : null,
+    useOpenSupport: (showConsentModal: () => void) => showConsentModal,
+  }),
+);
+
 describe('AboutInfo', () => {
   const mockStore = configureMockStore([thunk])(mockState);
   describe('validate links', () => {
@@ -66,14 +77,12 @@ describe('AboutInfo', () => {
       expect(websiteLink).toHaveAttribute('href', 'https://metamask.io/');
     });
 
-    it('should have correct href for "Contact us" link', () => {
-      const contactUsLink = getByRole('link', {
-        name: messages.contactUs.message,
-      });
-      expect(contactUsLink).toHaveAttribute(
-        'href',
-        'https://support.metamask.io/?utm_source=extension',
-      );
+    it('should trigger support modal when click "Contact us"', () => {
+      const contactUsButton = getByText(messages.contactUs.message);
+      fireEvent.click(contactUsButton);
+      expect(
+        getByTestId('visit-support-data-consent-modal'),
+      ).toBeInTheDocument();
     });
   });
 });
