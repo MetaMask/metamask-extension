@@ -36,14 +36,12 @@ export const closeSettings = async (driver: Driver): Promise<void> => {
  */
 export const enableTestNetworks = async (driver: Driver): Promise<void> => {
   const headerNavbar = new HeaderNavbar(driver);
-  const homePage = new HomePage(driver);
   await headerNavbar.openGlobalNetworksMenu();
 
   const networksPage = new NetworksPage(driver);
   await networksPage.checkPageIsLoaded();
   await networksPage.toggleShowTestNetwork();
   await networksPage.clickCloseButton();
-  await homePage.headerNavbar.clickDrawerBackButton();
 };
 
 /**
