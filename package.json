@@ -948,5 +948,43 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/eth-hd-keyring": {
+      "type": "non-breaking",
+      "previewVersion": "15.0.1-preview-fc2e821"
+    },
+    "@metamask/eth-ledger-bridge-keyring": {
+      "type": "non-breaking",
+      "previewVersion": "13.1.1-preview-fc2e821"
+    },
+    "@metamask/eth-money-mpc-keyring": {
+      "type": "non-breaking",
+      "previewVersion": "0.3.0-preview-fc2e821"
+    },
+    "@metamask/eth-qr-keyring": {
+      "type": "non-breaking",
+      "previewVersion": "3.0.1-preview-fc2e821"
+    },
+    "@metamask/eth-sig-util": {
+      "type": "non-breaking",
+      "previewVersion": "9.0.0-preview-c72f8b1"
+    },
+    "@metamask/eth-simple-keyring": {
+      "type": "non-breaking",
+      "previewVersion": "13.0.1-preview-fc2e821"
+    },
+    "@metamask/eth-snap-keyring": {
+      "type": "non-breaking",
+      "previewVersion": "24.1.1-preview-fc2e821"
+    },
+    "@metamask/eth-trezor-keyring": {
+      "type": "non-breaking",
+      "previewVersion": "11.0.1-preview-fc2e821"
+    },
+    "@metamask/keyring-sdk": {
+      "type": "non-breaking",
+      "previewVersion": "4.2.0-preview-fc2e821"
+    }
   }
 }
