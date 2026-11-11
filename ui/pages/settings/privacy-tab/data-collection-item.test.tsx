@@ -144,7 +144,7 @@ describe('DataCollectionToggleItem', () => {
     expect(mockOptInToMarketing).toHaveBeenCalled();
   });
 
-  it('does not read or write marketing consent through OAuth when social login flow is active', () => {
+  it('writes marketing consent through OAuth without reading it when social login flow is active', () => {
     (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
     const mockStore = createMockStore({ optedInToMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
@@ -156,9 +156,23 @@ describe('DataCollectionToggleItem', () => {
 
     expect(mockOptInToMarketing).toHaveBeenCalledTimes(1);
     const messengerActions = mockMessengerCall.mock.calls.map(
-      ([action]) => action,
+      ([method]) => method,
     );
+    expect(messengerActions).toContain('OAuthService:setMarketingConsent');
     expect(messengerActions).not.toContain('OAuthService:getMarketingConsent');
+  });
+
+  it('does not write marketing consent through OAuth when social login flow is inactive', () => {
+    const mockStore = createMockStore({ optedInToMarketing: false });
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    expect(mockOptInToMarketing).toHaveBeenCalledTimes(1);
+    const messengerActions = mockMessengerCall.mock.calls.map(
+      ([method]) => method,
+    );
     expect(messengerActions).not.toContain('OAuthService:setMarketingConsent');
+    expect(messengerActions).not.toContain('OAuthService:getMarketingConsent');
   });
 });
