@@ -447,21 +447,31 @@ describe('AcceptInviteSheet', () => {
     },
   );
 
-  it('does not track acceptance after the invite unmounts', async () => {
-    const registration = withResolvers<void>();
-    mockRegister.mockReturnValue(registration.promise);
-    const view = renderSheet();
-    await act(async () => {
-      fireEvent.click(view.getByTestId('money-referral-accept'));
-    });
-    view.unmount();
+  it.each(['registration', 'read-back'] as const)(
+    'does not track acceptance when %s finishes after unmount',
+    async (phase) => {
+      const pending = withResolvers<void>();
+      if (phase === 'registration') {
+        mockRegister.mockReturnValue(pending.promise);
+      } else {
+        mockReferralState.fetch.mockReturnValue(pending.promise);
+      }
+      const view = renderSheet();
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      expect(mockReferralState.fetch).toHaveBeenCalledTimes(
+        phase === 'read-back' ? 1 : 0,
+      );
+      view.unmount();
 
-    await act(async () => {
-      registration.resolve();
-    });
+      await act(async () => {
+        pending.resolve();
+      });
 
-    expect(trackedTypes()).toEqual(['viewed']);
-  });
+      expect(trackedTypes()).toEqual(['viewed']);
+    },
+  );
 
   it('records a refused accept without locking a later answer', async () => {
     const user = userEvent.setup();

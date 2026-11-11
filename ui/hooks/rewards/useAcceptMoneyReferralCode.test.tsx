@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { act, render, renderHook } from '@testing-library/react';
 import { withResolvers } from '#shared/lib/promise-with-resolvers';
 import { useAcceptMoneyReferralCode } from './useAcceptMoneyReferralCode';
+import { refreshReferralMeWithRetries } from './useReferralMe';
 
 const mockRegister = jest.fn();
 const acceptMessenger = {
@@ -177,6 +178,37 @@ describe('useAcceptMoneyReferralCode', () => {
     expect(mockRegister).toHaveBeenCalledTimes(1);
     expect(mockRegister).toHaveBeenCalledWith({ code: 'CODE' });
     expect(onAccepted).toHaveBeenCalledTimes(1);
+  });
+
+  it('blocks another Accept during read-back and ignores completion after unmount', async () => {
+    const readBack = withResolvers<void>();
+    jest
+      .mocked(refreshReferralMeWithRetries)
+      .mockReturnValueOnce(readBack.promise);
+    const onAccepted = jest.fn();
+    const { result, unmount } = renderHook(() =>
+      useAcceptMoneyReferralCode({
+        validateCode: async () => '',
+        fetchReferralMe: async () => ({ status: 'settled' }),
+        onAccepted,
+      }),
+    );
+    let accepting!: ReturnType<typeof result.current.accept>;
+    await act(async () => {
+      accepting = result.current.accept('CODE');
+    });
+    expect(result.current.isAccepting).toBe(true);
+    expect(onAccepted).not.toHaveBeenCalled();
+    expect(await result.current.accept('OTHER')).toEqual({ accepted: false });
+    expect(mockRegister).toHaveBeenCalledTimes(1);
+    unmount();
+
+    await act(async () => {
+      readBack.resolve();
+      await accepting;
+    });
+
+    expect(onAccepted).not.toHaveBeenCalled();
   });
 
   it.each([
