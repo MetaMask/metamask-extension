@@ -109,6 +109,10 @@ function unionShape(list: { [key: string]: Json }[]): { [key: string]: Json } {
  */
 function alignShape(mock: Json, live: Json, keepExtraKeys = false): Json {
   if (kindOf(mock) !== kindOf(live)) {
+    // A later sample that is only null must not flip a value we already kept.
+    if (keepExtraKeys && live === null && mock !== null) {
+      return mock;
+    }
     return placeholder(live);
   }
   if (Array.isArray(mock) && Array.isArray(live)) {

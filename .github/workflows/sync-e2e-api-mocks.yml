@@ -21,6 +21,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 concurrency:
   group: sync-e2e-api-mocks-${{ github.event.pull_request.number || github.run_id }}
@@ -87,6 +88,18 @@ jobs:
             [ "${EXIT}" -le 1 ]
           fi
 
+      # GITHUB_TOKEN pushes do not start workflows, so required CI would never
+      # run on the commit. This app token does.
+      - name: Get a token that can trigger CI
+        id: token
+        if: steps.sync.outputs.EXIT == '1'
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
+
       - name: Commit fixtures to this pull request
         id: pr-commit
         if: >-
@@ -97,13 +110,14 @@ jobs:
         shell: bash
         env:
           HEAD_REF: ${{ github.head_ref }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -u
           git commit -m "test: align E2E API mocks with live response shapes"
           # Fast-forward only, so a commit pushed while this ran is not overwritten.
-          git push origin "HEAD:refs/heads/${HEAD_REF}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${HEAD_REF}"
           echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
           echo "number=${{ github.event.pull_request.number }}" >> "${GITHUB_OUTPUT}"
 
@@ -116,7 +130,7 @@ jobs:
           }}
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           BRANCH="sync/e2e-api-mocks"
           git config user.name "github-actions[bot]"
@@ -124,13 +138,16 @@ jobs:
           git checkout -B "${BRANCH}"
           git add -u
           git commit -m "test: align E2E API mocks with live response shapes"
+          # Push with the app token. `origin` is the checkout GITHUB_TOKEN, and
+          # events from that token do not start CI.
+          REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
             # The checkout is a shallow clone of main, so the lease ref does
             # not exist until this fetch.
             git fetch origin "${BRANCH}:refs/remotes/origin/${BRANCH}"
-            git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" origin "${BRANCH}"
+            git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" "${REMOTE}" "HEAD:refs/heads/${BRANCH}"
           else
-            git push -u origin "${BRANCH}"
+            git push "${REMOTE}" "HEAD:refs/heads/${BRANCH}"
           fi
           {
             echo "Weekly shape sync of the E2E API mocks. Values the tests assert are pinned in code."
