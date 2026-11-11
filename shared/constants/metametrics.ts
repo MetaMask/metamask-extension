@@ -489,7 +489,8 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers?: string[];
   /**
-   * Does the user change the token sort order on the asset list
+   * Does the user change the token sort order on the asset list.
+   * Event values are {@link MetaMetricsTokenSortPreference}.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -1400,6 +1401,24 @@ export enum MetaMetricsTransactionEventSource {
 export enum MetaMetricsRequestedThrough {
   EthereumProvider = 'ethereum_provider',
   MultichainApi = 'multichain_api',
+}
+
+/**
+ * Where a token sort preference was chosen.
+ */
+export enum MetaMetricsTokenSortLocation {
+  SortMenu = 'Sort Menu',
+  TokenColumnHeader = 'Token Column Header',
+}
+
+/**
+ * `token_sort_preference` values for Token Sort Preference Updated.
+ */
+export enum MetaMetricsTokenSortPreference {
+  Title = 'title',
+  TokenFiatAmount = 'tokenFiatAmount',
+  Price = 'price',
+  PercentChange = 'percentChange',
 }
 
 export enum MetaMetricsEventLocation {
