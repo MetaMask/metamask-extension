@@ -5,6 +5,8 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
+import AutoLockSettings from '../../page-objects/pages/settings/security-and-password/auto-lock-settings';
+import SecurityAndPasswordSettings from '../../page-objects/pages/settings/security-and-password/security-and-password-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 
 pwTest.describe('Auto-Lock Timer', () => {
@@ -30,9 +32,15 @@ pwTest.describe('Auto-Lock Timer', () => {
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToSecurityAndPasswordSettings();
 
-          await settingsPage.goToAutoLockSettings();
-          await settingsPage.waitForAutoLockOptionsList();
-          await settingsPage.selectQuarterMinuteAutoLockOption();
+          const securityAndPasswordSettings = new SecurityAndPasswordSettings(
+            driver,
+          );
+          await securityAndPasswordSettings.checkPageIsLoaded();
+          await securityAndPasswordSettings.openAutoLockSettings();
+
+          const autoLockSettings = new AutoLockSettings(driver);
+          await autoLockSettings.checkPageIsLoaded();
+          await autoLockSettings.selectQuarterMinuteAutoLockOption();
 
           await driver.delay(16500);
 
