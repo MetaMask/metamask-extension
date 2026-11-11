@@ -1741,12 +1741,21 @@ async function setupMocking(
 
   // Accounts API: transactions
   await server
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/transactions')
     .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: API_MOCKS['accounts-transactions'],
+        json: {
+          ...API_MOCKS['accounts-transactions'],
+          data: [],
+          unprocessedAccounts: [],
+          pageInfo: {
+            ...API_MOCKS['accounts-transactions'].pageInfo,
+            hasNextPage: false,
+            count: 0,
+          },
+        },
       };
     });
 

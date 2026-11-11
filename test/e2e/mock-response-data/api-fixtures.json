@@ -32,14 +32,12 @@
   },
   "accounts-transactions": {
     "data": [],
-    "unprocessedNetworks": [],
     "pageInfo": {
       "count": 0,
       "hasNextPage": false,
-      "hasPreviousPage": false,
-      "startCursor": null,
       "endCursor": ""
-    }
+    },
+    "unprocessedAccounts": []
   },
   "bridge-aggregator-metadata-linea": {
     "1inch": {},
