@@ -127,6 +127,45 @@ describe('useTransactionPayToken', () => {
     });
   });
 
+  it('selects a non-EVM token by its CAIP asset ID', () => {
+    const { result } = renderHookWithProvider();
+
+    result.current.setPayToken({
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    });
+
+    expect(updatePaymentTokenMock).toHaveBeenCalledWith({
+      transactionId: TRANSACTION_ID_MOCK,
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    });
+  });
+
+  it('returns isNative from the CAIP asset namespace for non-EVM tokens', () => {
+    const solanaPayToken: TransactionPaymentToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceFiat: '150',
+      balanceHuman: '1.5',
+      balanceRaw: '1500000000',
+      balanceUsd: '150',
+      decimals: 9,
+      symbol: 'SOL',
+    };
+
+    const { result: nativeResult } = renderHookWithProvider({
+      payToken: solanaPayToken,
+    });
+    const { result: splResult } = renderHookWithProvider({
+      payToken: {
+        ...solanaPayToken,
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      },
+    });
+
+    expect(nativeResult.current.isNative).toBe(true);
+    expect(splResult.current.isNative).toBe(false);
+  });
+
   it('returns isNative true when pay token is an EVM native asset', () => {
     const { result } = renderHookWithProvider({
       payToken: { ...PAY_TOKEN_MOCK, assetId: 'eip155:1/slip44:60' },

@@ -11,12 +11,16 @@ import {
   getEvmAsset,
   getEvmAssetId,
   getEvmPaymentToken,
+  getPaymentTokenChainId,
+  isNonEvmPaymentToken,
 } from './pay-token';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const BTC_ASSET_ID =
   'bip122:000000000019d6689c085ae165831e93/slip44:0' as CaipAssetType;
+const SOLANA_MAINNET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+const SOL_ASSET_ID = `${SOLANA_MAINNET}/slip44:501` as CaipAssetType;
 
 function createPaymentToken(assetId: CaipAssetType): TransactionPaymentToken {
   return {
@@ -88,6 +92,26 @@ describe('pay-token', () => {
         getEvmPaymentToken(createPaymentToken(BTC_ASSET_ID)),
       ).toBeUndefined();
       expect(getEvmPaymentToken(undefined)).toBeUndefined();
+    });
+  });
+
+  describe('getPaymentTokenChainId', () => {
+    it('returns the Hex chain ID for EVM and the CAIP-2 chain ID for non-EVM tokens', () => {
+      expect(
+        getPaymentTokenChainId(createPaymentToken('eip155:42161/slip44:60')),
+      ).toBe('0xa4b1');
+      expect(getPaymentTokenChainId(createPaymentToken(SOL_ASSET_ID))).toBe(
+        SOLANA_MAINNET,
+      );
+    });
+  });
+
+  describe('isNonEvmPaymentToken', () => {
+    it('checks the protocol of the asset ID', () => {
+      expect(isNonEvmPaymentToken(createPaymentToken(SOL_ASSET_ID))).toBe(true);
+      expect(
+        isNonEvmPaymentToken(createPaymentToken('eip155:1/slip44:60')),
+      ).toBe(false);
     });
   });
 

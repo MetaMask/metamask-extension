@@ -14,7 +14,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../../../context/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
-import { getEvmPaymentToken } from '../../../../../../shared/lib/transaction/pay-token';
+import { getPaymentTokenChainId } from '../../../../../../shared/lib/transaction/pay-token';
 import { AlertsName } from '../constants';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 
@@ -59,7 +59,7 @@ export function useSigningOrSubmittingAlerts(): Alert[] {
   const isSigningOrSubmitting =
     isValidType && hasSigningOrSubmittingForCurrentScope;
 
-  const payTokenChainId = getEvmPaymentToken(payToken)?.chainId;
+  const payTokenChainId = payToken && getPaymentTokenChainId(payToken);
   const isPayTokenOnDifferentChain =
     payTokenChainId && payTokenChainId !== chainId;
 

@@ -120,4 +120,21 @@ describe('getBalance', () => {
 
     expect(getBalance(request)).toBeUndefined();
   });
+
+  it('returns undefined for a non-EVM payment token', () => {
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
+    const request = buildRequest(TransactionType.moneyAccountDeposit);
+    const solanaPaymentToken: TransactionPaymentToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceFiat: '10',
+      balanceHuman: '1',
+      balanceRaw: '1000000000',
+      balanceUsd: '10',
+      decimals: 9,
+      symbol: 'SOL',
+    };
+    request.transactionData.paymentToken = solanaPaymentToken;
+
+    expect(getBalance(request)).toBeUndefined();
+  });
 });

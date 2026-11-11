@@ -3,6 +3,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import type { Json } from '@metamask/utils';
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
   selectBlockedPayTokens,
@@ -15,6 +16,7 @@ import {
   selectIsMoneyAccountTransactionEnabled,
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
+  selectIsSolanaPayEnabled,
   selectMinimumRequiredTokenBalance,
   selectPayHardwareConfig,
   selectPayQuoteConfig,
@@ -174,6 +176,34 @@ const getMockPayExtendedState = (
       }),
     },
   },
+});
+
+describe('selectIsSolanaPayEnabled', () => {
+  const getState = (solana: Json) => ({
+    metamask: {
+      remoteFeatureFlags: {
+        confirmations_pay: { payStrategies: { relay: { solana } } },
+      },
+    },
+  });
+
+  it('returns true only when the Relay Solana flag is true', () => {
+    expect(selectIsSolanaPayEnabled(getState({ enabled: true }))).toBe(true);
+  });
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each([[{}], [{ enabled: false }], [{ enabled: 'true' }]])(
+    'returns false when the Relay Solana flag is %j',
+    (solana: Json) => {
+      expect(selectIsSolanaPayEnabled(getState(solana))).toBe(false);
+    },
+  );
+
+  it('returns false when confirmations_pay is missing', () => {
+    expect(
+      selectIsSolanaPayEnabled({ metamask: { remoteFeatureFlags: {} } }),
+    ).toBe(false);
+  });
 });
 
 describe('selectRelayAtomicMaxEnabled', () => {

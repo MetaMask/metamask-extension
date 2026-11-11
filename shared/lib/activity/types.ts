@@ -28,6 +28,7 @@ export type MoneyAccountActivityItem = Omit<
   'type'
 > & {
   type: MoneyAccountActivityKind;
+  payOutcome?: 'refunded' | 'unknown';
 };
 
 export type ActivityKind = ClientActivityKind | MoneyAccountActivityKind;

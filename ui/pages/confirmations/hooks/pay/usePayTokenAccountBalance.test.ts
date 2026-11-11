@@ -49,6 +49,35 @@ describe('usePayTokenAccountBalance', () => {
     useTokenFiatRateMock.mockReturnValue(1700);
   });
 
+  it('returns the Core snapshot as the live balance for a Solana pay token', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        balanceFiat: '150.00',
+        balanceHuman: '1.5',
+        balanceRaw: '1500000000',
+        balanceUsd: '150.00',
+        decimals: 9,
+        symbol: 'SOL',
+      },
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = renderHook(() => usePayTokenAccountBalance());
+
+    expect(result.current).toStrictEqual({
+      balanceUsd: '150.00',
+      balanceRaw: '1500000000',
+      isLiveBalance: true,
+      isBalanceUsdKnown: true,
+    });
+    expect(useTokenFiatRateMock).toHaveBeenCalledWith(
+      '0x0000000000000000000000000000000000000000',
+      '0x0',
+      'usd',
+    );
+  });
+
   it('returns zero balances when no pay token is selected', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,

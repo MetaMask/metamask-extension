@@ -131,12 +131,23 @@ export function usePayTokenAccountBalance(): {
   );
 
   return useMemo(() => {
-    if (!evmPayToken) {
+    if (!payToken) {
       return {
         balanceUsd: '0',
         balanceRaw: '0',
         isLiveBalance: false,
         isBalanceUsdKnown: false,
+      };
+    }
+
+    // Core reads non-EVM balances and prices from AssetsController on every
+    // quote update, so the controller snapshot is the live balance.
+    if (!evmPayToken) {
+      return {
+        balanceUsd: payToken.balanceUsd,
+        balanceRaw: payToken.balanceRaw,
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
       };
     }
 
@@ -154,10 +165,10 @@ export function usePayTokenAccountBalance(): {
       // Snapshot fallback: a positive USD snapshot is a usable figure, but a
       // `0`/absent one is indistinguishable from "not fetched yet" and must
       // not be treated as a known-zero balance.
-      const snapshotBalanceUsd = evmPayToken.balanceUsd ?? '0';
+      const snapshotBalanceUsd = payToken.balanceUsd ?? '0';
       return {
         balanceUsd: snapshotBalanceUsd,
-        balanceRaw: evmPayToken.balanceRaw ?? '0',
+        balanceRaw: payToken.balanceRaw ?? '0',
         isLiveBalance: false,
         isBalanceUsdKnown: new BigNumber(snapshotBalanceUsd).gt(0),
       };
@@ -175,9 +186,9 @@ export function usePayTokenAccountBalance(): {
       };
     }
 
-    const decimals = matchingToken.decimals ?? evmPayToken.decimals ?? 18;
+    const decimals = matchingToken.decimals ?? payToken.decimals ?? 18;
     const humanBalance = new BigNumber(balanceRaw).dividedBy(10 ** decimals);
-    const snapshotUsd = new BigNumber(evmPayToken.balanceUsd ?? '0');
+    const snapshotUsd = new BigNumber(payToken.balanceUsd ?? '0');
     const computedUsd = usdRate
       ? humanBalance.times(String(usdRate))
       : new BigNumber(0);
@@ -206,5 +217,5 @@ export function usePayTokenAccountBalance(): {
       isLiveBalance: true,
       isBalanceUsdKnown: new BigNumber(balanceUsd).gt(0),
     };
-  }, [accountTokens, evmPayToken, usdRate]);
+  }, [accountTokens, evmPayToken, payToken, usdRate]);
 }

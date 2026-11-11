@@ -23,6 +23,7 @@ import { getMarketData } from '../../../../selectors';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayAvailableTokens } from '../pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
+import { getPaymentTokenKey } from '../../utils/transaction-pay';
 import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
@@ -146,6 +147,7 @@ export function useDepositPrefill(): DepositPrefillResult {
   // TransactionPayController needs real market data to build source amounts.
   // `useTokenFiatRate` cannot be used as this readiness gate because it falls
   // back to a synthetic $1 token price when market data is absent.
+  // Money Account deposits from a non-EVM token are not prefilled.
   const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const payTokenMarketPrice = evmPayToken
     ? marketData?.[evmPayToken.chainId]?.[
@@ -159,7 +161,7 @@ export function useDepositPrefill(): DepositPrefillResult {
   // The confirmation id is part of the key so a following deposit rendered by
   // the same mounted UI releases the commit and prefills again, instead of
   // inheriting the previous confirmation's amount.
-  const tokenKey = `${transactionMeta?.id ?? ''}:${evmPayToken?.address}:${evmPayToken?.chainId}:${accountOverride ?? ''}`;
+  const tokenKey = `${transactionMeta?.id ?? ''}:${getPaymentTokenKey(payToken)}:${accountOverride ?? ''}`;
   const [committedKey, setCommittedKey] = useState<string | null>(null);
 
   const { prefillAmount, percentage, isLimitCapped, isUncappedMaxPrefill } =
@@ -286,8 +288,11 @@ export function useDepositPrefill(): DepositPrefillResult {
   const hasFundedToken = availableTokens.some(
     (token) => !token.disabled && (token.fiat?.balance ?? 0) > 0,
   );
+  const isNonEvmPayToken = Boolean(payToken) && !evmPayToken;
   const isSkipped =
-    enabled && !payToken && !hasFundedToken && !isAccountTokensLoading;
+    enabled &&
+    (isNonEvmPayToken ||
+      (!payToken && !hasFundedToken && !isAccountTokensLoading));
 
   let status = DepositPrefillStatus.Loading;
   if (!enabled) {

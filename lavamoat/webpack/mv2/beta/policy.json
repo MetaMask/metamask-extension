@@ -2122,7 +2122,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "ethereumjs-util>bn.js": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": true
+        "@metamask/transaction-controller>uuid": true
       }
     },
     "@metamask/wallet>@metamask/gas-fee-controller": {
@@ -3410,7 +3410,6 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "fetch": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -3429,6 +3428,7 @@
         "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
+        "@metamask/sentinel-api-service": true,
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
@@ -3457,11 +3457,19 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
         "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/rpc-errors": true,
         "@metamask/sentinel-api-service": true,
+        "@metamask/snaps-utils": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
+        "@metamask/transaction-pay-controller>@solana/addresses": true,
+        "@metamask/transaction-pay-controller>@solana/instructions": true,
+        "@metamask/transaction-pay-controller>@solana/rpc-types": true,
+        "@metamask/transaction-pay-controller>@solana/transaction-messages": true,
+        "@metamask/transaction-pay-controller>@solana/transactions": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
-        "@metamask/assets-controller>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/transaction-pay-controller>uuid": true
       }
     },
     "@metamask/transaction-pay-middleware": {
@@ -4344,9 +4352,42 @@
         "@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/transaction-pay-controller>@solana/addresses": {
+      "globals": {
+        "Intl.Collator": true,
+        "TextEncoder": true,
+        "crypto.subtle.digest": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true
+      },
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/assertions": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-strings": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/codecs-core": {
       "packages": {
         "@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": {
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/transactions>@solana/codecs-data-structures": {
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/transaction-pay-controller>@solana/rpc-types>@solana/codecs-numbers": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/rpc-types>@solana/codecs-numbers": {
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true
       }
     },
     "@solana/addresses>@solana/codecs-strings": {
@@ -4361,9 +4402,66 @@
         "@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-strings": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": {
+      "globals": {
+        "btoa": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/instructions": {
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/rpc-types": {
+      "globals": {
+        "Intl.Collator": true
+      },
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/transaction-pay-controller>@solana/rpc-types>@solana/codecs-numbers": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/transaction-messages": {
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/transaction-pay-controller>@solana/transactions>@solana/codecs-data-structures": true,
+        "@metamask/transaction-pay-controller>@solana/rpc-types>@solana/codecs-numbers": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true,
+        "@metamask/transaction-pay-controller>@solana/transactions>@solana/functional": true,
+        "@metamask/transaction-pay-controller>@solana/instructions": true,
+        "@metamask/transaction-pay-controller>@solana/rpc-types": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@solana/transactions": {
+      "packages": {
+        "@metamask/transaction-pay-controller>@solana/addresses": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/transaction-pay-controller>@solana/transactions>@solana/codecs-data-structures": true,
+        "@metamask/transaction-pay-controller>@solana/rpc-types>@solana/codecs-numbers": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/codecs-strings": true,
+        "@metamask/transaction-pay-controller>@solana/addresses>@solana/errors": true,
+        "@metamask/transaction-pay-controller>@solana/transactions>@solana/keys": true,
+        "@metamask/transaction-pay-controller>@solana/transaction-messages": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -7759,11 +7857,6 @@
         "crypto": true
       }
     },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/wallet>@metamask/gas-fee-controller>uuid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -7858,7 +7951,14 @@
     },
     "@metamask/transaction-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
+      }
+    },
+    "@metamask/transaction-pay-controller>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "remote-redux-devtools>socketcluster-client>uuid": {
