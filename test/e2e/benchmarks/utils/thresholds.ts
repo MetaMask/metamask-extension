@@ -194,9 +194,16 @@ const SEND_TRANSACTIONS = {
 
 // In the asset-details, add-account and bridge flows, a step's threshold is
 // keyed by `<stepId>Legacy`: each was calibrated on the step's harness-clock
-// timer, which those flows report under that name. The step's in-page timer is
-// reported under the bare step id and has no threshold here.
+// timer, which those flows report under that name. The step's in-page timer,
+// reported under the bare step id, carries the same numbers: it is the timer
+// `GATED_METRIC_VALUES` gates, and its interval lies inside the harness-clock
+// one, so these numbers can only be looser for it.
 const ASSET_DETAILS = {
+  assetClickToPriceChart: {
+    p75: { warn: 500, fail: 1500 },
+    p95: { warn: 1500, fail: 3000 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
   assetClickToPriceChartLegacy: {
     p75: { warn: 500, fail: 1500 },
     p95: { warn: 1500, fail: 3000 },
@@ -206,6 +213,11 @@ const ASSET_DETAILS = {
 } satisfies ThresholdConfig;
 
 const SOLANA_ASSET_DETAILS = {
+  assetClickToPriceChart: {
+    p75: { warn: 500, fail: 1500 },
+    p95: { warn: 1500, fail: 3000 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
   assetClickToPriceChartLegacy: {
     p75: { warn: 500, fail: 1500 },
     p95: { warn: 1500, fail: 3000 },
@@ -260,6 +272,11 @@ const POWER_USER_HOME = {
 // capture layout shifts from the benchmark harness (INP probe, navigation),
 // not from application rendering behavior. CLS applies to startup + journey only.
 const LOAD_NEW_ACCOUNT = {
+  load_new_account: {
+    p75: { warn: 800, fail: 1200 },
+    p95: { warn: 1200, fail: 1800 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
   load_new_accountLegacy: {
     p75: { warn: 800, fail: 1200 },
     p95: { warn: 1200, fail: 1800 },
@@ -276,7 +293,17 @@ const CONFIRM_TX = {
 } satisfies ThresholdConfig;
 
 const BRIDGE_USER_ACTIONS = {
+  bridge_load_page: {
+    p75: { warn: 500, fail: 800 },
+    p95: { warn: 800, fail: 1200 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
   bridge_load_pageLegacy: {
+    p75: { warn: 500, fail: 800 },
+    p95: { warn: 800, fail: 1200 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
+  bridge_load_asset_picker: {
     p75: { warn: 500, fail: 800 },
     p95: { warn: 800, fail: 1200 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
@@ -284,6 +311,11 @@ const BRIDGE_USER_ACTIONS = {
   bridge_load_asset_pickerLegacy: {
     p75: { warn: 500, fail: 800 },
     p95: { warn: 800, fail: 1200 },
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
+  },
+  bridge_search_token: {
+    p75: { warn: 1200, fail: 1800 },
+    p95: { warn: 1800, fail: 2500 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   bridge_search_tokenLegacy: {
