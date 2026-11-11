@@ -197,15 +197,21 @@ exports[`Bridge renders the component with initial props 1`] = `
               >
                 <button
                   aria-label="switch-tokens"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
+                  class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent text-icon-default cursor-not-allowed opacity-50 enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
                   data-testid="switch-tokens"
                   disabled=""
-                  style="align-self: center; border-radius: 100%; width: 100%; height: 100%;"
+                  style="align-self: center; width: 100%; height: 100%;"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/arrow-2-down.svg');"
-                  />
+                  <svg
+                    class="inline-block w-5 h-5 text-icon-default transition-all duration-300 ease-in-out"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m19.28 14.03-6.75 6.75a.75.75 0 0 1-1.06 0l-6.75-6.75a.75.75 0 0 1 1.06-1.06l5.47 5.47V3.75a.75.75 0 0 1 1.5 0v14.69l5.47-5.47a.75.75 0 0 1 1.06 1.06"
+                    />
+                  </svg>
                 </button>
               </div>
             </div>
