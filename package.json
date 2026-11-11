@@ -181,7 +181,7 @@
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^38.0.0",
-    "@metamask/transaction-controller": "72.3.0",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@73.1.2-preview-616796faf",
     "reselect@npm:^5.1.1": "5.1.1",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.2",
@@ -932,9 +932,13 @@
     }
   },
   "previewBuilds": {
+    "@metamask/transaction-controller": {
+      "type": "breaking",
+      "previewVersion": "73.1.2-preview-616796faf"
+    },
     "@metamask/transaction-pay-controller": {
       "type": "breaking",
-      "previewVersion": "31.1.0-preview-0c535b603"
+      "previewVersion": "31.1.0-preview-616796faf"
     }
   },
   "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",
