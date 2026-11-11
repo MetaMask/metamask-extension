@@ -13,9 +13,8 @@ import {
   mockSupportedVsCurrencies,
 } from '../btc/mocks/price-api';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
-import SelectNetworkModal, {
-  NetworkId,
-} from '../../page-objects/pages/networks/select-network-modal';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import { NetworkId } from '../../helpers/network-constants';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import { getMockAssetsPrice } from './utils/mocks';
 

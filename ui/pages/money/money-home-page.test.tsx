@@ -20,6 +20,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneyTooltipName,
@@ -404,7 +405,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.ActionButtonRow,
+      },
+    });
     expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -431,7 +437,12 @@ describe('MoneyHomePage', () => {
     );
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      },
+    });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyHome,
       componentName: MoneyComponentName.OnboardingCard,
@@ -490,6 +501,10 @@ describe('MoneyHomePage', () => {
       preferredPaymentToken: {
         address: DEPOSIT_TOKEN.address,
         chainId: DEPOSIT_TOKEN.chainId,
+      },
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.MoneyHome,
+        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
       },
     });
   });
