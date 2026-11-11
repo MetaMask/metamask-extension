@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { isRampsNetworkAllowed } from '../../../../shared/lib/ramps/network-access';
 import { syncRampsOrdersWithUserStorage } from '../../../store/controller-actions/ramps-controller';
 import {
   selectIsRampsSyncingEnabled,
@@ -24,12 +25,14 @@ export const useShouldDispatchRampsOrderSyncing = () => {
     getCompletedOnboarding,
   );
   return Boolean(
-    basicFunctionality &&
+    isRampsNetworkAllowed({
+      completedOnboarding,
+      useExternalServices: basicFunctionality,
+    }) &&
     isBackupAndSyncEnabled &&
     isRampsSyncingEnabled &&
     isUnlocked &&
-    isSignedIn &&
-    completedOnboarding,
+    isSignedIn,
   );
 };
 
