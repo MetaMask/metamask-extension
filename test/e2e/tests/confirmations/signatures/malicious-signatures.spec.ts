@@ -11,6 +11,10 @@ import Confirmation from '../../../page-objects/pages/confirmations/confirmation
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import { assertSignatureRejectedMetrics } from './signature-helpers';
 
@@ -96,6 +100,8 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
             // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 0,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
@@ -160,6 +166,8 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
             // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 1,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
