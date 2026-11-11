@@ -16,6 +16,9 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  DEFAULT_TDP_CHART_INDICATORS,
+  DEFAULT_TDP_CHART_INTERVAL,
+  DEFAULT_TDP_CHART_TYPE,
   ThemeType,
 } from '../../../shared/constants/preferences';
 import type {
@@ -202,9 +205,9 @@ export const getDefaultPreferencesControllerState =
       },
       useNativeCurrencyAsPrimaryCurrency: true,
       useSidePanelAsDefault: true,
-      tdpChartType: 2,
-      tdpChartInterval: '15m',
-      tdpChartIndicators: [],
+      tdpChartType: DEFAULT_TDP_CHART_TYPE,
+      tdpChartInterval: DEFAULT_TDP_CHART_INTERVAL,
+      tdpChartIndicators: DEFAULT_TDP_CHART_INDICATORS,
       gasSponsorshipOptOutByChainId: {},
     },
     securityAlertsEnabled: true,

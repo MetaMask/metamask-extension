@@ -1,4 +1,8 @@
-import { OHLCVServiceMessenger } from '@metamask/core-backend';
+import {
+  OHLCVServiceMessenger,
+  OHLCV_SERVICE_ALLOWED_ACTIONS,
+  OHLCV_SERVICE_ALLOWED_EVENTS,
+} from '@metamask/core-backend';
 import {
   Messenger,
   MessengerActions,
@@ -23,20 +27,13 @@ export function getOHLCVServiceMessenger(
     namespace: 'OHLCVService',
     parent: messenger,
   });
+  // Delegate exactly the actions/events the OHLCV service needs, sourced from
+  // the allow-lists `@metamask/core-backend` exports. This grants minimal
+  // permissions and stays in sync with core instead of a hand-maintained list.
   messenger.delegate({
     messenger: serviceMessenger,
-    actions: [
-      'BackendWebSocketService:connect',
-      'BackendWebSocketService:forceReconnection',
-      'BackendWebSocketService:subscribe',
-      'BackendWebSocketService:getConnectionInfo',
-      'BackendWebSocketService:channelHasSubscription',
-      'BackendWebSocketService:getSubscriptionsByChannel',
-      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-      'BackendWebSocketService:addChannelCallback',
-      'BackendWebSocketService:removeChannelCallback',
-    ],
-    events: ['BackendWebSocketService:connectionStateChanged'],
+    actions: [...OHLCV_SERVICE_ALLOWED_ACTIONS],
+    events: [...OHLCV_SERVICE_ALLOWED_EVENTS],
   });
   return serviceMessenger;
 }
