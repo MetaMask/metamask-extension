@@ -1,22 +1,42 @@
 name: Sync E2E API Mocks
 
-# Aligns the E2E API mock fixtures with the live response shapes and opens a
-# PR when they drift. See test/e2e/mock-response-data/api-mock-catalog.md.
+# Aligns the E2E API mock fixtures with the live response shapes. See
+# test/e2e/mock-response-data/api-mock-catalog.md.
+#
+# Mondays (and workflow_dispatch): open or update one PR when a fixture changes.
+# Same-repo pull requests that touch the mocks: commit any drift to that branch.
+# Fork pull requests are skipped. A fetch failure does not fail a pull request.
 
 on:
   schedule:
     # Mondays at 06:00 UTC
     - cron: '0 6 * * 1'
   workflow_dispatch:
+  pull_request:
+    paths:
+      - test/e2e/mock-e2e.js
+      - test/e2e/mock-response-data/**
+      - test/e2e/mock-cdn/ppom-version.json
 
 permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: sync-e2e-api-mocks-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   sync-e2e-api-mocks:
     name: Align E2E API mocks with live responses
-    environment: default-branch
+    # No environment on pull requests: its secrets may be unavailable, and the
+    # sync skips those rows instead of failing. Forks are not this repository.
+    if: >-
+      ${{
+        github.event_name != 'pull_request' ||
+        github.event.pull_request.head.repo.full_name == github.repository
+      }}
+    environment: ${{ github.event_name != 'pull_request' && 'default-branch' || null }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -25,9 +45,26 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          # pull_request otherwise checks out the merge commit, which cannot
+          # be pushed back to the head branch.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Skip the bot's own sync commit
+        id: bot
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          AUTHOR="$(git log -1 --format='%an')"
+          SUBJECT="$(git log -1 --format='%s')"
+          if [ "${AUTHOR}" = "github-actions[bot]" ] &&
+            [ "${SUBJECT}" = "test: align E2E API mocks with live response shapes" ]; then
+            echo "skip=true" >> "${GITHUB_OUTPUT}"
+            echo "Head commit is the bot sync commit; not running again."
+          fi
 
       - name: Align fixtures
         id: sync
+        if: steps.bot.outputs.skip != 'true'
         shell: bash
         env:
           CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
@@ -38,15 +75,41 @@ jobs:
           EXIT="${PIPESTATUS[0]}"
           set -e
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift (one line, no summary, no PR). 1: fixtures written.
-          # 2: nothing written, a fetch failed.
+          # 0: no drift (one line, no summary, nothing committed).
+          # 1: fixtures written. 2: a fetch failed and nothing was written.
           if [ "${EXIT}" -ne 0 ]; then
             cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
           fi
-          [ "${EXIT}" -le 1 ]
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Logged above. A fetch failure must not fail the pull request.
+            [ "${EXIT}" -le 2 ]
+          else
+            [ "${EXIT}" -le 1 ]
+          fi
+
+      - name: Commit fixtures to this pull request
+        if: >-
+          ${{
+            github.event_name == 'pull_request' &&
+            steps.sync.outputs.EXIT == '1'
+          }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mapfile -t CHANGED < <(git diff --name-only)
+          yarn prettier --write "${CHANGED[@]}"
+          git add "${CHANGED[@]}"
+          git commit -m "test: align E2E API mocks with live response shapes"
+          # Fast-forward only, so a commit pushed while this ran is not overwritten.
+          git push origin "HEAD:refs/heads/${{ github.head_ref }}"
 
       - name: Open or update the review PR
-        if: steps.sync.outputs.EXIT == '1'
+        if: >-
+          ${{
+            github.event_name != 'pull_request' &&
+            steps.sync.outputs.EXIT == '1'
+          }}
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -60,7 +123,8 @@ jobs:
           git add "${CHANGED[@]}"
           git commit -m "test: align E2E API mocks with live response shapes"
           if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
-            # Shallow checkout: fetch the branch so the lease has a ref.
+            # The checkout is a shallow clone of main, so the lease ref does
+            # not exist until this fetch.
             git fetch origin "${BRANCH}:refs/remotes/origin/${BRANCH}"
             git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" origin "${BRANCH}"
           else

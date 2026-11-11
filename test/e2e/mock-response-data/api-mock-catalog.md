@@ -12,9 +12,13 @@ two entries have it. `$NAME` in an endpoint comes from the environment; the
 row is skipped without it. `derived` follows another row; `skip` is not
 fetched, for the reason given. With no drift it prints `No API changes
 detected`. Otherwise it prints each changed API (its id, endpoint and what
-changed) and any fetch errors. It runs every Monday in
-`.github/workflows/sync-e2e-api-mocks.yml`, which opens or updates one PR
-when a fixture changes.
+changed) and any fetch errors. Every Monday,
+`.github/workflows/sync-e2e-api-mocks.yml` opens or updates one PR when a
+fixture changes. The same workflow runs on a same-repo pull request that
+changes `mock-e2e.js`, `mock-response-data/` (including this catalog), or
+`mock-cdn/ppom-version.json`: drift is committed to that branch, and no drift
+prints `No API changes detected` and commits nothing. Fork pull requests are
+skipped. A fetch failure is logged and does not fail the pull request check.
 
 Values the tests assert stay as literals where `mock-e2e.js` (or the phishing
 helper) registers the mock and are applied over the fixture, so a sync cannot
