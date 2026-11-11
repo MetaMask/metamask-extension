@@ -461,7 +461,7 @@
     "@metamask/eth-token-tracker": "^10.0.2",
     "@metamask/eth-trezor-keyring": "^11.0.0",
     "@metamask/etherscan-link": "^3.0.0",
-    "@metamask/gas-fee-controller": "^26.1.0",
+    "@metamask/gas-fee-controller": "^27.1.1",
     "@metamask/gator-permissions-controller": "^4.2.1",
     "@metamask/gator-permissions-snap": "^2.5.0",
     "@metamask/geolocation-controller": "^2.0.0",
