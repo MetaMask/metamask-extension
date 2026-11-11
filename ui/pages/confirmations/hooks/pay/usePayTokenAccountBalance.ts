@@ -10,6 +10,7 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { useSendTokens } from '../send/useSendTokens';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import type { Asset } from '../../types/send';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -122,14 +123,15 @@ export function usePayTokenAccountBalance(): {
 } {
   const { payToken } = useTransactionPayToken();
   const accountTokens = useSendTokens({ includeNoBalance: true });
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const usdRate = useTokenFiatRate(
-    (payToken?.address ?? ZERO_ADDRESS) as Hex,
-    (payToken?.chainId ?? ABSENT_CHAIN_ID) as Hex,
+    evmPayToken?.address ?? ZERO_ADDRESS,
+    evmPayToken?.chainId ?? ABSENT_CHAIN_ID,
     'usd',
   );
 
   return useMemo(() => {
-    if (!payToken) {
+    if (!evmPayToken) {
       return {
         balanceUsd: '0',
         balanceRaw: '0',
@@ -138,24 +140,24 @@ export function usePayTokenAccountBalance(): {
       };
     }
 
-    const payTokenChainId = toHexChainId(payToken.chainId);
+    const payTokenChainId = toHexChainId(evmPayToken.chainId);
     const matchingToken = accountTokens.find((token) => {
       if (toHexChainId(token.chainId) !== payTokenChainId) {
         return false;
       }
 
-      const tokenAddress = tokenAddressForMatch(token, payToken.chainId);
-      return tokenAddress?.toLowerCase() === payToken.address.toLowerCase();
+      const tokenAddress = tokenAddressForMatch(token, evmPayToken.chainId);
+      return tokenAddress?.toLowerCase() === evmPayToken.address.toLowerCase();
     });
 
     if (!matchingToken?.rawBalance) {
       // Snapshot fallback: a positive USD snapshot is a usable figure, but a
       // `0`/absent one is indistinguishable from "not fetched yet" and must
       // not be treated as a known-zero balance.
-      const snapshotBalanceUsd = payToken.balanceUsd ?? '0';
+      const snapshotBalanceUsd = evmPayToken.balanceUsd ?? '0';
       return {
         balanceUsd: snapshotBalanceUsd,
-        balanceRaw: payToken.balanceRaw ?? '0',
+        balanceRaw: evmPayToken.balanceRaw ?? '0',
         isLiveBalance: false,
         isBalanceUsdKnown: new BigNumber(snapshotBalanceUsd).gt(0),
       };
@@ -173,9 +175,9 @@ export function usePayTokenAccountBalance(): {
       };
     }
 
-    const decimals = matchingToken.decimals ?? payToken.decimals ?? 18;
+    const decimals = matchingToken.decimals ?? evmPayToken.decimals ?? 18;
     const humanBalance = new BigNumber(balanceRaw).dividedBy(10 ** decimals);
-    const snapshotUsd = new BigNumber(payToken.balanceUsd ?? '0');
+    const snapshotUsd = new BigNumber(evmPayToken.balanceUsd ?? '0');
     const computedUsd = usdRate
       ? humanBalance.times(String(usdRate))
       : new BigNumber(0);
@@ -204,5 +206,5 @@ export function usePayTokenAccountBalance(): {
       isLiveBalance: true,
       isBalanceUsdKnown: new BigNumber(balanceUsd).gt(0),
     };
-  }, [accountTokens, payToken, usdRate]);
+  }, [accountTokens, evmPayToken, usdRate]);
 }

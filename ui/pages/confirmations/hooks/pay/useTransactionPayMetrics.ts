@@ -10,6 +10,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import { useConfirmContext } from '../../context/confirm';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -67,11 +68,13 @@ export function useTransactionPayMetrics() {
     if (payToken) {
       props.mm_pay = true;
       props.mm_pay_token_selected = payToken.symbol;
-      props.mm_pay_chain_selected = payToken.chainId;
+      props.mm_pay_chain_selected =
+        getEvmPaymentToken(payToken)?.chainId ?? null;
       props.mm_pay_transaction_step_total = (quotes?.length ?? 0) + 1;
       props.mm_pay_transaction_step = props.mm_pay_transaction_step_total;
       props.mm_pay_token_presented = presentedPayToken?.symbol ?? null;
-      props.mm_pay_chain_presented = presentedPayToken?.chainId ?? null;
+      props.mm_pay_chain_presented =
+        getEvmPaymentToken(presentedPayToken)?.chainId ?? null;
       props.mm_pay_payment_token_list_size = availableTokens.length;
       props.mm_pay_quote_loaded = hasQuotes || hasLoadedQuote;
       props.mm_pay_account_type_source_presented = sourcePresented ?? null;

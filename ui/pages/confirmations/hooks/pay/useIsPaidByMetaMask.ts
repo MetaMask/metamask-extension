@@ -1,6 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { type SponsoredNetworkFeeFlags } from './sponsored-network-fees';
@@ -44,9 +45,8 @@ export function useSponsoredNetworkFeeFlags(): SponsoredNetworkFeeFlags {
 
   const isSameChainPayRoute = Boolean(
     isGasSponsored &&
-    payToken?.chainId &&
     transactionMeta?.chainId &&
-    payToken.chainId === transactionMeta.chainId,
+    getEvmPaymentToken(payToken)?.chainId === transactionMeta.chainId,
   );
 
   return {

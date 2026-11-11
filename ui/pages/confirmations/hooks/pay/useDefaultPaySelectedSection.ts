@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { getEvmAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
 import { selectMoneyAccountVaultConfig } from '../../../../selectors/money/money-account-feature-flags';
 import { updateTransactionPaymentToken } from '../../../../store/controller-actions/transaction-pay-controller';
@@ -49,8 +50,10 @@ export function useDefaultPaySelectedSection(): void {
 
       updateTransactionPaymentToken({
         transactionId,
-        tokenAddress: moneyAccountPayToken.address,
-        chainId: moneyAccountPayToken.chainId,
+        assetId: getEvmAssetId(
+          moneyAccountPayToken.address,
+          moneyAccountPayToken.chainId,
+        ),
       }).catch((error) => {
         console.error('Failed to set the Money Account pay token', error);
       });

@@ -7,6 +7,7 @@ import { replaceMusdConversionTransactionForPayToken } from '../../components/ap
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import { rejectPendingApproval } from '../../store/actions';
+import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
 import { useDispatch } from '../../store/hooks';
 import { useMusdPaymentToken } from './useMusdPaymentToken';
 
@@ -24,6 +25,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('@metamask/rpc-errors', () => ({
+  ...jest.requireActual('@metamask/rpc-errors'),
   providerErrors: {
     userRejectedRequest: jest.fn(() => ({
       code: 4001,
@@ -52,7 +54,7 @@ jest.mock('../../store/actions', () => ({
 }));
 
 jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
-  updateTransactionPaymentToken: jest.fn(),
+  updateTransactionPaymentToken: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockUseAppDispatch = useDispatch as jest.MockedFunction<
@@ -171,6 +173,30 @@ describe('useMusdPaymentToken', () => {
           rejectApproval: expect.any(Function),
         }),
       );
+    });
+
+    it('selects the replacement payment token by its asset ID', async () => {
+      const { result } = renderHook(() => useMusdPaymentToken());
+
+      await act(async () => {
+        await result.current.onPaymentTokenChange({
+          address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+          chainId: '0xe708',
+        });
+      });
+
+      const { updatePaymentToken } = mockReplaceTransaction.mock.calls[0][2];
+      updatePaymentToken({
+        transactionId: 'new-tx',
+        tokenAddress: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+        chainId: '0xe708',
+      });
+
+      expect(updateTransactionPaymentToken).toHaveBeenCalledWith({
+        transactionId: 'new-tx',
+        assetId:
+          'eip155:59144/erc20:0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+      });
     });
 
     it('navigates to new transaction after successful replacement', async () => {

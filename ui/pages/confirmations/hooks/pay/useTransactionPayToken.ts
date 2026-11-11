@@ -4,6 +4,10 @@ import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import {
+  getEvmAssetId,
+  getEvmPaymentToken,
+} from '../../../../../shared/lib/transaction/pay-token';
 import { useConfirmContext } from '../../context/confirm';
 import {
   selectTransactionPaymentTokenByTransactionId,
@@ -23,15 +27,16 @@ export function useTransactionPayToken(): {
     selectTransactionPaymentTokenByTransactionId(state, transactionId),
   );
 
+  const evmPayToken = getEvmPaymentToken(payToken);
   const isNative =
-    payToken && payToken?.address === getNativeTokenAddress(payToken?.chainId);
+    evmPayToken &&
+    evmPayToken.address === getNativeTokenAddress(evmPayToken.chainId);
 
   const setPayToken = useCallback(
     async (newPayToken: { address: Hex; chainId: Hex }) => {
       await updateTransactionPaymentToken({
         transactionId: transactionId as string,
-        tokenAddress: newPayToken.address,
-        chainId: newPayToken.chainId,
+        assetId: getEvmAssetId(newPayToken.address, newPayToken.chainId),
       });
     },
     [transactionId],

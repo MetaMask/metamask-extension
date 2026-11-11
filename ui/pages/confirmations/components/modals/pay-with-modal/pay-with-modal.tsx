@@ -18,6 +18,7 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
+import { getEvmPaymentToken } from '../../../../../../shared/lib/transaction/pay-token';
 import { useClearPaymentOverride } from '../../../hooks/pay/useClearPaymentOverride';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
@@ -104,10 +105,12 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
+      const evmPayToken = getEvmPaymentToken(payToken);
+
       if (
-        payToken &&
-        payToken.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken.chainId.toLowerCase() ===
+        evmPayToken &&
+        evmPayToken.address.toLowerCase() === token.address?.toLowerCase() &&
+        evmPayToken.chainId.toLowerCase() ===
           (token.chainId as string)?.toLowerCase()
       ) {
         handleClose();
