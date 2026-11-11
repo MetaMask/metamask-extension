@@ -67,32 +67,45 @@ jest.mock('../../compliance', () => {
   };
 });
 
-jest.mock('../../../../../shared/lib/perps-formatters', () => ({
-  PRICE_RANGES_UNIVERSAL: [],
-  formatPerpsFiat: (value: number | string) => {
-    const amount = Number(value);
-    return `$${amount
-      .toLocaleString('en-US', {
+jest.mock('../../../../../shared/lib/perps-formatters', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../../../shared/lib/perps-formatters')
+  >('../../../../../shared/lib/perps-formatters');
+  return {
+    PRICE_RANGES_UNIVERSAL: [],
+    PRICE_RANGES_MINIMAL_VIEW: actual.PRICE_RANGES_MINIMAL_VIEW,
+    // Close cash rows use the real cents formatter; other values keep the stub.
+    formatPerpsFiat: (
+      value: number | string,
+      options?: Parameters<typeof actual.formatPerpsFiat>[1],
+    ) => {
+      if (options?.ranges === actual.PRICE_RANGES_MINIMAL_VIEW) {
+        return actual.formatPerpsFiat(value, options);
+      }
+      const amount = Number(value);
+      return `$${amount
+        .toLocaleString('en-US', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 6,
+        })
+        .replace(/(\.\d*?[1-9])0+$/u, '$1')
+        .replace(/\.0+$/u, '')}`;
+    },
+    formatPnl: (value: number | string) => {
+      const amount = Number(value);
+      const abs = Math.abs(amount).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      return amount >= 0 ? `+$${abs}` : `-$${abs}`;
+    },
+    formatPositionSize: (value: number, decimals?: number) =>
+      Number(value).toLocaleString('en-US', {
         minimumFractionDigits: 0,
-        maximumFractionDigits: 6,
-      })
-      .replace(/(\.\d*?[1-9])0+$/u, '$1')
-      .replace(/\.0+$/u, '')}`;
-  },
-  formatPnl: (value: number | string) => {
-    const amount = Number(value);
-    const abs = Math.abs(amount).toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-    return amount >= 0 ? `+$${abs}` : `-$${abs}`;
-  },
-  formatPositionSize: (value: number, decimals?: number) =>
-    Number(value).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: decimals ?? 4,
-    }),
-}));
+        maximumFractionDigits: decimals ?? 4,
+      }),
+  };
+});
 
 jest.mock('@metamask/perps-controller', () => ({
   ...jest.requireActual('@metamask/perps-controller'),
@@ -2158,9 +2171,11 @@ describe('ClosePositionModal', () => {
         createCloseLimitEnabledStore(),
       );
       enterLimitPrice('46000');
+      // Cross margin is returned as reported (1,500) with the limit PnL (-500);
+      // the unrealized PnL is not taken out of it.
       expect(
         screen.getByTestId('perps-close-summary-margin-value'),
-      ).toHaveTextContent('$1,250');
+      ).toHaveTextContent('$1,000');
       expect(screen.getByText('-$500.00')).toBeInTheDocument();
     });
 
@@ -2289,11 +2304,10 @@ describe('ClosePositionModal', () => {
   });
 
   describe('receive amount calculation', () => {
-    it('computes "You\'ll receive" as margin minus fees without double-counting PnL', () => {
-      // Verify the formula: receive = round2(margin) - round2(fees), with no unrealizedPnl added.
-      // HyperLiquid's marginUsed already includes accumulated PnL, so adding unrealizedPnl
-      // would double-count it. We assert the relationship between the three displayed values
-      // rather than a hardcoded amount so the test stays valid as the fee rate changes.
+    it('computes "You\'ll receive" as margin with PnL at the close price minus fees', () => {
+      // Core's estimateCloseReceive: isolated Hyperliquid marginUsed holds the
+      // unrealized PnL, so it is taken out and the PnL at the live close price
+      // added back. The three displayed rows add up.
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -2319,9 +2333,9 @@ describe('ClosePositionModal', () => {
 
       // displayed margin − displayed fees must equal displayed receive (additive breakdown)
       expect(receiveValue).toBeCloseTo(marginValue - feesValue, 2);
-      // sanity: margin must be positive and must NOT include an extra pnl on top
-      // (basePosition: marginUsed=2375, unrealizedPnl=375 — receive should be ~2375-fees, not ~2750-fees)
-      expect(marginValue).toBe(2375);
+      // basePosition: marginUsed 2375 less unrealizedPnl 375, plus the PnL at
+      // 2900 on 2.5 ETH entered at 2850: 2000 + 125.
+      expect(marginValue).toBe(2125);
     });
   });
 
@@ -2396,6 +2410,203 @@ describe('ClosePositionModal', () => {
       expect(
         screen.queryByTestId('perps-close-summary-fees-value-original'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  // Reference rows from Core's estimateCloseReceive (@metamask/perps-controller
+  // 22.3.0) at a 0.145% fee rate unless stated.
+  describe('Core close figures', () => {
+    const renderClose = (
+      position: Parameters<typeof ClosePositionModal>[0]['position'],
+      currentPrice: number,
+    ) =>
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={position}
+          currentPrice={currentPrice}
+          sizeDecimals={4}
+        />,
+        mockStore,
+      );
+
+    const rows = () => ({
+      margin: screen.getByTestId('perps-close-summary-margin-value')
+        .textContent,
+      pnl: screen.queryByTestId('perps-close-summary-pnl-value')?.textContent,
+      fees: screen.getByTestId('perps-close-summary-fees-value').textContent,
+      receive: screen.getByTestId('perps-close-summary-receive-value')
+        .textContent,
+    });
+
+    it('closes an isolated gain at the live price', () => {
+      renderClose(basePosition, 2900);
+
+      expect(rows()).toStrictEqual({
+        margin: '$2,125',
+        pnl: '+$125.00',
+        fees: '$10.51',
+        receive: '$2,114.49',
+      });
+    });
+
+    it('keeps the PnL in a cross loss instead of taking it out of the margin', () => {
+      renderClose(mockPositions[1], 45500);
+
+      expect(rows()).toStrictEqual({
+        margin: '$1,250',
+        pnl: '-$250.00',
+        fees: '$32.99',
+        receive: '$1,217.01',
+      });
+    });
+
+    it('adds the PnL of a cross gain to the margin', () => {
+      renderClose(mockPositions[1], 44000);
+
+      expect(rows()).toStrictEqual({
+        margin: '$2,000',
+        pnl: '+$500.00',
+        fees: '$31.90',
+        receive: '$1,968.10',
+      });
+    });
+
+    it('scales margin, PnL and fee to a partial close', () => {
+      renderClose(basePosition, 2900);
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(rows()).toStrictEqual({
+        margin: '$1,062.50',
+        pnl: '+$62.50',
+        fees: '$5.26',
+        receive: '$1,057.24',
+      });
+    });
+
+    it('quotes the partial size the order submits, not the off-grid slider size', async () => {
+      // 50% of 0.03 is 0.015, but a 2-decimal market submits 0.01.
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={{
+            ...basePosition,
+            size: '0.03',
+            positionValue: '85.50',
+            unrealizedPnl: '0',
+            marginUsed: '28.50',
+          }}
+          currentPrice={2900}
+          sizeDecimals={2}
+        />,
+        mockStore,
+      );
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(rows()).toStrictEqual({
+        margin: '$10',
+        pnl: '+$0.50',
+        fees: '$0.04',
+        receive: '$9.96',
+      });
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [expect.objectContaining({ size: '0.01' })],
+        );
+      });
+    });
+
+    it('charges the discounted fee rate and strikes through the original', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.000725,
+        undiscountedFeeRate: 0.00145,
+        isLoading: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderClose(basePosition, 2900);
+
+      expect(rows().fees).toBe('$5.26');
+      expect(rows().receive).toBe('$2,119.74');
+      expect(
+        screen.getByTestId('perps-close-summary-fees-value-original'),
+      ).toHaveTextContent('$10.51');
+    });
+
+    it('rounds half away from zero as Core does', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0,
+        undiscountedFeeRate: 0,
+        isLoading: false,
+        metamaskFeeRateDiscountPercentage: undefined,
+      });
+
+      renderClose(
+        {
+          ...mockPositions[1],
+          size: '1',
+          entryPrice: '100',
+          marginUsed: '1.005',
+          unrealizedPnl: '0',
+        },
+        100,
+      );
+
+      expect(rows().margin).toBe('$1.01');
+      expect(rows().receive).toBe('$1.01');
+    });
+
+    it('shows a signed receive when the loss exceeds the margin', () => {
+      renderClose(
+        {
+          ...mockPositions[1],
+          size: '1',
+          entryPrice: '100',
+          marginUsed: '10',
+          unrealizedPnl: '-15',
+        },
+        80,
+      );
+
+      expect(rows().receive).toBe('-$10.12');
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('shows fee and receive as unavailable until the fee rate is quoted', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        undiscountedFeeRate: undefined,
+        isLoading: true,
+        metamaskFeeRateDiscountPercentage: undefined,
+      });
+
+      renderClose(basePosition, 2900);
+
+      expect(rows()).toStrictEqual({
+        margin: '$2,125',
+        pnl: '+$125.00',
+        fees: '--',
+        receive: '--',
+      });
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
     });
   });
 });
