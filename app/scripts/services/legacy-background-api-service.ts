@@ -1376,9 +1376,9 @@ export class LegacyBackgroundApiService {
       await this.lookupSelectedNetworks();
 
       // Wait for NetworkEnablementController's onAddNetwork to finish processing
-      // the new chain (SLIP-44 lookup, nativeAssetIdentifiers update, optional
-      // enablement), then restore the previous map with the new chain included
-      // at whatever value core decided (true if enabled, false if not).
+      // the new chain (SLIP-44 lookup, nativeAssetIdentifiers update, enablement
+      // decision). Core may either add the chain to the existing selection
+      // (popular mode) or replace the selection with only the new chain.
       //
       // The restore runs here in the linear flow rather than from a
       // `NetworkEnablementController:stateChange` subscriber: calling
@@ -1389,10 +1389,20 @@ export class LegacyBackgroundApiService {
       const currentState = this.#messenger.call(
         'NetworkEnablementController:getState',
       );
-      const coreEnabledValue =
-        currentState.enabledNetworkMap[KnownCaipNamespace.Eip155]?.[
-          networkConfiguration.chainId
-        ];
+      const currentEip155Map =
+        currentState.enabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
+      const previousEip155Map =
+        previousEnabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
+
+      // Check if core kept the previous selection (added to it) or replaced it
+      // (disabled previously enabled networks). If every previously enabled
+      // network is still enabled, core added rather than replaced.
+      const coreKeptPreviousSelection = Object.entries(previousEip155Map).every(
+        ([chainId, wasEnabled]) =>
+          !wasEnabled || currentEip155Map[chainId as Hex] === true,
+      );
+
+      const newChainEnabled = currentEip155Map[networkConfiguration.chainId];
 
       this.#messenger.call(
         'NetworkEnablementController:restoreEnabledNetworkMap',
@@ -1400,9 +1410,13 @@ export class LegacyBackgroundApiService {
           ...previousEnabledNetworkMap,
           [KnownCaipNamespace.Eip155]: {
             ...previousEnabledNetworkMap[KnownCaipNamespace.Eip155],
-            ...(coreEnabledValue === true && {
-              [networkConfiguration.chainId]: true,
-            }),
+            // Include the new chain as enabled only if core enabled it AND kept
+            // the previous selection (popular mode). Otherwise restore the
+            // snapshot unchanged to cancel core's selection switch.
+            ...(coreKeptPreviousSelection &&
+              newChainEnabled === true && {
+                [networkConfiguration.chainId]: true,
+              }),
           },
         },
       );

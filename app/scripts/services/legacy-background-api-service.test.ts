@@ -2227,7 +2227,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('restores the previous map without the added network when core does not enable it', async () => {
+    it('restores the previous map unchanged when core replaced the selection', async () => {
       await withService(async ({ rootMessenger }) => {
         const restoreEnabledNetworkMapHandler = jest.fn();
         let currentState: {
@@ -2263,9 +2263,9 @@ describe('LegacyBackgroundApiService', () => {
 
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        // Core added the chain but left it disabled
+        // Core replaced the selection: disabled 0x1, enabled only 0xa
         currentState = {
-          enabledNetworkMap: { eip155: { '0x1': true, '0xa': false } },
+          enabledNetworkMap: { eip155: { '0x1': false, '0xa': true } },
         };
         rootMessenger.publish(
           'NetworkEnablementController:stateChange',
@@ -2275,7 +2275,7 @@ describe('LegacyBackgroundApiService', () => {
 
         await promise;
 
-        // Restored map excludes the new chain since core didn't enable it
+        // Restored map unchanged (excludes 0xa) to cancel core's selection switch
         expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
           eip155: { '0x1': true },
         });
