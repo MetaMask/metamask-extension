@@ -50,26 +50,18 @@ type SpotPriceEntry = NonNullable<V3SpotPricesResponse[string]> &
  * @returns The cached price of the asset, or undefined if it is not in state.
  */
 export const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
-  const isEvm = isEvmChainId(asset.chainId);
   const evmMarketData = useSelector(getMarketData);
   const evmCurrencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
 
   const { chainId, type } = asset;
-  const isNative = type === AssetType.native;
-  const nativeAssetId =
-    !isEvm && isNative
-      ? getNativeAssetForChainIdSafe(chainId)?.assetId
-      : undefined;
 
   return {
     currentPrice: getCachedSpotPrice({
-      isEvm,
-      isNative,
+      isNative: type === AssetType.native,
       symbol: asset.symbol,
       chainId,
       address: type === AssetType.token ? asset.address : undefined,
-      nativeAssetId,
       marketData: evmMarketData,
       currencyRates: evmCurrencyRates,
       conversionRates: nonEvmConversionRates,

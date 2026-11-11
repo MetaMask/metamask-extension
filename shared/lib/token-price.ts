@@ -5,7 +5,7 @@ import {
   type MultichainAssetsRatesControllerState,
   type TokenRatesControllerState,
 } from '@metamask/assets-controllers';
-import type { CaipAssetType, Hex } from '@metamask/utils';
+import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { getNativeAssetId, isEvmChainId } from './asset-utils';
 import { toChecksumHexAddress } from './hexstring-utils';
 
@@ -13,15 +13,15 @@ type MarketData = TokenRatesControllerState['marketData'];
 type CurrencyRates = CurrencyRateState['currencyRates'];
 type ConversionRates = MultichainAssetsRatesControllerState['conversionRates'];
 
+const finiteNumber = (value: number | null | undefined) =>
+  typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+
 type CachedSpotPriceInput = {
-  isEvm: boolean;
   isNative: boolean;
   symbol: string;
-  chainId: string;
+  chainId: Hex | CaipChainId;
   /** EVM token address, or the non-EVM token asset id. */
   address?: string;
-  /** Non-EVM native asset id. */
-  nativeAssetId?: string;
   marketData?: MarketData;
   currencyRates?: CurrencyRates;
   conversionRates?: ConversionRates;
@@ -33,31 +33,27 @@ type CachedSpotPriceInput = {
  * use their conversion rate. Missing data returns `undefined`.
  *
  * @param input - The asset identity and the cached rate maps.
- * @param input.isEvm - Whether the asset is on an EVM chain.
  * @param input.isNative - Whether the asset is the chain's native token.
  * @param input.symbol - The asset symbol, used for the native currency rate.
- * @param input.chainId - The asset's chain id.
+ * @param input.chainId - The asset's chain id. This decides the EVM lookup and the non-EVM native asset id.
  * @param input.address - The EVM token address, or the non-EVM token asset id.
- * @param input.nativeAssetId - The non-EVM native asset id.
  * @param input.marketData - EVM market data keyed by chain id and address.
  * @param input.currencyRates - Fiat rates keyed by currency symbol.
  * @param input.conversionRates - Non-EVM rates keyed by asset id.
  * @returns The price, or `undefined` when it is not cached.
  */
 export function getCachedSpotPrice({
-  isEvm,
   isNative,
   symbol,
   chainId,
   address,
-  nativeAssetId,
   marketData,
   currencyRates,
   conversionRates,
 }: CachedSpotPriceInput): number | undefined {
-  if (isEvm) {
+  if (isEvmChainId(chainId)) {
     if (isNative) {
-      return currencyRates?.[symbol]?.conversionRate ?? undefined;
+      return finiteNumber(currencyRates?.[symbol]?.conversionRate);
     }
 
     if (!address) {
@@ -71,12 +67,14 @@ export function getCachedSpotPrice({
       : undefined;
     const price = tokenMarket?.price;
 
-    return exchangeRate !== undefined && price !== undefined
-      ? exchangeRate * price
-      : undefined;
+    return finiteNumber(
+      exchangeRate !== undefined && price !== undefined
+        ? exchangeRate * price
+        : undefined,
+    );
   }
 
-  const rateKey = isNative ? nativeAssetId : address;
+  const rateKey = isNative ? getNativeAssetId(chainId) : address;
   if (!rateKey) {
     return undefined;
   }
@@ -107,12 +105,10 @@ export function getCachedTokenPrice(
   conversionRates: ConversionRates | undefined,
 ): number | undefined {
   return getCachedSpotPrice({
-    isEvm: isEvmChainId(asset.chainId),
     isNative: Boolean(asset.isNative),
     symbol: asset.symbol,
     chainId: asset.chainId,
     address: 'address' in asset ? asset.address : asset.assetId,
-    nativeAssetId: getNativeAssetId(asset.chainId),
     marketData,
     currencyRates,
     conversionRates,
@@ -128,9 +124,6 @@ type CachedPercentChangeInput = {
   marketData?: MarketData;
   conversionRates?: ConversionRates;
 };
-
-const finiteNumber = (value: number | null | undefined) =>
-  typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 
 /**
  * Cached 24h percent change. EVM assets read `pricePercentChange1d`. Native

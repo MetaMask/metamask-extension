@@ -154,7 +154,7 @@ describe('sortTokenAssets', () => {
       assets,
       savedBalanceSort,
       { column: 'price', reversed: false },
-      { getPrice: (asset) => prices[asset.name] },
+      (asset) => prices[asset.name],
     ).map((asset) => asset.name);
 
     expect(sortedNames).toStrictEqual(['Asset B', 'Asset A', 'Asset Z']);
@@ -170,7 +170,42 @@ describe('sortTokenAssets', () => {
       assets,
       savedBalanceSort,
       { column: 'price', reversed: true },
-      { getPrice: (asset) => prices[asset.name] },
+      (asset) => prices[asset.name],
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
+  });
+
+  it('sorts non-finite prices last', () => {
+    const prices: Record<string, number> = {
+      'Asset A': Number.NaN,
+      'Asset B': Number.POSITIVE_INFINITY,
+      'Asset Z': 1,
+    };
+
+    const highestFirst = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'price', reversed: false },
+      (asset) => prices[asset.name],
+    ).map((asset) => asset.name);
+    const lowestFirst = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'price', reversed: true },
+      (asset) => prices[asset.name],
+    ).map((asset) => asset.name);
+
+    expect(highestFirst).toStrictEqual(['Asset Z', 'Asset A', 'Asset B']);
+    expect(lowestFirst).toStrictEqual(['Asset Z', 'Asset A', 'Asset B']);
+  });
+
+  it('orders assets by name when every price is missing', () => {
+    const sortedNames = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'price', reversed: false },
+      () => undefined,
     ).map((asset) => asset.name);
 
     expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
@@ -187,10 +222,25 @@ describe('sortTokenAssets', () => {
       assets,
       savedBalanceSort,
       { column: 'price', reversed: true },
-      { getPrice: (asset) => prices[asset.name] },
+      (asset) => prices[asset.name],
     ).map((asset) => asset.name);
 
     expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
+  });
+
+  it('reads each price once', () => {
+    const getSortValue = jest.fn((asset: Asset) =>
+      asset.name === 'Asset A' ? 2 : undefined,
+    );
+
+    sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'price', reversed: false },
+      getSortValue,
+    );
+
+    expect(getSortValue).toHaveBeenCalledTimes(assets.length);
   });
 
   it('sorts the largest 24h gain first and leaves missing changes last', () => {
@@ -203,10 +253,27 @@ describe('sortTokenAssets', () => {
       assets,
       savedBalanceSort,
       { column: 'change', reversed: false },
-      { getPercentChange: (asset) => changes[asset.name] },
+      (asset) => changes[asset.name],
     ).map((asset) => asset.name);
 
     expect(sortedNames).toStrictEqual(['Asset B', 'Asset A', 'Asset Z']);
+  });
+
+  it('sorts non-finite 24h changes last', () => {
+    const changes: Record<string, number> = {
+      'Asset A': Number.NaN,
+      'Asset B': Number.NEGATIVE_INFINITY,
+      'Asset Z': -1,
+    };
+
+    const sortedNames = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'change', reversed: true },
+      (asset) => changes[asset.name],
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset Z', 'Asset A', 'Asset B']);
   });
 
   it('sorts the largest 24h loss first when the change column is reversed', () => {
@@ -219,7 +286,7 @@ describe('sortTokenAssets', () => {
       assets,
       savedBalanceSort,
       { column: 'change', reversed: true },
-      { getPercentChange: (asset) => changes[asset.name] },
+      (asset) => changes[asset.name],
     ).map((asset) => asset.name);
 
     expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);

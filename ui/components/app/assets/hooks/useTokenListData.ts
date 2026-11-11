@@ -20,15 +20,8 @@ import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19Asse
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import {
-  getCachedTokenPercentChange,
-  getCachedTokenPrice,
-} from '#shared/lib/token-price';
-import {
-  getCurrencyRates,
-  getMarketData,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
-  getUseCurrencyRateCheck,
   getUseExternalServices,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
@@ -45,7 +38,6 @@ import {
 } from '../../../../selectors/multichain/networks';
 import {
   getAssetsBySelectedAccountGroup,
-  getAssetsRates,
   selectAccountGroupBalanceForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../../selectors/assets';
@@ -78,8 +70,10 @@ type UseTokenListDataOptions = {
     address: string,
     assetId?: CaipAssetType,
   ) => void;
-  // Table sort. Not used by token list, which uses the saved preference
+  // Table sort. Not used by token list, which uses the token sort config
   sortOverride?: TokenTableSort | null;
+  // Price or 24h change for the table sort override. Null for the token list
+  getSortValue?: ((asset: Asset) => number | undefined) | null;
 };
 
 let lowValueAssetsExpandedSessionValue = false;
@@ -123,11 +117,13 @@ export const getTokenListItemKey = (
  * @param options - The hook options.
  * @param options.onTokenClick - Called when a token is opened.
  * @param options.sortOverride - Token table sort. The token list doesn't use this.
+ * @param options.getSortValue - Price or 24h change for that table sort.
  * @returns The display items and the handlers to render them.
  */
 export function useTokenListData({
   onTokenClick,
   sortOverride = null,
+  getSortValue = null,
 }: UseTokenListDataOptions) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
@@ -146,9 +142,6 @@ export function useTokenListData({
   const { isStockToken } = useRWAToken();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
-  const marketData = useSelector(getMarketData);
-  const currencyRates = useSelector(getCurrencyRates);
-  const conversionRates = useSelector(getAssetsRates);
 
   // Defer only the hide-zero-balance preference so Settings toggles stay
   // responsive while this list recomputes. Account assets must update
@@ -158,14 +151,13 @@ export function useTokenListData({
   );
 
   const useExternalServices = useSelector(getUseExternalServices);
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
 
-  const sortedFilteredTokens = useMemo(() => {
-    const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
+  const filteredAssets = useMemo(() => {
+    const accountAssets = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
         if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
           return [];
@@ -184,36 +176,35 @@ export function useTokenListData({
       },
     );
 
-    const accountAssets = sortTokenAssets(
-      accountAssetsPreSort,
-      tokenSortConfig,
-      sortOverride,
-      {
-        getPrice: (asset) =>
-          useCurrencyRateCheck
-            ? getCachedTokenPrice(
-                asset,
-                marketData,
-                currencyRates,
-                conversionRates,
-              )
-            : undefined,
-        getPercentChange: (asset) =>
-          getCachedTokenPercentChange(asset, marketData, conversionRates),
-      },
-    );
-
     // Filter out non-EVM assets when basic functionality toggle is OFF
     // Exception: Keep assets for the currently selected non-EVM chain
-    const finalAccountAssets = useExternalServices
-      ? accountAssets
-      : accountAssets.filter(
-          (asset) =>
-            isEvmChainId(asset.chainId) ||
-            (!isEvm && asset.chainId === currentNetwork.chainId),
-        );
+    if (useExternalServices) {
+      return accountAssets;
+    }
 
-    return finalAccountAssets.map((asset) => {
+    return accountAssets.filter(
+      (asset) =>
+        isEvmChainId(asset.chainId) ||
+        (!isEvm && asset.chainId === currentNetwork.chainId),
+    );
+  }, [
+    accountGroupIdAssets,
+    allEnabledNetworksForAllNamespaces,
+    currentNetwork.chainId,
+    deferredShouldHideZeroBalanceTokens,
+    isEvm,
+    useExternalServices,
+  ]);
+
+  const sortedFilteredTokens = useMemo(() => {
+    const accountAssets = sortTokenAssets(
+      filteredAssets,
+      tokenSortConfig,
+      sortOverride,
+      getSortValue,
+    );
+
+    return accountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -226,20 +217,7 @@ export function useTokenListData({
 
       return token;
     });
-  }, [
-    isEvm,
-    currentNetwork.chainId,
-    tokenSortConfig,
-    accountGroupIdAssets,
-    allEnabledNetworksForAllNamespaces,
-    deferredShouldHideZeroBalanceTokens,
-    useExternalServices,
-    useCurrencyRateCheck,
-    sortOverride,
-    marketData,
-    currencyRates,
-    conversionRates,
-  ]);
+  }, [filteredAssets, getSortValue, sortOverride, tokenSortConfig]);
 
   // Skeletons stand in for the native gas token and mUSD that render before
   // the rest of the account's tokens. Tokens already in state stay visible,

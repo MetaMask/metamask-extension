@@ -25,7 +25,6 @@ const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 describe('getCachedSpotPrice', () => {
   it('uses the currency rate for a native token', () => {
     const price = getCachedSpotPrice({
-      isEvm: true,
       isNative: true,
       symbol: 'ETH',
       chainId: '0x1',
@@ -37,7 +36,6 @@ describe('getCachedSpotPrice', () => {
 
   it('multiplies an EVM token market price by the currency rate', () => {
     const price = getCachedSpotPrice({
-      isEvm: true,
       isNative: false,
       symbol: 'USDC',
       chainId: '0x1',
@@ -55,7 +53,6 @@ describe('getCachedSpotPrice', () => {
 
   it('returns undefined when an EVM token has no market data', () => {
     const price = getCachedSpotPrice({
-      isEvm: true,
       isNative: false,
       symbol: 'USDC',
       chainId: '0x1',
@@ -68,15 +65,42 @@ describe('getCachedSpotPrice', () => {
   it('parses a non-EVM conversion rate', () => {
     const assetId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
     const price = getCachedSpotPrice({
-      isEvm: false,
       isNative: true,
       symbol: 'SOL',
       chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      nativeAssetId: assetId,
       conversionRates: conversionRates({ [assetId]: { rate: '150.25' } }),
     });
 
     expect(price).toBe(150.25);
+  });
+
+  it('returns undefined for a non-finite price', () => {
+    expect(
+      getCachedSpotPrice({
+        isNative: true,
+        symbol: 'ETH',
+        chainId: '0x1',
+        currencyRates: currencyRates({ ETH: { conversionRate: Number.NaN } }),
+      }),
+    ).toBeUndefined();
+
+    expect(
+      getCachedSpotPrice({
+        isNative: false,
+        symbol: 'USDC',
+        chainId: '0x1',
+        address: USDC_ADDRESS,
+        marketData: marketData({
+          '0x1': {
+            [USDC_ADDRESS]: {
+              price: Number.POSITIVE_INFINITY,
+              currency: 'usd',
+            },
+          },
+        }),
+        currencyRates: currencyRates({ usd: { conversionRate: 1 } }),
+      }),
+    ).toBeUndefined();
   });
 });
 
@@ -152,6 +176,38 @@ describe('getCachedPercentChange', () => {
     });
 
     expect(change).toBe(2.25);
+  });
+
+  it('returns undefined for a non-finite change', () => {
+    expect(
+      getCachedPercentChange({
+        isEvm: true,
+        isNative: false,
+        chainId: '0x1',
+        address: USDC_ADDRESS,
+        marketData: marketData({
+          '0x1': {
+            [USDC_ADDRESS]: { pricePercentChange1d: Number.NaN },
+          },
+        }),
+      }),
+    ).toBeUndefined();
+
+    expect(
+      getCachedPercentChange({
+        isEvm: true,
+        isNative: false,
+        chainId: '0x1',
+        address: USDC_ADDRESS,
+        marketData: marketData({
+          '0x1': {
+            [USDC_ADDRESS]: {
+              pricePercentChange1d: Number.POSITIVE_INFINITY,
+            },
+          },
+        }),
+      }),
+    ).toBeUndefined();
   });
 
   it('returns undefined when the change is missing', () => {

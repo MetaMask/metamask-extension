@@ -4,7 +4,7 @@ import type { CaipChainId, Hex } from '@metamask/utils';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { sortAssets, type SortCriteria } from './sort';
 
-// These are the only two options for sorting assets
+// Saved tokenSortConfig values. Header overrides are applied by sortTokenAssets.
 // {"key": "name", "order": "asc", "sortCallback": "alphaNumeric"}
 // {"key": "tokenFiatAmount", "order": "dsc", "sortCallback": "stringNumeric"}
 export function sortAssetsWithPriority(
@@ -27,26 +27,24 @@ export type TokenTableSort = {
   reversed: boolean;
 };
 
-export type TokenSortValues = {
-  getPrice?: (asset: Asset) => number | undefined;
-  getPercentChange?: (asset: Asset) => number | undefined;
-};
-
 /**
  * Sorts tokens for the table header. Without an override, this is the saved
  * preference. The override is not written back to that preference.
  *
+ * Price and 24h values are read once per asset before the comparison, so the
+ * comparator only looks up numbers.
+ *
  * @param array - The assets to sort.
  * @param criteria - The saved token sort preference.
  * @param override - A table-header sort, when the user has clicked a column.
- * @param values - Spot price and 24h change for the price and change columns.
+ * @param getSortValue - The price or 24h change for one asset. Used only for those columns.
  * @returns The assets in the requested order.
  */
 export function sortTokenAssets(
   array: Asset[],
   criteria: SortCriteria,
   override?: TokenTableSort | null,
-  values: TokenSortValues = {},
+  getSortValue?: ((asset: Asset) => number | undefined) | null,
 ): Asset[] {
   if (!override) {
     return sortAssetsWithPriority(array, criteria);
@@ -61,39 +59,23 @@ export function sortTokenAssets(
   }
 
   if (override.column === 'price' || override.column === 'change') {
-    const getValue =
-      override.column === 'price' ? values.getPrice : values.getPercentChange;
-    return [...array].sort(
-      compareAssetsByNumber(getValue ?? (() => undefined), override.reversed),
+    const sortValueByAsset = new Map(
+      array.map((asset) => [asset, getSortValue?.(asset)]),
     );
+    return [...array].sort((assetA, assetB) => {
+      const comparison = compareOptionalNumbers(
+        sortValueByAsset.get(assetA),
+        sortValueByAsset.get(assetB),
+        override.reversed,
+      );
+      if (comparison !== 0) {
+        return comparison;
+      }
+      return assetA.name.localeCompare(assetB.name);
+    });
   }
 
   return [...array].sort((a, b) => compareFiatBalance(a, b, override.reversed));
-}
-
-/**
- * Orders assets by a number. Missing values stay last. Equal values are
- * ordered by name.
- *
- * @param getValue - The number to sort by.
- * @param reversed - When true, the lowest value comes first.
- * @returns A comparator for `Array.prototype.sort`.
- */
-function compareAssetsByNumber(
-  getValue: (asset: Asset) => number | undefined,
-  reversed: boolean,
-) {
-  return (a: Asset, b: Asset) => {
-    const comparison = compareOptionalNumbers(
-      getValue(a),
-      getValue(b),
-      reversed,
-    );
-    if (comparison !== 0) {
-      return comparison;
-    }
-    return a.name.localeCompare(b.name);
-  };
 }
 
 /**

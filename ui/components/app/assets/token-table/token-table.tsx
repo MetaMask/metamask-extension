@@ -23,6 +23,7 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
+import { useTokenSortValues } from '../hooks/useTokenSortValues';
 import type { TokenTableSort } from '../util/sortAssetsWithPriority';
 import { NativeTokenScamWarningModal } from '../token-cell/native-token-scam-warning-modal';
 import {
@@ -235,6 +236,11 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     [activeColumn, reversed],
   );
 
+  const getSortValue = useTokenSortValues(
+    headerSort?.column === 'price' || headerSort?.column === 'change'
+      ? headerSort.column
+      : null,
+  );
   const {
     tokenListItems,
     showLoadingSkeleton,
@@ -243,7 +249,11 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
-  } = useTokenListData({ onTokenClick, sortOverride: headerSort });
+  } = useTokenListData({
+    onTokenClick,
+    sortOverride: headerSort,
+    getSortValue,
+  });
 
   const renderRow = useCallback(
     (info: { item: TokenListDisplayItem }) => {
