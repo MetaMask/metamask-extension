@@ -12,6 +12,7 @@ jest.mock('webextension-polyfill', () => {
         removeListener: jest.fn(),
         addListener: jest.fn(),
       },
+      setUninstallURL: jest.fn(),
     },
   };
 });

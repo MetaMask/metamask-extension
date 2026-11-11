@@ -439,7 +439,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         >
                           <img
                             alt="Polygon"
-                            class="size-full object-contain"
+                            class="size-full object-cover"
                             data-testid="avatar-group-network-image"
                             src="./images/pol-token.svg"
                           />
@@ -454,7 +454,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         >
                           <img
                             alt="BNB Chain"
-                            class="size-full object-contain"
+                            class="size-full object-cover"
                             data-testid="avatar-group-network-image"
                             src="./images/bnb.svg"
                           />
@@ -483,7 +483,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         >
                           <img
                             alt="Custom Mainnet RPC"
-                            class="size-full object-contain"
+                            class="size-full object-cover"
                             data-testid="avatar-group-network-image"
                             src="./images/eth_logo.svg"
                           />

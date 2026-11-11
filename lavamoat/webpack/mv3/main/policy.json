@@ -998,12 +998,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/perps-controller>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -1560,6 +1554,23 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
+    "@metamask/gas-fee-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
     "@metamask/geolocation-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1642,6 +1653,23 @@
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/network-enablement-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -1811,6 +1839,23 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
+    "@metamask/subscription-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
     "@metamask/transaction-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1884,6 +1929,7 @@
     },
     "@metamask/core-backend": {
       "globals": {
+        "AbortController": true,
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
@@ -1899,6 +1945,7 @@
         "@metamask/core-backend>@metamask/controller-utils": true,
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
+        "async-mutex": true,
         "cockatiel": true,
         "@metamask/core-backend>uuid": true
       }
@@ -2300,39 +2347,25 @@
         "setInterval": true
       },
       "packages": {
+        "@metamask/gas-fee-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "ethereumjs-util>bn.js": true,
+        "@metamask/gas-fee-controller>uuid": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/gas-fee-controller": {
+      "globals": {
+        "clearInterval": true,
+        "console.error": true,
+        "setInterval": true
+      },
+      "packages": {
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "ethereumjs-util>bn.js": true,
         "uuid": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/transaction-controller>@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "ethereumjs-util>bn.js": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": true
-      }
-    },
-    "@metamask/wallet>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/wallet>@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "ethereumjs-util>bn.js": true,
-        "@metamask/wallet>@metamask/gas-fee-controller>uuid": true
       }
     },
     "@metamask/gator-permissions-controller": {
@@ -2710,7 +2743,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/wallet>@metamask/subscription-controller>@metamask/money-account-utils": {
+    "@metamask/subscription-controller>@metamask/money-account-utils": {
       "packages": {
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
@@ -2772,6 +2805,11 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2804,7 +2842,7 @@
         "@metamask/network-connection-banner-controller>@metamask/client-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/network-controller": true,
-        "@metamask/network-enablement-controller": true,
+        "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": true,
         "@metamask/utils": true,
         "reselect": true
       }
@@ -2851,10 +2889,16 @@
     "@metamask/network-enablement-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/config-registry-controller": true,
+        "@metamask/network-enablement-controller>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": {
+      "packages": {
         "@metamask/utils": true,
         "reselect": true
       }
@@ -2951,6 +2995,7 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
+        "Intl.NumberFormat": true,
         "URLSearchParams": true,
         "clearInterval": true,
         "clearTimeout": true,
@@ -2960,7 +3005,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/perps-controller>@metamask/abi-utils": true,
+        "@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/perps-controller>@metamask/controller-utils": true,
         "@metamask/superstruct": true,
@@ -3061,7 +3106,7 @@
         "uuid": true
       }
     },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": {
+    "@metamask/gas-fee-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -3070,19 +3115,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "fast-json-stable-stringify": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller>uuid": true
-      }
-    },
-    "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
+        "@metamask/gas-fee-controller>@metamask/polling-controller>uuid": true
       }
     },
     "@metamask/profile-metrics-controller>@metamask/polling-controller": {
@@ -3098,6 +3131,18 @@
       }
     },
     "@metamask/smart-transactions-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/subscription-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -3552,7 +3597,7 @@
         "console.warn": true
       }
     },
-    "@metamask/wallet>@metamask/subscription-controller": {
+    "@metamask/subscription-controller": {
       "globals": {
         "URL": true,
         "crypto.getRandomValues": true,
@@ -3560,21 +3605,21 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/wallet>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/subscription-controller>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-data-service": true,
-        "@metamask/wallet>@metamask/controller-utils": true,
+        "@metamask/subscription-controller>@metamask/controller-utils": true,
         "@metamask/delegation-core": true,
-        "@metamask/wallet>@metamask/subscription-controller>@metamask/delegation-deployments": true,
-        "@metamask/wallet>@metamask/subscription-controller>@metamask/money-account-utils": true,
-        "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "@metamask/subscription-controller>@metamask/delegation-deployments": true,
+        "@metamask/subscription-controller>@metamask/money-account-utils": true,
+        "@metamask/subscription-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@metamask/wallet>@metamask/controller-utils>bignumber.js": true,
+        "@metamask/subscription-controller>bignumber.js": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
       }
@@ -3618,7 +3663,7 @@
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/transaction-controller>@metamask/controller-utils": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
+        "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
@@ -3680,7 +3725,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/gas-fee-controller": true,
+        "@metamask/user-operation-controller>@metamask/gas-fee-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
@@ -3723,12 +3768,13 @@
         "@metamask/config-registry-controller": true,
         "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/wallet>@metamask/controller-utils": true,
-        "@metamask/wallet>@metamask/gas-fee-controller": true,
+        "@metamask/gas-fee-controller": true,
         "@metamask/geolocation-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
+        "@metamask/network-enablement-controller": true,
         "@metamask/passkey-controller": true,
         "@metamask/permission-controller": true,
         "@metamask/remote-feature-flag-controller": true,
@@ -3736,7 +3782,7 @@
         "@metamask/selected-network-controller": true,
         "@metamask/wallet>@metamask/shield-controller": true,
         "@metamask/wallet>@metamask/storage-service": true,
-        "@metamask/wallet>@metamask/subscription-controller": true,
+        "@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
@@ -5028,11 +5074,6 @@
         "crypto": true
       }
     },
-    "@metamask/wallet>@metamask/controller-utils>bignumber.js": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/perps-controller>bignumber.js": {
       "globals": {
         "crypto": true
@@ -5044,6 +5085,11 @@
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/subscription-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
@@ -8027,7 +8073,8 @@
     },
     "@metamask/analytics-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/assets-controllers>uuid": {
@@ -8043,7 +8090,8 @@
     },
     "@metamask/bridge-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/bridge-status-controller>uuid": {
@@ -8067,12 +8115,7 @@
         "crypto": true
       }
     },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/wallet>@metamask/gas-fee-controller>uuid": {
+    "@metamask/gas-fee-controller>uuid": {
       "globals": {
         "crypto.getRandomValues": true
       }
@@ -8114,7 +8157,8 @@
     },
     "@metamask/network-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/notification-services-controller>uuid": {
@@ -8146,7 +8190,7 @@
         "msCrypto": true
       }
     },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller>uuid": {
+    "@metamask/gas-fee-controller>@metamask/polling-controller>uuid": {
       "globals": {
         "crypto": true,
         "msCrypto": true

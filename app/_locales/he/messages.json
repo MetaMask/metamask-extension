@@ -211,10 +211,6 @@
   "fast": {
     "message": "מהיר"
   },
-  "fileImportFail": {
-    "message": "ייבוא הקובץ לא עובד? לחצ/י כאן!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "מחיקת המכשיר הזה"
   },
@@ -388,10 +384,6 @@
   },
   "passwordsDontMatch": {
     "message": "ססמאות אינן תואמות"
-  },
-  "pastePrivateKey": {
-    "message": "הדבק/י את מחרוזת המפתח הפרטי שלך כאן:",
-    "description": "For importing an account from a private key"
   },
   "pending": {
     "message": "בהמתנה"
@@ -580,9 +572,6 @@
   },
   "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."
-  },
-  "usedByClients": {
-    "message": "בשימוש על ידי מגוון לקוחות שונים"
   },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"

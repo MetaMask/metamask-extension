@@ -72,8 +72,17 @@ jest.mock('../../hooks/useFormatters', () => ({
 }));
 
 jest.mock(
-  '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar',
-  () => () => null,
+  '../../components/app/assets/asset-list/asset-list-control-bar/asset-controls',
+  () => ({
+    AssetControls: ({ children }: { children: React.ReactNode }) => children,
+  }),
+);
+
+jest.mock(
+  '../../components/app/assets/asset-list/asset-list-control-bar/network-filter',
+  () => ({
+    NetworkFilter: () => null,
+  }),
 );
 
 jest.mock(
