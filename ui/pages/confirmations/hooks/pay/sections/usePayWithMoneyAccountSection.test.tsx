@@ -69,6 +69,7 @@ describe('usePayWithMoneyAccountSection', () => {
       },
     } as ReturnType<typeof useConfirmContext>);
     useCachedBalanceMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatRaw: undefined,
       withdrawableFiatFormatted: '$12.34',
     });
