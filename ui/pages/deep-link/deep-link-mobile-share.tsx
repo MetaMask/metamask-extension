@@ -110,13 +110,14 @@ export const DeepLinkMobileShare = ({ url }: DeepLinkMobileShareProps) => {
             className="min-w-0 rounded-lg py-2 pl-3 pr-1"
           >
             <Text
+              asChild
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
               className="min-w-0 flex-1 truncate"
-              title={url}
-              data-testid="deep-link-mobile-share-url"
             >
-              {url}
+              <span title={url} data-testid="deep-link-mobile-share-url">
+                {url}
+              </span>
             </Text>
             <ButtonIcon
               iconName={copied ? IconName.CopySuccess : IconName.Copy}
