@@ -1375,27 +1375,34 @@ export class LegacyBackgroundApiService {
       );
       await this.lookupSelectedNetworks();
 
-      // The NetworkEnablementController enables the newly added network
-      // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
-      // updating state). That can also disable every other network. Wait for the
-      // enablement to land, then put the previous selection back and keep the
-      // network the user just added enabled, so its balance is fetched without
-      // switching the active network.
+      // Wait for NetworkEnablementController's onAddNetwork to finish processing
+      // the new chain (SLIP-44 lookup, nativeAssetIdentifiers update, optional
+      // enablement), then restore the previous map with the new chain included
+      // at whatever value core decided (true if enabled, false if not).
       //
       // The restore runs here in the linear flow rather than from a
-      // `NetworkEnablementController:stateChange` subscriber on purpose: calling
-      // the `restoreEnabledNetworkMap` action synchronously from inside the
-      // subscriber re-enters the messenger's publish and the restore update is
-      // dropped. Awaiting first defers the restore to a microtask outside that
-      // publish.
-      await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
+      // `NetworkEnablementController:stateChange` subscriber: calling
+      // restoreEnabledNetworkMap synchronously inside the subscriber re-enters
+      // the messenger's publish and the restore is dropped.
+      await this.#waitForCoreNetworkProcessing(networkConfiguration.chainId);
+
+      const currentState = this.#messenger.call(
+        'NetworkEnablementController:getState',
+      );
+      const coreEnabledValue =
+        currentState.enabledNetworkMap[KnownCaipNamespace.Eip155]?.[
+          networkConfiguration.chainId
+        ];
+
       this.#messenger.call(
         'NetworkEnablementController:restoreEnabledNetworkMap',
         {
           ...previousEnabledNetworkMap,
           [KnownCaipNamespace.Eip155]: {
             ...previousEnabledNetworkMap[KnownCaipNamespace.Eip155],
-            [networkConfiguration.chainId]: true,
+            ...(coreEnabledValue === true && {
+              [networkConfiguration.chainId]: true,
+            }),
           },
         },
       );
@@ -1408,28 +1415,30 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Resolves once the given network is enabled in the
-   * NetworkEnablementController. `NetworkEnablementController.onAddNetwork`
-   * always enables a newly added network, so this is guaranteed to resolve.
+   * Waits for NetworkEnablementController to finish processing a newly added
+   * network. Resolves when the chain appears in the enabledNetworkMap (with
+   * any value), signaling that onAddNetwork's async work has completed.
    *
    * @param chainId - The chain ID of the newly added network.
    */
-  async #waitForNetworkToBeEnabled(chainId: Hex): Promise<void> {
+  async #waitForCoreNetworkProcessing(chainId: Hex): Promise<void> {
+    const currentState = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+
+    // If chain is already in the map (enabled or disabled), core is done
     if (
-      this.#messenger.call(
-        'NetworkEnablementController:isNetworkEnabled',
-        chainId,
-      )
+      currentState.enabledNetworkMap[KnownCaipNamespace.Eip155]?.[chainId] !==
+      undefined
     ) {
       return;
     }
 
+    // Wait for chain to appear in the map
     await this.#messenger.waitUntil('NetworkEnablementController:stateChange', {
-      condition: () =>
-        this.#messenger.call(
-          'NetworkEnablementController:isNetworkEnabled',
-          chainId,
-        ),
+      condition: (state) =>
+        state.enabledNetworkMap[KnownCaipNamespace.Eip155]?.[chainId] !==
+        undefined,
     });
   }
 

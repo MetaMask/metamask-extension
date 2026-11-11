@@ -2117,6 +2117,10 @@ describe('LegacyBackgroundApiService', () => {
         const addNetworkHandler = jest.fn().mockReturnValue(addedNetwork);
         const setActiveNetworkHandler = jest.fn();
         const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        let currentState: {
+          enabledNetworkMap: { eip155?: Record<string, boolean> };
+        } = { enabledNetworkMap: {} };
+
         rootMessenger.registerActionHandler(
           'NetworkController:addNetwork',
           addNetworkHandler,
@@ -2131,48 +2135,58 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'NetworkEnablementController:getState',
-          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+          jest.fn().mockImplementation(() => currentState),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
           jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
         );
         rootMessenger.registerActionHandler(
-          'NetworkEnablementController:isNetworkEnabled',
-          jest.fn().mockReturnValue(true),
-        );
-        rootMessenger.registerActionHandler(
           'NetworkEnablementController:restoreEnabledNetworkMap',
           jest.fn(),
         );
 
-        const result = await rootMessenger.call(
+        const promise = rootMessenger.call(
           'LegacyBackgroundApiService:addNetwork',
           networkConfiguration,
           { setActive: false },
         );
 
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // Core processes the network
+        currentState = {
+          enabledNetworkMap: { eip155: { '0x1': true } },
+        };
+        rootMessenger.publish(
+          'NetworkEnablementController:stateChange',
+          currentState as unknown as NetworkEnablementControllerState,
+          [],
+        );
+
+        const result = await promise;
+
         expect(addNetworkHandler).toHaveBeenCalledWith(networkConfiguration);
         expect(setActiveNetworkHandler).not.toHaveBeenCalled();
-        // `lookupSelectedNetworks` runs after adding the network.
         expect(lookupNetworkHandler).toHaveBeenCalledWith();
         expect(result).toStrictEqual(addedNetwork);
       });
     });
 
-    it('restores the previous enabled network map once the added network becomes enabled', async () => {
+    it('restores the previous map with the added network enabled when core enables it', async () => {
       await withService(async ({ rootMessenger }) => {
         const restoreEnabledNetworkMapHandler = jest.fn();
-        let networkEnabled = false;
+        let currentState: {
+          enabledNetworkMap: { eip155: Record<string, boolean> };
+        } = { enabledNetworkMap: { eip155: { '0x1': true } } };
+
         rootMessenger.registerActionHandler(
           'NetworkController:addNetwork',
           jest.fn().mockReturnValue(addedNetwork),
         );
         rootMessenger.registerActionHandler(
           'NetworkEnablementController:getState',
-          jest.fn().mockReturnValue({
-            enabledNetworkMap: { eip155: { '0x1': true } },
-          }),
+          jest.fn().mockImplementation(() => currentState),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
@@ -2181,10 +2195,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'NetworkController:lookupNetwork',
           jest.fn().mockResolvedValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkEnablementController:isNetworkEnabled',
-          jest.fn().mockImplementation(() => networkEnabled),
         );
         rootMessenger.registerActionHandler(
           'NetworkEnablementController:restoreEnabledNetworkMap',
@@ -2197,27 +2207,77 @@ describe('LegacyBackgroundApiService', () => {
           { setActive: false },
         );
 
-        // Let `addNetwork` reach the `#whenNetworkEnabled` wait.
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        // The added network becomes enabled and the controller publishes.
-        networkEnabled = true;
+        // Core enables the added network
+        currentState = {
+          enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
+        };
         rootMessenger.publish(
           'NetworkEnablementController:stateChange',
-          {
-            enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
-          } as unknown as NetworkEnablementControllerState,
+          currentState as unknown as NetworkEnablementControllerState,
           [],
         );
 
         await promise;
 
-        // Previously enabled networks stay on, and the network the user added
-        // stays enabled. The restore runs exactly once, outside the
-        // state-change publish.
-        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledTimes(1);
         expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
           eip155: { '0x1': true, '0xa': true },
+        });
+      });
+    });
+
+    it('restores the previous map without the added network when core does not enable it', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const restoreEnabledNetworkMapHandler = jest.fn();
+        let currentState: {
+          enabledNetworkMap: { eip155: Record<string, boolean> };
+        } = { enabledNetworkMap: { eip155: { '0x1': true } } };
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          jest.fn().mockReturnValue(addedNetwork),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockImplementation(() => currentState),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:restoreEnabledNetworkMap',
+          restoreEnabledNetworkMapHandler,
+        );
+
+        const promise = rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          { ...networkConfiguration, chainId: '0xa' },
+          { setActive: false },
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // Core added the chain but left it disabled
+        currentState = {
+          enabledNetworkMap: { eip155: { '0x1': true, '0xa': false } },
+        };
+        rootMessenger.publish(
+          'NetworkEnablementController:stateChange',
+          currentState as unknown as NetworkEnablementControllerState,
+          [],
+        );
+
+        await promise;
+
+        // Restored map excludes the new chain since core didn't enable it
+        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
+          eip155: { '0x1': true },
         });
       });
     });
