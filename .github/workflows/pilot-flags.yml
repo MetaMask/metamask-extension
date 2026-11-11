@@ -19,7 +19,7 @@ env:
   DONOR_RUN: '39482092081'
   DONOR_VERSION: 13.55.0
   DONOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
-  BROWSER_LOADS: '10'
+  BROWSER_LOADS: '20'
 
 jobs:
   flags:
@@ -30,7 +30,7 @@ jobs:
       matrix:
         os: [ubuntu-26.04]
         group: [0, 1]
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 65
     env:
@@ -75,12 +75,12 @@ jobs:
         run: |
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
-          # Forced GC on and off (nogc) for Chrome 137 and 157 against the 126 reference, all with
+          # Variance test of dropping the forced GC on Chrome 137: GC on and off (nogc), both with
           # the jsvis workaround. Group 0 is the standard preset, group 1 the power-user preset.
           presets=(startupStandardHome startupPowerUserHome)
           pageloads=(10 7)
           preset=${presets[$GROUP]}
-          arms=("base126=jsvis" "chrome137=v137,jsvis" "chrome137nogc=v137,jsvis,nogc" "chrome157=v157,jsvis" "chrome157nogc=v157,jsvis,nogc")
+          arms=("chrome137=v137,jsvis" "chrome137nogc=v137,jsvis,nogc")
           n=${#arms[@]}
           mkdir -p test-artifacts/benchmarks
           for (( i = 0; i < n; i++ )); do
@@ -93,7 +93,7 @@ jobs:
             echo "::group::arm $name (position $i): BENCH_CHROME_ARM=$tokens"
             nogc=""
             [[ "$tokens" == *nogc* ]] && nogc=1
-            BENCH_NOGC="$nogc" BENCH_CHROME_ARM="$tokens" timeout -k 10 720 yarn test:e2e:benchmark \
+            BENCH_NOGC="$nogc" BENCH_CHROME_ARM="$tokens" timeout -k 10 1500 yarn test:e2e:benchmark \
               --preset "$preset" \
               --browserLoads "$BROWSER_LOADS" --pageLoads "${pageloads[$GROUP]}" --retries 2 \
               --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-g$GROUP-s$SHARD.json" \
