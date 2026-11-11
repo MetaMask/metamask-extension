@@ -6,10 +6,16 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { NETWORKS_ROUTE } from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE, NETWORKS_ROUTE } from '../../helpers/constants/routes';
 import { NetworksPage } from './networks-page';
 
 const mockTrackEvent = jest.fn();
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -234,6 +240,7 @@ const testNetworkConfiguration = {
 
 describe('NetworksPage', () => {
   beforeEach(() => {
+    mockNavigate.mockClear();
     mockTrackEvent.mockClear();
     mockJsonRpcRequest.mockReset();
     mockJsonRpcRequest.mockResolvedValue('0x1');
@@ -292,6 +299,16 @@ describe('NetworksPage', () => {
 
     return renderWithProvider(<NetworksPage />, store, pathname);
   };
+
+  it('returns to the wallet when back is clicked, even if the menu drawer was open', () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?drawerOpen=true`,
+    });
+
+    fireEvent.click(screen.getByTestId('page-header-back-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
 
   it('renders the sectioned networks view and keeps testnets visible while selected on a testnet', async () => {
     renderNetworksPage({
