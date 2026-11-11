@@ -2,23 +2,23 @@ import { tEn } from '../../../lib/i18n-helpers';
 import type { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { MoneyAccountDepositConfirmation } from '../pages/confirmations/money-account-deposit-confirmation';
-import BottomNavBar from '../pages/home/bottom-nav-bar-page';
+import MainNav from '../pages/home/main-nav-page';
 import MoneyFtueSplashPage from '../pages/money/money-ftue-splash-page';
 import MoneyHomePage from '../pages/money/money-home-page';
 import MoneyTransactionDetailsPage from '../pages/money/money-transaction-details-page';
 import { login } from './login.flow';
 
 /**
- * Open the Money home page via the bottom nav Money tab. Assumes the wallet
+ * Open the Money home page via the main nav Money tab. Assumes the wallet
  * is already unlocked.
  *
  * @param driver - The WebDriver instance.
  * @returns The loaded `MoneyHomePage`.
  */
 export async function openMoneyHome(driver: Driver): Promise<MoneyHomePage> {
-  const bottomNavBar = new BottomNavBar(driver);
-  await bottomNavBar.checkPageIsLoaded();
-  await bottomNavBar.clickMoney();
+  const mainNav = new MainNav(driver);
+  await mainNav.checkPageIsLoaded();
+  await mainNav.clickMoney();
 
   const moneyHomePage = new MoneyHomePage(driver);
   await moneyHomePage.checkPageIsLoaded();
@@ -26,7 +26,7 @@ export async function openMoneyHome(driver: Driver): Promise<MoneyHomePage> {
 }
 
 /**
- * Open the Money FTUE splash via the bottom nav Money tab. Assumes the wallet
+ * Open the Money FTUE splash via the main nav Money tab. Assumes the wallet
  * is already unlocked.
  *
  * @param driver - The WebDriver instance.
@@ -35,9 +35,9 @@ export async function openMoneyHome(driver: Driver): Promise<MoneyHomePage> {
 export async function openMoneyFtueSplash(
   driver: Driver,
 ): Promise<MoneyFtueSplashPage> {
-  const bottomNavBar = new BottomNavBar(driver);
-  await bottomNavBar.checkPageIsLoaded();
-  await bottomNavBar.clickMoney();
+  const mainNav = new MainNav(driver);
+  await mainNav.checkPageIsLoaded();
+  await mainNav.clickMoney();
 
   const splash = new MoneyFtueSplashPage(driver);
   await splash.checkPageIsLoaded();
@@ -45,7 +45,7 @@ export async function openMoneyFtueSplash(
 }
 
 /**
- * Unlock the wallet and open the Money home page via the bottom nav Money
+ * Unlock the wallet and open the Money home page via the main nav Money
  * tab.
  *
  * @param driver - The WebDriver instance.

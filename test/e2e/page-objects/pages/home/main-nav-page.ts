@@ -1,18 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Bottom navigation bar chrome.
+ * Main navigation chrome. Today this is the bottom nav bar.
  *
  * Screen: chrome component (not a full page), present on applicable routes
  * (home, perps-home, activity, money).
- * Owns: the bottom nav bar itself and tab clicks that assert navigation home.
+ * Owns: the main nav itself and tab clicks that assert navigation home.
  * Boundaries: the nav chrome only. Destination screens belong to `HomePage`,
  * swap/bridge page objects, etc. after navigation.
  * Related: `HomePage`, swap/bridge prepare flows reached from home.
  *
  * @see ui/components/app/bottom-nav-bar/bottom-nav-bar.tsx
  */
-class BottomNavBar {
+class MainNav {
   private readonly driver: Driver;
 
   private readonly homeTab = '[data-testid="bottom-nav-home"]';
@@ -35,12 +35,12 @@ class BottomNavBar {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    console.log('Wait for bottom nav bar to load');
+    console.log('Wait for main nav to load');
     await this.driver.waitForSelector(this.page);
   }
 
   async clickHome(): Promise<void> {
-    console.log('Click bottom nav home tab');
+    console.log('Click main nav home tab');
     await this.driver.clickElement(this.homeTab);
     await this.assertOnRoute('/');
   }
@@ -50,10 +50,10 @@ class BottomNavBar {
    * query resolves, so wait for it rather than failing on first paint.
    */
   async clickMoney(): Promise<void> {
-    console.log('Click bottom nav money tab');
+    console.log('Click main nav money tab');
     await this.driver.clickElement(this.moneyTab);
     await this.assertOnRoute('/money-home');
   }
 }
 
-export default BottomNavBar;
+export default MainNav;
