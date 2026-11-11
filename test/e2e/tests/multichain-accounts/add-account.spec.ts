@@ -128,7 +128,6 @@ describe('Add account', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withShowNativeTokenAsMainBalanceDisabled()
-          .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withAssetsController(
             getMainnet25EthAssetsControllerPatch(ETH_USD_CONVERSION_RATE),

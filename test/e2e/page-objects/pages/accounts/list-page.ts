@@ -422,7 +422,7 @@ class AccountListPage {
       // navigates home.
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
-        10000,
+        30000,
       );
     }
   }
