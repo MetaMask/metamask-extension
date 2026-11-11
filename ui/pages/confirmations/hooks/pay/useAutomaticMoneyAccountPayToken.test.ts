@@ -145,12 +145,7 @@ describe('useAutomaticMoneyAccountPayToken', () => {
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([
-    TransactionType.perpsDeposit,
-    TransactionType.perpsDepositAndOrder,
-    TransactionType.predictDeposit,
-    TransactionType.predictDepositAndOrder,
-  ])(
+  it.each([TransactionType.perpsDeposit, TransactionType.predictDeposit])(
     'selects Money Account for %s when it has a balance and the wallet has no tokens',
     (type: TransactionType) => {
       mockMoneyAccountPay({ type });
@@ -300,6 +295,19 @@ describe('useAutomaticMoneyAccountPayToken', () => {
 
   it('does not select Money Account for a withdraw', () => {
     mockMoneyAccountPay({ type: TransactionType.perpsWithdraw });
+
+    const { result } = runHook();
+
+    expect(result.current.shouldSelect).toBe(false);
+    expect(applyMoneyAccountOverrideMock).not.toHaveBeenCalled();
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    TransactionType.perpsDepositAndOrder,
+    TransactionType.predictDepositAndOrder,
+  ])('does not select Money Account for %s', (type: TransactionType) => {
+    mockMoneyAccountPay({ type });
 
     const { result } = runHook();
 

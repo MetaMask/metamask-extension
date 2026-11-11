@@ -25,13 +25,14 @@ import { applyMoneyAccountOverride } from '../../utils/transaction-pay';
 
 /**
  * Deposit flows whose Pay-with default can fall through to Money Account
- * when it is the better funding source. Mirrors mobile.
+ * when it is the better funding source.
+ *
+ * Deposit-and-order types are omitted. Extension has no Money Account pay
+ * path for them; mobile selects those from the order views.
  */
 const MONEY_ACCOUNT_BALANCE_DEFAULT_TYPES: TransactionType[] = [
   TransactionType.perpsDeposit,
-  TransactionType.perpsDepositAndOrder,
   TransactionType.predictDeposit,
-  TransactionType.predictDepositAndOrder,
 ];
 
 /**
