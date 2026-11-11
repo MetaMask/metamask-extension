@@ -70,6 +70,18 @@ describe('Onboarded wallet with basic functionality off', function () {
       async ({ driver, mockServer, mockedEndpoint }) => {
         await login(driver);
 
+        // The account Snaps start one by one after unlock, and starting one
+        // loads its execution environment, which is not an RPC request.
+        await driver.waitUntil(
+          async () => {
+            const { metamask } = await getCleanAppState(driver);
+            return ACCOUNT_SNAP_IDS.every(
+              (snapId) => metamask.snaps?.[snapId]?.status === 'running',
+            );
+          },
+          { timeout: driver.timeout, interval: 500 },
+        );
+
         // The Money balance is fetched after the availability check resolves,
         // which can land after the toggle if the test reaches settings first.
         const [moneyPositionsEndpoint] = mockedEndpoint as MockedEndpoint[];
