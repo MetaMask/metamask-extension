@@ -381,7 +381,7 @@ const OnboardingFlowContent = () => {
         'OnboardingFlow: failed to complete navigation after unlock',
         error,
       );
-      navigate(DEFAULT_ROUTE, { replace: true });
+      throw error;
     }
   };
 
