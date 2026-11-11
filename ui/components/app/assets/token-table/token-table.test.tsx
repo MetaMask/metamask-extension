@@ -74,6 +74,9 @@ const renderTable = () =>
     configureStore({ metamask: mockState.metamask }),
   );
 
+const getSortIndicator = (header: HTMLElement) =>
+  header.querySelector('[data-testid="token-table-sort-indicator"]');
+
 describe('TokenTable', () => {
   it('renders the column headers and a row for each token', () => {
     mockTokenListData({
@@ -129,5 +132,122 @@ describe('TokenTable', () => {
     fireEvent.click(getByTestId('low-value-assets-toggle'));
 
     expect(handleLowValueAssetsToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it('reverses the balance sort when the active balance header is clicked', () => {
+    mockTokenListData();
+
+    const { getByTestId } = renderTable();
+    fireEvent.click(getByTestId('token-table-sort-balance'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-balance')),
+    ).toHaveAttribute('data-sort-direction', 'up');
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'balance', reversed: true },
+      }),
+    );
+
+    fireEvent.click(getByTestId('token-table-sort-balance'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-balance')),
+    ).toHaveAttribute('data-sort-direction', 'down');
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'balance', reversed: false },
+      }),
+    );
+  });
+
+  it('sorts alphabetically on the first token header click, then reverses it', () => {
+    mockTokenListData();
+
+    const { getByTestId } = renderTable();
+    fireEvent.click(getByTestId('token-table-sort-token'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-token')),
+    ).toHaveAttribute('data-sort-direction', 'down');
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-balance')),
+    ).toBeNull();
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'token', reversed: false },
+      }),
+    );
+
+    fireEvent.click(getByTestId('token-table-sort-token'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-token')),
+    ).toHaveAttribute('data-sort-direction', 'up');
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'token', reversed: true },
+      }),
+    );
+  });
+
+  it('sorts by the highest price on the first price header click, then reverses it', () => {
+    mockTokenListData();
+
+    const { getByTestId } = renderTable();
+    fireEvent.click(getByTestId('token-table-sort-price'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-price')),
+    ).toHaveAttribute('data-sort-direction', 'down');
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-balance')),
+    ).toBeNull();
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'price', reversed: false },
+      }),
+    );
+
+    fireEvent.click(getByTestId('token-table-sort-price'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-price')),
+    ).toHaveAttribute('data-sort-direction', 'up');
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'price', reversed: true },
+      }),
+    );
+  });
+
+  it('sorts by the largest 24h gain on the first change header click, then reverses it', () => {
+    mockTokenListData();
+
+    const { getByTestId } = renderTable();
+    fireEvent.click(getByTestId('token-table-sort-change'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-change')),
+    ).toHaveAttribute('data-sort-direction', 'down');
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-balance')),
+    ).toBeNull();
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'change', reversed: false },
+      }),
+    );
+
+    fireEvent.click(getByTestId('token-table-sort-change'));
+
+    expect(
+      getSortIndicator(getByTestId('token-table-sort-change')),
+    ).toHaveAttribute('data-sort-direction', 'up');
+    expect(mockUseTokenListData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sortOverride: { column: 'change', reversed: true },
+      }),
+    );
   });
 });

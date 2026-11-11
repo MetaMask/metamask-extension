@@ -2,8 +2,9 @@ import type { Asset } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
-  compareFiatBalanceWithPriority,
+  compareFiatBalanceDescending,
   sortAssetsWithPriority,
+  sortTokenAssets,
 } from './sortAssetsWithPriority';
 
 function createMockAsset({
@@ -91,7 +92,141 @@ describe('sortAssetsWithPriority', () => {
   });
 });
 
-describe('compareFiatBalanceWithPriority', () => {
+describe('sortTokenAssets', () => {
+  const assets = [
+    createMockAsset({ name: 'Asset B', fiatBalance: 400 }),
+    createMockAsset({ name: 'Asset A', fiatBalance: 600 }),
+    createMockAsset({ name: 'Asset Z', fiatBalance: 100 }),
+  ];
+  const savedBalanceSort = {
+    key: 'tokenFiatAmount',
+    order: 'dsc' as const,
+    sortCallback: 'stringNumeric' as const,
+  };
+
+  it('sorts names from Z to A when the token column is reversed', () => {
+    const sortedNames = sortTokenAssets(assets, savedBalanceSort, {
+      column: 'token',
+      reversed: true,
+    }).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset Z', 'Asset B', 'Asset A']);
+  });
+
+  it('sorts the lower fiat balance first when the balance column is reversed', () => {
+    const sortedNames = sortTokenAssets(assets, savedBalanceSort, {
+      column: 'balance',
+      reversed: true,
+    }).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset Z', 'Asset B', 'Asset A']);
+  });
+
+  it('keeps a native asset ahead of a token when reversed balances are equal', () => {
+    const sortedNames = sortTokenAssets(
+      [
+        createMockAsset({ name: 'Token', fiatBalance: 10, isNative: false }),
+        createMockAsset({ name: 'Native', fiatBalance: 10, isNative: true }),
+      ],
+      savedBalanceSort,
+      { column: 'balance', reversed: true },
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Native', 'Token']);
+  });
+
+  it('sorts alphabetically when the token column is selected', () => {
+    const sortedNames = sortTokenAssets(assets, savedBalanceSort, {
+      column: 'token',
+      reversed: false,
+    }).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
+  });
+
+  it('sorts the highest price first and leaves missing prices last', () => {
+    const prices: Record<string, number | undefined> = {
+      'Asset A': 2,
+      'Asset B': 10,
+    };
+
+    const sortedNames = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'price', reversed: false },
+      { getPrice: (asset) => prices[asset.name] },
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset B', 'Asset A', 'Asset Z']);
+  });
+
+  it('sorts the lowest price first when the price column is reversed', () => {
+    const prices: Record<string, number | undefined> = {
+      'Asset A': 2,
+      'Asset B': 10,
+    };
+
+    const sortedNames = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'price', reversed: true },
+      { getPrice: (asset) => prices[asset.name] },
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
+  });
+
+  it('orders equal prices by name', () => {
+    const prices: Record<string, number> = {
+      'Asset A': 5,
+      'Asset B': 5,
+      'Asset Z': 5,
+    };
+
+    const sortedNames = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'price', reversed: true },
+      { getPrice: (asset) => prices[asset.name] },
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
+  });
+
+  it('sorts the largest 24h gain first and leaves missing changes last', () => {
+    const changes: Record<string, number | undefined> = {
+      'Asset A': -2,
+      'Asset B': 4,
+    };
+
+    const sortedNames = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'change', reversed: false },
+      { getPercentChange: (asset) => changes[asset.name] },
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset B', 'Asset A', 'Asset Z']);
+  });
+
+  it('sorts the largest 24h loss first when the change column is reversed', () => {
+    const changes: Record<string, number | undefined> = {
+      'Asset A': -2,
+      'Asset B': 4,
+    };
+
+    const sortedNames = sortTokenAssets(
+      assets,
+      savedBalanceSort,
+      { column: 'change', reversed: true },
+      { getPercentChange: (asset) => changes[asset.name] },
+    ).map((asset) => asset.name);
+
+    expect(sortedNames).toStrictEqual(['Asset A', 'Asset B', 'Asset Z']);
+  });
+});
+
+describe('compareFiatBalanceDescending', () => {
   describe('fiat balance comparison', () => {
     it('compares second value above first if the second asset has a fiat balance and the first asset does not', () => {
       const assetA = createMockAsset({
@@ -100,7 +235,7 @@ describe('compareFiatBalanceWithPriority', () => {
       });
       const assetB = createMockAsset({ name: 'Asset B', fiatBalance: 400 });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeGreaterThan(0);
     });
@@ -109,7 +244,7 @@ describe('compareFiatBalanceWithPriority', () => {
       const assetA = createMockAsset({ name: 'Asset A', fiatBalance: 300 });
       const assetB = createMockAsset({ name: 'Asset B', fiatBalance: 400 });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeGreaterThan(0);
     });
@@ -120,7 +255,7 @@ describe('compareFiatBalanceWithPriority', () => {
       const assetA = createMockAsset({ name: 'Asset A', isNative: true });
       const assetB = createMockAsset({ name: 'Asset B', isNative: false });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeLessThan(0);
     });
@@ -129,7 +264,7 @@ describe('compareFiatBalanceWithPriority', () => {
       const assetA = createMockAsset({ name: 'Asset A', isNative: false });
       const assetB = createMockAsset({ name: 'Asset B', isNative: true });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeGreaterThan(0);
     });
@@ -138,7 +273,7 @@ describe('compareFiatBalanceWithPriority', () => {
       const assetA = createMockAsset({ name: 'Asset A', isNative: false });
       const assetB = createMockAsset({ name: 'Asset B', isNative: false });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeLessThan(0);
     });
@@ -155,7 +290,7 @@ describe('compareFiatBalanceWithPriority', () => {
         chainId: '0xeeeeeeeeeeeee2',
       });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeLessThan(0);
     });
@@ -170,7 +305,7 @@ describe('compareFiatBalanceWithPriority', () => {
         chainId: CHAIN_IDS.BASE,
       });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeGreaterThan(0);
     });
@@ -185,7 +320,7 @@ describe('compareFiatBalanceWithPriority', () => {
         chainId: CHAIN_IDS.MAINNET,
       });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeGreaterThan(0);
     });
@@ -202,7 +337,7 @@ describe('compareFiatBalanceWithPriority', () => {
         fiatBalance: 0,
       });
 
-      const result = compareFiatBalanceWithPriority(assetA, assetB);
+      const result = compareFiatBalanceDescending(assetA, assetB);
 
       expect(result).toBeGreaterThan(0);
     });

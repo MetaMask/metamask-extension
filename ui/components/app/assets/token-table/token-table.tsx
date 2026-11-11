@@ -1,16 +1,20 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import type { CaipAssetType } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getTokenSortConfig } from '../../../../selectors';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
-import type { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import { useTokenDisplayInfo } from '../hooks';
@@ -19,6 +23,7 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
+import type { TokenTableSort } from '../util/sortAssetsWithPriority';
 import { NativeTokenScamWarningModal } from '../token-cell/native-token-scam-warning-modal';
 import {
   TokenCellPercentChange,
@@ -29,27 +34,69 @@ import {
 } from '../token-cell/cells';
 import { LowValueAssetsToggle } from '../token-list/low-value-assets-toggle';
 import { TokenListLoadingSkeleton } from '../token-list/token-list-loading-skeleton';
-import type { TokenWithFiatAmount } from '../types';
+import {
+  COLUMNS_CLASS_NAME,
+  HEADER_COLUMNS,
+  PERCENT_CHANGE_CLASS_NAME,
+  PRICE_AND_CHANGE_ITEM_CLASS_NAME,
+} from './token-table.constants';
+import type {
+  SortColumn,
+  SortableColumnHeaderProps,
+  HeaderProps,
+  TokenTableProps,
+  RowProps,
+} from './token-table.types';
 
-export type TokenTableProps = {
-  onTokenClick: (
-    chainId: string,
-    address: string,
-    assetId?: CaipAssetType,
-  ) => void;
-  safeChains?: SafeChain[];
+export type { TokenTableProps };
+
+// Gets the existing active sort column based on the TokenSortConfig
+const getActiveSortColumn = (
+  key?: string,
+): Extract<SortColumn, 'token' | 'balance'> | null => {
+  if (key === 'name' || key === 'title') {
+    return 'token';
+  }
+  if (key === 'tokenFiatAmount') {
+    return 'balance';
+  }
+  return null;
 };
 
-// Measures the table, not the viewport: the side nav has already taken 320px
-// by the time `lg` would apply. Below `@2xl` (42rem of this table) the price
-// cell stacks the 24h change under the price. At `@2xl` they are separate columns.
-const COLUMNS_CLASS_NAME =
-  'grid w-full grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] items-center gap-4 px-4 @2xl/token-table:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]';
-const PRICE_AND_CHANGE_ITEM_CLASS_NAME =
-  'min-w-0 @2xl/token-table:justify-self-end';
-const PERCENT_CHANGE_CLASS_NAME = `${PRICE_AND_CHANGE_ITEM_CLASS_NAME} @2xl/token-table:[&_.mm-text]:text-l-body-md`;
+const SortableColumnHeader = ({
+  label,
+  column,
+  activeColumn,
+  reversed,
+  onSort,
+  className,
+}: SortableColumnHeaderProps) => (
+  <button
+    type="button"
+    className={`w-full min-w-0 items-center gap-1 border-0 bg-transparent p-0 ${className ?? ''}`}
+    data-testid={`token-table-sort-${column}`}
+    onClick={onSort}
+  >
+    <Text
+      variant={TextVariant.BodySm}
+      fontWeight={FontWeight.Medium}
+      color={TextColor.TextAlternative}
+    >
+      {label}
+    </Text>
+    {activeColumn === column && (
+      <Icon
+        name={reversed ? IconName.ArrowUp : IconName.ArrowDown}
+        size={IconSize.Xs}
+        color={IconColor.IconAlternative}
+        data-testid="token-table-sort-indicator"
+        data-sort-direction={reversed ? 'up' : 'down'}
+      />
+    )}
+  </button>
+);
 
-const TokenTableHeader = () => {
+const Header = ({ activeColumn, reversed, onSort }: HeaderProps) => {
   const t = useI18nContext();
 
   return (
@@ -58,54 +105,22 @@ const TokenTableHeader = () => {
       className={`${COLUMNS_CLASS_NAME} py-2 border-b border-b-muted`}
       data-testid="token-table-header"
     >
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-      >
-        {t('token')}
-      </Text>
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-        className="text-end"
-      >
-        {t('price')}
-      </Text>
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-        className="hidden @2xl/token-table:block text-end"
-      >
-        {t('24hChange')}
-      </Text>
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-        className="text-end"
-      >
-        {t('balance')}
-      </Text>
+      {HEADER_COLUMNS.map((column) => (
+        <SortableColumnHeader
+          key={column.column}
+          label={t(column.labelKey)}
+          column={column.column}
+          activeColumn={activeColumn}
+          reversed={reversed}
+          onSort={() => onSort(column.column)}
+          className={column.className}
+        />
+      ))}
     </Box>
   );
 };
 
-type TokenTableRowProps = {
-  token: TokenWithFiatAmount;
-  privacyMode: boolean;
-  onClick?: () => void;
-  safeChains?: SafeChain[];
-};
-
-const TokenTableRow = ({
-  token,
-  privacyMode,
-  onClick,
-  safeChains,
-}: TokenTableRowProps) => {
+const Row = ({ token, privacyMode, onClick, safeChains }: RowProps) => {
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const tokenDisplayInfo = useTokenDisplayInfo({ token });
   const displayToken = useMemo(
@@ -185,6 +200,33 @@ const TokenTableRow = ({
  * @param props.safeChains - Known chains, used by the native token warning.
  */
 export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
+  const tokenSortConfig = useSelector(getTokenSortConfig);
+  const preferenceKey = `${tokenSortConfig?.key ?? ''}:${tokenSortConfig?.order ?? ''}`;
+  const [headerSort, setHeaderSort] = useState<
+    (TokenTableSort & { preferenceKey: string }) | null
+  >(null);
+  const sortOverride = useMemo(
+    () =>
+      headerSort?.preferenceKey === preferenceKey
+        ? { column: headerSort.column, reversed: headerSort.reversed }
+        : null,
+    [headerSort, preferenceKey],
+  );
+  const activeColumn =
+    sortOverride?.column ?? getActiveSortColumn(tokenSortConfig?.key);
+  const reversed = sortOverride?.reversed ?? false;
+
+  const handleSort = useCallback(
+    (column: TokenTableSort['column']) => {
+      setHeaderSort({
+        column,
+        reversed: column === activeColumn ? !reversed : false,
+        preferenceKey,
+      });
+    },
+    [activeColumn, preferenceKey, reversed],
+  );
+
   const {
     tokenListItems,
     showLoadingSkeleton,
@@ -193,7 +235,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
-  } = useTokenListData({ onTokenClick });
+  } = useTokenListData({ onTokenClick, sortOverride });
 
   const renderRow = useCallback(
     (info: { item: TokenListDisplayItem }) => {
@@ -209,7 +251,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
       }
 
       return (
-        <TokenTableRow
+        <Row
           token={item.token}
           privacyMode={privacyMode}
           onClick={getTokenClickHandler(item.token)}
@@ -232,7 +274,11 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
 
   return (
     <div data-testid="token-table" className="@container/token-table">
-      <TokenTableHeader />
+      <Header
+        activeColumn={activeColumn}
+        reversed={reversed}
+        onSort={handleSort}
+      />
       {/* Virtualization is disabled for the empty balance state, as in TokenList. */}
       {hasBalance ? (
         <VirtualizedList

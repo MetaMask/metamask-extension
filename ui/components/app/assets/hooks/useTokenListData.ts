@@ -20,6 +20,12 @@ import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19Asse
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import {
+  getCachedTokenPercentChange,
+  getCachedTokenPrice,
+} from '#shared/lib/token-price';
+import {
+  getCurrencyRates,
+  getMarketData,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
@@ -38,6 +44,7 @@ import {
 } from '../../../../selectors/multichain/networks';
 import {
   getAssetsBySelectedAccountGroup,
+  getAssetsRates,
   selectAccountGroupBalanceForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../../selectors/assets';
@@ -46,7 +53,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
+import {
+  sortTokenAssets,
+  type TokenTableSort,
+} from '../util/sortAssetsWithPriority';
 import { isMusdToken } from '../../musd/constants';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
@@ -67,6 +77,8 @@ type UseTokenListDataOptions = {
     address: string,
     assetId?: CaipAssetType,
   ) => void;
+  // Table sort. Not used by token list, which uses the saved preference
+  sortOverride?: TokenTableSort | null;
 };
 
 let lowValueAssetsExpandedSessionValue = false;
@@ -109,9 +121,13 @@ export const getTokenListItemKey = (
  *
  * @param options - The hook options.
  * @param options.onTokenClick - Called when a token is opened.
+ * @param options.sortOverride - Token table sort. The token list doesn't use this.
  * @returns The display items and the handlers to render them.
  */
-export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
+export function useTokenListData({
+  onTokenClick,
+  sortOverride = null,
+}: UseTokenListDataOptions) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
@@ -129,6 +145,9 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
   const { isStockToken } = useRWAToken();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const marketData = useSelector(getMarketData);
+  const currencyRates = useSelector(getCurrencyRates);
+  const conversionRates = useSelector(getAssetsRates);
 
   // Defer only the hide-zero-balance preference so Settings toggles stay
   // responsive while this list recomputes. Account assets must update
@@ -163,9 +182,21 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
       },
     );
 
-    const accountAssets = sortAssetsWithPriority(
+    const accountAssets = sortTokenAssets(
       accountAssetsPreSort,
       tokenSortConfig,
+      sortOverride,
+      {
+        getPrice: (asset) =>
+          getCachedTokenPrice(
+            asset,
+            marketData,
+            currencyRates,
+            conversionRates,
+          ),
+        getPercentChange: (asset) =>
+          getCachedTokenPercentChange(asset, marketData, conversionRates),
+      },
     );
 
     // Filter out non-EVM assets when basic functionality toggle is OFF
@@ -199,6 +230,10 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
     allEnabledNetworksForAllNamespaces,
     deferredShouldHideZeroBalanceTokens,
     useExternalServices,
+    sortOverride,
+    marketData,
+    currencyRates,
+    conversionRates,
   ]);
 
   // Skeletons stand in for the native gas token and mUSD that render before
@@ -222,10 +257,11 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
   });
 
   // Low value collapse only applies to declining-balance sort.
-  const shouldPartitionLowValueTokens =
-    tokenSortConfig?.key === 'tokenFiatAmount' &&
-    tokenSortConfig?.order === 'dsc' &&
-    tokenSortConfig?.sortCallback === 'stringNumeric';
+  const shouldPartitionLowValueTokens = sortOverride
+    ? sortOverride.column === 'balance' && !sortOverride.reversed
+    : tokenSortConfig?.key === 'tokenFiatAmount' &&
+      tokenSortConfig?.order === 'dsc' &&
+      tokenSortConfig?.sortCallback === 'stringNumeric';
   const { visibleTokens, lowValueTokens } = useLowValueTokenPartition({
     tokens: sortedFilteredTokens,
     enabled: shouldPartitionLowValueTokens,

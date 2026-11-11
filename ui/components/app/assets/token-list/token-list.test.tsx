@@ -89,6 +89,7 @@ jest.mock('../token-cell', () => {
 
 jest.mock('../util/sortAssetsWithPriority', () => ({
   sortAssetsWithPriority: jest.fn((assets) => assets),
+  sortTokenAssets: jest.fn((assets) => assets),
 }));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -110,6 +111,7 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 
 jest.mock('../../../../selectors', () => ({
   getCurrencyRates: jest.fn(),
+  getMarketData: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokenSortConfig: jest.fn(),
   getUseExternalServices: jest.fn(),
@@ -135,6 +137,7 @@ jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
 
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
+  getAssetsRates: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
   selectIsAssetsLoadingForSelectedAccountGroup: jest.fn(),
 }));

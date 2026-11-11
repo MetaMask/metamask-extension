@@ -4,10 +4,11 @@ import {
   type SupportedCurrency,
   type V3SpotPricesResponse,
 } from '@metamask/core-backend';
-import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
+import { isCaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import { getCachedSpotPrice } from '../../../../shared/lib/token-price';
 import { getCurrencyRates, getMarketData } from '../../../selectors';
 import { getAssetsRates } from '../../../selectors/assets';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -51,49 +52,25 @@ export const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
   const nonEvmConversionRates = useSelector(getAssetsRates);
 
   const { chainId, type } = asset;
+  const isNative = type === AssetType.native;
+  const nativeAssetId =
+    !isEvm && isNative
+      ? getNativeAssetForChainIdSafe(chainId)?.assetId
+      : undefined;
 
-  if (isEvm) {
-    if (type === AssetType.native) {
-      return {
-        currentPrice:
-          evmCurrencyRates[asset.symbol]?.conversionRate ?? undefined,
-      };
-    }
-
-    // Market and conversion rate data
-    const address = toChecksumHexAddress(asset.address) as Hex;
-    const tokenMarketPrice = evmMarketData[chainId]?.[address]?.price;
-    const baseCurrency = evmMarketData[chainId]?.[address]?.currency;
-    const tokenExchangeRate =
-      evmCurrencyRates[baseCurrency]?.conversionRate ?? undefined;
-
-    const currentPrice =
-      tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
-        ? tokenExchangeRate * tokenMarketPrice
-        : undefined;
-
-    return { currentPrice };
-  }
-
-  // Format normalization in isEvmChainId should prevent most errors, but using safe wrapper as defensive fallback
-  const assetId =
-    type === AssetType.token
-      ? asset.address
-      : getNativeAssetForChainIdSafe(chainId)?.assetId;
-
-  // If we can't get the assetId for a native token (unsupported chain), return undefined price
-  if (!assetId && type === AssetType.native) {
-    return { currentPrice: undefined };
-  }
-
-  const currentPriceAsString =
-    nonEvmConversionRates?.[assetId as CaipAssetType]?.rate;
-
-  const currentPrice = currentPriceAsString
-    ? parseFloat(currentPriceAsString)
-    : undefined;
-
-  return { currentPrice };
+  return {
+    currentPrice: getCachedSpotPrice({
+      isEvm,
+      isNative,
+      symbol: asset.symbol,
+      chainId,
+      address: type === AssetType.token ? asset.address : undefined,
+      nativeAssetId,
+      marketData: evmMarketData,
+      currencyRates: evmCurrencyRates,
+      conversionRates: nonEvmConversionRates,
+    }),
+  };
 };
 
 /**
