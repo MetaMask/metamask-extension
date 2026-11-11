@@ -27,6 +27,7 @@ import {
   updateMoneyAccountWithdrawAmount,
 } from '../lib/money/pay/update-withdraw-amount';
 import { getDelegationTransaction } from '../lib/transaction/delegation';
+import { trackSolanaPayLifecycle } from '../lib/money/pay/solana-pay-metrics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -37,6 +38,9 @@ import {
 import { TransactionPayControllerInit } from './transaction-pay-controller-init';
 
 jest.mock('@metamask/transaction-pay-controller');
+jest.mock('../lib/money/pay/solana-pay-metrics', () => ({
+  trackSolanaPayLifecycle: jest.fn(),
+}));
 jest.mock('../lib/transaction/delegation', () => ({
   getDelegationTransaction: jest.fn(),
 }));
@@ -117,6 +121,18 @@ describe('TransactionPayControllerInit', () => {
     const { messengerClient } =
       TransactionPayControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
+  });
+
+  it('subscribes Solana Pay lifecycle events to metrics', () => {
+    const request = getInitRequestMock();
+    const subscribeSpy = jest.spyOn(request.controllerMessenger, 'subscribe');
+
+    TransactionPayControllerInit(request);
+
+    expect(subscribeSpy).toHaveBeenCalledWith(
+      'TransactionPayController:solanaPayLifecycle',
+      trackSolanaPayLifecycle,
+    );
   });
 
   it('recovers Solana Pay status once at startup', () => {
