@@ -132,7 +132,6 @@ describe('getCachedTokenPrice', () => {
 describe('getCachedPercentChange', () => {
   it('reads an EVM token change from market data', () => {
     const change = getCachedPercentChange({
-      isEvm: true,
       isNative: false,
       chainId: '0x1',
       address: USDC_ADDRESS.toLowerCase(),
@@ -149,7 +148,6 @@ describe('getCachedPercentChange', () => {
   it('reads a native EVM change from the chain native token address', () => {
     const nativeAddress = getNativeTokenAddress('0x1' as Hex);
     const change = getCachedPercentChange({
-      isEvm: true,
       isNative: true,
       chainId: '0x1',
       address: 'slip44:60',
@@ -166,7 +164,6 @@ describe('getCachedPercentChange', () => {
   it('reads a non-EVM change from the conversion rate', () => {
     const assetId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
     const change = getCachedPercentChange({
-      isEvm: false,
       isNative: true,
       chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       address: assetId,
@@ -181,7 +178,6 @@ describe('getCachedPercentChange', () => {
   it('returns undefined for a non-finite change', () => {
     expect(
       getCachedPercentChange({
-        isEvm: true,
         isNative: false,
         chainId: '0x1',
         address: USDC_ADDRESS,
@@ -195,7 +191,6 @@ describe('getCachedPercentChange', () => {
 
     expect(
       getCachedPercentChange({
-        isEvm: true,
         isNative: false,
         chainId: '0x1',
         address: USDC_ADDRESS,
@@ -212,7 +207,6 @@ describe('getCachedPercentChange', () => {
 
   it('returns undefined when the change is missing', () => {
     const change = getCachedPercentChange({
-      isEvm: true,
       isNative: false,
       chainId: '0x1',
       address: USDC_ADDRESS,

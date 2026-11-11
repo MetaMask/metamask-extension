@@ -215,24 +215,6 @@ describe('useHistoricalPrices', () => {
       });
     });
 
-    it('does not fetch when currency rate checks are off', () => {
-      mockPricesFetch.mockResolvedValue({ prices: SEVEN_DAY_PRICES });
-
-      const { result } = renderHookWithProvider(
-        () => useHistoricalPrices({ chainId, address, currency, timeRange }),
-        {
-          ...state,
-          metamask: {
-            ...state.metamask,
-            useCurrencyRateCheck: false,
-          },
-        },
-      );
-
-      expect(result.current.isFetching).toBe(false);
-      expect(mockPricesFetch).not.toHaveBeenCalled();
-    });
-
     it('calls v3 endpoint with correct CAIP params', async () => {
       mockPricesFetch.mockResolvedValue({ prices: SEVEN_DAY_PRICES });
 

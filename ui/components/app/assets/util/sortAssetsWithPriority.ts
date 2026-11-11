@@ -22,29 +22,32 @@ export function sortAssetsWithPriority(
   return [...array].sort(compareFiatBalanceDescending);
 }
 
-export type TokenTableSort = {
-  column: 'token' | 'price' | 'change' | 'balance';
-  reversed: boolean;
-};
+export type TokenTableSort =
+  | {
+      column: 'token' | 'balance';
+      reversed: boolean;
+    }
+  | {
+      column: 'price' | 'change';
+      reversed: boolean;
+      getValue: (asset: Asset) => number | undefined;
+    };
 
 /**
  * Sorts tokens for the table header. Without an override, this is the saved
  * preference. The override is not written back to that preference.
  *
- * Price and 24h values are read once per asset before the comparison, so the
- * comparator only looks up numbers.
+ * Price and 24h values are read once per asset, then the entries are sorted.
  *
  * @param array - The assets to sort.
  * @param criteria - The saved token sort preference.
  * @param override - A table-header sort, when the user has clicked a column.
- * @param getSortValue - The price or 24h change for one asset. Used only for those columns.
  * @returns The assets in the requested order.
  */
 export function sortTokenAssets(
   array: Asset[],
   criteria: SortCriteria,
   override?: TokenTableSort | null,
-  getSortValue?: ((asset: Asset) => number | undefined) | null,
 ): Asset[] {
   if (!override) {
     return sortAssetsWithPriority(array, criteria);
@@ -59,20 +62,23 @@ export function sortTokenAssets(
   }
 
   if (override.column === 'price' || override.column === 'change') {
-    const sortValueByAsset = new Map(
-      array.map((asset) => [asset, getSortValue?.(asset)]),
-    );
-    return [...array].sort((assetA, assetB) => {
-      const comparison = compareOptionalNumbers(
-        sortValueByAsset.get(assetA),
-        sortValueByAsset.get(assetB),
-        override.reversed,
-      );
-      if (comparison !== 0) {
-        return comparison;
-      }
-      return assetA.name.localeCompare(assetB.name);
-    });
+    return array
+      .map((asset) => ({
+        asset,
+        value: override.getValue(asset),
+      }))
+      .sort((entryA, entryB) => {
+        const comparison = compareOptionalNumbers(
+          entryA.value,
+          entryB.value,
+          override.reversed,
+        );
+        if (comparison !== 0) {
+          return comparison;
+        }
+        return entryA.asset.name.localeCompare(entryB.asset.name);
+      })
+      .map((entry) => entry.asset);
   }
 
   return [...array].sort((a, b) => compareFiatBalance(a, b, override.reversed));

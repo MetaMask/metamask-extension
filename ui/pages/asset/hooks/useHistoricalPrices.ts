@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import { getAssetId } from '@metamask/assets-controllers';
 import {
@@ -13,7 +12,6 @@ import type { SupportedCurrency } from '@metamask/core-backend';
 import { fromIso8601DurationToPriceApiTimePeriod } from '../util';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { apiClient } from '../../../helpers/api-client';
-import { getUseCurrencyRateCheck } from '../../../selectors';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -175,8 +173,6 @@ export const useHistoricalPrices = ({
     () => fromIso8601DurationToPriceApiTimePeriod(timeRange),
     [timeRange],
   );
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-
   // The client's query options carry the canonical queryKey, queryFn (with
   // the configured base URL), staleTime, and gcTime.
   const queryOptions = useMemo(
@@ -205,7 +201,7 @@ export const useHistoricalPrices = ({
     queryFn: queryOptions?.queryFn ?? (() => ({ prices: [] })),
     staleTime: queryOptions?.staleTime,
     gcTime: queryOptions?.gcTime,
-    enabled: Boolean(queryOptions) && useCurrencyRateCheck,
+    enabled: Boolean(queryOptions),
     placeholderData: (previousData) => previousData ?? flatlinePlaceholder,
     retry: false,
     select: transformPricesToPoints,

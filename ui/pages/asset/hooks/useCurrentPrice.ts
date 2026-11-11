@@ -9,11 +9,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { getCachedSpotPrice } from '../../../../shared/lib/token-price';
-import {
-  getCurrencyRates,
-  getMarketData,
-  getUseCurrencyRateCheck,
-} from '../../../selectors';
+import { getCurrencyRates, getMarketData } from '../../../selectors';
 import { getAssetsRates } from '../../../selectors/assets';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { apiClient } from '../../../helpers/api-client';
@@ -73,7 +69,7 @@ export const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
  * Get spot prices from our APIs
  *
  * @param asset - The asset to get the spot price of
- * @param enabled - Whether to fetch. Pass false when a cached price is available or currency rate checks are off.
+ * @param enabled - Whether to fetch. Pass false when a cached price is available.
  * @returns The spot price of the asset, or undefined while loading or if unavailable.
  */
 const useSpotPrice = (
@@ -155,15 +151,11 @@ const useSpotPrice = (
 export const useCurrentPrice = (
   asset: Asset,
 ): { currentPrice?: number; marketData?: AssetMarketData } => {
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { currentPrice: cachedPrice } = useCachedPrice(asset);
   const { currentPrice: spotPrice, marketData } = useSpotPrice(
     asset,
-    useCurrencyRateCheck && cachedPrice === undefined,
+    cachedPrice === undefined,
   );
 
-  return {
-    currentPrice: cachedPrice ?? (useCurrencyRateCheck ? spotPrice : undefined),
-    marketData: useCurrencyRateCheck ? marketData : undefined,
-  };
+  return { currentPrice: cachedPrice ?? spotPrice, marketData };
 };

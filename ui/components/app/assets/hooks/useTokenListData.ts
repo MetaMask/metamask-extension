@@ -70,10 +70,9 @@ type UseTokenListDataOptions = {
     address: string,
     assetId?: CaipAssetType,
   ) => void;
-  // Table sort. Not used by token list, which uses the token sort config
+  // Table sort. Not used by token list, which uses the token sort config.
+  // Price and 24h overrides carry the value for each asset.
   sortOverride?: TokenTableSort | null;
-  // Price or 24h change for the table sort override. Null for the token list
-  getSortValue?: ((asset: Asset) => number | undefined) | null;
 };
 
 let lowValueAssetsExpandedSessionValue = false;
@@ -117,13 +116,11 @@ export const getTokenListItemKey = (
  * @param options - The hook options.
  * @param options.onTokenClick - Called when a token is opened.
  * @param options.sortOverride - Token table sort. The token list doesn't use this.
- * @param options.getSortValue - Price or 24h change for that table sort.
  * @returns The display items and the handlers to render them.
  */
 export function useTokenListData({
   onTokenClick,
   sortOverride = null,
-  getSortValue = null,
 }: UseTokenListDataOptions) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
@@ -201,7 +198,6 @@ export function useTokenListData({
       filteredAssets,
       tokenSortConfig,
       sortOverride,
-      getSortValue,
     );
 
     return accountAssets.map((asset) => {
@@ -217,7 +213,7 @@ export function useTokenListData({
 
       return token;
     });
-  }, [filteredAssets, getSortValue, sortOverride, tokenSortConfig]);
+  }, [filteredAssets, sortOverride, tokenSortConfig]);
 
   // Skeletons stand in for the native gas token and mUSD that render before
   // the rest of the account's tokens. Tokens already in state stay visible,

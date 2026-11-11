@@ -51,6 +51,8 @@ import type {
 
 export type { TokenTableProps };
 
+const noSortValue = () => undefined;
+
 // Gets the existing active sort column based on the TokenSortConfig
 const getActiveSortColumn = (
   key?: string,
@@ -215,7 +217,10 @@ const Row = ({ token, privacyMode, onClick, safeChains }: RowProps) => {
 export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const preferenceKey = `${tokenSortConfig?.key ?? ''}:${tokenSortConfig?.order ?? ''}`;
-  const [headerSort, setHeaderSort] = useState<TokenTableSort | null>(null);
+  const [headerSort, setHeaderSort] = useState<{
+    column: SortColumn;
+    reversed: boolean;
+  } | null>(null);
   const [headerSortPreferenceKey, setHeaderSortPreferenceKey] =
     useState(preferenceKey);
   if (headerSortPreferenceKey !== preferenceKey) {
@@ -227,7 +232,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
   const reversed = headerSort?.reversed ?? false;
 
   const handleSort = useCallback(
-    (column: TokenTableSort['column']) => {
+    (column: SortColumn) => {
       setHeaderSort({
         column,
         reversed: column === activeColumn ? !reversed : false,
@@ -241,6 +246,22 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
       ? headerSort.column
       : null,
   );
+  const sortOverride = useMemo((): TokenTableSort | null => {
+    if (headerSort === null) {
+      return null;
+    }
+
+    const { column, reversed: headerReversed } = headerSort;
+    if (column === 'price' || column === 'change') {
+      return {
+        column,
+        reversed: headerReversed,
+        getValue: getSortValue ?? noSortValue,
+      };
+    }
+
+    return { column, reversed: headerReversed };
+  }, [getSortValue, headerSort]);
   const {
     tokenListItems,
     showLoadingSkeleton,
@@ -251,8 +272,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     getTokenClickHandler,
   } = useTokenListData({
     onTokenClick,
-    sortOverride: headerSort,
-    getSortValue,
+    sortOverride,
   });
 
   const renderRow = useCallback(

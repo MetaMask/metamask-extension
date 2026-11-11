@@ -225,7 +225,11 @@ describe('TokenTable', () => {
     ).toBeNull();
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        sortOverride: { column: 'price', reversed: false },
+        sortOverride: expect.objectContaining({
+          column: 'price',
+          reversed: false,
+          getValue: expect.any(Function),
+        }),
       }),
     );
 
@@ -236,7 +240,11 @@ describe('TokenTable', () => {
     ).toHaveAttribute('data-sort-direction', 'up');
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        sortOverride: { column: 'price', reversed: true },
+        sortOverride: expect.objectContaining({
+          column: 'price',
+          reversed: true,
+          getValue: expect.any(Function),
+        }),
       }),
     );
   });
@@ -258,7 +266,11 @@ describe('TokenTable', () => {
     ).toBeNull();
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        sortOverride: { column: 'change', reversed: false },
+        sortOverride: expect.objectContaining({
+          column: 'change',
+          reversed: false,
+          getValue: expect.any(Function),
+        }),
       }),
     );
 
@@ -272,7 +284,11 @@ describe('TokenTable', () => {
     );
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        sortOverride: { column: 'change', reversed: true },
+        sortOverride: expect.objectContaining({
+          column: 'change',
+          reversed: true,
+          getValue: expect.any(Function),
+        }),
       }),
     );
   });
@@ -285,7 +301,11 @@ describe('TokenTable', () => {
 
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        sortOverride: { column: 'price', reversed: false },
+        sortOverride: expect.objectContaining({
+          column: 'price',
+          reversed: false,
+          getValue: expect.any(Function),
+        }),
       }),
     );
 
@@ -334,5 +354,57 @@ describe('TokenTable', () => {
     expect(mockUseTokenListData).toHaveBeenLastCalledWith(
       expect.objectContaining({ sortOverride: null }),
     );
+  });
+
+  it('renders rows in the order selected by the header', () => {
+    const assets = [
+      { name: 'Beta', symbol: 'BETA', fiat: { balance: 1 } },
+      { name: 'Alpha', symbol: 'ALPHA', fiat: { balance: 5 } },
+    ] as unknown as Asset[];
+    const prices: Record<string, number> = { Alpha: 1, Beta: 10 };
+
+    mockUseTokenListData.mockImplementation(({ sortOverride }) => {
+      const override =
+        sortOverride?.column === 'price' || sortOverride?.column === 'change'
+          ? {
+              ...sortOverride,
+              getValue: (asset: Asset) => prices[asset.name],
+            }
+          : sortOverride;
+
+      return {
+        tokenListItems: sortTokenAssets(
+          assets,
+          {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCallback: 'stringNumeric',
+          },
+          override,
+        ).map((asset) => ({
+          type: 'token' as const,
+          token: createToken(asset.name),
+        })),
+        displayedTokens: [],
+        showLoadingSkeleton: false,
+        hasBalance: false,
+        privacyMode: false,
+        isLowValueAssetsExpanded: false,
+        handleLowValueAssetsToggle: jest.fn(),
+        getTokenClickHandler: () => undefined,
+      };
+    });
+
+    const { getAllByTestId, getByTestId } = renderTable();
+    const titles = () =>
+      getAllByTestId('multichain-token-list-button').map(
+        (row) => row.textContent,
+      );
+
+    expect(titles()).toEqual(['Alpha', 'Beta']);
+
+    fireEvent.click(getByTestId('token-table-sort-price'));
+
+    expect(titles()).toEqual(['Beta', 'Alpha']);
   });
 });

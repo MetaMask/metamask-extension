@@ -41,7 +41,6 @@ export const TokenCellPercentChange = React.memo(
       typeof price === 'number' && typeof comparePrice === 'number'
         ? ((price - comparePrice) / comparePrice) * 100
         : getCachedPercentChange({
-            isEvm,
             isNative: Boolean(token.isNative),
             chainId: token.chainId,
             address: token.address,

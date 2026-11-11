@@ -116,9 +116,8 @@ export function getCachedTokenPrice(
 }
 
 type CachedPercentChangeInput = {
-  isEvm: boolean;
   isNative: boolean;
-  chainId: string;
+  chainId: Hex | CaipChainId;
   /** EVM token address, or the non-EVM asset id. */
   address?: string;
   marketData?: MarketData;
@@ -131,30 +130,29 @@ type CachedPercentChangeInput = {
  * is stored. Non-EVM assets read the P1D conversion-rate change.
  *
  * @param input - The asset identity and the cached rate maps.
- * @param input.isEvm - Whether the asset is on an EVM chain.
  * @param input.isNative - Whether the asset is the chain's native token.
- * @param input.chainId - The asset's chain id.
+ * @param input.chainId - The asset's chain id. This decides the EVM lookup.
  * @param input.address - The EVM token address, or the non-EVM asset id.
  * @param input.marketData - EVM market data keyed by chain id and address.
  * @param input.conversionRates - Non-EVM rates keyed by asset id.
  * @returns The percent change, or `undefined` when it is not cached.
  */
 export function getCachedPercentChange({
-  isEvm,
   isNative,
   chainId,
   address,
   marketData,
   conversionRates,
 }: CachedPercentChangeInput): number | undefined {
+  const evm = isEvmChainId(chainId);
   const tokenAddress =
-    isEvm && isNative ? getNativeTokenAddress(chainId as Hex) : address;
+    evm && isNative ? getNativeTokenAddress(chainId as Hex) : address;
 
   if (!tokenAddress) {
     return undefined;
   }
 
-  if (isEvm) {
+  if (evm) {
     return finiteNumber(
       marketData?.[chainId as Hex]?.[toChecksumHexAddress(tokenAddress) as Hex]
         ?.pricePercentChange1d,
@@ -182,7 +180,6 @@ export function getCachedTokenPercentChange(
   conversionRates: ConversionRates | undefined,
 ): number | undefined {
   return getCachedPercentChange({
-    isEvm: isEvmChainId(asset.chainId),
     isNative: Boolean(asset.isNative),
     chainId: asset.chainId,
     address: 'address' in asset ? asset.address : asset.assetId,

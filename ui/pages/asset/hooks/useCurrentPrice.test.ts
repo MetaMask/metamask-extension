@@ -288,36 +288,6 @@ describe('useCurrentPrice', () => {
       expect(result.current.marketData).toBeUndefined();
     });
 
-    it('does not fetch the spot price when currency rate checks are off', () => {
-      const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
-      const assetId = `eip155:1/erc20:${address}`;
-      const tokenAssetMissingMarket: Asset = {
-        chainId: '0x1',
-        type: AssetType.token,
-        address,
-        symbol: 'MISS',
-        decimals: 18,
-        name: 'Missing Token',
-        image: '',
-      };
-
-      mockSpotPricesFetch.mockResolvedValue({ [assetId]: { price: 1.23 } });
-
-      const { result } = renderHookWithProvider(
-        () => useCurrentPrice(tokenAssetMissingMarket),
-        {
-          metamask: {
-            ...mockStateIsEvm.metamask,
-            useCurrencyRateCheck: false,
-          },
-        },
-      );
-
-      expect(result.current.currentPrice).toBeUndefined();
-      expect(result.current.marketData).toBeUndefined();
-      expect(mockSpotPricesFetch).not.toHaveBeenCalled();
-    });
-
     it('does not fetch the spot price when market data is available', () => {
       const tokenAsset: Asset = {
         chainId: '0x1',

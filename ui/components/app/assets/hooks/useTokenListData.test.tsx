@@ -138,10 +138,7 @@ const getPrice = (asset: Asset) => prices[asset.symbol];
 const labels = (items: TokenListDisplayItem[]) =>
   items.map((item) => (item.type === 'token' ? item.token.symbol : 'toggle'));
 
-const renderList = (
-  sortOverride?: TokenTableSort | null,
-  getSortValue?: ((asset: Asset) => number | undefined) | null,
-) => {
+const renderList = (sortOverride?: TokenTableSort | null) => {
   const store = configureMockStore([thunk])({});
 
   return renderHook(
@@ -149,7 +146,6 @@ const renderList = (
       useTokenListData({
         onTokenClick: jest.fn(),
         sortOverride,
-        getSortValue,
       }),
     {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
@@ -196,10 +192,11 @@ describe('useTokenListData', () => {
   });
 
   it('orders tokens by the table override', () => {
-    const { result } = renderList(
-      { column: 'price', reversed: false },
-      getPrice,
-    );
+    const { result } = renderList({
+      column: 'price',
+      reversed: false,
+      getValue: getPrice,
+    });
 
     expect(labels(result.current.tokenListItems)).toStrictEqual([
       'ETH',
@@ -212,7 +209,11 @@ describe('useTokenListData', () => {
     const saved = renderList();
     const highToLow = renderList({ column: 'balance', reversed: false });
     const lowToHigh = renderList({ column: 'balance', reversed: true });
-    const byPrice = renderList({ column: 'price', reversed: false }, getPrice);
+    const byPrice = renderList({
+      column: 'price',
+      reversed: false,
+      getValue: getPrice,
+    });
 
     expect(labels(saved.result.current.tokenListItems)).toStrictEqual([
       'USDC',

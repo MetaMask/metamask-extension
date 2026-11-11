@@ -19,23 +19,11 @@ const eth = {
 } as unknown as Asset;
 
 describe('getTokenSortValue', () => {
-  it('returns no price when currency rate checks are off', () => {
+  it('returns the cached price', () => {
     const price = getTokenSortValue(eth, 'price', {
       marketData: undefined,
       currencyRates: currencyRates({ ETH: { conversionRate: 1800 } }),
       conversionRates: undefined,
-      useCurrencyRateCheck: false,
-    });
-
-    expect(price).toBeUndefined();
-  });
-
-  it('returns the cached price when currency rate checks are on', () => {
-    const price = getTokenSortValue(eth, 'price', {
-      marketData: undefined,
-      currencyRates: currencyRates({ ETH: { conversionRate: 1800 } }),
-      conversionRates: undefined,
-      useCurrencyRateCheck: true,
     });
 
     expect(price).toBe(1800);
@@ -48,7 +36,6 @@ describe('getTokenSortValue', () => {
         ETH: { conversionRate: Number.POSITIVE_INFINITY },
       }),
       conversionRates: undefined,
-      useCurrencyRateCheck: true,
     });
 
     expect(price).toBeUndefined();
@@ -64,7 +51,6 @@ describe('getTokenSortValue', () => {
       }),
       currencyRates: undefined,
       conversionRates: undefined,
-      useCurrencyRateCheck: true,
     });
 
     expect(change).toBeUndefined();
@@ -80,7 +66,6 @@ describe('getTokenSortValue', () => {
       }),
       currencyRates: undefined,
       conversionRates: undefined,
-      useCurrencyRateCheck: false,
     });
 
     expect(change).toBe(-3);
