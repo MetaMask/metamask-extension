@@ -2,6 +2,7 @@ import React from 'react';
 import { it as jestIt } from '@jest/globals';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { fireEvent } from '@testing-library/react';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { parse } from '../../../shared/lib/deep-links/parse';
@@ -74,6 +75,30 @@ describe('DeepLink', () => {
         name: messages.deepLink_GoToTheHomePageButton.message,
       }),
     ).toHaveAttribute('href', 'home.html#/');
+  });
+
+  it('copies the shared URL from the mobile share screen', async () => {
+    const writeText = jest.fn().mockResolvedValue(undefined);
+    Object.defineProperty(globalThis.navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    const { getByRole, findByRole } = renderDeepLink(
+      new URLSearchParams({
+        mobileShare: 'https://link.metamask.io/mobile-only?share=1',
+      }).toString(),
+    );
+
+    fireEvent.click(
+      getByRole('button', { name: messages.copyToClipboard.message }),
+    );
+
+    expect(writeText).toHaveBeenCalledWith(
+      'https://link.metamask.io/mobile-only',
+    );
+    expect(
+      await findByRole('button', { name: messages.copiedExclamation.message }),
+    ).toBeInTheDocument();
   });
 
   jestIt.each([

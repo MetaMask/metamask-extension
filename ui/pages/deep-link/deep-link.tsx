@@ -28,8 +28,8 @@ import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
-import { QRCodeImage } from '../../components/app/deeplink-qr-code';
 import { getMobileShareUrl } from '../../../shared/lib/deep-links/mobile-share';
+import { DeepLinkMobileShare } from './deep-link-mobile-share';
 
 type TranslateFunction = (
   key: string,
@@ -355,7 +355,6 @@ const DeepLinkInterstitial = () => {
 /** Displays the mobile QR fallback or the usual deep-link interstitial. */
 export const DeepLink = () => {
   const location = useLocation();
-  const t = useI18nContext();
   const originalUrl = new URLSearchParams(location.search).get('mobileShare');
   const mobileShareUrl = originalUrl ? getMobileShareUrl(originalUrl) : null;
 
@@ -363,46 +362,5 @@ export const DeepLink = () => {
     return <DeepLinkInterstitial />;
   }
 
-  return (
-    <FullPageCard
-      pageTestId="parent-selector-deep-link-page"
-      cardTestId="deep-link-mobile-share"
-    >
-      <img
-        className="h-40 w-40"
-        alt="MetaMask logo"
-        src="./images/logo/metamask-fox.svg"
-      />
-      <Text
-        asChild
-        variant={TextVariant.HeadingLg}
-        fontWeight={FontWeight.Bold}
-        className="my-4"
-      >
-        <h1>{t('deepLink_MobileShareTitle')}</h1>
-      </Text>
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {t('deepLink_MobileShareDescription')}
-      </Text>
-      <QRCodeImage data={mobileShareUrl} />
-      <Text variant={TextVariant.BodySm} className="w-full break-all">
-        {mobileShareUrl}
-      </Text>
-      <Box marginTop={12} className="w-full">
-        <Button
-          asChild
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          className="w-full hover:text-primary-inverse"
-        >
-          <a
-            href={getExtensionURL('/')}
-            data-testid="deep-link-continue-button"
-          >
-            {t('deepLink_GoToTheHomePageButton')}
-          </a>
-        </Button>
-      </Box>
-    </FullPageCard>
-  );
+  return <DeepLinkMobileShare url={mobileShareUrl} />;
 };
