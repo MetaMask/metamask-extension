@@ -1,6 +1,9 @@
 import {
   getNativeTokenAddress,
   type Asset,
+  type CurrencyRateState,
+  type MultichainAssetsRatesControllerState,
+  type TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
 import {
@@ -9,6 +12,13 @@ import {
   getCachedTokenPrice,
   getCachedTokenPercentChange,
 } from './token-price';
+
+const marketData = (data: object) =>
+  data as TokenRatesControllerState['marketData'];
+const currencyRates = (data: object) =>
+  data as CurrencyRateState['currencyRates'];
+const conversionRates = (data: object) =>
+  data as MultichainAssetsRatesControllerState['conversionRates'];
 
 const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
@@ -19,7 +29,7 @@ describe('getCachedSpotPrice', () => {
       isNative: true,
       symbol: 'ETH',
       chainId: '0x1',
-      currencyRates: { ETH: { conversionRate: 1800 } },
+      currencyRates: currencyRates({ ETH: { conversionRate: 1800 } }),
     });
 
     expect(price).toBe(1800);
@@ -32,12 +42,12 @@ describe('getCachedSpotPrice', () => {
       symbol: 'USDC',
       chainId: '0x1',
       address: USDC_ADDRESS.toLowerCase(),
-      marketData: {
+      marketData: marketData({
         '0x1': {
           [USDC_ADDRESS]: { price: 0.0005, currency: 'ETH' },
         },
-      },
-      currencyRates: { ETH: { conversionRate: 2000 } },
+      }),
+      currencyRates: currencyRates({ ETH: { conversionRate: 2000 } }),
     });
 
     expect(price).toBe(1);
@@ -63,7 +73,7 @@ describe('getCachedSpotPrice', () => {
       symbol: 'SOL',
       chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       nativeAssetId: assetId,
-      conversionRates: { [assetId]: { rate: '150.25' } },
+      conversionRates: conversionRates({ [assetId]: { rate: '150.25' } }),
     });
 
     expect(price).toBe(150.25);
@@ -82,12 +92,12 @@ describe('getCachedTokenPrice', () => {
 
     const price = getCachedTokenPrice(
       asset,
-      {
+      marketData({
         '0x1': {
           [USDC_ADDRESS]: { price: 2, currency: 'usd' },
         },
-      },
-      { usd: { conversionRate: 1 } },
+      }),
+      currencyRates({ usd: { conversionRate: 1 } }),
       undefined,
     );
 
@@ -102,11 +112,11 @@ describe('getCachedPercentChange', () => {
       isNative: false,
       chainId: '0x1',
       address: USDC_ADDRESS.toLowerCase(),
-      marketData: {
+      marketData: marketData({
         '0x1': {
           [USDC_ADDRESS]: { pricePercentChange1d: 1.5 },
         },
-      },
+      }),
     });
 
     expect(change).toBe(1.5);
@@ -119,11 +129,11 @@ describe('getCachedPercentChange', () => {
       isNative: true,
       chainId: '0x1',
       address: 'slip44:60',
-      marketData: {
+      marketData: marketData({
         '0x1': {
           [nativeAddress]: { pricePercentChange1d: -3 },
         },
-      },
+      }),
     });
 
     expect(change).toBe(-3);
@@ -136,9 +146,9 @@ describe('getCachedPercentChange', () => {
       isNative: true,
       chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       address: assetId,
-      conversionRates: {
+      conversionRates: conversionRates({
         [assetId]: { marketData: { pricePercentChange: { P1D: 2.25 } } },
-      },
+      }),
     });
 
     expect(change).toBe(2.25);
@@ -168,11 +178,11 @@ describe('getCachedTokenPercentChange', () => {
 
     const change = getCachedTokenPercentChange(
       asset,
-      {
+      marketData({
         '0x1': {
           [USDC_ADDRESS]: { pricePercentChange1d: 0.4 },
         },
-      },
+      }),
       undefined,
     );
 

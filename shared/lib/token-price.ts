@@ -5,48 +5,13 @@ import {
   type MultichainAssetsRatesControllerState,
   type TokenRatesControllerState,
 } from '@metamask/assets-controllers';
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import { getNativeAssetId, isEvmChainId } from './asset-utils';
 import { toChecksumHexAddress } from './hexstring-utils';
 
-type MarketData = {
-  [chainId: string]:
-    | {
-        [address: string]:
-          | {
-              price?: number;
-              currency?: string;
-              pricePercentChange1d?: number;
-            }
-          | undefined;
-      }
-    | undefined;
-};
-
-type CurrencyRates = {
-  [currency: string]:
-    | {
-        conversionRate?: number | null;
-      }
-    | undefined;
-};
-
-type ConversionRates = {
-  [assetId: string]:
-    | {
-        rate?: string | null;
-        marketData?: {
-          pricePercentChange?: Partial<Record<'P1D', number | null>>;
-        };
-      }
-    | undefined;
-};
-
-type MarketDataSource = TokenRatesControllerState['marketData'] | MarketData;
-type CurrencyRatesSource = CurrencyRateState['currencyRates'] | CurrencyRates;
-type ConversionRatesSource =
-  | MultichainAssetsRatesControllerState['conversionRates']
-  | ConversionRates;
+type MarketData = TokenRatesControllerState['marketData'];
+type CurrencyRates = CurrencyRateState['currencyRates'];
+type ConversionRates = MultichainAssetsRatesControllerState['conversionRates'];
 
 type CachedSpotPriceInput = {
   isEvm: boolean;
@@ -57,9 +22,9 @@ type CachedSpotPriceInput = {
   address?: string;
   /** Non-EVM native asset id. */
   nativeAssetId?: string;
-  marketData?: MarketDataSource;
-  currencyRates?: CurrencyRatesSource;
-  conversionRates?: ConversionRatesSource;
+  marketData?: MarketData;
+  currencyRates?: CurrencyRates;
+  conversionRates?: ConversionRates;
 };
 
 /**
@@ -90,24 +55,19 @@ export function getCachedSpotPrice({
   currencyRates,
   conversionRates,
 }: CachedSpotPriceInput): number | undefined {
-  const cachedMarketData = marketData as MarketData | undefined;
-  const cachedCurrencyRates = currencyRates as CurrencyRates | undefined;
-  const cachedConversionRates = conversionRates as ConversionRates | undefined;
-
   if (isEvm) {
     if (isNative) {
-      return cachedCurrencyRates?.[symbol]?.conversionRate ?? undefined;
+      return currencyRates?.[symbol]?.conversionRate ?? undefined;
     }
 
     if (!address) {
       return undefined;
     }
 
-    const checksumAddress = toChecksumHexAddress(address);
-    const tokenMarket = cachedMarketData?.[chainId]?.[checksumAddress];
+    const tokenMarket =
+      marketData?.[chainId as Hex]?.[toChecksumHexAddress(address) as Hex];
     const exchangeRate = tokenMarket?.currency
-      ? (cachedCurrencyRates?.[tokenMarket.currency]?.conversionRate ??
-        undefined)
+      ? (currencyRates?.[tokenMarket.currency]?.conversionRate ?? undefined)
       : undefined;
     const price = tokenMarket?.price;
 
@@ -121,7 +81,7 @@ export function getCachedSpotPrice({
     return undefined;
   }
 
-  const rate = cachedConversionRates?.[rateKey]?.rate;
+  const rate = conversionRates?.[rateKey as CaipAssetType]?.rate;
   if (!rate) {
     return undefined;
   }
@@ -142,9 +102,9 @@ export function getCachedSpotPrice({
  */
 export function getCachedTokenPrice(
   asset: Asset,
-  marketData: MarketDataSource | undefined,
-  currencyRates: CurrencyRatesSource | undefined,
-  conversionRates: ConversionRatesSource | undefined,
+  marketData: MarketData | undefined,
+  currencyRates: CurrencyRates | undefined,
+  conversionRates: ConversionRates | undefined,
 ): number | undefined {
   return getCachedSpotPrice({
     isEvm: isEvmChainId(asset.chainId),
@@ -165,8 +125,8 @@ type CachedPercentChangeInput = {
   chainId: string;
   /** EVM token address, or the non-EVM asset id. */
   address?: string;
-  marketData?: MarketDataSource;
-  conversionRates?: ConversionRatesSource;
+  marketData?: MarketData;
+  conversionRates?: ConversionRates;
 };
 
 const finiteNumber = (value: number | null | undefined) =>
@@ -194,8 +154,6 @@ export function getCachedPercentChange({
   marketData,
   conversionRates,
 }: CachedPercentChangeInput): number | undefined {
-  const cachedMarketData = marketData as MarketData | undefined;
-  const cachedConversionRates = conversionRates as ConversionRates | undefined;
   const tokenAddress =
     isEvm && isNative ? getNativeTokenAddress(chainId as Hex) : address;
 
@@ -204,14 +162,15 @@ export function getCachedPercentChange({
   }
 
   if (isEvm) {
-    const checksumAddress = toChecksumHexAddress(tokenAddress);
     return finiteNumber(
-      cachedMarketData?.[chainId]?.[checksumAddress]?.pricePercentChange1d,
+      marketData?.[chainId as Hex]?.[toChecksumHexAddress(tokenAddress) as Hex]
+        ?.pricePercentChange1d,
     );
   }
 
   return finiteNumber(
-    cachedConversionRates?.[tokenAddress]?.marketData?.pricePercentChange?.P1D,
+    conversionRates?.[tokenAddress as CaipAssetType]?.marketData
+      ?.pricePercentChange?.P1D,
   );
 }
 
@@ -226,8 +185,8 @@ export function getCachedPercentChange({
  */
 export function getCachedTokenPercentChange(
   asset: Asset,
-  marketData: MarketDataSource | undefined,
-  conversionRates: ConversionRatesSource | undefined,
+  marketData: MarketData | undefined,
+  conversionRates: ConversionRates | undefined,
 ): number | undefined {
   return getCachedPercentChange({
     isEvm: isEvmChainId(asset.chainId),
