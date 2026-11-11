@@ -125,10 +125,9 @@ export async function checkPersonalSignWasRejected(
     return false;
   });
   await driver.driver.switchTo().window(dappHandle);
-  await driver.waitForSelector({
-    css: '#personalSign',
-    text: 'Error: User rejected the request.',
-  });
+  await new TestDapp(driver).checkPersonalSignResultInCurrentWindow(
+    'Error: User rejected the request.',
+  );
 }
 
 /**
