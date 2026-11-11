@@ -207,7 +207,6 @@ describe('useAnalytics', () => {
       });
       await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
     });
-
   });
 
   describe('trackEvent', () => {
