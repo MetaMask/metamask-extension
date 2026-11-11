@@ -218,7 +218,9 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('permissionFor'));
-    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
+    expect(approveDetailsSpender).toHaveTextContent(
+      '0x9bc5baF874d2DA8D216aE9f137804184EE5AfEF4',
+    );
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -277,7 +279,9 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
     expect(approveDetailsRecipient).toHaveTextContent(tEn('interactingWith'));
-    expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
+    expect(approveDetailsRecipient).toHaveTextContent(
+      '0x076146c765189d51bE3160A2140cF80BFC73ad68',
+    );
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
       'transaction-details-recipient-row-tooltip',

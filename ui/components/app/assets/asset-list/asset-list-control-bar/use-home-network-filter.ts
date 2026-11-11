@@ -236,14 +236,14 @@ export const useHomeNetworkFilter = ({
   ]);
 
   const handleSelectNetwork = useCallback(
-    async (chainId: CaipChainId) => {
+    async (chainId: CaipChainId, location?: string) => {
       if (isPending) {
         return;
       }
       onPendingChange?.(true);
       onClose?.();
       try {
-        await handleNetworkChange(chainId);
+        await handleNetworkChange(chainId, location);
       } finally {
         onPendingChange?.(false);
       }

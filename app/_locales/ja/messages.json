@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URLを追加"
   },
-  "addAWallet": {
-    "message": "ウォレットを追加"
-  },
   "addAccount": {
     "message": "アカウントを追加"
   },
@@ -4133,10 +4130,6 @@
   },
   "fieldRequired": {
     "message": "$1は必須項目です"
-  },
-  "fileImportFail": {
-    "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "クリックしてアップロードまたはドラッグ＆ドロップ"
@@ -7336,10 +7329,6 @@
   "paste": {
     "message": "貼り付け"
   },
-  "pastePrivateKey": {
-    "message": "秘密鍵の文字列をここに貼り付けます:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "支払方法:",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8918,10 +8907,6 @@
   "privateKeyHidden": {
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "秘密鍵の入力の表示・非表示を切り替えます",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
@@ -12627,9 +12612,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーにより、あなたのIPアドレスにアクセスされることになります。"
-  },
-  "usedByClients": {
-    "message": "さまざまな異なるクライアントによって使用されています"
   },
   "userOpContractDeployError": {
     "message": "スマートコントラクトアカウントからのコントラクトの展開はサポートされていません"

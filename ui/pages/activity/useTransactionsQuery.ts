@@ -21,7 +21,7 @@ const knownApiMessages = ['networks param contains no supported chains'];
 const maxEmptyFilteredPagesToSkip = 1;
 
 type TransactionQueryOptions = ReturnType<
-  typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
+  typeof apiClient.accounts.getV5MultiAccountTransactionsInfiniteQueryOptions
 >;
 type QueryOptions = Extract<
   TransactionQueryOptions,
@@ -57,7 +57,7 @@ function withKnownApiResponse(queryFn: QueryOptions['queryFn']) {
       if (isKnownApiResponseError(error)) {
         return {
           data: [],
-          unprocessedNetworks: [],
+          unprocessedAccounts: [],
           pageInfo: {
             count: 0,
             hasNextPage: false,
@@ -83,14 +83,14 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
     network.startsWith('eip155:'),
   );
 
-  const accountAddresses = useMemo(
+  const accountIds = useMemo(
     () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
     [evmAddress],
   );
 
   const queryOptions =
-    apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
-      accountAddresses,
+    apiClient.accounts.getV5MultiAccountTransactionsInfiniteQueryOptions({
+      accountIds,
       networks: evmNetworks,
       includeTxMetadata: true,
       lang: locale.split('-')[0],
@@ -99,7 +99,7 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
   const enabled =
     Boolean(useExternalServices) &&
     evmNetworks.length > 0 &&
-    accountAddresses.length > 0;
+    accountIds.length > 0;
 
   const query = useInfiniteQuery({
     ...queryOptions,
@@ -172,20 +172,20 @@ export function usePrefetchTransactions() {
     [enabledNetworks],
   );
 
-  const accountAddresses = useMemo(
+  const accountIds = useMemo(
     () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
     [evmAddress],
   );
 
   const queryOptions = useMemo(
     () =>
-      apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions({
-        accountAddresses,
+      apiClient.accounts.getV5MultiAccountTransactionsInfiniteQueryOptions({
+        accountIds,
         networks: evmNetworks,
         includeTxMetadata: true,
         lang: locale.split('-')[0],
       }),
-    [accountAddresses, evmNetworks, locale],
+    [accountIds, evmNetworks, locale],
   );
 
   return useCallback(() => {
