@@ -72,8 +72,14 @@ describe('IntervalBar', () => {
       // both go through this same prop.
       renderBar({ intervals: LINE_CHART_TIME_RANGES, selectedInterval: '1d' });
 
-      expect(screen.getByText('1D')).toHaveStyle({ fontWeight: 600 });
-      expect(screen.getByText('1W')).toHaveStyle({ fontWeight: 500 });
+      expect(screen.getByRole('button', { name: '1D' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.getByRole('button', { name: '1W' })).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
     });
   });
 
@@ -93,9 +99,9 @@ describe('IntervalBar', () => {
     it('keeps the chart type toggle at full width inside the padding', () => {
       renderBar();
 
-      expect(screen.getByTestId('advanced-chart-type-toggle')).toHaveStyle({
-        flexShrink: 0,
-      });
+      expect(screen.getByTestId('advanced-chart-type-toggle')).toHaveClass(
+        'shrink-0',
+      );
     });
 
     it('brings the selected interval into view', () => {
