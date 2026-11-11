@@ -2193,7 +2193,7 @@ describe('LegacyBackgroundApiService', () => {
 
         const promise = rootMessenger.call(
           'LegacyBackgroundApiService:addNetwork',
-          networkConfiguration,
+          { ...networkConfiguration, chainId: '0xa' },
           { setActive: false },
         );
 
@@ -2212,11 +2212,12 @@ describe('LegacyBackgroundApiService', () => {
 
         await promise;
 
-        // The map captured before the network was added is restored, and the
-        // restore runs exactly once, outside the state-change publish.
+        // Previously enabled networks stay on, and the network the user added
+        // stays enabled. The restore runs exactly once, outside the
+        // state-change publish.
         expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledTimes(1);
         expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
-          eip155: { '0x1': true },
+          eip155: { '0x1': true, '0xa': true },
         });
       });
     });

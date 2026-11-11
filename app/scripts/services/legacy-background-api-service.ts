@@ -41,6 +41,7 @@ import {
   Hex,
   hexToBytes,
   Json,
+  KnownCaipNamespace,
   NonEmptyArray,
   parseCaipAccountId,
   parseCaipChainId,
@@ -1363,19 +1364,29 @@ export class LegacyBackgroundApiService {
 
     // The NetworkEnablementController enables the newly added network
     // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
-    // updating state), which switches the active network filter. Wait for that
-    // enablement to land, then restore the previous map.
+    // updating state). That can also disable every other network. Wait for the
+    // enablement to land, then put the previous selection back and keep the
+    // network the user just added enabled, so its balance is fetched without
+    // switching the active network.
     //
     // The restore runs here in the linear flow rather than from a
     // `NetworkEnablementController:stateChange` subscriber on purpose: calling
     // the `restoreEnabledNetworkMap` action synchronously from inside the
     // subscriber re-enters the messenger's publish and the restore update is
     // dropped. Awaiting first defers the restore to a microtask outside that
-    // publish.
+    // publish. The extra timer lets the registry auto-enable undo in
+    // network-enablement init run first; this restore is the one that sticks.
     await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
+    await new Promise((resolve) => setTimeout(resolve, 0));
     this.#messenger.call(
       'NetworkEnablementController:restoreEnabledNetworkMap',
-      previousEnabledNetworkMap,
+      {
+        ...previousEnabledNetworkMap,
+        [KnownCaipNamespace.Eip155]: {
+          ...previousEnabledNetworkMap[KnownCaipNamespace.Eip155],
+          [networkConfiguration.chainId]: true,
+        },
+      },
     );
 
     return addedNetwork;
