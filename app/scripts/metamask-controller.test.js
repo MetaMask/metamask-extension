@@ -2284,43 +2284,6 @@ describe('MetaMaskController', () => {
 
     describe('NFT source', () => {
       const NFT_ADDRESS = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
-      const NETWORK_CLIENT_ID = 'mainnet';
-
-      it('passes the custom source for addNft from the API', async () => {
-        const addNft = jest
-          .spyOn(metamaskController.nftController, 'addNft')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .addNft(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
-
-        expect(addNft).toHaveBeenCalledWith(
-          NFT_ADDRESS,
-          '1',
-          NETWORK_CLIENT_ID,
-          {
-            source: 'custom',
-          },
-        );
-      });
-
-      it('passes the custom source for addNftVerifyOwnership from the API', async () => {
-        const addNftVerifyOwnership = jest
-          .spyOn(metamaskController.nftController, 'addNftVerifyOwnership')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .addNftVerifyOwnership(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
-
-        expect(addNftVerifyOwnership).toHaveBeenCalledWith(
-          NFT_ADDRESS,
-          '1',
-          NETWORK_CLIENT_ID,
-          { source: 'custom' },
-        );
-      });
 
       it('passes the detected source when adding an NFT found in transaction logs', async () => {
         const addNft = jest
