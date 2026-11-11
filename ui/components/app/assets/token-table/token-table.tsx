@@ -13,7 +13,15 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenSortLocation,
+  MetaMetricsTokenSortPreference,
+  MetaMetricsUserTrait,
+} from '../../../../../shared/constants/metametrics';
 import { getTokenSortConfig } from '../../../../selectors';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import type { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -65,6 +73,16 @@ type TokenTableHeaderProps = {
 };
 
 type SortColumn = TokenTableSort['column'];
+
+const TOKEN_SORT_PREFERENCE_BY_COLUMN: Record<
+  SortColumn,
+  MetaMetricsTokenSortPreference
+> = {
+  token: MetaMetricsTokenSortPreference.Title,
+  balance: MetaMetricsTokenSortPreference.TokenFiatAmount,
+  price: MetaMetricsTokenSortPreference.Price,
+  change: MetaMetricsTokenSortPreference.PercentChange,
+};
 
 type SortableColumnHeaderProps = {
   label: string;
@@ -274,6 +292,7 @@ const TokenTableRow = ({
  * @param props.safeChains - Known chains, used by the native token warning.
  */
 export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const preferenceKey = `${tokenSortConfig?.key ?? ''}:${tokenSortConfig?.order ?? ''}`;
   const [headerSort, setHeaderSort] = useState<TokenTableHeaderSort | null>(
@@ -293,8 +312,18 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     (column: SortColumn) => {
       const nextReversed = column === activeColumn ? !reversed : false;
       setHeaderSort({ column, reversed: nextReversed });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenSortPreference)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            [MetaMetricsUserTrait.TokenSortPreference]:
+              TOKEN_SORT_PREFERENCE_BY_COLUMN[column],
+            location: MetaMetricsTokenSortLocation.TokenColumnHeader,
+          })
+          .build(),
+      );
     },
-    [activeColumn, reversed],
+    [activeColumn, createEventBuilder, reversed, trackEvent],
   );
 
   const sortOverride = useTokenSortOverride(headerSort);
