@@ -12,6 +12,12 @@ import type {
   TokenTableSort,
 } from '../util/sortAssetsWithPriority';
 
+function isTokenOrBalanceSort(
+  headerSort: TokenTableHeaderSort,
+): headerSort is Extract<TokenTableSort, { column: 'token' | 'balance' }> {
+  return headerSort.column === 'token' || headerSort.column === 'balance';
+}
+
 /**
  * The table-header sort, including the price or 24h reader when that column
  * is selected. Token and balance sorts return the header state unchanged, so
@@ -27,16 +33,13 @@ export function useTokenSortOverride(
   const currencyRates = useSelector(getCurrencyRates);
   const conversionRates = useSelector(getAssetsRates);
 
-  return useMemo(() => {
-    if (
-      headerSort === null ||
-      headerSort.column === 'token' ||
-      headerSort.column === 'balance'
-    ) {
+  return useMemo((): TokenTableSort | null => {
+    if (headerSort === null || isTokenOrBalanceSort(headerSort)) {
       return headerSort;
     }
 
-    const { column, reversed } = headerSort;
+    const column = headerSort.column === 'price' ? 'price' : 'change';
+    const { reversed } = headerSort;
 
     return {
       column,

@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import type { Asset } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
@@ -104,8 +105,16 @@ describe('sortTokenAssets', () => {
     sortCallback: 'stringNumeric' as const,
   };
   const names = ['Asset A', 'Asset B', 'Asset Z'];
+  type SortCase = {
+    label: string;
+    column: 'token' | 'balance' | 'price' | 'change';
+    reversed: boolean;
+    expected: string[];
+    values?: Record<string, number>;
+    list?: Asset[];
+  };
 
-  it.each([
+  it.each<SortCase>([
     {
       label: 'token names from A to Z',
       column: 'token' as const,
@@ -219,7 +228,7 @@ describe('sortTokenAssets', () => {
         ? {
             column,
             reversed,
-            getValue: (asset) => values[asset.name],
+            getValue: (asset) => values?.[asset.name],
           }
         : { column, reversed },
     ).map((asset) => asset.name);

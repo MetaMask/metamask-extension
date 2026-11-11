@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { act, fireEvent } from '@testing-library/react';
 import type { Asset } from '@metamask/assets-controllers';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -139,7 +140,7 @@ describe('TokenTable', () => {
     expect(handleLowValueAssetsToggle).toHaveBeenCalledTimes(1);
   });
 
-  it.each([
+  const headerSortCases = [
     {
       column: 'balance',
       label: 'Balance',
@@ -164,7 +165,9 @@ describe('TokenTable', () => {
       first: { direction: 'down', reversed: false, name: 'sorted descending' },
       second: { direction: 'up', reversed: true, name: 'sorted ascending' },
     },
-  ] as const)(
+  ] as const;
+
+  it.each(headerSortCases)(
     'toggles the $label header sort',
     ({ column, label, first, second }) => {
       mockTokenListData();
