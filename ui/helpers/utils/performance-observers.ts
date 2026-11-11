@@ -371,3 +371,155 @@ export function exposeLongTaskMetricsForTesting(): void {
     globalThis.stateHooks.resetLongTaskMetrics = resetLongTaskMetrics;
   }
 }
+
+// Long Animation Frames, for the benchmark harness only. Production gets them
+// from Sentry (`enableLongAnimationFrame` in `app/scripts/lib/setupSentry.ts`),
+// so attach only through `setupLongAnimationFrameMetricsForTesting`.
+// @see https://developer.chrome.com/docs/web-platform/long-animation-frames
+
+/**
+ * The fields of a `long-animation-frame` entry this module reads.
+ */
+type LongAnimationFrameEntry = {
+  duration: number;
+  /** Absent in an implementation that predates the field. */
+  blockingDuration?: number;
+};
+
+/**
+ * Accumulated Long Animation Frame metrics.
+ */
+export type LongAnimationFrameMetrics = {
+  /** Count of long animation frames observed */
+  count: number;
+  /** Sum of their `duration`s in milliseconds */
+  totalDuration: number;
+  /** Sum of their `blockingDuration`s in milliseconds */
+  blockingDuration: number;
+  /**
+   * Whether the `long-animation-frame` observer attached. False means the
+   * counts are initial zeros and say nothing about the main thread.
+   */
+  observed: boolean;
+};
+
+type LongAnimationFrameCounters = Omit<LongAnimationFrameMetrics, 'observed'>;
+
+const emptyLongAnimationFrameCounters = (): LongAnimationFrameCounters => ({
+  count: 0,
+  totalDuration: 0,
+  blockingDuration: 0,
+});
+
+let longAnimationFrameCounters = emptyLongAnimationFrameCounters();
+
+let longAnimationFrameObserver: PerformanceObserver | null = null;
+
+/**
+ * Unsampled, so call only via {@link setupLongAnimationFrameMetricsForTesting}.
+ *
+ * @returns Cleanup function to disconnect the observer
+ */
+export function setupLongAnimationFrameObserver(): () => void {
+  const noop = () => {
+    // Nothing attached, so nothing to disconnect
+  };
+
+  if (!('PerformanceObserver' in globalThis)) {
+    return noop;
+  }
+
+  if (longAnimationFrameObserver) {
+    return disconnectLongAnimationFrameObserver;
+  }
+
+  // `observe({ type })` with an unsupported type is a silent no-op, so check
+  // first, or `observed` would read true over counters that never move.
+  if (
+    !PerformanceObserver.supportedEntryTypes?.includes('long-animation-frame')
+  ) {
+    return noop;
+  }
+
+  try {
+    longAnimationFrameObserver = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries() as LongAnimationFrameEntry[]) {
+        longAnimationFrameCounters.count += 1;
+        longAnimationFrameCounters.totalDuration += entry.duration;
+        longAnimationFrameCounters.blockingDuration +=
+          entry.blockingDuration ?? 0;
+      }
+    });
+    longAnimationFrameObserver.observe({
+      type: 'long-animation-frame',
+      buffered: true,
+    });
+  } catch (error) {
+    longAnimationFrameObserver = null;
+    console.warn(
+      '[Performance] Failed to setup Long Animation Frame observer:',
+      error,
+    );
+    return noop;
+  }
+
+  return disconnectLongAnimationFrameObserver;
+}
+
+/**
+ * Disconnect the Long Animation Frame observer.
+ */
+export function disconnectLongAnimationFrameObserver(): void {
+  longAnimationFrameObserver?.disconnect();
+  longAnimationFrameObserver = null;
+}
+
+/**
+ * Reset Long Animation Frame metrics. The observer stays attached.
+ */
+export function resetLongAnimationFrameMetrics(): void {
+  longAnimationFrameCounters = emptyLongAnimationFrameCounters();
+}
+
+/**
+ * Get current Long Animation Frame metrics.
+ *
+ * @param reset - If true, resets the metrics after retrieval
+ */
+export function getLongAnimationFrameMetrics(
+  reset: boolean = false,
+): LongAnimationFrameMetrics {
+  const result = {
+    ...longAnimationFrameCounters,
+    observed: longAnimationFrameObserver !== null,
+  };
+
+  if (reset) {
+    resetLongAnimationFrameMetrics();
+  }
+
+  return result;
+}
+
+/**
+ * Call from ui/index.js after stateHooks is initialized, or nothing attaches.
+ *
+ * @returns Cleanup function to disconnect the observer
+ */
+export function setupLongAnimationFrameMetricsForTesting(): () => void {
+  if (
+    !(process.env.IN_TEST || process.env.METAMASK_DEBUG) ||
+    !globalThis.stateHooks
+  ) {
+    return () => {
+      // Nothing attached, so nothing to disconnect
+    };
+  }
+
+  const cleanup = setupLongAnimationFrameObserver();
+  globalThis.stateHooks.getLongAnimationFrameMetrics =
+    getLongAnimationFrameMetrics;
+  globalThis.stateHooks.resetLongAnimationFrameMetrics =
+    resetLongAnimationFrameMetrics;
+  return cleanup;
+}

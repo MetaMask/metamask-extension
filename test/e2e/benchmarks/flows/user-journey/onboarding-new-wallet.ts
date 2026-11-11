@@ -72,10 +72,14 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
           });
         }
 
+        // Each step's trigger runs inside `measureStepWithLongTasks`, after
+        // the long-task window opens and before the step timer starts, so the
+        // page's work in response to it counts toward the step's blocking
+        // metrics and not toward its duration.
+
         // Measure: Create wallet to Social screen
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
-        await startOnboardingPage.createWalletWithSrp(false);
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -83,11 +87,11 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
             async () => {
               await startOnboardingPage.checkSocialSignUpFormIsVisible();
             },
+            { trigger: () => startOnboardingPage.createWalletWithSrp(false) },
           ),
         );
 
         // Measure: SRP button to Password form
-        await startOnboardingPage.clickCreateWithSrpButton();
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -96,12 +100,17 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
               const onboardingPasswordPage = new OnboardingPasswordPage(driver);
               await onboardingPasswordPage.checkPageIsLoaded();
             },
+            { trigger: () => startOnboardingPage.clickCreateWithSrpButton() },
           ),
         );
 
-        // Measure: Password to Recovery
+        // Measure: Password to Recovery. Typing stays outside the windows;
+        // the submit is the trigger.
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+        await onboardingPasswordPage.fillWalletPassword(
+          WALLET_PASSWORD,
+          WALLET_PASSWORD,
+        );
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -111,27 +120,30 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
               const secureWalletPage = new SecureWalletPage(driver);
               await secureWalletPage.checkPageIsLoaded();
             },
+            {
+              trigger: () => onboardingPasswordPage.clickCreatePasswordButton(),
+            },
           ),
         );
 
-        // Skip recovery backup
+        // Skipping the recovery backup triggers the next measured step:
+        // the metrics screen on Chrome, the complete screen on Firefox.
         const secureWalletPage = new SecureWalletPage(driver);
-        await secureWalletPage.skipSRPBackup();
+        const skipBackup = () => secureWalletPage.skipSRPBackup();
 
         // Measure: Skip to Metrics (Chrome only)
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         if (!isFirefox) {
           steps.push(
             await measureStepWithLongTasks(
               driver,
               'skipBackupToMetricsScreen',
               async () => {
-                const onboardingMetricsPage = new OnboardingMetricsPage(driver);
                 await onboardingMetricsPage.checkPageIsLoaded();
               },
+              { trigger: skipBackup },
             ),
           );
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickOnContinueButton();
         }
 
         // Measure: Agree to Complete
@@ -143,10 +155,18 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
               const onboardingCompletePage = new OnboardingCompletePage(driver);
               await onboardingCompletePage.checkPageIsLoaded();
             },
+            {
+              trigger: isFirefox
+                ? skipBackup
+                : () => onboardingMetricsPage.clickOnContinueButton(),
+            },
           ),
         );
 
-        // Measure: Done to Asset list
+        // Measure: Done to Asset list. Its window still opens after the
+        // trigger, on both browsers. On Chrome the harness then navigates to
+        // home.html, which replaces the document, so a reset before the Done
+        // click would clear counters this step never reads.
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
         await handleSidepanelPostOnboarding(driver);

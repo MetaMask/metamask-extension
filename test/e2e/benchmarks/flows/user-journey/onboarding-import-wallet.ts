@@ -90,10 +90,14 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           });
         }
 
+        // Each step's trigger runs inside `measureStepWithLongTasks`, after
+        // the long-task window opens and before the step timer starts, so the
+        // page's work in response to it counts toward the step's blocking
+        // metrics and not toward its duration.
+
         // Measure: Import wallet button to Social screen
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
-        await startOnboardingPage.importWallet(false);
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -101,11 +105,11 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
             async () => {
               await startOnboardingPage.checkUserSrpButtonIsVisible();
             },
+            { trigger: () => startOnboardingPage.importWallet(false) },
           ),
         );
 
         // Measure: SRP button to form
-        await startOnboardingPage.clickImportWithSrpButton();
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -114,13 +118,13 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
               const onboardingSrpPage = new OnboardingSrpPage(driver);
               await onboardingSrpPage.checkPageIsLoaded();
             },
+            { trigger: () => startOnboardingPage.clickImportWithSrpButton() },
           ),
         );
 
         // Measure: Confirm to Password form
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.fillSrp(srp);
-        await onboardingSrpPage.clickConfirmButton();
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -129,33 +133,39 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
               const onboardingPasswordPage = new OnboardingPasswordPage(driver);
               await onboardingPasswordPage.checkPageIsLoaded();
             },
+            { trigger: () => onboardingSrpPage.clickConfirmButton() },
           ),
         );
 
-        // Create password
+        // Create password: typing stays outside the windows; the submit is
+        // the next measured step's trigger.
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+        await onboardingPasswordPage.fillWalletPassword(
+          WALLET_PASSWORD,
+          WALLET_PASSWORD,
+        );
+        const submitPassword = () =>
+          onboardingPasswordPage.clickCreatePasswordButton();
 
         // Measure: Password to Metrics (Chrome only)
-        if (isFirefox) {
-          await skipPasskeySetup(driver);
-        } else {
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+        if (!isFirefox) {
           steps.push(
             await measureStepWithLongTasks(
               driver,
               'pwFormToMetricsScreen',
               async () => {
                 await skipPasskeySetup(driver);
-                const onboardingMetricsPage = new OnboardingMetricsPage(driver);
                 await onboardingMetricsPage.checkPageIsLoaded();
               },
+              { trigger: submitPassword },
             ),
           );
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickOnContinueButton();
         }
 
-        // Measure: Metrics to Complete
+        // Measure: Metrics to Complete. On Firefox the metrics choice was made
+        // before the import and there is no passkey screen, so its password
+        // submit leads straight to this step.
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -164,10 +174,18 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
               const onboardingCompletePage = new OnboardingCompletePage(driver);
               await onboardingCompletePage.checkPageIsLoaded();
             },
+            {
+              trigger: isFirefox
+                ? submitPassword
+                : () => onboardingMetricsPage.clickOnContinueButton(),
+            },
           ),
         );
 
-        // Measure: Done to Home
+        // Measure: Done to Home. Its window still opens after the trigger, on
+        // both browsers. On Chrome the harness then navigates to home.html,
+        // which replaces the document, so a reset before the Done click would
+        // clear counters this step never reads.
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
         await handleSidepanelPostOnboarding(driver);
@@ -188,7 +206,6 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
 
         // Measure: Account list load
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
         steps.push(
           await measureStepWithLongTasks(
             driver,
@@ -197,6 +214,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
               const accountListPage = new AccountListPage(driver);
               await accountListPage.checkPageIsLoaded(120000);
             },
+            { trigger: () => headerNavbar.openAccountMenu() },
           ),
         );
 

@@ -12,6 +12,7 @@ import { Driver } from '../../../webdriver/driver';
 import {
   buildLongTaskTimerResults,
   legacyStepTimerId,
+  toLongTaskStepResult,
 } from '../../utils/long-task-helper';
 import {
   finishInPageStep,
@@ -81,15 +82,9 @@ export async function run(): Promise<BenchmarkRunResult> {
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
 
         const longTaskData = await driver.collectLongTaskMetrics();
-        steps.push({
-          id: 'load_new_account',
-          duration: loadingTimes,
-          longTaskCount: longTaskData?.count ?? 0,
-          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
-          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
-          tbt: longTaskData?.tbt ?? 0,
-          longTasksObserved: longTaskData?.observed ?? false,
-        });
+        steps.push(
+          toLongTaskStepResult('load_new_account', loadingTimes, longTaskData),
+        );
         if (newAccountProbe) {
           inPageTimers.push(
             ...(await finishInPageStep(driver, 'load_new_account')),

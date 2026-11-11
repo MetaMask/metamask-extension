@@ -18,6 +18,7 @@ import { Driver } from '../../../webdriver/driver';
 import {
   buildLongTaskTimerResults,
   legacyStepTimerId,
+  toLongTaskStepResult,
 } from '../../utils/long-task-helper';
 import {
   KNOWN_ANSWER_TOKEN_SEARCH_DELAY,
@@ -190,15 +191,9 @@ export async function run(): Promise<BenchmarkRunResult> {
         loadPage =
           timestampAfterLoadPage.getTime() - timestampBeforeLoadPage.getTime();
         let longTaskData = await driver.collectLongTaskMetrics();
-        steps.push({
-          id: 'bridge_load_page',
-          duration: loadPage,
-          longTaskCount: longTaskData?.count ?? 0,
-          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
-          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
-          tbt: longTaskData?.tbt ?? 0,
-          longTasksObserved: longTaskData?.observed ?? false,
-        });
+        steps.push(
+          toLongTaskStepResult('bridge_load_page', loadPage, longTaskData),
+        );
         if (loadPageProbe) {
           inPageTimers.push(
             ...(await finishInPageStep(driver, 'bridge_load_page')),
@@ -224,15 +219,13 @@ export async function run(): Promise<BenchmarkRunResult> {
           timestampAfterClickAssetPicker.getTime() -
           timestampBeforeClickAssetPicker.getTime();
         longTaskData = await driver.collectLongTaskMetrics();
-        steps.push({
-          id: 'bridge_load_asset_picker',
-          duration: loadAssetPicker,
-          longTaskCount: longTaskData?.count ?? 0,
-          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
-          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
-          tbt: longTaskData?.tbt ?? 0,
-          longTasksObserved: longTaskData?.observed ?? false,
-        });
+        steps.push(
+          toLongTaskStepResult(
+            'bridge_load_asset_picker',
+            loadAssetPicker,
+            longTaskData,
+          ),
+        );
         if (assetPickerProbe) {
           inPageTimers.push(
             ...(await finishInPageStep(driver, 'bridge_load_asset_picker')),
@@ -274,15 +267,13 @@ export async function run(): Promise<BenchmarkRunResult> {
           timestampAfterTokenSearch.getTime() -
           timestampBeforeTokenSearch.getTime();
         longTaskData = await driver.collectLongTaskMetrics();
-        steps.push({
-          id: 'bridge_search_token',
-          duration: searchToken,
-          longTaskCount: longTaskData?.count ?? 0,
-          longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
-          longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
-          tbt: longTaskData?.tbt ?? 0,
-          longTasksObserved: longTaskData?.observed ?? false,
-        });
+        steps.push(
+          toLongTaskStepResult(
+            'bridge_search_token',
+            searchToken,
+            longTaskData,
+          ),
+        );
         if (searchProbe) {
           inPageTimers.push(
             ...(await finishInPageStep(driver, 'bridge_search_token')),
