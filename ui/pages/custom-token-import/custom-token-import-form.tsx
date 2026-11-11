@@ -131,9 +131,7 @@ const NetworkPickerField = ({
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
             className="rounded-md"
-            src={
-              getImageForChainId(selectedNetwork, networkImageUrls) || undefined
-            }
+            src={getImageForChainId(selectedNetwork, networkImageUrls)}
             name={networkName}
           />
         }

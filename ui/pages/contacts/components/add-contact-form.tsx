@@ -377,8 +377,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
                 className="rounded-md"
                 src={
                   typeof selectedChainId === 'string'
-                    ? getImageForChainId(selectedChainId, networkImageUrls) ||
-                      undefined
+                    ? getImageForChainId(selectedChainId, networkImageUrls)
                     : undefined
                 }
                 name={String(selectedNetworkName)}

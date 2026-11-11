@@ -273,8 +273,7 @@ export function EditContactForm({
                   className="rounded-md"
                   src={
                     contactChainId
-                      ? getImageForChainId(contactChainId, networkImageUrls) ||
-                        undefined
+                      ? getImageForChainId(contactChainId, networkImageUrls)
                       : undefined
                   }
                   name={selectedNetworkName}

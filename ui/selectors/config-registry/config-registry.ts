@@ -29,8 +29,8 @@ import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
  * @param state.metamask.configs - The registry configs
  */
 export const getRegistryConfigs = (state: {
-  metamask?: { configs?: ConfigRegistryControllerState['configs'] };
-}) => state.metamask?.configs;
+  metamask: { configs?: ConfigRegistryControllerState['configs'] };
+}) => state.metamask.configs;
 
 /**
  * Returns whether the Config Registry API feature flag is enabled.

@@ -37,7 +37,7 @@ export const ChainBadge = ({
   children,
 }: Props) => {
   const networkImageSrc = useImageForChainId(
-    chainId ? (getMaybeHexChainId(chainId) ?? chainId) : undefined,
+    getMaybeHexChainId(chainId) ?? chainId,
   );
 
   if (!chainId) {

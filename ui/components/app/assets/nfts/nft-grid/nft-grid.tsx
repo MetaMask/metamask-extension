@@ -53,10 +53,10 @@ const NFTGridItem = (props: {
       alt={nftImageAlt}
       src={nftItemSrc}
       networkName={allNetworks?.[toHex(nft?.chainId ?? '')]?.name}
-      networkSrc={
-        getImageForChainId(toHex(nft?.chainId ?? ''), networkImageUrls) ||
-        undefined
-      }
+      networkSrc={getImageForChainId(
+        toHex(nft?.chainId ?? ''),
+        networkImageUrls,
+      )}
       onClick={onClick}
       isIpfsURL={isIpfsURL}
       privacyMode={privacyMode}
