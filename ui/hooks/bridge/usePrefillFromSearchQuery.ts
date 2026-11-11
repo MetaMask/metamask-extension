@@ -6,6 +6,10 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import {
+  getNativeAssetForChainId,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
+import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
 } from '../../../shared/lib/asset-utils';
@@ -34,6 +38,39 @@ const parseAsset = (assetId: string | null) => {
     return null;
   }
 };
+
+function getMetadataForAssetId(
+  metadataByAssetId: Record<CaipAssetType, AssetMetadata> | null | undefined,
+  assetId: CaipAssetType,
+) {
+  return (
+    metadataByAssetId?.[assetId] ??
+    metadataByAssetId?.[assetId.toLowerCase() as unknown as CaipAssetType]
+  );
+}
+
+function buildPlaceholderAssetMetadata(
+  parsed: NonNullable<ReturnType<typeof parseAsset>>,
+) {
+  if (isNativeAddress(parsed.assetReference)) {
+    const native = getNativeAssetForChainId(parsed.chainId);
+    return {
+      assetId: parsed.assetId,
+      symbol: native.symbol,
+      name: native.name ?? native.symbol,
+      decimals: native.decimals,
+    };
+  }
+
+  const placeholderSymbol = parsed.assetReference.slice(-6);
+
+  return {
+    assetId: parsed.assetId,
+    symbol: placeholderSymbol,
+    name: placeholderSymbol,
+    decimals: 18,
+  };
+}
 
 const fetchAssetMetadata = async (
   signal: AbortSignal,
@@ -108,6 +145,15 @@ export const usePrefillFromSearchQuery = () => {
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
       appliedSearch.current = search;
+
+      // Seed destination token from URL before fetch so getToToken does not fall back to the default
+      if (
+        searchParamsTo &&
+        isSupportedBridgeChain(searchParamsTo.chainId)
+      ) {
+        dispatch(setToToken(buildPlaceholderAssetMetadata(searchParamsTo)));
+      }
+
       // Defer state updates so they are not synchronous effect setStates
       // (react-hooks/set-state-in-effect).
       queueMicrotask(() => {
@@ -131,7 +177,7 @@ export const usePrefillFromSearchQuery = () => {
         });
       }
     }
-  }, [search, searchParams]);
+  }, [dispatch, search, searchParams]);
 
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {
@@ -175,11 +221,10 @@ export const usePrefillFromSearchQuery = () => {
       return;
     }
 
-    const toTokenMetadata =
-      assetMetadataByAssetId?.[parsedToAssetId.assetId] ??
-      assetMetadataByAssetId?.[
-        parsedToAssetId.assetId.toLowerCase() as unknown as CaipAssetType
-      ];
+    const toTokenMetadata = getMetadataForAssetId(
+      assetMetadataByAssetId,
+      parsedToAssetId.assetId,
+    );
     if (toTokenMetadata) {
       // Defer clear so setState is not synchronous in the effect body.
       queueMicrotask(() => {

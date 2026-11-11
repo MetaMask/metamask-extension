@@ -9,6 +9,7 @@ import {
 import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { getToToken } from '../../ducks/bridge/selectors';
 
 import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';
 
@@ -415,6 +416,33 @@ describe('usePrefillFromSearchQuery', () => {
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('shows the URL destination token on first paint while metadata fetch is still pending', () => {
+    jest
+      .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
+      .mockReturnValue(new Promise(() => undefined) as never);
+
+    const mockStoreState = createBridgeMockStore({
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      },
+    });
+
+    const toAssetId =
+      'eip155:1/erc20:0x0000000000000000000000000000000000000002';
+
+    const { store } = renderUseBridgeQueryParams(
+      mockStoreState,
+      `/?to=${encodeURIComponent(toAssetId)}`,
+    );
+
+    const state = store?.getState();
+    expect(state).toBeDefined();
+
+    const destination = getToToken(state as never);
+    expect(destination.assetId.toLowerCase()).toBe(toAssetId.toLowerCase());
+    expect(destination.symbol).not.toBe('USDC');
+  });
+
   it('should only set src token and amount', async () => {
     const fetchAssetMetadataForAssetIdsSpy = jest
       .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
@@ -560,7 +588,7 @@ describe('usePrefillFromSearchQuery', () => {
       );
     });
 
-    it('does not set toToken when metadata is not found for the to token address', async () => {
+    it('keeps the URL destination token after metadata fetch returns no row for that address', async () => {
       jest
         .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
         .mockResolvedValue({});
@@ -571,14 +599,12 @@ describe('usePrefillFromSearchQuery', () => {
         },
       });
 
-      const searchParams = new URLSearchParams({
-        to: 'eip155:1/erc20:0x0000000000000000000000000000000000000001',
-      });
+      const toAssetId =
+        'eip155:1/erc20:0x0000000000000000000000000000000000000001';
 
       const { store } = renderUseBridgeQueryParams(
         mockStoreState,
-        // eslint-disable-next-line prefer-template
-        '/?' + searchParams.toString(),
+        `/?${new URLSearchParams({ to: toAssetId }).toString()}`,
       );
 
       await act(async () => {
@@ -586,9 +612,8 @@ describe('usePrefillFromSearchQuery', () => {
       });
 
       const { toToken } = store?.getState().bridge ?? {};
-      expect(toToken?.assetId).not.toBe(
-        'eip155:1/erc20:0x0000000000000000000000000000000000000001',
-      );
+      expect(toToken?.assetId?.toLowerCase()).toBe(toAssetId.toLowerCase());
+      expect(toToken?.symbol).toBe('000001');
     });
   });
 
