@@ -106,11 +106,11 @@ describe('Permit Batch Signature Tests', () => {
     );
     const requestDetails = [
       'Spender',
-      '0x3fC91...b7FAD',
+      '0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD',
       'Request from',
       'metamask.github.io',
       'Interacting with',
-      '0x00000...78BA3',
+      '0x000000000022D473030F116dDEE9F6B43aC78BA3',
     ];
     expect(requestDetailsSection).toBeInTheDocument();
     verifyDetails(requestDetailsSection, requestDetails);

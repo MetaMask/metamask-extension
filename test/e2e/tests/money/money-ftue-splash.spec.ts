@@ -24,9 +24,12 @@ describe('Money Account FTUE', function (this: Suite) {
         await login(driver);
 
         const splash = await openMoneyFtueSplash(driver);
-        await splash.clickStartEarning();
 
+        // Money home mounts and loads behind the splash.
         const moneyHomePage = new MoneyHomePage(driver);
+        await moneyHomePage.checkPageIsLoaded();
+
+        await splash.clickStartEarning();
         await moneyHomePage.checkPageIsLoaded();
         await splash.checkIsNotShown();
 
@@ -49,9 +52,11 @@ describe('Money Account FTUE', function (this: Suite) {
         await login(driver);
 
         const splash = await openMoneyFtueSplash(driver);
-        await splash.clickClose();
 
         const moneyHomePage = new MoneyHomePage(driver);
+        await moneyHomePage.checkPageIsLoaded();
+
+        await splash.clickClose();
         await moneyHomePage.checkPageIsLoaded();
         await splash.checkIsNotShown();
       },

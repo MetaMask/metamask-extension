@@ -26,6 +26,7 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
+  getOHLCVServiceMessenger,
 } from './core-backend';
 import {
   getMultichainTransactionsControllerMessenger,
@@ -624,6 +625,10 @@ export const MESSENGER_FACTORIES = {
   },
   AccountActivityService: {
     getMessenger: getAccountActivityServiceMessenger,
+    getInitMessenger: noop,
+  },
+  OHLCVService: {
+    getMessenger: getOHLCVServiceMessenger,
     getInitMessenger: noop,
   },
   SmartTransactionsController: {
