@@ -140,7 +140,7 @@ export const TRON_TOKEN_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 
-export const STELLAR_TOKEN_IMAGE_URL = './images/xlm.svg';
+export const STELLAR_TOKEN_IMAGE_URL = './images/xlm.png';
 
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
 export const BITCOIN_BLOCK_EXPLORER_NAME = 'Mempool';
