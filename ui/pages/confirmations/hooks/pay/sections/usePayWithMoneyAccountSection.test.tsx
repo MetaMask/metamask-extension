@@ -1,7 +1,12 @@
+import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import configureStore from '../../../../../store/store';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { useConfirmContext } from '../../../context/confirm';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
@@ -19,11 +24,12 @@ jest.mock('../../../context/confirm', () => ({
 }));
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
-    const messages: Record<string, string> = {
+    const copy: Record<string, string> = {
       payWithMoneyAccount: 'Money account',
       available: 'available',
+      noDepositFee: 'No deposit fee',
     };
-    return messages[key] ?? key;
+    return copy[key] ?? key;
   },
 }));
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
@@ -39,13 +45,20 @@ function mockSelectors({
   primaryMoneyAccount = { address: MONEY_ACCOUNT_ADDRESS },
   isEnabled = true,
   paymentOverride = undefined as PaymentOverride | undefined,
+  noFeeRouteEnabled = false,
 }: {
   primaryMoneyAccount?: { address: string } | null;
   isEnabled?: boolean;
   paymentOverride?: PaymentOverride | undefined;
+  noFeeRouteEnabled?: boolean;
 } = {}) {
   let callIndex = 0;
-  const sequence = [primaryMoneyAccount, isEnabled, paymentOverride];
+  const sequence = [
+    primaryMoneyAccount,
+    isEnabled,
+    paymentOverride,
+    noFeeRouteEnabled,
+  ];
   jest.mocked(useSelector).mockImplementation(() => {
     const value = sequence[callIndex % sequence.length];
     callIndex += 1;
@@ -165,5 +178,66 @@ describe('usePayWithMoneyAccountSection', () => {
 
     expect(result.current?.rows[0].isSelected).toBe(true);
     expect(result.current?.rows[0].trailingElement).toBe('checkmark');
+  });
+
+  describe('no deposit fee tag', () => {
+    it.each([
+      TransactionType.perpsDeposit,
+      TransactionType.perpsDepositAndOrder,
+    ])(
+      'renders the no deposit fee tag on the money account row for %s when the route is listed',
+      (txType) => {
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: {
+            id: 'tx-1',
+            type: txType,
+          },
+        } as ReturnType<typeof useConfirmContext>);
+        mockSelectors({ noFeeRouteEnabled: true });
+
+        const { result } = renderHook(() =>
+          usePayWithMoneyAccountSection({ onClose }),
+        );
+        const tag = result.current?.rows[0].tagRenderers?.[0]?.();
+        const { getByTestId, getByText } = renderWithProvider(
+          <>{tag}</>,
+          configureStore(mockState),
+        );
+
+        expect(
+          getByTestId(`${PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID}-no-fee-tag`),
+        ).toBeInTheDocument();
+        expect(getByText(messages.noDepositFee.message)).toBeInTheDocument();
+      },
+    );
+
+    it.each([TransactionType.predictDeposit, TransactionType.perpsWithdraw])(
+      'omits the tag for %s even when the route is listed',
+      (txType) => {
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: {
+            id: 'tx-1',
+            type: txType,
+          },
+        } as ReturnType<typeof useConfirmContext>);
+        mockSelectors({ noFeeRouteEnabled: true });
+
+        const { result } = renderHook(() =>
+          usePayWithMoneyAccountSection({ onClose }),
+        );
+
+        expect(result.current?.rows[0].tagRenderers).toBeUndefined();
+      },
+    );
+
+    it('omits the tag for a perps deposit when the route is absent', () => {
+      mockSelectors({ noFeeRouteEnabled: false });
+
+      const { result } = renderHook(() =>
+        usePayWithMoneyAccountSection({ onClose }),
+      );
+
+      expect(result.current?.rows[0].tagRenderers).toBeUndefined();
+    });
   });
 });

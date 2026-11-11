@@ -1,17 +1,25 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
-import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
+import {
+  selectIsMoneyAccountTransactionEnabled,
+  selectPerpsMoneyAccountNoFeeRouteEnabled,
+} from '../../../selectors/feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { selectPrimaryMoneyAccount } from '../../../../../selectors/money-account';
 import { useConfirmContext } from '../../../context/confirm';
+import { NoDepositFeeTag } from '../../../components/UI/no-fee-tag';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
 import type { PayWithSectionConfig } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 
@@ -42,8 +50,19 @@ export function usePayWithMoneyAccountSection({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
+  const isPerpsMoneyAccountNoFeeRouteEnabled = useSelector(
+    selectPerpsMoneyAccountNoFeeRouteEnabled,
+  );
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount;
+  // Perps deposits only. Predict deposits are not subsidised. The gate is the
+  // Monad mUSD -> Hyperliquid route in `confirmations_relay_fixed_spread`.
+  const showNoDepositFeeTag =
+    isPerpsMoneyAccountNoFeeRouteEnabled &&
+    hasTransactionType(currentConfirmation, [
+      TransactionType.perpsDeposit,
+      TransactionType.perpsDepositAndOrder,
+    ]);
 
   const handlePress = useCallback(() => {
     if (!transactionId) {
@@ -90,6 +109,17 @@ export function usePayWithMoneyAccountSection({
           title: t('payWithMoneyAccount'),
           subtitle,
           isSelected: isMoneyAccountSelected,
+          ...(showNoDepositFeeTag
+            ? {
+                tagRenderers: [
+                  () => (
+                    <NoDepositFeeTag
+                      testId={`${PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID}-no-fee-tag`}
+                    />
+                  ),
+                ],
+              }
+            : {}),
           trailingElement: isMoneyAccountSelected ? 'checkmark' : 'none',
           onPress: handlePress,
           testId: PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID,
@@ -101,6 +131,7 @@ export function usePayWithMoneyAccountSection({
     isEnabled,
     isMoneyAccountSelected,
     primaryMoneyAccount,
+    showNoDepositFeeTag,
     t,
     withdrawableFiatFormatted,
   ]);

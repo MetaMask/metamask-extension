@@ -15,6 +15,8 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getDepositLimits } from '../utils/pay-deposit-limit';
 import {
   getRelayFixedSpreadFromConfig,
+  hasRelayFixedSpreadAliasRoute,
+  PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE,
   type RelayFixedSpreadConfig,
 } from '../utils/relay-fixed-spread';
 
@@ -510,17 +512,36 @@ export const selectRelayAtomicMaxEnabled = createSelector(
  * Parses the `confirmations_relay_fixed_spread` remote feature flag into a
  * normalised route config used to identify no-fee Money Account deposit tokens.
  */
+const getRawRelayFixedSpreadFlag = (
+  flags: ReturnType<typeof getRemoteFeatureFlags>,
+): unknown =>
+  (
+    flags as unknown as {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      confirmations_relay_fixed_spread?: unknown;
+    }
+  ).confirmations_relay_fixed_spread;
+
 export const selectRelayFixedSpread = createSelector(
   getRemoteFeatureFlags,
   (flags): RelayFixedSpreadConfig =>
     getRelayFixedSpreadFromConfig(
-      (
-        flags as unknown as {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          confirmations_relay_fixed_spread?: unknown;
-        }
-      ).confirmations_relay_fixed_spread,
+      getRawRelayFixedSpreadFlag(flags),
       RELAY_FIXED_SPREAD_FEATURE_FLAG,
+    ),
+);
+
+/**
+ * True when `confirmations_relay_fixed_spread` lists the Monad mUSD →
+ * Hyperliquid perps route. That route gates the Money account "No deposit fee"
+ * tag on perps deposits.
+ */
+export const selectPerpsMoneyAccountNoFeeRouteEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (flags): boolean =>
+    hasRelayFixedSpreadAliasRoute(
+      getRawRelayFixedSpreadFlag(flags),
+      PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE,
     ),
 );
 

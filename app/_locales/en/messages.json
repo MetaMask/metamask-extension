@@ -6920,6 +6920,10 @@
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
+  "noDepositFee": {
+    "message": "No deposit fee",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
+  },
   "noFee": {
     "message": "No fee",
     "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"

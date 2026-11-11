@@ -20,6 +20,7 @@ import {
   selectPayQuoteConfig,
   selectPreferredPayToken,
   selectPreferredPayTokens,
+  selectPerpsMoneyAccountNoFeeRouteEnabled,
   selectRelayAtomicMaxEnabled,
   selectRelayFixedSpread,
   selectStablecoins,
@@ -847,6 +848,46 @@ describe('Confirmations Pay Feature Flags', () => {
     it('returns empty routes when the flag is unset', () => {
       const state: MockState = { metamask: { remoteFeatureFlags: {} } };
       expect(selectRelayFixedSpread(state)).toEqual({ routes: [] });
+    });
+  });
+
+  describe('selectPerpsMoneyAccountNoFeeRouteEnabled', () => {
+    it('returns true when the Monad mUSD to Hyperliquid route is listed', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            /* eslint-disable @typescript-eslint/naming-convention -- remote flag payload shape */
+            confirmations_relay_fixed_spread: {
+              routes: [['monad', 'musd', 'hyperliquid', 'hypercore_usdc']],
+            },
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+        },
+      };
+
+      expect(selectPerpsMoneyAccountNoFeeRouteEnabled(state)).toBe(true);
+    });
+
+    it('returns false when the route is absent', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            /* eslint-disable @typescript-eslint/naming-convention -- remote flag payload shape */
+            confirmations_relay_fixed_spread: {
+              routes: [['eth', 'eth_usdc', 'eth', 'musd']],
+            },
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+        },
+      };
+
+      expect(selectPerpsMoneyAccountNoFeeRouteEnabled(state)).toBe(false);
+    });
+
+    it('returns false when the flag is unset', () => {
+      const state: MockState = { metamask: { remoteFeatureFlags: {} } };
+
+      expect(selectPerpsMoneyAccountNoFeeRouteEnabled(state)).toBe(false);
     });
   });
 });
