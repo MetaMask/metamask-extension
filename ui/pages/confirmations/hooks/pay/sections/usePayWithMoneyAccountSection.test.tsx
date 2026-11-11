@@ -174,12 +174,11 @@ describe('usePayWithMoneyAccountSection', () => {
   });
 
   describe('no deposit fee tag', () => {
-    it.each([
+    [
       TransactionType.perpsDeposit,
       TransactionType.perpsDepositAndOrder,
-    ])(
-      'renders the no deposit fee tag on the money account row for %s',
-      (txType) => {
+    ].forEach((txType) => {
+      it(`renders the no deposit fee tag on the money account row for ${txType}`, () => {
         useConfirmContextMock.mockReturnValue({
           currentConfirmation: {
             id: 'tx-1',
@@ -201,25 +200,26 @@ describe('usePayWithMoneyAccountSection', () => {
           getByTestId(`${PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID}-no-fee-tag`),
         ).toBeInTheDocument();
         expect(getByText(messages.noDepositFee.message)).toBeInTheDocument();
-      },
-    );
+      });
+    });
 
-    it.each([TransactionType.predictDeposit, TransactionType.perpsWithdraw])(
-      'omits the tag for %s',
+    [TransactionType.predictDeposit, TransactionType.perpsWithdraw].forEach(
       (txType) => {
-        useConfirmContextMock.mockReturnValue({
-          currentConfirmation: {
-            id: 'tx-1',
-            type: txType,
-          },
-        } as ReturnType<typeof useConfirmContext>);
-        mockSelectors();
+        it(`omits the tag for ${txType}`, () => {
+          useConfirmContextMock.mockReturnValue({
+            currentConfirmation: {
+              id: 'tx-1',
+              type: txType,
+            },
+          } as ReturnType<typeof useConfirmContext>);
+          mockSelectors();
 
-        const { result } = renderHook(() =>
-          usePayWithMoneyAccountSection({ onClose }),
-        );
+          const { result } = renderHook(() =>
+            usePayWithMoneyAccountSection({ onClose }),
+          );
 
-        expect(result.current?.rows[0].tagRenderers).toBeUndefined();
+          expect(result.current?.rows[0].tagRenderers).toBeUndefined();
+        });
       },
     );
   });
