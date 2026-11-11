@@ -52,8 +52,8 @@ export const selectTransactionPaymentTokenByTransactionId = createSelector(
 );
 
 /**
- * The selected payment token when it is an EVM token. EVM-only flows (mUSD
- * conversion) use this to read Hex address and chain fields.
+ * The selected payment token when it is an EVM token, with the Hex chain ID
+ * and token address derived from its asset ID.
  */
 export const selectEvmPaymentTokenByTransactionId = createSelector(
   selectTransactionPaymentTokenByTransactionId,

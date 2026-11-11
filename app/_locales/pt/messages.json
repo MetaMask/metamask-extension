@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Adicionar um URL"
   },
-  "addAWallet": {
-    "message": "Adicionar uma carteira"
-  },
   "addAccount": {
     "message": "Adicionar conta"
   },
@@ -4151,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 é obrigatório"
-  },
-  "fileImportFail": {
-    "message": "A importação de arquivo não está funcionando? Clique aqui!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Clique para upload ou arraste e solte"
@@ -7385,10 +7378,6 @@
   "paste": {
     "message": "Colar"
   },
-  "pastePrivateKey": {
-    "message": "Cole a string da sua chave privada aqui:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Pagar com",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8866,7 +8855,7 @@
     "message": "Saque enviado"
   },
   "perpsWithdrawTooltip": {
-    "message": "A MetaMask fará a conversão para o token desejado para você. A MetaMask não aplica taxas quando você converte para mUSD.",
+    "message": "A MetaMask fará a conversão para o token desejado para você.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8967,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "A chave privada está oculta",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Exibir/ocultar a inserção da chave privada",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Esta chave privada está sendo exibida",
@@ -11930,9 +11915,6 @@
     "message": "aqui",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " incluídas"
-  },
   "swapGasFeesSplit": {
     "message": "As taxas de rede da tela anterior estão divididas entre estas duas transações."
   },
@@ -12679,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "A exibição automática de tokens enviados para a sua conta envolve a comunicação com servidores de terceiros para buscar as imagens dos tokens. Esses servidores terão acesso ao seu endereço IP."
-  },
-  "usedByClients": {
-    "message": "Usado por diversos clientes diferentes"
   },
   "userOpContractDeployError": {
     "message": "A implementação do contrato a partir de uma conta de contrato inteligente não é suportada"

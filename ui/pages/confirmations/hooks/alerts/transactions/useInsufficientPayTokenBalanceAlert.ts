@@ -327,9 +327,10 @@ export function useInsufficientPayTokenBalanceAlert({
   // network fee compares two unrelated quantities and reports "Not enough MON
   // to cover fees" against a fee nobody pays from that balance.
   //
-  // Suppress for deposit *and* withdraw, unconditionally, mirroring
-  // `useInsufficientBalanceAlerts`. Gating on `isGasFeeSponsored` or on the
-  // post-quote flag is what made this alert appear only sometimes:
+  // Suppress for deposit *and* withdraw, but only for the leg that runs *from*
+  // the money account — that is, when the pay token is on the same chain as the
+  // parent transaction. Gating on `isGasFeeSponsored` or on the post-quote flag
+  // is what made this alert appear only sometimes:
   //   - `isGasFeeSponsored` is only set at creation for `CHAIN_IDS.MONAD`, and
   //     `useTransactionConfirm` can clear it (opt-out / unsupported gasless),
   //     so the guard could evaporate mid-confirmation.
@@ -342,16 +343,37 @@ export function useInsufficientPayTokenBalanceAlert({
   // Genuine shortfalls remain covered: deposits by the pay-token balance
   // checks above, withdrawals by `useInsufficientMoneyAccountBalanceAlert`.
   //
-  // Exception: a hardware payer funds a deposit with plain (non-7702)
+  // Exception 1: a hardware payer funds a deposit with plain (non-7702)
   // transactions signed on-device, so it pays source-network gas itself and
   // parent sponsorship does not cover it. Keep the check for that payer.
+  //
+  // Exception 2 (CONF-2217): a *cross-chain* deposit funds the money account
+  // from the user's own EOA on another chain. That source leg is an ordinary
+  // transaction billed to `payingAccount` in the source chain's native token,
+  // and sponsorship cannot apply — the pay controller only zeroes source gas
+  // when source chain == target chain == parent chain (`isSponsoredRoute`).
+  // Suppressing here let a deposit reach `eth_sendRawTransaction` with zero
+  // native balance and fail with "insufficient funds for gas * price + value".
+  // Scope the suppression to the same-chain case so the cross-chain leg — the
+  // only one actually paid from this balance — is still checked.
   const isMoneyAccountTransaction = Boolean(
     getMoneyAccountFlow(currentConfirmation),
   );
   const isHardwareFundedMoneyDeposit = isMoneyAccountDeposit && isHardwarePayer;
+  const isSameChainAsParent =
+    currentConfirmation?.chainId !== undefined &&
+    sourceChainId === currentConfirmation.chainId;
+  // Only the same-chain money-account leg runs from the money account, so only
+  // that leg compares two unrelated balances. A cross-chain source leg is paid
+  // by `payingAccount` and must stay checked.
+  const isMoneyAccountGasPaidByOtherAccount =
+    isMoneyAccountTransaction &&
+    isSameChainAsParent &&
+    !isHardwareFundedMoneyDeposit;
+
   const isInsufficientForSourceNetwork = useMemo(
     () =>
-      (!isMoneyAccountTransaction || isHardwareFundedMoneyDeposit) &&
+      !isMoneyAccountGasPaidByOtherAccount &&
       !isMoneyPaymentOverride &&
       !isNonEvmPayToken &&
       (payToken || isPostQuote) &&
@@ -360,8 +382,7 @@ export function useInsufficientPayTokenBalanceAlert({
       !isSourceGasFeeToken &&
       totalSourceNetworkFeeRaw.gt(nativeBalanceRaw),
     [
-      isHardwareFundedMoneyDeposit,
-      isMoneyAccountTransaction,
+      isMoneyAccountGasPaidByOtherAccount,
       isMoneyPaymentOverride,
       isNonEvmPayToken,
       isPayTokenNative,

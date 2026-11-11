@@ -4,7 +4,12 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
-import { openMoneyFtue, selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
+import {
+  openMoneyFtue,
+  selectHasSeenMoneyFtue,
+  type MoneyFtueOrigin,
+} from '../../ducks/money-ftue';
+import { MoneyFtueEntryPoint } from '../../pages/money/constants/money-events';
 import {
   selectMoneyFundingAccount,
   type MoneyFundingAccountState,
@@ -41,6 +46,10 @@ export type InitiateDepositOptions = {
    * splash.
    */
   skipFtue?: boolean;
+  /**
+   * Where the user came from, used only when this deposit opens the splash.
+   */
+  ftueOrigin?: MoneyFtueOrigin;
   /**
    * Replace the current page with the confirmation instead of pushing it,
    * for entry points that should not be returned to (e.g. the deeplink
@@ -147,6 +156,9 @@ export function useMoneyAccountDeposit() {
         dispatch(
           openMoneyFtue({
             source: 'deposit',
+            origin: options?.ftueOrigin ?? {
+              entryPoint: MoneyFtueEntryPoint.Unknown,
+            },
             preferredPaymentToken: options?.preferredPaymentToken,
             intent: options?.intent,
           }),

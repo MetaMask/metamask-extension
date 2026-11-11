@@ -375,9 +375,9 @@ export function useTransactionCustomAmount({
     },
     [
       accountOverride,
+      evmPayToken,
       isAtomicMaxAllowed,
       isMoneyAccountDeposit,
-      evmPayToken,
       transactionId,
     ],
   );

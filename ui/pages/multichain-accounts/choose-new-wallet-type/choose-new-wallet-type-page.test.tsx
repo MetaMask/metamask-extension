@@ -79,7 +79,7 @@ describe('ChooseNewWalletTypePage', () => {
     it('renders the page with header title', () => {
       renderComponent();
 
-      expect(screen.getByText(messages.addAWallet.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.addWallet.message)).toBeInTheDocument();
     });
 
     it('renders the back button', () => {
