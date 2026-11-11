@@ -177,7 +177,7 @@ export class DeepLinkRouter extends EventEmitter<{
     try {
       const url = new URL(urlStr);
 
-      const mobileShareUrl = getMobileShareUrl(urlStr);
+      const mobileShareUrl = getMobileShareUrl(url);
       const parsed = mobileShareUrl ? false : await parse(url);
       if (mobileShareUrl) {
         // This fallback only displays a QR code; it never opens a destination.

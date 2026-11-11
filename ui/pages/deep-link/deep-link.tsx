@@ -358,8 +358,10 @@ export const DeepLink = () => {
   const urlPathAndQuery = new URLSearchParams(location.search).get(
     'mobileShare',
   );
-  const mobileShareUrl = urlPathAndQuery
-    ? getMobileShareUrl(`https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`)
+  const mobileShareUrl = urlPathAndQuery?.startsWith('/')
+    ? getMobileShareUrl(
+        new URL(`https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`),
+      )
     : null;
 
   if (!mobileShareUrl) {
