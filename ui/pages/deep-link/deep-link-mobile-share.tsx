@@ -50,8 +50,9 @@ export const DeepLinkMobileShare = ({ url }: DeepLinkMobileShareProps) => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
       paddingHorizontal={4}
-      className="box-border w-full py-12 md:pt-28"
+      className="box-border min-h-screen w-full py-12"
       data-testid="parent-selector-deep-link-page"
     >
       <Box
