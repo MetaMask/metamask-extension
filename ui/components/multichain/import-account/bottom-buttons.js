@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
+  Box,
   Button,
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import { Box } from '../../component-library';
-import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function BottomButtons({
@@ -17,17 +16,7 @@ export default function BottomButtons({
   const t = useI18nContext();
 
   return (
-    <Box display={Display.Flex} gap={4}>
-      <Button
-        onClick={() => {
-          onActionComplete();
-        }}
-        size={ButtonSize.Lg}
-        variant={ButtonVariant.Secondary}
-        isFullWidth
-      >
-        {t('cancel')}
-      </Button>
+    <Box className="mt-auto" paddingTop={4}>
       <Button
         onClick={async () => {
           try {

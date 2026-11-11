@@ -34,6 +34,11 @@ import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  prepareDeepLinkUrl,
+} from '../deep-link/helpers';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -452,10 +457,16 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Navigates to an external web page using deferred deep link after onboarding completes', async function () {
-    const referringLink =
-      'https://link.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1&sig=aagQN9osZ1tfoYIEKvU6t5i8FVaW4Gi6EGimMcZ0VTDmAlPDk800-Nx3131QlDTmO3UF2JCmR2Y2RAJhceNOYw';
-    const expectedUrlOpened =
-      'https://app.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1';
+    const keyPair = await generateECDSAKeyPair();
+    const deepLinkPublicKey = bytesToB64(
+      await crypto.subtle.exportKey('raw', keyPair.publicKey),
+    );
+    const referringLink = await prepareDeepLinkUrl({
+      route: '/card-onboarding?amount=100',
+      signed: 'signed with sig_params',
+      privateKey: keyPair.privateKey,
+    });
+    const expectedUrlOpened = 'https://metamask.io/card?amount=100';
 
     await withFixtures(
       {
@@ -467,6 +478,11 @@ describe('MetaMask onboarding', function () {
             },
           })
           .build(),
+        manifestFlags: {
+          testing: {
+            deepLinkPublicKey,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

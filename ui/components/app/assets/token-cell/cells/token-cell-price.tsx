@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
+  FontWeight,
   Skeleton,
   Text,
   TextColor,
@@ -65,7 +66,8 @@ export const TokenCellPrice = React.memo(({ token }: TokenCellPriceProps) => {
   return (
     <Text
       variant={TextVariant.BodyMd}
-      color={TextColor.TextAlternative}
+      color={TextColor.TextDefault}
+      fontWeight={FontWeight.Medium}
       data-testid="multichain-token-list-item-price"
     >
       {useCurrencyRateCheck && currentPrice !== undefined
