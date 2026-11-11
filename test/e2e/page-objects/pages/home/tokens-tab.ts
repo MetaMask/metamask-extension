@@ -1179,7 +1179,10 @@ class TokensTab extends HomePage {
             500,
           )
         ) {
-          await this.driver.clickElement(this.lowValueAssetsToggleCollapsed);
+          await this.driver.clickElementSafe(
+            this.lowValueAssetsToggleCollapsed,
+            1000,
+          );
         }
         return false;
       },
