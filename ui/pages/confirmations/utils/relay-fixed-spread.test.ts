@@ -1,10 +1,8 @@
 import {
   EMPTY_RELAY_FIXED_SPREAD_CONFIG,
   getRelayFixedSpreadFromConfig,
-  hasRelayFixedSpreadAliasRoute,
   isSubsidizedRoute,
   isSubsidizedSource,
-  PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE,
 } from './relay-fixed-spread';
 
 const ETH_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
@@ -110,40 +108,6 @@ describe('getRelayFixedSpreadFromConfig', () => {
 
     expect(result).toEqual(EMPTY_RELAY_FIXED_SPREAD_CONFIG);
     expect(consoleWarnSpy).not.toHaveBeenCalled();
-  });
-});
-
-describe('hasRelayFixedSpreadAliasRoute', () => {
-  it('returns true when the expected alias route is listed', () => {
-    expect(
-      hasRelayFixedSpreadAliasRoute(
-        {
-          routes: [PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE],
-        },
-        PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE,
-      ),
-    ).toBe(true);
-  });
-
-  it('returns false when the route is absent or the payload is invalid', () => {
-    expect(
-      hasRelayFixedSpreadAliasRoute(
-        withRoutes([['eth', 'eth_usdc', 'eth', 'musd']]),
-        PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE,
-      ),
-    ).toBe(false);
-    expect(
-      hasRelayFixedSpreadAliasRoute(
-        undefined,
-        PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE,
-      ),
-    ).toBe(false);
-    expect(
-      hasRelayFixedSpreadAliasRoute(
-        '{not-json',
-        PERPS_MONEY_ACCOUNT_NO_FEE_ROUTE,
-      ),
-    ).toBe(false);
   });
 });
 

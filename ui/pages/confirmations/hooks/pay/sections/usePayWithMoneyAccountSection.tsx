@@ -11,10 +11,7 @@ import {
 } from '../../../../../selectors/transactionPayController';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
-import {
-  selectIsMoneyAccountTransactionEnabled,
-  selectPerpsMoneyAccountNoFeeRouteEnabled,
-} from '../../../selectors/feature-flags';
+import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { selectPrimaryMoneyAccount } from '../../../../../selectors/money-account';
@@ -50,19 +47,12 @@ export function usePayWithMoneyAccountSection({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isPerpsMoneyAccountNoFeeRouteEnabled = useSelector(
-    selectPerpsMoneyAccountNoFeeRouteEnabled,
-  );
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount;
-  // Perps deposits only. Predict deposits are not subsidised. The gate is the
-  // Monad mUSD -> Hyperliquid route in `confirmations_relay_fixed_spread`.
-  const showNoDepositFeeTag =
-    isPerpsMoneyAccountNoFeeRouteEnabled &&
-    hasTransactionType(currentConfirmation, [
-      TransactionType.perpsDeposit,
-      TransactionType.perpsDepositAndOrder,
-    ]);
+  const showNoDepositFeeTag = hasTransactionType(currentConfirmation, [
+    TransactionType.perpsDeposit,
+    TransactionType.perpsDepositAndOrder,
+  ]);
 
   const handlePress = useCallback(() => {
     if (!transactionId) {
