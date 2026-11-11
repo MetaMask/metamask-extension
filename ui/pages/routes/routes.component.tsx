@@ -8,6 +8,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
+import { ContentLayout } from '#ui/layouts/content-layout';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
@@ -50,6 +51,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
   RAMPS_COMPLETE_BUY_ROUTE,
+  RAMPS_BUY_INTERSTITIAL_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -84,6 +86,7 @@ import {
   MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
   MONEY_EARN_ROUTE,
+  MONEY_DEPOSIT_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -102,6 +105,7 @@ import {
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
+import { useUiInteractionReporter } from '../../hooks/useUiInteractionReporter';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
@@ -245,6 +249,9 @@ const RampsTokenSelection = mmLazy(
 const RampsPaymentMethod = mmLazy(
   () => import('../ramps/payment-method/index.ts'),
 );
+const BuyInterstitial = mmLazy(
+  () => import('../ramps/buy-interstitial/index.ts'),
+);
 const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
@@ -301,6 +308,9 @@ const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
 const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
+const MoneyDepositDeeplinkPage = mmLazy(
+  () => import('../money/money-deposit-deeplink-page.tsx'),
+);
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -647,6 +657,11 @@ export const routeConfig = [
             ],
           },
           {
+            // Resolves the intent and redirects; no flow chrome to show.
+            path: RAMPS_BUY_INTERSTITIAL_ROUTE,
+            element: <BuyInterstitial />,
+          },
+          {
             path: RAMPS_COMPLETE_BUY_ROUTE,
             element: <RampsCompleteBuy />,
           },
@@ -717,6 +732,16 @@ export const routeConfig = [
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyHomePage />,
               }),
+            ],
+          },
+        ],
+      },
+      {
+        element: <ContentLayout />,
+        children: [
+          {
+            element: <RequireBasicFunctionality />,
+            children: [
               createRouteWithMessenger({
                 path: MONEY_ACTIVITY_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
@@ -736,6 +761,11 @@ export const routeConfig = [
                 path: MONEY_EARN_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyEarnPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_DEPOSIT_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyDepositDeeplinkPage />,
               }),
             ],
           },
@@ -861,6 +891,8 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
+
+  useUiInteractionReporter();
 
   const handleIdleAction = useCallback(() => {
     dispatch(setLastActiveTime());

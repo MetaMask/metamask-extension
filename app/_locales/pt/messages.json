@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Adicionar um URL"
   },
-  "addAWallet": {
-    "message": "Adicionar uma carteira"
-  },
   "addAccount": {
     "message": "Adicionar conta"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Interação com o contrato"
   },
-  "convertAgain": {
-    "message": "Converter de novo"
-  },
   "convertTokenToNFTDescription": {
     "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo a NFTs. Gostaria de removê-lo de sua lista de tokens e adicioná-lo como NFT?"
   },
@@ -4154,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 é obrigatório"
-  },
-  "fileImportFail": {
-    "message": "A importação de arquivo não está funcionando? Clique aqui!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Clique para upload ou arraste e solte"
@@ -6343,19 +6333,6 @@
     "message": "Convertido para mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Falha ao converter mUSD"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Convertendo $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Conversão de mUSD bem-sucedida"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "O bônus poderá ser resgatado em até um dia."
-  },
   "musdConvert": {
     "message": "Converter"
   },
@@ -7401,10 +7378,6 @@
   "paste": {
     "message": "Colar"
   },
-  "pastePrivateKey": {
-    "message": "Cole a string da sua chave privada aqui:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Pagar com",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8447,7 +8420,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "entre em contato com o suporte",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Alguns serviços estão temporariamente indisponíveis. $1 ou $2.",
@@ -8455,7 +8428,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Consulte suas opções nas Perguntas frequentes (FAQs).",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Estamos tendo um apagão",
@@ -8882,7 +8855,7 @@
     "message": "Saque enviado"
   },
   "perpsWithdrawTooltip": {
-    "message": "A MetaMask fará a conversão para o token desejado para você. A MetaMask não aplica taxas quando você converte para mUSD.",
+    "message": "A MetaMask fará a conversão para o token desejado para você.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8983,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "A chave privada está oculta",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Exibir/ocultar a inserção da chave privada",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Esta chave privada está sendo exibida",
@@ -11946,9 +11915,6 @@
     "message": "aqui",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " incluídas"
-  },
   "swapGasFeesSplit": {
     "message": "As taxas de rede da tela anterior estão divididas entre estas duas transações."
   },
@@ -12695,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "A exibição automática de tokens enviados para a sua conta envolve a comunicação com servidores de terceiros para buscar as imagens dos tokens. Esses servidores terão acesso ao seu endereço IP."
-  },
-  "usedByClients": {
-    "message": "Usado por diversos clientes diferentes"
   },
   "userOpContractDeployError": {
     "message": "A implementação do contrato a partir de uma conta de contrato inteligente não é suportada"

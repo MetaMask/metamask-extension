@@ -30,7 +30,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
  * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
- * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
+ * `flows/multi-srp.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx
  */
@@ -115,6 +115,8 @@ class TokensTab extends HomePage {
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
+
+  private readonly moneyTokenListCta = '[data-testid^="money-token-list-cta-"]';
 
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
@@ -702,6 +704,12 @@ class TokensTab extends HomePage {
   async clickManageTokens(): Promise<void> {
     console.log('Click Manage tokens in the token options menu');
     await this.driver.clickElement(this.manageTokensButton);
+  }
+
+  async clickMoneyTokenListCta(): Promise<void> {
+    console.log('Click the Money deposit CTA on the first eligible token row');
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.clickElement(this.moneyTokenListCta);
   }
 
   async clickMultichainTokenListButton(): Promise<void> {

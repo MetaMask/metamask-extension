@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
-import { TxToastNotification } from '../../../page-objects/components/tx-toast-notification';
 import { waitUntilAccountTreeSyncIdle } from '../../../page-objects/flows/add-account.flow';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
@@ -54,9 +53,6 @@ describe('Tron Send', function (this: Suite) {
         const snapConfirmation = new SnapTransactionConfirmation(driver);
         await snapConfirmation.checkPageIsLoaded();
         await snapConfirmation.clickFooterButton({ button: 'confirm' });
-
-        const txToast = new TxToastNotification(driver);
-        await txToast.checkTxSubmittedToast();
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
