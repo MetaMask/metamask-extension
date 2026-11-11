@@ -830,7 +830,11 @@ async function setupMocking(
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
-      json: API_MOCKS['client-config-events'],
+      // An empty map, so every event keeps its default purpose. The synced
+      // fixture lists live event names with placeholder purposes.
+      json: {
+        data: { ...API_MOCKS['client-config-events'].data, events: {} },
+      },
     }));
 
   // Subscriptions Polling Get Subscriptions
