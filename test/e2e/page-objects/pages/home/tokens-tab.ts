@@ -415,14 +415,7 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
-    await this.expandLowValueAssetsIfPresent();
-    await this.driver.waitForSelector(
-      {
-        css: this.tokenName,
-        text: tokenName,
-      },
-      timeout === undefined ? {} : { timeout },
-    );
+    await this.waitForTokenNameVisible(tokenName, timeout);
     console.log(`Token "${tokenName}" was found in the token list`);
 
     if (amount) {
@@ -762,6 +755,41 @@ class TokensTab extends HomePage {
    */
   async expandLowValueAssets(): Promise<void> {
     await this.expandLowValueAssetsIfPresent();
+  }
+
+  /**
+   * Waits for a token name in the list, expanding the low-value section when it
+   * is collapsed. The token list can still be loading right after login, and
+   * tokens without a fiat value move into the collapsed low-value section once
+   * it renders.
+   *
+   * @param tokenName - The token name to wait for.
+   * @param timeout - Max ms to wait. Defaults to the driver timeout.
+   */
+  private async waitForTokenNameVisible(
+    tokenName: string,
+    timeout: number = this.driver.timeout,
+  ): Promise<void> {
+    const tokenNameLocator = { text: tokenName, css: this.tokenName };
+    await this.driver.waitUntil(
+      async () => {
+        if (
+          await this.driver.isElementPresentAndVisible(tokenNameLocator, 500)
+        ) {
+          return true;
+        }
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.lowValueAssetsToggleCollapsed,
+            500,
+          )
+        ) {
+          await this.driver.clickElement(this.lowValueAssetsToggleCollapsed);
+        }
+        return false;
+      },
+      { timeout, interval: 500 },
+    );
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
@@ -1107,29 +1135,8 @@ class TokensTab extends HomePage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    const tokenNameLocator = { text: tokenSymbol, css: this.tokenName };
-    // The token list can still be loading right after login, and tokens without
-    // a fiat value move into the collapsed low-value section once it renders.
-    await this.driver.waitUntil(
-      async () => {
-        if (
-          await this.driver.isElementPresentAndVisible(tokenNameLocator, 500)
-        ) {
-          return true;
-        }
-        if (
-          await this.driver.isElementPresentAndVisible(
-            this.lowValueAssetsToggleCollapsed,
-            500,
-          )
-        ) {
-          await this.driver.clickElement(this.lowValueAssetsToggleCollapsed);
-        }
-        return false;
-      },
-      { timeout: 10000, interval: 500 },
-    );
-    await this.driver.clickElement(tokenNameLocator);
+    await this.waitForTokenNameVisible(tokenSymbol);
+    await this.driver.clickElement({ text: tokenSymbol, css: this.tokenName });
   }
 
   /**

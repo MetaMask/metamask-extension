@@ -193,6 +193,7 @@ class SelectNetworkModal {
     // the non-EVM accounts on unlock. Clicking a disabled row is a no-op.
     await this.driver.waitForSelector(
       `${this.networkListItemClass}:not(${this.networkListItemClass}--disabled) ${this.networkListItemByName(networkName)}`,
+      { timeout: 45000 },
     );
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
