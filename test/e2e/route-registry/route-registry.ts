@@ -69,6 +69,9 @@ import { PerpsMarketDetailPage } from '../page-objects/pages/perps/perps-market-
 import { PerpsMarketListPage } from '../page-objects/pages/perps/perps-market-list-page';
 import { PerpsOrderEntryPage } from '../page-objects/pages/perps/perps-order-entry-page';
 import { PerpsWithdrawPage } from '../page-objects/pages/perps/perps-withdraw-page';
+import RampsBuildQuotePage from '../page-objects/pages/ramps/ramps-build-quote-page';
+import RampsCompleteBuyPage from '../page-objects/pages/ramps/ramps-complete-buy-page';
+import RampsTokenSelectionPage from '../page-objects/pages/ramps/ramps-token-selection-page';
 import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
 import RewardsPage from '../page-objects/pages/rewards/rewards-page';
 import DeepLink from '../page-objects/pages/security/deep-link-page';
@@ -190,10 +193,10 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/batch-sell/review': null,
 
   // Ramps
-  '/ramps/build-quote': null,
-  '/ramps/token-selection': null,
+  '/ramps/build-quote': RampsBuildQuotePage,
+  '/ramps/token-selection': RampsTokenSelectionPage,
   '/ramps/payment-method': null,
-  '/ramps/complete-buy': null,
+  '/ramps/complete-buy': RampsCompleteBuyPage,
   '/ramps/buy-interstitial': null,
 
   // Send, swap and bridge
