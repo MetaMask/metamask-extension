@@ -367,7 +367,6 @@
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^36.1.1",
-    "@metamask/account-tree-controller": "^11.2.0",
     "@graphql-tools/utils@npm:8.9.0": "12.0.3",
     "@graphql-tools/utils@npm:^8.8.0": "12.0.3",
     "tinypool@npm:2.1.0": "2.1.2",
