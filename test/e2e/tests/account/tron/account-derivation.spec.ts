@@ -273,7 +273,7 @@ describe('Tron account derivation', function (this: Suite) {
           await waitUntilAccountTreeSyncIdle(driver);
 
           await homepage.checkPageIsLoaded();
-          await homepage.clickOnReceiveButton('default');
+          await homepage.clickOnReceiveButton();
           await addressList.checkPageIsLoaded();
           await addressList.checkNetworkAddressIsDisplayedForNetwork({
             networkName: 'Tron',
