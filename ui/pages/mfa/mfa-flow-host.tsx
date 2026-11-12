@@ -44,7 +44,8 @@ const MfaFlowHost = () => {
   const location = useLocation();
   const active = useActiveMfaFlow();
   const flow = active?.flow;
-  const isLocked = !useSelector(getIsUnlocked);
+  const isUnlocked = useSelector(getIsUnlocked);
+  const isLocked = !isUnlocked;
   const cancelTimer = useRef<ReturnType<typeof setTimeout>>();
   const closeToHome = useRef(false);
 
