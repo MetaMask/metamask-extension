@@ -6,6 +6,7 @@ import {
 } from '../../tests/identity/account-syncing/helpers';
 import HomePage from '../pages/home/homepage';
 import AccountListPage from '../pages/accounts/list-page';
+import { importAccountWithPrivateKey } from './add-wallet.flow';
 
 /**
  * Waits until the AccountTreeController has finished synchronizing.
@@ -116,7 +117,7 @@ export async function importPrivateKeyAccount(
 
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded(options.accountListTimeout);
-  await accountListPage.addNewImportedAccount(privateKey);
+  await importAccountWithPrivateKey(driver, privateKey);
   await homepage.checkPageIsLoaded();
   await homepage.dismissAccountImportedToast();
 }

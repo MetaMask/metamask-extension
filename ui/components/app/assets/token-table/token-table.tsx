@@ -13,7 +13,19 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  useMoneyTokenListCta,
+  type MoneyTokenListCta as MoneyTokenListCtaConfig,
+} from '../../../../hooks/money/useMoneyTokenListCta';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenSortLocation,
+  MetaMetricsTokenSortPreference,
+  MetaMetricsUserTrait,
+} from '../../../../../shared/constants/metametrics';
 import { getTokenSortConfig } from '../../../../selectors';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import type { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -30,6 +42,7 @@ import type {
   TokenTableHeaderSort,
   TokenTableSort,
 } from '../util/sortAssetsWithPriority';
+import { MoneyTokenListCta } from '../../money/money-token-list-cta';
 import { NativeTokenScamWarningModal } from '../token-cell/native-token-scam-warning-modal';
 import {
   TokenCellPercentChange,
@@ -56,6 +69,7 @@ type TokenTableRowProps = {
   privacyMode: boolean;
   onClick?: () => void;
   safeChains?: SafeChain[];
+  moneyCta?: MoneyTokenListCtaConfig;
 };
 
 type TokenTableHeaderProps = {
@@ -65,6 +79,16 @@ type TokenTableHeaderProps = {
 };
 
 type SortColumn = TokenTableSort['column'];
+
+const TOKEN_SORT_PREFERENCE_BY_COLUMN: Record<
+  SortColumn,
+  MetaMetricsTokenSortPreference
+> = {
+  token: MetaMetricsTokenSortPreference.Title,
+  balance: MetaMetricsTokenSortPreference.TokenFiatAmount,
+  price: MetaMetricsTokenSortPreference.Price,
+  change: MetaMetricsTokenSortPreference.PercentChange,
+};
 
 type SortableColumnHeaderProps = {
   label: string;
@@ -194,6 +218,7 @@ const TokenTableRow = ({
   privacyMode,
   onClick,
   safeChains,
+  moneyCta,
 }: TokenTableRowProps) => {
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const tokenDisplayInfo = useTokenDisplayInfo({ token });
@@ -201,6 +226,7 @@ const TokenTableRow = ({
     () => ({ ...token, ...tokenDisplayInfo }),
     [token, tokenDisplayInfo],
   );
+  const showMoneyCta = Boolean(moneyCta?.shouldShow(token));
 
   if (!token.chainId) {
     return null;
@@ -235,7 +261,11 @@ const TokenTableRow = ({
               <TokenCellPrice token={displayToken} />
             </Box>
             <Box className={PERCENT_CHANGE_CLASS_NAME}>
-              <TokenCellPercentChange token={displayToken} />
+              {showMoneyCta && moneyCta ? (
+                <MoneyTokenListCta cta={moneyCta} token={token} />
+              ) : (
+                <TokenCellPercentChange token={displayToken} />
+              )}
             </Box>
           </Box>
           <Box className="flex min-w-0 flex-col items-end">
@@ -266,14 +296,12 @@ const TokenTableRow = ({
  * Token table for the fullscreen design. Lists the same tokens as `TokenList`,
  * laid out as columns.
  *
- * TODO: Match the final design (columns, sorting from the header, and
- * the mUSD / Money token CTAs that `TokenList` shows).
- *
  * @param props - The component props.
  * @param props.onTokenClick - Called when a token row is opened.
  * @param props.safeChains - Known chains, used by the native token warning.
  */
 export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const preferenceKey = `${tokenSortConfig?.key ?? ''}:${tokenSortConfig?.order ?? ''}`;
   const [headerSort, setHeaderSort] = useState<TokenTableHeaderSort | null>(
@@ -293,13 +321,24 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     (column: SortColumn) => {
       const nextReversed = column === activeColumn ? !reversed : false;
       setHeaderSort({ column, reversed: nextReversed });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenSortPreference)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            [MetaMetricsUserTrait.TokenSortPreference]:
+              TOKEN_SORT_PREFERENCE_BY_COLUMN[column],
+            location: MetaMetricsTokenSortLocation.TokenColumnHeader,
+          })
+          .build(),
+      );
     },
-    [activeColumn, reversed],
+    [activeColumn, createEventBuilder, reversed, trackEvent],
   );
 
   const sortOverride = useTokenSortOverride(headerSort);
   const {
     tokenListItems,
+    displayedTokens,
     showLoadingSkeleton,
     hasBalance,
     privacyMode,
@@ -310,6 +349,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
     onTokenClick,
     sortOverride,
   });
+  const moneyTokenListCta = useMoneyTokenListCta(displayedTokens);
 
   const renderRow = useCallback(
     (info: { item: TokenListDisplayItem }) => {
@@ -330,6 +370,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
           privacyMode={privacyMode}
           onClick={getTokenClickHandler(item.token)}
           safeChains={safeChains}
+          moneyCta={moneyTokenListCta}
         />
       );
     },
@@ -337,6 +378,7 @@ export const TokenTable = ({ onTokenClick, safeChains }: TokenTableProps) => {
       getTokenClickHandler,
       handleLowValueAssetsToggle,
       isLowValueAssetsExpanded,
+      moneyTokenListCta,
       privacyMode,
       safeChains,
     ],
