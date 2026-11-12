@@ -488,7 +488,7 @@ export type SortButtonPreset =
  * External resources and content for Perps education
  */
 export const LEARN_MORE_CONFIG = {
-  ExternalUrl: 'https://metamask.io/perps',
+  ExternalUrl: 'https://metamask.com/perps',
   TitleKey: 'perps.tutorial.card.title',
   DescriptionKey: 'perps.learn_more.description',
   CtaKey: 'perps.learn_more.cta',
@@ -515,7 +515,7 @@ export const FEEDBACK_CONFIG = {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
+    'https://support.metamask.com/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
 } as const;
 
 /**

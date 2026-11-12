@@ -2755,6 +2755,22 @@
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
+  "chartNoData": {
+    "message": "No chart data",
+    "description": "Title shown when advanced chart fails to load"
+  },
+  "chartNoDataDescription": {
+    "message": "We couldn't load the chart. Try switching to Line mode.",
+    "description": "Description shown when advanced chart fails to load, suggesting user switch to line chart"
+  },
+  "chartTypeCandlestick": {
+    "message": "Candlestick chart",
+    "description": "Accessible label for the candlestick chart type toggle button on the token details page chart"
+  },
+  "chartTypeLine": {
+    "message": "Line chart",
+    "description": "Accessible label for the line chart type toggle button on the token details page chart"
+  },
   "checkNetworkConnectivity": {
     "message": "Check network connectivity."
   },
@@ -3520,6 +3536,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "Go to the home page"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "Scan this QR code with your mobile device to open this link in MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Continue on MetaMask Mobile"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
@@ -5159,6 +5181,18 @@
   "jsonFile": {
     "message": "JSON file",
     "description": "format for importing an account"
+  },
+  "jsonImportPasswordIncorrect": {
+    "message": "That password didn't work.",
+    "description": "Shown under the JSON import password field when a password was entered after a blank attempt already failed"
+  },
+  "jsonImportPasswordIncorrectOrOptional": {
+    "message": "That password didn't work. If your file has no password, leave this blank.",
+    "description": "Shown under the JSON import password field when a password was entered and no blank attempt has failed yet"
+  },
+  "jsonImportPasswordRequired": {
+    "message": "This file needs a password.",
+    "description": "Shown under the JSON import password field when importing with the password left blank fails"
   },
   "keyringAccountName": {
     "message": "Account name"
@@ -6924,6 +6958,10 @@
   "noDefaultAddress": {
     "message": "No $1 address",
     "description": "$1 is the default address scope"
+  },
+  "noDepositFee": {
+    "message": "No deposit fee",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."

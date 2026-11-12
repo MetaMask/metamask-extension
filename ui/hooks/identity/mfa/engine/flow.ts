@@ -57,6 +57,7 @@ export const createMfaFlow = ({
   now = Date.now,
   reportError,
   trackEvent,
+  whileLocked = false,
 }: MfaFlowOptions): MfaFlow => {
   const tokenReason = { operation: reason.operation };
   const tracker = createMfaTracker({ reason, request, trackEvent });
@@ -788,7 +789,7 @@ export const createMfaFlow = ({
     const needsPasskey =
       request.kind === 'enroll'
         ? request.method === 'passkey'
-        : request.methods.includes('passkey');
+        : !request.verifyOnly && request.methods.includes('passkey');
     if (needsPasskey && !passkey) {
       rejectWith('passkey_unsupported');
       return Promise.resolve();
@@ -801,6 +802,7 @@ export const createMfaFlow = ({
 
   return {
     reason,
+    whileLocked,
     result,
     start,
     getState: () => state,

@@ -1,8 +1,12 @@
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
-import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
+import {
+  TOKEN_DETAILS_ADVANCED_CHARTS_FLAG,
+  TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG,
+} from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import {
   BFT_CHILD_PREFERENCES,
   getIsAdvancedChartsEnabled,
+  getIsAdvancedChartsThemingEnabled,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
   getIsFullscreenRedesignEnabled,
@@ -519,6 +523,43 @@ describe('getIsAdvancedChartsEnabled', () => {
         }) as any,
       ),
     ).toBe(true);
+  });
+});
+
+describe('getIsAdvancedChartsThemingEnabled', () => {
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsAdvancedChartsThemingEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG]: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsAdvancedChartsThemingEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG]: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsAdvancedChartsThemingEnabled(buildState() as any),
+    ).toBe(false);
   });
 });
 
