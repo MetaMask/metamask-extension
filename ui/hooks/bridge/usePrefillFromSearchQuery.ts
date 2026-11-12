@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
+import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,

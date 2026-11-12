@@ -92,8 +92,7 @@ describe('usePrefillFromSearchQuery', () => {
     });
     const renderResult = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
 
     const { store, result } = renderResult;
@@ -158,8 +157,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     const { result, store } = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
 
     await waitFor(() => {
@@ -216,8 +214,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     const { result, store } = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
 
     await waitFor(() => {
@@ -269,8 +266,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     const { store } = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
 
     await waitFor(() => {
@@ -318,8 +314,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     const { store } = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
 
     await waitFor(() => {
@@ -398,8 +393,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     const { store } = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
 
     await waitFor(() => {
@@ -450,8 +444,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     const { store } = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
 
     await waitFor(() => {
@@ -479,8 +472,7 @@ describe('usePrefillFromSearchQuery', () => {
       const searchParams = new URLSearchParams({ from: 'not-a-caip-id' });
       const { store, result } = renderUseBridgeQueryParams(
         mockStoreState,
-        // eslint-disable-next-line prefer-template
-        '/?' + searchParams.toString(),
+        `/?${searchParams.toString()}`,
       );
 
       // Effect block was skipped → no fetch and URL was NOT cleared
@@ -497,8 +489,7 @@ describe('usePrefillFromSearchQuery', () => {
       const searchParams = new URLSearchParams({ to: ':::invalid:::' });
       const { store, result } = renderUseBridgeQueryParams(
         mockStoreState,
-        // eslint-disable-next-line prefer-template
-        '/?' + searchParams.toString(),
+        `/?${searchParams.toString()}`,
       );
 
       expect(fetchSpy).not.toHaveBeenCalled();
@@ -517,8 +508,7 @@ describe('usePrefillFromSearchQuery', () => {
       });
       const { store } = renderUseBridgeQueryParams(
         mockStoreState,
-        // eslint-disable-next-line prefer-template
-        '/?' + searchParams.toString(),
+        `/?${searchParams.toString()}`,
       );
 
       expect(fetchSpy).not.toHaveBeenCalled();
@@ -547,8 +537,7 @@ describe('usePrefillFromSearchQuery', () => {
 
       const { store } = renderUseBridgeQueryParams(
         mockStoreState,
-        // eslint-disable-next-line prefer-template
-        '/?' + searchParams.toString(),
+        `/?${searchParams.toString()}`,
       );
 
       await act(async () => {
@@ -578,8 +567,7 @@ describe('usePrefillFromSearchQuery', () => {
 
       const { store } = renderUseBridgeQueryParams(
         mockStoreState,
-        // eslint-disable-next-line prefer-template
-        '/?' + searchParams.toString(),
+        `/?${searchParams.toString()}`,
       );
 
       await act(async () => {
@@ -616,8 +604,7 @@ describe('usePrefillFromSearchQuery', () => {
 
     const { store } = renderUseBridgeQueryParams(
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
     );
     expect(store).toBeDefined();
     const { fromToken, toToken, fromTokenInputValue } =
@@ -675,8 +662,7 @@ describe('usePrefillFromSearchQuery', () => {
     const renderResult = renderHookWithProvider(
       () => useBridgeQueryParamsWithLocation(),
       mockStoreState,
-      // eslint-disable-next-line prefer-template
-      '/?' + searchParams.toString(),
+      `/?${searchParams.toString()}`,
       StrictMode,
     );
 
