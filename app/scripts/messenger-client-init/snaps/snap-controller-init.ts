@@ -149,6 +149,27 @@ export const SnapControllerInit: MessengerClientInitFunction<
     initMessenger.call('SnapController:setClientActive', true);
   });
 
+  // The platform gate only rejects new requests, so running Snaps and their
+  // WebSockets must be torn down to stop in-flight network activity.
+  initMessenger.subscribe(
+    'PreferencesController:stateChange',
+    (useExternalServices) => {
+      if (useExternalServices) {
+        return;
+      }
+      messengerClient.stopAllSnaps().catch(console.error);
+      for (const snapId of Object.keys(messengerClient.state.snaps)) {
+        for (const { id } of initMessenger.call(
+          'WebSocketService:getAll',
+          snapId,
+        )) {
+          initMessenger.call('WebSocketService:close', snapId, id);
+        }
+      }
+    },
+    (state) => state.useExternalServices,
+  );
+
   return {
     messengerClient,
   };

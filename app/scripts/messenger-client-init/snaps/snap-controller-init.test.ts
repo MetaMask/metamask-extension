@@ -1,6 +1,8 @@
 import {
   SnapController,
   SnapControllerMessenger,
+  WebSocketServiceCloseAction,
+  WebSocketServiceGetAllAction,
 } from '@metamask/snaps-controllers';
 import {
   MOCK_ANY_NAMESPACE,
@@ -20,6 +22,10 @@ import {
   SnapControllerInitMessenger,
 } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
+import {
+  getDefaultPreferencesControllerState,
+  PreferencesControllerStateChangeEvent,
+} from '../../controllers/preferences-controller';
 import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
@@ -115,5 +121,41 @@ describe('SnapControllerInit', () => {
     baseMessenger.publish('KeyringController:unlock');
 
     expect(spy).toHaveBeenCalledWith('SnapController:setClientActive', true);
+  });
+
+  it('stops all Snaps and closes their WebSockets when basic functionality is turned off', () => {
+    const baseMessenger = new Messenger<
+      MockAnyNamespace,
+      WebSocketServiceGetAllAction | WebSocketServiceCloseAction,
+      PreferencesControllerStateChangeEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
+    const closeMock = jest.fn();
+    baseMessenger.registerActionHandler('WebSocketService:getAll', () => [
+      { id: 'socket-1', url: 'wss://example.com', protocols: [] },
+    ]);
+    baseMessenger.registerActionHandler('WebSocketService:close', closeMock);
+
+    const { messengerClient } = SnapControllerInit(
+      getInitRequestMock(baseMessenger),
+    );
+    jest.mocked(messengerClient.stopAllSnaps).mockResolvedValue(undefined);
+    Object.defineProperty(messengerClient, 'state', {
+      value: { snaps: { 'npm:snap': {} } },
+    });
+
+    baseMessenger.publish(
+      'PreferencesController:stateChange',
+      { ...getDefaultPreferencesControllerState(), useExternalServices: true },
+      [],
+    );
+    expect(messengerClient.stopAllSnaps).not.toHaveBeenCalled();
+
+    baseMessenger.publish(
+      'PreferencesController:stateChange',
+      { ...getDefaultPreferencesControllerState(), useExternalServices: false },
+      [],
+    );
+    expect(messengerClient.stopAllSnaps).toHaveBeenCalledTimes(1);
+    expect(closeMock).toHaveBeenCalledWith('npm:snap', 'socket-1');
   });
 });

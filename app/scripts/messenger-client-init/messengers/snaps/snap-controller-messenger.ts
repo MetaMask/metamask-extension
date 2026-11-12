@@ -6,13 +6,18 @@ import {
 import {
   SnapControllerMessenger,
   SnapControllerSetClientActiveAction,
+  WebSocketServiceCloseAction,
+  WebSocketServiceGetAllAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
   KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
-import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 import {
   OnboardingControllerGetStateAction,
@@ -84,12 +89,15 @@ type InitActions =
   | KeyringControllerWithKeyringV2UnsafeAction
   | PreferencesControllerGetStateAction
   | SnapControllerSetClientActiveAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | WebSocketServiceGetAllAction
+  | WebSocketServiceCloseAction;
 
 type InitEvents =
   | KeyringControllerUnlockEvent
   | KeyringControllerLockEvent
-  | OnboardingControllerStateChangeEvent;
+  | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent;
 
 export type SnapControllerInitMessenger = ReturnType<
   typeof getSnapControllerInitMessenger
@@ -121,11 +129,14 @@ export function getSnapControllerInitMessenger(
       'PreferencesController:getState',
       'SnapController:setClientActive',
       'OnboardingController:getState',
+      'WebSocketService:getAll',
+      'WebSocketService:close',
     ],
     events: [
       'KeyringController:lock',
       'KeyringController:unlock',
       'OnboardingController:stateChange',
+      'PreferencesController:stateChange',
     ],
   });
   return controllerInitMessenger;
