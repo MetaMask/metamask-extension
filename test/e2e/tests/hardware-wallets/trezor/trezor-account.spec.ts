@@ -20,6 +20,9 @@ describe('Trezor Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver, { waitForNonEvmAccounts: false });
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -52,7 +55,7 @@ describe('Trezor Hardware', function () {
         // Unlock first account of first page and check that the correct account has been added
         await selectTrezorAccountPage.unlockAccount(1);
         await headerNavbar.checkPageIsLoaded();
-        await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await checkAccountAddressDisplayedInAccountList(driver, 'Trezor', 1);
       },
@@ -67,6 +70,9 @@ describe('Trezor Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver, { waitForNonEvmAccounts: false });
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -91,7 +97,6 @@ describe('Trezor Hardware', function () {
         await selectTrezorAccountPage.clickUnlockButton();
 
         // Check that all 5 Trezor accounts are displayed in account list
-        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();

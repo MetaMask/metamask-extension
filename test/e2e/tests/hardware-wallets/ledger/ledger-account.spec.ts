@@ -21,7 +21,9 @@ describe('Ledger Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver, { waitForNonEvmAccounts: false });
-
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -67,7 +69,6 @@ describe('Ledger Hardware', function () {
         // stale selectedAccounts closure on slower CI environments.
         await driver.delay(1000);
         await selectLedgerAccountPage.clickUnlockButton();
-        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
@@ -84,6 +85,9 @@ describe('Ledger Hardware', function () {
       },
       async ({ driver }) => {
         await login(driver, { waitForNonEvmAccounts: false });
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -118,7 +122,6 @@ describe('Ledger Hardware', function () {
         await selectLedgerAccountPage.clickUnlockButton();
 
         // Check that all 5 Ledger accounts are displayed in account list
-        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
