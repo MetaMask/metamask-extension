@@ -5,7 +5,7 @@ const {
 // Wide enough for the fullscreen design to apply whenever its feature flag is
 // on, so that the flag alone decides which layout a test runs in.
 const DEFAULT_WINDOW_SIZE = {
-  width: FULL_SCREEN_DESIGN_MIN_WIDTH + 100,
+  width: FULL_SCREEN_DESIGN_MIN_WIDTH + 50,
   height: 1080,
 };
 
