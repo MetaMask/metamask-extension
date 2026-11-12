@@ -11,6 +11,7 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { login } from '../../../page-objects/flows/login.flow';
+import { importWalletWithSrp } from '../../../page-objects/flows/add-wallet.flow';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -106,9 +107,7 @@ describe('Account syncing - Multiple SRPs', function () {
         );
 
         // Import second SRP (this will automatically create the third account)
-        await accountListPage.startImportSecretPhrase(
-          IDENTITY_TEAM_SEED_PHRASE_2,
-        );
+        await importWalletWithSrp(driver, IDENTITY_TEAM_SEED_PHRASE_2);
 
         // Importing an SRP can be long, so we add a bit of extra time here
         await driver.delay(10000);
@@ -169,9 +168,7 @@ describe('Account syncing - Multiple SRPs', function () {
         // Import the second SRP to get access to all accounts
         await header.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.startImportSecretPhrase(
-          IDENTITY_TEAM_SEED_PHRASE_2,
-        );
+        await importWalletWithSrp(driver, IDENTITY_TEAM_SEED_PHRASE_2);
 
         // Importing an SRP can be long, so we add a bit of extra time here
         await driver.delay(10000);

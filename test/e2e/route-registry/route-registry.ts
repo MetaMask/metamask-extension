@@ -20,6 +20,9 @@
  * own, otherwise `null`.
  */
 
+import ChooseWalletTypePage from '../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
+import ImportAccountPage from '../page-objects/pages/accounts/add-wallet/import-account-page';
+import ImportSrpPage from '../page-objects/pages/accounts/add-wallet/import-srp-page';
 import AccountAddressListPage from '../page-objects/pages/accounts/address-list-page';
 import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
 import AccountListPage from '../page-objects/pages/accounts/list-page';
@@ -139,7 +142,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/restore-vault': ResetPasswordPage,
   '/seed': RevealSrpPage,
   '/seed/:keyringId': RevealSrpPage,
-  '/import-srp': null,
+  '/import-srp': ImportSrpPage,
   '/discover-search': null,
   '/hardware-wallet-repair': null,
   '/shield-plan': ShieldPlanPage,
@@ -166,8 +169,8 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/account-list': AccountListPage,
   '/multichain-account-details': AccountDetailsPage,
   '/multichain-wallet-details-page': WalletDetailsPage,
-  '/choose-new-wallet-type': null,
-  '/add-wallet-page': null,
+  '/choose-new-wallet-type': ChooseWalletTypePage,
+  '/add-wallet-page': ImportAccountPage,
   '/multichain-smart-account/:address': null,
   '/multichain-account-address-list': AccountAddressListPage,
   '/multichain-account-private-key-list': PrivateKeyModal,
