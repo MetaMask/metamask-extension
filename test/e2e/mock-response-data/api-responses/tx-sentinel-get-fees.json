@@ -1,0 +1,26 @@
+{
+  "blockNumber": 20728974,
+  "id": "19d4eea3-8a49-463e-9e9c-099f9d9571ca",
+  "txs": [
+    {
+      "cancelFees": [],
+      "return": "0x",
+      "status": 1,
+      "gasUsed": 190780,
+      "gasLimit": 239420,
+      "fees": [
+        {
+          "maxFeePerGas": 4667609171,
+          "maxPriorityFeePerGas": 1000000004,
+          "gas": 239420,
+          "balanceNeeded": 1217518987960240,
+          "currentBalance": 7519823030829194,
+          "error": ""
+        }
+      ],
+      "feeEstimate": 627603309182220,
+      "baseFeePerGas": 2289670348,
+      "maxFeeEstimate": 1117518987720820
+    }
+  ]
+}

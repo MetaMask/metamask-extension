@@ -13,6 +13,16 @@ import {
 
 import { formatAmount } from '../../../../shared/lib/format-amount';
 import { emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES } from '../../mock-e2e';
+import {
+  API_RESPONSES,
+  buildBridgePopularToken,
+  buildBridgeTokensSearch,
+  buildBridgeTxStatus,
+  buildGasPrices,
+  buildSpotPrice,
+  buildTxSentinelBatchStatus,
+  buildTxSentinelNetwork,
+} from '../../mock-response-data/api-responses';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -145,10 +155,7 @@ export async function mockGetTxStatus(mockServer: Mockttp) {
     const destChainId = urlObj.searchParams.get('destChainId');
     return {
       statusCode: 200,
-      json: {
-        status: 'COMPLETE',
-        isExpectedToken: true,
-        bridge: 'across',
+      json: buildBridgeTxStatus({
         srcChain: {
           chainId: Number(srcChainId) || 1,
           txHash: srcTxHash,
@@ -157,7 +164,7 @@ export async function mockGetTxStatus(mockServer: Mockttp) {
           chainId: Number(destChainId) || 59144,
           txHash: BRIDGE_DEST_TX_HASH,
         },
-      },
+      }),
     };
   });
 }
@@ -333,7 +340,7 @@ export async function mockTokensWithSecurityData(
     .asPriority(99)
     .thenCallback(() => ({
       statusCode: 200,
-      json: tokensWithSecurity,
+      json: tokensWithSecurity.map((token) => buildBridgePopularToken(token)),
     }));
 
   await mockServer
@@ -342,10 +349,7 @@ export async function mockTokensWithSecurityData(
     .asPriority(99)
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        data: tokensWithSecurity,
-        pageInfo: { hasNextPage: false, endCursor: null },
-      },
+      json: buildBridgeTokensSearch(tokensWithSecurity),
     }));
 }
 
@@ -360,7 +364,9 @@ export async function mockGetPopularTokens(mockServer: Mockttp) {
         toBridgeTokenResponse(42161, token),
       ),
       MOCK_TOKENS_ROBINHOOD.map((token) => toBridgeTokenResponse(4663, token)),
-    ].flat(),
+    ]
+      .flat()
+      .map((token) => buildBridgePopularToken(token)),
   }));
 }
 
@@ -394,13 +400,9 @@ async function mockSearchTokens(mockServer: Mockttp) {
         );
         return {
           statusCode: 200,
-          json: {
-            data: tokens.map((token) => toBridgeTokenResponse(1, token)),
-            pageInfo: {
-              hasNextPage: false,
-              endCursor: null,
-            },
-          },
+          json: buildBridgeTokensSearch(
+            tokens.map((token) => toBridgeTokenResponse(1, token)),
+          ),
         };
       }),
     await mockServer
@@ -413,13 +415,9 @@ async function mockSearchTokens(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(MOCK_TOKENS_LINEA, body.query ?? '');
         return {
           statusCode: 200,
-          json: {
-            data: tokens.map((token) => toBridgeTokenResponse(59144, token)),
-            pageInfo: {
-              hasNextPage: false,
-              endCursor: null,
-            },
-          },
+          json: buildBridgeTokensSearch(
+            tokens.map((token) => toBridgeTokenResponse(59144, token)),
+          ),
         };
       }),
     await mockServer
@@ -436,13 +434,9 @@ async function mockSearchTokens(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(allArbitrum, body.query ?? '');
         return {
           statusCode: 200,
-          json: {
-            data: tokens.map((token) => toBridgeTokenResponse(42161, token)),
-            pageInfo: {
-              hasNextPage: false,
-              endCursor: null,
-            },
-          },
+          json: buildBridgeTokensSearch(
+            tokens.map((token) => toBridgeTokenResponse(42161, token)),
+          ),
         };
       }),
     await mockServer
@@ -458,13 +452,9 @@ async function mockSearchTokens(mockServer: Mockttp) {
         );
         return {
           statusCode: 200,
-          json: {
-            data: tokens.map((token) => toBridgeTokenResponse(4663, token)),
-            pageInfo: {
-              hasNextPage: false,
-              endCursor: null,
-            },
-          },
+          json: buildBridgeTokensSearch(
+            tokens.map((token) => toBridgeTokenResponse(4663, token)),
+          ),
         };
       }),
   ];
@@ -482,13 +472,9 @@ async function mockSearchTokensMonadBase(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(MOCK_TOKENS_MONAD, body.query ?? '');
         return {
           statusCode: 200,
-          json: {
-            data: tokens.map((token) => toBridgeTokenResponse(143, token)),
-            pageInfo: {
-              hasNextPage: false,
-              endCursor: null,
-            },
-          },
+          json: buildBridgeTokensSearch(
+            tokens.map((token) => toBridgeTokenResponse(143, token)),
+          ),
         };
       }),
     await mockServer
@@ -501,13 +487,9 @@ async function mockSearchTokensMonadBase(mockServer: Mockttp) {
         const tokens = filterTokensByQuery(MOCK_TOKENS_BASE, body.query ?? '');
         return {
           statusCode: 200,
-          json: {
-            data: tokens.map((token) => toBridgeTokenResponse(8453, token)),
-            pageInfo: {
-              hasNextPage: false,
-              endCursor: null,
-            },
-          },
+          json: buildBridgeTokensSearch(
+            tokens.map((token) => toBridgeTokenResponse(8453, token)),
+          ),
         };
       }),
   ];
@@ -519,7 +501,9 @@ async function mockGetPopularTokensMonadBase(mockServer: Mockttp) {
     json: [
       MOCK_TOKENS_MONAD.map((token) => toBridgeTokenResponse(143, token)),
       MOCK_TOKENS_BASE.map((token) => toBridgeTokenResponse(8453, token)),
-    ].flat(),
+    ]
+      .flat()
+      .map((token) => buildBridgePopularToken(token)),
   }));
 }
 
@@ -1091,12 +1075,13 @@ async function mockPriceSpotPricesV3(
     id: string,
     price: number,
     pricePercentChange1d: number = 0.1,
-  ) => ({
-    assetPriceType: 'fungible',
-    id,
-    price,
-    pricePercentChange1d,
-  });
+  ) =>
+    buildSpotPrice({
+      assetPriceType: 'fungible',
+      id,
+      price,
+      pricePercentChange1d,
+    });
 
   const ethNativeAssetIds = [
     'eip155:1/slip44:60',
@@ -1195,11 +1180,7 @@ export async function mockGasPricesArbitrum(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          SafeGasPrice: '30',
-          ProposeGasPrice: '30',
-          FastGasPrice: '30',
-        },
+        json: buildGasPrices(),
       };
     });
 }
@@ -1211,11 +1192,7 @@ export async function mockGasPricesMainnet(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          SafeGasPrice: '30',
-          ProposeGasPrice: '30',
-          FastGasPrice: '30',
-        },
+        json: buildGasPrices(),
       };
     });
 }
@@ -1227,11 +1204,7 @@ export async function mockGasPricesMonad(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          SafeGasPrice: '30',
-          ProposeGasPrice: '30',
-          FastGasPrice: '30',
-        },
+        json: buildGasPrices(),
       };
     });
 }
@@ -1401,32 +1374,7 @@ async function mockSmartTransactionsForBridge(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        blockNumber: 20728974,
-        id: '19d4eea3-8a49-463e-9e9c-099f9d9571ca',
-        txs: [
-          {
-            cancelFees: [],
-            return: '0x',
-            status: 1,
-            gasUsed: 190780,
-            gasLimit: 239420,
-            fees: [
-              {
-                maxFeePerGas: 4667609171,
-                maxPriorityFeePerGas: 1000000004,
-                gas: 239420,
-                balanceNeeded: 1217518987960240,
-                currentBalance: 7519823030829194,
-                error: '',
-              },
-            ],
-            feeEstimate: 627603309182220,
-            baseFeePerGas: 2289670348,
-            maxFeeEstimate: 1117518987720820,
-          },
-        ],
-      },
+      json: API_RESPONSES['tx-sentinel-get-fees'],
     }));
 
   // submitTransactions: forward each raw signed tx to Anvil so the hash is
@@ -1489,21 +1437,10 @@ async function mockSmartTransactionsForBridge(
       const uuid = new URL(req.url).searchParams.get('uuids') ?? STX_UUID;
       return {
         statusCode: 200,
-        json: {
-          [uuid]: {
-            cancellationFeeWei: 0,
-            cancellationReason: 'not_cancelled',
-            deadlineRatio: 0,
-            isSettled: true,
-            minedTx: 'success',
-            wouldRevertMessage: null,
-            minedHash: latestMinedHash,
-            timedOut: true,
-            proxied: false,
-            type: 'sentinel',
-            ...batchStatusOverride,
-          },
-        },
+        json: buildTxSentinelBatchStatus(uuid, {
+          minedHash: latestMinedHash,
+          ...batchStatusOverride,
+        }),
       };
     });
 }
@@ -2038,16 +1975,7 @@ async function mockSentinelNetworks(
   mockServer: Mockttp,
   sendBundle: boolean = true,
 ) {
-  const network = {
-    network: 'ethereum-mainnet',
-    explorer: 'https://etherscan.io',
-    confirmations: true,
-    smartTransactions: true,
-    relayTransactions: true,
-    cubistSigners: ['0x1111111111111111111111111111111111111111'],
-    hidden: false,
-    sendBundle,
-  };
+  const network = buildTxSentinelNetwork({ sendBundle });
 
   await mockServer
     .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/network')

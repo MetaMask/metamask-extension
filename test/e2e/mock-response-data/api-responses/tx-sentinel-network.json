@@ -1,0 +1,10 @@
+{
+  "confirmations": true,
+  "cubistSigners": ["0x1111111111111111111111111111111111111111"],
+  "explorer": "https://etherscan.io",
+  "hidden": false,
+  "network": "ethereum-mainnet",
+  "relayTransactions": true,
+  "sendBundle": true,
+  "smartTransactions": true
+}

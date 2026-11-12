@@ -1,0 +1,13 @@
+{
+  "bridge": "across",
+  "destChain": {
+    "chainId": 59144,
+    "txHash": "0x5d2e1f8a7c3b4d6e9f0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60"
+  },
+  "isExpectedToken": true,
+  "srcChain": {
+    "chainId": 1,
+    "txHash": "0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5"
+  },
+  "status": "COMPLETE"
+}

@@ -1,3 +1,7 @@
+import {
+  buildExchangeRates,
+  buildGasPrices,
+} from '../../mock-response-data/api-responses';
 import { PRICES, POWER_USER_PRICES, type PriceData } from './price-data';
 
 export function jsonRpcResponse(result: unknown) {
@@ -172,32 +176,12 @@ export const FIAT_EXCHANGE_RATES = {
 
 export const CRYPTO_EXCHANGE_RATES = {
   statusCode: 200,
-  json: {
-    eth: {
-      name: 'Ether',
-      ticker: 'eth',
-      value: 1 / PRICES.ETH,
-      currencyType: 'crypto',
-    },
-    usd: {
-      name: 'US Dollar',
-      ticker: 'usd',
-      value: 1,
-      currencyType: 'fiat',
-    },
-    btc: {
-      name: 'Bitcoin',
-      ticker: 'btc',
-      value: 1 / PRICES.BTC,
-      currencyType: 'crypto',
-    },
-    sol: {
-      name: 'Solana',
-      ticker: 'sol',
-      value: 1 / PRICES.SOL,
-      currencyType: 'crypto',
-    },
-  },
+  json: buildExchangeRates({
+    eth: 1 / PRICES.ETH,
+    usd: 1,
+    btc: 1 / PRICES.BTC,
+    sol: 1 / PRICES.SOL,
+  }),
 };
 
 export const SUPPORTED_VS_CURRENCIES = {
@@ -338,11 +322,7 @@ export const SUGGESTED_GAS_FEES = {
 
 export const GAS_PRICES = {
   statusCode: 200,
-  json: {
-    SafeGasPrice: '30',
-    ProposeGasPrice: '30',
-    FastGasPrice: '30',
-  },
+  json: buildGasPrices(),
 };
 
 export const TOP_ASSETS = {

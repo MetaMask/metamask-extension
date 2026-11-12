@@ -1,0 +1,15 @@
+[
+  {
+    "address": "0x2efa2cb29c2341d8e5ba7d3262c9e9d6f1bf3711",
+    "symbol": "foo",
+    "decimals": 18,
+    "name": "foo",
+    "iconUrl": "",
+    "type": "erc20",
+    "aggregators": [],
+    "occurrences": 1,
+    "erc20Permit": false,
+    "storage": {},
+    "fees": {}
+  }
+]

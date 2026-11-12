@@ -1,0 +1,8 @@
+[
+  {
+    "assetId": "eip155:1/slip44:60",
+    "name": "Ethereum",
+    "symbol": "ETH",
+    "decimals": 18
+  }
+]
