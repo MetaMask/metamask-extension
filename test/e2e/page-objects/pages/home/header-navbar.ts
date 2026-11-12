@@ -1,3 +1,4 @@
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -5,7 +6,8 @@ import { Driver } from '../../../webdriver/driver';
  *
  * Screen: chrome component (not a full page), rendered across unlocked home
  * and related routes above page content.
- * Owns: account menu icon/open account list, global options menu (settings,
+ * Owns: account label, opening the account list (header account picker, or
+ * the side nav manage button in the wide layout), global options menu (settings,
  * lock, notifications, networks, contacts, connected sites), network picker,
  * and dapp connection control bar entry points.
  * Boundaries: header/menu chrome only. Destinations (settings, notifications,
@@ -20,10 +22,19 @@ import { Driver } from '../../../webdriver/driver';
 class HeaderNavbar {
   private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 
+  // The wide layout has no account picker in the header; the account list is
+  // opened from the side nav instead, and the header shows a plain name.
+  // XPath rather than a CSS selector list, because a `{ css, text }` locator
+  // only applies the text match to the last selector in the list.
+  private readonly accountLabel = (label: string) => ({
+    xpath: `//*[(@data-testid='account-menu-icon' or @data-testid='app-header-account-name') and contains(string(.), ${quoteXPathText(label)})]`,
+  });
+
   private readonly accountListPage =
     '[data-testid="parent-selector-account-list-page"]';
 
-  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
+  private readonly accountMenuButton =
+    '[data-testid="account-menu-icon"], [data-testid="side-nav-accounts-manage-button"]';
 
   private readonly accountSnapButton = { testId: 'global-menu-snaps' };
 
@@ -108,10 +119,7 @@ class HeaderNavbar {
     console.log(
       `Verify the displayed account label in header is: ${expectedLabel}`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountMenuButton,
-      text: expectedLabel,
-    });
+    await this.driver.waitForSelector(this.accountLabel(expectedLabel));
   }
 
   /**

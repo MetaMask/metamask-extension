@@ -60,7 +60,10 @@ class HomePage {
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
 
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+  // The wide layout's network pills show these logos before the non-EVM
+  // accounts exist, so they don't count as a sign the accounts are loaded.
+  private readonly bitcoinAccountIcon =
+    'img[src="./images/bitcoin-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -136,9 +139,13 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly singleActionButton = '[data-testid$="-overview-default"]';
+  // The wide layout shows every action as a pill, so the sole overflow action
+  // renders as `-overview-receive` instead of `-overview-default`.
+  private readonly singleActionButton =
+    '[data-testid$="-overview-default"], [data-testid$="-overview-receive"]';
 
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
+  private readonly solanaAccountIcon =
+    'img[src="./images/solana-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 

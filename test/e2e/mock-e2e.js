@@ -2313,10 +2313,12 @@ async function setupMocking(
       };
     });
 
-  // Nft API: tokens
+  // Nft API: tokens. Matches any account, because NFT detection also runs for
+  // hardware wallet, snap and imported accounts, and the catch-all's empty body
+  // would make the detection request reject.
   await server
     .forGet(
-      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+      /^https:\/\/nft\.api\.cx\.metamask\.io\/users\/0x[0-9a-fA-F]{40}\/tokens/u,
     )
     .thenCallback(() => {
       return {

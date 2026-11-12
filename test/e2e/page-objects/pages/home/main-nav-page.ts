@@ -2,16 +2,18 @@ import { Driver } from '../../../webdriver/driver';
 import { mainNavItem } from './main-nav-selectors';
 
 /**
- * Main navigation chrome. Today this is the bottom nav bar.
+ * Main navigation chrome: the bottom nav bar (narrow layout) or the side nav
+ * (wide layout).
  *
  * Screen: chrome component (not a full page), present on applicable routes
  * (home, perps-home, activity, money).
- * Owns: the main nav itself and tab clicks that assert navigation home.
+ * Owns: the nav chrome itself and item clicks that assert navigation.
  * Boundaries: the nav chrome only. Destination screens belong to `HomePage`,
  * swap/bridge page objects, etc. after navigation.
  * Related: `HomePage`, swap/bridge prepare flows reached from home.
  *
  * @see ui/components/app/bottom-nav-bar/bottom-nav-bar.tsx
+ * @see ui/components/app/side-nav/side-nav.tsx
  */
 class MainNav {
   private readonly driver: Driver;
@@ -20,9 +22,10 @@ class MainNav {
 
   private readonly moneyTab = mainNavItem('money');
 
-  private readonly page = {
-    testId: 'parent-selector-bottom-nav-bar',
-  };
+  private readonly page =
+    '[data-testid="parent-selector-bottom-nav-bar"], [data-testid="side-nav"]';
+
+  private readonly sideNav = '[data-testid="side-nav"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -40,18 +43,26 @@ class MainNav {
     await this.driver.waitForSelector(this.page);
   }
 
+  /**
+   * Asserts the wide layout is in use: the side nav replaces the bottom nav bar.
+   */
+  async checkSideNavIsDisplayed(): Promise<void> {
+    console.log('Check the side nav is displayed');
+    await this.driver.waitForSelector(this.sideNav);
+  }
+
   async clickHome(): Promise<void> {
-    console.log('Click main nav home tab');
+    console.log('Click main nav home item');
     await this.driver.clickElement(this.homeTab);
     await this.assertOnRoute('/');
   }
 
   /**
-   * Click the Money tab. Only rendered once the Money Account availability
+   * Click the Money item. Only rendered once the Money Account availability
    * query resolves, so wait for it rather than failing on first paint.
    */
   async clickMoney(): Promise<void> {
-    console.log('Click main nav money tab');
+    console.log('Click main nav money item');
     await this.driver.clickElement(this.moneyTab);
     await this.assertOnRoute('/money-home');
   }
