@@ -92,7 +92,7 @@ class ChooseWalletTypePage {
     if (shouldDisplay) {
       await this.driver.waitForSelector(this.watchEthereumAccountButton);
     } else {
-            await this.driver.assertElementNotPresent(
+      await this.driver.assertElementNotPresent(
         this.watchEthereumAccountButton,
         { findElementGuard: this.importWalletButton },
       );
