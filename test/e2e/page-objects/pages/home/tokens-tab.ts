@@ -226,6 +226,15 @@ class TokensTab extends HomePage {
 
   private readonly tokenTable = '[data-testid="token-table"]';
 
+  private readonly tokenTableSortBalance =
+    '[data-testid="token-table-sort-balance"]';
+
+  private readonly tokenTableSortIndicatorDown =
+    '[data-testid="token-table-sort-indicator"][data-sort-direction="down"]';
+
+  private readonly tokenTableSortToken =
+    '[data-testid="token-table-sort-token"]';
+
   async checkAssetIsAbsent(symbol: string): Promise<void> {
     console.log(`Checking asset is absent: ${symbol}`);
     await this.driver.assertElementNotPresent({
@@ -1170,6 +1179,34 @@ class TokensTab extends HomePage {
     } else if (sortBy === 'decliningBalance') {
       await this.driver.clickElement(this.sortByDecliningBalance);
     }
+  }
+
+  /**
+   * Sorts the wide layout token table by clicking its column header. Use
+   * `sortTokenList` for the narrow layout's sort popover.
+   *
+   * A header click sorts A to Z (token) or high to low (balance) when it
+   * switches column. Clicking the column that is already sorted that way would
+   * reverse it, so nothing is clicked in that case.
+   *
+   * @param sortBy - `alphabetically` sorts the token column,
+   * `decliningBalance` sorts the balance column.
+   */
+  async sortTokenTable(
+    sortBy: 'alphabetically' | 'decliningBalance',
+  ): Promise<void> {
+    console.log(`Sorting the token table by ${sortBy}`);
+    const header =
+      sortBy === 'alphabetically'
+        ? this.tokenTableSortToken
+        : this.tokenTableSortBalance;
+    const sortedDefaultDirection = `${header} ${this.tokenTableSortIndicatorDown}`;
+
+    if (await this.driver.isElementPresent(sortedDefaultDirection)) {
+      return;
+    }
+    await this.driver.clickElement(header);
+    await this.driver.waitForSelector(sortedDefaultDirection);
   }
 
   private tokenImportSelectNetwork(chainId: string): string {

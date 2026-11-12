@@ -59,39 +59,60 @@ describe('Token List Sorting', function () {
     ];
   }
 
-  it('should sort tokens alphabetically and by decreasing balance', async function () {
-    await withFixtures(
-      {
-        ...testFixtures,
-        title: (this as Context).test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: true,
+  const layouts = [
+    {
+      name: 'narrow layout (sort popover)',
+      isWideLayout: false,
+    },
+    {
+      name: 'wide layout (token table headers)',
+      isWideLayout: true,
+    },
+  ];
+
+  for (const { name, isWideLayout } of layouts) {
+    // The flag is set explicitly in both cases so each layout keeps being
+    // covered whatever default the feature flag registry has.
+    it(`should sort tokens alphabetically and by decreasing balance in the ${name}`, async function () {
+      await withFixtures(
+        {
+          ...testFixtures,
+          title: (this as Context).test?.fullTitle(),
+          manifestFlags: {
+            remoteFeatureFlags: {
+              extensionUxTokenManagementFilter: true,
+              extensionUxFullscreenRedesign: isWideLayout,
+            },
           },
+          testSpecificMock: mockCustomTokenImport,
         },
-        testSpecificMock: mockCustomTokenImport,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver);
 
-        const homePage = new HomePage(driver);
-        const tokensTab = new TokensTab(driver);
+          const homePage = new HomePage(driver);
+          const tokensTab = new TokensTab(driver);
 
-        await homePage.checkPageIsLoaded();
+          await homePage.checkPageIsLoaded();
 
-        await tokensTab.checkTokenExistsInList(customTokenSymbol);
-        await tokensTab.sortTokenList('alphabetically');
-        await tokensTab.checkTokenPositionInList({
-          position: 1,
-          tokenName: customTokenSymbol,
-        });
+          const sortTokens = (sortBy: 'alphabetically' | 'decliningBalance') =>
+            isWideLayout
+              ? tokensTab.sortTokenTable(sortBy)
+              : tokensTab.sortTokenList(sortBy);
 
-        await tokensTab.sortTokenList('decliningBalance');
-        await tokensTab.checkTokenPositionInList({
-          position: 1,
-          tokenName: 'Ethereum',
-        });
-      },
-    );
-  });
+          await tokensTab.checkTokenExistsInList(customTokenSymbol);
+          await sortTokens('alphabetically');
+          await tokensTab.checkTokenPositionInList({
+            position: 1,
+            tokenName: customTokenSymbol,
+          });
+
+          await sortTokens('decliningBalance');
+          await tokensTab.checkTokenPositionInList({
+            position: 1,
+            tokenName: 'Ethereum',
+          });
+        },
+      );
+    });
+  }
 });
