@@ -111,6 +111,14 @@ const AcceptInviteSheetContent = ({
   const [acceptStarted, setAcceptStarted] = useState(false);
   const hasTrackedViewRef = useRef(false);
   const hasRespondedRef = useRef(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const acceptAllowedForGeo = useSelector(selectMoneyReferralAllowedForGeo);
   const geoLoading = useSelector(selectOptinAllowedForGeoLoading);
@@ -260,20 +268,29 @@ const AcceptInviteSheetContent = ({
   }, [onClose, shouldDismissForGeo, trackResponded]);
 
   const handleDecline = useCallback(() => {
+    if (isAccepting) {
+      return;
+    }
     trackResponded('declined');
     onClose();
-  }, [onClose, trackResponded]);
+  }, [isAccepting, onClose, trackResponded]);
 
   const handleDismiss = useCallback(() => {
+    if (isAccepting) {
+      return;
+    }
     trackResponded('dismissed');
     onClose();
-  }, [onClose, trackResponded]);
+  }, [isAccepting, onClose, trackResponded]);
 
   const handleAccept = useCallback(() => {
     setAcceptStarted(true);
     setHasSeenEligibleInvite(true);
     accept(code)
       .then((result) => {
+        if (!mountedRef.current) {
+          return;
+        }
         if (result.accepted) {
           trackResponded('accepted');
           return;
@@ -307,7 +324,7 @@ const AcceptInviteSheetContent = ({
       <ModalContent className="items-center" size={ModalContentSize.Md}>
         <ModalHeader
           onClose={handleDismiss}
-          closeButtonProps={{ ariaLabel: t('close') }}
+          closeButtonProps={{ ariaLabel: t('close'), isDisabled: isAccepting }}
         >
           {copy.title}
         </ModalHeader>
@@ -333,6 +350,7 @@ const AcceptInviteSheetContent = ({
                 value={code}
                 size={TextFieldSize.Lg}
                 isError={Boolean(fieldError)}
+                isDisabled={isAccepting}
                 className="h-14 w-full"
                 onChange={(event) => {
                   setCode(normalizeMoneyReferralCode(event.target.value));
@@ -376,6 +394,7 @@ const AcceptInviteSheetContent = ({
               size={ButtonSize.Lg}
               isFullWidth
               onClick={handleDecline}
+              isDisabled={isAccepting}
               className="text-default"
               data-testid="money-referral-decline"
             >
