@@ -7,7 +7,10 @@ name: Sync E2E API Mocks
 # open or update one PR. That push uses GITHUB_TOKEN, so GitHub holds the
 # workflow runs on that PR until a maintainer approves them.
 # Same-repo pull requests that touch the mocks: do not push. When a fixture
-# differs, fail the check and comment so the author can commit the update.
+# differs, fail the check. If every drifted line is already in the pull
+# request diff and the change is small enough, post one review of suggestion
+# blocks so the author can commit them. Otherwise comment the diff and the
+# local command. A repeated run does not post the same review again.
 # Fork pull requests are skipped. A fetch failure does not fail a pull request.
 
 on:
@@ -21,6 +24,9 @@ on:
       - test/e2e/mock-response-data/**
       - test/e2e/mock-cdn/ppom-version.json
 
+# pull-requests: write lets GITHUB_TOKEN open a COMMENT review on a same-repo
+# pull request. The token cannot approve. Commit suggestion authors the commit
+# as the person who clicks it, so later workflows are not held for approval.
 permissions:
   contents: write
   pull-requests: write
@@ -179,6 +185,94 @@ jobs:
           echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
           echo "number=${NUMBER}" >> "${GITHUB_OUTPUT}"
 
+      - name: Post suggestion review
+        id: suggestions
+        if: >-
+          ${{
+            !cancelled() &&
+            github.event_name == 'pull_request' &&
+            steps.sync.outputs.EXIT == '1'
+          }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Zero context, so a suggestion covers only the drifted lines and
+          # not neighboring lines that are outside the pull request diff.
+          git diff -U0 > e2e-api-mock-drift-u0.diff
+          gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100" \
+            | jq 'add // []' > pr-files.json
+          python3 .github/scripts/e2e-api-mock-suggestions.py \
+            --diff e2e-api-mock-drift-u0.diff \
+            --files pr-files.json \
+            --readable drift-readable.txt \
+            --out suggest-plan.json
+          MODE="$(jq -r .mode suggest-plan.json)"
+          REASON="$(jq -r .reason suggest-plan.json)"
+          if [ "${MODE}" != "suggestions" ]; then
+            printf '%s\n' fallback > suggest-mode.txt
+            printf '%s\n' "${REASON}" > suggest-reason.txt
+            {
+              echo
+              echo "No suggestion review: ${REASON}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          MARKER="<!-- e2e-api-mock-sync-review -->"
+          HASH="$(jq -r .hash suggest-plan.json)"
+          gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews?per_page=100" \
+            | jq 'add // []' > pr-reviews.json
+          if jq -e --arg marker "${MARKER}" --arg hash "${HASH}" '
+            [.[] | select(.user.login == "github-actions[bot]") | select((.body // "") | contains($marker)) | select((.body // "") | contains($hash))] | length > 0
+          ' pr-reviews.json > /dev/null; then
+            printf '%s\n' suggestions > suggest-mode.txt
+            printf '\n' > suggest-reason.txt
+            echo "Suggestion review already matches this drift."
+            {
+              echo
+              echo "Suggestion review already matches this drift."
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          OLD="$(jq -r --arg marker "${MARKER}" '
+            .[] | select(.user.login == "github-actions[bot]") | select((.body // "") | contains($marker)) | .id
+          ' pr-reviews.json)"
+          if [ -n "${OLD}" ]; then
+            gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/comments?per_page=100" \
+              | jq 'add // []' > pr-review-comments.json
+            jq -r --arg old "${OLD}" '
+              ($old | split("\n") | map(select(length > 0))) as $ids
+              | .[] | select(($ids | index(.pull_request_review_id | tostring)) != null) | .id
+            ' pr-review-comments.json > old-comment-ids.txt
+            while IFS= read -r COMMENT_ID || [ -n "${COMMENT_ID}" ]; do
+              [ -z "${COMMENT_ID}" ] && continue
+              gh api --method DELETE "repos/${GITHUB_REPOSITORY}/pulls/comments/${COMMENT_ID}"
+            done < old-comment-ids.txt
+          fi
+          jq -n \
+            --arg sha "$(git rev-parse HEAD)" \
+            --slurpfile plan suggest-plan.json \
+            '{commit_id: $sha, event: "COMMENT", body: $plan[0].body, comments: $plan[0].comments}' \
+            > review.json
+          if ! gh api --method POST "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews" --input review.json > review-result.json; then
+            printf '%s\n' fallback > suggest-mode.txt
+            printf '%s\n' 'GitHub rejected the suggestion review. Run `yarn test:e2e:sync-api-mocks` and commit the result.' > suggest-reason.txt
+            {
+              echo
+              echo "GitHub rejected the suggestion review. The summary comment has the diff."
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          printf '%s\n' suggestions > suggest-mode.txt
+          printf '\n' > suggest-reason.txt
+          COUNT="$(jq '.comments | length' suggest-plan.json)"
+          {
+            echo
+            echo "Posted a review with ${COUNT} suggestion(s). Commit suggestion authors the commit as you."
+          } >> "${GITHUB_STEP_SUMMARY}"
+
       - name: Comment on the pull request
         if: >-
           ${{
@@ -201,22 +295,33 @@ jobs:
           READABLE="$(cat drift-readable.txt)"
           STAT="$(cat drift-stat.txt)"
           DIFF=""
-          if [ -z "${COMMIT_SHA}" ]; then
-            INTRO="E2E API mock fixtures differ from the live response shapes. This run did not commit the change. Run \`yarn test:e2e:sync-api-mocks\` locally and commit the result.
-
-          The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.
-
-          The check fails until that commit is on the branch. The full diff is the \`e2e-api-mock-drift\` artifact on this run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          MODE="fallback"
+          REASON=""
+          if [ -f suggest-mode.txt ]; then
+            MODE="$(cat suggest-mode.txt)"
+          fi
+          if [ -f suggest-reason.txt ]; then
+            REASON="$(cat suggest-reason.txt)"
+          fi
+          if [ -n "${COMMIT_SHA}" ]; then
+            INTRO="$(printf '%s\n\n%s\n\n%s' \
+              'Updated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.' \
+              "Commit: https://github.com/${GITHUB_REPOSITORY}/commit/${COMMIT_SHA}" \
+              'Workflow runs on this pull request stay waiting until a maintainer approves them. The commit was pushed with the workflow token.')"
+          elif [ "${MODE}" = "suggestions" ]; then
+            INTRO="$(printf '%s\n\n%s\n\n%s' \
+              'E2E API mock fixtures differ from the live response shapes. This run did not push.' \
+              'A review on this pull request has suggestions. Use Commit suggestion, or batch them and commit them together. That commit is authored by you, so the other checks are not held for approval.' \
+              'The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped. The check stays red until that commit is on the branch.')"
+          else
+            INTRO="$(printf '%s\n\n%s\n\n%s' \
+              'E2E API mock fixtures differ from the live response shapes. This run did not push.' \
+              "${REASON:-GitHub cannot attach a suggestion for this drift. Run \`yarn test:e2e:sync-api-mocks\` locally and commit the result.}" \
+              "The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped. The full diff is the \`e2e-api-mock-drift\` artifact on this run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")"
             bytes="$(wc -c < e2e-api-mock-drift.diff)"
             if [ "${bytes}" -le 20000 ]; then
               DIFF="$(cat e2e-api-mock-drift.diff)"
             fi
-          else
-            INTRO="Updated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.
-
-          Commit: https://github.com/${GITHUB_REPOSITORY}/commit/${COMMIT_SHA}
-
-          Workflow runs on this pull request stay waiting until a maintainer approves them. The commit was pushed with the workflow token."
           fi
           jq -n \
             --arg marker "${MARKER}" \
