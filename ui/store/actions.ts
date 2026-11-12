@@ -6403,6 +6403,36 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
+export async function trackErrorAsAnalytics(
+  error: unknown,
+  options: {
+    source: string;
+    volumeControls?: object;
+    excludeMetaMetricsId?: boolean;
+    environmentType?: string;
+  },
+  properties?: Record<string, unknown>,
+) {
+  const { excludeMetaMetricsId, environmentType, ...controllerOptions } =
+    options;
+  const controllerProperties: Record<string, unknown> = {
+    ...properties,
+    ...(excludeMetaMetricsId ? { anonymous: true } : {}),
+  };
+  if (environmentType) {
+    controllerProperties.environment_type = environmentType;
+  }
+
+  try {
+    await submitRequestToBackground(
+      'AnalyticsController:trackErrorAsAnalytics',
+      [getErrorMessage(error), controllerOptions, controllerProperties],
+    );
+  } catch {
+    // Swallow background RPC failures. Error reporting must not break UI.
+  }
+}
+
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
   payload: MetaMetricsEventFragmentPayload,
