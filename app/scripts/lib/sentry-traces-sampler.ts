@@ -70,9 +70,10 @@ type SampleRateOptions = {
    */
   remoteSampleRateOverrides?: Record<string, number>;
   /**
-   * Hard ceiling applied across ALL transactions — caps per-name overrides and
-   * parent-sampled (`forceTransaction`) decisions, not just the default — so a
-   * remote throttle guarantees the shed. Absent means no ceiling.
+   * Hard ceiling on per-name overrides and the default rate, so a remote
+   * throttle sheds every new trace. A positive parent decision is exempt: that
+   * trace was already admitted at its root under the same remote rate, and
+   * re-sampling its continuation would split it. Absent means no ceiling.
    */
   sampleRateCeiling?: number;
 };
@@ -82,8 +83,9 @@ type SampleRateOptions = {
  * for direct unit testing. Order: a per-name override pins its rate (regardless
  * of parent, so a throttled transaction can't ride in on a sampled parent), with
  * a remote override winning over the build-time one; else inherit the parent
- * decision; else the default. Every non-zero result is capped by
- * `sampleRateCeiling`.
+ * decision; else the default. Overrides and the default are capped by
+ * `sampleRateCeiling`; an inherited decision is not, so a sampled trace stays
+ * whole across the UI and background.
  *
  * Deliberately has no notion of releases. Silencing a specific release is a
  * fleet-wide selection over builds, and a build can only ever match itself — so
@@ -99,7 +101,7 @@ type SampleRateOptions = {
  * @param options.sampleRateOverrides - Build-time per-name sample-rate overrides.
  * @param options.remoteSampleRateOverrides - Remote-flag per-name overrides;
  * win over the build-time ones.
- * @param options.sampleRateCeiling - Hard ceiling capping every non-zero path.
+ * @param options.sampleRateCeiling - Hard ceiling on overrides and the default.
  * @returns A sample rate — in [0, 1] for valid inputs; negative inputs and a
  * `sampleRateCeiling` above 1 are passed through unclamped.
  */
@@ -129,7 +131,7 @@ export function getTransactionSampleRate(
   }
 
   if (typeof parentSampled === 'boolean') {
-    return parentSampled ? Math.min(1, ceiling) : 0;
+    return parentSampled ? 1 : 0;
   }
 
   return Math.min(defaultSampleRate, ceiling);
@@ -172,8 +174,11 @@ function parseSampleRateOverridesEnv(
  * per-name overrides once, merging the built-in defaults with the build-time
  * `SENTRY_SAMPLE_RATE_OVERRIDES` env var. The global rate is additionally
  * overridable at runtime by the remote `sentry.tracesSampleRate` feature flag
- * (see sentry-remote-rates.ts), which also acts as the ceiling — see
+ * (see sentry-remote-rates.ts), which also caps the per-name overrides — see
  * {@link getTransactionSampleRate} for the precedence and the release note.
+ * The UI and the background build their samplers here alike, so a remote
+ * throttle sheds a UI trace at its root, and the background spans continuing
+ * it inherit that decision.
  *
  * @param options - Sampler options.
  * @param options.defaultSampleRate - Global fallback rate (the `tracesSampleRate`).
@@ -209,8 +214,8 @@ export function createTracesSampler({
     // Read per call so a remote value applied after `Sentry.init` takes effect
     // without rebuilding the sampler; the read is a cached module field, not a
     // storage lookup. The same value is passed as BOTH default and ceiling, so
-    // those two paths only diverge on a per-name override — which is why the
-    // ceiling has to be isolated with one.
+    // the ceiling only decides a per-name override — which is why it has to be
+    // isolated with one.
     const remoteRate = getRemoteTracesSampleRate();
     return getTransactionSampleRate(samplingContext, {
       defaultSampleRate: remoteRate ?? defaultSampleRate,
