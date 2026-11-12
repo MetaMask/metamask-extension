@@ -1,7 +1,8 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 import {
   fetchOHLCV,
+  fetchOHLCVPage,
   useOHLCVChart,
   FETCH_TIMEOUT_MS,
   INTERVAL_TO_TIME_PERIOD,
@@ -366,6 +367,122 @@ describe('useOHLCVChart', () => {
     rerender({ enabled: true });
     expect(result.current.isLoading).toBe(true);
     expect(result.current.ohlcvData).toEqual([]);
+  });
+});
+
+describe('useOHLCVChart – fetchOHLCVPage', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const mockPage = (
+    data: typeof MOCK_API_CANDLES,
+    nextCursor: string | null,
+    hasNext: boolean,
+  ) =>
+    ({
+      ok: true,
+      status: 200,
+      json: jest.fn().mockResolvedValue({ data, nextCursor, hasNext }),
+    }) as unknown as Response;
+
+  it('parses the cursor fields from the response', async () => {
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue(mockPage(MOCK_API_CANDLES, 'c1', true));
+
+    const page = await fetchOHLCVPage('ethereum', '1h');
+
+    expect(page.bars).toHaveLength(2);
+    expect(page.nextCursor).toBe('c1');
+    expect(page.hasMore).toBe(true);
+  });
+
+  it('defaults the cursor fields when the API omits them', async () => {
+    mockFetchSuccess();
+
+    const page = await fetchOHLCVPage('ethereum', '1h');
+
+    expect(page.nextCursor).toBeNull();
+    expect(page.hasMore).toBe(false);
+  });
+
+  it('addresses an older page by cursor alone, dropping timePeriod/interval', async () => {
+    const fetchMock = jest.fn().mockResolvedValue(mockPage([], null, false));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await fetchOHLCVPage('ethereum', '1h', 'eur', { nextCursor: 'cursor-xyz' });
+
+    const url = new URL(fetchMock.mock.calls[0][0] as string);
+    expect(url.searchParams.get('nextCursor')).toBe('cursor-xyz');
+    expect(url.searchParams.get('vsCurrency')).toBe('eur');
+    expect(url.searchParams.has('timePeriod')).toBe(false);
+    expect(url.searchParams.has('interval')).toBe(false);
+  });
+});
+
+describe('useOHLCVChart – fetchOlderBars', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const mockPage = (
+    data: typeof MOCK_API_CANDLES,
+    nextCursor: string | null,
+    hasNext: boolean,
+  ) =>
+    ({
+      ok: true,
+      status: 200,
+      json: jest.fn().mockResolvedValue({ data, nextCursor, hasNext }),
+    }) as unknown as Response;
+
+  it('pages older bars by cursor and advances it each call', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'cursor-1', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, 'cursor-2', true))
+      .mockResolvedValueOnce(mockPage(MOCK_API_CANDLES, null, false));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(() =>
+      useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+
+    let older;
+    await act(async () => {
+      older = await result.current.fetchOlderBars();
+    });
+    expect(older).toEqual({ bars: expect.any(Array), noData: false });
+    const firstPageUrl = new URL(fetchMock.mock.calls[1][0] as string);
+    expect(firstPageUrl.searchParams.get('nextCursor')).toBe('cursor-1');
+
+    await act(async () => {
+      await result.current.fetchOlderBars();
+    });
+    const secondPageUrl = new URL(fetchMock.mock.calls[2][0] as string);
+    expect(secondPageUrl.searchParams.get('nextCursor')).toBe('cursor-2');
+  });
+
+  it('returns noData without fetching once the cursor is exhausted', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValue(mockPage(MOCK_API_CANDLES, null, false));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { result } = renderHook(() =>
+      useOHLCVChart({ assetId: 'ethereum', interval: '1h', currency: 'usd' }),
+    );
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+
+    let older;
+    await act(async () => {
+      older = await result.current.fetchOlderBars();
+    });
+    expect(older).toEqual({ bars: [], noData: true });
+    // Only the initial load fetched; the exhausted cursor short-circuits.
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
 
