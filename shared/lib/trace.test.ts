@@ -9,7 +9,10 @@ import {
   getSerializedTraceContext,
   getTraceContext,
   withoutTraceContext,
+  IN_FLIGHT_LOST_ATTRIBUTE,
+  IN_FLIGHT_STANDALONE_ATTRIBUTE,
   ONBOARDING_MACHINE_TIME_ATTRIBUTE,
+  OVER_SPAN_LIMIT_ATTRIBUTE,
   serializeTraceContext,
   trace,
   traceBackgroundPoll,
@@ -1737,5 +1740,126 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
         await aPromise;
       }
     });
+  });
+});
+
+describe('children still running when their root ends', () => {
+  // Real SDK: the loss happens in `SentrySpan`'s conversion of the root to a
+  // transaction, which this file's `globalThis.sentry` mock does not model.
+
+  type EnvelopeItem = [{ type: string }, Record<string, unknown>];
+  let client: Sentry.BrowserClient;
+  let sentItems: EnvelopeItem[];
+
+  beforeEach(() => {
+    sentItems = [];
+    client = new Sentry.BrowserClient({
+      dsn: 'https://public@example.ingest.sentry.io/1',
+      transport: () => ({
+        send: (envelope) => {
+          sentItems.push(...(envelope[1] as unknown as EnvelopeItem[]));
+          return Promise.resolve({});
+        },
+        flush: () => Promise.resolve(true),
+      }),
+      stackParser: Sentry.defaultStackParser,
+      integrations: [],
+      tracesSampleRate: 1,
+    });
+    Sentry.getCurrentScope().setClient(client);
+    client.init();
+    globalThis.sentry = { ...Sentry } as typeof globalThis.sentry;
+  });
+
+  afterEach(() => {
+    Sentry.getCurrentScope().clear();
+    Sentry.getIsolationScope().clear();
+  });
+
+  async function flushItems(type: string) {
+    await client.flush(1000);
+    return sentItems
+      .filter(([header]) => header.type === type)
+      .map(([, payload]) => payload);
+  }
+
+  function rootData(transaction: Record<string, unknown>) {
+    return (
+      transaction.contexts as { trace: { data: Record<string, unknown> } }
+    ).trace.data;
+  }
+
+  it('sends a child still running at endTrace once it ends, under its original ids', async () => {
+    const root = trace({
+      name: NAME_MOCK,
+      id: 'root',
+      root: true,
+    }) as Sentry.Span;
+    const child = trace({
+      name: NAME_MOCK,
+      id: 'child',
+      parentContext: root,
+    }) as Sentry.Span;
+
+    endTrace({ name: NAME_MOCK, id: 'root' });
+
+    const [transaction] = await flushItems('transaction');
+    expect(transaction.spans).toStrictEqual([]);
+    expect(rootData(transaction)).toMatchObject({
+      [IN_FLIGHT_STANDALONE_ATTRIBUTE]: 1,
+      [IN_FLIGHT_LOST_ATTRIBUTE]: 0,
+      [OVER_SPAN_LIMIT_ATTRIBUTE]: 0,
+    });
+
+    endTrace({ name: NAME_MOCK, id: 'child' });
+
+    const spans = await flushItems('span');
+    expect(spans).toHaveLength(1);
+    expect(spans[0]).toMatchObject({
+      span_id: child.spanContext().spanId,
+      trace_id: root.spanContext().traceId,
+      parent_span_id: root.spanContext().spanId,
+    });
+  });
+
+  it('sends a child still running when a trace() callback root settles', async () => {
+    let child: Sentry.Span | undefined;
+
+    await trace({ name: NAME_MOCK, root: true }, async () => {
+      child = Sentry.startInactiveSpan({ name: 'fetch', op: 'http.client' });
+    });
+
+    const [transaction] = await flushItems('transaction');
+    expect(transaction.spans).toStrictEqual([]);
+    expect(rootData(transaction)[IN_FLIGHT_STANDALONE_ATTRIBUTE]).toBe(1);
+
+    child?.end();
+
+    const spans = await flushItems('span');
+    expect(spans.map((span) => span.span_id)).toStrictEqual([
+      child?.spanContext().spanId,
+    ]);
+  });
+
+  it('records zero, not nothing, when every child had finished', async () => {
+    trace({ name: NAME_MOCK, id: 'root', root: true });
+    trace(
+      {
+        name: NAME_MOCK,
+        parentContext: getTraceContext({ name: NAME_MOCK, id: 'root' }),
+      },
+      () => undefined,
+    );
+
+    endTrace({ name: NAME_MOCK, id: 'root' });
+
+    const [transaction] = await flushItems('transaction');
+    expect(transaction.spans).toHaveLength(1);
+    expect(rootData(transaction)).toMatchObject({
+      [IN_FLIGHT_STANDALONE_ATTRIBUTE]: 0,
+      [IN_FLIGHT_LOST_ATTRIBUTE]: 0,
+      [OVER_SPAN_LIMIT_ATTRIBUTE]: 0,
+    });
+    expect(await flushItems('span')).toStrictEqual([]);
   });
 });
