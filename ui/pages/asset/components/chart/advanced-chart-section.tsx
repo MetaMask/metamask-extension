@@ -156,6 +156,7 @@ export const AdvancedChartSection = ({
     isLoading: isOhlcvLoading,
     error: ohlcvError,
     resolvedCurrency,
+    fetchOlderBars,
   } = useAdvancedChartData({
     assetId: caipAssetId,
     interval,
@@ -229,6 +230,7 @@ export const AdvancedChartSection = ({
         onError={setChartError}
         onReady={handleChartReady}
         realtimeBar={realtimeBar}
+        fetchOlderBars={fetchOlderBars}
       />
     );
   } else {
