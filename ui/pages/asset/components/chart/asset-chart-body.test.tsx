@@ -187,4 +187,46 @@ describe('AssetChartBody', () => {
       expect(onHoverPrice).not.toHaveBeenCalled();
     });
   });
+
+  describe('line color', () => {
+    // The border color is a callback resolved against the canvas at draw time.
+    // Stub getComputedStyle to echo the requested property so the test asserts
+    // which CSS variable the chart reads, independent of jsdom's empty values.
+    const resolveBorderColor = (container: HTMLElement) => {
+      const chart = Chart.getChart(
+        container.querySelector('canvas') as HTMLCanvasElement,
+      );
+      if (!chart) {
+        throw new Error('no chart was rendered');
+      }
+      const spy = jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+        getPropertyValue: (property: string) => `resolved(${property})`,
+      } as unknown as CSSStyleDeclaration);
+      try {
+        // Chart.js resolves the root `borderColor` to a string on
+        // `chart.options`; the original scriptable function is kept on the raw
+        // config, which is what the chart actually calls at draw time.
+        const { borderColor } = chart.config.options as {
+          borderColor: (ctx: { chart: Chart }) => string;
+        };
+        return borderColor({ chart });
+      } finally {
+        spy.mockRestore();
+      }
+    };
+
+    it('draws the line in the success token by default', () => {
+      expect(resolveBorderColor(renderBody().container)).toBe(
+        'resolved(--color-success-default)',
+      );
+    });
+
+    it('draws the line in the provided color variable', () => {
+      expect(
+        resolveBorderColor(
+          renderBody({ lineColorVar: '--color-error-default' }).container,
+        ),
+      ).toBe('resolved(--color-error-default)');
+    });
+  });
 });

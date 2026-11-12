@@ -12,7 +12,7 @@ import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
-import type { OHLCVBar } from './useOHLCVChart';
+import type { FetchOlderBarsResult, OHLCVBar } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
 /**
@@ -118,8 +118,25 @@ type AdvancedChartIframeProps = {
   ohlcvData: OHLCVBar[];
   onError?: (error: string) => void;
   onReady?: () => void;
+  /**
+   * Fired for gesture interactions the chart engine reports: zoom, pan, and
+   * tooltip. Already debounced by the engine, so there is no throttling here.
+   */
+  onChartInteracted?: (interactionType: 'zoom' | 'pan' | 'tooltip') => void;
+  /**
+   * Fired when a TradingView attribution link inside the chart is clicked. The
+   * host already opens the (sanitised) URL; this is purely for analytics.
+   */
+  onTradingViewClicked?: () => void;
   /** Real-time candle update from useOHLCVRealtime hook */
   realtimeBar?: OHLCVRealtimeBar;
+  /**
+   * Fetches an older page of candles when the engine scrolls past the oldest
+   * loaded bar. Host-backed ("RN-backed") pagination: the engine asks us for
+   * older bars rather than fetching them itself, keeping all network egress in
+   * the extension where there is no iframe-CSP restriction. Omit to disable.
+   */
+  fetchOlderBars?: () => Promise<FetchOlderBarsResult>;
 };
 
 const AdvancedChartIframe = forwardRef<
@@ -136,7 +153,10 @@ const AdvancedChartIframe = forwardRef<
       ohlcvData,
       onError,
       onReady,
+      onChartInteracted,
+      onTradingViewClicked,
       realtimeBar,
+      fetchOlderBars,
     },
     ref,
   ) => {
@@ -149,6 +169,10 @@ const AdvancedChartIframe = forwardRef<
     // The bars the engine was last given, so a newer arrival can be sent as a
     // cheap REALTIME_UPDATE instead of a full rebuild.
     const prevOhlcvDataRef = useRef<OHLCVBar[]>([]);
+    // The message listener is attached once, but the pagination callback is a
+    // prop that can change, so read it from a ref kept current each render.
+    const fetchOlderBarsRef = useRef(fetchOlderBars);
+    fetchOlderBarsRef.current = fetchOlderBars;
     const theme = useTheme();
     const isDark = theme === 'dark';
     const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
@@ -195,6 +219,15 @@ const AdvancedChartIframe = forwardRef<
           if (msg?.type === 'ERROR' && msg?.payload?.message) {
             onError?.(msg.payload.message);
           }
+          // Zoom, pan, and tooltip gestures. The chart bundle debounces these
+          // and sends tooltip once per crosshair session, so they arrive
+          // pre-throttled and are forwarded straight up.
+          if (
+            msg?.type === 'CHART_INTERACTED' &&
+            msg?.payload?.interaction_type
+          ) {
+            onChartInteracted?.(msg.payload.interaction_type);
+          }
           // The TradingView attribution link must stay reachable (license
           // clause 3.2), but the iframe is sandboxed without allow-popups or
           // allow-top-navigation. The engine cancels the click and hands us
@@ -203,6 +236,45 @@ const AdvancedChartIframe = forwardRef<
             global.platform.openTab({
               url: toTradingViewUrl(msg?.payload?.url),
             });
+            onTradingViewClicked?.();
+          }
+          // Host-backed pagination: the engine scrolled past its oldest loaded
+          // bar and is asking us for an older page. Fetch it and reply with the
+          // same requestId/seriesGeneration so the engine can match the
+          // response and reject it if the series has since changed.
+          if (msg?.type === 'FETCH_OLDER_BARS_REQUEST') {
+            const { requestId, seriesGeneration } = msg.payload ?? {};
+            const respond = (
+              bars: OHLCVBar[],
+              noData: boolean,
+              error?: string,
+            ) => {
+              postToChart({
+                type: 'FETCH_OLDER_BARS_RESPONSE',
+                payload: {
+                  requestId,
+                  seriesGeneration,
+                  bars,
+                  noData,
+                  ...(error ? { error } : {}),
+                },
+              });
+            };
+            const fetchOlder = fetchOlderBarsRef.current;
+            if (fetchOlder) {
+              // eslint-disable-next-line no-void -- fire-and-forget reply
+              void fetchOlder()
+                .then(({ bars, noData }) => respond(bars, noData))
+                .catch((e) =>
+                  respond(
+                    [],
+                    true,
+                    e instanceof Error ? e.message : 'pagination error',
+                  ),
+                );
+            } else {
+              respond([], true);
+            }
           }
         } catch {
           // ignore non-JSON
@@ -210,7 +282,13 @@ const AdvancedChartIframe = forwardRef<
       };
       window.addEventListener('message', handleMessage);
       return () => window.removeEventListener('message', handleMessage);
-    }, [onError, onReady]);
+    }, [
+      onChartInteracted,
+      onError,
+      onReady,
+      onTradingViewClicked,
+      postToChart,
+    ]);
 
     // Fall back to legacy chart if chartReady isn't set within LOAD_TIMEOUT_MS.
     useEffect(() => {
@@ -379,7 +457,14 @@ const AdvancedChartIframe = forwardRef<
       // First load, a different series, or a bulk change (interval change,
       // pagination) → full SET_OHLCV_DATA.
       if (!sameSeries || Math.abs(ohlcvData.length - prevData.length) > 1) {
-        postToChart({ type: 'SET_OHLCV_DATA', payload: { data: ohlcvData } });
+        postToChart({
+          type: 'SET_OHLCV_DATA',
+          // Strategy B (host-backed): the engine asks us for older bars via
+          // FETCH_OLDER_BARS_REQUEST instead of fetching them itself. Must NOT
+          // set `pagination` — that would switch on the in-iframe fetch path,
+          // which the chart origin's strict CSP (connect-src 'none') blocks.
+          payload: { data: ohlcvData, rnBackedPagination: { enabled: true } },
+        });
         prevOhlcvDataRef.current = ohlcvData;
         return;
       }

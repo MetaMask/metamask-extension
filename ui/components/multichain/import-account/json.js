@@ -27,6 +27,8 @@ import BottomButtons from './bottom-buttons';
 export default function JsonImportSubview({
   importAccountFunc,
   onActionComplete,
+  onClearImportError,
+  onJsonFileChange,
   importErrorMessage,
 }) {
   const t = useI18nContext();
@@ -37,8 +39,18 @@ export default function JsonImportSubview({
   const [errorMessage, setErrorMessage] = useState();
 
   const isPrimaryDisabled = fileContents === '';
-  const fileError = errorMessage ?? importErrorMessage;
+  const passwordErrors = [
+    t('jsonImportPasswordRequired'),
+    t('jsonImportPasswordIncorrect'),
+    t('jsonImportPasswordIncorrectOrOptional'),
+  ];
+  const passwordError = passwordErrors.includes(importErrorMessage)
+    ? importErrorMessage
+    : undefined;
+  const fileError =
+    errorMessage ?? (passwordError ? undefined : importErrorMessage);
   const fileErrorId = 'json-file-error';
+  const passwordErrorId = 'json-password-error';
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -74,6 +86,7 @@ export default function JsonImportSubview({
             onLoad={(event) => {
               setErrorMessage();
               setFileContents(event.target.result);
+              onJsonFileChange?.();
             }}
             style={{
               position: 'absolute',
@@ -94,7 +107,11 @@ export default function JsonImportSubview({
           </Text>
         </label>
         {fileError ? (
-          <HelpText id={fileErrorId} severity={HelpTextSeverity.Danger}>
+          <HelpText
+            id={fileErrorId}
+            role="alert"
+            severity={HelpTextSeverity.Danger}
+          >
             {fileError}
           </HelpText>
         ) : null}
@@ -117,12 +134,21 @@ export default function JsonImportSubview({
         id="json-password-box"
         size={TextFieldSize.Lg}
         placeholder={t('enterOptionalPassword')}
+        helpText={passwordError}
+        helpTextProps={
+          passwordError ? { id: passwordErrorId, role: 'alert' } : undefined
+        }
+        isError={Boolean(passwordError)}
         value={password}
         onChange={(event) => {
           setPassword(event.target.value);
+          if (passwordError) {
+            onClearImportError?.();
+          }
         }}
         inputProps={{
           'aria-label': t('enterOptionalPassword'),
+          'aria-describedby': passwordError ? passwordErrorId : undefined,
           onKeyPress: handleKeyPress,
         }}
         type={showPassword ? TextFieldType.Text : TextFieldType.Password}
@@ -159,6 +185,14 @@ JsonImportSubview.propTypes = {
    * Executes when the key is imported
    */
   onActionComplete: PropTypes.func.isRequired,
+  /**
+   * Clears the import error shown under the password field
+   */
+  onClearImportError: PropTypes.func,
+  /**
+   * Resets password-attempt state when a different file is chosen
+   */
+  onJsonFileChange: PropTypes.func,
   /**
    * Import error message
    */

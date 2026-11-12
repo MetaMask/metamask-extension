@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { priceApiBaseUrl } from '../../../../../shared/constants/price-api';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -10,6 +10,21 @@ export type OHLCVBar = {
   low: number;
   close: number;
   volume: number;
+};
+
+/** One page of candles plus the cursor needed to fetch the page before it. */
+export type OHLCVPage = {
+  bars: OHLCVBar[];
+  /** Opaque cursor for the next (older) page, or null when history is done. */
+  nextCursor: string | null;
+  /** Whether an older page exists. */
+  hasMore: boolean;
+};
+
+/** Result of a host-backed older-bars fetch, in the shape the engine wants. */
+export type FetchOlderBarsResult = {
+  bars: OHLCVBar[];
+  noData: boolean;
 };
 
 export type UseOHLCVChartOptions = {
@@ -32,6 +47,13 @@ export type UseOHLCVChartResult = {
    * USD, so callers can label the figures honestly.
    */
   resolvedCurrency: string;
+  /**
+   * Fetches the next older page of candles by cursor, for the chart engine to
+   * prepend when the user scrolls past the oldest loaded bar (host-backed
+   * pagination). Stable across renders. Returns `noData: true` when the cursor
+   * is exhausted, the series changed mid-flight, or the request failed.
+   */
+  fetchOlderBars: () => Promise<FetchOlderBarsResult>;
 };
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -72,24 +94,39 @@ type OHLCVApiCandle = {
 };
 
 /**
- * Fetches OHLCV candle data from the MetaMask Price API.
+ * Fetches one page of OHLCV candles from the MetaMask Price API, along with
+ * the cursor for the page before it.
  *
- * @param assetId    - CAIP or CoinGecko asset identifier
- * @param interval   - Candle interval (e.g. '1h', '1d')
- * @param vsCurrency - Fiat quote currency (default 'usd')
- * @param signal     - Optional AbortSignal for cancellation
- * @returns Mapped array of OHLCVBar objects
+ * The initial page is addressed by `timePeriod` + `interval`. Older pages are
+ * addressed by the opaque `nextCursor` the API returns, which already encodes
+ * the window and interval, so paging sends only the cursor (plus currency) —
+ * mirroring the chart engine's own paginator.
+ *
+ * @param assetId            - CAIP or CoinGecko asset identifier
+ * @param interval           - Candle interval (e.g. '1h', '1d')
+ * @param vsCurrency         - Fiat quote currency (default 'usd')
+ * @param options            - Paging / cancellation options
+ * @param options.nextCursor - Cursor from a previous page; omit for the first
+ * @param options.signal     - Optional AbortSignal for cancellation
+ * @returns The page's bars plus the next cursor and whether more remain
  */
-export async function fetchOHLCV(
+export async function fetchOHLCVPage(
   assetId: string,
   interval: string,
   vsCurrency = FALLBACK_CURRENCY,
-  signal?: AbortSignal,
-): Promise<OHLCVBar[]> {
-  const timePeriod = INTERVAL_TO_TIME_PERIOD[interval] ?? '1d';
+  options: { nextCursor?: string | null; signal?: AbortSignal } = {},
+): Promise<OHLCVPage> {
+  const { nextCursor, signal } = options;
   const url = new URL(`${OHLCV_BASE_URL}/${assetId}`);
-  url.searchParams.set('timePeriod', timePeriod);
-  url.searchParams.set('interval', interval);
+  if (nextCursor) {
+    url.searchParams.set('nextCursor', nextCursor);
+  } else {
+    url.searchParams.set(
+      'timePeriod',
+      INTERVAL_TO_TIME_PERIOD[interval] ?? '1d',
+    );
+    url.searchParams.set('interval', interval);
+  }
   url.searchParams.set('vsCurrency', vsCurrency);
 
   // A single controller drives both the caller's cancellation and the timeout,
@@ -113,7 +150,7 @@ export async function fetchOHLCV(
     }
 
     const json = await response.json();
-    return (json.data ?? []).map((c: OHLCVApiCandle) => ({
+    const bars: OHLCVBar[] = (json.data ?? []).map((c: OHLCVApiCandle) => ({
       time: c.timestamp,
       open: c.open,
       high: c.high,
@@ -121,12 +158,40 @@ export async function fetchOHLCV(
       close: c.close,
       volume: c.volume,
     }));
+    return {
+      bars,
+      nextCursor: json.nextCursor ?? null,
+      hasMore: Boolean(json.hasNext),
+    };
   } catch (error) {
     throw timedOut ? new Error('OHLCV fetch timeout') : error;
   } finally {
     clearTimeout(timer);
     signal?.removeEventListener('abort', abortFromCaller);
   }
+}
+
+/**
+ * Fetches the initial page of OHLCV candle data from the MetaMask Price API.
+ * Thin wrapper over {@link fetchOHLCVPage} that drops the cursor fields, kept
+ * for callers that only need the bars.
+ *
+ * @param assetId    - CAIP or CoinGecko asset identifier
+ * @param interval   - Candle interval (e.g. '1h', '1d')
+ * @param vsCurrency - Fiat quote currency (default 'usd')
+ * @param signal     - Optional AbortSignal for cancellation
+ * @returns Mapped array of OHLCVBar objects
+ */
+export async function fetchOHLCV(
+  assetId: string,
+  interval: string,
+  vsCurrency = FALLBACK_CURRENCY,
+  signal?: AbortSignal,
+): Promise<OHLCVBar[]> {
+  const { bars } = await fetchOHLCVPage(assetId, interval, vsCurrency, {
+    signal,
+  });
+  return bars;
 }
 
 // ─── React hook ─────────────────────────────────────────────────────────────
@@ -190,12 +255,36 @@ export const useOHLCVChart = ({
     }
   }
 
+  // Cursor bookkeeping for host-backed pagination. These live in refs, not
+  // state, because advancing the cursor must not re-render — only the chart
+  // engine consumes the older bars, and it does so through a stable callback.
+  const nextCursorRef = useRef<string | null>(null);
+  const hasMoreRef = useRef(false);
+  // Identifies the series the cursor belongs to, so a page that resolves after
+  // the user switched token/interval/currency is dropped instead of prepended
+  // onto the wrong chart.
+  const seriesKeyRef = useRef('');
+  const assetIdRef = useRef<string | undefined>(assetId);
+  const intervalRef = useRef(interval);
+  // The currency the loaded bars are actually priced in, so older pages are
+  // fetched in the same currency rather than re-triggering the USD fallback.
+  const pageCurrencyRef = useRef(requestedCurrency);
+  // Guards against overlapping older-bar fetches corrupting the cursor.
+  const olderBarsInFlightRef = useRef(false);
+
   useEffect(() => {
     if (!assetId || !enabled) {
       return undefined;
     }
 
     const controller = new AbortController();
+    seriesKeyRef.current = seriesKey;
+    assetIdRef.current = assetId;
+    intervalRef.current = interval;
+    // Reset the cursor for the new series; older-bar fetches before the first
+    // page lands are no-ops.
+    nextCursorRef.current = null;
+    hasMoreRef.current = false;
 
     // eslint-disable-next-line no-void -- fire-and-forget async data fetch inside effect
     void (async () => {
@@ -204,14 +293,11 @@ export const useOHLCVChart = ({
 
       let usedCurrency = requestedCurrency;
       try {
-        let data;
+        let page;
         try {
-          data = await fetchOHLCV(
-            assetId,
-            interval,
-            requestedCurrency,
-            controller.signal,
-          );
+          page = await fetchOHLCVPage(assetId, interval, requestedCurrency, {
+            signal: controller.signal,
+          });
         } catch (e) {
           // Only a 400 (bad request) means the quote currency itself was
           // rejected and is worth retrying in USD. Transient or server
@@ -225,22 +311,24 @@ export const useOHLCVChart = ({
             throw e;
           }
           usedCurrency = FALLBACK_CURRENCY;
-          data = await fetchOHLCV(
-            assetId,
-            interval,
-            FALLBACK_CURRENCY,
-            controller.signal,
-          );
+          page = await fetchOHLCVPage(assetId, interval, FALLBACK_CURRENCY, {
+            signal: controller.signal,
+          });
         }
 
         if (!controller.signal.aborted) {
-          setOhlcvData(data);
+          setOhlcvData(page.bars);
           setResolvedCurrency(usedCurrency);
+          nextCursorRef.current = page.nextCursor;
+          hasMoreRef.current = page.hasMore;
+          pageCurrencyRef.current = usedCurrency;
         }
       } catch (e) {
         if (!controller.signal.aborted) {
           setOhlcvData([]);
           setError(e instanceof Error ? e.message : 'Unknown error');
+          nextCursorRef.current = null;
+          hasMoreRef.current = false;
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -250,7 +338,48 @@ export const useOHLCVChart = ({
     })();
 
     return () => controller.abort();
-  }, [assetId, interval, requestedCurrency, enabled]);
+  }, [assetId, interval, requestedCurrency, enabled, seriesKey]);
 
-  return { ohlcvData, isLoading, error, resolvedCurrency };
+  const fetchOlderBars =
+    useCallback(async (): Promise<FetchOlderBarsResult> => {
+      const assetIdAtCall = assetIdRef.current;
+      const seriesKeyAtCall = seriesKeyRef.current;
+      const cursor = nextCursorRef.current;
+
+      if (
+        !assetIdAtCall ||
+        !cursor ||
+        !hasMoreRef.current ||
+        olderBarsInFlightRef.current
+      ) {
+        return { bars: [], noData: true };
+      }
+
+      olderBarsInFlightRef.current = true;
+      try {
+        const page = await fetchOHLCVPage(
+          assetIdAtCall,
+          intervalRef.current,
+          pageCurrencyRef.current,
+          { nextCursor: cursor },
+        );
+
+        // A new series started while this was in flight: drop the stale page so
+        // its bars cannot land on the wrong chart, and leave the (new series')
+        // cursor untouched.
+        if (seriesKeyRef.current !== seriesKeyAtCall) {
+          return { bars: [], noData: true };
+        }
+
+        nextCursorRef.current = page.nextCursor;
+        hasMoreRef.current = page.hasMore;
+        return { bars: page.bars, noData: page.bars.length === 0 };
+      } catch {
+        return { bars: [], noData: true };
+      } finally {
+        olderBarsInFlightRef.current = false;
+      }
+    }, []);
+
+  return { ohlcvData, isLoading, error, resolvedCurrency, fetchOlderBars };
 };
