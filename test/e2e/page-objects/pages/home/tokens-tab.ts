@@ -1160,12 +1160,13 @@ class TokensTab extends HomePage {
   }
 
   /**
-   * Sorts the wide layout token table by clicking its column header. Use
+   * Sorts the wide layout token table by clicking its column header once. Use
    * `sortTokenList` for the narrow layout's sort popover.
    *
-   * A header click sorts A to Z (token) or high to low (balance) when it
-   * switches column. Clicking the column that is already sorted that way would
-   * reverse it, so nothing is clicked in that case.
+   * Clicking a column other than the sorted one sorts it A to Z (token) or high
+   * to low (balance), which is what this waits for. Clicking the sorted column
+   * reverses it, so call this for a column that is not currently sorted,
+   * otherwise the wait for the default direction fails.
    *
    * @param sortBy - `alphabetically` sorts the token column,
    * `decliningBalance` sorts the balance column.
@@ -1178,20 +1179,11 @@ class TokensTab extends HomePage {
       sortBy === 'alphabetically'
         ? this.tokenTableSortToken
         : this.tokenTableSortBalance;
-    const sortedDefaultDirection = `${header} ${this.tokenTableSortIndicatorDown}`;
 
-    await this.driver.waitForSelector(header);
-    // Read the state without waiting: the indicator is absent whenever the
-    // column is not the sorted one, which is the usual case.
-    const isAlreadySorted = await this.driver.executeScript(
-      'return document.querySelector(arguments[0]) !== null',
-      sortedDefaultDirection,
-    );
-    if (isAlreadySorted) {
-      return;
-    }
     await this.driver.clickElement(header);
-    await this.driver.waitForSelector(sortedDefaultDirection);
+    await this.driver.waitForSelector(
+      `${header} ${this.tokenTableSortIndicatorDown}`,
+    );
   }
 
   private tokenImportSelectNetwork(chainId: string): string {
