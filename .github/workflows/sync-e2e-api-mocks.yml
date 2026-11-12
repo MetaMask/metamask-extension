@@ -3,8 +3,11 @@ name: Sync E2E API Mocks
 # Aligns the E2E API mock fixtures with the live response shapes. See
 # test/e2e/mock-response-data/api-mock-catalog.md.
 #
-# Mondays (and workflow_dispatch): open or update one PR when a fixture changes.
-# Same-repo pull requests that touch the mocks: commit any drift to that branch.
+# Mondays (and workflow_dispatch): commit any drift to sync/e2e-api-mocks and
+# open or update one PR. That push uses GITHUB_TOKEN, so GitHub holds the
+# workflow runs on that PR until a maintainer approves them.
+# Same-repo pull requests that touch the mocks: do not push. When a fixture
+# differs, fail the check and comment so the author can commit the update.
 # Fork pull requests are skipped. A fetch failure does not fail a pull request.
 
 on:
@@ -21,12 +24,13 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 concurrency:
   group: sync-e2e-api-mocks-${{ github.event.pull_request.number || github.run_id }}
-  # Do not cancel the run that just pushed. Its follow-up sees the bot commit
-  # and skips, so this run must finish and post the comment.
-  cancel-in-progress: false
+  # A newer push replaces a sync that is still running. This job does not
+  # push on pull requests, so it does not have to finish ahead of a follow-up.
+  cancel-in-progress: true
 
 jobs:
   sync-e2e-api-mocks:
@@ -47,26 +51,12 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # pull_request otherwise checks out the merge commit, which cannot
-          # be pushed back to the head branch.
+          # The pull request head, not the merge commit, so the diff is the
+          # branch's fixtures against the live APIs.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
-      - name: Skip the bot's own sync commit
-        id: bot
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: |
-          AUTHOR="$(git log -1 --format='%an')"
-          SUBJECT="$(git log -1 --format='%s')"
-          if [ "${AUTHOR}" = "github-actions[bot]" ] &&
-            [ "${SUBJECT}" = "test: align E2E API mocks with live response shapes" ]; then
-            echo "skip=true" >> "${GITHUB_OUTPUT}"
-            echo "Head commit is the bot sync commit; not running again."
-          fi
 
       - name: Align fixtures
         id: sync
-        if: steps.bot.outputs.skip != 'true'
         shell: bash
         env:
           CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
@@ -77,39 +67,70 @@ jobs:
           EXIT="${PIPESTATUS[0]}"
           set -e
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift (one line, no summary, nothing committed).
-          # 1: fixtures written. 2: a fetch failed and nothing was written.
-          if [ "${EXIT}" -ne 0 ]; then
+          # 0: no drift. 1: fixtures written. 2: a fetch failed and nothing
+          # was written. The drift step writes the summary for exit 1.
+          if [ "${EXIT}" -eq 2 ] || [ "${EXIT}" -gt 2 ]; then
             cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
           fi
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Logged above. A fetch failure must not fail the pull request.
-            [ "${EXIT}" -le 2 ]
+            # Drift fails the check so the author commits the update.
+            # A fetch failure is logged above and does not fail the pull request.
+            [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ]
           else
             [ "${EXIT}" -le 1 ]
           fi
 
-      - name: Commit fixtures to this pull request
-        id: pr-commit
+      - name: Record the fixture diff
+        id: drift
+        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
+        shell: bash
+        run: |
+          while IFS= read -r line || [ -n "${line}" ]; do
+            [ -z "${line}" ] && continue
+            ident="${line%% *}"
+            rest="${line#* }"
+            change="${rest##*: }"
+            url="${rest%": ${change}"}"
+            short="${url%%\?*}"
+            short="${short#https://}"
+            short="${short#http://}"
+            if [ "${#short}" -gt 96 ]; then
+              short="${short:0:48}...${short: -36}"
+            fi
+            printf -- '- **%s** (`%s`): %s\n' "${ident}" "${short}" "${change}"
+          done < sync-report.txt > drift-readable.txt
+          git diff --stat > drift-stat.txt
+          git diff > e2e-api-mock-drift.diff
+          {
+            echo "### E2E API mock drift"
+            echo
+            cat drift-readable.txt
+            echo
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "This run did not commit. The check fails until the update is on the branch."
+              echo
+              echo 'Run `yarn test:e2e:sync-api-mocks` and commit the result. The full diff is the `e2e-api-mock-drift` artifact.'
+            else
+              echo "The weekly job commits this onto \`sync/e2e-api-mocks\`."
+            fi
+            echo
+            echo '```'
+            cat drift-stat.txt
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload the fixture diff
         if: >-
           ${{
+            !cancelled() &&
             github.event_name == 'pull_request' &&
             steps.sync.outputs.EXIT == '1'
           }}
-        shell: bash
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -u
-          git commit -m "test: align E2E API mocks with live response shapes"
-          # Fast-forward only, so a commit pushed while this ran is not overwritten.
-          # The checkout token is used. Token exchange denies a write token for
-          # this repository, so an app token cannot replace it.
-          git push origin "HEAD:refs/heads/${HEAD_REF}"
-          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
-          echo "number=${{ github.event.pull_request.number }}" >> "${GITHUB_OUTPUT}"
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-api-mock-drift
+          path: e2e-api-mock-drift.diff
+          if-no-files-found: error
 
       - name: Open or update the review PR
         id: weekly
@@ -139,8 +160,12 @@ jobs:
           {
             echo "Weekly shape sync of the E2E API mocks. Values the tests assert are pinned in code."
             echo
+            echo "This pull request is pushed with the workflow GITHUB_TOKEN. GitHub holds its workflow runs until a maintainer approves them."
+            echo
+            cat drift-readable.txt
+            echo
             echo '```'
-            cat sync-report.txt
+            cat drift-stat.txt
             echo '```'
           } > pr-body.md
           EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number')"
@@ -154,38 +179,56 @@ jobs:
           echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
           echo "number=${NUMBER}" >> "${GITHUB_OUTPUT}"
 
-      - name: Comment that the mocks were updated
-        if: steps.pr-commit.outputs.sha != '' || steps.weekly.outputs.sha != ''
+      - name: Comment on the pull request
+        if: >-
+          ${{
+            !cancelled() &&
+            (
+              steps.weekly.outputs.sha != '' ||
+              (
+                github.event_name == 'pull_request' &&
+                steps.sync.outputs.EXIT == '1'
+              )
+            )
+          }}
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.pr-commit.outputs.number || steps.weekly.outputs.number }}
-          COMMIT_SHA: ${{ steps.pr-commit.outputs.sha || steps.weekly.outputs.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number || steps.weekly.outputs.number }}
+          COMMIT_SHA: ${{ steps.weekly.outputs.sha }}
         run: |
           MARKER="<!-- e2e-api-mock-sync -->"
-          # One list item per API. Drop the query string so the comment does
-          # not become a single line that scrolls sideways.
-          READABLE="$(
-            while IFS= read -r line || [ -n "${line}" ]; do
-              [ -z "${line}" ] && continue
-              ident="${line%% *}"
-              rest="${line#* }"
-              change="${rest##*: }"
-              url="${rest%": ${change}"}"
-              short="${url%%\?*}"
-              short="${short#https://}"
-              short="${short#http://}"
-              if [ "${#short}" -gt 96 ]; then
-                short="${short:0:48}...${short: -36}"
-              fi
-              printf -- '- **%s** (`%s`): %s\n' "${ident}" "${short}" "${change}"
-            done < sync-report.txt
-          )"
+          READABLE="$(cat drift-readable.txt)"
+          STAT="$(cat drift-stat.txt)"
+          DIFF=""
+          if [ -z "${COMMIT_SHA}" ]; then
+            INTRO="E2E API mock fixtures differ from the live response shapes. This run did not commit the change. Run \`yarn test:e2e:sync-api-mocks\` locally and commit the result.
+
+          The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.
+
+          The check fails until that commit is on the branch. The full diff is the \`e2e-api-mock-drift\` artifact on this run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            bytes="$(wc -c < e2e-api-mock-drift.diff)"
+            if [ "${bytes}" -le 20000 ]; then
+              DIFF="$(cat e2e-api-mock-drift.diff)"
+            fi
+          else
+            INTRO="Updated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.
+
+          Commit: https://github.com/${GITHUB_REPOSITORY}/commit/${COMMIT_SHA}
+
+          Workflow runs on this pull request stay waiting until a maintainer approves them. The commit was pushed with the workflow token."
+          fi
           jq -n \
-            --arg report "${READABLE}" \
             --arg marker "${MARKER}" \
-            --arg url "https://github.com/${GITHUB_REPOSITORY}/commit/${COMMIT_SHA}" \
-            '{body: ($marker + "\nUpdated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.\n\nCommit: " + $url + "\n\n" + $report + "\n")}' \
+            --arg intro "${INTRO}" \
+            --arg report "${READABLE}" \
+            --arg stat "${STAT}" \
+            --arg diff "${DIFF}" \
+            '{body: (
+              $marker + "\n" + $intro + "\n\n" + $report +
+              (if $stat == "" then "" else "\n\n```\n" + $stat + "\n```\n" end) +
+              (if $diff == "" then "" else "\n<details>\n<summary>Fixture diff</summary>\n\n```diff\n" + $diff + "\n```\n</details>\n" end)
+            )}' \
             > comment.json
           COMMENT_ID="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" | head -n 1)"
           if [ -n "${COMMENT_ID}" ]; then

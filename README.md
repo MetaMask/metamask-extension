@@ -248,7 +248,9 @@ Shared E2E tests mock MetaMask APIs from [`test/e2e/mock-e2e.js`](test/e2e/mock-
 
 To add a mock, add one catalog row (`write:<file>` or `write:<file>#<key>`, or `skip` plus a reason) and register it in `mock-e2e.js`, then run the command above.
 
-[`.github/workflows/sync-e2e-api-mocks.yml`](.github/workflows/sync-e2e-api-mocks.yml) runs every Monday at 06:00 UTC and when someone starts it manually. It also runs on a same-repo pull request that edits the mocks. When it pushes a commit, it posts or updates one comment with the affected APIs and a link to that commit. The note on the comment says the change is shape-only.
+[`.github/workflows/sync-e2e-api-mocks.yml`](.github/workflows/sync-e2e-api-mocks.yml) runs every Monday at 06:00 UTC and when someone starts it manually. If a fixture changed, it commits that change on `sync/e2e-api-mocks` and opens or updates one pull request. The push uses the workflow `GITHUB_TOKEN`, so GitHub holds the workflow runs on that pull request until a maintainer approves them.
+
+On a same-repo pull request that edits the mocks, the job does not commit. Drift fails the check. The job summary and one comment list the affected APIs, the diff (also uploaded as `e2e-api-mock-drift`), and the fix: run `yarn test:e2e:sync-api-mocks` and commit the result. A fetch failure is logged and does not fail the check. Fork pull requests are skipped.
 
 #### Running E2E tests with feature flags
 
