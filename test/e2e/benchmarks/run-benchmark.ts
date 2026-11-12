@@ -33,6 +33,7 @@ import {
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH,
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
+import { getAbPilotRecord, resetAbPilot } from './utils/ab-pilot';
 import { THRESHOLD_REGISTRY } from './utils/thresholds';
 import {
   validateResultThresholds,
@@ -198,6 +199,8 @@ async function runBenchmarkFile(
 
   const { platform, buildType } = extractPlatformBuildType(outputFilename);
 
+  resetAbPilot();
+
   let result: BenchmarkResults;
   let violations: ThresholdViolation[];
 
@@ -241,7 +244,8 @@ async function runBenchmarkFile(
 
   logThresholdResult(violations);
 
-  return result;
+  const abPilot = getAbPilotRecord();
+  return abPilot ? { ...result, abPilot } : result;
 }
 
 /**
