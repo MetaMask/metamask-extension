@@ -16,6 +16,11 @@ import {
   collectWebVitals,
   collectGarbageBetweenIterations,
 } from '../../utils';
+import {
+  isBigIconArmEnabled,
+  mockBigTokenIcons,
+  withBigIconTokens,
+} from '../../utils/big-icon';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
@@ -30,9 +35,15 @@ async function measurePageStandard(
   const webVitalsRuns: WebVitalsMetrics[] = [];
   const title = 'measurePageStandard';
   const persona = BENCHMARK_PERSONA.STANDARD;
+  const bigIcons = isBigIconArmEnabled();
+  const fixtureBuilder = new FixtureBuilderV2();
   await withFixtures(
     {
-      fixtures: new FixtureBuilderV2().build(),
+      fixtures: (bigIcons
+        ? withBigIconTokens(fixtureBuilder)
+        : fixtureBuilder
+      ).build(),
+      ...(bigIcons && { testSpecificMock: mockBigTokenIcons }),
       disableServerMochaToBackground: true,
       title,
       isBenchmark: true,

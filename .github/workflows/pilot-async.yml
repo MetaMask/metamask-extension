@@ -1,0 +1,181 @@
+name: Pilot async-decoding A/B
+
+# TEMPORARY (1/1): same-machine paired A/B of `decoding="async"` on token and
+# other <img> elements. Runs only on trigger-ci-pilot-async* branches, which
+# main.yml ignores. The branch's tip commit holds only the async edits; its
+# parent holds the harness and this file. Build A is the tip with ui/ restored
+# to the parent (no async), build B is the tip. Each benchmark job alternates
+# A and B between browser sessions on one machine. Results are uploaded as
+# artifacts only: no Sentry, no gates.
+# Remove this file and the main.yml branch exclusion when the pilot is done.
+#
+# Shards per arm: branch ending in -smoke gives 1, -s<N> gives N, else 20.
+# Arm "default" is the stock benchmark fixture (no remote icons). Arm "bigicon"
+# adds 5 tokens whose icons are served as 4096x4096 PNGs (positive control).
+
+on:
+  push:
+    branches:
+      - 'trigger-ci-pilot-async*'
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  BENCHMARK_AB_PILOT: '1'
+  # Session order; a per-job flip swaps which build goes first.
+  BENCHMARK_AB_SEQUENCE: ABBABAABAB
+
+jobs:
+  build:
+    name: build-${{ matrix.build }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [a, b]
+    env:
+      ENABLE_MV3: 'true'
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SEGMENT_WRITE_KEY: ${{ secrets.SEGMENT_WRITE_KEY }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
+      TZ: 'UTC'
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          fetch-depth: 2
+
+      - name: Remove the async edits (build A only)
+        if: ${{ matrix.build == 'a' }}
+        run: |
+          set -euo pipefail
+          git checkout HEAD~1 -- ui
+          git status --short
+          if git diff --quiet HEAD~1 HEAD -- ui; then
+            echo "::error::The tip commit does not change ui/, so A and B would be identical"
+            exit 1
+          fi
+
+      - name: Run tsc
+        run: yarn webpack:tsc
+
+      - name: Build the test build
+        run: yarn build:test
+
+      - name: Upload the unpacked build
+        uses: actions/upload-artifact@v6
+        with:
+          name: pilot-build-${{ matrix.build }}
+          path: dist/chrome
+          retention-days: 7
+          if-no-files-found: error
+
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Build the shard matrix
+        id: matrix
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          shards=20
+          if [[ "$BRANCH_NAME" =~ -smoke$ ]]; then
+            shards=1
+          elif [[ "$BRANCH_NAME" =~ -s([0-9]+)$ ]]; then
+            shards="${BASH_REMATCH[1]}"
+          fi
+          if (( shards < 1 || shards > 100 )); then
+            echo "::error::Shards per arm must be 1 to 100, got $shards"
+            exit 1
+          fi
+          matrix=$(jq -nc --argjson s "$shards" '
+            {include: [
+              ("default", "bigicon") as $arm
+              | range(1; $s + 1) as $shard
+              | {arm: $arm, shard: $shard, flip: (($shard - 1) % 2)}
+            ]}')
+          echo "Shards per arm: $shards"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  pilot:
+    needs:
+      - build
+      - plan
+    name: ${{ matrix.arm }}-${{ matrix.shard }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 45
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      BRANCH: ${{ github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      BENCHMARK_RUNNER_LABEL: ubuntu-26.04
+      BENCHMARK_BIG_ICONS: ${{ matrix.arm == 'bigicon' && '1' || '0' }}
+      BENCHMARK_AB_FLIP: ${{ matrix.flip }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download build A (no async)
+        uses: actions/download-artifact@v7
+        with:
+          name: pilot-build-a
+          path: pair/base
+
+      - name: Download build B (async)
+        uses: actions/download-artifact@v7
+        with:
+          name: pilot-build-b
+          path: pair/head
+
+      - name: Prepare the A and B builds
+        run: >-
+          yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts
+          --browser chrome
+          --base-source pair/base
+          --head-source pair/head
+          --out test-artifacts/benchmarks/ab-builds-${{ matrix.arm }}-s${{ matrix.shard }}.json
+
+      - name: Run the A/B benchmark
+        timeout-minutes: 35
+        run: >-
+          yarn test:e2e:benchmark
+          --preset startupStandardHome
+          --browserLoads 10 --pageLoads 10
+          --retries 2
+          --out test-artifacts/benchmarks/benchmark-chrome-webpack-startupStandardHome-${{ matrix.arm }}-s${{ matrix.shard }}.json
+
+      - name: Upload pilot result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: pilot-${{ matrix.arm }}-s${{ matrix.shard }}
+          path: test-artifacts/benchmarks/*.json
+          retention-days: 7
+          if-no-files-found: ignore

@@ -111,7 +111,10 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
   outliers?: StatisticalResult;
+  /** Raw per-load values by metric id, before outlier trimming (NaN where a load had none). */
+  samples?: Record<string, number[]>;
   webVitals?: WebVitalsSummary;
+  abPilot?: unknown;
 };
 
 export const STAT_KEY = {
