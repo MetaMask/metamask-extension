@@ -2015,6 +2015,12 @@ class Driver {
       // it, which made Tron account derivation, Edit Account Permissions and
       // dapp interactions look flaky in turn; tracked in #46623.
       '[PerpsStreamManager] Failed to fetch account',
+      // NFT detection failures are now logged (instead of silently
+      // rejecting) by the detectNfts thunk. In E2E the NFT detection
+      // endpoint is mocked/unavailable, so the request can reject (e.g.
+      // "Unexpected end of JSON input"), which is expected and has no user
+      // impact beyond the fetching indicator clearing.
+      '[detectNfts] error',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
