@@ -64,9 +64,6 @@ class HomePage {
   private readonly bitcoinAccountIcon =
     'img[src="./images/bitcoin-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
-  private readonly solanaAccountIcon =
-    'img[src="./images/solana-logo.svg"]:not([data-testid="network-pill-selector"] img)';
-
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -143,6 +140,10 @@ class HomePage {
     '[data-testid="shield-entry-modal-close-button"]';
 
   private readonly singleActionButton = '[data-testid$="-overview-default"]';
+
+  // See `bitcoinAccountIcon` for why the network pills are excluded.
+  private readonly solanaAccountIcon =
+    'img[src="./images/solana-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
