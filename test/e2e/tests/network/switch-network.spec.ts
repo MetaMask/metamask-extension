@@ -22,8 +22,6 @@ describe('Switch network - ', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        // Keeps this test on the narrow layout whatever default the feature
-        // flag registry has. The wide layout is covered below.
         manifestFlags: {
           remoteFeatureFlags: { extensionUxFullscreenRedesign: false },
         },
@@ -61,11 +59,11 @@ describe('Switch network - ', function (this: Suite) {
     );
   });
 
-  // The pills only offer default networks the wallet already has. Custom
+  // The network pills only offer default networks the wallet already has. Custom
   // networks (the local node) and networks that still have to be added
   // (Arbitrum) can only be switched to from the network filter modal, which is
-  // covered by the test above.
-  it('Switch networks with the network pills in the wide layout', async function () {
+  // covered by the previous test.
+  it('Switch networks using network pills available in wide layout', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),

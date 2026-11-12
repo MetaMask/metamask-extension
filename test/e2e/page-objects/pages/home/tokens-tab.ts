@@ -118,9 +118,6 @@ class TokensTab extends HomePage {
 
   private readonly moneyTokenListCta = '[data-testid^="money-token-list-cta-"]';
 
-  private readonly networkPillSelector =
-    '[data-testid="network-pill-selector"]';
-
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
     text: '—',
@@ -224,8 +221,6 @@ class TokensTab extends HomePage {
     text: 'Token symbol',
   };
 
-  private readonly tokenTable = '[data-testid="token-table"]';
-
   private readonly tokenTableSortBalance =
     '[data-testid="token-table-sort-balance"]';
 
@@ -304,14 +299,6 @@ class TokensTab extends HomePage {
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);
-  }
-
-  /**
-   * Checks the network pills shown above the token table in the wide layout.
-   */
-  async checkNetworkPillsAreDisplayed(): Promise<void> {
-    console.log('Check the network pills are displayed');
-    await this.driver.waitForSelector(this.networkPillSelector);
   }
 
   /**
@@ -721,15 +708,6 @@ class TokensTab extends HomePage {
       text: expectedAddressFormat,
     });
     console.log(`Token details verified successfully for ${symbol}`);
-  }
-
-  /**
-   * Checks the tokens render as a table, which the wide layout uses instead of
-   * the list.
-   */
-  async checkTokenTableIsDisplayed(): Promise<void> {
-    console.log('Check the token table is displayed');
-    await this.driver.waitForSelector(this.tokenTable);
   }
 
   async clickManageTokens(): Promise<void> {

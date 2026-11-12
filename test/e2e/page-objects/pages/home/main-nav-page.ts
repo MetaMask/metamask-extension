@@ -44,14 +44,6 @@ class MainNav {
     await this.driver.waitForSelector(this.page);
   }
 
-  /**
-   * Asserts the wide layout is in use: the side nav replaces the bottom nav bar.
-   */
-  async checkSideNavIsDisplayed(): Promise<void> {
-    console.log('Check the side nav is displayed');
-    await this.driver.waitForSelector(this.sideNavAccounts);
-  }
-
   async clickHome(): Promise<void> {
     console.log('Click main nav home item');
     await this.driver.clickElement(this.homeTab);
