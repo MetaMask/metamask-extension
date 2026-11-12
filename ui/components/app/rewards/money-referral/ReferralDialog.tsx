@@ -82,7 +82,6 @@ export function ReferralDialog({
         aria-labelledby={labelledBy}
         data-testid={testId}
         data-no-focus-lock
-        {...{ closedby: 'any' }}
         onCancel={handleCancel}
         onKeyDown={(event) => {
           if (event.key === 'Escape') {
@@ -93,9 +92,7 @@ export function ReferralDialog({
         // Other modals listen on document; keep our interactions local.
         onMouseDown={(event) => {
           event.stopPropagation();
-          // Firefox 140 supports dialog, but not native light dismissal.
-          backdropPress.current =
-            !('closedBy' in event.currentTarget) && isBackdropEvent(event);
+          backdropPress.current = isBackdropEvent(event);
         }}
         onClick={(event) => {
           event.stopPropagation();

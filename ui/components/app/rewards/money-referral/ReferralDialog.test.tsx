@@ -95,6 +95,7 @@ describe('ReferralDialog', () => {
       </ReferralDialog>,
     );
     const dialog = screen.getByRole('dialog');
+    Object.defineProperty(dialog, 'closedBy', { value: 'closerequest' });
     jest.spyOn(dialog, 'getBoundingClientRect').mockReturnValue({
       x: 100,
       y: 100,
@@ -144,35 +145,5 @@ describe('ReferralDialog', () => {
     fireEvent.click(dialog, { clientX: 150, clientY: 150 });
 
     expect(onClose).not.toHaveBeenCalled();
-  });
-
-  it('leaves native light dismissal to the cancel handler when supported', () => {
-    const onClose = jest.fn();
-    render(
-      <ReferralDialog onClose={onClose} data-testid="invite">
-        Invite
-      </ReferralDialog>,
-    );
-    const dialog = screen.getByRole('dialog');
-    Object.defineProperty(dialog, 'closedBy', { value: 'any' });
-    jest.spyOn(dialog, 'getBoundingClientRect').mockReturnValue({
-      x: 100,
-      y: 100,
-      width: 280,
-      height: 180,
-      top: 100,
-      right: 380,
-      bottom: 280,
-      left: 100,
-      toJSON: () => ({}),
-    });
-    expect(dialog).toHaveAttribute('closedby', 'any');
-
-    fireEvent.mouseDown(dialog, { clientX: 10, clientY: 10 });
-    fireEvent.click(dialog, { clientX: 10, clientY: 10 });
-    expect(onClose).not.toHaveBeenCalled();
-
-    fireEvent(dialog, new Event('cancel', { cancelable: true }));
-    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
