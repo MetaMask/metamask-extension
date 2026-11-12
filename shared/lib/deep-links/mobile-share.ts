@@ -1,16 +1,26 @@
 import { routes } from './routes';
 
 /**
+ * Checks whether an unregistered deep link requests the mobile QR fallback.
+ *
+ * @param url - The parsed deep link, including its share parameter.
+ * @returns Whether the mobile fallback applies.
+ */
+export function isMobileShareFallback(url: URL): boolean {
+  return (
+    !routes.has(url.pathname.toLowerCase()) &&
+    url.searchParams.has('share', '1')
+  );
+}
+
+/**
  * Handles mobile sharing only when no Extension route is registered.
  *
  * @param url - The parsed deep link, including its share parameter.
  * @returns The original link without `share=1`, or null when this fallback does not apply.
  */
 export function getMobileShareUrl(url: URL): string | null {
-  if (
-    routes.has(url.pathname.toLowerCase()) ||
-    !url.searchParams.has('share', '1')
-  ) {
+  if (!isMobileShareFallback(url)) {
     return null;
   }
 
