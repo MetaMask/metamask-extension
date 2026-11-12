@@ -110,26 +110,29 @@ export const usePrefillFromSearchQuery = () => {
       // Fetch asset metadata for both tokens in 1 call
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
         const controller = new AbortController();
+        let isFetchComplete = false;
         fetchAssetMetadata(
           controller.signal,
           searchParamsFrom?.assetId,
           searchParamsTo?.assetId,
         ).then((result) => {
           if (!controller.signal.aborted) {
+            isFetchComplete = true;
             setAssetMetadataByAssetId(result);
           }
         });
 
         return () => {
           controller.abort();
-          appliedSearch.current = null;
+          // Re-apply only if the fetch was cut short (e.g. StrictMode probe);
+          // re-applying after it landed would clobber the user's token picks.
+          if (!isFetchComplete) {
+            appliedSearch.current = null;
+          }
         };
       }
     }
-
-    return () => {
-      appliedSearch.current = null;
-    };
+    return undefined;
   }, [search, searchParams]);
 
   const setToChainAndToken = useCallback(
