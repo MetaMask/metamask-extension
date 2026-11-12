@@ -238,6 +238,20 @@ env:
   - REWARDS_MONEY_API_URL: null
 
   ###
+  # Advanced Charts
+  ###
+  # Origin serving the Advanced Charts iframe. Must stay in the chart origin's
+  # own CSP frame-ancestors / allowedEmbedderOrigins allowlist, keyed on the
+  # extension id.
+  #
+  # Leave this null: the origin is selected per build environment in
+  # getChartOrigin() (production/release-candidate -> chart.metamask-charts.com,
+  # everything else -> chart.uat.metamask-charts.com). Set an explicit value
+  # here or in .metamaskrc (e.g. http://localhost:8001) only to override the
+  # mapping against a local chart-origin server.
+  - CHART_ORIGIN_URL: null
+
+  ###
   # Notifications Feature
   ###
   - AUTH_API: https://authentication.api.cx.metamask.io
