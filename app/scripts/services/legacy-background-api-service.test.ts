@@ -1,6 +1,6 @@
 import { Mutex } from 'async-mutex';
 import nock from 'nock';
-import { it } from '@jest/globals';
+import { it as jestIt } from '@jest/globals';
 import {
   AnalyticsController,
   type AnalyticsControllerInitialState,
@@ -8785,7 +8785,7 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('checkFirstTimeInteraction', () => {
-    it.each([
+    jestIt.each([
       [0, true],
       [1, false],
       [undefined, undefined],
