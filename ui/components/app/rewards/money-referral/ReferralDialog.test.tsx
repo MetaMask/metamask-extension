@@ -107,6 +107,9 @@ describe('ReferralDialog', () => {
       left: 100,
       toJSON: () => ({}),
     });
+    fireEvent.mouseDown(dialog, { clientX: 150, clientY: 150 });
+    fireEvent.click(dialog, { clientX: 150, clientY: 150 });
+    expect(onClose).not.toHaveBeenCalled();
     fireEvent.mouseDown(screen.getByText('Invite'), {
       clientX: 150,
       clientY: 150,
@@ -119,31 +122,5 @@ describe('ReferralDialog', () => {
     fireEvent.mouseDown(dialog, { clientX: 10, clientY: 10 });
     fireEvent.click(dialog, { clientX: 10, clientY: 10 });
     expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('keeps clicks on dialog padding inside the sheet', () => {
-    const onClose = jest.fn();
-    render(
-      <ReferralDialog onClose={onClose} data-testid="invite">
-        Invite
-      </ReferralDialog>,
-    );
-    const dialog = screen.getByRole('dialog');
-    jest.spyOn(dialog, 'getBoundingClientRect').mockReturnValue({
-      x: 100,
-      y: 100,
-      width: 280,
-      height: 180,
-      top: 100,
-      right: 380,
-      bottom: 280,
-      left: 100,
-      toJSON: () => ({}),
-    });
-
-    fireEvent.mouseDown(dialog, { clientX: 150, clientY: 150 });
-    fireEvent.click(dialog, { clientX: 150, clientY: 150 });
-
-    expect(onClose).not.toHaveBeenCalled();
   });
 });
