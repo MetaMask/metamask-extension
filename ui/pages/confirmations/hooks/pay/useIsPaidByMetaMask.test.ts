@@ -1,9 +1,13 @@
 import { renderHook } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
+import {
+  PaymentOverride,
+  type TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -18,6 +22,9 @@ import {
   useSponsoredNetworkFeeFlags,
 } from './useIsPaidByMetaMask';
 
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 jest.mock('../transactions/useTransactionMetadataRequest');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayToken');
@@ -34,6 +41,7 @@ const useTransactionPaySourceAmountsMock = jest.mocked(
   useTransactionPaySourceAmounts,
 );
 const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
+const useSelectorMock = jest.mocked(useSelector);
 
 function mockConfirmation(
   type: TransactionType,
@@ -69,6 +77,7 @@ describe('useIsPaidByMetaMask', () => {
       payToken: { chainId: '0x1', address: '0xabc' },
       setPayToken: jest.fn(),
     } as never);
+    useSelectorMock.mockReturnValue(undefined);
   });
 
   it('returns true when all fees are zero for musdConversion', () => {
@@ -299,6 +308,90 @@ describe('useIsPaidByMetaMask', () => {
     const { result } = renderHook(() => useIsPaidByMetaMask());
     expect(result.current).toBe(false);
   });
+
+  it('returns true for a money-account perps deposit when every fee is zero', () => {
+    mockConfirmation(TransactionType.perpsDeposit, { id: 'tx-1' });
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true for a money-account perps withdraw when every fee is zero', () => {
+    mockConfirmation(TransactionType.perpsWithdraw, { id: 'tx-1' });
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns false for a perps deposit paid with a regular token', () => {
+    mockConfirmation(TransactionType.perpsDeposit, { id: 'tx-1' });
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false for a perps withdraw to a regular token', () => {
+    mockConfirmation(TransactionType.perpsWithdraw, { id: 'tx-1' });
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false for a money-account perps deposit with a provider fee', () => {
+    mockConfirmation(TransactionType.perpsDeposit, { id: 'tx-1' });
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+    mockTotals({
+      provider: { usd: '0.10' },
+    } as TransactionPayTotals['fees']);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false for a money-account perps withdraw with a network fee', () => {
+    mockConfirmation(TransactionType.perpsWithdraw, { id: 'tx-1' });
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+    mockTotals({
+      targetNetwork: { usd: '0.05' },
+    } as TransactionPayTotals['fees']);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false for a money-account perps deposit without a positive amount', () => {
+    mockConfirmation(TransactionType.perpsDeposit, { id: 'tx-1' });
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+    useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(false);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false for a money-account perps deposit without a quote', () => {
+    mockConfirmation(TransactionType.perpsDeposit, { id: 'tx-1' });
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+    useTransactionPayQuotesMock.mockReturnValue([]);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('does not treat gas sponsorship as Paid by MetaMask for perps', () => {
+    mockConfirmation(TransactionType.perpsDeposit, {
+      id: 'tx-1',
+      isGasFeeSponsored: true,
+    });
+    useSelectorMock.mockReturnValue(PaymentOverride.MoneyAccount);
+    useTransactionPayQuotesMock.mockReturnValue([]);
+    useTransactionPayTotalsMock.mockReturnValue(undefined);
+    useTransactionPaySourceAmountsMock.mockReturnValue([]);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
 });
 
 describe('useIsNetworkFeePaidByMetaMask', () => {
@@ -347,6 +440,15 @@ describe('useIsNetworkFeePaidByMetaMask', () => {
 
   it('returns false for unsupported transaction types even when sponsored', () => {
     mockConfirmation(TransactionType.simpleSend, {
+      isGasFeeSponsored: true,
+    });
+
+    const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false for perps even when gas is sponsored', () => {
+    mockConfirmation(TransactionType.perpsDeposit, {
       isGasFeeSponsored: true,
     });
 

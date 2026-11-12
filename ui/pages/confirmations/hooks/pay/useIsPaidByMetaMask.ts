@@ -1,6 +1,12 @@
-import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -19,7 +25,28 @@ export {
   type SponsoredNetworkFeeFlags,
 } from './sponsored-network-fees';
 
+/**
+ * Types that can show "Paid by MetaMask". Perps qualifies only when Money
+ * Account is the pay source or destination and every quoted fee is zero.
+ */
 const SUPPORTED_TYPES: TransactionType[] = [
+  TransactionType.musdConversion,
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+  TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
+];
+
+const PERPS_TYPES: TransactionType[] = [
+  TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
+];
+
+/**
+ * Types whose network gas can be MetaMask-sponsored via `isGasFeeSponsored`.
+ * Perps is excluded: its label comes from a zero-fee quote, not gas sponsorship.
+ */
+const GAS_SPONSORED_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
   TransactionType.moneyAccountDeposit,
   TransactionType.moneyAccountWithdraw,
@@ -37,7 +64,7 @@ export function useSponsoredNetworkFeeFlags(): SponsoredNetworkFeeFlags {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const { payToken } = useTransactionPayToken();
 
-  const isSupported = hasTransactionType(transactionMeta, SUPPORTED_TYPES);
+  const isSupported = hasTransactionType(transactionMeta, GAS_SPONSORED_TYPES);
   const isGasSponsored =
     isSupported && Boolean(transactionMeta?.isGasFeeSponsored);
 
@@ -88,6 +115,11 @@ export function useIsNetworkFeePaidByMetaMask(): boolean {
  * by MetaMask the same way mUSD conversion does. Same-token Money Account
  * withdraws store a Pay no-op quote whose totals still include estimated
  * network gas; that gas is also sponsored on Monad.
+ *
+ * Money Account ↔ Perps shows the label only when Money Account is the pay
+ * source (deposit) or destination (withdraw) and the quote's provider,
+ * MetaMask, and network fees are all zero. Regular USDC Perps flows stay on
+ * the numeric fee. Perps does not use `isGasFeeSponsored`.
  */
 export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
@@ -98,8 +130,18 @@ export function useIsPaidByMetaMask(): boolean {
     useTransactionPayHasPositiveRequiredAmount();
   const { isSourceNetworkSponsored, isTargetNetworkSponsored } =
     useSponsoredNetworkFeeFlags();
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionMeta?.id ?? ''),
+  );
 
   if (!hasTransactionType(transactionMeta, SUPPORTED_TYPES)) {
+    return false;
+  }
+
+  const isPerps = hasTransactionType(transactionMeta, PERPS_TYPES);
+  // Money Account selection is the payment override, for both funding a Perps
+  // deposit and receiving a Perps withdraw. A plain USDC pay token is not it.
+  if (isPerps && paymentOverride !== PaymentOverride.MoneyAccount) {
     return false;
   }
 
