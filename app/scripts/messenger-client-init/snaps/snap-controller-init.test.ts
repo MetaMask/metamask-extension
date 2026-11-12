@@ -13,7 +13,11 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { inMilliseconds, Duration } from '@metamask/utils';
+import {
+  createDeferredPromise,
+  inMilliseconds,
+  Duration,
+} from '@metamask/utils';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -123,7 +127,7 @@ describe('SnapControllerInit', () => {
     expect(spy).toHaveBeenCalledWith('SnapController:setClientActive', true);
   });
 
-  it('stops all Snaps and closes their WebSockets when basic functionality is turned off', () => {
+  it('stops all Snaps, then closes their WebSockets, when basic functionality is turned off', async () => {
     const baseMessenger = new Messenger<
       MockAnyNamespace,
       WebSocketServiceGetAllAction | WebSocketServiceCloseAction,
@@ -138,7 +142,10 @@ describe('SnapControllerInit', () => {
     const { messengerClient } = SnapControllerInit(
       getInitRequestMock(baseMessenger),
     );
-    jest.mocked(messengerClient.stopAllSnaps).mockResolvedValue(undefined);
+    const stopAllSnaps = createDeferredPromise();
+    jest
+      .mocked(messengerClient.stopAllSnaps)
+      .mockReturnValue(stopAllSnaps.promise as Promise<void>);
     Object.defineProperty(messengerClient, 'state', {
       value: { snaps: { 'npm:snap': {} } },
     });
@@ -156,6 +163,11 @@ describe('SnapControllerInit', () => {
       [],
     );
     expect(messengerClient.stopAllSnaps).toHaveBeenCalledTimes(1);
+    expect(closeMock).not.toHaveBeenCalled();
+
+    stopAllSnaps.resolve();
+    await stopAllSnaps.promise;
+    await new Promise(process.nextTick);
     expect(closeMock).toHaveBeenCalledWith('npm:snap', 'socket-1');
   });
 });

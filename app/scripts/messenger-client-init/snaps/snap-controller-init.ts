@@ -157,15 +157,21 @@ export const SnapControllerInit: MessengerClientInitFunction<
       if (useExternalServices) {
         return;
       }
-      messengerClient.stopAllSnaps().catch(console.error);
-      for (const snapId of Object.keys(messengerClient.state.snaps)) {
-        for (const { id } of initMessenger.call(
-          'WebSocketService:getAll',
-          snapId,
-        )) {
-          initMessenger.call('WebSocketService:close', snapId, id);
-        }
-      }
+      // Sockets are closed only once every Snap is terminated, otherwise a
+      // still-running Snap could open a new one that is never closed.
+      messengerClient
+        .stopAllSnaps()
+        .catch(console.error)
+        .finally(() => {
+          for (const snapId of Object.keys(messengerClient.state.snaps)) {
+            for (const { id } of initMessenger.call(
+              'WebSocketService:getAll',
+              snapId,
+            )) {
+              initMessenger.call('WebSocketService:close', snapId, id);
+            }
+          }
+        });
     },
     (state) => state.useExternalServices,
   );
