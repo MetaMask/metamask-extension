@@ -103,7 +103,7 @@ jobs:
             if [ "${#short}" -gt 96 ]; then
               short="${short:0:48}...${short: -36}"
             fi
-            printf -- '- **%s** (`%s`): %s\n' "${ident}" "${short}" "${change}"
+            printf -- "- **%s** (\`%s\`): %s\n" "${ident}" "${short}" "${change}"
           done < sync-report.txt > drift-readable.txt
           git diff --stat > drift-stat.txt
           git diff > e2e-api-mock-drift.diff
@@ -115,7 +115,7 @@ jobs:
             if [ "${{ github.event_name }}" = "pull_request" ]; then
               echo "This run did not commit. The check fails until the update is on the branch."
               echo
-              echo 'Run `yarn test:e2e:sync-api-mocks` and commit the result. The full diff is the `e2e-api-mock-drift` artifact.'
+              echo "Run \`yarn test:e2e:sync-api-mocks\` and commit the result. The full diff is the \`e2e-api-mock-drift\` artifact."
             else
               echo "The weekly job commits this onto \`sync/e2e-api-mocks\`."
             fi
@@ -258,7 +258,7 @@ jobs:
             > review.json
           if ! gh api --method POST "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews" --input review.json > review-result.json; then
             printf '%s\n' fallback > suggest-mode.txt
-            printf '%s\n' 'GitHub rejected the suggestion review. Run `yarn test:e2e:sync-api-mocks` and commit the result.' > suggest-reason.txt
+            printf '%s\n' "GitHub rejected the suggestion review. Run \`yarn test:e2e:sync-api-mocks\` and commit the result." > suggest-reason.txt
             {
               echo
               echo "GitHub rejected the suggestion review. The summary comment has the diff."
