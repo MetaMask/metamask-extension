@@ -436,7 +436,7 @@
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/connectivity-controller": "^1.0.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "^12.3.0",
+    "@metamask/controller-utils": "^13.0.0",
     "@metamask/core-backend": "^14.0.0",
     "@metamask/delegation-controller": "^4.0.0",
     "@metamask/delegation-core": "^2.0.0",
