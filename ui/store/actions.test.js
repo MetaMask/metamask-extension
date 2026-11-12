@@ -25,7 +25,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
-  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../shared/lib/trace';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
@@ -218,7 +217,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('returns the seed phrase and syncs marketing consent', async () => {
+    it('returns the seed phrase without reading marketing consent from OAuth', async () => {
       const store = mockStore();
       const mnemonic = 'seed phrase';
       const messengerCallStub = sinon.stub();
@@ -228,9 +227,6 @@ describe('Actions', () => {
           ['password'],
         )
         .resolves(mnemonic);
-      messengerCallStub
-        .withArgs('OAuthService:getMarketingConsent', [])
-        .resolves(true);
       setBackgroundConnection({
         ...background,
         getStatePatches: background.getStatePatches,
@@ -249,73 +245,16 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(
-        messengerCallStub.calledWithExactly(
-          'OAuthService:getMarketingConsent',
-          [],
-        ),
-      ).toBe(true);
+        messengerCallStub.calledWith('OAuthService:getMarketingConsent'),
+      ).toBe(false);
       expect(
-        messengerCallStub.calledWithExactly(
-          'AnalyticsController:optInToMarketing',
-          [],
-        ),
-      ).toBe(true);
+        messengerCallStub.calledWith('AnalyticsController:optInToMarketing'),
+      ).toBe(false);
+      expect(
+        messengerCallStub.calledWith('AnalyticsController:optOutOfMarketing'),
+      ).toBe(false);
       expect(background.getStatePatches.calledOnce).toStrictEqual(true);
-      expect(store.getActions()).toStrictEqual([
-        {
-          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-          value: true,
-        },
-      ]);
-    });
-
-    it('tracks the onboarding analytics preference event when a tracking function is provided', async () => {
-      const store = mockStore();
-      const trackEventStub = sinon.stub().resolves();
-      const messengerCallStub = sinon.stub();
-      messengerCallStub
-        .withArgs(
-          'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-          ['password'],
-        )
-        .resolves('seed phrase');
-      messengerCallStub
-        .withArgs('OAuthService:getMarketingConsent', [])
-        .resolves(false);
-
-      setBackgroundConnection({
-        ...background,
-        getStatePatches: background.getStatePatches,
-        messengerCall: messengerCallStub,
-      });
-
-      await store.dispatch(
-        actions.restoreSocialBackupAndGetSeedPhrase('password', trackEventStub),
-      );
-
-      expect(
-        messengerCallStub.calledWithExactly(
-          'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-          ['password'],
-        ),
-      ).toBe(true);
-      expect(
-        messengerCallStub.calledWithExactly(
-          'OAuthService:getMarketingConsent',
-          [],
-        ),
-      ).toBe(true);
-      expect(
-        trackEventStub.calledOnceWith({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
-            location: 'onboarding_social_login_rehydration',
-          },
-        }),
-      ).toStrictEqual(true);
+      expect(store.getActions()).toStrictEqual([]);
     });
 
     it('throws an error when restoring the social backup fails', async () => {

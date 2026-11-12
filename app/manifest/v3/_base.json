@@ -12,7 +12,7 @@
     "default_title": "MetaMask",
     "default_popup": "popup-init.html"
   },
-  "author": "https://metamask.io",
+  "author": "https://metamask.com",
   "background": {
     "service_worker": "service-worker.ts"
   },

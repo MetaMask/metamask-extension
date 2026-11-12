@@ -3,10 +3,12 @@ import { act, screen } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { AdvancedChartSection } from './advanced-chart-section';
 import { useAdvancedChartData } from './useAdvancedChartData';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
+import { useChartAnalytics } from './useChartAnalytics';
 import {
   CHART_TYPE_LINE,
   CHART_TYPE_CANDLE,
@@ -15,6 +17,7 @@ import {
 jest.mock('../../hooks/useHistoricalPrices');
 jest.mock('./useAdvancedChartData');
 jest.mock('./useAdvancedChartPreferences');
+jest.mock('./useChartAnalytics');
 
 // The iframe loads a cross-origin chart engine that cannot run under jsdom, so
 // stand in for it and expose the props the section is responsible for wiring.
@@ -26,11 +29,15 @@ jest.mock('./advanced-chart-iframe', () => ({
     selectedInterval,
     onError,
     onReady,
+    onChartInteracted,
+    onTradingViewClicked,
   }: {
     assetId: string;
     selectedInterval: string;
     onError: (error: string) => void;
     onReady: () => void;
+    onChartInteracted: (type: 'zoom' | 'pan' | 'tooltip') => void;
+    onTradingViewClicked: () => void;
   }) => (
     <div
       data-testid="chart-iframe"
@@ -42,6 +49,16 @@ jest.mock('./advanced-chart-iframe', () => ({
         type="button"
         data-testid="simulate-error"
         onClick={() => onError('boom')}
+      />
+      <button
+        type="button"
+        data-testid="simulate-gesture"
+        onClick={() => onChartInteracted('zoom')}
+      />
+      <button
+        type="button"
+        data-testid="simulate-tradingview"
+        onClick={() => onTradingViewClicked()}
       />
     </div>
   ),
@@ -84,6 +101,10 @@ const mockUseAdvancedChartData = jest.mocked(useAdvancedChartData);
 const mockUseAdvancedChartPreferences = jest.mocked(
   useAdvancedChartPreferences,
 );
+const mockUseChartAnalytics = jest.mocked(useChartAnalytics);
+
+const trackChartInteraction = jest.fn();
+const trackChartEmptyDisplayed = jest.fn();
 
 const setChartType = jest.fn();
 const setCandleInterval = jest.fn();
@@ -199,6 +220,10 @@ describe('AdvancedChartSection', () => {
     setupPreferences();
     setupData();
     setupHistorical();
+    mockUseChartAnalytics.mockReturnValue({
+      trackChartInteraction,
+      trackChartEmptyDisplayed,
+    });
   });
 
   describe('line mode', () => {
@@ -335,6 +360,129 @@ describe('AdvancedChartSection', () => {
       });
 
       expect(lineColor()).toBe('--color-success-default');
+    });
+  });
+
+  describe('analytics', () => {
+    const click = (element: Element) =>
+      act(() => (element as HTMLElement).click());
+
+    it('reports a chart type change with the newly selected type', () => {
+      render();
+
+      click(
+        screen.getByRole('button', {
+          name: messages.chartTypeCandlestick.message,
+        }),
+      );
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'chart_type_changed',
+        chartType: CHART_TYPE_CANDLE,
+      });
+    });
+
+    it('reports a line timeframe change', () => {
+      render();
+
+      click(screen.getByText('1W'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'timeframe_changed',
+        chartTimeframe: '1W',
+      });
+    });
+
+    it('reports a candle granularity change, lowercased', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByText('4h'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'granularity_changed',
+        chartGranularity: '4h',
+      });
+    });
+
+    it('reports an indicator toggle with the post-toggle set', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByText('RSI'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'indicator_toggled',
+        indicatorType: 'RSI',
+        indicatorAction: 'on',
+        indicatorsActive: ['RSI'],
+      });
+    });
+
+    it('reports the moving-average selector opening', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      // The moving-average dropdown trigger is the only button that opens a menu.
+      click(screen.getByTestId('advanced-chart-ma-trigger'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'indicator_selector_opened',
+        selectorType: 'moving_averages',
+      });
+    });
+
+    it('reports gesture interactions forwarded by the iframe', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByTestId('simulate-gesture'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'zoom',
+      });
+    });
+
+    it('reports a TradingView attribution click', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      render();
+
+      click(screen.getByTestId('simulate-tradingview'));
+
+      expect(trackChartInteraction).toHaveBeenCalledWith({
+        interactionType: 'tradingview_clicked',
+      });
+    });
+
+    it('reports an empty chart once candle data loads with no bars', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      setupData({ ohlcvData: [] });
+      render();
+
+      expect(trackChartEmptyDisplayed).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not report empty while the candle data is still loading', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      setupData({ ohlcvData: [], isLoading: true });
+      render();
+
+      expect(trackChartEmptyDisplayed).not.toHaveBeenCalled();
+    });
+
+    it('does not report empty when the candle chart errored', () => {
+      setupPreferences(CHART_TYPE_CANDLE);
+      setupData({ ohlcvData: [], error: 'boom' });
+      render();
+
+      expect(trackChartEmptyDisplayed).not.toHaveBeenCalled();
+    });
+
+    it('does not report empty in line mode, where candles are not shown', () => {
+      setupData({ ohlcvData: [] });
+      render();
+
+      expect(trackChartEmptyDisplayed).not.toHaveBeenCalled();
     });
   });
 
