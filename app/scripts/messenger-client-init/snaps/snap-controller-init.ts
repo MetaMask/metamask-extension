@@ -171,7 +171,9 @@ export const SnapControllerInit: MessengerClientInitFunction<
           ) {
             return;
           }
-          for (const snapId of Object.keys(messengerClient.state.snaps)) {
+          for (const { id: snapId } of Object.values(
+            messengerClient.state.snaps,
+          )) {
             for (const { id } of initMessenger.call(
               'WebSocketService:getAll',
               snapId,

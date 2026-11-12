@@ -156,7 +156,7 @@ describe('SnapControllerInit', () => {
         .mocked(messengerClient.stopAllSnaps)
         .mockReturnValue(stopAllSnaps.promise);
       Object.defineProperty(messengerClient, 'state', {
-        value: { snaps: { 'npm:snap': {} } },
+        value: { snaps: { 'npm:snap': { id: 'npm:snap' } } },
       });
 
       const setUseExternalServices = (useExternalServices: boolean) => {
