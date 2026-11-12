@@ -10,7 +10,7 @@ export const SideNav = () => {
 
   return (
     <div
-      data-testid="side-nav"
+      data-testid="parent-selector-main-nav"
       className="side-nav flex h-full min-h-0 w-[320px] shrink-0 flex-col bg-background-default border-r border-border-muted"
       // Keeps the side nav out of the root page transition, like the bottom nav bar.
       style={{ viewTransitionName: 'side-nav' }}
@@ -24,7 +24,7 @@ export const SideNav = () => {
             icon={icon}
             label={label}
             onClick={onClick}
-            data-testid={`side-nav-${id}`}
+            data-testid={`main-nav-${id}`}
           />
         ))}
       </nav>
