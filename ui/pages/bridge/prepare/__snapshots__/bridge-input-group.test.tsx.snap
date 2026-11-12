@@ -120,7 +120,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 >
                   <img
                     alt="Solana"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/solana-logo.svg"
                   />
                 </div>
@@ -166,7 +166,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 >
                   <img
                     alt="Bitcoin"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/bitcoin-logo.svg"
                   />
                 </div>
@@ -212,7 +212,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 >
                   <img
                     alt="Ethereum"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/eth_logo.svg"
                   />
                 </div>
@@ -258,7 +258,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 >
                   <img
                     alt="OP"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/optimism.svg"
                   />
                 </div>
@@ -304,7 +304,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 >
                   <img
                     alt="Polygon"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/pol-token.svg"
                   />
                 </div>
@@ -350,7 +350,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 >
                   <img
                     alt="BNB Chain"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/bnb.svg"
                   />
                 </div>
@@ -396,7 +396,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 >
                   <img
                     alt="Tron"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/tron-logo.svg"
                   />
                 </div>
@@ -562,7 +562,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 >
                   <img
                     alt="Solana"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/solana-logo.svg"
                   />
                 </div>
@@ -608,7 +608,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 >
                   <img
                     alt="Bitcoin"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/bitcoin-logo.svg"
                   />
                 </div>
@@ -654,7 +654,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 >
                   <img
                     alt="Ethereum"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/eth_logo.svg"
                   />
                 </div>
@@ -700,7 +700,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 >
                   <img
                     alt="OP"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/optimism.svg"
                   />
                 </div>
@@ -746,7 +746,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 >
                   <img
                     alt="Polygon"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/pol-token.svg"
                   />
                 </div>
@@ -792,7 +792,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 >
                   <img
                     alt="BNB Chain"
-                    class="size-full object-contain"
+                    class="size-full object-cover"
                     src="./images/bnb.svg"
                   />
                 </div>
