@@ -1,5 +1,7 @@
 import { fireEvent, waitFor } from '@testing-library/react';
+import { it } from '@jest/globals';
 import React from 'react';
+import log from 'loglevel';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Routes, Route } from 'react-router-dom';
@@ -117,9 +119,11 @@ jest.mock('../unlock-page', () => {
     navigateAfterUnlock?: () => Promise<void>;
   }) {
     const [password, setPassword] = reactModule.useState('');
+    const [error, setError] = reactModule.useState('');
 
     return (
       <div data-testid="unlock-page">
+        {error ? <div role="alert">{error}</div> : null}
         <input
           data-testid="unlock-password-input"
           value={password}
@@ -128,8 +132,13 @@ jest.mock('../unlock-page', () => {
         <button
           data-testid="unlock-submit"
           onClick={async () => {
-            await onSubmit(password);
-            await navigateAfterUnlock?.();
+            setError('');
+            try {
+              await onSubmit(password);
+              await navigateAfterUnlock?.();
+            } catch (caughtError) {
+              setError((caughtError as Error).message);
+            }
           }}
         >
           Unlock
@@ -366,51 +375,68 @@ describe('Onboarding Flow', () => {
     );
   });
 
-  it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', async () => {
-    const completedOnboardingState = {
-      metamask: {
-        completedOnboarding: true,
-        seedPhraseBackedUp: true,
-        internalAccounts: {
-          accounts: {
-            accountId: {
-              address: '0x0000000000000000000000000000000000000000',
-              metadata: {
-                keyring: 'HD Key Tree',
+  it.each([null, '/settings/privacy?a=v#metametrics'])(
+    'resumes %s after onboarding completes and clears the saved destination',
+    async (onboardingRedirect) => {
+      const completedOnboardingState = {
+        appState: { onboardingRedirect },
+        metamask: {
+          completedOnboarding: true,
+          seedPhraseBackedUp: true,
+          internalAccounts: {
+            accounts: {
+              accountId: {
+                address: '0x0000000000000000000000000000000000000000',
+                metadata: {
+                  keyring: 'HD Key Tree',
+                },
               },
             },
+            selectedAccount: 'accountId',
           },
-          selectedAccount: 'accountId',
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: ['0x0000000000000000000000000000000000000000'],
+            },
+          ],
         },
-        keyrings: [
+        localeMessages: {
+          currentLocale: 'en',
+        },
+      };
+
+      const completedOnboardingStore = configureMockStore([thunk])(
+        completedOnboardingState,
+      );
+
+      renderOnboarding(
+        <OnboardingFlowWithRouteContext />,
+        completedOnboardingStore,
+        ONBOARDING_ROUTE,
+      );
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          onboardingRedirect ?? DEFAULT_ROUTE,
           {
-            type: 'HD Key Tree',
-            accounts: ['0x0000000000000000000000000000000000000000'],
+            replace: true,
           },
-        ],
-      },
-      localeMessages: {
-        currentLocale: 'en',
-      },
-    };
-
-    const completedOnboardingStore = configureMockStore([thunk])(
-      completedOnboardingState,
-    );
-
-    renderOnboarding(
-      <OnboardingFlowWithRouteContext />,
-      completedOnboardingStore,
-      ONBOARDING_ROUTE,
-    );
-
-    await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
+        );
       });
-    });
-    expect(mockStartJourney).not.toHaveBeenCalled();
-  });
+      const clearRedirect = { type: 'SET_ONBOARDING_REDIRECT', payload: null };
+      if (onboardingRedirect) {
+        expect(completedOnboardingStore.getActions()).toContainEqual(
+          clearRedirect,
+        );
+      } else {
+        expect(completedOnboardingStore.getActions()).not.toContainEqual(
+          clearRedirect,
+        );
+      }
+      expect(mockStartJourney).not.toHaveBeenCalled();
+    },
+  );
 
   describe('Create Password', () => {
     it('should render create password', () => {
@@ -520,6 +546,96 @@ describe('Onboarding Flow', () => {
   });
 
   describe('Unlock Screen', () => {
+    it.each([false, true])(
+      'preserves the destination when social import completion fails (side panel: %s)',
+      async (sidePanelEnabled) => {
+        jest.spyOn(log, 'error').mockImplementation(() => undefined);
+        jest
+          .mocked(getIsSeedlessOnboardingFeatureEnabled)
+          .mockReturnValue(true);
+        jest.mocked(useSidePanelEnabled).mockReturnValue(sidePanelEnabled);
+        const completionAction = sidePanelEnabled
+          ? setCompletedOnboardingWithSidepanel
+          : setCompletedOnboarding;
+        jest.mocked(completionAction).mockImplementationOnce(() => async () => {
+          throw new Error('Completion failed');
+        });
+        const route = '/settings/privacy?a=v#metametrics';
+        const redirectStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.socialImport,
+          },
+          appState: { ...mockState.appState, onboardingRedirect: route },
+        });
+        const view = renderOnboarding(
+          <OnboardingFlowWithRouteContext />,
+          redirectStore,
+          ONBOARDING_UNLOCK_ROUTE,
+        );
+
+        submitUnlock(view.getByTestId);
+
+        expect(await view.findByRole('alert')).toHaveTextContent(
+          'Completion failed',
+        );
+        expect(mockUseNavigate).not.toHaveBeenCalled();
+        expect(redirectStore.getActions()).not.toContainEqual({
+          type: 'SET_ONBOARDING_REDIRECT',
+          payload: null,
+        });
+
+        submitUnlock(view.getByTestId);
+
+        await waitFor(() => {
+          expect(mockUseNavigate).toHaveBeenCalledWith(route, {
+            replace: true,
+          });
+          expect(redirectStore.getActions()).toContainEqual({
+            type: 'SET_ONBOARDING_REDIRECT',
+            payload: null,
+          });
+        });
+      },
+    );
+
+    it.each([false, true])(
+      'resumes the destination after social import (side panel: %s)',
+      async (sidePanelEnabled) => {
+        jest
+          .mocked(getIsSeedlessOnboardingFeatureEnabled)
+          .mockReturnValue(true);
+        jest.mocked(useSidePanelEnabled).mockReturnValue(sidePanelEnabled);
+        const route = '/settings/privacy?a=v#metametrics';
+        const redirectStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            firstTimeFlowType: FirstTimeFlowType.socialImport,
+          },
+          appState: { ...mockState.appState, onboardingRedirect: route },
+        });
+        const { getByTestId } = renderOnboarding(
+          <OnboardingFlowWithRouteContext />,
+          redirectStore,
+          ONBOARDING_UNLOCK_ROUTE,
+        );
+
+        submitUnlock(getByTestId);
+
+        await waitFor(() => {
+          expect(mockUseNavigate).toHaveBeenCalledWith(route, {
+            replace: true,
+          });
+          expect(redirectStore.getActions()).toContainEqual({
+            type: 'SET_ONBOARDING_REDIRECT',
+            payload: null,
+          });
+        });
+      },
+    );
+
     it('should render unlock page', () => {
       const { queryByTestId } = renderOnboarding(
         <OnboardingFlowWithRouteContext />,
@@ -713,6 +829,33 @@ describe('Onboarding Flow', () => {
       ONBOARDING_COMPLETION_ROUTE,
       expect.anything(),
     );
+  });
+
+  it('allows retry when automatic onboarding completion fails after unlock', async () => {
+    jest.spyOn(log, 'error').mockImplementation(() => undefined);
+    mockCompleteOnboarding.mockRejectedValueOnce(
+      new Error('Completion failed'),
+    );
+    const view = renderUnlockPage({
+      hasSeenOnboardingCompletionPage: true,
+      completedOnboarding: false,
+      isInitialized: true,
+      isUnlocked: true,
+      firstTimeFlowType: FirstTimeFlowType.create,
+    });
+
+    submitUnlock(view.getByTestId);
+
+    expect(await view.findByRole('alert')).toHaveTextContent(
+      'Completion failed',
+    );
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+
+    submitUnlock(view.getByTestId);
+
+    await waitFor(() => {
+      expect(mockCompleteOnboarding).toHaveBeenCalledTimes(2);
+    });
   });
 
   it('should render onboarding Login page screen', async () => {

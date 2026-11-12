@@ -11,7 +11,9 @@
     "phishing-detection.api.cx.metamask.io",
     "preview.contentful.com",
     "static.cx.metamask.io",
+    "stellar-mainnet.infura.io",
     "token.api.cx.metamask.io",
+    "tokens.api.cx.metamask.io",
     "user-storage.api.cx.metamask.io"
   ]
 }
