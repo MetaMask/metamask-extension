@@ -170,6 +170,31 @@ mm launch --state custom --preset withMultipleAccounts
 
 ---
 
+## Screen recording (opt-in)
+
+Set `MM_SCREENCAST_DIR` (or the `screencastDir` launch option, which wins)
+before `mm launch --self-onboarding`. The names keep their `screencast` spelling.
+Recording starts after onboarding and stops first in `cleanup()`.
+
+Every 250 ms the recorder captures a JPEG screenshot of each page. The directory
+contains `frames/<page>-<epochMs>.jpg` (`page` is the 0-based attach index),
+`frames.jsonl` (one line per written frame with `page`, `url`, `ts`,
+`deviceWidth`, `deviceHeight`, `file` and `bytes`), and `events.jsonl`
+(`start`, `page-attach`, `page-close`, `error` and `stop`).
+
+Screenshots use the page's emulated viewport (1280x800 by default) and JPEG
+quality 60. The capture is clipped to that viewport, so the browser window or
+an open side panel cannot crop the frame: frames are always the viewport size.
+When the browser window is smaller than the viewport (headless window chrome,
+or the side panel opening), the area outside the window is white in the frame,
+because that part is not on screen. Only byte-identical consecutive
+frames of a page are dropped, so unchanged pages produce no new frames, and
+states shorter than 250 ms can be missed. Frames contain whatever is on screen,
+so treat them as sensitive as screenshots; no network or console data is
+recorded.
+
+---
+
 ## Known Limitations
 
 - **Pre-launch network mocking:** `mm mock-network` uses Playwright route interception, which is only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.

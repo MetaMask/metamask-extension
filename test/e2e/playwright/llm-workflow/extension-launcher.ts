@@ -30,6 +30,11 @@ import {
   LAUNCH_SCREEN_CHECKS,
   waitForAnyScreen,
 } from './launcher/state-inspector';
+import {
+  ScreencastRecorder,
+  isOnboardingUrl,
+  resolveScreencastDir,
+} from './launcher/screencast-recorder';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
@@ -59,6 +64,7 @@ type ResolvedOptions = {
   selfOnboarding: boolean;
   srp?: string;
   password?: string;
+  screencastDir?: string;
 };
 
 export function buildChromiumLaunchArgs(
@@ -103,6 +109,8 @@ export class MetaMaskExtensionLauncher {
 
   private consoleErrorBuffer = new ConsoleErrorBuffer(100);
 
+  private screencast: ScreencastRecorder | undefined;
+
   constructor(options: LauncherLaunchOptions = {}) {
     this.options = {
       extensionPath:
@@ -125,6 +133,7 @@ export class MetaMaskExtensionLauncher {
       selfOnboarding: options.selfOnboarding === true,
       srp: options.srp,
       password: options.password,
+      screencastDir: options.screencastDir,
     };
     this.userDataDir = '';
 
@@ -299,6 +308,8 @@ export class MetaMaskExtensionLauncher {
           password = '';
         }
       }
+
+      await this.startScreencast();
 
       return {
         context: this.context as BrowserContext,
@@ -625,8 +636,46 @@ export class MetaMaskExtensionLauncher {
     await sidepanelPage.waitForLoadState('domcontentloaded');
   }
 
+  /** Starts recording after onboarding; failures only log a warning. */
+  private async startScreencast(): Promise<void> {
+    const dir = resolveScreencastDir(this.options.screencastDir, process.env);
+    if (!dir || !this.context) {
+      return;
+    }
+
+    if (!this.extensionPage || isOnboardingUrl(this.extensionPage.url())) {
+      console.warn(
+        'Screencast recording skipped: the extension is still on an onboarding screen, which may contain secrets.',
+      );
+      return;
+    }
+
+    const recorder = new ScreencastRecorder({
+      dir,
+      context: this.context,
+      extensionPage: this.extensionPage,
+    });
+
+    try {
+      await recorder.start();
+      this.screencast = recorder;
+    } catch (error) {
+      console.warn('Failed to start screencast recording:', error);
+    }
+  }
+
+  /** Stops first in `cleanup()`, so pending frames are flushed. */
+  private async stopScreencast(): Promise<void> {
+    const recorder = this.screencast;
+    this.screencast = undefined;
+    await recorder?.stop().catch((error) => {
+      console.warn('Failed to stop screencast recording:', error);
+    });
+  }
+
   async cleanup(): Promise<void> {
     try {
+      await this.stopScreencast();
       if (this.context) {
         try {
           await this.context.close();
