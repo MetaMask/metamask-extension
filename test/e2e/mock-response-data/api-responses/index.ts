@@ -5,6 +5,9 @@
  * id. Tests take the body from here and only override the values they assert,
  * so a fixture can be kept in line with the live API shape without changing
  * the tests that use it.
+ *
+ * `sources.json` is the sync manifest for these files, not a response body,
+ * so it is not imported here.
  */
 import fourByteSignatures from './4byte-signatures.json';
 import accountsV2SupportedNetworks from './accounts-v2-supported-networks.json';
@@ -49,12 +52,7 @@ type FourByteSignature = (typeof fourByteSignatures)['results'][number];
 type TxSentinelBatchStatus =
   (typeof txSentinelBatchStatus)[keyof typeof txSentinelBatchStatus];
 
-/**
- * Builds a `price.api` `/v1/exchange-rates` body with the given rates.
- *
- * @param values - Rate per ticker. Only these tickers are returned.
- * @returns The response body.
- */
+/** Builds a price.api /v1/exchange-rates body with the given rates. */
 export function buildExchangeRates(
   values: Partial<Record<ExchangeRateTicker, number>>,
 ) {
@@ -69,60 +67,35 @@ export function buildExchangeRates(
   );
 }
 
-/**
- * Builds one asset entry of a `price.api` `/v3/spot-prices` body.
- *
- * @param overrides - Values the test asserts.
- * @returns The spot price entry.
- */
+/** Builds one price.api /v3/spot-prices entry, keeping fixture fields the test does not override. */
 export function buildSpotPrice<Overrides extends Partial<SpotPrice>>(
   overrides: Overrides & Record<string, unknown>,
 ): SpotPrice & Overrides {
   return { ...priceV3SpotPrices['eip155:1/slip44:60'], ...overrides };
 }
 
-/**
- * Builds one entry of a `tokens.api` `/v3/assets` body.
- *
- * @param overrides - Values the test asserts.
- * @returns The asset entry.
- */
+/** Builds one tokens.api /v3/assets entry. */
 export function buildTokensV3Asset<Overrides extends Partial<TokensV3Asset>>(
   overrides: Overrides & Record<string, unknown>,
 ): TokensV3Asset & Overrides {
   return { ...tokensV3Assets[0], ...overrides };
 }
 
-/**
- * Builds one entry of a `token.api` `/tokens/<chainId>` body.
- *
- * @param overrides - Values the test asserts.
- * @returns The token list entry.
- */
+/** Builds one token.api /tokens/<chainId> entry. */
 export function buildTokenListToken<Overrides extends Partial<TokenListToken>>(
   overrides: Overrides,
 ): TokenListToken & Overrides {
   return { ...tokenTokens[0], ...overrides };
 }
 
-/**
- * Builds an `accounts.api` `/v2/supportedNetworks` body.
- *
- * @param overrides - Values the test asserts.
- * @returns The response body.
- */
+/** Builds an accounts.api /v2/supportedNetworks body. */
 export function buildAccountsSupportedNetworksV2(
   overrides: Partial<typeof accountsV2SupportedNetworks>,
 ) {
   return { ...accountsV2SupportedNetworks, ...overrides };
 }
 
-/**
- * Builds an `accounts.api` `/v5/multiaccount/balances` body.
- *
- * @param balances - Balance rows the test asserts.
- * @returns The response body.
- */
+/** Builds an accounts.api /v5/multiaccount/balances body from the given rows. */
 export function buildMultiaccountBalancesV5<
   Row extends Record<string, unknown>,
 >(balances: Row[]) {
@@ -136,15 +109,7 @@ export function buildMultiaccountBalancesV5<
   };
 }
 
-/**
- * Builds a bridge `getTxStatus` body.
- *
- * @param overrides - Values the test asserts. `srcChain` and `destChain` merge
- * with the fixture.
- * @param overrides.srcChain - Source chain values.
- * @param overrides.destChain - Destination chain values.
- * @returns The response body.
- */
+/** Builds a bridge getTxStatus body, merging srcChain and destChain over the fixture. */
 export function buildBridgeTxStatus({
   srcChain,
   destChain,
@@ -161,24 +126,14 @@ export function buildBridgeTxStatus({
   };
 }
 
-/**
- * Builds one token of a bridge `getTokens/popular` body.
- *
- * @param token - Token values the test asserts.
- * @returns The token entry.
- */
+/** Builds one token of a bridge getTokens/popular body. */
 export function buildBridgePopularToken<Token extends Partial<BridgeToken>>(
   token: Token,
 ): BridgeToken & Token {
   return { ...bridgeGetTokensPopular[0], ...token };
 }
 
-/**
- * Builds a bridge `getTokens/search` body.
- *
- * @param tokens - Tokens the test asserts.
- * @returns The response body.
- */
+/** Builds a bridge getTokens/search body. */
 export function buildBridgeTokensSearch<Token extends Partial<BridgeToken>>(
   tokens: Token[],
 ) {
@@ -191,35 +146,19 @@ export function buildBridgeTokensSearch<Token extends Partial<BridgeToken>>(
   };
 }
 
-/**
- * Builds a `gas.api` `/networks/<chainId>/gasPrices` body.
- *
- * @param overrides - Values the test asserts.
- * @returns The response body.
- */
+/** Builds a gas.api /networks/<chainId>/gasPrices body. */
 export function buildGasPrices(overrides: Partial<typeof gasPrices> = {}) {
   return { ...gasPrices, ...overrides };
 }
 
-/**
- * Builds a tx-sentinel `/network` body.
- *
- * @param overrides - Values the test asserts.
- * @returns The response body.
- */
+/** Builds a tx-sentinel /network body. */
 export function buildTxSentinelNetwork(
   overrides: Partial<typeof txSentinelNetwork> = {},
 ) {
   return { ...txSentinelNetwork, ...overrides };
 }
 
-/**
- * Builds a tx-sentinel `/v1/networks/<chainId>/batchStatus` body.
- *
- * @param uuid - The smart transaction UUID the status is for.
- * @param overrides - Values the test asserts.
- * @returns The response body.
- */
+/** Builds a tx-sentinel batchStatus body keyed by the given UUID. */
 export function buildTxSentinelBatchStatus(
   uuid: string,
   overrides: Partial<TxSentinelBatchStatus> & Record<string, unknown> = {},
@@ -228,12 +167,7 @@ export function buildTxSentinelBatchStatus(
   return { [uuid]: { ...status, ...overrides } };
 }
 
-/**
- * Builds a 4byte.directory `/api/v1/signatures/` body with one result.
- *
- * @param signature - The signature the test asserts.
- * @returns The response body.
- */
+/** Builds a 4byte.directory /api/v1/signatures/ body with one result. */
 export function buildFourByteSignatures(signature: Partial<FourByteSignature>) {
   return {
     ...fourByteSignatures,

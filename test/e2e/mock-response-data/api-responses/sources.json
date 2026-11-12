@@ -1,0 +1,83 @@
+{
+  "4byte-signatures": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://www.4byte.directory/api/v1/signatures/?hex_signature=0xa9059cbb"
+  },
+  "accounts-v2-supported-networks": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://accounts.api.cx.metamask.io/v2/supportedNetworks"
+  },
+  "accounts-v5-multiaccount-balances": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://accounts.api.cx.metamask.io/v5/multiaccount/balances?accountIds=eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1"
+  },
+  "bridge-get-tokens-popular": {
+    "method": "POST",
+    "mode": "skip",
+    "reason": "POST with a request-specific body",
+    "url": "https://bridge.api.cx.metamask.io/getTokens/popular"
+  },
+  "bridge-get-tokens-search": {
+    "method": "POST",
+    "mode": "skip",
+    "reason": "POST with a request-specific body",
+    "url": "https://bridge.api.cx.metamask.io/getTokens/search"
+  },
+  "bridge-get-tx-status": {
+    "method": "GET",
+    "mode": "skip",
+    "reason": "needs a real completed bridge transaction",
+    "url": "https://bridge.api.cx.metamask.io/getTxStatus?srcTxHash=0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5&srcChainId=1&destChainId=59144"
+  },
+  "gas-prices": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://gas.api.cx.metamask.io/networks/1/gasPrices"
+  },
+  "price-v1-exchange-rates": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://price.api.cx.metamask.io/v1/exchange-rates?baseCurrency=usd"
+  },
+  "price-v3-spot-prices": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155:1/slip44:60&vsCurrency=usd&includeMarketData=true"
+  },
+  "signature-insights-signature": {
+    "method": "POST",
+    "mode": "skip",
+    "reason": "POST with a request-specific body",
+    "url": "https://signature-insights.api.cx.metamask.io/v1/signature"
+  },
+  "token-tokens": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://token.api.cx.metamask.io/tokens/1"
+  },
+  "tokens-v3-assets": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://tokens.api.cx.metamask.io/v3/assets?assetIds=eip155:1/slip44:60"
+  },
+  "tx-sentinel-batch-status": {
+    "method": "GET",
+    "mode": "skip",
+    "reason": "needs a real smart transaction UUID",
+    "url": "https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/v1/networks/1/batchStatus?uuids=0d506aaa-5e38-4cab-ad09-2039cb7a0f33"
+  },
+  "tx-sentinel-get-fees": {
+    "method": "POST",
+    "mode": "skip",
+    "reason": "POST with a request-specific body",
+    "url": "https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/v1/networks/1/getFees"
+  },
+  "tx-sentinel-network": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/network"
+  }
+}
