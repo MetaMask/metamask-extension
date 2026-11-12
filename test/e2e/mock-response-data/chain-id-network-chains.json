@@ -432,7 +432,7 @@
     "shortName": "monadtest",
     "chainId": 10143,
     "networkId": 10143,
-    "slip44": 0,
+    "slip44": 1,
     "ens": {
       "registry": ""
     },
