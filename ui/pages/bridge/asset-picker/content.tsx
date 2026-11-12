@@ -35,10 +35,8 @@ export type BridgeAssetPickerContentHandle = {
 };
 
 /**
- * The shared body of the bridge asset picker. It is rendered both inside the
- * modal (`BridgeAssetPicker`) and inside the full-screen page
- * (`BridgeAssetPickerPage`) so the token selection logic stays identical
- * regardless of the surrounding container.
+ * The shared body of the bridge asset picker, rendered by the full-screen page
+ * (`BridgeAssetPickerPage`).
  *
  * The parent container owns the close action (`onClose`) and triggers the
  * guarded close via the imperative `handleClose` handle exposed through `ref`.
