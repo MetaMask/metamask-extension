@@ -1,4 +1,6 @@
 import { Mutex } from 'async-mutex';
+import nock from 'nock';
+import { it } from '@jest/globals';
 import {
   AnalyticsController,
   type AnalyticsControllerInitialState,
@@ -8778,6 +8780,44 @@ describe('LegacyBackgroundApiService', () => {
             expect(setUninstallURL).not.toHaveBeenCalled();
           },
         );
+      });
+    });
+  });
+
+  describe('checkFirstTimeInteraction', () => {
+    it.each([
+      [0, true],
+      [1, false],
+      [undefined, undefined],
+    ])('returns %s interactions as %s', async (count, expected) => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .reply(200, count === undefined ? {} : { count });
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBe(expected);
+        expect(scope.isDone()).toBe(true);
+      });
+    });
+
+    it('returns undefined when the relationship request fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .replyWithError('Request failed');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBeUndefined();
+        expect(scope.isDone()).toBe(true);
       });
     });
   });

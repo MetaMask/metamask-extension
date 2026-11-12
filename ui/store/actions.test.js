@@ -167,6 +167,24 @@ describe('Actions', () => {
     sinon.restore();
   });
 
+  describe('checkFirstTimeInteraction', () => {
+    it('requests the interaction check through the legacy service messenger', async () => {
+      const request = { chainId: 1, from: '0x123', to: '0x456' };
+      background.messengerCall.resolves(true);
+      setBackgroundConnection(background);
+
+      const result = await actions.checkFirstTimeInteraction(request);
+
+      expect(result).toBe(true);
+      expect(
+        background.messengerCall.calledOnceWithExactly(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          [request],
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe('announcement messenger actions', () => {
     it('resets viewed announcements through the messenger', async () => {
       setBackgroundConnection(background);

@@ -57,6 +57,23 @@ export type LegacyBackgroundApiServiceIsPublicEndpointUrlAction = {
 };
 
 /**
+ * Determines whether the sender has no prior interaction with an address.
+ *
+ * Missing relationship data and request failures remain unknown so callers
+ * can distinguish them from a confirmed first interaction.
+ *
+ * @param request - The chain, sender, and recipient to check.
+ * @param request.chainId - The numeric chain ID.
+ * @param request.from - The sender address.
+ * @param request.to - The recipient address.
+ * @returns Whether this is the first interaction, or undefined if unknown.
+ */
+export type LegacyBackgroundApiServiceCheckFirstTimeInteractionAction = {
+  type: `LegacyBackgroundApiService:checkFirstTimeInteraction`;
+  handler: LegacyBackgroundApiService['checkFirstTimeInteraction'];
+};
+
+/**
  * Determines whether the sendBundle feature is supported for the given chain.
  *
  * @param chainId - The chain ID to check.
@@ -1163,6 +1180,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceAddTokenAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
+  | LegacyBackgroundApiServiceCheckFirstTimeInteractionAction
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
