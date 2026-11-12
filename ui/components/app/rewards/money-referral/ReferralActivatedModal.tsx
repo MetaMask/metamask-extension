@@ -8,19 +8,16 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Modal,
   ModalBody,
-  ModalContent,
-  ModalContentSize,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Text,
   TextAlign,
   TextColor,
   TextTransform,
   TextVariant,
 } from '@metamask/design-system-react';
+import { ReferralDialog } from '#ui/components/app/rewards/money-referral/ReferralDialog';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -110,13 +107,8 @@ export function ReferralActivatedModal({
   const theme = useTheme();
   const t = useI18nContext();
   const titleId = React.useId();
+  // Focus the primary action when the invite hands off to this dialog.
   const startButtonRef = React.useRef<HTMLButtonElement>(null);
-
-  React.useLayoutEffect(() => {
-    // The invite dialog unmounts in the same commit, which drops focus to the
-    // page. Move it onto the primary action once this dialog is in the DOM.
-    startButtonRef.current?.focus();
-  }, []);
   const copy = referralMe?.localized_text;
   const hero = referralMe?.invite_hero;
   const imageUrl =
@@ -129,84 +121,77 @@ export function ReferralActivatedModal({
   );
 
   return (
-    <Modal
-      isOpen
+    <ReferralDialog
       onClose={onClose}
       initialFocusRef={startButtonRef}
       data-testid="money-referral-activated"
+      aria-labelledby={titleId}
     >
-      <ModalOverlay />
-      <ModalContent
-        className="items-center"
-        size={ModalContentSize.Md}
-        modalDialogProps={{ 'aria-labelledby': titleId }}
-      >
-        <ModalHeader
-          onClose={onClose}
-          closeButtonProps={{
-            ariaLabel: copy?.inviteAcceptedCloseA11y || t('close'),
-          }}
-        />
-        <ModalBody>
+      <ModalHeader
+        onClose={onClose}
+        closeButtonProps={{
+          ariaLabel: copy?.inviteAcceptedCloseA11y || t('close'),
+        }}
+      />
+      <ModalBody>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+        >
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.SuccessDefault}
+            fontWeight={FontWeight.Medium}
+            textTransform={TextTransform.Uppercase}
+            textAlign={TextAlign.Center}
+          >
+            {copy?.inviteAcceptedEyebrow ?? ''}
+          </Text>
+          <Text
+            asChild
+            variant={TextVariant.HeadingLg}
+            textAlign={TextAlign.Center}
+            className="mt-3"
+          >
+            <h2 id={titleId}>{copy?.inviteAcceptedTitle ?? ''}</h2>
+          </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Center}
+            className="mt-2"
+          >
+            {body}
+          </Text>
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            className="my-6 w-full"
           >
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.SuccessDefault}
-              fontWeight={FontWeight.Medium}
-              textTransform={TextTransform.Uppercase}
-              textAlign={TextAlign.Center}
-            >
-              {copy?.inviteAcceptedEyebrow ?? ''}
-            </Text>
-            <Text
-              asChild
-              variant={TextVariant.HeadingLg}
-              textAlign={TextAlign.Center}
-              className="mt-3"
-            >
-              <h2 id={titleId}>{copy?.inviteAcceptedTitle ?? ''}</h2>
-            </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              textAlign={TextAlign.Center}
-              className="mt-2"
-            >
-              {body}
-            </Text>
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Center}
-              justifyContent={BoxJustifyContent.Center}
-              className="my-6 w-full"
-            >
-              {imageUrl ? (
-                <img
-                  alt=""
-                  data-testid="money-referral-activated-hero"
-                  src={imageUrl}
-                  className="h-[220px] w-full object-contain"
-                />
-              ) : null}
-            </Box>
+            {imageUrl ? (
+              <img
+                alt=""
+                data-testid="money-referral-activated-hero"
+                src={imageUrl}
+                className="h-[220px] w-full object-contain"
+              />
+            ) : null}
           </Box>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            ref={startButtonRef}
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            isFullWidth
-            onClick={onClose}
-            data-testid="money-referral-activated-start"
-          >
-            {copy?.inviteAcceptedStartTrading ?? ''}
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </Box>
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          ref={startButtonRef}
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          isFullWidth
+          onClick={onClose}
+          data-testid="money-referral-activated-start"
+        >
+          {copy?.inviteAcceptedStartTrading ?? ''}
+        </Button>
+      </ModalFooter>
+    </ReferralDialog>
   );
 }
