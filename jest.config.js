@@ -90,7 +90,6 @@ module.exports = {
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
-    '<rootDir>/test/e2e/mock-response-data/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/route-registry/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/release-testing-ai-analyzer/**/*.test.ts',

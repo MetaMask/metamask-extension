@@ -8,7 +8,6 @@ import AlertModal from '../../../page-objects/pages/confirmations/alert-modal';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
-import { buildAccountsSupportedNetworksV2 } from '../../../mock-response-data/api-responses';
 
 /**
  * Exclude the local chain (1337) from the Accounts API supported
@@ -23,10 +22,10 @@ async function mockAccountsApiWithoutLocalNode(server: Mockttp) {
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: buildAccountsSupportedNetworksV2({
+      json: {
         fullSupport: [],
         partialSupport: [],
-      }),
+      },
     }));
   return [];
 }

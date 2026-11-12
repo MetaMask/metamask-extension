@@ -12,7 +12,6 @@ import accountsV5MultiaccountBalances from './accounts-v5-multiaccount-balances.
 import bridgeGetTokensPopular from './bridge-get-tokens-popular.json';
 import bridgeGetTokensSearch from './bridge-get-tokens-search.json';
 import bridgeGetTxStatus from './bridge-get-tx-status.json';
-import defiadaptersPositions from './defiadapters-positions.json';
 import gasPrices from './gas-prices.json';
 import priceV1ExchangeRates from './price-v1-exchange-rates.json';
 import priceV3SpotPrices from './price-v3-spot-prices.json';
@@ -30,7 +29,6 @@ export const API_RESPONSES = {
   'bridge-get-tokens-popular': bridgeGetTokensPopular,
   'bridge-get-tokens-search': bridgeGetTokensSearch,
   'bridge-get-tx-status': bridgeGetTxStatus,
-  'defiadapters-positions': defiadaptersPositions,
   'gas-prices': gasPrices,
   'price-v1-exchange-rates': priceV1ExchangeRates,
   'price-v3-spot-prices': priceV3SpotPrices,

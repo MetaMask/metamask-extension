@@ -18,7 +18,6 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
 } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
-import { buildAccountsSupportedNetworksV2 } from '../../mock-response-data/api-responses';
 
 const FIFTY_ETH_WEI = '0x2b5e3af16b1880000';
 const THIRTY_FIVE_ETH_WEI = '0x1e5b8fa8fe2ac0000';
@@ -100,13 +99,10 @@ async function mockChain1337(mockServer: Mockttp) {
     await mockServer
       .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
       .always()
-      .thenJson(
-        200,
-        buildAccountsSupportedNetworksV2({
-          fullSupport: [],
-          partialSupport: [],
-        }),
-      ),
+      .thenJson(200, {
+        fullSupport: [],
+        partialSupport: [],
+      }),
     await mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
       .always()

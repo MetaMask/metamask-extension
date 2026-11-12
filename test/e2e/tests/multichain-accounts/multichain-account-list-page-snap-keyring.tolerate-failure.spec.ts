@@ -16,7 +16,6 @@ import {
   MOCK_ETH_CONVERSION_RATE,
   mockPriceApi,
 } from '../tokens/utils/mocks';
-import { buildAccountsSupportedNetworksV2 } from '../../mock-response-data/api-responses';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 
@@ -26,13 +25,10 @@ async function mockEthMainnetAndMusd(mockServer: Mockttp) {
     await mockServer
       .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
       .always()
-      .thenJson(
-        200,
-        buildAccountsSupportedNetworksV2({
-          fullSupport: [],
-          partialSupport: [],
-        }),
-      ),
+      .thenJson(200, {
+        fullSupport: [],
+        partialSupport: [],
+      }),
     await mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
       .always()
