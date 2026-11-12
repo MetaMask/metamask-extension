@@ -123,9 +123,9 @@ export const usePrefillFromSearchQuery = () => {
         });
 
         return () => {
+          // Cleanup abort controller on unmount
           controller.abort();
-          // Re-apply only if the fetch was cut short (e.g. StrictMode probe);
-          // re-applying after it landed would clobber the user's token picks.
+          // Re-apply only if the fetch was interrupted
           if (!isFetchComplete) {
             appliedSearch.current = null;
           }
