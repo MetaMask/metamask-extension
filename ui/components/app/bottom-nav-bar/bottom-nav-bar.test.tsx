@@ -149,9 +149,7 @@ describe('BottomNavBar', () => {
         'aria-current',
         'page',
       );
-      expect(getByTestId('main-nav-perps')).not.toHaveAttribute(
-        'aria-current',
-      );
+      expect(getByTestId('main-nav-perps')).not.toHaveAttribute('aria-current');
       expect(getByTestId('main-nav-activity')).not.toHaveAttribute(
         'aria-current',
       );
@@ -164,9 +162,7 @@ describe('BottomNavBar', () => {
         'aria-current',
         'page',
       );
-      expect(getByTestId('main-nav-home')).not.toHaveAttribute(
-        'aria-current',
-      );
+      expect(getByTestId('main-nav-home')).not.toHaveAttribute('aria-current');
     });
 
     it('marks Perps as active on the /perps-home route', () => {
@@ -179,9 +175,7 @@ describe('BottomNavBar', () => {
         'aria-current',
         'page',
       );
-      expect(getByTestId('main-nav-home')).not.toHaveAttribute(
-        'aria-current',
-      );
+      expect(getByTestId('main-nav-home')).not.toHaveAttribute('aria-current');
     });
 
     it('marks Money as active on the Money home route', () => {
@@ -191,9 +185,7 @@ describe('BottomNavBar', () => {
         'aria-current',
         'page',
       );
-      expect(getByTestId('main-nav-home')).not.toHaveAttribute(
-        'aria-current',
-      );
+      expect(getByTestId('main-nav-home')).not.toHaveAttribute('aria-current');
     });
   });
 
