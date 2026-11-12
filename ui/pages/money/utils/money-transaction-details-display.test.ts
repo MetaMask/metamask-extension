@@ -5,7 +5,6 @@ import {
 } from '@metamask/transaction-controller';
 import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import type { Hex } from '@metamask/utils';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import {
   formatMoneyActivityDetailsDate,
@@ -14,13 +13,9 @@ import {
   getMoneyActivityExplorerUrl,
   getMoneyActivityPaidWith,
   getMoneyActivityTransactionHash,
-  getMoneyApiActivityDetailsHeroAmount,
   getMoneyTransactionDetailsHeroAmount,
   shortenMoneyActivityHex,
 } from './money-transaction-details-display';
-
-const t = (key: string): string =>
-  (messages as Record<string, { message: string }>)[key]?.message ?? key;
 
 function findMock(id: string) {
   const tx = MOCK_MONEY_TRANSACTIONS.find((item) => item.id === id);
@@ -96,73 +91,6 @@ describe('getMoneyTransactionDetailsHeroAmount', () => {
       amount: '+$10.25',
       isSuccessColor: true,
     });
-  });
-});
-
-describe('getMoneyApiActivityDetailsHeroAmount', () => {
-  const cardActivity = {
-    kind: 'card',
-    hash: '0xabc',
-    time: 1,
-    chainId: '0x8f',
-    token: {
-      address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
-      symbol: 'vmUSD',
-      decimals: 6,
-    },
-    amount: '1000000',
-    paidTo: '0xdef',
-  } as const;
-
-  it('renders the historical valuation', () => {
-    expect(
-      getMoneyApiActivityDetailsHeroAmount(
-        {
-          ...cardActivity,
-          displayAmount: { type: 'historical', value: '1017488', decimals: 6 },
-        },
-        t,
-      ),
-    ).toStrictEqual({ amount: '-$1.02', isSuccessColor: false });
-  });
-
-  it('marks the approximate valuation', () => {
-    expect(
-      getMoneyApiActivityDetailsHeroAmount(
-        {
-          ...cardActivity,
-          displayAmount: { type: 'approximate', value: '1500000', decimals: 6 },
-        },
-        t,
-      ),
-    ).toStrictEqual({ amount: '≈-$1.50', isSuccessColor: false });
-  });
-
-  it('renders a placeholder while the valuation is pending', () => {
-    expect(
-      getMoneyApiActivityDetailsHeroAmount(
-        { ...cardActivity, displayAmount: { type: 'pending' } },
-        t,
-      ),
-    ).toStrictEqual({ amount: '—', isSuccessColor: false });
-  });
-
-  it('renders the unavailable copy when no valuation exists', () => {
-    expect(
-      getMoneyApiActivityDetailsHeroAmount(
-        { ...cardActivity, displayAmount: { type: 'unavailable' } },
-        t,
-      ),
-    ).toStrictEqual({
-      amount: messages.moneyActivityAmountUnavailable.message,
-      isSuccessColor: false,
-    });
-  });
-
-  it('keeps the raw amount when there is no valuation', () => {
-    expect(getMoneyApiActivityDetailsHeroAmount(cardActivity, t)).toStrictEqual(
-      { amount: '-$1.00', isSuccessColor: false },
-    );
   });
 });
 

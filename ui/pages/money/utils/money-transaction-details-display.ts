@@ -11,16 +11,12 @@ import { shortenString } from '../../../helpers/utils/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
-import type { AccountsApiActivity } from '../types/money-activity';
 import {
   classifyMoneyActivity,
   getMoneyActivityStatus,
   isIncomingMoneyActivityKind,
 } from './classify-money-activity';
-import {
-  resolveOnchainAmount,
-  type MoneyActivityTranslate,
-} from './money-activity-display';
+import { resolveOnchainAmount } from './money-activity-display';
 
 export type MoneyTransactionDetailsHeroAmount = {
   amount: string;
@@ -57,48 +53,6 @@ export function getMoneyTransactionDetailsHeroAmount(
 
   return {
     amount: `${isIncoming ? '+' : '-'}${formatted}`,
-    isSuccessColor: isIncoming,
-  };
-}
-
-/**
- * Formats the details-page hero amount for an Accounts API settlement.
- *
- * @param activity - Parsed Accounts API card, cashback, or refund.
- * @param t - i18n translate function.
- * @returns Formatted fiat amount and whether to use the success color.
- */
-export function getMoneyApiActivityDetailsHeroAmount(
-  activity: AccountsApiActivity,
-  t: MoneyActivityTranslate,
-): MoneyTransactionDetailsHeroAmount {
-  const isIncoming = activity.kind === 'cashback' || activity.kind === 'refund';
-  const { displayAmount } = activity;
-
-  if (displayAmount?.type === 'pending') {
-    return { amount: '—', isSuccessColor: false };
-  }
-  if (displayAmount?.type === 'unavailable') {
-    return {
-      amount: t('moneyActivityAmountUnavailable'),
-      isSuccessColor: false,
-    };
-  }
-
-  const amount =
-    displayAmount &&
-    (displayAmount.type === 'historical' ||
-      displayAmount.type === 'approximate')
-      ? new BigNumber(displayAmount.value).dividedBy(
-          new BigNumber(10).pow(displayAmount.decimals),
-        )
-      : new BigNumber(activity.amount).dividedBy(
-          new BigNumber(10).pow(activity.token.decimals),
-        );
-  const approximatePrefix = displayAmount?.type === 'approximate' ? '≈' : '';
-
-  return {
-    amount: `${approximatePrefix}${isIncoming ? '+' : '-'}${moneyFormatUsd(amount)}`,
     isSuccessColor: isIncoming,
   };
 }
