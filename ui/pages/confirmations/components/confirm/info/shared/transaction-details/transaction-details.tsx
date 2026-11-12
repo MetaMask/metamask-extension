@@ -93,7 +93,7 @@ export const RecipientRow = ({
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress address={to} chainId={chainId} />
+      <ConfirmInfoRowAddress address={to} chainId={chainId} fillWidth />
     </ConfirmInfoAlertRow>
   );
 };

@@ -3,6 +3,8 @@ export type {
   PageObjectClass,
   RoutePageObjectRegistry,
 } from './route-registry';
+export { matchRoute } from './match-route';
+export type { MatchedRoute } from './match-route';
 export { getRouteCoverage } from './route-coverage';
 export type {
   RouteCoverageEntry,

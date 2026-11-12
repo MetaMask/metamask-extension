@@ -116,6 +116,8 @@ class TokensTab extends HomePage {
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
+  private readonly moneyTokenListCta = '[data-testid^="money-token-list-cta-"]';
+
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
     text: '—',
@@ -702,6 +704,12 @@ class TokensTab extends HomePage {
   async clickManageTokens(): Promise<void> {
     console.log('Click Manage tokens in the token options menu');
     await this.driver.clickElement(this.manageTokensButton);
+  }
+
+  async clickMoneyTokenListCta(): Promise<void> {
+    console.log('Click the Money deposit CTA on the first eligible token row');
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.clickElement(this.moneyTokenListCta);
   }
 
   async clickMultichainTokenListButton(): Promise<void> {
