@@ -1,4 +1,8 @@
 {
+  "24hChange": {
+    "message": "24h change",
+    "description": "Title for the 24 hour change of the token price"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "Relaunch MetaMask if the problem persists.",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
@@ -1203,9 +1207,6 @@
   },
   "addAUrl": {
     "message": "Add a URL"
-  },
-  "addAWallet": {
-    "message": "Add a wallet"
   },
   "addAccount": {
     "message": "Add account"
@@ -2761,6 +2762,10 @@
     "message": "Check network connectivity, or $1.",
     "description": "$1 is a link to update the network."
   },
+  "chooseJsonFile": {
+    "message": "Choose JSON file",
+    "description": "Button to select a JSON file when importing an account"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -2781,6 +2786,10 @@
   },
   "click": {
     "message": "Click"
+  },
+  "clickHere": {
+    "message": "Click here",
+    "description": "Link to help when a JSON account import is not working"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
@@ -3064,7 +3073,7 @@
     "message": "Connect a hardware wallet"
   },
   "connectAHardwareWalletDescription": {
-    "message": "Using USB or a QR Code"
+    "message": "Using USB or QR code"
   },
   "connectAnyway": {
     "message": "Connect anyway"
@@ -3198,9 +3207,6 @@
   },
   "contractInteraction": {
     "message": "Contract interaction"
-  },
-  "convertAgain": {
-    "message": "Convert again"
   },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
@@ -3536,6 +3542,9 @@
   },
   "deepLink_theHomePage": {
     "message": "the home page"
+  },
+  "deepLink_theMoneyDepositPage": {
+    "message": "the Money deposit page"
   },
   "deepLink_theMoneyPage": {
     "message": "the Money page"
@@ -4036,6 +4045,10 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
   },
+  "enterYourPrivateKey": {
+    "message": "Enter your private key",
+    "description": "Placeholder for the private key field when importing an account"
+  },
   "enter_verification_code": {
     "message": "Enter verification code"
   },
@@ -4233,9 +4246,9 @@
   "fieldRequired": {
     "message": "$1 is required"
   },
-  "fileImportFail": {
-    "message": "File import not working? Click here!",
-    "description": "Helps user import their account from a JSON file"
+  "fileImportNotWorking": {
+    "message": "File import not working?",
+    "description": "Prompt shown above the JSON import help link"
   },
   "fileUploaderDescription": {
     "message": "Click to upload or drag and drop"
@@ -4931,7 +4944,7 @@
     "message": "Import a wallet"
   },
   "importAWalletDescription": {
-    "message": "Using a 12, 18 or 24-word seed phrase"
+    "message": "Using a Secret Recovery Phrase"
   },
   "importAccountError": {
     "message": "Error importing account."
@@ -4952,7 +4965,7 @@
     "message": "We apologize, and we will make it faster in the future."
   },
   "importAccountMsg": {
-    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
+    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase."
   },
   "importAccountWithSocialMsg": {
     "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
@@ -4965,7 +4978,7 @@
     "message": "Import an account"
   },
   "importAnAccountDescription": {
-    "message": "Via a private key"
+    "message": "Using a private key"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -5144,7 +5157,7 @@
     "message": "Jazzicons"
   },
   "jsonFile": {
-    "message": "JSON File",
+    "message": "JSON file",
     "description": "format for importing an account"
   },
   "keyringAccountName": {
@@ -5900,6 +5913,14 @@
     "message": "Available balance: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"
   },
+  "moneyAccountDepositConvert": {
+    "message": "Convert $1",
+    "description": "Confirm button on a MetaMask Money deposit. $1 is the pay token symbol, for example USDC."
+  },
+  "moneyAccountDepositHeader": {
+    "message": "Add to MetaMask Money",
+    "description": "Header on the MetaMask Money deposit confirmation"
+  },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
   },
@@ -6538,19 +6559,6 @@
     "message": "Converted to mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD conversion failed"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Converting $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD conversion successful"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus will be claimable within a day."
-  },
   "musdConvert": {
     "message": "Convert"
   },
@@ -6916,6 +6924,10 @@
   "noDefaultAddress": {
     "message": "No $1 address",
     "description": "$1 is the default address scope"
+  },
+  "noDepositFee": {
+    "message": "No deposit fee",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -7599,10 +7611,6 @@
   },
   "paste": {
     "message": "Paste"
-  },
-  "pastePrivateKey": {
-    "message": "Enter your private key string here:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Pay with",
@@ -8896,6 +8904,10 @@
     "message": "Failed to place partial close order",
     "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
+  "perpsToastPositionAlreadyClosed": {
+    "message": "This position is already closed",
+    "description": "Toast text shown when a perps TP/SL update or close targets a position that closed before the request reached the provider"
+  },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",
     "description": "Subtitle shown in perps close failure toasts when the position remains open"
@@ -9091,7 +9103,7 @@
     "message": "Withdrawal submitted"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
+    "message": "MetaMask will swap to your desired token for you.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -9192,10 +9204,6 @@
   "privateKeyHidden": {
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Show/Hide the private key input",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "This private key is being shown",
@@ -9698,6 +9706,10 @@
   "rename": {
     "message": "Rename",
     "description": "Multichain account menu item for triggering account rename action modal"
+  },
+  "renameAccount": {
+    "message": "Rename account",
+    "description": "Title of the modal for renaming a multichain account"
   },
   "replace": {
     "message": "replace"
@@ -11267,6 +11279,10 @@
   "showAdvancedDetails": {
     "message": "Show advanced details"
   },
+  "showAllNetworks": {
+    "message": "Show all ($1)",
+    "description": "$1 is the number of network pills, including all networks"
+  },
   "showDefaultAddress": {
     "message": "Show default address"
   },
@@ -11279,8 +11295,8 @@
   "showExtensionInFullSizeViewDescription": {
     "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
-  "showFewerNetworks": {
-    "message": "Show fewer networks"
+  "showFewer": {
+    "message": "Show fewer"
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
@@ -11300,10 +11316,6 @@
   },
   "showMore": {
     "message": "Show more"
-  },
-  "showMoreNetworks": {
-    "message": "Show $1 more networks",
-    "description": "$1 is the number of networks that are hidden"
   },
   "showNativeTokenAsMainBalance": {
     "message": "Show native token as main balance"
@@ -11693,6 +11705,14 @@
   "sortByDecliningBalance": {
     "message": "Declining balance ($1 high-low)",
     "description": "Indicates a descending order based on token fiat balance. $1 is the preferred currency symbol"
+  },
+  "sortedAscending": {
+    "message": "sorted ascending",
+    "description": "Accessible name for a column sorted with the lowest value, or A to Z, first."
+  },
+  "sortedDescending": {
+    "message": "sorted descending",
+    "description": "Accessible name for a column sorted with the highest value, or Z to A, first."
   },
   "source": {
     "message": "Source"
@@ -12162,9 +12182,6 @@
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Included"
-  },
   "swapGasFeesSplit": {
     "message": "Network fees on the previous screen are split between these two transactions."
   },
@@ -12465,6 +12482,9 @@
   },
   "tokenContractAddress": {
     "message": "Token contract address"
+  },
+  "tokenContractAddressCopied": {
+    "message": "Token address copied"
   },
   "tokenContractWarning": {
     "message": "Token contract warning"
@@ -12920,9 +12940,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
-  },
-  "usedByClients": {
-    "message": "Used by a variety of different clients"
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart account is not supported"

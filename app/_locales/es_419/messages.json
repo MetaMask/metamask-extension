@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Agregar una URL"
   },
-  "addAWallet": {
-    "message": "Agregar una billetera"
-  },
   "addAccount": {
     "message": "Agregar cuenta"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Interacción con el contrato"
   },
-  "convertAgain": {
-    "message": "Volver a convertir"
-  },
   "convertTokenToNFTDescription": {
     "message": "Hemos detectado que este activo es un NFT. MetaMask ahora tiene soporte nativo completo para NFT. ¿Quiere eliminarlo de su lista de tokens y añadirlo como un NFT?"
   },
@@ -4154,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "Se requiere $1"
-  },
-  "fileImportFail": {
-    "message": "¿No funciona la importación del archivo? ¡Haga clic aquí!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Haz clic para cargar o arrastrar y soltar"
@@ -6347,19 +6337,6 @@
     "message": "Convertidas a mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Conversión de mUSD fallida"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Convirtiendo $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Conversión de mUSD realizada correctamente"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "El bono se podrá reclamar en un plazo de un día."
-  },
   "musdConvert": {
     "message": "Convertir"
   },
@@ -7404,10 +7381,6 @@
   },
   "paste": {
     "message": "Pegar"
-  },
-  "pastePrivateKey": {
-    "message": "Pegue aquí la cadena de clave privada:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Pagar con",
@@ -8896,7 +8869,7 @@
     "message": "Solicitud de retiro presentada"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask realizará el canje por el token que desees. No se aplica ninguna tarifa de MetaMask al canjear a mUSD.",
+    "message": "MetaMask realizará el canje por el token que desees.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8997,10 +8970,6 @@
   "privateKeyHidden": {
     "message": "La clave privada está oculta",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Mostrar/ocultar la entrada de clave privada",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Esta clave privada se está mostrando",
@@ -11960,9 +11929,6 @@
     "message": "aquí",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Incluida"
-  },
   "swapGasFeesSplit": {
     "message": "Las tarifas de red de la pantalla anterior se dividen entre estas dos transacciones."
   },
@@ -12709,9 +12675,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "La visualización automática de tokens enviados a su cuenta implica la comunicación con servidores de terceros para obtener imágenes de tokens. Esos servicios tendrán acceso a su dirección IP."
-  },
-  "usedByClients": {
-    "message": "Usado por una variedad de clientes distintos"
   },
   "userOpContractDeployError": {
     "message": "No se admite la implementación de contratos desde una cuenta inteligente"

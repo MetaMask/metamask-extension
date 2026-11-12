@@ -67,7 +67,7 @@
   },
   ".github/scripts/collect-qa-stats.mts": {
     "@typescript-eslint/naming-convention": {
-      "count": 22
+      "count": 29
     },
     "no-plusplus": {
       "count": 3
@@ -480,11 +480,6 @@
       "count": 1
     }
   },
-  "ui/hooks/bridge/usePrefillFromSearchQuery.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/hooks/bridge/useQuoteFetchEvents.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -854,11 +849,6 @@
   "ui/pages/custom-token-import/custom-token-import.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 2
-    }
-  },
-  "ui/pages/details/components/convert-again-button.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
     }
   },
   "ui/pages/details/templates/bridge/swap-again-button.tsx": {

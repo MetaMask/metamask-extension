@@ -1,5 +1,6 @@
 import {
   PaymentOverride,
+  TransactionPayClientId,
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
@@ -65,6 +66,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     );
 
   const messengerClient = new TransactionPayController({
+    clientId: TransactionPayClientId.Extension,
     getAmountData: (amountDataRequest) =>
       getMoneyAccountAmountData(
         initMessenger as MoneyPayMessenger,

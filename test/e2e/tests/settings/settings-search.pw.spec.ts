@@ -3,10 +3,11 @@ import { E2E_DRIVER } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AboutPage from '../../page-objects/pages/settings/about-page';
+import AssetsSettings from '../../page-objects/pages/settings/assets-settings';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
+import SecurityAndPasswordSettings from '../../page-objects/pages/settings/security-and-password/security-and-password-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -41,9 +42,7 @@ pwTest.describe('Settings Search', () => {
           await settingsPage.fillSearchSettingsInput(settingsSearch.assets);
 
           await settingsPage.goToSearchResultPage('Assets');
-          await new PreferencesAndDisplaySettings(
-            driver,
-          ).checkAssetsPageIsLoaded();
+          await new AssetsSettings(driver).checkPageIsLoaded();
         },
       );
     },
@@ -101,9 +100,7 @@ pwTest.describe('Settings Search', () => {
           );
 
           await settingsPage.goToSearchResultPage('Security and password');
-          await new PrivacySettings(
-            driver,
-          ).checkSecurityAndPasswordPageIsLoaded();
+          await new SecurityAndPasswordSettings(driver).checkPageIsLoaded();
         },
       );
     },
