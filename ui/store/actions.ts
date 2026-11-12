@@ -4776,6 +4776,8 @@ export function detectNfts(
     log.debug(`background.detectNfts`);
     try {
       await submitRequestToBackground('detectNfts', [chainIds]);
+    } catch (error) {
+      log.error('[detectNfts] error', error);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
