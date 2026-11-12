@@ -23,13 +23,24 @@ const NESTED_TRACE_NAMES = new Set<string>([
   'Wallet Alignment',
 ]);
 
+// Only the alignment a group creation runs afterwards is tagged `post`. The
+// rest come from `alignAccounts()`, `alignAccountsOf()` or `discoverAccounts()`,
+// which the service does not trace, so they start their own trace rather
+// than nest under the active span.
+function isStandaloneAlignment(request: TraceRequest) {
+  return (request.name as string) === 'Wallet Alignment' && !request.data?.post;
+}
+
 function traceWithNestedFallback<ResultType>(
   request: TraceRequest,
   fn?: TraceCallback<ResultType>,
 ) {
-  const req = NESTED_TRACE_NAMES.has(request.name)
-    ? { ...request, allowActiveSpanFallback: true }
-    : request;
+  let req = request;
+  if (isStandaloneAlignment(request)) {
+    req = { ...request, root: true };
+  } else if (NESTED_TRACE_NAMES.has(request.name)) {
+    req = { ...request, allowActiveSpanFallback: true };
+  }
   return fn ? trace(req, fn) : trace(req);
 }
 
