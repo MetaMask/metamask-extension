@@ -40,7 +40,19 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
+  NetworkManagementAction,
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkManagementSource,
 } from '../../../../shared/constants/metametrics';
+import {
+  getChangedNetworkFields,
+  trackNetworkAdded,
+  trackNetworkEdited,
+  trackNetworkManagementInteracted,
+  trackRpcRemoved,
+} from '../../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../../helpers/utils/network-sections';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
@@ -331,6 +343,50 @@ export const NetworksForm = ({
       : endpoint;
 
   const chainIdHex = chainId ? toHex(chainId) : undefined;
+  let metricsEntryPoint = NetworkManagementEntryPoint.NetworkPicker;
+  if (usePageFooterStyle) {
+    metricsEntryPoint = NetworkManagementEntryPoint.SettingsNetworks;
+  } else if (existingNetwork) {
+    metricsEntryPoint = NetworkManagementEntryPoint.EditNetworkModal;
+  }
+  const didTrackFormOpen = useRef(false);
+
+  useEffect(() => {
+    if (didTrackFormOpen.current) {
+      return;
+    }
+    didTrackFormOpen.current = true;
+
+    trackNetworkManagementInteracted(
+      { trackEvent, createEventBuilder },
+      {
+        interactionType: NetworkManagementInteractionType.NetworkFormOpened,
+        action: existingNetwork
+          ? NetworkManagementAction.Edit
+          : NetworkManagementAction.Add,
+        entryPoint: metricsEntryPoint,
+        chainId: chainIdHex,
+        networkType: chainIdHex ? getNetworkSectionKey(chainIdHex) : undefined,
+        rpcCount: rpcUrls.rpcEndpoints?.length ?? 0,
+      },
+    );
+
+    if (!existingNetwork) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            source_connection_method:
+              MetaMetricsNetworkEventSource.CustomNetworkForm,
+          })
+          .build(),
+      );
+    }
+    // Fire once when the form opens. Later field edits are not new views.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { suggestedName, nameWarning } = useMemo(() => {
     const expectedName = chainIdHex
@@ -690,6 +746,39 @@ export const NetworksForm = ({
             .build(),
         );
 
+        if (chainIdHex) {
+          const analytics = { trackEvent, createEventBuilder };
+          const rpcCount = rpcUrls?.rpcEndpoints?.length ?? 0;
+          if (existingNetwork) {
+            trackNetworkEdited(analytics, {
+              chainId: chainIdHex,
+              entryPoint: metricsEntryPoint,
+              changedFields: getChangedNetworkFields(existingNetwork, {
+                name,
+                chainId: chainIdHex,
+                nativeCurrency: ticker,
+                rpcEndpoints: rpcUrls?.rpcEndpoints,
+                defaultRpcEndpointIndex: rpcUrls?.defaultRpcEndpointIndex,
+                blockExplorerUrls: blockExplorers?.blockExplorerUrls,
+              }),
+              rpcCount,
+            });
+          } else {
+            trackNetworkAdded(analytics, {
+              chainId: chainIdHex,
+              source:
+                source === 'chainlist'
+                  ? NetworkManagementSource.Chainlist
+                  : NetworkManagementSource.Manual,
+              entryPoint: metricsEntryPoint,
+              rpcCount,
+              blockExplorerSet: Boolean(
+                blockExplorers?.blockExplorerUrls?.length,
+              ),
+            });
+          }
+        }
+
         dispatch(
           setEditedNetwork({
             chainId: chainIdHex,
@@ -894,6 +983,19 @@ export const NetworksForm = ({
               }))
             }
             onItemDeleted={(deletedIndex, newSelectedIndex) => {
+              trackRpcRemoved(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: chainIdHex,
+                  rpcCount: Math.max(
+                    (rpcUrls.rpcEndpoints?.length ?? 1) - 1,
+                    0,
+                  ),
+                  wasActive:
+                    deletedIndex === (rpcUrls.defaultRpcEndpointIndex ?? 0),
+                  entryPoint: metricsEntryPoint,
+                },
+              );
               setRpcUrls({
                 rpcEndpoints: rpcUrls.rpcEndpoints
                   ?.slice(0, deletedIndex)

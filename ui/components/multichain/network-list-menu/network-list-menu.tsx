@@ -93,7 +93,19 @@ import { Box, Text } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkManagementSource,
+  NetworkRemovalType,
 } from '../../../../shared/constants/metametrics';
+import {
+  trackNetworkManagementInteracted,
+  trackNetworkRemoved,
+  trackRpcAdded,
+  useTrackNetworkManagementStep,
+  getNetworkManagementStep,
+} from '../../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../../helpers/utils/network-sections';
 import {
   convertCaipToHexChainId,
   sortNetworks,
@@ -278,6 +290,22 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
+  const pickerView =
+    actionMode === ACTION_MODE.ADD_RPC ? 'add-rpc' : 'select-rpc';
+  const pickerStep =
+    actionMode === ACTION_MODE.ADD_RPC || actionMode === ACTION_MODE.SELECT_RPC
+      ? getNetworkManagementStep(pickerView)
+      : null;
+
+  useTrackNetworkManagementStep({
+    step: pickerStep,
+    entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+    chainId: editedNetwork?.chainId,
+    rpcCount: rpcUrls.rpcEndpoints.length,
+    networkType: editedNetwork?.chainId
+      ? getNetworkSectionKey(editedNetwork.chainId)
+      : undefined,
+  });
 
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
@@ -602,13 +630,37 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         ? () => {
             dispatch(toggleNetworkMenu());
             if (isDisableableDefault) {
-              dispatch(removeNetwork(chainId as CaipChainId));
+              const removalChainId = hexChainId ?? chainId;
+              trackNetworkManagementInteracted(
+                { trackEvent, createEventBuilder },
+                {
+                  interactionType:
+                    NetworkManagementInteractionType.NetworkRemovalRequested,
+                  entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                  chainId: removalChainId,
+                  networkType: getNetworkSectionKey(removalChainId),
+                },
+              );
+              // Track only once the removal has actually completed.
+              Promise.resolve(dispatch(removeNetwork(chainId as CaipChainId)))
+                .then(() =>
+                  trackNetworkRemoved(
+                    { trackEvent, createEventBuilder },
+                    {
+                      chainId: removalChainId,
+                      entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                      removalType: NetworkRemovalType.Disabled,
+                    },
+                  ),
+                )
+                .catch(() => undefined);
               return;
             }
             dispatch(
               showModal({
                 name: 'CONFIRM_DELETE_NETWORK',
                 target: hexChainId,
+                metricsEntryPoint: NetworkManagementEntryPoint.NetworkPicker,
                 onConfirm: () => undefined,
               }),
             );
@@ -664,6 +716,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       hasMultiRpcOptions,
       isUnlocked,
       isDiscoverBtnEnabled,
+      trackEvent,
+      createEventBuilder,
     ],
   );
 
@@ -895,6 +949,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 ],
                 defaultRpcEndpointIndex: rpcUrls.rpcEndpoints.length,
               });
+              trackRpcAdded(
+                { trackEvent, createEventBuilder },
+                {
+                  chainId: editedNetwork?.chainId,
+                  rpcCount: rpcUrls.rpcEndpoints.length + 1,
+                  source: NetworkManagementSource.Manual,
+                  entryPoint: NetworkManagementEntryPoint.NetworkPicker,
+                },
+              );
             }
             setActionMode(ACTION_MODE.ADD_EDIT);
           }}
@@ -919,6 +982,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       return (
         <SelectRpcUrlModal
           networkConfiguration={evmNetworks[editedNetwork.chainId]}
+          entryPoint={NetworkManagementEntryPoint.NetworkPicker}
           onNetworkChange={handleEvmNetworkChange}
         />
       );

@@ -10,6 +10,19 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useDispatch } from '../../../../store/hooks';
 import PopularNetworkList from './popular-network-list';
 
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: jest.fn(),
+    }),
+  };
+});
+
 jest.mock('../../../../store/hooks', () => ({
   useDispatch: jest.fn(),
 }));

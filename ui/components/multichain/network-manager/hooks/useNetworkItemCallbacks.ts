@@ -27,7 +27,18 @@ import {
 import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
 import { useAccountNetworkAvailability } from '../../../../hooks/accounts/useAccountNetworkAvailability';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useDispatch } from '../../../../store/hooks';
+import {
+  NetworkManagementEntryPoint,
+  NetworkManagementInteractionType,
+  NetworkRemovalType,
+} from '../../../../../shared/constants/metametrics';
+import {
+  trackNetworkManagementInteracted,
+  trackNetworkRemoved,
+} from '../../../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../../../helpers/utils/network-sections';
 
 export type NetworkItemCallbacks = {
   onDelete?: () => void;
@@ -40,6 +51,7 @@ export type NetworkItemCallbacks = {
 
 export const useNetworkItemCallbacks = () => {
   const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [, setSearchParams] = useSearchParams();
   const isUnlocked = useSelector(getIsUnlocked);
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
@@ -131,14 +143,38 @@ export const useNetworkItemCallbacks = () => {
 
       const onDelete = canRemoveOrDisable
         ? () => {
+            const removalChainId = hexChainId ?? chainId;
             if (isDisableableDefault) {
-              dispatch(removeNetwork(chainId as CaipChainId));
+              trackNetworkManagementInteracted(
+                { trackEvent, createEventBuilder },
+                {
+                  interactionType:
+                    NetworkManagementInteractionType.NetworkRemovalRequested,
+                  entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+                  chainId: removalChainId,
+                  networkType: getNetworkSectionKey(removalChainId),
+                },
+              );
+              // Track only once the removal has actually completed.
+              Promise.resolve(dispatch(removeNetwork(chainId as CaipChainId)))
+                .then(() =>
+                  trackNetworkRemoved(
+                    { trackEvent, createEventBuilder },
+                    {
+                      chainId: removalChainId,
+                      entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+                      removalType: NetworkRemovalType.Disabled,
+                    },
+                  ),
+                )
+                .catch(() => undefined);
               return;
             }
             dispatch(
               showModal({
                 name: 'CONFIRM_DELETE_NETWORK',
                 target: hexChainId,
+                metricsEntryPoint: NetworkManagementEntryPoint.SettingsNetworks,
                 ...modalProps,
               }),
             );
@@ -195,6 +231,8 @@ export const useNetworkItemCallbacks = () => {
       isUnlocked,
       isDiscoverBtnEnabled,
       setSearchParams,
+      trackEvent,
+      createEventBuilder,
     ],
   );
 

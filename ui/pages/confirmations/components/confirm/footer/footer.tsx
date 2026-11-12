@@ -322,7 +322,8 @@ const Footer = () => {
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
-  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
+  const { onSubmit: onAddEthereumChain, onReject: onRejectAddEthereumChain } =
+    useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
     useConfirmContext<TransactionMeta>();
@@ -497,6 +498,7 @@ const Footer = () => {
     }
 
     if (isAddEthereumChain) {
+      onRejectAddEthereumChain();
       navigate(DEFAULT_ROUTE);
       return;
     }
@@ -514,6 +516,7 @@ const Footer = () => {
     navigate,
     onDappSwapCompleted,
     dismissErrorModal,
+    onRejectAddEthereumChain,
   ]);
 
   const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();

@@ -1063,6 +1063,15 @@ export enum MetaMetricsEventName {
   ChainlistRpcSelected = 'Chainlist RPC Selected',
   CustomNetworkFormViewed = 'Custom Network Form Viewed',
   CustomNetworkAdded = 'Custom Network Added',
+  NetworkManagementInteracted = 'Network Management Interacted',
+  NetworkRequested = 'Network Requested',
+  NetworkRequestRejected = 'Network Request Rejected',
+  NetworkAdded = 'Network Added',
+  NetworkEdited = 'Network Edited',
+  NetworkRemoved = 'Network Removed',
+  RpcAdded = 'RPC Added',
+  RpcSwitched = 'RPC Switched',
+  RpcRemoved = 'RPC Removed',
   TokenDetailsOpened = 'Token Details Opened',
   WebWidgetViewed = 'Web Widget Viewed',
   TokenDetailsCtaClicked = 'Token Details CTA Clicked',
@@ -1372,6 +1381,56 @@ export enum MetaMetricsNetworkEventSource {
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
   Bridge = 'bridge',
+}
+
+/**
+ * Closed values for Network Management Interacted.interaction_type.
+ * Dashboards must filter on this; the event name alone is not a step.
+ */
+export enum NetworkManagementInteractionType {
+  NetworkFormOpened = 'network_form_opened',
+  RpcFormOpened = 'rpc_form_opened',
+  RpcSelectorOpened = 'rpc_selector_opened',
+  NetworkRemovalRequested = 'network_removal_requested',
+}
+
+/**
+ * Shared entry_point values. Chainlist Network Selected also uses
+ * add_network_form and add_rpc_form.
+ */
+export enum NetworkManagementEntryPoint {
+  NetworkPicker = 'network_picker',
+  SettingsNetworks = 'settings_networks',
+  DappRequest = 'dapp_request',
+  PopularNetworkList = 'popular_network_list',
+  EditNetworkModal = 'edit_network_modal',
+  AddNetworkForm = 'add_network_form',
+  AddRpcForm = 'add_rpc_form',
+}
+
+export enum NetworkManagementAction {
+  Add = 'add',
+  Edit = 'edit',
+}
+
+export enum NetworkManagementSource {
+  Chainlist = 'chainlist',
+  Manual = 'manual',
+  Dapp = 'dapp',
+  PopularList = 'popular_list',
+}
+
+export enum NetworkRemovalType {
+  Deleted = 'deleted',
+  Disabled = 'disabled',
+}
+
+export enum NetworkEditedField {
+  Name = 'name',
+  Rpc = 'rpc',
+  ChainId = 'chain_id',
+  NativeSymbol = 'symbol',
+  Explorer = 'explorer',
 }
 
 export enum MetaMetricsSwapsEventSource {
