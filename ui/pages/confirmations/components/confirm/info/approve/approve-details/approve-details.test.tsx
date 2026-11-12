@@ -109,7 +109,7 @@ describe('<ApproveDetails />', () => {
       );
     });
 
-    it('shows never expires when the expiration is too large for a date', async () => {
+    it('shows never expires for the max uint48 expiration', async () => {
       const { getByTestId } = renderPermit2Details(281474976710655);
 
       await waitFor(() => {

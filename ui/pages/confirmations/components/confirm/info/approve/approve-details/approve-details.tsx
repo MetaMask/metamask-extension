@@ -1,5 +1,4 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { DateTime } from 'luxon';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -13,6 +12,7 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { MAX_UINT48 } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
@@ -38,10 +38,10 @@ const Expiration = ({ expiration }: { expiration: number }) => {
       label={t('confirmFieldExpiration')}
       data-testid="confirmation__approve-expiration"
     >
-      {DateTime.fromSeconds(unixTimestamp).isValid ? (
-        <ConfirmInfoRowDate unixTimestamp={unixTimestamp} />
-      ) : (
+      {expiration === MAX_UINT48 ? (
         <ConfirmInfoRowText text={t('confirmFieldNeverExpires')} />
+      ) : (
+        <ConfirmInfoRowDate unixTimestamp={unixTimestamp} />
       )}
     </ConfirmInfoRow>
   );
