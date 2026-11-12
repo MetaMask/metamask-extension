@@ -44,7 +44,7 @@ const MfaFlowHost = () => {
   const location = useLocation();
   const active = useActiveMfaFlow();
   const flow = active?.flow;
-  const isUnlocked = useSelector(getIsUnlocked);
+  const isLocked = !useSelector(getIsUnlocked);
   const cancelTimer = useRef<ReturnType<typeof setTimeout>>();
   const closeToHome = useRef(false);
 
@@ -74,7 +74,7 @@ const MfaFlowHost = () => {
     }
   }, [flow, location.key, navigate]);
 
-  if (flow && !flow.whileLocked && !isUnlocked) {
+  if (flow && !flow.whileLocked && isLocked) {
     // Leaving the page cancels the flow.
     return <Navigate to={UNLOCK_ROUTE} state={{ from: location }} replace />;
   }
