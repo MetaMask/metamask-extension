@@ -6,7 +6,9 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { NetworkName } from '../../helpers/network-constants';
+import { NetworkId, NetworkName } from '../../helpers/network-constants';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
+import NetworkPillSelector from '../../page-objects/pages/networks/network-pill-selector';
 import {
   mockGasPricesArbitrum,
   mockSwapTokensArbitrum,
@@ -20,6 +22,11 @@ describe('Switch network - ', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        // Keeps this test on the narrow layout whatever default the feature
+        // flag registry has. The wide layout is covered below.
+        manifestFlags: {
+          remoteFeatureFlags: { extensionUxFullscreenRedesign: false },
+        },
         testSpecificMock: async (mockServer: Mockttp) => {
           const standardMocks = [
             await mockGasPricesArbitrum(mockServer),
@@ -50,6 +57,47 @@ describe('Switch network - ', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, NetworkName.ETHEREUM);
         await homePage.checkPageIsLoaded();
         await homePage.checkLocalNodeBalanceIsDisplayed();
+      },
+    );
+  });
+
+  // The pills only offer default networks the wallet already has. Custom
+  // networks (the local node) and networks that still have to be added
+  // (Arbitrum) can only be switched to from the network filter modal, which is
+  // covered by the test above.
+  it('Switch networks with the network pills in the wide layout', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        manifestFlags: {
+          remoteFeatureFlags: { extensionUxFullscreenRedesign: true },
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        const networkFilter = new NetworkFilter(driver);
+        const networkPillSelector = new NetworkPillSelector(driver);
+
+        await networkPillSelector.selectNetwork(NetworkId.ETHEREUM);
+        await networkFilter.waitUntilLabelIs(
+          `Network: ${NetworkName.ETHEREUM}`,
+        );
+        await homePage.checkLocalNodeBalanceIsDisplayed();
+
+        await networkPillSelector.selectNetwork(NetworkId.LINEA);
+        await networkFilter.waitUntilLabelIs(`Network: ${NetworkName.LINEA}`);
+
+        await networkPillSelector.selectNetwork(NetworkId.ETHEREUM);
+        await networkFilter.waitUntilLabelIs(
+          `Network: ${NetworkName.ETHEREUM}`,
+        );
+        await homePage.checkPageIsLoaded();
+        await homePage.checkLocalNodeBalanceIsDisplayed();
+        await networkPillSelector.checkNetworkPillIsSelected(
+          NetworkId.ETHEREUM,
+        );
       },
     );
   });
