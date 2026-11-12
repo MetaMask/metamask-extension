@@ -373,13 +373,17 @@ const AcceptInviteSheetContent = ({
                   <TextButton
                     size={TextButtonSize.BodyMd}
                     className="text-primary-default"
-                    onClick={() =>
+                    isDisabled={isAccepting}
+                    onClick={() => {
+                      if (isAccepting) {
+                        return;
+                      }
                       window.open(
                         termsLink.url,
                         '_blank',
                         'noopener,noreferrer',
-                      )
-                    }
+                      );
+                    }}
                     data-testid="money-referral-invite-terms-link"
                   >
                     {termsLink.label}

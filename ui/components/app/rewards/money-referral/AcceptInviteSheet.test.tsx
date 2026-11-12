@@ -477,10 +477,16 @@ describe('AcceptInviteSheet', () => {
         mockRegister.mockReturnValue(registration.promise);
       }
       const view = renderSheet();
+      const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
 
       await act(async () => {
         fireEvent.click(view.getByTestId('money-referral-accept'));
       });
+      const termsLink = view.getByTestId('money-referral-invite-terms-link');
+      expect(termsLink).toBeDisabled();
+      fireEvent.click(termsLink);
+      expect(openSpy).not.toHaveBeenCalled();
+      openSpy.mockRestore();
       expect(view.getByTestId('money-referral-accept')).toBeDisabled();
       expect(view.getByTestId('money-referral-decline')).toBeDisabled();
       expect(view.getByTestId('money-referral-code-input')).toBeDisabled();
