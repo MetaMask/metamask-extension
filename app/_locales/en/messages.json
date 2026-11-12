@@ -3648,10 +3648,6 @@
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain the same. This process may take up to 30 days. View our $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3659,14 +3655,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "We are unable to delete this data right now"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Unable to delete"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "We are about to remove all your MetaMetrics data. Are you sure?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Delete MetaMetrics data?"
@@ -5548,9 +5538,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Since you've never opted into MetaMetrics, there's no data to delete here."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
