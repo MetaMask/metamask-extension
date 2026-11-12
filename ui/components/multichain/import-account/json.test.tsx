@@ -104,4 +104,54 @@ describe('Json', () => {
       expect(mockImportFunc).toHaveBeenCalledWith('json', ['0', 'password']);
     });
   });
+
+  it('shows a missing or incorrect password under the password field', () => {
+    const { getByLabelText, getByTestId, getByText } = renderWithProvider(
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+        importErrorMessage={messages.jsonImportPasswordRequired.message}
+      />,
+      mockStore,
+    );
+
+    expect(
+      getByText(messages.jsonImportPasswordRequired.message),
+    ).toHaveAttribute('id', 'json-password-error');
+    expect(
+      getByText(messages.jsonImportPasswordRequired.message),
+    ).toHaveAttribute('role', 'alert');
+    expect(
+      getByLabelText(messages.enterOptionalPassword.message),
+    ).toHaveAttribute('aria-describedby', 'json-password-error');
+    expect(
+      getByLabelText(messages.enterOptionalPassword.message),
+    ).toHaveAttribute('aria-invalid', 'true');
+    expect(getByTestId('file-input')).not.toHaveAttribute(
+      'aria-invalid',
+      'true',
+    );
+  });
+
+  it('keeps a file error on the JSON file input', () => {
+    const { getByTestId, getByText } = renderWithProvider(
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+        importErrorMessage="Not a V3 wallet"
+      />,
+      mockStore,
+    );
+
+    expect(getByText('Not a V3 wallet')).toHaveAttribute(
+      'id',
+      'json-file-error',
+    );
+    expect(getByText('Not a V3 wallet')).toHaveAttribute('role', 'alert');
+    expect(getByTestId('file-input')).toHaveAttribute(
+      'aria-describedby',
+      'json-file-error',
+    );
+    expect(getByTestId('file-input')).toHaveAttribute('aria-invalid', 'true');
+  });
 });

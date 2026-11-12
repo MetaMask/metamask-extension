@@ -12,7 +12,10 @@ import { PAY_QUOTE_READY_TIMEOUT } from './metamask-pay-confirmation';
  */
 export class MoneyAccountWithdrawConfirmation extends MoneyAccountDepositConfirmation {
   constructor(driver: Driver) {
-    super(driver, tEn('send'));
+    super(driver, {
+      confirmText: tEn('send'),
+      headerText: tEn('send'),
+    });
   }
 
   /**
