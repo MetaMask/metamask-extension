@@ -7390,9 +7390,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^20.2.2, @metamask/assets-controller@npm:^20.3.0, @metamask/assets-controller@npm:^20.3.1":
-  version: 20.3.1
-  resolution: "@metamask/assets-controller@npm:20.3.1"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@20.3.1-preview-4ca608e50":
+  version: 20.3.1-preview-4ca608e50
+  resolution: "@metamask-previews/assets-controller@npm:20.3.1-preview-4ca608e50"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -7425,7 +7425,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/bbf99c3adf3e5a124c3e658b490c3863ef9f22e0d0578b4283c705d7f5cb71c97f0ec87ccbe693461940f61721d914fdb860e9ed8877291e993cc80d778af37e
+  checksum: 10/c3ef101f00e60234b7fb5688cd7edf464df5029466579dee2bcc5402c36c819e81917b6d274f2c93d18360ae0ceead494bbffb933d59fdbef0c9d84ed13bdce2
   languageName: node
   linkType: hard
 
@@ -7520,29 +7520,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/authenticated-user-storage@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "@metamask/authenticated-user-storage@npm:3.0.2"
+"@metamask/authenticated-user-storage@npm:@metamask-previews/authenticated-user-storage@4.1.0-preview-4ca608e50":
+  version: 4.1.0-preview-4ca608e50
+  resolution: "@metamask-previews/authenticated-user-storage@npm:4.1.0-preview-4ca608e50"
   dependencies:
-    "@metamask/base-data-service": "npm:^1.0.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/b368bce476e7d56af7b0bb321c4885bc1f4a60a9bee3a97234aa37fdae016cf072eee5eb010ef7c272b90c41574e0e661503bb4519738facbc4adbd781ffc967
-  languageName: node
-  linkType: hard
-
-"@metamask/authenticated-user-storage@npm:^4.0.0, @metamask/authenticated-user-storage@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/authenticated-user-storage@npm:4.1.0"
-  dependencies:
-    "@metamask/base-data-service": "npm:^2.0.0"
+    "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.0"
-  checksum: 10/17653dabcc63a2a4d0a07df275363e1118293793b45cfdce527cb8e48e64efc33a2a0dbce243a4984c481ae1cd2f14a9a2e22cfb466cb7742465323b28906ba1
+    "@metamask/utils": "npm:^12.0.1"
+  checksum: 10/53777278a13bf9fedb5f5fd8e3fc96fc5d8761327fed462616ef0c56809211819640e3df51c6dcc618adc7b6dc013fc4ff94af8eb6fb30516e62d390521efbad
   languageName: node
   linkType: hard
 
@@ -35547,9 +35534,9 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^20.3.0"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@20.3.1-preview-4ca608e50"
     "@metamask/assets-controllers": "npm:^113.3.0"
-    "@metamask/authenticated-user-storage": "npm:^4.0.0"
+    "@metamask/authenticated-user-storage": "npm:@metamask-previews/authenticated-user-storage@4.1.0-preview-4ca608e50"
     "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/base-data-service": "npm:^2.1.0"
