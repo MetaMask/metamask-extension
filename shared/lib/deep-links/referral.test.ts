@@ -21,6 +21,21 @@ describe('getReferralCode', () => {
   ])('ignores malformed or ambiguous input: %s', (query) => {
     expect(getReferralCode(new URLSearchParams(query))).toBeNull();
   });
+
+  jestIt.each([
+    ['ref=abc123&sig=signature', 'ABC123'],
+    ['ref=abc123&sig=signature&sig_params=ref', 'ABC123'],
+    ['ref=abc123&sig=signature&sig_params=from,ref,to', 'ABC123'],
+    ['ref=abc123&sig=signature&sig_params=', null],
+    ['ref=abc123&sig=signature&sig_params=from,to', null],
+    ['ref=abc123&sig=signature&sig_params=referral', null],
+    ['ref=abc123&sig=signature&sig_params=REF', null],
+    ['ref=abc123&sig=&sig_params=from,to', null],
+    ['ref=abc123&sig_params=from,to', 'ABC123'],
+    ['ref=abc123&sig_params=', 'ABC123'],
+  ])('respects the signature parameter scope: %s', (query, expected) => {
+    expect(getReferralCode(new URLSearchParams(query))).toBe(expected);
+  });
 });
 
 describe('withReferralCode', () => {
@@ -34,5 +49,14 @@ describe('withReferralCode', () => {
     const destination = 'scheme://id/home.html#/m';
     const route = withReferralCode(destination, new URLSearchParams('ref=???'));
     expect(route).toBe(destination);
+  });
+
+  it('does not carry a referral excluded from the signature', () => {
+    const destination = 'scheme://id/home.html#/m';
+    const params = new URLSearchParams(
+      'ref=abc123&sig=signature&sig_params=from,to',
+    );
+
+    expect(withReferralCode(destination, params)).toBe(destination);
   });
 });
