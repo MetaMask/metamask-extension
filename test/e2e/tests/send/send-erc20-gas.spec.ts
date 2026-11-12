@@ -21,6 +21,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendPage from '../../page-objects/pages/send/send-page';
+import { buildAccountsSupportedNetworksV2 } from '../../mock-response-data/api-responses';
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -298,10 +299,13 @@ describe('Send ERC20 - Gas Customization', function () {
       await server
         .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
         .always()
-        .thenJson(200, {
-          fullSupport: [],
-          partialSupport: [],
-        }),
+        .thenJson(
+          200,
+          buildAccountsSupportedNetworksV2({
+            fullSupport: [],
+            partialSupport: [],
+          }),
+        ),
       // Browse list on the token management page. Without this the catch-all
       // answers with an empty body, which `browseTokens` fails to parse.
       await server

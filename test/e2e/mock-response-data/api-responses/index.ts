@@ -7,6 +7,7 @@
  * the tests that use it.
  */
 import fourByteSignatures from './4byte-signatures.json';
+import accountsV2SupportedNetworks from './accounts-v2-supported-networks.json';
 import accountsV5MultiaccountBalances from './accounts-v5-multiaccount-balances.json';
 import bridgeGetTokensPopular from './bridge-get-tokens-popular.json';
 import bridgeGetTokensSearch from './bridge-get-tokens-search.json';
@@ -24,6 +25,7 @@ import txSentinelNetwork from './tx-sentinel-network.json';
 
 export const API_RESPONSES = {
   '4byte-signatures': fourByteSignatures,
+  'accounts-v2-supported-networks': accountsV2SupportedNetworks,
   'accounts-v5-multiaccount-balances': accountsV5MultiaccountBalances,
   'bridge-get-tokens-popular': bridgeGetTokensPopular,
   'bridge-get-tokens-search': bridgeGetTokensSearch,
@@ -103,6 +105,18 @@ export function buildTokenListToken<Overrides extends Partial<TokenListToken>>(
   overrides: Overrides,
 ): TokenListToken & Overrides {
   return { ...tokenTokens[0], ...overrides };
+}
+
+/**
+ * Builds an `accounts.api` `/v2/supportedNetworks` body.
+ *
+ * @param overrides - Values the test asserts.
+ * @returns The response body.
+ */
+export function buildAccountsSupportedNetworksV2(
+  overrides: Partial<typeof accountsV2SupportedNetworks>,
+) {
+  return { ...accountsV2SupportedNetworks, ...overrides };
 }
 
 /**

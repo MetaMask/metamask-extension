@@ -31,6 +31,7 @@ import {
   NATIVE_BALANCE_HEX,
 } from './max-amount-parity.constants';
 import type { MaxAmountNetwork } from './max-amount-parity.constants';
+import { buildAccountsSupportedNetworksV2 } from '../../mock-response-data/api-responses';
 
 const ONE_GWEI_HEX = '0x3b9aca00';
 
@@ -399,10 +400,13 @@ async function mockAccountsApi(
   await mockServer
     .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, {
-      fullSupport: [`eip155:${network.chainIdDecimal}`],
-      partialSupport: [],
-    });
+    .thenJson(
+      200,
+      buildAccountsSupportedNetworksV2({
+        fullSupport: [`eip155:${network.chainIdDecimal}`],
+        partialSupport: [],
+      }),
+    );
 
   await mockServer
     .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')

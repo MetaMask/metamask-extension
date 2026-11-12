@@ -15,6 +15,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
+import { buildAccountsSupportedNetworksV2 } from '../../mock-response-data/api-responses';
 
 async function mocks(server: Mockttp) {
   return [
@@ -22,10 +23,13 @@ async function mocks(server: Mockttp) {
     await server
       .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
       .always()
-      .thenJson(200, {
-        fullSupport: [],
-        partialSupport: [],
-      }),
+      .thenJson(
+        200,
+        buildAccountsSupportedNetworksV2({
+          fullSupport: [],
+          partialSupport: [],
+        }),
+      ),
   ];
 }
 
