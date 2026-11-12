@@ -44,8 +44,6 @@
     "sendInputCurrencySwitched": "boolean",
     "showBasicFunctionalityModal": "boolean",
     "showClaimSubmitToast": null,
-    "showDataDeletionErrorModal": "boolean",
-    "showDeleteMetaMetricsDataModal": "boolean",
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
