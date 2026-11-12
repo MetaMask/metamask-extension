@@ -34,7 +34,7 @@ const waitForSignIn = async (driver: Driver): Promise<void> => {
       const uiState = await getCleanAppState(driver);
       return uiState?.metamask?.isSignedIn === true;
     },
-    { interval: 500, timeout: 10000 },
+    { interval: 500, timeout: driver.timeout },
   );
 };
 
