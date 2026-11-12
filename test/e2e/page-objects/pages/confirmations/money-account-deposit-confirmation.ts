@@ -6,12 +6,24 @@ import {
 } from './metamask-pay-confirmation';
 
 /**
- * The Money Account deposit confirmation ("Add funds"): the deposit header
- * and confirm label on top of the shared MetaMask Pay confirmation.
+ * Header and confirm-button copy for a Money custom-amount confirmation.
+ * Deposit and withdraw share this screen but use different labels.
+ */
+type MoneyAccountConfirmationLabels = {
+  confirmText: string;
+  headerText: string;
+};
+
+const DEFAULT_DEPOSIT_PAY_TOKEN_SYMBOL = 'USDC';
+
+/**
+ * The Money Account deposit confirmation: "Add to MetaMask Money" in the
+ * header and "Convert [token]" on the confirm button, on top of the shared
+ * MetaMask Pay confirmation.
  *
  * Screen: wallet-initiated confirmation opened by the Money home "Add"
  * action (not a route of its own).
- * Owns: the "Add funds" header and confirm label, and the loaded and
+ * Owns: the deposit header and confirm label, and the loaded and
  * quote-ready checks for this flow.
  * Boundaries: the amount input, percentage buttons, Pay pills, quote rows,
  * and the confirm click belong to `MetaMaskPayConfirmation`. The Money home
@@ -29,19 +41,35 @@ export class MoneyAccountDepositConfirmation extends MetaMaskPayConfirmation {
 
   /**
    * @param driver - The WebDriver instance.
-   * @param confirmText - Header title and confirm-button label. Deposit uses
-   * "Add funds"; withdraw uses "Send".
+   * @param labels - Header title and confirm-button label. Deposit defaults
+   * to "Add to MetaMask Money" and "Convert USDC". Withdraw passes "Send"
+   * for both.
    */
-  constructor(driver: Driver, confirmText: string = tEn('addFunds')) {
+  constructor(
+    driver: Driver,
+    labels: MoneyAccountConfirmationLabels = {
+      confirmText: tEn('moneyAccountDepositConvert', [
+        DEFAULT_DEPOSIT_PAY_TOKEN_SYMBOL,
+      ]),
+      headerText: tEn('moneyAccountDepositHeader'),
+    },
+  ) {
     super(driver);
     this.headerTitle = {
       testId: 'wallet-initiated-header-title',
-      text: confirmText,
+      text: labels.headerText,
     };
     this.confirmLabel = {
       testId: 'confirm-footer-button',
-      text: confirmText,
+      text: labels.confirmText,
     };
+  }
+
+  async checkIsNotShown(): Promise<void> {
+    console.log('Check the Money Account deposit confirmation is not shown');
+    await this.driver.assertElementNotPresent(this.confirmationPage, {
+      waitAtLeastGuard: 1000,
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -61,10 +89,10 @@ export class MoneyAccountDepositConfirmation extends MetaMaskPayConfirmation {
   }
 
   /**
-   * Wait for the quote-derived rows and the "Add funds" button to enable.
+   * Wait for the quote-derived rows and the confirm button to enable.
    */
   async checkQuoteIsReady(): Promise<void> {
-    console.log('Wait for deposit quote rows and enabled Add funds button');
+    console.log('Wait for deposit quote rows and enabled confirm button');
     await this.checkQuoteRows();
     await this.driver.waitForSelector(this.confirmLabel, {
       timeout: PAY_QUOTE_READY_TIMEOUT,

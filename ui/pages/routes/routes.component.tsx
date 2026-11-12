@@ -51,6 +51,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
   RAMPS_COMPLETE_BUY_ROUTE,
+  RAMPS_BUY_INTERSTITIAL_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -247,6 +248,9 @@ const RampsTokenSelection = mmLazy(
 );
 const RampsPaymentMethod = mmLazy(
   () => import('../ramps/payment-method/index.ts'),
+);
+const BuyInterstitial = mmLazy(
+  () => import('../ramps/buy-interstitial/index.ts'),
 );
 const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
 const PermissionsPage = mmLazy(
@@ -651,6 +655,11 @@ export const routeConfig = [
                 element: <RampsPaymentMethod />,
               },
             ],
+          },
+          {
+            // Resolves the intent and redirects; no flow chrome to show.
+            path: RAMPS_BUY_INTERSTITIAL_ROUTE,
+            element: <BuyInterstitial />,
           },
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,

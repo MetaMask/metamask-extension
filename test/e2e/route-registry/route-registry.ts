@@ -20,6 +20,9 @@
  * own, otherwise `null`.
  */
 
+import ChooseWalletTypePage from '../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
+import ImportAccountPage from '../page-objects/pages/accounts/add-wallet/import-account-page';
+import ImportSrpPage from '../page-objects/pages/accounts/add-wallet/import-srp-page';
 import AccountAddressListPage from '../page-objects/pages/accounts/address-list-page';
 import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
 import AccountListPage from '../page-objects/pages/accounts/list-page';
@@ -28,12 +31,19 @@ import WalletDetailsPage from '../page-objects/pages/accounts/wallet-details-pag
 import AssetDetailsPage from '../page-objects/pages/asset/asset-details';
 import DeFiDetailsPage from '../page-objects/pages/asset/defi-details-page';
 import ImportNftPage from '../page-objects/pages/asset/import-nft-page';
+import NFTDetailsPage from '../page-objects/pages/asset/nft-details-page';
 import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
 import AddTokenConfirmation from '../page-objects/pages/confirmations/add-token-confirmations';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import DecryptMessageConfirmation from '../page-objects/pages/confirmations/decrypt-message-confirmation';
 import GetEncryptionKeyConfirmation from '../page-objects/pages/confirmations/get-encryption-key-confirmation';
+import WatchAssetConfirmation from '../page-objects/pages/confirmations/watch-asset-confirmation';
+import AddContactPage from '../page-objects/pages/contacts/add-contact-page';
+import ContactDetailsPage from '../page-objects/pages/contacts/contact-details-page';
+import ContactsListPage from '../page-objects/pages/contacts/contacts-list-page';
+import EditContactPage from '../page-objects/pages/contacts/edit-contact-page';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import ConnectHardwareWalletPage from '../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HardwareWalletSignaturesPage from '../page-objects/pages/hardware-wallet/hardware-wallet-signatures-page';
 import ActivityTab from '../page-objects/pages/home/activity-tab';
@@ -54,6 +64,7 @@ import ResetPasswordPage from '../page-objects/pages/onboarding/reset-password-p
 import SecureWalletPage from '../page-objects/pages/onboarding/secure-wallet-page';
 import SetupPasskeyPage from '../page-objects/pages/onboarding/setup-passkey-page';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
+import EditConnectedAccountsPage from '../page-objects/pages/permission/edit-connected-accounts-page';
 import GatorPermissionsPage from '../page-objects/pages/permission/gator-permissions-page';
 import PermissionListPage from '../page-objects/pages/permission/permission-list-page';
 import { PerpsActivityPage } from '../page-objects/pages/perps/perps-activity-page';
@@ -61,25 +72,38 @@ import { PerpsMarketDetailPage } from '../page-objects/pages/perps/perps-market-
 import { PerpsMarketListPage } from '../page-objects/pages/perps/perps-market-list-page';
 import { PerpsOrderEntryPage } from '../page-objects/pages/perps/perps-order-entry-page';
 import { PerpsWithdrawPage } from '../page-objects/pages/perps/perps-withdraw-page';
+import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
+import RewardsPage from '../page-objects/pages/rewards/rewards-page';
 import DeepLink from '../page-objects/pages/security/deep-link-page';
 import SendPage from '../page-objects/pages/send/send-page';
 import AboutPage from '../page-objects/pages/settings/about-page';
+import AccountIdenticonSettings from '../page-objects/pages/settings/preferences-and-display/account-identicon-settings';
+import AssetsSettings from '../page-objects/pages/settings/assets-settings';
+import AutoLockSettings from '../page-objects/pages/settings/security-and-password/auto-lock-settings';
 import BackupAndSyncSettings from '../page-objects/pages/settings/backup-and-sync-settings';
 import BasicFunctionalityOffPage from '../page-objects/pages/settings/basic-functionality-off-page';
-import ChangePasswordPage from '../page-objects/pages/settings/change-password-page';
-import ContactsSettings from '../page-objects/pages/settings/contacts-settings';
+import ChangePasswordPage from '../page-objects/pages/settings/security-and-password/change-password-page';
 import DebugOptions from '../page-objects/pages/settings/debug-page';
+import DeveloperToolsSettings from '../page-objects/pages/settings/developer-tools-settings';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
+import LanguageSettings from '../page-objects/pages/settings/preferences-and-display/language-settings';
+import ManageWalletRecoverySettings from '../page-objects/pages/settings/security-and-password/manage-wallet-recovery-settings';
 import NotificationsSettingsPage from '../page-objects/pages/settings/notifications-settings-page';
-import PreferencesAndDisplaySettings from '../page-objects/pages/settings/preferences-and-display-settings';
-import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
+import PreferencesAndDisplaySettings from '../page-objects/pages/settings/preferences-and-display/preferences-and-display-settings';
+import PreinstalledExampleSettings from '../page-objects/pages/settings/preinstalled-example-settings';
+import PrivacySettings from '../page-objects/pages/settings/privacy/privacy-settings';
+import RegisterPasskeySettings from '../page-objects/pages/settings/security-and-password/register-passkey-settings';
+import SecurityAndPasswordSettings from '../page-objects/pages/settings/security-and-password/security-and-password-settings';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import ShieldClaimPage from '../page-objects/pages/settings/shield/shield-claim-page';
 import ShieldClaimsListPage from '../page-objects/pages/settings/shield/shield-claims-list-page';
 import ShieldDetailPage from '../page-objects/pages/settings/shield/shield-detail-page';
+import ShieldManagePlanPage from '../page-objects/pages/settings/shield/shield-manage-plan-page';
 import ShieldPlanPage from '../page-objects/pages/settings/shield/shield-plan-page';
 import SyncAccountsSettingsPage from '../page-objects/pages/settings/sync-accounts-settings-page';
+import ThirdPartyApisSettings from '../page-objects/pages/settings/privacy/third-party-apis-settings';
 import TransactionsSettingsPage from '../page-objects/pages/settings/transactions-settings';
+import TurnOffPasskeySettings from '../page-objects/pages/settings/security-and-password/turn-off-passkey-settings';
 import SnapListPage from '../page-objects/pages/snaps/list-page';
 import CustomTokenImportPage from '../page-objects/pages/token-management/custom-token-import-page';
 import TokenManagementPage from '../page-objects/pages/token-management/token-management-page';
@@ -112,13 +136,13 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/tx/:caipChainId/:txIdentifier': TransactionDetailsPage,
   '/unlock': LoginPage,
   '/lock': NOT_A_SCREEN,
-  '/rewards': null,
+  '/rewards': RewardsPage,
   '/link': DeepLink,
   '/basic-functionality-off': BasicFunctionalityOffPage,
   '/restore-vault': ResetPasswordPage,
-  '/seed': null,
-  '/seed/:keyringId': null,
-  '/import-srp': null,
+  '/seed': RevealSrpPage,
+  '/seed/:keyringId': RevealSrpPage,
+  '/import-srp': ImportSrpPage,
   '/discover-search': null,
   '/hardware-wallet-repair': null,
   '/shield-plan': ShieldPlanPage,
@@ -145,8 +169,8 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/account-list': AccountListPage,
   '/multichain-account-details': AccountDetailsPage,
   '/multichain-wallet-details-page': WalletDetailsPage,
-  '/choose-new-wallet-type': null,
-  '/add-wallet-page': null,
+  '/choose-new-wallet-type': ChooseWalletTypePage,
+  '/add-wallet-page': ImportAccountPage,
   '/multichain-smart-account/:address': null,
   '/multichain-account-address-list': AccountAddressListPage,
   '/multichain-account-private-key-list': PrivateKeyModal,
@@ -156,7 +180,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/mfa': null,
 
   // Assets and tokens
-  '/asset/image/:asset/:id': null,
+  '/asset/image/:asset/:id': NFTDetailsPage,
   '/asset/:chainId/:asset?/:id?': AssetDetailsPage,
   '/asset/:chainId/:asset?/:id?/security-trust': null,
   '/defi': DeFiDetailsPage,
@@ -164,7 +188,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/custom-token-import': CustomTokenImportPage,
   '/import-nfts': ImportNftPage,
   '/confirm-add-suggested-token': AddTokenConfirmation,
-  '/confirm-add-suggested-nft': null,
+  '/confirm-add-suggested-nft': WatchAssetConfirmation,
   '/batch-sell/select': null,
   '/batch-sell/review': null,
 
@@ -173,6 +197,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/ramps/token-selection': null,
   '/ramps/payment-method': null,
   '/ramps/complete-buy': null,
+  '/ramps/buy-interstitial': null,
 
   // Send, swap and bridge
   '/send/:page?': SendPage,
@@ -189,20 +214,20 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
     DecryptMessageConfirmation,
   '/confirm-transaction/:id/encryption-public-key-request':
     GetEncryptionKeyConfirmation,
-  '/confirmation': null,
-  '/confirmation/:id': null,
+  '/confirmation': Confirmation,
+  '/confirmation/:id': Confirmation,
 
   // Permissions and connections
   '/connect/:id': ConnectAccountConfirmation,
   '/connect/:id/confirm-permissions': null,
-  '/connect/:id/snaps-connect': null,
-  '/connect/:id/snap-install': null,
-  '/connect/:id/snap-update': null,
-  '/connect/:id/snap-install-result': null,
+  '/connect/:id/snaps-connect': SnapInstall,
+  '/connect/:id/snap-install': SnapInstall,
+  '/connect/:id/snap-update': SnapInstall,
+  '/connect/:id/snap-install-result': SnapInstall,
   '/connected': null,
   '/connected/accounts': null,
   '/permissions': PermissionListPage,
-  '/review-permissions': null,
+  '/review-permissions': EditConnectedAccountsPage,
   '/gator-permissions': GatorPermissionsPage,
   '/gator-permissions/token-transfer/:origin?': null,
   '/review-gator-permissions/:chainId/:permissionGroupName/:origin?': null,
@@ -215,52 +240,54 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
 
   // Networks and contacts
   '/networks': NetworksPage,
-  '/contacts': ContactsSettings,
-  '/contacts/add': null,
-  '/contacts/view/:chainId/:address': null,
-  '/contacts/edit/:chainId/:address': null,
+  '/contacts': ContactsListPage,
+  '/contacts/add': AddContactPage,
+  '/contacts/view/:chainId/:address': ContactDetailsPage,
+  '/contacts/edit/:chainId/:address': EditContactPage,
 
   // Settings
   '/settings': SettingsPage,
   '/settings-v2': NOT_A_SCREEN,
   '/settings/about-us': AboutPage,
-  '/settings/assets': null,
+  '/settings/assets': AssetsSettings,
   '/settings/backup-and-sync': BackupAndSyncSettings,
   '/settings/debug': DebugOptions,
-  '/settings/developer-tools': null,
+  '/settings/developer-tools': DeveloperToolsSettings,
   '/settings/experimental': ExperimentalSettings,
   '/settings/notifications': NotificationsSettingsPage,
-  '/settings/notifications/wallet-activity': null,
-  '/settings/notifications/perps': null,
-  '/settings/notifications/marketing': null,
-  '/settings/notifications/agentic-cli': null,
+  '/settings/notifications/wallet-activity': NotificationsSettingsPage,
+  '/settings/notifications/perps': NotificationsSettingsPage,
+  '/settings/notifications/marketing': NotificationsSettingsPage,
+  '/settings/notifications/agentic-cli': NotificationsSettingsPage,
   '/settings/preferences-and-display': PreferencesAndDisplaySettings,
   '/settings/preferences-and-display/currency': null,
   '/settings/preferences-and-display/theme': null,
-  '/settings/preferences-and-display/language': null,
-  '/settings/preferences-and-display/account-identicon': null,
+  '/settings/preferences-and-display/language': LanguageSettings,
+  '/settings/preferences-and-display/account-identicon':
+    AccountIdenticonSettings,
   '/settings/privacy': PrivacySettings,
-  '/settings/privacy/third-party-apis': null,
-  '/settings/security-and-password': null,
-  '/settings/security-and-password/auto-lock': null,
-  '/settings/security-and-password/manage-wallet-recovery': null,
+  '/settings/privacy/third-party-apis': ThirdPartyApisSettings,
+  '/settings/security-and-password': SecurityAndPasswordSettings,
+  '/settings/security-and-password/auto-lock': AutoLockSettings,
+  '/settings/security-and-password/manage-wallet-recovery':
+    ManageWalletRecoverySettings,
   '/settings/security-and-password/password': ChangePasswordPage,
-  '/settings/security-and-password/register-passkey': null,
-  '/settings/security-and-password/turn-off-passkey': null,
+  '/settings/security-and-password/register-passkey': RegisterPasskeySettings,
+  '/settings/security-and-password/turn-off-passkey': TurnOffPasskeySettings,
   '/settings/security-and-password/verification-methods': null,
   '/settings/security-and-password/verification-methods/email': null,
   '/settings/security-and-password/verification-methods/authenticator-app':
     null,
-  '/settings/snap': null,
+  '/settings/snap': PreinstalledExampleSettings,
   '/settings/transactions': TransactionsSettingsPage,
   '/settings/transaction-shield': ShieldDetailPage,
-  '/settings/transaction-shield/manage-plan': null,
+  '/settings/transaction-shield/manage-plan': ShieldManagePlanPage,
   '/settings/transaction-shield/manage-past-plan': null,
   '/settings/transaction-shield/claims': ShieldClaimsListPage,
   '/settings/transaction-shield/claims/new-claim': ShieldClaimPage,
-  '/settings/transaction-shield/claims/edit-draft': null,
-  '/settings/transaction-shield/claims/view-pending-claim': null,
-  '/settings/transaction-shield/claims/view-history-claim': null,
+  '/settings/transaction-shield/claims/edit-draft': ShieldClaimPage,
+  '/settings/transaction-shield/claims/view-pending-claim': ShieldClaimPage,
+  '/settings/transaction-shield/claims/view-history-claim': ShieldClaimPage,
 
   // Onboarding
   '/onboarding': NOT_A_SCREEN,
