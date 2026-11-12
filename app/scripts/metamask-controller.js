@@ -101,7 +101,6 @@ import {
   getCaip25PermissionFromLegacyPermissions,
   getEthAccountsForScope,
 } from '@metamask/chain-agnostic-permission';
-import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -226,12 +225,9 @@ import createExternalRpcActivityMiddleware from './lib/createExternalRpcActivity
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   createEventBuilder,
-  setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
-  updateEventFragment,
 } from './controllers/analytics';
-import { setDataCollectionForMarketing } from './controllers/analytics/analytics';
 import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
@@ -2400,52 +2396,21 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi() {
     const {
-      accountsController,
       appStateController,
       nftController,
       nftDetectionController,
       currencyRateController,
       tokenDetectionController,
       gasFeeController,
-      gatorPermissionsController,
       announcementController,
       preferencesController,
-      tokensController,
-      txController,
       backup,
-      // Notification Controllers
       authenticationController,
-      notificationServicesController,
-      notificationServicesPushController,
       deFiPositionsController,
       staticAssetsController,
     } = this;
 
     return {
-      // etc
-
-      isPublicEndpointUrl: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:isPublicEndpointUrl',
-      ),
-      grantPermissionsIncremental:
-        this.permissionController.grantPermissionsIncremental.bind(
-          this.permissionController,
-        ),
-      grantPermissions: this.permissionController.grantPermissions.bind(
-        this.permissionController,
-      ),
-
-      setParticipateInMetaMetrics,
-      setDataCollectionForMarketing,
-
-      // primary keyring management
-
-      getSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getSeedPhrase',
-      ),
-
       // subscription
 
       subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
@@ -2455,25 +2420,6 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.stopPollingByPollingToken.bind(
           this.subscriptionController,
         ),
-
-      // rewards
-      rewardsGetPerpsDiscountForAccount:
-        this.rewardsController.getPerpsDiscountForAccount.bind(
-          this.rewardsController,
-        ),
-      rewardsGetVipTierForAccount:
-        this.rewardsController.getVipTierForAccount.bind(
-          this.rewardsController,
-        ),
-
-      // claims
-
-      getClaimDrafts: this.claimsController.getClaimDrafts.bind(
-        this.claimsController,
-      ),
-      deleteAllClaimDrafts: this.claimsController.deleteAllClaimDrafts.bind(
-        this.claimsController,
-      ),
 
       // MultichainNetworkController
 
@@ -2487,25 +2433,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.dismissSidePanelMigrationToast.bind(
           preferencesController,
         ),
-
-      // AccountsController
-
-      setAccountName:
-        accountsController.setAccountName.bind(accountsController),
-
-      // AccountTreeController
-
-      syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'AccountTreeController:syncWithUserStorage',
-      ),
-
-      // MultichainAccountService
-
-      alignMultichainWallets: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MultichainAccountService:alignWallets',
-      ),
 
       // NftController
 
@@ -2530,18 +2457,6 @@ export default class MetamaskController extends EventEmitter {
 
       // AppStateController
 
-      setLastVisitedRoute:
-        appStateController.setLastVisitedRoute.bind(appStateController),
-      setOnboardingDate:
-        appStateController.setOnboardingDate.bind(appStateController),
-      setNewPrivacyPolicyToastClickedOrClosed:
-        appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
-          appStateController,
-        ),
-      setNewPrivacyPolicyToastShownDate:
-        appStateController.setNewPrivacyPolicyToastShownDate.bind(
-          appStateController,
-        ),
       setArcUsageNoticeShown: () => {
         if (appStateController.state.arcUsageNoticeShown) {
           return;
@@ -2557,24 +2472,6 @@ export default class MetamaskController extends EventEmitter {
             .build(),
         );
       },
-      setPendingExtensionVersion:
-        appStateController.setPendingExtensionVersion.bind(appStateController),
-      setLastUpdatedAt:
-        appStateController.setLastUpdatedAt.bind(appStateController),
-      setLastPerpsDepositEntryPoint:
-        appStateController.setLastPerpsDepositEntryPoint.bind(
-          appStateController,
-        ),
-      setShieldPausedToastLastClickedOrClosed:
-        appStateController.setShieldPausedToastLastClickedOrClosed.bind(
-          appStateController,
-        ),
-      setShieldEndingToastLastClickedOrClosed:
-        appStateController.setShieldEndingToastLastClickedOrClosed.bind(
-          appStateController,
-        ),
-      setAppActiveTab:
-        appStateController.setAppActiveTab.bind(appStateController),
 
       // GeolocationController
 
@@ -2582,147 +2479,10 @@ export default class MetamaskController extends EventEmitter {
         this.geolocationController,
       ),
 
-      // SeedlessOnboardingController
-
-      getIsSeedlessOnboardingUserAuthenticated:
-        this.seedlessOnboardingController.getIsUserAuthenticated.bind(
-          this.seedlessOnboardingController,
-        ),
-
-      // GatorPermissionsController
-
-      fetchAndUpdateGatorPermissions:
-        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
-          gatorPermissionsController,
-        ),
-      addPendingRevocation:
-        gatorPermissionsController.addPendingRevocation.bind(
-          gatorPermissionsController,
-        ),
-      submitDirectRevocation:
-        gatorPermissionsController.submitDirectRevocation.bind(
-          gatorPermissionsController,
-        ),
-      checkDelegationDisabled: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:checkDelegationDisabled',
-      ),
-
-      // KeyringController
-
-      createNewVaultAndKeychain: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createNewVaultAndKeychain',
-      ),
-      createNewVaultAndGetSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
-      ),
-      unlockAndGetSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
-      ),
-
-      // TransactionController
-
-      updateTransaction: txController.updateTransaction.bind(txController),
-      createCancelTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'TransactionController:stopTransaction',
-      ),
-      createSpeedUpTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'TransactionController:speedUpTransaction',
-      ),
-      estimateGasFee: txController.estimateGasFee.bind(txController),
-
-      // permissions
-
-      approvePermissionsRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:acceptPermissionsRequest',
-      ),
-
-      // Snaps
-
-      handleSnapRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:handleRequest',
-      ),
-      disconnectOriginFromSnap: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:disconnectOrigin',
-      ),
-
-      // Bridge
-
-      resetState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:resetState`,
-      ),
-      setInputPrimaryDenomination: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:setInputPrimaryDenomination`,
-      ),
-      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
-      ),
-      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
-      ),
-      setLocation: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:setLocation`,
-      ),
-      getLocation: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:getLocation`,
-      ),
-      fetchQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
-      ),
-      updateBatchSellTrades: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
-      ),
-
-      // Bridge Tx submission
-
-      submitTx: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitTx'}`,
-      ),
-      submitIntent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
-      ),
-      submitBatchSell: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitBatchSell'}`,
-      ),
-
       // MetaMetrics
 
       trackAnalyticsEvent: trackEvent,
-      trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
-      updateEventFragment,
-
-      // These are background-owned buffered trace entry points. UI pages must
-      // call them through submitRequestToBackground; importing the methods
-      // directly in UI would create a separate queue for each page.
-
-      bufferedTrace: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SentryTracingService:bufferedTrace',
-      ),
-      bufferedEndTrace: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SentryTracingService:bufferedEndTrace',
-      ),
 
       // Notifications
 
@@ -2784,38 +2544,15 @@ export default class MetamaskController extends EventEmitter {
         nftDetectionController,
       ),
 
-      // Token Detection V2
-
-      addDetectedTokens:
-        tokensController.addDetectedTokens.bind(tokensController),
-
       // Authentication Controller
 
       getUserProfileLineage:
         authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
-      getBearerToken: authenticationController.getBearerToken.bind(
-        authenticationController,
-      ),
       requestProfilePairing:
         authenticationController.requestProfilePairing.bind(
           authenticationController,
-        ),
-
-      // NotificationServicesController
-
-      getNotificationsByType:
-        notificationServicesController.getNotificationsByType.bind(
-          notificationServicesController,
-        ),
-      enablePushNotifications:
-        notificationServicesPushController.enablePushNotifications.bind(
-          notificationServicesPushController,
-        ),
-      disablePushNotifications:
-        notificationServicesPushController.disablePushNotifications.bind(
-          notificationServicesPushController,
         ),
     };
   }
