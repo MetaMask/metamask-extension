@@ -213,12 +213,14 @@ export const useOHLCVChart = ({
             controller.signal,
           );
         } catch (e) {
-          // Only an API rejection is worth retrying: a timeout or an abort
-          // would fail the same way in USD.
+          // Only a 400 (bad request) means the quote currency itself was
+          // rejected and is worth retrying in USD. Transient or server
+          // failures (404/429/5xx), timeouts and aborts must surface as an
+          // error instead of silently relabeling prices in a different fiat.
           const unsupportedCurrency =
             requestedCurrency !== FALLBACK_CURRENCY &&
             e instanceof Error &&
-            e.message.startsWith('OHLCV API error:');
+            e.message === 'OHLCV API error: 400';
           if (!unsupportedCurrency || controller.signal.aborted) {
             throw e;
           }
