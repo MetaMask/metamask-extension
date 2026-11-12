@@ -5,7 +5,10 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { parse } from '../../../shared/lib/deep-links/parse';
+import {
+  parse,
+  type ParsedDeepLink,
+} from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 
 let DeepLink: typeof import('./deep-link').DeepLink;
@@ -31,7 +34,8 @@ function renderDeepLink(search: string) {
 
 describe('DeepLink', () => {
   beforeAll(async () => {
-    global.platform.getExtensionURL = (route = '/') => `home.html#${route}`;
+    global.platform.getExtensionURL = (route = null, query = null) =>
+      `chrome-extension://extension-id/home.html${route ? `#${route}` : ''}${query ? `?${query}` : ''}`;
     ({ DeepLink } = await import('./deep-link'));
   });
 
@@ -74,7 +78,7 @@ describe('DeepLink', () => {
       getByRole('link', {
         name: messages.deepLink_GoToTheHomePageButton.message,
       }),
-    ).toHaveAttribute('href', 'home.html#/');
+    ).toHaveAttribute('href', 'chrome-extension://extension-id/home.html#/');
   });
 
   it('copies the shared URL from the mobile share screen', async () => {
@@ -132,5 +136,29 @@ describe('DeepLink', () => {
       await findByText(messages.deepLink_Caution.message),
     ).toBeInTheDocument();
     expect(queryByTestId('deep-link-mobile-share')).not.toBeInTheDocument();
+  });
+  describe('referral continuation', () => {
+    jestIt.each(['missing', 'valid'] as const)(
+      'includes a portable referral in the actual anchor for a %s signature',
+      async (signature) => {
+        parseMock.mockResolvedValue({
+          signature,
+          destination: {
+            path: '/money',
+            query: new URLSearchParams('asset=ETH'),
+          },
+          route: { getTitle: () => 'money' },
+        } as unknown as ParsedDeepLink);
+        const { findByTestId } = renderDeepLink(
+          new URLSearchParams({ u: '/money?ref=abc123' }).toString(),
+        );
+
+        const anchor = await findByTestId('deep-link-continue-button');
+        const href = new URL(anchor.getAttribute('href') ?? '');
+        expect(href.searchParams.get('ref')).toBe('ABC123');
+        expect(href.hash).toBe('#/money?asset=ETH');
+        expect(anchor.tagName).toBe('A');
+      },
+    );
   });
 });

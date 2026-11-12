@@ -126,6 +126,9 @@ export const DeepLinkMobileShare = ({ url }: DeepLinkMobileShareProps) => {
               onClick={() => handleCopy(url)}
               data-testid="deep-link-mobile-share-copy"
             />
+            <span className="sr-only" role="status">
+              {copied ? t('copiedExclamation') : null}
+            </span>
           </Box>
           <Button
             asChild
