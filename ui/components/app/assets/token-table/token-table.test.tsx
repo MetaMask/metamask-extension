@@ -8,7 +8,32 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { useTokenListData } from '../hooks/useTokenListData';
 import type { TokenWithFiatAmount } from '../types';
 import { sortTokenAssets } from '../util/sortAssetsWithPriority';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenSortLocation,
+  MetaMetricsTokenSortPreference,
+  MetaMetricsUserTrait,
+} from '../../../../../shared/constants/metametrics';
 import { TokenTable } from './token-table';
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const mockTrackEvent = jest.fn();
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder: jest.requireActual(
+        '../../../../../shared/lib/analytics/create-event-builder',
+      ).createEventBuilder,
+      trackEvent: mockTrackEvent,
+    }),
+    mockTrackEvent,
+  };
+});
+
+const getMockTrackEvent = () =>
+  jest.requireMock('../../../../hooks/useAnalytics')
+    .mockTrackEvent as jest.Mock;
 
 jest.mock('../hooks/useTokenListData', () => ({
   ...jest.requireActual('../hooks/useTokenListData'),
@@ -144,24 +169,28 @@ describe('TokenTable', () => {
     {
       column: 'balance',
       label: 'Balance',
+      preference: MetaMetricsTokenSortPreference.TokenFiatAmount,
       first: { direction: 'up', reversed: true, name: 'sorted ascending' },
       second: { direction: 'down', reversed: false, name: 'sorted descending' },
     },
     {
       column: 'token',
       label: 'Token',
+      preference: MetaMetricsTokenSortPreference.Title,
       first: { direction: 'down', reversed: false, name: 'sorted ascending' },
       second: { direction: 'up', reversed: true, name: 'sorted descending' },
     },
     {
       column: 'price',
       label: 'Price',
+      preference: MetaMetricsTokenSortPreference.Price,
       first: { direction: 'down', reversed: false, name: 'sorted descending' },
       second: { direction: 'up', reversed: true, name: 'sorted ascending' },
     },
     {
       column: 'change',
       label: '24h change',
+      preference: MetaMetricsTokenSortPreference.PercentChange,
       first: { direction: 'down', reversed: false, name: 'sorted descending' },
       second: { direction: 'up', reversed: true, name: 'sorted ascending' },
     },
@@ -169,7 +198,8 @@ describe('TokenTable', () => {
 
   it.each(headerSortCases)(
     'toggles the $label header sort',
-    ({ column, label, first, second }) => {
+    ({ column, label, preference, first, second }) => {
+      getMockTrackEvent().mockClear();
       mockTokenListData();
 
       const { getByTestId } = renderTable();
@@ -212,6 +242,18 @@ describe('TokenTable', () => {
           sortOverride: sortOverride(second.reversed),
         }),
       );
+
+      const sortEvent = expect.objectContaining({
+        name: MetaMetricsEventName.TokenSortPreference,
+        properties: {
+          category: MetaMetricsEventCategory.Settings,
+          [MetaMetricsUserTrait.TokenSortPreference]: preference,
+          location: MetaMetricsTokenSortLocation.TokenColumnHeader,
+        },
+        sensitiveProperties: {},
+      });
+      expect(getMockTrackEvent()).toHaveBeenNthCalledWith(1, sortEvent);
+      expect(getMockTrackEvent()).toHaveBeenNthCalledWith(2, sortEvent);
     },
   );
 

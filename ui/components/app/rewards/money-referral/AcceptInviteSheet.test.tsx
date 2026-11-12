@@ -4,6 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import { withResolvers } from '#shared/lib/promise-with-resolvers';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AcceptInviteSheet } from './AcceptInviteSheet';
@@ -68,7 +69,7 @@ const mockReferralState: {
 const mockT = (key: string) =>
   (
     ({
-      close: 'Close',
+      close: messages.close.message,
       rewardsMoneyReferralCodeError: 'Invalid referral code',
       rewardsMoneyReferralCodeUnknownError:
         'Referral code couldn’t be validated.',
@@ -418,6 +419,71 @@ describe('AcceptInviteSheet', () => {
     }
   });
 
+  it.each(['validation', 'registration'] as const)(
+    'waits for pending %s before allowing dismissal',
+    async (phase) => {
+      const validation = withResolvers<string>();
+      const registration = withResolvers<void>();
+      if (phase === 'validation') {
+        mockValidation.validateCode.mockReturnValue(validation.promise);
+      } else {
+        mockRegister.mockReturnValue(registration.promise);
+      }
+      const view = renderSheet();
+
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      expect(view.getByTestId('money-referral-accept')).toBeDisabled();
+      expect(view.getByTestId('money-referral-decline')).toBeDisabled();
+      expect(view.getByTestId('money-referral-code-input')).toBeDisabled();
+      expect(
+        view.getByRole('button', { name: messages.close.message }),
+      ).toBeDisabled();
+      fireEvent.keyDown(document, { key: 'Escape' });
+      fireEvent.click(view.getByTestId('money-referral-decline'));
+      expect(view.onClose).not.toHaveBeenCalled();
+      expect(trackedTypes()).toEqual(['viewed']);
+
+      await act(async () => {
+        if (phase === 'validation') {
+          validation.resolve('');
+        } else {
+          registration.resolve();
+        }
+      });
+
+      expect(view.getByTestId('money-referral-activated')).toBeInTheDocument();
+      expect(trackedTypes()).toEqual(['viewed', 'accepted']);
+    },
+  );
+
+  it.each(['registration', 'read-back'] as const)(
+    'does not track acceptance when %s finishes after unmount',
+    async (phase) => {
+      const pending = withResolvers<void>();
+      if (phase === 'registration') {
+        mockRegister.mockReturnValue(pending.promise);
+      } else {
+        mockReferralState.fetch.mockReturnValue(pending.promise);
+      }
+      const view = renderSheet();
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      expect(mockReferralState.fetch).toHaveBeenCalledTimes(
+        phase === 'read-back' ? 1 : 0,
+      );
+      view.unmount();
+
+      await act(async () => {
+        pending.resolve();
+      });
+
+      expect(trackedTypes()).toEqual(['viewed']);
+    },
+  );
+
   it('records a refused accept without locking a later answer', async () => {
     const user = userEvent.setup();
     mockRegister.mockRejectedValueOnce({
@@ -431,6 +497,9 @@ describe('AcceptInviteSheet', () => {
     });
 
     expect(trackedTypes()).toEqual(['viewed', 'refused']);
+    expect(
+      view.getByRole('button', { name: messages.close.message }),
+    ).toBeEnabled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: expect.objectContaining({
