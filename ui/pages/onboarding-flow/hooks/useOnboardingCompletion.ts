@@ -56,7 +56,7 @@ import {
   setIsBackupAndSyncFeatureEnabled,
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
-import { useDispatch } from '../../../store/hooks';
+import { useAppSelector, useDispatch } from '../../../store/hooks';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -85,6 +85,9 @@ export function useOnboardingCompletion() {
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
   const onboardingRedirect = useSelector(getOnboardingRedirect);
+  const pendingReferralCode = useAppSelector(
+    (state) => state.rewardsMoney.pendingReferralCode,
+  );
   const isBasicFunctionalityForcedOn = useSelector(
     getIsBasicFunctionalityForcedOnDuringOnboarding,
   );
@@ -115,9 +118,13 @@ export function useOnboardingCompletion() {
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
         const url = new URL(deferredDeepLinkToUse.referringLink);
         if (
+          !pendingReferralCode &&
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
         ) {
-          dispatch(setPendingReferralCode(getReferralCode(url.searchParams)));
+          const referralCode = getReferralCode(url.searchParams);
+          if (referralCode) {
+            dispatch(setPendingReferralCode(referralCode));
+          }
         }
         await trackEvent(
           createEvent({
@@ -161,7 +168,7 @@ export function useOnboardingCompletion() {
         dispatch(setOnboardingRedirect(null));
       }
     },
-    [dispatch, navigate, onboardingRedirect, trackEvent],
+    [dispatch, navigate, onboardingRedirect, pendingReferralCode, trackEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
