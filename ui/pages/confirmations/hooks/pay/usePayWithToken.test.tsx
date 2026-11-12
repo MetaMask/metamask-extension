@@ -139,6 +139,7 @@ describe('usePayWithToken', () => {
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatFormatted: '$12.34',
       withdrawableFiatRaw: '12.34',
     });
