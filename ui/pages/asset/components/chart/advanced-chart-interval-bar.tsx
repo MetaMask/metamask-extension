@@ -102,7 +102,16 @@ const IntervalBar = ({
               type="button"
               aria-pressed={isSelected}
               ref={isSelected ? selectedPillRef : undefined}
-              onClick={() => onIntervalSelect(interval)}
+              // Re-selecting the active interval is a no-op: skip it so it does
+              // not fire a redundant selection (which would re-emit a
+              // `granularity_changed`/`timeframe_changed` analytics event and
+              // trigger needless re-renders). Mirrors the same-value guard in
+              // the chart-type handler.
+              onClick={() => {
+                if (!isSelected) {
+                  onIntervalSelect(interval);
+                }
+              }}
               className={twMerge(
                 'h-auto shrink-0 rounded-full bg-transparent px-2 py-1 hover:bg-hover active:bg-pressed',
                 isSelected && 'bg-muted',

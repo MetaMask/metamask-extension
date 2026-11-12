@@ -74,6 +74,7 @@ describe('Switch network - ', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
+        await driver.checkWideLayoutViewport();
         const homePage = new HomePage(driver);
         const networkFilter = new NetworkFilter(driver);
         const networkPillSelector = new NetworkPillSelector(driver);

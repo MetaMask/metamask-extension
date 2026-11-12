@@ -67,6 +67,17 @@ describe('IntervalBar', () => {
       expect(DEFAULT_PROPS.onIntervalSelect).toHaveBeenCalledWith('4h');
     });
 
+    it('does not re-report a click on the already-selected interval', () => {
+      // Re-selecting the active interval is a no-op and must not fire the
+      // callback, so it cannot emit a spurious change (analytics event,
+      // redundant re-render).
+      renderBar({ selectedInterval: '4h' });
+
+      fireEvent.click(screen.getByText('4h'));
+
+      expect(DEFAULT_PROPS.onIntervalSelect).not.toHaveBeenCalled();
+    });
+
     it('marks the selection regardless of label casing', () => {
       // Candle intervals persist lowercase but line ranges are uppercase, and
       // both go through this same prop.
