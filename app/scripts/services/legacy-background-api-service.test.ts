@@ -2282,6 +2282,144 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('restores only Solana when core replaces non-EVM selection with new EVM chain', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const restoreEnabledNetworkMapHandler = jest.fn();
+        let currentState: {
+          enabledNetworkMap: {
+            solana?: Record<string, boolean>;
+            eip155?: Record<string, boolean>;
+          };
+        } = {
+          enabledNetworkMap: {
+            solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
+          },
+        };
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          jest.fn().mockReturnValue(addedNetwork),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockImplementation(() => currentState),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:restoreEnabledNetworkMap',
+          restoreEnabledNetworkMapHandler,
+        );
+
+        const promise = rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          { ...networkConfiguration, chainId: '0xa' },
+          { setActive: false },
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // Core replaced selection: disabled Solana, enabled only new EVM chain
+        currentState = {
+          enabledNetworkMap: {
+            solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': false },
+            eip155: { '0xa': true },
+          },
+        };
+        rootMessenger.publish(
+          'NetworkEnablementController:stateChange',
+          currentState as unknown as NetworkEnablementControllerState,
+          [],
+        );
+
+        await promise;
+
+        // Restored map to Solana only (excludes new chain, but includes empty eip155 from previous map)
+        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
+          eip155: {},
+          solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
+        });
+      });
+    });
+
+    it('keeps new chain and all previous networks in popular mode with EVM and non-EVM', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const restoreEnabledNetworkMapHandler = jest.fn();
+        let currentState: {
+          enabledNetworkMap: {
+            solana?: Record<string, boolean>;
+            eip155?: Record<string, boolean>;
+          };
+        } = {
+          enabledNetworkMap: {
+            eip155: { '0x1': true, '0x89': true, '0xa4b1': true },
+            solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
+          },
+        };
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:addNetwork',
+          jest.fn().mockReturnValue(addedNetwork),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockImplementation(() => currentState),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:restoreEnabledNetworkMap',
+          restoreEnabledNetworkMapHandler,
+        );
+
+        const promise = rootMessenger.call(
+          'LegacyBackgroundApiService:addNetwork',
+          { ...networkConfiguration, chainId: '0xa' },
+          { setActive: false },
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // Core in popular mode: added new chain, kept all others including Solana
+        currentState = {
+          enabledNetworkMap: {
+            eip155: {
+              '0x1': true,
+              '0x89': true,
+              '0xa4b1': true,
+              '0xa': true,
+            },
+            solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
+          },
+        };
+        rootMessenger.publish(
+          'NetworkEnablementController:stateChange',
+          currentState as unknown as NetworkEnablementControllerState,
+          [],
+        );
+
+        await promise;
+
+        // Restored map with new chain and all previous selection intact
+        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
+          eip155: { '0x1': true, '0x89': true, '0xa4b1': true, '0xa': true },
+          solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
+        });
+      });
+    });
+
     it('rethrows when adding the network fails', async () => {
       await withService(async ({ rootMessenger }) => {
         const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);

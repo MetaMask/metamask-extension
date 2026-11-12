@@ -1389,20 +1389,26 @@ export class LegacyBackgroundApiService {
       const currentState = this.#messenger.call(
         'NetworkEnablementController:getState',
       );
-      const currentEip155Map =
-        currentState.enabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
-      const previousEip155Map =
-        previousEnabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
 
       // Check if core kept the previous selection (added to it) or replaced it
-      // (disabled previously enabled networks). If every previously enabled
-      // network is still enabled, core added rather than replaced.
-      const coreKeptPreviousSelection = Object.entries(previousEip155Map).every(
-        ([chainId, wasEnabled]) =>
-          !wasEnabled || currentEip155Map[chainId as Hex] === true,
+      // (disabled previously enabled networks across all namespaces). If every
+      // previously enabled network is still enabled, core added rather than replaced.
+      const coreKeptPreviousSelection = Object.entries(
+        previousEnabledNetworkMap,
+      ).every(([namespace, previousMap]) =>
+        Object.entries(previousMap ?? {}).every(
+          ([chainId, wasEnabled]) =>
+            !wasEnabled ||
+            currentState.enabledNetworkMap[namespace as KnownCaipNamespace]?.[
+              chainId as CaipChainId | Hex
+            ] === true,
+        ),
       );
 
-      const newChainEnabled = currentEip155Map[networkConfiguration.chainId];
+      const newChainEnabled =
+        currentState.enabledNetworkMap[KnownCaipNamespace.Eip155]?.[
+          networkConfiguration.chainId
+        ];
 
       this.#messenger.call(
         'NetworkEnablementController:restoreEnabledNetworkMap',
