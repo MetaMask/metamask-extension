@@ -5176,6 +5176,18 @@
     "message": "JSON file",
     "description": "format for importing an account"
   },
+  "jsonImportPasswordIncorrect": {
+    "message": "That password didn't work.",
+    "description": "Shown under the JSON import password field when a password was entered after a blank attempt already failed"
+  },
+  "jsonImportPasswordIncorrectOrOptional": {
+    "message": "That password didn't work. If your file has no password, leave this blank.",
+    "description": "Shown under the JSON import password field when a password was entered and no blank attempt has failed yet"
+  },
+  "jsonImportPasswordRequired": {
+    "message": "This file needs a password.",
+    "description": "Shown under the JSON import password field when importing with the password left blank fails"
+  },
   "keyringAccountName": {
     "message": "Account name"
   },
@@ -6940,6 +6952,10 @@
   "noDefaultAddress": {
     "message": "No $1 address",
     "description": "$1 is the default address scope"
+  },
+  "noDepositFee": {
+    "message": "No deposit fee",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."

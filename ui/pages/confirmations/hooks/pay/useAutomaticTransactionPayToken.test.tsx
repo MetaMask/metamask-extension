@@ -28,9 +28,11 @@ import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
 import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
+import { useAutomaticMoneyAccountPayToken } from './useAutomaticMoneyAccountPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useIsPayHardwareBlocked } from './useIsPayHardwareBlocked';
 
+jest.mock('./useAutomaticMoneyAccountPayToken');
 jest.mock('./useImportPayToken');
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
@@ -168,6 +170,9 @@ describe('useAutomaticTransactionPayToken', () => {
     selectMinimumRequiredTokenBalance,
   );
   const useImportPayTokenMock = jest.mocked(useImportPayToken);
+  const useAutomaticMoneyAccountPayTokenMock = jest.mocked(
+    useAutomaticMoneyAccountPayToken,
+  );
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
@@ -204,6 +209,10 @@ describe('useAutomaticTransactionPayToken', () => {
     });
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
     useIsPayHardwareBlockedMock.mockReturnValue(true);
+    useAutomaticMoneyAccountPayTokenMock.mockReturnValue({
+      isPending: false,
+      shouldSelect: false,
+    });
   });
 
   afterEach(() => {
@@ -1255,6 +1264,43 @@ describe('useAutomaticTransactionPayToken', () => {
     expect(setPayTokenMock).toHaveBeenCalledWith({
       address: TOKEN_ADDRESS_1_MOCK,
       chainId: CHAIN_ID_1_MOCK,
+    });
+  });
+
+  describe('money account balance default', () => {
+    it('does not select a token while the Money Account balance is loading', () => {
+      useAutomaticMoneyAccountPayTokenMock.mockReturnValue({
+        isPending: true,
+        shouldSelect: false,
+      });
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_1_MOCK,
+          chainId: CHAIN_ID_1_MOCK,
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider();
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+    });
+
+    it('does not select a token when Money Account is the better funding source', () => {
+      useAutomaticMoneyAccountPayTokenMock.mockReturnValue({
+        isPending: false,
+        shouldSelect: true,
+      });
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_1_MOCK,
+          chainId: CHAIN_ID_1_MOCK,
+          fiat: { balance: 2 },
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider();
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
     });
   });
 });
