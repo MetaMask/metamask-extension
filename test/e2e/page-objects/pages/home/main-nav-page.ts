@@ -25,9 +25,6 @@ class MainNav {
     testId: 'parent-selector-main-nav',
   };
 
-  // Only the wide layout renders the side nav's account list.
-  private readonly sideNavAccounts = '[data-testid="side-nav-accounts"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
