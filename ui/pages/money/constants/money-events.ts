@@ -56,6 +56,8 @@ export enum MoneyComponentName {
   FtueSplash = 'money_ftue_splash',
 }
 
+export { MoneyFtueEntryPoint } from '../../../helpers/money/money-ftue-entry-point';
+
 export enum MoneyButtonIntent {
   AddMoney = 'add_money',
   GoToMoneyHome = 'go_to_money_home',
