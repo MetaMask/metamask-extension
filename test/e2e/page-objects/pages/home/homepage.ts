@@ -9,7 +9,6 @@ import {
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
-import { mainNavItem } from './main-nav-selectors';
 
 type ReceiveButton = 'default' | 'row';
 
@@ -60,7 +59,10 @@ class HomePage {
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
 
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+  // The wide layout's network pills show these logos before the non-EVM
+  // accounts exist, so they don't count as a sign the accounts are loaded.
+  private readonly bitcoinAccountIcon =
+    'img[src="./images/bitcoin-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -102,11 +104,12 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
-  protected readonly mainNavActivityButton = mainNavItem('activity');
+  protected readonly mainNavActivityButton =
+    '[data-testid="main-nav-activity"]';
 
-  private readonly mainNavHomeButton = mainNavItem('home');
+  private readonly mainNavHomeButton = '[data-testid="main-nav-home"]';
 
-  protected readonly mainNavPerpsButton = mainNavItem('perps');
+  protected readonly mainNavPerpsButton = '[data-testid="main-nav-perps"]';
 
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
@@ -136,9 +139,13 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly singleActionButton = '[data-testid$="-overview-default"]';
+  // The wide layout shows every action as a pill, so the sole overflow action
+  // renders as `-overview-receive` instead of `-overview-default`.
+  private readonly singleActionButton =
+    '[data-testid$="-overview-default"], [data-testid$="-overview-receive"]';
 
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
+  private readonly solanaAccountIcon =
+    'img[src="./images/solana-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 

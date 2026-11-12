@@ -7,7 +7,6 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction.flow';
-import { mainNavItem } from '../../../page-objects/pages/home/main-nav-selectors';
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import {
@@ -47,7 +46,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(mainNavItem('activity'));
+        await driver.clickElement('[data-testid="main-nav-activity"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '[data-tx-status="confirmed"]',

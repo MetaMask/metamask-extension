@@ -5,7 +5,7 @@ import { Driver } from '../../../webdriver/driver';
  *
  * Screen: chrome component (not a full page), rendered across unlocked home
  * and related routes above page content.
- * Owns: account menu icon/open account list, global options menu (settings,
+ * Owns: account label, account menu icon/open account list, global options menu (settings,
  * lock, notifications, networks, contacts, connected sites), network picker,
  * and dapp connection control bar entry points.
  * Boundaries: header/menu chrome only. Destinations (settings, notifications,
@@ -19,6 +19,8 @@ import { Driver } from '../../../webdriver/driver';
  */
 class HeaderNavbar {
   private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+
+  private readonly accountLabel = '[data-testid="app-header-account-name"]';
 
   private readonly accountListPage =
     '[data-testid="parent-selector-account-list-page"]';
@@ -109,7 +111,7 @@ class HeaderNavbar {
       `Verify the displayed account label in header is: ${expectedLabel}`,
     );
     await this.driver.waitForSelector({
-      css: this.accountMenuButton,
+      css: this.accountLabel,
       text: expectedLabel,
     });
   }
