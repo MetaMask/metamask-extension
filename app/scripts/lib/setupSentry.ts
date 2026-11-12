@@ -15,6 +15,7 @@ import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import { applySentryRemoteRates } from '../../../shared/lib/sentry-remote-rates';
+import { trackServiceWorkerPageloadEnd } from '../../../shared/lib/trace';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
@@ -362,6 +363,7 @@ function setSentryClient(): true {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
+  trackServiceWorkerPageloadEnd(Sentry.getClient());
 
   // Apply remote-flag sample-rate overrides once, post-init; compile-time
   // rates remain the fallback when the flag is absent or malformed.
