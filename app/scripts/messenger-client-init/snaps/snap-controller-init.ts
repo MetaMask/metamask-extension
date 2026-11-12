@@ -161,8 +161,16 @@ export const SnapControllerInit: MessengerClientInitFunction<
       // still-running Snap could open a new one that is never closed.
       messengerClient
         .stopAllSnaps()
-        .catch(console.error)
-        .finally(() => {
+        .then(() => {
+          // Basic functionality may have been re-enabled while Snaps were
+          // stopping, in which case sockets are kept and their next message
+          // restarts the Snap.
+          if (
+            initMessenger.call('PreferencesController:getState')
+              .useExternalServices
+          ) {
+            return;
+          }
           for (const snapId of Object.keys(messengerClient.state.snaps)) {
             for (const { id } of initMessenger.call(
               'WebSocketService:getAll',
@@ -171,7 +179,8 @@ export const SnapControllerInit: MessengerClientInitFunction<
               initMessenger.call('WebSocketService:close', snapId, id);
             }
           }
-        });
+        })
+        .catch(console.error);
     },
     (state) => state.useExternalServices,
   );

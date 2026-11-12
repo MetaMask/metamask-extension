@@ -28,6 +28,7 @@ import {
 import { getRootMessenger } from '../../lib/messenger';
 import {
   getDefaultPreferencesControllerState,
+  PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
 import { SnapControllerInit } from './snap-controller-init';
@@ -127,47 +128,101 @@ describe('SnapControllerInit', () => {
     expect(spy).toHaveBeenCalledWith('SnapController:setClientActive', true);
   });
 
-  it('stops all Snaps, then closes their WebSockets, when basic functionality is turned off', async () => {
-    const baseMessenger = new Messenger<
-      MockAnyNamespace,
-      WebSocketServiceGetAllAction | WebSocketServiceCloseAction,
-      PreferencesControllerStateChangeEvent
-    >({ namespace: MOCK_ANY_NAMESPACE });
-    const closeMock = jest.fn();
-    baseMessenger.registerActionHandler('WebSocketService:getAll', () => [
-      { id: 'socket-1', url: 'wss://example.com', protocols: [] },
-    ]);
-    baseMessenger.registerActionHandler('WebSocketService:close', closeMock);
+  describe('when basic functionality is turned off', () => {
+    function setup() {
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        | WebSocketServiceGetAllAction
+        | WebSocketServiceCloseAction
+        | PreferencesControllerGetStateAction,
+        PreferencesControllerStateChangeEvent
+      >({ namespace: MOCK_ANY_NAMESPACE });
+      let preferences = getDefaultPreferencesControllerState();
+      baseMessenger.registerActionHandler(
+        'PreferencesController:getState',
+        () => preferences,
+      );
+      const closeMock = jest.fn();
+      baseMessenger.registerActionHandler('WebSocketService:getAll', () => [
+        { id: 'socket-1', url: 'wss://example.com', protocols: [] },
+      ]);
+      baseMessenger.registerActionHandler('WebSocketService:close', closeMock);
 
-    const { messengerClient } = SnapControllerInit(
-      getInitRequestMock(baseMessenger),
-    );
-    const stopAllSnaps = createDeferredPromise();
-    jest
-      .mocked(messengerClient.stopAllSnaps)
-      .mockReturnValue(stopAllSnaps.promise as Promise<void>);
-    Object.defineProperty(messengerClient, 'state', {
-      value: { snaps: { 'npm:snap': {} } },
+      const { messengerClient } = SnapControllerInit(
+        getInitRequestMock(baseMessenger),
+      );
+      const stopAllSnaps = createDeferredPromise<void>();
+      jest
+        .mocked(messengerClient.stopAllSnaps)
+        .mockReturnValue(stopAllSnaps.promise);
+      Object.defineProperty(messengerClient, 'state', {
+        value: { snaps: { 'npm:snap': {} } },
+      });
+
+      const setUseExternalServices = (useExternalServices: boolean) => {
+        preferences = { ...preferences, useExternalServices };
+        baseMessenger.publish(
+          'PreferencesController:stateChange',
+          preferences,
+          [],
+        );
+      };
+      const finishStopping = async () => {
+        stopAllSnaps.resolve();
+        await new Promise(process.nextTick);
+      };
+
+      return {
+        messengerClient,
+        closeMock,
+        setUseExternalServices,
+        finishStopping,
+      };
+    }
+
+    it('stops all Snaps, then closes their WebSockets', async () => {
+      const {
+        messengerClient,
+        closeMock,
+        setUseExternalServices,
+        finishStopping,
+      } = setup();
+
+      setUseExternalServices(true);
+      expect(messengerClient.stopAllSnaps).not.toHaveBeenCalled();
+
+      setUseExternalServices(false);
+      expect(messengerClient.stopAllSnaps).toHaveBeenCalledTimes(1);
+      expect(closeMock).not.toHaveBeenCalled();
+
+      await finishStopping();
+      expect(closeMock).toHaveBeenCalledWith('npm:snap', 'socket-1');
     });
 
-    baseMessenger.publish(
-      'PreferencesController:stateChange',
-      { ...getDefaultPreferencesControllerState(), useExternalServices: true },
-      [],
-    );
-    expect(messengerClient.stopAllSnaps).not.toHaveBeenCalled();
+    it('keeps WebSockets open if basic functionality is re-enabled while Snaps are stopping', async () => {
+      const { closeMock, setUseExternalServices, finishStopping } = setup();
 
-    baseMessenger.publish(
-      'PreferencesController:stateChange',
-      { ...getDefaultPreferencesControllerState(), useExternalServices: false },
-      [],
-    );
-    expect(messengerClient.stopAllSnaps).toHaveBeenCalledTimes(1);
-    expect(closeMock).not.toHaveBeenCalled();
+      setUseExternalServices(false);
+      setUseExternalServices(true);
+      await finishStopping();
 
-    stopAllSnaps.resolve();
-    await stopAllSnaps.promise;
-    await new Promise(process.nextTick);
-    expect(closeMock).toHaveBeenCalledWith('npm:snap', 'socket-1');
+      expect(closeMock).not.toHaveBeenCalled();
+    });
+
+    it('logs errors thrown while closing WebSockets', async () => {
+      const { closeMock, setUseExternalServices, finishStopping } = setup();
+      const error = new Error('close failed');
+      closeMock.mockImplementation(() => {
+        throw error;
+      });
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      setUseExternalServices(false);
+      await finishStopping();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(error);
+    });
   });
 });
