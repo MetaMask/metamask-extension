@@ -1096,6 +1096,9 @@ async function setupMocking(
       confirmations: true,
       smartTransactions: true,
       hidden: false,
+      // Sentinel validates cubistSigners as 0x-hex. The synced placeholder [""]
+      // fails that and drops the registry entry, so simulations never run.
+      cubistSigners: [],
     },
   };
   await server
