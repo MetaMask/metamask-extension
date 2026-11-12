@@ -89,6 +89,22 @@ const inboundTopUpRow = {
   ],
 };
 
+const VAULT_SHARE_TOKEN = {
+  chainId: '0x8f',
+  address: '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae',
+} as const;
+
+const vaultShareCashbackRow = {
+  ...cashbackRow,
+  valueTransfers: [
+    {
+      ...cashbackRow.valueTransfers[0],
+      contractAddress: VAULT_SHARE_TOKEN.address.toLowerCase(),
+      symbol: 'vmUSD',
+    },
+  ],
+};
+
 describe('parseAccountsApiActivity', () => {
   it('maps a card payment to a card outflow keyed on the leg leaving the money account', () => {
     const result = parseAccountsApiActivity(
@@ -177,6 +193,83 @@ describe('parseAccountsApiActivity', () => {
         amount: '5381986',
       }),
     ]);
+  });
+
+  it('carries the block number when the API returns one', () => {
+    const result = parseAccountsApiActivity(
+      { data: [{ ...cardPaymentRow, blockNumber: 123456 }] },
+      MONEY_ADDRESS,
+    );
+
+    expect(result[0]).toStrictEqual(
+      expect.objectContaining({ blockNumber: 123456 }),
+    );
+  });
+
+  it('drops an invalid block number instead of failing the row', () => {
+    const result = parseAccountsApiActivity(
+      { data: [{ ...cardPaymentRow, blockNumber: -1 }] },
+      MONEY_ADDRESS,
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).not.toHaveProperty('blockNumber');
+  });
+
+  it('maps a vault-share cashback when the token is configured', () => {
+    const result = parseAccountsApiActivity(
+      { data: [vaultShareCashbackRow] },
+      MONEY_ADDRESS,
+      undefined,
+      [VAULT_SHARE_TOKEN],
+    );
+
+    expect(result).toStrictEqual([
+      expect.objectContaining({
+        kind: 'cashback',
+        hash: cashbackRow.hash,
+        amount: '300000',
+        token: expect.objectContaining({
+          address: VAULT_SHARE_TOKEN.address.toLowerCase(),
+          symbol: 'vmUSD',
+        }),
+      }),
+    ]);
+  });
+
+  it('drops a vault-share cashback when the token is not configured', () => {
+    expect(
+      parseAccountsApiActivity(
+        { data: [vaultShareCashbackRow] },
+        MONEY_ADDRESS,
+      ),
+    ).toStrictEqual([]);
+  });
+
+  it('drops a vault-share refund', () => {
+    expect(
+      parseAccountsApiActivity(
+        {
+          data: [
+            {
+              ...cardPaymentRow,
+              valueTransfers: [
+                {
+                  ...cardPaymentRow.valueTransfers[0],
+                  contractAddress: VAULT_SHARE_TOKEN.address.toLowerCase(),
+                  symbol: 'vmUSD',
+                  from: SETTLEMENT_ADDRESS.toLowerCase(),
+                  to: MONEY_ADDRESS.toLowerCase(),
+                },
+              ],
+            },
+          ],
+        },
+        MONEY_ADDRESS,
+        undefined,
+        [VAULT_SHARE_TOKEN],
+      ),
+    ).toStrictEqual([]);
   });
 
   it('drops rows whose chainId is not Monad', () => {

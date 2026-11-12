@@ -1,0 +1,73 @@
+import {
+  array,
+  enums,
+  is,
+  literal,
+  number,
+  optional,
+  string,
+  type,
+} from '@metamask/superstruct';
+import { getStorageItem, setStorageItem } from '../storage-helpers';
+import {
+  entriesByIdentity,
+  type VaultShareValuationCacheEntry,
+} from './vault-share-valuations';
+
+const CACHE_VERSION = 1;
+const CACHE_KEY = `money.activity.vault-share-valuations.v${CACHE_VERSION}`;
+export const VAULT_SHARE_VALUATION_CACHE_LIMIT = 500;
+
+const CachedValuationStruct = type({
+  type: enums(['transfer_in', 'transfer_out']),
+  logIndex: optional(number()),
+  blockNumber: number(),
+  sharesWei: string(),
+  assetsWei: string(),
+  assetDecimals: number(),
+});
+
+const CachedEntryStruct = type({
+  account: string(),
+  chainId: number(),
+  vaultAddress: string(),
+  txHash: string(),
+  valuations: array(CachedValuationStruct),
+});
+
+const CacheDocumentStruct = type({
+  version: literal(CACHE_VERSION),
+  entries: array(CachedEntryStruct),
+});
+
+export async function readCachedVaultShareValuations(): Promise<
+  VaultShareValuationCacheEntry[]
+> {
+  const parsed = await getStorageItem<unknown>(CACHE_KEY);
+  return is(parsed, CacheDocumentStruct) ? parsed.entries : [];
+}
+
+function mergeEntries(
+  current: readonly VaultShareValuationCacheEntry[],
+  incoming: readonly VaultShareValuationCacheEntry[],
+): VaultShareValuationCacheEntry[] {
+  return [...entriesByIdentity([...current, ...incoming]).values()].slice(
+    -VAULT_SHARE_VALUATION_CACHE_LIMIT,
+  );
+}
+
+let writeQueue = Promise.resolve();
+
+export function writeCachedVaultShareValuations(
+  entries: readonly VaultShareValuationCacheEntry[],
+): Promise<void> {
+  const write = writeQueue.then(async () => {
+    const current = await readCachedVaultShareValuations();
+    await setStorageItem(CACHE_KEY, {
+      version: CACHE_VERSION,
+      entries: mergeEntries(current, entries),
+    });
+  });
+  writeQueue = write;
+  return write;
+}

@@ -117,6 +117,9 @@ export enum TraceName {
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
   StatePersist = 'State Persist',
+  // Money
+  MoneyActivityVaultShareValuationsFetch = 'Money Activity Vault Share Valuations Fetch',
+  MoneyActivityValuationsReady = 'Money Activity Valuations Ready',
   // Perps
   PerpsOpenPosition = 'Perps Open Position',
   PerpsClosePosition = 'Perps Close Position',
@@ -184,6 +187,8 @@ export enum TraceOperation {
   StateWrite = 'state.write',
   BridgeScreenPerformance = 'bridge.screen.performance',
   BridgeDataFetch = 'bridge.data_fetch',
+  // Money
+  MoneyAccountDataFetch = 'money.account.data_fetch',
   // Perps
   PerpsOperation = 'perps.operation',
 }
