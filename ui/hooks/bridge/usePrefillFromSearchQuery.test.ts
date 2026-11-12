@@ -1,6 +1,7 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
 import { waitFor, act } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
+import { StrictMode } from 'react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -627,5 +628,63 @@ describe('usePrefillFromSearchQuery', () => {
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).not.toHaveBeenCalled();
+  });
+
+  it('should set toToken in React StrictMode despite double-invocation', async () => {
+    const fetchAssetMetadataForAssetIdsSpy = jest
+      .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
+      .mockImplementation((assetIds, signal) => {
+        return new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            if (!signal?.aborted) {
+              resolve({
+                'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d':
+                  {
+                    symbol: 'USDC',
+                    decimals: 6,
+                    name: 'USDC',
+                    assetId:
+                      'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+                  },
+              });
+            }
+          }, 10);
+          signal?.addEventListener('abort', () => clearTimeout(timeout));
+        });
+      });
+
+    const mockStoreState = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
+            },
+          ],
+        },
+      },
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+      },
+    });
+
+    const searchParams = new URLSearchParams({
+      to: 'eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
+    });
+
+    const renderResult = renderHookWithProvider(
+      () => useBridgeQueryParamsWithLocation(),
+      mockStoreState,
+      // eslint-disable-next-line prefer-template
+      '/?' + searchParams.toString(),
+      StrictMode,
+    );
+
+    await waitFor(() => {
+      expect(renderResult.store?.getState().bridge?.toToken).toBeDefined();
+    });
+
+    expect(renderResult.store?.getState().bridge?.toToken?.symbol).toBe('USDC');
+    expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalled();
   });
 });

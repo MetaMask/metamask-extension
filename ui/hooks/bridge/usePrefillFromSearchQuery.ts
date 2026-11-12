@@ -67,9 +67,6 @@ export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
 
-  const abortController = useRef<AbortController>(new AbortController());
-  const appliedSearch = useRef<string | null>(null);
-
   const { search } = useBridgeNavigation();
 
   // Parse CAIP asset data
@@ -82,24 +79,11 @@ export const usePrefillFromSearchQuery = () => {
 
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
 
-  // Cleanup abort controller on unmount
-  useEffect(() => {
-    return () => {
-      abortController.current.abort();
-    };
-  }, []);
-
   const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
     ReturnType<typeof fetchAssetMetadataForAssetIds>
   > | null>(null);
 
-  // Only update parsed values and fetch metadata if the search params
-  // are set (once) to prevent infinite re-renders
   useEffect(() => {
-    if (appliedSearch.current === search) {
-      return;
-    }
-
     const searchParamsFrom = parseAsset(
       searchParams.get(BridgeQueryParams.From),
     );
@@ -107,7 +91,6 @@ export const usePrefillFromSearchQuery = () => {
     const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
-      appliedSearch.current = search;
       // Defer state updates so they are not synchronous effect setStates
       // (react-hooks/set-state-in-effect).
       queueMicrotask(() => {
@@ -120,18 +103,23 @@ export const usePrefillFromSearchQuery = () => {
 
       // Fetch asset metadata for both tokens in 1 call
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
-        abortController.current.abort();
-        abortController.current = new AbortController();
+        const controller = new AbortController();
         fetchAssetMetadata(
-          abortController.current.signal,
+          controller.signal,
           searchParamsFrom?.assetId,
           searchParamsTo?.assetId,
         ).then((result) => {
-          setAssetMetadataByAssetId(result);
+          if (!controller.signal.aborted) {
+            setAssetMetadataByAssetId(result);
+          }
         });
+
+        return () => {
+          controller.abort();
+        };
       }
     }
-  }, [search, searchParams]);
+  }, [searchParams]);
 
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {
