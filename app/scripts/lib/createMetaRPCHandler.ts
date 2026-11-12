@@ -14,7 +14,6 @@ import {
 import {
   admitTraceWrappers,
   isRootWrapperEnabled,
-  shouldSampleWrappers,
 } from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
@@ -77,9 +76,10 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
                 ),
             )
           : await callHandler();
-      } else if (shouldSampleWrappers(traceContext.traceId)) {
-        // Wrapper sub-sample passes: emit the `rpc.handler` span and
-        // propagate trace context for nested spans.
+      } else if (traceContext.parentSampled) {
+        // A sampled UI span always gets its `rpc.handler` child: without an
+        // active span, fetch starts no `http.client` span and its trace
+        // headers name a span that is never sent.
         result = await trace(
           {
             name,
@@ -90,10 +90,8 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
           callHandler,
         );
       } else {
-        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
-        // propagate trace context so nested auto-instrumented and core-package
-        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
-        // attach to the originating UI trace instead of becoming orphans.
+        // An unsampled UI span: nothing under it is recorded, so continue its
+        // context, which carries the unsampled decision, without a span.
         result = await continueTraceContext(traceContext, callHandler);
       }
     } catch (err) {

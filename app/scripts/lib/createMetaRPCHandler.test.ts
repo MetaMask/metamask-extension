@@ -312,7 +312,7 @@ describe('createMetaRPCHandler', () => {
       );
     });
 
-    it('continues trace context but skips rpc.handler span when shouldSampleWrappers rejects', async () => {
+    it('emits the rpc.handler span for a sampled UI span even when the wrapper sub-sample rejects', async () => {
       jest.mocked(shouldSampleWrappers).mockReturnValue(false);
       const foo = jest.fn().mockReturnValue('result');
       const api = { foo } as unknown as Api;
@@ -334,9 +334,41 @@ describe('createMetaRPCHandler', () => {
         ],
       });
 
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          op: 'rpc.handler',
+          parentContext: TRACE_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
+      expect(continueTraceContext).not.toHaveBeenCalled();
+      expect(foo).toHaveBeenCalledWith('bar');
+    });
+
+    it('continues trace context without an rpc.handler span for an unsampled UI span', async () => {
+      const foo = jest.fn().mockReturnValue('result');
+      const api = { foo } as unknown as Api;
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'foo',
+        params: [
+          'bar',
+          {
+            _trace: {
+              traceparent: `00-${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-00`,
+              spanName: 'Background RPC: foo',
+            },
+          },
+        ],
+      });
+
       expect(trace).not.toHaveBeenCalled();
       expect(continueTraceContext).toHaveBeenCalledWith(
-        TRACE_CONTEXT_MOCK,
+        { ...TRACE_CONTEXT_MOCK, parentSampled: false },
         expect.any(Function),
       );
       expect(foo).toHaveBeenCalledWith('bar');
