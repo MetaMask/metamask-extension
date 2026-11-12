@@ -7340,13 +7340,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/announcement-controller@npm:8.0.0"
+"@metamask/announcement-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/announcement-controller@npm:9.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-  checksum: 10/74d11df624755a947157781280a9dfbf2e7318c133435eb63da9af141be348a302ab5184ce9d9c848ac6079197ca492876c913b6eb3ba60cbedfbc03ef9ec5ad
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+  checksum: 10/b2978e7373e097cfc0f2b37c57615c27695bbf23a174d04b9984a028c7eecdf3bc703dc7fb5bcc742a4eefdc0d10ffdb4ddc0b072d25064aade51cc6b304d653
   languageName: node
   linkType: hard
 
@@ -35544,7 +35544,7 @@ __metadata:
     "@metamask/accounts-controller": "npm:^40.1.0"
     "@metamask/address-book-controller": "npm:^7.1.2"
     "@metamask/analytics-controller": "npm:^4.3.0"
-    "@metamask/announcement-controller": "npm:^8.0.0"
+    "@metamask/announcement-controller": "npm:^9.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^20.3.0"
