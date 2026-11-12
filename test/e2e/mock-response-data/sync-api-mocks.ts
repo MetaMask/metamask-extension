@@ -6,7 +6,7 @@
  * Exit 0: no change. Exit 1: a fixture was written. Exit 2: nothing was
  * written and a fetch failed.
  */
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 
 export type Json =
@@ -271,7 +271,183 @@ async function syncRow({
   return true;
 }
 
+/** Directory of one-file-per-endpoint fixtures. Absent until those files land. */
+export const API_RESPONSES_DIR_NAME = 'api-responses';
+
+/** Manifest beside the fixtures. Not itself a response body. */
+export const API_RESPONSE_SOURCES_FILE = 'sources.json';
+
+export type ApiResponseSource = {
+  method?: string;
+  url?: string;
+  mode?: string;
+  reason?: string;
+  follows?: string;
+};
+
+export type DiscoveredApiResponses = {
+  errors: string[];
+  warnings: string[];
+  rows: { id: string; url: string; mode: string }[];
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+
+/**
+ * Fixture ids in `api-responses/`, excluding the source manifest.
+ *
+ * @param responsesDir - The `api-responses` directory.
+ * @returns Sorted ids. Empty when the directory does not exist yet.
+ */
+export function listApiResponseFixtureIds(responsesDir: string): string[] {
+  if (!existsSync(responsesDir)) {
+    return [];
+  }
+  return readdirSync(responsesDir)
+    .filter(
+      (name) => name.endsWith('.json') && name !== API_RESPONSE_SOURCES_FILE,
+    )
+    .map((name) => name.slice(0, -'.json'.length))
+    .sort();
+}
+
+/**
+ * Tells the author exactly which object to add for a fixture with no source.
+ *
+ * @param id - Fixture id, the file name without `.json`.
+ * @returns The check failure text.
+ */
+export function missingApiResponseSourceMessage(id: string): string {
+  return [
+    `${API_RESPONSES_DIR_NAME}/${id}.json has no source entry.`,
+    `Add "${id}" to test/e2e/mock-response-data/${API_RESPONSES_DIR_NAME}/${API_RESPONSE_SOURCES_FILE}:`,
+    '{ "method": "GET", "url": "https://...", "mode": "write" }',
+    'For POST, auth, or an endpoint that needs a real id, use "mode": "skip" and a "reason".',
+  ].join('\n');
+}
+
+/**
+ * Reads `sources.json`. A missing file is an empty manifest.
+ *
+ * @param responsesDir - The `api-responses` directory.
+ * @returns The manifest, or one error when the file is not a JSON object.
+ */
+export function readApiResponseSources(responsesDir: string): {
+  sources: Record<string, ApiResponseSource>;
+  error: string | null;
+} {
+  const filePath = path.join(responsesDir, API_RESPONSE_SOURCES_FILE);
+  if (!existsSync(filePath)) {
+    return { sources: {}, error: null };
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(readFileSync(filePath, 'utf8'));
+  } catch (error) {
+    return {
+      sources: {},
+      error: `${API_RESPONSE_SOURCES_FILE} is not valid JSON: ${String(error)}`,
+    };
+  }
+  if (!isRecord(parsed)) {
+    return {
+      sources: {},
+      error: `${API_RESPONSE_SOURCES_FILE} must be a JSON object keyed by fixture id.`,
+    };
+  }
+  const sources: Record<string, ApiResponseSource> = {};
+  for (const [id, value] of Object.entries(parsed)) {
+    sources[id] = isRecord(value) ? (value as ApiResponseSource) : {};
+  }
+  return { sources, error: null };
+}
+
+/**
+ * Plans sync rows for every discovered fixture. Skip entries become warnings.
+ * A fixture with no entry, or a write entry that is not GET, is an error.
+ *
+ * @param responsesDir - The `api-responses` directory.
+ * @returns Errors, skip warnings, and write rows.
+ */
+export function discoverApiResponses(
+  responsesDir: string,
+): DiscoveredApiResponses {
+  const ids = listApiResponseFixtureIds(responsesDir);
+  if (ids.length === 0) {
+    return { errors: [], warnings: [], rows: [] };
+  }
+  const { sources, error } = readApiResponseSources(responsesDir);
+  if (error) {
+    return { errors: [error], warnings: [], rows: [] };
+  }
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const rows: DiscoveredApiResponses['rows'] = [];
+  for (const id of ids) {
+    const source = sources[id];
+    if (!source || Object.keys(source).length === 0) {
+      errors.push(missingApiResponseSourceMessage(id));
+      continue;
+    }
+    const method = source.method ?? '';
+    const url = source.url ?? '';
+    const mode = source.mode ?? '';
+    const reason = source.reason?.trim() ?? '';
+    if (mode !== 'write' && mode !== 'derived' && mode !== 'skip') {
+      errors.push(
+        `${id}: sources.json "mode" must be "write", "derived", or "skip".`,
+      );
+      continue;
+    }
+    if (!url) {
+      errors.push(`${id}: sources.json needs a "url".`);
+      continue;
+    }
+    if (mode === 'skip') {
+      if (!reason) {
+        errors.push(
+          `${id}: a skip entry needs a "reason", so the endpoint is not silently ignored.`,
+        );
+        continue;
+      }
+      warnings.push(`skip ${id} ${method || 'GET'} ${url}: ${reason}`);
+      continue;
+    }
+    if (mode === 'derived') {
+      if (!source.follows) {
+        errors.push(`${id}: a derived entry needs "follows".`);
+      }
+      continue;
+    }
+    if (method.toUpperCase() !== 'GET') {
+      errors.push(
+        `${id}: ${method || 'non-GET'} cannot be synced. Set "mode" to "skip" and add a "reason".`,
+      );
+      continue;
+    }
+    rows.push({
+      id,
+      url,
+      mode: `write:${API_RESPONSES_DIR_NAME}/${id}.json`,
+    });
+  }
+  return { errors, warnings, rows };
+}
+
 async function main(): Promise<number> {
+  const responsesDir = path.join(__dirname, API_RESPONSES_DIR_NAME);
+  const discovered = discoverApiResponses(responsesDir);
+  if (discovered.errors.length > 0) {
+    for (const error of discovered.errors) {
+      console.error(error);
+    }
+    return 3;
+  }
+  for (const warning of discovered.warnings) {
+    console.warn(warning);
+  }
+
   const rows = readFileSync(path.join(__dirname, 'api-mock-catalog.md'), 'utf8')
     .split('\n')
     .filter((line) => /^\| [a-z0-9]/u.test(line))
@@ -282,7 +458,8 @@ async function main(): Promise<number> {
         .map((cell) => cell.trim().replace(/^`|`$/gu, '')),
     )
     .map(([id, , url, , mode]) => ({ id, url, mode }))
-    .filter(({ mode }) => mode.startsWith('write:'));
+    .filter(({ mode }) => mode.startsWith('write:'))
+    .concat(discovered.rows);
 
   let changed = false;
   let failed = false;

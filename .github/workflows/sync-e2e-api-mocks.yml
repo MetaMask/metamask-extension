@@ -74,7 +74,9 @@ jobs:
           set -e
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
           # 0: no drift. 1: fixtures written. 2: a fetch failed and nothing
-          # was written. The drift step writes the summary for exit 1.
+          # was written. 3: an api-responses fixture has no sources.json
+          # entry. Exit 3 fails this check. The drift step writes the summary
+          # for exit 1.
           if [ "${EXIT}" -eq 2 ] || [ "${EXIT}" -gt 2 ]; then
             cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
           fi

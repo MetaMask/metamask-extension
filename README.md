@@ -246,7 +246,7 @@ Shared E2E tests mock MetaMask APIs from [`test/e2e/mock-e2e.js`](test/e2e/mock-
 
 [`api-mocks.ts`](test/e2e/mock-response-data/api-mocks.ts) checks the synced payloads with `satisfies` against the types the wallet reads. `yarn lint:tsc` fails when one of those fields disappears.
 
-To add a mock, add one catalog row (`write:<file>` or `write:<file>#<key>`, or `skip` plus a reason) and register it in `mock-e2e.js`, then run the command above.
+To add a shared mock, add one catalog row (`write:<file>` or `write:<file>#<key>`, or `skip` plus a reason) and register it in `mock-e2e.js`. A fixture dropped in `api-responses/<id>.json` is discovered on its own: add that id to `api-responses/sources.json`. The sync fails, with the object to add, when the entry is missing. Then run the command above.
 
 [`.github/workflows/sync-e2e-api-mocks.yml`](.github/workflows/sync-e2e-api-mocks.yml) runs every Monday at 06:00 UTC and when someone starts it manually. If a fixture changed, it commits that change on `sync/e2e-api-mocks` and opens or updates one pull request. The push uses the workflow `GITHUB_TOKEN`, so GitHub holds the workflow runs on that pull request until a maintainer approves them.
 

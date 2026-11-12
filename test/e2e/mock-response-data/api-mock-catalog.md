@@ -16,11 +16,35 @@ fetched, for the reason given. With no drift it prints `No API changes
 detected`. Otherwise it prints each changed API (its id, endpoint and what
 changed) and any fetch errors. Every Monday,
 `.github/workflows/sync-e2e-api-mocks.yml` opens or updates one PR when a
-fixture changes. The same workflow runs on a same-repo pull request that
-changes `mock-e2e.js`, `mock-response-data/` (including this catalog), or
-`mock-cdn/ppom-version.json`: drift is committed to that branch, and no drift
-prints `No API changes detected` and commits nothing. Fork pull requests are
-skipped. A fetch failure is logged and does not fail the pull request check.
+fixture changes. On a same-repo pull request that changes these mocks, drift
+fails the check instead of pushing. Fork pull requests are skipped. A fetch
+failure is logged and does not fail the pull request check.
+
+JSON files in `api-responses/<id>.json` are discovered in addition to the
+table below. Each one needs an entry in `api-responses/sources.json`, keyed
+by that id:
+
+```json
+{
+  "bridge-get-tokens-popular": {
+    "method": "POST",
+    "url": "https://bridge.api.cx.metamask.io/getTokens/popular",
+    "mode": "skip",
+    "reason": "POST with a request-specific body"
+  },
+  "price-v3-spot-prices": {
+    "method": "GET",
+    "url": "https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155:1/slip44:60&vsCurrency=usd&includeMarketData=true",
+    "mode": "write"
+  }
+}
+```
+
+`mode` is `write`, `derived` (set `follows` to another id), or `skip` (set
+`reason`). `write` is GET only. POST, auth, and endpoints that need a real id
+use `skip`; the sync prints that reason as a warning and does not fetch them.
+A fixture with no entry fails the command. Drop the JSON file and add its
+source entry; do not add a catalog row for it.
 
 Values the tests assert stay as literals where `mock-e2e.js` (or the phishing
 helper) registers the mock and are applied over the fixture, so a sync cannot
