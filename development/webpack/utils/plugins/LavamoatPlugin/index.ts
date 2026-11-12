@@ -16,7 +16,7 @@ const nullUnsafeEntries: Set<string> = new Set([
   'bootstrap',
 ]);
 
-const getScuttleGlobalThisExceptions = (args: Args) => [
+export const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by different mm deps outside of lm compartment
   'window',
   'Window',
@@ -78,6 +78,10 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'Request',
   // Sentry builds fetch trace headers with it; scuttled, they are dropped.
   'Headers',
+  // Sentry resolves `new URL(target, location.href)` to decide whether a fetch
+  // gets trace headers; scuttled, the lookup throws and none are attached. The
+  // service worker has no `location.href`, so it skips that branch.
+  'URL',
   // needed by Sentry and react-router-dom v6 HashRouter
   'history',
   // globals used by react-dom
