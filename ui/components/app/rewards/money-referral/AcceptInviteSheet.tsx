@@ -14,6 +14,8 @@ import {
   ModalHeader,
   Text,
   TextAlign,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextField,
   TextFieldSize,
@@ -52,6 +54,26 @@ const MONEY_REFERRAL_CODE_ERROR_ID = 'money-referral-code-error';
 
 type Translate = (key: string) => string;
 
+type InviteTermsLink = { label: string; url: string };
+
+/**
+ * The terms link after the invite body. It shows only when the server sets
+ * both its label and an https URL, so a blank Contentful entry shows nothing.
+ *
+ * @param localizedText - Server copy, absent when referral me never arrived.
+ * @returns The label and URL to link, or null when the link is not set.
+ */
+function resolveInviteTermsLink(
+  localizedText: ReferralLocalizedText | undefined,
+): InviteTermsLink | null {
+  const label = (localizedText?.inviteTermsLearnMore ?? '').trim();
+  const url = (localizedText?.inviteTermsUrl ?? '').trim();
+  if (label.length === 0 || !url.startsWith('https://')) {
+    return null;
+  }
+  return { label, url };
+}
+
 /**
  * Invite copy, resolved per key.
  *
@@ -76,6 +98,7 @@ function inviteCopy(
       localizedText?.inviteReferralCode ?? t('rewardsMoneyReferralCodeLabel'),
     decline: localizedText?.inviteDecline ?? t('musdEducationNotNow'),
     accept: localizedText?.inviteAccept ?? t('continue'),
+    termsLink: resolveInviteTermsLink(localizedText),
   };
 }
 
@@ -310,6 +333,7 @@ const AcceptInviteSheetContent = ({
   }
 
   const copy = inviteCopy(referralMe?.localized_text, (key) => t(key));
+  const { termsLink } = copy;
   const fieldError =
     errorMessage ||
     (isRejectedCode ? t('rewardsMoneyReferralCodeError') : '') ||
@@ -343,6 +367,25 @@ const AcceptInviteSheetContent = ({
               color={TextColor.TextAlternative}
             >
               {copy.body}
+              {termsLink ? (
+                <>
+                  {' '}
+                  <TextButton
+                    size={TextButtonSize.BodyMd}
+                    className="text-primary-default"
+                    onClick={() =>
+                      window.open(
+                        termsLink.url,
+                        '_blank',
+                        'noopener,noreferrer',
+                      )
+                    }
+                    data-testid="money-referral-invite-terms-link"
+                  >
+                    {termsLink.label}
+                  </TextButton>
+                </>
+              ) : null}
             </Text>
           ) : null}
           <Box flexDirection={BoxFlexDirection.Column} gap={2}>
