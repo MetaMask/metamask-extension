@@ -5947,6 +5947,10 @@
   "moneyActivity": {
     "message": "Activity"
   },
+  "moneyActivityAmountUnavailable": {
+    "message": "Amount unavailable",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
+  },
   "moneyActivityCard": {
     "message": "Card"
   },

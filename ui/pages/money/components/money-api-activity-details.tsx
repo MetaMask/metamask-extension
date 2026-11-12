@@ -64,7 +64,7 @@ export function MoneyApiActivityDetails({
   const [, handleCopy] = useCopyToClipboard();
 
   const display = getAccountsApiActivityDisplayInfo(activity, t);
-  const hero = getMoneyApiActivityDetailsHeroAmount(activity);
+  const hero = getMoneyApiActivityDetailsHeroAmount(activity, t);
   const explorerUrl = getMoneyActivityExplorerUrl(
     activity.chainId,
     activity.hash,
