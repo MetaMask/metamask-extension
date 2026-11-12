@@ -842,6 +842,7 @@
           "0x2105": false,
           "0x279f": false,
           "0x38": false,
+          "0x531": false,
           "0x539": true,
           "0x89": false,
           "0x8f": false,
@@ -1025,6 +1026,9 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "tdpChartIndicators": [],
+        "tdpChartInterval": "15m",
+        "tdpChartType": 2,
         "tokenNetworkFilter": {
           "0x539": true
         },
@@ -1084,10 +1088,13 @@
       }
     },
     "RampsController": {
+      "autorampTransactionRecords": {},
       "autoramps": [],
+      "moneyAccountWalletRegistrations": [],
       "orders": [],
       "providerAutoSelected": false,
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,

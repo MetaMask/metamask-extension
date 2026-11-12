@@ -1,11 +1,17 @@
 import type { MetaMaskReduxState } from '../../store/store';
 import {
+  MoneyComponentName,
+  MoneyFtueEntryPoint,
+} from '../../pages/money/constants/money-events';
+import {
   closeMoneyFtue,
   initialState,
   moneyFtueReducer as reducer,
   openMoneyFtue,
+  type MoneyFtueOrigin,
   type MoneyFtueState,
   selectIsMoneyFtueOpen,
+  selectMoneyFtueOrigin,
   selectMoneyFtuePendingDeposit,
   selectMoneyFtueSource,
   selectHasSeenMoneyFtue,
@@ -16,6 +22,15 @@ const preferredPaymentToken = {
   chainId: '0x1' as const,
 };
 
+const moneyHomeOrigin: MoneyFtueOrigin = {
+  entryPoint: MoneyFtueEntryPoint.MoneyHome,
+};
+
+const depositOrigin: MoneyFtueOrigin = {
+  entryPoint: MoneyFtueEntryPoint.WalletHome,
+  componentName: MoneyComponentName.TokenListItemCta,
+};
+
 const withState = (moneyFtue: MoneyFtueState): MetaMaskReduxState =>
   ({ moneyFtue }) as unknown as MetaMaskReduxState;
 
@@ -24,16 +39,21 @@ describe('moneyFtue slice', () => {
     expect(reducer(undefined, { type: '@@INIT' })).toStrictEqual(initialState);
     expect(initialState.isOpen).toBe(false);
     expect(initialState.source).toBeNull();
+    expect(initialState.origin).toBeNull();
     expect(initialState.pendingDeposit).toBeNull();
     expect(initialState.acknowledged).toBe(false);
   });
 
   it('opens for the Money home without a pending deposit', () => {
-    const state = reducer(initialState, openMoneyFtue({ source: 'moneyHome' }));
+    const state = reducer(
+      initialState,
+      openMoneyFtue({ source: 'moneyHome', origin: moneyHomeOrigin }),
+    );
 
     expect(state).toStrictEqual({
       isOpen: true,
       source: 'moneyHome',
+      origin: moneyHomeOrigin,
       pendingDeposit: null,
       acknowledged: false,
     });
@@ -44,6 +64,7 @@ describe('moneyFtue slice', () => {
       initialState,
       openMoneyFtue({
         source: 'deposit',
+        origin: depositOrigin,
         preferredPaymentToken,
         intent: 'addMusd',
       }),
@@ -52,17 +73,22 @@ describe('moneyFtue slice', () => {
     expect(state).toStrictEqual({
       isOpen: true,
       source: 'deposit',
+      origin: depositOrigin,
       pendingDeposit: { preferredPaymentToken, intent: 'addMusd' },
       acknowledged: false,
     });
   });
 
   it('stores an empty deposit intent when the deposit has no token', () => {
-    const state = reducer(initialState, openMoneyFtue({ source: 'deposit' }));
+    const state = reducer(
+      initialState,
+      openMoneyFtue({ source: 'deposit', origin: depositOrigin }),
+    );
 
     expect(state).toStrictEqual({
       isOpen: true,
       source: 'deposit',
+      origin: depositOrigin,
       pendingDeposit: {},
       acknowledged: false,
     });
@@ -73,12 +99,16 @@ describe('moneyFtue slice', () => {
       initialState,
       openMoneyFtue({
         source: 'deposit',
+        origin: depositOrigin,
         preferredPaymentToken,
         intent: 'addMusd',
       }),
     );
 
-    const state = reducer(opened, openMoneyFtue({ source: 'moneyHome' }));
+    const state = reducer(
+      opened,
+      openMoneyFtue({ source: 'moneyHome', origin: moneyHomeOrigin }),
+    );
 
     expect(state).toStrictEqual(opened);
   });
@@ -88,6 +118,7 @@ describe('moneyFtue slice', () => {
       initialState,
       openMoneyFtue({
         source: 'deposit',
+        origin: depositOrigin,
         preferredPaymentToken,
         intent: 'addMusd',
       }),
@@ -101,16 +132,18 @@ describe('moneyFtue slice', () => {
 });
 
 describe('moneyFtue selectors', () => {
-  it('reads the open, source and pending deposit values', () => {
+  it('reads the open, source, origin and pending deposit values', () => {
     const state = withState({
       isOpen: true,
       source: 'deposit',
+      origin: depositOrigin,
       pendingDeposit: { preferredPaymentToken, intent: 'addMusd' },
       acknowledged: false,
     });
 
     expect(selectIsMoneyFtueOpen(state)).toBe(true);
     expect(selectMoneyFtueSource(state)).toBe('deposit');
+    expect(selectMoneyFtueOrigin(state)).toStrictEqual(depositOrigin);
     expect(selectMoneyFtuePendingDeposit(state)).toStrictEqual({
       preferredPaymentToken,
       intent: 'addMusd',
@@ -122,6 +155,7 @@ describe('moneyFtue selectors', () => {
 
     expect(selectIsMoneyFtueOpen(state)).toBe(false);
     expect(selectMoneyFtueSource(state)).toBeNull();
+    expect(selectMoneyFtueOrigin(state)).toBeNull();
     expect(selectMoneyFtuePendingDeposit(state)).toBeNull();
   });
 

@@ -84,7 +84,9 @@ class SendPage {
     testId: 'send-network-filter-toggle',
   };
 
-  private readonly recipientClassRendered = '.break-all';
+  private readonly recipientFormatted = {
+    testId: 'clear-recipient-btn',
+  };
 
   private readonly recipientModalButton = {
     testId: 'open-recipient-modal-btn',
@@ -405,7 +407,7 @@ class SendPage {
     // We wait for that to happen before proceeding with the next step to prevent flakiness.
     // When the address is invalid the formatted element never renders, so we skip the wait.
     if (validAddress) {
-      await this.driver.waitForSelector(this.recipientClassRendered);
+      await this.driver.waitForSelector(this.recipientFormatted);
     }
   }
 
