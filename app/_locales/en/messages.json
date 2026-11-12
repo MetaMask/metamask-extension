@@ -9916,7 +9916,7 @@
     "message": "Failed to add account"
   },
   "rewardsMoneyReferralActiveTrader": {
-    "message": "You cannot be referred because of recent trading activity."
+    "message": "This referral code is only valid for new traders."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "You have already been referred by another user."
