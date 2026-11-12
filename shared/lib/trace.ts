@@ -1,5 +1,11 @@
 import type * as Sentry from '@sentry/browser';
-import { SPAN_STATUS_ERROR, SPAN_STATUS_OK, spanToJSON } from '@sentry/core';
+import {
+  SPAN_STATUS_ERROR,
+  SPAN_STATUS_OK,
+  getActiveSpan,
+  getRootSpan,
+  spanToJSON,
+} from '@sentry/core';
 import type {
   Client,
   MeasurementUnit,
@@ -361,6 +367,9 @@ export type TraceRequest = {
    * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
    * and sampling decision on the scope for the worker's whole life, so such
    * work would otherwise join that trace and be kept or dropped with it.
+   *
+   * In a UI document, so does one on the current route's trace: the SDK keeps a
+   * route's trace id on the scope until the next navigation.
    */
   root?: boolean;
 };
@@ -590,14 +599,7 @@ let endedServiceWorkerPageloadTraceId: string | undefined;
  * @param client - The Sentry client that emits the pageload's `spanEnd`.
  */
 export function trackServiceWorkerPageloadEnd(client?: Client): void {
-  const { ServiceWorkerGlobalScope } = globalThis as {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ServiceWorkerGlobalScope?: abstract new () => unknown;
-  };
-  if (
-    !ServiceWorkerGlobalScope ||
-    !(globalThis instanceof ServiceWorkerGlobalScope)
-  ) {
+  if (!isServiceWorker()) {
     return;
   }
 
@@ -618,10 +620,64 @@ function isOnEndedServiceWorkerPageload(): boolean {
   if (!endedServiceWorkerPageloadTraceId || sentryGetActiveSpan()) {
     return false;
   }
-  const scopeTraceId = globalThis.sentry
-    ?.getCurrentScope?.()
-    ?.getPropagationContext?.()?.traceId;
-  return scopeTraceId === endedServiceWorkerPageloadTraceId;
+  return getScopeTraceId() === endedServiceWorkerPageloadTraceId;
+}
+
+// The trace id of the UI document's latest pageload or navigation, which the
+// SDK keeps on the scope until the next navigation. Unset in the service worker.
+let documentRouteTraceId: string | undefined;
+
+const ROUTE_OPS = new Set(['pageload', 'navigation']);
+
+/**
+ * Records UI route trace ids for {@link TraceRequest.root}; call right after `Sentry.init`.
+ *
+ * @param client - The Sentry client that emits each navigation's `spanStart`.
+ */
+export function trackDocumentRouteTrace(client?: Client): void {
+  if (!client || isServiceWorker()) {
+    return;
+  }
+
+  const recordRoute = (span?: Span) => {
+    if (
+      span &&
+      getRootSpan(span) === span &&
+      ROUTE_OPS.has(spanToJSON(span).op ?? '')
+    ) {
+      documentRouteTraceId = span.spanContext().traceId;
+    }
+  };
+
+  recordRoute(getActiveSpan());
+  client.on('spanStart', recordRoute);
+}
+
+/**
+ * Whether the scope still holds the latest route's trace id, running or ended.
+ *
+ * @returns True when such work should start its own trace.
+ */
+function isOnDocumentRouteTrace(): boolean {
+  return (
+    documentRouteTraceId !== undefined &&
+    getScopeTraceId() === documentRouteTraceId
+  );
+}
+
+function isServiceWorker(): boolean {
+  const { ServiceWorkerGlobalScope } = globalThis as {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    ServiceWorkerGlobalScope?: abstract new () => unknown;
+  };
+  return Boolean(
+    ServiceWorkerGlobalScope && globalThis instanceof ServiceWorkerGlobalScope,
+  );
+}
+
+function getScopeTraceId(): string | undefined {
+  return globalThis.sentry?.getCurrentScope?.()?.getPropagationContext?.()
+    ?.traceId;
 }
 
 /**
@@ -1172,7 +1228,9 @@ function startSpan<T>(
   const parentDeclared = parentContext !== undefined;
 
   const root =
-    request.root || (!parentDeclared && isOnEndedServiceWorkerPageload());
+    request.root ||
+    (!parentDeclared &&
+      (isOnEndedServiceWorkerPageload() || isOnDocumentRouteTrace()));
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
