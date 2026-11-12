@@ -9,6 +9,7 @@ import {
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
+import { mainNavItem } from './main-nav-selectors';
 
 type ReceiveButton = 'default' | 'row';
 
@@ -101,12 +102,11 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
-  protected readonly mainNavActivityButton =
-    '[data-testid="bottom-nav-activity"]';
+  protected readonly mainNavActivityButton = mainNavItem('activity');
 
-  private readonly mainNavHomeButton = '[data-testid="bottom-nav-home"]';
+  private readonly mainNavHomeButton = mainNavItem('home');
 
-  protected readonly mainNavPerpsButton = '[data-testid="bottom-nav-perps"]';
+  protected readonly mainNavPerpsButton = mainNavItem('perps');
 
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',

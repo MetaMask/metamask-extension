@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { mainNavItem } from './main-nav-selectors';
 
 /**
  * Main navigation chrome. Today this is the bottom nav bar.
@@ -15,9 +16,9 @@ import { Driver } from '../../../webdriver/driver';
 class MainNav {
   private readonly driver: Driver;
 
-  private readonly homeTab = '[data-testid="bottom-nav-home"]';
+  private readonly homeTab = mainNavItem('home');
 
-  private readonly moneyTab = '[data-testid="bottom-nav-money"]';
+  private readonly moneyTab = mainNavItem('money');
 
   private readonly page = {
     testId: 'parent-selector-bottom-nav-bar',
