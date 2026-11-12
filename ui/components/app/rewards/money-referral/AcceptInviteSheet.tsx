@@ -20,7 +20,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { normalizeMoneyReferralCode } from '#shared/lib/money-referral-code';
-import { ReferralDialog } from '#ui/components/app/rewards/money-referral/ReferralDialog';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -46,6 +45,7 @@ import {
 import { useReferralMe } from '../../../../hooks/rewards/useReferralMe';
 import { REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES } from '../../../../hooks/rewards/rewards-money-messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
+import { ReferralDialog } from './ReferralDialog';
 import { ReferralActivatedModal } from './ReferralActivatedModal';
 
 const MONEY_REFERRAL_CODE_ERROR_ID = 'money-referral-code-error';
