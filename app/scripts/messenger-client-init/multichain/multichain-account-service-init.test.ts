@@ -133,21 +133,43 @@ describe('MultichainAccountServiceInit', () => {
         'function',
       );
     });
-    for (const name of [
-      'Provider Create Accounts (v2 - batched)',
-      'Wallet Alignment',
-    ]) {
-      it(`lets ${name} nest under the active span`, () => {
-        MultichainAccountServiceInit(buildInitRequestMock());
-        const { trace: configTrace } = multichainAccountServiceClassMock.mock
-          .calls[0][0].config as {
-          trace: (request: { name: string }, fn: () => void) => void;
-        };
+    type ConfigTrace = (
+      request: { name: string; data?: Record<string, unknown> },
+      fn: () => void,
+    ) => void;
 
-        configTrace({ name }, () => undefined);
+    function getConfigTrace(): ConfigTrace {
+      MultichainAccountServiceInit(buildInitRequestMock());
+      return (
+        multichainAccountServiceClassMock.mock.calls[0][0].config as {
+          trace: ConfigTrace;
+        }
+      ).trace;
+    }
+
+    for (const request of [
+      { name: 'Provider Create Accounts (v2 - batched)' },
+      { name: 'Wallet Alignment', data: { post: true } },
+    ]) {
+      it(`lets ${request.name} ${JSON.stringify(request.data ?? {})} nest under the active span`, () => {
+        getConfigTrace()(request, () => undefined);
 
         expect(trace).toHaveBeenCalledWith(
-          { name, allowActiveSpanFallback: true },
+          { ...request, allowActiveSpanFallback: true },
+          expect.any(Function),
+        );
+      });
+    }
+
+    // `alignAccounts()`, `discoverAccounts()` and `alignAccountsOf()` data.
+    for (const data of [{}, { discovery: true }, { groupIndex: 0 }]) {
+      it(`roots Wallet Alignment ${JSON.stringify(data)} started outside a group creation`, () => {
+        const request = { name: 'Wallet Alignment', data };
+
+        getConfigTrace()(request, () => undefined);
+
+        expect(trace).toHaveBeenCalledWith(
+          { ...request, root: true },
           expect.any(Function),
         );
       });
