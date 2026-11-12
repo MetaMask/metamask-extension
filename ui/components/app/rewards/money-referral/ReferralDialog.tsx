@@ -20,6 +20,9 @@ type ReferralDialogProps = {
  * MMDS does not support priority focus locks. Native modality keeps referrals
  * above other overlays and blocks background autofocus. The focus-lock opt-out also
  * stops background traps with autoFocus=false from blurring the active input.
+ * Return to the MMDS modal shell once priority overlays are supported.
+ *
+ * @see https://github.com/MetaMask/metamask-design-system/issues/1685
  */
 export function ReferralDialog({
   children,
@@ -51,6 +54,7 @@ export function ReferralDialog({
       onCancel={handleCancel}
       onKeyDown={(event) => {
         if (event.key === 'Escape') {
+          // Prevent native cancellation and keep Escape away from background modals.
           handleCancel(event);
         }
       }}
