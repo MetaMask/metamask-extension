@@ -84,6 +84,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             <Box
               as="img"
               src={`https:${notification.data.image.url}?fm=jpg&fl=progressive&w=1000&q=80`}
+              decoding="async"
               alt={notification.data.title}
               title={notification.data.title}
               display={Display.Block}

@@ -88,6 +88,7 @@ export const NftItem = ({
           data-testid="nft-image"
           as="img"
           src={src}
+          decoding="async"
           alt={alt}
           display={Display.Block}
           justifyContent={JustifyContent.center}

@@ -550,6 +550,7 @@ export function MoneyHomePage() {
             >
               <img
                 src={MONEY_ONBOARDING_ARTWORK}
+                decoding="async"
                 alt=""
                 className="h-[185px] w-full rounded-[14px] object-cover wide-layout:h-auto wide-layout:w-56 wide-layout:shrink-0 wide-layout:self-stretch"
               />

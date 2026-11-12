@@ -33,6 +33,7 @@ const IconWithFallback = ({
         <img
           onError={handleOnError}
           src={icon}
+          decoding="async"
           style={style}
           className={className}
           alt={name || 'icon'}

@@ -64,6 +64,7 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
           <Box
             as="img"
             src={nftItemSrc || (collection?.imageUrl as string)}
+            decoding="async"
             alt={name}
             style={{
               width: 48,

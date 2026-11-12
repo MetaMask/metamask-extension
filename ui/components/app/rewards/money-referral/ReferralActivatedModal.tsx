@@ -188,6 +188,7 @@ export function ReferralActivatedModal({
                   alt=""
                   data-testid="money-referral-activated-hero"
                   src={imageUrl}
+                  decoding="async"
                   className="h-[220px] w-full object-contain"
                 />
               ) : null}

@@ -105,6 +105,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
             <Box
               as="img"
               src={nftItemSrc || (collection?.imageUrl as string)}
+              decoding="async"
               alt={name}
               style={{
                 width: 32,

@@ -70,6 +70,7 @@ const NftImage = ({ src }: { src: string }): JSX.Element => {
       data-testid="nft-image"
       as="img"
       src={src}
+      decoding="async"
       display={Display.Block}
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.primaryMuted}

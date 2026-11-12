@@ -105,6 +105,7 @@ export function MoneyCondensedInfoCards({
               >
                 <img
                   src={image}
+                  decoding="async"
                   alt=""
                   width={imageWidth}
                   height={imageHeight}

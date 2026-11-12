@@ -305,6 +305,7 @@ const ConfirmAddSuggestedNFT = () => {
                         <img
                           className="confirm-add-suggested-nft__nft-single-image"
                           src={nftImageURL}
+                          decoding="async"
                           alt={name || tokenId}
                         />
                       ) : (

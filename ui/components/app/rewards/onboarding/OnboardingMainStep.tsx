@@ -151,6 +151,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
     >
       <img
         src={REWARDS_ONBOARD_HERO_IMAGE_URL}
+        decoding="async"
         alt={t('rewardsOnboardingTitle')}
         width={180}
         height={180}

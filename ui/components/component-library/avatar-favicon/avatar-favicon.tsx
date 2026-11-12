@@ -41,6 +41,7 @@ const Favicon = (props: { src?: string; name: string }) => {
     <img
       className="mm-avatar-favicon__image"
       src={src}
+      decoding="async"
       alt={t('logo', [name])}
       onError={handleImageError}
     />

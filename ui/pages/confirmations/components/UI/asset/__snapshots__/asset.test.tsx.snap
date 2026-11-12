@@ -18,6 +18,7 @@ exports[`TokenAsset hides balances when hideBalances is true 1`] = `
           <img
             alt="TEST logo"
             class="mm-avatar-token__token-image"
+            decoding="async"
             src="https://example.com/token.png"
           />
         </div>
@@ -30,6 +31,7 @@ exports[`TokenAsset hides balances when hideBalances is true 1`] = `
             <img
               alt="Ethereum logo"
               class="mm-avatar-network__network-image"
+              decoding="async"
               src="https://example.com/eth.png"
             />
           </div>

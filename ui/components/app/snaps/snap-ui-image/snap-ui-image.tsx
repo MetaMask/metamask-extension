@@ -25,6 +25,7 @@ export const SnapUIImage = ({
       className="snap-ui-renderer__image"
       data-testid="snaps-ui-image"
       src={src}
+      decoding="async"
       width={width}
       height={height}
       style={{ ...style, borderRadius }}

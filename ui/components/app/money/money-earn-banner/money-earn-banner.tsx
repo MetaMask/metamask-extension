@@ -118,6 +118,7 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
         {sourceTokenImage ? (
           <img
             src={sourceTokenImage.src}
+            decoding="async"
             className={sourceTokenImage.className}
             alt=""
             data-testid={`${MONEY_EARN_BANNER_TEST_ID}-source-image`}

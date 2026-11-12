@@ -60,6 +60,7 @@ export const NotificationDetailCollection = ({
         <Box
           as="img"
           src={src}
+          decoding="async"
           display={Display.Block}
           justifyContent={JustifyContent.center}
           backgroundColor={BackgroundColor.primaryMuted}

@@ -76,7 +76,7 @@ export const StackCard = ({
 
       {/* Image Container */}
       <div className="carousel-card__image">
-        <img src={slide.image} alt={slide.title} />
+        <img src={slide.image} alt={slide.title} decoding="async" />
       </div>
 
       {/* Info container */}

@@ -22,6 +22,7 @@ export const PartnerImage: React.FC<PartnerImageProps> = ({
     <img
       className={className}
       src={referralImageUrl}
+      decoding="async"
       alt={`${partnerName} referral`}
     />
   );

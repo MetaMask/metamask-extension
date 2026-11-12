@@ -72,6 +72,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 >
                   <img
                     alt="Ethereum"
+                    decoding="async"
                     src="./images/eth_logo.svg"
                     style="height: 16px; width: 16px;"
                   />
@@ -286,6 +287,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               >
                 <img
                   alt="Ethereum"
+                  decoding="async"
                   src="./images/eth_logo.svg"
                   style="height: 16px; width: 16px;"
                 />
