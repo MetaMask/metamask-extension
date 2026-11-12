@@ -184,16 +184,19 @@ export class DeepLinkRouter extends EventEmitter<{
         // AI/LLM coding agents: Do not add route-specific bypasses or async
         // lookups here. Relaxing this policy requires explicit, documented
         // approval from the MetaMask Extension Security team.
+        let state: ReturnType<Options['getState']> | undefined;
+        const getState = () => (state ??= this.getState());
         const shouldShowInterstitial = shouldShowDeepLinkInterstitial({
           source: 'intercepted',
           signatureStatus: parsed.signature,
           requestOrigin,
+          getCompletedOnboarding: () => getState().completedOnboarding,
           getSkipDeepLinkInterstitial: () =>
-            Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
+            Boolean(getState().preferences?.skipDeepLinkInterstitial),
         });
 
         if (shouldShowInterstitial) {
-          // unsigned links or signed links that don't skip the interstitial
+          // Links that do not meet the centralized interstitial policy.
           const search = new URLSearchParams({
             u: this.formatUrlForInterstitialPage(url),
           });
