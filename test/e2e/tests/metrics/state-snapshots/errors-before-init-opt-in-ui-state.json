@@ -294,6 +294,7 @@
       "syncQueue": "object"
     },
     "RampsController": {
+      "autorampTransactionRecords": "object",
       "autoramps": "object",
       "moneyAccountWalletRegistrations": "object",
       "orders": "object",
