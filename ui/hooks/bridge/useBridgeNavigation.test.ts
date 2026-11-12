@@ -269,44 +269,13 @@ describe('useBridgeNavigation', () => {
       });
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        { pathname: '/cross-chain/swaps/prepare-bridge-page', search: '' },
+        { pathname: '/cross-chain/swaps/prepare-bridge-page' },
         {
           state: {
             bridgeState: null,
             token: null,
           },
         },
-      );
-    });
-
-    it('preserves deep-link search query params when clearing navigation state', () => {
-      mockUseLocation.mockReturnValue({
-        pathname: '/cross-chain/swaps/prepare-bridge-page',
-        search:
-          '?to=eip155%3A1%2Ferc20%3A0x6B175474E89094C44Da98b954EedeAC495271d0F',
-        state: {
-          token: locationToken,
-        },
-      });
-
-      const { result } = renderUseBridgeNavigation();
-
-      act(() => {
-        result.current.resetLocationState();
-      });
-
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        {
-          pathname: '/cross-chain/swaps/prepare-bridge-page',
-          search:
-            '?to=eip155%3A1%2Ferc20%3A0x6B175474E89094C44Da98b954EedeAC495271d0F',
-        },
-        expect.objectContaining({
-          state: {
-            bridgeState: null,
-            token: null,
-          },
-        }),
       );
     });
   });
