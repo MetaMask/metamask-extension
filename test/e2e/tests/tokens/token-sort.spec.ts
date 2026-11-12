@@ -88,6 +88,9 @@ describe('Token List Sorting', function () {
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver);
+          if (isWideLayout) {
+            await driver.checkWideLayoutViewport();
+          }
 
           const homePage = new HomePage(driver);
           const tokensTab = new TokensTab(driver);

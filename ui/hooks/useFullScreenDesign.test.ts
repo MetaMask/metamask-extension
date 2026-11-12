@@ -1,9 +1,7 @@
 import { act } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
-import {
-  FULL_SCREEN_DESIGN_MIN_WIDTH,
-  useFullScreenDesign,
-} from './useFullScreenDesign';
+import { FULL_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
+import { useFullScreenDesign } from './useFullScreenDesign';
 
 /**
  * Mocks `window.matchMedia` with a controllable `min-width` media query.
