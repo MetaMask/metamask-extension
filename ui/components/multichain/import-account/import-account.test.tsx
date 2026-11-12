@@ -475,7 +475,7 @@ describe('ImportAccount', () => {
       await waitFor(() => {
         expect(
           queryByText('The account you are trying to import is a duplicate'),
-        ).toBeInTheDocument();
+        ).toHaveAttribute('role', 'alert');
       });
     });
 

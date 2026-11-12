@@ -107,7 +107,11 @@ export default function JsonImportSubview({
           </Text>
         </label>
         {fileError ? (
-          <HelpText id={fileErrorId} severity={HelpTextSeverity.Danger}>
+          <HelpText
+            id={fileErrorId}
+            role="alert"
+            severity={HelpTextSeverity.Danger}
+          >
             {fileError}
           </HelpText>
         ) : null}
@@ -131,7 +135,9 @@ export default function JsonImportSubview({
         size={TextFieldSize.Lg}
         placeholder={t('enterOptionalPassword')}
         helpText={passwordError}
-        helpTextProps={passwordError ? { id: passwordErrorId } : undefined}
+        helpTextProps={
+          passwordError ? { id: passwordErrorId, role: 'alert' } : undefined
+        }
         isError={Boolean(passwordError)}
         value={password}
         onChange={(event) => {

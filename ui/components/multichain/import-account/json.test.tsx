@@ -119,6 +119,9 @@ describe('Json', () => {
       getByText(messages.jsonImportPasswordRequired.message),
     ).toHaveAttribute('id', 'json-password-error');
     expect(
+      getByText(messages.jsonImportPasswordRequired.message),
+    ).toHaveAttribute('role', 'alert');
+    expect(
       getByLabelText(messages.enterOptionalPassword.message),
     ).toHaveAttribute('aria-describedby', 'json-password-error');
     expect(
@@ -144,6 +147,7 @@ describe('Json', () => {
       'id',
       'json-file-error',
     );
+    expect(getByText('Not a V3 wallet')).toHaveAttribute('role', 'alert');
     expect(getByTestId('file-input')).toHaveAttribute(
       'aria-describedby',
       'json-file-error',
