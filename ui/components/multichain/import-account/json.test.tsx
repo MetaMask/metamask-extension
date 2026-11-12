@@ -110,15 +110,14 @@ describe('Json', () => {
       <Json
         importAccountFunc={mockImportFunc}
         onActionComplete={mockOnActionComplete}
-        importErrorMessage={messages.jsonImportPasswordError.message}
+        importErrorMessage={messages.jsonImportPasswordRequired.message}
       />,
       mockStore,
     );
 
-    expect(getByText(messages.jsonImportPasswordError.message)).toHaveAttribute(
-      'id',
-      'json-password-error',
-    );
+    expect(
+      getByText(messages.jsonImportPasswordRequired.message),
+    ).toHaveAttribute('id', 'json-password-error');
     expect(
       getByLabelText(messages.enterOptionalPassword.message),
     ).toHaveAttribute('aria-describedby', 'json-password-error');

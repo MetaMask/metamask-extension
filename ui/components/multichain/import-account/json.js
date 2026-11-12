@@ -28,6 +28,7 @@ export default function JsonImportSubview({
   importAccountFunc,
   onActionComplete,
   onClearImportError,
+  onJsonFileChange,
   importErrorMessage,
 }) {
   const t = useI18nContext();
@@ -38,10 +39,14 @@ export default function JsonImportSubview({
   const [errorMessage, setErrorMessage] = useState();
 
   const isPrimaryDisabled = fileContents === '';
-  const passwordError =
-    importErrorMessage === t('jsonImportPasswordError')
-      ? importErrorMessage
-      : undefined;
+  const passwordErrors = [
+    t('jsonImportPasswordRequired'),
+    t('jsonImportPasswordIncorrect'),
+    t('jsonImportPasswordIncorrectOrOptional'),
+  ];
+  const passwordError = passwordErrors.includes(importErrorMessage)
+    ? importErrorMessage
+    : undefined;
   const fileError =
     errorMessage ?? (passwordError ? undefined : importErrorMessage);
   const fileErrorId = 'json-file-error';
@@ -81,6 +86,7 @@ export default function JsonImportSubview({
             onLoad={(event) => {
               setErrorMessage();
               setFileContents(event.target.result);
+              onJsonFileChange?.();
             }}
             style={{
               position: 'absolute',
@@ -177,6 +183,10 @@ JsonImportSubview.propTypes = {
    * Clears the import error shown under the password field
    */
   onClearImportError: PropTypes.func,
+  /**
+   * Resets password-attempt state when a different file is chosen
+   */
+  onJsonFileChange: PropTypes.func,
   /**
    * Import error message
    */

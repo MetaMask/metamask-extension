@@ -341,42 +341,97 @@ describe('ImportAccount', () => {
   });
 
   describe('JSON import password errors', () => {
-    it('shows a passphrase failure under the password field', async () => {
+    const rejectWithPassphraseError = () => {
       mockedActions.importNewAccount.mockReturnValue((() =>
         Promise.reject(
           new Error('Key derivation failed - possibly wrong passphrase'),
         )) as unknown as ReturnType<typeof actions.importNewAccount>);
+    };
 
-      const { getByLabelText, getByRole, getByTestId, queryByText } =
-        renderImportAccount();
-
-      fireEvent.click(getByRole('button', { name: messages.jsonFile.message }));
-      fireEvent.change(getByTestId('file-input'), {
+    const selectJsonFile = async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.jsonFile.message }),
+      );
+      fireEvent.change(screen.getByTestId('file-input'), {
         target: { files: [new File(['{}'], 'test.json')] },
       });
-
       await waitFor(() => {
         expect(getImportButton()).not.toBeDisabled();
       });
+    };
 
+    it('tells the user a blank attempt needs a password', async () => {
+      rejectWithPassphraseError();
+      const { getByLabelText, queryByText } = renderImportAccount();
+
+      await selectJsonFile();
       fireEvent.click(getImportButton());
 
       await waitFor(() => {
         expect(
-          queryByText(messages.jsonImportPasswordError.message),
+          queryByText(messages.jsonImportPasswordRequired.message),
         ).toBeInTheDocument();
       });
       expect(
         getByLabelText(messages.enterOptionalPassword.message),
       ).toHaveAttribute('aria-describedby', 'json-password-error');
+
+      fireEvent.change(getByLabelText(messages.enterOptionalPassword.message), {
+        target: { value: 'a' },
+      });
+
+      expect(
+        queryByText(messages.jsonImportPasswordRequired.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('says a typed password did not work after a blank attempt failed', async () => {
+      rejectWithPassphraseError();
+      const { getByLabelText, queryByText } = renderImportAccount();
+
+      await selectJsonFile();
+      fireEvent.click(getImportButton());
+
+      await waitFor(() => {
+        expect(
+          queryByText(messages.jsonImportPasswordRequired.message),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.change(getByLabelText(messages.enterOptionalPassword.message), {
+        target: { value: 'wrong-password' },
+      });
+      fireEvent.click(getImportButton());
+
+      await waitFor(() => {
+        expect(
+          queryByText(messages.jsonImportPasswordIncorrect.message),
+        ).toBeInTheDocument();
+      });
+      expect(
+        queryByText(messages.jsonImportPasswordIncorrectOrOptional.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('mentions a blank password when the first attempt already had one', async () => {
+      rejectWithPassphraseError();
+      const { getByLabelText, queryByText } = renderImportAccount();
+
+      await selectJsonFile();
+      fireEvent.change(getByLabelText(messages.enterOptionalPassword.message), {
+        target: { value: 'wrong-password' },
+      });
+      fireEvent.click(getImportButton());
+
+      await waitFor(() => {
+        expect(
+          queryByText(messages.jsonImportPasswordIncorrectOrOptional.message),
+        ).toBeInTheDocument();
+      });
     });
 
     it('does not show a passphrase failure from a private key import under the password field', async () => {
-      mockedActions.importNewAccount.mockReturnValue((() =>
-        Promise.reject(
-          new Error('Key derivation failed - possibly wrong passphrase'),
-        )) as unknown as ReturnType<typeof actions.importNewAccount>);
-
+      rejectWithPassphraseError();
       const { getByLabelText, queryByText } = renderImportAccount();
 
       fireEvent.change(getByLabelText(messages.enterYourPrivateKey.message), {
@@ -390,7 +445,7 @@ describe('ImportAccount', () => {
         ).toBeInTheDocument();
       });
       expect(
-        queryByText(messages.jsonImportPasswordError.message),
+        queryByText(messages.jsonImportPasswordRequired.message),
       ).not.toBeInTheDocument();
     });
   });

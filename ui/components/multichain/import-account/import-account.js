@@ -45,6 +45,7 @@ export const ImportAccount = ({ onActionComplete }) => {
 
   const [type, setType] = useState(importTypes[0].id);
   const [importErrorMessage, setImportErrorMessage] = useState();
+  const [jsonBlankPasswordFailed, setJsonBlankPasswordFailed] = useState(false);
 
   async function importAccount(strategy, importArgs) {
     const loadingMessage = getLoadingMessage(strategy);
@@ -67,6 +68,7 @@ export const ImportAccount = ({ onActionComplete }) => {
       if (selectedAccount) {
         trackImportEvent(strategy, true);
         setImportErrorMessage();
+        setJsonBlankPasswordFailed(false);
         onActionComplete(true);
       } else {
         setImportErrorMessage(t('importAccountError'));
@@ -79,7 +81,15 @@ export const ImportAccount = ({ onActionComplete }) => {
       // A V3 keystore reports a failed MAC check as a passphrase error for both
       // a missing password and a wrong one, so there is no code to match on.
       if (strategy === 'json' && message.includes('passphrase')) {
-        setImportErrorMessage(t('jsonImportPasswordError'));
+        const submittedPassword = importArgs[1] ?? '';
+        if (submittedPassword === '') {
+          setJsonBlankPasswordFailed(true);
+          setImportErrorMessage(t('jsonImportPasswordRequired'));
+        } else if (jsonBlankPasswordFailed) {
+          setImportErrorMessage(t('jsonImportPasswordIncorrect'));
+        } else {
+          setImportErrorMessage(t('jsonImportPasswordIncorrectOrOptional'));
+        }
         return false;
       }
 
@@ -240,6 +250,7 @@ export const ImportAccount = ({ onActionComplete }) => {
               data-testid={`import-account-type-${id}`}
               onClick={() => {
                 setImportErrorMessage();
+                setJsonBlankPasswordFailed(false);
                 setType(id);
               }}
             >
@@ -274,6 +285,10 @@ export const ImportAccount = ({ onActionComplete }) => {
               onActionComplete(confirmed);
             }}
             onClearImportError={() => setImportErrorMessage()}
+            onJsonFileChange={() => {
+              setImportErrorMessage();
+              setJsonBlankPasswordFailed(false);
+            }}
             importErrorMessage={importErrorMessage}
           />
         )}
