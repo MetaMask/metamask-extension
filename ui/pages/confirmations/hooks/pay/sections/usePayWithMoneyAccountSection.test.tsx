@@ -1,7 +1,12 @@
+import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import configureStore from '../../../../../store/store';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { useConfirmContext } from '../../../context/confirm';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
@@ -19,11 +24,12 @@ jest.mock('../../../context/confirm', () => ({
 }));
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
-    const messages: Record<string, string> = {
+    const copy: Record<string, string> = {
       payWithMoneyAccount: 'Money account',
       available: 'available',
+      noDepositFee: 'No deposit fee',
     };
-    return messages[key] ?? key;
+    return copy[key] ?? key;
   },
 }));
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
@@ -166,5 +172,56 @@ describe('usePayWithMoneyAccountSection', () => {
 
     expect(result.current?.rows[0].isSelected).toBe(true);
     expect(result.current?.rows[0].trailingElement).toBe('checkmark');
+  });
+
+  describe('no deposit fee tag', () => {
+    [
+      TransactionType.perpsDeposit,
+      TransactionType.perpsDepositAndOrder,
+    ].forEach((txType) => {
+      it(`renders the no deposit fee tag on the money account row for ${txType}`, () => {
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: {
+            id: 'tx-1',
+            type: txType,
+          },
+        } as ReturnType<typeof useConfirmContext>);
+        mockSelectors();
+
+        const { result } = renderHook(() =>
+          usePayWithMoneyAccountSection({ onClose }),
+        );
+        const tag = result.current?.rows[0].tagRenderers?.[0]?.();
+        const { getByTestId, getByText } = renderWithProvider(
+          <>{tag}</>,
+          configureStore(mockState),
+        );
+
+        expect(
+          getByTestId(`${PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID}-no-fee-tag`),
+        ).toBeInTheDocument();
+        expect(getByText(messages.noDepositFee.message)).toBeInTheDocument();
+      });
+    });
+
+    [TransactionType.predictDeposit, TransactionType.perpsWithdraw].forEach(
+      (txType) => {
+        it(`omits the tag for ${txType}`, () => {
+          useConfirmContextMock.mockReturnValue({
+            currentConfirmation: {
+              id: 'tx-1',
+              type: txType,
+            },
+          } as ReturnType<typeof useConfirmContext>);
+          mockSelectors();
+
+          const { result } = renderHook(() =>
+            usePayWithMoneyAccountSection({ onClose }),
+          );
+
+          expect(result.current?.rows[0].tagRenderers).toBeUndefined();
+        });
+      },
+    );
   });
 });

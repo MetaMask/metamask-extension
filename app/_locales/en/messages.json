@@ -6925,6 +6925,10 @@
     "message": "No $1 address",
     "description": "$1 is the default address scope"
   },
+  "noDepositFee": {
+    "message": "No deposit fee",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
+  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
