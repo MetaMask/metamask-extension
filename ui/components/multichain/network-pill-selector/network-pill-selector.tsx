@@ -222,7 +222,7 @@ export const NetworkPillSelector = () => {
   }
 
   return (
-    <div className="px-4 py-2" data-testid="network-pill-selector">
+    <div className="p-4" data-testid="network-pill-selector">
       <div
         ref={pillsRef}
         className={classnames(
