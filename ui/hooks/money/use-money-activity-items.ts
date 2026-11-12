@@ -130,7 +130,6 @@ export function useMoneyActivityItems({
     pageCount,
     error,
     refetch,
-    isSettling: isValuationsSettling,
   } = useMoneyAccountApiActivity();
 
   const apiActivity = mockDataEnabled ? MOCK_ACCOUNTS_API_ACTIVITY : activity;
@@ -167,9 +166,7 @@ export function useMoneyActivityItems({
 
   const isSettling =
     !mockDataEnabled &&
-    (isLoading ||
-      isValuationsSettling ||
-      (fillCount === 0 && (wantsMorePages || isLoadingMore)));
+    (isLoading || (fillCount === 0 && (wantsMorePages || isLoadingMore)));
 
   return {
     items: buckets[MoneyActivityFilter.All],

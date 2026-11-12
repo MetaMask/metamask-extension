@@ -290,6 +290,7 @@ describe('useMoneyActivityValuations', () => {
     expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
       type: 'pending',
     });
+    expect(result.current.isSettling).toBe(true);
     expect(messengerCall).not.toHaveBeenCalled();
 
     resolveCache([cachedEntry(1)]);
@@ -301,6 +302,7 @@ describe('useMoneyActivityValuations', () => {
         decimals: 6,
       });
     });
+    expect(result.current.isSettling).toBe(false);
     expect(messengerCall).not.toHaveBeenCalled();
   });
 

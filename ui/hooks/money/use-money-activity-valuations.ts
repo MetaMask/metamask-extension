@@ -249,7 +249,7 @@ export function useMoneyActivityValuations({
     return () => {
       cancelled = true;
     };
-  }, [enabled, moneyAddress]);
+  }, [enabled]);
 
   const cacheReady = !enabled || cache.loaded;
 
