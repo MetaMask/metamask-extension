@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { openMoneyFtue, selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
+import { MoneyFtueEntryPoint } from '../../pages/money/constants/money-events';
 import { useDispatch } from '../../store/hooks';
 
 export type UseOpenMoneyFtueOnFirstVisitOptions = {
@@ -31,7 +32,12 @@ export function useOpenMoneyFtueOnFirstVisit({
     }
 
     hasOpenedRef.current = true;
-    dispatch(openMoneyFtue({ source: 'moneyHome' }));
+    dispatch(
+      openMoneyFtue({
+        source: 'moneyHome',
+        origin: { entryPoint: MoneyFtueEntryPoint.MoneyHome },
+      }),
+    );
   }, [dispatch, hasSeenFtue, isAvailable, isLoading]);
 }
 
