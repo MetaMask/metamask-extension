@@ -73,13 +73,19 @@ class NetworkPillSelector {
   async selectNetwork(chainId: string): Promise<void> {
     console.log(`Selecting the network pill: ${chainId}`);
     const pill = this.networkPill(chainId);
-    const usablePill = `${pill}:not([inert])`;
 
     await this.checkIsLoaded();
-    if (!(await this.driver.isElementPresent(usablePill))) {
-      await this.driver.clickElementSafe(this.collapsedShowNetworksToggle);
+    await this.driver.waitForSelector(pill);
+    // Inert pills are still in the DOM, so read the attribute rather than
+    // waiting for a usable pill to appear.
+    const isPillInert = await this.driver.executeScript(
+      'return document.querySelector(arguments[0])?.hasAttribute("inert") ?? false',
+      pill,
+    );
+    if (isPillInert) {
+      await this.driver.clickElement(this.collapsedShowNetworksToggle);
     }
-    await this.driver.clickElement(usablePill);
+    await this.driver.clickElement(`${pill}:not([inert])`);
     await this.checkNetworkPillIsSelected(chainId);
   }
 }

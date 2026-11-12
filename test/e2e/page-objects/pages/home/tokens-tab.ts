@@ -1180,7 +1180,14 @@ class TokensTab extends HomePage {
         : this.tokenTableSortBalance;
     const sortedDefaultDirection = `${header} ${this.tokenTableSortIndicatorDown}`;
 
-    if (await this.driver.isElementPresent(sortedDefaultDirection)) {
+    await this.driver.waitForSelector(header);
+    // Read the state without waiting: the indicator is absent whenever the
+    // column is not the sorted one, which is the usual case.
+    const isAlreadySorted = await this.driver.executeScript(
+      'return document.querySelector(arguments[0]) !== null',
+      sortedDefaultDirection,
+    );
+    if (isAlreadySorted) {
       return;
     }
     await this.driver.clickElement(header);
