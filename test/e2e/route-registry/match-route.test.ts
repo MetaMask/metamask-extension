@@ -39,8 +39,8 @@ describe('matchRoute', () => {
   });
 
   it('returns null for routes without a page object', () => {
-    expect(matchRoute('/import-srp')).toStrictEqual({
-      path: '/import-srp',
+    expect(matchRoute('/mfa')).toStrictEqual({
+      path: '/mfa',
       pageObject: null,
     });
   });
