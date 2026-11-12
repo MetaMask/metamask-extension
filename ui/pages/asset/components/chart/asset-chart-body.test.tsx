@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, createEvent, fireEvent } from '@testing-library/react';
-import { Point } from 'chart.js';
+import { Chart, Point } from 'chart.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import {
@@ -86,6 +86,64 @@ describe('AssetChartBody', () => {
     expect(chart.lastElementChild).toBe(children);
   });
 
+  describe('realtime price', () => {
+    const renderedChart = (container: HTMLElement) => {
+      const chart = Chart.getChart(
+        container.querySelector('canvas') as HTMLCanvasElement,
+      );
+      if (!chart) {
+        throw new Error('no chart was rendered');
+      }
+      return {
+        lastPoint: chart.data.datasets[0].data.at(-1),
+        scales: chart.options.scales as {
+          x: { max?: number };
+          y: { min?: number; max?: number };
+        },
+      };
+    };
+
+    it('leaves the series and bounds untouched when no realtime price is given', () => {
+      const { lastPoint, scales } = renderedChart(renderBody().container);
+
+      expect(lastPoint).toEqual(PRICES.at(-1));
+      expect(scales.x.max).toBe(METADATA.xMax);
+      expect(scales.y.min).toBe(METADATA.yMin);
+      expect(scales.y.max).toBe(METADATA.yMax);
+    });
+
+    it('moves the final point to the realtime price and widens the bounds to fit it', () => {
+      const { lastPoint, scales } = renderedChart(
+        renderBody({ realtimePrice: 42, realtimeTimestamp: 9 }).container,
+      );
+
+      expect(lastPoint).toEqual({ x: 9, y: 42 });
+      expect(scales.x.max).toBe(9);
+      expect(scales.y.max).toBe(42);
+    });
+
+    it('lowers the minimum when the realtime price is below the range', () => {
+      const { scales } = renderedChart(
+        renderBody({ realtimePrice: 1, realtimeTimestamp: 9 }).container,
+      );
+
+      expect(scales.y.min).toBe(1);
+    });
+
+    it('pins the final point to the newest sample when the realtime timestamp is older', () => {
+      // The live OHLCV bar's timestamp is its candle bucket's start, which for
+      // a coarse interval can sit before the newest historical sample. The
+      // final point must not move backwards in time, or its closing segment
+      // draws back across the whole chart.
+      const { lastPoint, scales } = renderedChart(
+        renderBody({ realtimePrice: 42, realtimeTimestamp: 2 }).container,
+      );
+
+      expect(lastPoint).toEqual({ x: METADATA.xMax, y: 42 });
+      expect(scales.x.max).toBe(METADATA.xMax);
+    });
+  });
+
   describe('onHoverPrice', () => {
     it('reports the hovered data point', () => {
       const onHoverPrice = jest.fn();
@@ -101,7 +159,7 @@ describe('AssetChartBody', () => {
       expect(onHoverPrice).toHaveBeenCalledWith({ price: 20, date: 3 });
     });
 
-    it('reverts to the current price when the pointer leaves', () => {
+    it('reports null when the pointer leaves, leaving the fallback to the caller', () => {
       const onHoverPrice = jest.fn();
       const { container } = renderBody({ onHoverPrice, currentPrice: 25 });
 
@@ -109,9 +167,7 @@ describe('AssetChartBody', () => {
         container.querySelector('canvas') as HTMLCanvasElement,
       );
 
-      expect(onHoverPrice).toHaveBeenCalledWith(
-        expect.objectContaining({ price: 25 }),
-      );
+      expect(onHoverPrice).toHaveBeenCalledWith(null);
     });
 
     it('ignores hover while showing placeholder data', () => {
