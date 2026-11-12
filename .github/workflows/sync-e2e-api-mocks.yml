@@ -204,7 +204,7 @@ jobs:
           git diff -U0 > e2e-api-mock-drift-u0.diff
           gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100" \
             | jq 'add // []' > pr-files.json
-          python3 .github/scripts/e2e-api-mock-suggestions.py \
+          yarn tsx .github/scripts/e2e-api-mock-suggestions.mts \
             --diff e2e-api-mock-drift-u0.diff \
             --files pr-files.json \
             --readable drift-readable.txt \
