@@ -88,7 +88,7 @@ describe('cacheEntriesFromResponse', () => {
         valuations: [
           {
             type: 'transfer_out',
-                  blockNumber: 123456,
+            blockNumber: 123456,
             sharesWei: '951755696',
             assetsWei: '968399999',
             assetDecimals: 6,

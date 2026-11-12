@@ -267,6 +267,84 @@ describe('useMoneyActivityValuations', () => {
     });
   });
 
+  it('waits for the cache read before requesting valuations', async () => {
+    let resolveCache: (entries: VaultShareValuationCacheEntry[]) => void = () =>
+      undefined;
+    readCachedMock.mockReturnValue(
+      new Promise<VaultShareValuationCacheEntry[]>((resolve) => {
+        resolveCache = resolve;
+      }),
+    );
+
+    const { result } = renderHook(
+      () =>
+        useMoneyActivityValuations({
+          pageActivities: [[cardActivity(1)]],
+          moneyAddress: MONEY_ADDRESS,
+          vaultShareTokens: [vaultShareToken],
+          enabled: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
+      type: 'pending',
+    });
+    expect(messengerCall).not.toHaveBeenCalled();
+
+    resolveCache([cachedEntry(1)]);
+
+    await waitFor(() => {
+      expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
+        type: 'historical',
+        value: '2020000',
+        decimals: 6,
+      });
+    });
+    expect(messengerCall).not.toHaveBeenCalled();
+  });
+
+  it('does not refetch cached valuations after a remount', async () => {
+    readCachedMock.mockResolvedValue([cachedEntry(1)]);
+    const wrapper = createWrapper();
+
+    const first = renderHook(
+      () =>
+        useMoneyActivityValuations({
+          pageActivities: [[cardActivity(1)]],
+          moneyAddress: MONEY_ADDRESS,
+          vaultShareTokens: [vaultShareToken],
+          enabled: true,
+        }),
+      { wrapper },
+    );
+
+    await waitFor(() => {
+      expect(
+        first.result.current.getDisplayAmount(cardActivity(1)),
+      ).toStrictEqual({ type: 'historical', value: '2020000', decimals: 6 });
+    });
+    first.unmount();
+
+    const second = renderHook(
+      () =>
+        useMoneyActivityValuations({
+          pageActivities: [[cardActivity(1)]],
+          moneyAddress: MONEY_ADDRESS,
+          vaultShareTokens: [vaultShareToken],
+          enabled: true,
+        }),
+      { wrapper },
+    );
+
+    await waitFor(() => {
+      expect(
+        second.result.current.getDisplayAmount(cardActivity(1)),
+      ).toStrictEqual({ type: 'historical', value: '2020000', decimals: 6 });
+    });
+    expect(messengerCall).not.toHaveBeenCalled();
+  });
+
   it('does nothing when disabled', async () => {
     const { result } = renderHook(
       () =>

@@ -309,6 +309,7 @@ export function useMoneyActivityValuations({
         initialData: page.cached,
         initialDataUpdatedAt: 0,
         staleTime: 0,
+        refetchOnWindowFocus: false,
         retry: false,
         queryFn: () =>
           trace(
@@ -366,6 +367,14 @@ export function useMoneyActivityValuations({
     combine: combineValuationQueries,
   });
 
+  const valuationsByIdentity = useMemo(() => {
+    const map = entriesByIdentity(cache.entries);
+    for (const entry of valuationState.entries) {
+      map.set(getVaultShareValuationCacheIdentity(entry), entry);
+    }
+    return map;
+  }, [cache.entries, valuationState.entries]);
+
   const unresolvedVaultTokens = useMemo(() => {
     if (!cacheReady) {
       return [];
@@ -373,7 +382,7 @@ export function useMoneyActivityValuations({
     const unresolved = new Set<string>();
     for (const page of pages) {
       for (const target of page.targets) {
-        if (!hasHistoricalValue(target, page.cachedByIdentity)) {
+        if (!hasHistoricalValue(target, valuationsByIdentity)) {
           unresolved.add(target.vaultKey);
         }
       }
@@ -381,7 +390,7 @@ export function useMoneyActivityValuations({
     return vaultShareTokens.filter((token) =>
       unresolved.has(getVaultShareVaultKey(token.chainId, token.address)),
     );
-  }, [pages, vaultShareTokens, cacheReady]);
+  }, [pages, vaultShareTokens, cacheReady, valuationsByIdentity]);
 
   const rateState = useQueries({
     queries: unresolvedVaultTokens.map((token) => ({
@@ -405,14 +414,6 @@ export function useMoneyActivityValuations({
     combine: combineRateQueries,
   });
 
-  const valuationsByIdentity = useMemo(() => {
-    const map = entriesByIdentity(cache.entries);
-    for (const entry of valuationState.entries) {
-      map.set(getVaultShareValuationCacheIdentity(entry), entry);
-    }
-    return map;
-  }, [cache.entries, valuationState.entries]);
-
   const ratesByVault = useMemo(() => {
     const map = new Map<string, VaultRateResponse>();
     unresolvedVaultTokens.forEach((token, index) => {
@@ -434,6 +435,9 @@ export function useMoneyActivityValuations({
       if (!enabled || !target) {
         return undefined;
       }
+      if (!cacheReady) {
+        return { type: 'pending' };
+      }
 
       const historical =
         target.identity === undefined
@@ -454,6 +458,7 @@ export function useMoneyActivityValuations({
     },
     [
       enabled,
+      cacheReady,
       moneyAddress,
       vaultShareTokens,
       valuationsByIdentity,

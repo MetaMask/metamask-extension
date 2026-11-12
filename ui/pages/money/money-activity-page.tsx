@@ -164,7 +164,7 @@ export function MoneyActivityPage() {
     );
   } else if (availability.isAvailable) {
     let listBody: React.ReactNode;
-    if (isSettling) {
+    if (isSettling && filteredItems.length === 0) {
       listBody = (
         <MoneyActivitySettlingSkeletons className="flex flex-col gap-3 px-4 py-4">
           {scrollSentinel}

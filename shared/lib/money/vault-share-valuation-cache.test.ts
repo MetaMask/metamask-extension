@@ -63,6 +63,20 @@ describe('readCachedVaultShareValuations', () => {
 
     await expect(readCachedVaultShareValuations()).resolves.toStrictEqual([]);
   });
+
+  it('returns an empty list when a cached amount is not numeric', async () => {
+    getStorageItemMock.mockResolvedValue({
+      version: 1,
+      entries: [
+        {
+          ...entry(1),
+          valuations: [{ ...entry(1).valuations[0], sharesWei: 'abc' }],
+        },
+      ],
+    });
+
+    await expect(readCachedVaultShareValuations()).resolves.toStrictEqual([]);
+  });
 });
 
 describe('writeCachedVaultShareValuations', () => {

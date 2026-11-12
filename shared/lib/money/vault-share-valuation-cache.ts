@@ -1,5 +1,6 @@
 import {
   array,
+  define,
   enums,
   is,
   literal,
@@ -17,11 +18,16 @@ const CACHE_VERSION = 1;
 const CACHE_KEY = `money.activity.vault-share-valuations.v${CACHE_VERSION}`;
 export const VAULT_SHARE_VALUATION_CACHE_LIMIT = 500;
 
+const DigitsStruct = define<string>(
+  'digits',
+  (value) => typeof value === 'string' && /^\d+$/u.test(value),
+);
+
 const CachedValuationStruct = type({
   type: enums(['transfer_in', 'transfer_out']),
   blockNumber: number(),
-  sharesWei: string(),
-  assetsWei: string(),
+  sharesWei: DigitsStruct,
+  assetsWei: DigitsStruct,
   assetDecimals: number(),
 });
 
@@ -59,13 +65,15 @@ let writeQueue = Promise.resolve();
 export function writeCachedVaultShareValuations(
   entries: readonly VaultShareValuationCacheEntry[],
 ): Promise<void> {
-  const write = writeQueue.then(async () => {
-    const current = await readCachedVaultShareValuations();
-    await setStorageItem(CACHE_KEY, {
-      version: CACHE_VERSION,
-      entries: mergeEntries(current, entries),
-    });
-  });
+  const write = writeQueue
+    .then(async () => {
+      const current = await readCachedVaultShareValuations();
+      await setStorageItem(CACHE_KEY, {
+        version: CACHE_VERSION,
+        entries: mergeEntries(current, entries),
+      });
+    })
+    .catch(() => undefined);
   writeQueue = write;
   return write;
 }
