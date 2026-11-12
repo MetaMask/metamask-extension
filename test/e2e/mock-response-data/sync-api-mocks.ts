@@ -364,6 +364,22 @@ export function readApiResponseSources(responsesDir: string): {
 }
 
 /**
+ * Lines that describe a fixture write. Skip warnings and the no-drift line
+ * are not fixture updates, even if a log mixed them into the same file.
+ *
+ * @param report - Captured stdout from a sync run.
+ * @returns The changed-API lines only.
+ */
+export function selectFixtureChangeLines(report: string): string[] {
+  return report.split('\n').filter((line) => {
+    if (line === '' || line.startsWith('skip ')) {
+      return false;
+    }
+    return line.includes(' https://') || line.includes(' http://');
+  });
+}
+
+/**
  * Plans sync rows for every discovered fixture. Skip entries become warnings.
  * A fixture with no entry, or a write entry that is not GET, is an error.
  *

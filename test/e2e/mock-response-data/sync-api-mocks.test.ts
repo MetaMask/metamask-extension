@@ -5,6 +5,7 @@ import {
   discoverApiResponses,
   listApiResponseFixtureIds,
   missingApiResponseSourceMessage,
+  selectFixtureChangeLines,
 } from './sync-api-mocks';
 
 function responsesDir(): string {
@@ -14,6 +15,20 @@ function responsesDir(): string {
 function writeJson(dir: string, name: string, value: unknown) {
   writeFileSync(path.join(dir, name), `${JSON.stringify(value, null, 2)}\n`);
 }
+
+describe('selectFixtureChangeLines', () => {
+  it('drops skip warnings from a mixed sync report', () => {
+    const report = [
+      'skip bridge-get-tokens-popular POST https://bridge.api.cx.metamask.io/getTokens/popular: POST with a request-specific body',
+      'gas-prices https://gas.api.cx.metamask.io/networks/1/gasPrices: added low',
+      'No API changes detected',
+      '',
+    ].join('\n');
+    expect(selectFixtureChangeLines(report)).toStrictEqual([
+      'gas-prices https://gas.api.cx.metamask.io/networks/1/gasPrices: added low',
+    ]);
+  });
+});
 
 describe('api-responses discovery', () => {
   it('ignores a missing directory and the source manifest', () => {

@@ -69,9 +69,20 @@ jobs:
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
         run: |
           set +e
-          yarn test:e2e:sync-api-mocks 2>&1 | tee sync-report.txt
-          EXIT="${PIPESTATUS[0]}"
+          # stdout is the drift report. stderr is skip warnings and fetch
+          # errors, so a warning is not parsed as a changed API.
+          yarn test:e2e:sync-api-mocks > sync-report.txt 2> sync-warnings.txt
+          EXIT=$?
           set -e
+          cat sync-report.txt
+          if [ -s sync-warnings.txt ]; then
+            cat sync-warnings.txt >&2
+            {
+              echo "### API mock sync warnings"
+              echo
+              cat sync-warnings.txt
+            } >> "${GITHUB_STEP_SUMMARY}"
+          fi
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
           # 0: no drift. 1: fixtures written. 2: a fetch failed and nothing
           # was written. 3: an api-responses fixture has no sources.json
@@ -95,6 +106,14 @@ jobs:
         run: |
           while IFS= read -r line || [ -n "${line}" ]; do
             [ -z "${line}" ] && continue
+            # Skip warnings belong in the job log, not in this change list.
+            case "${line}" in
+              'skip '*) continue ;;
+            esac
+            case "${line}" in
+              *' https://'*|*' http://'*) ;;
+              *) continue ;;
+            esac
             ident="${line%% *}"
             rest="${line#* }"
             change="${rest##*: }"
