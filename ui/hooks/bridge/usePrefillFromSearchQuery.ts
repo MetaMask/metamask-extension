@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback, useState } from 'react';
+import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
@@ -66,6 +66,7 @@ const fetchAssetMetadata = async (
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
+  const appliedSearch = useRef<string | null>(null);
 
   const { search } = useBridgeNavigation();
 
@@ -84,6 +85,10 @@ export const usePrefillFromSearchQuery = () => {
   > | null>(null);
 
   useEffect(() => {
+    if (appliedSearch.current === search) {
+      return;
+    }
+
     const searchParamsFrom = parseAsset(
       searchParams.get(BridgeQueryParams.From),
     );
@@ -91,6 +96,7 @@ export const usePrefillFromSearchQuery = () => {
     const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
+      appliedSearch.current = search;
       // Defer state updates so they are not synchronous effect setStates
       // (react-hooks/set-state-in-effect).
       queueMicrotask(() => {
@@ -116,10 +122,15 @@ export const usePrefillFromSearchQuery = () => {
 
         return () => {
           controller.abort();
+          appliedSearch.current = null;
         };
       }
     }
-  }, [searchParams]);
+
+    return () => {
+      appliedSearch.current = null;
+    };
+  }, [search, searchParams]);
 
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {
