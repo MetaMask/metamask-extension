@@ -1,6 +1,6 @@
 import * as actionConstants from '../../store/actionConstants';
 import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
-import reduceApp from './app';
+import reduceApp, { setOnboardingRedirect } from './app';
 
 const actions = actionConstants;
 
@@ -11,6 +11,21 @@ describe('App State', () => {
     const initState = reduceApp(metamaskState, {});
 
     expect.anything(initState);
+  });
+
+  it('preserves unchanged onboarding redirect state and clears a saved destination', () => {
+    const state = reduceApp(metamaskState, {});
+    expect(reduceApp(state, setOnboardingRedirect(null))).toBe(state);
+
+    const route = '/settings/privacy';
+    const pending = reduceApp(state, setOnboardingRedirect(route));
+    expect(pending.onboardingRedirect).toBe(route);
+    expect(reduceApp(pending, setOnboardingRedirect(route))).toBe(pending);
+
+    expect(reduceApp(pending, setOnboardingRedirect(null))).toMatchObject({
+      onboardingRedirect: null,
+    });
+    expect(pending.onboardingRedirect).toBe(route);
   });
 
   it('sets networkDropdownOpen dropdown to true', () => {

@@ -63,6 +63,7 @@
     "newTokensImportedError": "string",
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
+    "onboardingRedirect": "null",
     "openMetaMaskTabs": {},
     "pendingTokens": {},
     "qrCodeData": "null",

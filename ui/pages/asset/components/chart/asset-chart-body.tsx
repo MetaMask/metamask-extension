@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from 'react';
+import React, { ReactNode, useMemo, useRef } from 'react';
 import {
   Chart,
   LineElement,
@@ -53,6 +53,9 @@ const initialChartOptions: ChartOptions<'line'> = {
   },
 };
 
+/** A point the pointer is resting on, or null once the pointer leaves. */
+export type HoveredPoint = { price?: number; date?: number };
+
 export type AssetChartBodyProps = {
   /** The price data points to plot. */
   prices: Point[];
@@ -68,8 +71,15 @@ export type AssetChartBodyProps = {
   currency: string;
   /** The asset's current price, reverted to when the pointer leaves the chart. */
   currentPrice?: number;
-  /** Called with the hovered data point, and with the current price on pointer out. */
-  onHoverPrice?: (point: { price?: number; date?: number }) => void;
+  /**
+   * Live price from the OHLCV stream. When set, the final plotted point tracks
+   * it so the line keeps moving between historical refetches.
+   */
+  realtimePrice?: number;
+  /** Timestamp of `realtimePrice`, in milliseconds since epoch. */
+  realtimeTimestamp?: number;
+  /** Called with the hovered data point, and with null once the pointer leaves. */
+  onHoverPrice?: (point: HoveredPoint | null) => void;
   /** Rendered below the chart, inside the box that carries the loading treatment. */
   children?: ReactNode;
 };
@@ -89,6 +99,8 @@ export const AssetChartBody = ({
   isPlaceholderData,
   currency,
   currentPrice,
+  realtimePrice,
+  realtimeTimestamp,
   onHoverPrice,
   children,
 }: AssetChartBodyProps) => {
@@ -115,6 +127,38 @@ export const AssetChartBody = ({
           y: { type: 'number', duration: 400 },
         };
 
+  // The live price replaces the final historical point, so the line keeps
+  // moving between refetches rather than ending at the last fetched sample.
+  const plottedPrices = useMemo(() => {
+    if (!realtimePrice || !realtimeTimestamp || prices.length === 0) {
+      return prices;
+    }
+    // The live bar's timestamp is its candle bucket's start, which for a
+    // coarse interval (e.g. 1D) can sit hours behind the newest historical
+    // sample. Never move the final point backwards in time, or the closing
+    // segment draws back across the chart. Keep it pinned to the newest x and
+    // just refresh the price.
+    const lastX = prices[prices.length - 1].x;
+    const liveX = Math.max(realtimeTimestamp, lastX);
+    const updated = [...prices];
+    updated[updated.length - 1] = { x: liveX, y: realtimePrice };
+    return updated;
+  }, [prices, realtimePrice, realtimeTimestamp]);
+
+  // The live point can sit outside the historical bounds, which would clip it.
+  const adjustedXMax =
+    realtimeTimestamp && Number.isFinite(xMax)
+      ? Math.max(xMax, realtimeTimestamp)
+      : xMax;
+  const adjustedYMin =
+    realtimePrice && Number.isFinite(yMin)
+      ? Math.min(yMin, realtimePrice)
+      : yMin;
+  const adjustedYMax =
+    realtimePrice && Number.isFinite(yMax)
+      ? Math.max(yMax, realtimePrice)
+      : yMax;
+
   const options = {
     ...initialChartOptions,
     borderColor: ({ chart }) =>
@@ -129,13 +173,13 @@ export const AssetChartBody = ({
     scales: {
       x: {
         min: finiteFallback(xMin, undefined),
-        max: finiteFallback(xMax, undefined),
+        max: finiteFallback(adjustedXMax, undefined),
         display: false,
         type: 'linear',
       },
       y: {
-        min: isPlaceholderData ? 0 : finiteFallback(yMin, 0),
-        max: isPlaceholderData ? 1 : finiteFallback(yMax, 1),
+        min: isPlaceholderData ? 0 : finiteFallback(adjustedYMin, 0),
+        max: isPlaceholderData ? 1 : finiteFallback(adjustedYMax, 1),
         display: false,
       },
     },
@@ -174,7 +218,7 @@ export const AssetChartBody = ({
           >
             <Line
               ref={chartRef}
-              data={{ datasets: [{ data: prices, fill: false }] }}
+              data={{ datasets: [{ data: plottedPrices, fill: false }] }}
               options={options}
               // Update the price display on chart hover
               onMouseMove={(event) => {
@@ -203,13 +247,10 @@ export const AssetChartBody = ({
                   }
                 }
               }}
-              // Revert to current price when not hovering
-              onMouseOut={() => {
-                onHoverPrice?.({
-                  price: currentPrice,
-                  date: Date.now(),
-                });
-              }}
+              // Signal that nothing is hovered; what to show instead is the
+              // caller's decision, since it may have a fresher price than
+              // the one we were handed.
+              onMouseOut={() => onHoverPrice?.(null)}
             />
           </Box>
 
