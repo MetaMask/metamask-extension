@@ -10,6 +10,7 @@ import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import {
   genUnapprovedApproveConfirmation,
   genUnapprovedPermit2ApproveConfirmation,
+  PERMIT2_SPENDER_ADDRESS,
   PERMIT2_TOKEN_ADDRESS,
 } from '../../../../../../../test/data/confirmations/token-approve';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
@@ -189,7 +190,7 @@ describe('<ApproveInfo />', () => {
       expect(screen.getByText('0x11111...11111')).toBeInTheDocument();
       expect(
         screen.getByTestId('confirmation__approve-spender'),
-      ).toHaveTextContent('0x22222...22222');
+      ).toHaveTextContent(PERMIT2_SPENDER_ADDRESS);
       expect(
         screen.getByTestId('confirmation__approve-expiration'),
       ).toHaveTextContent('01 January 2026, 00:00');

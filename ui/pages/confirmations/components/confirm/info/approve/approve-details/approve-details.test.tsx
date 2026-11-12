@@ -7,6 +7,7 @@ import { enLocale as messages } from '../../../../../../../../test/lib/i18n-help
 import {
   genUnapprovedApproveConfirmation,
   genUnapprovedPermit2ApproveConfirmation,
+  PERMIT2_SPENDER_ADDRESS,
 } from '../../../../../../../../test/data/confirmations/token-approve';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
@@ -100,7 +101,7 @@ describe('<ApproveDetails />', () => {
 
       await waitFor(() => {
         expect(getByTestId('confirmation__approve-spender')).toHaveTextContent(
-          '0x22222...22222',
+          PERMIT2_SPENDER_ADDRESS,
         );
       });
       expect(getByTestId('confirmation__approve-expiration')).toHaveTextContent(
