@@ -9,25 +9,25 @@ import type {
 } from '@metamask/money-account-balance-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import {
+  moneyFormatUsd,
+  moneyFormatUsdSpendable,
+} from '../../helpers/money/format';
 import { projectVmusdValueInMusdToHuman } from '../../helpers/money/withdrawable-balance';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
+import {
+  clearReportedMoneyQueryError,
+  reportMoneyQueryErrorOnce,
+} from '../../helpers/money/report-money-error';
 import { setLastKnownMoneyBalance } from '../../ducks/money-balance';
 import {
   isPersistedMoneyBalanceUsable,
   selectLastKnownMoneyBalance,
 } from '../../ducks/money-balance/selectors';
-import { selectMoneyVaultApyRemoteConfig } from '../../selectors/money/money-account-feature-flags';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
+import { useMoneyVaultApy } from './useMoneyVaultApy';
 
 const DEFAULT_REFETCH_INTERVAL = 30 * 1000; // 30 seconds
-const FIVE_MINUTES_MS = 5 * 60 * 1000;
-
-/** Percentage points per unit of a decimal rate. */
-const PERCENT = 100;
-
-/** Decimal places the APY percentage is presented to. */
-const APY_PERCENT_DP = 1;
 
 export type UseMoneyAccountBalanceResult = {
   moneyBalanceQuery: UseQueryResult<CanonicalMoneyAccountBalanceResponse>;
@@ -49,7 +49,12 @@ export type UseMoneyAccountBalanceResult = {
   tokenTotal: BigNumber | undefined;
   totalFiatFormatted: string | undefined;
   totalFiatRaw: string | undefined;
+  /**
+   * Withdrawable balance for display, rounded *down* to cents so the label
+   * never advertises more than the user can actually withdraw.
+   */
   withdrawableFiatFormatted: string | undefined;
+  /** Exact withdrawable balance. Drives Max, so it keeps full precision. */
   withdrawableFiatRaw: string | undefined;
   withdrawableMusd: BigNumber | undefined;
   apyDecimal: number | undefined;
@@ -77,9 +82,6 @@ export function useMoneyAccountBalance({
   const moneyAccountAddress = primaryMoneyAccount?.address;
 
   const lastKnownBalance = useSelector(selectLastKnownMoneyBalance);
-  const { vaultApyFallback, vaultApyOverride } = useSelector(
-    selectMoneyVaultApyRemoteConfig,
-  );
 
   const hasAddress = Boolean(moneyAccountAddress);
 
@@ -95,11 +97,8 @@ export function useMoneyAccountBalance({
     refetchInterval,
   });
 
-  const vaultApyQuery = useQuery<NormalizedVaultApyResponse>({
-    queryKey: [MoneyAccountBalanceServiceQueryKeys.GET_VAULT_APY],
-    enabled: enabled && hasAddress,
-    refetchInterval: FIVE_MINUTES_MS,
-  });
+  const { vaultApyQuery, apyDecimal, apyPercent, apyPercentFormatted } =
+    useMoneyVaultApy({ enabled: enabled && hasAddress });
 
   /**
    * True while the balance query is loading with no cached data (even if stale).
@@ -112,6 +111,19 @@ export function useMoneyAccountBalance({
   const balanceSource = moneyBalanceQuery.data?.source;
   const usedFallback = moneyBalanceQuery.data?.usedFallback === true;
   const isBalanceDegraded = usedFallback;
+
+  useEffect(() => {
+    if (!moneyBalanceQuery.isError) {
+      clearReportedMoneyQueryError('fetchBalanceWithFallback');
+      return;
+    }
+    reportMoneyQueryErrorOnce(
+      'fetchBalanceWithFallback',
+      '[Money Account] Balance fetch failed',
+      moneyBalanceQuery.error,
+      { query: 'fetchBalanceWithFallback' },
+    );
+  }, [moneyBalanceQuery.error, moneyBalanceQuery.isError]);
 
   const refetchBalance = useCallback(
     () =>
@@ -159,9 +171,12 @@ export function useMoneyAccountBalance({
   const totalFiatRaw =
     !isBalanceFetchError && totalFiat ? totalFiat.toString() : undefined;
 
+  // Rounded down to cents: this figure is the "Available balance" the user
+  // types back into a two-decimal amount field, so it must always be
+  // affordable. `withdrawableFiatRaw` below keeps full precision for Max.
   const withdrawableFiatFormatted =
     !isBalanceFetchError && withdrawableFiat
-      ? moneyFormatUsd(withdrawableFiat)
+      ? moneyFormatUsdSpendable(withdrawableFiat)
       : undefined;
 
   const withdrawableFiatRaw =
@@ -209,30 +224,6 @@ export function useMoneyAccountBalance({
   )
     ? lastKnownBalance.value
     : undefined;
-
-  const serviceApy = vaultApyQuery.data?.apy;
-
-  // Override always wins when set; otherwise use the live service value, then
-  // the configured fallback so projected earnings remain available on load.
-  const apyDecimal = vaultApyOverride ?? serviceApy ?? vaultApyFallback;
-
-  const apyPercent =
-    apyDecimal === undefined
-      ? undefined
-      : // `.toString()` because `bignumber.js@4` throws on a *number* argument
-        // with more than 15 significant digits, and live service APYs carry
-        // full float precision (e.g. 0.06632893279913232). Strings are exempt.
-        new BigNumber(apyDecimal.toString())
-          .times(PERCENT)
-          // `round(dp, rm)`, not mobile's `dp(dp, rm)`: in `bignumber.js@4`
-          // `decimalPlaces`/`dp` is a getter that ignores both arguments and
-          // returns the decimal-place *count* — it would silently yield a
-          // nonsense percentage rather than failing.
-          .round(APY_PERCENT_DP, BigNumber.ROUND_HALF_UP)
-          .toNumber();
-
-  const apyPercentFormatted =
-    apyPercent === undefined ? undefined : `${apyPercent}%`;
 
   return {
     moneyBalanceQuery,

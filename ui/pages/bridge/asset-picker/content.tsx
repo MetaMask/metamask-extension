@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Box,
   ButtonBase,
   ButtonBaseSize,
   FontWeight,
@@ -112,7 +111,7 @@ export const BridgeAssetPickerContent = forwardRef<
     }, [chainIdsList]);
 
     const selectedNetworkName = selectedChainId
-      ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
+      ? `${t('network')}: ${NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]}`
       : t('allNetworks');
 
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -157,11 +156,12 @@ export const BridgeAssetPickerContent = forwardRef<
     return (
       <>
         <div className="flex flex-col gap-4">
-          <Box className="mx-4">
+          <search className="mx-4">
             <TextFieldSearch
               autoFocus
               className="w-full"
               clearButtonOnClick={() => setSearchQuery('')}
+              inputAriaLabel={t('enterTokenNameOrAddress')}
               inputProps={
                 {
                   'data-testid': 'bridge-asset-picker-search-input',
@@ -171,7 +171,7 @@ export const BridgeAssetPickerContent = forwardRef<
               placeholder={t('enterTokenNameOrAddress')}
               value={searchQuery}
             />
-          </Box>
+          </search>
           <ButtonBase
             onClick={() =>
               isNetworkPickerOpen
@@ -182,7 +182,7 @@ export const BridgeAssetPickerContent = forwardRef<
             size={ButtonBaseSize.Sm}
             startIconName={IconName.Filter}
             startIconProps={{ size: IconSize.Md }}
-            className={`mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
+            className={`mx-4 w-max border border-muted bg-default hover:bg-hover active:bg-pressed ${
               selectedChainId ? 'text-primary-default' : 'text-default'
             }`}
           >

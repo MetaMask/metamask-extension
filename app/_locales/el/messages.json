@@ -7,9 +7,6 @@
     "message": "Η φόρτωση διαρκεί περισσότερο από το συνηθισμένο.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "Δεν υπάρχουν άλλοι λογαριασμοί. Αν θέλετε να αποκτήσετε πρόσβαση σε έναν άλλο λογαριασμό που δεν περιλαμβάνεται στην παρακάτω λίστα, παρακαλούμε συνδέστε ξανά το πορτοφόλι υλικού σας και επιλέξτε το."
-  },
   "QRHardwareScanInstructions": {
     "message": "Τοποθετήστε τον κωδικό QR μπροστά από την κάμερα. Η οθόνη είναι θολή, αλλά δεν θα επηρεάσει την ανάγνωση."
   },
@@ -105,6 +102,10 @@
   "accountIdenticon": {
     "message": "Εικονίδιο λογαριασμού"
   },
+  "accountImported": {
+    "message": "Ο λογαριασμός εισήχθη",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "Όνομα λογαριασμού"
   },
@@ -167,6 +168,9 @@
   },
   "activity": {
     "message": "Δραστηριότητα"
+  },
+  "activityAndNonceDataDeleted": {
+    "message": "Διαγράφηκαν τα δεδομένα δραστηριότητας και nonce"
   },
   "activityEmptyDescription": {
     "message": "Ανταλλάξτε το πρώτο σας token σήμερα."
@@ -476,6 +480,46 @@
   },
   "activity_marketShort_success_title": {
     "message": "Η θέση πώλησης έκλεισε – αγορά"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Προς: Money account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Η κατάθεση απέτυχε"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Προς: Money account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Κατάθεση $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Προς: Money account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Κατατέθηκαν $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Από: Money account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Η λήψη απέτυχε"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Από: Money account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Λήψη $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Από: Money account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Ελήφθη $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Η αγορά απέτυχε"
@@ -1100,9 +1144,6 @@
   "addAUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
-  "addAWallet": {
-    "message": "Προσθήκη πορτοφολιού"
-  },
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
@@ -1216,17 +1257,11 @@
   "add_device_error_expired": {
     "message": "Η συνεδρία συγχρονισμού έληξε. Ξεκινήστε ξανά για να δημιουργήσετε έναν νέο κωδικό QR."
   },
-  "add_device_error_generic": {
-    "message": "Παρουσιάστηκε πρόβλημα κατά τον συγχρονισμό με το τηλέφωνό σας. Προσπαθήστε ξανά."
-  },
   "add_device_error_invalid_code": {
     "message": "Ο κωδικός επαλήθευσης ήταν λανθασμένος. Ξεκινήστε ξανά για να προσπαθήσετε να συγχρονίσετε το τηλέφωνό σας."
   },
   "add_device_error_rejected": {
     "message": "Ο συγχρονισμός ακυρώθηκε στο τηλέφωνό σας. Ξεκινήστε ξανά για να προσπαθήσετε να συγχρονίσετε."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Δεν μπορέσαμε να ολοκληρώσουμε τον συγχρονισμό των λογαριασμών σας με το τηλέφωνό σας. Προσπαθήστε ξανά."
   },
   "add_device_error_title": {
     "message": "Ο συγχρονισμός δεν ολοκληρώθηκε"
@@ -1438,6 +1473,9 @@
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στις \"Ρυθμίσεις > Ειδοποιήσεις\""
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Προσθέστε λιγότερα χρήματα ή χρησιμοποιήστε διαφορετικό τρόπο πληρωμής."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Ανεπαρκές ποσό"
   },
@@ -1457,6 +1495,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Οι τεχνικοί σύμβουλοι ασφαλείας έχουν επισημάνει αυτήν τη διεύθυνση για κακόβουλη δραστηριότητα."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας έχουν επισημάνει τη διεύθυνση $1 για κακόβουλη δραστηριότητα."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας δεν διαθέτουν επαρκές αξιόπιστο ιστορικό για να επαληθεύσουν τη διεύθυνση $1."
+  },
   "alertMessageBurnAddress": {
     "message": "Στέλνετε τα περιουσιακά σας στοιχεία σε διεύθυνση καύσης. Αν συνεχίσετε, θα τα χάσετε."
   },
@@ -1469,11 +1513,17 @@
   "alertMessageGasFeeLow": {
     "message": "Όταν επιλέγετε χαμηλά τέλη, να αναμένετε πιο αργές συναλλαγές και μεγαλύτερους χρόνους αναμονής. Για ταχύτερες συναλλαγές, επιλέξτε τις επιλογές χρέωσης Market (Αγοράς) ή Aggressive (Υψηλότερη αγοραστική τιμή)."
   },
-  "alertMessageGasTooLow": {
-    "message": "Για να συνεχίσετε με αυτή τη συναλλαγή, θα πρέπει να αυξήσετε το όριο των τελών συναλλαγών σε 21000 ή περισσότερο."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Για να συνεχίσετε με αυτή τη συναλλαγή, θα πρέπει να αυξήσετε το όριο των τελών συναλλαγών σε 12000 ή περισσότερο."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας έχουν επισημάνει μια διεύθυνση ($1) που περιλαμβάνεται σε αυτή τη σύνθετη συναλλαγή για κακόβουλη δραστηριότητα."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Οι συνεργάτες μας στον τομέα της ασφάλειας δεν διαθέτουν επαρκές αξιόπιστο ιστορικό για να επαληθεύσουν τη διεύθυνση $1 που περιλαμβάνεται σε αυτή τη σύνθετη συναλλαγή."
   },
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
@@ -1549,6 +1599,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Μη αναγκαία άδεια"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "Η ενσωματωμένη διεύθυνση επισημάνθηκε ως υψηλού κινδύνου"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Ανεπαρκείς πληροφορίες για την ενσωματωμένη διεύθυνση"
   },
   "alertReasonNoGasPrice": {
     "message": "Δεν είναι διαθέσιμη η εκτίμηση των τελών"
@@ -1688,6 +1744,12 @@
     "message": "Εγκρίθηκε στο $1 για $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Καλώς ήρθατε στο Arc! Για να διευκολύνουμε και να επαληθεύουμε τη χρήση του blockchain Arc, ενδέχεται να κοινοποιήσουμε πληροφορίες στην ομάδα του Arc."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Σημείωση"
+  },
   "areYouSure": {
     "message": "Είσαι σίγουρος;"
   },
@@ -1730,9 +1792,6 @@
   },
   "assets": {
     "message": "Περιουσιακά στοιχεία"
-  },
-  "assetsDescription": {
-    "message": "Αυτόματος εντοπισμός των tokens στο πορτοφόλι σας, εμφάνιση NFT και ομαδοποιημένες ενημερώσεις υπολοίπων λογαριασμών"
   },
   "asterdexReferralSubtitle": {
     "message": "Λάβετε 4% επιστροφή στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
@@ -1792,6 +1851,9 @@
   "backToSafety": {
     "message": "Πίσω στην ασφάλεια"
   },
+  "backToWallet": {
+    "message": "Επιστροφή στο πορτοφόλι"
+  },
   "backUpIncomplete": {
     "message": "Η δημιουργία αντιγράφου ασφαλείας δεν ολοκληρώθηκε"
   },
@@ -1828,6 +1890,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Επαφές"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Εντολές αγοράς και πώλησης"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Διαχειριστείτε αυτά που συγχρονίζετε"
   },
@@ -1860,11 +1925,11 @@
   },
   "basicConfigurationDescription": {
     "message": "Το MetaMask παρέχει βασικές λειτουργίες, όπως λεπτομέρειες για τα tokens και ρυθμίσεις τελών συναλλαγών μέσω υπηρεσιών διαδικτύου. Όταν χρησιμοποιείτε υπηρεσίες διαδικτύου, η διεύθυνση IP σας κοινοποιείται, σε αυτή την περίπτωση με στο MetaMask. Αυτό συμβαίνει ακριβώς όπως όταν επισκέπτεστε οποιονδήποτε ιστότοπο. Το MetaMask χρησιμοποιεί αυτά τα δεδομένα προσωρινά και δεν πωλεί ποτέ τα δεδομένα σας. Μπορείτε να χρησιμοποιήσετε ένα VPN ή να απενεργοποιήσετε αυτές τις υπηρεσίες, αλλά αυτό μπορεί να επηρεάσει την εμπειρία σας στο MetaMask. Για να μάθετε περισσότερα διαβάστε την $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Περιλαμβάνει βασικές λειτουργίες όπως λεπτομέρειες για tokens και ρυθμίσεις χρεώσεων. Διατηρήστε αυτή τη λειτουργία ενεργή για καλύτερη εμπειρία. Διαβάστε την $1 για να μάθετε περισσότερα.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Βασικές λειτουργίες"
@@ -1886,6 +1951,44 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Ενεργοποίηση βασικών λειτουργιών"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Οι βασικές λειτουργίες είναι ενεργοποιημένες"
+  },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Ενημερώσαμε τις ρυθμίσεις μας"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "ανάρτηση στο blog"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "Επειδή συνδέεστε μέσω Google, Apple ή Telegram, το email σας (ή το όνομα χρήστη σας στο Telegram) αποθηκεύεται πλέον στο προφίλ σας στο MetaMask μαζί με τις διευθύνσεις των πορτοφολιών σας. Έτσι, ο λογαριασμός σας λειτουργεί απρόσκοπτα σε όλες τις λειτουργίες του MetaMask. Οι λογαριασμοί που χρησιμοποιούν σύνδεση μέσω κοινωνικών δικτύων διατηρούν τις βασικές λειτουργίες τους. Τα κλειδιά σας παραμένουν αποκλειστικά δικά σας."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "Μάθετε περισσότερα στο $1 και στην $2.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "Ενημέρωση Απορρήτου"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "Ενημερώσεις για τη σύνδεση μέσω κοινωνικών δικτύων"
+  },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "Οι ρυθμίσεις απορρήτου σας έχουν πλέον ενοποιηθεί σε μία ρύθμιση: \"Βασικές Λειτουργίες\". Έχει οριστεί σε $1 με βάση τις προηγούμενες ρυθμίσεις σας. Μπορείτε να το αλλάξετε οποιαδήποτε στιγμή από τις $2. $3.",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "απεν."
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "για"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "Μάθε περισσότερα"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Ρυθμίσεις > Απόρρητο"
   },
   "basicFunctionalityRequired_description": {
     "message": "Αυτή η λειτουργία δεν είναι διαθέσιμη όταν η βασική λειτουργικότητα είναι απενεργοποιημένη. Χρησιμοποιήστε τον παρακάτω διακόπτη για να την ενεργοποιήσετε."
@@ -2146,9 +2249,6 @@
   "bridgeLowestCost": {
     "message": "Χαμηλότερο κόστος"
   },
-  "bridgeMalicious": {
-    "message": "Κακόβουλο"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "Κακόβουλο token"
   },
@@ -2391,9 +2491,6 @@
   "bridgeSelectDestinationAccount": {
     "message": "Επιλέξτε λογαριασμό προορισμού"
   },
-  "bridgeSelectDifferentQuote": {
-    "message": "Επιλέξτε άλλη προσφορά."
-  },
   "bridgeSelectNetwork": {
     "message": "Επιλέξτε δίκτυο"
   },
@@ -2429,9 +2526,6 @@
     "message": "Ενεργοποιήστε πρώτα τα $1 στο δίκτυο Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "Ύποπτο"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "Ύποπτο token"
   },
@@ -2454,7 +2548,7 @@
     "message": "Χρήση μέγιστου επιτρεπόμενου"
   },
   "bridgeValidationInsufficientGasMessage": {
-    "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη συναλλαγών για αυτή τη διασύνδεση. Εισάγετε ένα μικρότερο ποσό ή αγοράστε περισσότερα $1."
+    "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη δικτύου για αυτήν τη μεταφορά. Πληκτρολογήστε μικρότερο ποσό ή αγοράστε περισσότερα $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Χρειάζονται περισσότερα $1 για τέλη"
@@ -2534,6 +2628,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Αυτό το σύμβολο token δεν ταιριάζει με το όνομα δικτύου ή το αναγνωριστικό αλυσίδας που καταχωρίσατε. Πολλά δημοφιλή tokens χρησιμοποιούν παρόμοια σύμβολα, τα οποία οι απατεώνες μπορούν να χρησιμοποιήσουν για να σας εξαπατήσουν ώστε να τους στείλετε ένα πιο πολύτιμο token ως αντάλλαγμα. Επαληθεύετέ τα πάντοτε προτού συνεχίσετε."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Μη αυτόματη καταχώριση στοιχείων δικτύου",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Μη αυτόματη καταχώριση στοιχείων RPC",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Μάθετε πώς να είστε ασφαλείς.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2545,6 +2647,22 @@
   "chainlistNetworkDetails": {
     "message": "Σύμβολο: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "Δεν βρέθηκαν αποτελέσματα από το ChainList",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "Τα στοιχεία RPC προέρχονται από το ChainList. Να τα επαληθεύετε πάντα πριν από την προσθήκη. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Χρησιμοποιήστε το \"$1\" ως όνομα δικτύου",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Χρησιμοποιήστε το \"$1\" ως URL RPC",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Αλλαγή στις Ρυθμίσεις"
@@ -2583,6 +2701,9 @@
   "clearActivityDescription": {
     "message": "Επαναφέρει το nonce του λογαριασμού και διαγράφει τα δεδομένα από την καρτέλα δραστηριότητας στο πορτοφόλι σας. Μόνο ο τρέχων λογαριασμός και το δίκτυο θα επηρεαστούν. Δεν θα υπάρξει καμία αλλαγή στα υπόλοιπα ή στις εισερχόμενες συναλλαγές σας."
   },
+  "clearClipboard": {
+    "message": "Εκκαθάριση προχείρου"
+  },
   "clearFilters": {
     "message": "Διαγραφή φίλτρων"
   },
@@ -2592,6 +2713,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Κάντε κλικ εδώ για να συνδέσετε το Ledger σας μέσω WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Δεν ήταν δυνατή η εκκαθάριση του προχείρου. Προσπαθήστε ξανά."
+  },
+  "clipboardCleared": {
+    "message": "Το πρόχειρο εκκαθαρίστηκε"
   },
   "close": {
     "message": "Κλείσιμο"
@@ -3000,9 +3127,6 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση συμβολαίου"
   },
-  "convertAgain": {
-    "message": "Μετατροπή ξανά"
-  },
   "convertTokenToNFTDescription": {
     "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο είναι NFT. Το MetaMask υποστηρίζει πλέον εξ'ορισμού πλήρως τα NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας και να το προσθέσετε ως NFT;"
   },
@@ -3015,14 +3139,14 @@
   "copiedToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
   },
+  "copy": {
+    "message": "Αντιγραφή"
+  },
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
   },
   "copyAddressShort": {
     "message": "Αντιγραφή διεύθυνσης"
-  },
-  "copyPrivateKey": {
-    "message": "Αντιγραφή ιδιωτικού κλειδιού"
   },
   "copyToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
@@ -3079,8 +3203,20 @@
     "message": "Αν τίποτα από τα παραπάνω δεν λειτουργήσει, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Ανάκτηση λογαριασμών"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Εγκαταστήστε ξανά το MetaMask"
+  },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Επαναφορά κατάστασης του MetaMask"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Με την ανάκτηση λογαριασμών θα διαγραφούν οι τρέχουσες ρυθμίσεις και προτιμήσεις σας."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Με την επαναφορά της κατάστασης του MetaMask θα διαγραφούν οι τρέχοντες λογαριασμοί, οι ρυθμίσεις και οι προτιμήσεις σας."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Ακόμα αντιμετωπίζετε προβλήματα;"
@@ -3103,9 +3239,6 @@
   },
   "current": {
     "message": "Τρέχουσα"
-  },
-  "currentAccountNotConnected": {
-    "message": "Ο τρέχων λογαριασμός σας δεν είναι συνδεδεμένος"
   },
   "currentEstimatedBaseFee": {
     "message": "Τρέχον: $1 GWEI"
@@ -3198,7 +3331,7 @@
     "message": "Συγκέντρωση δεδομένων για μάρκετινγκ"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Θα χρησιμοποιήσουμε το MetaMetrics για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιησούμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων και άλλο υλικό)."
+    "message": "Συλλέγουμε δεδομένα σχετικά με τον τρόπο που αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ, ώστε να σας ενημερώνουμε για σχετικό περιεχόμενο (όπως νέες λειτουργίες προϊόντων και άλλο υλικό)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Λάβετε ενημερώσεις προϊόντων, συμβουλές και νέα – και μέσω email. Ενδέχεται να χρησιμοποιήσουμε τις αλληλεπιδράσεις σας για τη βελτίωση του περιεχομένου που κοινοποιούμε."
@@ -3249,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Άνοιγμα μαζικής πώλησης στο κινητό"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Οι εντολές ορίου είναι διαθέσιμες στην εφαρμογή MetaMask για κινητά. Σαρώστε αυτόν τον κωδικό με την κινητή συσκευή σας για να τις χρησιμοποιήσετε."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Άνοιγμα εντολών ορίου στο κινητό"
   },
   "deepLinkQrPredictDescription": {
     "message": "Για πρόσβαση στις Αγορές Προβλέψεων του MetaMask, σαρώστε τον κωδικό QR με την κινητή σας συσκευή."
@@ -3335,6 +3474,9 @@
   "deepLink_theNotificationsPage": {
     "message": "σελίδα ειδοποιήσεων"
   },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "η σελίδα ρυθμίσεων ειδοποιήσεων"
+  },
   "deepLink_theOnboardingPage": {
     "message": "η σελίδα υποδοχής"
   },
@@ -3346,6 +3488,9 @@
   },
   "deepLink_thePredictPage": {
     "message": "η σελίδα των αγορών προβλέψεων"
+  },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "η σελίδα ρυθμίσεων απορρήτου"
   },
   "deepLink_theRewardsPage": {
     "message": "η σελίδα Ανταμοιβών του MetaMask"
@@ -3428,7 +3573,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Αυτό το αίτημα δεν μπορεί να ολοκληρωθεί αυτή τη στιγμή λόγω προβλήματος του διακομιστή του συστήματος ανάλυσης, παρακαλούμε προσπαθήστε ξανά αργότερα."
+    "message": "Δεν είναι δυνατή η ολοκλήρωση του αιτήματος αυτήν τη στιγμή λόγω προβλήματος στον διακομιστή του συστήματος αναλυτικών στοιχείων. Προσπαθήστε ξανά αργότερα."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Δεν μπορούμε να διαγράψουμε αυτά τα δεδομένα προς το παρόν"
@@ -3497,7 +3642,7 @@
     "message": "Απενεργοποίηση"
   },
   "disabledGasOptionToolTipMessage": {
-    "message": "“$1” είναι απενεργοποιημένο/η, επειδή δεν πληροί το ελάχιστο της αύξησης 10% από τα αρχικά τέλη συναλλαγής.",
+    "message": "Το \"$1\" είναι απενεργοποιημένο, επειδή δεν πληροί την ελάχιστη προϋπόθεση αύξησης κατά 10% σε σχέση με τα αρχικά τέλη δικτύου.",
     "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
@@ -3514,9 +3659,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "Αυτό θα αποσυνδέσει όλους τους λογαριασμούς σας από όλες τις αποκεντρωμένες εφαρμογές. Θα πρέπει να συνδεθείτε ξανά για να τις χρησιμοποιήσετε."
-  },
-  "disconnectAllSitesError": {
-    "message": "Ορισμένες αποκεντρωμένες εφαρμογές (dapps) δεν ήταν δυνατό να αποσυνδεθούν. Παρακαλώ δοκιμάστε ξανά."
   },
   "disconnectAllSitesQuestion": {
     "message": "Αποσύνδεση όλων των?"
@@ -3670,7 +3812,7 @@
     "message": "Επεξεργασία επαφής"
   },
   "editGasFeeModalTitle": {
-    "message": "Επεξεργασία τέλους συναλλαγής"
+    "message": "Επεξεργασία τελών δικτύου"
   },
   "editGasLimitOutOfBounds": {
     "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον $1"
@@ -3737,9 +3879,6 @@
   },
   "enableSmartContractAccountDescription": {
     "message": "Επωφεληθείτε από ταχύτερες συναλλαγές, χαμηλότερα τέλη δικτύου και περισσότερη ασφάλεια στα υποστηριζόμενα δίκτυα."
-  },
-  "enableSnap": {
-    "message": "Ενεργοποίηση"
   },
   "enableToken": {
     "message": "ενεργοποίηση $1",
@@ -3825,9 +3964,6 @@
   "enter_verification_code_desc": {
     "message": "Για λόγους ασφαλείας, εισάγετε τον κωδικό που εμφανίζεται στην εφαρμογή MetaMask στη συσκευή σας."
   },
-  "enter_verification_code_error": {
-    "message": "Λανθασμένος κωδικός. Προσπαθήστε ξανά."
-  },
   "enter_verification_code_expired": {
     "message": "Ο κωδικός επαλήθευσης έληξε"
   },
@@ -3850,9 +3986,6 @@
   "errorCode": {
     "message": "Κωδικός: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Σφάλμα κατά τη λήψη της λίστας ασφαλών αλυσίδων, συνεχίστε με προσοχή."
   },
   "errorLegalTextFirstInfo": {
     "message": "Τεχνικές διαγνωστικές πληροφορίες."
@@ -4016,19 +4149,8 @@
   "fieldRequired": {
     "message": "Απαιτείται η $1"
   },
-  "fileImportFail": {
-    "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "Κάντε κλικ για μεταφόρτωση ή σύρετε και αφήστε"
-  },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "Μη έγκυρος τύπος αρχείου. Παρακαλώ ανεβάστε ένα υποστηριζόμενο μορφότυπο αρχείου."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "Το μέγεθος του αρχείου υπερβαίνει τα $1MB. Παρακαλούμε ανεβάστε ένα μικρότερο αρχείο.",
-    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "θα πρέπει να απεγκαταστήσετε αυτήν την επέκταση",
@@ -4056,9 +4178,6 @@
   },
   "floatAmountToken": {
     "message": "Η ποσότητα των Τokens πρέπει να είναι ακέραιος αριθμός"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "Απαγορευμένη πύλη IPFS: Παρακαλώ καθορίστε μια πύλη CID"
   },
   "forgetDevice": {
     "message": "Αγνοήστε αυτή τη συσκευή"
@@ -4113,6 +4232,9 @@
   "from": {
     "message": "Από"
   },
+  "fullyDiluted": {
+    "message": "Πλήρως κατανεμημένα"
+  },
   "function": {
     "message": "Λειτουργία: $1"
   },
@@ -4126,14 +4248,17 @@
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
   },
-  "gasLimitTooLow": {
-    "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 12000"
+  },
+  "gasLimitEditingUnavailable": {
+    "message": "Η επεξεργασία του ορίου συναλλαγών δεν είναι διαθέσιμη μέχρι να παρέχει το MetaMask μια εκτίμηση."
   },
   "gasPrice": {
     "message": "Τέλη συναλλαγών"
   },
   "gasPriceExcessive": {
-    "message": "Το ποσό του τέλους συναλλαγής σας έχει οριστεί αδικαιολόγητα υψηλό. Εξετάστε το ενδεχόμενο μείωσης του ποσού."
+    "message": "Τα τέλη δικτύου σας είναι υπερβολικά υψηλά. Εξετάστε το ενδεχόμενο να μειώσετε το ποσό."
   },
   "gasPriceFetchFailed": {
     "message": "Η εκτίμηση της τιμής του τέλους συναλλαγής απέτυχε λόγω σφάλματος δικτύου."
@@ -4145,8 +4270,12 @@
     "message": "Το MetaMask καλύπτει τα τέλη δικτύου για αυτή τη συναλλαγή. Αυτό περιλαμβάνει και μία εφάπαξ ενεργοποίηση έξυπνου συμβολαίου."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Αυτό το συγκεκριμένο δίκτυο απαιτεί τη διατήρηση ενός αποθεματικού ύψους $1 $2 στον λογαριασμό σας.",
+    "message": "Αυτό το δίκτυο απαιτεί να διατηρείτε τουλάχιστον $1 $2 στον λογαριασμό σας μετά τη συναλλαγή. Τα έξυπνα πορτοφόλια δεν μπορούν να έχουν υπόλοιπο μικρότερο από αυτό το αποθεματικό.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "Το $1 καλύπτει τα τέλη δικτύου για αυτή τη συναλλαγή. Αυτό περιλαμβάνει και μία εφάπαξ ενεργοποίηση έξυπνου συμβολαίου.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 ώρες",
@@ -4275,14 +4404,8 @@
   "general": {
     "message": "Γενικά"
   },
-  "generalCameraError": {
-    "message": "Δεν μπορέσαμε να έχουμε πρόσβαση στην κάμερά σας. Προσπαθήστε ξανά."
-  },
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
-  },
-  "generalDescription": {
-    "message": "Συγχρονισμός ρυθμίσεων σε όλες τις συσκευές, επιλογή προτιμήσεων δικτύου και παρακολούθηση δεδομένων των tokens"
   },
   "generateNewQrCode": {
     "message": "Δημιουργία νέου κωδικού QR"
@@ -4400,6 +4523,14 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Συνεχίστε"
   },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Ξεκλειδώστε την και προσπαθήστε ξανά για να συνεχίσετε",
+    "description": "Description shown when a hardware wallet is locked during an operation"
+  },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "Το $1 σας υποστηρίζει μόνο την υπογραφή δεδομένων τύπου 4. Ο συγκεκριμένος ιστότοπος ζήτησε έναν παλαιότερο τύπο υπογραφής, ο οποίος δεν υποστηρίζεται",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorReconnectButton": {
     "message": "Συνδεθείτε ξανά και προσπαθήστε πάλι",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
@@ -4418,7 +4549,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Συνεχίστε για να βεβαιωθείτε ότι:"
+    "message": "Για να συνεχίσετε, βεβαιωθείτε ότι:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Η $1 συσκευή σας ξεκλειδώθηκε",
@@ -4467,9 +4598,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "Εντοπισμός συσκευής..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Η συσκευή δεν εντοπίστηκε. Ελέγξτε τα προηγούμενα βήματα και προσπαθήστε ξανά."
   },
   "hardwareWalletRepairLink": {
     "message": "Επαναλάβετε τη διαδικασία σύνδεσης από την αρχή"
@@ -4630,6 +4758,22 @@
   "honeypotTitle": {
     "message": "Απάτη"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Καταθέστε οποιοδήποτε token. Θα το ανταλλάξουμε και θα το στείλουμε αυτόματα στον λογαριασμό σας στο Hyperliquid — χωρίς χρέωση από το MetaMask.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "Όχι, ευχαριστώ. Κατάθεση χειροκίνητα",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Χρηματοδότηση του Hyperliquid μέσω MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Τα κεφάλαιά σας είναι έτοιμα για συναλλαγές στο Hyperliquid και στα Perps του MetaMask.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
+  },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Εφαρμογή κωδικού παραπομπής στο MetaMask σε όλες τις μελλοντικές συναλλαγές σύμφωνα με τους $1 της Hyperliquid. Το MetaMask λαμβάνει προμήθεια.",
     "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
@@ -4713,9 +4857,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
-  },
-  "importTokensError": {
-    "message": "Δεν μπορέσαμε να εισάγουμε τα tokens. Προσπαθήστε ξανά αργότερα."
   },
   "importWalletSuccess": {
     "message": "Έγινε εισαγωγή του πορτοφολιού $1",
@@ -4919,9 +5060,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Για την ασφάλειά σας, η επιλογή αυτού του κειμένου δεν είναι διαθέσιμη αυτή τη στιγμή."
-  },
   "learnHow": {
     "message": "Μάθετε πώς"
   },
@@ -4970,7 +5108,7 @@
     "message": "Βεβαιωθείτε ότι το Ledger είναι συνδεδεμένο και επιλέξτε την εφαρμογή Ethereum."
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Ανοίξτε την εφαρμογή στη συσκευή Ledger για να συνεχίσετε"
+    "message": "Ανοίξτε την στη συσκευή Ledger σας για να συνεχίσετε"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "Η εφαρμογή Ethereum είναι κλειστή"
@@ -4979,7 +5117,7 @@
     "message": "Βρέθηκε η συσκευή Ledger"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Ξεκλειδώστε τη συσκευή Ledger για να συνεχίσετε"
+    "message": "Ξεκλειδώστε τη συσκευή Ledger σας για να συνεχίσετε"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Το Ledger είναι κλειδωμένο"
@@ -5000,7 +5138,7 @@
     "message": "Η συσκευή δεν βρέθηκε"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Αποσυνδέστε και συνδέστε ξανά τη συσκευή σας"
+    "message": "Αποσυνδέστε τη συσκευή σας και συνδέστε την ξανά"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Η συσκευή Ledger δεν ανταποκρίνεται"
@@ -5016,9 +5154,6 @@
   },
   "ledgerConnectionStatusSearchingTitle": {
     "message": "Αναζήτηση της συσκευής σας"
-  },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Η συσκευή Ledger απέτυχε να ανοίξει. Το Ledger σας μπορεί να είναι συνδεδεμένο με άλλο λογισμικό. Παρακαλούμε κλείστε το Ledger Live ή άλλες εφαρμογές που είναι συνδεδεμένες με τη συσκευή Ledger και προσπαθήστε να συνδεθείτε ξανά."
   },
   "ledgerErrorConnectionIssue": {
     "message": "Επανασυνδέστε το Ledger σας, ανοίξτε την εφαρμογή ETH και δοκιμάστε ξανά."
@@ -5050,15 +5185,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Το Firefox δεν υποστηρίζεται"
   },
-  "ledgerLocked": {
-    "message": "Δεν είναι δυνατή η σύνδεση με τη συσκευή Ledger. Βεβαιωθείτε ότι η συσκευή σας είναι ξεκλειδωμένη και ότι η εφαρμογή Ethereum είναι ανοιχτή."
-  },
   "ledgerTimeout": {
     "message": "Το Ledger Live χρειάζεται πολύ χρόνο για να ανταποκριθεί ή η σύνδεση έχει διακοπεί. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοιχτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Η συσκευή Ledger δεν συνδέθηκε. Εάν επιθυμείτε να συνδέσετε το Ledger σας, κάντε ξανά κλικ στο 'Συνέχεια' και εγκρίνετε τη σύνδεση HID.",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "Ανοιχτόχρωμο"
@@ -5080,9 +5208,6 @@
   },
   "loading": {
     "message": "Φόρτωση..."
-  },
-  "loadingScreenSnapMessage": {
-    "message": "Ολοκληρώστε τη συναλλαγή στο Snap."
   },
   "loadingTokenList": {
     "message": "Φόρτωση της λίστας των tokens"
@@ -5128,17 +5253,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "Σύνδεση"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Η συνεδρία σας έχει λήξει. Παρακαλούμε συνδεθείτε ξανά για να συνεχίσετε."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Η συνεδρία έχει λήξει"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Ενημέρωση του Telegram"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Δεν μπορέσαμε να συνδεθούμε στο Telegram. Αυτό συνήθως συμβαίνει όταν η εφαρμογή Telegram δεν είναι ενημερωμένη. Ενημερώστε το Telegram και προσπαθήστε ξανά."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Δεν ήταν δυνατή η σύνδεση στο Telegram"
@@ -5159,7 +5278,7 @@
   },
   "lowValueAssets": {
     "message": "Tokens χαμηλής αξίας ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -5178,6 +5297,10 @@
   },
   "manage": {
     "message": "Διαχείριση"
+  },
+  "manageAccounts": {
+    "message": "Διαχείριση λογαριασμών",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Διαχείριση συνδεδεμένων λογαριασμών"
@@ -5286,9 +5409,6 @@
   "metamaskSwap": {
     "message": "MetaMask Swap"
   },
-  "metamaskSwapsOfflineDescription": {
-    "message": "Το MetaMask Swaps βρίσκεται υπό συντήρηση. Προσπαθήστε ξανά αργότερα."
-  },
   "metamaskVersion": {
     "message": "Έκδοση του MetaMask"
   },
@@ -5303,6 +5423,279 @@
   },
   "metrics": {
     "message": "Μετρήσεις"
+  },
+  "mfaEmailEntryContinue": {
+    "message": "Συνεχίστε"
+  },
+  "mfaEmailEntryDescription": {
+    "message": "Θα χρησιμοποιήσουμε το email σας για την επαλήθευση του λογαριασμού σας και για να σας στέλνουμε περιστασιακά ενημερώσεις σχετικά με αυτόν."
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Πληκτρολογήστε μια έγκυρη διεύθυνση email."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Διεύθυνση email"
+  },
+  "mfaEmailEntryTitle": {
+    "message": "Επαληθεύστε το email σας"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Ο κωδικός επαλήθευσης έληξε. Ζητήστε νέο κωδικό."
+  },
+  "mfaErrorCooldown": {
+    "message": "Έχουν υποβληθεί πάρα πολλά αιτήματα. Περιμένετε λίγο και προσπαθήστε ξανά."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "Αυτό το email χρησιμοποιείται ήδη. Δοκιμάστε κάποιο άλλο."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Μια άλλη διαδικασία επαλήθευσης βρίσκεται ήδη σε εξέλιξη."
+  },
+  "mfaErrorGeneric": {
+    "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
+  },
+  "mfaErrorInvalidCode": {
+    "message": "Ο κωδικός δεν είναι σωστός. Προσπαθήστε ξανά"
+  },
+  "mfaErrorInvalidPasskey": {
+    "message": "Δεν ήταν δυνατή η επαλήθευση του κλειδιού πρόσβασης. Προσπαθήστε ξανά."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "Ο κωδικός δεν είναι σωστός. Προσπαθήστε ξανά"
+  },
+  "mfaErrorLimitReached": {
+    "message": "Έχετε φτάσει το όριο για αυτή τη μέθοδο."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "Το αίτημα για το κλειδί πρόσβασης ακυρώθηκε."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Συνδεθείτε για να συνεχίσετε."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Ζητήστε νέο κωδικό."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "Η διαδικασία διήρκεσε πολύ. Πληκτρολογήστε τον τρέχοντα κωδικό από την εφαρμογή σας."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "Έχει ήδη ρυθμιστεί μια εφαρμογή ελέγχου ταυτότητας για αυτόν τον λογαριασμό."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Περιμένετε να εμφανιστεί ο νέος κωδικός στην εφαρμογή και προσπαθήστε ξανά."
+  },
+  "mfaErrorUnsupported": {
+    "message": "Αυτή η μέθοδος δεν υποστηρίζεται σε αυτήν τη συσκευή."
+  },
+  "mfaFailureClose": {
+    "message": "Κλείσιμο"
+  },
+  "mfaFailureContactSupport": {
+    "message": "Επικοινωνήστε με την υποστήριξη"
+  },
+  "mfaFailureDone": {
+    "message": "Τέλος"
+  },
+  "mfaFailureRetry": {
+    "message": "Προσπαθήστε ξανά"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Επικοινωνήστε με την υποστήριξη για να συνεχίσετε."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "Δεν μπορέσαμε να επαληθεύσουμε τα στοιχεία σας"
+  },
+  "mfaFailureTitle": {
+    "message": "Κάτι πήγε στραβά"
+  },
+  "mfaIntroContinue": {
+    "message": "Έναρξη"
+  },
+  "mfaIntroDescription": {
+    "message": "Θα ρυθμίσουμε μερικούς τρόπους επιβεβαίωσης της ταυτότητάς σας. Αν χάσετε την πρόσβαση σε έναν από αυτούς, μπορείτε να χρησιμοποιήσετε κάποιον άλλο."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Λάβετε έναν 6ψήφιο κωδικό στα εισερχόμενά σας"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Επιβεβαιώστε με τη συσκευή σας ή τον διαχειριστή κωδικών πρόσβασης"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Αποθηκεύτηκε σε αυτήν τη συσκευή"
+  },
+  "mfaIntroTitle": {
+    "message": "Ρυθμίστε την διαδικασία επαλήθευσης σε 2 βήματα"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Λάβετε έναν 6ψήφιο κωδικό από μια εφαρμογή όπως το Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Ρυθμίστε την εφαρμογή ελέγχου ταυτότητας"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaMethodPasskey": {
+    "message": "Κλειδί πρόσβασης"
+  },
+  "mfaMethodTotp": {
+    "message": "Εφαρμογή ελέγχου ταυτότητας"
+  },
+  "mfaOtpDescription": {
+    "message": "Στείλαμε έναν 6ψήφιο κωδικό στο email σας. Πληκτρολογήστε το παρακάτω για να επαληθεύσετε το email σας."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Ανοίξτε την εφαρμογή ελέγχου ταυτότητας και πληκτρολογήστε τον 6ψήφιο κωδικό."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "Στείλαμε έναν 6ψήφιο κωδικό στο $1. Πληκτρολογήστε το παρακάτω για να επαληθεύσετε το email σας.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Αποστολή νέου κωδικού"
+  },
+  "mfaOtpResend": {
+    "message": "Επαναποστολή κωδικού"
+  },
+  "mfaOtpResendIn": {
+    "message": "Αποστολή νέου κωδικού σε $1 δευτ.",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "Σας στείλαμε νέο κωδικό."
+  },
+  "mfaOtpRetry": {
+    "message": "Προσπαθήστε ξανά"
+  },
+  "mfaOtpRetryIn": {
+    "message": "Προσπαθήστε ξανά σε $1 δευτ."
+  },
+  "mfaOtpSendIn": {
+    "message": "Αποστολή νέου κωδικού σε $1 δευτ.",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Αποστολή κωδικού..."
+  },
+  "mfaOtpTitle": {
+    "message": "Πληκτρολογήστε τον κωδικό επαλήθευσης"
+  },
+  "mfaOtpVerifying": {
+    "message": "Επαλήθευση κωδικού"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Δημιουργία κλειδιού πρόσβασης"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Χρήση του κλειδιού πρόσβασης σας"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Λήψη κωδικού επαλήθευσης"
+  },
+  "mfaPickerOr": {
+    "message": "ή"
+  },
+  "mfaPickerPasskey": {
+    "message": "Επαλήθευση με κλειδί πρόσβασης"
+  },
+  "mfaPickerTitle": {
+    "message": "Επιβεβαιώστε την διαδικασία επαλήθευσης σε 2 βήματα"
+  },
+  "mfaPickerTotp": {
+    "message": "Χρήση εφαρμογής ελέγχου ταυτότητας"
+  },
+  "mfaSettingsAdd": {
+    "message": "Προσθήκη"
+  },
+  "mfaSettingsAddedOn": {
+    "message": "Προστέθηκε στις $1"
+  },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Προστέθηκε εφαρμογή ελέγχου ταυτότητας"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "Η διαδικασία επαλήθευσης μέσω email καταργήθηκε"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "Επαληθεύτηκε η διεύθυνση email"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "Αυτό το email είναι η μοναδική μέθοδος ασφαλείας για αυτόν τον λογαριασμό. Προσθέστε μια άλλη μέθοδο πριν το αφαιρέσετε."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "Δεν είναι δυνατή η κατάργηση του email"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "Αυτή η εφαρμογή ελέγχου ταυτότητας είναι η μοναδική μέθοδος ασφαλείας για αυτόν τον λογαριασμό. Προσθέστε μια άλλη μέθοδο πριν το αφαιρέσετε."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Δεν είναι δυνατή η κατάργηση της εφαρμογής ελέγχου ταυτότητας"
+  },
+  "mfaSettingsNotice": {
+    "message": "Αυτές οι μέθοδοι προσθέτουν ένα επιπλέον επίπεδο προστασίας στις συναλλαγές σας στο Money account. Δεν μπορούν να ανακτήσουν το πορτοφόλι σας."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Οι άλλες μέθοδοι επαλήθευσης λειτουργούν μόνο στην εφαρμογή MetaMask για κινητά. Αφαιρέστε το email σας από εκεί."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Δεν μπορείτε να αφαιρέσετε το email σας από εδώ"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "Αφαίρεση email"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "Δεν θα μπορείτε πλέον να συνδέεστε ή να επαληθεύετε συναλλαγές λαμβάνοντας κωδικό μέσω email."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "Δεν ήταν δυνατή η κατάργηση αυτής της μεθόδου. Προσπαθήστε ξανά αργότερα."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "Κατάργηση εφαρμογής ελέγχου ταυτότητας"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "Δεν θα μπορείτε πλέον να επαληθεύετε συναλλαγές μέσω του Money account σας με κωδικούς από την εφαρμογή ελέγχου ταυτότητας."
+  },
+  "mfaSettingsTitle": {
+    "message": "Διαδικασία επαλήθευσης σε 2 βήματα"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Οι άλλες μέθοδοι επαλήθευσης λειτουργούν μόνο στην εφαρμογή MetaMask για κινητά. Καταργήστε την εφαρμογή ελέγχου ταυτότητας από εκεί."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Δεν μπορείτε να καταργήσετε την εφαρμογή ελέγχου ταυτότητας από εδώ"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Η εφαρμογή ελέγχου ταυτότητας καταργήθηκε"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "Χρησιμοποιείται για"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Επαλήθευση συναλλαγών στον Money account"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Συνεχίστε"
+  },
+  "mfaTotpSetupCopied": {
+    "message": "Αντιγράφηκε το κλειδί ρύθμισης"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Σαρώστε τον κωδικό QR με την εφαρμογή ελέγχου ταυτότητας ή πληκτρολογήστε το κλειδί ρύθμισης."
+  },
+  "mfaTotpSetupKey": {
+    "message": "Κλειδί ρύθμισης"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Ή πληκτρολογήστε το χειροκίνητα"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "Κωδικός QR για την προσθήκη του MetaMask στην εφαρμογή ελέγχου ταυτότητας"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "Η διαδικασία διήρκεσε πολύ, οπότε δημιουργήσαμε ένα νέο κλειδί ρύθμισης. Καταργήστε την προηγούμενη καταχώριση του MetaMask από την εφαρμογή ελέγχου ταυτότητας και, στη συνέχεια, προσθέστε τη νέα."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "Ρύθμιση εφαρμογής ελέγχου ταυτότητας"
   },
   "minimumReceivedExplanation": {
     "message": "Το ελάχιστο ποσό που θα λάβετε, αν αλλάξει η τιμή κατά τη διάρκεια της επεξεργασίας της συναλλαγής σας, με βάση τη ρύθμιση απόκλισης. Η εκτίμηση προέρχεται από τους παρόχους ρευστότητας, επομένως το τελικό ποσό ενδέχεται να διαφέρει."
@@ -5342,12 +5735,13 @@
   "money": {
     "message": "Οικονομικά"
   },
-  "moneyAccountApyPitch": {
-    "message": "Κερδίστε $1% APY",
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "Πληροφορίες για την Ετήσια Ποσοστιαία Απόδοση (APY)"
+  "moneyAccountApyPitchEarn": {
+    "message": "Κερδίστε $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "Το επιτόκιο που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Ποσοστιαία Απόδοση (APY) με βάση τις τρέχουσες συνθήκες της αγοράς. Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
@@ -5359,15 +5753,15 @@
   "moneyAccountProjectedBalance": {
     "message": "Προβλεπόμενο υπόλοιπο 1ετίας:"
   },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Προβλεπόμενο υπόλοιπο 1ετίας"
-  },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Η εκτίμηση υποθέτει ότι το $1% Ετήσιο Ποσοστό Απόδοσης (APY) παραμένει αμετάβλητο για ένα έτος. Το APY είναι μεταβλητό και δεν είναι εγγυημένο.",
     "description": "$1 is the APY percentage used in the one-year projection"
   },
   "moneyActivity": {
     "message": "Δραστηριότητα"
+  },
+  "moneyActivityCard": {
+    "message": "Κάρτα"
   },
   "moneyActivityConversionFailed": {
     "message": "Η μετατροπή απέτυχε"
@@ -5387,11 +5781,32 @@
   "moneyActivityDepositing": {
     "message": "Κατάθεση σε εξέλιξη"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Πληρωμή προς"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Λάβατε από"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "Αναγνωριστικό συναλλαγής"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "Έχετε κερδίσει"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "Ξοδέψατε"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "Σας έγινε επιστροφή χρημάτων"
+  },
   "moneyActivityEmpty": {
     "message": "Καμία δραστηριότητα μέχρι στιγμής"
   },
   "moneyActivityFilterAll": {
     "message": "Όλες"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Κάρτα"
   },
   "moneyActivityFilterDeposits": {
     "message": "Καταθέσεις"
@@ -5399,11 +5814,17 @@
   "moneyActivityFilterSends": {
     "message": "Στέλνει"
   },
+  "moneyActivityLoadError": {
+    "message": "Δεν ήταν δυνατή η φόρτωση της δραστηριότητάς σας"
+  },
+  "moneyActivityMusdBack": {
+    "message": "Επιστροφή σε mUSD"
+  },
   "moneyActivityPending": {
     "message": "Εκκρεμεί"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Η δραστηριότητα του Money account σας θα εμφανίζεται εδώ."
+  "moneyActivityPurchase": {
+    "message": "Αγορά"
   },
   "moneyActivityReceived": {
     "message": "Ελήφθη"
@@ -5414,6 +5835,12 @@
   "moneyActivityReceiving": {
     "message": "Λήψη"
   },
+  "moneyActivityRefund": {
+    "message": "Επιστροφή χρημάτων"
+  },
+  "moneyActivityRetry": {
+    "message": "Επανάληψη"
+  },
   "moneyActivitySendFailed": {
     "message": "Η αποστολή απέτυχε"
   },
@@ -5422,6 +5849,10 @@
   },
   "moneyActivitySent": {
     "message": "Εστάλη"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "Τα τέλη μετατροπής περιλαμβάνουν χρεώσεις δικτύου και ενδέχεται να περιλαμβάνουν τέλη παρόχου.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "Προβολή όλων"
@@ -5433,7 +5864,7 @@
     "message": "$1 APY"
   },
   "moneyBalanceInfoBody": {
-    "message": "Το υπόλοιπό σας σε mUSD, που υποστηρίζεται από δολάρια και είναι πάντα διαθέσιμο για αγορές, μεταφορές ή συναλλαγές, οποιαδήποτε στιγμή. Δεν υπολογίζουμε αυτό το ποσό στο συνολικό υπόλοιπο του λογαριασμού σας."
+    "message": "Το υπόλοιπό σας σε mUSD, με υποστήριξη από το δολάριο, και αποφέρει πάντα κέρδη. Το ποσό αυτό δεν περιλαμβάνεται στο συνολικό υπόλοιπο του λογαριασμού σας."
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "Οι αναλήψεις διεκπεραιώνονται άμεσα, με την επιφύλαξη των τυπικών χρόνων επιβεβαίωσης του δικτύου στο αντίστοιχο blockchain. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρξουν προσωρινές καθυστερήσεις."
@@ -5441,17 +5872,21 @@
   "moneyBalanceLastKnown": {
     "message": "Υπόλοιπο κατά την τελευταία ενημέρωση"
   },
-  "moneyBalanceTitle": {
-    "message": "Υπόλοιπο χρημάτων"
+  "moneyBalanceRetry": {
+    "message": "Επανάληψη"
   },
   "moneyBalanceUnavailable": {
     "message": "Το υπόλοιπο δεν είναι διαθέσιμο"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "Δεν είναι δυνατή η προβολή του υπολοίπου σας προς το παρόν. Τα χρήματά σας είναι ασφαλή — προσπαθήστε ξανά σε λίγο."
   },
   "moneyBenefitAutoEarn": {
     "message": "Κερδίστε αυτόματα απόδοση στο υπόλοιπό σας στον Money account"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Κερδίστε αυτόματα έως και ~$1 APY"
+    "message": "Κερδίστε έως $1 αυτόματα",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"
@@ -5465,8 +5900,34 @@
   "moneyBenefits": {
     "message": "Ανταμοιβές"
   },
+  "moneyContactSupport": {
+    "message": "Επικοινωνήστε με την υποστήριξη"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "Μετατρέψτε τα κρυπτονομίσματά σας"
+  },
+  "moneyEarnApy": {
+    "message": "Κερδίστε $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Κερδίστε έως και $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Προσθέστε $1 στον Money account σας και κερδίστε έως και $2 σε έναν χρόνο.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Προσθήκη $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Προσθέστε $1 στον Money account σας - χωρίς δεσμεύσεις ή ελάχιστο ποσό κατάθεσης.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Κερδίστε με τον λογαριασμό Money",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Κερδίστε από τα κρυπτονομίσματά σας"
@@ -5486,6 +5947,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Χωρίς τέλος συναλλαγής"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Η εκτίμηση βασίζεται στην υπόθεση ότι η ετήσια ποσοστιαία απόδοση (APY) του $1% παραμένει αμετάβλητη για ένα έτος. Το APY είναι μεταβλητό και δεν είναι εγγυημένο. Δεν υπάρχει εγγύηση απόδοσης.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Κερδίστε από το υπόλοιπό σας"
   },
@@ -5501,15 +5966,93 @@
   "moneyFundDescriptionWithApy": {
     "message": "Προσθέστε χρήματα στον Money account σας και δείτε το υπόλοιπό σας να αυξάνεται με απόδοση έως και $1 APY."
   },
+  "moneyGetApy": {
+    "message": "Κερδίστε $1 APY",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
+  "moneyHomeApyTooltip": {
+    "message": "Η εμφανιζόμενη τιμή είναι η τρέχουσα Ετήσια Ποσοστιαία Απόδοση (APY). Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Ο Money account σας αποφέρει αυτόματα έως και $1 APY.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Ο Money Account υποστηρίζεται από την Monad."
+  },
   "moneyHowItWorks": {
     "message": "Πώς λειτουργεί"
   },
   "moneyHowItWorksDescription": {
     "message": "Προσθέστε mUSD και το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "Μετατρέψτε οποιοδήποτε κρυπτονόμισμα στον Money account σας και κερδίστε αυτόματα έως και $1 APY (μεταβλητό). Τα κεφάλαια τοποθετούνται σε ένα DeFi vault που διαχειρίζεται η Veda, με παρακολούθηση κινδύνων από τη Steakhouse Financial. Η απόδοση προκύπτει από πλατφόρμες DeFi τρίτων που χρησιμοποιούν τα κεφάλαια σε πρωτόκολλα blockchain. Χωρίς δέσμευση κρυπτονομισμάτων, χωρίς διεκδίκηση αποδόσεων, χωρίς κλείδωμα κεφαλαίων.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Προσθέστε mUSD και κερδίστε έως και $1. Το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Ο Money Account δεν αποτελεί τραπεζικό λογαριασμό, λογαριασμό αποταμίευσης ή ασφαλισμένο καταθετικό προϊόν. Η ετήσια απόδοση (APY) είναι μεταβλητή και δεν είναι εγγυημένη. Ο Money Account περιλαμβάνει κινδύνους από έξυπνα συμβόλαια, πρωτόκολλα, ρευστότητα και άλλους παράγοντες, και ενδέχεται να χάσετε μέρος ή το σύνολο των κεφαλαίων σας. Υπόκειται σε τοπικούς περιορισμούς. Ισχύουν όροι."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Κίνδυνοι και Γνωστοποιήσεις"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Έως και $1 APY. Το επιτόκιο είναι μεταβλητό και μεταβάλλεται ανάλογα με τις συνθήκες της αγοράς. Το τρέχον επιτόκιο εμφανίζεται πάντα στον Money account σας.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Πόσα μπορώ να κερδίσω με έναν Money Account στο MetaMask;"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "Στις περισσότερες χώρες! Προς το παρόν δεν υποστηρίζεται στο Ηνωμένο Βασίλειο και σε χώρες της λίστας κυρώσεων των ΗΠΑ."
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "Σε ποιες χώρες είναι διαθέσιμος ο Money Account στο MetaMask;"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Δεν υπάρχει χρέωση για την δημιουργία του Money account ούτε για την κατάθεση stablecoins. Θα χρεωθείτε τέλη κατά την κατάθεση tokens που δεν είναι stablecoins."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Ποιες είναι οι χρεώσεις για έναν Money Account στο MetaMask;"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "Όχι, η δημιουργία ενός Money Account δεν απαιτεί επαλήθευση ταυτότητας. Ωστόσο, ορισμένες λειτουργίες, όπως η Κάρτα και οι υπηρεσίες μετατροπής νομισμάτων, απαιτούν ταυτοποίηση. Οι έλεγχοι πραγματοποιούνται από τρίτους παρόχους που λειτουργούν ρυθμιζόμενες υπηρεσίες, και όχι από το MetaMask. Εάν χρειαστεί, θα σας καθοδηγήσουμε για την διαδικασία μέσα από την εφαρμογή κατά την εγγραφή."
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "Πρέπει να ολοκληρώσω την επαλήθευση ταυτότητας για να χρησιμοποιήσω τον Money Account στο MetaMask;"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Ναι. Μπορείτε να στείλετε ή να κάνετε ανάληψη ολόκληρου του υπολοίπου σας οποιαδήποτε στιγμή, χωρίς περιόδους προειδοποίησης, ποινές ή χρεώσεις ανάληψης από το MetaMask. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρξουν προσωρινές καθυστερήσεις."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Μπορώ να κάνω ανάληψη από τον Money Account στο MetaMask οποιαδήποτε στιγμή;"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Λογαριασμός με μεταβλητό APY έως και $1. Καταθέτετε κεφάλαια, τα οποία διατηρούνται στον λογαριασμό ως mUSD και αποφέρουν έως και $1 APY. Το mUSD είναι το stablecoin του MetaMask με υποστήριξη σε δολάρια. Μπορείτε να χρησιμοποιήσετε ή να κάνετε ανάληψη των κεφαλαίων σας οποιαδήποτε στιγμή, χωρίς ποινές.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Τι είναι ένας Money Account στο MetaMask;"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "Συχνές Ερωτήσεις"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "Μπορείτε να καταθέσετε τα παρακάτω stablecoins και aTokens στον Money account σας χωρίς τέλη μετατροπής:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nΌλα τα άλλα EVM tokens μπορούν να κατατεθούν στον Money account σας, αλλά ενδέχεται να ισχύουν οι συνήθεις χρεώσεις. Μπορείτε επίσης να προσθέσετε χρήματα στον Money account σας μέσω χρεωστικής ή πιστωτικής κάρτας, τραπεζικού λογαριασμού, PayPal, Apple Pay ή Google Pay.\n\nΣημείωση: Αρχικά, ισχύει μέγιστο όριο κατάθεσης $1 ανά token, ώστε να διασφαλίζεται η ρευστότητα.",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "Ποια tokens μπορώ να καταθέσω στον Money Account;"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Όταν καταθέτετε κεφάλαια, αυτά τοποθετούνται σε καθιερωμένα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi), όπως το Aave και το Morpho, όπου αποφέρουν αποδόσεις από πραγματική οικονομική δραστηριότητα. Οι αποδόσεις αυτές καταβάλλονται σε εσάς με τη μορφή της ετήσιας απόδοσης (APY).\n\nΈνας τρίτος πάροχος υπηρεσιών, η Steakhouse Financial, παρακολουθεί τον τρόπο με τον οποίο κατανέμονται τα κεφάλαια στα πρωτόκολλα. Η Veda, ένας τρίτος πάροχος υποδομών, αναπτύσσει και διατηρεί τα έξυπνα συμβόλαια στο θησαυροφυλάκιο (vault) όπου φυλάσσονται τα κεφάλαιά σας.\n\nΟι αποδόσεις δεν αποτελούν τόκο που καταβάλλεται από τo MetaMask ή από τον εκδότη των mUSD. Πρόκειται για αποδόσεις στο blockchain που παράγονται από θέσεις σε τρίτα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi)."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Από πού προέρχεται η απόδοση;"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Πώς αυξάνονται τα χρήματά σας"
@@ -5520,8 +6063,14 @@
   "moneyLifetime": {
     "message": "Συνολικά"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Τα συνολικά κέρδη σας από το υπόλοιπο του λογαριασμού Money μέχρι σήμερα."
+  },
   "moneyMeetMusd": {
     "message": "Μάθετε για τα mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Τα συνολικά κέρδη σας από το υπόλοιπο του λογαριασμού Money τις τελευταίες 30 ημέρες."
   },
   "moneyMoreInformation": {
     "message": "Περισσότερες πληροφορίες"
@@ -5532,8 +6081,103 @@
   "moneyMusd": {
     "message": "mUSD"
   },
+  "moneyOnboardingFundTitle": {
+    "message": "Χρηματοδοτήστε τον Money Account σας",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
+  },
   "moneySend": {
     "message": "Αποστολή"
+  },
+  "moneyStartEarning": {
+    "message": "Ξεκινήστε να κερδίζετε",
+    "description": "Token details balance section button that opens a Money account deposit"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Δεν είναι δυνατή η προσθήκη κεφαλαίων. Προσπαθήστε ξανά."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Δεν είναι δυνατή η μετατροπή. Προσπαθήστε ξανά."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Η κατάθεση απέτυχε"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Δεν ήταν δυνατή η προσθήκη κεφαλαίων"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Η μετατροπή απέτυχε"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Οι αγορές με κάρτες ενδέχεται να χρειαστούν μερικά λεπτά."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Προσθήκη χρημάτων"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Κατάθεση σε εξέλιξη"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Μετατροπή κρυπτονομισμάτων"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "Προστέθηκαν $1 στον Money account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Προστέθηκαν στον Money Account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Προστέθηκαν κεφάλαια"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Η κατάθεση ολοκληρώθηκε"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Η μετατροπή ολοκληρώθηκε"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Αυτό μπορεί να διαρκέσει λίγα λεπτά."
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Δεν είναι δυνατή η μεταφορά κεφαλαίων. Προσπαθήστε ξανά."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Η μεταφορά απέτυχε"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "ο λογαριασμός σας"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Μεταφορά σε εξέλιξη"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "Προστέθηκαν $1 στο $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Προστέθηκαν στο $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Η μεταφορά ολοκληρώθηκε"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Άλλος λογαριασμός"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Προσεχώς"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Λογαριασμός Perps"
+  },
+  "moneyTransferSendExternal": {
+    "message": "Εξωτερική διεύθυνση"
+  },
+  "moneyTransferTitle": {
+    "message": "Αποστολή χρημάτων προς"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Τραπεζικός λογαριασμός"
   },
   "month": {
     "message": "μήνας"
@@ -5689,19 +6333,6 @@
     "message": "Έγινε μετατροπή σε mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Η μετατροπή σε mUSD απέτυχε"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Μετατροπή $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Η μετατροπή σε mUSD ολοκληρώθηκε με επιτυχία"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Το μπόνους θα είναι διαθέσιμο για εξαργύρωση μέσα σε μία ημέρα."
-  },
   "musdConvert": {
     "message": "Μετατροπή"
   },
@@ -5709,7 +6340,7 @@
     "message": "Ξεκινήστε"
   },
   "musdEducationHeadline": {
-    "message": "ΚΕΡΔΙΣΤΕ $1% ΣΤΑ \nSTABLECOINS",
+    "message": "Κερδίστε $1% σε\nstablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -5816,10 +6447,6 @@
   "nativeTokenScamWarningConversion": {
     "message": "Επεξεργασία λεπτομερειών δικτύου"
   },
-  "nativeTokenScamWarningDescription": {
-    "message": "Το σύμβολο του εγγενούς token δεν ταιριάζει με το αναμενόμενο σύμβολο του εγγενούς token για το δίκτυο με το σχετικό αναγνωριστικό αλυσίδας. Έχετε εισαγάγει $1 ενώ το αναμενόμενο σύμβολο του token είναι $2. Επαληθεύστε ότι έχετε συνδεθεί στη σωστή αλυσίδα.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
-  },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "κάτι άλλο",
     "description": "graceful fallback for when token symbol isn't found"
@@ -5873,9 +6500,6 @@
   "networkFeeExplanationTitle": {
     "message": "Τέλη δικτύου"
   },
-  "networkMenu": {
-    "message": "Μενού δικτύου"
-  },
   "networkMenuHeading": {
     "message": "Επιλέξτε ένα δίκτυο"
   },
@@ -5884,9 +6508,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Bitcoin Native SegWit"
   },
   "networkNameDefinition": {
     "message": "Το όνομα που συνδέεται με αυτό το δίκτυο."
@@ -5902,6 +6523,9 @@
   },
   "networkNameSolana": {
     "message": "Solana"
+  },
+  "networkNameStellar": {
+    "message": "Stellar"
   },
   "networkNameTron": {
     "message": "Tron"
@@ -5923,7 +6547,7 @@
     "message": "Εύρος των τελών προτεραιότητας (ή αλλιώς “Miner tip”). Αυτό πηγαίνει στους miners και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
   "networkStatusStabilityFeeTooltip": {
-    "message": "Τα τέλη συναλλαγών είναι $1 σε σχέση με τις τελευταίες 72 ώρες.",
+    "message": "Τα τέλη δικτύου είναι $1 σε σχέση με τις τελευταίες 72 ώρες.",
     "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
@@ -5967,6 +6591,10 @@
   },
   "newCustomTokenAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "Για να χρησιμοποιήσετε το OpenSea και να δείτε τα NFT σας, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Ρυθμίσεις > Περιουσιακά στοιχεία"
@@ -6179,18 +6807,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Η ανάληψη είναι έτοιμη"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Μπορείτε τώρα να αποσύρετε τα $1 που δεν έχετε ποντάρει"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Το αίτημά σας για ακύρωση του πονταρίσματος των $1 έχει σταλεί"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Λάβατε NFT από"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Στείλατε NFT σε"
-  },
   "notificationItemNetwork": {
     "message": "Δίκτυο"
   },
@@ -6199,18 +6815,6 @@
   },
   "notificationItemReceived": {
     "message": "Ελήφθη"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Λάβατε από"
-  },
-  "notificationItemSent": {
-    "message": "Εστάλη"
-  },
-  "notificationItemSentTo": {
-    "message": "Εστάλη σε"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Ολοκλήρωση του πονταρίσματος (stake)"
   },
   "notificationItemStaked": {
     "message": "Έγινε ποντάρισμα"
@@ -6224,17 +6828,11 @@
   "notificationItemSwapped": {
     "message": "Έγινε ανταλλαγή"
   },
-  "notificationItemSwappedFor": {
-    "message": "για"
-  },
   "notificationItemTo": {
     "message": "Προς"
   },
   "notificationItemTransactionId": {
     "message": "Αναγνωριστικό συναλλαγής"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Ολοκλήρωση ακύρωσης πονταρίσματός"
   },
   "notificationItemUnStaked": {
     "message": "Ακύρωση πονταρίσματος"
@@ -6298,6 +6896,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Δεν έχετε λάβει καμία ειδοποίηση ακόμα."
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "Δεν ήταν δυνατή η φόρτωση των ρυθμίσεων ειδοποιήσεων του λογαριασμού σας. Προσπαθήστε ξανά αργότερα."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Αιτήματα σύνδεσης CLI, εγκρίσεις και ενημερώσεις συνεδριών για το Agent wallet"
@@ -6417,9 +7018,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Προσθήκη προσαρμοσμένης πύλης IPFS"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Η διεύθυνση URL της πύλης IPFS είναι έγκυρη"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Όταν χρησιμοποιείτε τις προεπιλεγμένες ρυθμίσεις και παραμέτρους μας, χρησιμοποιούμε την Infura ως προεπιλεγμένο πάροχο κλήσεων απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Σε ορισμένες περιπτώσεις, ενδέχεται να χρησιμοποιήσουμε άλλους παρόχους RPC προκειμένου να παρέχουμε την καλύτερη δυνατή εμπειρία στους χρήστες μας. Μπορείτε να επιλέξετε το δικό σας RPC, αλλά να θυμάστε ότι οποιοδήποτε RPC θα λάβει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιήσει συναλλαγές. Για να μάθετε περισσότερα σχετικά με το πώς η Infura χειρίζεται τα δεδομένα για λογαριασμούς EVM, διαβάστε την $1 μας, ενώ για λογαριασμούς Solana, $2."
   },
@@ -6458,7 +7056,7 @@
     "message": "Συλλογή βασικών δεδομένων χρήσης"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Ενημερώσεις προϊόντος"
+    "message": "Ενημερώσεις μάρκετινγκ"
   },
   "onboardingMetametricsContinue": {
     "message": "Συνεχίστε"
@@ -6577,6 +7175,10 @@
   "paidByMetaMask": {
     "message": "Πληρωμή μέσω MetaMask"
   },
+  "paidBySponsor": {
+    "message": "Πληρώνεται από το $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "paidWith": {
     "message": "Πληρώθηκε με"
   },
@@ -6653,6 +7255,42 @@
   "passkeyErrorVerificationFailed": {
     "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά ή χρησιμοποιήστε τον κωδικό πρόσβασής σας.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationDescription1": {
+    "message": "Ο τρόπος αποθήκευσης του passkey σας δεν παρέχει πλήρη προστασία για το κλειδί του πορτοφολιού σας. Αντικαταστήστε το για να συνεχίσετε να χρησιμοποιείτε την επαλήθευση με βιομετρικά στοιχεία.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "Όταν το πρόγραμμα περιήγησής σας σάς ρωτήσει πού θέλετε να το αποθηκεύσετε, επιλέξτε \"Διαχειριστής κωδικών πρόσβασης Google\" και όχι \"Αυτή η συσκευή\". $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Το τρέχον passkey σας θα συνεχίσει να λειτουργεί μέχρι να το αντικαταστήσετε.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "Αποθηκεύτηκε σε αυτήν τη συσκευή, η οποία δεν μπορεί να προστατεύσει το κλειδί του πορτοφολιού σας. Προσπαθήστε ξανά και επιλέξτε \"Διαχειριστής κωδικών πρόσβασης Google\" όταν το πρόγραμμα περιήγησής σας σάς ρωτήσει πού θέλετε να το αποθηκεύσετε. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Διατήρηση του τρέχοντος passkey προς το παρόν",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "Αυτό το passkey δεν θα λειτουργεί",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Προσπαθήστε ξανά",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "Δείτε τους υποστηριζόμενους παρόχους",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Το passkey σας χρειάζεται ενημέρωση",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "Εγγραφή με $1",
@@ -6735,14 +7373,10 @@
     "message": "Εμφάνιση κωδικού πρόσβασης"
   },
   "passwordsDontMatch": {
-    "message": "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
+    "message": "Οι κωδικοί πρόσβασης δεν ταιριάζουν."
   },
   "paste": {
     "message": "Επικόλληση"
-  },
-  "pastePrivateKey": {
-    "message": "Εισάγετε τη συμβολοσειρά του ιδιωτικού σας κλειδιού εδώ:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Πληρωμή με",
@@ -7110,6 +7744,13 @@
   "perps24hVolume": {
     "message": "Όγκος συναλλαγών 24ώρου"
   },
+  "perpsAbout": {
+    "message": "Σχετικά"
+  },
+  "perpsAboutAsset": {
+    "message": "Σχετικά με τα $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Δραστηριότητα"
   },
@@ -7124,6 +7765,13 @@
   },
   "perpsAddFunds": {
     "message": "Προσθήκη κεφαλαίων"
+  },
+  "perpsAddFundsHint": {
+    "message": "Προσθέστε τουλάχιστον $1 στον λογαριασμό Perps σας για να υποβάλετε την εντολή.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Προσθέστε κεφάλαια για να κάνετε συναλλαγές"
   },
   "perpsAddMargin": {
     "message": "Προσθήκη περιθωρίου"
@@ -7195,6 +7843,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "Λεπτά"
   },
+  "perpsChart": {
+    "message": "Διάγραμμα τιμών"
+  },
+  "perpsChartLoadError": {
+    "message": "Δεν ήταν δυνατή η φόρτωση των δεδομένων του διαγράμματος"
+  },
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
   },
@@ -7242,6 +7896,9 @@
   },
   "perpsCloseShort": {
     "message": "Κλείσιμο θέσης πώλησης"
+  },
+  "perpsCollapseChart": {
+    "message": "Σύμπτυξη γραφήματος"
   },
   "perpsConfirmCloseLong": {
     "message": "Κλείσιμο θέσης αγοράς"
@@ -7341,6 +7998,9 @@
     "message": "Προσθέστε χρήματα για να ξεκινήσετε τις συναλλαγές.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
+  "perpsExpandChart": {
+    "message": "Επέκταση γραφήματος"
+  },
   "perpsExploreMarkets": {
     "message": "Εξερευνήστε αγορές"
   },
@@ -7362,6 +8022,10 @@
   "perpsFilterAll": {
     "message": "Όλες"
   },
+  "perpsFilterClear": {
+    "message": "$1, κατάργηση φίλτρου",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Εμπορεύματα"
   },
@@ -7375,7 +8039,18 @@
     "message": "Forex"
   },
   "perpsFilterIndex": {
-    "message": "Δείκτης"
+    "message": "Δείκτες"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
+  "perpsFilterMore": {
+    "message": "Περισσότερα",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Περισσότερα, επιλεγμένη κατηγορία: $1",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Νέα"
@@ -7415,6 +8090,13 @@
   },
   "perpsInsufficientMargin": {
     "message": "Μη επαρκές περιθώριο για την εκτέλεση αυτής της εντολής."
+  },
+  "perpsIocCancel": {
+    "message": "Η εντολή σας δεν εκτελέστηκε εντός του ορίου απόκλισης ολίσθησης $1%. Δοκιμάστε μια εντολή ορίου ή προσαρμόστε την απόκλιση.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Η εντολή σας δεν εκτελέστηκε εντός του ορίου απόκλισης ολίσθησης. Δοκιμάστε μια εντολή ορίου ή προσαρμόστε την απόκλιση."
   },
   "perpsKeepPositions": {
     "message": "Διατήρηση θέσεων"
@@ -7472,6 +8154,18 @@
   },
   "perpsMarket": {
     "message": "Τιμή αγοράς"
+  },
+  "perpsMarketCategories": {
+    "message": "Κατηγορίες αγοράς",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 αγορές",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 αγορά",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Η αγορά δεν βρέθηκε"
@@ -7659,8 +8353,23 @@
   "perpsPositions": {
     "message": "Θέσεις"
   },
+  "perpsPriceMoved": {
+    "message": "Η τιμή μεταβλήθηκε κατά $1%, ξεπερνώντας το όριο απόκλισης ολίσθησης κατά $2%. Ελέγξτε την ενημερωμένη τιμή και προσπαθήστε ξανά.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
+  "perpsProducts": {
+    "message": "Προϊόντα",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "Πάρα πολλά αιτήματα. Προσπαθήστε ξανά σε λίγο."
+  },
+  "perpsReadMore": {
+    "message": "Διαβάστε περισσότερα"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Μάθετε περισσότερα για τα $1",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "Πρόσφατη δραστηριότητα"
@@ -7708,6 +8417,22 @@
   "perpsSeeAll": {
     "message": "Προβολή όλων",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "επικοινωνήστε με την υποστήριξη",
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Ορισμένες υπηρεσίες είναι προσωρινά μη διαθέσιμες. $1, ή $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Δείτε τις επιλογές σας στις Συχνές Ερωτήσεις",
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Αντιμετωπίζουμε διακοπή λειτουργίας",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Η υπηρεσία είναι προσωρινά μη διαθέσιμη. Προσπαθήστε ξανά αργότερα."
@@ -7773,14 +8498,8 @@
   "perpsSortByPriceChange": {
     "message": "Αλλαγή τιμής"
   },
-  "perpsSortByRank": {
-    "message": "Κατάταξη"
-  },
-  "perpsSortBySection": {
-    "message": "Ταξινόμηση κατά"
-  },
   "perpsSortByTitle": {
-    "message": "Φιλτράρισμα"
+    "message": "Ταξινόμηση κατά"
   },
   "perpsSortByVolume": {
     "message": "Όγκος"
@@ -7961,6 +8680,10 @@
     "message": "Υποβολή της συναλλαγής σας",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "Δεν ήταν δυνατό το άνοιγμα της θέσης",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "Η θέση έκλεισε",
     "description": "Success toast text shown when a perps position is closed"
@@ -7976,6 +8699,18 @@
   "perpsToastUpdateSuccess": {
     "message": "Οι ρυθμίσεις για Λήψη Κέρδους/Περιορισμός Ζημιάς ενημερώθηκαν με επιτυχία",
     "description": "Success toast text shown when TP/SL settings are updated"
+  },
+  "perpsTopMovers": {
+    "message": "Κορυφαίες μεταβολές",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "Ανοδικές μετοχές",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "Πτωτικές μετοχές",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
   "perpsTrades": {
     "message": "Συναλλαγές"
@@ -8120,7 +8855,7 @@
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
   },
   "perpsWithdrawTooltip": {
-    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
+    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8218,24 +8953,13 @@
     "message": "Ιδιωτικό κλειδί",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Ιδιωτικό κλειδί για $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Το ιδιωτικό κλειδί είναι κρυφό",
     "description": "Explains that the private key input is hidden"
   },
-  "privateKeyShow": {
-    "message": "Εμφάνιση/απόκρυψη της εισαγωγής του ιδιωτικού κλειδιού",
-    "description": "Describes a toggle that is used to show or hide the private key input"
-  },
   "privateKeyShown": {
     "message": "Αυτό το ιδιωτικό κλειδί είναι ορατό",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Προειδοποίηση: Ποτέ μην αποκαλύπτετε αυτό το κλειδί. Οποιοσδήποτε έχει τα ιδιωτικά σας κλειδιά μπορεί να κλέψει όλα τα περιουσιακά στοιχεία που βρίσκονται στον λογαριασμό σας."
   },
   "privateKeys": {
     "message": "Ιδιωτικά κλειδιά",
@@ -8368,6 +9092,10 @@
   "quotedTotalCost": {
     "message": "Συνολικό κόστος: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Επιστροφή στο πορτοφόλι",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Καλύτερη τιμή"
   },
@@ -8385,6 +9113,25 @@
   "rampsChangeProvider": {
     "message": "Αλλαγή παρόχου."
   },
+  "rampsChangeProviders": {
+    "message": "αλλαγή παρόχων",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
+  "rampsChooseProvider": {
+    "message": "Επιλέξτε παρόχους"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "Ολοκλήρωση αγοράς",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Ολοκληρώστε την αγορά σας στην καρτέλα $1",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Συνέχεια στο πρόγραμμα περιήγησης",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Προσπαθήστε ξανά ή επικοινωνήστε με την υποστήριξη αν το πρόβλημα επιμένει."
   },
@@ -8396,6 +9143,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Σφάλμα κατά τη φόρτωση των tokens"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Εκτιμώμενο ποσό που θα λάβετε",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "Το μέγιστο ποσό αγοράς είναι $1",
@@ -8514,7 +9265,7 @@
     "message": "Άμεσα"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Λιγότερο από"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "λεπτό"
@@ -8522,12 +9273,23 @@
   "rampsPaymentDelayMinutes": {
     "message": "λεπτά"
   },
+  "rampsPaymentMethod": {
+    "message": "Μέθοδος πληρωμής",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "Μέγιστο ποσό: $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
   "rampsPaymentMethodMinLimit": {
     "message": "Ελάχιστο ποσό: $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsPreviouslyUsed": {
+    "message": "Τελευταία χρήση"
+  },
   "rampsQuoteFetchError": {
-    "message": "Αποτυχία λήψης προσφοράς."
+    "message": "Σφάλμα κατά τη λήψη προσφορών. Πληκτρολογήστε μικρότερο ποσό ή"
   },
   "rampsQuoteUnavailable": {
     "message": "Δεν υπάρχει διαθέσιμη προσφορά."
@@ -8541,8 +9303,13 @@
   "rampsServiceDisruptionTitle": {
     "message": "Η δυνατότητα αγοράς δεν είναι προσωρινά διαθέσιμη"
   },
-  "rampsShowAllTokens": {
-    "message": "Εμφάνιση όλων των tokens"
+  "rampsTokenUnavailableDescription": {
+    "message": "Αυτό το token δεν είναι διαθέσιμο στην περιοχή σας.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Το token δεν είναι διαθέσιμο",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Η αγορά κρυπτονομισμάτων δεν υποστηρίζεται ακόμη στην περιοχή σας."
@@ -8557,7 +9324,7 @@
     "message": "Περιλαμβάνει προμήθεια $1% στο MM."
   },
   "readdToken": {
-    "message": "Μπορείτε να προσθέσετε ξανά αυτό το token στο μέλλον επιλέγοντας \"Εισαγωγή token\" στο μενού επιλογών των λογαριασμών σας."
+    "message": "Μπορείτε να προσθέσετε ξανά αυτό το token στο μέλλον, μεταβαίνοντας στην επιλογή \"Διαχείριση tokens\" από το μενού σχετικά με tokens"
   },
   "receive": {
     "message": "Λήψη"
@@ -8625,11 +9392,26 @@
   "rejected": {
     "message": "Απορρίφθηκε"
   },
+  "relayerFee": {
+    "message": "Χρέωση αποδέκτη"
+  },
+  "remindMeLater": {
+    "message": "Υπενθυμίστε μου αργότερα",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Διαγραφή"
   },
   "removeAccount": {
     "message": "Διαγραφή λογαριασμού"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "Μπορείτε να επαναφέρετε αυτόν τον λογαριασμό ανά πάσα στιγμή, εισάγοντάς τον ξανά με το ιδιωτικό κλειδί.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "Αφαίρεση του $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "Βεβαιωθείτε ότι έχετε τη Μυστική Φράση Ανάκτησης ή το ιδιωτικό κλειδί για αυτόν τον λογαριασμό πριν τον αφαιρέσετε.",
@@ -8679,6 +9461,10 @@
   },
   "replace": {
     "message": "αντικατάσταση"
+  },
+  "replacePasskey": {
+    "message": "Αντικατάσταση passkey",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Αναφέρετε ένα πρόβλημα"
@@ -8849,6 +9635,33 @@
   "rewardsLinkAccountError": {
     "message": "Αποτυχία προσθήκης λογαριασμού"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Δεν μπορείτε να εγγραφείτε μέσω παραπομπής λόγω της πρόσφατης δραστηριότητάς σας στις συναλλαγές."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Έχετε ήδη παραπεμφθεί από άλλον χρήστη."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Μη έγκυρος κωδικός παραπομπής"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Κωδικός παραπομπής"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Δεν μπορείτε να χρησιμοποιήσετε τον δικό σας κωδικό παραπομπής."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Δεν μπορείτε να εγγραφείτε μέσω παραπομπής από άλλο άτομο."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Παρουσιάστηκε κάποιο πρόβλημα. Προσπαθήστε ξανά σε λίγο."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Περιμένετε λίγο και προσπαθήστε ξανά."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Έλεγχος περιοχής…"
   },
@@ -8886,24 +9699,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Αποτυχία συμμετοχής"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Μη έγκυρος κωδικός παραπομπής"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Κωδικός παραπομπής (προαιρετικά)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Απόκρυψη κωδικού"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Έχετε κωδικό παραπομπής;"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Εγγραφείτε για Ανταμοιβές"
   },
@@ -8912,10 +9707,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Ξεκινήστε να κερδίζετε ανταμοιβές"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Επαλήθευση κωδικού παραπομπής...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 πόντοι",
@@ -8959,6 +9750,9 @@
   },
   "rpcUrl": {
     "message": "Διεύθυνση URL του RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Αυτός ο πάροχος RPC έχει θέσει περιορισμό στα αιτήματα. Προσπαθήστε ξανά αργότερα ή χρησιμοποιήστε διαφορετική διεύθυνση URL RPC."
   },
   "safeTransferFrom": {
     "message": "Ασφαλής μεταφορά από"
@@ -9084,6 +9878,10 @@
   "searchAnAcccountOrContact": {
     "message": "Αναζήτηση λογαριασμού ή επαφής"
   },
+  "searchAnAccount": {
+    "message": "Αναζήτηση λογαριασμού",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "Αναζήτηση περιουσιακού στοιχείου για αποστολή"
   },
@@ -9149,21 +9947,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Ασφάλεια & προστασία προσωπικών δεδομένων"
-  },
-  "securityDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς σας"
-  },
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
   },
   "securityProviderPoweredBy": {
     "message": "Με την υποστήριξη του $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς και τα δεδομένα σας"
   },
   "securitySocialLoginEnabled": {
     "message": "Ενεργοποιημένο"
@@ -9523,6 +10312,9 @@
   "selectPathHelp": {
     "message": "Αν δεν βλέπετε τους λογαριασμούς που επιθυμείτε, δοκιμάστε να αλλάξετε τη διαδρομή HD ή το τρέχον επιλεγμένο δίκτυο."
   },
+  "selectPerpsAccount": {
+    "message": "Επιλέξτε λογαριασμό perps"
+  },
   "selectRecipient": {
     "message": "Επιλέξτε παραλήπτη"
   },
@@ -9551,9 +10343,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Νέα διεύθυνση"
   },
-  "sendBugReport": {
-    "message": "Στείλτε μας μια αναφορά σφαλμάτων."
-  },
   "sendBundleHwGasPayment": {
     "message": "Πληρωμή τέλη δικτύου με $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -9564,6 +10353,9 @@
   "sendSelectSendAsset": {
     "message": "Επιλέξτε περιουσιακό στοιχείο για αποστολή"
   },
+  "sendToPerps": {
+    "message": "Αποστολή στα Perps"
+  },
   "sendingAsset": {
     "message": "Αποστολή $1"
   },
@@ -9573,6 +10365,9 @@
   "sendingNativeAsset": {
     "message": "Αποστολή $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "Αυτές οι ευαίσθητες πληροφορίες παραμένουν στο πρόχειρό σας."
   },
   "sent": {
     "message": "Εστάλη"
@@ -10272,12 +11067,6 @@
   "showPermissions": {
     "message": "Εμφάνιση αδειών"
   },
-  "showPrivateKey": {
-    "message": "Εμφάνιση ιδιωτικού κλειδιού"
-  },
-  "showSRP": {
-    "message": "Εμφάνιση της Μυστικής Φράσης Ανάκτησης"
-  },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },
@@ -10884,38 +11673,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το εικονικό σας \"θησαυροφυλάκιο\", ακολουθώντας $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το MetaMask, ακολουθώντας $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Δεν είναι δυνατή η αυτόματη επαναφορά του εικονικού σας \"θησαυροφυλακίου\"."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Δεν είναι δυνατή η επαναφορά του εικονικού σας \"θησαυροφυλακίου\" από ένα αυτόματο αντίγραφο ασφαλείας. Η αυτόματη ανάκτηση θα διαγράψει τις τρέχουσες ρυθμίσεις και προτιμήσεις σας, επαναφέροντας μόνο το εικονικό σας \"θησαυροφυλάκιο\"."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Εσωτερικό σφάλμα: δεν είναι δυνατή η πρόσβαση στη βάση δεδομένων"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Επαναφορά κατάστασης του MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Γίνεται επαναφορά της βάσης δεδομένων…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Επαναφορά λογαριασμών"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Γίνεται ανάκτηση της βάσης δεδομένων…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "αυτές τις οδηγίες",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Πώς να ανακτήσετε τη Μυστική Φράση Ανάκτησής σας"
@@ -10961,7 +11731,7 @@
     "message": "Η ανταλλαγή θα είχε αποτύχει"
   },
   "stxCancelledDescription": {
-    "message": "Η συναλλαγή σας θα είχε αποτύχει και ακυρώθηκε για να σας προστατεύσουμε από την καταβολή περιττών τελών συναλλαγής."
+    "message": "Η συναλλαγή σας θα είχε αποτύχει και ακυρώθηκε για να μην επιβαρυνθείτε με περιττά τέλη δικτύου."
   },
   "stxCancelledSubDescription": {
     "message": "Προσπαθήστε εκ νέου να κάνετε ανταλλαγή. Θα είμαστε εδώ για να σας προστατεύσουμε από παρόμοιους κινδύνους την επόμενη φορά."
@@ -10970,7 +11740,7 @@
     "message": "Η ανταλλαγή απέτυχε"
   },
   "stxFailureDescription": {
-    "message": "Οι ξαφνικές αλλαγές της αγοράς ενδέχεται να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με $1.",
+    "message": "Οι ξαφνικές αλλαγές στην αγορά μπορεί να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με το $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
@@ -11006,7 +11776,7 @@
     "message": "Η ανταλλαγή ακυρώθηκε"
   },
   "stxUserCancelledDescription": {
-    "message": "Η συναλλαγή σας ακυρώθηκε και δεν πληρώσατε περιττά τέλη συναλλαγής."
+    "message": "Η συναλλαγή σας ακυρώθηκε και δεν επιβαρυνθήκατε με περιττά τέλη δικτύου."
   },
   "submit": {
     "message": "Υποβολή"
@@ -11138,18 +11908,15 @@
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
-    "message": "Το MetaMask δεν κερδίζει χρήματα από τα τέλη συναλλαγών. Αυτές οι χρεώσεις είναι εκτιμήσεις και μπορούν να αλλάξουν ανάλογα με το πόσο απασχολημένο είναι το δίκτυο και πόσο περίπλοκη είναι μια συναλλαγή. Μάθετε περισσότερα $1.",
+    "message": "Το MetaMask δεν αποκομίζει έσοδα από τα τέλη δικτύου. Αυτές οι χρεώσεις είναι ενδεικτικές και ενδέχεται να αλλάξουν ανάλογα με τον φόρτο του δικτύου και την πολυπλοκότητα της συναλλαγής. Μάθετε περισσότερα $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
     "message": "εδώ",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Περιλαμβάνεται"
-  },
   "swapGasFeesSplit": {
-    "message": "Τα τέλη συναλλαγών στην προηγούμενη οθόνη κατανέμονται μεταξύ αυτών των δύο συναλλαγών."
+    "message": "Τα τέλη δικτύου που εμφανίζονταν στην προηγούμενη οθόνη κατανέμονται σε αυτές τις δύο συναλλαγές."
   },
   "swapGasFeesSponsored": {
     "message": "Πληρωμή μέσω MetaMask"
@@ -11242,6 +12009,9 @@
   "swapSlippageAutoDescription": {
     "message": "Αυτόματα"
   },
+  "swapSlippageCappedDescription": {
+    "message": "Η ανοχή απόκλισης περιορίστηκε στο 100%."
+  },
   "swapSlippageHighDescription": {
     "message": "Η απόκλιση που καταχωρήσατε ($1%) θεωρείται πολύ υψηλή και μπορεί να επιφέρει χαμηλό επιτόκιο",
     "description": "$1 is the amount of % for slippage"
@@ -11285,7 +12055,7 @@
     "message": "Πηγή ρευστότητας"
   },
   "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Οι ανταλλαγές είναι πολύπλοκες και με επείγοντα χαρακτήρα συναλλαγές. Συνιστούμε αυτό το τέλος συναλλαγής για μια καλή ισορροπία μεταξύ κόστους και εμπιστοσύνης σε μια επιτυχημένη Ανταλλαγή."
+    "message": "Οι ανταλλαγές είναι πολύπλοκες που απαιτούν άμεση εκτέλεση. Συνιστούμε αυτά τα τέλη δικτύου για μια καλή ισορροπία μεταξύ κόστους και πιθανότητας επιτυχούς ολοκλήρωσης της ανταλλαγής."
   },
   "swapToConfirmWithHwWallet": {
     "message": "για επιβεβαίωση με το πορτοφόλι υλικού σας"
@@ -11310,7 +12080,7 @@
     "message": "Άγνωστο"
   },
   "swapValidationInsufficientGasMessage": {
-    "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη συναλλαγών για αυτήν την ανταλλαγή. Εισάγετε μικρότερο ποσό ή αγοράστε περισσότερα $1."
+    "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη δικτύου για αυτήν την ανταλλαγή. Πληκτρολογήστε μικρότερο ποσό ή αγοράστε περισσότερα $1."
   },
   "swapZeroSlippage": {
     "message": "0% Απόκλιση"
@@ -11514,7 +12284,7 @@
     "message": "Συνολικό ποσό που λάβατε"
   },
   "totalVolume": {
-    "message": "Συνολικός όγκος"
+    "message": "Συνολικός όγκος συναλλαγών (24ωρο)"
   },
   "transaction": {
     "message": "Συναλλαγή"
@@ -11526,7 +12296,7 @@
     "message": "Λειτουργία"
   },
   "transactionDetailGasHeading": {
-    "message": "Εκτιμώμενα τέλη συναλλαγών"
+    "message": "Εκτιμώμενα τέλη δικτύου"
   },
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό του συμβολαίου."
@@ -11547,7 +12317,7 @@
     "message": "Βασικό τέλος (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "Σύνολο Τέλους Συναλλαγής L1"
+    "message": "Συνολικά τέλη δικτύου L1"
   },
   "transactionHistoryL2GasLimitLabel": {
     "message": "Όριο τέλους συναλλαγής L2"
@@ -11562,7 +12332,7 @@
     "message": "Τέλος προτεραιότητας (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Σύνολο τελών συναλλαγών"
+    "message": "Συνολικά τέλη δικτύου"
   },
   "transactionIdCopied": {
     "message": "Το αναγνωριστικό συναλλαγής αντιγράφηκε"
@@ -11626,6 +12396,18 @@
     "message": "Αυτό είναι το ημερήσιο όριό σας, με βάση τα TRX που έχετε δεσμεύσει. Λαμβάνετε καθημερινά δωρεάν bandwidth αξίας $1.",
     "description": "$1 is the maximum bandwidth value"
   },
+  "tronDailyResourcesLoading": {
+    "message": "Φόρτωση ημερήσιας χρήσης πόρων…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "Οι πληροφορίες για την ενέργεια και το εύρος ζώνης σας είναι προσωρινά μη διαθέσιμες. Θα ενημερωθούν αυτόματα.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Δεν ήταν δυνατή η φόρτωση των πόρων",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
   "tronEnergy": {
     "message": "Ενέργεια"
   },
@@ -11685,6 +12467,9 @@
   "turnOn": {
     "message": "Ενεργοποίηση"
   },
+  "turnOnBasicFunctionality": {
+    "message": "ενεργοποίηση βασικών λειτουργιών"
+  },
   "turnOnMetamaskNotificationsError": {
     "message": "Προέκυψε σφάλμα κατά τη δημιουργία των ειδοποιήσεων. Προσπαθήστε ξανά αργότερα."
   },
@@ -11720,9 +12505,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Η σύνδεση στο $1 δεν είναι αξιόπιστη. Ενημερώστε τα στοιχεία σύνδεσης δικτύου πριν συνεχίσετε ή προσπαθήστε ξανά αργότερα.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Αυτή η συμπεριφορά είναι απρόβλεπτη και πρέπει να αναφερθεί ως σφάλμα, ακόμη κι αν οι λογαριασμοί σας έχουν αποκατασταθεί."
   },
   "unexpectedError": {
     "message": "Παρουσιάστηκε απρόσμενο σφάλμα.",
@@ -11765,7 +12547,7 @@
     "message": "Ξεκλείδωμα"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Ο κωδικός πρόσβασης είναι λανθασμένος. Προσπαθήστε ξανά."
+    "message": "Λανθασμένος κωδικός πρόσβασης. Προσπαθήστε ξανά."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Πάρα πολλές προσπάθειες. Δοκιμάστε ξανά σε "
@@ -11880,9 +12662,6 @@
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."
   },
-  "usedByClients": {
-    "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
-  },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"
   },
@@ -11959,6 +12738,9 @@
   },
   "volume": {
     "message": "Όγκος"
+  },
+  "volumeToMarketCap": {
+    "message": "Όγκος συναλλαγών / Κεφαλαιοποίηση αγοράς"
   },
   "wallet": {
     "message": "Πορτοφόλι"
@@ -12038,7 +12820,7 @@
     "message": "Σύμφωνα με τα αρχεία μας, το όνομα του δικτύου ενδέχεται να μην ταιριάζει απόλυτα με αυτό το αναγνωριστικό αλυσίδας."
   },
   "wrongPassword": {
-    "message": "Λάθος κωδικός πρόσβασης",
+    "message": "Λανθασμένος κωδικός πρόσβασης. Προσπαθήστε ξανά.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {

@@ -9,6 +9,7 @@ import {
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
   selectPerpsDepositPending,
+  selectPerpsLastDepositEntryPoint,
   selectPerpsLastDepositTransactionId,
   selectPerpsLastDepositResult,
   selectPerpsWithdrawInProgress,
@@ -26,6 +27,7 @@ import {
   selectPerpsCachedPositions,
   selectPerpsCachedOrders,
   selectPerpsCachedAccountState,
+  selectPerpsCachedUserData,
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
   selectPerpsShouldShowDepositToast,
@@ -33,6 +35,11 @@ import {
   selectOrderBookPosition,
   selectOrderBookExpanded,
   selectChartExpanded,
+  selectPerpsPendingTradeConfiguration,
+  selectPerpsSelectedOrderType,
+  selectPerpsOrderBookPreferences,
+  selectPerpsOrderBookGrouping,
+  selectPerpsVisibleCandleCount,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -95,8 +102,8 @@ describe('perps-controller selectors', () => {
   describe('selectPerpsActiveProvider', () => {
     it('returns value from state', () => {
       expect(
-        selectPerpsActiveProvider(buildState({ activeProvider: 'myx' })),
-      ).toBe('myx');
+        selectPerpsActiveProvider(buildState({ activeProvider: 'lighter' })),
+      ).toBe('lighter');
     });
 
     it('defaults to hyperliquid', () => {
@@ -395,6 +402,28 @@ describe('perps-controller selectors', () => {
 
     it('defaults to null', () => {
       expect(selectPerpsLastDepositResult(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectPerpsLastDepositEntryPoint', () => {
+    it('returns entry point from persisted state when present', () => {
+      expect(
+        selectPerpsLastDepositEntryPoint(
+          buildState({
+            lastPerpsDepositEntryPoint: 'hyperliquid_deposit_prompt',
+          }),
+        ),
+      ).toBe('hyperliquid_deposit_prompt');
+    });
+
+    it('returns null when no entry point is set', () => {
+      expect(
+        selectPerpsLastDepositEntryPoint(
+          buildState({
+            lastPerpsDepositEntryPoint: null,
+          }),
+        ),
+      ).toBeNull();
     });
   });
 
@@ -764,6 +793,31 @@ describe('perps-controller selectors', () => {
     });
   });
 
+  describe('selectPerpsCachedUserData', () => {
+    it('returns the full cache entry for the active provider', () => {
+      const entry = {
+        positions: [],
+        orders: [],
+        accountState: { totalBalance: '100' },
+        timestamp: 1,
+        address: '0xabc',
+      };
+
+      expect(
+        selectPerpsCachedUserData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: { hyperliquid: entry },
+          }),
+        ),
+      ).toBe(entry);
+    });
+
+    it('defaults to null', () => {
+      expect(selectPerpsCachedUserData(buildState())).toBeNull();
+    });
+  });
+
   describe('selectPerpsPerpsBalances', () => {
     it('returns value from state', () => {
       const balances = { ETH: '100' };
@@ -888,6 +942,144 @@ describe('perps-controller selectors', () => {
       expect(selectChartExpanded(buildState())).toBe(
         selectProLayoutPreferences(buildState()).chartExpanded,
       );
+    });
+  });
+
+  describe('selectPerpsPendingTradeConfiguration', () => {
+    it('returns an unexpired draft for the active environment', () => {
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_000);
+
+      expect(
+        selectPerpsPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: {
+                ETH: {
+                  pendingConfig: {
+                    amount: '25',
+                    direction: 'long',
+                    timestamp: 10_000,
+                  },
+                },
+              },
+              testnet: {},
+            },
+          }),
+          'ETH',
+        ),
+      ).toEqual({
+        amount: '25',
+        direction: 'long',
+      });
+      dateNowSpy.mockRestore();
+    });
+
+    it('keeps a draft at the controller TTL boundary', () => {
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_000);
+
+      expect(
+        selectPerpsPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: {
+                ETH: {
+                  pendingConfig: {
+                    amount: '25',
+                    timestamp: 10_000,
+                  },
+                },
+              },
+              testnet: {},
+            },
+          }),
+          'ETH',
+        ),
+      ).toEqual({ amount: '25' });
+      dateNowSpy.mockRestore();
+    });
+
+    it('returns undefined when the draft has expired', () => {
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_001);
+
+      expect(
+        selectPerpsPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: {
+                ETH: {
+                  pendingConfig: {
+                    amount: '25',
+                    timestamp: 10_000,
+                  },
+                },
+              },
+              testnet: {},
+            },
+          }),
+          'ETH',
+        ),
+      ).toBeUndefined();
+      dateNowSpy.mockRestore();
+    });
+  });
+
+  describe('selectPerpsSelectedOrderType', () => {
+    it('returns a persisted limit order type', () => {
+      expect(
+        selectPerpsSelectedOrderType(
+          buildState({ selectedOrderType: 'limit' }),
+        ),
+      ).toBe('limit');
+    });
+
+    it('defaults unsupported controller order types to market', () => {
+      expect(
+        selectPerpsSelectedOrderType(
+          buildState({ selectedOrderType: 'stop_limit' }),
+        ),
+      ).toBe('market');
+    });
+  });
+
+  describe('selectPerpsOrderBookPreferences', () => {
+    it('merges persisted values with controller defaults', () => {
+      expect(
+        selectPerpsOrderBookPreferences(
+          buildState({ orderBookPreferences: { currency: 'base' } }),
+        ),
+      ).toEqual({ currency: 'base', metric: 'total' });
+    });
+  });
+
+  describe('selectPerpsOrderBookGrouping', () => {
+    it('returns the grouping for the active market and environment', () => {
+      expect(
+        selectPerpsOrderBookGrouping(
+          buildState({
+            isTestnet: true,
+            tradeConfigurations: {
+              mainnet: {},
+              testnet: { ETH: { orderBookGrouping: 5 } },
+            },
+          }),
+          'ETH',
+        ),
+      ).toBe(5);
+    });
+  });
+
+  describe('selectPerpsVisibleCandleCount', () => {
+    it('returns the persisted count', () => {
+      expect(
+        selectPerpsVisibleCandleCount(buildState({ visibleCandleCount: 75 })),
+      ).toBe(75);
+    });
+
+    it('returns the controller default when not persisted', () => {
+      expect(selectPerpsVisibleCandleCount(buildState())).toBe(30);
     });
   });
 });

@@ -25,7 +25,6 @@ const DEPRECATED_COMPONENT_PATHS = [
   'ui/box',
   'ui/button',
   'ui/callout',
-  'ui/check-box',
   'ui/chip',
   'ui/form-field',
   'ui/icon',

@@ -58,8 +58,6 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -84,6 +82,16 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
     ActivityBanner: 'ext_buy_banner_activity',
     BtcBanner: 'ext_buy_banner_btc',
   },
+}));
+
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    goToBuy: mockGoToBuy,
+  })),
 }));
 
 const BUY_BUTTON = 'coin-overview-buy';
@@ -124,9 +132,6 @@ const mockMetamaskStore = {
     },
   },
   useExternalServices: true,
-  accountsAssets: {
-    [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
-  },
   internalAccounts: {
     accounts: {
       [mockNonEvmAccount.id]: mockNonEvmAccount,
@@ -155,21 +160,28 @@ const mockMetamaskStore = {
       },
     },
   },
-  // MultichainBalancesController
-  balances: {
+  selectedCurrency: 'usd',
+  assetsBalance: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.BITCOIN]: {
         amount: mockNonEvmBalance,
-        unit: 'BTC',
       },
     },
   },
-  // (Multichain) RatesController
-  fiatCurrency: 'usd',
-  conversionRates: {
-    [Cryptocurrency.Btc]: {
-      conversionRate: '1.000',
-      conversionDate: 0,
+  assetsInfo: {
+    [MultichainNativeAssets.BITCOIN]: {
+      type: 'native',
+      decimals: 8,
+      symbol: 'BTC',
+      name: 'Bitcoin',
+    },
+  },
+  assetsPrice: {
+    [MultichainNativeAssets.BITCOIN]: {
+      assetPriceType: 'fungible',
+      price: 1,
+      usdPrice: 1,
+      lastUpdated: 0,
     },
   },
   cryptocurrencies: [Cryptocurrency.Btc],
@@ -250,10 +262,13 @@ describe('NonEvmOverview', () => {
               [MultichainNetworks.BITCOIN]: true,
             },
           },
-          currentCurrency: 'usd',
-          conversionRates: {
+          selectedCurrency: 'usd',
+          assetsPrice: {
             [MultichainNativeAssets.BITCOIN]: {
-              rate: '1',
+              assetPriceType: 'fungible',
+              price: 1,
+              usdPrice: 1,
+              lastUpdated: 0,
             },
           },
         },
@@ -272,9 +287,8 @@ describe('NonEvmOverview', () => {
       getStore({
         metamask: {
           ...mockMetamaskStore,
-          balances: {},
-          accountsAssets: {
-            [mockNonEvmAccount.id]: [],
+          assetsBalance: {
+            [mockNonEvmAccount.id]: {},
           },
         },
       }),
@@ -319,7 +333,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).not.toBeDisabled();
   });
 
-  it('calls openBuyInPdapp when clicking on "Buy & Sell" button', async () => {
+  it('calls the in-app buy flow when clicking on "Buy & Sell" button', async () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -328,9 +342,7 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
     expect(buyButton).toBeInTheDocument();
     fireEvent.click(buyButton as HTMLElement);
-    await waitFor(() =>
-      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1),
-    );
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalledTimes(1));
   });
 
   it('sends an event when clicking the Buy button', async () => {

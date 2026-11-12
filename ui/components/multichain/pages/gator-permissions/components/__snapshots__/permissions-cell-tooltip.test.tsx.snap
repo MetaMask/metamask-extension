@@ -17,57 +17,57 @@ exports[`PermissionsCellTooltip renders correctly with networks 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
           >
             <img
               alt="BNB Smart Chain"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/bnb.svg"
             />
           </div>
         </div>
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: -8px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
           >
             <img
               alt="Avalanche C-Chain"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/avax-token.svg"
             />
           </div>
         </div>
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: -8px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
           >
             <img
               alt="Polygon"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/pol-token.svg"
             />
           </div>
         </div>
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: -8px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-4 w-4 bg-white"
           >
             <img
               alt="Ethereum Mainnet"
-              class="size-full object-contain"
+              class="size-full object-cover"
               src="./images/eth_logo.svg"
             />
           </div>

@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 
 /**
  * Single-address QR overlay: full address and view-on-explorer.
@@ -23,10 +24,8 @@ class AccountAddressModal {
   private readonly parentSelector =
     '[data-testid="parent-selector-address-qr-code-modal"]';
 
-  private readonly viewOnEtherscanButton = {
-    css: 'button',
-    text: 'View on Etherscan',
-  };
+  private readonly qrModalCopyButton =
+    '[data-testid="address-qr-code-modal-copy-button"]';
 
   private readonly viewOnEtherscanLink =
     '[data-testid="view-address-on-etherscan"]';
@@ -42,6 +41,8 @@ class AccountAddressModal {
         this.accountAddress,
         this.viewOnEtherscanLink,
       ]);
+      // Wait for modal animation to complete
+      await this.driver.waitForElementToStopMoving(this.parentSelector);
     } catch (e) {
       console.log(
         'Timeout while waiting for account address modal to be loaded',
@@ -49,8 +50,19 @@ class AccountAddressModal {
       );
       throw e;
     }
-    await this.driver.delay(1000);
     console.log('Account address modal is loaded');
+  }
+
+  /**
+   * Verify the displayed address matches the expected one
+   *
+   * @param expectedAddress - The address expected in the modal
+   */
+  async checkQrPopupShowsAddress(expectedAddress: string): Promise<void> {
+    console.log(`Check QR popup shows address "${expectedAddress}"`);
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='account-address'][translate(normalize-space(.), ' ', '') = ${quoteXPathText(expectedAddress)}]`,
+    });
   }
 
   /**
@@ -58,7 +70,24 @@ class AccountAddressModal {
    */
   async checkViewOnEtherscanButton(): Promise<void> {
     console.log('Verifying View on Etherscan button');
-    await this.driver.findElement(this.viewOnEtherscanButton);
+    await this.driver.findElement(this.viewOnEtherscanLink);
+  }
+
+  /**
+   * Verify the View on Tronscan button is present
+   */
+  async checkViewOnTronscanButton(): Promise<void> {
+    console.log('Verify View on Tronscan button is present');
+    await this.driver.waitForSelector({
+      css: this.viewOnEtherscanLink,
+      text: 'View on Tronscan',
+    });
+  }
+
+  async clickQrCopyAddressLink(expectedAddress: string): Promise<void> {
+    console.log('Click copy address button in QR popup');
+    await this.driver.clickElement(this.qrModalCopyButton);
+    await this.driver.waitForClipboardContent(expectedAddress);
   }
 
   /**
@@ -66,10 +95,8 @@ class AccountAddressModal {
    */
   async getAccountAddress(): Promise<string> {
     console.log('Getting the address from the modal');
-    // This delay is needed to wait for the animation to complete
-    // as we don't have a mechanism to wait for the anumation to complete.
-    // If we remove it will introduce flakiness
-    await this.driver.delay(1000);
+    // Wait for animation to complete before reading the address
+    await this.driver.waitForElementToStopMoving(this.accountAddress);
     await this.driver.waitForSelector(this.accountAddress);
     const element = await this.driver.findElement(this.accountAddress);
     await this.driver.waitForNonEmptyElement(element);

@@ -1,10 +1,15 @@
 import { act, waitFor } from '@testing-library/react';
+import { describe, it } from '@jest/globals';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   DEFAULT_ROUTE,
   DEEP_LINK_ROUTE,
 } from '../../../helpers/constants/routes';
-import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
+import {
+  type DeferredDeepLinkRoute,
+  DeferredDeepLinkRouteType,
+} from '../../../../shared/lib/deep-links/types';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
 import {
   INVALID,
@@ -79,28 +84,57 @@ const mockSetPreference = jest.fn().mockResolvedValue(undefined);
 const mockSetUseMultiAccountBalanceChecker = jest
   .fn()
   .mockResolvedValue(undefined);
+const mockSetUseTokenDetection = jest.fn().mockResolvedValue(undefined);
+const mockSetUseCurrencyRateCheck = jest.fn().mockResolvedValue(undefined);
+const mockSetUseAddressBarEnsResolution = jest
+  .fn()
+  .mockResolvedValue(undefined);
+const mockSetUsePhishDetect = jest.fn().mockResolvedValue(undefined);
+const mockSetOpenSeaEnabled = jest.fn().mockResolvedValue(undefined);
+const mockSetUseNftDetection = jest.fn().mockResolvedValue(undefined);
+const mockSetUseSafeChainsListValidation = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const mockSetHasSeenOnboardingCompletionPage = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockCompleteOnboarding = jest.fn().mockResolvedValue(true);
-const backgroundConnectionMock = new Proxy(
-  {
-    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
-    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
-    toggleExternalServices: mockToggleExternalServices,
-    toggleBasicFunctionality: mockToggleBasicFunctionality,
-    setPreference: mockSetPreference,
-    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
-    setHasSeenOnboardingCompletionPage: mockSetHasSeenOnboardingCompletionPage,
-    completeOnboarding: mockCompleteOnboarding,
-  },
-  {
-    get: (target, prop) => {
-      if (prop in target) {
-        return target[prop as keyof typeof target];
-      }
-      return jest.fn().mockResolvedValue(undefined);
-    },
+const messengerCallMock = jest.fn(
+  (actionType: string, args: unknown[] = []) => {
+    switch (actionType) {
+      case 'AppStateController:removeDeferredDeepLink':
+        return mockRemoveDeferredDeepLink(...args);
+      case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
+        return mockSetIsBackupAndSyncFeatureEnabled(...args);
+      case 'LegacyBackgroundApiService:toggleExternalServices':
+        return mockToggleExternalServices(...args);
+      case 'PreferencesController:toggleBasicFunctionality':
+        return mockToggleBasicFunctionality(...args);
+      case 'PreferencesController:setPreference':
+        return mockSetPreference(...args);
+      case 'PreferencesController:setUseMultiAccountBalanceChecker':
+        return mockSetUseMultiAccountBalanceChecker(...args);
+      case 'PreferencesController:setUseTokenDetection':
+        return mockSetUseTokenDetection(...args);
+      case 'PreferencesController:setUseCurrencyRateCheck':
+        return mockSetUseCurrencyRateCheck(...args);
+      case 'PreferencesController:setUseAddressBarEnsResolution':
+        return mockSetUseAddressBarEnsResolution(...args);
+      case 'PreferencesController:setUsePhishDetect':
+        return mockSetUsePhishDetect(...args);
+      case 'PreferencesController:setOpenSeaEnabled':
+        return mockSetOpenSeaEnabled(...args);
+      case 'PreferencesController:setUseNftDetection':
+        return mockSetUseNftDetection(...args);
+      case 'PreferencesController:setUseSafeChainsListValidation':
+        return mockSetUseSafeChainsListValidation(...args);
+      case 'OnboardingController:setHasSeenOnboardingCompletionPage':
+        return mockSetHasSeenOnboardingCompletionPage(...args);
+      case 'OnboardingController:completeOnboarding':
+        return mockCompleteOnboarding(...args);
+      default:
+        return Promise.resolve(undefined);
+    }
   },
 );
 
@@ -134,6 +168,13 @@ describe('useOnboardingCompletion', () => {
       completedOnboarding: false,
       hasSeenOnboardingCompletionPage: false,
       deferredDeepLink: null,
+      useTokenDetection: true,
+      useCurrencyRateCheck: true,
+      useAddressBarEnsResolution: true,
+      usePhishDetect: true,
+      openSeaEnabled: true,
+      useNftDetection: true,
+      useSafeChainsListValidation: true,
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -149,7 +190,10 @@ describe('useOnboardingCompletion', () => {
       false,
     );
     mockUseNavigate.mockClear();
-    setBackgroundConnection(backgroundConnectionMock as never);
+    setBackgroundConnection({
+      getStatePatches: jest.fn().mockResolvedValue([]),
+      messengerCall: messengerCallMock,
+    } as never);
     (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
       false,
     );
@@ -209,6 +253,37 @@ describe('useOnboardingCompletion', () => {
     });
   });
 
+  it.each([
+    [false, false],
+    [true, false],
+    [true, true],
+  ])(
+    'resumes the intended destination (side panel: %s, auto-complete: %s)',
+    async (sidePanelEnabled, autoComplete) => {
+      jest
+        .mocked(useSidePanelEnabledHook.useSidePanelEnabled)
+        .mockReturnValue(sidePanelEnabled);
+      const browserMock = jest.requireMock('webextension-polyfill');
+      browserMock.tabs.query.mockResolvedValue([{ windowId: 1, id: 1 }]);
+      const route = '/settings/privacy?a=v#metametrics';
+      const { result, store } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          appState: { ...mockState.appState, onboardingRedirect: route },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding(autoComplete);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(route, { replace: true });
+      expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+      expect(store.getState().appState.onboardingRedirect).toBeNull();
+    },
+  );
+
   it('does not complete onboarding while the wallet is locked', async () => {
     const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
       ...mockState,
@@ -244,8 +319,36 @@ describe('useOnboardingCompletion', () => {
         'isBasicFunctionalityConsolidatedEnabled',
         true,
       );
-      expect(mockSetUseMultiAccountBalanceChecker).toHaveBeenCalledWith(true);
+      expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
     });
+    expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
+  });
+
+  it('forces Basic Functionality on for social-login users when consolidation is enabled', async () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+      },
+      appState: {
+        ...mockState.appState,
+        externalServicesOnboardingToggleState: false,
+      },
+    });
+
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+
+    await waitFor(() => {
+      expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
+    });
+    expect(mockToggleExternalServices).not.toHaveBeenCalled();
+    expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
   });
 
   it('uses toggleExternalServices when the Basic Functionality build flag is disabled', async () => {
@@ -259,10 +362,147 @@ describe('useOnboardingCompletion', () => {
     });
 
     await waitFor(() => {
-      expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
+      expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+        useTokenDetection: true,
+        useCurrencyRateCheck: true,
+        usePhishDetect: true,
+        useAddressBarEnsResolution: true,
+        openSeaEnabled: true,
+        useNftDetection: true,
+        useSafeChainsListValidation: true,
+      });
     });
     expect(mockSetPreference).not.toHaveBeenCalled();
     expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
+  });
+
+  describe('onboarding privacy choices', () => {
+    it('applies every preference the user turned off in the same toggleExternalServices write', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+            useAddressBarEnsResolution: false,
+            usePhishDetect: false,
+            openSeaEnabled: false,
+            useNftDetection: false,
+            useSafeChainsListValidation: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+          useTokenDetection: true,
+          useCurrencyRateCheck: false,
+          usePhishDetect: false,
+          useAddressBarEnsResolution: false,
+          openSeaEnabled: false,
+          useNftDetection: false,
+          useSafeChainsListValidation: false,
+        });
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+      expect(mockSetOpenSeaEnabled).not.toHaveBeenCalled();
+      expect(mockSetUseNftDetection).not.toHaveBeenCalled();
+      expect(mockSetUseSafeChainsListValidation).not.toHaveBeenCalled();
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+    });
+
+    it('does not follow that write with individual preference restores', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+          useTokenDetection: true,
+          useCurrencyRateCheck: false,
+          usePhishDetect: true,
+          useAddressBarEnsResolution: true,
+          openSeaEnabled: true,
+          useNftDetection: true,
+          useSafeChainsListValidation: true,
+        });
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+    });
+
+    it('does not pass owned preferences when Basic Functionality is turned off', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+            usePhishDetect: false,
+          },
+          appState: {
+            ...mockState.appState,
+            externalServicesOnboardingToggleState: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(false);
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+    });
+
+    it('leaves the consolidated path to own them', async () => {
+      mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+        true,
+      );
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+            usePhishDetect: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+    });
   });
 
   it('allows retrying completion after a failed attempt', async () => {
@@ -270,9 +510,13 @@ describe('useOnboardingCompletion', () => {
       .mockRejectedValueOnce(new Error('completion failed'))
       .mockResolvedValueOnce(true);
 
-    const { result } = renderHookWithProvider(
+    const route = '/settings/privacy?a=v#metametrics';
+    const { result, store } = renderHookWithProvider(
       () => useOnboardingCompletion(),
-      mockState,
+      {
+        ...mockState,
+        appState: { ...mockState.appState, onboardingRedirect: route },
+      },
     );
 
     await act(async () => {
@@ -280,6 +524,7 @@ describe('useOnboardingCompletion', () => {
         'completion failed',
       );
     });
+    expect(store.getState().appState.onboardingRedirect).toBe(route);
 
     await act(async () => {
       await result.current.completeOnboarding();
@@ -287,7 +532,8 @@ describe('useOnboardingCompletion', () => {
 
     await waitFor(() => {
       expect(mockCompleteOnboarding).toHaveBeenCalledTimes(2);
-      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(route, { replace: true });
+      expect(store.getState().appState.onboardingRedirect).toBeNull();
     });
   });
 
@@ -825,45 +1071,94 @@ describe('useOnboardingCompletion', () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       });
     });
+  });
 
-    it('navigates to interstitial page for Interstitial type (unsigned/invalid signature) when side panel is disabled', async () => {
-      const urlPathAndQuery = '/swap?amount=100';
-      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
-        type: DeferredDeepLinkRouteType.Interstitial,
-        urlPathAndQuery,
-        signature: INVALID,
-      });
-      (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
-        `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
-      );
-
-      const { result } = renderHookWithProvider(
-        () => useOnboardingCompletion(),
+  describe.each([
+    [false, false],
+    [true, false],
+    [true, true],
+  ])(
+    'Direct link after install (side panel: %s, auto-complete: %s)',
+    (sidePanelEnabled, autoComplete) => {
+      it.each([
         {
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            deferredDeepLink: {
-              createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap?amount=100',
+          type: DeferredDeepLinkRouteType.Navigate,
+          route: '/swap',
+          signature: VALID,
+        },
+        {
+          type: DeferredDeepLinkRouteType.Redirect,
+          url: 'https://example.com/callback',
+          signature: VALID,
+        },
+        {
+          type: DeferredDeepLinkRouteType.Interstitial,
+          urlPathAndQuery: '/swap?amount=100',
+          signature: INVALID,
+        },
+      ] satisfies NonNullable<DeferredDeepLinkRoute>[])(
+        'resumes the direct destination and retains deferred attribution for $type',
+        async (deferredRoute) => {
+          jest
+            .mocked(useSidePanelEnabledHook.useSidePanelEnabled)
+            .mockReturnValue(sidePanelEnabled);
+          jest
+            .mocked(deepLinkUtils.getDeferredDeepLinkRoute)
+            .mockResolvedValue(deferredRoute);
+          const browserMock = jest.requireMock('webextension-polyfill');
+          browserMock.tabs.query.mockResolvedValue([{ windowId: 1, id: 1 }]);
+          const directRoute = '/settings/privacy?a=v#metametrics';
+
+          const { result, store } = renderHookWithProvider(
+            () => useOnboardingCompletion(),
+            {
+              ...mockState,
+              appState: {
+                ...mockState.appState,
+                onboardingRedirect: directRoute,
+              },
+              metamask: {
+                ...mockState.metamask,
+                deferredDeepLink: {
+                  createdAt: Date.now(),
+                  referringLink:
+                    'https://link.metamask.io/swap?attributionId=install-123&utm_source=campaign',
+                },
+              },
             },
-          },
+          );
+
+          await act(async () => {
+            await result.current.completeOnboarding(autoComplete);
+          });
+
+          expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+          expect(mockUseNavigate).toHaveBeenCalledWith(directRoute, {
+            replace: true,
+          });
+          expect(windowOpenSpy).not.toHaveBeenCalled();
+          expect(deepLinkUtils.buildInterstitialRoute).not.toHaveBeenCalled();
+          expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+          expect(mockRemoveDeferredDeepLink).toHaveBeenCalledTimes(1);
+          expect(store.getState().appState.onboardingRedirect).toBeNull();
+          const deferredEvents = mockTrackEvent.mock.calls.filter(
+            ([event]) => event.name === MetaMetricsEventName.DeepLinkUsed,
+          );
+          expect(deferredEvents).toHaveLength(1);
+          expect(deferredEvents[0][0]).toEqual(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                route: '/swap',
+                signature: deferredRoute.signature,
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics properties
+                attribution_id: 'install-123',
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics properties
+                utm_source: 'campaign',
+              }),
+            }),
+          );
         },
       );
-
-      await act(async () => {
-        await result.current.completeOnboarding();
-      });
-
-      await waitFor(() => {
-        expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
-          urlPathAndQuery,
-        );
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
-        );
-        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
-      });
-    });
-  });
+    },
+  );
 });

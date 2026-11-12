@@ -33,7 +33,7 @@ type TranslateFn = ReturnType<typeof useI18nContext>;
 /**
  * Formats a provider buy limit for payment method list display.
  *
- * Shows "Up to {max}" when a maximum is published, or a minimum-only
+ * Shows "{max} limit" when a maximum is published, or a minimum-only
  * label when only a min is available.
  *
  * @param limit - Structured buy limit, when available.

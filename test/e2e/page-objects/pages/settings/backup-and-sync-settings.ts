@@ -8,8 +8,9 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: page load checks and toggling backup-and-sync, account sync, and
  * contact sync.
  * Boundaries: toggle surface only. QR sync / add-wallet flows belong to
- * `SyncAccountsSettingsPage`; contact CRUD belongs to `ContactsSettings`.
- * Related: `SettingsPage`, `SyncAccountsSettingsPage`, `ContactsSettings`.
+ * `SyncAccountsSettingsPage`; contacts belong to `ContactsListPage` and its
+ * add, details and edit page objects.
+ * Related: `SettingsPage`, `SyncAccountsSettingsPage`, `ContactsListPage`.
  *
  * @see ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.tsx
  */
@@ -24,6 +25,9 @@ class BackupAndSyncSettings {
     '[data-testid="contact-syncing-toggle-container"]';
 
   private readonly driver: Driver;
+
+  private readonly rampsSyncToggle =
+    '[data-testid="ramps-syncing-toggle-container"]';
 
   private readonly settingsPage = {
     testId: 'parent-selector-settings-page',
@@ -40,6 +44,7 @@ class BackupAndSyncSettings {
         this.backupAndSyncToggle,
         this.contactSyncToggle,
         this.settingsPage,
+        this.rampsSyncToggle,
       ]);
     } catch (e) {
       console.log(
@@ -64,6 +69,11 @@ class BackupAndSyncSettings {
   async toggleContactSync(): Promise<void> {
     console.log('Toggling contact sync setting');
     await this.driver.clickElement(this.contactSyncToggle);
+  }
+
+  async toggleRampsSync(): Promise<void> {
+    console.log('Toggling ramps order sync setting');
+    await this.driver.clickElement(this.rampsSyncToggle);
   }
 }
 

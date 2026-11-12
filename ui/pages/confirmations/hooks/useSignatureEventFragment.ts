@@ -5,7 +5,7 @@ import { useConfirmContext } from '../context/confirm';
 import { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 
-import type { MetaMetricsEventFragment } from '../../../../shared/constants/metametrics';
+import type { MetaMetricsEventFragmentPayload } from '../../../../shared/constants/metametrics';
 
 /**
  * When a signature has been requested, there should be an event fragment created for it in
@@ -22,7 +22,7 @@ export const useSignatureEventFragment = () => {
   const fragmentId = requestId ? generateSignatureUniqueId(requestId) : null;
 
   const updateSignatureEventFragment = useCallback(
-    async (fragmentPayload: Partial<MetaMetricsEventFragment>) => {
+    async (fragmentPayload: MetaMetricsEventFragmentPayload) => {
       if (!fragmentId) {
         return;
       }

@@ -27,7 +27,7 @@ export function getUserTraitsServiceMessenger(
   messenger.delegate({
     messenger: userTraitsServiceMessenger,
     actions: [
-      'MetaMetricsController:getState',
+      'AppMetadataController:getState',
       'SeedlessOnboardingController:getState',
     ],
   });

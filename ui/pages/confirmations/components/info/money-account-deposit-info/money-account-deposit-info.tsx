@@ -1,11 +1,13 @@
 import React from 'react';
 import { BalanceProjection } from '../../../../../components/app/money/balance-projection';
+import { useUpgradeMoneyAccount } from '../../../../../hooks/money/use-upgrade-money-account';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN,
   MUSD_TOKEN_ADDRESS,
 } from '../../../constants/musd';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
+import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfo } from '../custom-amount-info';
 
 const MONEY_ACCOUNT_DEPOSIT_CURRENCY = 'usd';
@@ -26,12 +28,19 @@ const renderAmountDetails = (amountFiat: string) => (
 );
 
 export const MoneyAccountDepositInfo = () => {
+  const { preferredPaymentToken } = useConfirmationNavigationOptions();
+
   useAddToken({
     chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
     decimals: MUSD_TOKEN.decimals,
     symbol: MUSD_TOKEN.symbol,
     tokenAddress: MUSD_TOKEN_ADDRESS,
   });
+
+  // A deposit reached without visiting the Money home page must still ensure
+  // the account is upgraded, mirroring mobile's trigger on its confirmation
+  // stack.
+  useUpgradeMoneyAccount();
 
   return (
     <CustomAmountInfo
@@ -40,7 +49,9 @@ export const MoneyAccountDepositInfo = () => {
       currency={MONEY_ACCOUNT_DEPOSIT_CURRENCY}
       displayAccountRow
       displayPercentageButtons
+      hasMax
       hidePayTokenAmount
+      preferredToken={preferredPaymentToken}
     />
   );
 };

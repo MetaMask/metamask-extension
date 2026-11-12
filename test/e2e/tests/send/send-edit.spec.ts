@@ -70,9 +70,6 @@ describe('Send - Edit Transaction', function () {
 
         await transactionConfirmation.checkGasFeeFiat('$0.07');
 
-        // Adding unrelated check for stability, to prevent issue where clicking Back navigates to Homepage instead of Sendpage(#CONF-1865)
-        await transactionConfirmation.checkSecurityProviderBannerAlertIsNotPresent();
-
         await transactionConfirmation.clickBackButton();
 
         await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
@@ -93,7 +90,10 @@ describe('Send - Edit Transaction', function () {
         await transactionConfirmation.checkGasFeeFiat('$0.29');
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
         await activityTab.goToActivityList();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
@@ -137,9 +137,6 @@ describe('Send - Edit Transaction', function () {
 
         await transactionConfirmation.checkGasFeeFiat('$0.75');
 
-        // Adding unrelated check for stability, to prevent issue where clicking Back navigates to Homepage instead of Sendpage(#CONF-1865)
-        await transactionConfirmation.checkSecurityProviderBannerAlertIsNotPresent();
-
         await transactionConfirmation.clickBackButton();
 
         await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
@@ -161,7 +158,10 @@ describe('Send - Edit Transaction', function () {
         await transactionConfirmation.checkGasFeeFiat('$0.29');
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
         await activityTab.goToActivityList();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);

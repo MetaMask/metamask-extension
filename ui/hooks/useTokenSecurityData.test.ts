@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
+import { apiClient } from '../helpers/api-client';
 import { getTokenAssetQueryKey } from './token-asset/token-asset-query';
 import * as tokenAssetBatcherModule from './token-asset/token-asset-batcher';
 import { useTokenSecurityData } from './useTokenSecurityData';
@@ -12,11 +13,22 @@ jest.mock('@metamask/assets-controllers', () => ({
   fetchTokenAssets: jest.fn(),
 }));
 
+jest.mock('../helpers/api-client', () => ({
+  apiClient: {
+    tokens: {
+      fetchTokenV2SupportedNetworks: jest.fn(),
+    },
+  },
+}));
+
 jest.mock('react-redux', () => ({
   useSelector: (selector: (state: unknown) => unknown) => selector({}),
 }));
 
 const mockFetchCachedTokenAssets = jest.mocked(fetchTokenAssets);
+const mockFetchSupportedNetworks = jest.mocked(
+  apiClient.tokens.fetchTokenV2SupportedNetworks,
+);
 
 const mockSecurityData: TokenSecurityData = {
   resultType: 'Verified',
@@ -69,6 +81,10 @@ const createWrapper = (queryClient: QueryClient) =>
 describe('useTokenSecurityData', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchSupportedNetworks.mockResolvedValue({
+      fullSupport: ['eip155:1'],
+      partialSupport: [],
+    });
   });
 
   it('returns prefetched data immediately without fetching', () => {

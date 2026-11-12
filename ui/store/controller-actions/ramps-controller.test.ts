@@ -3,6 +3,7 @@ import {
   addRampsOrder,
   addRampsPrecreatedOrder,
   getRampsBuyWidgetData,
+  getRampsCountries,
   getRampsOrderFromCallback,
   getRampsPaymentMethods,
   getRampsProviders,
@@ -14,6 +15,7 @@ import {
   setRampsSelectedProvider,
   setRampsSelectedToken,
   setRampsUserRegion,
+  syncRampsOrdersWithUserStorage,
 } from './ramps-controller';
 
 jest.mock('../background-connection');
@@ -48,6 +50,7 @@ describe('ramps-controller actions', () => {
     await setRampsSelectedToken('eip155:1/erc20:0x0');
     await setRampsSelectedProvider('transak', { autoSelected: true });
     await setRampsSelectedPaymentMethod('credit_debit_card');
+    await getRampsCountries();
     await getRampsTokens('us-ca');
     await getRampsTokens('us-ca', 'sell');
     await getRampsProviders('us-ca');
@@ -63,6 +66,7 @@ describe('ramps-controller actions', () => {
     await removeRampsOrder('order-1');
     await refreshRampsOrder('transak', 'order-1', '0xabc');
     await getRampsOrderFromCallback('transak', 'https://callback', '0xabc');
+    await syncRampsOrdersWithUserStorage();
 
     expect(mockSubmitRequestToBackground.mock.calls).toMatchSnapshot();
   });

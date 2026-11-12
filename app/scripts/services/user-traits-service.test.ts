@@ -1,11 +1,7 @@
 import { toHex } from '@metamask/controller-utils';
 import { AddressBookEntry } from '@metamask/address-book-controller';
 import { NameEntry, NameType } from '@metamask/name-controller';
-import {
-  Nft,
-  Token,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import { Nft } from '@metamask/assets-controllers';
 import {
   AuthConnection,
   type SeedlessOnboardingControllerGetStateAction,
@@ -46,16 +42,18 @@ import * as Utils from '../lib/util';
 import * as analyticsHelpers from '../controllers/analytics/analytics';
 import { getUserTraitsServiceMessenger } from '../messenger-client-init/messengers/user-traits-service-messenger';
 import type {
-  MetaMetricsControllerGetStateAction,
-  MetaMetricsControllerState,
-} from '../controllers/metametrics-controller';
+  AppMetadataControllerGetStateAction,
+  AppMetadataControllerState,
+} from '../controllers/app-metadata';
+import type { StorageKind } from '../../../shared/lib/stores/persistence-manager';
 import { UserTraitsService } from './user-traits-service';
 import type { MetaMaskState } from './user-traits-service';
 
 const TEST_ANALYTICS_ID = '00000000-0000-4000-8000-000000000001';
 
 type WithServiceOptions = {
-  seedTraits?: Partial<MetaMetricsUserTraits>;
+  appMetadataState?: Partial<AppMetadataControllerState>;
+  storageKind?: StorageKind;
   seedlessOnboardingState?: Partial<SeedlessOnboardingControllerState>;
   /**
    * When true, `SeedlessOnboardingController:getState` throws, simulating the
@@ -66,15 +64,14 @@ type WithServiceOptions = {
 
 type WithServiceCallback<ReturnValue> = (args: {
   service: UserTraitsService;
-  updateSeedTraits: (traits: Partial<MetaMetricsUserTraits>) => void;
+  updateAppMetadataState: (state: Partial<AppMetadataControllerState>) => void;
 }) => ReturnValue;
 
 /**
  * Builds a {@link UserTraitsService} wired to a real restricted messenger via
- * {@link getUserTraitsServiceMessenger}, with configurable seed traits and
- * SeedlessOnboardingController state, then runs the provided callback with the
- * service and a helper to mutate the seed traits (mirroring the effect of
- * `MetaMetricsController.updateTraits`).
+ * {@link getUserTraitsServiceMessenger}, with configurable AppMetadataController
+ * state and SeedlessOnboardingController state, then runs the provided callback
+ * with the service and a helper to mutate AppMetadata state.
  *
  * @param args - Either a callback, or an options object followed by a callback.
  * @returns The return value of the callback.
@@ -86,25 +83,28 @@ async function withService<ReturnValue>(
 ): Promise<ReturnValue> {
   const [
     {
-      seedTraits = {},
+      appMetadataState = {},
+      storageKind = 'split',
       seedlessOnboardingState = {},
       seedlessOnboardingUnavailable = false,
     },
     fn,
   ] = args.length === 2 ? args : [{}, args[0]];
 
-  let seed = { ...seedTraits } as MetaMetricsUserTraits;
+  let appMetadata: Partial<AppMetadataControllerState> = {
+    ...appMetadataState,
+  };
 
   const rootMessenger: Messenger<
     MockAnyNamespace,
-    | MetaMetricsControllerGetStateAction
+    | AppMetadataControllerGetStateAction
     | SeedlessOnboardingControllerGetStateAction,
     never
   > = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:getState',
-    () => ({ traits: seed }) as MetaMetricsControllerState,
+    'AppMetadataController:getState',
+    () => appMetadata as AppMetadataControllerState,
   );
 
   rootMessenger.registerActionHandler(
@@ -119,13 +119,16 @@ async function withService<ReturnValue>(
 
   const service = new UserTraitsService({
     messenger: getUserTraitsServiceMessenger(rootMessenger),
+    getStorageKind: () => storageKind,
   });
 
-  const updateSeedTraits = (traits: Partial<MetaMetricsUserTraits>) => {
-    seed = { ...seed, ...traits };
+  const updateAppMetadataState = (
+    state: Partial<AppMetadataControllerState>,
+  ) => {
+    appMetadata = { ...appMetadata, ...state };
   };
 
-  return fn({ service, updateSeedTraits });
+  return fn({ service, updateAppMetadataState });
 }
 
 describe('UserTraitsService', function () {
@@ -159,7 +162,8 @@ describe('UserTraitsService', function () {
       consentDecisionMade: true,
       optedIn: true,
       analyticsId: '',
-      dataCollectionForMarketing: false,
+      marketingConsentDecisionMade: true,
+      optedInToMarketing: false,
       preferences: {
         privacyMode: false,
         tokenNetworkFilter: {},
@@ -213,39 +217,33 @@ describe('UserTraitsService', function () {
     });
 
     it('should return full user traits object on first call', async function () {
-      const MOCK_ALL_TOKENS: TokensControllerState['allTokens'] = {
-        [toHex(1)]: {
-          '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
-            {
-              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
-            },
-            {
-              address: '0xabc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
-            },
-          ] as Token[],
-          '0xe364b0f9d1879e53e8183055c9d7dd2b7375d86b': [
-            {
-              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
-            },
-          ] as Token[],
-        },
-        [toHex(4)]: {
-          '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
-            {
-              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
-            },
-            {
-              address: '0x12317F958D2ee523a2206206994597C13D831ec7',
-            },
-          ] as Token[],
-        },
-      };
+      const tokenAccount1 = createMockInternalAccount({
+        id: 'mock1',
+        address: '0x1235ce91d74254f29d4609f25932fe6d97bf4842',
+      });
+      const tokenAccount2 = createMockInternalAccount({
+        id: 'mock2',
+        address: '0xe364b0f9d1879e53e8183055c9d7dd2b7375d86b',
+      });
+      const tokenAssetIdsAccount1 = [
+        'eip155:1/erc20:0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+        'eip155:1/erc20:0xabc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+        'eip155:4/erc20:0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+        'eip155:4/erc20:0x12317f958d2ee523a2206206994597c13d831ec7',
+      ] as const;
+      const tokenAssetIdsAccount2 = [
+        'eip155:1/erc20:0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+      ] as const;
+      const tokenAssetsInfo = Object.fromEntries(
+        [...new Set([...tokenAssetIdsAccount1, ...tokenAssetIdsAccount2])].map(
+          (assetId) => [
+            assetId,
+            { type: 'erc20', symbol: 'TKN', decimals: 18, name: 'Token' },
+          ],
+        ),
+      );
 
-      await withService(({ service, updateSeedTraits }) => {
-        updateSeedTraits({
-          [MetaMetricsUserTrait.StorageKind]: 'split',
-        });
-
+      await withService(({ service }) => {
         const traits = service._buildUserTraitsObject({
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
@@ -288,7 +286,11 @@ describe('UserTraitsService', function () {
               ] as Nft[],
             },
           },
-          allTokens: MOCK_ALL_TOKENS,
+          customAssets: {
+            [tokenAccount1.id]: [...tokenAssetIdsAccount1],
+            [tokenAccount2.id]: [...tokenAssetIdsAccount2],
+          },
+          assetsInfo: tokenAssetsInfo,
           ...mockNetworkState(
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.GOERLI },
@@ -296,10 +298,10 @@ describe('UserTraitsService', function () {
           ),
           internalAccounts: {
             accounts: {
-              mock1: {} as InternalAccount,
-              mock2: {} as InternalAccount,
+              [tokenAccount1.id]: tokenAccount1,
+              [tokenAccount2.id]: tokenAccount2,
             },
-            selectedAccount: 'mock1',
+            selectedAccount: tokenAccount1.id,
           },
           multichainNetworkConfigurationsByChainId: {
             'bip122:000000000019d6689c085ae165831e93': {
@@ -352,7 +354,8 @@ describe('UserTraitsService', function () {
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
-          dataCollectionForMarketing: false,
+          marketingConsentDecisionMade: true,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -366,7 +369,7 @@ describe('UserTraitsService', function () {
           srpSessionData: undefined,
           keyrings: [],
           firstTimeFlowType: FirstTimeFlowType.create,
-        });
+        } as unknown as MetaMaskState);
 
         expect(traits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 3,
@@ -423,6 +426,66 @@ describe('UserTraitsService', function () {
       });
     });
 
+    it('derives install_date_ext from firstTimeInfo.date', async function () {
+      await withService(
+        {
+          appMetadataState: {
+            firstTimeInfo: {
+              version: '13.0.0',
+              date: Date.UTC(2024, 0, 15, 12, 0, 0),
+            },
+          },
+        },
+        ({ service }) => {
+          const traits = service._buildUserTraitsObject({
+            addressBook: {},
+            allNfts: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            multichainNetworkConfigurationsByChainId: {},
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: false,
+            securityAlertsEnabled: true,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            names: {
+              ethereumAddress: {},
+            },
+            consentDecisionMade: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
+            currentCurrency: 'usd',
+            marketingConsentDecisionMade: true,
+            optedInToMarketing: false,
+            preferences: {
+              privacyMode: false,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: true,
+            } as Preferences,
+            srpSessionData: undefined,
+            keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.create,
+          });
+
+          expect(traits?.[MetaMetricsUserTrait.InstallDateExt]).toBe(
+            '2024-01-15',
+          );
+        },
+      );
+    });
+
     it('uses the social create flow to build the account type trait', async function () {
       await withService(
         {
@@ -450,7 +513,7 @@ describe('UserTraitsService', function () {
             consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
-            dataCollectionForMarketing: false,
+            optedInToMarketing: false,
             preferences: {
               privacyMode: false,
               tokenNetworkFilter: {},
@@ -506,7 +569,7 @@ describe('UserTraitsService', function () {
             consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
-            dataCollectionForMarketing: false,
+            optedInToMarketing: false,
             preferences: {
               privacyMode: false,
               tokenNetworkFilter: {},
@@ -575,7 +638,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -597,6 +660,13 @@ describe('UserTraitsService', function () {
           multichainNetworkConfigurationsByChainId: {},
         } as MetaMaskState);
 
+        const updatedTokenAccount = createMockInternalAccount({
+          id: 'mock1',
+          address: '0xabcde',
+        });
+        const updatedTokenAssetId =
+          'eip155:1/erc20:0x0000000000000000000000000000000000000001' as const;
+
         const updatedTraits = service._buildUserTraitsObject({
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
@@ -616,9 +686,15 @@ describe('UserTraitsService', function () {
               } as AddressBookEntry,
             },
           },
-          allTokens: {
-            [toHex(1)]: {
-              '0xabcde': [{ address: '0xtestAddress' } as Token],
+          customAssets: {
+            [updatedTokenAccount.id]: [updatedTokenAssetId],
+          },
+          assetsInfo: {
+            [updatedTokenAssetId]: {
+              type: 'erc20',
+              symbol: 'TEST',
+              decimals: 18,
+              name: 'Test',
             },
           },
           ...networkState,
@@ -626,7 +702,7 @@ describe('UserTraitsService', function () {
           openSeaEnabled: false,
           internalAccounts: {
             accounts: {
-              mock1: {} as InternalAccount,
+              [updatedTokenAccount.id]: updatedTokenAccount,
               mock2: {} as InternalAccount,
               mock3: {} as InternalAccount,
             },
@@ -643,7 +719,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -673,7 +749,7 @@ describe('UserTraitsService', function () {
           keyrings: [],
           firstTimeFlowType: FirstTimeFlowType.import,
           multichainNetworkConfigurationsByChainId: {},
-        } as MetaMaskState);
+        } as unknown as MetaMaskState);
 
         expect(updatedTraits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 4,
@@ -728,7 +804,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -796,7 +872,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -1210,7 +1286,7 @@ describe('UserTraitsService', function () {
     });
 
     it('updates the profile when install attribution traits arrive after opt-in', async function () {
-      await withService({}, async ({ service, updateSeedTraits }) => {
+      await withService({}, async ({ service, updateAppMetadataState }) => {
         const identifySpy = jest
           .spyOn(analyticsHelpers, 'identify')
           .mockImplementation(() => undefined);
@@ -1240,7 +1316,7 @@ describe('UserTraitsService', function () {
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -1260,9 +1336,11 @@ describe('UserTraitsService', function () {
 
         expect(identifySpy).toHaveBeenCalledTimes(1);
 
-        updateSeedTraits({
-          [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
-          [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+        updateAppMetadataState({
+          installAttribution: {
+            cookieId: 'GA1.1.12345.67890',
+            gaClientId: '12345.67890',
+          },
         });
 
         service.handleMetaMaskStateUpdate(metaMaskState);

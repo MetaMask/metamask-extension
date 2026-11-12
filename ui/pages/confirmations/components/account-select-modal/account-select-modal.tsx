@@ -18,6 +18,7 @@ import {
 } from '@metamask/design-system-react';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { getEvmAccountsGroupedByWallet } from '../../utils/evm-accounts-grouped-by-wallet';
@@ -25,18 +26,31 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type AccountSelectModalProps = {
   /**
-   * The address of the currently selected account, highlighted in the list.
+   * When true, hardware wallet accounts are omitted from the list. Used by
+   * flows that cannot be funded by a hardware device.
    */
-  selectedAddress?: string;
+  excludeHardwareAccounts?: boolean;
+  /**
+   * When true, QR hardware wallet accounts are omitted from the list.
+   */
+  excludeQrAccounts?: boolean;
+  /**
+   * When true, only the globally selected hardware account is included.
+   */
+  restrictHardwareAccountsToSelected?: boolean;
+  /**
+   * Called when the modal requests to close (backdrop, escape, or close button).
+   */
+  onClose: () => void;
   /**
    * Invoked with the chosen account address when the user picks an account.
    * The consumer is responsible for closing the modal after selection.
    */
   onSelect: (address: string) => void;
   /**
-   * Called when the modal requests to close (backdrop, escape, or close button).
+   * The address of the currently selected account, highlighted in the list.
    */
-  onClose: () => void;
+  selectedAddress?: string;
   /**
    * Optional modal title. Defaults to the "Select an account" string.
    */
@@ -49,24 +63,45 @@ export type AccountSelectModalProps = {
  * pick which account funds a transaction.
  *
  * @param props - Component props.
- * @param props.selectedAddress - Address of the currently selected account.
+ * @param props.excludeHardwareAccounts - Whether to omit hardware accounts.
+ * @param props.excludeQrAccounts - Whether to omit QR hardware accounts.
+ * @param props.restrictHardwareAccountsToSelected - Whether to omit
+ * non-selected hardware accounts.
+ * @param props.onClose - Called when the modal should close.
  * @param props.onSelect - Called with the chosen account address. The consumer
  * must close the modal after handling selection.
- * @param props.onClose - Called when the modal should close.
+ * @param props.selectedAddress - Address of the currently selected account.
  * @param props.title - Optional modal title.
  */
 export function AccountSelectModal({
-  selectedAddress = '',
-  onSelect,
+  excludeHardwareAccounts = false,
+  excludeQrAccounts = false,
+  restrictHardwareAccountsToSelected = false,
   onClose,
+  onSelect,
+  selectedAddress = '',
   title,
 }: AccountSelectModalProps) {
   const t = useI18nContext();
   const wallets = useSelector(getWalletsWithAccounts);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const accountsGroupedByWallet = useMemo(
-    () => getEvmAccountsGroupedByWallet(wallets),
-    [wallets],
+    () =>
+      getEvmAccountsGroupedByWallet(wallets, {
+        excludeHardwareAccounts,
+        excludeQrAccounts,
+        allowedHardwareAccountAddress: restrictHardwareAccountsToSelected
+          ? (selectedAccount?.address ?? null)
+          : undefined,
+      }),
+    [
+      wallets,
+      excludeHardwareAccounts,
+      excludeQrAccounts,
+      restrictHardwareAccountsToSelected,
+      selectedAccount?.address,
+    ],
   );
 
   return (

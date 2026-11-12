@@ -12,9 +12,11 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
+import { NetworkId, NetworkName } from '../../helpers/network-constants';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
@@ -84,8 +86,10 @@ describe('Popular Networks', function (this: Suite) {
 
         await networksPage.checkPageIsLoaded();
 
-        await networksPage.clickAddButtonForPopularNetwork('0xa86a');
-        await networksPage.checkAddNetworkMessageIsDisplayed('Avalanche');
+        await networksPage.clickAddButtonForPopularNetwork(CHAIN_IDS.AVALANCHE);
+        await networksPage.checkAddNetworkMessageIsDisplayed(
+          NetworkName.AVALANCHE,
+        );
         await networksPage.clickCloseButton();
 
         // verify the additional network was added without switching the home filter
@@ -109,7 +113,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.disableNetwork('eip155:42161');
+        await networksPage.disableNetwork(NetworkId.ARBITRUM);
         await networksPage.clickCloseButton();
         await headerNavbar.clickDrawerBackButton();
 
@@ -120,8 +124,8 @@ describe('Popular Networks', function (this: Suite) {
         // check that arbitrum is on the list of popular network
         await networksPage.checkPageIsLoaded();
         await networksPage.checkPopularNetworkIsDisplayed({
-          chainId: '0xa4b1',
-          networkName: 'Arbitrum',
+          chainId: CHAIN_IDS.ARBITRUM,
+          networkName: NetworkName.ARBITRUM,
         });
       },
     );
@@ -180,7 +184,7 @@ describe('Popular Networks', function (this: Suite) {
     );
   });
 
-  it("when the network details validation toggle is turned off, don't validate user inserted details", async function () {
+  it("when basic functionality is turned off, don't validate user inserted details", async function () {
     async function mockRPCURLAndChainId(mockServer: MockttpServer) {
       return [
         await mockServer
@@ -212,7 +216,6 @@ describe('Popular Networks', function (this: Suite) {
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
 
-        // navigate to security & privacy settings and toggle off network details check
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
@@ -220,7 +223,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        await privacySettings.toggleNetworkDetailsCheck();
+        await privacySettings.toggleBasicFunctionalityOff();
         await closeSettings(driver);
 
         // return to the home screen

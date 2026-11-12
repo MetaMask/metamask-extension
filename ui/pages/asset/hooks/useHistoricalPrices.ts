@@ -8,7 +8,7 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import { Point } from 'chart.js';
-import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
+import type { SupportedCurrency } from '@metamask/core-backend';
 import { fromIso8601DurationToPriceApiTimePeriod } from '../util';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { apiClient } from '../../../helpers/api-client';
@@ -95,22 +95,12 @@ const transformPricesToPoints = (
   data: { prices?: number[][] } | undefined,
 ): Point[] => data?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
 
-type PricesClientFetch = {
-  fetch: (
-    baseUrl: string,
-    path: string,
-    options?: {
-      signal?: AbortSignal;
-      params?: Record<string, string | undefined>;
-    },
-  ) => Promise<{ prices?: [number, number][] }>;
-};
-
-/** TanStack Query key prefix — distinct from `@metamask/core-backend` `['prices', ...]` keys to avoid cache/queryFn mismatches. */
-const V3_HISTORICAL_PRICES_QUERY_KEY_ROOT = [
+/** Query key used when the asset cannot be resolved and the query is disabled. */
+const DISABLED_QUERY_KEY = [
   'metamask-extension',
   'assetHistoricalPrices',
   'v3',
+  'disabled',
 ] as const;
 
 /**
@@ -184,18 +174,22 @@ export const useHistoricalPrices = ({
     [timeRange],
   );
 
-  const queryKey = useMemo(() => {
-    if (!v3Params) {
-      return [...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT, 'disabled'] as const;
-    }
-    return [
-      ...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT,
-      v3Params.caipChainId,
-      v3Params.assetType,
-      currency,
-      timePeriod,
-    ] as const;
-  }, [v3Params, currency, timePeriod]);
+  // The client's query options carry the canonical queryKey, queryFn (with
+  // the configured base URL), staleTime, and gcTime.
+  const queryOptions = useMemo(
+    () =>
+      v3Params
+        ? apiClient.prices.getV3HistoricalPricesQueryOptions(
+            v3Params.caipChainId,
+            v3Params.assetType,
+            {
+              currency: currency as SupportedCurrency,
+              timePeriod,
+            },
+          )
+        : null,
+    [v3Params, currency, timePeriod],
+  );
 
   const {
     data: prices = [],
@@ -204,32 +198,13 @@ export const useHistoricalPrices = ({
     isFetchedAfterMount,
     isPlaceholderData,
   } = useQuery({
-    queryKey,
-    queryFn: async ({ queryKey: qk, signal }) => {
-      if (qk[3] === 'disabled') {
-        return { prices: [] as [number, number][] };
-      }
-      const caipChainId = qk[3] as CaipChainId;
-      const assetType = qk[4] as string;
-      const curr = qk[5] as string;
-      const period = qk[6] as string;
-      return (apiClient.prices as unknown as PricesClientFetch).fetch(
-        API_URLS.PRICES,
-        `/v3/historical-prices/${caipChainId}/${assetType}`,
-        {
-          signal,
-          params: {
-            vsCurrency: curr,
-            timePeriod: period,
-          },
-        },
-      );
-    },
-    enabled: Boolean(v3Params),
+    queryKey: queryOptions?.queryKey ?? DISABLED_QUERY_KEY,
+    queryFn: queryOptions?.queryFn ?? (() => ({ prices: [] })),
+    staleTime: queryOptions?.staleTime,
+    gcTime: queryOptions?.gcTime,
+    enabled: Boolean(queryOptions),
     placeholderData: (previousData) => previousData ?? flatlinePlaceholder,
     retry: false,
-    staleTime: STALE_TIMES.PRICES,
-    gcTime: GC_TIMES.DEFAULT,
     select: transformPricesToPoints,
   });
 

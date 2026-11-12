@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -17,6 +17,16 @@ jest.mock('../contexts/alertMetricsContext', () => ({
     trackAlertActionClicked: jest.fn(),
   })),
 }));
+
+async function flushMicrotasks(depth = 3): Promise<void> {
+  await act(async () => {
+    for (let i = 0; i < depth; i++) {
+      await new Promise<void>((resolve) => {
+        queueMicrotask(resolve);
+      });
+    }
+  });
+}
 
 describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
@@ -108,6 +118,7 @@ describe('MultipleAlertModal', () => {
       />,
       mockStore,
     );
+    await flushMicrotasks();
 
     // shows the contract alert
     expect(getByText(alertsMock[2].message)).toBeInTheDocument();
@@ -123,12 +134,15 @@ describe('MultipleAlertModal', () => {
     });
 
     // Rerender the component to apply the updated mock
-    rerender(
-      <MultipleAlertModal
-        {...defaultProps}
-        alertKey={CONTRACT_ALERT_KEY_MOCK}
-      />,
-    );
+    await act(async () => {
+      rerender(
+        <MultipleAlertModal
+          {...defaultProps}
+          alertKey={CONTRACT_ALERT_KEY_MOCK}
+        />,
+      );
+    });
+    await flushMicrotasks();
 
     // verifies the data alert is shown
     expect(queryByText(alertsMock[0].message)).not.toBeInTheDocument();
@@ -136,16 +150,17 @@ describe('MultipleAlertModal', () => {
     useAlertsSpy.mockRestore();
   });
 
-  it('renders the multiple alert modal', () => {
+  it('renders the multiple alert modal', async () => {
     const { getByTestId } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} />,
       mockStore,
     );
+    await flushMicrotasks();
 
     expect(getByTestId('alert-modal-next-button')).toBeDefined();
   });
 
-  it('invokes the onFinalAcknowledgeClick when the button is clicked', () => {
+  it('invokes the onFinalAcknowledgeClick when the button is clicked', async () => {
     const { getByTestId } = renderWithProvider(
       <MultipleAlertModal
         {...defaultProps}
@@ -153,18 +168,20 @@ describe('MultipleAlertModal', () => {
       />,
       mockStoreAcknowledgeAlerts,
     );
+    await flushMicrotasks();
 
     fireEvent.click(getByTestId('alert-modal-button'));
 
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
   });
 
-  it('does not change the alert when the "Got it" button is clicked', () => {
+  it('does not change the alert when the "Got it" button is clicked', async () => {
     onAcknowledgeClickMock.mockReset();
     const { getByTestId, getByText, queryByText } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStoreAcknowledgeAlerts,
     );
+    await flushMicrotasks();
 
     expect(getByText(alertsMock[1].message)).toBeInTheDocument();
 
@@ -175,7 +192,7 @@ describe('MultipleAlertModal', () => {
     expect(queryByText(alertsMock[2].message)).not.toBeInTheDocument();
   });
 
-  it('closes modal when the "Got it" button is clicked', () => {
+  it('closes modal when the "Got it" button is clicked', async () => {
     onAcknowledgeClickMock.mockReset();
     const { getByTestId } = renderWithProvider(
       <MultipleAlertModal
@@ -185,6 +202,7 @@ describe('MultipleAlertModal', () => {
       />,
       mockStoreAcknowledgeAlerts,
     );
+    await flushMicrotasks();
 
     fireEvent.click(getByTestId('alert-modal-button'));
 
@@ -220,7 +238,7 @@ describe('MultipleAlertModal', () => {
       },
     });
 
-    it('does not render if displayAllAlerts is false', () => {
+    it('does not render if displayAllAlerts is false', async () => {
       const { queryByText } = renderWithProvider(
         <MultipleAlertModal
           {...defaultProps}
@@ -228,11 +246,12 @@ describe('MultipleAlertModal', () => {
         />,
         mockStoreWithAlertsWithoutField,
       );
+      await flushMicrotasks();
 
       expect(queryByText('alert-modal-button')).toBeNull();
     });
 
-    it('renders alerts if displayAllAlerts is true', () => {
+    it('renders alerts if displayAllAlerts is true', async () => {
       const { getByTestId } = renderWithProvider(
         <MultipleAlertModal
           {...defaultProps}
@@ -241,17 +260,19 @@ describe('MultipleAlertModal', () => {
         />,
         mockStoreWithAlertsWithoutField,
       );
+      await flushMicrotasks();
 
       expect(getByTestId('alert-modal-button')).toBeInTheDocument();
     });
   });
 
   describe('Navigation', () => {
-    it('calls next alert when the next button is clicked', () => {
+    it('calls next alert when the next button is clicked', async () => {
       const { getByTestId, getByText } = renderWithProvider(
         <MultipleAlertModal {...defaultProps} />,
         mockStore,
       );
+      await flushMicrotasks();
 
       fireEvent.click(getByTestId('alert-modal-next-button'));
 
@@ -259,7 +280,7 @@ describe('MultipleAlertModal', () => {
       expect(getByText(alertsMock[2].message)).toBeInTheDocument();
     });
 
-    it('calls previous alert when the previous button is clicked', () => {
+    it('calls previous alert when the previous button is clicked', async () => {
       const selectSecondAlertMock = {
         ...defaultProps,
         alertKey: CONTRACT_ALERT_KEY_MOCK,
@@ -268,6 +289,7 @@ describe('MultipleAlertModal', () => {
         <MultipleAlertModal {...selectSecondAlertMock} />,
         mockStore,
       );
+      await flushMicrotasks();
 
       fireEvent.click(getByTestId('alert-modal-back-button'));
 
@@ -328,7 +350,7 @@ describe('MultipleAlertModal', () => {
       },
     });
 
-    it('does not render navigation controls when the selected alert hides navigation', () => {
+    it('does not render navigation controls when the selected alert hides navigation', async () => {
       const { queryByTestId } = renderWithProvider(
         <MultipleAlertModal
           {...defaultProps}
@@ -336,16 +358,18 @@ describe('MultipleAlertModal', () => {
         />,
         mockStoreWithHiddenNavigation,
       );
+      await flushMicrotasks();
 
       expect(queryByTestId('alert-modal-next-button')).toBeNull();
       expect(queryByTestId('alert-modal-back-button')).toBeNull();
     });
 
-    it('skips alerts hidden from navigation when cycling forward', () => {
+    it('skips alerts hidden from navigation when cycling forward', async () => {
       const { getByTestId, getByText, queryByText } = renderWithProvider(
         <MultipleAlertModal {...defaultProps} />,
         mockStoreWithHiddenNavigation,
       );
+      await flushMicrotasks();
 
       fireEvent.click(getByTestId('alert-modal-next-button'));
 
@@ -353,7 +377,7 @@ describe('MultipleAlertModal', () => {
       expect(getByText('Alert 3')).toBeInTheDocument();
     });
 
-    it('acknowledges an alert that hides navigation without cycling', () => {
+    it('acknowledges an alert that hides navigation without cycling', async () => {
       onAcknowledgeClickMock.mockReset();
       const { getByTestId } = renderWithProvider(
         <MultipleAlertModal
@@ -362,6 +386,7 @@ describe('MultipleAlertModal', () => {
         />,
         mockStoreWithHiddenNavigationConfirmed,
       );
+      await flushMicrotasks();
 
       fireEvent.click(getByTestId('alert-modal-button'));
 

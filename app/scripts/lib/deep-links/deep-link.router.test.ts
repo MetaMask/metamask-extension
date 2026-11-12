@@ -1,10 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
-import {
-  DEEP_LINK_HOST,
-  SIG_PARAM,
-} from '../../../../shared/lib/deep-links/constants';
+import { SIG_PARAM } from '../../../../shared/lib/deep-links/common';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
@@ -101,7 +98,10 @@ describe('DeepLinkRouter', () => {
           browser.webRequest.onBeforeRequest.addListener,
         ).toHaveBeenCalledWith(
           expect.any(Function),
-          { urls: [`*://*.${DEEP_LINK_HOST}/*`], types: ['main_frame'] },
+          {
+            urls: ['*://link.metamask.io/*', '*://link.metamask.com/*'],
+            types: ['main_frame'],
+          },
           mockIsManifestV3() ? [] : ['blocking'],
         );
       },
@@ -121,6 +121,37 @@ describe('DeepLinkRouter', () => {
     beforeEach(() => {
       router.install();
     });
+
+    it.each([false, true, undefined])(
+      'handles a signed direct destination when onboarding completion is %s',
+      async (completedOnboarding) => {
+        getState.mockReturnValueOnce({
+          completedOnboarding,
+          preferences: { skipDeepLinkInterstitial: false },
+        } as unknown as ReturnType<MetaMaskController['getState']>);
+        parseMock.mockResolvedValue({
+          signature: 'valid',
+          destination: {
+            path: 'settings/privacy',
+            query: new URLSearchParams([['a', 'v']]),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: 'https://link.metamask.io/privacy?a=v',
+          initiator: 'https://example.com',
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url:
+            completedOnboarding === false
+              ? 'chrome-extension://extension-id/home.html#settings/privacy?a=v'
+              : 'chrome-extension://extension-id/home.html#link?u=%2Fprivacy%3Fa%3Dv',
+        });
+        expect(getState).toHaveBeenCalledTimes(1);
+      },
+    );
 
     // test return values for MV2 and MV3 behavior
     it.each(['mv2', 'mv3'])(
@@ -161,6 +192,25 @@ describe('DeepLinkRouter', () => {
         });
       },
     );
+
+    it('routes metamask.com through the canonical-host interstitial', async () => {
+      parseMock.mockResolvedValue({
+        signature: 'missing',
+        destination: {
+          path: 'internal-route',
+          query: new URLSearchParams(),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.com/home',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fhome',
+      });
+    });
 
     it.each(protectedRouteTestCases)(
       'shows the interstitial for $route when the signature is $signature',

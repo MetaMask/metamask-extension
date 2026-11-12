@@ -65,6 +65,16 @@ export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
   handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
 };
 
+/**
+ * Records when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param lastShown - Timestamp when the reminder was shown.
+ */
+export type AppStateControllerSetLastShownPrfMigrationReminderAtAction = {
+  type: `AppStateController:setLastShownPrfMigrationReminderAt`;
+  handler: AppStateController['setLastShownPrfMigrationReminderAt'];
+};
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -190,6 +200,14 @@ export type AppStateControllerSetLastActiveTimeAction = {
 };
 
 /**
+ * Records a click or keypress inside a MetaMask UI for state-write telemetry.
+ */
+export type AppStateControllerRecordUiInteractionAction = {
+  type: `AppStateController:recordUiInteraction`;
+  handler: AppStateController['recordUiInteraction'];
+};
+
+/**
  * Set the version of the pending extension update, or null when no update is available or after update is applied.
  *
  * @param version - Version string of the available update, or null to clear.
@@ -292,6 +310,17 @@ export type AppStateControllerSetPerpsTabBadgeSeenAction = {
 };
 
 /**
+ * Sets whether the Money account first-time-user-experience (FTUE) splash
+ * has been seen.
+ *
+ * @param value - Whether the Money FTUE splash has been seen
+ */
+export type AppStateControllerSetMoneyFtueSeenAction = {
+  type: `AppStateController:setMoneyFtueSeen`;
+  handler: AppStateController['setMoneyFtueSeen'];
+};
+
+/**
  * Sets whether the mUSD conversion education screen has been seen.
  *
  * @param value - Whether the education screen has been seen
@@ -310,6 +339,18 @@ export type AppStateControllerSetMusdConversionEducationSeenAction = {
 export type AppStateControllerAddMusdConversionDismissedCtaKeyAction = {
   type: `AppStateController:addMusdConversionDismissedCtaKey`;
   handler: AppStateController['addMusdConversionDismissedCtaKey'];
+};
+
+/**
+ * Adds a token whose Money earn banner on token details was dismissed, so
+ * the banner stays hidden for it.
+ *
+ * @param key - Key in `chainId:address` format, both lowercased (e.g.
+ * "0x1:0xa0b86991...").
+ */
+export type AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction = {
+  type: `AppStateController:addMoneyEarnBannerDismissedTokenKey`;
+  handler: AppStateController['addMoneyEarnBannerDismissedTokenKey'];
 };
 
 /**
@@ -389,6 +430,16 @@ export type AppStateControllerGetLastInteractedConfirmationInfoAction = {
 export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
   type: `AppStateController:setLastInteractedConfirmationInfo`;
   handler: AppStateController['setLastInteractedConfirmationInfo'];
+};
+
+/**
+ * Sets the entry point that initiated the last Perps deposit flow.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
+  type: `AppStateController:setLastPerpsDepositEntryPoint`;
+  handler: AppStateController['setLastPerpsDepositEntryPoint'];
 };
 
 /**
@@ -578,6 +629,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AppStateControllerSetLastShownPrfMigrationReminderAtAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
   | AppStateControllerSetArcUsageNoticeShownAction
@@ -593,6 +645,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetSnapsInstallPrivacyWarningShownStatusAction
   | AppStateControllerSetOutdatedBrowserWarningLastShownAction
   | AppStateControllerSetLastActiveTimeAction
+  | AppStateControllerRecordUiInteractionAction
   | AppStateControllerSetPendingExtensionVersionAction
   | AppStateControllerSetUpdateModalLastDismissedAtAction
   | AppStateControllerSetLastUpdatedAtAction
@@ -603,8 +656,10 @@ export type AppStateControllerMethodActions =
   | AppStateControllerClearPollingTokensAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
   | AppStateControllerSetPerpsTabBadgeSeenAction
+  | AppStateControllerSetMoneyFtueSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
+  | AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction
   | AppStateControllerSetProductTourAction
   | AppStateControllerSetCurrentExtensionPopupIdAction
   | AppStateControllerSetTrezorModelAction
@@ -614,6 +669,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetCurrentPopupIdAction
   | AppStateControllerGetLastInteractedConfirmationInfoAction
   | AppStateControllerSetLastInteractedConfirmationInfoAction
+  | AppStateControllerSetLastPerpsDepositEntryPointAction
   | AppStateControllerGetCurrentPopupIdAction
   | AppStateControllerGetThrottledOriginStateAction
   | AppStateControllerUpdateThrottledOriginStateAction

@@ -37,15 +37,7 @@ export const useRecipientValidation = () => {
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
   const validationRequestIdRef = useRef(0);
-  const unmountedRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    return () => {
-      unmountedRef.current = true;
-      abortControllerRef.current?.abort();
-    };
-  }, []);
 
   const validateRecipient = useCallback(
     async (
@@ -107,6 +99,7 @@ export const useRecipientValidation = () => {
 
     validationRequestIdRef.current += 1;
     const requestId = validationRequestIdRef.current;
+    let cancelled = false;
 
     const timeoutId = setTimeout(() => {
       abortControllerRef.current?.abort();
@@ -114,10 +107,7 @@ export const useRecipientValidation = () => {
 
       validateRecipient(to, abortControllerRef.current.signal)
         .then((validationResult) => {
-          if (
-            unmountedRef.current ||
-            validationRequestIdRef.current !== requestId
-          ) {
+          if (cancelled || validationRequestIdRef.current !== requestId) {
             return;
           }
 
@@ -130,20 +120,37 @@ export const useRecipientValidation = () => {
     }, VALIDATION_DEBOUNCE_MS);
 
     return () => {
+      cancelled = true;
       clearTimeout(timeoutId);
+      abortControllerRef.current?.abort();
     };
   }, [to, chainId, validateRecipient]);
 
   const { alerts, hasUnacknowledgedAlerts, acknowledgeAlerts } =
     useSendAlerts();
 
+  // A committed result only belongs to the input it was validated for. Once
+  // `to` changes or is cleared, the stored result is stale until the next
+  // validation commits, so consumers never see it.
+  const isResultCurrent =
+    Boolean(to && chainId) && result?.toAddressValidated === to;
+
   return {
-    recipientConfusableCharacters: result?.confusableCharacters,
-    recipientError: result?.error ? t(result?.error) : undefined,
-    recipientResolvedLookup: result?.resolvedLookup,
-    recipientWarning: result?.warning ? t(result?.warning) : undefined,
-    resolutionProtocol: result?.protocol,
-    toAddressValidated: result?.toAddressValidated,
+    recipientConfusableCharacters: isResultCurrent
+      ? result?.confusableCharacters
+      : undefined,
+    recipientError:
+      isResultCurrent && result?.error ? t(result.error) : undefined,
+    recipientResolvedLookup: isResultCurrent
+      ? result?.resolvedLookup
+      : undefined,
+    recipientWarning:
+      isResultCurrent && result?.warning ? t(result.warning) : undefined,
+    resolutionProtocol: isResultCurrent ? result?.protocol : undefined,
+    toAddressValidated: isResultCurrent
+      ? result?.toAddressValidated
+      : undefined,
+    isRecipientValidationPending: Boolean(to && chainId && !isResultCurrent),
     alerts,
     hasUnacknowledgedAlerts,
     acknowledgeAlerts,

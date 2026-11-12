@@ -6,6 +6,7 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
+import ShieldManagePlanPage from '../../page-objects/pages/settings/shield/shield-manage-plan-page';
 import ShieldClaimPage from '../../page-objects/pages/settings/shield/shield-claim-page';
 import ShieldClaimsListPage from '../../page-objects/pages/settings/shield/shield-claims-list-page';
 import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shield/shield-subscription-approve-page';
@@ -698,10 +699,12 @@ describe('Shield Plan Stripe Integration', function () {
 
         // Cancel the subscription
         await shieldDetailPage.clickManagePlanButton();
-        await shieldDetailPage.cancelSubscription();
+        const shieldManagePlanPage = new ShieldManagePlanPage(driver);
+        await shieldManagePlanPage.checkPageIsLoaded();
+        await shieldManagePlanPage.cancelSubscription();
 
         // Renew the subscription
-        await shieldDetailPage.clickRenewButton();
+        await shieldManagePlanPage.clickRenewButton();
 
         await settingsPage.goToTransactionShieldPage();
 
@@ -765,10 +768,12 @@ describe('Shield Plan Stripe Integration', function () {
 
         await shieldDetailPage.clickManagePlanButton();
 
-        await shieldDetailPage.checkPaymentMethod('Crypto (USDC)');
-        await shieldDetailPage.clickPaymentMethod();
+        const shieldManagePlanPage = new ShieldManagePlanPage(driver);
+        await shieldManagePlanPage.checkPageIsLoaded();
+        await shieldManagePlanPage.checkPaymentMethod('Crypto (USDC)');
+        await shieldManagePlanPage.clickPaymentMethod();
 
-        await shieldDetailPage.selectPaymentMethodInModal('Pay with USDT');
+        await shieldManagePlanPage.selectPaymentMethodInModal('Pay with USDT');
 
         const shieldSubscriptionApprovePage = new ShieldSubscriptionApprovePage(
           driver,
@@ -778,11 +783,14 @@ describe('Shield Plan Stripe Integration', function () {
           'USDT',
         );
 
-        await shieldSubscriptionApprovePage.clickFooterConfirmButton();
+        await shieldSubscriptionApprovePage.clickFooterButton({
+          button: 'confirm',
+        });
         await shieldDetailPage.checkPageIsLoaded();
 
         await shieldDetailPage.clickManagePlanButton();
-        await shieldDetailPage.checkPaymentMethod('Crypto (USDT)');
+        await shieldManagePlanPage.checkPageIsLoaded();
+        await shieldManagePlanPage.checkPaymentMethod('Crypto (USDT)');
       },
     );
   });

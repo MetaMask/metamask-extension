@@ -5,7 +5,11 @@ import {
   OAuthErrorMessages,
 } from '../../../../shared/lib/error';
 import { checkForLastError } from '../../../../shared/lib/browser-runtime.utils';
-import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import {
+  TraceName,
+  TraceOperation,
+  type SerializedTraceContext,
+} from '../../../../shared/lib/trace';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -25,11 +29,13 @@ import {
   OAuthRefreshTokenResult,
   OAuthServiceMessenger,
   OAuthServiceOptions,
+  OAuthTraceTags,
   SERVICE_NAME,
   ServiceName,
   WebAuthenticator,
 } from './types';
 import { loadOAuthConfig } from './config';
+import { getOAuthTraceTags } from './utils';
 
 const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
@@ -57,18 +63,12 @@ export class OAuthService {
 
   #platform: ExtensionPlatform;
 
-  #bufferedTrace: OAuthServiceOptions['bufferedTrace'];
-
-  #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
-
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
   constructor({
     messenger,
     webAuthenticator,
     platform,
-    bufferedTrace,
-    bufferedEndTrace,
     trackEvent,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
@@ -76,8 +76,6 @@ export class OAuthService {
     this.#config = loadOAuthConfig();
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
-    this.#bufferedTrace = bufferedTrace;
-    this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
 
     this.#messenger.registerMethodActionHandlers(
@@ -108,10 +106,12 @@ export class OAuthService {
    * Start the OAuth login process for the given social login type.
    *
    * @param authConnection - The social login type to login with.
+   * @param parentTraceContext - Optional serialized parent context for OAuth traces.
    * @returns The login result.
    */
   async startOAuthLogin(
     authConnection: AuthConnection,
+    parentTraceContext?: SerializedTraceContext,
   ): Promise<OAuthLoginResult> {
     // create the login handler for the given social login type
     // this is to get the Jwt Token in the exchange for the Authorization Code
@@ -132,6 +132,7 @@ export class OAuthService {
     const oAuthLoginResult = await this.#handleOAuthLogin(
       loginHandler,
       authConnection,
+      parentTraceContext,
     );
     return oAuthLoginResult;
   }
@@ -215,17 +216,20 @@ export class OAuthService {
    *
    * @param loginHandler - The login handler to use.
    * @param authConnection - The auth connection type (google | apple).
+   * @param parentTraceContext
    * @returns The login result.
    */
   async #handleOAuthLogin(
     loginHandler: BaseLoginHandler,
     authConnection: AuthConnection,
+    parentTraceContext?: SerializedTraceContext,
   ): Promise<OAuthLoginResult> {
     const isRehydration = this.#isRehydrationFlow();
     const redirectUrlFromOAuth = await this.#performOAuthProviderLogin({
       authConnection,
       isRehydration,
       loginHandler,
+      parentTraceContext,
     });
 
     return await this.#exchangeOAuthTokens({
@@ -233,6 +237,7 @@ export class OAuthService {
       isRehydration,
       loginHandler,
       redirectUrlFromOAuth,
+      parentTraceContext,
     });
   }
 
@@ -240,21 +245,28 @@ export class OAuthService {
     authConnection,
     isRehydration,
     loginHandler,
+    parentTraceContext,
   }: {
     authConnection: AuthConnection;
     isRehydration: boolean | null;
     loginHandler: BaseLoginHandler;
+    parentTraceContext?: SerializedTraceContext;
   }): Promise<string> {
     let providerLoginSuccess = false;
+    const oauthTraceTags = getOAuthTraceTags(authConnection, isRehydration);
 
     try {
-      this.#bufferedTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
+        tags: oauthTraceTags,
+        ...(parentTraceContext && { parentContext: parentTraceContext }),
       });
       const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
         loginHandler,
+        oauthTraceTags,
+        parentTraceContext,
       );
       providerLoginSuccess = true;
       return redirectUrlFromOAuth;
@@ -270,6 +282,15 @@ export class OAuthService {
       });
 
       if (!isUserCancelled) {
+        this.#messenger.call('SentryTracingService:bufferedTrace', {
+          name: TraceName.OnboardingOAuthProviderLoginError,
+          op: TraceOperation.OnboardingError,
+          tags: oauthTraceTags,
+          ...(parentTraceContext && { parentContext: parentTraceContext }),
+        });
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+          name: TraceName.OnboardingOAuthProviderLoginError,
+        });
         this.#messenger.captureException?.(
           createSentryError(
             `${TraceName.OnboardingOAuthProviderLoginError} (${authConnection})`,
@@ -280,7 +301,7 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingOAuthProviderLogin,
         data: { success: providerLoginSuccess },
       });
@@ -292,18 +313,22 @@ export class OAuthService {
     isRehydration,
     loginHandler,
     redirectUrlFromOAuth,
+    parentTraceContext,
   }: {
     authConnection: AuthConnection;
     isRehydration: boolean | null;
     loginHandler: BaseLoginHandler;
     redirectUrlFromOAuth: string;
+    parentTraceContext?: SerializedTraceContext;
   }): Promise<OAuthLoginResult> {
     let getAuthTokensSuccess = false;
 
     try {
-      this.#bufferedTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
+        tags: getOAuthTraceTags(authConnection, isRehydration),
+        ...(parentTraceContext && { parentContext: parentTraceContext }),
       });
       const loginResult = await this.#handleOAuthResponse(
         loginHandler,
@@ -312,6 +337,15 @@ export class OAuthService {
       getAuthTokensSuccess = true;
       return loginResult;
     } catch (error: unknown) {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+        op: TraceOperation.OnboardingError,
+        tags: getOAuthTraceTags(authConnection, isRehydration),
+        ...(parentTraceContext && { parentContext: parentTraceContext }),
+      });
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+      });
       this.#trackOAuthLoginFailure({
         authConnection,
         isRehydration,
@@ -328,7 +362,7 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         data: { success: getAuthTokensSuccess },
       });
@@ -459,48 +493,145 @@ export class OAuthService {
   async #launchAuthFlow(
     authConnection: AuthConnection,
     loginHandler: BaseLoginHandler,
+    oauthTraceTags: OAuthTraceTags,
+    parentTraceContext?: SerializedTraceContext,
   ): Promise<string> {
-    const authUrl = await loginHandler.getAuthUrl();
-    if (authConnection === AuthConnection.Telegram) {
-      return this.#launchTabAuthFlow(
+    this.#messenger.call('SentryTracingService:bufferedTrace', {
+      name: TraceName.OnboardingOAuthProviderLaunch,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: oauthTraceTags,
+      ...(parentTraceContext && { parentContext: parentTraceContext }),
+    });
+
+    let launchTraceEnded = false;
+    const endLaunchTrace = (success: boolean): void => {
+      if (launchTraceEnded) {
+        return;
+      }
+
+      launchTraceEnded = true;
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        data: { success },
+      });
+    };
+
+    try {
+      const authUrl = await loginHandler.getAuthUrl();
+
+      if (authConnection === AuthConnection.Telegram) {
+        return await this.#launchTabAuthFlow({
+          authUrl,
+          extensionRedirectURL: this.#webAuthenticator.getRedirectURL(),
+          loginHandler,
+          oauthTraceTags,
+          parentTraceContext,
+          endLaunchTrace,
+        });
+      }
+
+      return this.#launchWebAuthFlow({
         authUrl,
-        this.#webAuthenticator.getRedirectURL(),
         loginHandler,
-      );
+        oauthTraceTags,
+        parentTraceContext,
+        endLaunchTrace,
+      });
+    } catch (error) {
+      endLaunchTrace(false);
+      throw error;
     }
+  }
 
+  /**
+   * Launches the standard browser web authentication flow.
+   *
+   * @param options - The web authentication flow options.
+   * @param options.authUrl - The authentication URL.
+   * @param options.loginHandler - The login handler.
+   * @param options.oauthTraceTags - The OAuth trace tags.
+   * @param options.parentTraceContext - The optional parent trace context.
+   * @param options.endLaunchTrace - Ends the launch trace.
+   * @returns The validated OAuth response URL.
+   */
+  #launchWebAuthFlow({
+    authUrl,
+    loginHandler,
+    oauthTraceTags,
+    parentTraceContext,
+    endLaunchTrace,
+  }: {
+    authUrl: string;
+    loginHandler: BaseLoginHandler;
+    oauthTraceTags: OAuthTraceTags;
+    parentTraceContext?: SerializedTraceContext;
+    endLaunchTrace: (success: boolean) => void;
+  }): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.#webAuthenticator.launchWebAuthFlow(
-        { interactive: true, url: authUrl },
-        (responseUrl) => {
-          if (!responseUrl) {
-            reject(this.#getAuthFlowError());
-            return;
-          }
-
-          try {
-            loginHandler.validateState(responseUrl);
-            resolve(responseUrl);
-          } catch (error) {
-            reject(error);
-          }
-        },
+      const endProviderInteractionTrace = this.#startProviderInteractionTrace(
+        oauthTraceTags,
+        parentTraceContext,
       );
+
+      let launchDispatched = false;
+      // Synchronous dispatch errors are caught here. The provider response arrives through the callback.
+      // prettier-ignore
+      try { // NOSONAR
+        this.#webAuthenticator.launchWebAuthFlow(
+          { interactive: true, url: authUrl },
+          (responseUrl) => {
+            if (!responseUrl) {
+              endProviderInteractionTrace(false);
+              reject(this.#getAuthFlowError());
+              return;
+            }
+
+            try {
+              loginHandler.validateState(responseUrl);
+              endProviderInteractionTrace(true);
+              resolve(responseUrl);
+            } catch (error) {
+              endProviderInteractionTrace(false);
+              reject(error);
+            }
+          },
+        );
+        launchDispatched = true;
+      } catch (error) {
+        endProviderInteractionTrace(false);
+        reject(error);
+      } finally {
+        endLaunchTrace(launchDispatched);
+      }
     });
   }
 
   /**
    * Telegram login needs a real browser tab instead of the standard
    * `launchWebAuthFlow` popup because of "Authorization page could not be loaded"
-   * @param authUrl
-   * @param extensionRedirectURL
-   * @param loginHandler
+   * @param options - The Telegram auth flow options.
+   * @param options.authUrl - The authentication URL.
+   * @param options.extensionRedirectURL - The extension redirect URL.
+   * @param options.loginHandler - The login handler.
+   * @param options.oauthTraceTags - The OAuth trace tags.
+   * @param options.parentTraceContext - The optional parent trace context.
+   * @param options.endLaunchTrace - Ends the launch trace.
    */
-  async #launchTabAuthFlow(
-    authUrl: string,
-    extensionRedirectURL: string,
-    loginHandler: BaseLoginHandler,
-  ): Promise<string> {
+  async #launchTabAuthFlow({
+    authUrl,
+    extensionRedirectURL,
+    loginHandler,
+    oauthTraceTags,
+    parentTraceContext,
+    endLaunchTrace,
+  }: {
+    authUrl: string;
+    extensionRedirectURL: string;
+    loginHandler: BaseLoginHandler;
+    oauthTraceTags: OAuthTraceTags;
+    parentTraceContext?: SerializedTraceContext;
+    endLaunchTrace: (success: boolean) => void;
+  }): Promise<string> {
     try {
       const openedTab = await this.#platform.openTab({
         url: authUrl,
@@ -512,6 +643,14 @@ export class OAuthService {
         throw this.#getAuthFlowError();
       }
 
+      const confirmedTabId: number = openedTabId;
+      endLaunchTrace(true);
+
+      const endProviderInteractionTrace = this.#startProviderInteractionTrace(
+        oauthTraceTags,
+        parentTraceContext,
+      );
+
       const redirectUrl = await new Promise<string>((resolve, reject) => {
         const platform = this.#platform;
 
@@ -520,18 +659,19 @@ export class OAuthService {
           platform.removeTabRemovedListener(onRemoved);
         }
 
-        function finish(callback: () => void): void {
+        function finish(success: boolean, callback: () => void): void {
           cleanup();
-          platform.closeTab(openedTabId).catch(() => undefined);
+          endProviderInteractionTrace(success);
+          platform.closeTab(confirmedTabId).catch(() => undefined);
           callback();
         }
 
         function onUpdated(
           tabId: number,
           changeInfo: { url?: string; pendingUrl?: string },
-          tab?: { url?: string },
+          tab: { url?: string },
         ): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 
@@ -544,18 +684,19 @@ export class OAuthService {
 
           try {
             loginHandler.validateState(candidateUrl);
-            finish(() => resolve(candidateUrl));
+            finish(true, () => resolve(candidateUrl));
           } catch (error) {
-            finish(() => reject(error));
+            finish(false, () => reject(error));
           }
         }
 
         function onRemoved(tabId: number): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 
           cleanup();
+          endProviderInteractionTrace(false);
           reject(new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR));
         }
 
@@ -661,5 +802,39 @@ export class OAuthService {
 
       return false;
     }
+  }
+
+  /**
+   * Starts the provider interaction trace and returns a function that ends it once.
+   *
+   * @param oauthTraceTags - The OAuth trace tags.
+   * @param parentTraceContext - The optional parent trace context.
+   * @returns A function that ends the provider interaction trace.
+   */
+  #startProviderInteractionTrace(
+    oauthTraceTags: OAuthTraceTags,
+    parentTraceContext?: SerializedTraceContext,
+  ): (success: boolean) => void {
+    let providerInteractionTraceEnded = false;
+    const endProviderInteractionTrace = (success: boolean): void => {
+      if (providerInteractionTraceEnded) {
+        return;
+      }
+
+      providerInteractionTraceEnded = true;
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        data: { success },
+      });
+    };
+
+    this.#messenger.call('SentryTracingService:bufferedTrace', {
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: oauthTraceTags,
+      ...(parentTraceContext && { parentContext: parentTraceContext }),
+    });
+
+    return endProviderInteractionTrace;
   }
 }

@@ -1,4 +1,3 @@
-import assert from 'node:assert/strict';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
@@ -14,6 +13,9 @@ import {
 } from './helpers';
 
 describe('Deep Link - Invalid Route', function () {
+  const extraCtaRedirectCopy = `and we'll take you to the right place.`;
+  const extraCtaUpdateCopy = 'Update to the latest version of MetaMask';
+  const invalidRouteDescription = `We can't find the page you are looking for.`;
   const scenarios = generateScenariosForRoutes(['/INVALID']);
 
   scenarios.forEach(({ locked, signed, route, action }) => {
@@ -70,22 +72,27 @@ describe('Deep Link - Invalid Route', function () {
 
           // we should NOT render the checkbox for invalid routes
           console.log('Checking if deep link interstitial checkbox exists');
-          const hasCheckbox =
-            await deepLink.hasSkipDeepLinkInterstitialCheckBox();
-          assert.equal(hasCheckbox, false, 'Checkbox presence mismatch');
-
-          console.log('Getting error text for invalid route');
-          const text = await deepLink.getDescriptionText();
-          assert.equal(
-            text,
-            `We can't find the page you are looking for.${
-              isSigned
-                ? `
-Update to the latest version of MetaMask
-and we'll take you to the right place.`
-                : ''
-            }`,
+          await deepLink.checkSkipDeepLinkInterstitialCheckBoxIsDisplayed(
+            false,
           );
+
+          console.log('Checking error text for invalid route');
+          await deepLink.checkDescriptionTextIsDisplayed(
+            invalidRouteDescription,
+          );
+          if (isSigned) {
+            await deepLink.checkDescriptionTextIsDisplayed(extraCtaUpdateCopy);
+            await deepLink.checkDescriptionTextIsDisplayed(
+              extraCtaRedirectCopy,
+            );
+          } else {
+            await deepLink.checkDescriptionTextIsNotDisplayed(
+              extraCtaUpdateCopy,
+            );
+            await deepLink.checkDescriptionTextIsNotDisplayed(
+              extraCtaRedirectCopy,
+            );
+          }
 
           console.log('Clicking continue button');
           await deepLink.clickContinueButton();

@@ -39,7 +39,7 @@ describe('Send - Hex Address Normalization', function () {
 
           // Confirm transaction
           const confirmation = new Confirmation(driver);
-          await confirmation.clickFooterConfirmButton();
+          await confirmation.clickFooterButton({ button: 'confirm' });
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
           const activityTab = new ActivityTab(driver);
@@ -122,7 +122,7 @@ describe('Send - Hex Address Normalization', function () {
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkSendAmount('0 TST');
           const confirmation = new Confirmation(driver);
-          await confirmation.clickFooterConfirmButton();
+          await confirmation.clickFooterButton({ button: 'confirm' });
           await homePage.goToActivityList();
           const activityTab = new ActivityTab(driver);
           await activityTab.checkConfirmedTxNumberDisplayedInActivity();

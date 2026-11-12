@@ -132,11 +132,14 @@ describe('usePayWithToken', () => {
     usePayTokenAccountBalanceMock.mockReturnValue({
       balanceUsd: '25',
       balanceRaw: '25000000',
+      isLiveBalance: true,
+      isBalanceUsdKnown: true,
     });
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatFormatted: '$12.34',
       withdrawableFiatRaw: '12.34',
     });
@@ -171,6 +174,8 @@ describe('usePayWithToken', () => {
     usePayTokenAccountBalanceMock.mockReturnValue({
       balanceUsd: '0.10',
       balanceRaw: '100000',
+      isLiveBalance: true,
+      isBalanceUsdKnown: true,
     });
 
     const { result } = renderHook(() => usePayWithToken());

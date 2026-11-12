@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -25,8 +25,11 @@ export function useActivityCacheInvalidation() {
   const messenger = useMessenger<ActivityCacheInvalidationMessenger>();
   const useExternalServices = useSelector(getUseExternalServices);
   const useExternalServicesRef = useRef(useExternalServices);
-  useExternalServicesRef.current = useExternalServices;
   const firedIdsRef = useRef<Set<string>>(new Set());
+
+  useLayoutEffect(() => {
+    useExternalServicesRef.current = useExternalServices;
+  }, [useExternalServices]);
 
   useEffect(() => {
     const handleStatusUpdated = (

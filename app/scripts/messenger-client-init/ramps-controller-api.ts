@@ -1,7 +1,9 @@
 import type { RampsController } from '@metamask/ramps-controller';
 import {
   createWatchRampsCheckoutTab,
+  createWatchRampsOrderTab,
   type WatchRampsCheckoutTabParams,
+  type WatchRampsOrderTabParams,
 } from '../lib/ramps/checkout-watch';
 import type ExtensionPlatform from '../platforms/extension';
 
@@ -20,6 +22,10 @@ export function getRampsControllerApi(
     platform,
     rampsController,
   );
+  const watchRampsOrderTab = createWatchRampsOrderTab(
+    platform,
+    rampsController,
+  );
 
   return {
     setRampsUserRegion: rampsController.setUserRegion.bind(rampsController),
@@ -29,6 +35,7 @@ export function getRampsControllerApi(
       rampsController.setSelectedProvider.bind(rampsController),
     setRampsSelectedPaymentMethod:
       rampsController.setSelectedPaymentMethod.bind(rampsController),
+    getRampsCountries: rampsController.getCountries.bind(rampsController),
     getRampsTokens: rampsController.getTokens.bind(rampsController),
     getRampsProviders: rampsController.getProviders.bind(rampsController),
     getRampsPaymentMethods:
@@ -43,7 +50,11 @@ export function getRampsControllerApi(
     refreshRampsOrder: rampsController.getOrder.bind(rampsController),
     getRampsOrderFromCallback:
       rampsController.getOrderFromCallback.bind(rampsController),
+    syncRampsOrdersWithUserStorage: () =>
+      rampsController.syncOrdersWithUserStorage(),
     watchRampsCheckoutTab: (params: WatchRampsCheckoutTabParams) =>
       watchRampsCheckoutTab(params),
+    watchRampsProviderOrderTab: (params: WatchRampsOrderTabParams) =>
+      watchRampsOrderTab(params),
   };
 }

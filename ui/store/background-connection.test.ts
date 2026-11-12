@@ -4,10 +4,21 @@ import {
   JsonRpcNotification,
 } from '@metamask/utils';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
+import { getSerializedTraceContext } from '../../shared/lib/trace';
 import {
   setBackgroundConnection,
+  submitRequestToBackground,
   subscribeToMessengerEvent,
 } from './background-connection';
+
+jest.mock('../../shared/lib/trace', () => {
+  return {
+    ...jest.requireActual('../../shared/lib/trace'),
+    getSerializedTraceContext: jest.fn(),
+  };
+});
+
+const getSerializedTraceContextMock = jest.mocked(getSerializedTraceContext);
 
 type NotificationListener = (data: JsonRpcNotification) => void;
 
@@ -44,6 +55,160 @@ function setup() {
 }
 
 const event = 'ExampleController:stateChange';
+
+describe('submitRequestToBackground', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('routes a UI messenger action and its arguments through messengerCall', async () => {
+    const messengerCallMock = jest.fn().mockResolvedValue('installed');
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({ messengerCall: messengerCallMock });
+
+    const result = await submitRequestToBackground(
+      'SnapController:installSnaps',
+      ['https://example.com', { 'npm:my-snap': {} }],
+    );
+
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'SnapController:installSnaps',
+      ['https://example.com', { 'npm:my-snap': {} }],
+    );
+    expect(result).toBe('installed');
+  });
+
+  it('passes an empty argument list to messengerCall when none is supplied', async () => {
+    const messengerCallMock = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({ messengerCall: messengerCallMock });
+
+    await submitRequestToBackground('NetworkController:getState');
+
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'NetworkController:getState',
+      [],
+    );
+  });
+
+  it('allows actions whose arguments are all optional to be called with those arguments', async () => {
+    const messengerCallMock = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({ messengerCall: messengerCallMock });
+
+    await submitRequestToBackground(
+      'SubscriptionService:getSubscriptionsEligibilities',
+      [{ balanceCategory: '0-99' }],
+    );
+
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'SubscriptionService:getSubscriptionsEligibilities',
+      [{ balanceCategory: '0-99' }],
+    );
+  });
+
+  it('passes tracing metadata to messengerCall when routing requests through it', async () => {
+    const serializedTraceContext = {
+      // This is what this property is called.
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _traceId: 'foo',
+    };
+    getSerializedTraceContextMock.mockReturnValue(serializedTraceContext);
+    const messengerCallMock = jest.fn().mockResolvedValue('installed');
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({ messengerCall: messengerCallMock });
+
+    const result = await submitRequestToBackground(
+      'SnapController:installSnaps',
+      ['https://example.com', { 'npm:my-snap': {} }],
+    );
+
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'SnapController:installSnaps',
+      ['https://example.com', { 'npm:my-snap': {} }],
+      {
+        // This is what this property is called.
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _trace: {
+          context: serializedTraceContext,
+          messengerAction: 'SnapController:installSnaps',
+          spanName: 'Background RPC: SnapController:installSnaps',
+        },
+      },
+    );
+    expect(result).toBe('installed');
+  });
+
+  it('includes a span name for legacy background requests', async () => {
+    const context = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _traceId: 'trace123',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _spanId: 'span456',
+    };
+    getSerializedTraceContextMock.mockReturnValueOnce(context);
+    const getState = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Only the RPC method used by this test is needed.
+    await setBackgroundConnection({ getState });
+
+    await submitRequestToBackground('getState');
+
+    expect(getState).toHaveBeenCalledWith({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _trace: { context, spanName: 'Background RPC: getState' },
+    });
+  });
+
+  it('includes action metadata when messengerCall is requested directly', async () => {
+    const context = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _traceId: 'trace123',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _spanId: 'span456',
+    };
+    getSerializedTraceContextMock.mockReturnValueOnce(context);
+    const messengerCall = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Only the RPC method used by this test is needed.
+    await setBackgroundConnection({ messengerCall });
+
+    await submitRequestToBackground('messengerCall', [
+      'AppStateController:getState',
+      [],
+    ]);
+
+    expect(messengerCall).toHaveBeenCalledWith(
+      'AppStateController:getState',
+      [],
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _trace: {
+          context,
+          messengerAction: 'AppStateController:getState',
+          spanName: 'Background RPC: AppStateController:getState',
+        },
+      },
+    );
+  });
+
+  it('continues to accept names of methods within the legacy background API', async () => {
+    const messengerSubscribeMock = jest.fn();
+    const messengerCallMock = jest.fn();
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({
+      messengerSubscribe: messengerSubscribeMock,
+      messengerCall: messengerCallMock,
+    });
+
+    await submitRequestToBackground('messengerSubscribe', [
+      'ExampleController:stateChange',
+    ]);
+
+    expect(messengerSubscribeMock).toHaveBeenCalledWith(
+      'ExampleController:stateChange',
+    );
+    expect(messengerCallMock).not.toHaveBeenCalled();
+  });
+});
 
 describe('subscribeToMessengerEvent', () => {
   it('invokes callback when JSON-RPC notifications are received', async () => {

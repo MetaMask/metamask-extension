@@ -15,6 +15,12 @@ describe('NetworkConstants', () => {
     );
   });
 
+  it('maps Kinetiq Elysium to its network logo', () => {
+    expect(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1863d']).toBe(
+      './images/elysium-network.png',
+    );
+  });
+
   it('returns network name for chain ids', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM]).toBe('Arbitrum');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.AVALANCHE]).toBe('Avalanche');
@@ -26,7 +32,6 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.TEMPO_MAINNET]).toBe('Tempo');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARC]).toBe('Arc');
   });
-
   it('returns XGR Mainnet identity metadata', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.XGR]).toBe('XGR Mainnet');
     expect(CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[CHAIN_IDS.XGR]).toBe('XGR');
@@ -53,6 +58,7 @@ describe('NetworkConstants', () => {
         Tempo: CHAIN_IDS.TEMPO_MAINNET,
         Arc: CHAIN_IDS.ARC,
         'Robinhood Chain': CHAIN_IDS.ROBINHOOD_CHAIN,
+        'XDC Network': CHAIN_IDS.XDC,
       };
 
       FEATURED_RPCS.forEach((rpc) => {

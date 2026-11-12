@@ -73,6 +73,7 @@ function createWrapper(
     (typeof STATE_MOCK)['metamask']['transactionData'][typeof TRANSACTION_ID_MOCK]
   >,
   transactionType?: TransactionType,
+  isAmountPending = false,
 ) {
   const state = stateOverrides
     ? {
@@ -93,6 +94,8 @@ function createWrapper(
     currentConfirmation: { id: TRANSACTION_ID_MOCK, type: transactionType },
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
+    isAmountPending,
+    setIsAmountPending: jest.fn(),
   };
 
   return ({ children }: { children: React.ReactNode }) => (
@@ -311,14 +314,67 @@ describe('useTransactionPayData', () => {
       expect(result.current).toBe(false);
     });
 
-    it('returns false for money-account withdraw before an amount is entered', () => {
+    it('returns true for money-account withdraw until the amount is committed to Pay', () => {
       const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
         wrapper: createWrapper(
           {
-            isLoading: true,
-            isPostQuote: false,
+            isLoading: false,
+            isPostQuote: true,
             tokens: [],
           },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false for money-account withdraw once the quote matches the committed amount', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: true },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns true for money-account withdraw while quotes are loading', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: true, isPostQuote: true },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns true while a typed amount has not been committed', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper({ isLoading: false }, undefined, true),
+      });
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false when the typed amount is committed and quotes are idle', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false },
+          TransactionType.perpsDeposit,
+          false,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
+
+    it('does not wait on post-quote setup for money-account withdraw', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: false },
           TransactionType.moneyAccountWithdraw,
         ),
       });

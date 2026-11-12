@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import {
   getSelectedAccountCachedBalance,
   getSlides,
@@ -25,6 +25,7 @@ jest.mock('../../ducks/locale/locale', () => ({
 }));
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
+  useStore: jest.fn(),
 }));
 jest.mock('../../store/actions', () => ({
   updateSlides: jest.fn(),
@@ -36,6 +37,7 @@ jest.mock('../../store/actions', () => ({
 const mockFetch = jest.mocked(fetchCarouselSlidesFromContentful);
 const mockUpdateSlides = jest.mocked(updateSlides);
 const mockUseSelector = jest.mocked(useSelector);
+const mockUseStore = jest.mocked(useStore);
 const mockUseAppDispatch = jest.mocked(useDispatch);
 
 const slide = (
@@ -75,6 +77,14 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
     type MockSelector = (state: unknown) => unknown;
 
     mockUseAppDispatch.mockReturnValue(jest.fn());
+    mockUseStore.mockReturnValue({
+      getState: jest.fn(() => ({
+        metamask: { slides: mockGetSlides() },
+      })),
+      dispatch: jest.fn(),
+      subscribe: jest.fn(),
+      replaceReducer: jest.fn(),
+    } as unknown as ReturnType<typeof useStore>);
     mockUseSelector.mockImplementation(
       <TSelected>(selector: (state: unknown) => TSelected): TSelected => {
         if (selector === getSlides) {

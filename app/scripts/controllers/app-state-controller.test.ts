@@ -14,6 +14,7 @@ import {
 } from '../../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { MINUTE } from '../../../shared/constants/time';
+import { recordUiInteraction } from '../../../shared/lib/telemetry/last-activity';
 import { AppStateController } from './app-state-controller';
 import type {
   AppStateControllerMessenger,
@@ -30,6 +31,9 @@ type RootMessenger = Messenger<
 
 jest.mock('webextension-polyfill');
 jest.mock('../../../shared/lib/deep-links/utils');
+jest.mock('../../../shared/lib/telemetry/last-activity', () => ({
+  recordUiInteraction: jest.fn(),
+}));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
 jest.mock('../../../shared/lib/mv3.utils', () => ({
@@ -81,6 +85,21 @@ describe('AppStateController', () => {
         controller.setPasskeyAutoUnlockSuppressed(false);
         expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
           false,
+        );
+      });
+    });
+  });
+
+  describe('setLastShownPrfMigrationReminderAt', () => {
+    it('sets lastShownPrfMigrationReminderAt', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBeNull();
+
+        const timestamp = Date.now();
+        controller.setLastShownPrfMigrationReminderAt(timestamp);
+
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBe(
+          timestamp,
         );
       });
     });
@@ -226,10 +245,10 @@ describe('AppStateController', () => {
   describe('setDefaultHomeActiveTabName', () => {
     it('sets the default home tab name', async () => {
       await withController(({ controller }) => {
-        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Activity);
+        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Tokens);
 
         expect(controller.state.defaultHomeActiveTabName).toBe(
-          AccountOverviewTabKey.Activity,
+          AccountOverviewTabKey.Tokens,
         );
       });
     });
@@ -340,6 +359,16 @@ describe('AppStateController', () => {
         controller.setLastActiveTime();
 
         expect(setTimeout).toHaveBeenCalledTimes(0);
+      });
+    });
+  });
+
+  describe('recordUiInteraction', () => {
+    it('records a UI interaction for last-activity telemetry', async () => {
+      await withController(({ controller }) => {
+        controller.recordUiInteraction();
+
+        expect(recordUiInteraction).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -476,6 +505,18 @@ describe('AppStateController', () => {
         controller.setPerpsTabBadgeSeen(true);
 
         expect(controller.state.perpsTabBadgeSeen).toStrictEqual(true);
+      });
+    });
+  });
+
+  describe('setMoneyFtueSeen', () => {
+    it('defaults to unseen and updates when set', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.moneyFtueSeen).toStrictEqual(false);
+
+        controller.setMoneyFtueSeen(true);
+
+        expect(controller.state.moneyFtueSeen).toStrictEqual(true);
       });
     });
   });
@@ -847,11 +888,15 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -937,9 +982,13 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1020,9 +1069,12 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1098,11 +1150,15 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1139,6 +1195,20 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('addMoneyEarnBannerDismissedTokenKey', () => {
+    it('adds each token key once', async () => {
+      await withController(async ({ controller }) => {
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+        controller.addMoneyEarnBannerDismissedTokenKey('0xe708:0xdef');
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+
+        expect(
+          controller.state.moneyEarnBannerDismissedTokenKeys,
+        ).toStrictEqual(['0x1:0xabc', '0xe708:0xdef']);
+      });
     });
   });
 

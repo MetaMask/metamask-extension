@@ -109,7 +109,7 @@ const EditModeVisibilityIcon = ({
 }: EditModeVisibilityIconProps) => (
   <ButtonIcon
     iconName={isHidden ? IconName.EyeSlash : IconName.Eye}
-    size={ButtonIconSize.Sm}
+    size={ButtonIconSize.Md}
     ariaLabel={ariaLabel}
     onClick={onClick}
     isDisabled={disabled}
@@ -120,7 +120,7 @@ const EditModeVisibilityIcon = ({
         : 'multichain-account-cell-edit-mode-visible-icon'
     }
     iconProps={{
-      size: IconSize.Sm,
+      size: IconSize.Md,
       color: IconColor.IconAlternative,
     }}
   />
@@ -139,14 +139,14 @@ const EditModeDeleteIcon = ({
 }: EditModeDeleteIconProps) => (
   <ButtonIcon
     iconName={IconName.RemoveMinus}
-    size={ButtonIconSize.Sm}
+    size={ButtonIconSize.Md}
     ariaLabel={ariaLabel}
     onClick={onClick}
     isDisabled={disabled}
     className="multichain-account-cell__edit-mode-action-icon flex-shrink-0"
     data-testid="multichain-account-cell-edit-mode-delete-icon"
     iconProps={{
-      size: IconSize.Sm,
+      size: IconSize.Md,
       className: IconColor.ErrorDefault,
     }}
   />
@@ -362,6 +362,7 @@ export const MultichainAccountCell = ({
         </Box>
       </Box>
       <Box
+        className="multichain-account-cell__trailing"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}

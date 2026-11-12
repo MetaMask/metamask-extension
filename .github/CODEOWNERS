@@ -32,6 +32,16 @@ app/offscreen/offscreen.ts       @MetaMask/core-platform
 # make all such communication opt IN versus opt OUT.
 privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
+# The legacy-background-api-snapshot.json file lists the members that the legacy
+# background APIs (MetamaskController.getApi and LegacyBackgroundApiService) are
+# allowed to have. This API is frozen, and the legacy-background-api.ts script
+# checks that it remains so (using the snapshot for comparison). It also allows
+# for regenerating the snapshot in case the API needs to be expanded, but that
+# step requires approval from the Core Platform team.
+development/legacy-background-api/        @MetaMask/core-platform
+development/legacy-background-api.ts      @MetaMask/core-platform
+development/legacy-background-api.test.ts @MetaMask/core-platform
+legacy-background-api-snapshot.json       @MetaMask/core-platform
 
 # A machine-generated file that tracks circular dependencies in the codebase.
 # It is updated using yarn circular-deps:update
@@ -77,6 +87,7 @@ app/scripts/lib/offscreen-bridge                    @MetaMask/accounts-engineers
 ui/pages/create-account                             @MetaMask/accounts-engineers
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
 **/identity/**                                      @MetaMask/accounts-engineers
+ui/pages/mfa                                        @MetaMask/accounts-engineers
 **/hardware-wallets/**                              @MetaMask/accounts-engineers
 
 # Swaps-Bridge team to own code for the swaps folder
@@ -93,6 +104,7 @@ ui/selectors/rampsController/                         @MetaMask/money-movement
 ui/store/controller-actions/ramps-controller*         @MetaMask/money-movement
 app/scripts/messenger-client-init/ramps-*             @MetaMask/money-movement
 app/scripts/messenger-client-init/messengers/ramps-*  @MetaMask/money-movement
+shared/lib/deep-links/routes/buy*                     @MetaMask/money-movement
 test/e2e/tests/btc/mocks/ramps.ts                     @MetaMask/money-movement
 **/ramps/**                                           @MetaMask/money-movement
 
@@ -142,14 +154,15 @@ ui/components/app/import-token                                 @MetaMask/core-ex
 ui/components/app/toast-listener                               @MetaMask/core-extension-ux
 ui/components/ui/toast                                         @MetaMask/core-extension-ux
 ui/css                                                         @MetaMask/core-extension-ux
+ui/hooks/activity/                                             @MetaMask/core-extension-ux
 shared/lib/activity                                            @MetaMask/core-extension-ux
 ui/pages/home                                                  @MetaMask/core-extension-ux
 ui/pages/activity                                              @MetaMask/core-extension-ux
 ui/pages/core                                                  @MetaMask/core-extension-ux
 ui/pages/details                                               @MetaMask/core-extension-ux
-ui/pages/details/templates/ramps/                              @MetaMask/money-movement
 ui/pages/permissions-connect/                                  @MetaMask/core-extension-ux
 ui/pages/settings                                              @MetaMask/core-extension-ux
+ui/pages/settings/mfa-settings                                 @MetaMask/accounts-engineers
 ui/components/multichain/                                      @MetaMask/core-extension-ux
 ui/pages/settings/notifications-tab/**                         @MetaMask/core-extension-ux @MetaMask/engagement
 ui/components/multichain/notification*/**                      @MetaMask/core-extension-ux @MetaMask/engagement
@@ -158,7 +171,6 @@ ui/components/multichain/notifications*/**                     @MetaMask/core-ex
 # Co-owned by accounts and core-extension-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/core-extension-ux
-ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux
@@ -270,6 +282,17 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 ui/selectors/money/                  @MetaMask/earn
 ui/components/app/money/             @MetaMask/earn
 
+# Activity
+ui/selectors/activity.ts                                        @MetaMask/core-extension-ux
+ui/selectors/activity/                                         @MetaMask/core-extension-ux
+ui/components/app/activity-list-item-avatar/                   @MetaMask/core-extension-ux
+ui/components/app/transaction-activity-empty-state/            @MetaMask/core-extension-ux
+ui/pages/details/templates/ramps/                              @MetaMask/core-extension-ux @MetaMask/money-movement
+ui/pages/details/templates/perps/                              @MetaMask/core-extension-ux @MetaMask/perps
+ui/pages/details/templates/money/                              @MetaMask/core-extension-ux @MetaMask/earn
+ui/pages/details/templates/bridge/                             @MetaMask/swaps-engineers @MetaMask/core-extension-ux
+ui/selectors/activity/musd/                                    @MetaMask/core-extension-ux @MetaMask/earn
+
 
 # Extension Platform owns build, development tooling,
 # CI, background process, and platform infrastructure. Changes to
@@ -367,3 +390,5 @@ app/scripts/wallet-init/instance-options/storage-service*                @MetaMa
 /.github/scripts/known-feature-flag-constants.mts
 # Snapshots – *.snap files
 **/*.snap
+# Storybook stories – low-risk, often bulk-updated (e.g. Storybook upgrades)
+**/*.stories.*

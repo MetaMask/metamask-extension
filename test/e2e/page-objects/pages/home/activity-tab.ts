@@ -1,18 +1,18 @@
 import { strict as assert } from 'assert';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import HomePage from './homepage';
 
 /**
- * Home activity list and per-transaction details opened from it.
+ * Activity list and per-transaction details opened from it.
  *
- * Screen: `#/` Activity tab (`account-overview__activity-tab`), or `#/activity`
- * when bottom nav is enabled; reached via `HomePage.goToActivityList()`.
+ * Screen: `#/activity`, reached via `HomePage.goToActivityList()`.
  * Owns: activity rows (status counts, amounts, swap/bridge labels), cancel /
  * speed-up actions, and opening a row to assert details, fees, and explorer
  * links.
  * Boundaries: homepage chrome, balance, and tab switching stay on `HomePage`.
  * Post-submit toast UI belongs to `TxToastNotification`.
  * Related: `HomePage` (`goToActivityList`), `TxToastNotification`,
- * `flows/send-transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
+ * `flows/transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
  * land here after a tx.
  *
  * @see ui/pages/activity/activity-list.tsx
@@ -54,8 +54,18 @@ class ActivityTab extends HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly transactionBaseFeeRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-base-fee"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
+
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
+
+  private readonly transactionBreakdownAmountRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-breakdown-value-amount"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
 
   private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
@@ -65,6 +75,22 @@ class ActivityTab extends HomePage {
 
   private readonly transactionStatusLabel = (status: string) => ({
     testId: `transaction-details-status-${status}`,
+  });
+
+  private readonly transactionWithStatus = (status: string) =>
+    `[data-testid="activity-list-item"][data-tx-status="${status}"]`;
+
+  private readonly transactionWithStatusAndAmount = (
+    status: string,
+    amount: string,
+  ) => ({
+    xpath:
+      `//*[@data-testid="activity-list-item" and @data-tx-status=${quoteXPathText(
+        status,
+      )}]` +
+      `//*[@data-testid="transaction-list-item-primary-currency" and normalize-space(.)=${quoteXPathText(
+        amount,
+      )}]`,
   });
 
   /**
@@ -89,10 +115,10 @@ class ActivityTab extends HomePage {
     expectedDestToken?: string,
   ): Promise<void> {
     console.log(`Open bridge transaction details`);
-    const [completedTx] = await this.driver.findElements({
+    await this.driver.clickElement({
       text: action,
+      css: this.activityListAction,
     });
-    await completedTx.click();
     await this.driver.waitForSelector({ text: action });
 
     console.log('Checking scanner links');
@@ -106,7 +132,13 @@ class ActivityTab extends HomePage {
       this.transactionStatusLabel(expectedStatus),
     );
 
-    if (!isBridge) {
+    if (isBridge) {
+      console.log('Checking bridge fee and total amount rows are populated');
+      await this.driver.waitForSelector(this.transactionBaseFeeRowValue);
+      await this.driver.waitForSelector(
+        this.transactionBreakdownAmountRowValue,
+      );
+    } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
         await this.driver.waitForSelector({
@@ -294,7 +326,7 @@ class ActivityTab extends HomePage {
    * This function checks the specified number of pending transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of pending transactions to be visible.
    *
-   * @param expectedNumber - The number of pending transactions expected to be displayed in the activity list. Defaults to 1.
+   * @param expectedNumber - The number of pending transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of pending transactions is displayed within the timeout period.
    */
   async checkPendingTxNumberDisplayedInActivity(
@@ -357,6 +389,23 @@ class ActivityTab extends HomePage {
   async checkTransactionActivityByText(txnText: string): Promise<void> {
     console.log(`Check transaction activity with text: ${txnText}`);
     await this.driver.waitForSelector({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  /**
+   * Checks that no transaction activity item matching the provided text is
+   * displayed in the activity list.
+   *
+   * @param txnText - The text to search for within the transaction activity list.
+   * @returns A promise that resolves when no activity item with the text is present.
+   */
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity with text is absent: ${txnText}`);
+    await this.driver.assertElementNotPresent({
       text: txnText,
       css: this.activityListAction,
     });
@@ -475,9 +524,35 @@ class ActivityTab extends HomePage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
-    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
-      timeout: 5000,
-    });
+    await this.driver.waitForSelector(this.transactionWithStatus(status));
+  }
+
+  /**
+   * Waits for the activity row with the exact amount to reach the given status.
+   *
+   * @param expectedAmount - Exact primary-currency amount identifying the row.
+   * @param status - The expected transaction status.
+   * @param options - Optional wait configuration.
+   * @param options.timeout - Maximum time to wait in milliseconds.
+   */
+  async checkWaitForTransactionStatusByAmount(
+    expectedAmount: string,
+    status: 'confirmed' | 'cancelled' | 'pending',
+    { timeout = 5000 }: { timeout?: number } = {},
+  ): Promise<void> {
+    await this.driver.waitForSelector(
+      this.transactionWithStatusAndAmount(status, expectedAmount),
+      { timeout },
+    );
+  }
+
+  /**
+   * Clicks the activity row whose visible text contains the provided text.
+   *
+   * @param text - The text shown on the activity row (e.g. 'Sent TRX').
+   */
+  async clickActivityByText(text: string): Promise<void> {
+    await this.driver.clickElement({ css: this.activityListAction, text });
   }
 
   async clickCancelTransaction() {

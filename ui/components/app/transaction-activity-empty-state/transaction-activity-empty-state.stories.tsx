@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { TransactionActivityEmptyState } from './transaction-activity-empty-state';
 
 const meta: Meta<typeof TransactionActivityEmptyState> = {

@@ -2,18 +2,6 @@ import { type CaipChainId } from '@metamask/utils';
 import { convertCaipToHexChainId } from '../../../../../shared/lib/network.utils';
 import { Driver } from '../../../webdriver/driver';
 
-export enum NetworkId {
-  ETHEREUM = 'eip155:1',
-  LINEA = 'eip155:59144',
-  ARBITRUM = 'eip155:42161',
-  AVALANCHE = 'eip155:43114',
-  BSC = 'eip155:56',
-  BASE = 'eip155:8453',
-  OPTIMISM = 'eip155:10',
-  POLYGON = 'eip155:137',
-  XDC = 'eip155:50',
-}
-
 /**
  * The network filter keys EVM rows by hex chain id and non-EVM rows by CAIP
  * chain id, while tests refer to networks by CAIP chain id throughout.
@@ -56,7 +44,8 @@ class SelectNetworkModal {
   private readonly manageNetworksButton =
     '[data-testid="home-network-filter-manage-networks"]';
 
-  private readonly modalCloseButton = 'header button[aria-label="Close"]';
+  private readonly modalCloseButton =
+    '[data-testid="home-network-filter-modal"] [aria-label="Close"]';
 
   private readonly networkListItem = (chainId: string) =>
     `[data-testid="network-list-item-${toListItemChainId(chainId)}"]`;

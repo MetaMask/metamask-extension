@@ -10,7 +10,7 @@ import {
   getFirstTimeFlowType,
   getConsentDecisionMade,
 } from '../../../selectors';
-import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
+import SetupPasskeyContent from '../../../components/app/passkey-setup/setup-passkey-content';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 

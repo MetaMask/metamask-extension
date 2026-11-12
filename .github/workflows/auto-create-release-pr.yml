@@ -1,12 +1,17 @@
 name: Auto Create Release PR
 
 on:
-  create:
+  push:
+    branches:
+      # Glob, not regex. Same pattern as update-release-changelog.yml: three
+      # dot-separated segments that each start with a digit, e.g. release/13.53.0.
+      - 'release/[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   extract:
-    # Only run for release branch creation (not tags or other branches)
-    if: startsWith(github.ref, 'refs/heads/release/')
+    # Push also fires for later commits on release/X.Y.Z. Run only when this
+    # push creates the branch, so those commits do not open another release PR.
+    if: github.event.created
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:

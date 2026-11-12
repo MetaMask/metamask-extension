@@ -69,14 +69,16 @@ if [[ "${submitted_state}" == "PENDING_REVIEW" && "${submitted_crx}" == "${CRX_V
   exit 1
 fi
 
-# After upload-only, submittedItemRevisionStatus is usually unset until :publish; lastAsyncUploadState=SUCCEEDED is the draft signal.
-draft_ready=false
-if [[ "${async_state}" == "SUCCEEDED" && -z "${submitted_crx}" ]]; then
-  draft_ready=true
+if [[ "${submitted_state}" == "STAGED" && "${submitted_crx}" == "${CRX_VERSION}" ]]; then
+  echo "::error::Version ${CRX_VERSION} is already STAGED (approved, not live). Use publish-staged operation."
+  exit 1
 fi
 
-if [[ "${draft_ready}" != "true" ]]; then
-  echo "::error::No uploaded draft for version ${CRX_VERSION} (submitted state=${submitted_state:-<none>}, submitted crx=${submitted_crx:-<none>}, lastAsyncUploadState=${async_state:-<none>}). Run upload-extension-to-cws.yml first."
+# Upload-only drafts are not reliably visible in :fetchStatus before :publish
+# (submittedItemRevisionStatus stays unset; lastAsyncUploadState is async-only and often absent
+# after sync :upload). Proceed with :publish; cws-publish.yml verifies crxVersion after submit.
+if [[ -n "${submitted_crx}" && "${submitted_crx}" != "${CRX_VERSION}" ]]; then
+  echo "::error::Another revision is already submitted (submitted crx=${submitted_crx}, expected ${CRX_VERSION}). Resolve in CWS console before submitting ${CRX_VERSION}."
   cat "${FETCH_STATUS_JSON}"
   exit 1
 fi
@@ -90,5 +92,5 @@ fi
 {
   echo "action=submit-for-review"
   echo "api_publish_type=${api_publish_type}"
-  echo "branch=Submit ${CRX_VERSION} for review (${PUBLISH_TYPE}, ${PERCENTAGE}%)"
+  echo "branch=Submit ${CRX_VERSION} for review (${PUBLISH_TYPE}, ${PERCENTAGE}%; pre-publish fetchStatus lastAsyncUploadState=${async_state:-none})"
 } >> "${GITHUB_OUTPUT}"

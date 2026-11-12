@@ -14,30 +14,30 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
           >
             <img
               alt="Network3"
-              class="size-full object-contain"
+              class="size-full object-cover"
               data-testid="avatar-group-network-image"
               src="img2"
             />
           </div>
         </div>
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: -8px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
           >
             <img
               alt="Network1"
-              class="size-full object-contain"
+              class="size-full object-cover"
               data-testid="avatar-group-network-image"
               src="img1"
             />
@@ -78,30 +78,30 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: 0px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
           >
             <img
               alt="Network3"
-              class="size-full object-contain"
+              class="size-full object-cover"
               data-testid="avatar-group-network-image"
               src="img2"
             />
           </div>
         </div>
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: -8px;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden h-[18px] w-[18px] border-background-default border bg-white rounded-md"
           >
             <img
               alt="Network1"
-              class="size-full object-contain"
+              class="size-full object-cover"
               data-testid="avatar-group-network-image"
               src="img1"
             />

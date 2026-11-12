@@ -11,26 +11,21 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
-import { Skeleton } from '@metamask/design-system-react';
 import {
+  FontWeight,
+  IconColor,
   IconName,
+  IconSize,
   Text,
-  TextField,
-  TextFieldType,
-  ButtonLink,
-} from '../../../components/component-library';
+  TextButton,
+  TextColor,
+  TextVariant,
+  twMerge,
+} from '@metamask/design-system-react';
+import { HeroAmountInput } from '../../../components/ui/hero-amount-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
-import {
-  Display,
-  FontWeight,
-  IconColor,
-  TextAlign,
-  JustifyContent,
-  TextVariant,
-  TextColor,
-} from '../../../helpers/constants/design-system';
 import {
   getFromTokenBalance,
   getValidationErrors,
@@ -72,6 +67,18 @@ const getBlockExplorerUrl = (
     : null;
 };
 
+// Two stacked amount fields cannot fit the 88px start, so the Swap/Bridge
+// fields start lower on the same shared scale.
+const AMOUNT_FIELD_MAX_FONT_SIZE = 48;
+
+type BridgeAmountFieldProps = {
+  testId: string;
+  autoFocus?: boolean;
+  value?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
+};
+
 export const BridgeInputGroup = ({
   token,
   onAmountChange,
@@ -90,15 +97,12 @@ export const BridgeInputGroup = ({
 }: {
   setIsAssetPickerOpen: (isOpen: boolean) => void;
   secondaryDisplay?: string;
-  amountInputPrefix?: React.ReactNode;
+  amountInputPrefix?: string;
   onAmountTypeToggle?: () => void;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
   buttonProps: { testId: string };
-  amountFieldProps: Pick<
-    React.ComponentProps<typeof TextField>,
-    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
-  >;
+  amountFieldProps: BridgeAmountFieldProps;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
   containerProps?: React.ComponentProps<typeof Column>;
@@ -130,7 +134,7 @@ export const BridgeInputGroup = ({
   );
 
   // useCopyToClipboard analysis: Copies a public address
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const assetReference = token
@@ -140,9 +144,7 @@ export const BridgeInputGroup = ({
 
   const isAmountReadOnly =
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
-  const shouldShowAmountSkeleton = Boolean(
-    showAmountSkeleton && isAmountReadOnly,
-  );
+  const isAmountLoading = Boolean(showAmountSkeleton && isAmountReadOnly);
   const hasAmountInputPrefix = Boolean(amountInputPrefix);
   const previousHasAmountInputPrefix = useRef(hasAmountInputPrefix);
   const formattedTokenAmount = useMemo(() => {
@@ -160,22 +162,11 @@ export const BridgeInputGroup = ({
     );
   }, [locale, balanceAmount, token.symbol]);
 
-  const inputFontSize = useMemo(() => {
-    const len = (amountFieldProps?.value ?? '').toString().length;
-    if (len <= 10) {
-      return 40;
-    }
-    if (len <= 15) {
-      return 35;
-    }
-    if (len <= 20) {
-      return 30;
-    }
-    if (len <= 25) {
-      return 25;
-    }
-    return 20;
-  }, [amountFieldProps?.value]);
+  const amountValue = amountFieldProps?.value?.toString() ?? '';
+  // prepare-bridge-page passes "0" before a quote arrives. That sentinel is
+  // the placeholder, not a quoted amount, so the read-only row stays dimmed.
+  const isReadOnlyPlaceholder =
+    isAmountReadOnly && (amountValue === '' || amountValue === '0');
 
   useEffect(() => {
     const hasAmountInputPrefixChanged =
@@ -219,79 +210,35 @@ export const BridgeInputGroup = ({
   return (
     <Column gap={1} {...containerProps}>
       <Row gap={4}>
-        {shouldShowAmountSkeleton ? (
-          <Skeleton
-            width={128}
-            height={40}
-            data-testid={`${amountFieldProps.testId}-loading-skeleton`}
-            style={{ flex: 1, minWidth: 0 }}
-          />
-        ) : (
-          <TextField
-            startAccessory={
-              amountInputPrefix ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  style={{
-                    fontSize: inputFontSize,
-                    fontWeight: 400,
-                    lineHeight: 1,
-                  }}
-                >
-                  {amountInputPrefix}
-                </Text>
-              ) : undefined
-            }
-            inputProps={{
-              disableStateStyles: true,
-              textAlign: TextAlign.Start,
-              style: {
-                fontWeight: 400,
-                fontSize: inputFontSize,
-                transition: 'font-size 0.1s',
-                padding: 0,
-              },
-            }}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              opacity:
-                isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
-            }}
-            display={Display.Flex}
-            inputRef={inputRef}
-            type={TextFieldType.Text}
-            className="amount-input"
-            placeholder="0"
-            onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-              if (e) {
-                // Only allow numbers and at most one decimal point
-                if (
-                  e.key === '.' &&
-                  amountFieldProps.value?.toString().includes('.')
-                ) {
-                  e.preventDefault();
-                } else if (!/^[\d.]{1}$/u.test(e.key)) {
-                  e.preventDefault();
-                }
-              }
-            }}
-            onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-              e.preventDefault();
-              const cleanedValue = sanitizeAmountInput(
-                e.clipboardData.getData('text'),
+        <HeroAmountInput
+          prefix={amountInputPrefix}
+          value={amountValue}
+          onChange={(value) => onAmountChange?.(sanitizeAmountInput(value))}
+          autoFocus={amountFieldProps.autoFocus}
+          disabled={amountFieldProps.disabled}
+          readOnly={amountFieldProps.readOnly}
+          isLoading={isAmountLoading}
+          maxFontSize={AMOUNT_FIELD_MAX_FONT_SIZE}
+          align="start"
+          inputRef={inputRef}
+          data-testid={`${amountFieldProps.testId}-row`}
+          className={twMerge(
+            'min-w-0 flex-1',
+            isReadOnlyPlaceholder && !isAmountLoading && 'opacity-50',
+          )}
+          inputProps={{
+            'data-testid': amountFieldProps.testId,
+            autoComplete: 'off',
+            // Pasted token amounts such as "1,234.5 ETH" are cleaned rather
+            // than rejected.
+            onPaste: (event) => {
+              event.preventDefault();
+              onAmountChange?.(
+                sanitizeAmountInput(event.clipboardData.getData('text')),
               );
-              onAmountChange?.(cleanedValue ?? '');
-            }}
-            onChange={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const cleanedValue = sanitizeAmountInput(e.target.value);
-              onAmountChange?.(cleanedValue ?? '');
-            }}
-            {...amountFieldProps}
-          />
-        )}
+            },
+          }}
+        />
         <SelectedAssetButton
           onClick={() => {
             dispatch(
@@ -315,15 +262,21 @@ export const BridgeInputGroup = ({
         />
       </Row>
 
-      <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
+      <Row className="h-6">
         {onAmountTypeToggle ? (
-          <ButtonLink
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+          <TextButton
+            className="max-w-full hover:no-underline"
+            textProps={{
+              fontWeight: FontWeight.Regular,
+              color: TextColor.TextAlternative,
+              ellipsis: true,
+            }}
             endIconName={IconName.SwapVertical}
-            endIconProps={{ color: IconColor.iconAlternative }}
-            ellipsis
-            style={{ textDecoration: 'none' }}
+            endIconProps={{
+              size: IconSize.Sm,
+              color: IconColor.IconAlternative,
+              className: 'shrink-0',
+            }}
             data-testid="bridge-input-denomination-toggle"
             aria-label={`Toggle input denomination${
               secondaryDisplay ? `, ${secondaryDisplay}` : ''
@@ -331,17 +284,17 @@ export const BridgeInputGroup = ({
             onClick={onAmountTypeToggle}
           >
             {secondaryDisplay}
-          </ButtonLink>
+          </TextButton>
         ) : (
           <Text
-            variant={TextVariant.bodyMd}
-            fontWeight={FontWeight.Normal}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Regular}
             color={
               isAmountReadOnly && isEstimatedReturnLow
-                ? TextColor.warningDefault
-                : TextColor.textAlternative
+                ? TextColor.WarningDefault
+                : TextColor.TextAlternative
             }
-            textAlign={TextAlign.End}
+            className="text-end"
             ellipsis
           >
             {secondaryDisplay}
@@ -349,27 +302,22 @@ export const BridgeInputGroup = ({
         )}
         {!isAmountReadOnly && balanceAmount && token && (
           <Text
-            display={Display.Flex}
-            gap={1}
-            variant={TextVariant.bodyMd}
+            variant={TextVariant.BodyMd}
             color={
               isInsufficientBalance
-                ? TextColor.errorDefault
-                : TextColor.textAlternative
+                ? TextColor.ErrorDefault
+                : TextColor.TextAlternative
             }
-            style={{
-              cursor: 'default',
-              textDecoration: 'none',
-            }}
+            className="flex cursor-default gap-1"
           >
             {formattedTokenAmount}
             {onMaxButtonClick && (
-              <ButtonLink
-                variant={TextVariant.bodyMd}
+              <TextButton
+                textProps={{ fontWeight: FontWeight.Regular }}
                 onClick={() => onMaxButtonClick(balanceAmount)}
               >
                 {t('max')}
-              </ButtonLink>
+              </TextButton>
             )}
           </Text>
         )}
@@ -378,25 +326,19 @@ export const BridgeInputGroup = ({
           selectedChainId &&
           !isNativeAddress(assetReference) && (
             <Text
-              display={Display.Flex}
-              gap={1}
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              onClick={() => {
-                handleAddressClick();
-              }}
-              as={'a'}
-              style={{
-                cursor: isAmountReadOnly ? 'pointer' : 'default',
-                textDecoration: isAmountReadOnly ? 'underline' : 'none',
-              }}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              className="flex cursor-pointer gap-1 underline"
+              asChild
             >
-              {shortenString(assetReference, {
-                truncatedCharLimit: 11,
-                truncatedStartChars: 4,
-                truncatedEndChars: 4,
-                skipCharacterInEnd: false,
-              })}
+              <button type="button" onClick={handleAddressClick}>
+                {shortenString(assetReference, {
+                  truncatedCharLimit: 11,
+                  truncatedStartChars: 4,
+                  truncatedEndChars: 4,
+                  skipCharacterInEnd: false,
+                })}
+              </button>
             </Text>
           )}
       </Row>

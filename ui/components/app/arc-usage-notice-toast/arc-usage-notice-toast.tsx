@@ -16,6 +16,7 @@ import { Toast } from '../../multichain/toast';
 import { selectShowArcUsageNoticeToast } from './selectors';
 
 const ARC_CAIP_CHAIN_ID = 'eip155:5042';
+const ARC_NETWORK_NAME = 'arc';
 
 export function ArcUsageNoticeToast() {
   const t = useI18nContext();
@@ -51,9 +52,15 @@ export function ArcUsageNoticeToast() {
       description={t('arcUsageNoticeDescription')}
       onClose={() => {
         trackEvent(
-          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastDismissed)
+          createEventBuilder(
+            MetaMetricsEventName.NetworkUsageNoticeToastInteracted,
+          )
             .addCategory(MetaMetricsEventCategory.Home)
             .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_name: ARC_NETWORK_NAME,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              interaction_type: 'dismissed',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               chain_id_caip: ARC_CAIP_CHAIN_ID,
             })

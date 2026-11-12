@@ -14,13 +14,16 @@ export async function updateTransactionPaymentToken({
   tokenAddress: Hex;
   chainId: Hex;
 }): Promise<void> {
-  return await submitRequestToBackground('updateTransactionPaymentToken', [
-    {
-      transactionId,
-      tokenAddress,
-      chainId,
-    },
-  ]);
+  return await submitRequestToBackground(
+    'TransactionPayController:updatePaymentToken',
+    [
+      {
+        transactionId,
+        tokenAddress,
+        chainId,
+      },
+    ],
+  );
 }
 
 export async function setPaymentOverride(
@@ -44,12 +47,46 @@ export async function setPaymentOverride(
 export async function setIsMaxAmount(
   transactionId: string,
   isMaxAmount: boolean,
-  options: { isMoneyAccountDeposit?: boolean } = {},
+  options: {
+    /**
+     * Whether Core may quote this Max atomically. Money-account deposits only:
+     * requires the `atomicMaxEnabled` gate and a matching fixed-spread route.
+     */
+    isAtomicMaxAllowed?: boolean;
+    isMoneyAccountDeposit?: boolean;
+    sourceAccountAddress?: string;
+    /**
+     * Funding-account pay-token balance in base units. Money-account deposits
+     * must supply it: the snapshot the controller would otherwise use as the
+     * Max source amount can be `0` for this flow.
+     */
+    sourceBalanceRaw?: string;
+    sourceChainId?: string;
+    sourceTokenAddress?: string;
+  } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayIsMaxAmount', [
     transactionId,
     isMaxAmount,
     options,
+  ]);
+}
+
+/**
+ * Refreshes the atomic hint for an already-armed Money Account deposit Max,
+ * without disturbing the recorded Max source balance. Used when the
+ * `atomicMaxEnabled` gate changes while Max is active.
+ *
+ * @param transactionId - Confirmation transaction id.
+ * @param isAtomicMaxAllowed - Whether Core may quote this Max atomically.
+ */
+export async function setTransactionPayAtomic(
+  transactionId: string,
+  isAtomicMaxAllowed: boolean,
+): Promise<void> {
+  return await submitRequestToBackground('setTransactionPayAtomic', [
+    transactionId,
+    isAtomicMaxAllowed,
   ]);
 }
 
@@ -79,20 +116,20 @@ export async function createMoneyAccountDepositTransaction(
  * Creates the placeholder Money Account withdrawal batch in the background
  * and returns the created transaction's id for confirmation navigation.
  *
- * @param accountOverride - Currently selected EVM account, used as the
- * default destination on the confirmation (`txParams.from` is the money
- * account, which executes the batch).
+ * @param recipient - Default recipient on the confirmation, stored as Pay's
+ * account override. `txParams.from` is the money account, which executes and
+ * signs the batch.
  * @returns The created transaction id and the batch id.
  */
 export async function createMoneyAccountWithdrawTransaction(
-  accountOverride: Hex,
+  recipient: Hex,
 ): Promise<{
   transactionId: string;
   batchId: Hex;
 }> {
   return await submitRequestToBackground(
     'createMoneyAccountWithdrawTransaction',
-    [accountOverride],
+    [recipient],
   );
 }
 

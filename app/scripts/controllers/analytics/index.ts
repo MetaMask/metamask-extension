@@ -9,10 +9,16 @@ export type {
 export {
   configureAnalytics,
   canSubmitAnalytics,
+  createEventFragment,
+  finalizeEventFragment,
+  getEventFragmentById,
   identify,
+  setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
+  updateEventFragment,
   updateProfileSessionData,
+  upsertEventFragment,
   validateIdentifyPayload,
 } from './analytics';

@@ -1,4 +1,9 @@
 import {
+  ARC_HEX_CHAIN_ID,
+  ARC_NATIVE_ASSET_ID,
+  ARC_NATIVE_CAIP_CHAIN_ID,
+} from '../../../components/app/assets/enablement/arc';
+import {
   getBalanceAwareSwapDefaults,
   hasPositiveTokenBalance,
   selectBestSwapSourceToken,
@@ -11,6 +16,7 @@ const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const POLYGON_USDC_ADDRESS = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const POLYGON_NATIVE_ADDRESS = '0x0000000000000000000000000000000000001010';
+const ARC_EURC_ADDRESS = '0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1';
 
 const currentToken: BalanceAwareSwapSourceToken = {
   address: '0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -426,6 +432,118 @@ describe('getBalanceAwareSwapDefaults', () => {
     expect(result).toEqual({
       sourceToken: bitcoinToken,
     });
+  });
+
+  it('uses Arc native USDC as from when the Arc native token has balance', () => {
+    const arcNativeToken: BalanceAwareSwapSourceToken = {
+      address: ZERO_ADDRESS,
+      chainId: ARC_HEX_CHAIN_ID,
+      decimals: 6,
+      symbol: 'USDC',
+      name: 'USDC',
+    };
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken: arcNativeToken,
+      assetsByChain: {
+        [ARC_HEX_CHAIN_ID]: [
+          {
+            assetId: ARC_NATIVE_ASSET_ID,
+            chainId: ARC_NATIVE_CAIP_CHAIN_ID,
+            address: ZERO_ADDRESS,
+            symbol: 'USDC',
+            name: 'USDC',
+            decimals: 6,
+            isNative: true,
+            balance: '100',
+            fiat: { balance: 100 },
+          },
+        ],
+      },
+    });
+
+    expect(result).toEqual({
+      sourceToken: arcNativeToken,
+    });
+  });
+
+  it('uses Arc native USDC as from when the Arc native token page omits the address', () => {
+    const arcNativeToken: BalanceAwareSwapSourceToken = {
+      address: '',
+      chainId: ARC_HEX_CHAIN_ID,
+      decimals: 6,
+      symbol: 'USDC',
+      name: 'USDC',
+    };
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken: arcNativeToken,
+      currentTokenBalance: '100',
+      assetsByChain: {},
+    });
+
+    expect(result.sourceToken).toBe(arcNativeToken);
+  });
+
+  it('sets Arc native USDC as to when the Arc native token has no balance', () => {
+    const arcNativeToken: BalanceAwareSwapSourceToken = {
+      address: ZERO_ADDRESS,
+      chainId: ARC_HEX_CHAIN_ID,
+      decimals: 6,
+      symbol: 'USDC',
+      name: 'USDC',
+    };
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken: arcNativeToken,
+      currentTokenBalance: '0',
+      assetsByChain: {
+        '0x1': [
+          userAsset({
+            assetId: USDC_ADDRESS,
+            symbol: 'USDC',
+            decimals: 6,
+            fiatBalance: 5000,
+          }),
+        ],
+      },
+    });
+
+    expect(result.sourceToken?.address).toBe(USDC_ADDRESS);
+    expect(result.destTokenAssetId).toBe(ARC_NATIVE_ASSET_ID);
+  });
+
+  it('sets Arc native USDC as to when EURC is a funded same-chain token', () => {
+    const arcNativeToken: BalanceAwareSwapSourceToken = {
+      address: ZERO_ADDRESS,
+      chainId: ARC_HEX_CHAIN_ID,
+      decimals: 6,
+      symbol: 'USDC',
+      name: 'USDC',
+    };
+
+    const result = getBalanceAwareSwapDefaults({
+      currentToken: arcNativeToken,
+      currentTokenBalance: '0',
+      assetsByChain: {
+        [ARC_HEX_CHAIN_ID]: [
+          {
+            assetId: ARC_EURC_ADDRESS,
+            address: ARC_EURC_ADDRESS,
+            chainId: ARC_HEX_CHAIN_ID,
+            symbol: 'EURC',
+            name: 'EURC',
+            decimals: 6,
+            isNative: false,
+            balance: '100',
+            fiat: { balance: 100 },
+          },
+        ],
+      },
+    });
+
+    expect(result.sourceToken?.address).toBe(ARC_EURC_ADDRESS);
+    expect(result.destTokenAssetId).toBe(ARC_NATIVE_ASSET_ID);
   });
 
   it('sets an unfunded non-EVM native as the destination', () => {

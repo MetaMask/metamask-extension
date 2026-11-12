@@ -38,7 +38,10 @@ describe('Petnames - Transactions', function () {
           name: CUSTOM_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -49,7 +52,10 @@ describe('Petnames - Transactions', function () {
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -85,7 +91,10 @@ describe('Petnames - Transactions', function () {
         });
 
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndWaitToDisappear();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'disappear',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -97,7 +106,10 @@ describe('Petnames - Transactions', function () {
           proposedName: PROPOSED_NAME_MOCK,
         });
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndWaitToDisappear();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'disappear',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

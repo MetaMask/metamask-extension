@@ -18,6 +18,7 @@ describe('Test Snap Notification', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockNotificationSnap,
@@ -34,10 +35,7 @@ describe('Test Snap Notification', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectNotificationButton',
-          'Reconnect to Notifications Snap',
+          { expectedMessage: 'Reconnect to Notifications Snap' },
         );
         await testSnaps.clickButton('sendInAppNotificationButton');
 
@@ -58,6 +56,7 @@ describe('Test Snap Notification', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockNotificationSnap,
@@ -78,10 +77,7 @@ describe('Test Snap Notification', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectNotificationButton',
-          'Reconnect to Notifications Snap',
+          { expectedMessage: 'Reconnect to Notifications Snap' },
         );
         await testSnaps.clickButton('sendExpandedViewNotificationButton');
 

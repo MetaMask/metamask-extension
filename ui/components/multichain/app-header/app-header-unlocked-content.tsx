@@ -1,12 +1,17 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import classnames from 'clsx';
 import {
+  matchPath,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import {
+  BadgeWrapper,
+  BadgeWrapperPosition,
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -21,10 +26,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
-import { getIsDefaultAddressEnabled } from '../../../selectors';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   DISCOVER_SEARCH_ROUTE,
 } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
@@ -39,21 +45,28 @@ import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
+import { AccountName } from './account-name';
+import { DiscoverSearchBar } from './discover-search-bar';
 
 type AppHeaderUnlockedContentProps = {
-  disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
+  isWideLayout?: boolean;
 };
 
 export const AppHeaderUnlockedContent = ({
-  disableAccountPicker,
   menuRef,
+  isWideLayout = false,
 }: AppHeaderUnlockedContentProps) => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const disableAccountPicker = Boolean(
+    matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
+    matchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname),
+  );
   // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
   const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';
   const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
@@ -61,7 +74,6 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
@@ -120,13 +132,15 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <Box style={{ overflow: 'hidden' }}>
-        {/* Prevent overflow of account picker by long account names */}
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Start}
-          className="min-w-0"
-        >
+      <Box
+        className={classnames(
+          'min-w-0 flex-1 overflow-hidden',
+          isWideLayout && 'max-w-lg',
+        )}
+      >
+        {isWideLayout ? (
+          <AccountName name={accountName} />
+        ) : (
           <AccountPicker
             address={''} // No address shown in multichain mode
             name={accountName}
@@ -159,7 +173,7 @@ export const AppHeaderUnlockedContent = ({
             paddingLeft={2}
             paddingRight={2}
           />
-        </Box>
+        )}
         {selectedMultichainAccountId && (
           <Box
             className="ml-2 mt-1 w-fit"
@@ -174,7 +188,6 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
-              showDefaultAddressSection={isDefaultAddressEnabled}
             >
               <MultichainAccountNetworkGroupWithCopyIcon
                 groupId={selectedMultichainAccountId}
@@ -186,8 +199,8 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [
     accountName,
+    isWideLayout,
     disableAccountPicker,
-    isDefaultAddressEnabled,
     selectedMultichainAccountId,
     navigate,
     trackEvent,
@@ -197,57 +210,53 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={2}
-        className="min-w-0"
-      >
-        {multichainAccountAppContent}
-      </Box>
-      <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.End}
-        className="ml-auto"
-      >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.End}
-          className="relative w-full"
-          gap={2}
-        >
-          {!accountOptionsMenuOpen && (
-            <Box onClick={handleMainMenuToggle}>
-              <NotificationsTagCounter noLabel />
-            </Box>
-          )}
-          {isDiscoverSearchEnabled && (
-            <ButtonIcon
-              iconName={IconName.Search}
-              data-testid="discover-search-button"
-              ariaLabel={t('searchTokens')}
-              onClick={handleOpenDiscoverSearch}
-              size={ButtonIconSize.Md}
-            />
-          )}
+      {multichainAccountAppContent}
+
+      {isDiscoverSearchEnabled &&
+        (isWideLayout ? (
+          <DiscoverSearchBar
+            className="ml-auto"
+            onOpen={handleOpenDiscoverSearch}
+          />
+        ) : (
           <ButtonIcon
-            ref={menuRef}
-            iconName={IconName.Menu}
-            data-testid="account-options-menu-button"
-            ariaLabel={t('accountOptions')}
-            onClick={handleMainMenuToggle}
+            iconName={IconName.Search}
+            data-testid="discover-search-button"
+            ariaLabel={t('searchTokens')}
+            onClick={handleOpenDiscoverSearch}
             size={ButtonIconSize.Md}
           />
-        </Box>
-        <GlobalMenuDrawerWithList
-          isOpen={accountOptionsMenuOpen}
-          onClose={closeAccountOptionsMenu}
+        ))}
+
+      <BadgeWrapper
+        badge={
+          accountOptionsMenuOpen ? null : <NotificationsTagCounter noLabel />
+        }
+        position={BadgeWrapperPosition.TopRight}
+        badgeContainerProps={{
+          onClick: handleMainMenuToggle,
+          className: 'cursor-pointer',
+        }}
+        className="self-center"
+      >
+        <ButtonIcon
+          ref={menuRef}
+          iconName={IconName.Menu}
+          data-testid="account-options-menu-button"
+          ariaLabel={t('accountOptions')}
+          onClick={handleMainMenuToggle}
+          size={isWideLayout ? ButtonIconSize.Lg : ButtonIconSize.Md}
         />
-        <VisitSupportDataConsentModal
-          isOpen={showSupportDataConsentModal}
-          onClose={() => dispatch(setShowSupportDataConsentModal(false))}
-        />
-      </Box>
+      </BadgeWrapper>
+
+      <GlobalMenuDrawerWithList
+        isOpen={accountOptionsMenuOpen}
+        onClose={closeAccountOptionsMenu}
+      />
+      <VisitSupportDataConsentModal
+        isOpen={showSupportDataConsentModal}
+        onClose={() => dispatch(setShowSupportDataConsentModal(false))}
+      />
     </>
   );
 };

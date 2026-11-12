@@ -1,3 +1,4 @@
+import type { Json } from '@metamask/utils';
 import {
   ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
   getEnabledAdvancedPermissions,
@@ -142,6 +143,49 @@ describe('Feature Flag Registry', () => {
       expect(flagNames).toContain('addSolanaAccount');
       expect(flagNames).toContain('bridgeConfig');
       expect(flagNames).toContain('smartTransactionsNetworks');
+    });
+
+    it('only uses 0 or 1 for threshold scope values', () => {
+      const collectThresholdValues = (value: Json): number[] => {
+        if (Array.isArray(value)) {
+          const values: number[] = [];
+          const isThresholdArray =
+            value.length > 0 &&
+            value.every(
+              (item) =>
+                item &&
+                typeof item === 'object' &&
+                !Array.isArray(item) &&
+                (item as { scope?: { type?: string } }).scope?.type ===
+                  'threshold',
+            );
+          if (isThresholdArray) {
+            for (const item of value) {
+              const scopeValue = (item as { scope?: { value?: number } }).scope
+                ?.value;
+              if (typeof scopeValue === 'number') {
+                values.push(scopeValue);
+              }
+            }
+            return values;
+          }
+          return value.flatMap((item) => collectThresholdValues(item as Json));
+        }
+        if (value && typeof value === 'object') {
+          return Object.values(value).flatMap((nested) =>
+            collectThresholdValues(nested),
+          );
+        }
+        return [];
+      };
+
+      const response = getProductionRemoteFlagApiResponse();
+      for (const item of response) {
+        const flagValue = Object.values(item as Record<string, Json>)[0];
+        for (const scopeValue of collectThresholdValues(flagValue)) {
+          expect([0, 1]).toContain(scopeValue);
+        }
+      }
     });
   });
 

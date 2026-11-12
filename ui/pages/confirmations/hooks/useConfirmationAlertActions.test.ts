@@ -61,6 +61,9 @@ describe('useConfirmationAlertActions', () => {
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
+      suppressAutoExit: jest.fn(),
+      isAmountPending: false,
+      setIsAmountPending: jest.fn(),
     });
   });
 
@@ -92,6 +95,9 @@ describe('useConfirmationAlertActions', () => {
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
+      suppressAutoExit: jest.fn(),
+      isAmountPending: false,
+      setIsAmountPending: jest.fn(),
     });
 
     processAlertActionKey(AlertActionKey.ShowAdvancedGasFeeModal);

@@ -1,1 +1,1 @@
-export { ImportNftsModal } from './import-nfts-modal';
+export { ImportNftsForm } from './import-nfts-form';

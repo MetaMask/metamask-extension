@@ -6,3 +6,5 @@ export type HyperliquidDepositPromptProps = {
   onActionComplete: (result: HyperliquidDepositPromptResult) => void;
   selectedAddress?: string;
 };
+
+export type HyperliquidDepositPromptAction = 'dismiss' | 'continue';

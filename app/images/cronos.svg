@@ -1,95 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   width="250"
-   height="250"
-   viewBox="0 0 250 250"
-   fill="none"
-   version="1.1"
-   id="svg10"
-   sodipodi:docname="Cronos EVM Icon.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview10"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.7033208"
-     inkscape:cx="65.75391"
-     inkscape:cy="29.06088"
-     inkscape:window-width="1920"
-     inkscape:window-height="1050"
-     inkscape:window-x="0"
-     inkscape:window-y="30"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg10" />
-  <rect width="100%" height="100%" fill="white"/>
-  <g
-     id="g11"
-     transform="matrix(1.8048,0,0,1.8048,0.735,0.956)">
-    <g
-       id="g10"
-       transform="translate(15.5,6.3)">
-      <path
-         d="M 53.5021,0.417191 0.232056,31.3972 v 61.8 L 53.5021,124.177 106.752,93.1972 v -61.83 z M 90.972,84.0372 53.5021,105.787 16.0321,84.0372 v -43.5 l 37.47,-21.77 37.4699,21.77 z"
-         fill="#002d74"
-         id="path1" />
-      <path
-         style="mix-blend-mode:multiply;fill:url(#paint0_linear_1208_184)"
-         d="M 53.5021,124.127 106.752,93.1472 v -61.79 L 53.5021,0.377197 V 18.7172 l 37.47,21.81 v 43.5 l -37.47,21.7498 v 18.34 z"
-         fill="url(#paint0_linear_1208_184)"
-         id="path2" />
-      <path
-         style="mix-blend-mode:multiply;fill:url(#paint1_linear_1208_184)"
-         d="M 53.5021,105.787 16.032,84.0372 v -43.5 l 37.4701,-21.77 V 0.417191 L 0.252045,31.3572 v 61.85 L 53.5021,124.127 Z"
-         fill="url(#paint1_linear_1208_184)"
-         id="path3" />
-      <path
-         d="m 78.3721,76.7272 -24.87,14.44 -24.89,-14.44 v -28.88 l 24.89,-14.46 24.87,14.46 -10.37,6.01 -14.5,-8.43 -14.52,8.43 v 16.86 l 14.52,8.43 14.5,-8.43 z"
-         fill="#002d74"
-         id="path4" />
-    </g>
-  </g>
-  <defs
-     id="defs10">
-    <linearGradient
-       id="paint0_linear_1208_184"
-       x1="80.132103"
-       y1="124.127"
-       x2="80.132103"
-       y2="62.2672"
-       gradientUnits="userSpaceOnUse">
-      <stop
-         stop-color="#002D74"
-         id="stop7" />
-      <stop
-         offset="1"
-         stop-color="#002D74"
-         stop-opacity="0"
-         id="stop8" />
-    </linearGradient>
-    <linearGradient
-       id="paint1_linear_1208_184"
-       x1="26.882"
-       y1="0.417191"
-       x2="26.882"
-       y2="62.287201"
-       gradientUnits="userSpaceOnUse">
-      <stop
-         stop-color="#002D74"
-         id="stop9" />
-      <stop
-         offset="1"
-         stop-color="#002D74"
-         stop-opacity="0"
-         id="stop10" />
-    </linearGradient>
-  </defs>
-</svg>
+<svg width="1600" height="1600" viewBox="0 0 1600 1600" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(314.6 249.0) scale(0.82)">
+<path d="M0.905273 656.206V420.171C0.905273 366.648 40.2478 292.305 87.3859 265.089L511.077 20.447C558.475 -6.92123 627.485 -6.78998 675.075 20.6885L1098.74 265.315C1199.11 323.267 1226.31 512.075 1095.26 514.199C1073.75 514.548 1047.56 509.768 1028.76 498.914L671.846 292.83C596.437 249.289 527.298 283.847 460.6 322.359L127.445 514.724C124.566 516.388 121.156 520.163 117.97 522.237C79.2727 547.416 41.0011 576.057 17.9977 617.136C11.218 629.245 5.69021 645.746 0.905273 656.206Z" fill="url(#paint0_linear_415_1660)"/>
+<path d="M510.773 1325.01L101.447 1088.66C44.0801 1055.54 0.0078125 996.75 0.0078125 927.668V869.351C0.0078125 855.016 2.18636 840.434 4.05782 826.215C18.5517 716.067 82.8374 606.896 186.576 559.236C201.269 552.487 223.669 540.137 240.284 544.833C252.095 548.172 256.166 562.67 256.166 573.482V858.116C256.166 896.344 281.923 931.669 313.974 950.175L482.979 1047.76C542.304 1082.01 585.172 1119.37 656.799 1078.01L900.295 937.417C923.676 923.917 958.733 888.91 978.027 881.156C1004.58 870.483 1037.64 874.339 1065.56 874.31C1090.7 874.281 1118.92 871.239 1142.97 880.174C1166.69 888.994 1181.88 909.109 1183.61 934.38C1188.07 999.331 1139.08 1055.46 1086.1 1086.05L681.44 1319.7C632.467 1347.98 560.814 1353.9 510.773 1325.01Z" fill="url(#paint1_linear_415_1660)"/>
+<path d="M257.5 873.262C263.167 905.49 286.21 934.141 313.974 950.175L482.98 1047.76C542.305 1082.01 585.172 1119.37 656.799 1078.01L900.296 937.417C923.677 923.917 958.733 888.91 978.028 881.156C1004.59 870.483 1037.64 874.339 1065.56 874.31C1090.7 874.281 1118.93 871.239 1142.97 880.174C1166.69 888.994 1181.88 909.109 1183.61 934.38C1188.07 999.331 1139.08 1055.46 1086.1 1086.05L681.441 1319.7C632.468 1347.98 560.815 1353.9 510.774 1325.01L497.994 1317.65C355.01 1196.41 274.758 1060.34 257.5 873.262Z" fill="url(#paint2_linear_415_1660)"/>
+<defs>
+<linearGradient id="paint0_linear_415_1660" x1="34.8093" y1="583.097" x2="1050.56" y2="130.895" gradientUnits="userSpaceOnUse">
+<stop stop-color="#2BC2F3"/>
+<stop offset="0.4" stop-color="#4CDBFF"/>
+<stop offset="1" stop-color="#96EDFF"/>
+</linearGradient>
+<linearGradient id="paint1_linear_415_1660" x1="391.79" y1="495.583" x2="710.066" y2="1283.27" gradientUnits="userSpaceOnUse">
+<stop stop-color="#08548A"/>
+<stop offset="0.17" stop-color="#0B7BBE"/>
+<stop offset="0.33" stop-color="#129EE2"/>
+<stop offset="0.5" stop-color="#119ADF"/>
+<stop offset="1" stop-color="#15A2E4"/>
+</linearGradient>
+<linearGradient id="paint2_linear_415_1660" x1="270.737" y1="962.155" x2="1160.03" y2="1055.61" gradientUnits="userSpaceOnUse">
+<stop stop-color="#022339" stop-opacity="0.7"/>
+<stop offset="0.2" stop-color="#022339" stop-opacity="0.234"/>
+<stop offset="0.42" stop-color="#022339" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</g></svg>

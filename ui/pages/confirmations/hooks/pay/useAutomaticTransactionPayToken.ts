@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
-import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionType,
+  hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
 import { getMoneyAccountTransactionType } from '../../utils/confirm';
@@ -27,8 +30,12 @@ import {
   getMoneyAccountPayToken,
   type MoneyAccountPayToken,
 } from '../../utils/money-account-pay-token';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
+import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
 import { useImportPayToken } from './useImportPayToken';
+import { useIsPayHardwareBlocked } from './useIsPayHardwareBlocked';
+import { useAutomaticMoneyAccountPayToken } from './useAutomaticMoneyAccountPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -66,6 +73,9 @@ export function useAutomaticTransactionPayToken({
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
   const vaultConfig = useSelector(selectMoneyAccountVaultConfig);
   const moneyAccountPayToken = useMemo(
     () => getMoneyAccountPayToken(vaultConfig),
@@ -107,14 +117,21 @@ export function useAutomaticTransactionPayToken({
     [tokens],
   );
 
+  const {
+    isPending: isMoneyAccountPayPending,
+    shouldSelect: shouldSelectMoneyAccount,
+  } = useAutomaticMoneyAccountPayToken({
+    availableTokens: tokensWithBalance,
+    disable,
+    payTokenSelected: Boolean(payToken),
+  });
+
   const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
     useState(false);
 
-  const hardwareWalletType = useSelector(getHardwareWalletType);
-  const isHardwareWallet = useMemo(
-    () => Boolean(hardwareWalletType),
-    [hardwareWalletType],
-  );
+  const payingAccount = useTransactionPayingAccount();
+  const isHardwareWallet = useIsHardwareWalletAccount(payingAccount);
+  const isPayHardwareBlocked = useIsPayHardwareBlocked();
 
   const targetToken = useMemo(
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
@@ -147,7 +164,9 @@ export function useAutomaticTransactionPayToken({
     () =>
       getBestToken({
         isHardwareWallet,
+        isMoneyAccountDeposit,
         isMoneyPaymentOverride,
+        isPayHardwareBlocked,
         isPostQuoteWithdraw,
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
@@ -161,7 +180,9 @@ export function useAutomaticTransactionPayToken({
       }),
     [
       isHardwareWallet,
+      isMoneyAccountDeposit,
       isMoneyPaymentOverride,
+      isPayHardwareBlocked,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
       isPostQuoteWithdrawTokenAllowed,
@@ -186,6 +207,16 @@ export function useAutomaticTransactionPayToken({
       isUpdated.current === transactionId ||
       isDefaultMoneyAccount
     ) {
+      return;
+    }
+
+    // Money Account owns the default when it is the better funding source.
+    // Selecting a token first latches payToken, so the balance default never
+    // runs. Wait while its balance is still loading.
+    if (isMoneyAccountPayPending || shouldSelectMoneyAccount) {
+      if (shouldSelectMoneyAccount) {
+        isUpdated.current = transactionId;
+      }
       return;
     }
 
@@ -229,10 +260,12 @@ export function useAutomaticTransactionPayToken({
     automaticToken,
     disable,
     isDefaultMoneyAccount,
+    isMoneyAccountPayPending,
     isPostQuoteWithdraw,
     payToken,
     preferredToken,
     setPayToken,
+    shouldSelectMoneyAccount,
     tokens,
     transactionId,
   ]);
@@ -268,6 +301,12 @@ export function useAutomaticTransactionPayToken({
       return;
     }
 
+    // Initial selection already yielded to Money Account. Once a pay token
+    // exists, an account change still needs a token for the new account.
+    if (!payToken && (isMoneyAccountPayPending || shouldSelectMoneyAccount)) {
+      return;
+    }
+
     if (!automaticToken) {
       // Keep pending after the empty-account timeout. Funding tokens can still
       // arrive later; clearing pending here would leave payToken unset forever
@@ -287,8 +326,11 @@ export function useAutomaticTransactionPayToken({
     emptyAccountReselectTimedOut,
     from,
     isDefaultMoneyAccount,
+    isMoneyAccountPayPending,
     isPostQuoteWithdraw,
+    payToken,
     setPayToken,
+    shouldSelectMoneyAccount,
     tokensWithBalance.length,
   ]);
 
@@ -350,7 +392,9 @@ export function useAutomaticTransactionPayToken({
 
 function getBestToken({
   isHardwareWallet,
+  isMoneyAccountDeposit,
   isMoneyPaymentOverride,
+  isPayHardwareBlocked,
   isPostQuoteWithdraw,
   isPostQuoteWithdrawTokenFilterApplied,
   isPostQuoteWithdrawTokenAllowed,
@@ -363,7 +407,9 @@ function getBestToken({
   tokens,
 }: {
   isHardwareWallet: boolean;
+  isMoneyAccountDeposit: boolean;
   isMoneyPaymentOverride: boolean;
+  isPayHardwareBlocked: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
   isPostQuoteWithdrawTokenAllowed: (
@@ -385,13 +431,44 @@ function getBestToken({
       }
     : undefined;
 
-  if (isHardwareWallet) {
+  if (isHardwareWallet && isPayHardwareBlocked) {
     return targetTokenFallback;
   }
 
   if (isMoneyPaymentOverride) {
     return moneyAccountPayToken;
   }
+
+  // Exclude zero-balance EOA tokens from every money-account deposit selection
+  // path. `minimumRequiredTokenBalance` defaults to 0, so a $0 preferred /
+  // no-fee row (for example Monad mUSD) would otherwise outrank a funded token
+  // and the deposit would open on a token that can never fund it. If none are
+  // funded, leave the pay token unresolved so the deposit prefill lifecycle can
+  // settle as skipped instead of holding the amount skeleton up forever.
+  const fundedTokens = isMoneyAccountDeposit
+    ? tokens.filter((token) => (token.fiat?.balance ?? 0) > 0)
+    : tokens;
+  const gasFundedChainIds = new Set(
+    tokens
+      .filter(
+        (token) =>
+          token.isNative &&
+          token.chainId &&
+          hasPositiveRawBalance(token.rawBalance),
+      )
+      .map((token) => String(token.chainId).toLowerCase()),
+  );
+  const hardwareGasEligibleTokens =
+    isHardwareWallet && isMoneyAccountDeposit
+      ? fundedTokens.filter(
+          (token) =>
+            token.isNative ||
+            gasFundedChainIds.has(String(token.chainId).toLowerCase()),
+        )
+      : fundedTokens;
+  const selectableTokens = hardwareGasEligibleTokens.length
+    ? hardwareGasEligibleTokens
+    : fundedTokens;
 
   // Without a post-quote withdraw allowlist, `preferredToken` is the
   // destination: honor it even if the user has no wallet balance of it.
@@ -409,7 +486,7 @@ function getBestToken({
       return preferredToken;
     }
   } else if (preferredToken) {
-    const preferredTokenAvailable = tokens.some(
+    const preferredTokenAvailable = selectableTokens.some(
       (token) =>
         token.address?.toLowerCase() === preferredToken.address.toLowerCase() &&
         String(token.chainId)?.toLowerCase() ===
@@ -425,7 +502,7 @@ function getBestToken({
     isPostQuoteWithdraw,
     minimumRequiredTokenBalance,
     preferredTokensFromFlags,
-    tokens,
+    tokens: selectableTokens,
   });
   if (preferredFromFlags) {
     return preferredFromFlags;
@@ -437,9 +514,10 @@ function getBestToken({
 
   // Same as mobile / Pay-with picker: prefer a no-fee source (subsidized
   // route or same-token Monad mUSD) that meets the fiat minimum before
-  // falling through to the first funding token.
-  if (tokens?.length && !isPostQuoteWithdraw) {
-    const noFeeCandidates = tokens
+  // falling through to the first funding token. Hardware payers get no
+  // no-fee routes, so there is nothing to prefer.
+  if (selectableTokens.length && !isPostQuoteWithdraw && !isHardwareWallet) {
+    const noFeeCandidates = selectableTokens
       .filter((token) => {
         if (!token.chainId || !token.address) {
           return false;
@@ -463,10 +541,10 @@ function getBestToken({
     }
   }
 
-  if (tokens?.length) {
+  if (selectableTokens.length) {
     return {
-      address: tokens[0].address as Hex,
-      chainId: tokens[0].chainId as Hex,
+      address: selectableTokens[0].address as Hex,
+      chainId: selectableTokens[0].chainId as Hex,
     };
   }
 
@@ -482,6 +560,10 @@ function getBestToken({
   }
 
   return undefined;
+}
+
+function hasPositiveRawBalance(rawBalance: Hex | undefined): boolean {
+  return Boolean(rawBalance && BigInt(rawBalance) > 0n);
 }
 
 function getPreferredToken({
