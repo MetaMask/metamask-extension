@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { withReferralCode } from '#shared/lib/deep-links/referral';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   type ParsedDeepLink,
@@ -211,6 +212,7 @@ export class DeepLinkRouter extends EventEmitter<{
             parsed.destination.path,
             parsed.destination.query.toString(),
           );
+          link = withReferralCode(link, url.searchParams);
         }
       } else {
         // unable to parse, show error page

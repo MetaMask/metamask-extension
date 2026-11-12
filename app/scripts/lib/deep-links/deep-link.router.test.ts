@@ -122,6 +122,40 @@ describe('DeepLinkRouter', () => {
       router.install();
     });
 
+    it.each([
+      {
+        initiator: 'https://metamask.io',
+        expectedUrl:
+          'chrome-extension://extension-id/home.html?ref=ABC123#/money?asset=ETH',
+      },
+      {
+        initiator: undefined,
+        expectedUrl:
+          'chrome-extension://extension-id/home.html#link?u=%2Fmoney%3Fref%3Dabc123%26unsigned%3Dignored',
+      },
+    ])(
+      'uses the existing security policy for referral links from $initiator',
+      async ({ initiator, expectedUrl }) => {
+        parseMock.mockResolvedValue({
+          signature: 'missing',
+          destination: {
+            path: '/money',
+            query: new URLSearchParams('asset=ETH'),
+          },
+        } as ParsedDeepLink);
+
+        await onBeforeRequest?.({
+          tabId: 1,
+          url: 'https://link.metamask.io/money?ref=abc123&unsigned=ignored',
+          initiator,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: expectedUrl,
+        });
+      },
+    );
+
     it.each([false, true, undefined])(
       'handles a signed direct destination when onboarding completion is %s',
       async (completedOnboarding) => {
