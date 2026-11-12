@@ -209,9 +209,8 @@ class FirefoxDriver {
           height: CONSTRAINED_WINDOW_SIZE.height,
         });
       } else if (!isHeadless('SELENIUM')) {
-        // Headless Firefox already starts wide enough. A headed window uses
-        // the browser default, so set the size explicitly so the fullscreen
-        // design applies whenever its feature flag is on.
+        // A headed window uses the browser default; set the size explicitly
+        // so the wide screen design applies whenever its feature flag is on.
         await driver.manage().window().setRect({
           width: DEFAULT_WINDOW_SIZE.width,
           height: DEFAULT_WINDOW_SIZE.height,

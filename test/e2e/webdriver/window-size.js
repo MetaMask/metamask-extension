@@ -1,11 +1,11 @@
 const {
-  FULL_SCREEN_DESIGN_MIN_WIDTH,
+  WIDE_SCREEN_DESIGN_MIN_WIDTH,
 } = require('../../../shared/constants/layout');
 
-// Wide enough for the fullscreen design to apply whenever its feature flag is
+// Wide enough for the wide screen design to apply whenever its feature flag is
 // on, so that the flag alone decides which layout a test runs in.
 const DEFAULT_WINDOW_SIZE = {
-  width: FULL_SCREEN_DESIGN_MIN_WIDTH + 50,
+  width: WIDE_SCREEN_DESIGN_MIN_WIDTH + 50,
   height: 1080,
 };
 

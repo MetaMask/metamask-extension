@@ -135,7 +135,7 @@ class ChromeDriver {
     try {
       // The default window size in headless mode is tiny.
       // We increase it to reduce the chance of buttons being hidden behind toasts,
-      // and so the viewport is wide enough for the fullscreen design to apply
+      // and so the viewport is wide enough for the wide screen design to apply
       // whenever its feature flag is on.
       if (isHeadless('SELENIUM')) {
         await driver
