@@ -4,7 +4,6 @@ import {
   is,
   literal,
   number,
-  optional,
   string,
   type,
 } from '@metamask/superstruct';
@@ -20,7 +19,6 @@ export const VAULT_SHARE_VALUATION_CACHE_LIMIT = 500;
 
 const CachedValuationStruct = type({
   type: enums(['transfer_in', 'transfer_out']),
-  logIndex: optional(number()),
   blockNumber: number(),
   sharesWei: string(),
   assetsWei: string(),

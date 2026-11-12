@@ -46,7 +46,6 @@ describe('toCachedVaultShareValuation', () => {
   it('keeps a valid mUSD valuation', () => {
     expect(toCachedVaultShareValuation(valuation)).toStrictEqual({
       type: 'transfer_out',
-      logIndex: 3,
       blockNumber: 123456,
       sharesWei: '951755696',
       assetsWei: '968399999',
@@ -89,8 +88,7 @@ describe('cacheEntriesFromResponse', () => {
         valuations: [
           {
             type: 'transfer_out',
-            logIndex: 3,
-            blockNumber: 123456,
+                  blockNumber: 123456,
             sharesWei: '951755696',
             assetsWei: '968399999',
             assetDecimals: 6,

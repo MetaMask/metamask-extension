@@ -15,7 +15,6 @@ export type VaultShareToken = {
 
 export type CachedVaultShareValuation = {
   type: 'transfer_in' | 'transfer_out';
-  logIndex?: number;
   blockNumber: number;
   sharesWei: string;
   assetsWei: string;
@@ -77,16 +76,8 @@ export function toCachedVaultShareValuation(
     return undefined;
   }
 
-  const logIndex =
-    typeof valuation.log_index === 'number' &&
-    Number.isInteger(valuation.log_index) &&
-    valuation.log_index >= 0
-      ? valuation.log_index
-      : undefined;
-
   return {
     type: valuation.type,
-    ...(logIndex === undefined ? {} : { logIndex }),
     blockNumber: valuation.block_number,
     sharesWei: valuation.shares_wei,
     assetsWei: valuation.assets_wei,

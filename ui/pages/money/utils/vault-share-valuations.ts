@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { MUSD_DECIMALS } from '@metamask/money-account-utils';
-import { hexToNumber, type Hex } from '@metamask/utils';
+import { hexToNumber } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import {
   getVaultShareValuationCacheIdentity,
