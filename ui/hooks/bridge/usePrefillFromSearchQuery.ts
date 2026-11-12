@@ -86,6 +86,7 @@ export const usePrefillFromSearchQuery = () => {
   useEffect(() => {
     return () => {
       abortController.current.abort();
+      appliedSearch.current = null;
     };
   }, []);
 
@@ -122,11 +123,15 @@ export const usePrefillFromSearchQuery = () => {
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
         abortController.current.abort();
         abortController.current = new AbortController();
+        const controller = abortController.current;
         fetchAssetMetadata(
-          abortController.current.signal,
+          controller.signal,
           searchParamsFrom?.assetId,
           searchParamsTo?.assetId,
         ).then((result) => {
+          if (controller.signal.aborted) {
+            return;
+          }
           setAssetMetadataByAssetId(result);
         });
       }
