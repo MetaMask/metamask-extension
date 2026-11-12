@@ -224,6 +224,37 @@ export const useOHLCVChart = ({
   const [error, setError] = useState<string | null>(null);
   const [resolvedCurrency, setResolvedCurrency] = useState(requestedCurrency);
 
+  // Reset synchronously when the *data series* (asset/interval/currency)
+  // changes, before the fetch effect runs. Without this the previous series'
+  // bars linger in `ohlcvData` and `isLoading` stays false for the first render
+  // after the change, so callers either paint stale candles under the new key
+  // or flash a "no data" placeholder before loading begins. `enabled` is
+  // deliberately excluded: toggling to line mode (enabled=false) and back must
+  // keep the loaded candles so the still-mounted iframe round-trips instantly
+  // instead of blanking into a reload. Adjusting state from a changed input
+  // during render is the React-recommended pattern
+  // (https://react.dev/reference/react/useState#storing-information-from-previous-renders).
+  const seriesKey = `${assetId ?? ''}|${interval}|${requestedCurrency}`;
+  const [renderedSeriesKey, setRenderedSeriesKey] = useState(seriesKey);
+  if (renderedSeriesKey !== seriesKey) {
+    setRenderedSeriesKey(seriesKey);
+    setOhlcvData([]);
+    setError(null);
+    setIsLoading(active);
+  }
+
+  // Entering candle mode with no bars yet (a cold line→candle toggle) must show
+  // loading rather than an empty "no data" frame while the first fetch runs.
+  // This never clears existing bars, so a warm toggle back keeps the last
+  // candles on screen and only refreshes them in the background.
+  const [renderedEnabled, setRenderedEnabled] = useState(enabled);
+  if (renderedEnabled !== enabled) {
+    setRenderedEnabled(enabled);
+    if (active && ohlcvData.length === 0) {
+      setIsLoading(true);
+    }
+  }
+
   // Cursor bookkeeping for host-backed pagination. These live in refs, not
   // state, because advancing the cursor must not re-render — only the chart
   // engine consumes the older bars, and it does so through a stable callback.
@@ -247,7 +278,6 @@ export const useOHLCVChart = ({
     }
 
     const controller = new AbortController();
-    const seriesKey = `${assetId}|${interval}|${requestedCurrency}`;
     seriesKeyRef.current = seriesKey;
     assetIdRef.current = assetId;
     intervalRef.current = interval;
@@ -269,12 +299,14 @@ export const useOHLCVChart = ({
             signal: controller.signal,
           });
         } catch (e) {
-          // Only an API rejection is worth retrying: a timeout or an abort
-          // would fail the same way in USD.
+          // Only a 400 (bad request) means the quote currency itself was
+          // rejected and is worth retrying in USD. Transient or server
+          // failures (404/429/5xx), timeouts and aborts must surface as an
+          // error instead of silently relabeling prices in a different fiat.
           const unsupportedCurrency =
             requestedCurrency !== FALLBACK_CURRENCY &&
             e instanceof Error &&
-            e.message.startsWith('OHLCV API error:');
+            e.message === 'OHLCV API error: 400';
           if (!unsupportedCurrency || controller.signal.aborted) {
             throw e;
           }
@@ -306,7 +338,7 @@ export const useOHLCVChart = ({
     })();
 
     return () => controller.abort();
-  }, [assetId, interval, requestedCurrency, enabled]);
+  }, [assetId, interval, requestedCurrency, enabled, seriesKey]);
 
   const fetchOlderBars =
     useCallback(async (): Promise<FetchOlderBarsResult> => {

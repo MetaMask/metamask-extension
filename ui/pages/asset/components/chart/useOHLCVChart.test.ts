@@ -281,6 +281,93 @@ describe('useOHLCVChart', () => {
 
     expect(global.fetch).not.toHaveBeenCalled();
   });
+
+  it('clears the previous series and shows loading the instant the inputs change, so stale bars never linger', async () => {
+    // First series resolves; the second request hangs so the state right after
+    // the switch is observable before the new data lands.
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue({ data: MOCK_API_CANDLES }),
+      } as unknown as Response)
+      .mockReturnValueOnce(new Promise(() => undefined));
+
+    const { result, rerender } = renderHook(
+      ({ assetId }) =>
+        useOHLCVChart({ assetId, interval: '1h', currency: 'usd' }),
+      { initialProps: { assetId: 'ethereum' } },
+    );
+
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+
+    // Switching the asset resets during render, so the next committed state has
+    // no bars and is already loading — the previous series cannot be painted
+    // under the new key while the fetch is in flight.
+    rerender({ assetId: 'bitcoin' });
+
+    expect(result.current.ohlcvData).toEqual([]);
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.error).toBeNull();
+  });
+
+  it('keeps the loaded candles when toggling to line mode and back, so the iframe does not blank', async () => {
+    mockFetchSuccess();
+
+    const { result, rerender } = renderHook(
+      ({ enabled }) =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+          enabled,
+        }),
+      { initialProps: { enabled: true } },
+    );
+
+    await waitFor(() => expect(result.current.ohlcvData).toHaveLength(2));
+
+    // Line mode disables the hook; the bars must survive so the still-mounted
+    // chart keeps showing them.
+    rerender({ enabled: false });
+    expect(result.current.ohlcvData).toHaveLength(2);
+
+    // Back to candle mode: still the same bars (refreshed in the background),
+    // never cleared to an empty series.
+    rerender({ enabled: true });
+    expect(result.current.ohlcvData).toHaveLength(2);
+
+    // Let the background refresh settle so its state updates run inside `act`.
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    expect(result.current.ohlcvData).toHaveLength(2);
+  });
+
+  it('shows loading without wiping data on a cold line→candle toggle', async () => {
+    // Fetch hangs so the state right after enabling is observable.
+    global.fetch = jest.fn().mockReturnValue(new Promise(() => undefined));
+
+    const { result, rerender } = renderHook(
+      ({ enabled }) =>
+        useOHLCVChart({
+          assetId: 'ethereum',
+          interval: '1h',
+          currency: 'usd',
+          enabled,
+        }),
+      { initialProps: { enabled: false } },
+    );
+
+    // Starts idle in line mode: no request, no bars, not loading.
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.ohlcvData).toEqual([]);
+
+    // Entering candle mode with no bars yet shows loading immediately, avoiding
+    // the empty "no data" flash before the fetch resolves.
+    rerender({ enabled: true });
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.ohlcvData).toEqual([]);
+  });
 });
 
 describe('useOHLCVChart – fetchOHLCVPage', () => {
