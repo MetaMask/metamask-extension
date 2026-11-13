@@ -1,6 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { endTrace, trace, TraceName } from '#shared/lib/trace';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  type TraceContext,
+  type TraceRequest,
+} from '../../shared/lib/trace';
 import { TraceCoordinator, useCoordinatedTrace } from './useTraceCoordinator';
 
 jest.mock('#shared/lib/trace', () => ({
@@ -38,7 +44,9 @@ describe('TraceCoordinator', () => {
   it('starts the parent before children and ends it after every child is ready', () => {
     const parentNameKey = '_name';
     const parentIdKey = '_id';
-    const mockedTrace = jest.mocked(trace);
+    const mockedTrace = trace as jest.MockedFunction<
+      (request: TraceRequest) => TraceContext
+    >;
     const { rerender } = render(
       <TraceCoordinator
         name={TraceName.HomepageReady}

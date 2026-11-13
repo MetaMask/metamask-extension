@@ -14,9 +14,16 @@ import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from '../controllers/onboarding';
-import type { PreferencesControllerStateChangeEvent } from '../controllers/preferences-controller';
+import type {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../controllers/preferences-controller';
 import type { RootMessenger } from '../lib/messenger';
 import type { MessengerClientFlatState } from '../messenger-client-init/controller-list';
+import type {
+  AnalyticsControllerInitMessengerActions,
+  AnalyticsControllerInitMessengerEvents,
+} from './messengers/analytics-controller-messenger';
 import type { SeedlessOnboardingControllerInitMessengerActions } from './messengers/seedless-onboarding-controller-messenger';
 import type {
   TransactionControllerInitMessengerActions,
@@ -28,20 +35,24 @@ import { PermissionControllerInitMessengerActions } from './messengers/permissio
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
  * extra actions/events the extension-side wiring reads (the metaMetrics id from
  * `AnalyticsController`, the canonical profile id from `AuthenticationController`,
- * the remote feature flag toggle and canonical-id refresh subscriptions, and the
+ * the remote feature flag toggle and canonical-id refresh subscriptions, the
+ * AnalyticsController init messenger used by platform-adapter enrichment, and the
  * TransactionController init messenger used by extension hooks/listeners).
  * The remote feature flag enable/disable/update actions the toggle calls are
  * already covered by `DefaultActions`.
  */
 export type WalletInitMessenger = RootMessenger<
   | AnalyticsControllerGetStateAction
+  | AnalyticsControllerInitMessengerActions
   | AuthenticationControllerGetStateAction
   | DefaultActions
   | OnboardingControllerGetStateAction
+  | PreferencesControllerGetStateAction
   | SeedlessOnboardingControllerInitMessengerActions
   | TransactionControllerInitMessengerActions
   | PermissionControllerInitMessengerActions,
   | DefaultEvents
+  | AnalyticsControllerInitMessengerEvents
   | AuthenticationControllerStateChangeEvent
   | OnboardingControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent

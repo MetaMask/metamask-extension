@@ -17,10 +17,6 @@ import HomePage from '../home/homepage';
  * @see ui/components/app/perps/perps-positions-orders/perps-positions-orders.tsx
  */
 export class PerpsPositionsBase extends HomePage {
-  protected readonly accountOverviewPerpsTab = {
-    testId: 'account-overview__perps-tab',
-  };
-
   private readonly perpsPositionsSection = {
     testId: 'perps-positions-section',
   };

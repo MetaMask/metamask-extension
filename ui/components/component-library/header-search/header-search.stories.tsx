@@ -20,6 +20,7 @@ export default {
     textFieldSearchProps: {
       value: '',
       placeholder: 'Search',
+      inputAriaLabel: 'Search',
     },
   },
 } as Meta<typeof HeaderSearch>;
@@ -58,6 +59,7 @@ Screen.args = {
   textFieldSearchProps: {
     value: '',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };
 
@@ -68,6 +70,7 @@ Inline.args = {
   textFieldSearchProps: {
     value: '',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };
 
@@ -78,6 +81,7 @@ ScreenWithValue.args = {
   textFieldSearchProps: {
     value: 'Search query',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };
 
@@ -88,5 +92,6 @@ InlineWithValue.args = {
   textFieldSearchProps: {
     value: 'Search query',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };

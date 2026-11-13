@@ -83,14 +83,18 @@ function buildAssetsBalance(accountIds: string[]) {
  * deposit can be funded from another account.
  * @param options.remoteFlagOverrides - Extra remote flags seeded into
  * `RemoteFeatureFlagController` state (must also be served by the HTTP mock).
+ * @param options.moneyFtueSeen - Whether the fixture user has already seen the
+ * Money FTUE splash.
  * @returns The built fixture state.
  */
 export function buildMoneyAccountDepositFixture({
   withAccount2 = false,
   remoteFlagOverrides = {},
+  moneyFtueSeen = true,
 }: {
   withAccount2?: boolean;
   remoteFlagOverrides?: Record<string, Json>;
+  moneyFtueSeen?: boolean;
 } = {}) {
   const accountAddresses = [
     DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
@@ -117,6 +121,7 @@ export function buildMoneyAccountDepositFixture({
   }
 
   return builder
+    .withAppStateController({ moneyFtueSeen })
     .withRemoteFeatureFlagController({
       remoteFeatureFlags: {
         ...MONEY_ACCOUNT_DEPOSIT_REMOTE_FLAGS,
@@ -233,21 +238,26 @@ export async function seedAnvilUsdcBalance(
  * USDC on Anvil.
  * @param options.remoteFlagOverrides - Extra remote flags applied to both the
  * seeded controller state and the `/v1/flags` mock.
+ * @param options.moneyFtueSeen - Whether the fixture user has already seen the
+ * Money FTUE splash.
  * @returns Partial `withFixtures` config.
  */
 export function getMoneyAccountDepositConfig({
   title,
   withAccount2 = false,
   remoteFlagOverrides = {},
+  moneyFtueSeen = true,
 }: {
   title?: string;
   withAccount2?: boolean;
   remoteFlagOverrides?: Record<string, Json>;
+  moneyFtueSeen?: boolean;
 }) {
   return {
     fixtures: buildMoneyAccountDepositFixture({
       withAccount2,
       remoteFlagOverrides,
+      moneyFtueSeen,
     }),
     title,
     localNodeOptions: [
@@ -259,7 +269,6 @@ export function getMoneyAccountDepositConfig({
         },
       },
     ],
-    ethConversionInUsd: ETH_USD_PRICE,
     // The Money Account upgrade pipeline (CHOMP association, delegations,
     // intents) runs in the background and is not mocked here; its retries log
     // step errors that are unrelated to the deposit under test.
