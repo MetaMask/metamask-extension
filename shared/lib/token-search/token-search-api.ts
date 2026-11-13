@@ -7,6 +7,14 @@ const TOKEN_V3_BASE_URL = 'https://tokens.api.cx.metamask.io';
 const DEFAULT_BROWSE_OCCURRENCE_FLOOR = 3;
 const EVM_CHAIN_NAMESPACE = 'eip155:';
 
+/**
+ * Service profile sent as the `x-mm-service-profile` header on every
+ * `/tokens/search` request made by the extension. Both the local helper below
+ * and `useDiscoverCryptoSearch` (via core `searchTokens`) pass this value
+ * explicitly, so they stay in sync regardless of the core default.
+ */
+export const TOKEN_SEARCH_SERVICE_PROFILE = 'assets--trending-search';
+
 export type TokenSearchResult = {
   assetId: CaipAssetType;
   symbol: string;
@@ -77,7 +85,10 @@ const fetchTokenSearch = async (
   const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
   const response = await fetchWithTimeout(url, {
     method: 'GET',
-    headers: { 'X-Client-Id': 'extension' },
+    headers: {
+      'X-Client-Id': 'extension',
+      'x-mm-service-profile': TOKEN_SEARCH_SERVICE_PROFILE,
+    },
     signal: options.signal,
   });
 

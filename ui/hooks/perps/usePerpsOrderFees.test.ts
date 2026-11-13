@@ -403,6 +403,12 @@ describe('usePerpsOrderFees', () => {
         original: 0.001,
       },
       {
+        feeSource: 'grant' as const,
+        discountBips: 2500,
+        rate: 0.00075,
+        original: 0.001,
+      },
+      {
         feeSource: 'subscription' as const,
         discountBips: 10000,
         rate: 0,
@@ -451,6 +457,7 @@ describe('usePerpsOrderFees', () => {
     it.each([
       { feeSource: 'default' as const, metamaskFeeDiscountBips: 0 },
       { feeSource: 'rewards' as const, metamaskFeeDiscountBips: 0 },
+      { feeSource: 'grant' as const, metamaskFeeDiscountBips: 0 },
       { feeSource: 'subscription' as const, metamaskFeeDiscountBips: 0 },
       { feeSource: 'rewards' as const, metamaskFeeDiscountBips: 5000 },
       { feeSource: undefined, metamaskFeeDiscountBips: undefined },

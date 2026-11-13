@@ -241,10 +241,10 @@ describe('AppStateController', () => {
   describe('setDefaultHomeActiveTabName', () => {
     it('sets the default home tab name', async () => {
       await withController(({ controller }) => {
-        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Activity);
+        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Tokens);
 
         expect(controller.state.defaultHomeActiveTabName).toBe(
-          AccountOverviewTabKey.Activity,
+          AccountOverviewTabKey.Tokens,
         );
       });
     });
@@ -491,6 +491,18 @@ describe('AppStateController', () => {
         controller.setPerpsTabBadgeSeen(true);
 
         expect(controller.state.perpsTabBadgeSeen).toStrictEqual(true);
+      });
+    });
+  });
+
+  describe('setMoneyFtueSeen', () => {
+    it('defaults to unseen and updates when set', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.moneyFtueSeen).toStrictEqual(false);
+
+        controller.setMoneyFtueSeen(true);
+
+        expect(controller.state.moneyFtueSeen).toStrictEqual(true);
       });
     });
   });
@@ -870,6 +882,7 @@ describe('AppStateController', () => {
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -961,6 +974,7 @@ describe('AppStateController', () => {
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1046,6 +1060,7 @@ describe('AppStateController', () => {
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1129,6 +1144,7 @@ describe('AppStateController', () => {
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
               "moneyEarnBannerDismissedTokenKeys": [],
+              "moneyFtueSeen": false,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,

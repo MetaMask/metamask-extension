@@ -11,10 +11,15 @@ import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
+import { selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  MoneyComponentName,
+  MoneyFtueEntryPoint,
+} from '../../pages/money/constants/money-events';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
@@ -34,11 +39,17 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(),
 }));
 
+jest.mock('../../ducks/money-ftue', () => ({
+  ...jest.requireActual('../../ducks/money-ftue'),
+  selectHasSeenMoneyFtue: jest.fn(() => true),
+}));
+
 const createDepositTransactionMock = jest.mocked(
   createMoneyAccountDepositTransaction,
 );
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 const useMoneyErrorReporterMock = jest.mocked(useMoneyErrorReporter);
+const selectHasSeenMoneyFtueMock = jest.mocked(selectHasSeenMoneyFtue);
 
 const TRANSACTION_ID = 'transaction-id-mock';
 const ACCOUNT_ID = 'account-id-mock';
@@ -168,6 +179,7 @@ describe('useMoneyAccountDeposit', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    selectHasSeenMoneyFtueMock.mockReturnValue(true);
 
     useMoneyErrorReporterMock.mockReturnValue(reportErrorMock);
     useConfirmationNavigationMock.mockReturnValue({
@@ -194,6 +206,97 @@ describe('useMoneyAccountDeposit', () => {
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
       '0x1234567890123456789012345678901234567890',
     );
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: '/',
+    });
+  });
+
+  it('opens the FTUE splash instead of creating the batch when unseen', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+    const preferredPaymentToken = {
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as const,
+      chainId: '0x1' as const,
+    };
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({
+        preferredPaymentToken,
+        intent: 'addMusd',
+      });
+    });
+
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+    expect(result.current.isLoading).toBe(false);
+    expect(store.getState().moneyFtue).toStrictEqual({
+      isOpen: true,
+      source: 'deposit',
+      origin: { entryPoint: MoneyFtueEntryPoint.Unknown },
+      pendingDeposit: { preferredPaymentToken, intent: 'addMusd' },
+      acknowledged: false,
+    });
+  });
+
+  it('forwards the FTUE origin when the splash opens', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+    const ftueOrigin = {
+      entryPoint: MoneyFtueEntryPoint.WalletHome,
+      componentName: MoneyComponentName.TokenListItemCta,
+    };
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({ ftueOrigin });
+    });
+
+    expect(store.getState().moneyFtue.origin).toStrictEqual(ftueOrigin);
+  });
+
+  it('opens the FTUE splash for an option-less deposit when unseen', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(store.getState().moneyFtue).toStrictEqual({
+      isOpen: true,
+      source: 'deposit',
+      origin: { entryPoint: MoneyFtueEntryPoint.Unknown },
+      pendingDeposit: {},
+      acknowledged: false,
+    });
+  });
+
+  it('creates the batch when the FTUE splash has been acknowledged', async () => {
+    selectHasSeenMoneyFtueMock.mockReturnValue(false);
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({ skipFtue: true });
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(1);
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
