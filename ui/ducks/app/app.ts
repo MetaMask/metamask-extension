@@ -99,8 +99,6 @@ type AppState = {
   onboardingRedirect: string | null;
   customTokenAmount: string;
   txId: string | null;
-  showDeleteMetaMetricsDataModal: boolean;
-  showDataDeletionErrorModal: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
@@ -195,8 +193,6 @@ const initialState: AppState = {
   onboardingRedirect: null,
   customTokenAmount: '',
   txId: null,
-  showDeleteMetaMetricsDataModal: false,
-  showDataDeletionErrorModal: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
@@ -594,26 +590,6 @@ export default function reduceApp(
         ...appState,
         isNetworkMenuOpen: false,
       };
-    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
-      return {
-        ...appState,
-        showDeleteMetaMetricsDataModal: true,
-      };
-    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
-      return {
-        ...appState,
-        showDeleteMetaMetricsDataModal: false,
-      };
-    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
-      return {
-        ...appState,
-        showDataDeletionErrorModal: true,
-      };
-    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
-      return {
-        ...appState,
-        showDataDeletionErrorModal: false,
-      };
     case actionConstants.SHOW_SETTINGS_PAGE_ERROR:
       return {
         ...appState,
@@ -814,30 +790,6 @@ export function getLedgerTransportStatus(state: AppSliceState): string | null {
 
 export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
-}
-
-export function openDeleteMetaMetricsDataModal(): Action {
-  return {
-    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
-  };
-}
-
-export function hideDeleteMetaMetricsDataModal(): Action {
-  return {
-    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
-  };
-}
-
-export function openDataDeletionErrorModal(): Action {
-  return {
-    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
-  };
-}
-
-export function hideDataDeletionErrorModal(): Action {
-  return {
-    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
-  };
 }
 
 export function setHomeDeepLinkQrCode(payload: {
