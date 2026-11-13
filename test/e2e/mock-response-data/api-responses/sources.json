@@ -38,6 +38,7 @@
     "url": "https://gas.api.cx.metamask.io/networks/1/gasPrices"
   },
   "price-v1-exchange-rates": {
+    "map": [""],
     "method": "GET",
     "mode": "write",
     "url": "https://price.api.cx.metamask.io/v1/exchange-rates?baseCurrency=usd"
