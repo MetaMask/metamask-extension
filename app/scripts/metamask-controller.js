@@ -42,7 +42,6 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  safelyExecuteWithTimeout,
   toHex,
 } from '@metamask/controller-utils';
 
@@ -94,7 +93,6 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
-  getPermittedEthChainIds,
   getSessionScopes,
   setPermittedEthChainIds,
   getPermittedAccountsForScopes,
@@ -441,9 +439,6 @@ function isKeyringV2NotSupportedError(error) {
     KeyringControllerErrorMessage.KeyringV2NotSupported,
   );
 }
-
-// Maximum time to wait for capabilities when building session properties.
-const SESSION_CAPABILITIES_TIMEOUT_MS = 2000;
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -1010,31 +1005,6 @@ export default class MetamaskController extends EventEmitter {
       return this.getPermittedAccounts(innerOrigin, scope);
     };
 
-    this.getEip5792Capabilities = (address, chainIds) =>
-      getCapabilities(
-        {
-          getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
-              .dismissSmartAccountSuggestionEnabled,
-          getIsSmartTransaction: (chainId) =>
-            getIsSmartTransaction(this._getMetaMaskState(), chainId),
-          getSmartTransactionsPreferenceEnabled: () =>
-            getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
-          getSmartTransactionsEnabled: (chainId) =>
-            getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
-          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-            this.txController,
-          ),
-          isRelaySupported,
-          getSendBundleSupportedChains,
-          isAuxiliaryFundsSupported: (chainId) =>
-            ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
-        },
-        this.controllerMessenger,
-        address,
-        chainIds,
-      );
-
     this.eip5792Middleware = createScaffoldMiddleware({
       wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
         walletGetCapabilities(req, res, {
@@ -1042,7 +1012,29 @@ export default class MetamaskController extends EventEmitter {
           getPermittedAccountsForOrigin: async () => {
             return getAccounts({ origin: req.origin });
           },
-          getCapabilities: this.getEip5792Capabilities,
+          getCapabilities: getCapabilities.bind(
+            null,
+            {
+              getDismissSmartAccountSuggestionEnabled: () =>
+                this.preferencesController.state.preferences
+                  .dismissSmartAccountSuggestionEnabled,
+              getIsSmartTransaction: (chainId) =>
+                getIsSmartTransaction(this._getMetaMaskState(), chainId),
+              getSmartTransactionsPreferenceEnabled: () =>
+                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+              getSmartTransactionsEnabled: (chainId) =>
+                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
+              isAtomicBatchSupported:
+                this.txController.isAtomicBatchSupported.bind(
+                  this.txController,
+                ),
+              isRelaySupported,
+              getSendBundleSupportedChains,
+              isAuxiliaryFundsSupported: (chainId) =>
+                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+            },
+            this.controllerMessenger,
+          ),
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
@@ -4499,8 +4491,10 @@ export default class MetamaskController extends EventEmitter {
           ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
-        // TEMPORARY EXPERIMENT: stubbed to isolate E2E failures.
-        getCapabilities: async () => ({}),
+        // The session handlers hydrate `sessionProperties.eip155Capabilities`
+        // through this hook. Resolving without a value leaves the account out
+        // of that record, so dapps keep calling `wallet_getCapabilities`.
+        getCapabilities: async () => undefined,
       }),
     );
 
