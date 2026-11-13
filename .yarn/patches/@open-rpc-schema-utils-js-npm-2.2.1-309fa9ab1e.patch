@@ -1,0 +1,17 @@
+diff --git a/build/index-web.js b/build/index-web.js
+index d0ba6837466a9920047f4bdc31a04f5cba0ef46b..d6d645af0a8f352e31167d30db73057abf9a246a 100644
+--- a/build/index-web.js
++++ b/build/index-web.js
+@@ -26,8 +26,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.ContentDescriptorNotFoundInMethodError = exports.OpenRPCDocumentValidationError = exports.ParameterValidationError = exports.MethodCallValidator = exports.MethodNotFoundError = exports.getExtendedMetaSchema = exports.getDocumentExtendedMetaSchema = exports.validateOpenRPCDocument = exports.generateMethodResultId = exports.generateMethodParamId = exports.parseOpenRPCDocument = void 0;
++exports.ContentDescriptorNotFoundInMethodError = exports.OpenRPCDocumentDereferencingError = exports.OpenRPCDocumentValidationError = exports.ParameterValidationError = exports.MethodCallValidator = exports.MethodNotFoundError = exports.getExtendedMetaSchema = exports.getDocumentExtendedMetaSchema = exports.validateOpenRPCDocument = exports.generateMethodResultId = exports.generateMethodParamId = exports.parseOpenRPCDocument = exports.dereferenceDocument = void 0;
+ var parse_open_rpc_document_1 = __importDefault(require("./parse-open-rpc-document"));
++var dereference_document_1 = __importStar(require("./dereference-document"));
++exports.dereferenceDocument = dereference_document_1.default;
++Object.defineProperty(exports, "OpenRPCDocumentDereferencingError", { enumerable: true, get: function () { return dereference_document_1.OpenRPCDocumentDereferencingError; } });
+ var validate_open_rpc_document_1 = __importStar(require("./validate-open-rpc-document"));
+ exports.validateOpenRPCDocument = validate_open_rpc_document_1.default;
+ Object.defineProperty(exports, "OpenRPCDocumentValidationError", { enumerable: true, get: function () { return validate_open_rpc_document_1.OpenRPCDocumentValidationError; } });

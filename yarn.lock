@@ -12051,6 +12051,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@open-rpc/schema-utils-js@npm:2.2.1":
+  version: 2.2.1
+  resolution: "@open-rpc/schema-utils-js@npm:2.2.1"
+  dependencies:
+    "@json-schema-tools/dereferencer": "npm:^1.6.3"
+    "@json-schema-tools/meta-schema": "npm:^1.7.5"
+    "@json-schema-tools/reference-resolver": "npm:^1.2.6"
+    "@open-rpc/spec-types": "npm:0.0.2"
+    "@open-rpc/specification-extension-spec": "npm:^1.0.2"
+    ajv: "npm:^6.10.0"
+    detect-node: "npm:^2.0.4"
+    fast-safe-stringify: "npm:^2.0.7"
+    fs-extra: "npm:^10.1.0"
+    is-url: "npm:^1.2.4"
+    isomorphic-fetch: "npm:^3.0.0"
+  checksum: 10/8ac30b3880e57638af8c75e8cc130cb97237bbd55c4cae0948c5e1dbf01e6c639caa0515fa8eacb4b350f5410a9f02f47617244249c6231bc550b791478ee515
+  languageName: node
+  linkType: hard
+
 "@open-rpc/schema-utils-js@npm:^1.16.2":
   version: 1.16.2
   resolution: "@open-rpc/schema-utils-js@npm:1.16.2"
@@ -12069,9 +12088,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/schema-utils-js@npm:^2.0.5, @open-rpc/schema-utils-js@npm:^2.2.1":
+"@open-rpc/schema-utils-js@patch:@open-rpc/schema-utils-js@npm%3A2.2.1#~/.yarn/patches/@open-rpc-schema-utils-js-npm-2.2.1-309fa9ab1e.patch":
   version: 2.2.1
-  resolution: "@open-rpc/schema-utils-js@npm:2.2.1"
+  resolution: "@open-rpc/schema-utils-js@patch:@open-rpc/schema-utils-js@npm%3A2.2.1#~/.yarn/patches/@open-rpc-schema-utils-js-npm-2.2.1-309fa9ab1e.patch::version=2.2.1&hash=f4512d"
   dependencies:
     "@json-schema-tools/dereferencer": "npm:^1.6.3"
     "@json-schema-tools/meta-schema": "npm:^1.7.5"
@@ -12084,7 +12103,7 @@ __metadata:
     fs-extra: "npm:^10.1.0"
     is-url: "npm:^1.2.4"
     isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/8ac30b3880e57638af8c75e8cc130cb97237bbd55c4cae0948c5e1dbf01e6c639caa0515fa8eacb4b350f5410a9f02f47617244249c6231bc550b791478ee515
+  checksum: 10/4670938bc7106afaa9c2bad03283b80d75196332783cd69068ec6bf7b375c3a4e4735b3e7f9adb58e64dcd47a911d7723f0e4cc597cb04eea32fef63cb697fde
   languageName: node
   linkType: hard
 
