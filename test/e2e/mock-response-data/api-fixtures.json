@@ -481,9 +481,37 @@
     "total": 0,
     "skip": 0,
     "limit": 0,
-    "items": [],
+    "items": [
+      {
+        "sys": {
+          "id": ""
+        },
+        "fields": {
+          "headline": "",
+          "teaser": "",
+          "image": {
+            "sys": {
+              "id": ""
+            }
+          },
+          "linkUrl": "",
+          "undismissable": false
+        }
+      }
+    ],
     "includes": {
-      "Asset": []
+      "Asset": [
+        {
+          "sys": {
+            "id": ""
+          },
+          "fields": {
+            "file": {
+              "url": ""
+            }
+          }
+        }
+      ]
     }
   },
   "gas-prices": {
@@ -832,7 +860,35 @@
       "isMutable": null
     }
   },
-  "ramps-countries": [],
+  "ramps-countries": [
+    {
+      "isoCode": "",
+      "id": "",
+      "flag": "",
+      "name": "",
+      "phone": {
+        "prefix": "",
+        "placeholder": "",
+        "template": ""
+      },
+      "currency": "",
+      "supported": {
+        "buy": false,
+        "sell": false
+      },
+      "recommended": false,
+      "states": [
+        {
+          "id": "",
+          "name": "",
+          "stateId": "",
+          "supported": false
+        }
+      ],
+      "defaultAmount": 0,
+      "quickAmounts": []
+    }
+  ],
   "sevenseas-performance": {
     "Response": {
       "aggregation_period": "",
@@ -1771,7 +1827,7 @@
     "hidden": false,
     "sendBundle": false,
     "simulationIncludeFees": false,
-    "cubistSigners": [""],
+    "cubistSigners": [],
     "sponsorship": {
       "enabled": false,
       "rules": [
@@ -1820,7 +1876,7 @@
       "hidden": false,
       "sendBundle": false,
       "simulationIncludeFees": false,
-      "cubistSigners": [""],
+      "cubistSigners": [],
       "sponsorship": {
         "enabled": false,
         "rules": [

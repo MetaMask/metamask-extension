@@ -1096,9 +1096,6 @@ async function setupMocking(
       confirmations: true,
       smartTransactions: true,
       hidden: false,
-      // Sentinel validates cubistSigners as 0x-hex. The synced placeholder [""]
-      // fails that and drops the registry entry, so simulations never run.
-      cubistSigners: [],
     },
   };
   await server
@@ -1856,7 +1853,10 @@ async function setupMocking(
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: API_MOCKS['ramps-countries'],
+          // The fixture keeps one placeholder country so its type is checked.
+          json: API_MOCKS['ramps-countries'].filter(
+            (country) => country.isoCode,
+          ),
         };
       });
   }
@@ -2288,9 +2288,20 @@ async function setupMocking(
       content_type: 'promotionalBanner',
     })
     .thenCallback(() => {
+      // The fixture keeps one placeholder banner and asset so their types are
+      // checked. No banner is shown.
       return {
         statusCode: 200,
-        json: API_MOCKS.contentful,
+        json: {
+          ...API_MOCKS.contentful,
+          items: API_MOCKS.contentful.items.filter((item) => item.sys.id),
+          includes: {
+            ...API_MOCKS.contentful.includes,
+            Asset: API_MOCKS.contentful.includes.Asset.filter(
+              (asset) => asset.sys.id,
+            ),
+          },
+        },
       };
     });
 
