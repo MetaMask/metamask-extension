@@ -548,6 +548,7 @@ describe('Wallet Ready Page', () => {
         expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
         expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
           urlPathAndQuery,
+          'restored_context',
         );
         expect(mockUseNavigate).toHaveBeenCalledWith(
           `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
@@ -761,6 +762,7 @@ describe('Wallet Ready Page', () => {
       await waitFor(() => {
         expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
           urlPathAndQuery,
+          'restored_context',
         );
         expect(mockUseNavigate).toHaveBeenCalledWith(
           `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
