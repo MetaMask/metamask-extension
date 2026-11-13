@@ -34,6 +34,11 @@ export type MoneyAccountWithdrawableFiat = {
   withdrawableFiatFormatted: string | undefined;
   /** Exact withdrawable balance. Drives Max, so it keeps full precision. */
   withdrawableFiatRaw: string | undefined;
+  /**
+   * True only while an enabled balance query has no data yet. Callers that
+   * would otherwise pick another pay source must wait, or they win the race.
+   */
+  isLoading: boolean;
 };
 
 /**
@@ -73,25 +78,31 @@ export function useMoneyAccountWithdrawableFiat(
   });
 
   return useMemo(() => {
+    const isLoading = Boolean(shouldFetch && moneyBalanceQuery.isLoading);
     const vmusdValueInMusd = moneyBalanceQuery.data?.vmusdValueInMusd;
     if (
       !isActive ||
-      moneyBalanceQuery.isLoading ||
+      isLoading ||
       moneyBalanceQuery.isError ||
       vmusdValueInMusd === undefined ||
       vmusdValueInMusd === null
     ) {
       return {
+        isLoading,
         withdrawableFiatFormatted: undefined,
         withdrawableFiatRaw: undefined,
       };
     }
 
-    return projectWithdrawableFiat(vmusdValueInMusd);
+    return {
+      ...projectWithdrawableFiat(vmusdValueInMusd),
+      isLoading: false,
+    };
   }, [
     isActive,
     moneyBalanceQuery.data,
     moneyBalanceQuery.isError,
     moneyBalanceQuery.isLoading,
+    shouldFetch,
   ]);
 }
