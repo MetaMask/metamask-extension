@@ -165,7 +165,12 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  endTrace,
+  serializeTraceContext,
+  trace,
+  TraceName,
+} from '../../shared/lib/trace';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -4266,10 +4271,10 @@ export default class MetamaskController extends EventEmitter {
             // response's JSON validation, and only the `SerializedTraceContext`
             // shape round-trips into a later `startTrace` `parentContext`.
             const span = trace(options);
-            const spanContext = span?.spanContext?.();
-            return spanContext
-              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
-              : {};
+            return serializeTraceContext(span, {
+              name: options.name,
+              id: options.id,
+            });
           },
           endTrace,
           getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
