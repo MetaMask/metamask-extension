@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
@@ -25,6 +26,7 @@ import { Confirmation } from '../../types/confirm';
 export type ConfirmContextType = {
   /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
   currentConfirmation: Confirmation;
+  transactionMetadataRequestOverride?: TransactionMeta;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
@@ -41,6 +43,12 @@ export type ConfirmContextType = {
    * rejected/removed. See CONF-1865.
    */
   suppressAutoExit: () => void;
+  /**
+   * The amount field has changed and Pay has not committed that amount yet.
+   * Confirm stays disabled, and quote rows stay pending, until it matches.
+   */
+  isAmountPending: boolean;
+  setIsAmountPending: (isAmountPending: boolean) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -51,11 +59,14 @@ export const ConfirmContextProvider = ({
   children,
   confirmationId,
   currentConfirmationOverride,
+  initialIsAmountPending = false,
 }: React.PropsWithChildren<{
   children: ReactElement;
   confirmationId?: string;
   /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
   currentConfirmationOverride?: Confirmation;
+  /** Test hook for a confirmation that opens with a typed amount still pending. */
+  initialIsAmountPending?: boolean;
 }>) => {
   const { goBackTo: goBackFromUrl, goBackAction: goBackActionFromUrl } =
     useConfirmationNavigationOptions();
@@ -64,10 +75,17 @@ export const ConfirmContextProvider = ({
   const { key: locationKey } = useLocation();
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
+  const [isAmountPending, setIsAmountPending] = useState(
+    initialIsAmountPending,
+  );
   const { currentConfirmation: currentConfirmationFromHook } =
     useCurrentConfirmation(confirmationId);
   const currentConfirmation =
     currentConfirmationOverride ?? currentConfirmationFromHook;
+  const transactionMetadataRequestOverride =
+    currentConfirmationOverride && 'txParams' in currentConfirmationOverride
+      ? currentConfirmationOverride
+      : undefined;
 
   useSyncConfirmPath(
     currentConfirmationOverride === undefined ? currentConfirmation : undefined,
@@ -124,19 +142,25 @@ export const ConfirmContextProvider = ({
   const value = useMemo(
     () => ({
       currentConfirmation,
+      transactionMetadataRequestOverride,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
       goBackAction,
       suppressAutoExit,
+      isAmountPending,
+      setIsAmountPending,
     }),
     [
       currentConfirmation,
+      transactionMetadataRequestOverride,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
       goBackAction,
       suppressAutoExit,
+      isAmountPending,
+      setIsAmountPending,
     ],
   );
 
@@ -157,10 +181,13 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
   return context as {
     /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
     currentConfirmation: CurrentConfirmation;
+    transactionMetadataRequestOverride?: TransactionMeta;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
     goBackAction?: ConfirmationGoBackAction;
     suppressAutoExit: () => void;
+    isAmountPending: boolean;
+    setIsAmountPending: (isAmountPending: boolean) => void;
   };
 };

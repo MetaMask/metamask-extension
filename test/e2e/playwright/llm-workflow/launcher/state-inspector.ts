@@ -1,26 +1,13 @@
 import type { Page } from '@playwright/test';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-  CONNECT_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
+  BASIC_FUNCTIONALITY_OFF_ROUTE,
+  DEEP_LINK_ROUTE,
   DEFAULT_ROUTE,
+  LOCK_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_CONFIRM_SRP_ROUTE,
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_HELP_US_IMPROVE_ROUTE,
-  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_METAMETRICS,
-  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_REVEAL_SRP_ROUTE,
-  ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  SEND_ROUTE,
-  SETTINGS_ROUTE,
-  SIGNATURE_REQUEST_PATH,
+  RESTORE_VAULT_ROUTE,
   UNLOCK_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
 import {
@@ -32,32 +19,160 @@ import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
 } from '../../../../../shared/lib/selectors/networks';
-import type { ExtensionState } from '../launcher-types';
-import { HomePage } from '../page-objects/home-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import LoginPage from '../../../page-objects/pages/onboarding/login-page';
+import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
+import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
+import {
+  ROUTE_PAGE_OBJECT_REGISTRY,
+  matchRoute,
+} from '../../../route-registry';
+import type { Driver } from '../../../webdriver/driver';
+import { getE2EDriver, withTimeout } from '../e2e-driver';
+import type { ExtensionState, ScreenName } from '../launcher-types';
 
-const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
-  'home',
-  'send',
-  'swap',
-  'settings',
-  'confirm-transaction',
-  'confirm-signature',
-  'confirmation',
-  'connect',
-  'bridge',
+const SCREEN_PROBE_TIMEOUT_MS = 2_000;
+const BALANCE_TIMEOUT_MS = 2_000;
+
+export type ScreenCheck = {
+  /** Route path pattern of the screen, as keyed in the route registry. */
+  route: string;
+  screen: ScreenName;
+  description: string;
+  check: (driver: Driver) => Promise<void>;
+};
+
+function createScreenCheck(
+  route: string,
+  description: string,
+  check: ScreenCheck['check'],
+): ScreenCheck {
+  return { route, screen: getScreenName(route), description, check };
+}
+
+/**
+ * Screens waited for from the DOM while launching and self-onboarding, each by
+ * its e2e page object's own load assertion, so a UI change that breaks one
+ * also fails the e2e suite.
+ */
+export const SCREEN_CHECKS: ScreenCheck[] = [
+  createScreenCheck(UNLOCK_ROUTE, 'unlock page', (driver) =>
+    new LoginPage(driver).checkPageIsLoaded(),
+  ),
+  createScreenCheck(
+    ONBOARDING_WELCOME_ROUTE,
+    'onboarding welcome page',
+    (driver) => new StartOnboardingPage(driver).checkLoginPageIsLoaded(),
+  ),
+  createScreenCheck(DEFAULT_ROUTE, 'home page', (driver) =>
+    new HomePage(driver).checkPageIsLoaded(),
+  ),
+  createScreenCheck(
+    ONBOARDING_COMPLETION_ROUTE,
+    'onboarding complete page',
+    (driver) => new OnboardingCompletePage(driver).checkPageIsLoaded(),
+  ),
+];
+
+const LAUNCH_ROUTES = [UNLOCK_ROUTE, ONBOARDING_WELCOME_ROUTE, DEFAULT_ROUTE];
+
+/** Screens the extension can open on after launch. */
+export const LAUNCH_SCREEN_CHECKS: ScreenCheck[] = SCREEN_CHECKS.filter(
+  ({ route }) => LAUNCH_ROUTES.includes(route),
+);
+
+/**
+ * Resolves with the first screen whose check passes. Rejects only when every
+ * check fails.
+ *
+ * @param driver - The e2e driver bound to the page.
+ * @param checks - The candidate screens.
+ * @returns The screen that was reached.
+ */
+export async function waitForAnyScreen(
+  driver: Driver,
+  checks: ScreenCheck[],
+): Promise<ScreenCheck> {
+  return await Promise.any(
+    checks.map(async (screenCheck) => {
+      await screenCheck.check(driver);
+      return screenCheck;
+    }),
+  );
+}
+
+// Some page objects use their own longer waits, so the probe is capped here
+// rather than through the driver timeout alone.
+async function detectScreenFromPageObjects(
+  page: Page,
+): Promise<ExtensionState['currentScreen']> {
+  const handles: { timer?: ReturnType<typeof setTimeout> } = {};
+  const giveUp = new Promise<ScreenName>((resolve) => {
+    handles.timer = setTimeout(
+      () => resolve('unknown'),
+      SCREEN_PROBE_TIMEOUT_MS,
+    );
+  });
+  try {
+    return await Promise.race([
+      waitForAnyScreen(
+        withTimeout(getE2EDriver(page), SCREEN_PROBE_TIMEOUT_MS),
+        SCREEN_CHECKS,
+      ).then(
+        ({ screen }) => screen,
+        (): ScreenName => 'unknown',
+      ),
+      giveUp,
+    ]);
+  } finally {
+    clearTimeout(handles.timer);
+  }
+}
+
+/**
+ * Names a screen after its route path pattern without the dynamic segments,
+ * e.g. `/account-list` is `account-list` and `/send/:page?` is `send`.
+ *
+ * @param routePath - A route path pattern from the route registry.
+ * @returns The screen name.
+ */
+export function getScreenName(routePath: string): ScreenName {
+  const segments = routePath
+    .split('/')
+    .filter((segment) => segment && !segment.startsWith(':'));
+  return segments.length > 0 ? segments.join('-') : 'home';
+}
+
+function hasRoutePrefix(path: string, route: string): boolean {
+  return path === route || path.startsWith(`${route}/`);
+}
+
+// Must match the routes rendered outside `RequireAuthenticated` in
+// ui/pages/routes/routes.component.tsx.
+const LOCKED_ROUTES = [
+  ONBOARDING_ROUTE,
+  UNLOCK_ROUTE,
+  LOCK_ROUTE,
+  RESTORE_VAULT_ROUTE,
+];
+const UNAUTHENTICATED_ROUTES = [DEEP_LINK_ROUTE, BASIC_FUNCTIONALITY_OFF_ROUTE];
+
+const REGISTRY_ROUTES = Object.keys(ROUTE_PAGE_OBJECT_REGISTRY);
+
+const LOCKED_SCREENS = new Set(
+  REGISTRY_ROUTES.filter((route) =>
+    LOCKED_ROUTES.some((locked) => hasRoutePrefix(route, locked)),
+  ).map(getScreenName),
+);
+
+const UNLOCKED_SCREENS = new Set([
   'notification',
-]);
-
-const LOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
-  'unlock',
-  'onboarding-welcome',
-  'onboarding-import',
-  'onboarding-create',
-  'onboarding-srp',
-  'onboarding-password',
-  'onboarding-complete',
-  'onboarding-metametrics',
-  'onboarding-privacy',
+  ...REGISTRY_ROUTES.filter(
+    (route) =>
+      !LOCKED_SCREENS.has(getScreenName(route)) &&
+      !UNAUTHENTICATED_ROUTES.includes(route),
+  ).map(getScreenName),
 ]);
 
 export async function detectCurrentScreen(
@@ -73,51 +188,32 @@ export async function detectCurrentScreen(
     return urlScreenMatch;
   }
 
-  const screenSelectors: {
-    screen: ExtensionState['currentScreen'];
-    selector: string;
-  }[] = [
-    { screen: 'unlock', selector: '[data-testid="unlock-password"]' },
-    { screen: 'home', selector: '[data-testid="account-menu-icon"]' },
-    { screen: 'onboarding-welcome', selector: '[data-testid="get-started"]' },
-    {
-      screen: 'onboarding-import',
-      selector: '[data-testid="onboarding-import-wallet"]',
-    },
-    {
-      screen: 'onboarding-create',
-      selector: '[data-testid="onboarding-create-wallet"]',
-    },
-    {
-      screen: 'onboarding-srp',
-      selector: '[data-testid="srp-input-import__srp-note"]',
-    },
-    {
-      screen: 'onboarding-password',
-      selector: '[data-testid="create-password-new-input"]',
-    },
-    {
-      screen: 'onboarding-complete',
-      selector: '[data-testid="onboarding-complete-done"]',
-    },
-    {
-      screen: 'onboarding-metametrics',
-      selector: '[data-testid="metametrics-i-agree"]',
-    },
-    { screen: 'settings', selector: '[data-testid="settings-page"]' },
-  ];
+  return await detectScreenFromPageObjects(page);
+}
 
-  for (const { screen, selector } of screenSelectors) {
-    const isVisible = await page
-      .locator(selector)
-      .isVisible({ timeout: 200 })
-      .catch(() => false);
-    if (isVisible) {
-      return screen;
+/**
+ * Finds the route for a hash path. A path that is not a route itself (e.g. a
+ * nested step missing from `ROUTES`) gets its closest parent route, but never
+ * the home route.
+ *
+ * @param hashPath - The URL hash without `#` and query string.
+ * @returns The route path pattern, or `undefined`.
+ */
+function findRoute(hashPath: string): string | undefined {
+  if (hashPath === '' || hashPath === DEFAULT_ROUTE) {
+    return DEFAULT_ROUTE;
+  }
+  for (
+    let path = hashPath;
+    path.startsWith('/') && path.length > 1;
+    path = path.slice(0, path.lastIndexOf('/'))
+  ) {
+    const route = matchRoute(path);
+    if (route) {
+      return route.path;
     }
   }
-
-  return 'unknown';
+  return undefined;
 }
 
 export function detectScreenFromUrl(
@@ -125,105 +221,15 @@ export function detectScreenFromUrl(
 ): ExtensionState['currentScreen'] {
   const hash = url.split('#')[1] ?? '';
   const hashPath = hash.split(/[?#]/u)[0] || hash;
+  const route = findRoute(hashPath);
 
-  const routeMatchers: {
-    matcher: (path: string) => boolean;
-    screen: ExtensionState['currentScreen'];
-  }[] = [
-    { matcher: (path) => hasRoutePrefix(path, SEND_ROUTE), screen: 'send' },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE),
-      screen: 'swap',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(
-          path,
-          `${CONFIRM_TRANSACTION_ROUTE}${SIGNATURE_REQUEST_PATH}`,
-        ) || path.includes(SIGNATURE_REQUEST_PATH),
-      screen: 'confirm-signature',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, CONFIRM_TRANSACTION_ROUTE),
-      screen: 'confirm-transaction',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, CONFIRMATION_V_NEXT_ROUTE),
-      screen: 'confirmation',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, CONNECT_ROUTE),
-      screen: 'connect',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, SETTINGS_ROUTE),
-      screen: 'settings',
-    },
-    { matcher: (path) => hasRoutePrefix(path, UNLOCK_ROUTE), screen: 'unlock' },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_WELCOME_ROUTE),
-      screen: 'onboarding-welcome',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_CREATE_PASSWORD_ROUTE),
-      screen: 'onboarding-password',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_IMPORT_WITH_SRP_ROUTE),
-      screen: 'onboarding-import',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, ONBOARDING_REVEAL_SRP_ROUTE) ||
-        hasRoutePrefix(path, ONBOARDING_REVIEW_SRP_ROUTE) ||
-        hasRoutePrefix(path, ONBOARDING_CONFIRM_SRP_ROUTE),
-      screen: 'onboarding-srp',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_COMPLETION_ROUTE),
-      screen: 'onboarding-complete',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, ONBOARDING_METAMETRICS) ||
-        hasRoutePrefix(path, ONBOARDING_HELP_US_IMPROVE_ROUTE),
-      screen: 'onboarding-metametrics',
-    },
-    {
-      matcher: (path) =>
-        hasRoutePrefix(path, ONBOARDING_PRIVACY_SETTINGS_ROUTE),
-      screen: 'onboarding-privacy',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_UNLOCK_ROUTE),
-      screen: 'unlock',
-    },
-    {
-      matcher: (path) => hasRoutePrefix(path, ONBOARDING_ROUTE),
-      screen: 'onboarding-welcome',
-    },
-    {
-      matcher: (path) => /notification\.html/u.test(path),
-      screen: 'notification',
-    },
-    {
-      matcher: (path) => path === DEFAULT_ROUTE || path === '',
-      screen: 'home',
-    },
-  ];
-
-  for (const { matcher, screen } of routeMatchers) {
-    if (matcher(hashPath) || matcher(url)) {
-      return screen;
-    }
+  if (
+    /notification\.html/u.test(url) &&
+    (route === undefined || route === DEFAULT_ROUTE)
+  ) {
+    return 'notification';
   }
-
-  return 'unknown';
-}
-
-function hasRoutePrefix(path: string, route: string): boolean {
-  return path === route || path.startsWith(`${route}/`);
+  return route === undefined ? 'unknown' : getScreenName(route);
 }
 
 export async function detectUnlockState(
@@ -237,10 +243,14 @@ export async function detectUnlockState(
     return false;
   }
 
-  return page
-    .locator('[data-testid="account-menu-icon"]')
-    .isVisible()
-    .catch(() => false);
+  return await new HeaderNavbar(
+    withTimeout(getE2EDriver(page), SCREEN_PROBE_TIMEOUT_MS),
+  )
+    .checkPageIsLoaded()
+    .then(
+      () => true,
+      () => false,
+    );
 }
 
 // Fetches the raw metamask Redux state via stateHooks. Uses CDP
@@ -360,8 +370,10 @@ export async function getBaseExtensionState(
   // Balance remains DOM-based (home screen only) pending a separate
   // investigation into extracting it from Redux state.
   if (isUnlocked && currentScreen === 'home') {
-    const homePage = new HomePage(page);
-    balance = (await homePage.getBalance()) || null;
+    balance =
+      (await new HomePage(getE2EDriver(page))
+        .getBalance(BALANCE_TIMEOUT_MS)
+        .catch(() => '')) || null;
   }
 
   return {

@@ -66,13 +66,14 @@ describe('toMusdAmountHex', () => {
 describe('commitTransactionPayUpdates', () => {
   it('writes nested calldata and requiredAssets onto the transaction', () => {
     const transaction = createTransaction();
-    const updateTransaction = jest.fn();
+    const updateTransactionMetadata = jest.fn();
     const { messenger } = createMoneyPayMessengerMock({
       handlers: {
         'TransactionController:getState': () => ({
           transactions: [transaction],
         }),
-        'TransactionController:updateTransaction': updateTransaction,
+        'TransactionController:updateTransactionMetadata':
+          updateTransactionMetadata,
       },
     });
 
@@ -83,36 +84,91 @@ describe('commitTransactionPayUpdates', () => {
         { nestedTransactionIndex: 0, data: APPROVE_DATA },
         { nestedTransactionIndex: 1, data: DEPOSIT_DATA },
       ],
-      'test note',
       '0xf4240',
     );
 
-    expect(updateTransaction).toHaveBeenCalledTimes(1);
-    const [nextTransaction, note] = updateTransaction.mock.calls[0];
-    expect(note).toBe('test note');
-    expect(nextTransaction.nestedTransactions[0].data).toBe(APPROVE_DATA);
-    expect(nextTransaction.nestedTransactions[1].data).toBe(DEPOSIT_DATA);
+    expect(updateTransactionMetadata).toHaveBeenCalledWith({
+      transactionId: TRANSACTION_ID,
+      skipResimulate: true,
+      callback: expect.any(Function),
+    });
+    const nextTransaction = createTransaction();
+    const [{ callback }] = updateTransactionMetadata.mock.calls[0];
+    callback(nextTransaction);
+    expect(nextTransaction.nestedTransactions?.[0].data).toBe(APPROVE_DATA);
+    expect(nextTransaction.nestedTransactions?.[1].data).toBe(DEPOSIT_DATA);
     expect(nextTransaction.txParams.data).not.toBe('0x');
-    expect(nextTransaction.requiredAssets[0].amount).toBe('0xf4240');
+    expect(nextTransaction.requiredAssets?.[0].amount).toBe('0xf4240');
     expect(transaction.requiredAssets?.[0]?.amount).toBe('0x0');
   });
 
-  it('does not write when the transaction is gone', () => {
-    const updateTransaction = jest.fn();
+  it('preserves the gas limit while clearing amount-derived metadata', () => {
+    const transaction = createTransaction();
+    transaction.txParams.gas = '0x5208';
+    transaction.gasLimitNoBuffer = '0x6000';
+    transaction.gasUsed = '0x5100';
+    transaction.securityAlertResponse = {
+      reason: 'stale',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: 'Malicious',
+    };
+    transaction.simulationData = { tokenBalanceChanges: [] };
+    transaction.simulationFails = { debug: {}, reason: 'stale' };
+    transaction.revert = {
+      gas: {} as never,
+      simulation: {} as never,
+    };
+    const updateTransactionMetadata = jest.fn();
     const { messenger } = createMoneyPayMessengerMock({
       handlers: {
-        'TransactionController:getState': () => ({ transactions: [] }),
-        'TransactionController:updateTransaction': updateTransaction,
+        'TransactionController:updateTransactionMetadata':
+          updateTransactionMetadata,
       },
     });
 
-    commitTransactionPayUpdates(
-      messenger,
-      TRANSACTION_ID,
-      [{ nestedTransactionIndex: 0, data: APPROVE_DATA }],
-      'test note',
-    );
+    commitTransactionPayUpdates(messenger, TRANSACTION_ID, [
+      { nestedTransactionIndex: 0, data: APPROVE_DATA },
+    ]);
 
-    expect(updateTransaction).not.toHaveBeenCalled();
+    const [{ callback }] = updateTransactionMetadata.mock.calls[0];
+    callback(transaction);
+
+    // Clearing the gas limit would make the next simulation run with Monad's
+    // 150M default, which masks a pre-funding revert as a reserve balance
+    // violation. Nothing re-estimates gas after this commit.
+    expect(transaction.txParams.gas).toBe('0x5208');
+    expect(transaction.gasLimitNoBuffer).toBe('0x6000');
+    expect(transaction.gasUsed).toBeUndefined();
+    expect(transaction.securityAlertResponse).toBeUndefined();
+    expect(transaction.simulationData).toBeUndefined();
+    expect(transaction.simulationFails).toBeUndefined();
+    expect(transaction.revert).toBeUndefined();
+  });
+
+  it('preserves a receipt-backed revert while clearing stale data', () => {
+    const transaction = createTransaction();
+    transaction.revert = {
+      gas: {} as never,
+      simulation: {} as never,
+      receipt: { status: '0x0' } as never,
+    };
+    const updateTransactionMetadata = jest.fn();
+    const { messenger } = createMoneyPayMessengerMock({
+      handlers: {
+        'TransactionController:updateTransactionMetadata':
+          updateTransactionMetadata,
+      },
+    });
+
+    commitTransactionPayUpdates(messenger, TRANSACTION_ID, [
+      { nestedTransactionIndex: 0, data: APPROVE_DATA },
+    ]);
+
+    const [{ callback }] = updateTransactionMetadata.mock.calls[0];
+    callback(transaction);
+
+    expect(transaction.revert).toStrictEqual({
+      receipt: { status: '0x0' },
+    });
   });
 });

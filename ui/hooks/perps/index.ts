@@ -43,13 +43,17 @@ export type {
   UsePerpsEstimatedSlippageReturn,
 } from './usePerpsEstimatedSlippage';
 export { usePerpsEventTracking } from './usePerpsEventTracking';
+export { usePerpsMarketAboutTracking } from './usePerpsMarketAboutTracking';
+export type {
+  UsePerpsMarketAboutTrackingOptions,
+  UsePerpsMarketAboutTrackingReturn,
+} from './usePerpsMarketAboutTracking';
 export { usePerpsAttribution } from './usePerpsAttribution';
 export type {
   PerpsTrackEventFn,
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
 export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
-export { PERPS_HOME_TAB_ROUTE, usePerpsHomeRoute } from './usePerpsHomeRoute';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,
