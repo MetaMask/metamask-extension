@@ -363,6 +363,7 @@
     }
   ],
   "chomp": {
+    "version": "",
     "auth": {
       "message": ""
     },

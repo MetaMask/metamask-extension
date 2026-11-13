@@ -68,6 +68,39 @@ describe('alignShape lists and nulls', () => {
     ]);
   });
 
+  it('does not add a nested field only some list items return', () => {
+    const mock: Json[] = [{ storage: { balance: 0, approval: 0 } }];
+    const live: Json[] = [
+      { storage: { balance: 1, approval: 2, approvalStr: 'x' } },
+      { storage: { balance: 3, approval: 4 } },
+    ];
+    expect(alignShape(mock, live)).toStrictEqual([
+      { storage: { balance: 0, approval: 0 } },
+    ]);
+  });
+
+  it('keeps a nested field only some list items return when the mock has it', () => {
+    const mock: Json[] = [{ storage: { balance: 0, approvalStr: 'kept' } }];
+    const live: Json[] = [
+      { storage: { balance: 1, approvalStr: 'x' } },
+      { storage: { balance: 3 } },
+    ];
+    expect(alignShape(mock, live)).toStrictEqual([
+      { storage: { balance: 0, approvalStr: 'kept' } },
+    ]);
+  });
+
+  it('adds a nested field every list item returns', () => {
+    const mock: Json[] = [{ storage: { balance: 0 } }];
+    const live: Json[] = [
+      { storage: { balance: 1, approval: 2 } },
+      { storage: { balance: 3, approval: 4 } },
+    ];
+    expect(alignShape(mock, live)).toStrictEqual([
+      { storage: { balance: 0, approval: 0 } },
+    ]);
+  });
+
   it('keeps the mock value when the live value is null', () => {
     expect(
       alignShape(

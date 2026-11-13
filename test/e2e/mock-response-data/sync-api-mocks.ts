@@ -176,20 +176,46 @@ function alignObjectList(
   live: { [key: string]: Json }[],
   options: AlignOptions,
 ): Json[] {
-  const union = unionShape(live);
-  const required = new Set(
-    Object.keys(union).filter((key) => live.every((item) => key in item)),
+  return mock.map((item) =>
+    alignShape(item, listItemShape(item, live), false, options),
   );
-  return mock.map((item) => {
-    const present = isObject(item) ? item : {};
-    const shape: { [key: string]: Json } = {};
-    for (const [key, value] of Object.entries(union)) {
-      if (required.has(key) || key in present) {
-        shape[key] = value;
-      }
+}
+
+/**
+ * The live shape one list item is aligned to, applied at every depth. A field
+ * every sample returns is required. A field only some samples return is kept
+ * only where the mock already has it, so the sync does not add a field that
+ * depends on which items one response happened to include. A nested object
+ * gets the same rule. A sample that is `null` does not count toward the shape.
+ *
+ * @param mock - The current value at this position.
+ * @param samples - The live values at this position, one per list entry.
+ * @returns The live shape to align the mock value to.
+ */
+function listItemShape(mock: Json, samples: Json[]): Json {
+  const present = samples.filter((sample) => sample !== null);
+  if (present.length === 0) {
+    return null;
+  }
+  if (!present.every(isObject)) {
+    return present[0] ?? null;
+  }
+  const objects = present as { [key: string]: Json }[];
+  if (!isObject(mock)) {
+    return unionShape(objects);
+  }
+  const shape: { [key: string]: Json } = {};
+  for (const key of Object.keys(unionShape(objects))) {
+    const values = objects
+      .filter((item) => key in item)
+      .map((item) => item[key]);
+    const everySampleHasKey = objects.every((item) => key in item);
+    if (!everySampleHasKey && !(key in mock)) {
+      continue;
     }
-    return alignShape(item, shape, false, options);
-  });
+    shape[key] = listItemShape(mock[key], values);
+  }
+  return shape;
 }
 
 /** Decimal chain ids and `0x` hex chain ids are data keys, not fields. */
