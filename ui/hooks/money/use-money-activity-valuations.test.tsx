@@ -347,6 +347,81 @@ describe('useMoneyActivityValuations', () => {
     expect(messengerCall).not.toHaveBeenCalled();
   });
 
+  it('keeps a vault-share row pending while the valuation request is in flight', async () => {
+    let resolveValuation: (value: VaultShareValuationsResponse) => void = () =>
+      undefined;
+    messengerCall.mockImplementation((action: string) =>
+      action === 'MoneyAccountApiDataService:fetchVaultShareValuations'
+        ? new Promise<VaultShareValuationsResponse>((resolve) => {
+            resolveValuation = resolve;
+          })
+        : Promise.resolve(rateResponse),
+    );
+
+    const { result } = renderHook(
+      () =>
+        useMoneyActivityValuations({
+          pageActivities: [[cardActivity(1)]],
+          moneyAddress: MONEY_ADDRESS,
+          vaultShareTokens: [vaultShareToken],
+          enabled: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(messengerCall).toHaveBeenCalledWith(
+        'MoneyAccountApiDataService:fetchVaultShareValuations',
+        MONEY_ADDRESS,
+        { txHashes: [hash(1)], chainId: 143 },
+      );
+    });
+    expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
+      type: 'pending',
+    });
+    expect(result.current.isSettling).toBe(true);
+
+    resolveValuation(valuationResponse([1]));
+
+    await waitFor(() => {
+      expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
+        type: 'historical',
+        value: '1017488',
+        decimals: 6,
+      });
+    });
+    expect(result.current.isSettling).toBe(false);
+  });
+
+  it('shows unavailable after the rate request fails', async () => {
+    messengerCall.mockImplementation((action: string) =>
+      action === 'MoneyAccountApiDataService:fetchVaultRate'
+        ? Promise.reject(new Error('rate failed'))
+        : Promise.resolve({
+            ...valuationResponse([]),
+            results: [{ tx_hash: hash(1), found: false, valuations: [] }],
+          }),
+    );
+
+    const { result } = renderHook(
+      () =>
+        useMoneyActivityValuations({
+          pageActivities: [[cardActivity(1)]],
+          moneyAddress: MONEY_ADDRESS,
+          vaultShareTokens: [vaultShareToken],
+          enabled: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
+        type: 'unavailable',
+      });
+    });
+    expect(result.current.isSettling).toBe(false);
+  });
+
   it('does nothing when disabled', async () => {
     const { result } = renderHook(
       () =>

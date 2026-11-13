@@ -57,6 +57,7 @@ type ValuationPage = {
   targets: VaultShareValuationTarget[];
   cached: VaultShareValuationCacheEntry[];
   cachedByIdentity: Map<string, VaultShareValuationCacheEntry>;
+  hasMissing: boolean;
 };
 
 export type UseMoneyActivityValuationsOptions = {
@@ -165,20 +166,35 @@ function combineValuationQueries(
   results: {
     data?: VaultShareValuationCacheEntry[];
     isFetching: boolean;
+    isFetched: boolean;
   }[],
-): { entries: VaultShareValuationCacheEntry[]; isFetching: boolean } {
+): {
+  entries: VaultShareValuationCacheEntry[];
+  isFetching: boolean;
+  isFetched: boolean[];
+} {
   return {
     entries: results.flatMap((result) => result.data ?? []),
     isFetching: results.some((result) => result.isFetching),
+    isFetched: results.map((result) => result.isFetched),
   };
 }
 
 function combineRateQueries(
-  results: { data?: VaultRateResponse; isFetching: boolean }[],
-): { data: (VaultRateResponse | undefined)[]; isFetching: boolean } {
+  results: {
+    data?: VaultRateResponse;
+    isFetching: boolean;
+    isFetched: boolean;
+  }[],
+): {
+  data: (VaultRateResponse | undefined)[];
+  isFetching: boolean;
+  isFetched: boolean[];
+} {
   return {
     data: results.map((result) => result.data),
     isFetching: results.some((result) => result.isFetching),
+    isFetched: results.map((result) => result.isFetched),
   };
 }
 
@@ -272,10 +288,14 @@ export function useMoneyActivityValuations({
           enabled && cacheReady
             ? usableEntries(targets, cache.entries)
             : EMPTY_CACHE;
+        const cachedByIdentity = entriesByIdentity(cached);
         return {
           targets,
           cached,
-          cachedByIdentity: entriesByIdentity(cached),
+          cachedByIdentity,
+          hasMissing:
+            cacheReady &&
+            missingHashesByChain(targets, cachedByIdentity).size > 0,
         };
       }),
     [
@@ -375,6 +395,19 @@ export function useMoneyActivityValuations({
     return map;
   }, [cache.entries, valuationState.entries]);
 
+  const valuationFetchedByIdentity = useMemo(() => {
+    const map = new Map<string, boolean>();
+    pages.forEach((page, index) => {
+      const isFetched = valuationState.isFetched[index] ?? false;
+      for (const target of page.targets) {
+        if (target.identity) {
+          map.set(target.identity, isFetched);
+        }
+      }
+    });
+    return map;
+  }, [pages, valuationState.isFetched]);
+
   const unresolvedVaultTokens = useMemo(() => {
     if (!cacheReady) {
       return [];
@@ -425,6 +458,17 @@ export function useMoneyActivityValuations({
     return map;
   }, [rateState.data, unresolvedVaultTokens]);
 
+  const rateFetchedByVault = useMemo(() => {
+    const map = new Map<string, boolean>();
+    unresolvedVaultTokens.forEach((token, index) => {
+      map.set(
+        getVaultShareVaultKey(token.chainId, token.address),
+        rateState.isFetched[index] ?? false,
+      );
+    });
+    return map;
+  }, [unresolvedVaultTokens, rateState.isFetched]);
+
   const getDisplayAmount = useCallback(
     (activity: AccountsApiActivity): AccountsApiDisplayAmount | undefined => {
       const target = getVaultShareValuationTarget({
@@ -450,11 +494,21 @@ export function useMoneyActivityValuations({
         return historical;
       }
 
-      const rate = ratesByVault.get(target.vaultKey);
-      if (!rate && rateState.isFetching) {
+      if (
+        target.identity !== undefined &&
+        valuationFetchedByIdentity.get(target.identity) !== true
+      ) {
         return { type: 'pending' };
       }
-      return getApproximateVaultShareDisplayAmount(activity, rate?.rate);
+
+      const rate = ratesByVault.get(target.vaultKey);
+      if (!rate) {
+        if (rateFetchedByVault.get(target.vaultKey) !== true) {
+          return { type: 'pending' };
+        }
+        return getApproximateVaultShareDisplayAmount(activity, undefined);
+      }
+      return getApproximateVaultShareDisplayAmount(activity, rate.rate);
     },
     [
       enabled,
@@ -462,15 +516,27 @@ export function useMoneyActivityValuations({
       moneyAddress,
       vaultShareTokens,
       valuationsByIdentity,
+      valuationFetchedByIdentity,
       ratesByVault,
-      rateState.isFetching,
+      rateFetchedByVault,
     ],
+  );
+
+  const valuationsPending = pages.some(
+    (page, index) => page.hasMissing && !valuationState.isFetched[index],
+  );
+  const ratesPending = unresolvedVaultTokens.some(
+    (_token, index) => !rateState.isFetched[index],
   );
 
   const isSettling =
     enabled &&
     pages.some((page) => page.targets.length > 0) &&
-    (!cacheReady || valuationState.isFetching || rateState.isFetching);
+    (!cacheReady ||
+      valuationState.isFetching ||
+      rateState.isFetching ||
+      valuationsPending ||
+      ratesPending);
 
   return { getDisplayAmount, isSettling };
 }
