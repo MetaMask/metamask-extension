@@ -12,6 +12,7 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
+const noInlineApiMockBodyRule = require('./development/eslint-rules/no-inline-api-mock-body');
 const {
   architecturalZones,
   buildSystemZones,
@@ -876,6 +877,34 @@ module.exports = defineConfig([
     },
     rules: {
       'page-object/member-order': 'error',
+    },
+  },
+  /**
+   * E2E API mock bodies
+   *
+   * Response bodies for external APIs come from
+   * `test/e2e/mock-response-data/api-responses/`, with the fixture id listed in
+   * `sources.json`. Warn, so specs that still inline a body do not fail CI.
+   * `mock-e2e.js` is the global catalog, the builders live next to the
+   * fixtures, and benchmark payloads are timed stand-ins rather than synced
+   * API fixtures.
+   */
+  {
+    files: ['test/e2e/**/*.{js,ts}'],
+    ignores: [
+      'test/e2e/mock-e2e.js',
+      'test/e2e/mock-response-data/**',
+      'test/e2e/benchmarks/**',
+    ],
+    plugins: {
+      'e2e-api-mocks': {
+        rules: {
+          'no-inline-response-body': noInlineApiMockBodyRule,
+        },
+      },
+    },
+    rules: {
+      'e2e-api-mocks/no-inline-response-body': 'warn',
     },
   },
   /**
