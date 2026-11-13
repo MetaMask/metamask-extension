@@ -103,12 +103,7 @@ async function main() {
 
   await loadStyles();
   const resolved = await loadTicker(symbol);
-  if (
-    !resolved ||
-    ![resolved.primary, ...resolved.similar].some(
-      (asset) => (asset.marketCap ?? 0) > 0,
-    )
-  ) {
+  if (!resolved) {
     return;
   }
 

@@ -88,45 +88,6 @@ describe('widget frame', () => {
     ).toHaveLength(5);
   });
 
-  it('does not render when every asset has no market cap', async () => {
-    window.history.replaceState({}, '', '?symbol=ETH&theme=light');
-    let respond: (value: unknown) => void = () => undefined;
-    const response = new Promise<unknown>((resolve) => {
-      respond = resolve;
-    });
-    mockSendMessage.mockImplementation((message) => {
-      if (message.type === EXTENSION_MESSAGES.GET_DATA) {
-        return response;
-      }
-      return Promise.resolve(undefined);
-    });
-
-    await import('./frame');
-    document.querySelector('link')?.dispatchEvent(new Event('load'));
-    await waitFor(() => expect(mockSendMessage).toHaveBeenCalled());
-
-    respond({
-      body: {
-        asset: { ...primary, marketCap: null },
-        similar: [
-          {
-            ...primary,
-            marketCap: 0,
-            caipAssetId: 'eip155:1/erc20:0x0',
-          },
-        ],
-      },
-    });
-    await response;
-
-    expect(mockRender).not.toHaveBeenCalled();
-    expect(
-      mockSendMessage.mock.calls.some(
-        ([message]) => message.type === EXTENSION_MESSAGES.TRACK_EVENT,
-      ),
-    ).toBe(false);
-  });
-
   it('does not load or render without a ticker symbol', async () => {
     window.history.replaceState({}, '', '?theme=light');
 
