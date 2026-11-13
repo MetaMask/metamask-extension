@@ -3037,11 +3037,11 @@ export default class MetamaskController extends EventEmitter {
       ...(iconUrl ? { iconUrl } : {}),
     };
 
-    await this.assetsController.addCustomAsset(
-      accountId,
-      assetId,
-      pendingMetadata,
-    );
+    this.assetsController
+      .addCustomAsset(accountId, assetId, pendingMetadata)
+      .catch((error) => {
+        captureException(error);
+      });
   };
 
   handleWatchAssetRequest = async ({
