@@ -9526,9 +9526,6 @@
   "restore": {
     "message": "Wiederherstellen"
   },
-  "restoreUserData": {
-    "message": "Benutzerdaten wiederherstellen"
-  },
   "restoreWalletDescription": {
     "message": "Geben Sie Ihre $1 ein. Durch das Importieren der Wallet werden Ihre aktuellen Wallet-Daten von diesem Gerät gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "description": "$1 is the Secret Recovery Phrase"

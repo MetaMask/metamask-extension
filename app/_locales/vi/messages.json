@@ -9540,9 +9540,6 @@
   "restore": {
     "message": "Khôi phục"
   },
-  "restoreUserData": {
-    "message": "Khôi phục dữ liệu người dùng"
-  },
   "restoreWalletDescription": {
     "message": "Nhập $1 của bạn. Khi nhập ví, bạn sẽ xóa dữ liệu ví hiện tại khỏi thiết bị này. Hành động này không thể hoàn tác.",
     "description": "$1 is the Secret Recovery Phrase"

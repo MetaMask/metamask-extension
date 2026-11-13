@@ -9534,9 +9534,6 @@
   "restore": {
     "message": "복구"
   },
-  "restoreUserData": {
-    "message": "사용자 데이터 복구"
-  },
   "restoreWalletDescription": {
     "message": "$1을(를) 입력하세요. 지갑을 가져오면 이 기기에서 현재 지갑 데이터가 삭제됩니다. 이 작업은 취소할 수 없습니다.",
     "description": "$1 is the Secret Recovery Phrase"

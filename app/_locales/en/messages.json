@@ -9806,9 +9806,6 @@
   "restore": {
     "message": "Restore"
   },
-  "restoreUserData": {
-    "message": "Restore user data"
-  },
   "restoreWalletDescription": {
     "message": "Enter your $1. By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.",
     "description": "$1 is the Secret Recovery Phrase"

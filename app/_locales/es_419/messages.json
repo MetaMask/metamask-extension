@@ -9540,9 +9540,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreUserData": {
-    "message": "Restaure sus datos de usuario"
-  },
   "restoreWalletDescription": {
     "message": "Ingresa $1. Al importar la billetera, borrarás los datos de tu billetera actual de este dispositivo. Esta acción es irreversible.",
     "description": "$1 is the Secret Recovery Phrase"

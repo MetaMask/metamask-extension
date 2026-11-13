@@ -9526,9 +9526,6 @@
   "restore": {
     "message": "रीस्टोर करें"
   },
-  "restoreUserData": {
-    "message": "यूज़र डेटा रीस्टोर करें"
-  },
   "restoreWalletDescription": {
     "message": "अपना $1 टाइप करें। वॉलेट इंपोर्ट करके, आप इस डिवाइस से अपना मौजूदा वॉलेट डेटा मिटा देंगे। इसे पहले जैसा नहीं किया जा सकता।",
     "description": "$1 is the Secret Recovery Phrase"
