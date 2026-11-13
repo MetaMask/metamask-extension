@@ -3566,7 +3566,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "이렇게 하면 지갑과 연결된 과거 MetaMetrics 데이터가 삭제됩니다. MetaMetrics에는 익명화된 사용 데이터와 진단 데이터가 포함됩니다. 지갑과 계정은 그대로 유지됩니다. 이 절차는 최대 30일 정도 소요됩니다. 다음을 참고하세요: $1.",
-    "description": "$1 will have text saying Privacy Notice "
+    "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "분석 시스템 서버 문제로 지금 요청을 처리할 수 없습니다. 나중에 다시 시도해 주세요."
@@ -6983,6 +6983,13 @@
   },
   "onboardedMetametricsKey3": {
     "message": "기타 관련 프로모션 자료"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "$1 외에도 데이터를 활용하여 사용자가 마케팅 커뮤니케이션과 상호 작용하는 방식을 이해하고자 합니다.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "이를 통해 회원님과 공유하는 다음과 같은 콘텐츠를 개인화할 수 있습니다."

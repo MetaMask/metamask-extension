@@ -3566,7 +3566,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Ini akan menghapus data MetaMetrics historis yang terkait dengan dompet Anda. MetaMetrics mencakup data penggunaan dan diagnostik yang dianonimkan. Dompet dan akun Anda akan tetap sama. Proses ini akan memakan waktu hingga 30 hari. Lihat $1 kami.",
-    "description": "$1 will have text saying Privacy Notice "
+    "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Permintaan ini tidak dapat diselesaikan sekarang karena masalah server sistem analitis. Coba lagi nanti."
@@ -6983,6 +6983,13 @@
   },
   "onboardedMetametricsKey3": {
     "message": "Materi promosi lain yang relevan"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "Selain $1, kami ingin menggunakan data untuk memahami cara Anda berinteraksi dengan komunikasi pemasaran.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Ini membantu kami mempersonalisasi hal yang kami bagikan kepada Anda, seperti:"

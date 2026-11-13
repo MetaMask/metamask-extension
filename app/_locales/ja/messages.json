@@ -3548,7 +3548,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "これにより、ウォレットに関連する過去のMetaMetricsデータが削除されます。MetaMetricsには匿名化された使用状況および診断データが含まれます。ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。当社の$1をご覧ください。",
-    "description": "$1 will have text saying Privacy Notice "
+    "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "アナリティクスシステムサーバーの問題により、現在このリクエストを完了させることができません。後でもう一度お試しください。"
@@ -6934,6 +6934,13 @@
   },
   "onboardedMetametricsKey3": {
     "message": "その他関連プロモーション資料"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "$1に加え、マーケティングコミュニケーションとのインタラクションについて把握するためにもデータを使用します。",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "これは、次のようなお伝えする情報のカスタマイズに役立ちます:"

@@ -3566,7 +3566,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên kết với ví của bạn. MetaMetrics bao gồm dữ liệu sử dụng và chẩn đoán đã được ẩn danh. Ví và các tài khoản của bạn sẽ không thay đổi. Quá trình này có thể mất tới 30 ngày. Xem $1 của chúng tôi.",
-    "description": "$1 will have text saying Privacy Notice "
+    "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hiện không thể hoàn tất yêu cầu này do sự cố máy chủ của hệ thống phân tích. Hãy thử lại sau."
@@ -6983,6 +6983,13 @@
   },
   "onboardedMetametricsKey3": {
     "message": "Các tài liệu khuyến mại liên quan khác"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "Ngoài $1, chúng tôi muốn sử dụng dữ liệu để hiểu cách bạn tương tác với với các thông tin tiếp thị.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Điều này sẽ giúp chúng tôi cá nhân hóa nội dung mà chúng tôi chia sẻ với bạn, chẳng hạn như:"

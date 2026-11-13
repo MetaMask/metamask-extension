@@ -3566,7 +3566,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Это удалит исторические данные MetaMetrics, связанные с вашим кошельком. MetaMetrics включает анонимизированные данные об использовании и диагностике. Ваш кошелек и счета останутся без изменений. Этот процесс может занять до 30 дней. См. нашу $1.",
-    "description": "$1 will have text saying Privacy Notice "
+    "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Сейчас невозможно выполнить этот запрос из-за проблемы с сервером системы аналитики. Повторите попытку позже."
@@ -6979,6 +6979,13 @@
   },
   "onboardedMetametricsKey3": {
     "message": "Другие соответствующие промоматериалы"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics,"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "Кроме $1, мы хотели бы использовать данные, чтобы понять, как вы взаимодействуете с рекламными сообщениями.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Это помогает нам персонализировать то, чем мы делимся с вами, например:"
