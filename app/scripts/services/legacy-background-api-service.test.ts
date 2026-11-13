@@ -2139,6 +2139,10 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
         );
         rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+        );
+        rootMessenger.registerActionHandler(
           'NetworkEnablementController:setNetworkAdditionMode',
           setNetworkAdditionModeHandler,
         );
@@ -8843,6 +8847,8 @@ function getMessenger(
       'NetworkEnablementController:enableAllPopularNetworks',
       'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
+      'NetworkEnablementController:setNetworkAdditionMode',
+      'NetworkEnablementController:isNonActiveAddition',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
