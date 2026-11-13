@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 
-import { getUseSafeChainsListValidation } from '../../../selectors';
+import {
+  getUseExternalServices,
+  getUseSafeChainsListValidation,
+} from '../../../selectors';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import { DAY } from '../../../../shared/constants/time';
@@ -71,26 +74,35 @@ const loadSafeChains = () => {
   return safeChainsRequest;
 };
 
-export const useSafeChains = () => {
+type UseSafeChainsOptions = {
+  /**
+   * Load Chainlist even when network-details validation is off.
+   * Basic functionality still has to be on. Chainlist is a third-party API.
+   */
+  enabled?: boolean;
+};
+
+export const useSafeChains = ({ enabled }: UseSafeChainsOptions = {}) => {
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
+  const useExternalServices = useSelector(getUseExternalServices);
+  const shouldLoad =
+    Boolean(useExternalServices) &&
+    (Boolean(enabled) || useSafeChainsListValidation);
 
   const [safeChains, setSafeChains] = useState<SafeChainsState>(() =>
-    useSafeChainsListValidation ? safeChainsState : { safeChains: [] },
+    shouldLoad ? safeChainsState : { safeChains: [] },
   );
-  const [prevUseSafeChainsListValidation, setPrevUseSafeChainsListValidation] =
-    useState(useSafeChainsListValidation);
+  const [prevShouldLoad, setPrevShouldLoad] = useState(shouldLoad);
 
-  if (useSafeChainsListValidation !== prevUseSafeChainsListValidation) {
-    setPrevUseSafeChainsListValidation(useSafeChainsListValidation);
-    setSafeChains(
-      useSafeChainsListValidation ? safeChainsState : { safeChains: [] },
-    );
+  if (shouldLoad !== prevShouldLoad) {
+    setPrevShouldLoad(shouldLoad);
+    setSafeChains(shouldLoad ? safeChainsState : { safeChains: [] });
   }
 
   useEffect(() => {
-    if (!useSafeChainsListValidation) {
+    if (!shouldLoad) {
       return undefined;
     }
 
@@ -100,7 +112,7 @@ export const useSafeChains = () => {
     return () => {
       safeChainsSubscribers.delete(setSafeChains);
     };
-  }, [useSafeChainsListValidation]);
+  }, [shouldLoad]);
 
   return safeChains;
 };

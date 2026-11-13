@@ -53,20 +53,4 @@ describe('BridgeAsset', () => {
     expect(getByText(messages.musdSymbol.message)).toBeInTheDocument();
     expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
-
-  it('should render asset with accountType', () => {
-    const { getByTestId, getByText } = renderWithProvider(
-      <BridgeAsset
-        asset={{
-          ...toBridgeToken(getNativeAssetForChainId(ChainId.BTC)),
-          accountType: 'bip122:p2wpkh',
-        }}
-        selected={false}
-      />,
-      configureStore(createBridgeMockStore({})),
-    );
-    expect(getByText('BTC')).toBeInTheDocument();
-    expect(getByText('Native SegWit')).toBeInTheDocument();
-    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
-  });
 });

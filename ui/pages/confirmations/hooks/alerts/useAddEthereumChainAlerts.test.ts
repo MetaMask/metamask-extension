@@ -84,6 +84,7 @@ describe('useAddEthereumChainAlerts', () => {
       currentConfirmation: {
         requestData: {
           chainId: '0x1234',
+          rpcUrl: 'https://example.com/rpc',
         },
       },
     });
@@ -91,6 +92,32 @@ describe('useAddEthereumChainAlerts', () => {
     const { result } = renderHook(() => useAddEthereumChainAlerts());
 
     expect(result.current).toEqual([]);
+  });
+
+  it('returns homograph RPC alert for unrecognized chain', async () => {
+    const spoofedRpcUrl = 'https://iոfura.io/v3/abc';
+
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        requestData: {
+          chainId: '0x1234',
+          rpcUrl: spoofedRpcUrl,
+        },
+      },
+    });
+
+    const { result } = renderHook(() => useAddEthereumChainAlerts());
+
+    await waitFor(() => {
+      expect(result.current).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            key: 'rpcUrlIdnHomograph',
+            severity: Severity.Warning,
+          }),
+        ]),
+      );
+    });
   });
 
   it('warns on mismatched network name', async () => {

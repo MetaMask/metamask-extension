@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-param */
 import { BaseController } from '@metamask/base-controller';
 import log from 'loglevel';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
@@ -249,7 +248,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSeasonStatus',
   'optIn',
   'getGeoRewardsMetadata',
-  'validateReferralCode',
   'linkAccountToSubscriptionCandidate',
   'linkAccountsToSubscriptionCandidate',
   'getCandidateSubscriptionId',
@@ -273,10 +271,6 @@ export class RewardsController extends BaseController<
   #geoLocation: RewardsGeoMetadata | null = null;
 
   #isDisabled: () => boolean;
-
-  #isBitcoinDisabled: () => boolean;
-
-  #isTronDisabled: () => boolean;
 
   #isVipDisabled: () => boolean;
 
@@ -529,15 +523,11 @@ export class RewardsController extends BaseController<
     messenger,
     state,
     isDisabled,
-    isBitcoinDisabled,
-    isTronDisabled,
     isVipDisabled,
   }: {
     messenger: RewardsControllerMessenger;
     state?: Partial<RewardsControllerState>;
     isDisabled: () => boolean;
-    isBitcoinDisabled: () => boolean;
-    isTronDisabled: () => boolean;
     isVipDisabled: () => boolean;
   }) {
     super({
@@ -556,8 +546,6 @@ export class RewardsController extends BaseController<
     );
     this.#initializeEventSubscriptions();
     this.#isDisabled = isDisabled;
-    this.#isBitcoinDisabled = isBitcoinDisabled;
-    this.#isTronDisabled = isTronDisabled;
     this.#isVipDisabled = isVipDisabled;
   }
 
@@ -574,15 +562,6 @@ export class RewardsController extends BaseController<
     // Subscribe to KeyringController unlock events to retry silent auth
     this.messenger.subscribe('KeyringController:unlock', () =>
       this.handleAuthenticationTrigger('KeyringController unlocked'),
-    );
-
-    // On a fresh install the first keyring unlock happens during onboarding,
-    // before remote feature flags (and thus `rewardsEnabled`) are available, so
-    // the unlock-triggered silent auth returns early. Retry when remote flags
-    // hydrate after onboarding completes — `handleAuthenticationTrigger` is a
-    // no-op while rewards is still disabled.
-    this.messenger.subscribe('RemoteFeatureFlagController:stateChange', () =>
-      this.handleAuthenticationTrigger('RemoteFeatureFlag changed'),
     );
   }
 
@@ -870,9 +849,6 @@ export class RewardsController extends BaseController<
       isBtcMainnetAddress(account.address) ||
       isBtcTestnetAddress(account.address)
     ) {
-      if (this.#isBitcoinDisabled()) {
-        throw new Error('Unsupported account type for signing rewards message');
-      }
       const result = await signBitcoinRewardsMessage(
         this.messenger.call.bind(
           this.messenger,
@@ -888,9 +864,6 @@ export class RewardsController extends BaseController<
           : `0x${result.signature}`,
       };
     } else if (isTronAddress(account.address)) {
-      if (this.#isTronDisabled()) {
-        throw new Error('Unsupported account type for signing rewards message');
-      }
       const result = await signTronRewardsMessage(
         this.messenger.call.bind(
           this.messenger,
@@ -1087,17 +1060,15 @@ export class RewardsController extends BaseController<
         return true;
       }
 
-      // Check if it's a Bitcoin address (gated by feature flag)
       if (
         isBtcMainnetAddress(account.address) ||
         isBtcTestnetAddress(account.address)
       ) {
-        return !this.#isBitcoinDisabled();
+        return true;
       }
 
-      // Check if it's a Tron address (gated by feature flag)
       if (isTronAddress(account.address)) {
-        return !this.#isTronDisabled();
+        return true;
       }
 
       // If it's none of the supported types, opt-in is not supported
@@ -1941,12 +1912,8 @@ export class RewardsController extends BaseController<
    * Perform the complete opt-in process for rewards
    *
    * @param accounts - The accounts to opt in
-   * @param referralCode - Optional referral code
    */
-  async optIn(
-    accounts: InternalAccount[],
-    referralCode?: string,
-  ): Promise<string | null> {
+  async optIn(accounts: InternalAccount[]): Promise<string | null> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
       return null;
@@ -1968,7 +1935,7 @@ export class RewardsController extends BaseController<
 
     for (const accountToTry of sortedAccounts) {
       try {
-        optinResult = await this.#optIn(accountToTry, referralCode);
+        optinResult = await this.#optIn(accountToTry);
       } catch (error) {
         // Hardware wallet errors must propagate — the user explicitly interacted with their device
         if (isHardwareAccount(accountToTry)) {
@@ -2004,12 +1971,10 @@ export class RewardsController extends BaseController<
    * Private method to perform opt-in for a single internal account (using mobile opt-in logic)
    *
    * @param account - The internal account to opt in
-   * @param referralCode - Optional referral code
    * @returns Promise with subscription data or null if failed
    */
   async #optIn(
     account: InternalAccount,
-    referralCode?: string,
   ): Promise<{ subscription: SubscriptionDto; sessionId: string } | null> {
     const rewardsEnabled = this.isRewardsFeatureEnabled();
     if (!rewardsEnabled) {
@@ -2033,14 +1998,12 @@ export class RewardsController extends BaseController<
           return await this.messenger.call('RewardsDataService:siweLogin', {
             challengeId: chal.id,
             signature: sig as `0x${string}`,
-            referralCode,
           });
         }
         return await this.messenger.call('RewardsDataService:mobileOptin', {
           account: account.address,
           timestamp: ts,
           signature: sig as `0x${string}`,
-          referralCode,
         });
       } catch (error) {
         // Check if it's an InvalidTimestampError and we haven't exceeded retry attempts
@@ -2184,38 +2147,6 @@ export class RewardsController extends BaseController<
         optinAllowedForGeo: true,
       };
     }
-  }
-
-  /**
-   * Validate a referral code
-   *
-   * @param code - The referral code to validate
-   * @returns Promise<{ valid: boolean; isVipCode: boolean }> - Whether the code
-   * is valid and whether it is a VIP code. A code is only treated as a VIP code
-   * when the backend says so AND the VIP feature is enabled locally (rewards on
-   * and VIP not disabled).
-   */
-  async validateReferralCode(
-    code: string,
-  ): Promise<{ valid: boolean; isVipCode: boolean }> {
-    const rewardsEnabled = this.isRewardsFeatureEnabled();
-    if (!rewardsEnabled) {
-      return { valid: false, isVipCode: false };
-    }
-
-    if (!code.trim()) {
-      return { valid: false, isVipCode: false };
-    }
-
-    const response = await this.messenger.call(
-      'RewardsDataService:validateReferralCode',
-      code,
-    );
-    // A referral code is only treated as a VIP code when the backend says so
-    // AND the VIP feature is enabled locally (rewards on and VIP not disabled).
-    const isVipCode =
-      (response.isVipCode ?? false) && this.isVipFeatureEnabled();
-    return { valid: response.valid, isVipCode };
   }
 
   /**

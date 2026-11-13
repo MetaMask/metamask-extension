@@ -12,9 +12,11 @@ import type {
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
+  isInWalletPerpsDepositTransaction,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
 import {
@@ -34,8 +36,8 @@ import {
 } from './shared';
 import {
   clearToastPhase,
+  setApprovedOrSignedToastPhase,
   shouldShowPendingToast,
-  shouldShowFailedToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
 
@@ -54,7 +56,6 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
 // Flows with custom toasts — excluded for now from generic messenger event toasts.
 const excludedTransactionTypes: TransactionType[] = [
   TransactionType.musdRelayDeposit,
-  TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
   TransactionType.perpsRelayDeposit,
   TransactionType.shieldSubscriptionApprove,
@@ -62,8 +63,8 @@ const excludedTransactionTypes: TransactionType[] = [
 
 // Ported from custom toasts that included pre-broadcast (approved/signed) stage
 const earlyPendingToastTypes = new Set([
-  TransactionType.musdConversion,
   TransactionType.musdClaim,
+  TransactionType.perpsDeposit,
 ]);
 
 // Separate batch txs that share one toast with the main send/swap/bridge tx.
@@ -85,6 +86,9 @@ function isExcludedTransactionType(
   }
   return (
     hasTransactionType(transactionMeta, excludedTransactionTypes) ||
+    // In-wallet Perps deposits have their own toast (`PerpsDepositToast`).
+    // dApp-requested ones use the generic toasts.
+    isInWalletPerpsDepositTransaction(transactionMeta) ||
     isMoneyAccountTx(transactionMeta) ||
     isMoneyAccountChildTx(transactionMeta, transactions)
   );
@@ -156,7 +160,7 @@ function handleAccountsControllerTx(tx: Transaction) {
     showPendingToast(toastId);
   } else if (tx.status === 'confirmed' && shouldShowTerminalToast(tx.id)) {
     showSuccessToast(toastId);
-  } else if (tx.status === 'failed' && shouldShowFailedToast(tx.id)) {
+  } else if (tx.status === 'failed' && shouldShowTerminalToast(tx.id)) {
     showFailedToast(toastId);
   }
 }
@@ -169,6 +173,10 @@ export function useTransactionEventToasts(): void {
   const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
+    if (getManifestFlags().testing?.disableTransactionToasts) {
+      return undefined;
+    }
+
     // EVM via TransactionController
     const handleEvmStatusUpdate = (
       raw:
@@ -199,6 +207,13 @@ export function useTransactionEventToasts(): void {
         to: getDetailsRoute(chainId, hash),
       };
 
+      if (
+        status === TransactionStatus.approved ||
+        status === TransactionStatus.signed
+      ) {
+        setApprovedOrSignedToastPhase(id);
+      }
+
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {
           showPendingToast(toastId, props);
@@ -206,17 +221,16 @@ export function useTransactionEventToasts(): void {
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
-        if (
-          transactionMeta.replacedById &&
-          isSpeedUpReplacement(transactionMeta.replacedById, transactions)
-        ) {
-          dismissToast(toastId);
-          clearToastPhase(id);
-        } else if (
-          status === TransactionStatus.failed
-            ? shouldShowFailedToast(id)
-            : shouldShowTerminalToast(id)
-        ) {
+        if (transactionMeta.replacedById) {
+          if (
+            isSpeedUpReplacement(transactionMeta.replacedById, transactions)
+          ) {
+            dismissToast(toastId);
+            clearToastPhase(id);
+          } else if (shouldShowTerminalToast(id)) {
+            showFailedToast(toastId, props);
+          }
+        } else if (shouldShowTerminalToast(id)) {
           showFailedToast(toastId, props);
         }
       }

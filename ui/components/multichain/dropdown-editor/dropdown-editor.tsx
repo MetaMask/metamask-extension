@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useId,
+  useRef,
   useState,
 } from 'react';
 import classnames from 'clsx';
@@ -16,12 +17,14 @@ import {
   IconName,
   IconSize,
   Label,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Popover, PopoverPosition, PopoverRole } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 
 export enum DropdownEditorStyle {
@@ -70,16 +73,17 @@ export const DropdownEditor = <Item,>({
   buttonDataTestId: string;
 }) => {
   const t = useI18nContext();
+  const dropdownRef = useRef<HTMLButtonElement>(null);
+  // Captured on open (rather than via a callback ref on mount) so the popover
+  // has a positioned reference without triggering a state update on mount.
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
   const labelId = useId();
   const listboxId = useId();
   const selectedValueId = useId();
-  const setDropdownRef = useCallback((node: HTMLElement | null) => {
-    setReferenceElement(node);
-  }, []);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const closeDropdown = useCallback(() => setIsDropdownOpen(false), []);
 
   const renderDropdownList = () => (
     <Box
@@ -104,7 +108,7 @@ export const DropdownEditor = <Item,>({
             )}
           >
             {index === selectedItemIndex && (
-              <Box className="absolute left-1 top-1 h-[calc(100%-8px)] w-1 rounded-full bg-primary-default" />
+              <Box className="absolute inset-y-1 left-1 w-1 rounded-full bg-primary-default" />
             )}
             <button
               type="button"
@@ -185,25 +189,26 @@ export const DropdownEditor = <Item,>({
   const selectedItem = items?.[selectedItemIndex ?? -1];
   const tooltip = selectedItem ? renderTooltip(selectedItem, false) : undefined;
 
-  const box = (
+  const trigger = (
     <ButtonBase
       type="button"
       onClick={() => {
-        setIsDropdownOpen(!isDropdownOpen);
+        setReferenceElement(dropdownRef.current);
+        setIsDropdownOpen((isOpen) => !isOpen);
       }}
       aria-labelledby={`${labelId} ${selectedValueId}`}
       aria-controls={listboxId}
       aria-expanded={isDropdownOpen}
       aria-haspopup="listbox"
       className={classnames(
-        'min-h-12 h-auto w-full justify-between rounded-lg border bg-muted px-4 text-left hover:bg-muted-hover active:scale-100 active:bg-muted-pressed',
+        'min-h-12 h-auto w-full justify-between rounded-xl border bg-muted px-4 text-left hover:bg-muted-hover active:scale-100 active:bg-muted-pressed',
         {
           'border-error-default': error,
           'border-default': !error && isDropdownOpen,
           'border-muted': !error && !isDropdownOpen,
         },
       )}
-      ref={setDropdownRef}
+      ref={dropdownRef}
       data-testid={buttonDataTestId}
       endIconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
       endIconProps={{
@@ -233,34 +238,28 @@ export const DropdownEditor = <Item,>({
       </Label>
       {tooltip ? (
         <Tooltip title={tooltip} position="bottom">
-          {box}
+          {trigger}
         </Tooltip>
       ) : (
-        box
+        trigger
       )}
       {style === DropdownEditorStyle.PopoverStyle ? (
-        // The MMDS Popover uses Floating UI, which accesses globalThis.parent.
-        // LavaMoat blocks that global in scuttling mode, crashing production.
         <Popover
-          paddingTop={items && items.length > 0 ? 2 : 0}
-          paddingBottom={items && items.length > 0 ? 2 : 0}
-          paddingLeft={0}
-          matchWidth={true}
-          paddingRight={0}
-          className="z-[1]"
           referenceElement={referenceElement}
           position={PopoverPosition.Bottom}
           role={PopoverRole.Dialog}
+          matchWidth
           isOpen={isDropdownOpen}
-          onClickOutside={() => setIsDropdownOpen(false)}
-          onPressEscKey={() => setIsDropdownOpen(false)}
+          onClickOutside={closeDropdown}
+          onPressEscKey={closeDropdown}
+          className="z-10 rounded-xl p-0"
         >
           {renderDropdownList()}
         </Popover>
       ) : (
         <Box
           className={classnames(
-            'mt-2 overflow-hidden rounded-lg border border-muted',
+            'mt-2 overflow-hidden rounded-xl border border-muted',
             {
               hidden: !isDropdownOpen,
             },

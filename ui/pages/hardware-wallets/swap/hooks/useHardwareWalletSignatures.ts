@@ -25,8 +25,8 @@ import { useHwSwapActions } from '../../../../hooks/hardware-wallets/useHwSwapAc
 import {
   useHardwareWalletActions,
   useHardwareWalletState,
-  isInE2eTest,
 } from '../../../../contexts/hardware-wallets';
+import { isInE2eTest } from '../../../../../shared/lib/environment';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionDataRecipient,
@@ -411,7 +411,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     stepTrackingResetKey: qrStepTrackingResetKey,
   });
 
-  useHwSwapNavigation({ signatureState });
+  useHwSwapNavigation({ signatureState, isSendBundleFlow });
 
   const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,

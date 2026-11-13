@@ -1,17 +1,10 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ChangeEvent,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { useRampsBuildQuoteDraft } from '../../context/ramps-flow-context';
 import { parseFiatAmount } from '../utils/build-quote';
 
 const DEFAULT_AMOUNT = '100';
 const QUOTE_DEBOUNCE_MS = 500;
-const FIAT_AMOUNT_INPUT_PATTERN = /^[0-9]*[.,]?[0-9]*$/u;
 
 export function useBuildQuoteAmount(regionDefaultAmount?: number) {
   const { draftAmount, setDraftAmount } = useRampsBuildQuoteDraft();
@@ -39,16 +32,10 @@ export function useBuildQuoteAmount(regionDefaultAmount?: number) {
     }
   }, [amount, userHasEnteredAmount, setDraftAmount]);
 
-  const handleAmountChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      if (FIAT_AMOUNT_INPUT_PATTERN.test(value)) {
-        setAmount(value);
-        setUserHasEnteredAmount(true);
-      }
-    },
-    [],
-  );
+  const handleAmountChange = useCallback((value: string) => {
+    setAmount(value);
+    setUserHasEnteredAmount(true);
+  }, []);
 
   return {
     amount,

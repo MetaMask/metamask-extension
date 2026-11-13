@@ -159,6 +159,7 @@ describe('useBridgeAlerts', () => {
       assetSuspiciousLocalizedFeatures: [],
       assetIsVerified: false,
       assetHasSecurityData: false,
+      assetSecurityTrustBadgeResult: undefined,
     });
     jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(false);
 
@@ -397,6 +398,7 @@ describe('useBridgeAlerts', () => {
         assetSuspiciousLocalizedFeatures: [],
         assetIsVerified: false,
         assetHasSecurityData: true,
+        assetSecurityTrustBadgeResult: undefined,
       });
 
       const { result } = renderHook();
@@ -439,6 +441,7 @@ describe('useBridgeAlerts', () => {
         ],
         assetIsVerified: false,
         assetHasSecurityData: true,
+        assetSecurityTrustBadgeResult: undefined,
       });
 
       const { result } = renderHook();
@@ -471,6 +474,7 @@ describe('useBridgeAlerts', () => {
         assetSuspiciousLocalizedFeatures: [],
         assetIsVerified: false,
         assetHasSecurityData: true,
+        assetSecurityTrustBadgeResult: undefined,
       });
 
       const { result } = renderHook();
@@ -490,6 +494,7 @@ describe('useBridgeAlerts', () => {
         assetSuspiciousLocalizedFeatures: [],
         assetIsVerified: true,
         assetHasSecurityData: true,
+        assetSecurityTrustBadgeResult: undefined,
       });
 
       const { result } = renderHook();

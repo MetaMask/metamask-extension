@@ -132,6 +132,7 @@ export const MultichainAddressRowsList = ({
           key={`${item.account.address}-${item.scope}-${index}`}
           chainId={item.scope}
           networkName={item.networkName}
+          accountType={item.account.type}
           address={item.normalizedAddress}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),
@@ -155,16 +156,17 @@ export const MultichainAddressRowsList = ({
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
-      <Box paddingLeft={4} paddingRight={4}>
+      <search className="px-4">
         <TextFieldSearch
           className="w-full"
           clearButtonOnClick={handleClearSearch}
           data-testid="multichain-address-rows-list-search"
+          inputAriaLabel={t('searchNetworks')}
           onChange={handleSearchChange}
           placeholder={t('searchNetworks')}
           value={searchPattern}
         />
-      </Box>
+      </search>
 
       <Box>
         {filteredItems.length > 0 ? (

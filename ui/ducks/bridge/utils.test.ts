@@ -2,7 +2,11 @@ import { type CaipAssetType } from '@metamask/utils';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
-import { isSupportedBridgeChain, toBridgeToken } from './utils';
+import {
+  getDefaultFromToken,
+  isSupportedBridgeChain,
+  toBridgeToken,
+} from './utils';
 
 const BASE_PAYLOAD = {
   assetId:
@@ -48,6 +52,17 @@ describe('isSupportedBridgeChain', () => {
 
     it('returns false for an entirely unknown non-EVM namespace', () => {
       expect(isSupportedBridgeChain(`cosmos:cosmoshub-4`)).toBe(false);
+    });
+  });
+});
+
+describe('getDefaultFromToken', () => {
+  it('uses native USDC on Arc', () => {
+    expect(getDefaultFromToken('eip155:5042')).toMatchObject({
+      assetId: 'eip155:5042/slip44:5042',
+      chainId: 'eip155:5042',
+      decimals: 18,
+      symbol: 'USDC',
     });
   });
 });

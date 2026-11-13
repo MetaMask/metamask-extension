@@ -21,6 +21,18 @@ import { AssetType } from '../../../shared/constants/transaction';
 import { useTokenAssetSecurityResults } from '../../hooks/token-asset/useTokenAssetSecurityResults';
 import { TokenManagementPage } from './token-management';
 
+/**
+ * This suite seeds AssetsController fields (`customAssets`, `assetsInfo`,
+ * `assetPreferences`). Override the global jest setup mock so migration
+ * selectors resolve those fields instead of legacy TokensController slices.
+ */
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 jest.mock('../../hooks/token-asset/useTokenAssetSecurityResults', () => ({
   useTokenAssetSecurityResults: jest.fn(() => ({})),
 }));
@@ -929,6 +941,59 @@ describe('TokenManagementPage', () => {
     );
   });
 
+  describe('native token on a chain outside the swaps default-token map', () => {
+    const somniaNativeAssetId = 'eip155:5031/slip44:5031';
+    const somniaNativeToken = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: '0x0000000000000000000000000000000000000000',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x13a7',
+      image: '',
+      name: 'Somnia Native',
+      symbol: 'SOMI',
+      decimals: 18,
+      isNative: true,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+    const somniaNativeResult = {
+      assetId: somniaNativeAssetId,
+      symbol: 'SOMI',
+      decimals: 18,
+      name: 'SOMI',
+    };
+    const somniaState = () =>
+      createState({
+        enabledNetworks: { '0x13a7': true },
+        accountGroupAssets: { '0x13a7': [somniaNativeToken] },
+      });
+
+    it('does not duplicate the native token from API browse results', () => {
+      setTokenSearchState({ results: [somniaNativeResult] });
+
+      renderPage(somniaState());
+
+      expect(screen.getByText('Somnia Native')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(
+          `token-management-cell-search-${somniaNativeAssetId}`,
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the owned balance on the native search result', () => {
+      setTokenSearchState({ results: [somniaNativeResult] });
+
+      renderPage(somniaState());
+      fireEvent.change(screen.getByTestId('token-management-search-input'), {
+        target: { value: 'somi' },
+      });
+
+      expect(screen.getByText('1.0 SOMI')).toBeInTheDocument();
+    });
+  });
+
   it('renders API-backed results in place of the home-page list while a query is active', () => {
     setTokenSearchState({
       results: [
@@ -1052,15 +1117,6 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-    if (!selectedAddress) {
-      throw new Error('Expected selected account address');
-    }
-
     const baseState = createState({
       accountGroupAssets: {
         '0x1': [nativeToken],
@@ -1070,9 +1126,21 @@ describe('TokenManagementPage', () => {
       ...baseState,
       metamask: {
         ...baseState.metamask,
-        allIgnoredTokens: {
-          '0x1': {
-            [selectedAddress]: [mainnetToken.address],
+        customAssets: {
+          [mainnetToken.accountId]: [mainnetTokenAssetId],
+        },
+        assetsInfo: {
+          ...(baseState.metamask.assetsInfo ?? {}),
+          [mainnetTokenAssetId]: {
+            type: 'erc20',
+            symbol: mainnetToken.symbol,
+            decimals: mainnetToken.decimals,
+            name: mainnetToken.name,
+          },
+        },
+        assetPreferences: {
+          [mainnetTokenAssetId]: {
+            hidden: true,
           },
         },
       },
@@ -1692,14 +1760,6 @@ describe('TokenManagementPage', () => {
 
   it('shows imported EVM tokens from TokensController before balances exist', () => {
     const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-    if (!selectedAddress) {
-      throw new Error('Expected selected account address');
-    }
 
     const baseState = createState({
       accountGroupAssets: {
@@ -1710,16 +1770,16 @@ describe('TokenManagementPage', () => {
       ...baseState,
       metamask: {
         ...baseState.metamask,
-        allTokens: {
-          '0x1': {
-            [selectedAddress]: [
-              {
-                address: usdcAddress,
-                symbol: 'USDC',
-                decimals: 6,
-                name: 'USD Coin',
-              },
-            ],
+        customAssets: {
+          [mainnetToken.accountId]: [`eip155:1/erc20:${usdcAddress}`],
+        },
+        assetsInfo: {
+          ...(baseState.metamask.assetsInfo ?? {}),
+          [`eip155:1/erc20:${usdcAddress}`]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
           },
         },
       },
@@ -1825,22 +1885,24 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-
     const stateWithImportedToken = createState();
-    stateWithImportedToken.metamask = {
-      ...stateWithImportedToken.metamask,
-      allTokens: {
-        '0x1': {
-          [selectedAddress as string]: [
-            { address: usdcAddress, symbol: 'USDC', decimals: 6 },
-          ],
-        },
-      },
+    (
+      stateWithImportedToken.metamask as unknown as {
+        customAssets: Record<string, string[]>;
+      }
+    ).customAssets = {
+      [mainnetToken.accountId]: [`eip155:1/erc20:${usdcAddress}`],
+    };
+    (
+      stateWithImportedToken.metamask.assetsInfo as Record<
+        string,
+        { type: string; decimals: number; symbol: string; name?: string }
+      >
+    )[`eip155:1/erc20:${usdcAddress}`] = {
+      type: 'erc20',
+      symbol: 'USDC',
+      decimals: 6,
+      name: 'USD Coin',
     };
 
     renderPage(stateWithImportedToken);
@@ -1868,36 +1930,27 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-    if (!selectedAddress) {
-      throw new Error('Expected selected account address');
-    }
-
-    const baseState = createState();
-    const stateWithIgnoredToken = {
-      ...baseState,
-      metamask: {
-        ...baseState.metamask,
-        allTokens: {
-          '0x1': {
-            [selectedAddress]: [
-              {
-                address: mainnetToken.address,
-                symbol: mainnetToken.symbol,
-                decimals: mainnetToken.decimals,
-              },
-            ],
-          },
-        },
-        allIgnoredTokens: {
-          '0x1': {
-            [selectedAddress]: [mainnetToken.address],
-          },
-        },
+    const stateWithIgnoredToken = createState();
+    const unifiedState = stateWithIgnoredToken.metamask as unknown as {
+      customAssets: Record<string, string[]>;
+      assetsInfo: Record<
+        string,
+        { type: string; decimals: number; symbol: string; name?: string }
+      >;
+      assetPreferences: Record<string, { hidden?: boolean }>;
+    };
+    unifiedState.customAssets = {
+      [mainnetToken.accountId]: [`eip155:1/erc20:${mainnetToken.address}`],
+    };
+    unifiedState.assetsInfo[`eip155:1/erc20:${mainnetToken.address}`] = {
+      type: 'erc20',
+      symbol: mainnetToken.symbol,
+      decimals: mainnetToken.decimals,
+      name: mainnetToken.name,
+    };
+    unifiedState.assetPreferences = {
+      [`eip155:1/erc20:${mainnetToken.address}`]: {
+        hidden: true,
       },
     };
 

@@ -42,3 +42,26 @@ export const moneyFormatUsd = (value: BigNumber): string => {
     currencyDisplay: 'narrowSymbol',
   });
 };
+
+/**
+ * Formats a balance the user is allowed to spend down to the last cent.
+ *
+ * {@link moneyFormatUsd} rounds half-up, so a balance of `0.499999` renders as
+ * `$0.50` — a cent more than is actually held. The amount input only accepts
+ * two decimals, so the smallest amount matching that label is `0.50`, which
+ * fails the balance check and blocks the withdraw with "Insufficient funds"
+ * (CONF-2196). Rounding the *displayed* figure half-up is only safe for
+ * read-only totals; anywhere the label doubles as a spendable target it must
+ * round down so the advertised amount is always affordable.
+ *
+ * Sub-cent dust still collapses to `$0.00` via {@link moneyFormatUsd}, and the
+ * underlying raw value is left untouched so Max can still withdraw in full.
+ *
+ * `round(dp, rm)`, not `decimalPlaces`: this repo pins `bignumber.js@4` where
+ * `decimalPlaces` is a getter returning the place *count*.
+ *
+ * @param value - The dollar value to format.
+ * @returns The formatted dollar value, never above `value`.
+ */
+export const moneyFormatUsdSpendable = (value: BigNumber): string =>
+  moneyFormatUsd(value.isNaN() ? value : value.round(2, BigNumber.ROUND_DOWN));

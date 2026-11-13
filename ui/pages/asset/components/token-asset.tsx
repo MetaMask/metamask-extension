@@ -10,6 +10,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
@@ -17,6 +18,7 @@ import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { HideTokenConfirmationModal } from '../../../components/app/modals/hide-token-confirmation-modal/hide-token-confirmation-modal';
+import { resolveTokenDisplayName } from '../utils/resolve-token-display-name';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -70,9 +72,14 @@ const TokenAsset = ({
   const tokenDataFromChain =
     address && erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
 
-  const name = tokenData?.name || tokenDataFromChain?.name || symbol;
-  const iconUrl =
-    tokenData?.iconUrl || tokenDataFromChain?.iconUrl || image || '';
+  const name = resolveTokenDisplayName(
+    symbol,
+    token.name,
+    tokenData?.name,
+    tokenDataFromChain?.name,
+  );
+
+  const iconUrl = getAssetImageUrl(address ?? '', chainId) ?? '';
 
   const aggregators = tokenData?.aggregators;
 

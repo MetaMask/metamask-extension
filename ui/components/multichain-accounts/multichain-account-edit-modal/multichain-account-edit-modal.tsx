@@ -1,9 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
+  ButtonIcon,
+  ButtonIconSize,
   ButtonsAlignment,
   FormTextField,
+  IconColor,
+  IconName,
   TextFieldSize,
   Modal,
   ModalBody,
@@ -34,32 +38,50 @@ export const MultichainAccountEditModal = ({
     getMultichainAccountGroupById(state, accountGroupId),
   );
   const currentAccountName = accountGroup?.metadata.name || '';
-  const [accountName, setAccountName] = useState('');
+  const [accountName, setAccountName] = useState(currentAccountName);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const normalizedAccountName = accountName.trim();
+  const isSaveDisabled =
+    !normalizedAccountName || normalizedAccountName === currentAccountName;
 
   const handleSave = useCallback(async () => {
-    const normalizedAccountName = accountName.trim();
-    if (normalizedAccountName && normalizedAccountName !== currentAccountName) {
-      const result = (await dispatch(
-        setAccountGroupName(accountGroupId, normalizedAccountName),
-      )) as unknown as boolean;
-
-      if (result) {
-        onClose();
-      } else {
-        setShowErrorMessage(true);
-      }
+    if (isSaveDisabled) {
+      return;
     }
-  }, [accountName, currentAccountName, accountGroupId, dispatch, onClose]);
+
+    const result = (await dispatch(
+      setAccountGroupName(accountGroupId, normalizedAccountName),
+    )) as unknown as boolean;
+
+    if (result) {
+      onClose();
+    } else {
+      setShowErrorMessage(true);
+    }
+  }, [
+    isSaveDisabled,
+    normalizedAccountName,
+    accountGroupId,
+    dispatch,
+    onClose,
+  ]);
 
   const handleKeyDown = useCallback(
     async (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && accountName.trim()) {
+      if (e.key === 'Enter') {
         await handleSave();
       }
     },
-    [accountName, handleSave],
+    [handleSave],
   );
+
+  const handleClear = useCallback(() => {
+    setAccountName('');
+    setShowErrorMessage(false);
+    inputRef.current?.focus();
+  }, []);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -69,24 +91,40 @@ export const MultichainAccountEditModal = ({
           data-testid="account-edit-modal-header"
           onClose={onClose}
           closeButtonProps={{ ariaLabel: t('close') }}
-          onBack={onClose}
-          backButtonProps={{ ariaLabel: t('back') }}
         >
-          {t('rename')}
+          {t('renameAccount')}
         </ModalHeader>
         <ModalBody>
           <FormTextField
             id="account-name-input"
-            label={t('accountName')}
             data-testid="account-name-input"
             value={accountName}
-            onChange={(e) => setAccountName(e.target.value)}
+            onChange={(e) => {
+              setAccountName(e.target.value);
+              setShowErrorMessage(false);
+            }}
             onKeyDown={handleKeyDown}
             placeholder={currentAccountName}
-            aria-invalid={showErrorMessage}
+            inputRef={inputRef}
+            inputProps={{
+              'aria-label': t('accountName'),
+              'aria-invalid': showErrorMessage,
+            }}
             autoFocus
             size={TextFieldSize.Lg}
             isError={showErrorMessage}
+            endAccessory={
+              accountName ? (
+                <ButtonIcon
+                  data-testid="account-name-clear-button"
+                  ariaLabel={t('clear')}
+                  iconName={IconName.CircleX}
+                  size={ButtonIconSize.Md}
+                  iconProps={{ color: IconColor.IconAlternative }}
+                  onClick={handleClear}
+                />
+              ) : null
+            }
             helpText={
               showErrorMessage ? t('accountNameAlreadyInUse') : undefined
             }
@@ -94,10 +132,10 @@ export const MultichainAccountEditModal = ({
         </ModalBody>
         <ModalFooter
           buttonsAlignment={ButtonsAlignment.Vertical}
-          secondaryButtonProps={{
+          primaryButtonProps={{
             'data-testid': 'account-name-confirm-button',
-            disabled: !accountName.trim(),
-            children: t('confirm'),
+            isDisabled: isSaveDisabled,
+            children: t('save'),
             onClick: handleSave,
           }}
         />

@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 229,
+      "currentMigrationVersion": 235,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -72,16 +72,18 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
+      "moneyFtueSeen": false,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
-      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -130,9 +132,11 @@
     },
     "ConfigRegistryController": {
       "configs": {
+        "eventsConfig": null,
         "networks": {}
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
       "version": null
     },
@@ -169,6 +173,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
       "moneyAccounts": {}
     },
     "MoneyAccountUpgradeController": {
@@ -178,12 +183,6 @@
       "accountsAssets": {},
       "allIgnoredAssets": {},
       "assetsMetadata": {}
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": {}
-    },
-    "MultichainBalancesController": {
-      "balances": {}
     },
     "MultichainNetworkController": {
       "isEvmSelected": true,
@@ -304,9 +303,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://dimensional-special-breeze.quiknode.pro/d5e2d185c1561ef5ecb9aadf1ae7cc58863f4fa4/"
-              ],
               "networkClientId": "mainnet",
               "type": "infura",
               "url": "https://mainnet.infura.io/v3/{infuraProjectId}"
@@ -322,7 +318,6 @@
           "nativeCurrency": "MegaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "megaeth-testnet-v2",
               "type": "custom",
               "url": "https://carrot.megaeth.com/rpc"
@@ -338,9 +333,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://ancient-quaint-water.base-mainnet.quiknode.pro/a2cb04635063b578dba24f656fe376a55e8d9939/"
-              ],
               "networkClientId": "base-mainnet",
               "type": "infura",
               "url": "https://base-mainnet.infura.io/v3/{infuraProjectId}"
@@ -356,7 +348,6 @@
           "nativeCurrency": "MON",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "monad-testnet",
               "type": "custom",
               "url": "https://testnet-rpc.monad.xyz"
@@ -372,7 +363,6 @@
           "nativeCurrency": "BNB",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "bsc-mainnet",
               "type": "infura",
               "url": "https://bsc-mainnet.infura.io/v3/{infuraProjectId}"
@@ -388,9 +378,6 @@
           "nativeCurrency": "POL",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://powerful-radial-aura.matic.quiknode.pro/edaa1cc73ef2a19230e2e715e766b6783ad8126a/"
-              ],
               "networkClientId": "polygon-mainnet",
               "type": "infura",
               "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}"
@@ -406,7 +393,6 @@
           "nativeCurrency": "MON",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "monad-mainnet",
               "type": "infura",
               "url": "https://monad-mainnet.infura.io/v3/{infuraProjectId}"
@@ -422,9 +408,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://holy-convincing-diagram.optimism.quiknode.pro/4804f72f80b7566982ad24a7a1d8e1ae48bca208/"
-              ],
               "networkClientId": "optimism-mainnet",
               "type": "infura",
               "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}"
@@ -440,9 +423,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/"
-              ],
               "networkClientId": "arbitrum-mainnet",
               "type": "infura",
               "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}"
@@ -458,7 +438,6 @@
           "nativeCurrency": "SepoliaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "sepolia",
               "type": "infura",
               "url": "https://sepolia.infura.io/v3/{infuraProjectId}"
@@ -474,7 +453,6 @@
           "nativeCurrency": "LineaETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [],
               "networkClientId": "linea-sepolia",
               "type": "infura",
               "url": "https://linea-sepolia.infura.io/v3/{infuraProjectId}"
@@ -490,9 +468,6 @@
           "nativeCurrency": "ETH",
           "rpcEndpoints": [
             {
-              "failoverUrls": [
-                "https://patient-sleek-daylight.linea-mainnet.quiknode.pro/d0e608bf5f231ef9ae6756de4d7876cb0f5ece55/"
-              ],
               "networkClientId": "linea-mainnet",
               "type": "infura",
               "url": "https://linea-mainnet.infura.io/v3/{infuraProjectId}"
@@ -523,6 +498,7 @@
           "0x2105": true,
           "0x279f": false,
           "0x38": true,
+          "0x531": false,
           "0x89": true,
           "0x8f": true,
           "0xa": true,
@@ -585,6 +561,7 @@
       "completedOnboarding": false,
       "firstTimeFlowType": null,
       "hasSeenOnboardingCompletionPage": false,
+      "onboardingJourneyEnded": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -2029,6 +2006,9 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "tdpChartIndicators": [],
+        "tdpChartInterval": "15m",
+        "tdpChartType": 2,
         "tokenNetworkFilter": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
@@ -2070,10 +2050,13 @@
       "syncQueue": {}
     },
     "RampsController": {
+      "autorampTransactionRecords": {},
       "autoramps": [],
+      "moneyAccountWalletRegistrations": [],
       "orders": [],
       "providerAutoSelected": false,
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2220,12 +2203,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
-    "TokenRatesController": {
-      "marketData": {}
-    },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
@@ -2251,6 +2228,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 229
+    "version": 235
   }
 }

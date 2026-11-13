@@ -9,7 +9,7 @@ import {
 describe('@metamask/perps-controller mock', () => {
   it('exports SUPPORT_CONFIG with the expected URL and UI keys', () => {
     expect(SUPPORT_CONFIG.Url).toBe(
-      'https://support.metamask.io/?utm_source=extension',
+      'https://support.metamask.com/?utm_source=extension',
     );
     expect(SUPPORT_CONFIG.TitleKey).toBe('perps.support.title');
     expect(SUPPORT_CONFIG.DescriptionKey).toBe('perps.support.description');
