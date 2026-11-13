@@ -41,7 +41,6 @@ type FourByteSignature = (typeof fourByteSignatures)['results'][number];
 type TxSentinelBatchStatus =
   (typeof txSentinelBatchStatus)[keyof typeof txSentinelBatchStatus];
 
-/** Copies listed template fields, then the caller's values. Other template fields are left out. */
 function pinned<Template extends Record<string, unknown>>(
   template: Template,
   keys: readonly (keyof Template)[],
@@ -69,10 +68,12 @@ export function buildExchangeRates(
   );
 }
 
-/** Builds one price.api /v3/spot-prices entry, keeping fixture fields the test does not override. */
+type SpotPrice = (typeof priceV3SpotPrices)['eip155:1/slip44:60'];
+
+/** Builds one price.api /v3/spot-prices entry from the pinned fixture fields. */
 export function buildSpotPrice<Overrides extends Record<string, unknown>>(
   overrides: Overrides,
-) {
+): SpotPrice & Overrides {
   return pinned(
     priceV3SpotPrices['eip155:1/slip44:60'],
     [
@@ -84,7 +85,7 @@ export function buildSpotPrice<Overrides extends Record<string, unknown>>(
       'totalVolume',
     ],
     overrides,
-  );
+  ) as SpotPrice & Overrides;
 }
 
 /** Builds one tokens.api /v3/assets entry. */
