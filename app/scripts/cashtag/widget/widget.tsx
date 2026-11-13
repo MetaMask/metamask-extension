@@ -27,6 +27,9 @@ export function Widget({
     data,
     ...similar.filter((asset) => asset.caipAssetId !== data.caipAssetId),
   ];
+  if (!results.some((asset) => (asset.marketCap ?? 0) > 0)) {
+    return null;
+  }
 
   return (
     <div className="mm-cashtag-card w-full h-full overflow-y-auto rounded-xl border border-muted bg-elevated1 text-default">

@@ -109,4 +109,21 @@ describe('Widget', () => {
     expect(onSwap).toHaveBeenCalledWith(similar);
     expect(onViewDetails).toHaveBeenCalledWith(similar);
   });
+
+  it('renders nothing when every asset has no market cap', () => {
+    const { container } = render(
+      <Widget
+        data={{ ...primary, marketCap: null }}
+        similar={[{ ...similar, marketCap: 0 }]}
+        displayTicker="ETH"
+        onSwap={jest.fn()}
+        onViewDetails={jest.fn()}
+        onViewSimilar={jest.fn()}
+        onSelectSimilar={jest.fn()}
+        onDisable={jest.fn()}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
 });

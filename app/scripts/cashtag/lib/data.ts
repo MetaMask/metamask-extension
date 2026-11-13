@@ -144,6 +144,10 @@ export async function resolveTicker(
   }
 
   const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
+  if (!assets.some((asset) => (asset.marketCap ?? 0) > 0)) {
+    return null;
+  }
+
   return {
     primary: assets[0],
     similar: assets.slice(1),
