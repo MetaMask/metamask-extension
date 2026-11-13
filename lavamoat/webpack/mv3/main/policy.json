@@ -3410,6 +3410,7 @@
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/chain-agnostic-permission": true,
         "@metamask/multichain-api-middleware>@metamask/controller-utils": true,
+        "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
