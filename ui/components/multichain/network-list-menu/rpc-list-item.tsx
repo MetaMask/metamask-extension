@@ -1,8 +1,10 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { Tag } from '@metamask/design-system-react';
+import type { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { infuraProjectId } from '../../../../shared/constants/network';
+import { getFailoverUrlsForEndpoint } from '../../../../shared/constants/network-failover';
 import { Box, Text } from '../../component-library';
 import {
   Display,
@@ -38,12 +40,13 @@ export const stripProtocol = (endpoint: string) => {
 // This components represents an RPC endpoint in a list,
 // currently when selecting or editing endpoints for a network.
 const RpcListItem = ({
+  chainId,
   rpcEndpoint,
 }: {
+  chainId: Hex;
   rpcEndpoint: {
     name?: string;
     url: string;
-    failoverUrls?: string[];
     type: RpcEndpointType;
   };
 }) => {
@@ -86,8 +89,7 @@ const RpcListItem = ({
         >
           {name || displayEndpoint(url)}
           {isRpcFailoverEnabled &&
-          rpcEndpoint.failoverUrls &&
-          rpcEndpoint.failoverUrls.length > 0 ? (
+          getFailoverUrlsForEndpoint(chainId, url).length > 0 ? (
             <Tag className="inline-flex">{t('failover')}</Tag>
           ) : null}
         </Text>

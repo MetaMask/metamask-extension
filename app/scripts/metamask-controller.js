@@ -19,7 +19,6 @@ import log from 'loglevel';
 import { rawChainData } from 'eth-chainlist';
 import { nanoid } from 'nanoid';
 import { Messenger } from '@metamask/messenger';
-import { RequestSourceFlow } from '@metamask/phishing-controller';
 import {
   MethodNames,
   PermissionDoesNotExistError,
@@ -47,6 +46,7 @@ import {
 } from '@metamask/controller-utils';
 
 import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
+import { Source } from '@metamask/assets-controllers';
 
 import {
   TransactionStatus,
@@ -101,7 +101,6 @@ import {
   getCaip25PermissionFromLegacyPermissions,
   getEthAccountsForScope,
 } from '@metamask/chain-agnostic-permission';
-import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -166,7 +165,12 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  endTrace,
+  serializeTraceContext,
+  trace,
+  TraceName,
+} from '../../shared/lib/trace';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -222,15 +226,13 @@ import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddlewa
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
+import createExternalRpcActivityMiddleware from './lib/createExternalRpcActivityMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   createEventBuilder,
-  setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
-  updateEventFragment,
 } from './controllers/analytics';
-import { setDataCollectionForMarketing } from './controllers/analytics/analytics';
 import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
@@ -293,11 +295,8 @@ import {
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
-  TokenRatesControllerInit,
 } from './messenger-client-init/assets';
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
-import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
-import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
 import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
 import { ComplianceControllerInit } from './messenger-client-init/compliance-controller-init';
 import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
@@ -322,6 +321,7 @@ import {
 import {
   BackendWebSocketServiceInit,
   AccountActivityServiceInit,
+  OHLCVServiceInit,
 } from './messenger-client-init/core-backend';
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
@@ -341,7 +341,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
@@ -356,7 +355,6 @@ import { BridgeControllerInit } from './messenger-client-init/bridge-controller-
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
 import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
-import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
@@ -372,6 +370,8 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
+import { RewardsMoneyDataServiceInit } from './messenger-client-init/rewards-money-data-service-init';
+import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-money-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
@@ -391,6 +391,7 @@ import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
+import { setupNetworkEnablementController } from './wallet-init/network-enablement-controller';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
@@ -555,12 +556,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      // GeolocationController must init before AnalyticsController, which
-      // resolves geolocation during its own init via
-      // GeolocationController:getGeolocationData.
-      GeolocationApiService: GeolocationApiServiceInit,
-      GeolocationController: GeolocationControllerInit,
-      AnalyticsController: AnalyticsControllerInit,
       SentryTracingService: SentryTracingServiceInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -577,6 +572,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      OHLCVService: OHLCVServiceInit,
       SentinelApiService: SentinelApiServiceInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
@@ -600,11 +596,7 @@ export default class MetamaskController extends EventEmitter {
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
-      // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
-      // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
-      NetworkEnablementController: NetworkEnablementControllerInit,
-      TokenRatesController: TokenRatesControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
@@ -634,6 +626,8 @@ export default class MetamaskController extends EventEmitter {
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
+      RewardsMoneyDataService: RewardsMoneyDataServiceInit,
+      RewardsMoneyController: RewardsMoneyControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
@@ -662,6 +656,15 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMemState = controllerMemState;
     this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
+
+    this.networkEnablementController = this.wallet.getInstance(
+      'NetworkEnablementController',
+    );
+    setupNetworkEnablementController({
+      networkEnablementController: this.networkEnablementController,
+      messenger: controllerMessenger,
+      persistedState: initState,
+    });
 
     this.rampsController = messengerClientsByName.RampsController;
 
@@ -694,7 +697,7 @@ export default class MetamaskController extends EventEmitter {
     );
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = this.wallet.getInstance('NetworkController');
-    this.analyticsController = messengerClientsByName.AnalyticsController;
+    this.analyticsController = this.wallet.getInstance('AnalyticsController');
     this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
@@ -744,7 +747,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
-    this.tokenRatesController = messengerClientsByName.TokenRatesController;
     this.currencyRateController = messengerClientsByName.CurrencyRateController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
@@ -774,8 +776,6 @@ export default class MetamaskController extends EventEmitter {
       'SubscriptionController',
     );
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
-    this.networkEnablementController =
-      messengerClientsByName.NetworkEnablementController;
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
       messengerClientsByName.GatorPermissionsController;
@@ -800,7 +800,9 @@ export default class MetamaskController extends EventEmitter {
       accountsController: this.accountsController,
       networkController: this.networkController,
     });
-    this.geolocationController = messengerClientsByName.GeolocationController;
+    this.geolocationController = this.wallet.getInstance(
+      'GeolocationController',
+    );
     this.moneyAccountUpgradeController =
       messengerClientsByName.MoneyAccountUpgradeController;
 
@@ -882,6 +884,7 @@ export default class MetamaskController extends EventEmitter {
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
             this.preferencesController,
+            this.controllerMessenger,
           );
           this.shieldController.start();
         } else {
@@ -1146,6 +1149,9 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.delegate({
       messenger: walletPayMessenger,
       actions: [
+        'AccountTreeController:setSelectedAccountGroupByAccountId',
+        'AccountsController:getAccountByAddress',
+        'AccountsController:getSelectedAccount',
         'NetworkController:findNetworkClientIdByChainId',
         'PerpsController:getState',
         'PerpsController:refreshEligibility',
@@ -1370,7 +1376,6 @@ export default class MetamaskController extends EventEmitter {
      */
     const resetOnRestartStore = {
       AccountTracker: this.accountTrackerController,
-      TokenRatesController: this.tokenRatesController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
@@ -1386,6 +1391,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       AnalyticsController: this.analyticsController,
+      GeolocationController: this.geolocationController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
@@ -1442,12 +1448,12 @@ export default class MetamaskController extends EventEmitter {
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
         MultichainTransactionsController: this.multichainTransactionsController,
-        TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
         AnalyticsController: this.analyticsController,
+        GeolocationController: this.geolocationController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
@@ -1712,7 +1718,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (
-        this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+        this.controllerMessenger.call(
+          'PerpsController:getWebSocketConnectionState',
+        ) === 'disconnected'
       ) {
         return;
       }
@@ -2392,604 +2400,11 @@ export default class MetamaskController extends EventEmitter {
    * New methods should be defined in controllers and exposed via the messenger, rather than being added to this API object.
    */
   getApi() {
-    const {
-      accountsController,
-      addressBookController,
-      alertController,
-      appStateController,
-      nftController,
-      nftDetectionController,
-      currencyRateController,
-      tokenDetectionController,
-      gasFeeController,
-      gatorPermissionsController,
-      networkController,
-      announcementController,
-      onboardingController,
-      preferencesController,
-      tokensController,
-      smartTransactionsController,
-      txController,
-      backup,
-      approvalController,
-      phishingController,
-      tokenRatesController,
-      // Notification Controllers
-      authenticationController,
-      userStorageController,
-      authenticatedUserStorageService,
-      notificationServicesController,
-      notificationServicesPushController,
-      deFiPositionsController,
-      staticAssetsController,
-    } = this;
+    const { appStateController, backup } = this;
 
     return {
-      // etc
-      setCurrentCurrency: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setCurrentCurrency',
-      ),
-      setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
-        preferencesController,
-      ),
-      setUseMultiAccountBalanceChecker:
-        preferencesController.setUseMultiAccountBalanceChecker.bind(
-          preferencesController,
-        ),
-      setUseSafeChainsListValidation:
-        preferencesController.setUseSafeChainsListValidation.bind(
-          preferencesController,
-        ),
-      setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
-        preferencesController,
-      ),
-      setUseNftDetection: preferencesController.setUseNftDetection.bind(
-        preferencesController,
-      ),
-      setUse4ByteResolution: preferencesController.setUse4ByteResolution.bind(
-        preferencesController,
-      ),
-      setUseCurrencyRateCheck:
-        preferencesController.setUseCurrencyRateCheck.bind(
-          preferencesController,
-        ),
-      setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
-        preferencesController,
-      ),
-      isPublicEndpointUrl: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:isPublicEndpointUrl',
-      ),
-      grantPermissionsIncremental:
-        this.permissionController.grantPermissionsIncremental.bind(
-          this.permissionController,
-        ),
-      grantPermissions: this.permissionController.grantPermissions.bind(
-        this.permissionController,
-      ),
-      setSecurityAlertsEnabled:
-        preferencesController.setSecurityAlertsEnabled.bind(
-          preferencesController,
-        ),
-      setAddSnapAccountEnabled:
-        preferencesController.setAddSnapAccountEnabled.bind(
-          preferencesController,
-        ),
-      setWatchEthereumAccountEnabled:
-        preferencesController.setWatchEthereumAccountEnabled.bind(
-          preferencesController,
-        ),
-      setUseExternalNameSources:
-        preferencesController.setUseExternalNameSources.bind(
-          preferencesController,
-        ),
-      setUseTransactionSimulations:
-        preferencesController.setUseTransactionSimulations.bind(
-          preferencesController,
-        ),
-      setIpfsGateway: preferencesController.setIpfsGateway.bind(
-        preferencesController,
-      ),
-      setIsIpfsGatewayEnabled:
-        preferencesController.setIsIpfsGatewayEnabled.bind(
-          preferencesController,
-        ),
-      setUseAddressBarEnsResolution:
-        preferencesController.setUseAddressBarEnsResolution.bind(
-          preferencesController,
-        ),
-      setParticipateInMetaMetrics,
-      setDataCollectionForMarketing,
-      setCurrentLocale: preferencesController.setCurrentLocale.bind(
-        preferencesController,
-      ),
-      markPasswordForgotten: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:markPasswordForgotten',
-      ),
-      unMarkPasswordForgotten: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:unMarkPasswordForgotten',
-      ),
-      getRequestAccountTabIds: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getRequestAccountTabIds',
-      ),
-      getOpenMetamaskTabsIds: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
-      ),
-      closeNotificationPopup: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:closeNotificationPopup',
-      ),
-      markNotificationPopupAsAutomaticallyClosed:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
-        ),
-      getCode: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getCode',
-      ),
-
-      // primary keyring management
-      getSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getSeedPhrase',
-      ),
-      resetAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:resetAccount',
-      ),
-      removeAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:removeAccount',
-      ),
-      importAccountWithStrategy: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:importAccountWithStrategy',
-      ),
-      getAccountsBySnapId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getAccountsBySnapId',
-      ),
-      checkIsSeedlessPasswordOutdated: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-      ),
-      syncPasswordAndUnlockWallet: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
-      ),
-
-      // subscription
-      subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
-        this.subscriptionController,
-      ),
-      subscriptionsStopPolling:
-        this.subscriptionController.stopPollingByPollingToken.bind(
-          this.subscriptionController,
-        ),
-      getSubscriptionsEligibilities:
-        this.subscriptionController.getSubscriptionsEligibilities.bind(
-          this.subscriptionController,
-        ),
-      assignUserToCohort: this.subscriptionController.assignUserToCohort.bind(
-        this.subscriptionController,
-      ),
-      getSubscriptions: this.subscriptionController.getSubscriptions.bind(
-        this.subscriptionController,
-      ),
-      getSubscriptionPricing: this.subscriptionController.getPricing.bind(
-        this.subscriptionController,
-      ),
-      cacheLastSelectedPaymentMethod:
-        this.subscriptionController.cacheLastSelectedPaymentMethod.bind(
-          this.subscriptionController,
-        ),
-      getSubscriptionCryptoApprovalAmount:
-        this.subscriptionController.getCryptoApproveTransactionParams.bind(
-          this.subscriptionController,
-        ),
-      cancelSubscription: this.subscriptionController.cancelSubscription.bind(
-        this.subscriptionController,
-      ),
-      unCancelSubscription:
-        this.subscriptionController.unCancelSubscription.bind(
-          this.subscriptionController,
-        ),
-      getSubscriptionBillingPortalUrl:
-        this.subscriptionController.getBillingPortalUrl.bind(
-          this.subscriptionController,
-        ),
-      startSubscriptionWithCard:
-        this.shieldSubscriptionService.startSubscriptionWithCard.bind(
-          this.shieldSubscriptionService,
-        ),
-      updateSubscriptionCardPaymentMethod:
-        this.shieldSubscriptionService.updateSubscriptionCardPaymentMethod.bind(
-          this.shieldSubscriptionService,
-        ),
-      updateSubscriptionCryptoPaymentMethod:
-        this.shieldSubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
-          this.shieldSubscriptionService,
-        ),
-      submitSubscriptionUserEvents:
-        this.subscriptionController.submitUserEvent.bind(
-          this.subscriptionController,
-        ),
-      linkRewardToShieldSubscription:
-        this.shieldSubscriptionService.linkRewardToExistingSubscription.bind(
-          this.shieldSubscriptionService,
-        ),
-
-      // rewards
-      getRewardsCandidateSubscriptionId:
-        this.rewardsController.getCandidateSubscriptionId.bind(
-          this.rewardsController,
-        ),
-      getRewardsSeasonMetadata: this.rewardsController.getSeasonMetadata.bind(
-        this.rewardsController,
-      ),
-      getRewardsSeasonStatus: this.rewardsController.getSeasonStatus.bind(
-        this.rewardsController,
-      ),
-      getRewardsHasAccountOptedIn:
-        this.rewardsController.getHasAccountOptedIn.bind(
-          this.rewardsController,
-        ),
-      estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
-        this.rewardsController,
-      ),
-      validateRewardsReferralCode:
-        this.rewardsController.validateReferralCode.bind(
-          this.rewardsController,
-        ),
-      getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
-        this.rewardsController,
-      ),
-      rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
-      rewardsIsOptInSupported: this.rewardsController.isOptInSupported.bind(
-        this.rewardsController,
-      ),
-      rewardsGetOptInStatus: this.rewardsController.getOptInStatus.bind(
-        this.rewardsController,
-      ),
-      rewardsLinkAccountsToSubscriptionCandidate:
-        this.rewardsController.linkAccountsToSubscriptionCandidate.bind(
-          this.rewardsController,
-        ),
-      rewardsGetPerpsDiscountForAccount:
-        this.rewardsController.getPerpsDiscountForAccount.bind(
-          this.rewardsController,
-        ),
-      rewardsGetVipTierForAccount:
-        this.rewardsController.getVipTierForAccount.bind(
-          this.rewardsController,
-        ),
-
-      // claims
-      getSubmitClaimConfig: this.claimsController.getSubmitClaimConfig.bind(
-        this.claimsController,
-      ),
-      generateClaimSignature: this.claimsController.generateClaimSignature.bind(
-        this.claimsController,
-      ),
-      getClaims: this.claimsController.getClaims.bind(this.claimsController),
-      saveClaimDraft: this.claimsController.saveOrUpdateClaimDraft.bind(
-        this.claimsController,
-      ),
-      getClaimDrafts: this.claimsController.getClaimDrafts.bind(
-        this.claimsController,
-      ),
-      deleteClaimDraft: this.claimsController.deleteClaimDraft.bind(
-        this.claimsController,
-      ),
-      deleteAllClaimDrafts: this.claimsController.deleteAllClaimDrafts.bind(
-        this.claimsController,
-      ),
-
-      // hardware wallets
-      connectHardware: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:connectHardware',
-      ),
-      forgetDevice: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:forgetDevice',
-      ),
-      checkHardwareStatus: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:checkHardwareStatus',
-      ),
-      getHdPathForLedgerKeyring: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getHdPathForLedgerKeyring',
-      ),
-      unlockHardwareWalletAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:unlockHardwareWalletAccount',
-      ),
-      attemptLedgerTransportCreation: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:attemptLedgerTransportCreation',
-      ),
-      getAppNameAndVersion: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getAppNameAndVersion',
-      ),
-      getLedgerPublicKey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getLedgerPublicKey',
-      ),
-      getLedgerAppConfiguration: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getLedgerAppConfiguration',
-      ),
-      getLedgerMode: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getLedgerMode',
-      ),
-      getTrezorFeatures: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getTrezorFeatures',
-      ),
-
-      // qr hardware devices
-      completeQrCodeScan:
-        appStateController.completeQrCodeScan.bind(appStateController),
-      cancelQrCodeScan:
-        appStateController.cancelQrCodeScan.bind(appStateController),
-
-      // vault management
-      submitPasswordOrEncryptionKey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-      ),
-      verifyPassword: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'KeyringController:verifyPassword',
-      ),
-
-      // network management
-      setActiveNetwork: async (id) => {
-        // The multichain network controller will proxy the call to the network controller
-        // in the case that the ID is an EVM network client ID.
-        return await this.multichainNetworkController.setActiveNetwork(id);
-      },
-      findNetworkClientIdByChainId:
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
-
-      // active networks by accounts
-      getNetworksWithTransactionActivityByAccounts:
-        this.multichainNetworkController.getNetworksWithTransactionActivityByAccounts.bind(
-          this.multichainNetworkController,
-        ),
-      // Avoids returning the promise so that initial call to switch network
-      // doesn't block on the network lookup step
-      setActiveNetworkConfigurationId: (networkConfigurationId) => {
-        this.networkController.setActiveNetwork(networkConfigurationId);
-      },
-      setNetworkClientIdForDomain: (origin, networkClientId) => {
-        return this.selectedNetworkController.setNetworkClientIdForDomain(
-          origin,
-          networkClientId,
-        );
-      },
-      rollbackToPreviousProvider:
-        networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addNetwork',
-      ),
-      updateNetwork: this.networkController.updateNetwork.bind(
-        this.networkController,
-      ),
-      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
-        this.multichainNetworkController,
-      ),
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getNetworkConfigurationByNetworkClientId:
-        this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-          this.networkController,
-        ),
-      // PreferencesController
-      toggleExternalServices: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:toggleExternalServices',
-      ),
-      addToken: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addToken',
-      ),
-      updateTokenType: tokensController.updateTokenType.bind(tokensController),
-      setFeatureFlag: preferencesController.setFeatureFlag.bind(
-        preferencesController,
-      ),
-      setPreference: preferencesController.setPreference.bind(
-        preferencesController,
-      ),
-      consolidateBasicFunctionality: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'PreferencesController:consolidateBasicFunctionality',
-      ),
-      toggleBasicFunctionality: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'PreferencesController:toggleBasicFunctionality',
-      ),
-
-      addKnownMethodData: preferencesController.addKnownMethodData.bind(
-        preferencesController,
-      ),
-      setDismissSeedBackUpReminder:
-        preferencesController.setDismissSeedBackUpReminder.bind(
-          preferencesController,
-        ),
-      setOverrideContentSecurityPolicyHeader:
-        preferencesController.setOverrideContentSecurityPolicyHeader.bind(
-          preferencesController,
-        ),
-      setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
-        preferencesController,
-      ),
-      setTheme: preferencesController.setTheme.bind(preferencesController),
-      setSnapsAddSnapAccountModalDismissed:
-        preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
-          preferencesController,
-        ),
-      dismissSidePanelMigrationToast:
-        preferencesController.dismissSidePanelMigrationToast.bind(
-          preferencesController,
-        ),
-      dismissBasicFunctionalityMigrationNotification:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'PreferencesController:dismissBasicFunctionalityMigrationNotification',
-        ),
-
-      setManageInstitutionalWallets:
-        preferencesController.setManageInstitutionalWallets.bind(
-          preferencesController,
-        ),
-
-      // AccountsController
-      setSelectedInternalAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setSelectedInternalAccount',
-      ),
-
-      setAccountName:
-        accountsController.setAccountName.bind(accountsController),
-
-      setAccountLabel: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setAccountLabel',
-      ),
-
-      // AccountTreeController
-      setSelectedMultichainAccount: (accountGroupId) => {
-        this.accountTreeController.setSelectedAccountGroup(accountGroupId);
-      },
-      setAccountGroupName: (accountGroupId, accountGroupName) => {
-        this.accountTreeController.setAccountGroupName(
-          accountGroupId,
-          accountGroupName,
-        );
-      },
-      setAccountGroupPinned:
-        this.accountTreeController.setAccountGroupPinned.bind(
-          this.accountTreeController,
-        ),
-      setAccountGroupHidden:
-        this.accountTreeController.setAccountGroupHidden.bind(
-          this.accountTreeController,
-        ),
-      syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'AccountTreeController:syncWithUserStorage',
-      ),
-
-      // MultichainAccountService
-      createNextMultichainAccountGroup: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MultichainAccountService:createNextMultichainAccountGroup',
-      ),
-
-      alignMultichainWallets: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MultichainAccountService:alignWallets',
-      ),
-
-      // AssetsContractController
-      getTokenStandardAndDetails: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getTokenStandardAndDetails',
-      ),
-      getTokenSymbol: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getTokenSymbol',
-      ),
-      getTokenStandardAndDetailsByChain: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain',
-      ),
-      getERC1155BalanceOf:
-        this.assetsContractController.getERC1155BalanceOf.bind(
-          this.assetsContractController,
-        ),
-
-      // NftController
-      addNft: nftController.addNft.bind(nftController),
-
-      addNftVerifyOwnership:
-        nftController.addNftVerifyOwnership.bind(nftController),
-
-      removeAndIgnoreNft: nftController.removeAndIgnoreNft.bind(nftController),
-
-      removeNft: nftController.removeNft.bind(nftController),
-
-      checkAndUpdateAllNftsOwnershipStatus:
-        nftController.checkAndUpdateAllNftsOwnershipStatus.bind(nftController),
-
-      checkAndUpdateSingleNftOwnershipStatus:
-        nftController.checkAndUpdateSingleNftOwnershipStatus.bind(
-          nftController,
-        ),
-
-      isNftOwner: nftController.isNftOwner.bind(nftController),
-
-      // AddressController
-      setAddressBook: addressBookController.set.bind(addressBookController),
-      removeFromAddressBook: addressBookController.delete.bind(
-        addressBookController,
-      ),
-
       // AppStateController
-      setLastActiveTime:
-        appStateController.setLastActiveTime.bind(appStateController),
-      setCurrentExtensionPopupId:
-        appStateController.setCurrentExtensionPopupId.bind(appStateController),
-      setBrowserEnvironment:
-        appStateController.setBrowserEnvironment.bind(appStateController),
-      setDefaultHomeActiveTabName:
-        appStateController.setDefaultHomeActiveTabName.bind(appStateController),
-      setLastVisitedRoute:
-        appStateController.setLastVisitedRoute.bind(appStateController),
-      removeDeferredDeepLink:
-        appStateController.removeDeferredDeepLink.bind(appStateController),
-      setConnectedStatusPopoverHasBeenShown:
-        appStateController.setConnectedStatusPopoverHasBeenShown.bind(
-          appStateController,
-        ),
-      setRecoveryPhraseReminderHasBeenShown:
-        appStateController.setRecoveryPhraseReminderHasBeenShown.bind(
-          appStateController,
-        ),
-      setRecoveryPhraseReminderLastShown:
-        appStateController.setRecoveryPhraseReminderLastShown.bind(
-          appStateController,
-        ),
-      setTermsOfUseLastAgreed:
-        appStateController.setTermsOfUseLastAgreed.bind(appStateController),
-      setOnboardingDate:
-        appStateController.setOnboardingDate.bind(appStateController),
-      setLastViewedUserSurvey:
-        appStateController.setLastViewedUserSurvey.bind(appStateController),
-      setNewPrivacyPolicyToastClickedOrClosed:
-        appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
-          appStateController,
-        ),
-      setNewPrivacyPolicyToastShownDate:
-        appStateController.setNewPrivacyPolicyToastShownDate.bind(
-          appStateController,
-        ),
+
       setArcUsageNoticeShown: () => {
         if (appStateController.state.arcUsageNoticeShown) {
           return;
@@ -3005,761 +2420,16 @@ export default class MetamaskController extends EventEmitter {
             .build(),
         );
       },
-      setSnapsInstallPrivacyWarningShownStatus:
-        appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
-          appStateController,
-        ),
-      setOutdatedBrowserWarningLastShown:
-        appStateController.setOutdatedBrowserWarningLastShown.bind(
-          appStateController,
-        ),
-      setPendingExtensionVersion:
-        appStateController.setPendingExtensionVersion.bind(appStateController),
-      setUpdateModalLastDismissedAt:
-        appStateController.setUpdateModalLastDismissedAt.bind(
-          appStateController,
-        ),
-      setLastUpdatedAt:
-        appStateController.setLastUpdatedAt.bind(appStateController),
-      setProductTour:
-        appStateController.setProductTour.bind(appStateController),
-      updateNftDropDownState:
-        appStateController.updateNftDropDownState.bind(appStateController),
-      getLastInteractedConfirmationInfo:
-        appStateController.getLastInteractedConfirmationInfo.bind(
-          appStateController,
-        ),
-      deleteDappSwapComparisonData:
-        appStateController.deleteDappSwapComparisonData.bind(
-          appStateController,
-        ),
-      setLastInteractedConfirmationInfo:
-        appStateController.setLastInteractedConfirmationInfo.bind(
-          appStateController,
-        ),
-      updateSlides: appStateController.updateSlides.bind(appStateController),
-      removeSlide: appStateController.removeSlide.bind(appStateController),
-      setHasShownMultichainAccountsIntroModal:
-        appStateController.setHasShownMultichainAccountsIntroModal.bind(
-          appStateController,
-        ),
-      setPerpsTabBadgeSeen:
-        appStateController.setPerpsTabBadgeSeen.bind(appStateController),
-      setLastPerpsDepositEntryPoint:
-        appStateController.setLastPerpsDepositEntryPoint.bind(
-          appStateController,
-        ),
-      setMusdConversionEducationSeen:
-        appStateController.setMusdConversionEducationSeen.bind(
-          appStateController,
-        ),
-      addMusdConversionDismissedCtaKey:
-        appStateController.addMusdConversionDismissedCtaKey.bind(
-          appStateController,
-        ),
-      setShowShieldEntryModalOnce:
-        appStateController.setShowShieldEntryModalOnce.bind(appStateController),
-      setPendingShieldCohort:
-        appStateController.setPendingShieldCohort.bind(appStateController),
-      setPendingRedirectRoute:
-        appStateController.setPendingRedirectRoute.bind(appStateController),
-      setShieldPausedToastLastClickedOrClosed:
-        appStateController.setShieldPausedToastLastClickedOrClosed.bind(
-          appStateController,
-        ),
-      setShieldEndingToastLastClickedOrClosed:
-        appStateController.setShieldEndingToastLastClickedOrClosed.bind(
-          appStateController,
-        ),
-      setShieldSubscriptionError:
-        appStateController.setShieldSubscriptionError.bind(appStateController),
-      setPna25Acknowledged:
-        appStateController.setPna25Acknowledged.bind(appStateController),
-      setAppActiveTab:
-        appStateController.setAppActiveTab.bind(appStateController),
-      setDefaultSubscriptionPaymentOptions:
-        appStateController.setDefaultSubscriptionPaymentOptions.bind(
-          appStateController,
-        ),
-      setShieldSubscriptionMetricsProps:
-        appStateController.setShieldSubscriptionMetricsProps.bind(
-          appStateController,
-        ),
-
-      // OAuthService
-      startOAuthLogin: this.oauthService.startOAuthLogin.bind(
-        this.oauthService,
-      ),
-      setMarketingConsent: this.oauthService.setMarketingConsent.bind(
-        this.oauthService,
-      ),
-      getMarketingConsent: this.oauthService.getMarketingConsent.bind(
-        this.oauthService,
-      ),
-      getGeolocation: this.geolocationController.getGeolocation.bind(
-        this.geolocationController,
-      ),
-
-      // SeedlessOnboardingController
-      preloadToprfNodeDetails:
-        this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
-          this.seedlessOnboardingController,
-        ),
-      authenticate: this.seedlessOnboardingController.authenticate.bind(
-        this.seedlessOnboardingController,
-      ),
-      resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
-        this.seedlessOnboardingController,
-      ),
-      createSeedPhraseBackup: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createSeedPhraseBackup',
-      ),
-      storeKeyringEncryptionKey:
-        this.seedlessOnboardingController.storeKeyringEncryptionKey.bind(
-          this.seedlessOnboardingController,
-        ),
-      restoreSocialBackupAndGetSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-      ),
-      syncSeedPhrases: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:syncSeedPhrases',
-      ),
-      changePassword: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:changePassword',
-      ),
-      getIsSeedlessOnboardingUserAuthenticated:
-        this.seedlessOnboardingController.getIsUserAuthenticated.bind(
-          this.seedlessOnboardingController,
-        ),
-
-      // GatorPermissionsController
-      fetchAndUpdateGatorPermissions:
-        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
-          gatorPermissionsController,
-        ),
-      addPendingRevocation:
-        gatorPermissionsController.addPendingRevocation.bind(
-          gatorPermissionsController,
-        ),
-      submitDirectRevocation:
-        gatorPermissionsController.submitDirectRevocation.bind(
-          gatorPermissionsController,
-        ),
-      checkDelegationDisabled: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:checkDelegationDisabled',
-      ),
-
-      // KeyringController
-      setLocked: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setLocked',
-      ),
-      createNewVaultAndKeychain: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createNewVaultAndKeychain',
-      ),
-      createNewVaultAndGetSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
-      ),
-      unlockAndGetSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
-      ),
-      createNewVaultAndRestore: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createNewVaultAndRestore',
-      ),
-      importMnemonicToVault: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:importMnemonicToVault',
-      ),
-      exportAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:exportAccount',
-      ),
-
-      // txController
-      updateTransaction: txController.updateTransaction.bind(txController),
-      approveTransactionsWithSameNonce:
-        txController.approveTransactionsWithSameNonce.bind(txController),
-      createCancelTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'TransactionController:stopTransaction',
-      ),
-      createSpeedUpTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'TransactionController:speedUpTransaction',
-      ),
-      estimateGas: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:estimateGas',
-      ),
-      estimateGasFee: txController.estimateGasFee.bind(txController),
-      getNextNonce: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getNextNonce',
-      ),
-      addTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addTransaction',
-      ),
-      addTransactionAndWaitForPublish: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
-      ),
-      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
-      ),
-      setTransactionActive:
-        txController.setTransactionActive.bind(txController),
-      // decryptMessageController
-      decryptMessage: this.decryptMessageController.decryptMessage.bind(
-        this.decryptMessageController,
-      ),
-      decryptMessageInline:
-        this.decryptMessageController.decryptMessageInline.bind(
-          this.decryptMessageController,
-        ),
-      cancelDecryptMessage:
-        this.decryptMessageController.cancelDecryptMessage.bind(
-          this.decryptMessageController,
-        ),
-
-      // EncryptionPublicKeyController
-      encryptionPublicKey:
-        this.encryptionPublicKeyController.encryptionPublicKey.bind(
-          this.encryptionPublicKeyController,
-        ),
-      cancelEncryptionPublicKey:
-        this.encryptionPublicKeyController.cancelEncryptionPublicKey.bind(
-          this.encryptionPublicKeyController,
-        ),
-
-      // onboarding controller
-      setSeedPhraseBackedUp:
-        onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
-      completeOnboarding:
-        onboardingController.completeOnboarding.bind(onboardingController),
-      setHasSeenOnboardingCompletionPage:
-        onboardingController.setHasSeenOnboardingCompletionPage.bind(
-          onboardingController,
-        ),
-      setFirstTimeFlowType:
-        onboardingController.setFirstTimeFlowType.bind(onboardingController),
-
-      // alert controller
-      setAlertEnabledness:
-        alertController.setAlertEnabledness.bind(alertController),
-      setUnconnectedAccountAlertShown:
-        alertController.setUnconnectedAccountAlertShown.bind(alertController),
-      setWeb3ShimUsageAlertDismissed:
-        alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
-
-      // permissions
-      removePermissionsFor: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:removePermissionsFor',
-      ),
-      approvePermissionsRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:acceptPermissionsRequest',
-      ),
-      rejectPermissionsRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:rejectPermissionsRequest',
-      ),
-      addPermittedAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addPermittedAccount',
-      ),
-      addPermittedAccounts: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addPermittedAccounts',
-      ),
-      removePermittedAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:removePermittedAccount',
-      ),
-      setPermittedAccounts: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setPermittedAccounts',
-      ),
-      addPermittedChain: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addPermittedChain',
-      ),
-      addPermittedChains: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:addPermittedChains',
-      ),
-      removePermittedChain: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:removePermittedChain',
-      ),
-      setPermittedChains: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setPermittedChains',
-      ),
-      requestAccountsAndChainPermissionsWithId:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
-        ),
-
-      // Snaps
-      disableSnap: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:disableSnap',
-      ),
-      enableSnap: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:enableSnap',
-      ),
-      removeSnap: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:removeSnap',
-      ),
-      handleSnapRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:handleRequest',
-      ),
-      revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:revokeDynamicSnapPermissions',
-      ),
-      disconnectOriginFromSnap: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:disconnectOrigin',
-      ),
-      updateNetworksList: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'NetworkOrderController:updateNetworksList',
-      ),
-      updateAccountsList: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'AccountOrderController:updateAccountsList',
-      ),
-      setEnabledNetworks: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setEnabledNetworks',
-      ),
-      setEnabledAllPopularNetworks: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
-      ),
-      updateHiddenAccountsList: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'AccountOrderController:updateHiddenAccountsList',
-      ),
-      getPhishingResult: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getPhishingResult',
-      ),
-      checkAddressPoisoning: (address) => {
-        return phishingController.checkAddressPoisoning(address);
-      },
-      scanUrlForPhishing: async (origin) => {
-        return phishingController.scanUrl(origin, RequestSourceFlow.RevealSrp);
-      },
-      deleteInterface: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapInterfaceController:deleteInterface',
-      ),
-      updateInterfaceState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapInterfaceController:updateInterfaceState',
-      ),
-
-      // Bridge
-      resetState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:resetState`,
-      ),
-      setInputPrimaryDenomination: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:setInputPrimaryDenomination`,
-      ),
-      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
-      ),
-      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
-      ),
-      setLocation: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:setLocation`,
-      ),
-      getLocation: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:getLocation`,
-      ),
-      fetchQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
-      ),
-      updateBatchSellTrades: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
-      ),
-
-      // Bridge Tx submission
-      submitTx: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitTx'}`,
-      ),
-      submitIntent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
-      ),
-      submitBatchSell: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitBatchSell'}`,
-      ),
-
-      // Smart Transactions
-      fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
-        smartTransactionsController,
-      ),
-      clearSmartTransactionFees: smartTransactionsController.clearFees.bind(
-        smartTransactionsController,
-      ),
-      submitSignedTransactions:
-        smartTransactionsController.submitSignedTransactions.bind(
-          smartTransactionsController,
-        ),
-      cancelSmartTransaction:
-        smartTransactionsController.cancelSmartTransaction.bind(
-          smartTransactionsController,
-        ),
-      fetchSmartTransactionsLiveness:
-        smartTransactionsController.fetchLiveness.bind(
-          smartTransactionsController,
-        ),
-      updateSmartTransaction:
-        smartTransactionsController.updateSmartTransaction.bind(
-          smartTransactionsController,
-        ),
-      setStatusRefreshInterval:
-        smartTransactionsController.setStatusRefreshInterval.bind(
-          smartTransactionsController,
-        ),
 
       // MetaMetrics
+
       trackAnalyticsEvent: trackEvent,
-      trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
-      updateEventFragment,
-
-      // These are background-owned buffered trace entry points. UI pages must
-      // call them through submitRequestToBackground; importing the methods
-      // directly in UI would create a separate queue for each page.
-      bufferedTrace: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SentryTracingService:bufferedTrace',
-      ),
-      bufferedEndTrace: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SentryTracingService:bufferedEndTrace',
-      ),
-
-      // ApprovalController
-      rejectAllPendingApprovals: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:rejectAllPendingApprovals',
-      ),
-      rejectPendingApproval: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:rejectPendingApproval',
-      ),
-      requestUserApproval:
-        approvalController.addAndShowApprovalRequest.bind(approvalController),
-      resolvePendingApproval: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:resolvePendingApproval',
-      ),
-      approveHardwareWalletTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:approveHardwareWalletTransaction',
-      ),
-
-      // Notifications
-      resetViewedNotifications: announcementController.resetViewed.bind(
-        announcementController,
-      ),
-      updateViewedNotifications: announcementController.updateViewed.bind(
-        announcementController,
-      ),
-
-      // CurrencyRateController
-      currencyRateStartPolling: currencyRateController.startPolling.bind(
-        currencyRateController,
-      ),
-      currencyRateStopPollingByPollingToken:
-        currencyRateController.stopPollingByPollingToken.bind(
-          currencyRateController,
-        ),
-
-      tokenRatesStartPolling:
-        tokenRatesController.startPolling.bind(tokenRatesController),
-      tokenRatesStopPollingByPollingToken:
-        tokenRatesController.stopPollingByPollingToken.bind(
-          tokenRatesController,
-        ),
-
-      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
-        tokenDetectionController,
-      ),
-      tokenDetectionStopPollingByPollingToken:
-        tokenDetectionController.stopPollingByPollingToken.bind(
-          tokenDetectionController,
-        ),
-
-      staticAssetsStartPolling: staticAssetsController.startPolling.bind(
-        staticAssetsController,
-      ),
-      staticAssetsStopPollingByPollingToken:
-        staticAssetsController.stopPollingByPollingToken.bind(
-          staticAssetsController,
-        ),
-
-      deFiStartPolling: deFiPositionsController.startPolling.bind(
-        deFiPositionsController,
-      ),
-      deFiStopPolling: deFiPositionsController.stopPollingByPollingToken.bind(
-        deFiPositionsController,
-      ),
-
-      // GasFeeController
-      gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
-      gasFeeStopPollingByPollingToken:
-        gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
-
-      getGasFeeTimeEstimate:
-        gasFeeController.getTimeEstimate.bind(gasFeeController),
-
-      addPollingTokenToAppState:
-        appStateController.addPollingToken.bind(appStateController),
-
-      removePollingTokenFromAppState:
-        appStateController.removePollingToken.bind(appStateController),
-
-      updateThrottledOriginState:
-        appStateController.updateThrottledOriginState.bind(appStateController),
 
       // Backup
+
       backupUserData: backup.backupUserData.bind(backup),
       restoreUserData: backup.restoreUserData.bind(backup),
-
-      // TokenDetectionController
-      detectTokens: tokenDetectionController.detectTokens.bind(
-        tokenDetectionController,
-      ),
-
-      // DetectCollectibleController
-      detectNfts: nftDetectionController.detectNfts.bind(
-        nftDetectionController,
-      ),
-
-      // Assets Controller - accounts passed from UI; options may include chainIds, assetTypes
-      getAssets: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getAssets',
-      ),
-
-      /** Token Detection V2 */
-      addDetectedTokens:
-        tokensController.addDetectedTokens.bind(tokensController),
-      addImportedTokens: tokensController.addTokens.bind(tokensController),
-      ignoreTokens: tokensController.ignoreTokens.bind(tokensController),
-      getBalancesInSingleCall: (...args) =>
-        this.assetsContractController.getBalancesInSingleCall(...args),
-
-      // New Assets Controller
-      hideAsset: (assetId) => this.assetsController.hideAsset(assetId),
-      unhideAsset: (assetId) => this.assetsController.unhideAsset(assetId),
-      addCustomAsset: (accountId, assetId, pendingMetadata) =>
-        this.assetsController.addCustomAsset(
-          accountId,
-          assetId,
-          pendingMetadata,
-        ),
-      removeCustomAsset: (accountId, assetId) =>
-        this.assetsController.removeCustomAsset(accountId, assetId),
-      // Authentication Controller
-      performSignIn: authenticationController.performSignIn.bind(
-        authenticationController,
-      ),
-      performSignOut: authenticationController.performSignOut.bind(
-        authenticationController,
-      ),
-      getUserProfileLineage:
-        authenticationController.getUserProfileLineage.bind(
-          authenticationController,
-        ),
-      getBearerToken: authenticationController.getBearerToken.bind(
-        authenticationController,
-      ),
-      requestProfilePairing:
-        authenticationController.requestProfilePairing.bind(
-          authenticationController,
-        ),
-
-      // UserStorageController
-      setIsBackupAndSyncFeatureEnabled:
-        userStorageController.setIsBackupAndSyncFeatureEnabled.bind(
-          userStorageController,
-        ),
-      deleteAccountSyncingDataFromUserStorage:
-        userStorageController.performDeleteStorageAllFeatureEntries.bind(
-          userStorageController,
-        ),
-      syncContactsWithUserStorage:
-        userStorageController.syncContactsWithUserStorage.bind(
-          userStorageController,
-        ),
-      getNotificationPreferences:
-        authenticatedUserStorageService.getNotificationPreferences.bind(
-          authenticatedUserStorageService,
-        ),
-      putNotificationPreferences:
-        authenticatedUserStorageService.putNotificationPreferences.bind(
-          authenticatedUserStorageService,
-        ),
-      // NotificationServicesController
-      checkAccountsPresence:
-        notificationServicesController.checkAccountsPresence.bind(
-          notificationServicesController,
-        ),
-      createOnChainTriggers:
-        notificationServicesController.createOnChainTriggers.bind(
-          notificationServicesController,
-        ),
-      disableAccounts: notificationServicesController.disableAccounts.bind(
-        notificationServicesController,
-      ),
-      enableAccounts: notificationServicesController.enableAccounts.bind(
-        notificationServicesController,
-      ),
-      fetchAndUpdateMetamaskNotifications:
-        notificationServicesController.fetchAndUpdateMetamaskNotifications.bind(
-          notificationServicesController,
-        ),
-      deleteNotificationsById:
-        notificationServicesController.deleteNotificationsById.bind(
-          notificationServicesController,
-        ),
-      getNotificationsByType:
-        notificationServicesController.getNotificationsByType.bind(
-          notificationServicesController,
-        ),
-      markMetamaskNotificationsAsRead:
-        notificationServicesController.markMetamaskNotificationsAsRead.bind(
-          notificationServicesController,
-        ),
-      setFeatureAnnouncementsEnabled:
-        notificationServicesController.setFeatureAnnouncementsEnabled.bind(
-          notificationServicesController,
-        ),
-      enablePushNotifications:
-        notificationServicesPushController.enablePushNotifications.bind(
-          notificationServicesPushController,
-        ),
-      disablePushNotifications:
-        notificationServicesPushController.disablePushNotifications.bind(
-          notificationServicesPushController,
-        ),
-      enableMetamaskNotifications: (options) =>
-        notificationServicesController.enableMetamaskNotifications(options),
-      disableMetamaskNotifications:
-        notificationServicesController.disableNotificationServices.bind(
-          notificationServicesController,
-        ),
-
-      // Testing
-      throwTestError: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:throwTestError',
-      ),
-      captureTestError: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:captureTestError',
-      ),
-
-      // NameController
-      updateProposedNames: this.nameController.updateProposedNames.bind(
-        this.nameController,
-      ),
-      setName: this.nameController.setName.bind(this.nameController),
-
-      // Multichain Assets Controller
-      multichainAddAssets: (assetIds, accountId) =>
-        this.multichainAssetsController.addAssets(assetIds, accountId),
-
-      multichainIgnoreAssets: (assetIds, accountId) =>
-        this.multichainAssetsController.ignoreAssets(assetIds, accountId),
-
-      // MultichainTransactionsController
-      multichainUpdateTransactions: (accountId) =>
-        this.multichainTransactionsController.updateTransactionsForAccount(
-          accountId,
-        ),
-      // Transaction Decode
-      decodeTransactionData: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:decodeTransactionData',
-      ),
-      // metrics data deleteion
-      createMetaMetricsDataDeletionTask:
-        this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
-          this.metaMetricsDataDeletionController,
-        ),
-      updateDataDeletionTaskStatus:
-        this.metaMetricsDataDeletionController.updateDataDeletionTaskStatus.bind(
-          this.metaMetricsDataDeletionController,
-        ),
-
-      // Other
-      isRelaySupported: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:isRelaySupported',
-      ),
-      isSendBundleSupported: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:isSendBundleSupported',
-      ),
-      getSentinelNetworkFlags: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getSentinelNetworkFlags',
-      ),
-      openUpdateTabAndReload: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:openUpdateTabAndReload',
-      ),
-      requestSafeReload: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:requestSafeReload',
-      ),
-      applyTransactionContainersExisting: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:applyTransactionContainersExisting',
-      ),
-      lookupSelectedNetworks: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:lookupSelectedNetworks',
-      ),
-      resetWallet: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:resetWallet',
-      ),
     };
   }
 
@@ -5229,6 +3899,17 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createLoggerMiddleware({ origin }));
+    if (subjectType !== SubjectType.Internal) {
+      engine.push(
+        createExternalRpcActivityMiddleware(subjectType, {
+          isConnected: () =>
+            this.permissionController.hasPermission(
+              origin,
+              Caip25EndowmentPermissionName,
+            ),
+        }),
+      );
+    }
     engine.push(this.permissionLogController.createMiddleware());
 
     engine.push(createTracingMiddleware());
@@ -5590,10 +4271,10 @@ export default class MetamaskController extends EventEmitter {
             // response's JSON validation, and only the `SerializedTraceContext`
             // shape round-trips into a later `startTrace` `parentContext`.
             const span = trace(options);
-            const spanContext = span?.spanContext?.();
-            return spanContext
-              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
-              : {};
+            return serializeTraceContext(span, {
+              name: options.name,
+              id: options.id,
+            });
           },
           endTrace,
           getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
@@ -5663,6 +4344,17 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createLoggerMiddleware({ origin }));
+    if (subjectType !== SubjectType.Internal) {
+      engine.push(
+        createExternalRpcActivityMiddleware(subjectType, {
+          isConnected: () =>
+            this.permissionController.hasPermission(
+              origin,
+              Caip25EndowmentPermissionName,
+            ),
+        }),
+      );
+    }
 
     engine.push((req, _res, next, end) => {
       const isSnap = isSnapId(origin);
@@ -6421,7 +5113,6 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
-      this.tokenRatesController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
@@ -6449,7 +5140,6 @@ export default class MetamaskController extends EventEmitter {
       // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
-      this.tokenRatesController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);
@@ -6883,6 +5573,10 @@ export default class MetamaskController extends EventEmitter {
             singleNft.contract,
             singleNft.tokenId,
             networkClientId,
+            // Automatic add after the user's own transaction, not a manual
+            // import. The default (`Source.Custom`) would exempt the NFT from
+            // spam auto-removal.
+            { source: Source.Detected },
           );
         });
         await Promise.allSettled(addNftPromises);
@@ -6954,6 +5648,9 @@ export default class MetamaskController extends EventEmitter {
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
       getUIState: this.getState.bind(this),
+      appBuildType: process.env.METAMASK_BUILD_TYPE,
+      appEnvironment: process.env.METAMASK_ENVIRONMENT,
+      appVersion: process.env.METAMASK_VERSION,
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       requestSafeReload: this.requestSafeReload.bind(this),

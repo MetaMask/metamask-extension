@@ -33,6 +33,16 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   default: () => ({ goToBuy: mockGoToBuy }),
 }));
 
+// Analytics events go through the background connection, which this UI test
+// does not initialize.
+jest.mock('../../../hooks/ramps/useRampsAnalytics', () => ({
+  useRampsAnalytics: () => ({
+    trackTokenSelected: jest.fn(),
+    trackScreenViewed: jest.fn(),
+    trackProviderSelected: jest.fn(),
+  }),
+}));
+
 jest.mock('../../../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../../../shared/lib/selectors/networks'),
   getAllNetworkConfigurationsByCaipChainId: jest.fn(() => ({

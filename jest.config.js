@@ -90,6 +90,7 @@ module.exports = {
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/route-registry/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/release-testing-ai-analyzer/**/*.test.ts',
   ],
@@ -105,6 +106,10 @@ module.exports = {
   },
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    // ESM-only `@metamask` dependencies (e.g. `@metamask/eth-money-mpc-keyring`)
+    // ship only `.mjs` entry points, which Jest cannot load natively in CJS
+    // tests. Transpile them like the other transpiled ESM above.
+    '^.+\\.mjs$': 'babel-jest',
     '^.+\\.mts$': [
       'babel-jest',
       {

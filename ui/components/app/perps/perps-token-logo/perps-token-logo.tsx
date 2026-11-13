@@ -56,7 +56,9 @@ export const PerpsTokenLogo = ({
       return 'bg-icon-default';
     }
 
-    return '';
+    // AvatarToken paints image logos with `bg-white`. That would hide light
+    // logos in dark mode; per-asset backgrounds come from the config above.
+    return 'bg-alternative';
   }, [displaySymbol, theme]);
   const [resolvedSrc, setResolvedSrc] = useState<string | undefined>(undefined);
   const [isResolving, setIsResolving] = useState(() =>

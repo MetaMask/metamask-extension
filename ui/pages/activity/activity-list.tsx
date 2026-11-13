@@ -6,9 +6,11 @@ import React, {
   useState,
 } from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
-import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
+import { AssetControls } from '../../components/app/assets/asset-list/asset-list-control-bar/asset-controls';
+import { NetworkFilter } from '../../components/app/assets/asset-list/asset-list-control-bar/network-filter';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
+import { ResponsiveDialog } from '../../components/ui/responsive-dialog/responsive-dialog';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { useRelativeMediumDate } from '../../hooks/useRelativeMediumDate';
@@ -62,7 +64,7 @@ export function ActivityList({
   const formatRelativeMediumDate = useRelativeMediumDate();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
-  // null = not yet initialised by AssetListControlBar; [] = no filter applied
+  // null = not yet initialised by NetworkFilter; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
   const deferredNetworks = useDeferredValue(networks);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
@@ -189,12 +191,9 @@ export function ActivityList({
   return (
     <PendingTransactionCancelSpeedUpProvider>
       {!filter && (
-        <AssetListControlBar
-          showSortControl={false}
-          showImportTokenButton={false}
-          onNetworkSelect={setNetworks}
-          data-testid="parent-selector-activity-tab"
-        />
+        <AssetControls data-testid="parent-selector-activity-tab">
+          <NetworkFilter onNetworkSelect={setNetworks} />
+        </AssetControls>
       )}
 
       <VirtualizedList
@@ -233,17 +232,13 @@ export function ActivityList({
         }}
       />
 
-      <dialog
-        ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
-        onClose={handleClose}
-      >
+      <ResponsiveDialog dialogRef={dialogRef} onClose={handleClose}>
         <TransactionDetails
           chainId={selectedItem?.chainId}
           txIdentifier={getActivityItemIdentifier(selectedItem)}
           onBack={handleDialogBack}
         />
-      </dialog>
+      </ResponsiveDialog>
     </PendingTransactionCancelSpeedUpProvider>
   );
 }

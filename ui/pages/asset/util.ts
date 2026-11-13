@@ -118,6 +118,7 @@ export const fromIso8601DurationToPriceApiTimePeriod = (
   );
 
   const SUPPORTED_MAPPINGS: Record<string, PriceApiTimePeriod> = {
+    PT1H: '1H',
     P1D: '1D',
     P7D: '7D',
     P1W: '7D',

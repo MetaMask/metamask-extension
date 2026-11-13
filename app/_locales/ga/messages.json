@@ -626,7 +626,7 @@
   },
   "basicConfigurationDescription": {
     "message": "Cuireann MetaMask gnéithe bunúsacha ar fáil ar nós sonraí comharthaí agus socruithe gáis trí sheirbhísí idirlín. Nuair a úsáideann tú seirbhísí idirlín, roinntear do sheoladh IP, sa chás seo le MetaMask. Tá sé seo díreach mar a tharlaíonn nuair a thugann tú cuairt ar aon suíomh Gréasáin. Úsáideann MetaMask na sonraí seo go sealadach agus ní dhíolann sé do shonraí riamh. Is féidir leat VPN a úsáid nó na seirbhísí seo a mhúchadh, ach d'fhéadfadh sé difear a dhéanamh do do thaithí MetaMask. Chun tuilleadh eolais a fháil léigh ár $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Feidhmiúlacht bhunúsach"
@@ -1355,7 +1355,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Nuashonraigh go dtí an leagan is déanaí de MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Níor soláthraíodh aon URL le nascleanúint chuige."
@@ -1422,18 +1422,8 @@
   "deleteMetaMetricsData": {
     "message": "Scrios sonraí MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Scriosfaidh sé seo sonraí stairiúla MetaMetrics a bhaineann le d'úsáid ar an ngléas seo. Fanfaidh do sparán agus do chuntais díreach mar atá siad anois tar éis na sonraí seo a scriosadh. Féadfaidh an próiseas seo suas le 30 lá a thógáil. Féach ar ár $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Ní féidir an t-iarratas seo a chomhlánú faoi láthair mar gheall ar fhadhb le freastalaí an chórais anailíse, déan iarracht arís ar ball."
-  },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Ní féidir linn na sonraí seo a scriosadh faoi láthair"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Táimid ar tí do chuid sonraí MetaMetrics go léir a bhaint. An bhfuil tú cinnte?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Scrios sonraí MetaMetrics?"
@@ -1673,9 +1663,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Is féidir leat gnéithe cuntais chliste a chumasú ar líonraí a dtacaítear leo."
   },
-  "enableSnap": {
-    "message": "Cumasaigh"
-  },
   "enableToken": {
     "message": "cumasaigh $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1898,10 +1885,6 @@
   },
   "fast": {
     "message": "Tapa"
-  },
-  "fileImportFail": {
-    "message": "Nach bhfuil allmhairiú comhaid ag obair? Cliceáil anseo!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Cliceáil chun uaslódáil nó tarraing agus scaoil"
@@ -2641,9 +2624,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Taispeánann an cnaipe stádais nasc an bhfuil an suíomh Gréasáin atá á thabhairt agat ceangailte leis an gcuntas atá roghnaithe agat faoi láthair."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Ós rud é nár roghnaigh tú MetaMetrics a úsáid riamh, níl aon sonraí le scriosadh anseo."
   },
   "metadataModalSourceTooltip": {
     "message": "Tá $1 á óstáil ar npm agus is é $2 aitheantóir uathúil an Snap seo.",
@@ -3459,10 +3439,6 @@
   "paste": {
     "message": "Greamaigh"
   },
-  "pastePrivateKey": {
-    "message": "Cuir isteach do shreang eochrach phríobháideach anseo:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "Ar feitheamh"
   },
@@ -3820,10 +3796,6 @@
   "privateKeyHidden": {
     "message": "Tá an eochair phríobháideach i bhfolach",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Taispeáin/Folaigh an t-ionchur eochrach príobháideach",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Tá an eochair phríobháideach seo á taispeáint",
@@ -5036,7 +5008,7 @@
   },
   "stxFailureDescription": {
     "message": "Is féidir le hathruithe tobann sa mhargadh teipeanna a chur faoi deara. Má leanann an fhadhb, déan teagmháil le $1 le do thoil.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ag cur isteach do Mhalartú go príobháideach..."
@@ -5167,7 +5139,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Tarlaíonn teipeanna idirbheart agus táimid anseo chun cabhrú leat. Má leanann an fhadhb seo ar aghaidh, is féidir leat teagmháil a dhéanamh lenár dtacaíocht do chustaiméirí ag $1 le haghaidh tuilleadh cúnaimh.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Theip ar an malartú"
@@ -5196,9 +5168,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "anseo",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " San áireamh"
   },
   "swapGasFeesSplit": {
     "message": "Tá táillí gáis ar an scáileán roimhe seo roinnte idir an dá idirbheart seo."
@@ -5758,9 +5727,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Baineann cumarsáid le freastalaithe tríú páirtí chun íomhánna na gcomharthaí a aisghabháil le taispeáint uathoibríoch comharthaí a sheoltar chuig do chuntas. Beidh rochtain ag na freastalaithe sin ar do sheoladh IP."
-  },
-  "usedByClients": {
-    "message": "Úsáidte ag réimse cliant éagsúil"
   },
   "userOpContractDeployError": {
     "message": "Ní thacaítear le himscaradh conartha ó chuntas conartha cliste"
