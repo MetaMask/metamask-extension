@@ -77,7 +77,6 @@ describe('SelectRpcUrlModal Component', () => {
     mockDispatch.mockClear();
   });
 
-
   it('should render the component correctly with network image and name', () => {
     const { getByRole, getByText } = renderWithProvider(
       <SelectRpcUrlModal
