@@ -8,6 +8,9 @@ export const RAMPS_REGION = 'us-ca';
 export const RAMPS_ASSET_ID = 'eip155:1/slip44:60';
 export const RAMPS_PAYMENT_METHOD = 'debit-credit-card';
 export const RAMPS_ORDER_CODE = 'mock-order-1';
+// Must match `getRampCallbackBaseUrl()` in the build under test: a test build
+// resolves to the staging host. If these drift, the checkout watcher never
+// matches the callback and the test fails as a window-close timeout.
 export const RAMPS_CALLBACK_BASE =
   'https://on-ramp-content.uat-api.cx.metamask.io/regions/fake-callback';
 
