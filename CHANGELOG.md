@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Hid the X widget when all matching tokens have a missing or zero market cap (#47914)
 - Fixed Perps token logo backgrounds so light logos remained visible in dark mode (#47599)
 - Fixed navigation after submitting a swap or bridge so users stayed on the Swaps page instead of returning to Home (#47591)
 - Fixed Discover Search crypto results to show the order provided by the search API (#47699)
