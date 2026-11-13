@@ -323,7 +323,6 @@ export const CustomTokenImportPage = () => {
 
       if (isMainnetToken && selectedNetwork !== CHAIN_IDS.MAINNET) {
         setWarning(t('mainnetToken'));
-        return;
       }
 
       const isOwnAccountAddress = internalAccounts.some(
@@ -451,7 +450,6 @@ export const CustomTokenImportPage = () => {
     !addressError &&
     !symbolError &&
     !decimalsError &&
-    !warning &&
     showSymbolAndDecimals &&
     address.length > 0 &&
     symbol.length > 0 &&
