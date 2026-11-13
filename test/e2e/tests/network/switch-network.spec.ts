@@ -22,9 +22,6 @@ describe('Switch network - ', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: { extensionUxFullscreenRedesign: false },
-        },
         testSpecificMock: async (mockServer: Mockttp) => {
           const standardMocks = [
             await mockGasPricesArbitrum(mockServer),
@@ -62,7 +59,7 @@ describe('Switch network - ', function (this: Suite) {
   // The network pills only offer default networks the wallet already has. Custom
   // networks (the local node) and networks that still have to be added
   // (Arbitrum) can only be switched to from the network filter modal, which is
-  // covered by the previous test.
+  // covered by the previous test, which is layout-agnostic.
   it('Switch networks using network pills available in wide layout', async function () {
     await withFixtures(
       {

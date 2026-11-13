@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
-import { FULL_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
+import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
 import { getIsFullscreenRedesignEnabled } from '../selectors/multichain/feature-flags';
 
-const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${FULL_SCREEN_DESIGN_MIN_WIDTH}px)`;
+const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${WIDE_SCREEN_DESIGN_MIN_WIDTH}px)`;
 
 /**
  * Subscribes to a media query and returns whether it currently matches.
