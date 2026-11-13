@@ -105,8 +105,9 @@ describe('SideNav', () => {
     const sideNav = getByTestId('side-nav');
     const resizeHandle = getByTestId('side-nav-resize-handle');
 
+    const rect = sideNav.getBoundingClientRect();
     jest.spyOn(sideNav, 'getBoundingClientRect').mockReturnValue({
-      ...sideNav.getBoundingClientRect(),
+      ...rect,
       left: 0,
     });
 
