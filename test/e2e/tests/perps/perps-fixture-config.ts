@@ -10,7 +10,6 @@ import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
-import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatUnits } from '../../../../shared/lib/unit';
 import {
@@ -93,7 +92,6 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   // is on in production (registry value), so it stays registered; tests that
   // need the slippage UI can opt in explicitly. Covered by unit tests + recipe.
   perpsSlippageConfig2: { enabled: false, minimumVersion: '0.0.0' },
-  [BOTTOM_NAV_AB_TEST_KEY]: 'control',
 };
 
 /**
@@ -152,8 +150,6 @@ const PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS = {
     PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
-  [BOTTOM_NAV_AB_TEST_KEY]:
-    PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
 };
 
 const PERPS_GEO_BLOCKED_FLAG = {
@@ -174,9 +170,6 @@ const PERPS_GEO_BLOCKED_FLAG = {
  * without `GeolocationController:getGeolocation` on PerpsControllerMessenger,
  * `refreshEligibility()` would fail and perps-controller would set `isEligible`
  * to true, hiding the geo-block modal. Deferred checks keep `isEligible: false`.
- * Callers must use `login(..., { waitForNonEvmAccounts: false })` because the
- * home flow otherwise waits for non-EVM account icons that do not load when
- * basic functionality is off.
  *
  * Also sets isFirstTimeUser to false so the tutorial modal does not intercept clicks.
  *
@@ -214,8 +207,6 @@ export function getPerpsGeoBlockConfig(title?: string) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay: { name: 'empty' },
         perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
-        [BOTTOM_NAV_AB_TEST_KEY]:
-          PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
       });
       await server
         .forGet('https://client-config.api.cx.metamask.io/v1/flags')
@@ -276,8 +267,6 @@ async function mockEligibleFeatureFlags(
     // market submit disabled without order-book estimates.
     perpsSlippageConfig2:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsSlippageConfig2,
-    [BOTTOM_NAV_AB_TEST_KEY]:
-      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS[BOTTOM_NAV_AB_TEST_KEY],
     ...overrides,
   });
   await server

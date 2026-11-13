@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URL ekle"
   },
-  "addAWallet": {
-    "message": "Bir cüzdan ekleyin"
-  },
   "addAccount": {
     "message": "Hesap ekleyin"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Sözleşme Etkileşimi"
   },
-  "convertAgain": {
-    "message": "Tekrar dönüştür"
-  },
   "convertTokenToNFTDescription": {
     "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenizden çıkarmak ve NFT olarak eklemek ister misiniz?"
   },
@@ -3432,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMask’in en son sürümüne güncelleyin",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Gidilecek url adresi sunulmadı."
@@ -3570,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics verilerini sil"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Bu işlem, bu cihazdaki kullanımınızla ilişkili geçmiş MetaMetrics verilerini silecektir. Bu veriler silindikten sonra cüzdanınız ve hesaplarınız tam olarak şu anda oldukları gibi kalacaktır. Bu süreç 30 güne kadar sürebilir. $1 bölümümüzü görüntüleyin.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Bu işlem, cüzdanınızla ilişkili geçmiş MetaMetrics verilerini siler. MetaMetrics, anonimleştirilmiş kullanım ve tanı verilerini içerir. Cüzdanınız ve hesaplarınız aynı kalır. Bu işlem 30 güne kadar sürebilir. $1 bölümümüzü görüntüleyin.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3581,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Bu istek, bir analitik sistem sunucusu sorunu nedeniyle şu anda tamamlanamıyor. Daha sonra tekrar deneyin."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Şu anda bu verileri silemiyoruz"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Silinemiyor"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Tüm MetaMetrics verilerini kaldırmak üzeresiniz. Emin misiniz?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics verilerini sil?"
@@ -4154,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "$1 gereklidir"
-  },
-  "fileImportFail": {
-    "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Yüklemek için tıkla veya sürükle ve bırak"
@@ -5407,9 +5387,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Bağlantı durumu düğmesi ziyaret ettiğiniz web sitesinin şu anda seçilen hesabınıza bağlı olup olmadığını gösterir."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Hiçbir zaman MetaMetrics'e dahil olmadığınız için burada silinecek veri yok."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 npm'de barındırılmaktadır ve $2 bu Snap'in eşsiz tanımlayıcısıdır.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -6346,19 +6323,6 @@
   "musdConversionTitle": {
     "message": "mUSD'ye dönüştürüldü",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSD dönüştürme işlemi başarısız oldu"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSD dönüştürme işlemi yapılıyor",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD dönüştürme işlemi başarılı"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus bir gün içinde alınabilir olacaktır."
   },
   "musdConvert": {
     "message": "Dönüştür"
@@ -7404,10 +7368,6 @@
   },
   "paste": {
     "message": "Yapıştır"
-  },
-  "pastePrivateKey": {
-    "message": "Özel anahtar dizinizi buraya yapıştırın:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "ile öde",
@@ -8457,7 +8417,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "destek bölümü ile iletişime geçerek",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Bazı hizmetler geçici olarak kullanılamıyor. $1 veya $2.",
@@ -8465,7 +8425,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Seçeneklerinizi SSS bölümünde görebilirsiniz",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Bir kesinti yaşıyoruz",
@@ -8896,7 +8856,7 @@
     "message": "Çekim gönderildi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
+    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8997,10 +8957,6 @@
   "privateKeyHidden": {
     "message": "Özel anahtar gizli",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Özel anahtar girişini göster/gizle",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Özel anahtar gösteriliyor",
@@ -11786,7 +11742,7 @@
   },
   "stxFailureDescription": {
     "message": "Ani piyasa değişiklikleri başarısızlıklara neden olabilir. Sorun devam ederse lütfen $1 ile iletişime geç.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Daha güvenilir ve güvenli işlemler için Akıllı İşlemleri açın. $1"
@@ -11930,7 +11886,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "İşlemler başarısız olabilir ve size yardımcı olmak için buradayız. Bu sorun devam ederse daha fazla destek için $1 adresinden müşteri hizmetleri destek bölümü ile iletişime geçebilirsiniz.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Takas başarısız oldu"
@@ -11959,9 +11915,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "Buradan",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Dahil"
   },
   "swapGasFeesSplit": {
     "message": "Önceki ekrandaki ağ ücretleri bu iki işlem arasında bölünmüştür."
@@ -12709,9 +12662,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Hesabına gönderilen tokenların otomatik olarak görüntülenmesi, tokenın görüntülerini almak için üçüncü parti sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."
-  },
-  "usedByClients": {
-    "message": "Çeşitli müşteriler tarafından kullanılıyor"
   },
   "userOpContractDeployError": {
     "message": "Akıllı hesaptan sözleşme kurulumu desteklenmiyor"

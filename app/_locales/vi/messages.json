@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Thêm URL"
   },
-  "addAWallet": {
-    "message": "Thêm ví"
-  },
   "addAccount": {
     "message": "Thêm tài khoản"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Tương tác với hợp đồng"
   },
-  "convertAgain": {
-    "message": "Chuyển đổi lại"
-  },
   "convertTokenToNFTDescription": {
     "message": "Chúng tôi phát hiện tài sản này là một NFT. MetaMask hiện đã hỗ trợ toàn diện và đầy đủ cho NFT. Bạn có muốn xóa tài sản khỏi danh sách token và thêm tài sản dưới dạng NFT không?"
   },
@@ -3432,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Cập nhật lên phiên bản MetaMask mới nhất",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Không có URL nào được cung cấp để điều hướng."
@@ -3570,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Xóa dữ liệu MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên quan đến quá trình sử dụng của bạn trên thiết bị này. Ví và tài khoản của bạn sẽ vẫn như hiện tại sau khi dữ liệu này bị xóa. Quá trình này có thể mất đến 30 ngày. Xem $1 của chúng tôi.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên kết với ví của bạn. MetaMetrics bao gồm dữ liệu sử dụng và chẩn đoán đã được ẩn danh. Ví và các tài khoản của bạn sẽ không thay đổi. Quá trình này có thể mất tới 30 ngày. Xem $1 của chúng tôi.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3581,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hiện không thể hoàn tất yêu cầu này do sự cố máy chủ của hệ thống phân tích. Hãy thử lại sau."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Chúng tôi không thể xóa dữ liệu này bây giờ"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Không thể xóa"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Chúng tôi sắp xóa tất cả dữ liệu MetaMetrics của bạn. Bạn có chắc không?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Xóa dữ liệu MetaMetrics?"
@@ -4154,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "$1 là bắt buộc"
-  },
-  "fileImportFail": {
-    "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Nhấn để tải lên hoặc kéo và thả"
@@ -5407,9 +5387,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Nút trạng thái kết nối sẽ hiển thị nếu trang web mà bạn đang truy cập được kết nối với tài khoản bạn đang chọn."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Vì bạn chưa bao giờ chọn tham gia MetaMetrics, nên ở đây không có dữ liệu nào để xóa."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 được lưu trữ trên npm và $2 là mã định danh duy nhất của Snap này.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -6346,19 +6323,6 @@
   "musdConversionTitle": {
     "message": "Đã chuyển đổi sang mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "Chuyển đổi mUSD thất bại"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Đang chuyển đổi $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Chuyển đổi mUSD thành công"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bạn sẽ có thể nhận thưởng trong vòng một ngày."
   },
   "musdConvert": {
     "message": "Chuyển đổi"
@@ -7404,10 +7368,6 @@
   },
   "paste": {
     "message": "Dán"
-  },
-  "pastePrivateKey": {
-    "message": "Dán chuỗi khóa riêng tư của bạn vào đây:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Thanh toán bằng",
@@ -8457,7 +8417,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "liên hệ bộ phận hỗ trợ",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Một số dịch vụ tạm thời không khả dụng. $1 hoặc $2.",
@@ -8465,7 +8425,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Xem các tùy chọn của bạn trong phần Câu hỏi thường gặp",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Chúng tôi đang gặp sự cố ngừng hoạt động",
@@ -8896,7 +8856,7 @@
     "message": "Yêu cầu rút tiền đã được gửi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
+    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8997,10 +8957,6 @@
   "privateKeyHidden": {
     "message": "Khóa riêng tư bị ẩn",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Hiển thị/Ẩn đầu vào khóa riêng tư",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Khóa riêng tư này đang được hiển thị",
@@ -11786,7 +11742,7 @@
   },
   "stxFailureDescription": {
     "message": "Thị trường thay đổi đột ngột có thể gây thất bại. Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Bật Giao dịch thông minh để có giao dịch đáng tin cậy và an toàn hơn. $1"
@@ -11930,7 +11886,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Đã xảy ra lỗi giao dịch và chúng tôi sẵn sàng trợ giúp bạn. Nếu vấn đề này tiếp diễn, bạn có thể liên hệ với bộ phận hỗ trợ khách hàng tại $1 để được hỗ trợ thêm.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Hoán đổi không thành công"
@@ -11959,9 +11915,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "tại đây",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Đã bao gồm"
   },
   "swapGasFeesSplit": {
     "message": "Phí mạng trên màn hình trước được chia cho hai giao dịch này."
@@ -12709,9 +12662,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Tự động hiển thị các token được gửi vào tài khoản của bạn có liên quan đến hoạt động trao đổi thông tin với các máy chủ bên thứ ba để tìm nạp hình ảnh của token. Các máy chủ đó sẽ có quyền truy cập vào địa chỉ IP của bạn."
-  },
-  "usedByClients": {
-    "message": "Được nhiều ví khác nhau sử dụng"
   },
   "userOpContractDeployError": {
     "message": "Không hỗ trợ triển khai hợp đồng từ tài khoản thông minh"

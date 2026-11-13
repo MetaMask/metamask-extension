@@ -83,6 +83,7 @@ function buildState({
   selectedNetworkClientId,
   chainId,
   remoteFeatureFlags,
+  gasSponsorshipOptOutByChainId,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
@@ -90,6 +91,7 @@ function buildState({
   selectedNetworkClientId?: string;
   chainId?: string;
   remoteFeatureFlags?: Record<string, unknown>;
+  gasSponsorshipOptOutByChainId?: Record<string, boolean>;
 } = {}) {
   let pendingApprovals = {};
   if (currentConfirmation) {
@@ -108,6 +110,9 @@ function buildState({
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
+      ...(gasSponsorshipOptOutByChainId
+        ? { preferences: { gasSponsorshipOptOutByChainId } }
+        : {}),
       ...buildNativeEvmBalancePatch({
         hexChainId: resolvedChainId,
         amountWei: balance ?? 0,
@@ -167,6 +172,52 @@ describe('useInsufficientBalanceAlerts', () => {
         ...TRANSACTION_MOCK,
         isGasFeeSponsored: true,
       },
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns alert if transaction is gas fee sponsored but user opted out of sponsorship on the chain', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      transaction: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      gasSponsorshipOptOutByChainId: { '0x5': true },
+    });
+
+    expect(alerts).toEqual(ALERT);
+  });
+
+  it('returns no alerts if transaction is gas fee sponsored and user opted out of sponsorship on another chain', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      transaction: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      gasSponsorshipOptOutByChainId: { '0x1': true },
     });
 
     expect(alerts).toEqual([]);

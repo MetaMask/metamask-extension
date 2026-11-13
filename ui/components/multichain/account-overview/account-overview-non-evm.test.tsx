@@ -86,7 +86,6 @@ const expectStandardTabs = (
 ) => {
   expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
   expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
-  expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
 };
 
 const expectAllTabs = (queryByTestId: (id: string) => HTMLElement | null) => {
@@ -122,7 +121,7 @@ describe('AccountOverviewBtc', () => {
       expect(button).toBeInTheDocument(); // Verify the button is present
       expect(button).toBeEnabled(); // Verify the button is enabled
       // TODO: This one might be required, but we do not really handle tokens for BTC yet...
-      expect(queryByTestId('refresh-list-button')).not.toBeInTheDocument();
+      expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
     });
   });
 

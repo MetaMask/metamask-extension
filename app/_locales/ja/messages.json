@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URLを追加"
   },
-  "addAWallet": {
-    "message": "ウォレットを追加"
-  },
   "addAccount": {
     "message": "アカウントを追加"
   },
@@ -3112,9 +3109,6 @@
   "contractInteraction": {
     "message": "コントラクトインタラクション"
   },
-  "convertAgain": {
-    "message": "変換を再実行"
-  },
   "convertTokenToNFTDescription": {
     "message": "このアセットはNFTであることが検出されました。MetaMaskでは現在、NFTが完全にネイティブでサポートされています。トークンリストから削除して、NFTとして追加しますか？"
   },
@@ -3414,7 +3408,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMaskを最新バージョンにアップデートしてください。",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "アクセス先のURLが提供されていません。 "
@@ -3552,10 +3546,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetricsデータを削除"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "これにより、このデバイスでの使用に関連した過去のMetaMetricsデータが削除されます。このデータが削除された後も、ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。$1をご覧ください。",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "これにより、ウォレットに関連する過去のMetaMetricsデータが削除されます。MetaMetricsには匿名化された使用状況および診断データが含まれます。ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。当社の$1をご覧ください。",
     "description": "$1 will have text saying Privacy Policy "
@@ -3563,14 +3553,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "アナリティクスシステムサーバーの問題により、現在このリクエストを完了させることができません。後でもう一度お試しください。"
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "現在このデータを削除できません"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "削除できません"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "すべてのMetaMetricsデータを削除しようとしています。よろしいですか？"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetricsデータを削除しますか？"
@@ -4136,10 +4120,6 @@
   },
   "fieldRequired": {
     "message": "$1は必須項目です"
-  },
-  "fileImportFail": {
-    "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "クリックしてアップロードまたはドラッグ＆ドロップ"
@@ -5389,9 +5369,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "訪問しているWebサイトが現在選択しているアカウントに接続されている場合、接続ステータスボタンが表示されます。"
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "MetaMetricsにオプトインしていないため、ここで削除するデータはありません。"
-  },
   "metadataModalSourceTooltip": {
     "message": "$1はnpmでホストされていて、$2はこのSnapの一意のIDです。",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -6301,19 +6278,6 @@
   "musdConversionTitle": {
     "message": "mUSDへの変換完了",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSDへの変換に失敗しました"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSDに変換中",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSDへの換算が完了しました"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "ボーナスは1日以内に請求できます。"
   },
   "musdConvert": {
     "message": "変換"
@@ -7351,10 +7315,6 @@
   },
   "paste": {
     "message": "貼り付け"
-  },
-  "pastePrivateKey": {
-    "message": "秘密鍵の文字列をここに貼り付けます:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "支払方法:",
@@ -8398,7 +8358,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "サポートにお問い合わせ",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "現在、一部のサービスを一時的にご利用いただけません。$1または$2。",
@@ -8406,7 +8366,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "よくある質問 (FAQ)でオプションをご確認ください",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "障害が発生しています",
@@ -8833,7 +8793,7 @@
     "message": "出金が送信されました"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。mUSDへのスワップ時にMetaMaskの手数料は発生しません。",
+    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8934,10 +8894,6 @@
   "privateKeyHidden": {
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "秘密鍵の入力の表示・非表示を切り替えます",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
@@ -11723,7 +11679,7 @@
   },
   "stxFailureDescription": {
     "message": "突然の市場変動が失敗の原因になります。問題が解決されないようでしたら、$1にお問い合わせください。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "スマートトランザクションをオンにして、トランザクションの信頼性と安全性を高めましょう。$1"
@@ -11867,7 +11823,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "トランザクション障害が発生した場合は、いつでもお手伝いいたします。この問題が解決しない場合は、$1でカスタマーサポートにお問い合わせください。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "スワップに失敗しました"
@@ -11896,9 +11852,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "こちら",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " 込み"
   },
   "swapGasFeesSplit": {
     "message": "前の画面のネットワーク手数料は、この2つのトランザクションに分けられています。"
@@ -12646,9 +12599,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーにより、あなたのIPアドレスにアクセスされることになります。"
-  },
-  "usedByClients": {
-    "message": "さまざまな異なるクライアントによって使用されています"
   },
   "userOpContractDeployError": {
     "message": "スマートコントラクトアカウントからのコントラクトの展開はサポートされていません"
