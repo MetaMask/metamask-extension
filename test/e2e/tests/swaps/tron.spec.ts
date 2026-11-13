@@ -11,7 +11,6 @@ import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
   mockTronSwapApisWithoutFeeEstimation,
-  TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from '../tron/mocks/common-tron';
 
 describe('Swap on Tron', function (this: Suite) {
@@ -21,12 +20,10 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
-        ignoredConsoleErrors: [
-          `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
-        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -58,6 +55,7 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) =>
@@ -88,6 +86,7 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApisNoQuotes(mockServer),
@@ -117,6 +116,7 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
@@ -149,6 +149,7 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
@@ -177,6 +178,7 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
@@ -212,6 +214,7 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
