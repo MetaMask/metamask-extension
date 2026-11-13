@@ -2140,7 +2140,11 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'NetworkEnablementController:getState',
-          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+          jest
+            .fn()
+            .mockReturnValue({
+              enabledNetworkMap: { 'eip155': { '0x1': true } },
+            }),
         );
         rootMessenger.registerActionHandler(
           'NetworkEnablementController:setNetworkAdditionMode',
