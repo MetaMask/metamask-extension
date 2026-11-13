@@ -1,6 +1,11 @@
 import type * as Sentry from '@sentry/browser';
 import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
-import type { MeasurementUnit, Span, StartSpanOptions, TraceparentData } from '@sentry/core';
+import type {
+  MeasurementUnit,
+  Span,
+  StartSpanOptions,
+  TraceparentData,
+} from '@sentry/core';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,
