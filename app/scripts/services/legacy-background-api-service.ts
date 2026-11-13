@@ -5574,16 +5574,13 @@ export class LegacyBackgroundApiService {
     });
 
     const date = new Date();
-    const userDataFileName = `MetaMaskUserData.${date.getFullYear()}_${prependZero(
+    const prefixZero = (num: number): string => prependZero(num, 2);
+
+    const userDataFileName = `MetaMaskUserData.${date.getFullYear()}_${prefixZero(
       date.getMonth() + 1,
-      2,
-    )}_${prependZero(date.getDate(), 2)}_${prependZero(
-      date.getHours(),
-      2,
-    )}_${prependZero(date.getMinutes(), 2)}_${prependZero(
-      date.getSeconds(),
-      2,
-    )}.json`;
+    )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+      date.getMinutes(),
+    )}_${prefixZero(date.getDay())}.json`;
 
     return { fileName: userDataFileName, data };
   }
