@@ -42,6 +42,7 @@ import {
   ERC1155,
   ERC20,
   ERC721,
+  safelyExecuteWithTimeout,
   toHex,
 } from '@metamask/controller-utils';
 
@@ -440,6 +441,9 @@ function isKeyringV2NotSupportedError(error) {
     KeyringControllerErrorMessage.KeyringV2NotSupported,
   );
 }
+
+// Maximum time to wait for capabilities when building session properties.
+const SESSION_CAPABILITIES_TIMEOUT_MS = 2000;
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -4507,7 +4511,15 @@ export default class MetamaskController extends EventEmitter {
           if (chainIds.length === 0) {
             return {};
           }
-          return await this.getEip5792Capabilities(address, chainIds);
+          // Best effort, so the session handshake does not wait on slow or
+          // unreachable RPC endpoints. Dapps can still call
+          // `wallet_getCapabilities`.
+          const capabilities = await safelyExecuteWithTimeout(
+            () => this.getEip5792Capabilities(address, chainIds),
+            true,
+            SESSION_CAPABILITIES_TIMEOUT_MS,
+          );
+          return capabilities ?? {};
         },
       }),
     );
