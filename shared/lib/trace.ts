@@ -1,6 +1,11 @@
 import type * as Sentry from '@sentry/browser';
 import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
-import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
+import type {
+  MeasurementUnit,
+  Span,
+  StartSpanOptions,
+  TraceparentData,
+} from '@sentry/types';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,
@@ -214,6 +219,14 @@ const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
   TraceName.OnboardingResetPassword,
 ]);
 
+const W3C_TRACEPARENT_VERSION = '00';
+
+const TRACE_FLAG_SAMPLED = 0x1;
+
+/** W3C `traceparent`, lowercase hex; captures traceId, parentId, flags. */
+const W3C_TRACEPARENT_REGEXP =
+  /^[0-9a-f]{2}-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/u;
+
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
 let onboardingMachineTimeByKey = new Map<string, number>();
@@ -238,14 +251,13 @@ export type TraceValue = string | number | boolean;
 
 /**
  * Serialized trace context for cross-boundary propagation.
- * Contains trace/span IDs for distributed tracing and optional name/id for
- * same-process parent lookup via the tracesByKey map.
+ * Carries a W3C `traceparent` string for distributed tracing and optional
+ * name/id for same-process parent lookup via the tracesByKey map.
  */
 export type SerializedTraceContext = {
   _name?: string;
   _id?: string;
-  _traceId?: string;
-  _spanId?: string;
+  traceparent?: string;
 };
 
 /**
@@ -253,9 +265,9 @@ export type SerializedTraceContext = {
  */
 export type SerializedTraceMetadata = {
   /**
-   * The originating UI span's serialized context.
+   * W3C `traceparent` of the originating UI span, present when one is active.
    */
-  context: SerializedTraceContext;
+  traceparent?: string;
   /**
    * The dispatched messenger action, when the request uses the messenger.
    */
@@ -264,6 +276,14 @@ export type SerializedTraceMetadata = {
    * The background operation's display name.
    */
   spanName: `Background RPC: ${string}`;
+};
+
+/**
+ * {@link SerializedTraceMetadata} as the background reads it, with the
+ * `traceparent` parsed.
+ */
+export type TraceMetadata = Omit<SerializedTraceMetadata, 'traceparent'> & {
+  traceContext?: TraceparentData;
 };
 
 /**
@@ -600,11 +620,9 @@ export function endTrace(request: EndTraceRequest): void {
  * are correctly nested under the originating UI trace regardless of whether
  * wrapper spans themselves are sub-sampled in.
  *
- * @returns Serialized context with traceId/spanId, or undefined if no active span or kill switch is set.
+ * @returns A W3C `traceparent` string, or undefined if no active span or kill switch is set.
  */
-export function getSerializedTraceContext():
-  | SerializedTraceContext
-  | undefined {
+export function getSerializedTraceContext(): string | undefined {
   if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
     return undefined;
   }
@@ -613,9 +631,7 @@ export function getSerializedTraceContext():
     return undefined;
   }
   try {
-    const ctx = activeSpan.spanContext();
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    return { _traceId: ctx.traceId, _spanId: ctx.spanId };
+    return spanContextToTraceparent(activeSpan.spanContext());
   } catch {
     return undefined;
   }
@@ -650,14 +666,16 @@ export function withoutTraceContext<ReturnValue>(
  *
  * Only a valid trailing `_trace` wrapper is removed, preserving ordinary
  * application arguments that happen to contain a similarly named property.
+ * A `traceparent` in it must be a valid W3C `traceparent` string.
  *
  * @param params - RPC call parameters.
- * @returns Clean params and the tracing metadata, if present.
+ * @returns Clean params and the tracing metadata, with the `traceparent`
+ * parsed, if present.
  */
 export function extractTraceMetadata(
   params: unknown,
 ):
-  | { cleanParams: unknown[]; traceMetadata: SerializedTraceMetadata }
+  | { cleanParams: unknown[]; traceMetadata: TraceMetadata }
   | { cleanParams: unknown; traceMetadata: undefined } {
   if (!Array.isArray(params) || params.length === 0) {
     return { cleanParams: params, traceMetadata: undefined };
@@ -668,27 +686,30 @@ export function extractTraceMetadata(
     isObject(lastParam) &&
     hasProperty(lastParam, '_trace') &&
     isObject(lastParam._trace) &&
-    hasProperty(lastParam._trace, 'context') &&
-    hasDistributedTraceIds(lastParam._trace.context) &&
     hasProperty(lastParam._trace, 'spanName') &&
     typeof lastParam._trace.spanName === 'string' &&
     lastParam._trace.spanName.startsWith('Background RPC: ') &&
     (!hasProperty(lastParam._trace, 'messengerAction') ||
       typeof lastParam._trace.messengerAction === 'string')
   ) {
-    return {
-      cleanParams: params.slice(0, -1),
-      traceMetadata: {
-        context: lastParam._trace.context,
-        // Type assertion: the prefix check above validates this template literal.
-        spanName: lastParam._trace
-          .spanName as SerializedTraceMetadata['spanName'],
-        ...(hasProperty(lastParam._trace, 'messengerAction') &&
-          typeof lastParam._trace.messengerAction === 'string' && {
-            messengerAction: lastParam._trace.messengerAction,
-          }),
-      },
-    };
+    const traceContext = hasProperty(lastParam._trace, 'traceparent')
+      ? parseTraceparent(lastParam._trace.traceparent)
+      : undefined;
+    if (!hasProperty(lastParam._trace, 'traceparent') || traceContext) {
+      return {
+        cleanParams: params.slice(0, -1),
+        traceMetadata: {
+          // Type assertion: the prefix check above validates this template literal.
+          spanName: lastParam._trace
+            .spanName as SerializedTraceMetadata['spanName'],
+          ...(hasProperty(lastParam._trace, 'messengerAction') &&
+            typeof lastParam._trace.messengerAction === 'string' && {
+              messengerAction: lastParam._trace.messengerAction,
+            }),
+          ...(traceContext && { traceContext }),
+        },
+      };
+    }
   }
 
   return { cleanParams: params, traceMetadata: undefined };
@@ -702,21 +723,55 @@ export function extractTraceMetadata(
  * span itself (e.g. when `shouldSampleWrappers` rejects the wrapper but
  * trace continuity for downstream spans is still desired).
  *
- * @param parentContext - Serialized trace context with `_traceId` / `_spanId`.
+ * @param parentContext - Parsed trace context with `traceId` / `parentSpanId`.
  * @param fn - Callback to run within the propagated trace scope.
  * @returns The callback's return value.
  */
 export function continueTraceContext<ResultType>(
-  parentContext: SerializedTraceContext | undefined,
+  parentContext: TraceparentData | undefined,
   fn: () => ResultType,
 ): ResultType {
-  if (!hasDistributedTraceIds(parentContext)) {
+  if (!hasTraceparentData(parentContext)) {
     return fn();
   }
-  const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
+  const sentryTrace = traceparentDataToSentryTrace(parentContext);
   return sentryContinueTrace(sentryTrace, () =>
     sentryWithIsolationScope(() => fn()),
   );
+}
+
+/**
+ * Serialize a span for a later `parentContext`: name/id for same-process
+ * lookup, plus the span's W3C `traceparent`.
+ *
+ * @param span - The Sentry span to build the `traceparent` from.
+ * @param request - Request metadata for same-process lookup.
+ * @param request.name - The trace name for same-process map lookup.
+ * @param request.id - Optional trace ID for same-process map lookup.
+ * @returns Serialized trace context.
+ */
+export function serializeTraceContext(
+  span: Sentry.Span | null | undefined,
+  request: { name: string; id?: string },
+): SerializedTraceContext {
+  // Only assign defined fields: `undefined` leaks across the snap response
+  // boundary and fails its JSON validation (the snap trace round-trips this).
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const ctx: SerializedTraceContext = { _name: request.name };
+  if (request.id !== undefined) {
+    ctx._id = request.id;
+  }
+  if (span) {
+    try {
+      const traceparent = spanContextToTraceparent(span.spanContext());
+      if (traceparent) {
+        ctx.traceparent = traceparent;
+      }
+    } catch {
+      // Span may have ended or be invalid
+    }
+  }
+  return ctx;
 }
 
 function traceCallback<ResultType>(
@@ -841,23 +896,87 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   return null;
 }
 
-function hasInProcessIdentity(value: unknown): value is { _name: string } {
-  return (
-    isObject(value) &&
-    hasProperty(value, '_name') &&
-    typeof value._name === 'string'
-  );
+type SpanContextLike = {
+  traceId?: string;
+  spanId?: string;
+  traceFlags?: number;
+};
+
+/**
+ * Parsed trace context whose distributed-tracing ids are guaranteed present.
+ */
+type ResolvedTraceparentData = {
+  traceId: string;
+  parentSpanId: string;
+  parentSampled?: boolean;
+};
+
+/**
+ * Whether a W3C `trace-flags` byte has the sampled bit (bit 0) set. Uses
+ * modulo rather than a bitwise mask, which lint disallows.
+ *
+ * @param flags - The decimal value of the `trace-flags` byte.
+ * @returns True when the sampled bit is set.
+ */
+function isSampled(flags: number): boolean {
+  return flags % 2 === TRACE_FLAG_SAMPLED;
 }
 
-function hasDistributedTraceIds(
+function spanContextToTraceparent(
+  spanContext: SpanContextLike,
+): string | undefined {
+  const { traceId, spanId, traceFlags } = spanContext;
+  if (!traceId || !spanId) {
+    return undefined;
+  }
+  // Sentry always sets `traceFlags`; treat an input without it as sampled.
+  const flags = isSampled(traceFlags ?? TRACE_FLAG_SAMPLED) ? '01' : '00';
+  return `${W3C_TRACEPARENT_VERSION}-${traceId}-${spanId}-${flags}`;
+}
+
+/**
+ * Parse a W3C `traceparent`, keeping only the sampled bit of its flags.
+ *
+ * @param value - The candidate `traceparent`.
+ * @returns Parsed trace context, or undefined when `value` is not a valid W3C
+ * `traceparent` string.
+ */
+function parseTraceparent(value: unknown): TraceparentData | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  const match = W3C_TRACEPARENT_REGEXP.exec(value.trim());
+  if (!match) {
+    return undefined;
+  }
+  const [, traceId, parentId, flags] = match;
+  return {
+    traceId,
+    parentSpanId: parentId,
+    parentSampled: isSampled(parseInt(flags, 16)),
+  };
+}
+
+/**
+ * Build a `sentry-trace` header. An unset `parentSampled` encodes as sampled.
+ *
+ * @param data - Parsed trace context with `traceId` and `parentSpanId`.
+ * @returns A `sentry-trace` header string.
+ */
+function traceparentDataToSentryTrace(data: ResolvedTraceparentData): string {
+  const sampled = data.parentSampled === false ? '0' : '1';
+  return `${data.traceId}-${data.parentSpanId}-${sampled}`;
+}
+
+function hasTraceparentData(
   value: unknown,
-): value is { _traceId: string; _spanId: string } {
+): value is TraceparentData & ResolvedTraceparentData {
   return (
     isObject(value) &&
-    hasProperty(value, '_traceId') &&
-    hasProperty(value, '_spanId') &&
-    typeof value._traceId === 'string' &&
-    typeof value._spanId === 'string'
+    hasProperty(value, 'traceId') &&
+    hasProperty(value, 'parentSpanId') &&
+    typeof value.traceId === 'string' &&
+    typeof value.parentSpanId === 'string'
   );
 }
 
@@ -902,22 +1021,30 @@ function startSpan<T>(
     ...(forceTransaction === undefined ? {} : { forceTransaction }),
   };
 
-  // Cross-process propagation via continueTrace when we have serialized
-  // trace/span IDs but couldn't resolve a local parent span from the map.
-  // A context carrying `_name` was meant to resolve from the map; sending its
-  // lookup miss here would start a new, billed segment.
-  if (
-    !parentSpan &&
-    hasDistributedTraceIds(parentContext) &&
-    !hasInProcessIdentity(parentContext)
-  ) {
-    const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
-    return sentryContinueTrace(sentryTrace, () =>
-      sentryWithScope((scope: Sentry.Scope) => {
-        initScope(scope, request);
-        return callback({ ...spanOptions, parentSpan: undefined });
-      }),
-    );
+  // No local parent: continue from parsed `TraceparentData`, or from the
+  // `traceparent` a snap's `SerializedTraceContext` keeps after its parent ended.
+  if (!parentSpan) {
+    let traceparentData;
+    if (hasTraceparentData(parentContext)) {
+      traceparentData = parentContext;
+    } else if (
+      isObject(parentContext) &&
+      hasProperty(parentContext, 'traceparent')
+    ) {
+      const parsed = parseTraceparent(parentContext.traceparent);
+      if (hasTraceparentData(parsed)) {
+        traceparentData = parsed;
+      }
+    }
+    if (traceparentData) {
+      const sentryTrace = traceparentDataToSentryTrace(traceparentData);
+      return sentryContinueTrace(sentryTrace, () =>
+        sentryWithScope((scope: Sentry.Scope) => {
+          initScope(scope, request);
+          return callback({ ...spanOptions, parentSpan: undefined });
+        }),
+      );
+    }
   }
 
   // A declared parent that did not resolve nests under the active span, without
@@ -1151,6 +1278,21 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
   return actual() ?? null;
 }
 
+/**
+ * Baggage for a continued trace. It must carry `sentry-sampled`, which backends
+ * route spans to Sentry on.
+ *
+ * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
+ * @returns A `baggage` string, or undefined when the header is malformed.
+ */
+function sentryTraceToBaggage(sentryTrace: string): string | undefined {
+  const [traceId, , sampled] = sentryTrace.split('-');
+  if (!traceId || (sampled !== '0' && sampled !== '1')) {
+    return undefined;
+  }
+  return `sentry-trace_id=${traceId},sentry-sampled=${sampled === '1'}`;
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryContinueTrace<T>(sentryTrace: string, callback: () => T): T {
@@ -1160,5 +1302,8 @@ function sentryContinueTrace<T>(sentryTrace: string, callback: () => T): T {
     return callback();
   }
 
-  return actual({ sentryTrace, baggage: undefined }, callback);
+  return actual(
+    { sentryTrace, baggage: sentryTraceToBaggage(sentryTrace) },
+    callback,
+  );
 }

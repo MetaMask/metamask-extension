@@ -14,7 +14,6 @@ import {
 import {
   admitTraceWrappers,
   isRootWrapperEnabled,
-  shouldSampleWrappers,
 } from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
@@ -45,30 +44,31 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
 
     const controller = handler._controllerName;
     const { cleanParams, traceMetadata } = extractTraceMetadata(data.params);
+    const traceContext = traceMetadata?.traceContext;
+    const name: `Background RPC: ${string}` = controller
+      ? `Background RPC: ${controller}.${data.method}`
+      : (traceMetadata?.spanName ?? `Background RPC: ${data.method}`);
+    const spanData = {
+      method: data.method,
+      ...(controller && { controller }),
+      ...(traceMetadata?.messengerAction && {
+        action: traceMetadata.messengerAction,
+      }),
+    };
+    const callHandler = () =>
+      Array.isArray(cleanParams)
+        ? handler.call(api, ...cleanParams)
+        : handler.call(api, cleanParams);
 
     let result: unknown;
     let error: unknown;
     try {
-      if (!traceMetadata) {
-        const callHandler = () =>
-          Array.isArray(cleanParams)
-            ? handler.call(api, ...cleanParams)
-            : handler.call(api, cleanParams);
+      if (!traceContext) {
         // No UI trace context: the dispatch roots its own trace, so
         // concurrent handlers get independent trace ids.
         result = isRootWrapperEnabled()
           ? await trace(
-              {
-                name: controller
-                  ? `Background RPC: ${controller}.${data.method}`
-                  : `Background RPC: ${data.method}`,
-                op: 'rpc.handler',
-                root: true,
-                data: {
-                  method: data.method,
-                  ...(controller && { controller }),
-                },
-              },
+              { name, op: 'rpc.handler', root: true, data: spanData },
               () =>
                 admitTraceWrappers(
                   sentryGetActiveSpan()?.spanContext().traceId,
@@ -76,34 +76,23 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
                 ),
             )
           : await callHandler();
-      } else if (shouldSampleWrappers(traceMetadata.context._traceId)) {
-        // Wrapper sub-sample passes: emit the `rpc.handler` span and
-        // propagate trace context for nested spans.
+      } else if (traceContext.parentSampled) {
+        // A sampled UI span always gets its `rpc.handler` child: without an
+        // active span, fetch starts no `http.client` span and its trace
+        // headers name a span that is never sent.
         result = await trace(
           {
-            name: controller
-              ? `Background RPC: ${controller}.${data.method}`
-              : traceMetadata.spanName,
-            parentContext: traceMetadata.context,
+            name,
+            parentContext: traceContext,
             op: 'rpc.handler',
-            data: {
-              method: data.method,
-              ...(controller && { controller }),
-              ...(traceMetadata.messengerAction && {
-                action: traceMetadata.messengerAction,
-              }),
-            },
+            data: spanData,
           },
-          () => handler.call(api, ...cleanParams),
+          callHandler,
         );
       } else {
-        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
-        // propagate trace context so nested auto-instrumented and core-package
-        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
-        // attach to the originating UI trace instead of becoming orphans.
-        result = await continueTraceContext(traceMetadata.context, () =>
-          handler.call(api, ...cleanParams),
-        );
+        // An unsampled UI span: nothing under it is recorded, so continue its
+        // context, which carries the unsampled decision, without a span.
+        result = await continueTraceContext(traceContext, callHandler);
       }
     } catch (err) {
       error = err;

@@ -6943,10 +6943,18 @@ describe('Actions', () => {
           store.dispatch(actions.recordUiInteraction()),
         );
 
+        // The action still names the background span; no `traceparent` rides along.
         expect(
           messengerCallStub.calledOnceWithExactly(
             'AppStateController:recordUiInteraction',
             [],
+            {
+              _trace: {
+                messengerAction: 'AppStateController:recordUiInteraction',
+                spanName:
+                  'Background RPC: AppStateController:recordUiInteraction',
+              },
+            },
           ),
         ).toBe(true);
       });
