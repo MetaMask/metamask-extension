@@ -37,6 +37,7 @@ import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import { ApprovalType, ERC20 } from '@metamask/controller-utils';
 import { parseCaipAccountId } from '@metamask/utils';
+import { captureException } from '../../shared/lib/sentry';
 
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -97,6 +98,11 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
         },
       };
     }),
+}));
+
+jest.mock('../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../shared/lib/sentry'),
+  captureException: jest.fn(),
 }));
 
 jest.mock('./messenger-client-init/ramps-controller-init', () => ({
@@ -893,7 +899,7 @@ describe('MetaMaskController', () => {
           ).not.toHaveBeenCalled();
         });
 
-        it('resolves the watch asset request even when the post-approval asset refresh never settles', async () => {
+        it('resolves the watch asset request even when persisting the watched asset never settles', async () => {
           jest
             .spyOn(metamaskController.assetsController, 'addCustomAsset')
             .mockImplementation(() => new Promise(() => undefined));
@@ -918,12 +924,14 @@ describe('MetaMaskController', () => {
           ).toHaveBeenCalledTimes(1);
         });
 
-        it('resolves the watch asset request when the post-approval asset refresh rejects', async () => {
+        it('resolves the watch asset request and reports the failure when persisting the watched asset rejects', async () => {
+          const persistenceError = new Error(
+            'No provider available for chain 0x171',
+          );
+          captureException.mockClear();
           jest
             .spyOn(metamaskController.assetsController, 'addCustomAsset')
-            .mockRejectedValue(
-              new Error('No provider available for chain 0x171'),
-            );
+            .mockRejectedValue(persistenceError);
 
           const asset = {
             address: watchAssetTokenAddress,
@@ -939,6 +947,9 @@ describe('MetaMaskController', () => {
               networkClientId: watchAssetNetworkClientId,
             }),
           ).resolves.toBeUndefined();
+
+          await waitForAllPromises();
+          expect(captureException).toHaveBeenCalledWith(persistenceError);
         });
       });
     });
