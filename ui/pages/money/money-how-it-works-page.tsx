@@ -22,64 +22,10 @@ import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { MoneyScreenName } from './constants/money-events';
 import { MoneyFaqItem } from './components/money-faq-item';
 import { MoneySectionDivider } from './components/money-section-divider';
+import { MONEY_FAQ_ITEMS } from './constants/money-faqs';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
 
 const APY_FALLBACK = '—';
-const MAX_DEPOSIT_PER_TOKEN = '$100,000';
-
-type FaqDefinition = {
-  id: string;
-  questionKey: string;
-  answerKey: string;
-  usesApy?: boolean;
-  substitutions?: string[];
-};
-
-const FAQ_ITEMS: FaqDefinition[] = [
-  {
-    id: 'money-account',
-    questionKey: 'moneyHowItWorksFaqMoneyAccountQuestion',
-    answerKey: 'moneyHowItWorksFaqMoneyAccountAnswer',
-    usesApy: true,
-  },
-  {
-    id: 'fees',
-    questionKey: 'moneyHowItWorksFaqFeesQuestion',
-    answerKey: 'moneyHowItWorksFaqFeesAnswer',
-  },
-  {
-    id: 'apy',
-    questionKey: 'moneyHowItWorksFaqApyQuestion',
-    answerKey: 'moneyHowItWorksFaqApyAnswer',
-    usesApy: true,
-  },
-  {
-    id: 'yield',
-    questionKey: 'moneyHowItWorksFaqYieldQuestion',
-    answerKey: 'moneyHowItWorksFaqYieldAnswer',
-  },
-  {
-    id: 'tokens',
-    questionKey: 'moneyHowItWorksFaqTokensQuestion',
-    answerKey: 'moneyHowItWorksFaqTokensAnswer',
-    substitutions: [MAX_DEPOSIT_PER_TOKEN],
-  },
-  {
-    id: 'locked',
-    questionKey: 'moneyHowItWorksFaqLockedQuestion',
-    answerKey: 'moneyHowItWorksFaqLockedAnswer',
-  },
-  {
-    id: 'identity',
-    questionKey: 'moneyHowItWorksFaqIdentityQuestion',
-    answerKey: 'moneyHowItWorksFaqIdentityAnswer',
-  },
-  {
-    id: 'countries',
-    questionKey: 'moneyHowItWorksFaqCountriesQuestion',
-    answerKey: 'moneyHowItWorksFaqCountriesAnswer',
-  },
-];
 
 const MoneyHowItWorksSkeleton = () => {
   return (
@@ -149,7 +95,7 @@ const MoneyHowItWorksContent = ({
         </Text>
       </div>
 
-      {FAQ_ITEMS.map((item, index) => {
+      {MONEY_FAQ_ITEMS.map((item, index) => {
         const answer = t(
           item.answerKey,
           item.usesApy ? [apyDisplay] : item.substitutions,

@@ -7,9 +7,6 @@
     "message": "Masyadong matagal ang paglo-load kaysa sa karaniwan.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "Wala nang mga account. Kung gusto mong mag-access ng iba pang account na hindi nakalista sa ibaba, pakikonektang muli ang wallet na hardware mo at piliin ito."
-  },
   "QRHardwareScanInstructions": {
     "message": "Ilagay ang QR code sa harap ng iyong camera. Malabo ang screen, pero hindi ito makakaapekto sa pagbabasa."
   },
@@ -1147,9 +1144,6 @@
   "addAUrl": {
     "message": "Magdagdag ng URL"
   },
-  "addAWallet": {
-    "message": "Magdagdag ng wallet"
-  },
   "addAccount": {
     "message": "Magdagdag ng account"
   },
@@ -1263,17 +1257,11 @@
   "add_device_error_expired": {
     "message": "Nag-expire ang sync session na ito. Magsimula muli para makalikha ng bagong QR code."
   },
-  "add_device_error_generic": {
-    "message": "Nagkaproblema habang sini-sync sa iyong telepono. Pakisubukan muli."
-  },
   "add_device_error_invalid_code": {
     "message": "Mali ang verification code. Magsimula muli para subukang i-sync ang iyong telepono."
   },
   "add_device_error_rejected": {
     "message": "Kinansela ang sync sa iyong telepono. Simulan muli para subukang i-sync."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Hindi namin matapos ang pag-sync ng iyong mga account sa iyong telepono. Pakisubukan muli."
   },
   "add_device_error_title": {
     "message": "Hindi makumpleto ang pag-sync"
@@ -1507,6 +1495,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Na-flag ng mga partner sa seguridad ang address na ito dahil sa mapaminsalang aktibidad."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Na-flag ng mga partner sa seguridad ang address $1 na ito dahil sa mapaminsalang aktibidad."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Walang sapat na maaasahang history ang mga partner sa seguridad para ma-verify ang address $1 na ito."
+  },
   "alertMessageBurnAddress": {
     "message": "Ipapadala mo ang mga asset mo sa burn address. Kapag nagpatuloy ka, mawawala sa iyo ang mga asset mo."
   },
@@ -1524,6 +1518,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga bayarin sa network."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Na-flag ng mga partner sa seguridad ang nested na address $1 ng transaksyon na ito dahil sa mapaminsalang aktibidad."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Walang sapat na maaasahang history ang mga partner sa seguridad para ma-verify ang nested na address $1 ng transaksyon na ito."
   },
   "alertMessageNoGasPrice": {
     "message": "Hindi tayo makakapagpatuloy sa transaksyong ito hanggang sa manwal mong i-update ang bayad."
@@ -1599,6 +1599,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Hindi kinakailangang pahintulot"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "Na-flag ang nested address bilang may mataas na panganib"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Limitado ang mga signal ng nested address"
   },
   "alertReasonNoGasPrice": {
     "message": "Hindi available ang pagtantiya sa bayad"
@@ -2482,9 +2488,6 @@
   "bridgeSelectDestinationAccount": {
     "message": "Pumili ng destinasyong account"
   },
-  "bridgeSelectDifferentQuote": {
-    "message": "Mangyaring pumili ng ibang quote."
-  },
   "bridgeSelectNetwork": {
     "message": "Pumili ng network"
   },
@@ -3121,9 +3124,6 @@
   "contractInteraction": {
     "message": "Interaksyon ng kontrata"
   },
-  "convertAgain": {
-    "message": "Mag-convert muli"
-  },
   "convertTokenToNFTDescription": {
     "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang MetaMask ay mayroon na ngayong ganap na native support para sa mga NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
   },
@@ -3420,7 +3420,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "I-update ang pinakabagong bersyon ng MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Walang ibinigay na url para sa pag-navigate."
@@ -3558,25 +3558,15 @@
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa paggamit mo sa device na ito. Hindi magbabago ang wallet at mga account mo sa kung ano ito ngayon pagkatapos mabura ang data na ito. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang aming $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa iyong wallet. Kabilang sa MetaMetrics ang walang pagkakakilanlan na paggamit at diagnostic data. Hindi magbabago ang wallet at mga account mo. Ang proseso na ito ay maaaring tumagal ng 30 araw. Tingnan ang aming $1.",
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system, pakisubukang muli mamaya."
-  },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Hindi namin matanggal ang data na ito sa ngayon"
+    "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system. Subukan muli mamaya."
   },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Hindi matanggal"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Aalisin na namin ang lahat ng iyong data ng MetaMetrics. Sigurado ka ba?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
@@ -3653,9 +3643,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "Ididiskonekta nito ang lahat ng account mo mula sa lahat ng dapp. Kailangan mong muling kumonekta para magamit muli ang mga ito."
-  },
-  "disconnectAllSitesError": {
-    "message": "Hindi maaaring idiskonekta ang ilang mga dapp. Pakisubukan muli."
   },
   "disconnectAllSitesQuestion": {
     "message": "Idiskonekta ang lahat ng?"
@@ -3961,9 +3948,6 @@
   "enter_verification_code_desc": {
     "message": "Para sa seguridad, ilagay ang code na ipinapakita ng MetaMask app sa iyong device."
   },
-  "enter_verification_code_error": {
-    "message": "Maling code. Pakisubukan muli."
-  },
   "enter_verification_code_expired": {
     "message": "Nag-expire ang code sa pag-verify"
   },
@@ -3986,9 +3970,6 @@
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "May error habang kinukuha ang ligtas na chain list, mangyaring magpatuloy nang may pag-iingat."
   },
   "errorLegalTextFirstInfo": {
     "message": "Impormasyon sa teknikal na diagnostic."
@@ -4152,19 +4133,8 @@
   "fieldRequired": {
     "message": "Kinakailangan ang $1"
   },
-  "fileImportFail": {
-    "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "I-click para mag-upload o mag-drag and drop"
-  },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "Di-wastong uri ng file. Mag-upload ng sinusuportahang format ng file."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "Lagpas $1MB ang size ng file. Mag-upload ng mas maliit na file.",
-    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",
@@ -4192,9 +4162,6 @@
   },
   "floatAmountToken": {
     "message": "Ang halaga ng token ay dapat isang integer"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "Forbidden IPFS Gateway: Tumukoy ng CID gateway"
   },
   "forgetDevice": {
     "message": "Kalimutan ang device na ito"
@@ -4421,9 +4388,6 @@
   "general": {
     "message": "Pangkalahatan"
   },
-  "generalCameraError": {
-    "message": "Hindi namin ma-access ang iyong camera. Mangyaring subukan ulit."
-  },
   "generalCameraErrorTitle": {
     "message": "Mayroong nang mali...."
   },
@@ -4618,9 +4582,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "Nagde-detect ng device..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Hindi na-detect ang device. Pakitingnan ang mga naunang hakbang at subukan muli."
   },
   "hardwareWalletRepairLink": {
     "message": "Magbalik-ugnayan mula sa umpisa"
@@ -4881,9 +4842,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
   },
-  "importTokensError": {
-    "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
-  },
   "importWalletSuccess": {
     "message": "Na-import ang wallet na $1",
     "description": "$1 is the index of the secret recovery phrase"
@@ -5143,7 +5101,7 @@
     "message": "Natagpuan ang ledger device"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Paki-unlock ang iyong Ledger device para makapagpatuloy"
+    "message": "I-unlock ang iyong Ledger device para makapagpatuloy"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Naka-lock ang Ledger"
@@ -5181,9 +5139,6 @@
   "ledgerConnectionStatusSearchingTitle": {
     "message": "Hinahanap ang device mo"
   },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Nabigong mabuksan ang Ledger device. Ang iyong Ledger ay maaaring konektado sa ibang software. Pakisara ang Ledger Live o iba pang mga application na konektado sa iyong Ledger device, at subukan muling ikonekta."
-  },
   "ledgerErrorConnectionIssue": {
     "message": "Muling ikonekta ang iyong ledger, buksan ang ETH app at subukan muli."
   },
@@ -5214,15 +5169,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Hindi Sinusuportahan ang Firefox"
   },
-  "ledgerLocked": {
-    "message": "Hindi makakonekta sa Ledger device. Siguruhin na ang device mo ay naka-unlock at bukas ang Ethereum."
-  },
   "ledgerTimeout": {
     "message": "Masyadong natatagalan ang Ledger Live upang tumugon o mag-timeout ng koneksyon. Tiyaking nakabukas ang Ledger Live app at naka-unlock ang iyong device."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Hindi nakakonekta ang ledger device. Kung nais mong ikonekta ang iyong Ledger, mangyaring i-click muli ang 'Magpatuloy' at aprubahan ang HID na koneksyon",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "Maliwanag"
@@ -5289,17 +5237,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "Mag-log in"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Mag-log in muli para magpatuloy."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Nag-expire ang sesyon"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "I-update ang Telegram"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Hindi kami makakonekta sa Telegram. Kadalasang nangyayari ito kapag ang iyong Telegram app ay luma na. Paki-update ang Telegram at subukan muli."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Hindi makapag-sign in gamit ang Telegram"
@@ -5432,9 +5374,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Makikita sa button ng katayuan ng koneksyon kung nakakonekta ang website na binibisita mo sa kasalukuyan mong napiling account."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Dahil hindi mo kailanman sinubukan ang MetaMetrics, walang data na tatanggalin dito."
-  },
   "metadataModalSourceTooltip": {
     "message": "Ang $1 ay naka-host sa npm at $2 ang natatanging pagkakailanlan ng Snap.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5493,8 +5432,14 @@
   "mfaErrorGeneric": {
     "message": "Nagkaproblema. Subukan muli."
   },
+  "mfaErrorInvalidCode": {
+    "message": "Mali ang code na ito. Subukan muli"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "Hindi ma-verify ang passkey mo. Subukan ulit."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "Mali ang code na ito. Subukan muli"
   },
   "mfaErrorLimitReached": {
     "message": "Naabot mo na ang limit para sa pamamaraang ito."
@@ -5531,6 +5476,12 @@
   },
   "mfaFailureRetry": {
     "message": "Subukang muli"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Makipag-ugnayan sa suporta para magpatuloy."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "Hindi namin ma-verify ang mga detalye mo"
   },
   "mfaFailureTitle": {
     "message": "Mayroong nang mali"
@@ -5637,8 +5588,14 @@
   "mfaSettingsAddedOn": {
     "message": "Nagdagdag ng $1"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Naidagdag ang authenticator app"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "Tinanggal ang email verification"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "Na-verify ang email"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "Ang email na ito ay ang tanging paraan ng seguridad para sa account na ito. Magdagdag ng bagong paraan bago ito tanggalin."
@@ -5697,8 +5654,17 @@
   "mfaTotpSetupContinue": {
     "message": "Magpatuloy"
   },
+  "mfaTotpSetupCopied": {
+    "message": "Nakopya ang setup key"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "I-scan ang QR code sa iyong authenticator app, o ilagay ang setup key."
+  },
   "mfaTotpSetupKey": {
     "message": "I-set up ang key"
+  },
+  "mfaTotpSetupManual": {
+    "message": "O ilagay nang mano-ano"
   },
   "mfaTotpSetupQrAlt": {
     "message": "QR code para magdagdag ng MetaMask sa iyong authenticator app"
@@ -6345,19 +6311,6 @@
     "message": "Na-convert sa mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Nabigong palitan ang mUSD"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Ikino-convert ang $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Matagumpay ang pag-convert ng mUSD"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Puwedeng ma-claim ang bonus sa loob ng isang araw."
-  },
   "musdConvert": {
     "message": "I-convert"
   },
@@ -6365,7 +6318,7 @@
     "message": "Magsimula"
   },
   "musdEducationHeadline": {
-    "message": "Makakuha ng $1% sa\nmga stablecoin",
+    "message": "Makakakuha ng $1% sa\nmga stablecoin",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6471,10 +6424,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "I-edit ang mga detalye ng network"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "Ang simbolo ng native token ay hindi tumutugma sa inaasahang simbolo ng native token para sa network na may nauugnay na ID ng chain. Ang inilagay mo ay $1 samantalang ang inaasahang simbolo ng token ay $2. Pakiberipika na konektado ka sa tamang chain.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "iba pa",
@@ -7201,6 +7150,10 @@
   "paidByMetaMask": {
     "message": "Binayaran ng MetaMask"
   },
+  "paidBySponsor": {
+    "message": "Binayaran ng $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "paidWith": {
     "message": "Magbayad gamit ang"
   },
@@ -7399,10 +7352,6 @@
   },
   "paste": {
     "message": "I-paste"
-  },
-  "pastePrivateKey": {
-    "message": "I-paste ang string ng iyong pribadong key dito:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Magbayad gamit ang",
@@ -8446,7 +8395,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "makipag-ugnayan sa suporta",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Pansamantalang hindi available ang ilang serbisyo.$1, o $2.",
@@ -8454,7 +8403,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Tingnan ang iyong mga opsyon sa Mga FAQ",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Nakakaranas kami ng outage",
@@ -8881,7 +8830,7 @@
     "message": "Naisumite ang pagwi-withdraw"
   },
   "perpsWithdrawTooltip": {
-    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo. Walang hihinging bayad sa MetaMask kapag nag-swap ka sa mUSD.",
+    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8982,10 +8931,6 @@
   "privateKeyHidden": {
     "message": "Ang pribadong key ay nakatago",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Ipakita/Itago ang pribadong key input",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Ang pribadong key ay na ito ay ipinapakita",
@@ -11851,9 +11796,6 @@
     "message": "dito",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Kasama na"
-  },
   "swapGasFeesSponsored": {
     "message": "Binayaran ng MetaMask"
   },
@@ -11874,6 +11816,9 @@
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Walang available na quote"
+  },
+  "swapRate": {
+    "message": "Rate"
   },
   "swapRequestForQuotation": {
     "message": "Humiling ng quotation"
@@ -12494,9 +12439,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
-  },
-  "usedByClients": {
-    "message": "Ginagamit ng iba't ibang kliyente"
   },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"

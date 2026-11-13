@@ -68,10 +68,12 @@ const SOFTWARE_ADDRESS = '0x9999999999999999999999999999999999999999';
  * skip it rather than merely picking the only entry.
  *
  * @param others - Additional accounts, in list order after the hardware one.
+ * @param keyringType - Keyring type of the selected hardware account.
  * @returns Mock state.
  */
 const stateWithSelectedHardwareAccount = (
   others: Record<string, unknown>[] = [],
+  keyringType: KeyringTypes = KeyringTypes.ledger,
 ) => ({
   metamask: {
     internalAccounts: {
@@ -81,7 +83,7 @@ const stateWithSelectedHardwareAccount = (
           id: HARDWARE_ACCOUNT_ID,
           type: EthAccountType.Eoa,
           address: '0x1234567890123456789012345678901234567890',
-          metadata: { keyring: { type: KeyringTypes.ledger } },
+          metadata: { keyring: { type: keyringType } },
         },
         ...others.reduce(
           (acc, entry) => ({ ...acc, [entry.id as string]: entry }),
@@ -304,27 +306,37 @@ describe('useMoneyAccountWithdrawal', () => {
   });
 
   describe('when a hardware account is selected', () => {
-    it('withdraws to the next eligible account instead of the hardware one', async () => {
-      const { result } = renderHookWithProvider(
-        () => useMoneyAccountWithdrawal(),
-        stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]),
-      );
+    const HARDWARE_KEYRING_TYPES = [
+      KeyringTypes.ledger,
+      KeyringTypes.trezor,
+      KeyringTypes.lattice,
+      KeyringTypes.qr,
+      KeyringTypes.oneKey,
+    ];
 
-      await act(async () => {
-        await result.current.initiateWithdrawal();
+    for (const keyringType of HARDWARE_KEYRING_TYPES) {
+      it(`withdraws to the selected ${keyringType} account`, async () => {
+        const { result } = renderHookWithProvider(
+          () => useMoneyAccountWithdrawal(),
+          stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT], keyringType),
+        );
+
+        await act(async () => {
+          await result.current.initiateWithdrawal();
+        });
+
+        expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+        );
+        expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+          loader: ConfirmationLoader.CustomAmount,
+          goBackTo: '/',
+        });
+        expect(reportErrorMock).not.toHaveBeenCalled();
       });
+    }
 
-      expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
-        SOFTWARE_ADDRESS,
-      );
-      expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
-        loader: ConfirmationLoader.CustomAmount,
-        goBackTo: '/',
-      });
-      expect(reportErrorMock).not.toHaveBeenCalled();
-    });
-
-    it('skips non-EVM accounts when choosing the fallback', async () => {
+    it('withdraws to the hardware account when it is the only EVM account', async () => {
       const { result } = renderHookWithProvider(
         () => useMoneyAccountWithdrawal(),
         stateWithSelectedHardwareAccount([
@@ -334,8 +346,38 @@ describe('useMoneyAccountWithdrawal', () => {
             address: 'bc1qexampleexampleexampleexampleexampleex',
             metadata: { keyring: { type: 'Snap Keyring' } },
           },
-          SOFTWARE_ACCOUNT,
         ]),
+      );
+
+      await act(async () => {
+        await result.current.initiateWithdrawal();
+      });
+
+      expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
+        '0x1234567890123456789012345678901234567890',
+      );
+      expect(reportErrorMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when a software account is selected', () => {
+    it('withdraws to a selected imported account', async () => {
+      const importedAccount = {
+        ...SOFTWARE_ACCOUNT,
+        metadata: { keyring: { type: KeyringTypes.simple } },
+      };
+      const state = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: importedAccount.id,
+            accounts: { [importedAccount.id]: importedAccount },
+          },
+        },
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountWithdrawal(),
+        state,
       );
 
       await act(async () => {
@@ -347,33 +389,31 @@ describe('useMoneyAccountWithdrawal', () => {
       );
     });
 
-    it('fails fast when every account is a hardware account', async () => {
+    it('withdraws to a selected Snap EVM account', async () => {
+      const snapAccount = {
+        ...SOFTWARE_ACCOUNT,
+        metadata: { keyring: { type: KeyringTypes.snap } },
+      };
+      const state = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: snapAccount.id,
+            accounts: { [snapAccount.id]: snapAccount },
+          },
+        },
+      };
+
       const { result } = renderHookWithProvider(
         () => useMoneyAccountWithdrawal(),
-        stateWithSelectedHardwareAccount([
-          {
-            id: 'trezor-account-id-mock',
-            type: EthAccountType.Eoa,
-            address: SOFTWARE_ADDRESS,
-            metadata: { keyring: { type: KeyringTypes.trezor } },
-          },
-        ]),
+        state,
       );
 
       await act(async () => {
-        await expect(
-          result.current.initiateWithdrawal(),
-        ).resolves.toBeUndefined();
+        await result.current.initiateWithdrawal();
       });
 
-      expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
-      expect(navigateToTransactionMock).not.toHaveBeenCalled();
-      expect(reportErrorMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          error: expect.objectContaining({
-            message: '[Money Account] Missing recipient EVM address',
-          }),
-        }),
+      expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
+        SOFTWARE_ADDRESS,
       );
     });
   });

@@ -1,4 +1,8 @@
 {
+  "24hChange": {
+    "message": "24h change",
+    "description": "Title for the 24 hour change of the token price"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "Relaunch MetaMask if the problem persists.",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
@@ -1204,9 +1208,6 @@
   "addAUrl": {
     "message": "Add a URL"
   },
-  "addAWallet": {
-    "message": "Add a wallet"
-  },
   "addAccount": {
     "message": "Add account"
   },
@@ -2392,7 +2393,7 @@
     "message": "Because of your trade size and available liquidity, you'll get about $1 less than the market price. This is already factored into your quote."
   },
   "bridgePriceImpactNormalDescription": {
-    "message": "This is how your trade changes the market price of a token. It depends on the trade size, availale liquidity, and provider fees. MetaMask doesn't control price impact."
+    "message": "This is how your trade changes the market price of a token. It depends on the trade size, available liquidity, and provider fees. MetaMask doesn't control price impact."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Price impact"
@@ -2751,12 +2752,32 @@
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
+  "chartNoData": {
+    "message": "No chart data",
+    "description": "Title shown when advanced chart fails to load"
+  },
+  "chartNoDataDescription": {
+    "message": "We couldn't load the chart. Try switching to Line mode.",
+    "description": "Description shown when advanced chart fails to load, suggesting user switch to line chart"
+  },
+  "chartTypeCandlestick": {
+    "message": "Candlestick chart",
+    "description": "Accessible label for the candlestick chart type toggle button on the token details page chart"
+  },
+  "chartTypeLine": {
+    "message": "Line chart",
+    "description": "Accessible label for the line chart type toggle button on the token details page chart"
+  },
   "checkNetworkConnectivity": {
     "message": "Check network connectivity."
   },
   "checkNetworkConnectivityOr": {
     "message": "Check network connectivity, or $1.",
     "description": "$1 is a link to update the network."
+  },
+  "chooseJsonFile": {
+    "message": "Choose JSON file",
+    "description": "Button to select a JSON file when importing an account"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -2778,6 +2799,10 @@
   },
   "click": {
     "message": "Click"
+  },
+  "clickHere": {
+    "message": "Click here",
+    "description": "Link to help when a JSON account import is not working"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
@@ -3061,7 +3086,7 @@
     "message": "Connect a hardware wallet"
   },
   "connectAHardwareWalletDescription": {
-    "message": "Using USB or a QR Code"
+    "message": "Using USB or QR code"
   },
   "connectAnyway": {
     "message": "Connect anyway"
@@ -3195,9 +3220,6 @@
   },
   "contractInteraction": {
     "message": "Contract interaction"
-  },
-  "convertAgain": {
-    "message": "Convert again"
   },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
@@ -3495,7 +3517,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Update to the latest version of MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
@@ -3508,6 +3530,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "Go to the home page"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "Scan this QR code with your mobile device to open this link in MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Continue on MetaMask Mobile"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
@@ -3530,6 +3558,9 @@
   },
   "deepLink_theHomePage": {
     "message": "the home page"
+  },
+  "deepLink_theMoneyDepositPage": {
+    "message": "the Money deposit page"
   },
   "deepLink_theMoneyPage": {
     "message": "the Money page"
@@ -3633,10 +3664,6 @@
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain the same. This process may take up to 30 days. View our $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3644,14 +3671,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "We are unable to delete this data right now"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Unable to delete"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "We are about to remove all your MetaMetrics data. Are you sure?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Delete MetaMetrics data?"
@@ -4030,6 +4051,10 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
   },
+  "enterYourPrivateKey": {
+    "message": "Enter your private key",
+    "description": "Placeholder for the private key field when importing an account"
+  },
   "enter_verification_code": {
     "message": "Enter verification code"
   },
@@ -4227,9 +4252,9 @@
   "fieldRequired": {
     "message": "$1 is required"
   },
-  "fileImportFail": {
-    "message": "File import not working? Click here!",
-    "description": "Helps user import their account from a JSON file"
+  "fileImportNotWorking": {
+    "message": "File import not working?",
+    "description": "Prompt shown above the JSON import help link"
   },
   "fileUploaderDescription": {
     "message": "Click to upload or drag and drop"
@@ -4925,7 +4950,7 @@
     "message": "Import a wallet"
   },
   "importAWalletDescription": {
-    "message": "Using a 12, 18 or 24-word seed phrase"
+    "message": "Using a Secret Recovery Phrase"
   },
   "importAccountError": {
     "message": "Error importing account."
@@ -4946,7 +4971,7 @@
     "message": "We apologize, and we will make it faster in the future."
   },
   "importAccountMsg": {
-    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
+    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase."
   },
   "importAccountWithSocialMsg": {
     "message": "Imported private keys are backed up to your account and sync automatically when you sign in with the same Google or Apple login."
@@ -4959,7 +4984,7 @@
     "message": "Import an account"
   },
   "importAnAccountDescription": {
-    "message": "Via a private key"
+    "message": "Using a private key"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -5138,8 +5163,20 @@
     "message": "Jazzicons"
   },
   "jsonFile": {
-    "message": "JSON File",
+    "message": "JSON file",
     "description": "format for importing an account"
+  },
+  "jsonImportPasswordIncorrect": {
+    "message": "That password didn't work.",
+    "description": "Shown under the JSON import password field when a password was entered after a blank attempt already failed"
+  },
+  "jsonImportPasswordIncorrectOrOptional": {
+    "message": "That password didn't work. If your file has no password, leave this blank.",
+    "description": "Shown under the JSON import password field when a password was entered and no blank attempt has failed yet"
+  },
+  "jsonImportPasswordRequired": {
+    "message": "This file needs a password.",
+    "description": "Shown under the JSON import password field when importing with the password left blank fails"
   },
   "keyringAccountName": {
     "message": "Account name"
@@ -5527,9 +5564,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Since you've never opted into MetaMetrics, there's no data to delete here."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5607,7 +5641,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many attempts. Request a new code."
+    "message": "Too many incorrect codes. Get a new code when it's available."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5687,6 +5721,10 @@
   },
   "mfaOtpGetNewCode": {
     "message": "Get new code"
+  },
+  "mfaOtpGetNewCodeIn": {
+    "message": "Get new code in $1s",
+    "description": "$1 is a number of seconds"
   },
   "mfaOtpResend": {
     "message": "Resend code"
@@ -5835,7 +5873,7 @@
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
   },
   "minimumReceivedExplanationTitle": {
-    "message": "Minimum amount received"
+    "message": "Minimum received"
   },
   "minimumReceivedLabel": {
     "message": "Minimum received"
@@ -5884,6 +5922,14 @@
     "message": "Available balance: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"
   },
+  "moneyAccountDepositConvert": {
+    "message": "Convert $1",
+    "description": "Confirm button on a MetaMask Money deposit. $1 is the pay token symbol, for example USDC."
+  },
+  "moneyAccountDepositHeader": {
+    "message": "Add to MetaMask Money",
+    "description": "Header on the MetaMask Money deposit confirmation"
+  },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
   },
@@ -5893,6 +5939,10 @@
   },
   "moneyActivity": {
     "message": "Activity"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "Amount unavailable",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Card"
@@ -6094,6 +6144,49 @@
   "moneyExploreBenefits": {
     "message": "Explore your benefits"
   },
+  "moneyFtueBenefitConvertDescription": {
+    "message": "Funds you add convert 1:1 to MetaMask USD, with no fees."
+  },
+  "moneyFtueBenefitConvertTitle": {
+    "message": "Converts to MetaMask USD, 1:1"
+  },
+  "moneyFtueBenefitEarnDescription": {
+    "message": "Earnings land in your balance in real time, with nothing to claim."
+  },
+  "moneyFtueBenefitEarnTitle": {
+    "message": "Earn automatically"
+  },
+  "moneyFtueBenefitSpendDescription": {
+    "message": "Send to any wallet or bank, or spend with MetaMask Card for up to 3% back."
+  },
+  "moneyFtueBenefitSpendTitle": {
+    "message": "Send or spend anywhere"
+  },
+  "moneyFtueBenefitTradeDescription": {
+    "message": "Fund swaps, perps, and predictions directly from your Money balance."
+  },
+  "moneyFtueBenefitTradeTitle": {
+    "message": "Trade from the same balance"
+  },
+  "moneyFtueBenefitWithdrawDescription": {
+    "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
+  },
+  "moneyFtueBenefitWithdrawTitle": {
+    "message": "Withdraw anytime"
+  },
+  "moneyFtueDescription": {
+    "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyFtueHeadline": {
+    "message": "Earn, trade, and spend from one balance"
+  },
+  "moneyFtueStartEarning": {
+    "message": "Start earning"
+  },
+  "moneyFtueTitle": {
+    "message": "MetaMask Money"
+  },
   "moneyFundDescription": {
     "message": "Fund your Money account and watch your balance grow."
   },
@@ -6141,6 +6234,12 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "How much can I earn with a MetaMask Money account?"
   },
+  "moneyHowItWorksFaqControlsAnswer": {
+    "message": "You! MetaMask is a self-custodial wallet, meaning only the account holder's Private Keys control it. MetaMask can't access, freeze, or move your funds. This is what distinguishes us from traditional bank accounts and custodial crypto platforms—there's no third party holding your funds."
+  },
+  "moneyHowItWorksFaqControlsQuestion": {
+    "message": "Who controls my MetaMask Money account?"
+  },
   "moneyHowItWorksFaqCountriesAnswer": {
     "message": "Most places! We currently aren't available in the UK and countries on the USA sanctions list."
   },
@@ -6171,6 +6270,12 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "What is a MetaMask Money account?"
+  },
+  "moneyHowItWorksFaqSafeAnswer": {
+    "message": "Yes, but like all DeFi products, it carries risk. It's a self-custodial wallet, meaning you have full control over your account with your Private Keys.\n\nRisks include smart-contract failures, protocol exploits, liquidity shortages, third-party failures, and legal or regulatory restrictions. The Money account isn't insured by the FDIC or any government agency. There is a risk of loss."
+  },
+  "moneyHowItWorksFaqSafeQuestion": {
+    "message": "Is MetaMask Money account safe?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
@@ -6466,19 +6571,6 @@
   "musdConversionTitle": {
     "message": "Converted to mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSD conversion failed"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Converting $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD conversion successful"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus will be claimable within a day."
   },
   "musdConvert": {
     "message": "Convert"
@@ -6845,6 +6937,10 @@
   "noDefaultAddress": {
     "message": "No $1 address",
     "description": "$1 is the default address scope"
+  },
+  "noDepositFee": {
+    "message": "No deposit fee",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -7525,10 +7621,6 @@
   },
   "paste": {
     "message": "Paste"
-  },
-  "pastePrivateKey": {
-    "message": "Enter your private key string here:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Pay with",
@@ -8578,7 +8670,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "contact support",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Some services are temporarily unavailable. $1, or $2.",
@@ -8586,7 +8678,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "See your options in FAQs",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "We're experiencing an outage",
@@ -8822,6 +8914,10 @@
     "message": "Failed to place partial close order",
     "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
+  "perpsToastPositionAlreadyClosed": {
+    "message": "This position is already closed",
+    "description": "Toast text shown when a perps TP/SL update or close targets a position that closed before the request reached the provider"
+  },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",
     "description": "Subtitle shown in perps close failure toasts when the position remains open"
@@ -9017,7 +9113,7 @@
     "message": "Withdrawal submitted"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
+    "message": "MetaMask will swap to your desired token for you.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -9118,10 +9214,6 @@
   "privateKeyHidden": {
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Show/Hide the private key input",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "This private key is being shown",
@@ -9625,6 +9717,10 @@
     "message": "Rename",
     "description": "Multichain account menu item for triggering account rename action modal"
   },
+  "renameAccount": {
+    "message": "Rename account",
+    "description": "Title of the modal for renaming a multichain account"
+  },
   "replace": {
     "message": "replace"
   },
@@ -9802,7 +9898,7 @@
     "message": "Failed to add account"
   },
   "rewardsMoneyReferralActiveTrader": {
-    "message": "You cannot be referred because of recent trading activity."
+    "message": "This referral code is only valid for new traders."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "You have already been referred by another user."
@@ -11193,6 +11289,10 @@
   "showAdvancedDetails": {
     "message": "Show advanced details"
   },
+  "showAllNetworks": {
+    "message": "Show all ($1)",
+    "description": "$1 is the number of network pills, including all networks"
+  },
   "showDefaultAddress": {
     "message": "Show default address"
   },
@@ -11205,8 +11305,8 @@
   "showExtensionInFullSizeViewDescription": {
     "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
-  "showFewerNetworks": {
-    "message": "Show fewer networks"
+  "showFewer": {
+    "message": "Show fewer"
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
@@ -11226,10 +11326,6 @@
   },
   "showMore": {
     "message": "Show more"
-  },
-  "showMoreNetworks": {
-    "message": "Show $1 more networks",
-    "description": "$1 is the number of networks that are hidden"
   },
   "showNativeTokenAsMainBalance": {
     "message": "Show native token as main balance"
@@ -11620,6 +11716,14 @@
     "message": "Declining balance ($1 high-low)",
     "description": "Indicates a descending order based on token fiat balance. $1 is the preferred currency symbol"
   },
+  "sortedAscending": {
+    "message": "sorted ascending",
+    "description": "Accessible name for a column sorted with the lowest value, or A to Z, first."
+  },
+  "sortedDescending": {
+    "message": "sorted descending",
+    "description": "Accessible name for a column sorted with the highest value, or Z to A, first."
+  },
   "source": {
     "message": "Source"
   },
@@ -11994,9 +12098,6 @@
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Included"
-  },
   "swapGasFeesSponsored": {
     "message": "Paid by MetaMask"
   },
@@ -12017,6 +12118,9 @@
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "No quotes available"
+  },
+  "swapRate": {
+    "message": "Rate"
   },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
@@ -12066,6 +12170,15 @@
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
+  },
+  "swapsRebateBanner": {
+    "message": "You’re getting $1% back on fees"
+  },
+  "swapsRebateTooltipContent": {
+    "message": "Get $1% of the MetaMask fee on this trade back as a reward, paid in mUSD to your Money account. Network fees aren’t included. See the Rewards tab for details."
+  },
+  "swapsRebateTooltipTitle": {
+    "message": "Trading Rewards"
   },
   "switch": {
     "message": "Switch"
@@ -12182,6 +12295,9 @@
   },
   "tokenContractAddress": {
     "message": "Token contract address"
+  },
+  "tokenContractAddressCopied": {
+    "message": "Token address copied"
   },
   "tokenContractWarning": {
     "message": "Token contract warning"
@@ -12637,9 +12753,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
-  },
-  "usedByClients": {
-    "message": "Used by a variety of different clients"
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart account is not supported"

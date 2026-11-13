@@ -518,10 +518,6 @@
   "fast": {
     "message": "Veloce"
   },
-  "fileImportFail": {
-    "message": "Importazione file non funziona? Clicca qui!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forbiddenIpfsGateway": {
     "message": "Portale IPFS vietato: specifica un portale CID"
   },
@@ -751,10 +747,6 @@
   "passwordsDontMatch": {
     "message": "Le Password Non Corrispondono"
   },
-  "pastePrivateKey": {
-    "message": "Incolla la tua chiave privata qui:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "in corso"
   },
@@ -947,6 +939,9 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Nessuna quotazione disponibile"
   },
+  "swapRate": {
+    "message": "Tariffa"
+  },
   "swapRequestForQuotation": {
     "message": "Richiedi quotazione"
   },
@@ -1037,9 +1032,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Visualizza un avvertimento sui domini di phishing rivolto a utenti di Ethereum"
-  },
-  "usedByClients": {
-    "message": "Usato da una varietà di clients diversi"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"
