@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { cloneDeep } from 'lodash';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
+import {
+  getProductionRemoteFlagApiResponse,
+  getRegistryEntry,
+} from '../../../feature-flags';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_STELLAR_ADDRESS,
@@ -16,6 +20,14 @@ export const STELLAR_ACCOUNT_ADDRESS = DEFAULT_STELLAR_ADDRESS;
 export const STELLAR_USDC_ISSUER =
   'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 export const STELLAR_USDC_ASSET_ID = `${STELLAR_CHAIN_ID}/asset:USDC-${STELLAR_USDC_ISSUER}`;
+
+/** EURC classic asset used as a second swap destination in Swap E2E. */
+export const STELLAR_EURC_ISSUER =
+  'GDHU6WRG4IEQXM5NZ4BMPKOXHWKG23DEZXLFYCAVTZJWN3VBFTEYHHD6';
+export const STELLAR_EURC_ASSET_ID = `${STELLAR_CHAIN_ID}/asset:EURC-${STELLAR_EURC_ISSUER}`;
+
+/** Internal bridge-controller chain id for Stellar pubnet. */
+export const STELLAR_BRIDGE_CHAIN_ID = 20_000_000_000_002;
 
 /** Funded mock balance: 100 XLM. */
 export const XLM_BALANCE = '100.0000000';
@@ -201,6 +213,44 @@ export function buildHorizonAccountResponse(
 }
 
 /**
+ * Production bridgeConfig with Stellar swap enabled and SSE disabled so E2E
+ * can mock REST `getQuote` (same idea as Tron's invalid `{}` → default path).
+ */
+export function buildStellarE2eBridgeConfig(): Record<string, unknown> {
+  const production =
+    (getRegistryEntry('bridgeConfig')?.productionDefault as Record<
+      string,
+      unknown
+    >) ?? {};
+  const bridgeConfig = cloneDeep(production) as {
+    sse?: { enabled?: boolean; minimumVersion?: string };
+    bip44DefaultPairs?: Record<string, unknown>;
+    chains?: Record<string, Record<string, unknown>>;
+  };
+
+  bridgeConfig.sse = { enabled: false, minimumVersion: '99.0.0' };
+  bridgeConfig.bip44DefaultPairs = {
+    ...(bridgeConfig.bip44DefaultPairs ?? {}),
+    stellar: {
+      other: {},
+      standard: {
+        [STELLAR_NATIVE_ASSET_ID]: STELLAR_USDC_ASSET_ID,
+      },
+    },
+  };
+  bridgeConfig.chains = {
+    ...(bridgeConfig.chains ?? {}),
+    [String(STELLAR_BRIDGE_CHAIN_ID)]: {
+      isActiveDest: true,
+      isActiveSrc: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+  };
+
+  return bridgeConfig;
+}
+
+/**
  * Mocks the feature flags endpoint with BIP44 Stage 2 configuration.
  * This enables automatic Stellar account creation.
  *
@@ -221,8 +271,7 @@ export async function mockStellarFeatureFlags(
       json: [
         ...getProductionRemoteFlagApiResponse(),
         BIP44_STAGE_TWO,
-        // Same bridge / failover overrides as Tron E2E mocks.
-        { bridgeConfig: {} },
+        { bridgeConfig: buildStellarE2eBridgeConfig() },
         { corePlatformRpcFailoverMode: 'disabled' },
       ],
     }));
