@@ -1334,6 +1334,7 @@ export class LegacyBackgroundApiService {
     networkConfiguration: AddNetworkFields,
     { setActive = true } = {},
   ): Promise<NetworkConfiguration> {
+    console.log('[NEC debug] addNetwork called', networkConfiguration.chainId, setActive);
     if (setActive) {
       const addedNetwork = this.#messenger.call(
         'NetworkController:addNetwork',

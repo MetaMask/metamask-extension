@@ -9487,7 +9487,7 @@ __metadata:
 
 "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A7.1.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.1-5f56d06877.patch":
   version: 7.1.1
-  resolution: "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A7.1.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.1-5f56d06877.patch::version=7.1.1&hash=734227"
+  resolution: "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A7.1.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.1-5f56d06877.patch::version=7.1.1&hash=391d1f"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
@@ -9500,7 +9500,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^73.1.2"
     "@metamask/utils": "npm:^12.0.1"
     reselect: "npm:^5.3.0"
-  checksum: 10/e68ddff7ed1c2af9aebd93294a1bbf2c5cd46efd1a59bc9715137cfefaf4c3491a58036fc57666a3c97571ac4a435f815426e99b91c62491f92ecdcd07dd26ae
+  checksum: 10/d91bed5023ab752c195ee15d7b4a8efce9b5b97fa00f545749de4509378a6a46b8695d44a754bb9288651e4d10b4f00477ca17e42a1858e4a950e4ff905397ed
   languageName: node
   linkType: hard
 

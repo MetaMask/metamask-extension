@@ -122,7 +122,7 @@ index b94a4006c99364deb007146bec4e952a01d26b6e..6f91b9caefb5b46dc32b2d131eff937e
 +{"version":3,"file":"NetworkEnablementController.d.ts","sourceRoot":"","sources":["../src/NetworkEnablementController.ts"],"names":[],"mappings":"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"}
 \ No newline at end of file
 diff --git a/dist/NetworkEnablementController.js b/dist/NetworkEnablementController.js
-index b4fb88a9b8f52741ff16388c23da97ee41b74054..89e65c058745edbe9b8f9013f81452624c62790a 100644
+index b4fb88a9b8f52741ff16388c23da97ee41b74054..9fbb54e7fbc5fbb3cbf7dd55f37ef9e1343c3628 100644
 --- a/dist/NetworkEnablementController.js
 +++ b/dist/NetworkEnablementController.js
 @@ -20,6 +20,8 @@ const MESSENGER_EXPOSED_METHODS = [
@@ -224,7 +224,7 @@ index b4fb88a9b8f52741ff16388c23da97ee41b74054..89e65c058745edbe9b8f9013f8145262
          // Parse reference (decimal string from CAIP-2) to number for chainid.network lookup
          const numericChainId = parseInt(reference, 10);
          // EVM networks: use getEvmSlip44 (chainid.network data)
-@@ -519,18 +577,34 @@ export class NetworkEnablementController extends BaseController {
+@@ -519,18 +577,36 @@ export class NetworkEnablementController extends BaseController {
          this.update((state) => {
              // Ensure the namespace bucket exists
              this.#ensureNamespaceBucket(state, namespace);
@@ -235,6 +235,7 @@ index b4fb88a9b8f52741ff16388c23da97ee41b74054..89e65c058745edbe9b8f9013f8145262
 +                // Otherwise, add as disabled.
 +                const inPopularNetworksMode = this.#isInPopularNetworksMode();
 +                const isAddedNetworkPopular = this.#getPopularEvmChainIds().includes(chainId);
++                console.log('[NEC debug] onAddNetwork', { chainId, isNonActiveAddition, inPopularNetworksMode, isAddedNetworkPopular, popularIds: this.#getPopularEvmChainIds(), enabledBefore: JSON.stringify(this.state.enabledNetworkMap.eip155) });
 +                if (inPopularNetworksMode && isAddedNetworkPopular) {
 +                    // Popular mode: enable the new popular network alongside existing ones
 +                    state.enabledNetworkMap[namespace][storageKey] = true;
@@ -243,6 +244,7 @@ index b4fb88a9b8f52741ff16388c23da97ee41b74054..89e65c058745edbe9b8f9013f8145262
 +                    // Single-network mode or non-popular network: add as disabled
 +                    state.enabledNetworkMap[namespace][storageKey] = false;
 +                }
++                console.log('[NEC debug] after', JSON.stringify(state.enabledNetworkMap.eip155));
 +            }
 +            else if (isRegistryAutoAdded) {
 +                // Registry auto-added network: add as disabled to preserve selection
