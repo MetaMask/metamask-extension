@@ -363,6 +363,15 @@ export function useMoneyActivityValuations({
               ];
               if (newEntries.length > 0) {
                 await writeCachedVaultShareValuations(newEntries);
+                setCache((current) => ({
+                  loaded: current.loaded,
+                  entries: [
+                    ...entriesByIdentity([
+                      ...current.entries,
+                      ...newEntries,
+                    ]).values(),
+                  ],
+                }));
               }
 
               /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */

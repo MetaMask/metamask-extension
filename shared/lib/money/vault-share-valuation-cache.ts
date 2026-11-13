@@ -51,13 +51,20 @@ export async function readCachedVaultShareValuations(): Promise<
   return is(parsed, CacheDocumentStruct) ? parsed.entries : [];
 }
 
+function latestBlockNumber(entry: VaultShareValuationCacheEntry): number {
+  return entry.valuations.reduce(
+    (latest, valuation) => Math.max(latest, valuation.blockNumber),
+    0,
+  );
+}
+
 function mergeEntries(
   current: readonly VaultShareValuationCacheEntry[],
   incoming: readonly VaultShareValuationCacheEntry[],
 ): VaultShareValuationCacheEntry[] {
-  return [...entriesByIdentity([...current, ...incoming]).values()].slice(
-    -VAULT_SHARE_VALUATION_CACHE_LIMIT,
-  );
+  return [...entriesByIdentity([...current, ...incoming]).values()]
+    .sort((left, right) => latestBlockNumber(right) - latestBlockNumber(left))
+    .slice(0, VAULT_SHARE_VALUATION_CACHE_LIMIT);
 }
 
 let writeQueue = Promise.resolve();

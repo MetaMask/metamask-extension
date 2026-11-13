@@ -104,11 +104,11 @@ describe('writeCachedVaultShareValuations', () => {
 
     expect(setStorageItemMock).toHaveBeenLastCalledWith(
       'money.activity.vault-share-valuations.v1',
-      { version: 1, entries: [entry(1), entry(2)] },
+      { version: 1, entries: [entry(2), entry(1)] },
     );
   });
 
-  it('caps the cache at the entry limit', async () => {
+  it('caps the cache at the entry limit and keeps the newest activity', async () => {
     const entries = Array.from(
       { length: VAULT_SHARE_VALUATION_CACHE_LIMIT + 1 },
       (_, index) => entry(index),
@@ -118,7 +118,7 @@ describe('writeCachedVaultShareValuations', () => {
 
     expect(setStorageItemMock).toHaveBeenLastCalledWith(
       'money.activity.vault-share-valuations.v1',
-      { version: 1, entries: entries.slice(1) },
+      { version: 1, entries: [...entries.slice(1)].reverse() },
     );
   });
 });

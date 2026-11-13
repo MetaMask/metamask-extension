@@ -422,6 +422,65 @@ describe('useMoneyActivityValuations', () => {
     expect(result.current.isSettling).toBe(false);
   });
 
+  it('keeps already valued rows historical when a page gains a new hash', async () => {
+    let stored: VaultShareValuationCacheEntry[] = [];
+    readCachedMock.mockImplementation(async () => stored);
+    writeCachedMock.mockImplementation(async (entries) => {
+      stored = [...entries];
+    });
+    messengerCall.mockImplementation(
+      (action: string, _address: string, options: { txHashes: string[] }) => {
+        if (action !== 'MoneyAccountApiDataService:fetchVaultShareValuations') {
+          return Promise.resolve(rateResponse);
+        }
+        if (options.txHashes.includes(hash(2))) {
+          return new Promise(() => undefined);
+        }
+        return Promise.resolve(valuationResponse([1]));
+      },
+    );
+
+    const { result, rerender } = renderHook(
+      ({ activities }: { activities: AccountsApiActivity[] }) =>
+        useMoneyActivityValuations({
+          pageActivities: [activities],
+          moneyAddress: MONEY_ADDRESS,
+          vaultShareTokens: [vaultShareToken],
+          enabled: true,
+        }),
+      {
+        initialProps: { activities: [cardActivity(1)] },
+        wrapper: createWrapper(),
+      },
+    );
+
+    await waitFor(() => {
+      expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
+        type: 'historical',
+        value: '1017488',
+        decimals: 6,
+      });
+    });
+
+    rerender({ activities: [cardActivity(1), cardActivity(2)] });
+
+    await waitFor(() => {
+      expect(messengerCall).toHaveBeenCalledWith(
+        'MoneyAccountApiDataService:fetchVaultShareValuations',
+        MONEY_ADDRESS,
+        { txHashes: [hash(2)], chainId: 143 },
+      );
+    });
+    expect(result.current.getDisplayAmount(cardActivity(1))).toStrictEqual({
+      type: 'historical',
+      value: '1017488',
+      decimals: 6,
+    });
+    expect(result.current.getDisplayAmount(cardActivity(2))).toStrictEqual({
+      type: 'pending',
+    });
+  });
+
   it('does nothing when disabled', async () => {
     const { result } = renderHook(
       () =>
