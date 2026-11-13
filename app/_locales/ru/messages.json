@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Удалить данные MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Это приведет к удалению исторических данных MetaMetrics, связанных с использованием вами этого устройства. Ваш кошелек и счета останутся такими же, как сейчас, после удаления этих данных. Этот процесс может занять до 30 дней. Наша $1 содержит подробные сведения по этому вопросу.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Это удалит исторические данные MetaMetrics, связанные с вашим кошельком. MetaMetrics включает анонимизированные данные об использовании и диагностике. Ваш кошелек и счета останутся без изменений. Этот процесс может занять до 30 дней. См. нашу $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Сейчас невозможно выполнить этот запрос из-за проблемы с сервером системы аналитики. Повторите попытку позже."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Мы не можем удалить эти данные прямо сейчас"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Не удалось удалить"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Мы собираемся удалить всю все данные MetaMetrics. Вы уверены?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Удалить данные MetaMetrics?"
@@ -5392,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Кнопка статуса подключения показывает, подключен ли посещаемый вами веб-сайт, к выбранному вами в настоящее время счету."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Поскольку вы никогда не включали MetaMetrics, здесь нет данных для удаления."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 размещается на npm, а $2 — это уникальный идентификатор Snap.",
