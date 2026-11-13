@@ -7,6 +7,7 @@ import { Transform } from 'readable-stream';
 import { JsonRpcNotification } from '@metamask/utils';
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../../shared/constants/messages';
+import type { MessengerEventWrite } from '../../../shared/lib/telemetry/messenger-event-write-reporter';
 import { MessengerSubscriptions } from './MessengerSubscriptions';
 
 const MOCK_STATE_CHANGE = {
@@ -20,7 +21,15 @@ type ExampleControllerStateChangeEvent = ControllerStateChangeEvent<
   { foo: string }
 >;
 
-function setup() {
+function setup(
+  flushPendingState?: () => number,
+  telemetry?: {
+    getSampleRate?: () => number;
+    random?: () => number;
+    now?: () => number;
+    onWrite?: (measurement: MessengerEventWrite) => void;
+  },
+) {
   const messenger = new Messenger<
     MockAnyNamespace,
     never,
@@ -32,7 +41,12 @@ function setup() {
       callback();
     },
   });
-  const subscriptions = new MessengerSubscriptions(messenger, stream);
+  const subscriptions = new MessengerSubscriptions(
+    messenger,
+    stream,
+    flushPendingState,
+    telemetry,
+  );
 
   return { messenger, stream, subscriptions };
 }
@@ -58,6 +72,50 @@ describe('MessengerSubscriptions', () => {
     });
   });
 
+  it('drains pending state before writing the notification', () => {
+    // A subscriber that reads state in its handler must not see a world older than
+    // the event: the notification is written at publish time, the state behind it
+    // rides the 200ms-debounced `sendUpdate`, so the order on the stream is what
+    // decides whether the two can be read together.
+    const order: string[] = [];
+    const flushPendingState = jest.fn(() => order.push('flush'));
+    const { messenger, stream, subscriptions } = setup(flushPendingState);
+    jest.spyOn(stream, 'write').mockImplementation(() => {
+      order.push('notification');
+      return true;
+    });
+
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+    subscriptions.subscribe(event);
+    messenger.publish(event, state, patches);
+
+    expect(flushPendingState).toHaveBeenCalledTimes(1);
+    expect(order).toStrictEqual(['flush', 'notification']);
+  });
+
+  it('drains once per published event', () => {
+    const flushPendingState = jest.fn();
+    const { messenger, subscriptions } = setup(flushPendingState);
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+
+    subscriptions.subscribe(event);
+    messenger.publish(event, state, patches);
+    messenger.publish(event, state, patches);
+
+    expect(flushPendingState).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not drain when the stream is no longer writable', () => {
+    const flushPendingState = jest.fn();
+    const { messenger, stream, subscriptions } = setup(flushPendingState);
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+
+    subscriptions.subscribe(event);
+    stream.destroy();
+    messenger.publish(event, state, patches);
+
+    expect(flushPendingState).not.toHaveBeenCalled();
+  });
   it('stops sending notifications for a given event when all subscriptions are removed', () => {
     const { messenger, stream, subscriptions } = setup();
     const subscribeSpy = jest.spyOn(messenger, 'subscribe');
@@ -110,5 +168,121 @@ describe('MessengerSubscriptions', () => {
     expect(() => subscriptions.unsubscribe(event)).toThrow(
       'No active subscriptions found for: "ExampleController:stateChange".',
     );
+  });
+
+  describe('measuring writes on this channel', () => {
+    const { event, state, patches } = MOCK_STATE_CHANGE;
+
+    it('reports the write and what the drain carried when sampled', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 3, {
+        getSampleRate: () => 0.5,
+        random: () => 0.1,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).toHaveBeenCalledWith({
+        event,
+        patchesDrained: 3,
+        subscriberCount: 1,
+        payloadBytes: JSON.stringify([state, patches]).length,
+        msSinceLastWrite: undefined,
+        sampleRate: 0.5,
+      });
+    });
+
+    it('reports the subscriber count this connection holds for the event', () => {
+      // One publish fans out to every subscriber in this UI context, so the
+      // count is the multiplier between the channel's write rate and the work
+      // it causes.
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 1,
+        random: () => 0,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).toHaveBeenCalledWith(
+        expect.objectContaining({ subscriberCount: 2 }),
+      );
+    });
+
+    it('reports the gap since the previous write, which separates a burst from a rate', () => {
+      const onWrite = jest.fn();
+      const clock = [1_000, 1_040];
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 1,
+        random: () => 0,
+        now: () => clock.shift() ?? 0,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ msSinceLastWrite: undefined }),
+      );
+      expect(onWrite).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ msSinceLastWrite: 40 }),
+      );
+    });
+
+    it('omits the payload size rather than throwing on a payload that will not serialize', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 1,
+        random: () => 0,
+        onWrite,
+      });
+
+      const circular: Record<string, unknown> = {};
+      circular.self = circular;
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, circular as never, patches);
+
+      expect(onWrite).toHaveBeenCalledWith(
+        expect.objectContaining({ payloadBytes: undefined }),
+      );
+    });
+
+    it('reports nothing at the default rate, which is off', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 3, {
+        getSampleRate: () => 0,
+        random: () => 0,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).not.toHaveBeenCalled();
+    });
+
+    it('reports nothing when the draw falls outside the rate', () => {
+      const onWrite = jest.fn();
+      const { messenger, subscriptions } = setup(() => 0, {
+        getSampleRate: () => 0.25,
+        random: () => 0.9,
+        onWrite,
+      });
+
+      subscriptions.subscribe(event);
+      messenger.publish(event, state, patches);
+
+      expect(onWrite).not.toHaveBeenCalled();
+    });
   });
 });

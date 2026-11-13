@@ -199,10 +199,15 @@ export function createTracesSampler({
     : DEFAULT_TRANSACTION_SAMPLE_RATES;
 
   return (samplingContext) => {
-    // `State Persist` is sampled upstream, before its bytes are measured
-    // (`getPersistenceWriteTelemetrySampleRate`, which also applies the remote
-    // ceiling). Any rate below 1 here would drop writes we already measured.
-    if (samplingContext?.name === TraceName.StatePersist) {
+    // These two are sampled upstream, before their measurements are taken
+    // (`getPersistenceWriteTelemetrySampleRate` and
+    // `getMessengerEventWriteTelemetrySampleRate`, both of which also apply the
+    // remote ceiling). Any rate below 1 here would drop writes we already
+    // measured.
+    if (
+      samplingContext?.name === TraceName.StatePersist ||
+      samplingContext?.name === TraceName.MessengerEventWrite
+    ) {
       return 1;
     }
 

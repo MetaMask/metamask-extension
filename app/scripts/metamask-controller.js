@@ -370,6 +370,7 @@ import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-mone
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
+import { trackMessengerEventWrite } from '../../shared/lib/telemetry/messenger-event-write-reporter';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
 import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
@@ -3362,9 +3363,32 @@ export default class MetamaskController extends EventEmitter {
     // cancel the deferred disconnect so positions/markets stay hot.
     this.#cancelPerpsDisconnectTimer();
 
+    // Ordering guard for the un-debounced channel: a messenger notification is written
+    // at publish time, while the state behind it rides the 200ms-debounced `sendUpdate`.
+    // Draining the pending patches first keeps a UI handler that reads state from seeing
+    // a world older than the event that woke it. Only writes when something is pending,
+    // so an event with no state behind it costs nothing.
+    const flushPendingPatchesForEvent = () => {
+      if (!isStreamWritable(outStream) || !uiReady) {
+        return 0;
+      }
+      const patches = patchStore.flushPendingPatches();
+      if (patches.length === 0) {
+        return 0;
+      }
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'sendUpdate',
+        params: [patches],
+      });
+      return patches.length;
+    };
+
     const messengerSubscriptions = new MessengerSubscriptions(
       this.controllerMessenger,
       outStream,
+      flushPendingPatchesForEvent,
+      { onWrite: trackMessengerEventWrite },
     );
 
     const perpsController = this.messengerClientsByName.PerpsController;
