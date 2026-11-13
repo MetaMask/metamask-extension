@@ -36815,13 +36815,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^2.0.0":
-  version: 2.1.11
-  resolution: "nanoid@npm:2.1.11"
-  checksum: 10/cf2a2eedcf9d8893a4687f11743ccf8381f047bc2b3d3887a23721bbef8fe64c5759b9cba6eb945e40efeb4a7e7379b3417e4dc5f6cc03050322d2c24a7ff69b
-  languageName: node
-  linkType: hard
-
 "nanoid@npm:^3.3.16, nanoid@npm:^3.3.18, nanoid@npm:^3.3.19, nanoid@npm:^3.3.20, nanoid@npm:^3.3.8":
   version: 3.3.20
   resolution: "nanoid@npm:3.3.20"
@@ -41583,7 +41576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-devtools-core@npm:^0.2.1":
+"redux-devtools-core@npm:0.2.1":
   version: 0.2.1
   resolution: "redux-devtools-core@npm:0.2.1"
   dependencies:
@@ -41593,6 +41586,19 @@ __metadata:
     nanoid: "npm:^2.0.0"
     remotedev-serialize: "npm:^0.1.8"
   checksum: 10/54574464f8ea542818d2f8b03144bf5bc16530244350c7c586c1b0a3175c13cefe6213fbebe3d860187645ca99c0ccae870073051d08a96e887215dc81579551
+  languageName: node
+  linkType: hard
+
+"redux-devtools-core@patch:redux-devtools-core@npm%3A0.2.1#~/.yarn/patches/redux-devtools-core-npm-0.2.1-d6e29377f4.patch":
+  version: 0.2.1
+  resolution: "redux-devtools-core@patch:redux-devtools-core@npm%3A0.2.1#~/.yarn/patches/redux-devtools-core-npm-0.2.1-d6e29377f4.patch::version=0.2.1&hash=405e66"
+  dependencies:
+    get-params: "npm:^0.1.2"
+    jsan: "npm:^3.1.13"
+    lodash: "npm:^4.17.11"
+    nanoid: "npm:^2.0.0"
+    remotedev-serialize: "npm:^0.1.8"
+  checksum: 10/08ee16441476fb8b3fa4e41c8789e016ebbb2e2fe72419019a9e8ed32a9506a401286f8f051524bcc3f91ba18263459e1b176e5a17286c1fa55e3c95df4b6afc
   languageName: node
   linkType: hard
 

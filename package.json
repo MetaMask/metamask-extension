@@ -288,6 +288,7 @@
     "dompurify": "patch:dompurify@npm%3A3.4.17#~/.yarn/patches/dompurify-npm-3.4.17-925de8a518.patch",
     "jest-process-manager/wait-on": "^9.0.5",
     "@tootallnate/once@npm:1": "^2.0.1",
+    "redux-devtools-core/nanoid": "^3.3.18",
     "package-json@npm:^4.0.0": "^7.0.0",
     "package-json@npm:^6.3.0": "^7.0.0",
     "get-uri/basic-ftp": "^6.2.3",
@@ -381,7 +382,8 @@
     "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
-    "@metamask/utils": "^12.0.1"
+    "@metamask/utils": "^12.0.1",
+    "redux-devtools-core@npm:^0.2.1": "patch:redux-devtools-core@npm%3A0.2.1#~/.yarn/patches/redux-devtools-core-npm-0.2.1-d6e29377f4.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
