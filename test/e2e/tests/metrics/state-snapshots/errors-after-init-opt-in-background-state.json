@@ -65,6 +65,7 @@
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
     "moneyEarnBannerDismissedTokenKeys": "object",
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -304,6 +305,9 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
+      "tdpChartIndicators": "object",
+      "tdpChartInterval": "string",
+      "tdpChartType": "number",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
@@ -338,8 +342,10 @@
   },
   "QrSyncController": "object",
   "RampsController": {
+    "autorampTransactionRecords": "object",
     "autoramps": "object",
     "countries": "object",
+    "moneyAccountWalletRegistrations": "object",
     "nativeProviders": "object",
     "orders": "object",
     "paymentMethods": "object",
@@ -347,7 +353,9 @@
     "providers": "object",
     "requests": "object",
     "tokens": "object",
-    "userRegion": null
+    "userRegion": null,
+    "vbaAutorampListFetchedAt": null,
+    "vbaCustomerAbilities": null
   },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",

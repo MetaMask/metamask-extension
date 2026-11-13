@@ -1,6 +1,3 @@
-import { BOTTOM_NAV_AB_TEST_KEY } from './configs/bottom-nav-bar';
-import { ABTestVariant } from './variants';
-
 export type ABTestResolution = {
   variantName: string;
   isActive: boolean;
@@ -37,15 +34,9 @@ export function resolveABTestAssignment(
   const variantName =
     getFlagVariantName(featureFlags?.[flagKey]) ?? thresholdGroups?.[flagKey];
   const isActive = Boolean(variantName && validVariants.includes(variantName));
-  const fallbackVariant =
-    flagKey === BOTTOM_NAV_AB_TEST_KEY &&
-    !process.env.IN_TEST &&
-    process.env.NODE_ENV !== 'test'
-      ? ABTestVariant.Treatment
-      : DEFAULT_VARIANT;
 
   return {
-    variantName: isActive && variantName ? variantName : fallbackVariant,
+    variantName: isActive && variantName ? variantName : DEFAULT_VARIANT,
     isActive,
   };
 }

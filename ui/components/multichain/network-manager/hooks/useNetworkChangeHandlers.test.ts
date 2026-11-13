@@ -9,9 +9,16 @@ import { useNetworkChangeHandlers } from './useNetworkChangeHandlers';
 
 const mockDispatch = jest.fn();
 const mockTrackEvent = jest.fn();
+const trackedProperties: Record<string, unknown>[] = [];
 const mockCreateEventBuilder = jest.fn(() => ({
   addCategory: jest.fn().mockReturnThis(),
-  addProperties: jest.fn().mockReturnThis(),
+  addProperties: jest.fn(function addProperties(
+    this: unknown,
+    properties: Record<string, unknown>,
+  ) {
+    trackedProperties.push(properties);
+    return this;
+  }),
   build: jest.fn().mockReturnValue({ event: 'NavNetworkSwitched' }),
 }));
 
@@ -115,6 +122,7 @@ jest.mock('../../../../../shared/lib/network.utils', () => ({
 describe('useNetworkChangeHandlers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    trackedProperties.length = 0;
     jest.useFakeTimers();
   });
 
@@ -139,6 +147,27 @@ describe('useNetworkChangeHandlers', () => {
       setActiveNetwork('linea-mainnet'),
     );
     expect(mockTrackEvent).toHaveBeenCalled();
+    expect(trackedProperties).toMatchObject([
+      {
+        location: 'Network Menu',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: CHAIN_IDS.MAINNET,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        from_network: CHAIN_IDS.MAINNET,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        to_network: CHAIN_IDS.LINEA_MAINNET,
+      },
+    ]);
+  });
+
+  it('tracks the switch with the location it was given', async () => {
+    const { result } = renderHook(() => useNetworkChangeHandlers());
+
+    await act(async () => {
+      await result.current.handleNetworkChange(mockLineaCaip, 'Network Pill');
+    });
+
+    expect(trackedProperties).toMatchObject([{ location: 'Network Pill' }]);
   });
 
   it('exposes isPending and startTransition for callers', () => {

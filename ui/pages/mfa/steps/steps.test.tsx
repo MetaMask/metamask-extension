@@ -47,7 +47,7 @@ jest.mock('../../../hooks/useTheme', () => ({
   useTheme: () => mockTheme,
 }));
 
-const reason = { operation: 'test' };
+const reason: MfaReason = { operation: 'qa.test' };
 
 const buildState = <Step extends MfaFlowStep>(
   step: Step,
@@ -76,7 +76,7 @@ describe('IntroStep', () => {
           missing: ['passkey'],
           email: 'chris@metamask.com',
         })}
-        reason={{ operation: 'test', enrollDescription: 'Why we ask' }}
+        reason={{ operation: 'qa.test', enrollDescription: 'Why we ask' }}
         onAction={onAction}
       />,
     );
@@ -143,7 +143,7 @@ describe('IntroStep', () => {
           methods: ['email_otp'],
           missing: ['email_otp'],
         })}
-        reason={{ operation: 'test', verifyDescription: 'Not this one' }}
+        reason={{ operation: 'qa.test', verifyDescription: 'Not this one' }}
         onAction={jest.fn()}
       />,
     );
@@ -219,13 +219,13 @@ describe('PickerStep', () => {
   it.each<['verify' | 'confirm', MfaReason, boolean]>([
     [
       'verify',
-      { operation: 'test', verifyDescription: 'To send $20.00' },
+      { operation: 'qa.test', verifyDescription: 'To send $20.00' },
       true,
     ],
-    ['verify', { operation: 'test' }, false],
+    ['verify', { operation: 'qa.test' }, false],
     [
       'confirm',
-      { operation: 'test', verifyDescription: 'To send $20.00' },
+      { operation: 'qa.test', verifyDescription: 'To send $20.00' },
       false,
     ],
   ])(
@@ -291,11 +291,12 @@ describe('EmailEntryStep', () => {
   });
 
   it('links the help article when the email is already in use', () => {
+    const onAction = jest.fn();
     render(
       <EmailEntryStep
         {...buildState({ name: 'emailEntry' }, { error: 'email_claimed' })}
         reason={reason}
-        onAction={jest.fn()}
+        onAction={onAction}
       />,
     );
 
@@ -304,8 +305,13 @@ describe('EmailEntryStep', () => {
     );
     expect(screen.getByTestId(MfaFlowTestIds.ERROR_LINK)).toHaveAttribute(
       'href',
-      'https://support.metamask.io/configure/wallet/email-in-use',
+      'https://support.metamask.com/configure/wallet/email-in-use',
     );
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.ERROR_LINK));
+    expect(onAction).toHaveBeenCalledWith({
+      type: 'errorCtaClicked',
+      cta: 'learn_more',
+    });
   });
 
   it('submits with Enter', () => {
@@ -572,6 +578,29 @@ describe('CodeStep', () => {
     expect(onAction).not.toHaveBeenCalled();
   });
 
+  it('says the code is dead and counts down to a new one after too many attempts', () => {
+    const { onAction } = renderCode(otp(true), {
+      error: 'too_many_attempts',
+      resendAvailableAt: Date.now() + 30_000,
+    });
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      messages.mfaErrorTooManyAttempts.message,
+    );
+    expect(
+      screen.getByText(messages.mfaOtpGetNewCodeIn.message.replace('$1', '30')),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeDisabled();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
+    expect(onAction).not.toHaveBeenCalled();
+    act(() => {
+      jest.advanceTimersByTime(30_000);
+    });
+    expect(
+      screen.getByText(messages.mfaOtpGetNewCode.message),
+    ).toBeInTheDocument();
+  });
+
   it('lets the user resend once the cooldown ends, without its error', () => {
     const { onAction } = renderCode(otp(true), {
       error: 'rate_limited',
@@ -608,7 +637,7 @@ describe('CodeStep', () => {
     act(() => {
       jest.advanceTimersByTime(2_000);
     });
-    expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
+    expect(onAction).toHaveBeenCalledWith({ type: 'resend', trigger: 'auto' });
   });
 
   it('waits out a new cooldown before sending again', () => {
@@ -711,6 +740,10 @@ describe('CodeStep', () => {
       screen.getByText(messages.mfaErrorGeneric.message),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({
+      type: 'errorCtaClicked',
+      cta: 'try_again',
+    });
     expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
   });
 
@@ -841,6 +874,10 @@ describe('FailureStep', () => {
         screen.getByText(messages.mfaFailureSupportTitle.message),
       ).toBeInTheDocument();
       fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+      expect(onAction).toHaveBeenCalledWith({
+        type: 'errorCtaClicked',
+        cta: 'contact_support',
+      });
       const supportLink = new URL(
         screen.getByTestId('support-modal').textContent ?? '',
       );

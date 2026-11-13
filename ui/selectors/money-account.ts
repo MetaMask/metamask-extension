@@ -21,7 +21,7 @@ export type PrimaryMoneyAccount = Omit<MoneyAccount, 'address'> & {
   address: Hex;
 };
 
-type MoneyAccountState = {
+export type MoneyAccountState = {
   metamask: {
     keyrings: KeyringObject[];
     moneyAccounts?: MoneyAccountControllerState['moneyAccounts'];
@@ -32,6 +32,42 @@ const getKeyrings = (state: MoneyAccountState) => state.metamask.keyrings;
 
 const getMoneyAccounts = (state: MoneyAccountState) =>
   state.metamask.moneyAccounts;
+
+const MONEY_KEYRING_TYPES = new Set<string>([
+  KeyringTypes.money,
+  KeyringTypes.mpcMoney,
+]);
+
+/**
+ * Whether the given address belongs to a Money keyring (SRP-derived or MPC).
+ *
+ * Money keyrings cannot sign transactions (no `signTransaction`); their
+ * transactions must stay externally signed and publish through the sponsored
+ * relay. Money Accounts are not internal accounts, so this reads the keyring
+ * list directly rather than `metadata.keyring` on an internal account.
+ *
+ * @param state - The MetaMask state object.
+ * @param address - The account address to check.
+ * @returns `true` when the address is held by a Money keyring.
+ */
+export function isMoneyKeyringAddress(
+  state: MoneyAccountState,
+  address: string | undefined,
+): boolean {
+  if (!address) {
+    return false;
+  }
+
+  const normalizedAddress = address.toLowerCase();
+
+  return state.metamask.keyrings.some(
+    (keyring) =>
+      MONEY_KEYRING_TYPES.has(keyring.type) &&
+      keyring.accounts.some(
+        (account) => account.toLowerCase() === normalizedAddress,
+      ),
+  );
+}
 
 /**
  * Selects the Money Account belonging to the primary HD keyring, if

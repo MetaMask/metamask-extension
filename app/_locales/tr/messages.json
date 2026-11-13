@@ -7,9 +7,6 @@
     "message": "Yükleme her zamankinden daha uzun sürüyor.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "Başka hesap yok. Aşağıda listelenmeyen başka bir hesaba erişmek istiyorsanız lütfen donanım cüzdanınızı yeniden bağlayın ve seçin."
-  },
   "QRHardwareScanInstructions": {
     "message": "QR kodunu kameranızın önüne getirin. Ekran bulanık, ancak bu okumayı etkilemeyecektir."
   },
@@ -1147,9 +1144,6 @@
   "addAUrl": {
     "message": "URL ekle"
   },
-  "addAWallet": {
-    "message": "Bir cüzdan ekleyin"
-  },
   "addAccount": {
     "message": "Hesap ekleyin"
   },
@@ -1263,17 +1257,11 @@
   "add_device_error_expired": {
     "message": "Bu senkronizasyon oturumunun süresi doldu. Yeni bir QR kodu oluşturmak için yeniden başlatın."
   },
-  "add_device_error_generic": {
-    "message": "Telefonunuzla senkronizasyon gerçekleştirilirken bir şeyler ters gitti. Lütfen tekrar deneyin."
-  },
   "add_device_error_invalid_code": {
     "message": "Doğrulama kodu yanlıştı. Telefonunuzla senkronizasyonu denemek için yeniden başlatın."
   },
   "add_device_error_rejected": {
     "message": "Senkronizasyon telefonunuzda iptal edildi. Senkronizasyonu denemek için yeniden başlatın."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Hesaplarınızı telefonunuza senkronize etme işlemini tamamlayamadık. Lütfen tekrar deneyin."
   },
   "add_device_error_title": {
     "message": "Senkronizasyon tamamlanamadı"
@@ -1507,6 +1495,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Güvenlik ortakları bu adresi kötü amaçlı faaliyet olarak işaretledi."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Güvenlik ortakları bu adresi $1 kötü amaçlı faaliyet olarak işaretledi."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Güvenlik ortaklarının bu adresi doğrulamak için yeterli geçmişi yok $1."
+  },
   "alertMessageBurnAddress": {
     "message": "Varlıklarınızı bir yakım adresine gönderiyorsunuz. Devam ederseniz varlıklarınızı kaybedeceksiniz."
   },
@@ -1524,6 +1518,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Hesabınızda ağ ücretlerini ödemek için yeterli $1 yok."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Güvenlik ortakları iç içe geçmiş bir adresi $1 kötü amaçlı faaliyet olarak işaretledi."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Güvenlik ortaklarının bu iç içe geçmiş adresi doğrulamak için yeterli geçmişi yok $1."
   },
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
@@ -1599,6 +1599,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Gereksiz izin"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "İç içe geçmiş adres yüksek riskli olarak işaretlendi"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Sınırlı iç içe geçmiş adres sinyali"
   },
   "alertReasonNoGasPrice": {
     "message": "Ücret tahmini mevcut değil"
@@ -2485,9 +2491,6 @@
   "bridgeSelectDestinationAccount": {
     "message": "Hedef hesap seçin"
   },
-  "bridgeSelectDifferentQuote": {
-    "message": "Lütfen farklı bir teklif seçin."
-  },
   "bridgeSelectNetwork": {
     "message": "Ağ seç"
   },
@@ -3124,9 +3127,6 @@
   "contractInteraction": {
     "message": "Sözleşme Etkileşimi"
   },
-  "convertAgain": {
-    "message": "Tekrar dönüştür"
-  },
   "convertTokenToNFTDescription": {
     "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenizden çıkarmak ve NFT olarak eklemek ister misiniz?"
   },
@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMask’in en son sürümüne güncelleyin",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Gidilecek url adresi sunulmadı."
@@ -3564,25 +3564,15 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics verilerini sil"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Bu işlem, bu cihazdaki kullanımınızla ilişkili geçmiş MetaMetrics verilerini silecektir. Bu veriler silindikten sonra cüzdanınız ve hesaplarınız tam olarak şu anda oldukları gibi kalacaktır. Bu süreç 30 güne kadar sürebilir. $1 bölümümüzü görüntüleyin.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Bu işlem, cüzdanınızla ilişkili geçmiş MetaMetrics verilerini siler. MetaMetrics, anonimleştirilmiş kullanım ve tanı verilerini içerir. Cüzdanınız ve hesaplarınız aynı kalır. Bu işlem 30 güne kadar sürebilir. $1 bölümümüzü görüntüleyin.",
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Bu talep analitik bir sistem sunucusu sorunundan dolayı şu anda tamamlanamıyor, lütfen daha sonra tekrar deneyin."
-  },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Şu anda bu verileri silemiyoruz"
+    "message": "Bu istek, bir analitik sistem sunucusu sorunu nedeniyle şu anda tamamlanamıyor. Daha sonra tekrar deneyin."
   },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Silinemiyor"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Tüm MetaMetrics verilerini kaldırmak üzeresiniz. Emin misiniz?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics verilerini sil?"
@@ -3659,9 +3649,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "Bu işlem tüm hesaplarınızın tüm dapp'lerle bağlantısını keser. Tekrar kullanmak için yeniden bağlamanız gerekir."
-  },
-  "disconnectAllSitesError": {
-    "message": "Bazı dapp'lerin bağlantısı kesilemedi. Lütfen tekrar deneyin."
   },
   "disconnectAllSitesQuestion": {
     "message": "Tümünün bağlantısını kes?"
@@ -3967,9 +3954,6 @@
   "enter_verification_code_desc": {
     "message": "Güvenlik için cihazınızda MetaMask uygulamasında gösterilen kodu girin."
   },
-  "enter_verification_code_error": {
-    "message": "Kod yanlış. Lütfen tekrar deneyin."
-  },
   "enter_verification_code_expired": {
     "message": "Doğrulama kodunun süresi doldu"
   },
@@ -3992,9 +3976,6 @@
   "errorCode": {
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Güvenli zincir listesi alınırken hata oluştu, lütfen dikkatli bir şekilde devam edin."
   },
   "errorLegalTextFirstInfo": {
     "message": "Teknik tanılama verileri."
@@ -4158,19 +4139,8 @@
   "fieldRequired": {
     "message": "$1 gereklidir"
   },
-  "fileImportFail": {
-    "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "Yüklemek için tıkla veya sürükle ve bırak"
-  },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "Dosya türü geçersiz. Lütfen desteklenen bir dosya biçimi yükleyin."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "Dosya boyutu $1 MB sınırını aşıyor. Lütfen daha küçük bir dosya yükleyin.",
-    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmanız gerekiyor",
@@ -4198,9 +4168,6 @@
   },
   "floatAmountToken": {
     "message": "Token miktarı tam sayı olmalıdır"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "Yasaklı IPFS Ağ Geçidi: Lütfen bir CID ağ geçidi belirtin"
   },
   "forgetDevice": {
     "message": "Bu cihazı unut"
@@ -4431,9 +4398,6 @@
   "general": {
     "message": "Genel"
   },
-  "generalCameraError": {
-    "message": "Kameranıza erişemedik. Lütfen bir defa daha deneyin."
-  },
   "generalCameraErrorTitle": {
     "message": "Bir şeyler ters gitti...."
   },
@@ -4628,9 +4592,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "Cihaz algılanıyor..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Cihaz algılanmadı. Lütfen önceki adımları kontrol edip tekrar deneyin."
   },
   "hardwareWalletRepairLink": {
     "message": "Baştan yeniden bağla"
@@ -4891,9 +4852,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini İçe Aktar"
   },
-  "importTokensError": {
-    "message": "Tokenları içe aktaramadık. Lütfen daha sonra tekrar deneyin."
-  },
   "importWalletSuccess": {
     "message": "Cüzdan $1 içe aktarıldı",
     "description": "$1 is the index of the secret recovery phrase"
@@ -5144,7 +5102,7 @@
     "message": "Ledger'ınızın bağlı olduğundan emin olun ve Ethereum uygulamasını seçin."
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Devam etmek için lütfen Ledger cihazınızda açın"
+    "message": "Devam etmek için Ledger cihazınızda açın"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "Ethereum uygulaması kapatıldı"
@@ -5153,7 +5111,7 @@
     "message": "Ledger cihazı bulundu"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Devam etmek için lütfen Ledger cihazınızın kilidini açın"
+    "message": "Devam etmek için Ledger cihazınızın kilidini açın"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Ledger kilitli"
@@ -5174,7 +5132,7 @@
     "message": "Cihaz bulunamadı"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Lütfen cihazın bağlantısını kesip yeniden bağlayın"
+    "message": "Cihazınızın bağlantısını kesip yeniden bağlayın"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger yanıt vermiyor"
@@ -5190,9 +5148,6 @@
   },
   "ledgerConnectionStatusSearchingTitle": {
     "message": "Cihazınız aranıyor"
-  },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Ledger cihazı açılamadı. Ledger'ınız başka bir yazılıma bağlanmış olabilir. Lütfen Ledger Live'ı ya da Ledger cihazınızla bağlantılı diğer uygulamaları kapatıp tekrar bağlanmayı deneyin."
   },
   "ledgerErrorConnectionIssue": {
     "message": "Ledger'ınızı tekrar bağlayın, ETH uygulamasını açın ve tekrar deneyin."
@@ -5224,15 +5179,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox Desteklenmiyor"
   },
-  "ledgerLocked": {
-    "message": "Ledger cihazına bağlanılamıyor. Lütfen cihazınızın kilidinin açık ve Ethereum uygulamasının açık olduğundan emin olun."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Ledger cihazı bağlı değil. Kayıt Defterinizi bağlamak istiyorsanız lütfen \"Devam Et\" düğmesine yeniden tıklayın ve HID bağlantısını onaylayın",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "Açık"
@@ -5299,17 +5247,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "Oturum aç"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Devam etmek için tekrar oturum açın."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Oturum sona erdi"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Telegram'ı Güncelle"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Telegram'a bağlanamadık. Bu durum Telegram uygulamanız güncel olmadığında meydana gelir. Lütfen Telegram'ı güncelleyip tekrar deneyin."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Telegram ile giriş yapılamadı"
@@ -5445,9 +5387,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Bağlantı durumu düğmesi ziyaret ettiğiniz web sitesinin şu anda seçilen hesabınıza bağlı olup olmadığını gösterir."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Hiçbir zaman MetaMetrics'e dahil olmadığınız için burada silinecek veri yok."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 npm'de barındırılmaktadır ve $2 bu Snap'in eşsiz tanımlayıcısıdır.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5460,9 +5399,6 @@
   },
   "metamaskSwap": {
     "message": "MetaMask Takas"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Takas İşlemleri bakımda. Lütfen daha sonra tekrar kontrol edin."
   },
   "metamaskVersion": {
     "message": "MetaMask Sürümü"
@@ -5509,8 +5445,14 @@
   "mfaErrorGeneric": {
     "message": "Bir şeyler ters gitti. Tekrar deneyin."
   },
+  "mfaErrorInvalidCode": {
+    "message": "Bu kod doğru değil. Tekrar deneyin"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "Geçiş anahtarınız doğrulanamadı. Tekrar deneyin."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "Bu kod doğru değil. Tekrar deneyin"
   },
   "mfaErrorLimitReached": {
     "message": "Bu yöntem için limite ulaştınız."
@@ -5547,6 +5489,12 @@
   },
   "mfaFailureRetry": {
     "message": "Tekrar deneyin"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Devam etmek için destek bölümüyle iletişime geçin."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "Bilgilerinizi doğrulayamadık"
   },
   "mfaFailureTitle": {
     "message": "Bir şeyler ters gitti"
@@ -5653,8 +5601,14 @@
   "mfaSettingsAddedOn": {
     "message": "Eklendi: $1"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Kimlik doğrulama uygulaması eklendi"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "E-posta doğrulama kaldırıldı"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "E-posta doğrulandı"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "Bu e-posta bu hesap için tek güvenlik yöntemidir. Bunu kaldırmadan önce ikinci bir yöntem ekleyin."
@@ -5713,8 +5667,17 @@
   "mfaTotpSetupContinue": {
     "message": "Devam Et"
   },
+  "mfaTotpSetupCopied": {
+    "message": "Kurulum anahtarı kopyalandı"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Kimlik doğrulama uygulaması ile QR kodunu tarayın veya kurulum anahtarını girin."
+  },
   "mfaTotpSetupKey": {
     "message": "Kurulum anahtarı"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Veya elle girin"
   },
   "mfaTotpSetupQrAlt": {
     "message": "MetaMask'i kimlik doğrulama uygulamanıza eklemek için QR kodu"
@@ -6361,19 +6324,6 @@
     "message": "mUSD'ye dönüştürüldü",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD dönüştürme işlemi başarısız oldu"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSD dönüştürme işlemi yapılıyor",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD dönüştürme işlemi başarılı"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus bir gün içinde alınabilir olacaktır."
-  },
   "musdConvert": {
     "message": "Dönüştür"
   },
@@ -6381,7 +6331,7 @@
     "message": "Başla"
   },
   "musdEducationHeadline": {
-    "message": "Stabil kripto paralarda\n%$1 alın",
+    "message": "Stabil kripto paralarda %$1\nalın",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6487,10 +6437,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "Ağ bilgilerini düzenle"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "Yerel token sembolü, zincir kimliği ile ilişkili ağın yerel token'inin beklenen sembolü ile uyumlu değil. Sizin girdiğiniz $1 iken beklenen sembol $2 idi. Lütfen doğru zincire bağlandığınızdan emin olun.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "başka bir şey",
@@ -7220,6 +7166,10 @@
   "paidByMetaMask": {
     "message": "MetaMask tarafından ödenir"
   },
+  "paidBySponsor": {
+    "message": "$1 tarafından ödenir",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "paidWith": {
     "message": "Ödeme aracı"
   },
@@ -7418,10 +7368,6 @@
   },
   "paste": {
     "message": "Yapıştır"
-  },
-  "pastePrivateKey": {
-    "message": "Özel anahtar dizinizi buraya yapıştırın:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "ile öde",
@@ -8471,7 +8417,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "destek bölümü ile iletişime geçerek",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Bazı hizmetler geçici olarak kullanılamıyor. $1 veya $2.",
@@ -8479,7 +8425,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Seçeneklerinizi SSS bölümünde görebilirsiniz",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Bir kesinti yaşıyoruz",
@@ -8910,7 +8856,7 @@
     "message": "Çekim gönderildi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
+    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -9011,10 +8957,6 @@
   "privateKeyHidden": {
     "message": "Özel anahtar gizli",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Özel anahtar girişini göster/gizle",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Özel anahtar gösteriliyor",
@@ -11800,7 +11742,7 @@
   },
   "stxFailureDescription": {
     "message": "Ani piyasa değişiklikleri başarısızlıklara neden olabilir. Sorun devam ederse lütfen $1 ile iletişime geç.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Daha güvenilir ve güvenli işlemler için Akıllı İşlemleri açın. $1"
@@ -11944,7 +11886,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "İşlemler başarısız olabilir ve size yardımcı olmak için buradayız. Bu sorun devam ederse daha fazla destek için $1 adresinden müşteri hizmetleri destek bölümü ile iletişime geçebilirsiniz.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Takas başarısız oldu"
@@ -11973,9 +11915,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "Buradan",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Dahil"
   },
   "swapGasFeesSplit": {
     "message": "Önceki ekrandaki ağ ücretleri bu iki işlem arasında bölünmüştür."
@@ -12723,9 +12662,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Hesabına gönderilen tokenların otomatik olarak görüntülenmesi, tokenın görüntülerini almak için üçüncü parti sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."
-  },
-  "usedByClients": {
-    "message": "Çeşitli müşteriler tarafından kullanılıyor"
   },
   "userOpContractDeployError": {
     "message": "Akıllı hesaptan sözleşme kurulumu desteklenmiyor"
