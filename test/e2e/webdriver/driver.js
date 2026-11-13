@@ -1570,15 +1570,24 @@ class Driver {
 
     while (timeElapsed <= this.timeout) {
       for (const handle of windowHandles) {
-        // Wait 25 x 200ms = 5 seconds for the title to match the target title
+        // Wait 25 x 200ms = 5 seconds for the title to match the target title.
+        // A window that reload already closed will never recover, so skip it
+        // and keep polling the remaining handles.
         const handleTitle = await retry(
           {
             retries: 25,
             delay: 200,
           },
           async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
+            try {
+              await this.driver.switchTo().window(handle);
+              return await this.driver.getTitle();
+            } catch (error) {
+              if (error?.name === 'NoSuchWindowError') {
+                return undefined;
+              }
+              throw error;
+            }
           },
         );
 
