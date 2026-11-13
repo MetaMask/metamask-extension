@@ -125,7 +125,12 @@ export const useAssetActivation = ({
       }
     } finally {
       setIsDeactivating(false);
-      navigate(PREVIOUS_ROUTE);
+      // Once the snap confirmation has replaced the loader, the confirmation
+      // page redirects on close. Navigating back here as well races that
+      // redirect. Only leave if we never left the loader.
+      if (isRemainOnAssetActivationLoader()) {
+        navigate(PREVIOUS_ROUTE);
+      }
     }
   }, [
     assetId,
@@ -177,7 +182,12 @@ export const useAssetActivation = ({
       }
     } finally {
       setIsActivating(false);
-      navigate(PREVIOUS_ROUTE);
+      // Once the snap confirmation has replaced the loader, the confirmation
+      // page redirects on close. Navigating back here as well races that
+      // redirect. Only leave if we never left the loader.
+      if (isRemainOnAssetActivationLoader()) {
+        navigate(PREVIOUS_ROUTE);
+      }
     }
   }, [
     assetId,
@@ -200,3 +210,16 @@ export const useAssetActivation = ({
     dismissErrorMessage,
   };
 };
+
+/**
+ * Returns whether the current route is still the asset activation loader.
+ *
+ * The loader replaces history when the snap confirmation opens, so callers use
+ * this to avoid racing the confirmation page's own redirect on close.
+ *
+ * @returns True when the current route is the asset activation loader.
+ */
+function isRemainOnAssetActivationLoader() {
+  const pathname = window.location.hash.replace(/^#/u, '').split('?')[0];
+  return pathname === ASSET_ACTIVATION_LOADER_ROUTE;
+}

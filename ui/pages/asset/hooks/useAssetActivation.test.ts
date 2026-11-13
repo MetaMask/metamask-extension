@@ -148,6 +148,8 @@ describe('useAssetActivation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockNavigate.mockClear();
+    // Still on the loader after the snap returns (no confirmation handoff).
+    window.location.hash = `#${ASSET_ACTIVATION_LOADER_ROUTE}`;
     jest
       .spyOn(stellarSnapRequests, 'requestStellarChangeTrustOptAdd')
       .mockResolvedValue({ status: true });
@@ -160,6 +162,7 @@ describe('useAssetActivation', () => {
   });
 
   afterEach(() => {
+    window.location.hash = '';
     jest.restoreAllMocks();
   });
 
@@ -346,6 +349,22 @@ describe('useAssetActivation', () => {
       expect(result.current.errorMessage).toBeNull();
       expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
     });
+
+    it('does not navigate back when the confirmation already replaced the loader', async () => {
+      window.location.hash = '#/confirmation/pending-trustline';
+
+      const { result } = renderHookWithProvider(
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
+        createStellarState(),
+      );
+
+      await act(async () => {
+        await result.current.activateAsset();
+      });
+
+      expect(mockNavigate).toHaveBeenCalledWith(ASSET_ACTIVATION_LOADER_ROUTE);
+      expect(mockNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    });
   });
 
   describe('deactivateAsset', () => {
@@ -452,6 +471,22 @@ describe('useAssetActivation', () => {
       expect(toast.error).not.toHaveBeenCalled();
       expect(result.current.errorMessage).toBeNull();
       expect(mockNavigate).toHaveBeenLastCalledWith(PREVIOUS_ROUTE);
+    });
+
+    it('does not navigate back when the confirmation already replaced the loader', async () => {
+      window.location.hash = '#/confirmation/pending-trustline';
+
+      const { result } = renderHookWithProvider(
+        () => useAssetActivation(DEFAULT_HOOK_PARAMS),
+        createStellarState({ trustlineLimit: '10' }),
+      );
+
+      await act(async () => {
+        await result.current.deactivateAsset();
+      });
+
+      expect(mockNavigate).toHaveBeenCalledWith(ASSET_ACTIVATION_LOADER_ROUTE);
+      expect(mockNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
