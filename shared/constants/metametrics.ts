@@ -489,7 +489,8 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers?: string[];
   /**
-   * Does the user change the token sort order on the asset list
+   * Does the user change the token sort order on the asset list.
+   * Event values are {@link MetaMetricsTokenSortPreference}.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -844,7 +845,6 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
-  ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
   ForceUpgradeUpdateNeededPromptViewed = 'Force Upgrade Update Needed Prompt Viewed',
   ForceUpgradeSkipped = 'Force Upgrade Skipped',
@@ -866,6 +866,12 @@ export enum MetaMetricsEventName {
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
+  MfaCodeResent = 'MFA Code Resent',
+  MfaErrorCtaClicked = 'MFA Error CTA Clicked',
+  MfaErrorViewed = 'MFA Error Viewed',
+  MfaFlowStatusUpdated = 'MFA Flow Status Updated',
+  MfaMethodSelected = 'MFA Method Selected',
+  MfaStepViewed = 'MFA Step Viewed',
   MoneyButtonClicked = 'Money Button Clicked',
   MoneyOnboardingEvent = 'Money Onboarding Event',
   MoneySurfaceClicked = 'Money Surface Clicked',
@@ -1061,6 +1067,8 @@ export enum MetaMetricsEventName {
   WebWidgetViewed = 'Web Widget Viewed',
   TokenDetailsCtaClicked = 'Token Details CTA Clicked',
   ExploreSearchInteracted = 'Explore Search Interacted',
+  ChartInteracted = 'Chart Interacted',
+  ChartEmptyDisplayed = 'Chart Empty Displayed',
   TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
   TokenDetailsSecuritySectionViewed = 'token_details_security_section_viewed',
   NftScreenViewed = 'NFT Screen Viewed',
@@ -1394,6 +1402,24 @@ export enum MetaMetricsTransactionEventSource {
 export enum MetaMetricsRequestedThrough {
   EthereumProvider = 'ethereum_provider',
   MultichainApi = 'multichain_api',
+}
+
+/**
+ * Where a token sort preference was chosen.
+ */
+export enum MetaMetricsTokenSortLocation {
+  SortMenu = 'Sort Menu',
+  TokenColumnHeader = 'Token Column Header',
+}
+
+/**
+ * `token_sort_preference` values for Token Sort Preference Updated.
+ */
+export enum MetaMetricsTokenSortPreference {
+  Title = 'title',
+  TokenFiatAmount = 'tokenFiatAmount',
+  Price = 'price',
+  PercentChange = 'percentChange',
 }
 
 export enum MetaMetricsEventLocation {

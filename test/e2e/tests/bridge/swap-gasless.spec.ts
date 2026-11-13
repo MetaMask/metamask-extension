@@ -35,6 +35,7 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await bridgePage.submitQuoteAndDismiss();
 
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
@@ -70,6 +71,7 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await bridgePage.submitQuoteAndDismiss();
 
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(2);
@@ -110,6 +112,7 @@ describe('Gasless swap tests', function (this: Suite) {
 
         await bridgePage.submitQuoteAndDismiss();
 
+        await bridgePage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);

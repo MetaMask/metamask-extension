@@ -24,6 +24,7 @@ export const formatTokenAmount = (
     locale,
     new BigNumber(amount),
     roundingMode,
+    { compact: true },
   );
 
   return [stringifiedAmount, symbol].join(' ').trim();

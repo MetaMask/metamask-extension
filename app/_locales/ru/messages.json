@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Добавить URL"
   },
-  "addAWallet": {
-    "message": "Добавить кошелек"
-  },
   "addAccount": {
     "message": "Добавить аккаунт"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Взаимодействие по контракту"
   },
-  "convertAgain": {
-    "message": "Конвертировать снова"
-  },
   "convertTokenToNFTDescription": {
     "message": "Мы обнаружили, что этот актив является NFT. MetaMask теперь имеет полную встроенную поддержку NFT. Хотите удалить его из списка токенов и добавить в качестве NFT?"
   },
@@ -4154,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "Требуется $1"
-  },
-  "fileImportFail": {
-    "message": "Импорт файлов не работает? Нажмите здесь!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Нажмите, чтобы загрузить, или перетащите"
@@ -6343,19 +6333,6 @@
     "message": "Конвертировано в mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Конвертация mUSD не удалась."
-  },
-  "musdConversionToastInProgress": {
-    "message": "Выполняется конвертация $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Конвертация в mUSD прошла успешно"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Бонус можно будет получить в течение дня."
-  },
   "musdConvert": {
     "message": "Конвертировать"
   },
@@ -7401,10 +7378,6 @@
   "paste": {
     "message": "Вставить"
   },
-  "pastePrivateKey": {
-    "message": "Вставьте строку вашего закрытого ключа сюда:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Оплатить с помощью",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8447,7 +8420,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "обратитесь в поддержку",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Некоторые службы временно недоступны. $1 или $2.",
@@ -8455,7 +8428,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Посмотрите варианты действий в разделе часто задаваемых вопросов",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Произошел сбой",
@@ -8882,7 +8855,7 @@
     "message": "Выводимые средства отправлены"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask автоматически обменяет ваш токен на желаемый. При обмене на mUSD комиссия MetaMask не взимается.",
+    "message": "MetaMask автоматически обменяет ваш токен на желаемый.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8983,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "Закрытый ключ скрыт",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Показать/скрыть закрытый ключ при вводе",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Этот закрытый ключ отображается",
@@ -11946,9 +11915,6 @@
     "message": "здесь",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Включен"
-  },
   "swapGasFeesSplit": {
     "message": "Комиссии сети на предыдущем экране разделены между этими двумя транзакциями."
   },
@@ -12695,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Автоматическое отображение токенов, отправленных на ваш счет, включает коммуникацию со сторонними серверами для получения изображений токенов. Эти сервера получают доступ к вашему IP-адресу."
-  },
-  "usedByClients": {
-    "message": "Используется множеством разных клиентов"
   },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"

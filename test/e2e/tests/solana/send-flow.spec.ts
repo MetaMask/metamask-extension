@@ -191,6 +191,7 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkSecurityAlertsErrorIsDisplayed();
         await confirmation.clickFooterButton({ button: 'confirm' });
         const activityTab = new ActivityTab(driver);
+        await activityTab.checkPageIsLoaded();
         await activityTab.checkFailedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({
           action: 'Interaction failed',

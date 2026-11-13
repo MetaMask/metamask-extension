@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URL ekle"
   },
-  "addAWallet": {
-    "message": "Bir cüzdan ekleyin"
-  },
   "addAccount": {
     "message": "Hesap ekleyin"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Sözleşme Etkileşimi"
   },
-  "convertAgain": {
-    "message": "Tekrar dönüştür"
-  },
   "convertTokenToNFTDescription": {
     "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenizden çıkarmak ve NFT olarak eklemek ister misiniz?"
   },
@@ -4154,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "$1 gereklidir"
-  },
-  "fileImportFail": {
-    "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Yüklemek için tıkla veya sürükle ve bırak"
@@ -6347,19 +6337,6 @@
     "message": "mUSD'ye dönüştürüldü",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD dönüştürme işlemi başarısız oldu"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSD dönüştürme işlemi yapılıyor",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD dönüştürme işlemi başarılı"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus bir gün içinde alınabilir olacaktır."
-  },
   "musdConvert": {
     "message": "Dönüştür"
   },
@@ -7404,10 +7381,6 @@
   },
   "paste": {
     "message": "Yapıştır"
-  },
-  "pastePrivateKey": {
-    "message": "Özel anahtar dizinizi buraya yapıştırın:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "ile öde",
@@ -8457,7 +8430,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "destek bölümü ile iletişime geçerek",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Bazı hizmetler geçici olarak kullanılamıyor. $1 veya $2.",
@@ -8465,7 +8438,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Seçeneklerinizi SSS bölümünde görebilirsiniz",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Bir kesinti yaşıyoruz",
@@ -8896,7 +8869,7 @@
     "message": "Çekim gönderildi"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
+    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8997,10 +8970,6 @@
   "privateKeyHidden": {
     "message": "Özel anahtar gizli",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Özel anahtar girişini göster/gizle",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Özel anahtar gösteriliyor",
@@ -11960,9 +11929,6 @@
     "message": "Buradan",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Dahil"
-  },
   "swapGasFeesSplit": {
     "message": "Önceki ekrandaki ağ ücretleri bu iki işlem arasında bölünmüştür."
   },
@@ -12709,9 +12675,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Hesabına gönderilen tokenların otomatik olarak görüntülenmesi, tokenın görüntülerini almak için üçüncü parti sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."
-  },
-  "usedByClients": {
-    "message": "Çeşitli müşteriler tarafından kullanılıyor"
   },
   "userOpContractDeployError": {
     "message": "Akıllı hesaptan sözleşme kurulumu desteklenmiyor"

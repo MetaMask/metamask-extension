@@ -46,9 +46,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        await driver.clickElement('[data-testid="bottom-nav-activity"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '[data-tx-status="confirmed"]',

@@ -17,6 +17,7 @@ import {
 import { moneyFormatUsd } from '../../../../helpers/money/format';
 import { getMoneyAccountWithdrawTransferDetails } from '../../../../pages/confirmations/utils/money-account-withdraw';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import type { ToastStatus } from '../../toast-listener/shared';
 
 export type ToastLabel = { title: string; description?: string };
@@ -133,6 +134,26 @@ function getWithdrawLabel(
   };
 }
 
+/**
+ * A quoted withdrawal transfers the mUSD to the money account itself and Pay
+ * delivers the output, so that transfer does not name the destination.
+ *
+ * @param transactionMeta - The withdrawal transaction.
+ * @returns The recipient, or `undefined` when the transfer stays on the money account.
+ */
+function getWithdrawRecipient(
+  transactionMeta: TransactionMeta | undefined,
+): string | undefined {
+  const { recipient } = getMoneyAccountWithdrawTransferDetails(transactionMeta);
+  if (
+    recipient &&
+    isEqualCaseInsensitive(recipient, transactionMeta?.txParams?.from ?? '')
+  ) {
+    return undefined;
+  }
+  return recipient;
+}
+
 function useWithdrawDestination(
   recipient: string | undefined,
 ): string | undefined {
@@ -187,9 +208,7 @@ export function useMoneyAccountToastLabel(
     !isDeposit &&
     Boolean(transactionMeta && isMoneyWithdrawTx(transactionMeta));
   const destination = useWithdrawDestination(
-    isWithdraw
-      ? getMoneyAccountWithdrawTransferDetails(transactionMeta).recipient
-      : undefined,
+    isWithdraw ? getWithdrawRecipient(transactionMeta) : undefined,
   );
 
   if (!transactionMeta) {

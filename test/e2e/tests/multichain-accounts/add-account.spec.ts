@@ -8,6 +8,7 @@ import {
   login,
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
+import { importAccountWithPrivateKey } from '../../page-objects/flows/add-wallet.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -80,6 +81,7 @@ describe('Add account', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('-2.8 ETH');
         await activityTab.waitPendingTxToNotBeVisible();
@@ -144,7 +146,7 @@ describe('Add account', function () {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
+        await importAccountWithPrivateKey(driver, TEST_PRIVATE_KEY);
 
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
@@ -216,7 +218,7 @@ describe('Add account', function () {
         await accountDetailsPage.navigateBack();
 
         // Create 3rd account with private key
-        await accountListPage.addNewImportedAccount(testPrivateKey);
+        await importAccountWithPrivateKey(driver, testPrivateKey);
 
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();

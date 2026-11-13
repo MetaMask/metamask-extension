@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
-  "addAWallet": {
-    "message": "Προσθήκη πορτοφολιού"
-  },
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση συμβολαίου"
   },
-  "convertAgain": {
-    "message": "Μετατροπή ξανά"
-  },
   "convertTokenToNFTDescription": {
     "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο είναι NFT. Το MetaMask υποστηρίζει πλέον εξ'ορισμού πλήρως τα NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας και να το προσθέσετε ως NFT;"
   },
@@ -4154,10 +4148,6 @@
   },
   "fieldRequired": {
     "message": "Απαιτείται η $1"
-  },
-  "fileImportFail": {
-    "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Κάντε κλικ για μεταφόρτωση ή σύρετε και αφήστε"
@@ -6343,19 +6333,6 @@
     "message": "Έγινε μετατροπή σε mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Η μετατροπή σε mUSD απέτυχε"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Μετατροπή $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Η μετατροπή σε mUSD ολοκληρώθηκε με επιτυχία"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Το μπόνους θα είναι διαθέσιμο για εξαργύρωση μέσα σε μία ημέρα."
-  },
   "musdConvert": {
     "message": "Μετατροπή"
   },
@@ -7401,10 +7378,6 @@
   "paste": {
     "message": "Επικόλληση"
   },
-  "pastePrivateKey": {
-    "message": "Εισάγετε τη συμβολοσειρά του ιδιωτικού σας κλειδιού εδώ:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Πληρωμή με",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8447,7 +8420,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "επικοινωνήστε με την υποστήριξη",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Ορισμένες υπηρεσίες είναι προσωρινά μη διαθέσιμες. $1, ή $2.",
@@ -8455,7 +8428,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Δείτε τις επιλογές σας στις Συχνές Ερωτήσεις",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Αντιμετωπίζουμε διακοπή λειτουργίας",
@@ -8882,7 +8855,7 @@
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
   },
   "perpsWithdrawTooltip": {
-    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
+    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8983,10 +8956,6 @@
   "privateKeyHidden": {
     "message": "Το ιδιωτικό κλειδί είναι κρυφό",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Εμφάνιση/απόκρυψη της εισαγωγής του ιδιωτικού κλειδιού",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Αυτό το ιδιωτικό κλειδί είναι ορατό",
@@ -11946,9 +11915,6 @@
     "message": "εδώ",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Περιλαμβάνεται"
-  },
   "swapGasFeesSplit": {
     "message": "Τα τέλη δικτύου που εμφανίζονταν στην προηγούμενη οθόνη κατανέμονται σε αυτές τις δύο συναλλαγές."
   },
@@ -12695,9 +12661,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."
-  },
-  "usedByClients": {
-    "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"
