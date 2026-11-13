@@ -4499,28 +4499,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
-        // Limit the capabilities in the session properties to the EVM chains
-        // the session permits, instead of every configured network.
-        getCapabilities: async ({ address }) => {
-          const caveat = this.permissionController.getCaveat(
-            origin,
-            Caip25EndowmentPermissionName,
-            Caip25CaveatType,
-          );
-          const chainIds = getPermittedEthChainIds(caveat.value);
-          if (chainIds.length === 0) {
-            return {};
-          }
-          // Best effort, so the session handshake does not wait on slow or
-          // unreachable RPC endpoints. Dapps can still call
-          // `wallet_getCapabilities`.
-          const capabilities = await safelyExecuteWithTimeout(
-            () => this.getEip5792Capabilities(address, chainIds),
-            true,
-            SESSION_CAPABILITIES_TIMEOUT_MS,
-          );
-          return capabilities ?? {};
-        },
+        // TEMPORARY EXPERIMENT: stubbed to isolate E2E failures.
+        getCapabilities: async () => ({}),
       }),
     );
 
