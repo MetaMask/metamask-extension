@@ -7,21 +7,23 @@
 
 set -euo pipefail
 
-# Stale suggestion reviews are removed on every run, including a clean one.
-bash .github/scripts/e2e-api-mock-dismiss-stale-suggestions.sh
-
 MARKER="<!-- e2e-api-mock-sync -->"
-# One comment. Exit 0 means the fixtures match, so delete a previous drift
-# comment. Other non-drift exits leave it: a fetch failure or a refused
-# write did not confirm the drift is gone.
+# Exit 0 is the only confirmed clean sync: the fixtures match and every fetch
+# that was attempted succeeded. Exit 6 is a refused write on a row this pull
+# request did not change. The check passes, and the drift comment stays.
+# Exits 2 and 5 also leave it. Exit 1 and 4 update it.
 COMMENT_IDS="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id")"
-if [ "${EXIT:-1}" != "1" ] && [ "${EXIT:-1}" != "4" ]; then
-  if [ "${EXIT:-1}" = "0" ] && [ -n "${COMMENT_IDS}" ]; then
+if [ "${EXIT:-1}" = "0" ]; then
+  bash .github/scripts/e2e-api-mock-dismiss-stale-suggestions.sh
+  if [ -n "${COMMENT_IDS}" ]; then
     while IFS= read -r COMMENT_ID || [ -n "${COMMENT_ID}" ]; do
       [ -z "${COMMENT_ID}" ] && continue
       gh api --method DELETE "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}"
     done <<< "${COMMENT_IDS}"
   fi
+  exit 0
+fi
+if [ "${EXIT:-1}" != "1" ] && [ "${EXIT:-1}" != "4" ]; then
   exit 0
 fi
 

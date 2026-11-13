@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 # Deletes suggestion comments from earlier sync reviews (marked
-# <!-- e2e-api-mock-sync-review -->) that do not match the current drift.
-# A clean run has no suggest-plan.json, so every such review is stale.
+# <!-- e2e-api-mock-sync-review -->). Only a confirmed clean sync (exit 0)
+# may do this. A fetch failure or a refused write has no suggest-plan.json
+# either, and must not treat a live suggestion review as stale.
 #
-# Env: GH_TOKEN, GITHUB_REPOSITORY, PR_NUMBER.
-# Optional file: suggest-plan.json, with a .hash for the current drift.
+# Env: GH_TOKEN, GITHUB_REPOSITORY, PR_NUMBER, EXIT.
+# EXIT must be 0. Optional file: suggest-plan.json, with a .hash to keep.
 
 set -euo pipefail
+
+if [ "${EXIT:-}" != "0" ]; then
+  echo "skip stale suggestion cleanup: exit ${EXIT:-unset} did not confirm a clean sync" >&2
+  exit 0
+fi
 
 MARKER="<!-- e2e-api-mock-sync-review -->"
 KEEP_HASH=""

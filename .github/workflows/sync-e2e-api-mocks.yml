@@ -10,8 +10,9 @@ name: Sync E2E API Mocks
 # drift is small and in the pull request diff, one review of suggestion
 # blocks lets the author commit it. Nothing is pushed. Fork pull requests are
 # skipped. A fetch failure does not fail. A refused write fails (exit 5) only
-# when it is on a row this pull request changed. When there is no drift, an
-# existing sync comment is removed, and stale suggestion reviews are deleted.
+# when it is on a row this pull request changed. A refused write on any other
+# row is exit 6: the check passes and the drift comment stays. Only exit 0
+# removes that comment and stale suggestion reviews.
 #
 # weekly: Mondays and workflow_dispatch. Commits all drift to
 # sync/e2e-api-mocks and opens or updates one labeled PR. The push uses
@@ -90,12 +91,12 @@ jobs:
           # suggestions but does not fail. 2: a fetch failed and nothing was
           # written, which does not fail. 3: an api-responses fixture has no
           # sources.json entry, which fails. 5: a refused write on a row this
-          # pull request changed, which fails. A refused write on any other
-          # row warns and does not change the exit code.
+          # pull request changed, which fails. 6: a refused write on any other
+          # row. The check passes, and the drift comment is kept.
           if [ "${EXIT}" -eq 1 ] || [ "${EXIT}" -eq 4 ]; then
             echo "DRIFT=true" >> "${GITHUB_OUTPUT}"
           fi
-          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ] || [ "${EXIT}" -eq 4 ]
+          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ] || [ "${EXIT}" -eq 4 ] || [ "${EXIT}" -eq 6 ]
 
       - name: Record the fixture diff
         if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
@@ -145,17 +146,28 @@ jobs:
           HASH="$(jq -r .hash suggest-plan.json)"
           gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews?per_page=100" \
             | jq 'add // []' > pr-reviews.json
-          if jq -e --arg marker "${MARKER}" --arg hash "${HASH}" '
-            [.[] | select(.user.login == "github-actions[bot]") | select((.body // "") | contains($marker)) | select((.body // "") | contains($hash))] | length > 0
-          ' pr-reviews.json > /dev/null; then
-            printf '%s\n' suggestions > suggest-mode.txt
-            printf '\n' > suggest-reason.txt
-            echo "Suggestion review already matches this drift."
-            {
-              echo
+          # A COMMENT review cannot be dismissed, so deleting its suggestion
+          # comments leaves the hash in the review body. Skip re-posting only
+          # when a matching review still has those comments.
+          MATCHING="$(jq -r --arg marker "${MARKER}" --arg hash "${HASH}" '
+            .[] | select(.user.login == "github-actions[bot]") | select((.body // "") | contains($marker)) | select((.body // "") | contains($hash)) | .id
+          ' pr-reviews.json)"
+          if [ -n "${MATCHING}" ]; then
+            gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/comments?per_page=100" \
+              | jq 'add // []' > pr-review-comments.json
+            if jq -e --arg ids "${MATCHING}" '
+              ($ids | split("\n") | map(select(length > 0))) as $reviewIds
+              | [.[] | select(($reviewIds | index(.pull_request_review_id | tostring)) != null)] | length > 0
+            ' pr-review-comments.json > /dev/null; then
+              printf '%s\n' suggestions > suggest-mode.txt
+              printf '\n' > suggest-reason.txt
               echo "Suggestion review already matches this drift."
-            } >> "${GITHUB_STEP_SUMMARY}"
-            exit 0
+              {
+                echo
+                echo "Suggestion review already matches this drift."
+              } >> "${GITHUB_STEP_SUMMARY}"
+              exit 0
+            fi
           fi
           OLD="$(jq -r --arg marker "${MARKER}" '
             .[] | select(.user.login == "github-actions[bot]") | select((.body // "") | contains($marker)) | .id

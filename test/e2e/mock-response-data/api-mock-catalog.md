@@ -20,7 +20,7 @@ written. Exit 4 means the only writes were rows this pull request did not
 change, so a pull-request run does not fail. Exit 5 means a refused write was
 on a row this run blocks on (every row weekly, or a row the pull request
 changed) and is never reported as exit 4. A refused write on any other row
-warns and does not fail. `$NAME` in an endpoint comes from the environment; the row is
+is exit 6: the check passes, and it is not a clean run. `$NAME` in an endpoint comes from the environment; the row is
 skipped, with a warning, without it. `derived` follows another row; `skip` is
 not fetched, for the reason given. A run with drift prints each changed API
 (its id, endpoint and what changed) and any fetch errors. Every Monday,

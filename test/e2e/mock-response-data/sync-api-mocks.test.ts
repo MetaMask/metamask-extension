@@ -288,6 +288,10 @@ describe('catalog skips and refused writes', () => {
     );
     expect(syncExitCode({ ...base, changed: true, refused: true })).toBe(1);
     expect(syncExitCode({ ...base, changedOther: true })).toBe(4);
+    expect(syncExitCode({ ...base, refusedOther: true })).toBe(6);
+    expect(
+      syncExitCode({ ...base, refusedOther: true, changedOther: true }),
+    ).toBe(4);
     expect(syncExitCode(base)).toBe(0);
   });
 });
