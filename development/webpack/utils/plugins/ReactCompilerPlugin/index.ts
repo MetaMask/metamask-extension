@@ -5,7 +5,7 @@ import {
   type ReactCompilerStats,
   type ReactCompilerStatus,
   type ReactCompilerStatusCounts,
-} from '../../loaders/reactCompilerLoader';
+} from '../../loaders/reactCompilerLoader.ts';
 
 const STATUS_ORDER = [
   'error',

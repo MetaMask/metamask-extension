@@ -1,3 +1,5 @@
+import { webpackFile } from '../lib/build-paths.ts';
+
 /**
  * @file Executes the build process in a child process environment, ensuring it
  * was correctly spawned by checking for a `PPID` environment variable that
@@ -15,11 +17,11 @@ async function main() {
   const PPID = Number(process.env.PPID);
   if (isNaN(PPID) || PPID !== process.ppid) {
     throw new Error(
-      `${__filename} must be run with a \`PPID\` environment variable. See ${__dirname}/launch.ts for an example.`,
+      `${webpackFile('fork')} must be run with a \`PPID\` environment variable. See ${webpackFile('launch')} for an example.`,
     );
   }
 
-  const { build } = await import('./build');
+  const { build } = await import('./build.ts');
   await build(() => {
     // stop writing now because the parent process is still listening to these
     // streams and we don't want any more output to be shown to the user.
@@ -33,5 +35,3 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
-
-export {};

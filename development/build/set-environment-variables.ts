@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert';
-import phishingWarningPackageJson from '@metamask/phishing-warning/package.json';
-import { ENVIRONMENT, type BuildEnvironment } from './constants';
+import phishingWarningPackageJson from '@metamask/phishing-warning/package.json' with { type: 'json' };
+import { ENVIRONMENT, type BuildEnvironment } from './constants.ts';
 
 export type { BuildEnvironment };
 

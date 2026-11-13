@@ -4,8 +4,10 @@ import {
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
+import { webpackFile } from '../../../lib/build-paths.ts';
 
-const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
+const getWrapperPath = () =>
+  webpackFile('utils/loaders/reactCompilerLoaderWrapper');
 
 /**
  * React Compiler result status stored in module.buildInfo (not buildMeta,
@@ -88,7 +90,7 @@ export type ReactCompilerLoaderConfig = {
  * is requested. Falls back to the direct `react-compiler-webpack` loader
  * otherwise (e.g. LavaMoat policy generation where the wrapper isn't
  * resolvable). While worker builds still cannot record buildInfo stats, using
- * the wrapper there keeps the loader path consistent across the direct `tsx`
+ * the wrapper there keeps the loader path consistent across the native Node
  * and emitted `.webpack` CJS execution paths.
  *
  * @param config - Configuration options for the React Compiler loader.

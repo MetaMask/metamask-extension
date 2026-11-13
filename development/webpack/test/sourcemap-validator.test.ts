@@ -12,11 +12,11 @@ import {
   discoverWebpackBundles,
   validateBundle,
   main,
-} from '../sourcemap-validator';
+} from '../sourcemap-validator.ts';
 
 const noop = () => undefined;
 
-const FIXTURES_DIR = join(__dirname, 'fixtures');
+const FIXTURES_DIR = join(import.meta.dirname, 'fixtures');
 const EMPTY_FIXTURE = join(FIXTURES_DIR, 'sourcemap-validator-empty');
 const DIST_FIXTURE = join(FIXTURES_DIR, 'sourcemap-validator-dist');
 

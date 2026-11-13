@@ -4,12 +4,16 @@ import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { describe, it } from 'node:test';
 
+const nodeRequire = createRequire(import.meta.url);
+
 type GlobalsPolicy = Record<string, boolean | 'write'>;
 type Policy = {
   resources: Record<string, { globals?: GlobalsPolicy }>;
 };
 
-const requireFromLavaMoat = createRequire(require.resolve('@lavamoat/webpack'));
+const requireFromLavaMoat = createRequire(
+  nodeRequire.resolve('@lavamoat/webpack'),
+);
 const createEndowmentsToolkit = requireFromLavaMoat(
   'lavamoat-core/src/endowmentsToolkit',
 ) as () => {
@@ -28,7 +32,7 @@ describe('NetworkController LavaMoat policy', () => {
       it(`${manifest}/${variant} preserves native receivers when binding RPC globals`, () => {
         const readPolicy = (filename: string): GlobalsPolicy => {
           const path = resolve(
-            __dirname,
+            import.meta.dirname,
             `../../../lavamoat/webpack/${manifest}/${variant}/${filename}.json`,
           );
           const policy = JSON.parse(readFileSync(path, 'utf8')) as Policy;
