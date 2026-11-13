@@ -13,6 +13,10 @@ import type { Hex } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
+import {
+  getInternalEvmAddresses,
+  isTransactionTrusted,
+} from '../../../../shared/lib/transaction/enforced-simulations';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import type {
@@ -99,6 +103,17 @@ export function getTransactionControllerInstanceOptions({
     isSimulationEnabled: () =>
       initMessenger.call('PreferencesController:getState')
         .useTransactionSimulations,
+    isTransactionTrusted: (transactionMeta) => {
+      const flatState = getFlatState();
+
+      return isTransactionTrusted(transactionMeta, {
+        addressSecurityAlertResponses:
+          flatState.addressSecurityAlertResponses ?? {},
+        internalAddresses: getInternalEvmAddresses(
+          Object.values(flatState.internalAccounts?.accounts ?? {}),
+        ),
+      });
+    },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     trace: traceAsControllerCallback,

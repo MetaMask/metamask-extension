@@ -46,7 +46,6 @@ type ControllerMessengerCallback = (
 export type MessengerClientsToInitialize =
   | 'AccountTrackerController'
   | 'AuthenticationController'
-  | 'ClientController'
   | 'CronjobController'
   | 'DeFiPositionsController'
   | 'DeFiPositionsControllerV2'

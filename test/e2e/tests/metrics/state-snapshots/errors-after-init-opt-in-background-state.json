@@ -254,6 +254,7 @@
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
     "hasSeenOnboardingCompletionPage": true,
+    "onboardingJourneyEnded": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },

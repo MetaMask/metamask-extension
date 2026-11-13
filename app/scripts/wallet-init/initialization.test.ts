@@ -1,6 +1,8 @@
 import { Wallet } from '@metamask/wallet';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
+import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
+import { unrestrictedMethods } from '../controllers/permissions';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -179,7 +181,15 @@ describe('initializeWallet', () => {
           },
         },
         passkeyController: 'passkey-options',
+        permissionController: {
+          caveatSpecifications: expect.any(Object),
+          permissionSpecifications: expect.any(Object),
+          unrestrictedMethods,
+        },
         seedlessOnboardingController: 'seedless-onboarding-options',
+        selectedNetworkController: {
+          domainProxyMap: new WeakRefObjectMap(),
+        },
         shieldApiService: 'shield-api-service-options',
         shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',

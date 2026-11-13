@@ -22,15 +22,20 @@ import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
+import { TraceName, TraceOperation } from '../../shared/lib/trace';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';
 import * as actions from './actions';
@@ -3551,6 +3556,187 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6', 'mainnet')),
       ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#startOAuthLogin', () => {
+    const oauthLoginResult = {
+      authConnection: AuthConnection.Google,
+    };
+    const parentTraceContext = {
+      _name: TraceName.OnboardingSocialLoginAttempt,
+    };
+
+    const buildState = ({
+      firstTimeFlowType = FirstTimeFlowType.create,
+      completedOnboarding = false,
+    } = {}) => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        firstTimeFlowType,
+        completedOnboarding,
+      },
+    });
+
+    function stubBackground({ authenticateError } = {}) {
+      const startOAuthLoginStub = sinon.stub().resolves(oauthLoginResult);
+      const preloadToprfNodeDetailsStub = sinon.stub().resolves();
+      const authenticateStub = authenticateError
+        ? sinon.stub().rejects(authenticateError)
+        : sinon.stub().resolves({ isNewUser: true });
+
+      background.getApi.returns({
+        startOAuthLogin: startOAuthLoginStub,
+        preloadToprfNodeDetails: preloadToprfNodeDetailsStub,
+        authenticate: authenticateStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      return {
+        startOAuthLoginStub,
+        preloadToprfNodeDetailsStub,
+        authenticateStub,
+      };
+    }
+
+    afterEach(() => {
+      sinon.restore();
+      jest.restoreAllMocks();
+    });
+
+    it('authenticates with the parent trace and rehydration tags', async () => {
+      const store = mockStore(
+        buildState({
+          firstTimeFlowType: FirstTimeFlowType.socialImport,
+          completedOnboarding: false,
+        }),
+      );
+      const {
+        startOAuthLoginStub,
+        preloadToprfNodeDetailsStub,
+        authenticateStub,
+      } = stubBackground();
+      const bufferedTrace = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const traceTags = {
+        provider: AuthConnection.Google,
+        is_rehydration: 'true',
+      };
+
+      const isNewUser = await store.dispatch(
+        actions.startOAuthLogin(
+          AuthConnection.Google,
+          bufferedTrace,
+          bufferedEndTrace,
+          undefined,
+          parentTraceContext,
+        ),
+      );
+
+      expect(isNewUser).toBe(true);
+      expect(
+        startOAuthLoginStub.calledOnceWith(
+          AuthConnection.Google,
+          parentTraceContext,
+        ),
+      ).toBe(true);
+      expect(preloadToprfNodeDetailsStub.calledOnce).toBe(true);
+      expect(authenticateStub.calledOnceWith(oauthLoginResult)).toBe(true);
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        op: TraceOperation.OnboardingSecurityOp,
+        tags: traceTags,
+        parentContext: parentTraceContext,
+      });
+      expect(bufferedEndTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        data: { success: true },
+      });
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('omits the parent trace when none is supplied', async () => {
+      const store = mockStore(buildState());
+      const { startOAuthLoginStub } = stubBackground();
+      const bufferedTrace = jest.fn();
+
+      await store.dispatch(
+        actions.startOAuthLogin(AuthConnection.Apple, bufferedTrace),
+      );
+
+      expect(startOAuthLoginStub.calledOnceWith(AuthConnection.Apple)).toBe(
+        true,
+      );
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        op: TraceOperation.OnboardingSecurityOp,
+        tags: {
+          provider: AuthConnection.Apple,
+          is_rehydration: 'false',
+        },
+        parentContext: undefined,
+      });
+    });
+
+    it('tracks a seedless authentication failure and ends both traces', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      const store = mockStore({});
+      const authenticateError = new Error('seedless auth failed');
+      const { authenticateStub } = stubBackground({ authenticateError });
+      const bufferedTrace = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const trackEvent = jest.fn().mockResolvedValue(undefined);
+      const traceTags = {
+        provider: AuthConnection.Google,
+        is_rehydration: 'unknown',
+      };
+
+      await expect(
+        store.dispatch(
+          actions.startOAuthLogin(
+            AuthConnection.Google,
+            bufferedTrace,
+            bufferedEndTrace,
+            trackEvent,
+            parentTraceContext,
+          ),
+        ),
+      ).rejects.toThrow('seedless auth failed');
+
+      expect(authenticateStub.calledOnce).toBe(true);
+      expect(trackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.SocialLoginFailed,
+        category: MetaMetricsEventCategory.Onboarding,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Default}_${AuthConnection.Google}`,
+          is_rehydration: 'unknown',
+          failure_type: 'error',
+          error_category: 'seedless_auth',
+        },
+      });
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        op: TraceOperation.OnboardingSecurityOp,
+        tags: traceTags,
+        parentContext: parentTraceContext,
+      });
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+        op: TraceOperation.OnboardingError,
+        tags: traceTags,
+        parentContext: parentTraceContext,
+      });
+      expect(bufferedEndTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+      });
+      expect(bufferedEndTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        data: { success: false },
+      });
     });
   });
 
