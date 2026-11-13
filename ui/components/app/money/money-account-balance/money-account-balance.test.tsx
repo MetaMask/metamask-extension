@@ -17,6 +17,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -363,7 +364,12 @@ describe('MoneyAccountBalance', () => {
     fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID));
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      ftueOrigin: {
+        entryPoint: MoneyFtueEntryPoint.WalletHome,
+        componentName: MoneyComponentName.BalanceCard,
+      },
+    });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.WalletHome,
       componentName: MoneyComponentName.BalanceCard,
@@ -385,9 +391,7 @@ describe('MoneyAccountBalance', () => {
 
     fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID));
 
-    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
-      state: { stayOnHomePage: true },
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
     expect(mockInitiateDeposit).not.toHaveBeenCalled();
     expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
       redirectTarget: MoneyScreenName.MoneyHome,
@@ -403,9 +407,7 @@ describe('MoneyAccountBalance', () => {
       key: 'Enter',
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
-      state: { stayOnHomePage: true },
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
   });
 
   it('starts a deposit when the Add section around the button is clicked', () => {

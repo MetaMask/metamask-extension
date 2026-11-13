@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { isStrictHexString, type Hex } from '@metamask/utils';
+import { ORIGIN_METAMASK } from '../constants/app';
 
 export function isValidTransactionHash(hash: string) {
   return hash.length === 66 && isStrictHexString(hash);
@@ -119,7 +120,8 @@ export function isPostQuoteWithdrawTransaction(
  *
  * Most flows use `txParams.from`. Money Account deposits are signed by the
  * money account but funded by the account in `accountOverride`. Post-quote
- * withdraws keep `from` because their override is only the recipient.
+ * withdraws (including Money Account withdraws) keep `from` because their
+ * override is only the recipient, which must never be asked to sign.
  *
  * @param transactionMeta - The transaction metadata.
  * @param accountOverride - MetaMask Pay account override for the transaction.
@@ -155,4 +157,24 @@ export function isPerpsWithdrawTransaction(
   transactionMeta: TransactionMeta | undefined,
 ): boolean {
   return hasTransactionType(transactionMeta, PERPS_WITHDRAW_TYPES);
+}
+
+/**
+ * Checks whether the given transaction is a Perps deposit started in the
+ * wallet, either directly via `type` or via any `nestedTransactions` entry.
+ *
+ * In-wallet Perps deposits are tracked by the Perps controller and toasted by
+ * `PerpsDepositToast`. Deposits a dApp requests through `wallet_pay` have the
+ * dApp's origin instead.
+ *
+ * @param transactionMeta - The transaction metadata to check.
+ * @returns Whether the transaction is an in-wallet Perps deposit.
+ */
+export function isInWalletPerpsDepositTransaction(
+  transactionMeta: TransactionMeta | undefined,
+): boolean {
+  return (
+    transactionMeta?.origin === ORIGIN_METAMASK &&
+    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
+  );
 }

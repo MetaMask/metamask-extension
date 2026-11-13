@@ -46,7 +46,7 @@ jest.mock('../../pages/swaps/swaps.util', () => ({
 }));
 
 setBackgroundConnection({
-  getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token-for-tests'),
+  messengerCall: jest.fn().mockResolvedValue('mock-bearer-token-for-tests'),
 } as never);
 
 describe('useTokensWithFiltering', () => {

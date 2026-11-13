@@ -34,7 +34,6 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
           expectedBalance: '1.21M',
-          waitForNonEvmAccounts: false,
         });
 
         // deploy action
@@ -86,7 +85,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-          waitForNonEvmAccounts: false,
         });
 
         const contractAddress =
@@ -151,7 +149,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-          waitForNonEvmAccounts: false,
         });
 
         const contractAddress =
@@ -211,7 +208,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await login(driver, {
           expectedBalance:
             `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-          waitForNonEvmAccounts: false,
         });
 
         const contractAddress =

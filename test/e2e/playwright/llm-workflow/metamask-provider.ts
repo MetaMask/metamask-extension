@@ -18,7 +18,7 @@ import {
   type EnvironmentMode,
   ErrorCodes,
   generateSessionId,
-  knowledgeStore,
+  writeSessionMetadata,
 } from '@metamask/client-mcp-core';
 import { isHeadless, parseBoolean } from '../../../helpers/env';
 import type {
@@ -37,6 +37,7 @@ import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+const DEFAULT_ARTIFACTS_DIR = 'test-artifacts';
 
 // Preserve MM_HEADLESS as the explicit mm CLI override. Otherwise, share the
 // Playwright harness convention: honor PLAYWRIGHT_HEADLESS/HEADLESS, use
@@ -512,8 +513,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       schemaVersion: 1,
       sessionId,
       createdAt: startedAt,
-      goal: input.goal,
-      flowTags: input.flowTags ?? [],
       tags: input.tags ?? [],
       launch: {
         stateMode,
@@ -526,7 +525,12 @@ export class MetaMaskSessionManager implements ISessionManager {
       },
     };
 
-    await knowledgeStore.writeSessionMetadata(metadata);
+    // Writes <artifactsDir>/<sessionId>/session.json. Relative paths resolve
+    // against the daemon's working directory (the repo root).
+    await writeSessionMetadata(
+      this.workflowContext?.config?.artifactsDir ?? DEFAULT_ARTIFACTS_DIR,
+      metadata,
+    );
     this.sessionMetadata = metadata;
 
     return {
