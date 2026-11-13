@@ -11,6 +11,8 @@ type RawIssue = {
   body: string;
   author: {
     login: string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __typename: string;
   };
   labels: {
     nodes: {
@@ -44,6 +46,7 @@ export async function retrieveIssue(
             body
             author {
               login
+              __typename
             }
             labels(first: 100) {
               nodes {
@@ -81,6 +84,7 @@ export async function retrieveIssue(
     createdAt: retrieveIssueResult?.repository?.issue?.createdAt,
     body: retrieveIssueResult?.repository?.issue?.body,
     author: retrieveIssueResult?.repository?.issue?.author?.login,
+    authorType: retrieveIssueResult?.repository?.issue?.author?.__typename,
     labels: retrieveIssueResult?.repository?.issue?.labels?.nodes,
   };
 
