@@ -195,6 +195,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PasskeyController:clearState',
       'SubscriptionController:clearState',
       'ClaimsController:clearState',
+      'AddressBookController:getState',
       'AddressBookController:clear',
       'PreferencesController:resetState',
       'OnboardingController:resetOnboarding',
