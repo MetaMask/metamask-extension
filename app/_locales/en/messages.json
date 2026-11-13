@@ -3672,7 +3672,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain exactly as they are now. This process may take up to 30 days. View our $1.",
-    "description": "$1 will have text saying Privacy Notice "
+    "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
