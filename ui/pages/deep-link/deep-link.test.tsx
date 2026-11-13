@@ -3,13 +3,14 @@ import { it as jestIt } from '@jest/globals';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   parse,
   type ParsedDeepLink,
 } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
+import type { SignatureStatus } from '../../../shared/lib/deep-links/verify';
 
 let DeepLink: typeof import('./deep-link').DeepLink;
 
@@ -25,11 +26,37 @@ jest.mock('../../components/app/deeplink-qr-code', () => ({
 
 const parseMock = jest.mocked(parse);
 
-function renderDeepLink(search: string) {
+function renderDeepLink(
+  search: string,
+  {
+    referralEnabled = true,
+    useExternalServices = true,
+  }: { referralEnabled?: boolean; useExternalServices?: boolean } = {},
+) {
   const store = configureMockStore([thunk])({
-    metamask: { preferences: {} },
+    metamask: {
+      preferences: {},
+      useExternalServices,
+      remoteFeatureFlags: {
+        rewardsMoneyControllerEnabled: {
+          enabled: referralEnabled,
+          minimumVersion: '0.0.0',
+        },
+      },
+    },
   });
   return renderWithProvider(<DeepLink />, store, `/link?${search}`);
+}
+
+function mockParsedLink(
+  destination: { path: string; query: URLSearchParams } | { redirectTo: URL },
+  signature: SignatureStatus = 'missing',
+) {
+  parseMock.mockResolvedValue({
+    signature,
+    destination,
+    route: { getTitle: () => 'deepLink_theHomePage' },
+  } as unknown as ParsedDeepLink);
 }
 
 describe('DeepLink', () => {
@@ -160,5 +187,105 @@ describe('DeepLink', () => {
         expect(anchor.tagName).toBe('A');
       },
     );
+  });
+
+  describe('referral interstitial copy', () => {
+    const homeDestination = { path: '/', query: new URLSearchParams() };
+    const continueDescription = tEn('deepLink_ContinueDescription', [
+      tEn('deepLink_theHomePage'),
+    ]);
+    const cautionDescription = tEn('deepLink_ThirdPartyDescription', [
+      continueDescription,
+    ]);
+
+    async function expectCopy(
+      { findByRole, findByTestId }: ReturnType<typeof renderDeepLink>,
+      title: string,
+      description: string,
+    ) {
+      expect(await findByRole('heading', { name: title })).toBeInTheDocument();
+      expect(await findByTestId('deep-link-description')).toHaveTextContent(
+        description,
+      );
+    }
+
+    jestIt.each<[SignatureStatus, string]>([
+      ['missing', '/home?ref=ABCD12'],
+      ['invalid', '/home?ref=ABCD12'],
+      ['missing', '/home?ref=%20abcd12%20'],
+    ])(
+      'shows the referral copy for a %s signature and %s',
+      async (signature, u) => {
+        mockParsedLink(homeDestination, signature);
+        const result = renderDeepLink(new URLSearchParams({ u }).toString());
+
+        await expectCopy(
+          result,
+          messages.deepLink_ReferralTitle.message,
+          messages.deepLink_ReferralDescription.message,
+        );
+        expect(
+          await result.findByTestId('deep-link-continue-button'),
+        ).toHaveTextContent(messages.deepLink_Continue.message);
+        expect(result.queryByTestId('deep-link-checkbox')).toBeNull();
+      },
+    );
+
+    jestIt.each([
+      ['no ref', '/home'],
+      ['a short ref', '/home?ref=ab'],
+      ['a malformed ref', '/home?ref=AB!'],
+      ['a duplicate ref', '/home?ref=ABC&ref=DEF'],
+    ])('keeps the caution copy for %s', async (_, u) => {
+      mockParsedLink(homeDestination);
+
+      await expectCopy(
+        renderDeepLink(new URLSearchParams({ u }).toString()),
+        messages.deepLink_Caution.message,
+        cautionDescription,
+      );
+    });
+
+    jestIt.each([
+      ['the referral flag is off', { referralEnabled: false }],
+      ['Basic Functionality is off', { useExternalServices: false }],
+    ])('keeps the caution copy when %s', async (_, options) => {
+      mockParsedLink(homeDestination);
+
+      await expectCopy(
+        renderDeepLink(
+          new URLSearchParams({ u: '/home?ref=ABCD12' }).toString(),
+          options,
+        ),
+        messages.deepLink_Caution.message,
+        cautionDescription,
+      );
+    });
+
+    it('keeps the caution copy for a link that redirects to a website', async () => {
+      mockParsedLink({
+        redirectTo: new URL('https://metamask.io/news/top-traders'),
+      });
+
+      await expectCopy(
+        renderDeepLink(
+          new URLSearchParams({ u: '/top-traders?ref=ABCD12' }).toString(),
+        ),
+        messages.deepLink_Caution.message,
+        cautionDescription,
+      );
+    });
+
+    it('keeps the redirecting copy for a signed link with a ref', async () => {
+      mockParsedLink(homeDestination, 'valid');
+
+      await expectCopy(
+        renderDeepLink(
+          new URLSearchParams({ u: '/home?ref=ABCD12' }).toString(),
+        ),
+        messages.deepLink_RedirectingToMetaMask.message,
+        continueDescription,
+      );
+    });
   });
 });
