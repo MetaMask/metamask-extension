@@ -36,6 +36,11 @@ const GATED_METRIC_VALUES = [
   METRIC.swap.cls,
   METRIC.assetDetails.cls,
   METRIC.solanaAssetDetails.cls,
+  METRIC.solanaAssetDetails.assetClickToPriceChart,
+  METRIC.assetDetails.assetClickToPriceChart,
+  METRIC.bridgeUserActions.bridge_load_page,
+  METRIC.bridgeUserActions.bridge_load_asset_picker,
+  METRIC.bridgeUserActions.bridge_search_token,
 
   // Onboarding form-to-form transitions
   //
