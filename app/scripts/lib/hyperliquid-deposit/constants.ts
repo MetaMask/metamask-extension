@@ -1,4 +1,4 @@
-import type { CaipAssetType, Hex } from '@metamask/utils';
+import type { CaipAssetType } from '@metamask/utils';
 
 // CAIP asset ID for Arbitrum USDC (eip155:42161/erc20:address).
 export const HYPERLIQUID_DEPOSIT_USDC_CAIP_ID =

@@ -1,45 +1,72 @@
 # Useful Screen Ready
 
 `Useful Screen Ready` (`ui.screen.performance`) measures initial document
-navigation (`performance.timeOrigin`) to committed useful content, followed by
-two animation frames. This is a paint opportunity proxy, not an actual paint timestamp.
+navigation (`performance.timeOrigin`) to a page's explicit readiness signal.
+The shared API emits no results until a page registers and reports a measurement.
 
-## Screen API
+## Page-owned measurement
 
-Call `useUsefulScreenReady(screen, ready)` in a component whose commit includes
-the useful screen content. The JSX equivalent, `<UsefulScreenReady screen="unlock"
-ready={ready} />`, supports the existing class-based Unlock screen.
+Register before routing begins, using initial application state to decide
+eligibility. Keep registration and navigation rules alongside the page. An
+application bootstrap call connects that adapter to the initial state and router;
+the shared measurement helper does not interpret either.
 
-| Screen         | Readiness                                                                                      |
-| -------------- | ---------------------------------------------------------------------------------------------- |
-| `unlock`       | Onboarded password/passkey form, without lockout, submission, or a blocking Unlock modal.      |
-| `home`         | Tokens list or legitimate empty state, committing with the account overview.                   |
-| `confirmation` | Transaction details with a type and transaction parameters, committing with the action footer. |
+```ts
+const measurement = registerDocumentLoadMeasurement({
+  screen: 'example',
+  tags: { 'example.initial_state': true },
+});
 
-No network refresh, password input, animation, simulation, security check, or
-approval-button enabling is required. Existing approval validation is unchanged.
-Other initial Home tabs, signatures, and non-transaction approvals are outside v1.
-Keep the marker with the useful content if introducing separate Suspense boundaries.
+measurement.reportReady(); // Record elapsed document loading time.
+measurement.discard(); // Permanently exclude this document from sampling.
+```
 
-## Measurement contract
+Both operations are terminal and idempotent. Reporting or discarding prevents
+later registrations from restarting sampling in the same document. Registration
+captures a copy of the supplied tags and the background initialization timestamp.
+Labels and tags must not contain URLs, request identifiers, or other private data.
 
-- At most one sample per document. Initial wallet state is captured before React
-  renders; a later Home visit after unlocking is excluded.
-- Startup `REPLACE` redirects are allowed. Subsequent `PUSH`/`POP`, unsupported
-  routes, hidden documents, and page close abandon measurement. Unmounting or
-  becoming unready cancels a pending report.
-- Create and immediately end the span when ready, backdating to document navigation.
-  Abandoned loads produce no successful sample or incomplete span.
-- Compare p50/p95 within matching `screen`, `wallet.ui_type`, `wallet.unlocked`,
-  `ui.background_initialized_before_navigation`, release, and browser cohorts.
-  Additional tags: `ui.navigation=document` and `ui.readiness_version=1`.
-- Background warmness uses an optional timestamp on the existing
-  `BACKGROUND_INITIALIZED` message: before navigation=true, afterward=false,
-  missing/invalid=unknown. No new RPC or wait. Initial wallet state is the state
-  received at UI startup, not necessarily the exact navigation instant.
+The page owns whether startup redirects are allowed, when leaving its initial
+visit invalidates measurement, and which content or interactions affect readiness.
+A router `REPLACE` alone does not establish that navigation is a startup redirect.
+Observe navigation before the page mounts, including while its code is loading.
+Expose the resulting handle through a page-owned context or props.
+
+## Optional React scheduling
+
+```ts
+useAfterPaint(isContentReady, measurement?.reportReady);
+```
+
+`useAfterPaint` schedules a callback after a ready commit and two animation frames.
+This allows a paint opportunity; it does not measure actual pixel presentation.
+Browsers can defer animation frames while a document is hidden.
+It cancels pending work when readiness becomes false, the callback changes, or the
+component unmounts. Becoming ready again can schedule a new callback.
+
+Scheduling cleanup never discards the measurement. This distinction allows
+StrictMode replay and temporary loading states without permanently excluding a
+valid load. The page explicitly calls `discard()` when the load is no longer
+eligible. The scheduling hook has no dependency on telemetry or routing.
+
+## Shared measurement contract
+
+- At most one sample per document. Discarded loads produce no successful sample
+  or incomplete span. A span is created and immediately ended when readiness is
+  reported, backdated to document navigation.
+- Page-close tracking starts before background initialization and permanently
+  excludes closed documents.
+- Document visibility does not affect eligibility, including Chrome side panels
+  that start hidden. Elapsed time includes time spent hidden.
+- Common tags are `screen`, `ui.navigation=document`, `ui.readiness_version=1`,
+  and `ui.background_initialized_before_navigation`. Integrations supply any
+  additional initial-state metadata. Compare timings within matching cohorts.
+- Background warmness uses the existing `BACKGROUND_INITIALIZED` message:
+  before navigation=true, afterward=false, not received=unknown. No new RPC or
+  wait is introduced.
 - Default sampling is 0.1%, with existing consent, remote overrides, and ceilings.
 
-Merge trace plumbing, then instrumentation, and collect a production baseline
-before optimizations. Live Sentry ingestion/dashboard availability must be verified
-after deployment. This metric covers completed foreground loads, not abandonment
-or failure rates; async enrichment can update content after readiness.
+Collect a production baseline before optimizations. Live Sentry ingestion and
+dashboard availability must be verified after deployment. This metric covers
+completed document loads, not abandonment or failure rates; asynchronous
+enrichment can update content after readiness.

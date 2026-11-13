@@ -2,7 +2,6 @@ import {
   CachedLastSelectedPaymentMethod,
   PricingResponse,
   PRODUCT_TYPES,
-  ProductType,
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';

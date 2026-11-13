@@ -77,14 +77,30 @@ function getStore({
   return configureStore(
     getMockConfirmStateForTransaction(confirmation, {
       metamask: {
-        currencyRates: {
-          ETH: {
-            conversionRate: 556.12,
-            usdConversionRate,
+        assetsInfo: {
+          'eip155:1/slip44:60': {
+            type: 'native',
+            decimals: 18,
+            symbol: 'ETH',
           },
-          SepoliaETH: {
-            conversionRate: 556.12,
-            usdConversionRate,
+          'eip155:11155111/slip44:60': {
+            type: 'native',
+            decimals: 18,
+            symbol: 'SepoliaETH',
+          },
+        },
+        assetsPrice: {
+          'eip155:1/slip44:60': {
+            assetPriceType: 'fungible',
+            price: 556.12,
+            usdPrice: usdConversionRate,
+            lastUpdated: 1,
+          },
+          'eip155:11155111/slip44:60': {
+            assetPriceType: 'fungible',
+            price: 556.12,
+            usdPrice: usdConversionRate,
+            lastUpdated: 1,
           },
         },
         preferences: {

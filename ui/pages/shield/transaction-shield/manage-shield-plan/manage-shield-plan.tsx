@@ -25,8 +25,6 @@ import CancelMembershipModal from '../components/cancel-membership-modal';
 import ApiErrorHandler from '../../../../components/app/api-error-handler';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../../shared/constants/subscriptions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../../asset/util';
 import { PaymentMethodRow } from '../payment-method-row';
 import { useSubscriptionPricing } from '../../../../hooks/subscription/useSubscriptionPricing';
 import { useHandlePayment } from '../../../../hooks/subscription/useHandlePayment';
@@ -38,6 +36,7 @@ import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import CryptoAccountDisplay from '../components/crypto-account-display';
+import { formatOptionalDate } from '../utils';
 
 const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   const t = useI18nContext();
@@ -158,9 +157,7 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     }
     return t('shieldTxDetails2Description', [
       isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly'),
-      getShortDateFormatterV2().format(
-        new Date(displayedShieldSubscription?.currentPeriodEnd),
-      ),
+      formatOptionalDate(displayedShieldSubscription.currentPeriodEnd),
     ]);
   }, [displayedShieldSubscription, isPastPlan, t]);
 
@@ -199,8 +196,10 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
             {isPastPlan && (
               <ButtonRow
                 title={t('shieldTxDetails1Title')}
-                description={`${getShortDateFormatterV2().format(new Date(displayedShieldSubscription?.currentPeriodStart))} - ${getShortDateFormatterV2().format(
-                  new Date(displayedShieldSubscription?.currentPeriodEnd),
+                description={`${formatOptionalDate(
+                  displayedShieldSubscription.currentPeriodStart,
+                )} - ${formatOptionalDate(
+                  displayedShieldSubscription.currentPeriodEnd,
                 )}`}
               />
             )}

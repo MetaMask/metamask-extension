@@ -9,9 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import featureFlagsModule from '../../shared/lib/feature-flags';
-
-const { FeatureFlagNames } = featureFlagsModule;
+import { FeatureFlagNames } from '../../shared/lib/feature-flags';
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
@@ -25,11 +23,11 @@ const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
  * Constants that must be resolved by reading their source file (because
  * importing them would pull in browser-only dependencies).
  */
-const FILE_SOURCES: Array<{
+const FILE_SOURCES: {
   key: string;
   file: string;
   exportName: string;
-}> = [
+}[] = [
   {
     key: 'ASSETS_UNIFY_STATE_FLAG',
     file: 'shared/lib/assets-unify-state/remote-feature-flag.ts',
@@ -86,6 +84,11 @@ const FILE_SOURCES: Array<{
     exportName: 'TOKEN_DETAILS_ADVANCED_CHARTS_FLAG',
   },
   {
+    key: 'TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG',
+    file: 'shared/lib/assets/advanced-charts-feature-flags.ts',
+    exportName: 'TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG',
+  },
+  {
     key: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
     file: 'shared/lib/money/feature-flags.ts',
     exportName: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
@@ -116,14 +119,44 @@ const FILE_SOURCES: Array<{
     exportName: 'MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME',
   },
   {
+    key: 'MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+  },
+  {
     key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
     file: 'shared/lib/money/vault-config.ts',
     exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
   },
   {
+    key: 'MONEY_ACCOUNT_PREMIUM_VAULT_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/vault-config.ts',
+    exportName: 'MONEY_ACCOUNT_PREMIUM_VAULT_CONFIG_FLAG_NAME',
+  },
+  {
     key: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
     file: 'shared/lib/money/chomp-config.ts',
     exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+  },
+  {
+    key: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+    file: 'app/scripts/lib/transaction/caveats.ts',
+    exportName: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+  },
+  {
+    key: 'REWARDS_MONEY_CONTROLLER_FLAG',
+    file: 'app/scripts/messenger-client-init/rewards-money-controller-init.ts',
+    exportName: 'REWARDS_MONEY_CONTROLLER_FLAG',
   },
 ];
 

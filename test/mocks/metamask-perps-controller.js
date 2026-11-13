@@ -45,6 +45,7 @@ const mockPerpsEventPropertyKeys = {
   BUTTON_LOCATION: 'button_location',
   OPEN_POSITION: 'open_position',
   OPEN_ORDER: 'open_order',
+  OUTAGE_BANNER_SHOWN: 'outage_banner_shown',
   MAX_SLIPPAGE_PCT: 'max_slippage_pct',
   MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
   ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',
@@ -467,7 +468,21 @@ function mockSelectVisibleCandleCount(state) {
     : mockDefaultVisibleCandleCount;
 }
 
+// Shared Perps calculations come from the real package so tests assert Core's
+// formulas, not a copy. These modules import only `bignumber.js` and constants,
+// so they load without the Hyperliquid SDK.
+const mockCloseCalculations = require('@metamask/perps-controller/utils/closeCalculations');
+const mockTpslCalculations = require('@metamask/perps-controller/utils/tpslCalculations');
+const mockPerpsConfig = require('@metamask/perps-controller/constants/perpsConfig');
+const mockPerpsFormatters = require('@metamask/perps-controller/utils/perpsFormatters');
+
 module.exports = {
+  ...mockCloseCalculations,
+  ...mockTpslCalculations,
+  CLOSE_POSITION_CONFIG: mockPerpsConfig.CLOSE_POSITION_CONFIG,
+  TP_SL_PRECISION_CONFIG: mockPerpsConfig.TP_SL_PRECISION_CONFIG,
+  formatPerpsFiat: mockPerpsFormatters.formatPerpsFiat,
+  formatPnl: mockPerpsFormatters.formatPnl,
   DEFAULT_ORDER_BOOK_PREFERENCES: mockDefaultOrderBookPreferences,
   DEFAULT_PRO_LAYOUT_PREFERENCES: mockDefaultProLayoutPreferences,
   DEFAULT_SELECTED_ORDER_TYPE: 'market',

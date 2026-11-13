@@ -4,6 +4,7 @@ import { type TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
+  selectTransactionPayFiatPaymentByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayQuoteErrorByTransactionId,
@@ -21,6 +22,10 @@ import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
+}
+
+export function useTransactionPayFiatPayment() {
+  return useTransactionPayData(selectTransactionPayFiatPaymentByTransactionId);
 }
 
 export function useTransactionPayQuoteError() {
@@ -74,12 +79,19 @@ export function useTransactionPayIsPostQuote() {
 }
 
 export function useIsTransactionPayQuotePending() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isAmountPending } =
+    useConfirmContext<TransactionMeta>();
   const isLoading = useIsTransactionPayLoading();
   const isPostQuote = useTransactionPayIsPostQuote();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  // The previous quote stays executable until the typed amount is committed.
+  // Keep quote rows loading so they do not show that amount and then correct it.
+  if (isAmountPending) {
+    return true;
+  }
 
   if (isPostQuoteWithdrawTransaction(currentConfirmation)) {
     if (isPerpsWithdrawTransaction(currentConfirmation)) {

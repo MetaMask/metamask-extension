@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -15,11 +16,16 @@ import {
   TextColor,
   TextAlign,
   FontWeight,
+  BoxBackgroundColor,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import type { FeeCalculationResult } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
-  PRICE_RANGES_UNIVERSAL,
+  PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../../../shared/lib/perps-formatters';
 import { PERPS_FALLBACK_FEE_RATES } from '../../../../../shared/constants/perps';
 import {
@@ -40,6 +46,40 @@ import {
   getPerpsNotionalUsd,
 } from '../../../../hooks/perps/perps-fee-utils';
 import type { Position } from '../types';
+import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
+import {
+  PERPS_CLOSE_UNAVAILABLE_DISPLAY,
+  estimateClosePositionReceive,
+  getCloseMarginWithPnl,
+  getClosePositionProviderId,
+  roundCloseUsd,
+} from './close-position-utils';
+
+/**
+ * A symbol's close fee rates. Without a resolved MetaMask rate, the discounted
+ * local fallback is applied at render time.
+ */
+type SymbolFeeRates = {
+  protocolFeeRate: number;
+  metamaskFeeRate?: number;
+};
+
+/**
+ * Sums figures that are each rounded to cents, or `undefined` when any is.
+ *
+ * @param values - The figures to add.
+ * @returns The total, or `undefined` when a figure is unavailable.
+ */
+function sumCloseUsd(values: (number | undefined)[]): number | undefined {
+  let total = 0;
+  for (const value of values) {
+    if (value === undefined) {
+      return undefined;
+    }
+    total += value;
+  }
+  return roundCloseUsd(total);
+}
 
 export type CloseAllPositionsModalProps = {
   isOpen: boolean;
@@ -58,28 +98,11 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 }) => {
   const t = useI18nContext();
 
+  // Summary amounts keep the cents Core rounds them to.
   const formatFiat = useCallback(
     (value: number | string) =>
-      formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
+      formatPerpsFiat(value, { ranges: PRICE_RANGES_MINIMAL_VIEW }),
     [],
-  );
-
-  const totalMargin = useMemo(
-    () =>
-      positions.reduce(
-        (sum, pos) => sum + (Number.parseFloat(pos.marginUsed) || 0),
-        0,
-      ),
-    [positions],
-  );
-
-  const totalUnrealizedPnl = useMemo(
-    () =>
-      positions.reduce(
-        (sum, pos) => sum + (Number.parseFloat(pos.unrealizedPnl) || 0),
-        0,
-      ),
-    [positions],
   );
 
   // Build a stable, JSON-serialisable key from position symbols + notionals
@@ -88,21 +111,33 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   const symbolNotionalPairs = useMemo(() => {
     const map = new Map<string, number>();
     for (const pos of positions) {
-      const notional = getPerpsNotionalUsd({ usdAmount: pos.positionValue });
+      let notional: number;
+      try {
+        notional = getPerpsNotionalUsd({
+          usdAmount: pos.positionValue,
+          allowEmpty: false,
+        });
+      } catch (error) {
+        if (error instanceof RangeError) {
+          return undefined;
+        }
+        throw error;
+      }
       map.set(pos.symbol, (map.get(pos.symbol) ?? 0) + notional);
     }
     return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
   }, [positions]);
 
   const symbolNotionalKey = useMemo(
-    () => JSON.stringify(symbolNotionalPairs),
+    () => JSON.stringify(symbolNotionalPairs ?? []),
     [symbolNotionalPairs],
   );
+  const hasInvalidNotional = symbolNotionalPairs === undefined;
 
-  const [rawProtocolFees, setRawProtocolFees] = useState(0);
-  const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
-  const [fallbackMetamaskFees, setFallbackMetamaskFees] = useState(0);
-  const [isLoadingFees, setIsLoadingFees] = useState(positions.length > 0);
+  // Per-symbol fee rates; undefined while the quotes load.
+  const [symbolFeeRates, setSymbolFeeRates] = useState<
+    Record<string, SymbolFeeRates> | undefined
+  >(undefined);
   const feeRequestId = useRef(0);
   const feeFetchKey = isOpen ? symbolNotionalKey : '';
   const [prevFeeFetchKey, setPrevFeeFetchKey] = useState(feeFetchKey);
@@ -110,11 +145,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   if (feeFetchKey !== prevFeeFetchKey) {
     setPrevFeeFetchKey(feeFetchKey);
     if (isOpen) {
-      const entries: [string, number][] = JSON.parse(symbolNotionalKey);
-      setRawProtocolFees(0);
-      setRawMetamaskFees(0);
-      setFallbackMetamaskFees(0);
-      setIsLoadingFees(entries.length > 0);
+      setSymbolFeeRates(undefined);
     }
   }
 
@@ -123,7 +154,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   );
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen || hasInvalidNotional) {
       return undefined;
     }
 
@@ -146,7 +177,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     );
 
     Promise.all(
-      entries.map(([symbol, notional]) =>
+      entries.map(([symbol]) =>
         submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
           {
             orderType: 'market' as const,
@@ -155,84 +186,103 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
             amount: String(totalNotional),
           },
         ])
-          .then((result) => ({
-            protocolFee:
-              notional *
-              (result?.protocolFeeRate ??
-                PERPS_FALLBACK_FEE_RATES.protocolFeeRate),
-            metamaskFee: notional * (result?.metamaskFeeRate ?? 0),
-            fallbackMetamaskFee:
-              result?.metamaskFeeRate === undefined
-                ? notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate
-                : 0,
-          }))
-          .catch(() => ({
-            protocolFee: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
-            metamaskFee: 0,
-            fallbackMetamaskFee:
-              notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
-          })),
+          .then((result): [string, SymbolFeeRates] => [
+            symbol,
+            {
+              protocolFeeRate:
+                result?.protocolFeeRate ??
+                PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
+              metamaskFeeRate: result?.metamaskFeeRate,
+            },
+          ])
+          // A failed quote uses the published protocol rate and the
+          // discounted fallback MetaMask rate, as the single-close fee hook
+          // does, so one symbol's quote error cannot block closing every
+          // position. The fee is still shown and charged at that estimate.
+          .catch((): [string, SymbolFeeRates] => [
+            symbol,
+            { protocolFeeRate: PERPS_FALLBACK_FEE_RATES.protocolFeeRate },
+          ]),
       ),
     )
-      .then((perSymbolFees) => {
+      .then((perSymbolRates) => {
         if (!cancelled && currentId === feeRequestId.current) {
-          setRawProtocolFees(
-            perSymbolFees.reduce((sum, f) => sum + f.protocolFee, 0),
-          );
-          setRawMetamaskFees(
-            perSymbolFees.reduce((sum, f) => sum + f.metamaskFee, 0),
-          );
-          setFallbackMetamaskFees(
-            perSymbolFees.reduce((sum, f) => sum + f.fallbackMetamaskFee, 0),
-          );
-          setIsLoadingFees(false);
+          setSymbolFeeRates(Object.fromEntries(perSymbolRates));
         }
       })
-      .catch(() => {
-        if (!cancelled) {
-          setIsLoadingFees(false);
-        }
-      });
+      // Each quote already falls back on error, so nothing reaches here.
+      .catch(() => undefined);
 
     return () => {
       cancelled = true;
     };
-  }, [isOpen, symbolNotionalKey]);
+  }, [isOpen, symbolNotionalKey, hasInvalidNotional]);
 
-  const estimatedFees = useMemo(() => {
-    // Controller rates are resolved; discount only local fallback estimates.
-    return (
-      rawProtocolFees +
-      rawMetamaskFees +
-      applyPerpsFallbackDiscount(fallbackMetamaskFees, metamaskFeeDiscountBips)
-    );
-  }, [
-    rawProtocolFees,
-    rawMetamaskFees,
-    fallbackMetamaskFees,
-    metamaskFeeDiscountBips,
-  ]);
+  const activeProvider = useSelector(selectPerpsActiveProvider);
 
-  const roundedMargin = useMemo(
-    () => Math.round(totalMargin * 100) / 100,
-    [totalMargin],
+  // Each position closes in full at its mark price, the price a market close
+  // is quoted at, with its symbol's fee rate.
+  const closeEstimates = useMemo(
+    () =>
+      positions.map((position) => {
+        const rates = symbolFeeRates?.[position.symbol];
+        // Controller rates are resolved; discount only the local fallback.
+        const feeRate =
+          rates === undefined
+            ? undefined
+            : rates.protocolFeeRate +
+              (rates.metamaskFeeRate ??
+                applyPerpsFallbackDiscount(
+                  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
+                  metamaskFeeDiscountBips,
+                ));
+        const closeSize = Math.abs(Number.parseFloat(position.size));
+        return estimateClosePositionReceive({
+          position,
+          providerId: getClosePositionProviderId(position, activeProvider),
+          closeSize,
+          price: Number.parseFloat(position.positionValue) / closeSize,
+          feeRate,
+        });
+      }),
+    [positions, symbolFeeRates, metamaskFeeDiscountBips, activeProvider],
   );
 
-  const roundedFees = useMemo(
-    () => Math.round(estimatedFees * 100) / 100,
-    [estimatedFees],
+  // Totals add the per-position figures at the cents Core rounds them to, so
+  // margin with PnL minus fees equals what you receive.
+  const totalMarginWithPnl = sumCloseUsd(
+    closeEstimates.map(getCloseMarginWithPnl),
+  );
+  const totalPnl = sumCloseUsd(
+    closeEstimates.map(({ realizedPnl }) => roundCloseUsd(realizedPnl)),
+  );
+  const totalFees = sumCloseUsd(
+    closeEstimates.map(({ fee }) => roundCloseUsd(fee)),
+  );
+  const totalReceive = sumCloseUsd(
+    closeEstimates.map(({ receive }) => receive),
   );
 
-  // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
-  // add unrealizedPnl separately (that would double-count).
-  // Derived from the same rounded values shown in the Margin/Fees rows so
-  // the summary always reconciles visually (avoids ±1 cent drift).
-  const youWillReceive = useMemo(
-    () => Math.round((roundedMargin - roundedFees) * 100) / 100,
-    [roundedMargin, roundedFees],
+  const formatCloseUsd = useCallback(
+    (value: number | undefined) =>
+      value === undefined || hasInvalidNotional
+        ? PERPS_CLOSE_UNAVAILABLE_DISPLAY
+        : formatFiat(value),
+    [formatFiat, hasInvalidNotional],
   );
 
-  const isSubmitDisabled = isSubmitting || positions.length === 0;
+  // As a single close does, a batch that would receive less than zero is
+  // blocked rather than submitted.
+  const hasNegativeReceive = totalReceive !== undefined && totalReceive < 0;
+
+  // Close all waits for every fee quote, as a single close does, so the user
+  // never confirms against an unquoted fee or receive.
+  const isSubmitDisabled =
+    isSubmitting ||
+    positions.length === 0 ||
+    hasInvalidNotional ||
+    totalFees === undefined ||
+    hasNegativeReceive;
 
   return (
     <Modal
@@ -282,34 +332,36 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                     textAlign={TextAlign.Right}
                     data-testid="perps-close-all-total-margin-value"
                   >
-                    {formatFiat(roundedMargin)}
+                    {formatCloseUsd(totalMarginWithPnl)}
                   </Text>
-                  <Text
-                    variant={TextVariant.BodyXs}
-                    color={TextColor.TextAlternative}
-                    textAlign={TextAlign.Right}
-                  >
-                    {t('perpsIncludesPnl', [
-                      <Text
-                        key="perps-close-all-pnl"
-                        variant={TextVariant.BodyXs}
-                        color={
-                          totalUnrealizedPnl >= 0
-                            ? TextColor.SuccessDefault
-                            : TextColor.ErrorDefault
-                        }
-                        asChild
-                      >
-                        <span>
-                          {totalUnrealizedPnl >= 0 ? '+' : '-'}
-                          {formatPerpsFiat(Math.abs(totalUnrealizedPnl), {
-                            minimumDecimals: 2,
-                            maximumDecimals: 2,
-                          })}
-                        </span>
-                      </Text>,
-                    ])}
-                  </Text>
+                  {totalPnl === undefined ? null : (
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                      textAlign={TextAlign.Right}
+                    >
+                      {t('perpsIncludesPnl', [
+                        <Text
+                          key="perps-close-all-pnl"
+                          variant={TextVariant.BodyXs}
+                          color={
+                            totalPnl >= 0
+                              ? TextColor.SuccessDefault
+                              : TextColor.ErrorDefault
+                          }
+                          asChild
+                        >
+                          <span data-testid="perps-close-all-pnl-value">
+                            {totalPnl >= 0 ? '+' : '-'}
+                            {formatPerpsFiat(Math.abs(totalPnl), {
+                              minimumDecimals: 2,
+                              maximumDecimals: 2,
+                            })}
+                          </span>
+                        </Text>,
+                      ])}
+                    </Text>
+                  )}
                 </Box>
               </Box>
 
@@ -332,7 +384,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-fees-value"
                 >
-                  {isLoadingFees ? '--' : `-${formatFiat(roundedFees)}`}
+                  {totalFees === undefined || hasInvalidNotional
+                    ? PERPS_CLOSE_UNAVAILABLE_DISPLAY
+                    : `-${formatFiat(totalFees)}`}
                 </Text>
               </Box>
 
@@ -354,10 +408,39 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-receive-value"
                 >
-                  {isLoadingFees
-                    ? '--'
-                    : formatFiat(Math.max(youWillReceive, 0))}
+                  {formatCloseUsd(totalReceive)}
                 </Text>
+              </Box>
+
+              {/* Mounted before the banner so screen readers announce it. */}
+              <Box
+                aria-live="polite"
+                aria-atomic="true"
+                data-testid="perps-close-all-error-live-region"
+              >
+                {hasNegativeReceive && (
+                  <Box
+                    backgroundColor={BoxBackgroundColor.ErrorMuted}
+                    className="mt-4 rounded-lg"
+                    padding={3}
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={2}
+                    data-testid="perps-close-all-error"
+                  >
+                    <Icon
+                      name={IconName.Warning}
+                      size={IconSize.Sm}
+                      color={IconColor.ErrorDefault}
+                    />
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.ErrorDefault}
+                    >
+                      {t('perpsInsufficientMargin')}
+                    </Text>
+                  </Box>
+                )}
               </Box>
             </Box>
           </Box>
