@@ -30,12 +30,7 @@ describe('Perps Geo-block', function (this: Suite) {
         perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          // External services are off in getPerpsGeoBlockConfig so Perps eligibility does not
-          // call Geolocation (not wired on PerpsControllerMessenger); non-EVM
-          // account icons are not loaded in that mode.
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver);
 
         const perpsTab = new PerpsTab(driver);
         await perpsTab.navigateToPerpsHome();

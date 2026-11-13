@@ -270,6 +270,38 @@ describe('envValidationLoader', () => {
       assert.strictEqual(emittedErrors.length, 0);
     });
 
+    it('parses .ts files containing generics that are invalid as JSX', async () => {
+      const source = `
+        const identity = <T>(value: T): T => value;
+        const env = identity<string>(process.env.NODE_ENV!);
+      `;
+      const { context, emittedErrors, callbackPromise, callbackResult } =
+        createMockContext(['NODE_ENV'], '/test/file.ts');
+
+      envValidationLoader.call(context, source);
+      await callbackPromise;
+
+      assert.strictEqual(callbackResult().error, null);
+      assert.strictEqual(callbackResult().source, source);
+      assert.strictEqual(emittedErrors.length, 0);
+    });
+
+    it('parses .mts files containing generics that are invalid as JSX', async () => {
+      const source = `
+        const identity = <T>(value: T): T => value;
+        const env = identity<string>(process.env.NODE_ENV!);
+      `;
+      const { context, emittedErrors, callbackPromise, callbackResult } =
+        createMockContext(['NODE_ENV'], '/test/file.mts');
+
+      envValidationLoader.call(context, source);
+      await callbackPromise;
+
+      assert.strictEqual(callbackResult().error, null);
+      assert.strictEqual(callbackResult().source, source);
+      assert.strictEqual(emittedErrors.length, 0);
+    });
+
     it('parses TSX files correctly', async () => {
       const source = `
         const Component = () => <div>{process.env.NODE_ENV}</div>;

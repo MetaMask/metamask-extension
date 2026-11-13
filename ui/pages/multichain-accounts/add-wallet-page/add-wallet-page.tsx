@@ -5,8 +5,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
-  TextVariant,
 } from '@metamask/design-system-react';
 import {
   Content,
@@ -74,10 +72,9 @@ export const AddWalletPage = () => {
           />
         }
       >
-        {t('addWallet')}
+        {t('importAnAccount')}
       </Header>
       <Content>
-        <Text variant={TextVariant.HeadingSm}>{t('privateKey')}</Text>
         <ImportAccount onActionComplete={onActionComplete} />
       </Content>
     </Page>

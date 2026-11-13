@@ -369,17 +369,6 @@ export function getCurrentChainId(state: ProviderConfigState) {
   return chainId;
 }
 
-export const getIsAllNetworksFilterEnabled = createSelector(
-  getNetworkConfigurationsByChainId,
-  (allNetworks) => {
-    const allOpts: Record<string, boolean> = {};
-    Object.keys(allNetworks || {}).forEach((chain) => {
-      allOpts[chain] = true;
-    });
-    return allOpts;
-  },
-);
-
 /**
  * Returns all available network configurations without test networks.
  *

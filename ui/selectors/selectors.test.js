@@ -2267,28 +2267,6 @@ describe('#getConnectedSitesList', () => {
       },
     });
   });
-  describe('#getShowDeleteMetaMetricsDataModal', () => {
-    it('returns state of showDeleteMetaMetricsDataModal', () => {
-      expect(
-        selectors.getShowDeleteMetaMetricsDataModal({
-          appState: {
-            showDeleteMetaMetricsDataModal: true,
-          },
-        }),
-      ).toStrictEqual(true);
-    });
-  });
-  describe('#getShowDataDeletionErrorModal', () => {
-    it('returns state of showDataDeletionErrorModal', () => {
-      expect(
-        selectors.getShowDataDeletionErrorModal({
-          appState: {
-            showDataDeletionErrorModal: true,
-          },
-        }),
-      ).toStrictEqual(true);
-    });
-  });
   describe('#getMetaMetricsDataDeletionId', () => {
     it('returns metaMetricsDataDeletionId', () => {
       expect(
