@@ -3385,7 +3385,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionUxFullscreenRedesign',
     productionDefault: {
-      enabled: false,
+      enabled: true,
       minimumVersion: '13.50.0',
     },
     status: FeatureFlagStatus.Active,
