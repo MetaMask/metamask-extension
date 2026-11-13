@@ -1355,7 +1355,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Nuashonraigh go dtí an leagan is déanaí de MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Níor soláthraíodh aon URL le nascleanúint chuige."
@@ -5008,7 +5008,7 @@
   },
   "stxFailureDescription": {
     "message": "Is féidir le hathruithe tobann sa mhargadh teipeanna a chur faoi deara. Má leanann an fhadhb, déan teagmháil le $1 le do thoil.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ag cur isteach do Mhalartú go príobháideach..."
@@ -5139,7 +5139,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Tarlaíonn teipeanna idirbheart agus táimid anseo chun cabhrú leat. Má leanann an fhadhb seo ar aghaidh, is féidir leat teagmháil a dhéanamh lenár dtacaíocht do chustaiméirí ag $1 le haghaidh tuilleadh cúnaimh.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Theip ar an malartú"
