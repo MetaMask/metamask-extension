@@ -39,12 +39,11 @@ async function switchToActivityWindow(driver: Driver): Promise<void> {
  *
  * @param driver - WebDriver instance.
  * @param amount - Fiat amount to quote.
- * @returns The complete-buy page object.
  */
 export async function startRampsBuyFromHome(
   driver: Driver,
   amount = '100',
-): Promise<RampsCompleteBuyPage> {
+): Promise<void> {
   await new HomePage(driver).clickOnBuyButton();
 
   const tokenSelectionPage = new RampsTokenSelectionPage(driver);
@@ -61,9 +60,7 @@ export async function startRampsBuyFromHome(
   await buildQuotePage.waitForQuote();
   await buildQuotePage.clickContinue();
 
-  const completeBuyPage = new RampsCompleteBuyPage(driver);
-  await completeBuyPage.checkPageIsLoaded();
-  return completeBuyPage;
+  await new RampsCompleteBuyPage(driver).checkPageIsLoaded();
 }
 
 /**
