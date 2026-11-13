@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import HomePage from './homepage';
 
 /**
- * Home activity list and per-transaction details opened from it.
+ * Activity list and per-transaction details opened from it.
  *
- * Screen: `#/` Activity tab (`account-overview__activity-tab`), or `#/activity`
- * when bottom nav is enabled; reached via `HomePage.goToActivityList()`.
+ * Screen: `#/activity`, reached via `HomePage.goToActivityList()`.
  * Owns: activity rows (status counts, amounts, swap/bridge labels), cancel /
  * speed-up actions, and opening a row to assert details, fees, and explorer
  * links.
@@ -75,6 +75,22 @@ class ActivityTab extends HomePage {
 
   private readonly transactionStatusLabel = (status: string) => ({
     testId: `transaction-details-status-${status}`,
+  });
+
+  private readonly transactionWithStatus = (status: string) =>
+    `[data-testid="activity-list-item"][data-tx-status="${status}"]`;
+
+  private readonly transactionWithStatusAndAmount = (
+    status: string,
+    amount: string,
+  ) => ({
+    xpath:
+      `//*[@data-testid="activity-list-item" and @data-tx-status=${quoteXPathText(
+        status,
+      )}]` +
+      `//*[@data-testid="transaction-list-item-primary-currency" and normalize-space(.)=${quoteXPathText(
+        amount,
+      )}]`,
   });
 
   /**
@@ -508,9 +524,26 @@ class ActivityTab extends HomePage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
-    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
-      timeout: 5000,
-    });
+    await this.driver.waitForSelector(this.transactionWithStatus(status));
+  }
+
+  /**
+   * Waits for the activity row with the exact amount to reach the given status.
+   *
+   * @param expectedAmount - Exact primary-currency amount identifying the row.
+   * @param status - The expected transaction status.
+   * @param options - Optional wait configuration.
+   * @param options.timeout - Maximum time to wait in milliseconds.
+   */
+  async checkWaitForTransactionStatusByAmount(
+    expectedAmount: string,
+    status: 'confirmed' | 'cancelled' | 'pending',
+    { timeout = 5000 }: { timeout?: number } = {},
+  ): Promise<void> {
+    await this.driver.waitForSelector(
+      this.transactionWithStatusAndAmount(status, expectedAmount),
+      { timeout },
+    );
   }
 
   /**

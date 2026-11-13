@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // Keep automatic @types discovery for the existing browser and test globals.
+    "types": null,
     "esModuleInterop": true,
     "incremental": true,
     "isolatedModules": true,
@@ -12,6 +14,6 @@
     "noCheck": true
   },
   "exclude": ["test", "*.test.ts", "../build/**/*.ts", "../lib/**/*.ts"],
-  // this should match our node version in .nvmrc
-  "extends": "@tsconfig/node22/tsconfig.json"
+  // Compiler baseline compatible with the supported Node.js runtimes.
+  "extends": "@tsconfig/node24/tsconfig.json"
 }

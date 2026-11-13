@@ -15,6 +15,8 @@ import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenSortLocation,
+  MetaMetricsTokenSortPreference,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
 import { getTokenSortConfig } from '../../../../../selectors';
@@ -75,6 +77,16 @@ type SortControlProps = {
   handleClose: () => void;
 };
 
+type SortKey = 'title' | 'tokenFiatAmount';
+
+const TOKEN_SORT_PREFERENCE_BY_KEY: Record<
+  SortKey,
+  MetaMetricsTokenSortPreference
+> = {
+  title: MetaMetricsTokenSortPreference.Title,
+  tokenFiatAmount: MetaMetricsTokenSortPreference.TokenFiatAmount,
+};
+
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -83,13 +95,8 @@ const SortControl = ({ handleClose }: SortControlProps) => {
 
   const dispatch = useDispatch();
 
-  type SortKeys = 'title' | 'tokenFiatAmount';
   const handleSort = useCallback(
-    (
-      key: SortKeys,
-      sortCallback: keyof SortingCallbacksT,
-      order: SortOrder,
-    ) => {
+    (key: SortKey, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
       dispatch(
         setTokenSortConfig({
           key,
@@ -101,7 +108,9 @@ const SortControl = ({ handleClose }: SortControlProps) => {
         createEventBuilder(MetaMetricsEventName.TokenSortPreference)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            [MetaMetricsUserTrait.TokenSortPreference]: key,
+            [MetaMetricsUserTrait.TokenSortPreference]:
+              TOKEN_SORT_PREFERENCE_BY_KEY[key],
+            location: MetaMetricsTokenSortLocation.SortMenu,
           })
           .build(),
       );

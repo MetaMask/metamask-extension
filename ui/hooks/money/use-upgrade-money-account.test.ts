@@ -29,8 +29,8 @@ const ADDRESS = '0xD5FE9B0579443E7025CF3309BA420977710E7183' as Hex;
 const ADDRESS_KEY = ADDRESS.toLowerCase();
 
 const UPGRADE_CALL = [
-  'messengerCall',
-  ['MoneyAccountUpgradeController:upgradeAccount', [ADDRESS_KEY]],
+  'MoneyAccountUpgradeController:upgradeAccount',
+  [ADDRESS_KEY],
 ] as const;
 
 /**

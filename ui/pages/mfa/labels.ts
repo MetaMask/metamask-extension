@@ -20,7 +20,6 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   otp_resend_cooldown: 'mfaErrorCooldown',
   rate_limited: 'mfaErrorCooldown',
   max_passkeys_reached: 'mfaErrorLimitReached',
-  max_identifiers_reached: 'mfaErrorLimitReached',
   authentication_required: 'mfaErrorSignedOut',
   passkey_unsupported: 'mfaErrorUnsupported',
   flow_in_progress: 'mfaErrorFlowInProgress',
@@ -28,7 +27,7 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
 };
 
 const ERROR_LINKS: Partial<Record<MfaFlowErrorCode, string>> = {
-  email_claimed: 'https://support.metamask.io/configure/wallet/email-in-use',
+  email_claimed: 'https://support.metamask.com/configure/wallet/email-in-use',
 };
 
 /**
@@ -72,15 +71,19 @@ export const getSpecificErrorMessageKey = (
  * Errors whose failure screen has its own title and description, rather than
  * "Something went wrong" and the error's message.
  */
+const SUPPORT_KEYS = {
+  title: 'mfaFailureSupportTitle',
+  description: 'mfaFailureSupportDescription',
+};
+
+/* eslint-disable @typescript-eslint/naming-convention -- the server's codes */
 const FAILURE_KEYS: Partial<
   Record<MfaFlowErrorCode, { title: string; description: string }>
 > = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- the server's code
-  multi_primary_srp: {
-    title: 'mfaFailureSupportTitle',
-    description: 'mfaFailureSupportDescription',
-  },
+  max_identifiers_reached: SUPPORT_KEYS,
+  multi_primary_srp: SUPPORT_KEYS,
 };
+/* eslint-enable @typescript-eslint/naming-convention */
 
 /**
  * The failure screen's message keys for an error.

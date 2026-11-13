@@ -7,9 +7,6 @@
     "message": "Pemuatan memerlukan waktu lebih lama dari biasanya.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "Tidak ada akun lainnya. Jika Anda ingin mengakses akun lain yang tidak terdaftar di bawah ini, harap hubungkan kembali dompet perangkat keras Anda dan pilih."
-  },
   "QRHardwareScanInstructions": {
     "message": "Taruh kode QR di depan kamera Anda. Layar mengabur, tetapi tidak akan memengaruhi pembacaan."
   },
@@ -1147,9 +1144,6 @@
   "addAUrl": {
     "message": "Tambahkan URL"
   },
-  "addAWallet": {
-    "message": "Tambahkan dompet"
-  },
   "addAccount": {
     "message": "Tambah akun"
   },
@@ -1263,17 +1257,11 @@
   "add_device_error_expired": {
     "message": "Sesi sinkronisasi ini telah berakhir. Mulai lagi untuk menghasilkan kode QR baru."
   },
-  "add_device_error_generic": {
-    "message": "Terjadi kesalahan saat menyinkronkan ke ponsel Anda. Coba lagi."
-  },
   "add_device_error_invalid_code": {
     "message": "Kode verifikasi salah. Mulai lagi untuk mencoba menyinkronkan ponsel Anda."
   },
   "add_device_error_rejected": {
     "message": "Sinkronisasi dibatalkan di ponsel Anda. Mulai lagi untuk mencoba menyinkronkan."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Kami tidak dapat menyelesaikan sinkronisasi akun ke ponsel Anda. Coba lagi."
   },
   "add_device_error_title": {
     "message": "Sinkronisasi tidak dapat diselesaikan"
@@ -1507,6 +1495,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Mitra keamanan telah menandai alamat ini karena adanya aktivitas berbahaya."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Mitra keamanan telah menandai alamat $1 ini karena adanya aktivitas berbahaya."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Mitra keamanan tidak memiliki riwayat yang cukup andal untuk memverifikasi alamat $1 ini."
+  },
   "alertMessageBurnAddress": {
     "message": "Anda mengirimkan aset ke alamat burn. Jika dilanjutkan, aset Anda akan hilang."
   },
@@ -1524,6 +1518,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Anda tidak memiliki cukup $1 di akun untuk membayar biaya jaringan."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Mitra keamanan telah menandai alamat transaksi bertingkat $1 karena adanya aktivitas berbahaya."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Mitra keamanan tidak memiliki riwayat yang cukup andal untuk memverifikasi alamat transaksi bertingkat $1 ini."
   },
   "alertMessageNoGasPrice": {
     "message": "Kami tidak dapat melanjutkan transaksi ini hingga Anda memperbarui biayanya secara manual."
@@ -1599,6 +1599,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Izin yang tidak diperlukan"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "Alamat bertingkat ditandai sebagai berisiko tinggi"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Sinyal alamat bertingkat terbatas"
   },
   "alertReasonNoGasPrice": {
     "message": "Estimasi biaya tidak tersedia"
@@ -2485,9 +2491,6 @@
   "bridgeSelectDestinationAccount": {
     "message": "Pilih akun tujuan"
   },
-  "bridgeSelectDifferentQuote": {
-    "message": "Pilih kuotasi lain."
-  },
   "bridgeSelectNetwork": {
     "message": "Pilih jaringan"
   },
@@ -3124,9 +3127,6 @@
   "contractInteraction": {
     "message": "Interaksi kontrak"
   },
-  "convertAgain": {
-    "message": "Konversikan lagi"
-  },
   "convertTokenToNFTDescription": {
     "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini MetaMask memiliki dukungan asli penuh untuk NFT. Ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
   },
@@ -3564,25 +3564,15 @@
   "deleteMetaMetricsData": {
     "message": "Hapus data MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Ini akan menghapus data MetaMetrics historis yang terkait dengan penggunaan Anda pada perangkat ini. Dompet dan akun Anda akan tetap sama seperti sekarang setelah data ini dihapus. Proses ini dapat memakan waktu hingga 30 hari. Lihat $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Ini akan menghapus data MetaMetrics historis yang terkait dengan dompet Anda. MetaMetrics mencakup data penggunaan dan diagnostik yang dianonimkan. Dompet dan akun Anda akan tetap sama. Proses ini akan memakan waktu hingga 30 hari. Lihat $1 kami.",
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Permintaan ini tidak dapat diselesaikan sekarang karena masalah server sistem analitis, coba lagi nanti."
-  },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Kami tidak dapat menghapus data ini sekarang"
+    "message": "Permintaan ini tidak dapat diselesaikan sekarang karena masalah server sistem analitis. Coba lagi nanti."
   },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Tidak dapat menghapus"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Kami akan menghapus semua data MetaMetrics Anda. Lanjutkan?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Hapus data MetaMetrics?"
@@ -3659,9 +3649,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "Tindakan ini akan memutus koneksi semua akun Anda dari semua dapp. Anda perlu menghubungkannya kembali untuk dapat menggunakannya lagi."
-  },
-  "disconnectAllSitesError": {
-    "message": "Beberapa dapp tidak dapat diputus koneksinya. Coba lagi."
   },
   "disconnectAllSitesQuestion": {
     "message": "Putuskan semua koneksi?"
@@ -3967,9 +3954,6 @@
   "enter_verification_code_desc": {
     "message": "Demi keamanan, masukkan kode yang ditampilkan di aplikasi MetaMask pada perangkat Anda."
   },
-  "enter_verification_code_error": {
-    "message": "Kode salah. Coba lagi."
-  },
   "enter_verification_code_expired": {
     "message": "Kode verifikasi telah kedaluwarsa"
   },
@@ -3992,9 +3976,6 @@
   "errorCode": {
     "message": "Kode: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "Terjadi kesalahan saat mendapatkan daftar rantai aman, lanjutkan dengan hati-hati."
   },
   "errorLegalTextFirstInfo": {
     "message": "Informasi diagnostik teknis."
@@ -4158,19 +4139,8 @@
   "fieldRequired": {
     "message": "$1 wajib diisi"
   },
-  "fileImportFail": {
-    "message": "Impor file tidak bekerja? Klik di sini!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "Klik untuk mengunggah atau seret dan lepas"
-  },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "Jenis file tidak valid. Unggah format file yang didukung."
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "Ukuran file melebihi $1MB. Unggah file yang lebih kecil.",
-    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -4198,9 +4168,6 @@
   },
   "floatAmountToken": {
     "message": "Jumlah token harus berupa bilangan bulat"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "Gateway IPFS Terlarang: Tentukan gateway CID"
   },
   "forgetDevice": {
     "message": "Lupakan perangkat ini"
@@ -4431,9 +4398,6 @@
   "general": {
     "message": "Umum"
   },
-  "generalCameraError": {
-    "message": "Kami tidak dapat mengakses kamera Anda. Harap coba lagi."
-  },
   "generalCameraErrorTitle": {
     "message": "Terjadi kesalahan...."
   },
@@ -4628,9 +4592,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "Mendeteksi perangkat..."
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Perangkat tidak terdeteksi. Periksa langkah-langkah sebelumnya dan coba lagi."
   },
   "hardwareWalletRepairLink": {
     "message": "Terhubung kembali dari awal"
@@ -4890,9 +4851,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
-  },
-  "importTokensError": {
-    "message": "Kami tidak dapat mengimpor token. Coba lagi nanti."
   },
   "importWalletSuccess": {
     "message": "Dompet $1 diimpor",
@@ -5191,9 +5149,6 @@
   "ledgerConnectionStatusSearchingTitle": {
     "message": "Mencari perangkat Anda"
   },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Perangkat Ledger gagal dibuka. Ledger Anda mungkin terhubung ke perangkat lunak lain. Tutup Ledger Live atau aplikasi lain yang terhubung ke perangkat Ledger Anda, dan coba hubungkan kembali."
-  },
   "ledgerErrorConnectionIssue": {
     "message": "Hubungkan kembali ledger Anda, buka aplikasi ETH dan coba lagi."
   },
@@ -5224,15 +5179,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox Tidak Didukung"
   },
-  "ledgerLocked": {
-    "message": "Tidak dapat terhubung ke perangkat Ledger. Pastikan perangkat Anda tidak terkunci dan aplikasi Ethereum terbuka."
-  },
   "ledgerTimeout": {
     "message": "Respons Ledger Live terlalu lama atau waktu koneksi habis. Pastikan aplikasi Ledger Live terbuka dan perangkat Anda tidak terkunci."
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Perangkat ledger tidak terhubung. Jika ingin menghubungkan Ledger Anda, klik 'Lanjutkan' lagi dan setujui koneksi HID",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "Terang"
@@ -5299,17 +5247,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "Masuk"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Masuk lagi untuk melanjutkan."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Sesi telah berakhir"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "Perbarui Telegram"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "Kami tidak dapat terhubung ke Telegram. Ini biasanya terjadi saat aplikasi Telegram Anda sudah usang. Perbarui Telegram dan coba lagi."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Tidak dapat masuk menggunakan Telegram"
@@ -5445,9 +5387,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Tombol status koneksi menunjukkan apakah situs web yang Anda kunjungi terhubung ke akun Anda yang dipilih saat ini."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Karena Anda belum pernah ikut serta dalam MetaMetrics, tidak ada data yang dapat dihapus di sini."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 dihosting pada npm dan $2 merupakan pengenal unik Snap ini.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5460,9 +5399,6 @@
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps sedang menjalani pemeliharaan. Silakan kembali lagi nanti."
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -5509,8 +5445,14 @@
   "mfaErrorGeneric": {
     "message": "Terjadi kesalahan. Coba lagi."
   },
+  "mfaErrorInvalidCode": {
+    "message": "Kode ini tidak tepat. Coba lagi"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "Kode sandi tidak dapat diverifikasi. Coba lagi."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "Kode ini tidak tepat. Coba lagi"
   },
   "mfaErrorLimitReached": {
     "message": "Anda telah mencapai batas maksimal untuk metode ini."
@@ -5547,6 +5489,12 @@
   },
   "mfaFailureRetry": {
     "message": "Coba lagi"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Hubungi dukungan untuk melanjutkan."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "Kami tidak dapat memverifikasi detail Anda"
   },
   "mfaFailureTitle": {
     "message": "Terjadi kesalahan"
@@ -5653,8 +5601,14 @@
   "mfaSettingsAddedOn": {
     "message": "Menambahkan $1"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Aplikasi autentikator telah ditambahkan"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "Verifikasi email dihapus"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "Email telah diverifikasi"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "Email ini merupakan satu-satunya metode keamanan untuk akun ini. Tambahkan metode kedua sebelum menghapusnya."
@@ -5713,8 +5667,17 @@
   "mfaTotpSetupContinue": {
     "message": "Lanjutkan"
   },
+  "mfaTotpSetupCopied": {
+    "message": "Kunci pengaturan telah disalin"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Pindai kode QR menggunakan aplikasi autentikator, atau masukkan kunci pengaturan."
+  },
   "mfaTotpSetupKey": {
     "message": "Kunci pengaturan"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Atau masukkan secara manual"
   },
   "mfaTotpSetupQrAlt": {
     "message": "Kode QR untuk menambahkan MetaMask ke aplikasi autentikator"
@@ -6361,19 +6324,6 @@
     "message": "Dikonversi ke mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "Konversi mUSD gagal"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Mengonversi $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Konversi mUSD berhasil"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Bonus dapat diklaim dalam waktu satu hari."
-  },
   "musdConvert": {
     "message": "Konversikan"
   },
@@ -6381,7 +6331,7 @@
     "message": "Mulai"
   },
   "musdEducationHeadline": {
-    "message": "DAPATKAN $1% UNTUK\nSTABLECOIN",
+    "message": "Dapatkan $1% untuk\nstablecoin",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6487,10 +6437,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "Edit detail jaringan"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "Simbol token asli tidak cocok dengan simbol token asli yang diharapkan untuk jaringan dengan ID chain yang terkait. Anda telah memasukkan $1 sementara simbol token yang diharapkan adalah $2. Verifikasikan bahwa Anda terhubung ke chain yang benar.",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "suatu hal lainnya",
@@ -7220,6 +7166,10 @@
   "paidByMetaMask": {
     "message": "Dibayar oleh MetaMask"
   },
+  "paidBySponsor": {
+    "message": "Dibayar melalui $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "paidWith": {
     "message": "Dibayar dengan"
   },
@@ -7418,10 +7368,6 @@
   },
   "paste": {
     "message": "Tempel"
-  },
-  "pastePrivateKey": {
-    "message": "Tempel string kunci pribadi Anda di sini:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "Bayar melalui",
@@ -8465,7 +8411,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "hubungi dukungan",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Beberapa layanan tidak tersedia untuk sementara waktu. $1, atau $2.",
@@ -8473,7 +8419,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Lihat pilihan Anda di bagian Pertanyaan Umum",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Kami sedang mengalami gangguan",
@@ -8904,7 +8850,7 @@
     "message": "Penarikan dikirim"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask akan menukar token Anda ke token yang diinginkan. MetaMask tidak mengenakan biaya saat Anda menukar ke mUSD.",
+    "message": "MetaMask akan menukar token Anda ke token yang diinginkan.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -9005,10 +8951,6 @@
   "privateKeyHidden": {
     "message": "Kunci pribadi disembunyikan",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Tampilkan/Sembunyikan input kunci pribadi",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Kunci pribadi ini sedang ditampilkan",
@@ -11968,9 +11910,6 @@
     "message": "di sini",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " Termasuk"
-  },
   "swapGasFeesSplit": {
     "message": "Biaya jaringan pada layar sebelumnya dibagi di antara kedua transaksi ini."
   },
@@ -12717,9 +12656,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
-  },
-  "usedByClients": {
-    "message": "Digunakan oleh berbagai klien yang berbeda"
   },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"

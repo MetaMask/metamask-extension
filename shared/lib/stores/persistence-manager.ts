@@ -14,7 +14,13 @@ import { StorageWriteErrorType } from '../../constants/app-state';
 import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 import type { EnvironmentType } from '../../constants/app';
 import { getEnvironmentType } from '../environment-type';
-import type { ReportedStartupPhase } from '../telemetry/startup-phase';
+import {
+  getLastActivityContext,
+  hydrateLastActivity,
+  recordWrite,
+  type LastActivityContext,
+} from '../telemetry/last-activity';
+import type { CurrentActivity, IdleStatus } from '../telemetry/idle-status';
 import { IndexedDBStore } from './indexeddb-store';
 import {
   BACKUP_INDEXED_DB_NAME,
@@ -75,19 +81,6 @@ export type WriteRetryRecoveredEvent = {
   retryDelayMs: number;
 };
 
-/**
- * UI presence from `uiPresence` plus {@link ReportedStartupPhase} at write
- * time. All fields undefined when no provider ran (UI context, not wired yet,
- * or threw).
- */
-export type CurrentActivity = {
-  startupPhase?: ReportedStartupPhase;
-  popupCount?: number;
-  notificationIsOpen?: boolean;
-  fullscreenCount?: number;
-  sidePanelCount?: number;
-};
-
 export type SplitStateWriteEvent = {
   /**
    * Per-controller size measurements. Exact storage bytes when
@@ -96,7 +89,7 @@ export type SplitStateWriteEvent = {
    */
   bytesByController: Map<string, number>;
   coalescedUpdates: number;
-  idleStatus: 'active' | 'idle' | 'unknown';
+  idleStatus: IdleStatus;
   measurementDurationMs: number;
   sampleRate: number;
   sizeMeasurementSource:
@@ -109,6 +102,7 @@ export type SplitStateWriteEvent = {
   writeDurationMs: number;
   environmentType: EnvironmentType | 'unknown';
   currentActivity: CurrentActivity;
+  lastActivity: LastActivityContext;
 };
 
 export type PersistenceManagerEventMap = {
@@ -120,7 +114,10 @@ export type PersistenceManagerEventMap = {
 };
 
 export type PersistenceManagerOptions = {
-  getIsIdle?: () => boolean | undefined;
+  getIsIdle?: (
+    currentActivity: CurrentActivity,
+    lastActivity: LastActivityContext,
+  ) => IdleStatus | undefined;
   getPersistenceWriteSampleRate?: () => number;
   localStore: BaseStore;
   random?: () => number;
@@ -358,7 +355,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  #getIsIdle: () => boolean | undefined;
+  #getIsIdle: (
+    currentActivity: CurrentActivity,
+    lastActivity: LastActivityContext,
+  ) => IdleStatus | undefined;
 
   #getCurrentActivity: (() => CurrentActivity) | undefined;
 
@@ -380,7 +380,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
-   * Sets the activity provider (background only).
+   * Sets the current-activity provider (background only).
    *
    * @param getCurrentActivity - Returns the current activity snapshot.
    */
@@ -865,14 +865,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
     // Snapshot activity before any awaits so init / UI changes during size
     // measurement cannot skew the write's reported context.
-    const isIdle = this.#getIsIdle();
-    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
-    if (isIdle === true) {
-      idleStatus = 'idle';
-    } else if (isIdle === false) {
-      idleStatus = 'active';
-    }
-
     // Best-effort: missing/throwing provider → empty activity, write still emits.
     let currentActivity: CurrentActivity = {};
     if (this.#getCurrentActivity) {
@@ -882,6 +874,28 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         // Keep empty snapshot.
       }
     }
+
+    // Best-effort: throwing getter → empty activity, write still emits.
+    // Wait for session restore so an early startup write still reports
+    // timestamps from before the service-worker restart.
+    let lastActivity: LastActivityContext = {};
+    try {
+      await hydrateLastActivity();
+    } catch {
+      // Snapshot whatever is already in memory.
+    }
+    try {
+      lastActivity = getLastActivityContext();
+    } catch {
+      // Keep empty snapshot.
+    }
+
+    // Not wrapped in try/catch: a throwing provider aborts the rest of this
+    // method, matching the existing contract that telemetry failures must
+    // not emit a partial `splitStateWrite` event (the write itself already
+    // succeeded by this point).
+    const idleStatus =
+      this.#getIsIdle(currentActivity, lastActivity) ?? 'unknown';
 
     const href = globalThis.self?.location?.href;
     const environmentType = (
@@ -936,6 +950,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       writeDurationMs,
       environmentType,
       currentActivity,
+      lastActivity,
     });
   }
 
@@ -1009,6 +1024,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           try {
             // Telemetry must not treat a successful write as a failure.
+            // Snapshot before recordWrite() so msSinceLastWrite is the prior
+            // interval, not ~0 for this write.
             await this.#recordSplitStateWrite(
               clone,
               coalescedUpdates,
@@ -1017,6 +1034,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           } catch {
             // Ignore measurement/reporting failures after a successful write.
           }
+
+          // Every successful write, including unsampled ones.
+          recordWrite();
 
           const partialState = Object.create(null);
           for (const [key, value] of clone.entries()) {

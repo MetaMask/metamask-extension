@@ -14,10 +14,14 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
+import { trace } from '../../../../shared/lib/trace';
 import * as manifestFlagsModule from '../../../../shared/lib/manifestFlags';
 import { BackendWebSocketServiceInit } from './backend-websocket-service-init';
 
 jest.mock('@metamask/core-backend');
+jest.mock('../../../../shared/lib/trace', () => ({
+  trace: jest.fn((_request, fn) => (fn ? fn() : undefined)),
+}));
 
 type InitRequestMock = jest.Mocked<
   MessengerClientInitRequest<
@@ -128,6 +132,20 @@ describe('BackendWebSocketServiceInit', () => {
       isBasicFunctionality: expect.any(Function),
       subscribeToBasicFunctionalityChange: expect.any(Function),
     });
+  });
+
+  it('roots every websocket trace in its own trace', () => {
+    BackendWebSocketServiceInit(getInitRequestMock());
+
+    const { traceFn } = jest.mocked(BackendWebSocketService).mock.calls[0][0];
+    const callback = jest.fn();
+
+    traceFn?.({ name: 'WebSocket Connect' }, callback);
+
+    expect(trace).toHaveBeenCalledWith(
+      { name: 'WebSocket Connect', root: true },
+      callback,
+    );
   });
 
   it('returns null for both state keys', () => {

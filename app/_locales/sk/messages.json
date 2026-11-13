@@ -205,10 +205,6 @@
   "fast": {
     "message": "Rýchle"
   },
-  "fileImportFail": {
-    "message": "Import souboru nefunguje? Klikněte sem!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Zabudnúť toto zariadenie"
   },
@@ -363,10 +359,6 @@
   },
   "passwordsDontMatch": {
     "message": "Hesla nejsou stejná"
-  },
-  "pastePrivateKey": {
-    "message": "Vložte zde svůj privátní klíč:",
-    "description": "For importing an account from a private key"
   },
   "pending": {
     "message": "prebieha"
@@ -549,9 +541,6 @@
   },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
-  },
-  "usedByClients": {
-    "message": "Používána různými klienty"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

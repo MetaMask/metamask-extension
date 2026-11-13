@@ -7,9 +7,6 @@
     "message": "加载时间比平时长。",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "暂无更多账户。若想访问下方未列出的其他账户，请重新连接您的硬件钱包并选择它。"
-  },
   "QRHardwareScanInstructions": {
     "message": "将二维码放在摄像头前。屏幕是模糊的，但不影响对二维码的读取。"
   },
@@ -1147,9 +1144,6 @@
   "addAUrl": {
     "message": "添加 URL"
   },
-  "addAWallet": {
-    "message": "添加钱包"
-  },
   "addAccount": {
     "message": "添加账户"
   },
@@ -1263,17 +1257,11 @@
   "add_device_error_expired": {
     "message": "此同步会话已过期。请重新开始以生成新的二维码。"
   },
-  "add_device_error_generic": {
-    "message": "与您的手机同步时出现问题。请重试。"
-  },
   "add_device_error_invalid_code": {
     "message": "验证码有误。请重新开始以同步您的手机。"
   },
   "add_device_error_rejected": {
     "message": "同步已在您的手机上取消。请重新开始以尝试同步。"
-  },
-  "add_device_error_sync_failed": {
-    "message": "无法将您的账户完整同步至手机。请重试。"
   },
   "add_device_error_title": {
     "message": "同步未能完成"
@@ -1507,6 +1495,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "安全合作伙伴已将此地址标记为恶意活动。"
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "安全合作伙伴已将此地址 $1 标记为恶意活动。"
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "安全合作伙伴没有足够可靠的历史记录来验证此地址 $1。"
+  },
   "alertMessageBurnAddress": {
     "message": "您正在将资产发送至销毁地址。若继续操作，您将损失该笔资产。"
   },
@@ -1524,6 +1518,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "您的账户中没有足够的 $1 来支付网络费用。"
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "安全合作伙伴已将嵌套交易地址 $1 标记为恶意活动。"
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "安全合作伙伴没有足够可靠的历史记录来验证此嵌套交易地址 $1。"
   },
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
@@ -1599,6 +1599,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "非必要权限"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "嵌套地址已标记为高风险"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "嵌套地址信号有限"
   },
   "alertReasonNoGasPrice": {
     "message": "无法使用费用估算"
@@ -2485,9 +2491,6 @@
   "bridgeSelectDestinationAccount": {
     "message": "选择一个目标账户"
   },
-  "bridgeSelectDifferentQuote": {
-    "message": "请选择其他报价。"
-  },
   "bridgeSelectNetwork": {
     "message": "选择网络"
   },
@@ -3124,9 +3127,6 @@
   "contractInteraction": {
     "message": "合约交互"
   },
-  "convertAgain": {
-    "message": "再次转换"
-  },
   "convertTokenToNFTDescription": {
     "message": "我们检测到该资产是NFT。MetaMask现在完全原生支持NFT。您想将它从您的代币列表中删除并将它添加为NFT吗？"
   },
@@ -3564,25 +3564,15 @@
   "deleteMetaMetricsData": {
     "message": "删除MetaMetrics数据"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "这将删除与您在此设备上的使用相关的 MetaMetrics 历史数据。删除此数据后，您的钱包和账户将保持原样。此过程可能需要最多 30 天。查看我们的 $1。",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "这将会删除与您的钱包关联的历史 MetaMetrics 数据。MetaMetrics 包含匿名使用数据和诊断数据。您的钱包和账户将保持不变。此过程最长可能需要 30 天。查看我们的 $1。",
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "由于分析系统服务器问题，现在无法完成此请求，请稍后再试。"
-  },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "我们现在无法删除此数据"
+    "message": "由于分析系统服务器问题，此请求目前无法完成。请稍后再试。"
   },
   "deleteMetaMetricsDataErrorToast": {
     "message": "无法删除"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "我们即将删除您所有的MetaMetrics数据。您确定吗？"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "要删除MetaMetrics数据吗？"
@@ -3659,9 +3649,6 @@
   },
   "disconnectAllSitesDescriptionText": {
     "message": "这将断开您的所有账户与所有 dapp 的连接。您需要重新连接后才能再次使用它们。"
-  },
-  "disconnectAllSitesError": {
-    "message": "部分去中心化应用无法断开连接。请重试。"
   },
   "disconnectAllSitesQuestion": {
     "message": "断开连接所有?"
@@ -3967,9 +3954,6 @@
   "enter_verification_code_desc": {
     "message": "为了安全起见，请输入您设备上 MetaMask 应用中显示的验证码。"
   },
-  "enter_verification_code_error": {
-    "message": "验证码错误，请重试。"
-  },
   "enter_verification_code_expired": {
     "message": "验证码已过期"
   },
@@ -3992,9 +3976,6 @@
   "errorCode": {
     "message": "代码：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorGettingSafeChainList": {
-    "message": "获取安全链列表时出错，请谨慎继续。"
   },
   "errorLegalTextFirstInfo": {
     "message": "技术诊断信息。"
@@ -4158,19 +4139,8 @@
   "fieldRequired": {
     "message": "$1 为必填项"
   },
-  "fileImportFail": {
-    "message": "文件导入失败？点击这里！",
-    "description": "Helps user import their account from a JSON file"
-  },
   "fileUploaderDescription": {
     "message": "点击上传或拖放"
-  },
-  "fileUploaderInvalidFileTypeError": {
-    "message": "文件类型无效。请上传支持的文件格式。"
-  },
-  "fileUploaderMaxFileSizeError": {
-    "message": "文件大小超出 $1MB。请上传较小的文件。",
-    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
@@ -4198,9 +4168,6 @@
   },
   "floatAmountToken": {
     "message": "代币金额必须是整数"
-  },
-  "forbiddenIpfsGateway": {
-    "message": "禁用的 IPFS 网关：请指定一个 CID 网关"
   },
   "forgetDevice": {
     "message": "忽略此设备"
@@ -4427,9 +4394,6 @@
   "general": {
     "message": "通用"
   },
-  "generalCameraError": {
-    "message": "我们无法访问您的摄像头。请再试一次。"
-  },
   "generalCameraErrorTitle": {
     "message": "出错了...."
   },
@@ -4624,9 +4588,6 @@
   },
   "hardwareWalletRepairDetecting": {
     "message": "正在检测设备……"
-  },
-  "hardwareWalletRepairDeviceNotDetected": {
-    "message": "未检测到设备。请检查前面的步骤，然后重试。"
   },
   "hardwareWalletRepairLink": {
     "message": "从头开始重新连接"
@@ -4887,9 +4848,6 @@
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
   },
-  "importTokensError": {
-    "message": "我们无法导入代币。请稍后再试。"
-  },
   "importWalletSuccess": {
     "message": "钱包 $1 已导入",
     "description": "$1 is the index of the secret recovery phrase"
@@ -5140,7 +5098,7 @@
     "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "请在您的 Ledger 设备上打开它以继续"
+    "message": "请在 Ledger 设备上打开该应用以继续"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "以太坊应用已关闭"
@@ -5149,7 +5107,7 @@
     "message": "已发现 Ledger 设备"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "请解锁您的 Ledger 设备以继续"
+    "message": "请解锁 Ledger 设备以继续"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Ledger已锁定"
@@ -5170,7 +5128,7 @@
     "message": "未找到设备"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "请断开并重新连接您的设备"
+    "message": "断开设备连接，然后重新连接"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger 无响应"
@@ -5186,9 +5144,6 @@
   },
   "ledgerConnectionStatusSearchingTitle": {
     "message": "正在查找您的设备"
-  },
-  "ledgerDeviceOpenFailureMessage": {
-    "message": "Ledger 设备打开失败。您的 Ledger 可能已连接到其他软件。请关闭 Ledger Live 或其他连接到您的 Ledger 设备的应用程序，并尝试再次连接。"
   },
   "ledgerErrorConnectionIssue": {
     "message": "请重新连接Ledger，打开ETH应用程序，然后重试。"
@@ -5220,15 +5175,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "不支持 Firefox"
   },
-  "ledgerLocked": {
-    "message": "无法连接到 Ledger 设备。请确保您的设备已解锁并打开 Etherum 应用程序。"
-  },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
-  },
-  "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "Ledger 设备未连接。如果您想要连接您的 Ledger，请再次点击“继续”并批准 HID 连接",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
     "message": "浅色"
@@ -5295,17 +5243,11 @@
   "loginErrorSessionExpiredButton": {
     "message": "登录"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "请重新登录以继续。"
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "会话已过期"
   },
   "loginErrorTelegramOutdatedButton": {
     "message": "更新 Telegram"
-  },
-  "loginErrorTelegramOutdatedDescription": {
-    "message": "无法连接到 Telegram。这通常是因为你的 Telegram 应用版本过旧。请更新 Telegram 后重试。"
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "无法使用 Telegram 登录"
@@ -5441,9 +5383,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "连接状态按钮显示所访问的网站是否与您当前选择的账户连接。"
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "由于您从未选择过 MetaMetrics，因此此处没有要删除的数据。"
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 托管于 npm 上，$2 是此 Snap 的唯一标识符。",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5456,9 +5395,6 @@
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps 正在进行维护。请稍后再查看。"
   },
   "metamaskVersion": {
     "message": "MetaMask 版本"
@@ -5505,8 +5441,14 @@
   "mfaErrorGeneric": {
     "message": "出现问题，请重试。"
   },
+  "mfaErrorInvalidCode": {
+    "message": "该验证码不正确。请重试"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "您的通行密钥无法验证。请重试。"
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "该验证码不正确。请重试"
   },
   "mfaErrorLimitReached": {
     "message": "您已达到此方式的设限。"
@@ -5543,6 +5485,12 @@
   },
   "mfaFailureRetry": {
     "message": "请重试"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "联系支持团队以继续。"
+  },
+  "mfaFailureSupportTitle": {
+    "message": "我们无法验证您的详细信息"
   },
   "mfaFailureTitle": {
     "message": "出错了"
@@ -5619,6 +5567,9 @@
   "mfaOtpTitle": {
     "message": "输入您的验证码"
   },
+  "mfaOtpVerifying": {
+    "message": "正在验证代码"
+  },
   "mfaPasskeyTitleSetup": {
     "message": "创建通行密钥"
   },
@@ -5646,8 +5597,14 @@
   "mfaSettingsAddedOn": {
     "message": "已添加 $1"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "身份验证应用已添加"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "电子邮件验证已移除"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "电子邮件已验证"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "此电子邮件是此账户唯一的安全方式。请在移除前添加第二种方式。"
@@ -5706,8 +5663,17 @@
   "mfaTotpSetupContinue": {
     "message": "继续"
   },
+  "mfaTotpSetupCopied": {
+    "message": "设置密钥已复制"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "使用您的身份验证应用扫描二维码，或输入设置密钥。"
+  },
   "mfaTotpSetupKey": {
     "message": "设置密钥"
+  },
+  "mfaTotpSetupManual": {
+    "message": "或手动输入"
   },
   "mfaTotpSetupQrAlt": {
     "message": "二维码用于将 MetaMask 添加到您的身份验证应用"
@@ -6354,19 +6320,6 @@
     "message": "已兑换为 mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD 兑换失败"
-  },
-  "musdConversionToastInProgress": {
-    "message": "正在将 $1 兑换为 mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD 兑换成功"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "奖励将在一天内可领取。"
-  },
   "musdConvert": {
     "message": "兑换"
   },
@@ -6374,7 +6327,7 @@
     "message": "开始使用"
   },
   "musdEducationHeadline": {
-    "message": "获得稳定币的 $1% 奖励",
+    "message": "稳定币可享\n$1% 收益",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6480,10 +6433,6 @@
   },
   "nativeTokenScamWarningConversion": {
     "message": "编辑网络详情"
-  },
-  "nativeTokenScamWarningDescription": {
-    "message": "原生代币符号与具有关联链 ID 网络的原生代币的预期符号不匹配。您输入了 $1，而预期的代币符号为 $2。请验证您是否连接到正确的链。",
-    "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
     "message": "其他",
@@ -7213,6 +7162,10 @@
   "paidByMetaMask": {
     "message": "由 MetaMask 支付"
   },
+  "paidBySponsor": {
+    "message": "由 $1 支付",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "paidWith": {
     "message": "已使用以下支付方式付款："
   },
@@ -7411,10 +7364,6 @@
   },
   "paste": {
     "message": "粘贴"
-  },
-  "pastePrivateKey": {
-    "message": "请粘贴您的私钥:",
-    "description": "For importing an account from a private key"
   },
   "payWith": {
     "message": "支付方式：",
@@ -8464,7 +8413,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "联系支持部门",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "部分服务暂时不可用。$1，或 $2。",
@@ -8472,7 +8421,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "在常见问题解答中查看您的选项",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "我们遇到了服务中断",
@@ -8899,7 +8848,7 @@
     "message": "提现已提交"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask 将为您兑换为您想要的代币。兑换至 mUSD 时，MetaMask 不收取任何费用。",
+    "message": "MetaMask 将为您兑换为您想要的代币。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -9000,10 +8949,6 @@
   "privateKeyHidden": {
     "message": "私钥已隐藏",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "显示/隐藏私钥输入",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "正在显示此私钥",
@@ -11963,9 +11908,6 @@
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesIncluded": {
-    "message": " 已包含"
-  },
   "swapGasFeesSplit": {
     "message": "上一页显示的网络费用包含这两笔交易产生的费用。"
   },
@@ -12712,9 +12654,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将会获取您的 IP 地址。"
-  },
-  "usedByClients": {
-    "message": "可用于各种不同的客户端"
   },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
