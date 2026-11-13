@@ -29,6 +29,7 @@ import type {
   WebVitalsSummary,
 } from '../../../shared/constants/benchmarks';
 import { getGitBranch, getGitCommitHash } from './utils/git';
+import { captureHostProvenance } from './utils/host-provenance';
 import type { UserActionResult } from './utils/types';
 import { aggregateWebVitals, assessDataQuality } from './utils/statistics';
 
@@ -203,6 +204,36 @@ async function main() {
     release: `metamask-extension@${version}`,
   });
 
+  /**
+   * Flatten host provenance into log attributes.
+   *
+   * The host is a property of the JOB rather than of a benchmark -- every
+   * benchmark in a job ran on one machine -- so these go in the base
+   * attributes and reach every emission, including user actions, whose
+   * result type carries no `host` of its own.
+   *
+   * Prefer the provenance recorded WITH the results over capturing it here.
+   * Both read the same machine, but `stealPercent` is cumulative since boot,
+   * so a value read now is larger than the one that was true while the
+   * measurement ran, by however long the steps in between took.
+   *
+   * @param results - the benchmark results about to be sent
+   * @returns attributes to merge into every log from this job
+   */
+  function hostAttributes(results: object): Record<string, string | number> {
+    const recorded = Object.values(results)
+      .map((v) => (v as BenchmarkResults)?.host)
+      .find((h) => h !== undefined);
+    const host = recorded ?? captureHostProvenance();
+    const out: Record<string, string | number> = {};
+    for (const [k, v] of Object.entries(host)) {
+      if (typeof v === 'string' || typeof v === 'number') {
+        out[`host.${k}`] = v;
+      }
+    }
+    return out;
+  }
+
   // CI metadata
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
@@ -210,6 +241,7 @@ async function main() {
     'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
+    ...hostAttributes(results),
   };
 
   let sentCount = 0;
