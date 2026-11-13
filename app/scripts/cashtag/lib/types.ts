@@ -1,3 +1,5 @@
+import type { BridgeControllerMetricsLocation } from '@metamask/bridge-controller';
+
 import type { PreferencesController } from '../../controllers/preferences-controller';
 
 export type AssetData = {
@@ -61,5 +63,8 @@ export type Controller = {
       };
     };
     setPreference?: PreferencesController['setPreference'];
+  };
+  bridgeController?: {
+    setLocation: (location: BridgeControllerMetricsLocation) => void;
   };
 };

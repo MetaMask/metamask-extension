@@ -12,9 +12,10 @@ import {
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { getPersistenceWriteTelemetrySampleRate } from '../../../shared/lib/sentry-remote-rates';
+import { trackSplitStateWrite } from '../../../shared/lib/telemetry/state-write-reporter';
+import { getIdleStatus } from '../../../shared/lib/telemetry/idle-status';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
-import { trackSplitStateWrite } from './state-write-metrics';
 
 const platform = new ExtensionPlatform();
 
@@ -57,9 +58,12 @@ function getStateForEarlySegmentEvent(manager: PersistenceManager) {
   return persistedState?.data ?? null;
 }
 
+globalThis.stateHooks.getIsIdle = getIdleStatus;
+
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({
-  getIsIdle: () => globalThis.stateHooks?.getIsIdle?.(),
+  getIsIdle: (currentActivity, lastActivity) =>
+    globalThis.stateHooks?.getIsIdle?.(currentActivity, lastActivity),
   getPersistenceWriteSampleRate: getPersistenceWriteTelemetrySampleRate,
   localStore,
 })

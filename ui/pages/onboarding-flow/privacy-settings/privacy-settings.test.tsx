@@ -109,20 +109,42 @@ describe('Privacy Settings Onboarding View', () => {
     );
   });
 
+  const messengerCallMock = jest.fn(
+    (actionType: string, args: unknown[] = []) => {
+      switch (actionType) {
+        case 'PreferencesController:setFeatureFlag':
+          return setFeatureFlagStub(...args);
+        case 'PreferencesController:setUse4ByteResolution':
+          return setUse4ByteResolutionStub(...args);
+        case 'PreferencesController:setUseTokenDetection':
+          return setUseTokenDetectionStub(...args);
+        case 'PreferencesController:setUseCurrencyRateCheck':
+          return setUseCurrencyRateCheckStub(...args);
+        case 'PreferencesController:setIpfsGateway':
+          return setIpfsGatewayStub(...args);
+        case 'OnboardingController:completeOnboarding':
+          return completeOnboardingStub(...args);
+        case 'PreferencesController:setUseMultiAccountBalanceChecker':
+          return setUseMultiAccountBalanceCheckerStub(...args);
+        case 'PreferencesController:setUseAddressBarEnsResolution':
+          return setUseAddressBarEnsResolutionStub(...args);
+        case 'LegacyBackgroundApiService:toggleExternalServices':
+          return toggleExternalServicesStub(...args);
+        case 'PreferencesController:setUseTransactionSimulations':
+          return setUseTransactionSimulationsStub(...args);
+        case 'PreferencesController:setPreference':
+          return setPreferenceStub(...args);
+        default:
+          return Promise.resolve(undefined);
+      }
+    },
+  );
+
   setBackgroundConnection({
-    setFeatureFlag: setFeatureFlagStub,
-    setUse4ByteResolution: setUse4ByteResolutionStub,
-    setUseTokenDetection: setUseTokenDetectionStub,
-    setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
-    setIpfsGateway: setIpfsGatewayStub,
-    completeOnboarding: completeOnboardingStub,
-    setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
-    setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
-    toggleExternalServices: toggleExternalServicesStub,
+    getStatePatches: jest.fn().mockResolvedValue([]),
+    messengerCall: messengerCallMock,
     onboardingToggleBasicFunctionalityOn:
       onboardingToggleBasicFunctionalityOnStub,
-    setUseTransactionSimulations: setUseTransactionSimulationsStub,
-    setPreference: setPreferenceStub,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
 
@@ -230,6 +252,40 @@ describe('Privacy Settings Onboarding View', () => {
       expect(setUseAddressBarEnsResolutionStub).not.toHaveBeenCalled();
       expect(setUseMultiAccountBalanceCheckerStub).not.toHaveBeenCalled();
       expect(setUse4ByteResolutionStub).not.toHaveBeenCalled();
+    });
+
+    it('locks the Basic Functionality toggle on for social login', () => {
+      const socialLoginStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { getByTestId } = renderWithProvider(
+        <PrivacySettings />,
+        socialLoginStore,
+      );
+
+      fireEvent.click(getByTestId('category-item-Privacy'));
+      const setting = getByTestId('basic-functionality-toggle');
+      const toggle = setting.querySelector('input[type=checkbox]');
+
+      expect(toggle).toHaveAttribute('value', 'true');
+      expect(setting.querySelector('.toggle-button--disabled')).not.toBeNull();
+
+      fireEvent.click(toggle as HTMLElement);
+
+      expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
+    });
+
+    it('lets secret recovery phrase users change the Basic Functionality toggle', () => {
+      const { getByTestId } = renderWithProvider(<PrivacySettings />, store);
+
+      fireEvent.click(getByTestId('category-item-Privacy'));
+      const setting = getByTestId('basic-functionality-toggle');
+
+      expect(setting.querySelector('.toggle-button--disabled')).toBeNull();
     });
 
     it('shows social-login MetaMetrics settings in the Privacy category', () => {

@@ -1,6 +1,4 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
 import {
   Icon,
   IconColor,
@@ -11,26 +9,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  ACTIVITY_ROUTE,
-  DEFAULT_ROUTE,
-  MONEY_HOME_ROUTE,
-  PERPS_HOME_PAGE_ROUTE,
-} from '../../../helpers/constants/routes';
-import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
-import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
-import { getDefaultHomeActiveTabName } from '../../../selectors';
-import { transitionForward } from '../../ui/transition';
-import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
-import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
-import {
-  MoneyButtonIntent,
-  MoneyButtonType,
-  MoneyComponentName,
-  MoneyScreenName,
-} from '../../../pages/money/constants/money-events';
-import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
+import { useMainNavItems } from '../../../hooks/useMainNavItems';
 
 type NavTabProps = {
   isActive: boolean;
@@ -74,62 +53,7 @@ const NavTab = ({
 };
 
 export function BottomNavBar() {
-  const t = useI18nContext();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const { availability: moneyAccountAvailability } =
-    useMoneyAccountAvailability();
-  const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
-  const { trackButtonClicked: trackMoneyButtonClicked } = useMoneyAnalytics({
-    componentName: MoneyComponentName.HomeTab,
-  });
-
-  const { isHome, isPerps, isMoney, isActivity } =
-    getActiveBottomNavTabs(pathname);
-
-  const handleHomeClick = useCallback(() => {
-    transitionForward(() =>
-      navigate(
-        lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
-        {
-          state: {
-            entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-            stayOnHomePage: true,
-          },
-        },
-      ),
-    );
-  }, [navigate, lastActiveTab]);
-
-  const handlePerpsClick = useCallback(() => {
-    transitionForward(() =>
-      navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
-    );
-  }, [navigate]);
-
-  const handleMoneyClick = useCallback(() => {
-    trackMoneyButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
-      labelKey: 'money',
-      redirectTarget: MoneyScreenName.MoneyHome,
-    });
-    transitionForward(() =>
-      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
-    );
-  }, [navigate, trackMoneyButtonClicked]);
-
-  const handleActivityClick = useCallback(() => {
-    transitionForward(() =>
-      navigate(ACTIVITY_ROUTE, {
-        state: {
-          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
-        },
-      }),
-    );
-  }, [navigate]);
+  const items = useMainNavItems();
 
   return (
     <nav
@@ -137,38 +61,16 @@ export function BottomNavBar() {
       className="bottom-nav-bar sticky bottom-0 mt-auto w-full shrink-0 bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100] transition-[background-color,backdrop-filter] duration-200"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
-      <NavTab
-        isActive={isHome}
-        icon={isHome ? IconName.HomeFilled : IconName.Home}
-        label={t('home')}
-        onClick={handleHomeClick}
-        data-testid="bottom-nav-home"
-      />
-      {isPerpsAvailable && (
+      {items.map(({ id, icon, label, isActive, onClick }) => (
         <NavTab
-          isActive={isPerps}
-          icon={isPerps ? IconName.CandlestickFilled : IconName.Candlestick}
-          label={t('perps')}
-          onClick={handlePerpsClick}
-          data-testid="bottom-nav-perps"
+          key={id}
+          isActive={isActive}
+          icon={icon}
+          label={label}
+          onClick={onClick}
+          data-testid={`bottom-nav-${id}`}
         />
-      )}
-      {moneyAccountAvailability.isAvailable && (
-        <NavTab
-          isActive={isMoney}
-          icon={IconName.Musd}
-          label={t('money')}
-          onClick={handleMoneyClick}
-          data-testid="bottom-nav-money"
-        />
-      )}
-      <NavTab
-        isActive={isActivity}
-        icon={isActivity ? IconName.ClockFilled : IconName.Clock}
-        label={t('activity')}
-        onClick={handleActivityClick}
-        data-testid="bottom-nav-activity"
-      />
+      ))}
     </nav>
   );
 }

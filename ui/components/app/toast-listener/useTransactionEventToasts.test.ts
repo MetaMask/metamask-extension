@@ -4,6 +4,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import * as ManifestFlags from '../../../../shared/lib/manifestFlags';
 import {
   registerMoneyBatchTransaction,
   resetMoneyBatchRegistry,
@@ -101,6 +102,16 @@ describe('useTransactionEventToasts', () => {
       accountsControllerEvent,
       expect.any(Function),
     );
+  });
+
+  it('does not subscribe when the disableTransactionToasts manifest flag is set', () => {
+    jest
+      .spyOn(ManifestFlags, 'getManifestFlags')
+      .mockReturnValueOnce({ testing: { disableTransactionToasts: true } });
+
+    renderHook(() => useTransactionEventToasts());
+
+    expect(mockSubscribe).not.toHaveBeenCalled();
   });
 
   it('unsubscribes on unmount', () => {
@@ -446,6 +457,101 @@ describe('useTransactionEventToasts', () => {
         expect.objectContaining({
           transactionId: 'nested-withdraw-approved',
         }),
+      );
+    });
+
+    it('does not toast in-wallet perpsDeposit transactions, which have their own toast', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'wallet-deposit',
+          status: TransactionStatus.submitted,
+          type: TransactionType.perpsDeposit,
+          origin: 'metamask',
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('does not toast in-wallet nested perpsDeposit transactions', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'wallet-nested-deposit',
+          status: TransactionStatus.submitted,
+          type: TransactionType.batch,
+          origin: 'metamask',
+          nestedTransactions: [{ type: TransactionType.perpsDeposit }],
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('shows a pending toast for dApp perpsDeposit transactions on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'dapp-deposit-approved',
+          status: TransactionStatus.approved,
+          type: TransactionType.perpsDeposit,
+          origin: 'https://example.test',
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-dapp-deposit-approved',
+        expect.objectContaining({ transactionId: 'dapp-deposit-approved' }),
+      );
+    });
+
+    it('shows a success toast when a dApp perpsDeposit confirms', () => {
+      const { handlers } = mountHook();
+      const transactionMeta = createTransactionMeta({
+        id: 'dapp-deposit',
+        status: TransactionStatus.approved,
+        type: TransactionType.perpsDeposit,
+        origin: 'https://example.test',
+      });
+
+      handlers[transactionControllerEvent]({ transactionMeta });
+      handlers[transactionControllerEvent]({
+        transactionMeta: {
+          ...transactionMeta,
+          status: TransactionStatus.confirmed,
+        },
+      });
+
+      expect(mockShowSuccessToast).toHaveBeenCalledWith(
+        'tx-dapp-deposit',
+        expect.objectContaining({ transactionId: 'dapp-deposit' }),
+      );
+    });
+
+    it('shows a failed toast when a dApp perpsDeposit fails', () => {
+      const { handlers } = mountHook();
+      const transactionMeta = createTransactionMeta({
+        id: 'dapp-deposit-failed',
+        status: TransactionStatus.approved,
+        type: TransactionType.perpsDeposit,
+        origin: 'https://example.test',
+      });
+
+      handlers[transactionControllerEvent]({ transactionMeta });
+      handlers[transactionControllerEvent]({
+        transactionMeta: {
+          ...transactionMeta,
+          status: TransactionStatus.failed,
+        },
+      });
+
+      expect(mockShowFailedToast).toHaveBeenCalledWith(
+        'tx-dapp-deposit-failed',
+        expect.objectContaining({ transactionId: 'dapp-deposit-failed' }),
       );
     });
 

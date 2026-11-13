@@ -108,6 +108,7 @@ describe('wrapMessengerWithTracing', () => {
         name: `Messenger Call: Test:setState`,
         op: 'messenger.call',
         data: { action: 'Test:setState' },
+        allowActiveSpanFallback: true,
       }),
       expect.any(Function),
     );

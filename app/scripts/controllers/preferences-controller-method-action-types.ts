@@ -384,6 +384,11 @@ export type PreferencesControllerSetSnapsAddSnapAccountModalDismissedAction = {
   handler: PreferencesController['setSnapsAddSnapAccountModalDismissed'];
 };
 
+export type PreferencesControllerDismissSidePanelMigrationToastAction = {
+  type: `PreferencesController:dismissSidePanelMigrationToast`;
+  handler: PreferencesController['dismissSidePanelMigrationToast'];
+};
+
 /**
  * Dismisses the one-time Basic Functionality migration modal or toast.
  */
@@ -468,6 +473,7 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetShowDefaultAddressAction
   | PreferencesControllerSetDefaultAddressScopeAction
   | PreferencesControllerSetSnapsAddSnapAccountModalDismissedAction
+  | PreferencesControllerDismissSidePanelMigrationToastAction
   | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerResetStateAction
   | PreferencesControllerAddReferralApprovedAccountAction

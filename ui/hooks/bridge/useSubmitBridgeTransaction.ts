@@ -3,6 +3,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   isCrossChain,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import type {
   InputPrimaryDenomination,
@@ -16,8 +17,10 @@ import {
 } from '../../ducks/bridge-status/actions';
 import {
   getBridgeLocation,
+  setFromTokenInputValue,
   setWasTxDeclined,
 } from '../../ducks/bridge/actions';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import {
   getBridgeQuotes,
   getFromAmountInCurrency,
@@ -61,6 +64,7 @@ export default function useSubmitBridgeTransaction(
     navigateToHwSigningPage,
     navigateToDefaultRoute,
     isHardwareWalletSigningPage,
+    search,
   } = useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -154,6 +158,10 @@ export default function useSubmitBridgeTransaction(
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            // @ts-expect-error We're passing an enum that has more potential
+            // properties than `BridgeStatusController.submitIntent` knows what
+            // to do with.
+            // TODO: Remove these extra properties?
             location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
             activeAbTests,
@@ -177,6 +185,10 @@ export default function useSubmitBridgeTransaction(
             quoteResponse,
             smartTransactionsEnabled,
             quotesReceivedContext,
+            // @ts-expect-error We're passing an enum that has more potential
+            // properties than `BridgeStatusController.submitBridgeTx` knows
+            // what to do with.
+            // TODO: Remove these extra properties?
             location,
             toToken?.securityData?.type ?? null,
             activeAbTests,
@@ -262,7 +274,7 @@ export default function useSubmitBridgeTransaction(
     try {
       await submitQuote(quoteResponse, options);
     } catch (e) {
-      captureException(e);
+      captureException(e, { tags: { feature: SwapFeatureTag.SWAP } });
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         // Only user rejection should set wasTxDeclined; timeouts/disconnects must not.
         dispatch(setWasTxDeclined(true));
@@ -275,6 +287,7 @@ export default function useSubmitBridgeTransaction(
       if (hardwareWalletUsed) {
         throw e;
       }
+      return;
     } finally {
       setIsSubmitting(false);
     }
@@ -285,7 +298,14 @@ export default function useSubmitBridgeTransaction(
       return;
     }
 
-    await navigateToDefaultRoute({ replace: true }, false);
+    if (
+      new URLSearchParams(search).get(BridgeQueryParams.IsFromTransactionShield)
+    ) {
+      await navigateToDefaultRoute({ replace: true }, false);
+      return;
+    }
+
+    dispatch(setFromTokenInputValue(null));
   };
 
   return {
