@@ -34,7 +34,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickHeaderAccountDetailsButton();
@@ -76,7 +76,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickFooterButton({

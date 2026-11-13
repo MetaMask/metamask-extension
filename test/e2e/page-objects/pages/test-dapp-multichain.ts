@@ -2,7 +2,7 @@ import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { Json } from '@metamask/utils';
 import { WINDOW_TITLES } from '../../constants';
-import { largeDelayMs, veryLargeDelayMs } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { replaceColon } from '../../flask/multichain-api/testHelpers';
 
@@ -34,9 +34,19 @@ class TestDappMultichain {
     tag: 'button',
   };
 
+  private readonly connectionStatusReady = {
+    css: '.connection-status',
+    text: 'Ready to Connect',
+  };
+
   private readonly dappTitle = {
     text: 'MetaMask MultiChain API Test Dapp',
     tag: 'h1',
+  };
+
+  private readonly detectedWalletName = {
+    css: '.wallet-name',
+    text: 'MetaMask',
   };
 
   private readonly driver: Driver;
@@ -157,13 +167,15 @@ class TestDappMultichain {
    */
   async connectExternallyConnectable(extensionId: string) {
     console.log('Connect multichain test dapp to Multichain API');
+    // Wait for MetaMask's wallet announcement before typing: it overwrites the dapp's extension ID state
+    await this.driver.waitForSelector(this.detectedWalletName);
     await this.fillExtensionIdInput(
       process.env.SELENIUM_BROWSER === Browser.FIREFOX
         ? 'window.postMessage'
         : extensionId,
     );
     await this.clickConnectExternallyConnectableButton();
-    await this.driver.delay(veryLargeDelayMs);
+    await this.driver.waitForSelector(this.connectionStatusReady);
   }
 
   customAccountAddressInput(i: number) {

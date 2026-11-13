@@ -76,6 +76,8 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'logEncryptedVault',
   'WebAssembly',
   'Request',
+  // Sentry builds fetch trace headers with it; scuttled, they are dropped.
+  'Headers',
   // needed by Sentry and react-router-dom v6 HashRouter
   'history',
   // globals used by react-dom
