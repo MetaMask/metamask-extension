@@ -502,6 +502,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'removeReferralDeclinedAccount',
   'setAccountsReferralApproved',
   'dismissSidePanelMigrationToast',
+  'loadBackup',
 ] as const;
 
 export class PreferencesController extends BaseController<
@@ -1257,5 +1258,14 @@ export class PreferencesController extends BaseController<
         state.referrals[partner][address] = ReferralStatus.Approved;
       });
     });
+  }
+
+  /**
+   * Merges backed-up preferences into the current state.
+   *
+   * @param backupState - The preferences state restored from a backup.
+   */
+  loadBackup(backupState: PreferencesControllerState): void {
+    this.update((state) => ({ ...state, ...backupState }));
   }
 }

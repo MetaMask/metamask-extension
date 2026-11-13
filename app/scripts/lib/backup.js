@@ -21,7 +21,7 @@ export default class Backup {
     const { preferences, addressBook, network, internalAccounts } =
       JSON.parse(jsonString);
     if (preferences) {
-      this.preferencesController.update(preferences);
+      this.preferencesController.loadBackup(preferences);
     }
 
     if (addressBook) {
