@@ -44,7 +44,7 @@ const createController = (
 const start = (controller: MfaControllerAdapter) =>
   startMfaFlow({
     request: { kind: 'enroll', method: 'email_otp' },
-    reason: { operation: 'test' },
+    reason: { operation: 'qa.test' },
     platform: 'extension',
     controller,
   }).then(
@@ -67,7 +67,7 @@ describe('MfaFlowLauncher', () => {
     await act(async () => getActiveMfaFlow()?.dispatch({ type: 'cancel' }));
   });
 
-  it('opens the MFA page once the flow has a screen', async () => {
+  it('opens the MFA page once the flow has a screen, remembering the page that started it', async () => {
     renderLauncher();
 
     await act(async () => {
@@ -75,7 +75,9 @@ describe('MfaFlowLauncher', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith(MFA_FLOW_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_FLOW_ROUTE, {
+      state: { returnTo: '/settings/security?tab=mfa' },
+    });
   });
 
   it('stays closed while the flow has nothing to show', async () => {
@@ -102,7 +104,9 @@ describe('MfaFlowLauncher', () => {
       start(createController());
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith(MFA_FLOW_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_FLOW_ROUTE, {
+      state: { returnTo: '/settings/security?tab=mfa' },
+    });
     expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
   });
 

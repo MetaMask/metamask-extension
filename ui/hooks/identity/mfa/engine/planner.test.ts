@@ -5,28 +5,36 @@ import {
 import {
   getEnrollmentMaxSessionAgeMs,
   getMethodStatuses,
+  getVerifiableMethods,
   planEnroll,
   planVerifyOrEnroll,
 } from './planner';
-import type { PlanContext, VerifyOrEnrollRequest } from './types';
+import type { MfaMethod, PlanContext, VerifyOrEnrollRequest } from './types';
 
 const NOW = 1_800_000_000_000;
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 
-const passkey: EnrolledCredential = { type: 'passkey', status: 'active' };
+const passkey: EnrolledCredential = {
+  id: 'passkey',
+  type: 'passkey',
+  status: 'active',
+};
 const email: EnrolledCredential = {
+  id: 'email_otp',
   type: 'email_otp',
   status: 'active',
   email: 'a@b.co',
   verified: true,
 };
 const providerEmail: EnrolledCredential = {
+  id: 'email_otp',
   type: 'email_otp',
   status: 'active',
   verified: true,
 };
 const pendingEmail: EnrolledCredential = {
+  id: 'email_otp',
   type: 'email_otp',
   status: 'pending',
   email: 'pending@b.co',
@@ -112,6 +120,25 @@ describe('getMethodStatuses', () => {
       canVerify: false,
       canEnroll: false,
     });
+  });
+});
+
+describe('getVerifiableMethods', () => {
+  it('returns nothing for a profile with no active credential', () => {
+    expect(getVerifiableMethods([pendingEmail], 'mobile')).toStrictEqual([]);
+  });
+
+  it('returns the active methods, cheapest first', () => {
+    expect(getVerifiableMethods([passkey, email], 'mobile')).toStrictEqual([
+      'passkey',
+      'email_otp',
+    ]);
+  });
+
+  it('leaves out active methods the platform cannot run', () => {
+    expect(getVerifiableMethods([passkey, email], 'extension')).toStrictEqual([
+      'email_otp',
+    ]);
   });
 });
 
@@ -419,6 +446,93 @@ describe('planVerifyOrEnroll', () => {
   });
 });
 
+describe('planVerifyOrEnroll with verifyOnly', () => {
+  const EVERY_METHOD: MfaMethod[] = ['passkey', 'totp', 'email_otp'];
+  const VERIFY_ONLY: VerifyOrEnrollRequest = {
+    methods: EVERY_METHOD,
+    verifyWith: EVERY_METHOD,
+    verifyOnly: true,
+  };
+
+  it('verifies with the active methods in cost order', () => {
+    expect(
+      planVerifyOrEnroll(
+        VERIFY_ONLY,
+        buildContext({ credentials: [email, passkey] }),
+      ),
+    ).toStrictEqual({
+      ok: true,
+      steps: [{ kind: 'verify', options: ['passkey', 'email_otp'] }],
+    });
+  });
+
+  it('never plans a setup for a method the profile lacks', () => {
+    expect(
+      planVerifyOrEnroll(VERIFY_ONLY, buildContext({ credentials: [email] })),
+    ).toStrictEqual({
+      ok: true,
+      steps: [{ kind: 'verify', options: ['email_otp'] }],
+    });
+  });
+
+  const NOT_ENROLLED: [string, EnrolledCredential[]][] = [
+    ['has no method', []],
+    ['has only a pending method', [pendingEmail]],
+  ];
+  for (const [description, credentials] of NOT_ENROLLED) {
+    it(`rejects with credential_not_enrolled when the profile ${description}`, () => {
+      expect(
+        planVerifyOrEnroll(VERIFY_ONLY, buildContext({ credentials })),
+      ).toStrictEqual({ ok: false, code: 'credential_not_enrolled' });
+    });
+  }
+
+  it('leaves out active methods this platform cannot run', () => {
+    const context = buildContext({
+      platform: 'extension',
+      credentials: [passkey, email],
+    });
+
+    expect(planVerifyOrEnroll(VERIFY_ONLY, context)).toStrictEqual({
+      ok: true,
+      steps: [{ kind: 'verify', options: ['email_otp'] }],
+    });
+  });
+
+  it('rejects with credential_not_enrolled when only methods this platform cannot run are active', () => {
+    const context = buildContext({
+      platform: 'extension',
+      credentials: [passkey],
+    });
+
+    expect(planVerifyOrEnroll(VERIFY_ONLY, context)).toStrictEqual({
+      ok: false,
+      code: 'credential_not_enrolled',
+    });
+  });
+
+  it('is done when a live session already proves one of the methods', () => {
+    const context = buildContext({
+      credentials: [email],
+      session: { obtainedAt: NOW, amr: ['email_otp'] },
+    });
+
+    expect(planVerifyOrEnroll(VERIFY_ONLY, context)).toStrictEqual({
+      ok: true,
+      steps: [],
+    });
+  });
+
+  it('rejects a request that verifies with nothing', () => {
+    expect(
+      planVerifyOrEnroll(
+        { methods: EVERY_METHOD, verifyOnly: true },
+        buildContext({ credentials: [email] }),
+      ),
+    ).toStrictEqual({ ok: false, code: 'invalid_request' });
+  });
+});
+
 describe('planEnroll', () => {
   it('sets up the first method without confirming', () => {
     expect(planEnroll('passkey', buildContext())).toStrictEqual({
@@ -466,7 +580,9 @@ describe('planEnroll', () => {
     expect(
       planEnroll(
         'totp',
-        buildContext({ credentials: [{ type: 'totp', status: 'active' }] }),
+        buildContext({
+          credentials: [{ id: 'totp', type: 'totp', status: 'active' }],
+        }),
       ),
     ).toStrictEqual({ ok: false, code: 'totp_already_enrolled' });
   });

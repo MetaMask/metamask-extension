@@ -149,6 +149,7 @@ export const MESSAGE_TYPE = {
   WALLET_GET_CAPABILITIES: 'wallet_getCapabilities',
   WALLET_GET_SESSION: 'wallet_getSession',
   WALLET_INVOKE_METHOD: 'wallet_invokeMethod',
+  WALLET_PAY: 'wallet_pay',
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WALLET_REVOKE_SESSION: 'wallet_revokeSession',
   WALLET_SEND_CALLS: 'wallet_sendCalls',
