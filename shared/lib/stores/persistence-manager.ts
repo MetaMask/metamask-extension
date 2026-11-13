@@ -1062,15 +1062,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
-        let failedWriteControllers: string[] = [];
-        let failedCoalescedUpdates = 0;
+        // Read before cloning so a failed clone still reports what was pending.
+        const failedWriteControllers = [...this.#pendingPairs.keys()].filter(
+          (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
+        );
+        const failedCoalescedUpdates = this.#pendingUpdateCount;
         try {
           const clone = structuredClone(this.#pendingPairs);
           const coalescedUpdates = this.#pendingUpdateCount;
-          failedCoalescedUpdates = coalescedUpdates;
-          failedWriteControllers = [...clone.keys()].filter(
-            (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
-          );
           // reset the pendingPairs
           this.#pendingPairs.clear();
           this.#pendingUpdateCount = 0;

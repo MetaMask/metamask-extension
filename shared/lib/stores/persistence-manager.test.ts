@@ -2133,6 +2133,37 @@ describe('PersistenceManager', () => {
       });
     });
 
+    it('attaches write details when cloning the pending writes fails', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 0,
+        localStore: new ExtensionStore(),
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: true });
+      manager.update('BarController', { bar: true });
+
+      const error = new DOMException(
+        'Data cannot be cloned, out of memory.',
+        'DataCloneError',
+      );
+      jest.spyOn(globalThis, 'structuredClone').mockImplementationOnce(() => {
+        throw error;
+      });
+      const [didPersist] = await manager.persist();
+
+      expect(didPersist).toBe(false);
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          extra: expect.objectContaining({
+            'persistence.coalesced_updates': 2,
+            'persistence.controller_count': 2,
+            'persistence.controllers': 'FooController,BarController',
+          }),
+        }),
+      );
+    });
+
     it('attaches controller keys when set fails', async () => {
       await withPopup(async () => {
         manager = new PersistenceManager({
