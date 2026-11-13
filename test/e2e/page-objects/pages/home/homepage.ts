@@ -52,11 +52,6 @@ class HomePage {
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
 
-  // The wide layout's network pills show these logos before the non-EVM
-  // accounts exist, so they don't count as a sign the accounts are loaded.
-  private readonly bitcoinAccountIcon =
-    'img[src="./images/bitcoin-logo.svg"]:not([data-testid="network-pill-selector"] img)';
-
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -135,10 +130,6 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
-
-  // See `bitcoinAccountIcon` for why the network pills are excluded.
-  private readonly solanaAccountIcon =
-    'img[src="./images/solana-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
