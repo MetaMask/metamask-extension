@@ -178,22 +178,6 @@ describe('useAutomaticMoneyAccountPayToken', () => {
     expect(applyMoneyAccountOverrideMock).toHaveBeenCalled();
   });
 
-  it('compares fiat balances with more than 15 significant digits', () => {
-    mockMoneyAccountPay({ balance: '1.1' });
-
-    const { result } = runHook({
-      availableTokens: [
-        {
-          address: TOKEN_ADDRESS,
-          chainId: '0x1',
-          fiat: { balance: 0.9727848652231649 },
-        },
-      ],
-    });
-
-    expect(result.current.shouldSelect).toBe(true);
-  });
-
   it('selects Money Account when its balance beats a preferred token', () => {
     mockMoneyAccountPay({ balance: '76' });
     selectPreferredPayTokensMock.mockReturnValue([

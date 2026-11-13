@@ -96,11 +96,7 @@ export function useAutomaticMoneyAccountPayToken({
   );
   const withdrawableBalance = toFiatBalance(withdrawableFiatRaw);
   const highestBalanceToken = getHighestBalanceToken(availableTokens);
-  // bignumber.js 4 throws on JS numbers with more than 15 significant digits,
-  // which fiat balances often have, so compare through strings.
-  const highestTokenBalance = new BigNumber(
-    String(highestBalanceToken?.fiat?.balance ?? 0),
-  );
+  const highestTokenBalance = highestBalanceToken?.fiat?.balance ?? 0;
   const isHighestBalanceTokenPreferred = Boolean(
     highestBalanceToken &&
     preferredTokens.some((token) => isSamePayToken(highestBalanceToken, token)),
@@ -111,9 +107,7 @@ export function useAutomaticMoneyAccountPayToken({
     withdrawableBalance?.greaterThan(0) &&
     (withdrawableBalance.greaterThan(highestTokenBalance) ||
       (!isHighestBalanceTokenPreferred &&
-        withdrawableBalance.greaterThanOrEqualTo(
-          new BigNumber(String(minimumRequiredTokenBalance)),
-        ))),
+        withdrawableBalance.greaterThanOrEqualTo(minimumRequiredTokenBalance))),
   );
 
   useEffect(() => {
