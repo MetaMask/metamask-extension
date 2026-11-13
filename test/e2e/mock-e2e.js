@@ -2314,10 +2314,15 @@ async function setupMocking(
     });
 
   // Nft API: tokens
+  // Matches any account, not just the default fixture account.
+  // Registered at FALLBACK priority like the other broad defaults so
+  // specs that mock a specific address take precedence.
   await server
     .forGet(
-      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+      /^https:\/\/nft\.api\.cx\.metamask\.io\/users\/0x[0-9a-fA-F]{40}\/tokens/u,
     )
+    .asPriority(RulePriority.FALLBACK)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
