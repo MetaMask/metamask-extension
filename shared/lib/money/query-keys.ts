@@ -10,6 +10,8 @@ import type {
 import type {
   MoneyAccountApiDataServiceFetchInterestAction,
   MoneyAccountApiDataServiceFetchPositionsAction,
+  MoneyAccountApiDataServiceFetchVaultRateAction,
+  MoneyAccountApiDataServiceFetchVaultShareValuationsAction,
 } from '@metamask/money-account-api-data-service';
 
 type MoneyAccountBalanceServiceQueryAction =
@@ -23,7 +25,9 @@ type MoneyAccountBalanceServiceQueryAction =
 
 type MoneyAccountApiDataServiceQueryAction =
   | MoneyAccountApiDataServiceFetchInterestAction
-  | MoneyAccountApiDataServiceFetchPositionsAction;
+  | MoneyAccountApiDataServiceFetchPositionsAction
+  | MoneyAccountApiDataServiceFetchVaultRateAction
+  | MoneyAccountApiDataServiceFetchVaultShareValuationsAction;
 
 export const MoneyAccountBalanceServiceQueryKeys = {
   GET_MUSD_BALANCE: 'MoneyAccountBalanceService:getMusdBalance',
@@ -44,6 +48,9 @@ export const MoneyAccountBalanceServiceQueryKeys = {
 export const MoneyAccountApiDataServiceQueryKeys = {
   FETCH_POSITIONS: 'MoneyAccountApiDataService:fetchPositions',
   FETCH_INTEREST: 'MoneyAccountApiDataService:fetchInterest',
+  FETCH_VAULT_RATE: 'MoneyAccountApiDataService:fetchVaultRate',
+  FETCH_VAULT_SHARE_VALUATIONS:
+    'MoneyAccountApiDataService:fetchVaultShareValuations',
 } as const satisfies Record<
   string,
   MoneyAccountApiDataServiceQueryAction['type']

@@ -11,7 +11,10 @@ import type { MoneyPayMessenger } from './pay-context';
 
 const MUSD_UNIT = 10 ** MUSD_DECIMALS;
 
-const latestIntentByTransactionId = new Map<string, number>();
+const latestIntentByTransactionId = new Map<
+  string,
+  { intent: number; amountRaw?: bigint }
+>();
 
 /**
  * Parses a human-readable mUSD amount into base units. Returns `undefined`
@@ -66,12 +69,32 @@ export function toMusdAmountHex(amount: bigint): Hex {
  * `isCurrent()` is false once a newer intent has started for the same id.
  *
  * @param transactionId - Id of the transaction being updated.
+ * @param amountRaw - Raw amount this intent commits, if known.
  * @returns A function that is true only while this intent is still latest.
  */
-export function beginAmountCommit(transactionId: string): () => boolean {
-  const intent = (latestIntentByTransactionId.get(transactionId) ?? 0) + 1;
-  latestIntentByTransactionId.set(transactionId, intent);
-  return () => latestIntentByTransactionId.get(transactionId) === intent;
+export function beginAmountCommit(
+  transactionId: string,
+  amountRaw?: bigint,
+): () => boolean {
+  const intent =
+    (latestIntentByTransactionId.get(transactionId)?.intent ?? 0) + 1;
+  latestIntentByTransactionId.set(transactionId, { intent, amountRaw });
+  return () =>
+    latestIntentByTransactionId.get(transactionId)?.intent === intent;
+}
+
+/**
+ * Returns whether an amount commit is in flight for a transaction, and the
+ * raw amount it commits when known.
+ *
+ * @param transactionId - Id of the transaction being updated.
+ * @returns The in-flight commit, or `undefined` when none is pending.
+ */
+export function getPendingAmountCommit(
+  transactionId: string,
+): { amountRaw?: bigint } | undefined {
+  const pending = latestIntentByTransactionId.get(transactionId);
+  return pending ? { amountRaw: pending.amountRaw } : undefined;
 }
 
 /**
@@ -150,6 +173,9 @@ export function getTransactionMeta(
  * Re-reads state first so a concurrent commit cannot clobber unrelated
  * fields from a stale copy.
  *
+ * Clears simulation, security, and receipt-less revert metadata derived from
+ * the previous amount, but keeps the gas limit — see the inline note below.
+ *
  * @param messenger - Messenger used to read and write the transaction.
  * @param transactionId - Id of the transaction to update.
  * @param updates - Nested calldata updates keyed by index.
@@ -177,8 +203,16 @@ export function commitTransactionPayUpdates(
         ];
       }
 
-      transaction.txParams.gas = undefined;
-      transaction.gasLimitNoBuffer = undefined;
+      // The gas limit is deliberately retained. Clearing it sends the next
+      // simulation with no gas limit, so Monad applies its 150M default; a
+      // pre-funding revert then burns the whole limit and the node masks the
+      // real revert reason as "reserve balance violation", which raises a
+      // blocking reserve alert on a deposit that succeeds once Pay delivers
+      // the mUSD. Nothing re-estimates gas after this point either: the
+      // deferred `skipInitialGasEstimate` estimate runs once at creation, and
+      // neither GasFeePoller nor the resimulation loop writes `txParams.gas`.
+      // The batch shape is fixed, so the existing estimate stays valid across
+      // amount changes.
       transaction.gasUsed = undefined;
       transaction.securityAlertResponse = undefined;
       transaction.simulationData = undefined;

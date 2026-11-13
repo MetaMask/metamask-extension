@@ -212,6 +212,16 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   })),
 }));
 
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    goToBuy: mockGoToBuy,
+  })),
+}));
+
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
 const DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP = {
@@ -407,8 +417,12 @@ describe('AssetPage', () => {
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
-      getTokenSymbol: jest.fn(),
-      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
+      messengerCall: jest.fn((actionType: string) => {
+        if (actionType === 'AuthenticationController:getBearerToken') {
+          return Promise.resolve('mock-bearer-token');
+        }
+        return Promise.resolve(undefined);
+      }),
     } as never);
   });
 
@@ -592,7 +606,7 @@ describe('AssetPage', () => {
     expect(buyButton).not.toBeDisabled();
 
     fireEvent.click(buyButton as HTMLElement);
-    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
+    expect(mockGoToBuy).toHaveBeenCalledTimes(1);
   });
 
   it('hides the Send button when token balance is zero', () => {
@@ -700,6 +714,23 @@ describe('AssetPage', () => {
       '/0x1',
     );
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
+  });
+
+  it('renders the token name with the ticker and compact address under it', () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <AssetPage
+        asset={{ ...token, name: 'Test Token' }}
+        optionsButton={null}
+      />,
+      store,
+    );
+
+    expect(getByTestId('asset-name')).toHaveTextContent('Test Token');
+    expect(getByTestId('asset-page-header-ticker')).toHaveTextContent('TEST');
+    expect(getByTestId('asset-page-header-address')).toHaveTextContent(
+      '0x..25C0',
+    );
+    expect(queryByTestId('asset-page-header-subtitle')).toBeInTheDocument();
   });
 
   describe('Perps actions on the native asset page', () => {

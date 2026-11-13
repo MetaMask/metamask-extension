@@ -1,15 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  Text,
-  TextColor,
-  TextVariant,
-} from '@metamask/design-system-react';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -18,6 +9,7 @@ import {
 } from '../../../../shared/constants/app-state';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../networks-form/use-safe-chains';
@@ -27,47 +19,28 @@ import {
   getIsDefiPositionsEnabled,
 } from '../../../selectors';
 import {
-  getIsPerpsExperienceAvailable,
-  getPerpsTabBadgeSeen,
-} from '../../../selectors/perps';
-import {
   detectNfts,
   setDefaultHomeActiveTabName,
-  setPerpsTabBadgeSeen,
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
-import { useABTest } from '../../../hooks/useABTest';
-import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
-import {
-  PERPS_TAB_BADGE_AB_KEY,
-  PERPS_TAB_BADGE_VARIANTS,
-  PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
-} from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
-import { ActivityList } from '../../../pages/activity/activity-list';
-import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
 import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
-  showTokensLinks?: boolean;
   showTokens?: boolean;
   showNfts?: boolean;
   showDefi?: boolean;
-  showActivity?: boolean;
 };
 
 export const AccountOverviewTabs = ({
-  showTokensLinks,
   showTokens = true,
   showNfts = true,
   showDefi = true,
-  showActivity = true,
 }: AccountOverviewTabsProps) => {
   const persistedTab = useSelector(getDefaultHomeActiveTabName);
   const [urlTab, setActiveTabKey] = useTabState();
@@ -89,63 +62,14 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
-  const prefetchTransactions = usePrefetchTransactions();
   const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
-
-  const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
-  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const showBottomNav = useBottomNavBar();
-
-  // Track exposure only when the Perps tab is shown, gated on availability (not
-  // dismissal) so control and treatment record symmetrically once per session.
-  const { variant: perpsTabBadgeVariant } = useABTest(
-    PERPS_TAB_BADGE_AB_KEY,
-    PERPS_TAB_BADGE_VARIANTS,
-    PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
-    { trackExposure: isPerpsExperienceAvailable },
-  );
-  const showPerpsTabBadge =
-    isPerpsExperienceAvailable &&
-    perpsTabBadgeVariant.showBadge &&
-    !perpsTabBadgeSeen;
+  const { isWideLayout } = useAppLayout();
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
       setDefaultHomeActiveTabName(activeTabKey);
     }
   }, [activeTabKey]);
-
-  // Whether the persisted/url active tab resolves to a tab that is actually
-  // rendered. Membership only — render order is irrelevant here.
-  const renderedTabKeys: Set<AccountOverviewTab> = new Set([
-    ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
-    ...(isPerpsExperienceAvailable && !showBottomNav
-      ? [AccountOverviewTabKey.Perps]
-      : []),
-    ...(showDefi && defiPositionsEnabled ? [AccountOverviewTabKey.DeFi] : []),
-    ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
-    ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
-  ]);
-  // Perps is the effective active tab when it is explicitly selected, or when
-  // the active tab isn't rendered and Tabs clamps to the first rendered tab.
-  // Perps is that first tab whenever Tokens (the only tab that can precede it)
-  // is hidden and the Perps experience is available.
-  const perpsIsRendered = renderedTabKeys.has(AccountOverviewTabKey.Perps);
-  const perpsIsEffectiveActiveTab =
-    perpsIsRendered &&
-    (activeTabKey === AccountOverviewTabKey.Perps ||
-      (!renderedTabKeys.has(activeTabKey) && !showTokens));
-
-  // Mark the badge seen whenever Perps is the effective active tab — covers
-  // clicking in, landing directly on Perps (persisted default or ?tab=perps),
-  // and the clamped-active case above; a click handler alone would miss the last
-  // two. Gated on showPerpsTabBadge so control/seen/unavailable (badge never
-  // visible) never marks it seen.
-  useEffect(() => {
-    if (showPerpsTabBadge && perpsIsEffectiveActiveTab) {
-      dispatch(setPerpsTabBadgeSeen(true));
-    }
-  }, [showPerpsTabBadge, perpsIsEffectiveActiveTab, dispatch]);
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
@@ -191,11 +115,13 @@ export const AccountOverviewTabs = ({
     <>
       <Tabs<AccountOverviewTab>
         animated
+        hasTabEndSlot
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
+        tabRowClassName="border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border"
         tabListProps={{
           className:
-            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border',
+            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade',
         }}
         tabListWrapperProps={{
           className:
@@ -210,57 +136,12 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="tokens">
               <AssetList
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}
+                variant={isWideLayout ? 'table' : 'list'}
               />
             </ErrorBoundary>
-          </Tab>
-        )}
-
-        {isPerpsExperienceAvailable && !showBottomNav && (
-          <Tab
-            name={
-              showPerpsTabBadge ? (
-                <Box
-                  asChild
-                  flexDirection={BoxFlexDirection.Row}
-                  alignItems={BoxAlignItems.Center}
-                  gap={1}
-                >
-                  <span>
-                    {t('perps')}
-                    <Box
-                      asChild
-                      flexDirection={BoxFlexDirection.Row}
-                      alignItems={BoxAlignItems.Center}
-                      backgroundColor={BoxBackgroundColor.PrimaryMuted}
-                      paddingLeft={2}
-                      paddingRight={2}
-                      className="rounded-sm"
-                      data-testid="perps-tab-new-badge"
-                    >
-                      <span>
-                        <Text
-                          asChild
-                          variant={TextVariant.BodySm}
-                          color={TextColor.PrimaryDefault}
-                        >
-                          <span>{t('perpsFilterNew')}</span>
-                        </Text>
-                      </span>
-                    </Box>
-                  </span>
-                </Box>
-              ) : (
-                t('perps')
-              )
-            }
-            tabKey={AccountOverviewTabKey.Perps}
-            data-testid="account-overview__perps-tab"
-          >
-            <PerpsTab />
           </Tab>
         )}
 
@@ -272,7 +153,6 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="defi">
               <DeFiTab
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}
@@ -289,19 +169,6 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="nfts">
               <NftsTab entryPoint={tabEntryPoint} />
-            </ErrorBoundary>
-          </Tab>
-        )}
-
-        {showActivity && !showBottomNav && (
-          <Tab
-            name={t('activity')}
-            tabKey={AccountOverviewTabKey.Activity}
-            data-testid="account-overview__activity-tab"
-            onMouseEnter={prefetchTransactions}
-          >
-            <ErrorBoundary key="activity">
-              <ActivityList entryPoint={tabEntryPoint} />
             </ErrorBoundary>
           </Tab>
         )}

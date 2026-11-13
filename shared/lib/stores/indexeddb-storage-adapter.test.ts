@@ -1,7 +1,3 @@
-import type {
-  StorageAdapter,
-  StorageGetResult,
-} from '@metamask/storage-service';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import {
   STORAGE_SERVICE_INDEXED_DB_NAME,

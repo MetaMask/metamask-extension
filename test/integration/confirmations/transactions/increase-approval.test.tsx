@@ -72,12 +72,12 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      getGasFeeTimeEstimate: {
+      'GasFeeController:getTimeEstimate': {
         lowerTimeBound: new Date().getTime(),
         upperTimeBound: new Date().getTime(),
       },
-      getNextNonce: '9',
-      addKnownMethodData: {},
+      'LegacyBackgroundApiService:getNextNonce': '9',
+      'PreferencesController:addKnownMethodData': {},
       ...mockRequests,
     }),
   );
@@ -95,7 +95,7 @@ describe('Legacy ERC-20 increaseApproval Confirmation (PSAFE-415)', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetailsByChain: {
+      'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain': {
         standard: ERC20,
         decimals: '4',
       },

@@ -1149,6 +1149,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
         KnownCaipNamespace.Solana,
         KnownCaipNamespace.Bip122,
         KnownCaipNamespace.Stellar,
+        KnownCaipNamespace.Tron,
       ].flatMap((namespace) =>
         Object.keys(allMainnetNetworksMap?.[namespace] || {}),
       ),
@@ -1315,6 +1316,7 @@ export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
         KnownCaipNamespace.Solana,
         KnownCaipNamespace.Bip122,
         KnownCaipNamespace.Stellar,
+        KnownCaipNamespace.Tron,
       ].flatMap((namespace) =>
         Object.keys(allMainnetNetworksMap?.[namespace] || {}),
       ),
@@ -1420,6 +1422,33 @@ export const selectUnifiedBalanceBySelectedAccountGroup = createSelector(
       enabledNetworkMap,
     );
   },
+);
+
+/**
+ * Returns a function that computes the selected account group's unified
+ * balance for any set of enabled networks. Same calculation as
+ * {@link selectUnifiedBalanceBySelectedAccountGroup}, for a given network map.
+ *
+ * @param state - Redux state object.
+ * @returns A function from an enabled network map to the group balance, or
+ * null when no group is selected.
+ */
+export const selectUnifiedBalanceGetterBySelectedAccountGroup = createSelector(
+  [selectAssetsControllerStateForBalances, selectAccountTreeStateForBalances],
+  (assetsControllerState, accountTreeState) =>
+    (enabledNetworkMap: EnabledNetworkMap) => {
+      const selectedGroupId = accountTreeState?.selectedAccountGroup;
+      if (!selectedGroupId) {
+        return null;
+      }
+
+      return getUnifiedBalanceForAccountGroup(
+        augmentAssetControllersState(assetsControllerState),
+        accountTreeState,
+        selectedGroupId,
+        enabledNetworkMap,
+      );
+    },
 );
 
 export const selectBalanceByAccountGroup = (groupId: string) =>
