@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "I-update ang pinakabagong bersyon ng MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Walang ibinigay na url para sa pag-navigate."
@@ -11728,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Ang biglaang pagbabago sa merkado ay maaaring maging sanhi ng pagkabigo. Kung magpatuloy ang problema, makipag-ugnyan sa $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "I-on ang mga Smart Transaction para sa mas maaasahan at ligtas na mga transaksyon. $1"
@@ -11872,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Nangyayari ang mga pagkabigo sa transaksyon at narito kami upang tumulong. Kung magpapatuloy ang isyung ito, maaari kapag makipag-ugnay sa aming suporta sa customer sa $1 para sa karagdagang tulong.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Nabigo ang pag-swap"

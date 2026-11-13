@@ -7792,19 +7792,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-utils@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/client-utils@npm:3.2.0"
+"@metamask/client-utils@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@metamask/client-utils@npm:3.3.0"
   dependencies:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/core-backend": "npm:^14.0.0"
+    "@metamask/core-backend": "npm:^14.1.0"
     "@metamask/keyring-api": "npm:^24.3.0"
     "@metamask/slip44": "npm:^4.5.0"
     "@metamask/transaction-controller": "npm:^73.1.2"
     "@metamask/utils": "npm:^12.0.1"
     eth-chainlist: "npm:^0.0.873"
-  checksum: 10/4933f71d24aaa01ffc52bd02fc51199cb02d7b10124124cc41a67804cd4ba7e975bea5ba387850ebd17e5a24c5c3bbc5091fe1402dbe165523b83184f2e311b1
+  checksum: 10/0f1e217fbc4e042c5bc5287f72c158ee6fef88a4c60976b88b6171664d99fcc6e988ba002bb84091fcb8a748a9e569fd1825bf325069bb1aec583dd13c6733e4
   languageName: node
   linkType: hard
 
@@ -7922,22 +7922,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@metamask/core-backend@npm:14.0.0"
+"@metamask/core-backend@npm:^14.0.0, @metamask/core-backend@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "@metamask/core-backend@npm:14.1.0"
   dependencies:
     "@metamask/account-tree-controller": "npm:^11.2.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/keyring-controller": "npm:^28.2.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^36.0.0"
+    "@metamask/profile-sync-controller": "npm:^36.1.1"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/utils": "npm:^12.0.1"
     "@tanstack/query-core": "npm:^5.103.2"
     async-mutex: "npm:^0.5.0"
     cockatiel: "npm:^3.2.1"
-    uuid: "npm:^14.0.1"
-  checksum: 10/528399ebbdef099a691b30b3c99224fa103691bac9459e94ae69e8be8429defa33a65b839b32c0d1d811207fe9164245134b9f6b5a5af12030548bbc591f6ab1
+    uuid: "npm:^14.0.2"
+  checksum: 10/baeee781ca11a4637a663032f181f32d0b7714a4aa4112703c4c174d17e29798a3c71b9c0477f9d260acda641bb59b90c786a20406c4210d90314de9d2c641ef
   languageName: node
   linkType: hard
 
@@ -9165,9 +9165,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-api-data-service@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "@metamask/money-account-api-data-service@npm:2.3.1"
+"@metamask/money-account-api-data-service@npm:^2.3.1, @metamask/money-account-api-data-service@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@metamask/money-account-api-data-service@npm:2.4.0"
   dependencies:
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
@@ -9175,7 +9175,7 @@ __metadata:
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^12.0.1"
     "@tanstack/query-core": "npm:^5.103.2"
-  checksum: 10/ccf1b5a8ef53d82de12e889eb66fe39966e06af5c27711e91268dcc1691960f4d822058b613c0b060e57638b2634acd34c33d69d67d20b05faa10593c77457f1
+  checksum: 10/7b959ec3982f6c34219c45db4d1f7f2758e087e977ff20f5c3601888bfe94d759d26d16a0b5c04639bdae6cdbff4bb126aa2ede02b7b74e8f227d10ea8c7a246
   languageName: node
   linkType: hard
 
@@ -35337,13 +35337,13 @@ __metadata:
     "@metamask/claims-controller": "npm:^1.1.0"
     "@metamask/client-controller": "npm:^2.0.0"
     "@metamask/client-mcp-core": "npm:0.13.1"
-    "@metamask/client-utils": "npm:^3.2.0"
+    "@metamask/client-utils": "npm:^3.3.0"
     "@metamask/compliance-controller": "npm:^3.0.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
     "@metamask/connectivity-controller": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^14.0.0"
+    "@metamask/core-backend": "npm:^14.1.0"
     "@metamask/delegation-controller": "npm:^4.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.1.0"
@@ -35401,7 +35401,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
-    "@metamask/money-account-api-data-service": "npm:^2.3.1"
+    "@metamask/money-account-api-data-service": "npm:^2.4.0"
     "@metamask/money-account-balance-service": "npm:^3.2.0"
     "@metamask/money-account-controller": "npm:^3.0.0"
     "@metamask/money-account-upgrade-controller": "npm:^4.0.0"
@@ -47460,7 +47460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0.0, uuid@npm:^14.0.1, uuid@npm:^14.0.2":
+"uuid@npm:^14.0.0, uuid@npm:^14.0.2":
   version: 14.0.3
   resolution: "uuid@npm:14.0.3"
   bin:

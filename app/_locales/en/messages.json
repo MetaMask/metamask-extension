@@ -3523,7 +3523,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Update to the latest version of MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
@@ -5951,6 +5951,10 @@
   },
   "moneyActivity": {
     "message": "Activity"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "Amount unavailable",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Card"
@@ -9909,7 +9913,7 @@
     "message": "Failed to add account"
   },
   "rewardsMoneyReferralActiveTrader": {
-    "message": "You cannot be referred because of recent trading activity."
+    "message": "This referral code is only valid for new traders."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "You have already been referred by another user."
@@ -12029,7 +12033,7 @@
   },
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Turn on Smart Transactions for more reliable and secure transactions. $1"
@@ -12173,7 +12177,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Swap failed"
