@@ -104,7 +104,7 @@ mm cleanup
 Every command prints JSON on stdout. A failed command prints one JSON line on stdout (not `Error: ...` on stderr) and exits with a non-zero code:
 
 ```json
-{"ok":false,"error":{"code":"MM_CLICK_TIMEOUT","message":"Click timed out after 2000ms; state unknown. ...","hint":"...","retryable":false},"meta":{...}}
+{"ok":false,"error":{"code":"MM_CLICK_TIMEOUT","message":"Click timed out after 3000ms; state unknown (last Playwright step: element is not enabled). ...","hint":"...","retryable":false},"meta":{...}}
 ```
 
 | Exit code | Meaning                                          |
@@ -118,6 +118,8 @@ Every command prints JSON on stdout. A failed command prints one JSON line on st
 | 6         | Platform or device not available                 |
 
 Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
+
+`mm click` without `--timeout` fails after 2 seconds with `MM_TARGET_NOT_FOUND` (exit code 4) when no element matches the target, for example `Selector [data-testid="x"] (testId:x) matched 0 elements after 2000ms`. Check the target with `mm describe-screen`. With `--timeout <ms>`, the click waits that long for the target to appear. A `MM_CLICK_TIMEOUT` message ends with the last Playwright step, which tells why the click failed: for example `element is not enabled`, or `<div class="mm-modal" ...> subtree intercepts pointer events` (close the modal first).
 
 ---
 
