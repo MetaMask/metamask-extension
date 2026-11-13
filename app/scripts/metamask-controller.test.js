@@ -4757,9 +4757,6 @@ describe('MetaMaskController', () => {
       jest
         .spyOn(metamaskController, 'triggerNetworkrequests')
         .mockImplementation(noop);
-      jest
-        .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
-        .mockResolvedValue(undefined);
 
       await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
         password,
@@ -4835,6 +4832,178 @@ describe('MetaMaskController', () => {
           actionType === 'LegacyBackgroundApiService:discoverAndCreateAccounts',
       );
       expect(discoverCalls).toHaveLength(1);
+    });
+
+    async function completeOnboarding() {
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+
+      await publishOnboardingState({
+        completedOnboarding: false,
+        firstTimeFlowType: FirstTimeFlowType.create,
+      });
+      await publishOnboardingState({
+        completedOnboarding: true,
+        firstTimeFlowType: FirstTimeFlowType.create,
+      });
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+
+    it('refreshes token assets after onboarding completes', async () => {
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+
+      await completeOnboarding();
+
+      expect(getAssets).toHaveBeenCalledTimes(1);
+      expect(getAssets).toHaveBeenCalledWith(
+        [metamaskController.accountsController.getSelectedAccount()],
+        {
+          assetTypes: ['token', 'metadata'],
+          forceUpdate: true,
+        },
+      );
+    });
+
+    it('logs an error when the post-onboarding asset refresh fails', async () => {
+      const error = new Error('refresh failed');
+      jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockRejectedValue(error);
+      const logError = jest
+        .spyOn(log, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        await completeOnboarding();
+
+        expect(logError).toHaveBeenCalledWith(
+          'Error refreshing assets after onboarding',
+          { err: error },
+        );
+      } finally {
+        logError.mockRestore();
+      }
+    });
+
+    it('skips the asset refresh when no account is selected', async () => {
+      jest
+        .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+        .mockReturnValue(undefined);
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+
+      await completeOnboarding();
+
+      expect(getAssets).not.toHaveBeenCalled();
+    });
+
+    it('skips the asset refresh when the assets controller is missing', async () => {
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+      metamaskController.assetsController = undefined;
+
+      await completeOnboarding();
+
+      expect(getAssets).not.toHaveBeenCalled();
+    });
+
+    describe('BridgeStatusController:destinationTransactionCompleted', () => {
+      const evmAssetId = 'eip155:1/slip44:60';
+      const nonEvmAssetId =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
+      function publishBridgeCompletion(assetId) {
+        metamaskController.controllerMessenger.publish(
+          'BridgeStatusController:destinationTransactionCompleted',
+          assetId,
+        );
+      }
+
+      it('refreshes EVM token assets for the selected account', async () => {
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+
+        publishBridgeCompletion(evmAssetId);
+        await flushPromises();
+
+        expect(getAssets).toHaveBeenCalledTimes(1);
+        expect(getAssets).toHaveBeenCalledWith(
+          [metamaskController.accountsController.getSelectedAccount()],
+          {
+            chainIds: ['eip155:1'],
+            assetTypes: ['token', 'metadata'],
+            forceUpdate: true,
+          },
+        );
+      });
+
+      it('skips the refresh for a non-EVM destination', async () => {
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+
+        publishBridgeCompletion(nonEvmAssetId);
+        await flushPromises();
+
+        expect(getAssets).not.toHaveBeenCalled();
+      });
+
+      it('skips the refresh when the assets controller is missing', async () => {
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+        metamaskController.assetsController = undefined;
+
+        publishBridgeCompletion(evmAssetId);
+        await flushPromises();
+
+        expect(getAssets).not.toHaveBeenCalled();
+      });
+
+      it('skips the refresh when no account is selected', async () => {
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue(undefined);
+        const getAssets = jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockResolvedValue({});
+
+        publishBridgeCompletion(evmAssetId);
+        await flushPromises();
+
+        expect(getAssets).not.toHaveBeenCalled();
+      });
+
+      it('logs an error when the bridge asset refresh fails', async () => {
+        const error = new Error('bridge refresh failed');
+        jest
+          .spyOn(metamaskController.assetsController, 'getAssets')
+          .mockRejectedValue(error);
+        const logError = jest
+          .spyOn(log, 'error')
+          .mockImplementation(() => undefined);
+
+        try {
+          publishBridgeCompletion(evmAssetId);
+          await flushPromises();
+
+          expect(logError).toHaveBeenCalledWith(
+            'Error refreshing assets after bridge',
+            { err: error },
+          );
+        } finally {
+          logError.mockRestore();
+        }
+      });
     });
   });
 
