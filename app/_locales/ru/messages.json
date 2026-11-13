@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Добавить URL"
   },
-  "addAWallet": {
-    "message": "Добавить кошелек"
-  },
   "addAccount": {
     "message": "Добавить аккаунт"
   },
@@ -3429,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Обновите до последней версии MetaMask,",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "URL-адрес для перехода не предоставлен."
@@ -3567,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Удалить данные MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Это приведет к удалению исторических данных MetaMetrics, связанных с использованием вами этого устройства. Ваш кошелек и счета останутся такими же, как сейчас, после удаления этих данных. Этот процесс может занять до 30 дней. Наша $1 содержит подробные сведения по этому вопросу.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Это удалит исторические данные MetaMetrics, связанные с вашим кошельком. MetaMetrics включает анонимизированные данные об использовании и диагностике. Ваш кошелек и счета останутся без изменений. Этот процесс может занять до 30 дней. См. нашу $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3578,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Сейчас невозможно выполнить этот запрос из-за проблемы с сервером системы аналитики. Повторите попытку позже."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Мы не можем удалить эти данные прямо сейчас"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Не удалось удалить"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Мы собираемся удалить всю все данные MetaMetrics. Вы уверены?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Удалить данные MetaMetrics?"
@@ -4151,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "Требуется $1"
-  },
-  "fileImportFail": {
-    "message": "Импорт файлов не работает? Нажмите здесь!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Нажмите, чтобы загрузить, или перетащите"
@@ -5399,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Кнопка статуса подключения показывает, подключен ли посещаемый вами веб-сайт, к выбранному вами в настоящее время счету."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Поскольку вы никогда не включали MetaMetrics, здесь нет данных для удаления."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 размещается на npm, а $2 — это уникальный идентификатор Snap.",
@@ -7385,10 +7365,6 @@
   "paste": {
     "message": "Вставить"
   },
-  "pastePrivateKey": {
-    "message": "Вставьте строку вашего закрытого ключа сюда:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Оплатить с помощью",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8866,7 +8842,7 @@
     "message": "Выводимые средства отправлены"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask автоматически обменяет ваш токен на желаемый. При обмене на mUSD комиссия MetaMask не взимается.",
+    "message": "MetaMask автоматически обменяет ваш токен на желаемый.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8967,10 +8943,6 @@
   "privateKeyHidden": {
     "message": "Закрытый ключ скрыт",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Показать/скрыть закрытый ключ при вводе",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Этот закрытый ключ отображается",
@@ -11756,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Внезапные изменения на рынке могут привести к сбою транзакции. Если проблема не исчезает, обратитесь в $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Включите функцию «Умные транзакции» для более надежного и безопасного выполнения транзакций. $1"
@@ -11900,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Иногда транзакции не удается выполнить. Мы рады помочь вам в таких случаях. Если проблема не исчезнет, обратитесь в нашу поддержку клентов на сайте $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Своп не удался"
@@ -11929,9 +11901,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "здесь",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Включен"
   },
   "swapGasFeesSplit": {
     "message": "Комиссии сети на предыдущем экране разделены между этими двумя транзакциями."
@@ -12679,9 +12648,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Автоматическое отображение токенов, отправленных на ваш счет, включает коммуникацию со сторонними серверами для получения изображений токенов. Эти сервера получают доступ к вашему IP-адресу."
-  },
-  "usedByClients": {
-    "message": "Используется множеством разных клиентов"
   },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"

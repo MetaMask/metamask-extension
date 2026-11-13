@@ -479,7 +479,7 @@ describe('useSendQueryParams', () => {
         ),
     },
   ])(
-    'when the loader has left the send screen, handleSubmit shows a toast for a validation error when the loader has left the send screen - $testcase',
+    'when the loader has left the send screen, handleSubmit shows a toast and leaves navigation to the confirmation page - $testcase',
     async ({
       mockImp,
     }: {
@@ -503,12 +503,12 @@ describe('useSendQueryParams', () => {
       await waitFor(() => {
         expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
         expect(toast.error).toHaveBeenCalledWith(GENERIC_TRANSACTION_ERROR);
-        expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       });
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
     },
   );
 
-  it('when the loader has left the send screen, handleSubmit does not show a toast when the user rejects the confirmation', async () => {
+  it('when the loader has left the send screen, handleSubmit does not show a toast or navigate back when the user rejects the confirmation', async () => {
     window.location.hash = '#/confirmation/pending-send';
 
     const mockUpdateNonEVMSubmitError = jest.fn();
@@ -529,9 +529,10 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
-      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+      expect(trackedEventNames()).toStrictEqual(['Send Failed']);
     });
+    expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
     expect(toast.error).not.toHaveBeenCalled();
   });
 

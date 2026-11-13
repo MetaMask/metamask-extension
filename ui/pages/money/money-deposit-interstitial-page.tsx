@@ -7,6 +7,7 @@ import {
 } from '../../helpers/constants/routes';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
+import { MoneyFtueEntryPoint } from './constants/money-events';
 
 /**
  * Loading page shown while a Money account deposit is being prepared.
@@ -33,6 +34,7 @@ export function MoneyDepositInterstitialPage() {
     initiateDeposit({
       replaceConfirmation: true,
       goBackTo: MONEY_HOME_ROUTE,
+      ftueOrigin: { entryPoint: MoneyFtueEntryPoint.MoneyDepositDeeplink },
     }).then((isStarted) => {
       if (!isStarted) {
         navigate(DEFAULT_ROUTE, { replace: true });

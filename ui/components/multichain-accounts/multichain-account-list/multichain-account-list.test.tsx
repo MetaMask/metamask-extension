@@ -664,7 +664,9 @@ describe('MultichainAccountList', () => {
     expect(modalHeader).toBeInTheDocument();
 
     // Find the header text inside the modal
-    const headerText = within(modalHeader).getByText(messages.rename.message);
+    const headerText = within(modalHeader).getByText(
+      messages.renameAccount.message,
+    );
     expect(headerText).toBeInTheDocument();
 
     // Find the actual input element directly
@@ -682,7 +684,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find and click the confirmation button
-    const confirmButton = screen.getByText(messages.confirm.message);
+    const confirmButton = screen.getByText(messages.save.message);
     expect(confirmButton).toBeInTheDocument();
 
     // The button should no longer be disabled after entering text

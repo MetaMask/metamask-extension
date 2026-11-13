@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Ajouter une URL"
   },
-  "addAWallet": {
-    "message": "Ajouter un portefeuille"
-  },
   "addAccount": {
     "message": "Ajouter un compte"
   },
@@ -3429,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Mettez à jour MetaMask vers la dernière version",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Aucune URL de redirection n’a été fournie."
@@ -3567,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Cela supprimera les données historiques de MetaMetrics associées à votre utilisation de cet appareil. Aucun changement ne sera apporté à votre portefeuille et à vos comptes après la suppression de ces données. Ce processus peut prendre jusqu’à 30 jours. Veuillez consulter notre $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Cette action supprimera l’historique des données MetaMetrics associées à votre portefeuille. MetaMetrics comprend des données d’utilisation et de diagnostic anonymisées. Votre portefeuille et vos comptes resteront inchangés. Ce processus peut prendre jusqu’à 30 jours. Consultez notre $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3578,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Impossible de traiter cette demande pour le moment en raison d’un problème avec le serveur du système d’analyse. Veuillez réessayer plus tard."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Il nous est impossible de supprimer ces données pour le moment"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Impossible de supprimer"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Nous sommes sur le point de supprimer toutes vos données MetaMetrics. Êtes-vous sûr(e) de vouloir continuer ?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Voulez-vous supprimer les données MetaMetrics ?"
@@ -4151,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "Le champ $1 est obligatoire"
-  },
-  "fileImportFail": {
-    "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Cliquez pour télécharger ou glissez-déposez"
@@ -5399,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Le bouton d’état de connexion indique si le site Web que vous visitez est connecté à votre compte actuellement sélectionné."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Comme vous n’avez jamais adhéré à MetaMetrics, il n’y a pas de données à supprimer ici."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 est hébergé sur npm et $2 est l’identifiant unique de ce Snap.",
@@ -7385,10 +7365,6 @@
   "paste": {
     "message": "Coller"
   },
-  "pastePrivateKey": {
-    "message": "Collez votre clé privée ici :",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Payer avec",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8866,7 +8842,7 @@
     "message": "Demande de retrait envoyée avec succès"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask échangera vos jetons pour vous. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
+    "message": "MetaMask échangera vos jetons pour vous.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8967,10 +8943,6 @@
   "privateKeyHidden": {
     "message": "La clé privée est masquée",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Afficher/masquer le champ de saisie de la clé privée",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Cette clé privée est affichée",
@@ -11756,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Les changements soudains du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Activez les transactions intelligentes pour profiter de transactions plus fiables et plus sécurisées. $1"
@@ -11900,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Sachez que les transactions peuvent échouer et que nous sommes là pour vous aider. Si ce problème persiste, vous pouvez contacter notre service clientèle au $1 pour plus d’assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Échec du swap"
@@ -11929,9 +11901,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "ici",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Inclus"
   },
   "swapGasFeesSplit": {
     "message": "Les frais de réseau indiqués sur l’écran précédent sont répartis entre ces deux transactions."
@@ -12679,9 +12648,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "L’affichage automatique des jetons envoyés à votre compte implique de communiquer avec des serveurs tiers pour la récupération des images de jeton. Ces serveurs auront accès à votre adresse IP."
-  },
-  "usedByClients": {
-    "message": "Utilisé par plusieurs clients différents"
   },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"

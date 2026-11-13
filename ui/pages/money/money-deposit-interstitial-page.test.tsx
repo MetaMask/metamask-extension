@@ -4,6 +4,7 @@ import {
   DEFAULT_ROUTE,
   MONEY_HOME_ROUTE,
 } from '../../helpers/constants/routes';
+import { MoneyFtueEntryPoint } from './constants/money-events';
 import { MoneyDepositInterstitialPage } from './money-deposit-interstitial-page';
 
 const mockNavigate = jest.fn();
@@ -52,6 +53,7 @@ describe('MoneyDepositInterstitialPage', () => {
     expect(mockInitiateDeposit).toHaveBeenCalledWith({
       replaceConfirmation: true,
       goBackTo: MONEY_HOME_ROUTE,
+      ftueOrigin: { entryPoint: MoneyFtueEntryPoint.MoneyDepositDeeplink },
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });

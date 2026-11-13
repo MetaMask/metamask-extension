@@ -79,17 +79,24 @@ jest.mock('./controllers/analytics', () => ({
 }));
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
-  PerpsControllerInit: jest.fn().mockImplementation(() => ({
-    messengerClient: {
-      state: {},
-      name: 'PerpsController',
-      stopMarketDataPreload: jest.fn(),
-    },
-    api: {
-      perpsDisconnect: jest.fn().mockResolvedValue(undefined),
-      perpsGetConnectionState: jest.fn().mockReturnValue('disconnected'),
-    },
-  })),
+  PerpsControllerInit: jest
+    .fn()
+    .mockImplementation(({ controllerMessenger }) => {
+      controllerMessenger.registerActionHandler(
+        'PerpsController:getWebSocketConnectionState',
+        () => 'disconnected',
+      );
+      return {
+        messengerClient: {
+          state: {},
+          name: 'PerpsController',
+          stopMarketDataPreload: jest.fn(),
+        },
+        api: {
+          perpsDisconnect: jest.fn().mockResolvedValue(undefined),
+        },
+      };
+    }),
 }));
 
 jest.mock('./messenger-client-init/ramps-controller-init', () => ({
@@ -151,6 +158,7 @@ jest.mock('webextension-polyfill', () => ({
       addListener: jest.fn(),
     },
     getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
+    setUninstallURL: jest.fn(),
   },
   storage: {
     local: {
@@ -280,7 +288,11 @@ jest.mock('./lib/rpc-method-middleware', () => ({
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
   getPerformanceTimestamp: jest.fn(() => 1_000),
-  trace: jest.fn(),
+  // Run the callback only for the RPC-dispatch path; other instrumentation
+  // traces stay no-ops, as the rest of the suite assumes.
+  trace: jest.fn((request, fn) =>
+    request?.op === 'rpc.handler' ? fn?.() : undefined,
+  ),
   endTrace: jest.fn(),
 }));
 
@@ -993,9 +1005,11 @@ describe('MetaMaskController', () => {
       jest
         .spyOn(environment, 'getIsPerpsIncludedInBuild')
         .mockReturnValue(true);
-      jest
-        .spyOn(metamaskController.messengerClientApi, 'perpsGetConnectionState')
-        .mockReturnValue('connected');
+      mockMessengerControllerAction(
+        { messenger: metamaskController.controllerMessenger },
+        'PerpsController:getWebSocketConnectionState',
+        () => 'connected',
+      );
       const disconnect = jest.spyOn(
         metamaskController.messengerClientApi,
         'perpsDisconnect',
@@ -1031,12 +1045,11 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockReturnValue('connected');
+        mockMessengerControllerAction(
+          { messenger: metamaskController.controllerMessenger },
+          'PerpsController:getWebSocketConnectionState',
+          () => 'connected',
+        );
 
         metamaskController._onLock();
         await waitForAllPromises();
@@ -1054,12 +1067,11 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockReturnValue('connected');
+        mockMessengerControllerAction(
+          { messenger: metamaskController.controllerMessenger },
+          'PerpsController:getWebSocketConnectionState',
+          () => 'connected',
+        );
 
         metamaskController._onLock();
         await waitForAllPromises();
@@ -1079,12 +1091,11 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockReturnValue('disconnected');
+        mockMessengerControllerAction(
+          { messenger: metamaskController.controllerMessenger },
+          'PerpsController:getWebSocketConnectionState',
+          () => 'disconnected',
+        );
 
         metamaskController._onLock();
         await waitForAllPromises();
@@ -2277,43 +2288,6 @@ describe('MetaMaskController', () => {
 
     describe('NFT source', () => {
       const NFT_ADDRESS = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
-      const NETWORK_CLIENT_ID = 'mainnet';
-
-      it('passes the custom source for addNft from the API', async () => {
-        const addNft = jest
-          .spyOn(metamaskController.nftController, 'addNft')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .addNft(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
-
-        expect(addNft).toHaveBeenCalledWith(
-          NFT_ADDRESS,
-          '1',
-          NETWORK_CLIENT_ID,
-          {
-            source: 'custom',
-          },
-        );
-      });
-
-      it('passes the custom source for addNftVerifyOwnership from the API', async () => {
-        const addNftVerifyOwnership = jest
-          .spyOn(metamaskController.nftController, 'addNftVerifyOwnership')
-          .mockResolvedValue(undefined);
-
-        await metamaskController
-          .getApi()
-          .addNftVerifyOwnership(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
-
-        expect(addNftVerifyOwnership).toHaveBeenCalledWith(
-          NFT_ADDRESS,
-          '1',
-          NETWORK_CLIENT_ID,
-          { source: 'custom' },
-        );
-      });
 
       it('passes the detected source when adding an NFT found in transaction logs', async () => {
         const addNft = jest
@@ -3264,12 +3238,11 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockReturnValue('connected');
+        mockMessengerControllerAction(
+          { messenger: metamaskController.controllerMessenger },
+          'PerpsController:getWebSocketConnectionState',
+          () => 'connected',
+        );
 
         const firstStream = createTestStream();
         const secondStream = createTestStream();
@@ -3323,12 +3296,11 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockReturnValue('connected');
+        mockMessengerControllerAction(
+          { messenger: metamaskController.controllerMessenger },
+          'PerpsController:getWebSocketConnectionState',
+          () => 'connected',
+        );
 
         const firstStream = createTestStream();
         metamaskController.setupTrustedCommunication(
@@ -3382,12 +3354,11 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
-        jest
-          .spyOn(
-            metamaskController.messengerClientApi,
-            'perpsGetConnectionState',
-          )
-          .mockReturnValue('connected');
+        mockMessengerControllerAction(
+          { messenger: metamaskController.controllerMessenger },
+          'PerpsController:getWebSocketConnectionState',
+          () => 'connected',
+        );
 
         const firstStream = createTestStream();
         metamaskController.setupTrustedCommunication(

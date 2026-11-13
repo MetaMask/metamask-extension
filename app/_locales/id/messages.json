@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Tambahkan URL"
   },
-  "addAWallet": {
-    "message": "Tambahkan dompet"
-  },
   "addAccount": {
     "message": "Tambah akun"
   },
@@ -3429,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Perbarui ke versi terkini MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Tidak ada url untuk dinavigasi yang diberikan."
@@ -3567,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Hapus data MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Ini akan menghapus data MetaMetrics historis yang terkait dengan penggunaan Anda pada perangkat ini. Dompet dan akun Anda akan tetap sama seperti sekarang setelah data ini dihapus. Proses ini dapat memakan waktu hingga 30 hari. Lihat $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Ini akan menghapus data MetaMetrics historis yang terkait dengan dompet Anda. MetaMetrics mencakup data penggunaan dan diagnostik yang dianonimkan. Dompet dan akun Anda akan tetap sama. Proses ini akan memakan waktu hingga 30 hari. Lihat $1 kami.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3578,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Permintaan ini tidak dapat diselesaikan sekarang karena masalah server sistem analitis. Coba lagi nanti."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Kami tidak dapat menghapus data ini sekarang"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Tidak dapat menghapus"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Kami akan menghapus semua data MetaMetrics Anda. Lanjutkan?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Hapus data MetaMetrics?"
@@ -4151,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "$1 wajib diisi"
-  },
-  "fileImportFail": {
-    "message": "Impor file tidak bekerja? Klik di sini!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Klik untuk mengunggah atau seret dan lepas"
@@ -5403,9 +5386,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Tombol status koneksi menunjukkan apakah situs web yang Anda kunjungi terhubung ke akun Anda yang dipilih saat ini."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Karena Anda belum pernah ikut serta dalam MetaMetrics, tidak ada data yang dapat dihapus di sini."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 dihosting pada npm dan $2 merupakan pengenal unik Snap ini.",
@@ -7389,10 +7369,6 @@
   "paste": {
     "message": "Tempel"
   },
-  "pastePrivateKey": {
-    "message": "Tempel string kunci pribadi Anda di sini:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Bayar melalui",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8874,7 +8850,7 @@
     "message": "Penarikan dikirim"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask akan menukar token Anda ke token yang diinginkan. MetaMask tidak mengenakan biaya saat Anda menukar ke mUSD.",
+    "message": "MetaMask akan menukar token Anda ke token yang diinginkan.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8975,10 +8951,6 @@
   "privateKeyHidden": {
     "message": "Kunci pribadi disembunyikan",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Tampilkan/Sembunyikan input kunci pribadi",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Kunci pribadi ini sedang ditampilkan",
@@ -11764,7 +11736,7 @@
   },
   "stxFailureDescription": {
     "message": "Perubahan pasar yang terjadi secara tiba-tiba dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Aktifkan Transaksi Cerdas untuk transaksi yang lebih andal dan aman. $1"
@@ -11908,7 +11880,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Kegagalan transaksi terjadi dan kami siap membantu. Jika masalah terus berlanjut, Anda dapat menghubungi dukungan pelanggan kami di $1 untuk mendapatkan bantuan lebih lanjut.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Pertukaran gagal"
@@ -11937,9 +11909,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "di sini",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Termasuk"
   },
   "swapGasFeesSplit": {
     "message": "Biaya jaringan pada layar sebelumnya dibagi di antara kedua transaksi ini."
@@ -12687,9 +12656,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."
-  },
-  "usedByClients": {
-    "message": "Digunakan oleh berbagai klien yang berbeda"
   },
   "userOpContractDeployError": {
     "message": "Penerapan kontrak dari akun kontrak cerdas tidak didukung"
