@@ -46,6 +46,9 @@ export type Metrics = {
   'Background Connect': number;
   'First Render': number;
   'Homepage Ready'?: number;
+  'Balance Painted'?: number;
+  'Token Name Painted'?: number;
+  'Token Icon Painted'?: number;
   'Initial Actions': number;
   'Load Scripts': number;
   'Setup Store': number;

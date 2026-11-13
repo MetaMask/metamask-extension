@@ -87,6 +87,9 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
               onError={handleOnError}
               src={src}
               alt={`${name} logo`}
+              // TEMPORARY (1/1): Element Timing probe for the async-decoding A/B pilot.
+              // Remove with .github/workflows/pilot-async.yml.
+              {...{ elementtiming: 'token-icon' }}
             />
           </>
         )}

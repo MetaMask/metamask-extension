@@ -200,6 +200,9 @@ export const AccountGroupBalance = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
           className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+          // TEMPORARY (1/1): Element Timing probe for the async-decoding A/B pilot.
+          // Remove with .github/workflows/pilot-async.yml.
+          {...{ elementtiming: 'balance' }}
         >
           {/* We should always show something but the check is just to appease TypeScript */}
           {formattedTotal}

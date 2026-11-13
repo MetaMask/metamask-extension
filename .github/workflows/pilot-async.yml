@@ -98,7 +98,7 @@ jobs:
           fi
           matrix=$(jq -nc --argjson s "$shards" '
             {include: [
-              ("default", "bigicon") as $arm
+              ("default", "pain", "big1", "synthetic") as $arm
               | range(1; $s + 1) as $shard
               | {arm: $arm, shard: $shard, flip: (($shard - 1) % 2)}
             ]}')
@@ -125,7 +125,7 @@ jobs:
       HEAD_COMMIT_HASH: ${{ github.sha }}
       GITHUB_REF_NAME: ${{ github.ref_name }}
       BENCHMARK_RUNNER_LABEL: ubuntu-26.04
-      BENCHMARK_BIG_ICONS: ${{ matrix.arm == 'bigicon' && '1' || '0' }}
+      BENCHMARK_ICON_ARM: ${{ matrix.arm == 'default' && '' || matrix.arm }}
       BENCHMARK_AB_FLIP: ${{ matrix.flip }}
     steps:
       - name: Checkout and setup environment
