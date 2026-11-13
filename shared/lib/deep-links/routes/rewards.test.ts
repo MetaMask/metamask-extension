@@ -13,7 +13,7 @@ describe('rewards deep link route', () => {
 
   it('returns the /rewards route and preserves query parameters', () => {
     const params = new URLSearchParams(
-      'referral=ABC123&sig_params=referral&sig=signature&utm_source=twitter&_hsenc=value&attributionId=attr',
+      'sig_params=utm_source&sig=signature&utm_source=twitter&_hsenc=value&attributionId=attr',
     );
 
     const destination = rewards.handler(params);
@@ -21,7 +21,10 @@ describe('rewards deep link route', () => {
     expect(destination).toHaveProperty('path');
     expect((destination as { path: string }).path).toBe('/rewards');
     expect((destination as { query: URLSearchParams }).query.toString()).toBe(
-      'sig_params=referral&sig=signature&utm_source=twitter&_hsenc=value&attributionId=attr',
+      'sig_params=utm_source&sig=signature&utm_source=twitter&_hsenc=value&attributionId=attr',
     );
+    expect(
+      (destination as { query: URLSearchParams }).query.has('referral'),
+    ).toBe(false);
   });
 });

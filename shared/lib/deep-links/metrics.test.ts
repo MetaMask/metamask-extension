@@ -136,7 +136,7 @@ describe('createEvent', () => {
       expect(result.properties.utm_term).toBe('crypto-wallet');
     });
 
-    it('handles referral codes as standard attribution properties', () => {
+    it('reports Money ref as referral_code and discards legacy referral', () => {
       const url = new URL(
         'https://example.com/test?referral=ABC123&ref=%20def456%20&customParam=secret-value',
       );
@@ -144,8 +144,8 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result.properties.referral).toBe('ABC123');
       expect(result.properties.referral_code).toBe('DEF456');
+      expect(result.properties).not.toHaveProperty('referral');
       expect(result.sensitiveProperties).toStrictEqual({
         customParam: 'secret-value',
       });

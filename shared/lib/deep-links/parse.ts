@@ -82,6 +82,9 @@ export async function parse<
     // canonicalize does not remove sig_params, as it is needed for verification
     // but we do not want to pass it to the route handler, so we remove it
     canonicalUrl.searchParams.delete(SIG_PARAMS_PARAM);
+    // Legacy points query; Money uses `ref`. Drop it so handlers that copy
+    // the whole query do not re-share it. verify() still sees the original URL.
+    canonicalUrl.searchParams.delete('referral');
     destination = route.handler(canonicalUrl.searchParams);
   } catch (error) {
     // tab may have closed in the meantime, the searchParams may have
