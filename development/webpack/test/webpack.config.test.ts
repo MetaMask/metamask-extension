@@ -443,6 +443,26 @@ ${Object.entries(env)
     assert(getPluginNames(config).includes('ReactCompilerPlugin'));
   });
 
+  function getPluginBuildDependencies(config: Configuration) {
+    return ((config.cache as FileCacheOptions).buildDependencies?.config ?? [])
+      .map(buildDependencyPath)
+      .filter((path) => path.includes(join('utils', 'plugins')));
+  }
+
+  it('does not track optional plugins as cache build dependencies by default', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig();
+    assert.deepStrictEqual(getPluginBuildDependencies(config), []);
+  });
+
+  it('tracks a loaded optional plugin as a cache build dependency', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig(['--reactCompilerVerbose']);
+    assert.deepStrictEqual(getPluginBuildDependencies(config), [
+      require.resolve('../utils/plugins/ReactCompilerPlugin'),
+    ]);
+  });
+
   it('enables React Refresh for development watch builds', async () => {
     mockOptionalRcFiles();
 
