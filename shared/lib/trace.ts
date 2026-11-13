@@ -28,6 +28,7 @@ export enum TraceName {
   AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BackgroundPoll = 'Background Poll',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
   BridgeTransactionApprovalCompleted = 'Bridge Transaction Approval Completed',
@@ -70,7 +71,7 @@ export enum TraceName {
   LoadCollectibles = 'Load Collectibles',
   GetAssetHistoricalPrices = 'Get Asset Historical Prices',
   OnFinishedTransaction = 'On Finished Transaction',
-  AccountSyncFull = 'Account Sync Full',
+  AccountSyncFull = 'Multichain Account Syncing - Full',
   AccountSyncSaveIndividual = 'Account Sync Save Individual',
   ContactSyncFull = 'Contact Sync Full',
   ContactSyncDeleteRemote = 'Contact Sync Delete Remote',
@@ -501,6 +502,30 @@ function finalizeOnboardingMachineTime(span?: Span | null): void {
   }
 
   onboardingMachineTimeByKey = new Map();
+}
+
+/**
+ * Run one background polling cycle as its own `Background Poll` root trace.
+ *
+ * @param controllerName - The polling controller, recorded as `controller` span data.
+ * @param fn - The polling cycle to trace.
+ * @returns The result of the polling cycle.
+ */
+export function traceBackgroundPoll<ResultType>(
+  controllerName: string,
+  fn: () => ResultType,
+): ResultType {
+  return trace(
+    {
+      name: TraceName.BackgroundPoll,
+      op: 'background.poll',
+      // Span data, not a scope tag: a tag stays on the scope while the poll is
+      // pending and lands on unrelated concurrent transactions.
+      data: { controller: controllerName },
+      root: true,
+    },
+    fn,
+  );
 }
 
 /**

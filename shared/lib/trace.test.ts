@@ -10,6 +10,7 @@ import {
   withoutTraceContext,
   ONBOARDING_MACHINE_TIME_ATTRIBUTE,
   trace,
+  traceBackgroundPoll,
   TraceName,
 } from './trace';
 
@@ -1195,6 +1196,35 @@ describe('Trace', () => {
     it('returns undefined when sentry is not initialized', () => {
       globalThis.sentry = undefined;
       expect(getSerializedTraceContext()).toBeUndefined();
+    });
+  });
+
+  describe('traceBackgroundPoll', () => {
+    it('roots background poll traces with poll metadata', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      traceBackgroundPoll('StaticAssetsController', () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.BackgroundPoll,
+          op: 'background.poll',
+          parentSpan: null,
+          attributes: { controller: 'StaticAssetsController' },
+        }),
+        expect.any(Function),
+      );
+      expect(setTagMock).not.toHaveBeenCalledWith(
+        'controller',
+        expect.anything(),
+      );
     });
   });
 

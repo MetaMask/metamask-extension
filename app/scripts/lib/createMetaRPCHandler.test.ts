@@ -2,7 +2,11 @@ import { PassThrough } from 'stream';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import { continueTraceContext, trace } from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import {
+  admitTraceWrappers,
+  isRootWrapperEnabled,
+  shouldSampleWrappers,
+} from '../../../shared/lib/wrapper-sampling';
 import createMetaRPCHandler from './createMetaRPCHandler';
 
 jest.mock('../../../shared/lib/trace', () => {
@@ -11,11 +15,16 @@ jest.mock('../../../shared/lib/trace', () => {
     trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
     continueTraceContext: jest.fn((_ctx: unknown, fn: () => unknown) => fn()),
     extractTraceMetadata: actual.extractTraceMetadata,
+    sentryGetActiveSpan: jest.fn(() => ({
+      spanContext: () => ({ traceId: 'root-trace-id' }),
+    })),
   };
 });
 
 jest.mock('../../../shared/lib/wrapper-sampling', () => ({
   shouldSampleWrappers: jest.fn().mockReturnValue(true),
+  isRootWrapperEnabled: jest.fn().mockReturnValue(true),
+  admitTraceWrappers: jest.fn((_traceId: unknown, fn: () => unknown) => fn()),
 }));
 
 type Api = Record<string, TaggedApiMethod>;
@@ -156,6 +165,7 @@ describe('createMetaRPCHandler', () => {
       jest.mocked(trace).mockClear();
       jest.mocked(continueTraceContext).mockClear();
       jest.mocked(shouldSampleWrappers).mockReset().mockReturnValue(true);
+      jest.mocked(isRootWrapperEnabled).mockReset().mockReturnValue(true);
     });
 
     it('strips trace context from params and wraps call in trace', async () => {
@@ -280,7 +290,15 @@ describe('createMetaRPCHandler', () => {
       });
 
       expect(messengerCall).toHaveBeenCalledWith([]);
-      expect(trace).not.toHaveBeenCalled();
+      // The root span for a call without UI context is named after the method,
+      // never after an argument.
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Background RPC: messengerCall',
+          data: { method: 'messengerCall' },
+        }),
+        expect.any(Function),
+      );
     });
 
     it('continues trace context but skips rpc.handler span when shouldSampleWrappers rejects', async () => {
@@ -313,7 +331,37 @@ describe('createMetaRPCHandler', () => {
       expect(foo).toHaveBeenCalledWith('bar');
     });
 
-    it('does not wrap in trace when no trace context present', async () => {
+    it('wraps call in a new root trace when no trace context present', async () => {
+      const foo = jest.fn().mockReturnValue('result');
+      const api = { foo } as unknown as Api;
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler(api, streamTest);
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'foo',
+        params: ['bar'],
+      });
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Background RPC: foo',
+          op: 'rpc.handler',
+          root: true,
+          data: { method: 'foo' },
+        }),
+        expect.any(Function),
+      );
+      expect(admitTraceWrappers).toHaveBeenCalledWith(
+        'root-trace-id',
+        expect.any(Function),
+      );
+      expect(foo).toHaveBeenCalledWith('bar');
+    });
+
+    it('calls the handler without a trace when distributed tracing is disabled', async () => {
+      jest.mocked(isRootWrapperEnabled).mockReturnValue(false);
       const foo = jest.fn().mockReturnValue('result');
       const api = { foo } as unknown as Api;
       const streamTest = createStream();
@@ -328,9 +376,14 @@ describe('createMetaRPCHandler', () => {
 
       expect(trace).not.toHaveBeenCalled();
       expect(foo).toHaveBeenCalledWith('bar');
+      expect(streamTest.read()).toStrictEqual({
+        jsonrpc: '2.0',
+        result: 'result',
+        id: 1,
+      });
     });
 
-    it('handles empty params with no trace context', async () => {
+    it('wraps call in a new root trace when params are empty and no trace context', async () => {
       const foo = jest.fn().mockReturnValue('result');
       const api = { foo } as unknown as Api;
       const streamTest = createStream();
@@ -343,11 +396,18 @@ describe('createMetaRPCHandler', () => {
         params: [],
       });
 
-      expect(trace).not.toHaveBeenCalled();
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Background RPC: foo',
+          op: 'rpc.handler',
+          root: true,
+        }),
+        expect.any(Function),
+      );
       expect(foo).toHaveBeenCalledWith();
     });
 
-    it('passes non-array cleanParams as a single argument (handles undefined and JSON-RPC by-name params)', async () => {
+    it('wraps call in a new root trace when params are non-array (handles undefined and JSON-RPC by-name params)', async () => {
       const foo = jest.fn().mockReturnValue('result');
       const api = { foo } as unknown as Api;
       const streamTest = createStream();
@@ -360,11 +420,18 @@ describe('createMetaRPCHandler', () => {
         params: undefined,
       } as JsonRpcRequest);
 
-      expect(trace).not.toHaveBeenCalled();
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Background RPC: foo',
+          op: 'rpc.handler',
+          root: true,
+        }),
+        expect.any(Function),
+      );
       expect(foo).toHaveBeenCalledWith(undefined);
     });
 
-    it('does not strip last param when _trace has wrong shape (legitimate param preserved)', async () => {
+    it('wraps call in a new root trace but preserves legitimate param when _trace has wrong shape', async () => {
       const foo = jest.fn().mockReturnValue('result');
       const api = { foo } as unknown as Api;
       const streamTest = createStream();
@@ -378,7 +445,14 @@ describe('createMetaRPCHandler', () => {
         params: ['bar', legitimateParam],
       });
 
-      expect(trace).not.toHaveBeenCalled();
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Background RPC: foo',
+          op: 'rpc.handler',
+          root: true,
+        }),
+        expect.any(Function),
+      );
       expect(foo).toHaveBeenCalledWith('bar', legitimateParam);
     });
   });

@@ -8,9 +8,14 @@ import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import {
   continueTraceContext,
   extractTraceMetadata,
+  sentryGetActiveSpan,
   trace,
 } from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import {
+  admitTraceWrappers,
+  isRootWrapperEnabled,
+  shouldSampleWrappers,
+} from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -45,11 +50,32 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceMetadata) {
-        if (Array.isArray(cleanParams)) {
-          result = await handler.call(api, ...cleanParams);
-        } else {
-          result = await handler.call(api, cleanParams);
-        }
+        const callHandler = () =>
+          Array.isArray(cleanParams)
+            ? handler.call(api, ...cleanParams)
+            : handler.call(api, cleanParams);
+        // No UI trace context: the dispatch roots its own trace, so
+        // concurrent handlers get independent trace ids.
+        result = isRootWrapperEnabled()
+          ? await trace(
+              {
+                name: controller
+                  ? `Background RPC: ${controller}.${data.method}`
+                  : `Background RPC: ${data.method}`,
+                op: 'rpc.handler',
+                root: true,
+                data: {
+                  method: data.method,
+                  ...(controller && { controller }),
+                },
+              },
+              () =>
+                admitTraceWrappers(
+                  sentryGetActiveSpan()?.spanContext().traceId,
+                  callHandler,
+                ),
+            )
+          : await callHandler();
       } else if (shouldSampleWrappers(traceMetadata.context._traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.
