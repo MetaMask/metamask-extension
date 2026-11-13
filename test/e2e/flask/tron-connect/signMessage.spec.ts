@@ -1,6 +1,6 @@
 import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
 import { WINDOW_TITLES } from '../../constants';
-import { connectTronTestDapp } from '../../page-objects/flows/tron-dapp.flow';
+import { connectSnapTestDapp } from '../../page-objects/flows/snap-dapp.flow';
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap, DEFAULT_MESSAGE_SIGNATURE } from './common-tron';
@@ -19,7 +19,9 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
         await testDappTron.openTestDappPage();
 
         // 1. Connect
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         await testDappTron.setMessage(messageToSign);
 

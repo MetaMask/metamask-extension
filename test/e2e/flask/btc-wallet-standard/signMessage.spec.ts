@@ -2,7 +2,7 @@ import {
   TestDappBitcoin,
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
-import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
+import { connectSnapTestDapp } from '../../page-objects/flows/snap-dapp.flow';
 import BitcoinDappConfirmation from '../../page-objects/pages/confirmations/bitcoin-dapp-confirmation';
 import { WINDOW_TITLES } from '../../constants';
 import {
@@ -26,7 +26,9 @@ describe('Bitcoin Wallet Standard - Sign Message - e2e tests', function () {
           await testDapp.openTestDappPage();
 
           // 1. Connect
-          await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
+          await connectSnapTestDapp(driver, testDapp, () =>
+            testDapp.connectToWallet(connectionLibrary),
+          );
 
           // 2. Sign a message
           await testDapp.setMessage(messageToSign);
