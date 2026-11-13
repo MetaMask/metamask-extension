@@ -1119,6 +1119,12 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(queryByTestId('network-fees-included')).toBeInTheDocument();
+    expect(queryByTestId('network-fees-included-token')).toHaveTextContent(
+      'ETH',
+    );
+    expect(queryByTestId('network-fees-included')).not.toHaveTextContent(
+      'Included',
+    );
     expect(queryByTestId('network-fees')).not.toBeInTheDocument();
     expect(queryByTestId('relayer-fees')).toBeInTheDocument();
   });

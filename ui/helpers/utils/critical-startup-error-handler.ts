@@ -17,6 +17,7 @@ import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
+import { ThemeType } from '../../../shared/constants/preferences';
 import {
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
@@ -343,12 +344,14 @@ export class CriticalStartupErrorHandler {
         repairAction,
         criticalErrorType,
         currentLocale,
+        theme,
       } = data.params as {
         analyticsConsent?: boolean;
         error: ErrorLike;
         repairAction?: CriticalErrorRepairAction;
         criticalErrorType?: CriticalErrorType;
         currentLocale?: string;
+        theme?: ThemeType;
       };
       if (
         !isStateCorruptionErrorType(criticalErrorType) ||
@@ -370,6 +373,7 @@ export class CriticalStartupErrorHandler {
           error,
           {
             currentLocale,
+            theme,
             port: this.#port,
             criticalErrorType,
             repairActionFromBackground: repairAction,
@@ -387,9 +391,10 @@ export class CriticalStartupErrorHandler {
         return;
       }
 
-      const { error, currentLocale } = data.params as {
+      const { error, currentLocale, theme } = data.params as {
         error: ErrorLike;
         currentLocale?: string;
+        theme?: ThemeType;
       };
       if (!this.#criticalErrorAlreadyDisplayed) {
         this.#criticalErrorAlreadyDisplayed = true;
@@ -399,6 +404,7 @@ export class CriticalStartupErrorHandler {
           error as ErrorLike,
           {
             currentLocale,
+            theme,
             port: this.#port,
             criticalErrorType: CriticalErrorType.GeneralStartupError,
             backgroundCaptureAttempted: true,

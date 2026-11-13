@@ -1,11 +1,19 @@
+import React, { isValidElement } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import configureStore from '../../../../../store/store';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { useConfirmContext } from '../../../context/confirm';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
+import { ApyTag } from '../../../components/UI/apy-tag';
 import {
+  PAY_WITH_MONEY_ACCOUNT_APY_TAG_TEST_ID,
   PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID,
   usePayWithMoneyAccountSection,
 } from './usePayWithMoneyAccountSection';
@@ -19,21 +27,38 @@ jest.mock('../../../context/confirm', () => ({
 }));
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
-    const messages: Record<string, string> = {
+    const copy: Record<string, string> = {
       payWithMoneyAccount: 'Money account',
       available: 'available',
+      noDepositFee: 'No deposit fee',
     };
-    return messages[key] ?? key;
+    return copy[key] ?? key;
   },
 }));
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
   useMoneyAccountWithdrawableFiat: jest.fn(),
+}));
+jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
+  useMoneyVaultApy: jest.fn(),
 }));
 jest.mock('../../../utils/transaction-pay', () => ({
   applyMoneyAccountOverride: jest.fn(),
 }));
 
 const MONEY_ACCOUNT_ADDRESS = '0xc4ff9e84b5754570812d891ade0bad3952bb5946';
+
+function mockVaultApy(apyPercent?: number) {
+  jest.mocked(useMoneyVaultApy).mockReturnValue({
+    apyDecimal: apyPercent === undefined ? undefined : apyPercent / 100,
+    apyPercent,
+    apyPercentFormatted:
+      apyPercent === undefined ? undefined : `${apyPercent}%`,
+    vaultApyQuery: {
+      isError: false,
+      isLoading: false,
+    },
+  } as ReturnType<typeof useMoneyVaultApy>);
+}
 
 function mockSelectors({
   primaryMoneyAccount = { address: MONEY_ACCOUNT_ADDRESS },
@@ -69,9 +94,11 @@ describe('usePayWithMoneyAccountSection', () => {
       },
     } as ReturnType<typeof useConfirmContext>);
     useCachedBalanceMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatRaw: undefined,
       withdrawableFiatFormatted: '$12.34',
     });
+    mockVaultApy();
     mockSelectors();
   });
 
@@ -165,5 +192,129 @@ describe('usePayWithMoneyAccountSection', () => {
 
     expect(result.current?.rows[0].isSelected).toBe(true);
     expect(result.current?.rows[0].trailingElement).toBe('checkmark');
+  });
+
+  describe('no deposit fee tag', () => {
+    [
+      TransactionType.perpsDeposit,
+      TransactionType.perpsDepositAndOrder,
+    ].forEach((txType) => {
+      it(`renders the no deposit fee tag on the money account row for ${txType}`, () => {
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: {
+            id: 'tx-1',
+            type: txType,
+          },
+        } as ReturnType<typeof useConfirmContext>);
+        mockSelectors();
+
+        const { result } = renderHook(() =>
+          usePayWithMoneyAccountSection({ onClose }),
+        );
+        const tag = result.current?.rows[0].tagRenderers?.[0]?.();
+        const { getByTestId, getByText } = renderWithProvider(
+          <>{tag}</>,
+          configureStore(mockState),
+        );
+
+        expect(
+          getByTestId(`${PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID}-no-fee-tag`),
+        ).toBeInTheDocument();
+        expect(getByText(messages.noDepositFee.message)).toBeInTheDocument();
+      });
+    });
+
+    [TransactionType.predictDeposit, TransactionType.perpsWithdraw].forEach(
+      (txType) => {
+        it(`omits the tag for ${txType}`, () => {
+          useConfirmContextMock.mockReturnValue({
+            currentConfirmation: {
+              id: 'tx-1',
+              type: txType,
+            },
+          } as ReturnType<typeof useConfirmContext>);
+          mockSelectors();
+
+          const { result } = renderHook(() =>
+            usePayWithMoneyAccountSection({ onClose }),
+          );
+
+          expect(result.current?.rows[0].tagRenderers).toBeUndefined();
+        });
+      },
+    );
+  });
+
+  describe('APY tag', () => {
+    it('skips the vault APY request outside perps withdraw', () => {
+      renderHook(() => usePayWithMoneyAccountSection({ onClose }));
+
+      expect(useMoneyVaultApy).toHaveBeenCalledWith({ enabled: false });
+    });
+
+    it('shows the vault APY tag on perps withdraw when the rate is known', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'tx-withdraw-1',
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+      mockVaultApy(4.2);
+
+      const { result } = renderHook(() =>
+        usePayWithMoneyAccountSection({ onClose }),
+      );
+
+      expect(useMoneyVaultApy).toHaveBeenCalledWith({ enabled: true });
+      const tag = result.current?.rows[0].tagRenderers?.[0]?.();
+      expect(isValidElement(tag) ? tag.type : undefined).toBe(ApyTag);
+      expect(isValidElement(tag) ? tag.props : undefined).toStrictEqual({
+        apyPercentFormatted: '4.2%',
+        testId: PAY_WITH_MONEY_ACCOUNT_APY_TAG_TEST_ID,
+      });
+    });
+
+    it('hides the APY tag on perps withdraw when the rate is unknown', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'tx-withdraw-1',
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+
+      const { result } = renderHook(() =>
+        usePayWithMoneyAccountSection({ onClose }),
+      );
+
+      expect(result.current?.rows[0].tagRenderers).toBeUndefined();
+    });
+
+    [
+      TransactionType.perpsDeposit,
+      TransactionType.perpsDepositAndOrder,
+      TransactionType.moneyAccountDeposit,
+      TransactionType.moneyAccountWithdraw,
+    ].forEach((txType) => {
+      it(`hides the APY tag for ${txType} even when a rate is known`, () => {
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: {
+            id: 'tx-1',
+            type: txType,
+          },
+        } as ReturnType<typeof useConfirmContext>);
+        mockVaultApy(4.2);
+
+        const { result } = renderHook(() =>
+          usePayWithMoneyAccountSection({ onClose }),
+        );
+
+        expect(useMoneyVaultApy).toHaveBeenCalledWith({ enabled: false });
+        const tags =
+          result.current?.rows[0].tagRenderers?.map((render) => render()) ?? [];
+        expect(
+          tags.some((tag) => isValidElement(tag) && tag.type === ApyTag),
+        ).toBe(false);
+      });
+    });
   });
 });

@@ -112,7 +112,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
 
         await createDappTransaction(driver);
@@ -182,7 +181,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -280,6 +278,15 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
 }
 
 async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
+  const network = {
+    network: 'ethereum-mainnet',
+    confirmations: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    sendBundle: true,
+    smartTransactions: true,
+  };
+
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/networks`)
     .always()
@@ -287,15 +294,18 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
       return {
         ok: true,
         statusCode: 200,
-        json: {
-          '1': {
-            network: 'ethereum-mainnet',
-            confirmations: true,
-            relayTransactions: true,
-            cubistSigners: ['0x1111111111111111111111111111111111111111'],
-            sendBundle: true,
-          },
-        },
+        json: { '1': network },
+      };
+    });
+
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/network`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: network,
       };
     });
 }
@@ -396,11 +406,17 @@ async function mockTokenAssets(mockServer: MockttpServer) {
 }
 
 async function mockTokensSupportedNetworks(mockServer: MockttpServer) {
+  const supportedNetworks = {
+    fullSupport: ['eip155:1', 'eip155:1337'],
+    partialSupport: [],
+  };
+
+  await mockServer
+    .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, supportedNetworks);
   await mockServer
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, {
-      fullSupport: ['eip155:1', 'eip155:1337'],
-      partialSupport: [],
-    });
+    .thenJson(200, supportedNetworks);
 }

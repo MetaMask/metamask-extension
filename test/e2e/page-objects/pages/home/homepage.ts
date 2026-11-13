@@ -19,33 +19,24 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
-
 /**
  * Wallet home / account overview: balance, primary CTAs, and tab navigation.
  *
  * Screen: `#/` (DEFAULT_ROUTE), after unlock / onboarding.
  * Owns: balance and empty-state checks, Send / Swap / Bridge / Receive,
- * navigating to Tokens / NFTs / DeFi / Activity tabs, home notifications,
+ * navigating to Tokens / NFTs / DeFi / Perps / Activity page, home notifications,
  * shield entry modal, survey and SRP toasts, and page-ready waits.
  * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
  * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
- * `CarouselPage`. Non-EVM account-specific helpers live on `NonEvmHomepage`.
+ * `CarouselPage`.
  * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
- * `ActivityTab` / `PerpsTab` / `CarouselPage` / `NonEvmHomepage`.
+ * `ActivityTab` / `PerpsTab` / `CarouselPage`.
  *
  * @see ui/pages/home/home.tsx
  */
 class HomePage {
   private readonly accountImportedToast =
     '[data-testid="account-imported-toast"]';
-
-  protected readonly activityTab = {
-    testId: 'account-overview__activity-tab',
-  };
 
   private readonly backupRemindMeLaterButton = {
     tag: 'button',
@@ -63,9 +54,12 @@ class HomePage {
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
 
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+  protected readonly bottomNavActivityButton =
+    '[data-testid="bottom-nav-activity"]';
 
   private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
+
+  protected readonly bottomNavPerpsButton = '[data-testid="bottom-nav-perps"]';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -117,8 +111,6 @@ class HomePage {
 
   private readonly popoverBackground = '.popover-bg';
 
-  private readonly portfolioLink = '[data-testid="portfolio-link"]';
-
   private readonly privacyBalanceToggle = {
     testId: 'account-value-and-suffix',
   };
@@ -139,9 +131,10 @@ class HomePage {
 
   private readonly singleActionButton = '[data-testid$="-overview-default"]';
 
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
-
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
+
+  private readonly srpAddedToastCloseButton =
+    '.toast-container button[aria-label="Close"]';
 
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
@@ -153,11 +146,6 @@ class HomePage {
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   protected readonly swapButton = '[data-testid$="-overview-swap"]';
-
-  // The generic toaster close button has no data-testid (ButtonIcon only sets
-  // aria-label), so this selector is shared by every toast.
-  private readonly toastCloseButton =
-    '.toast-container button[aria-label="Close"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -427,11 +415,6 @@ class HomePage {
     });
   }
 
-  async checkPortfolioLinkIsDisplayed(): Promise<void> {
-    console.log('Check if portfolio link is displayed on homepage');
-    await this.driver.waitForSelector(this.portfolioLink);
-  }
-
   async checkSendButtonIsClickable(clickable: boolean = true): Promise<void> {
     console.log(`Check Send button is ${clickable ? 'enabled' : 'disabled'}`);
     await this.driver.waitForSelector(this.sendButton, {
@@ -500,12 +483,20 @@ class HomePage {
 
   async clickOnShieldEntryModalGetStarted(): Promise<void> {
     console.log('Click on shield entry modal get started');
-    await this.driver.clickElement(this.shieldEntryModalGetStarted);
+    await this.driver.findClickableElement(this.shieldEntryModalGetStarted);
+    await this.driver.waitForElementToStopMoving(
+      this.shieldEntryModalGetStarted,
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.shieldEntryModalGetStarted,
+    );
   }
 
   async clickOnShieldEntryModalSkip(): Promise<void> {
     console.log('Click on shield entry modal skip');
-    await this.driver.clickElement(this.shieldEntryModalSkip);
+    await this.driver.findClickableElement(this.shieldEntryModalSkip);
+    await this.driver.waitForElementToStopMoving(this.shieldEntryModalSkip);
+    await this.driver.clickElementAndWaitToDisappear(this.shieldEntryModalSkip);
   }
 
   async clickOnSwapButton(): Promise<void> {
@@ -547,13 +538,13 @@ class HomePage {
   }
 
   async dismissAccountImportedToast(): Promise<void> {
-    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
     // The toast can take some time to appear
-    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   /**
@@ -564,9 +555,25 @@ class HomePage {
     await this.waitForLoadingOverlayToDisappear();
   }
 
+  /**
+   * Returns the primary balance text shown on the account overview.
+   *
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout`.
+   */
+  async getBalance(timeout?: number): Promise<string> {
+    const balance = await this.driver.waitForSelector(
+      this.balance,
+      timeout === undefined ? {} : { timeout },
+    );
+    return (await balance.getText()).trim();
+  }
+
   async goToActivityList(): Promise<void> {
-    console.log(`Open activity tab on homepage`);
-    await this.driver.clickElement(this.activityTab);
+    console.log('Open the activity page from the bottom navigation bar');
+    await this.driver.clickElement(this.bottomNavActivityButton);
+    await this.driver.waitForSelector({
+      testId: 'parent-selector-activity-tab',
+    });
   }
 
   async goToBackupSRPPage(): Promise<void> {
@@ -591,37 +598,19 @@ class HomePage {
     if (alreadyOnHome) {
       return;
     }
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavHomeButton,
-      1000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-      await this.checkPageIsLoaded();
-    }
+    await this.driver.clickElement(this.bottomNavHomeButton);
+    await this.checkPageIsLoaded();
   }
 
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavHomeButton,
-      3000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-      await this.checkPageIsLoaded();
-    }
+    await this.goToHomePage();
     await this.driver.clickElement(this.nftTab);
   }
 
   async goToTokensTab(): Promise<void> {
     console.log(`Go to tokens tab on homepage`);
-    // With the bottom nav bar, activity is its own route instead of a home
-    // tab, so the tab strip is absent and we have to return home first.
-    const currentUrl = await this.driver.getCurrentUrl();
-    if (currentUrl.includes(`#${ACTIVITY_ROUTE}`)) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-    }
+    await this.goToHomePage();
     await this.driver.clickElement(this.tokensTab);
   }
 
@@ -635,9 +624,13 @@ class HomePage {
     await this.checkPageIsLoaded();
   }
 
-  async openPortfolioPage(): Promise<void> {
-    console.log(`Open portfolio page on homepage`);
-    await this.driver.clickElement(this.portfolioLink);
+  /**
+   * Refreshes the home page and waits for it to load again.
+   */
+  async refreshPage(): Promise<void> {
+    console.log('Refreshing home page');
+    await this.driver.refresh();
+    await this.checkPageIsLoaded();
   }
 
   async startBridgeFlow(): Promise<void> {
@@ -750,18 +743,6 @@ class HomePage {
       },
       { timeout: 15000, interval: 500, stableFor: 5000 },
     );
-  }
-
-  async waitForNonEvmAccountsLoaded(): Promise<void> {
-    console.log('Waiting for Non EVM account icons to be visible');
-    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
-    // as soon as the icons render.
-    await this.driver.waitForSelector(this.solanaAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
-    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
   }
 }
 

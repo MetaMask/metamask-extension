@@ -44,6 +44,7 @@ import {
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
+import { discardUnlockMeasurement, UnlockReady } from '../unlock-performance';
 
 export type PasskeyUnlockSuccessContext = {
   /**
@@ -55,6 +56,7 @@ export type PasskeyUnlockSuccessContext = {
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
+  isUnlockReady: boolean;
   isPasskeyActive: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
@@ -65,6 +67,7 @@ export type UnlockPasskeySectionProps = {
 
 export const UnlockPasskeySection = ({
   logoSection,
+  isUnlockReady,
   isPasskeyActive,
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
@@ -109,6 +112,12 @@ export const UnlockPasskeySection = ({
       }
       if (!isPasskeyActive) {
         return;
+      }
+
+      // Automatic authentication never offers an idle form before user input.
+      // Exclude the whole document, including cancellation/password fallback.
+      if (isAutoPrompt) {
+        discardUnlockMeasurement();
       }
 
       if (isMountedRef.current) {
@@ -291,6 +300,9 @@ export const UnlockPasskeySection = ({
       gap={4}
       padding={4}
     >
+      <UnlockReady
+        ready={isUnlockReady && !passkeyInProgress && !showTroubleshootModal}
+      />
       {logoSection}
       {passkeyError ? (
         <Text

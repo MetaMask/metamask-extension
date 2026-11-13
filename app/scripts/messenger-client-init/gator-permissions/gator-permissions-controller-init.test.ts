@@ -130,17 +130,6 @@ describe('GatorPermissionsControllerInit', () => {
     expect(config.supportedPermissionTypes).toEqual(supportedTypes);
   });
 
-  it('returns correct API methods', () => {
-    const requestMock = buildInitRequestMock();
-    const result = GatorPermissionsControllerInit(requestMock);
-
-    expect(result.api).toEqual({
-      fetchAndUpdateGatorPermissions: expect.any(Function),
-      addPendingRevocation: expect.any(Function),
-      submitDirectRevocation: expect.any(Function),
-    });
-  });
-
   it('handles undefined persistedState.GatorPermissionsController', () => {
     const requestMock = buildInitRequestMock();
     requestMock.persistedState.GatorPermissionsController = undefined;

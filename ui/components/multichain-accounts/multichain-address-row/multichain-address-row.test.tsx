@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen, render } from '@testing-library/react';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from './multichain-address-row';
@@ -87,6 +88,20 @@ describe('MultichainAddressRow', () => {
     expect(
       screen.getByTestId('multichain-address-row-qr-button'),
     ).toBeInTheDocument();
+  });
+
+  it('renders the Bitcoin account type label beside the network name', () => {
+    renderComponent({
+      networkName: 'Bitcoin',
+      accountType: BtcAccountType.P2wpkh,
+    });
+
+    expect(
+      screen.getByTestId('multichain-address-row-network-name'),
+    ).toHaveTextContent('Bitcoin');
+    expect(screen.getByTestId('account-type-label')).toHaveTextContent(
+      'Native SegWit',
+    );
   });
 
   it('handles empty networkName gracefully', () => {

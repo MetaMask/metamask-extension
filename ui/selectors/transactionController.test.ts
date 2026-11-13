@@ -3,8 +3,9 @@ import type {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
+  selectBatchTransactionCounts,
   selectTransactions,
   selectOrderedTransactions,
   selectRequiredTransactionIds,
@@ -62,6 +63,28 @@ describe('transactionController selectors', () => {
       const state = { metamask: undefined } as unknown as TransactionState;
 
       expect(selectTransactions(state)).toBe(EMPTY_ARRAY);
+    });
+  });
+
+  describe('selectBatchTransactionCounts', () => {
+    it('returns batch transaction counts from state', () => {
+      const state = {
+        metamask: {
+          batchTransactionCounts: { '0xbatch': 2 },
+        } as unknown as TransactionControllerState,
+      };
+
+      expect(selectBatchTransactionCounts(state)).toStrictEqual({
+        '0xbatch': 2,
+      });
+    });
+
+    it('returns EMPTY_OBJECT when batch transaction counts are undefined', () => {
+      const state = {
+        metamask: {} as unknown as TransactionControllerState,
+      };
+
+      expect(selectBatchTransactionCounts(state)).toBe(EMPTY_OBJECT);
     });
   });
 

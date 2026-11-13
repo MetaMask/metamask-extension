@@ -2009,6 +2009,12 @@ class Driver {
       // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
       // a lock fires mid-flight. No user impact; tracked in #37459.
       'unable to proceed, wallet is locked',
+      // PerpsStreamManager account fallback: the E2E perps WebSocket mock
+      // terminates around teardown, so perpsGetAccountState rejects and the
+      // channel logs. Unrelated suites that merely unlock the wallet inherit
+      // it, which made Tron account derivation, Edit Account Permissions and
+      // dapp interactions look flaky in turn; tracked in #46623.
+      '[PerpsStreamManager] Failed to fetch account',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

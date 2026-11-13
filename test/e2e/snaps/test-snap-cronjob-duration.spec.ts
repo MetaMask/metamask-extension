@@ -1,6 +1,5 @@
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
@@ -26,7 +25,6 @@ describe('Test Snap Cronjob Duration', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const notificationsListPage = new NotificationsListPage(driver);
 
@@ -34,10 +32,7 @@ describe('Test Snap Cronjob Duration', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectCronjobDurationButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectCronjobDurationButton',
-          'Reconnect to Cronjob Duration Snap',
+          { expectedMessage: 'Reconnect to Cronjob Duration Snap' },
         );
 
         // Switch back to the extension page and validate that a notification appears.
