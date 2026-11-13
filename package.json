@@ -329,6 +329,7 @@
     "minimatch@npm:9.0.3": "^9.0.9",
     "decode-uri-component@npm:^0.2.0": "^0.5.1",
     "decode-uri-component@npm:^0.2.2": "^0.5.1",
+    "pac-proxy-agent@npm:^7.0.0": "^9.1.0",
     "@reown/appkit-wallet/zod": "^4.6.6",
     "minimatch@npm:^7.4.6": "^11.0.1",
     "minimatch@npm:^9.0.0": "^11.0.1",
