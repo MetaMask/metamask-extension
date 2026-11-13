@@ -29,7 +29,6 @@ import {
   recordNonRpcRequests,
 } from './helpers';
 
-// TEMP test flakiness
 const MONEY_POSITIONS_URL =
   /^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\//u;
 
