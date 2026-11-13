@@ -1,6 +1,13 @@
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
-import { parseCaipAssetType } from '@metamask/utils';
+import {
+  type CaipAccountId,
+  type CaipChainId,
+  isCaipChainId,
+  KnownCaipNamespace,
+  parseCaipAssetType,
+  toCaipAccountId,
+} from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { MINUTE } from '../../../shared/constants/time';
@@ -74,12 +81,16 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
     'assetId' in filters
       ? [parseCaipAssetType(filters.assetId).chainId]
       : filters.networks;
-  const evmNetworks = networks.filter((network) =>
-    network.startsWith('eip155:'),
+  const evmNetworks: CaipChainId[] = networks.filter(
+    (network): network is CaipChainId =>
+      isCaipChainId(network) && network.startsWith('eip155:'),
   );
 
-  const accountIds = useMemo(
-    () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
+  const accountIds: CaipAccountId[] = useMemo(
+    () =>
+      evmAddress
+        ? [toCaipAccountId(KnownCaipNamespace.Eip155, '0', evmAddress)]
+        : [],
     [evmAddress],
   );
 
