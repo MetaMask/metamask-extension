@@ -111,9 +111,14 @@ const cache = args.cache
         defaultConfig: [__filename],
         // Invalidates the build cache when the listed files change.
         // `__filename` makes all `require`d dependencies of *this* file
-        // `buildDependencies`
+        // `buildDependencies`. Modules loaded with `await import()` are not
+        // recorded as `require` children, so the optional plugins are listed
+        // explicitly to keep their own dependencies tracked.
         config: [
           __filename,
+          require.resolve('./utils/plugins/SelfInjectPlugin'),
+          require.resolve('./utils/plugins/LavamoatPlugin'),
+          require.resolve('./utils/plugins/ReactCompilerPlugin'),
           ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
             existsSync,
           ),
