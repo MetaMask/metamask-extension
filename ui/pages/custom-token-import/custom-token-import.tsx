@@ -221,7 +221,7 @@ export const CustomTokenImportPage = () => {
   const [addressError, setAddressError] = useState<string | null>(null);
   const [symbolError, setSymbolError] = useState<string | null>(null);
   const [decimalsError, setDecimalsError] = useState<string | null>(null);
-  const [mainnetWarning, setMainnetWarning] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
   const [showSymbolAndDecimals, setShowSymbolAndDecimals] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -252,7 +252,7 @@ export const CustomTokenImportPage = () => {
     setAddressError(null);
     setSymbolError(null);
     setDecimalsError(null);
-    setMainnetWarning(null);
+    setWarning(null);
     setShowSymbolAndDecimals(false);
   }, []);
 
@@ -322,7 +322,7 @@ export const CustomTokenImportPage = () => {
       }
 
       if (isMainnetToken && selectedNetwork !== CHAIN_IDS.MAINNET) {
-        setMainnetWarning(t('mainnetToken'));
+        setWarning(t('mainnetToken'));
       }
 
       const isOwnAccountAddress = internalAccounts.some(
@@ -611,7 +611,7 @@ export const CustomTokenImportPage = () => {
         symbolError={symbolError}
         decimals={decimals}
         decimalsError={decimalsError}
-        mainnetWarning={mainnetWarning}
+        warning={warning}
         showSymbolAndDecimals={showSymbolAndDecimals}
         isSubmitDisabled={!isValid || isSubmitting}
         isSubmitting={isSubmitting}

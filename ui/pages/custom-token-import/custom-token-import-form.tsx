@@ -52,7 +52,7 @@ export type CustomTokenImportFormProps = {
   symbolError: string | null;
   decimals: string;
   decimalsError: string | null;
-  mainnetWarning: string | null;
+  warning: string | null;
   showSymbolAndDecimals: boolean;
   isSubmitDisabled: boolean;
   isSubmitting: boolean;
@@ -148,7 +148,7 @@ const TokenFormFields = ({
   symbolError,
   decimals,
   decimalsError,
-  mainnetWarning,
+  warning,
   showSymbolAndDecimals,
   onAddressChange,
   onSymbolChange,
@@ -161,7 +161,7 @@ const TokenFormFields = ({
   | 'symbolError'
   | 'decimals'
   | 'decimalsError'
-  | 'mainnetWarning'
+  | 'warning'
   | 'showSymbolAndDecimals'
   | 'onAddressChange'
   | 'onSymbolChange'
@@ -189,12 +189,12 @@ const TokenFormFields = ({
         }
       />
 
-      {mainnetWarning ? (
+      {warning ? (
         <BannerAlert
           severity={BannerAlertSeverity.Warning}
           data-testid="custom-token-import-mainnet-warning"
         >
-          <Text variant={TextVariant.BodySm}>{mainnetWarning}</Text>
+          <Text variant={TextVariant.BodySm}>{warning}</Text>
         </BannerAlert>
       ) : null}
 
@@ -274,7 +274,7 @@ export const CustomTokenImportForm = ({
   symbolError,
   decimals,
   decimalsError,
-  mainnetWarning,
+  warning,
   showSymbolAndDecimals,
   isSubmitDisabled,
   isSubmitting,
@@ -325,7 +325,7 @@ export const CustomTokenImportForm = ({
             symbolError={symbolError}
             decimals={decimals}
             decimalsError={decimalsError}
-            mainnetWarning={mainnetWarning}
+            warning={warning}
             showSymbolAndDecimals={showSymbolAndDecimals}
             onAddressChange={onAddressChange}
             onSymbolChange={onSymbolChange}
