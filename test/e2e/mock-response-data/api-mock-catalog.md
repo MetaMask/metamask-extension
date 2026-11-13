@@ -4,21 +4,29 @@ Every API mock registered for the shared E2E environment: one row per
 `mock-e2e.js` registration, then the shared helpers it calls, then per-spec
 mocks grouped by kind.
 
-`yarn test:e2e:sync-api-mocks` fetches each `write:<file>[#<key>]` row and
-aligns that fixture with the live **shape**: existing values stay, new fields
-get a placeholder (`0`, `""`, `false`, `null`), removed fields are dropped,
-and empty lists stay empty. In a list, the shape is the union of the
-entries' fields. A field only some entries have is optional: once the fixture
-has it, a later response that omits it is not drift. `$NAME` in an endpoint
-comes from the environment; the
-row is skipped without it. `derived` follows another row; `skip` is not
-fetched, for the reason given. With no drift it prints `No API changes
+`yarn test:e2e:sync-api-mocks` fetches each `write:<file>[#<key>]` row (6 at a
+time, 3 attempts with backoff on 429, 5xx and network errors) and aligns that
+fixture with the live **shape**: existing values stay, new fields get a
+placeholder (`0`, `""`, `false`, `null`, `[]` for a list of primitives),
+removed fields are dropped, and empty lists stay empty. In a list, the shape
+is the union of the entries' fields. A field only some entries have is
+optional: once the fixture has it, a later response that omits it is not
+drift. Decimal and `0x` hex keys are chain ids: data, not fields. Add `map`
+after the mode (`write:<file>#<key> map`, or `map:<path>` for a nested object)
+when an object's keys are data, such as chain names. A write that would drop
+most top-level fields, which looks like an error body, is refused with a
+warning. `$NAME` in an endpoint comes from the environment; the row is
+skipped, with a warning, without it. `derived` follows another row; `skip` is
+not fetched, for the reason given. With no drift it prints `No API changes
 detected`. Otherwise it prints each changed API (its id, endpoint and what
 changed) and any fetch errors. Every Monday,
 `.github/workflows/sync-e2e-api-mocks.yml` opens or updates one PR when a
-fixture changes. On a same-repo pull request that changes these mocks, drift
-fails the check instead of pushing. Fork pull requests are skipped. A fetch
-failure is logged and does not fail the pull request check.
+fixture changes. On a same-repo pull request that changes these mocks, only
+the rows that pull request changed (catalog entry or fixture value, against
+the merge base) fail the check. Other drift is listed as info and left for
+the weekly PR. Nothing is pushed, and Contentful rows are skipped. Fork pull
+requests are skipped. A fetch failure is logged and does not fail the pull
+request check.
 
 JSON files in `api-responses/<id>.json` are discovered in addition to the
 table below. Each one needs an entry in `api-responses/sources.json`, keyed

@@ -3,15 +3,17 @@ name: Sync E2E API Mocks
 # Aligns the E2E API mock fixtures with the live response shapes. See
 # test/e2e/mock-response-data/api-mock-catalog.md.
 #
-# Mondays (and workflow_dispatch): commit any drift to sync/e2e-api-mocks and
-# open or update one PR. That push uses GITHUB_TOKEN, so GitHub holds the
-# workflow runs on that PR until a maintainer approves them.
-# Same-repo pull requests that touch the mocks: do not push. When a fixture
-# differs, fail the check. If every drifted line is already in the pull
-# request diff and the change is small enough, post one review of suggestion
-# blocks so the author can commit them. Otherwise comment the diff and the
-# local command. A repeated run does not post the same review again.
-# Fork pull requests are skipped. A fetch failure does not fail a pull request.
+# pull-request: a same-repo pull request that touches the mocks. Read-only
+# contents and no Contentful secrets (those rows are skipped). Only rows the
+# pull request changed (catalog entry or fixture value, against the merge
+# base) can fail the check. Other drift is listed in the job summary and left
+# for the weekly sync. When the drift is small and in the pull request diff,
+# one review of suggestion blocks lets the author commit it. Nothing is
+# pushed. Fork pull requests are skipped. A fetch failure does not fail.
+#
+# weekly: Mondays and workflow_dispatch. Commits all drift to
+# sync/e2e-api-mocks and opens or updates one labeled PR. The push uses
+# GITHUB_TOKEN, so a maintainer approves the workflow runs on that PR.
 
 on:
   schedule:
@@ -24,33 +26,29 @@ on:
       - test/e2e/mock-response-data/**
       - test/e2e/mock-cdn/ppom-version.json
 
-# pull-requests: write lets GITHUB_TOKEN open a COMMENT review on a same-repo
-# pull request. The token cannot approve. Commit suggestion authors the commit
-# as the person who clicks it, so later workflows are not held for approval.
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write
+  contents: read
 
 concurrency:
   group: sync-e2e-api-mocks-${{ github.event.pull_request.number || github.run_id }}
-  # A newer push replaces a sync that is still running. This job does not
-  # push on pull requests, so it does not have to finish ahead of a follow-up.
   cancel-in-progress: true
 
 jobs:
-  sync-e2e-api-mocks:
-    name: Align E2E API mocks with live responses
-    # No environment on pull requests: its secrets may be unavailable, and the
-    # sync skips those rows instead of failing. Forks are not this repository.
+  pull-request:
+    name: Align E2E API mocks this pull request changed
     if: >-
       ${{
-        github.event_name != 'pull_request' ||
+        github.event_name == 'pull_request' &&
         github.event.pull_request.head.repo.full_name == github.repository
       }}
-    environment: ${{ github.event_name != 'pull_request' && 'default-branch' || null }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    # pull-requests: write lets GITHUB_TOKEN post the COMMENT review and the
+    # sync comment. Commit suggestion authors the commit as the person who
+    # clicks it, so later workflows are not held for approval.
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -59,161 +57,53 @@ jobs:
           skip-allow-scripts: true
           # The pull request head, not the merge commit, so the diff is the
           # branch's fixtures against the live APIs.
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Find the merge base
+        id: base
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          MERGE_BASE="$(gh api "repos/${GITHUB_REPOSITORY}/compare/${BASE_SHA}...${HEAD_SHA}" --jq .merge_base_commit.sha)"
+          git fetch --no-tags --depth=1 origin "${MERGE_BASE}"
+          echo "sha=${MERGE_BASE}" >> "${GITHUB_OUTPUT}"
 
       - name: Align fixtures
         id: sync
         shell: bash
         env:
-          CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
-          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          MERGE_BASE: ${{ steps.base.outputs.sha }}
         run: |
           set +e
-          # stdout is the drift report. stderr is skip warnings and fetch
-          # errors, so a warning is not parsed as a changed API.
-          yarn test:e2e:sync-api-mocks > sync-report.txt 2> sync-warnings.txt
+          yarn test:e2e:sync-api-mocks --changed-since "${MERGE_BASE}" > sync-report.txt 2> sync-warnings.txt
           EXIT=$?
           set -e
-          cat sync-report.txt
-          if [ -s sync-warnings.txt ]; then
-            cat sync-warnings.txt >&2
-            {
-              echo "### API mock sync warnings"
-              echo
-              cat sync-warnings.txt
-            } >> "${GITHUB_STEP_SUMMARY}"
-          fi
+          bash .github/scripts/e2e-api-mock-sync-summary.sh "${EXIT}"
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift. 1: fixtures written. 2: a fetch failed and nothing
-          # was written. 3: an api-responses fixture has no sources.json
-          # entry. Exit 3 fails this check. The drift step writes the summary
-          # for exit 1.
-          if [ "${EXIT}" -eq 2 ] || [ "${EXIT}" -gt 2 ]; then
-            cat sync-report.txt >> "${GITHUB_STEP_SUMMARY}"
-          fi
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Drift fails the check so the author commits the update.
-            # A fetch failure is logged above and does not fail the pull request.
-            [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ]
-          else
-            [ "${EXIT}" -le 1 ]
-          fi
+          # 0: no drift in rows this pull request changed. 1: drift in those
+          # rows, which fails the check. 2: a fetch failed and nothing was
+          # written, which does not fail. 3: an api-responses fixture has no
+          # sources.json entry, which fails.
+          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ]
 
       - name: Record the fixture diff
-        id: drift
         if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
         shell: bash
-        run: |
-          while IFS= read -r line || [ -n "${line}" ]; do
-            [ -z "${line}" ] && continue
-            # Skip warnings belong in the job log, not in this change list.
-            case "${line}" in
-              'skip '*) continue ;;
-            esac
-            case "${line}" in
-              *' https://'*|*' http://'*) ;;
-              *) continue ;;
-            esac
-            ident="${line%% *}"
-            rest="${line#* }"
-            change="${rest##*: }"
-            url="${rest%": ${change}"}"
-            short="${url%%\?*}"
-            short="${short#https://}"
-            short="${short#http://}"
-            if [ "${#short}" -gt 96 ]; then
-              short="${short:0:48}...${short: -36}"
-            fi
-            printf -- "- **%s** (\`%s\`): %s\n" "${ident}" "${short}" "${change}"
-          done < sync-report.txt > drift-readable.txt
-          git diff --stat > drift-stat.txt
-          git diff > e2e-api-mock-drift.diff
-          {
-            echo "### E2E API mock drift"
-            echo
-            cat drift-readable.txt
-            echo
-            if [ "${{ github.event_name }}" = "pull_request" ]; then
-              echo "This run did not commit. The check fails until the update is on the branch."
-              echo
-              echo "Run \`yarn test:e2e:sync-api-mocks\` and commit the result. The full diff is the \`e2e-api-mock-drift\` artifact."
-            else
-              echo "The weekly job commits this onto \`sync/e2e-api-mocks\`."
-            fi
-            echo
-            echo '```'
-            cat drift-stat.txt
-            echo '```'
-          } >> "${GITHUB_STEP_SUMMARY}"
+        run: bash .github/scripts/e2e-api-mock-drift-report.sh pull_request
 
       - name: Upload the fixture diff
-        if: >-
-          ${{
-            !cancelled() &&
-            github.event_name == 'pull_request' &&
-            steps.sync.outputs.EXIT == '1'
-          }}
+        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
         uses: actions/upload-artifact@v7
         with:
           name: e2e-api-mock-drift
           path: e2e-api-mock-drift.diff
           if-no-files-found: error
 
-      - name: Open or update the review PR
-        id: weekly
-        if: >-
-          ${{
-            github.event_name != 'pull_request' &&
-            steps.sync.outputs.EXIT == '1'
-          }}
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH="sync/e2e-api-mocks"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B "${BRANCH}"
-          git add -u
-          git commit -m "test: align E2E API mocks with live response shapes"
-          if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
-            # The checkout is a shallow clone of main, so the lease ref does
-            # not exist until this fetch.
-            git fetch origin "${BRANCH}:refs/remotes/origin/${BRANCH}"
-            git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" origin "HEAD:refs/heads/${BRANCH}"
-          else
-            git push -u origin "HEAD:refs/heads/${BRANCH}"
-          fi
-          {
-            echo "Weekly shape sync of the E2E API mocks. Values the tests assert are pinned in code."
-            echo
-            echo "This pull request is pushed with the workflow GITHUB_TOKEN. GitHub holds its workflow runs until a maintainer approves them."
-            echo
-            cat drift-readable.txt
-            echo
-            echo '```'
-            cat drift-stat.txt
-            echo '```'
-          } > pr-body.md
-          EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number')"
-          if [ -n "${EXISTING}" ]; then
-            gh pr edit "${EXISTING}" --body-file pr-body.md
-            NUMBER="${EXISTING}"
-          else
-            URL="$(gh pr create --base main --head "${BRANCH}" --title "test: align E2E API mocks with live response shapes" --body-file pr-body.md)"
-            NUMBER="$(gh pr view "${URL}" --json number --jq .number)"
-          fi
-          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
-          echo "number=${NUMBER}" >> "${GITHUB_OUTPUT}"
-
       - name: Post suggestion review
-        id: suggestions
-        if: >-
-          ${{
-            !cancelled() &&
-            github.event_name == 'pull_request' &&
-            steps.sync.outputs.EXIT == '1'
-          }}
+        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -295,70 +185,136 @@ jobs:
           } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Comment on the pull request
-        if: >-
-          ${{
-            !cancelled() &&
-            (
-              steps.weekly.outputs.sha != '' ||
-              (
-                github.event_name == 'pull_request' &&
-                steps.sync.outputs.EXIT == '1'
-              )
-            )
-          }}
+        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number || steps.weekly.outputs.number }}
-          COMMIT_SHA: ${{ steps.weekly.outputs.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          COMMIT_SHA: ''
+        run: bash .github/scripts/e2e-api-mock-comment.sh
+
+  weekly:
+    name: Align E2E API mocks with live responses
+    if: ${{ github.event_name != 'pull_request' }}
+    environment: default-branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Align fixtures
+        id: sync
+        shell: bash
+        env:
+          CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
         run: |
-          MARKER="<!-- e2e-api-mock-sync -->"
-          READABLE="$(cat drift-readable.txt)"
-          STAT="$(cat drift-stat.txt)"
-          DIFF=""
-          MODE="fallback"
-          REASON=""
-          if [ -f suggest-mode.txt ]; then
-            MODE="$(cat suggest-mode.txt)"
-          fi
-          if [ -f suggest-reason.txt ]; then
-            REASON="$(cat suggest-reason.txt)"
-          fi
-          if [ -n "${COMMIT_SHA}" ]; then
-            INTRO="$(printf '%s\n\n%s\n\n%s' \
-              'Updated the E2E API mocks on this pull request. The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.' \
-              "Commit: https://github.com/${GITHUB_REPOSITORY}/commit/${COMMIT_SHA}" \
-              'Workflow runs on this pull request stay waiting until a maintainer approves them. The commit was pushed with the workflow token.')"
-          elif [ "${MODE}" = "suggestions" ]; then
-            INTRO="$(printf '%s\n\n%s\n\n%s' \
-              'E2E API mock fixtures differ from the live response shapes. This run did not push.' \
-              'A review on this pull request has suggestions. Use Commit suggestion, or batch them and commit them together. That commit is authored by you, so the other checks are not held for approval.' \
-              'The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped. The check stays red until that commit is on the branch.')"
+          set +e
+          yarn test:e2e:sync-api-mocks > sync-report.txt 2> sync-warnings.txt
+          EXIT=$?
+          set -e
+          bash .github/scripts/e2e-api-mock-sync-summary.sh "${EXIT}"
+          echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
+          # 0: no drift. 1: fixtures written. 2: a fetch failed. 3: an
+          # api-responses fixture has no sources.json entry.
+          [ "${EXIT}" -le 1 ]
+
+      - name: Record the fixture diff
+        if: ${{ steps.sync.outputs.EXIT == '1' }}
+        shell: bash
+        run: bash .github/scripts/e2e-api-mock-drift-report.sh weekly
+
+      - name: Open or update the review PR
+        id: weekly
+        if: ${{ steps.sync.outputs.EXIT == '1' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="sync/e2e-api-mocks"
+          TITLE="test: align E2E API mocks with live response shapes"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "${BRANCH}"
+          git add -u
+          git commit -m "${TITLE}"
+          if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
+            # The checkout is a shallow clone of main, so the lease ref does
+            # not exist until this fetch.
+            git fetch origin "${BRANCH}:refs/remotes/origin/${BRANCH}"
+            git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" origin "HEAD:refs/heads/${BRANCH}"
           else
-            INTRO="$(printf '%s\n\n%s\n\n%s' \
-              'E2E API mock fixtures differ from the live response shapes. This run did not push.' \
-              "${REASON:-GitHub cannot attach a suggestion for this drift. Run \`yarn test:e2e:sync-api-mocks\` locally and commit the result.}" \
-              "The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped. The full diff is the \`e2e-api-mock-drift\` artifact on this run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")"
-            bytes="$(wc -c < e2e-api-mock-drift.diff)"
-            if [ "${bytes}" -le 20000 ]; then
-              DIFF="$(cat e2e-api-mock-drift.diff)"
-            fi
+            git push -u origin "HEAD:refs/heads/${BRANCH}"
           fi
-          jq -n \
-            --arg marker "${MARKER}" \
-            --arg intro "${INTRO}" \
-            --arg report "${READABLE}" \
-            --arg stat "${STAT}" \
-            --arg diff "${DIFF}" \
-            '{body: (
-              $marker + "\n" + $intro + "\n\n" + $report +
-              (if $stat == "" then "" else "\n\n```\n" + $stat + "\n```\n" end) +
-              (if $diff == "" then "" else "\n<details>\n<summary>Fixture diff</summary>\n\n```diff\n" + $diff + "\n```\n</details>\n" end)
-            )}' \
-            > comment.json
-          COMMENT_ID="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" | head -n 1)"
-          if [ -n "${COMMENT_ID}" ]; then
-            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" --input comment.json
+          {
+            echo "## **Description**"
+            echo
+            echo "Weekly shape sync of the E2E API mocks from \`yarn test:e2e:sync-api-mocks\`. Values the tests assert are pinned in \`mock-e2e.js\`, so only response shapes change."
+            echo
+            echo "This pull request is pushed with the workflow \`GITHUB_TOKEN\`, so GitHub holds its workflow runs until a maintainer approves them."
+            echo
+            cat drift-readable.txt
+            echo
+            echo '```'
+            cat drift-stat.txt
+            echo '```'
+            echo
+            echo "## **Changelog**"
+            echo
+            echo "CHANGELOG entry: null"
+            echo
+            echo "## **Related issues**"
+            echo
+            echo "Fixes: N/A"
+            echo
+            echo "## **Manual testing steps**"
+            echo
+            echo "1. Check out this branch and run \`yarn test:e2e:sync-api-mocks\`. It prints \`No API changes detected\`."
+            echo "2. Run \`yarn lint:tsc\`. It passes."
+            echo
+            echo "## **Screenshots/Recordings**"
+            echo
+            echo "N/A"
+            echo
+            echo "### **Before**"
+            echo
+            echo "N/A"
+            echo
+            echo "### **After**"
+            echo
+            echo "N/A"
+            echo
+            echo "## **Pre-merge author checklist**"
+            echo
+            echo "- [x] Opened by the weekly sync workflow."
+            echo
+            echo "## **Pre-merge reviewer checklist**"
+            echo
+            echo "- [ ] I've reviewed the shape changes and the CI results."
+          } > pr-body.md
+          EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number')"
+          if [ -n "${EXISTING}" ]; then
+            gh pr edit "${EXISTING}" --body-file pr-body.md --add-label team-qa --add-label no-changelog
+            NUMBER="${EXISTING}"
           else
-            gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --input comment.json
+            URL="$(gh pr create --base main --head "${BRANCH}" --title "${TITLE}" --body-file pr-body.md --label team-qa --label no-changelog)"
+            NUMBER="$(gh pr view "${URL}" --json number --jq .number)"
           fi
+          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+          echo "number=${NUMBER}" >> "${GITHUB_OUTPUT}"
+
+      - name: Comment on the review PR
+        if: ${{ steps.weekly.outputs.sha != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.weekly.outputs.number }}
+          COMMIT_SHA: ${{ steps.weekly.outputs.sha }}
+        run: bash .github/scripts/e2e-api-mock-comment.sh
