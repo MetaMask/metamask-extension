@@ -144,7 +144,8 @@ export async function resolveTicker(
   }
 
   const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
-  if (!assets.some((asset) => (asset.marketCap ?? 0) > 0)) {
+  // Assets are sorted by market cap descending, so checking the first one is enough.
+  if ((assets[0].marketCap ?? 0) <= 0) {
     return null;
   }
 
