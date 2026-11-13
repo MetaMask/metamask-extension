@@ -1,0 +1,26 @@
+diff --git a/dist/check.js b/dist/check.js
+index 2d506595069bb495af834ce2e9985330ef44ecae..d7a30b5b627205c74997e648fb5e6d5a4e0551d8 100644
+--- a/dist/check.js
++++ b/dist/check.js
+@@ -9,7 +9,7 @@ var _debug = _interopRequireDefault(require("debug"));
+ var _isCoreModule = _interopRequireDefault(require("is-core-module"));
+ var _lodash = _interopRequireDefault(require("lodash"));
+ var _readdirp = _interopRequireDefault(require("readdirp"));
+-var _minimatch = _interopRequireDefault(require("minimatch"));
++var _minimatch = { default: require("minimatch").minimatch };
+ var _requirePackageName = _interopRequireDefault(require("require-package-name"));
+ var _utils = require("./utils");
+ var _parser = _interopRequireDefault(require("./utils/parser"));
+diff --git a/dist/special/gulp-load-plugins.js b/dist/special/gulp-load-plugins.js
+index 71aef8cee1670eb5b91cc2f3718ddeeb43c4a16c..91ced41e6d979e6f97e3232f35b4484741b0b186 100644
+--- a/dist/special/gulp-load-plugins.js
++++ b/dist/special/gulp-load-plugins.js
+@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
+ exports.default = parseGulpPlugins;
+ var _path = require("path");
+ var _lodash = _interopRequireDefault(require("lodash"));
+-var _minimatch = _interopRequireDefault(require("minimatch"));
++var _minimatch = { default: require("minimatch").minimatch };
+ var _traverse = _interopRequireDefault(require("@babel/traverse"));
+ var _es = require("../parser/es7");
+ var _importDeclaration = _interopRequireDefault(require("../detector/importDeclaration"));
