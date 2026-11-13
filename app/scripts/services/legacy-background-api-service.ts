@@ -29,6 +29,8 @@ import {
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
   NetworkEnablementControllerIsNetworkEnabledAction,
+  NetworkEnablementControllerIsNonActiveAdditionAction,
+  NetworkEnablementControllerSetNetworkAdditionModeAction,
   NetworkEnablementControllerState,
   NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
@@ -696,6 +698,8 @@ type AllowedActions =
   | NetworkEnablementControllerIsNetworkEnabledAction
   | NetworkEnablementControllerGetStateAction
   | NetworkEnablementControllerRestoreEnabledNetworkMapAction
+  | NetworkEnablementControllerSetNetworkAdditionModeAction
+  | NetworkEnablementControllerIsNonActiveAdditionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | OnboardingControllerResetOnboardingAction
@@ -1345,66 +1349,26 @@ export class LegacyBackgroundApiService {
       return addedNetwork;
     }
 
-    const { enabledNetworkMap } = this.#messenger.call(
-      'NetworkEnablementController:getState',
-    );
-    const previousEnabledNetworkMap = Object.fromEntries(
-      Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
-        namespace,
-        { ...networks },
-      ]),
-    ) as NetworkEnablementControllerState['enabledNetworkMap'];
-
-    const addedNetwork = this.#messenger.call(
-      'NetworkController:addNetwork',
-      networkConfiguration,
-    );
-    await this.lookupSelectedNetworks();
-
-    // The NetworkEnablementController enables the newly added network
-    // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
-    // updating state), which switches the active network filter. Wait for that
-    // enablement to land, then restore the previous map.
-    //
-    // The restore runs here in the linear flow rather than from a
-    // `NetworkEnablementController:stateChange` subscriber on purpose: calling
-    // the `restoreEnabledNetworkMap` action synchronously from inside the
-    // subscriber re-enters the messenger's publish and the restore update is
-    // dropped. Awaiting first defers the restore to a microtask outside that
-    // publish.
-    await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
-    this.#messenger.call(
-      'NetworkEnablementController:restoreEnabledNetworkMap',
-      previousEnabledNetworkMap,
+    // Mark this as a non-active addition so NetworkEnablementController
+    // preserves the current selection in popular mode or adds as disabled
+    // in single-network mode.
+    const cleanup = this.#messenger.call(
+      'NetworkEnablementController:setNetworkAdditionMode',
+      networkConfiguration.chainId,
+      'non-active',
     );
 
-    return addedNetwork;
-  }
+    try {
+      const addedNetwork = this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration,
+      );
+      await this.lookupSelectedNetworks();
 
-  /**
-   * Resolves once the given network is enabled in the
-   * NetworkEnablementController. `NetworkEnablementController.onAddNetwork`
-   * always enables a newly added network, so this is guaranteed to resolve.
-   *
-   * @param chainId - The chain ID of the newly added network.
-   */
-  async #waitForNetworkToBeEnabled(chainId: Hex): Promise<void> {
-    if (
-      this.#messenger.call(
-        'NetworkEnablementController:isNetworkEnabled',
-        chainId,
-      )
-    ) {
-      return;
+      return addedNetwork;
+    } finally {
+      cleanup();
     }
-
-    await this.#messenger.waitUntil('NetworkEnablementController:stateChange', {
-      condition: () =>
-        this.#messenger.call(
-          'NetworkEnablementController:isNetworkEnabled',
-          chainId,
-        ),
-    });
   }
 
   /**

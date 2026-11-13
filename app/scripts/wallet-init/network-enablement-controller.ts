@@ -81,11 +81,18 @@ export function setupNetworkEnablementController({
 
   // Adding an auto-enabled Config Registry network enables it, which would
   // change the user's network filter. Restore the previous selection instead.
+  // Skip this restore for user-initiated non-active additions (from Settings),
+  // which the controller handles directly.
   initMessenger.subscribe(
     'NetworkController:networkAdded',
     async ({ chainId }) => {
       let timeoutId: ReturnType<typeof setTimeout> | undefined;
       try {
+        // Skip restore for non-active additions (user-initiated from Settings)
+        if (networkEnablementController.isNonActiveAddition(chainId)) {
+          return;
+        }
+
         const autoEnabledNetworkChainIds = selectEvmAutoEnabledNetworksChainIds(
           initMessenger.call('ConfigRegistryController:getState'),
         );

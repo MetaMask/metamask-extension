@@ -32,6 +32,7 @@ function createMessengerClient(): jest.Mocked<NetworkEnablementController> {
     enableAllPopularNetworks: jest.fn(),
     enableNetworkInNamespace: jest.fn(),
     restoreEnabledNetworkMap: jest.fn(),
+    isNonActiveAddition: jest.fn().mockReturnValue(false),
   } as unknown as jest.Mocked<NetworkEnablementController>;
 }
 
@@ -460,6 +461,52 @@ describe('NetworkEnablementControllerInit', () => {
       chainId: CHAIN_IDS.ARC,
     } as never);
 
+    expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
+  });
+
+  it('does not preserve the filter when a network is added as non-active', () => {
+    process.env.IN_TEST = 'true';
+    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+    const request = getInitRequestMock(messenger);
+    messenger.registerActionHandler(
+      'ConfigRegistryController:getState' as never,
+      () =>
+        ({
+          configs: {
+            networks: {
+              'eip155:5042': {
+                chainId: 'eip155:5042',
+                config: {
+                  isActive: true,
+                  isAutoEnabled: true,
+                  isDeprecated: false,
+                },
+              },
+            },
+          },
+        }) as never,
+    );
+
+    const { messengerClient } = runNetworkEnablementSetup(request);
+    messengerClient.isNonActiveAddition = jest.fn().mockReturnValue(true);
+    messengerClient.state = {
+      enabledNetworkMap: {
+        [KnownCaipNamespace.Eip155]: {
+          [CHAIN_IDS.LOCALHOST]: true,
+          [CHAIN_IDS.ARC]: false,
+        },
+      },
+      nativeAssetIdentifiers: {},
+    };
+
+    // @ts-expect-error: Partial mock.
+    messenger.publish('NetworkController:networkAdded', {
+      chainId: CHAIN_IDS.ARC,
+    } as never);
+
+    expect(messengerClient.isNonActiveAddition).toHaveBeenCalledWith(
+      CHAIN_IDS.ARC,
+    );
     expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
   });
 

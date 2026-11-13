@@ -2117,6 +2117,11 @@ describe('LegacyBackgroundApiService', () => {
         const addNetworkHandler = jest.fn().mockReturnValue(addedNetwork);
         const setActiveNetworkHandler = jest.fn();
         const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        const cleanupFn = jest.fn();
+        const setNetworkAdditionModeHandler = jest
+          .fn()
+          .mockReturnValue(cleanupFn);
+
         rootMessenger.registerActionHandler(
           'NetworkController:addNetwork',
           addNetworkHandler,
@@ -2130,20 +2135,12 @@ describe('LegacyBackgroundApiService', () => {
           lookupNetworkHandler,
         );
         rootMessenger.registerActionHandler(
-          'NetworkEnablementController:getState',
-          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
-        );
-        rootMessenger.registerActionHandler(
           'NetworkController:getState',
           jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
         );
         rootMessenger.registerActionHandler(
-          'NetworkEnablementController:isNetworkEnabled',
-          jest.fn().mockReturnValue(true),
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkEnablementController:restoreEnabledNetworkMap',
-          jest.fn(),
+          'NetworkEnablementController:setNetworkAdditionMode',
+          setNetworkAdditionModeHandler,
         );
 
         const result = await rootMessenger.call(
@@ -2152,78 +2149,60 @@ describe('LegacyBackgroundApiService', () => {
           { setActive: false },
         );
 
+        expect(setNetworkAdditionModeHandler).toHaveBeenCalledWith(
+          '0x1',
+          'non-active',
+        );
         expect(addNetworkHandler).toHaveBeenCalledWith(networkConfiguration);
         expect(setActiveNetworkHandler).not.toHaveBeenCalled();
         // `lookupSelectedNetworks` runs after adding the network.
         expect(lookupNetworkHandler).toHaveBeenCalledWith();
+        expect(cleanupFn).toHaveBeenCalled();
         expect(result).toStrictEqual(addedNetwork);
       });
     });
 
-    it('restores the previous enabled network map once the added network becomes enabled', async () => {
+    it('calls cleanup even if adding the network fails', async () => {
       await withService(async ({ rootMessenger }) => {
-        const restoreEnabledNetworkMapHandler = jest.fn();
-        let networkEnabled = false;
+        const cleanupFn = jest.fn();
+        const setNetworkAdditionModeHandler = jest
+          .fn()
+          .mockReturnValue(cleanupFn);
+        const addNetworkHandler = jest
+          .fn()
+          .mockImplementation(() => {
+            throw new Error('Network add failed');
+          });
+
         rootMessenger.registerActionHandler(
           'NetworkController:addNetwork',
-          jest.fn().mockReturnValue(addedNetwork),
+          addNetworkHandler,
         );
         rootMessenger.registerActionHandler(
-          'NetworkEnablementController:getState',
-          jest.fn().mockReturnValue({
-            enabledNetworkMap: { eip155: { '0x1': true } },
-          }),
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkController:getState',
-          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkController:lookupNetwork',
-          jest.fn().mockResolvedValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkEnablementController:isNetworkEnabled',
-          jest.fn().mockImplementation(() => networkEnabled),
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkEnablementController:restoreEnabledNetworkMap',
-          restoreEnabledNetworkMapHandler,
+          'NetworkEnablementController:setNetworkAdditionMode',
+          setNetworkAdditionModeHandler,
         );
 
-        const promise = rootMessenger.call(
-          'LegacyBackgroundApiService:addNetwork',
-          networkConfiguration,
-          { setActive: false },
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addNetwork',
+            networkConfiguration,
+            { setActive: false },
+          ),
+        ).rejects.toThrow('Network add failed');
+
+        expect(setNetworkAdditionModeHandler).toHaveBeenCalledWith(
+          '0x1',
+          'non-active',
         );
-
-        // Let `addNetwork` reach the `#whenNetworkEnabled` wait.
-        await new Promise((resolve) => setTimeout(resolve, 0));
-
-        // The added network becomes enabled and the controller publishes.
-        networkEnabled = true;
-        rootMessenger.publish(
-          'NetworkEnablementController:stateChange',
-          {
-            enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
-          } as unknown as NetworkEnablementControllerState,
-          [],
-        );
-
-        await promise;
-
-        // The map captured before the network was added is restored, and the
-        // restore runs exactly once, outside the state-change publish.
-        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledTimes(1);
-        expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
-          eip155: { '0x1': true },
-        });
+        expect(cleanupFn).toHaveBeenCalled();
       });
     });
 
     it('rethrows when adding the network fails', async () => {
       await withService(async ({ rootMessenger }) => {
         const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
+        const cleanupFn = jest.fn();
         rootMessenger.registerActionHandler(
           'NetworkController:addNetwork',
           jest.fn().mockImplementation(() => {
@@ -2235,8 +2214,8 @@ describe('LegacyBackgroundApiService', () => {
           lookupNetworkHandler,
         );
         rootMessenger.registerActionHandler(
-          'NetworkEnablementController:getState',
-          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
+          'NetworkEnablementController:setNetworkAdditionMode',
+          jest.fn().mockReturnValue(cleanupFn),
         );
 
         await expect(
@@ -2248,6 +2227,7 @@ describe('LegacyBackgroundApiService', () => {
         ).rejects.toThrow('add network failed');
 
         expect(lookupNetworkHandler).not.toHaveBeenCalled();
+        expect(cleanupFn).toHaveBeenCalled();
       });
     });
   });
