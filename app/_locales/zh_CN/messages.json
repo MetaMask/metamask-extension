@@ -9519,9 +9519,6 @@
   "restore": {
     "message": "恢复"
   },
-  "restoreUserData": {
-    "message": "恢复用户数据"
-  },
   "restoreWalletDescription": {
     "message": "请输入您的$1。导入钱包将清除此设备上当前的钱包数据。此操作无法撤销。",
     "description": "$1 is the Secret Recovery Phrase"
