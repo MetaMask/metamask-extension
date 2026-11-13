@@ -1,0 +1,15 @@
+diff --git a/index.js b/index.js
+index 66bb63834990021f524699e903697a782f756912..22dcaac70dbda75a1828a3eddd232f7f2332695e 100644
+--- a/index.js
++++ b/index.js
+@@ -2,6 +2,10 @@ var atob = require("atob")
+ var urlLib = require("url")
+ var pathLib = require("path")
+ var decodeUriComponentLib = require("decode-uri-component")
++// decode-uri-component >= 0.3 is ESM-only; require() yields { default }
++if (typeof decodeUriComponentLib !== "function") {
++  decodeUriComponentLib = decodeUriComponentLib.default
++}
+ 
+ 
+ 

@@ -327,6 +327,8 @@
     "minimatch@npm:3.1.2": "^3.1.5",
     "minimatch@npm:5.0.1": "^5.1.9",
     "minimatch@npm:9.0.3": "^9.0.9",
+    "decode-uri-component@npm:^0.2.0": "^0.5.1",
+    "decode-uri-component@npm:^0.2.2": "^0.5.1",
     "minimatch@npm:^7.4.6": "^11.0.1",
     "minimatch@npm:^9.0.0": "^11.0.1",
     "minimatch@npm:^9.0.4": "^11.0.1",
@@ -388,7 +390,8 @@
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
     "@metamask/utils": "^12.0.1",
-    "redux-devtools-core@npm:^0.2.1": "patch:redux-devtools-core@npm%3A0.2.1#~/.yarn/patches/redux-devtools-core-npm-0.2.1-d6e29377f4.patch"
+    "redux-devtools-core@npm:^0.2.1": "patch:redux-devtools-core@npm%3A0.2.1#~/.yarn/patches/redux-devtools-core-npm-0.2.1-d6e29377f4.patch",
+    "source-map-resolve@npm:^0.6.0": "patch:source-map-resolve@npm%3A0.6.0#~/.yarn/patches/source-map-resolve-npm-0.6.0-6e67c9e55f.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
