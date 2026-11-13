@@ -9466,7 +9466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^7.1.0, @metamask/network-enablement-controller@npm:^7.1.1":
+"@metamask/network-enablement-controller@npm:7.1.1":
   version: 7.1.1
   resolution: "@metamask/network-enablement-controller@npm:7.1.1"
   dependencies:
@@ -9482,6 +9482,25 @@ __metadata:
     "@metamask/utils": "npm:^12.0.1"
     reselect: "npm:^5.3.0"
   checksum: 10/b0479d2e42937c441d39f78993acf20437a5026d7ea5f03cd18a6185efe6b4c5962b649e0f3d2c3c5a4cd5dc348aa932392e6740130886a0102e684801cd6630
+  languageName: node
+  linkType: hard
+
+"@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A7.1.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.1-5f56d06877.patch":
+  version: 7.1.1
+  resolution: "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A7.1.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.1-5f56d06877.patch::version=7.1.1&hash=ffee57"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/config-registry-controller": "npm:^5.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/multichain-network-controller": "npm:^4.1.1"
+    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/slip44": "npm:^4.5.0"
+    "@metamask/transaction-controller": "npm:^73.1.2"
+    "@metamask/utils": "npm:^12.0.1"
+    reselect: "npm:^5.3.0"
+  checksum: 10/f831833b815bfd82216c0c443540df45fc39c634bec0d5e79a0e3c84bd17f974d3bc8be4637dedf301c5f82bc3204a70437969bd0a79d88b64739cfc8265fc8d
   languageName: node
   linkType: hard
 
@@ -35414,7 +35433,7 @@ __metadata:
     "@metamask/name-controller": "npm:^10.0.0"
     "@metamask/network-connection-banner-controller": "npm:^1.1.0"
     "@metamask/network-controller": "npm:^38.0.0"
-    "@metamask/network-enablement-controller": "npm:^7.1.1"
+    "@metamask/network-enablement-controller": "patch:@metamask/network-enablement-controller@npm%3A7.1.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-7.1.1-5f56d06877.patch"
     "@metamask/notification-services-controller": "npm:^29.0.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"

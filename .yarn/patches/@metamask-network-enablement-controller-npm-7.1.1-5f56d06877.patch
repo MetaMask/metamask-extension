@@ -1,0 +1,32 @@
+diff --git a/dist/NetworkEnablementController.js b/dist/NetworkEnablementController.js
+index b4fb88a9b8f52741ff16388c23da97ee41b74054..0a3ef99fc7ed220f3a73403a14ec3623cd73fec4 100644
+--- a/dist/NetworkEnablementController.js
++++ b/dist/NetworkEnablementController.js
+@@ -410,14 +410,25 @@ export class NetworkEnablementController extends BaseController {
+      */
+     restoreEnabledNetworkMap(enabledNetworkMap) {
+         this.update((state) => {
++            // Check if the previous selection was kept: every network that was
++            // enabled in the snapshot is still enabled in current state
++            const previousSelectionKept = Object.entries(enabledNetworkMap).every(([namespace, snapshotNetworks]) => Object.entries(snapshotNetworks ?? {}).every(([chainId, wasEnabled]) => !wasEnabled || state.enabledNetworkMap[namespace]?.[chainId] === true));
+             Object.entries(state.enabledNetworkMap).forEach(([namespace, currentNetworks]) => {
+                 Object.keys(currentNetworks).forEach((chainId) => {
+                     const storageKey = chainId;
+                     const previousValue = enabledNetworkMap[namespace]?.[storageKey];
+-                    state.enabledNetworkMap[namespace][storageKey] =
+-                        previousValue ?? false;
++                    if (previousValue !== undefined) {
++                        // Key present in snapshot: restore snapshot value
++                        state.enabledNetworkMap[namespace][storageKey] = previousValue;
++                    }
++                    else if (!previousSelectionKept) {
++                        // New network added when selection was replaced: disable it
++                        state.enabledNetworkMap[namespace][storageKey] = false;
++                    }
++                    // else: new network added when selection was kept: keep current value
+                 });
+             });
++            console.log('[NEC debug] restore', { previousSelectionKept, eip155: JSON.stringify(state.enabledNetworkMap.eip155) });
+         });
+     }
+     /**
