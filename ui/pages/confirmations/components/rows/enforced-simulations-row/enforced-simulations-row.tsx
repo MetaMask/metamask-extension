@@ -35,7 +35,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { getEnforcedSimulationsSlippageBasisPoints } from '../../../../../../shared/lib/transaction/enforced-simulations';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
-  'https://support.metamask.io/manage-crypto/transactions/simulations/';
+  'https://support.metamask.com/manage-crypto/transactions/simulations/';
 
 export function EnforcedSimulationsRow() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

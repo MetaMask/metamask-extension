@@ -104,7 +104,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
           ]),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -171,7 +171,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
           ]),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

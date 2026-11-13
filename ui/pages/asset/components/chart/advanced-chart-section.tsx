@@ -16,6 +16,7 @@ import ChartErrorState from './chart-error-state';
 import TokenPriceHeader from './token-price-header';
 import { useAdvancedChartData } from './useAdvancedChartData';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
+import { useAdvancedChartInteractions } from './useAdvancedChartInteractions';
 
 /**
  * The aspect ratio of the legacy chart's plot area, from
@@ -234,6 +235,30 @@ export const AdvancedChartSection = ({
   const showIndicatorBar =
     !isLineChart && chartReady && !candleFailed && !candleEmpty;
 
+  // Interaction handlers and empty-state tracking live in their own hook to
+  // keep this component focused on layout.
+  const {
+    handleChartTypeSelect,
+    handleLineTimeRangeSelect,
+    handleCandleIntervalSelect,
+    handleIndicatorToggle,
+    handleMASelectorOpen,
+    handleChartInteracted,
+    handleTradingViewClicked,
+  } = useAdvancedChartInteractions({
+    chartType,
+    indicators,
+    isLineChart,
+    caipAssetId,
+    isOhlcvLoading,
+    candleFailed,
+    ohlcvBarCount: ohlcvData.length,
+    setChartType,
+    setLineTimeRange,
+    setCandleInterval,
+    toggleIndicator,
+  });
+
   let candleChart;
   if (candleFailed || candleEmpty) {
     candleChart = <ChartErrorState />;
@@ -248,6 +273,8 @@ export const AdvancedChartSection = ({
         ohlcvData={ohlcvData}
         onError={setChartError}
         onReady={handleChartReady}
+        onChartInteracted={handleChartInteracted}
+        onTradingViewClicked={handleTradingViewClicked}
         realtimeBar={realtimeBar}
         fetchOlderBars={fetchOlderBars}
       />
@@ -273,9 +300,11 @@ export const AdvancedChartSection = ({
       <IntervalBar
         intervals={isLineChart ? LINE_CHART_TIME_RANGES : undefined}
         selectedInterval={isLineChart ? lineTimeRange : interval}
-        onIntervalSelect={isLineChart ? setLineTimeRange : setCandleInterval}
+        onIntervalSelect={
+          isLineChart ? handleLineTimeRangeSelect : handleCandleIntervalSelect
+        }
         chartType={chartType}
-        onChartTypeSelect={setChartType}
+        onChartTypeSelect={handleChartTypeSelect}
       />
 
       {/* Both modes share one grid cell rather than taking turns in the tree.
@@ -351,8 +380,9 @@ export const AdvancedChartSection = ({
               >
                 <IndicatorBar
                   activeIndicators={indicators}
-                  onIndicatorToggle={toggleIndicator}
-                  onMAToggle={toggleIndicator}
+                  onIndicatorToggle={handleIndicatorToggle}
+                  onMAToggle={handleIndicatorToggle}
+                  onMASelectorOpen={handleMASelectorOpen}
                 />
               </Box>
             </Box>
