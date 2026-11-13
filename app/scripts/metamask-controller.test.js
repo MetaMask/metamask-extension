@@ -37,7 +37,6 @@ import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import { ApprovalType, ERC20 } from '@metamask/controller-utils';
 import { parseCaipAccountId } from '@metamask/utils';
-import { captureException } from '../../shared/lib/sentry';
 
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -98,11 +97,6 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
         },
       };
     }),
-}));
-
-jest.mock('../../shared/lib/sentry', () => ({
-  ...jest.requireActual('../../shared/lib/sentry'),
-  captureException: jest.fn(),
 }));
 
 jest.mock('./messenger-client-init/ramps-controller-init', () => ({
@@ -897,59 +891,6 @@ describe('MetaMaskController', () => {
           expect(
             metamaskController.assetsController.addCustomAsset,
           ).not.toHaveBeenCalled();
-        });
-
-        it('resolves the watch asset request even when persisting the watched asset never settles', async () => {
-          jest
-            .spyOn(metamaskController.assetsController, 'addCustomAsset')
-            .mockImplementation(() => new Promise(() => undefined));
-
-          const asset = {
-            address: watchAssetTokenAddress,
-            symbol: 'TST',
-            decimals: 4,
-          };
-
-          await expect(
-            metamaskController.handleWatchAssetRequest({
-              asset,
-              type: ERC20,
-              origin: 'https://example.com',
-              networkClientId: watchAssetNetworkClientId,
-            }),
-          ).resolves.toBeUndefined();
-
-          expect(
-            metamaskController.assetsController.addCustomAsset,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('resolves the watch asset request and reports the failure when persisting the watched asset rejects', async () => {
-          const persistenceError = new Error(
-            'No provider available for chain 0x171',
-          );
-          captureException.mockClear();
-          jest
-            .spyOn(metamaskController.assetsController, 'addCustomAsset')
-            .mockRejectedValue(persistenceError);
-
-          const asset = {
-            address: watchAssetTokenAddress,
-            symbol: 'TST',
-            decimals: 4,
-          };
-
-          await expect(
-            metamaskController.handleWatchAssetRequest({
-              asset,
-              type: ERC20,
-              origin: 'https://example.com',
-              networkClientId: watchAssetNetworkClientId,
-            }),
-          ).resolves.toBeUndefined();
-
-          await waitForAllPromises();
-          expect(captureException).toHaveBeenCalledWith(persistenceError);
         });
       });
     });
