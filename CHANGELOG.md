@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated the Money onboarding splash with new hero artwork, heading styles, and card layout (#47716)
+- Updated the Perps withdrawal amount input to the Grotzec typeface (#47560)
 - Updated the MetaMask Pay amount input to the Grotzec typeface (#47565)
 - Made bottom navigation available by default (#47206)
 - Showed more of recipient addresses in Send (#47533)
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed a bug where the close button on the Transaction Shield intro modal in Settings could not be clicked (#47916)
 - Fixed the nickname modal address field appearing disabled while keeping it read-only (#47593)
 - Fixed the token details header to show the token name with its ticker beneath it (#47552)
 - Fixed Tron balances being ignored when determining whether to show the wallet empty state (#47570)
