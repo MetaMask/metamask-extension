@@ -114,6 +114,11 @@ export const TokenInsightsModal = ({
     }
     const handleDocMouseDownCapture = (event: MouseEvent) => {
       const el = dialogRef.current;
+      const nativeDialog =
+        event.target instanceof Element && event.target.closest('dialog[open]');
+      if (nativeDialog && !nativeDialog.contains(el)) {
+        return;
+      }
       // this prevents the modal from closing when clicking on the modal content
       if (el && !el.contains(event.target as Node)) {
         onClose();

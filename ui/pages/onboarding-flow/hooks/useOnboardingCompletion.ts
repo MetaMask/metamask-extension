@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { getReferralCode } from '#shared/lib/deep-links/referral';
+import { setPendingReferralCode } from '#ui/ducks/rewards-money';
+import {
+  getOnboardingRedirect,
+  setOnboardingRedirect,
+} from '#ui/ducks/app/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -78,6 +84,7 @@ export function useOnboardingCompletion() {
   const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
+  const onboardingRedirect = useSelector(getOnboardingRedirect);
   const isBasicFunctionalityForcedOn = useSelector(
     getIsBasicFunctionalityForcedOnDuringOnboarding,
   );
@@ -104,16 +111,25 @@ export function useOnboardingCompletion() {
         dispatch(removeDeferredDeepLink());
       }
 
+      // Retain install attribution even when a later direct link supplies the action.
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        const url = new URL(deferredDeepLinkToUse.referringLink);
+        if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          dispatch(setPendingReferralCode(getReferralCode(url.searchParams)));
+        }
         await trackEvent(
           createEvent({
             signature: deferredDeepLinkResult.signature,
-            url: new URL(deferredDeepLinkToUse.referringLink),
+            url,
           }),
         );
       }
 
-      if (deferredDeepLinkResult) {
+      if (onboardingRedirect) {
+        navigate(onboardingRedirect, { replace: true });
+      } else if (deferredDeepLinkResult) {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
         ) {
@@ -141,8 +157,11 @@ export function useOnboardingCompletion() {
       } else if (!completedWithSidePanelFlow) {
         navigate(DEFAULT_ROUTE);
       }
+      if (onboardingRedirect) {
+        dispatch(setOnboardingRedirect(null));
+      }
     },
-    [dispatch, navigate, trackEvent],
+    [dispatch, navigate, onboardingRedirect, trackEvent],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
@@ -175,8 +194,8 @@ export function useOnboardingCompletion() {
         }
 
         // `browser.sidePanel.open()` requires a user gesture. Auto-complete
-        // runs from `useEffect`, so skip the call there. Navigate/Interstitial
-        // deferred deep links also skip opening so the popup can route first.
+        // runs from `useEffect`, so skip the call there. Internal destinations
+        // and interstitials also keep navigation in this UI.
         if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {
           await browserWithSidePanel.sidePanel.open({
             windowId,
@@ -242,6 +261,7 @@ export function useOnboardingCompletion() {
         const deferredDeepLinkResult =
           await getDeferredDeepLinkRoute(deferredDeepLink);
         const shouldOpenSidePanel =
+          !onboardingRedirect &&
           deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
           deferredDeepLinkResult?.type !==
             DeferredDeepLinkRouteType.Interstitial;
@@ -356,6 +376,7 @@ export function useOnboardingCompletion() {
       isOptedIn,
       isSidePanelEnabled,
       isUnlocked,
+      onboardingRedirect,
       trackEvent,
     ],
   );

@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
   },
-  "addAWallet": {
-    "message": "Προσθήκη πορτοφολιού"
-  },
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
@@ -3429,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Ενημερώστε στην πιο πρόσφατη έκδοση του MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Δεν δόθηκε διεύθυνση URL για μετάβαση."
@@ -3567,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Διαγραφή δεδομένων MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Αυτό θα διαγράψει τα ιστορικά δεδομένα από το MetaMetrics που σχετίζονται με τη χρήση σας σε αυτή τη συσκευή. Το πορτοφόλι και οι λογαριασμοί σας θα παραμείνουν ακριβώς όπως είναι τώρα μετά τη διαγραφή αυτών των δεδομένων. Η διαδικασία αυτή μπορεί να διαρκέσει έως και 30 ημέρες. Δείτε την $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Η ενέργεια αυτή θα διαγράψει τα ιστορικά δεδομένα MetaMetrics του πορτοφολιού σας. Τα MetaMetrics περιλαμβάνουν ανώνυμα δεδομένα χρήσης και διαγνωστικά στοιχεία. Το πορτοφόλι και οι λογαριασμοί σας δεν θα επηρεαστούν. Η διαδικασία μπορεί να διαρκέσει έως και 30 ημέρες. Δείτε την $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3578,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Δεν είναι δυνατή η ολοκλήρωση του αιτήματος αυτήν τη στιγμή λόγω προβλήματος στον διακομιστή του συστήματος αναλυτικών στοιχείων. Προσπαθήστε ξανά αργότερα."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Δεν μπορούμε να διαγράψουμε αυτά τα δεδομένα προς το παρόν"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Δεν είναι δυνατή η διαγραφή"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Πρόκειται να αφαιρέσουμε όλα τα δεδομένα σας στο MetaMetrics. Είστε σίγουροι;"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Διαγραφή δεδομένων MetaMetrics;"
@@ -4151,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "Απαιτείται η $1"
-  },
-  "fileImportFail": {
-    "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Κάντε κλικ για μεταφόρτωση ή σύρετε και αφήστε"
@@ -5399,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Το κουμπί Κατάστασης Σύνδεσης δείχνει αν ο ιστότοπος που επισκέπτεστε είναι συνδεδεμένος με τον τρέχοντα επιλεγμένο λογαριασμό σας."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Εφόσον δεν έχετε επιλέξει ποτέ το MetaMetrics, δεν υπάρχουν δεδομένα προς διαγραφή εδώ."
   },
   "metadataModalSourceTooltip": {
     "message": "Το $1 φιλοξενείται στο npm και το $2 είναι το μοναδικό αναγνωριστικό αυτού του Snap.",
@@ -7385,10 +7365,6 @@
   "paste": {
     "message": "Επικόλληση"
   },
-  "pastePrivateKey": {
-    "message": "Εισάγετε τη συμβολοσειρά του ιδιωτικού σας κλειδιού εδώ:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Πληρωμή με",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8866,7 +8842,7 @@
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
   },
   "perpsWithdrawTooltip": {
-    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
+    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8967,10 +8943,6 @@
   "privateKeyHidden": {
     "message": "Το ιδιωτικό κλειδί είναι κρυφό",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Εμφάνιση/απόκρυψη της εισαγωγής του ιδιωτικού κλειδιού",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Αυτό το ιδιωτικό κλειδί είναι ορατό",
@@ -11756,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Οι ξαφνικές αλλαγές στην αγορά μπορεί να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με το $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Ενεργοποιήστε τις Έξυπνες Συναλλαγές για πιο αξιόπιστες και ασφαλείς συναλλαγές. $1"
@@ -11900,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Συμβαίνουν αποτυχίες συναλλαγών και είμαστε εδώ για να βοηθήσουμε. Εάν αυτό το πρόβλημα επιμένει, μπορείτε να επικοινωνήσετε με την υποστήριξη πελατών μας στο $1 για περαιτέρω βοήθεια.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Η ανταλλαγή απέτυχε"
@@ -11929,9 +11901,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "εδώ",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Περιλαμβάνεται"
   },
   "swapGasFeesSplit": {
     "message": "Τα τέλη δικτύου που εμφανίζονταν στην προηγούμενη οθόνη κατανέμονται σε αυτές τις δύο συναλλαγές."
@@ -12679,9 +12648,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση tokens που έχουν σταλεί στον λογαριασμό σας περιλαμβάνει επικοινωνία με εξυπηρετητές τρίτων για την εμφάνιση των εικόνων των token. Αυτοί οι εξυπηρετητές θα έχουν πρόσβαση στη διεύθυνσή IP σας."
-  },
-  "usedByClients": {
-    "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
   },
   "userOpContractDeployError": {
     "message": "Η ανάπτυξη συμβολαίου από έξυπνο λογαριασμό δεν υποστηρίζεται"

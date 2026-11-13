@@ -86,4 +86,24 @@ describe('NameDisplay', () => {
     );
     expect(getByText('TEST')).toBeInTheDocument();
   });
+
+  it('renders the address instead of a security label with fillWidth', () => {
+    const address = '0x1111111111111111111111111111111111111111';
+    useDisplayNameMock.mockReturnValue({
+      name: 'Null: 0x111...111',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      isAccount: false,
+    });
+    const { getByText, queryByText } = renderWithProvider(
+      <NameDisplay
+        value={address}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={'0x1'}
+        fillWidth
+      />,
+    );
+    expect(getByText(address)).toBeInTheDocument();
+    expect(queryByText('Null: 0x111...111')).toBeNull();
+  });
 });

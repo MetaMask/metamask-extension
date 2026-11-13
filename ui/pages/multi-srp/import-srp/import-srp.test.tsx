@@ -6,7 +6,10 @@ import thunk from 'redux-thunk';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { importMnemonicToVault } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { ImportSrp } from './import-srp';
@@ -54,6 +57,22 @@ describe('ImportSrp', () => {
   it('renders matches snapshot', () => {
     const { asFragment } = renderWithProvider(<ImportSrp />, store);
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('returns to the previous page when the back button is clicked', () => {
+    const { getByTestId } = renderWithProvider(<ImportSrp />, store);
+
+    fireEvent.click(getByTestId('import-srp-back-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('leaves the flow when the close button is clicked', () => {
+    const { getByTestId } = renderWithProvider(<ImportSrp />, store);
+
+    fireEvent.click(getByTestId('import-srp-close-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('renders header with correct title', () => {

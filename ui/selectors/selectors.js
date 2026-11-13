@@ -322,14 +322,6 @@ export function getBackupAndSyncOnboardingToggleState(state) {
   return state.appState.backupAndSyncOnboardingToggleState;
 }
 
-export function getShowDeleteMetaMetricsDataModal(state) {
-  return state.appState.showDeleteMetaMetricsDataModal;
-}
-
-export function getShowDataDeletionErrorModal(state) {
-  return state.appState.showDataDeletionErrorModal;
-}
-
 export function getKeyringSnapRemovalResult(state) {
   return state.appState.keyringRemovalSnapModal;
 }
@@ -1280,12 +1272,16 @@ export const getNetworkConfigurationIdByChainId = createResultEqualSelector(
 );
 
 /**
+ * Mirrors the NetworkController: RPC failover is on unless the
+ * `corePlatformRpcFailoverMode` flag is `disabled`. An absent or unrecognized
+ * value falls back to the controller default (`enabled`).
+ *
  * @type (state: RemoteFeatureFlagsState) => boolean
  */
 export const getIsRpcFailoverEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
+    remoteFeatureFlags.corePlatformRpcFailoverMode !== 'disabled',
 );
 
 /**

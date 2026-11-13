@@ -3,7 +3,14 @@ import { useSelector } from 'react-redux';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
 import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { AssetListProps } from '../../../components/app/assets/asset-list/asset-list';
-import AssetListControlBar from '../../../components/app/assets/asset-list/asset-list-control-bar';
+import {
+  AssetControls,
+  AssetControlsActions,
+} from '../../../components/app/assets/asset-list/asset-list-control-bar/asset-controls';
+import { NetworkFilter } from '../../../components/app/assets/asset-list/asset-list-control-bar/network-filter';
+import { DeFiOptionsMenu } from '../../../components/app/assets/asset-list/asset-list-control-bar/defi-options-menu';
+import { SortByButton } from '../../../components/app/assets/asset-list/asset-list-control-bar/sort-by-button';
+import { TabControls } from '../../../components/ui/tabs';
 import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import DefiList from '../../../components/app/assets/defi-list/defi-list';
@@ -37,12 +44,15 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
 
   return (
     <>
-      <AssetListControlBar
-        showImportTokenButton={false}
-        showSortControl={!isEmpty}
-        onRefresh={handleRefresh}
-        data-testid="parent-selector-defi-tab"
-      />
+      <TabControls>
+        <AssetControls data-testid="parent-selector-defi-tab">
+          <NetworkFilter />
+          <AssetControlsActions>
+            {!isEmpty && <SortByButton />}
+            <DeFiOptionsMenu onRefresh={handleRefresh} />
+          </AssetControlsActions>
+        </AssetControls>
+      </TabControls>
       <DefiListV2 items={listItems} onClick={onClickAsset} />
     </>
   );
@@ -62,11 +72,14 @@ function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
 
   return (
     <>
-      <AssetListControlBar
-        showImportTokenButton={false}
-        showSortControl={!isEmpty}
-        data-testid="parent-selector-defi-tab"
-      />
+      <TabControls>
+        <AssetControls data-testid="parent-selector-defi-tab">
+          <NetworkFilter />
+          <AssetControlsActions>
+            {!isEmpty && <SortByButton />}
+          </AssetControlsActions>
+        </AssetControls>
+      </TabControls>
       <DefiList items={positions} onClick={onClickAsset} />
     </>
   );

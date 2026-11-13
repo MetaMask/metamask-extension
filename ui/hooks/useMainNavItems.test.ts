@@ -14,6 +14,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../pages/money/constants/money-events';
 import type { MoneyAccountAvailability } from './money/use-money-account-availability';
@@ -227,7 +228,7 @@ describe('useMainNavItems', () => {
       });
     });
 
-    it('opens the FTUE splash without navigating on the first Money click', () => {
+    it('opens the FTUE splash and navigates to Money Home on the first Money click', () => {
       const { result, store } = renderUseMainNavItems(
         createState({ moneyFtueSeen: false }),
       );
@@ -237,10 +238,14 @@ describe('useMainNavItems', () => {
       expect(store.getState().moneyFtue).toStrictEqual({
         isOpen: true,
         source: 'moneyHome',
+        origin: {
+          entryPoint: MoneyFtueEntryPoint.MoneyTab,
+          componentName: MoneyComponentName.HomeTab,
+        },
         pendingDeposit: null,
         acknowledged: false,
       });
-      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
       expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
         buttonType: MoneyButtonType.Text,
         buttonIntent: MoneyButtonIntent.GoToMoneyHome,

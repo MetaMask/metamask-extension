@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "添加 URL"
   },
-  "addAWallet": {
-    "message": "添加钱包"
-  },
   "addAccount": {
     "message": "添加账户"
   },
@@ -3429,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "更新至 MetaMask 最新版本",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "未提供可导航的 URL。"
@@ -3567,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "删除MetaMetrics数据"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "这将删除与您在此设备上的使用相关的 MetaMetrics 历史数据。删除此数据后，您的钱包和账户将保持原样。此过程可能需要最多 30 天。查看我们的 $1。",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "这将会删除与您的钱包关联的历史 MetaMetrics 数据。MetaMetrics 包含匿名使用数据和诊断数据。您的钱包和账户将保持不变。此过程最长可能需要 30 天。查看我们的 $1。",
     "description": "$1 will have text saying Privacy Policy "
@@ -3578,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "由于分析系统服务器问题，此请求目前无法完成。请稍后再试。"
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "我们现在无法删除此数据"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "无法删除"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "我们即将删除您所有的MetaMetrics数据。您确定吗？"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "要删除MetaMetrics数据吗？"
@@ -4151,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "$1 为必填项"
-  },
-  "fileImportFail": {
-    "message": "文件导入失败？点击这里！",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "点击上传或拖放"
@@ -5399,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "连接状态按钮显示所访问的网站是否与您当前选择的账户连接。"
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "由于您从未选择过 MetaMetrics，因此此处没有要删除的数据。"
   },
   "metadataModalSourceTooltip": {
     "message": "$1 托管于 npm 上，$2 是此 Snap 的唯一标识符。",
@@ -7385,10 +7365,6 @@
   "paste": {
     "message": "粘贴"
   },
-  "pastePrivateKey": {
-    "message": "请粘贴您的私钥:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "支付方式：",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8872,7 +8848,7 @@
     "message": "提现已提交"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask 将为您兑换为您想要的代币。兑换至 mUSD 时，MetaMask 不收取任何费用。",
+    "message": "MetaMask 将为您兑换为您想要的代币。",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8973,10 +8949,6 @@
   "privateKeyHidden": {
     "message": "私钥已隐藏",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "显示/隐藏私钥输入",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "正在显示此私钥",
@@ -11762,7 +11734,7 @@
   },
   "stxFailureDescription": {
     "message": "突然的市场变化可能导致失败。如果问题仍然存在，请联系$1。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "开启智能交易，以获得更加安全可靠的交易体验。$1"
@@ -11906,7 +11878,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "交易有时会失败，我们随时为您提供帮助。如果此问题仍然存在，您可以在 $1 联系我们的客服，以获得进一步的帮助。",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "交换失败"
@@ -11935,9 +11907,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " 已包含"
   },
   "swapGasFeesSplit": {
     "message": "上一页显示的网络费用包含这两笔交易产生的费用。"
@@ -12685,9 +12654,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将会获取您的 IP 地址。"
-  },
-  "usedByClients": {
-    "message": "可用于各种不同的客户端"
   },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
