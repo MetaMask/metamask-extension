@@ -21,6 +21,7 @@ import {
   recordNonRpcRequests,
 } from './helpers';
 
+// TEMP test flakiness
 describe('Onboarded wallet with basic functionality off', function () {
   it('only makes RPC requests after unlocking', async function () {
     let getNonRpcRequests: () => Promise<NonRpcRequests> = async () =>
