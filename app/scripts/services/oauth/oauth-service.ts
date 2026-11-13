@@ -46,6 +46,7 @@ const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
 
 const MESSENGER_EXPOSED_METHODS = [
   'startOAuthLogin',
+  'waitForOnboardingNetworkPolicy',
   'getNewRefreshToken',
   'revokeRefreshToken',
   'renewRefreshToken',

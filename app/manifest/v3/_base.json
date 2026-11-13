@@ -12,7 +12,7 @@
     "default_title": "MetaMask",
     "default_popup": "popup-init.html"
   },
-  "author": "https://metamask.io",
+  "author": "https://metamask.com",
   "background": {
     "service_worker": "service-worker.ts"
   },
@@ -48,6 +48,14 @@
       "run_at": "document_start",
       "world": "MAIN",
       "all_frames": true
+    },
+    {
+      "matches": ["https://x.com/*", "https://www.x.com/*"],
+      "css": [
+        "scripts/cashtag/pill/page.css",
+        "scripts/cashtag/widget/page.css"
+      ],
+      "run_at": "document_start"
     },
     {
       "matches": ["*://connect.trezor.io/*/popup.html*"],

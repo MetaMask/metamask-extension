@@ -14,13 +14,16 @@ export async function updateTransactionPaymentToken({
   tokenAddress: Hex;
   chainId: Hex;
 }): Promise<void> {
-  return await submitRequestToBackground('updateTransactionPaymentToken', [
-    {
-      transactionId,
-      tokenAddress,
-      chainId,
-    },
-  ]);
+  return await submitRequestToBackground(
+    'TransactionPayController:updatePaymentToken',
+    [
+      {
+        transactionId,
+        tokenAddress,
+        chainId,
+      },
+    ],
+  );
 }
 
 export async function setPaymentOverride(
@@ -113,20 +116,20 @@ export async function createMoneyAccountDepositTransaction(
  * Creates the placeholder Money Account withdrawal batch in the background
  * and returns the created transaction's id for confirmation navigation.
  *
- * @param accountOverride - Currently selected EVM account, used as the
- * default destination on the confirmation (`txParams.from` is the money
- * account, which executes the batch).
+ * @param recipient - Default recipient on the confirmation, stored as Pay's
+ * account override. `txParams.from` is the money account, which executes and
+ * signs the batch.
  * @returns The created transaction id and the batch id.
  */
 export async function createMoneyAccountWithdrawTransaction(
-  accountOverride: Hex,
+  recipient: Hex,
 ): Promise<{
   transactionId: string;
   batchId: Hex;
 }> {
   return await submitRequestToBackground(
     'createMoneyAccountWithdrawTransaction',
-    [accountOverride],
+    [recipient],
   );
 }
 

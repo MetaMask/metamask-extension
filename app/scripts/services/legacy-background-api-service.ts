@@ -2,6 +2,10 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import type {
   AnalyticsControllerGetEventFragmentByIdAction,
+  AnalyticsControllerGetStateAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerUpsertEventFragmentAction,
   ReadonlyAnalyticsEventFragment,
 } from '@metamask/analytics-controller';
@@ -361,6 +365,8 @@ import {
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { updateExtensionUninstallUrl } from '../controllers/analytics/analytics';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import {
   DefiReferralPartner,
   DefiReferralPartnerConfig,
@@ -414,6 +420,8 @@ import {
 import type {
   SentryTracingServiceBufferedEndTraceAction,
   SentryTracingServiceBufferedTraceAction,
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
@@ -483,6 +491,7 @@ type TokenStandardAndDetails = {
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'waitForNetworkRequestPolicy',
   'acceptPermissionsRequest',
   'addNetwork',
   'addPermittedAccount',
@@ -562,6 +571,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setEnabledAllPopularNetworks',
   'setEnabledNetworks',
   'setLocked',
+  'setParticipateInMetaMetrics',
   'setPermittedAccounts',
   'setPermittedChains',
   'setSelectedInternalAccount',
@@ -654,6 +664,10 @@ type AllowedActions =
   | KeyringControllerWithKeyringV2Action
   | KeyringControllerWithKeyringV2UnsafeAction
   | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerGetStateAction
+  | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptOutAction
+  | AnalyticsControllerResetConsentDecisionAction
   | AnalyticsControllerUpsertEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -663,6 +677,8 @@ type AllowedActions =
   | KeyringControllerWithKeyringAction
   | SentryTracingServiceBufferedTraceAction
   | SentryTracingServiceBufferedEndTraceAction
+  | SentryTracingServiceClearTracesAfterMetricsOptInAction
+  | SentryTracingServiceTrackTracesAfterMetricsOptInAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -789,6 +805,10 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
  */
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
+  appBuildType: string;
+  appEnvironment: string;
+  appVersion: string;
+  setUninstallURL: (url: string) => void;
   infuraProjectId: string;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
@@ -815,6 +835,14 @@ export class LegacyBackgroundApiService {
   name: typeof serviceName = serviceName;
 
   readonly #messenger: LegacyBackgroundApiServiceMessenger;
+
+  readonly #appBuildType: string;
+
+  readonly #appEnvironment: string;
+
+  readonly #appVersion: string;
+
+  readonly #setUninstallURL: (url: string) => void;
 
   readonly #infuraProjectId: string;
 
@@ -848,6 +876,10 @@ export class LegacyBackgroundApiService {
    * Creates a new instance of the LegacyBackgroundApiService.
    * @param options - The options required to initialize the LegacyBackgroundApiService.
    * @param options.messenger - The messenger instance used for communication.
+   * @param options.appBuildType - The extension build type.
+   * @param options.appEnvironment - The extension environment.
+   * @param options.appVersion - The extension version.
+   * @param options.setUninstallURL - Sets the extension uninstall URL.
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
@@ -862,6 +894,10 @@ export class LegacyBackgroundApiService {
    */
   constructor({
     messenger,
+    appBuildType,
+    appEnvironment,
+    appVersion,
+    setUninstallURL,
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
@@ -875,6 +911,10 @@ export class LegacyBackgroundApiService {
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
+    this.#appBuildType = appBuildType;
+    this.#appEnvironment = appEnvironment;
+    this.#appVersion = appVersion;
+    this.#setUninstallURL = setUninstallURL;
 
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
@@ -895,6 +935,15 @@ export class LegacyBackgroundApiService {
       this,
       MESSENGER_EXPOSED_METHODS,
     );
+  }
+
+  /**
+   * Wait until the current network request policy has been published.
+   *
+   * @returns A promise that resolves after the browser policy is updated.
+   */
+  async waitForNetworkRequestPolicy(): Promise<void> {
+    await refreshNetworkRequestPolicy();
   }
 
   /**
@@ -1093,13 +1142,13 @@ export class LegacyBackgroundApiService {
    * @param networkClientId - The ID of the network client to use for the request.
    * @returns The code of the contract at the given address.
    */
-  async getCode(address: Hex, networkClientId: string): Promise<Json> {
+  async getCode(address: Hex, networkClientId: string): Promise<Hex> {
     const { provider } = this.#messenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );
 
-    return await provider.request({
+    return await provider.request<[Hex], Hex>({
       method: 'eth_getCode',
       params: [address],
     });
@@ -3369,7 +3418,7 @@ export class LegacyBackgroundApiService {
     index: number,
     hdPathDescription?: string,
   ): string {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${
       index + 1
     } ${hdPathDescription || ''}`.trim();
   }
@@ -3480,8 +3529,11 @@ export class LegacyBackgroundApiService {
         return {
           address: normalize(createdAccount.address) as string,
           label: this.#getAccountLabel(
+            // QR devices report a user-defined name that can be empty or
+            // missing (e.g. a Keystone wallet with no name), so fall back to
+            // the device name.
             deviceName === HardwareDeviceNames.qr
-              ? (keyring as QrKeyringV2).getName()
+              ? (keyring as QrKeyringV2).getName() || deviceName
               : deviceName,
             index,
             hdPathDescription,
@@ -5463,5 +5515,50 @@ export class LegacyBackgroundApiService {
         PermissionControllerGrantPermissionsAction['handler']
       >[0]['approvedPermissions'],
     });
+  }
+
+  /**
+   * Sets the user's MetaMetrics participation preference.
+   *
+   * The UI calls this through the background API so consent changes can also
+   * update the extension uninstall URL and tracing behavior.
+   *
+   * @param participateInMetaMetrics - Whether the user wants to participate,
+   * or `null` to reset the consent decision.
+   * @returns The current analytics ID.
+   */
+  async setParticipateInMetaMetrics(
+    participateInMetaMetrics: boolean | null,
+  ): Promise<string> {
+    const { analyticsId } = this.#messenger.call(
+      'AnalyticsController:getState',
+    );
+
+    if (participateInMetaMetrics === true) {
+      await this.#messenger.call('AnalyticsController:optIn');
+      this.#messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else if (participateInMetaMetrics === false) {
+      this.#messenger.call('AnalyticsController:optOut');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else {
+      this.#messenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    if (
+      this.#appBuildType === 'main' &&
+      this.#appEnvironment !== ENVIRONMENT.DEVELOPMENT &&
+      participateInMetaMetrics !== null
+    ) {
+      updateExtensionUninstallUrl({
+        participateInMetaMetrics,
+        analyticsId,
+        appVersion: this.#appVersion,
+        appEnvironment: this.#appEnvironment,
+        setUninstallURL: this.#setUninstallURL,
+      });
+    }
+
+    return analyticsId;
   }
 }

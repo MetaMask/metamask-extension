@@ -1,5 +1,6 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
+import { getPrivateNetworkEnablementConfiguration } from './network-metadata-privacy';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { isObject } from '@metamask/utils';
 import { isInE2eTest } from '../../../shared/lib/environment';
@@ -10,6 +11,7 @@ import {
 } from '../../../shared/constants/network';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -21,6 +23,7 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
@@ -28,6 +31,7 @@ import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getGeolocationApiServiceInstanceOptions } from './instance-options/geolocation-api-service';
 import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
@@ -74,7 +78,15 @@ export function initializeWallet(request: InitializeWalletRequest) {
   });
 
   const wallet = new Wallet({
+    initializationConfigurations: [
+      getPrivateNetworkEnablementConfiguration(messenger),
+    ],
     instanceOptions: {
+      analyticsController: getAnalyticsControllerInstanceOptions({
+        initMessenger: getAnalyticsControllerInitMessenger(messenger),
+        state,
+        platform,
+      }),
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
@@ -86,6 +98,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       gasFeeController: getGasFeeControllerInstanceOptions({
         initMessenger: getGasFeeControllerInitMessenger(messenger),
       }),
+      geolocationApiService: getGeolocationApiServiceInstanceOptions(),
       keyringController: getKeyringControllerInstanceOptions({
         encryptor,
         messenger,
@@ -105,7 +118,10 @@ export function initializeWallet(request: InitializeWalletRequest) {
       shieldApiService: getShieldApiServiceInstanceOptions(),
       shieldController: getShieldControllerInstanceOptions(),
       remoteFeatureFlagController:
-        getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
+        getRemoteFeatureFlagControllerInstanceOptions({
+          messenger,
+          state,
+        }),
       selectedNetworkController: {
         domainProxyMap: new WeakRefObjectMap(),
       },

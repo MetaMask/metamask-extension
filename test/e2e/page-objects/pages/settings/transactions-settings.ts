@@ -7,9 +7,8 @@ import { Driver } from '../../../webdriver/driver';
  * `SettingsPage.goToTransactionsSettings`.
  * Owns: page load via hex-data toggle, toggling hex data on, and waiting for
  * the security alerts section.
- * Boundaries: transactions settings only. Smart-transactions / legacy advanced
- * helpers may still live on `AdvancedSettings`.
- * Related: `SettingsPage`, `AdvancedSettings`.
+ * Boundaries: transactions settings only.
+ * Related: `SettingsPage`.
  *
  * @see ui/pages/settings/transactions-tab/transactions-tab.tsx
  */

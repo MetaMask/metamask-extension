@@ -28,7 +28,6 @@ import {
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
   BACKGROUND_LIVENESS_METHOD,
@@ -67,21 +66,17 @@ import {
 } from '../../shared/lib/deep-links/metrics';
 import { hasVault } from '../../shared/lib/stores/persistence-manager';
 import type { MetaMaskStateType } from '../../shared/lib/stores/base-store';
-import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import {
-  isPhishingWarningPageUrl,
-  loadPhishingWarningPage,
-  maybeDetectPhishing,
-} from './lib/phishing';
-import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
-import ExtensionPlatform from './platforms/extension';
-import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
-import { registerCashtagBackgroundBridge } from './cashtag/background';
+  getStartupPhase,
+  setStartupPhase,
+  StartupPhase,
+} from '../../shared/lib/telemetry/startup-phase';
+import {
+  recordUiClosed,
+  recordUiOpen,
+  recordWindowEvent,
+} from '../../shared/lib/telemetry/last-activity';
 
-import NotificationManager from './lib/notification-manager';
-import MetamaskController from './metamask-controller';
-import { createEventBuilder, trackEvent } from './controllers/analytics';
 import { updateSegmentDeliveryState } from './lib/segment';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
@@ -95,6 +90,20 @@ import rawFirstTimeState from './first-time-state';
 import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
 import { wireStatePersistence } from './lib/startup/wire-state-persistence';
 import { parsePortInfo } from './lib/parse-port-info';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
+import MetamaskController from './metamask-controller';
+import NotificationManager from './lib/notification-manager';
+import { registerCashtagBackgroundBridge } from './cashtag/background';
+import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
+import ExtensionPlatform from './platforms/extension';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
+import {
+  isPhishingWarningPageUrl,
+  loadPhishingWarningPage,
+  maybeDetectPhishing,
+} from './lib/phishing';
+import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { loadPreinstalledSnaps } from './lib/load-preinstalled-snaps';
 import {
   handleOnInstalled,
@@ -227,6 +236,18 @@ const uiPresence = createUiPresenceTracker({
   getNotificationIsOpen: () => notificationIsOpen,
 });
 
+persistenceManager.setCurrentActivityProvider(() => ({
+  startupPhase: getStartupPhase(),
+  ...uiPresence.getOpenUiCounts(),
+}));
+
+// Includes `WINDOW_ID_NONE` (focus left the browser).
+// We're not reusing listeners from `installActiveTabTracker`,
+// because they only track the active tab, and skip `WINDOW_ID_NONE`.
+browser.windows.onFocusChanged.addListener(() => {
+  recordWindowEvent();
+});
+
 // DappViewed / AppOpened metrics, tab→origin registries, and onNavigateToTab
 // (see app/scripts/lib/metrics/dapp-metrics.ts).
 const {
@@ -257,6 +278,7 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
  * called if initialization fails in an unrecoverable way.
  */
 let isInitialized: Promise<void>;
+let backgroundInitializedAt: number | undefined;
 let resolveInitialization: () => void;
 let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 
@@ -267,7 +289,11 @@ let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 function setGlobalInitializers() {
   const deferred = withResolvers<void>();
   isInitialized = deferred.promise;
-  resolveInitialization = deferred.resolve;
+  backgroundInitializedAt = undefined;
+  resolveInitialization = () => {
+    backgroundInitializedAt = Date.now();
+    deferred.resolve();
+  };
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
@@ -454,6 +480,7 @@ const handleOnConnect = async (port: Runtime.Port) => {
         !tryPostMessage(
           asChromeRuntimePort(port),
           BACKGROUND_INITIALIZED_METHOD,
+          { initializedAt: backgroundInitializedAt },
         )
       ) {
         return;
@@ -548,6 +575,8 @@ browser.runtime.onConnectExternal.addListener(async (port: Runtime.Port) => {
  * @param backup
  */
 async function initialize(backup: Backup | null) {
+  await setStartupPhase(StartupPhase.Initializing);
+
   // Initialize install type early so it's cached for MetaMetrics user traits
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
@@ -575,6 +604,8 @@ async function initialize(backup: Backup | null) {
   const { versionedData: initData } = await loadStateFromPersistence(backup, {
     ...rawFirstTimeState,
   });
+
+  await setStartupPhase(StartupPhase.SettingUpController);
 
   const initState = initData.data;
   if (isManifestV3) {
@@ -665,7 +696,7 @@ async function initialize(backup: Backup | null) {
     getState: initializedController.getState.bind(initializedController),
   })
     .on('navigate', async ({ url, parsed }) => {
-      // don't track deep links that are immediately redirected (like /buy)
+      // Don't track deep links that are immediately redirected.
       if (shouldTrackDeepLinkNavigation(parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }
@@ -816,15 +847,8 @@ export function setupController(
   //
   // User Interface setup
   //
-  const {
-    updateBadge,
-    clearFailedTxBadge,
-    getFailedTxCount,
-    setClientLandingTab,
-  } = createBadgeManager({
-    getController: () =>
-      // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
-      metamaskController as BadgeManagerController,
+  const { updateBadge, clearFailedTxBadge } = createBadgeManager({
+    getController: () => metamaskController as BadgeManagerController,
     browser,
     notificationManager,
     triggerUi,
@@ -871,6 +895,16 @@ export function setupController(
 
       // communication with popup
       metamaskController.isClientOpen = true;
+      // Defensive: Chrome marks any extension-origin port as UI, but only the
+      // four types below record a close. Limit open stamps to those types.
+      if (
+        processName === ENVIRONMENT_TYPE_POPUP ||
+        processName === ENVIRONMENT_TYPE_SIDEPANEL ||
+        processName === ENVIRONMENT_TYPE_NOTIFICATION ||
+        processName === ENVIRONMENT_TYPE_FULLSCREEN
+      ) {
+        recordUiOpen();
+      }
       metamaskController
         .setupTrustedCommunication(
           portStream,
@@ -900,6 +934,10 @@ export function setupController(
           openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          // Only when no MetaMask UI remains open.
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
@@ -920,6 +958,9 @@ export function setupController(
           openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
@@ -930,12 +971,12 @@ export function setupController(
         onStreamFinished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (getFailedTxCount() > 0) {
-            setClientLandingTab(AccountOverviewTabKey.Activity);
-          }
           updateBadge();
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(
             isClientOpen,
             ENVIRONMENT_TYPE_NOTIFICATION,
@@ -956,6 +997,9 @@ export function setupController(
           }
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(
             isClientOpen,
             ENVIRONMENT_TYPE_FULLSCREEN,
@@ -1195,6 +1239,7 @@ async function initBackground(backup: Backup | null) {
     }
 
     log.info('MetaMask initialization complete.');
+    await setStartupPhase(StartupPhase.Initialized);
     resolveInitialization();
   } catch (error) {
     log.error(error);

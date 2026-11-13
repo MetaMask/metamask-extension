@@ -6,6 +6,16 @@
 import type { LegacyBackgroundApiService } from './legacy-background-api-service';
 
 /**
+ * Wait until the current network request policy has been published.
+ *
+ * @returns A promise that resolves after the browser policy is updated.
+ */
+export type LegacyBackgroundApiServiceWaitForNetworkRequestPolicyAction = {
+  type: `LegacyBackgroundApiService:waitForNetworkRequestPolicy`;
+  handler: LegacyBackgroundApiService['waitForNetworkRequestPolicy'];
+};
+
+/**
  * Sets the current currency for the CurrencyRateController and AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
@@ -1141,9 +1151,25 @@ export type LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAc
   };
 
 /**
+ * Sets the user's MetaMetrics participation preference.
+ *
+ * The UI calls this through the background API so consent changes can also
+ * update the extension uninstall URL and tracing behavior.
+ *
+ * @param participateInMetaMetrics - Whether the user wants to participate,
+ * or `null` to reset the consent decision.
+ * @returns The current analytics ID.
+ */
+export type LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction = {
+  type: `LegacyBackgroundApiService:setParticipateInMetaMetrics`;
+  handler: LegacyBackgroundApiService['setParticipateInMetaMetrics'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
+  | LegacyBackgroundApiServiceWaitForNetworkRequestPolicyAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceAddTokenAction
@@ -1236,4 +1262,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceAddPermittedChainsAction
   | LegacyBackgroundApiServiceRemovePermittedChainAction
   | LegacyBackgroundApiServiceSetPermittedChainsAction
-  | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction;
+  | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction
+  | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction;

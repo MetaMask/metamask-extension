@@ -18,6 +18,15 @@ export type OAuthServiceStartOAuthLoginAction = {
 };
 
 /**
+ * Wait for the selected social login path's browser allowances before preload.
+ * The login request sets this promise synchronously before its first await.
+ */
+export type OAuthServiceWaitForOnboardingNetworkPolicyAction = {
+  type: `OAuthService:waitForOnboardingNetworkPolicy`;
+  handler: OAuthService['waitForOnboardingNetworkPolicy'];
+};
+
+/**
  * Get a new refresh token from the Web3Auth Authentication Server.
  *
  * @param options - The options for the get new refresh token.
@@ -63,6 +72,7 @@ export type OAuthServiceGetMarketingConsentAction = {
  */
 export type OAuthServiceMethodActions =
   | OAuthServiceStartOAuthLoginAction
+  | OAuthServiceWaitForOnboardingNetworkPolicyAction
   | OAuthServiceGetNewRefreshTokenAction
   | OAuthServiceRenewRefreshTokenAction
   | OAuthServiceRevokeRefreshTokenAction
