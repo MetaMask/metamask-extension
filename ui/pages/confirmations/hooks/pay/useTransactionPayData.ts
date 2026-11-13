@@ -4,6 +4,7 @@ import { type TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
+  selectTransactionPayFiatPaymentByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayQuoteErrorByTransactionId,
@@ -21,6 +22,10 @@ import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
+}
+
+export function useTransactionPayFiatPayment() {
+  return useTransactionPayData(selectTransactionPayFiatPaymentByTransactionId);
 }
 
 export function useTransactionPayQuoteError() {

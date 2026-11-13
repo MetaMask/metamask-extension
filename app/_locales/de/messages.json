@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics-Daten löschen"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Dadurch werden historische, mit Ihrer Nutzung auf diesem Gerät verbundene MetaMetrics-Daten gelöscht. Ihre Wallet und Ihre Konten bleiben nach dem Löschen dieser Daten unverändert. Dieser Vorgang kann bis zu 30 Tage dauern. Lesen Sie unsere $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Hierdurch werden historische MetaMetrics-Daten in Verbindung mit Ihrer Wallet gelöscht. MetaMetrics enthält anonymisierte Nutzungs- und Diagnosedaten. Ihre Wallet und Ihre Konten bleiben unverändert. Dieser Vorgang kann bis zu 30 Tage dauern. Siehe unsere $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Die Anfrage kann aktuell nicht abgeschlossen werden, da ein Problem mit dem Analytik-System des Servers vorliegt. Versuchen Sie es später erneut."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Wir können diese Daten im Moment nicht löschen"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Löschen nicht möglich"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Wir löschen all Ihre MetaMetrics-Daten. Sind Sie sicher?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics-Daten löschen?"
@@ -5392,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Die Schaltfläche „Verbindungsstatus“ zeigt an, ob die Seite, die Sie besuchen, mit Ihrem aktuell ausgewählten Konto verbunden ist."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Da Sie sich noch nie für MetaMetrics angemeldet haben, gibt es hier keine Daten zu löschen."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 wird auf npm gehostet und $2 ist die einzige Kennung dieses Snaps.",
