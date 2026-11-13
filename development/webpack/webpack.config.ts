@@ -95,14 +95,16 @@ async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
 }
 
 // #region cache
-const cacheBuildDependencies: string[] = [
-  __filename,
-  ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
-    existsSync,
-  ),
-  join(root, 'builds.yml'),
-  browsersListPath,
-];
+const cacheBuildDependencies: string[] = args.cache
+  ? [
+      __filename,
+      ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+        existsSync,
+      ),
+      join(root, 'builds.yml'),
+      browsersListPath,
+    ]
+  : [];
 /**
  * Tracks a lazily imported module as a cache build dependency, as a `require`
  * of the same module would have done.
@@ -110,8 +112,11 @@ const cacheBuildDependencies: string[] = [
  * @param id - The module specifier passed to `import()`.
  */
 function trackBuildDependency(id: string) {
+  if (!args.cache) {
+    return;
+  }
   const path = require.resolve(id);
-  if (args.cache && !cacheBuildDependencies.includes(path)) {
+  if (!cacheBuildDependencies.includes(path)) {
     cacheBuildDependencies.push(path);
   }
 }
