@@ -4,10 +4,12 @@ import {
   type EnrollmentChallenge,
   type VerificationToken,
 } from '@metamask/profile-sync-controller/sdk';
+import { createMfaTracker } from './analytics';
 import {
   MfaFlowError,
   getErrorHandling,
   getFlowErrorCode,
+  isCooldownCountdown,
   isReportable,
 } from './errors';
 import {
@@ -54,8 +56,11 @@ export const createMfaFlow = ({
   passkey,
   now = Date.now,
   reportError,
+  trackEvent,
+  whileLocked = false,
 }: MfaFlowOptions): MfaFlow => {
   const tokenReason = { operation: reason.operation };
+  const tracker = createMfaTracker({ reason, request, trackEvent });
   const completed: MfaMethod[] = [];
   const listeners = new Set<() => void>();
 
@@ -87,7 +92,22 @@ export const createMfaFlow = ({
     if (settled) {
       return;
     }
+    const previous = state;
     state = { ...state, ...next };
+    // Analytics follow what the user sees: a new screen, a new error on it.
+    if (next.step) {
+      tracker.stepViewed(state.step);
+      if (state.step.name === 'failure') {
+        tracker.errorViewed(state.step.code, state.step);
+      }
+    }
+    if (
+      state.error &&
+      state.error !== previous.error &&
+      !isCooldownCountdown(state)
+    ) {
+      tracker.errorViewed(state.error, state.step);
+    }
     listeners.forEach((listener) => listener());
   };
 
@@ -112,7 +132,11 @@ export const createMfaFlow = ({
   };
 
   const rejectWith = (code: MfaFlowErrorCode) =>
-    settle(() => rejectResult(new MfaFlowError(code, [...completed])));
+    settle(() => {
+      const error = new MfaFlowError(code, [...completed]);
+      tracker.ended(error, state);
+      rejectResult(error);
+    });
 
   const fail = (code: MfaFlowErrorCode, canRetry = false, error?: unknown) => {
     if (isReportable(code)) {
@@ -161,7 +185,10 @@ export const createMfaFlow = ({
       toList(request.verifyWith).length > 0;
     const value =
       wantsToken && token ? { credentials, token } : { credentials };
-    settle(() => resolveResult(value));
+    settle(() => {
+      tracker.completed();
+      resolveResult(value);
+    });
   };
 
   /**
@@ -437,10 +464,20 @@ export const createMfaFlow = ({
     isRecovery: boolean,
   ): (() => Promise<void>) | undefined => {
     if (!isRecovery && current?.flowId && state.step.name === 'otp') {
-      if (current.method === 'email_otp') {
+      // Too many wrong codes: the user gets the new code themselves, once the
+      // resend limit allows it, rather than a silent send that may be refused.
+      if (current.method === 'email_otp' && code !== 'too_many_attempts') {
         return async () => {
+          // Clear the previous notice first: the code screen empties the
+          // boxes when `codeResent` changes, so a second expiry must change it
+          // again.
+          setState({ codeResent: undefined });
           await beginCodeChallenge();
           setState({ codeResent: true });
+          // The user may have closed the flow while the code was being sent.
+          if (!settled && state.step.name === 'otp') {
+            tracker.codeResent('auto', state.step);
+          }
         };
       }
       if (current.method === 'totp') {
@@ -682,6 +719,7 @@ export const createMfaFlow = ({
       case 'choose':
         if (step.name === 'picker' && step.options.includes(action.method)) {
           const { purpose } = step;
+          tracker.methodSelected(action.method, step);
           await run(() => startVerification(action.method, purpose));
         }
         return;
@@ -702,6 +740,9 @@ export const createMfaFlow = ({
           step.name === 'otp' &&
           (step.method === 'email_otp' || !step.codeSent)
         ) {
+          if (step.method === 'email_otp') {
+            tracker.codeResent(action.trigger ?? 'user', step);
+          }
           await run(beginCodeChallenge);
         }
         return;
@@ -710,6 +751,13 @@ export const createMfaFlow = ({
           await run(lastOperation);
         }
         return;
+      case 'errorCtaClicked': {
+        const code = step.name === 'failure' ? step.code : state.error;
+        if (code) {
+          tracker.errorCtaClicked(code, action.cta);
+        }
+        return;
+      }
       case 'back':
         // Setup codes return to the setup behind them without replacing the
         // authenticator secret or sending another email code.
@@ -736,11 +784,12 @@ export const createMfaFlow = ({
   };
 
   const start = () => {
+    tracker.started();
     flowStartedAt = now();
     const needsPasskey =
       request.kind === 'enroll'
         ? request.method === 'passkey'
-        : request.methods.includes('passkey');
+        : !request.verifyOnly && request.methods.includes('passkey');
     if (needsPasskey && !passkey) {
       rejectWith('passkey_unsupported');
       return Promise.resolve();
@@ -753,6 +802,7 @@ export const createMfaFlow = ({
 
   return {
     reason,
+    whileLocked,
     result,
     start,
     getState: () => state,

@@ -11,8 +11,9 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { TRON_CHAIN_ID, mockTronFeatureFlags } from '../tron/mocks/common-tron';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { NetworkName } from '../../helpers/network-constants';
 
-const TRON_NETWORK_NAME = 'Tron';
+const TRON_NETWORK_NAME = NetworkName.TRON;
 const TRON_NILE_NAME = 'Tron Nile';
 const TRON_SHASTA_NAME = 'Tron Shasta';
 

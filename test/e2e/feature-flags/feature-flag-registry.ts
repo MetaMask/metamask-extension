@@ -76,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-11-03
+ * Production defaults last synced: 2026-11-10
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -100,7 +100,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   additionalNetworksBlacklist: {
     inProd: true,
     name: 'additionalNetworksBlacklist',
-    productionDefault: [],
+    productionDefault: ['0x32'],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3178,7 +3178,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   enableFiatToggle: {
     inProd: true,
     name: 'enableFiatToggle',
-    productionDefault: false,
+    productionDefault: true,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3273,10 +3273,26 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  extensionUpdatePromptDeprecatedVersion: {
+    inProd: true,
+    name: 'extensionUpdatePromptDeprecatedVersion',
+    productionDefault: '0.0.0',
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   extensionUpdatePromptMinimumVersion: {
     inProd: true,
     name: 'extensionUpdatePromptMinimumVersion',
     productionDefault: '0.0.0',
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  extensionUpdatePromptOnNotification: {
+    inProd: true,
+    name: 'extensionUpdatePromptOnNotification',
+    productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3553,6 +3569,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'moneyEnableActivityDetails',
     productionDefault: true,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  moneyEnableHistoricalVaultShareValuations: {
+    inProd: false,
+    name: 'moneyEnableHistoricalVaultShareValuations',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -4290,6 +4317,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  swapsRebateBannerEnabled: {
+    inProd: true,
+    name: 'swapsRebateBannerEnabled',
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '13.57.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   swapsSWAPS4827AbtestChainValueOrder: {
     inProd: true,
     name: 'swapsSWAPS4827AbtestChainValueOrder',
@@ -4348,14 +4386,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       enabled: true,
       minimumVersion: '13.36.0',
     },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  walletFrameworkRpcFailoverEnabled: {
-    inProd: true,
-    name: 'walletFrameworkRpcFailoverEnabled',
-    productionDefault: true,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },

@@ -17,6 +17,8 @@ export type ReferralLocalizedText = {
   inviteReferralCode: string;
   inviteDecline: string;
   inviteAccept: string;
+  inviteTermsLearnMore: string;
+  inviteTermsUrl: string;
   inviteAcceptedEyebrow: string;
   inviteAcceptedTitle: string;
   inviteAcceptedBody: string;

@@ -28,7 +28,6 @@ import {
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
   BACKGROUND_LIVENESS_METHOD,
@@ -684,7 +683,7 @@ async function initialize(backup: Backup | null) {
     getState: initializedController.getState.bind(initializedController),
   })
     .on('navigate', async ({ url, parsed }) => {
-      // don't track deep links that are immediately redirected (like /buy)
+      // Don't track deep links that are immediately redirected.
       if (shouldTrackDeepLinkNavigation(parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }
@@ -809,15 +808,8 @@ export function setupController(
   //
   // User Interface setup
   //
-  const {
-    updateBadge,
-    clearFailedTxBadge,
-    getFailedTxCount,
-    setClientLandingTab,
-  } = createBadgeManager({
-    getController: () =>
-      // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
-      metamaskController as BadgeManagerController,
+  const { updateBadge, clearFailedTxBadge } = createBadgeManager({
+    getController: () => metamaskController as BadgeManagerController,
     browser,
     notificationManager,
     triggerUi,
@@ -940,9 +932,6 @@ export function setupController(
         onStreamFinished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (getFailedTxCount() > 0) {
-            setClientLandingTab(AccountOverviewTabKey.Activity);
-          }
           updateBadge();
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;

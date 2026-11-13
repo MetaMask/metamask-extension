@@ -6,6 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
+  ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../../helpers/constants/routes';
@@ -259,7 +260,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
+      expect(mockUseNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
     });
   });
 
@@ -478,7 +479,7 @@ describe('useSendQueryParams', () => {
         ),
     },
   ])(
-    'when the loader has left the send screen, handleSubmit shows a toast for a validation error when the loader has left the send screen - $testcase',
+    'when the loader has left the send screen, handleSubmit shows a toast and leaves navigation to the confirmation page - $testcase',
     async ({
       mockImp,
     }: {
@@ -502,12 +503,12 @@ describe('useSendQueryParams', () => {
       await waitFor(() => {
         expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
         expect(toast.error).toHaveBeenCalledWith(GENERIC_TRANSACTION_ERROR);
-        expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       });
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
     },
   );
 
-  it('when the loader has left the send screen, handleSubmit does not show a toast when the user rejects the confirmation', async () => {
+  it('when the loader has left the send screen, handleSubmit does not show a toast or navigate back when the user rejects the confirmation', async () => {
     window.location.hash = '#/confirmation/pending-send';
 
     const mockUpdateNonEVMSubmitError = jest.fn();
@@ -528,9 +529,10 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
-      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+      expect(trackedEventNames()).toStrictEqual(['Send Failed']);
     });
+    expect(mockUpdateNonEVMSubmitError).toHaveBeenLastCalledWith(undefined);
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(PREVIOUS_ROUTE);
     expect(toast.error).not.toHaveBeenCalled();
   });
 
@@ -551,7 +553,7 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
+      expect(mockUseNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
     });
 
     // The Snap emits the post-submit lifecycle events itself, so the client

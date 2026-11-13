@@ -93,3 +93,14 @@ export const applyDefaultStopLossSign = (
     ? `-${normalizedValue}`
     : normalizedValue;
 };
+
+/**
+ * Keeps a calculated trigger price only when the price field can show it: a
+ * positive plain decimal. A price at or below zero, or one too small to write
+ * without an exponent (such as `9.1e-7`), clears the field.
+ *
+ * @param price - A trigger price string from Core's TP/SL calculations.
+ * @returns The price, or `''` when the field cannot show it.
+ */
+export const toTriggerPriceInput = (price: string): string =>
+  /^\d+(?:\.\d+)?$/u.test(price) && Number.parseFloat(price) > 0 ? price : '';
