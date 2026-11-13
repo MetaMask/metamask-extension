@@ -86,6 +86,9 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
       data,
       name: TraceName.StatePersist,
       op: TraceOperation.StateWrite,
+      // The write is debounced, lock-gated and size-measured before this runs,
+      // so the active span here is not what triggered it.
+      root: true,
     },
     () => undefined,
   );

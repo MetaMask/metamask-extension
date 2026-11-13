@@ -3,6 +3,7 @@ import {
   addRampsOrder,
   addRampsPrecreatedOrder,
   getRampsBuyWidgetData,
+  getRampsCountries,
   getRampsOrderFromCallback,
   getRampsPaymentMethods,
   getRampsProviders,
@@ -49,6 +50,7 @@ describe('ramps-controller actions', () => {
     await setRampsSelectedToken('eip155:1/erc20:0x0');
     await setRampsSelectedProvider('transak', { autoSelected: true });
     await setRampsSelectedPaymentMethod('credit_debit_card');
+    await getRampsCountries();
     await getRampsTokens('us-ca');
     await getRampsTokens('us-ca', 'sell');
     await getRampsProviders('us-ca');

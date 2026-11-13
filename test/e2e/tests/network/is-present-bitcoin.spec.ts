@@ -9,8 +9,9 @@ import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import { Driver } from '../../webdriver/driver';
+import { NetworkName } from '../../helpers/network-constants';
 
-const BITCOIN_NETWORK_NAME = 'Bitcoin';
+const BITCOIN_NETWORK_NAME = NetworkName.BITCOIN;
 
 // Anvil is still needed because the extension polls EVM networks even in
 // Bitcoin-only flows.

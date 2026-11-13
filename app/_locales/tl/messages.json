@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Magdagdag ng URL"
   },
-  "addAWallet": {
-    "message": "Magdagdag ng wallet"
-  },
   "addAccount": {
     "message": "Magdagdag ng account"
   },
@@ -3567,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa paggamit mo sa device na ito. Hindi magbabago ang wallet at mga account mo sa kung ano ito ngayon pagkatapos mabura ang data na ito. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang aming $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa iyong wallet. Kabilang sa MetaMetrics ang walang pagkakakilanlan na paggamit at diagnostic data. Hindi magbabago ang wallet at mga account mo. Ang proseso na ito ay maaaring tumagal ng 30 araw. Tingnan ang aming $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3578,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system. Subukan muli mamaya."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Hindi namin matanggal ang data na ito sa ngayon"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Hindi matanggal"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Aalisin na namin ang lahat ng iyong data ng MetaMetrics. Sigurado ka ba?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
@@ -4151,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "Kinakailangan ang $1"
-  },
-  "fileImportFail": {
-    "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "I-click para mag-upload o mag-drag and drop"
@@ -5399,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Makikita sa button ng katayuan ng koneksyon kung nakakonekta ang website na binibisita mo sa kasalukuyan mong napiling account."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Dahil hindi mo kailanman sinubukan ang MetaMetrics, walang data na tatanggalin dito."
   },
   "metadataModalSourceTooltip": {
     "message": "Ang $1 ay naka-host sa npm at $2 ang natatanging pagkakailanlan ng Snap.",
@@ -7385,10 +7365,6 @@
   "paste": {
     "message": "I-paste"
   },
-  "pastePrivateKey": {
-    "message": "I-paste ang string ng iyong pribadong key dito:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Magbayad gamit ang",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8967,10 +8943,6 @@
   "privateKeyHidden": {
     "message": "Ang pribadong key ay nakatago",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Ipakita/Itago ang pribadong key input",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Ang pribadong key ay na ito ay ipinapakita",
@@ -12676,9 +12648,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
-  },
-  "usedByClients": {
-    "message": "Ginagamit ng iba't ibang kliyente"
   },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"

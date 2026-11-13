@@ -1422,18 +1422,8 @@
   "deleteMetaMetricsData": {
     "message": "Scrios sonraí MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Scriosfaidh sé seo sonraí stairiúla MetaMetrics a bhaineann le d'úsáid ar an ngléas seo. Fanfaidh do sparán agus do chuntais díreach mar atá siad anois tar éis na sonraí seo a scriosadh. Féadfaidh an próiseas seo suas le 30 lá a thógáil. Féach ar ár $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Ní féidir an t-iarratas seo a chomhlánú faoi láthair mar gheall ar fhadhb le freastalaí an chórais anailíse, déan iarracht arís ar ball."
-  },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Ní féidir linn na sonraí seo a scriosadh faoi láthair"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Táimid ar tí do chuid sonraí MetaMetrics go léir a bhaint. An bhfuil tú cinnte?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Scrios sonraí MetaMetrics?"
@@ -1895,10 +1885,6 @@
   },
   "fast": {
     "message": "Tapa"
-  },
-  "fileImportFail": {
-    "message": "Nach bhfuil allmhairiú comhaid ag obair? Cliceáil anseo!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Cliceáil chun uaslódáil nó tarraing agus scaoil"
@@ -2638,9 +2624,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Taispeánann an cnaipe stádais nasc an bhfuil an suíomh Gréasáin atá á thabhairt agat ceangailte leis an gcuntas atá roghnaithe agat faoi láthair."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Ós rud é nár roghnaigh tú MetaMetrics a úsáid riamh, níl aon sonraí le scriosadh anseo."
   },
   "metadataModalSourceTooltip": {
     "message": "Tá $1 á óstáil ar npm agus is é $2 aitheantóir uathúil an Snap seo.",
@@ -3456,10 +3439,6 @@
   "paste": {
     "message": "Greamaigh"
   },
-  "pastePrivateKey": {
-    "message": "Cuir isteach do shreang eochrach phríobháideach anseo:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "Ar feitheamh"
   },
@@ -3817,10 +3796,6 @@
   "privateKeyHidden": {
     "message": "Tá an eochair phríobháideach i bhfolach",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Taispeáin/Folaigh an t-ionchur eochrach príobháideach",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Tá an eochair phríobháideach seo á taispeáint",
@@ -5752,9 +5727,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Baineann cumarsáid le freastalaithe tríú páirtí chun íomhánna na gcomharthaí a aisghabháil le taispeáint uathoibríoch comharthaí a sheoltar chuig do chuntas. Beidh rochtain ag na freastalaithe sin ar do sheoladh IP."
-  },
-  "usedByClients": {
-    "message": "Úsáidte ag réimse cliant éagsúil"
   },
   "userOpContractDeployError": {
     "message": "Ní thacaítear le himscaradh conartha ó chuntas conartha cliste"

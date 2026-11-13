@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "Adicionar um URL"
   },
-  "addAWallet": {
-    "message": "Adicionar uma carteira"
-  },
   "addAccount": {
     "message": "Adicionar conta"
   },
@@ -3567,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Excluir dados do MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Isso excluirá dados históricos do MetaMetrics associados ao seu uso neste dispositivo. Sua carteira e contas continuarão exatamente como estão agora após a exclusão desses dados. Esse processo pode levar até 30 dias. Veja nossa $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Isso excluirá os dados históricos do MetaMetrics associados à sua carteira. O MetaMetrics inclui dados de uso e de diagnóstico anonimizados. Sua carteira e suas contas permanecerão as mesmas. Esse processo pode levar até 30 dias. Consulte nossa $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3578,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Não é possível concluir essa solicitação no momento devido a um problema no servidor do sistema de análise. Tente novamente mais tarde."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Não podemos excluir esses dados no momento"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Não foi possível excluir"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Estamos prestes a remover todos os seus dados do MetaMetrics. Tem certeza?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Excluir dados do MetaMetrics?"
@@ -4151,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "$1 é obrigatório"
-  },
-  "fileImportFail": {
-    "message": "A importação de arquivo não está funcionando? Clique aqui!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Clique para upload ou arraste e solte"
@@ -5399,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "O botão de status da conexão mostra se o website que você está visitando está conectado à conta selecionada no momento."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Visto que você nunca aceitou participar do MetaMetrics, não há dados para excluir aqui."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 está hospedado no npm e $2 é o identificador específico deste Snap.",
@@ -7385,10 +7365,6 @@
   "paste": {
     "message": "Colar"
   },
-  "pastePrivateKey": {
-    "message": "Cole a string da sua chave privada aqui:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Pagar com",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8967,10 +8943,6 @@
   "privateKeyHidden": {
     "message": "A chave privada está oculta",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Exibir/ocultar a inserção da chave privada",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Esta chave privada está sendo exibida",
@@ -12676,9 +12648,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "A exibição automática de tokens enviados para a sua conta envolve a comunicação com servidores de terceiros para buscar as imagens dos tokens. Esses servidores terão acesso ao seu endereço IP."
-  },
-  "usedByClients": {
-    "message": "Usado por diversos clientes diferentes"
   },
   "userOpContractDeployError": {
     "message": "A implementação do contrato a partir de uma conta de contrato inteligente não é suportada"
