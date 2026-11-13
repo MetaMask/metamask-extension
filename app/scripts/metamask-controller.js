@@ -3164,7 +3164,7 @@ export default class MetamaskController extends EventEmitter {
     this.assetsController
       .addCustomAsset(accountId, assetId, pendingMetadata)
       .catch((error) => {
-        captureException(error);
+        captureException(error, { extra: { assetId, chainId } });
       });
   };
 
