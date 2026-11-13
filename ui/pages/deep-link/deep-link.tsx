@@ -17,7 +17,10 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { withReferralCode } from '#shared/lib/deep-links/referral';
+import {
+  getReferralCode,
+  withReferralCode,
+} from '#shared/lib/deep-links/referral';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -25,6 +28,7 @@ import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
+import { selectIsMoneyReferralInviteEnabled } from '../../ducks/rewards-money/selectors';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
@@ -58,6 +62,7 @@ const { getExtensionURL } = globalThis.platform;
  * @param t - The translation function.
  * @param abortController
  * @param setPageNotFoundError - The function to call when the destination is missing.
+ * @param referralInviteEnabled - Whether local gates allow a Money referral invite.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -70,6 +75,7 @@ async function updateStateFromUrl(
   t: TranslateFunction,
   abortController: AbortController,
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
+  referralInviteEnabled: boolean,
 ) {
   try {
     const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
@@ -96,15 +102,26 @@ async function updateStateFromUrl(
 
       const signed = parsed.signature === VALID;
       const continueMessage = t('deepLink_ContinueDescription', [t(title)]);
-      const description = signed
-        ? continueMessage
-        : t('deepLink_ThirdPartyDescription', [continueMessage]);
-      setDescription(description);
+      // Matches the links that open the referral invite. Account eligibility
+      // needs a server read, so it stays with the invite sheet: an
+      // already-referred user may still see the referral copy.
+      const opensReferralInvite =
+        referralInviteEnabled &&
+        !('redirectTo' in destination) &&
+        getReferralCode(url.searchParams) !== null;
+
+      if (signed) {
+        setTitle(t('deepLink_RedirectingToMetaMask'));
+        setDescription(continueMessage);
+      } else if (opensReferralInvite) {
+        setTitle(t('deepLink_ReferralTitle'));
+        setDescription(t('deepLink_ReferralDescription'));
+      } else {
+        setTitle(t('deepLink_Caution'));
+        setDescription(t('deepLink_ThirdPartyDescription', [continueMessage]));
+      }
       setExtraDescription(null);
       setRoute({ href, signed });
-      setTitle(
-        signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
-      );
       setCta(t('deepLink_Continue', [t(title)]));
       setPageNotFoundError(false);
     } else {
@@ -152,6 +169,7 @@ const DeepLinkInterstitial = () => {
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
   );
+  const referralInviteEnabled = useSelector(selectIsMoneyReferralInviteEnabled);
 
   const [description, setDescription] = useState<string | null>(null);
   const [pageNotFoundError, setPageNotFoundError] = useState<boolean>(false);
@@ -240,6 +258,7 @@ const DeepLinkInterstitial = () => {
         t,
         abortController,
         setPageNotFoundError,
+        referralInviteEnabled,
       );
     };
 
@@ -247,7 +266,7 @@ const DeepLinkInterstitial = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError]);
+  }, [location.search, t, setPageNotFoundError, referralInviteEnabled]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);
