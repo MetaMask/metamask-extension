@@ -5,7 +5,7 @@ import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { consumeReferralCode } from '#ui/helpers/utils/consume-referral-code';
-import { setPendingReferralCode } from '#ui/ducks/rewards-money';
+import { setPendingReferral } from '#ui/ducks/rewards-money';
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 import { getEnvironmentType } from '../shared/lib/environment-type';
@@ -147,7 +147,7 @@ export async function launchMetamaskUi(opts) {
  * @returns redux store
  */
 export async function setupInitialStore(metamaskState, activeTab) {
-  const referralCode = consumeReferralCode();
+  const pendingReferral = consumeReferralCode();
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -213,7 +213,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
   }
 
   const store = configureStore(draftInitialState);
-  store.dispatch(setPendingReferralCode(referralCode));
+  store.dispatch(setPendingReferral(pendingReferral));
   reduxStore.resolve(store);
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);

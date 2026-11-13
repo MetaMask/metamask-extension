@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import type { ReferralEntryType } from '#shared/types/rewards-money';
 import {
   DeferredDeepLink,
   DeferredDeepLinkRoute,
@@ -7,6 +8,7 @@ import {
 import { parse } from './parse';
 import { DEEP_LINK_ROUTE } from './routes/route';
 import { shouldShowDeepLinkInterstitial } from './security-policy';
+import { REFERRAL_ENTRY_TYPE_PARAM } from './referral';
 
 /**
  * Builds the interstitial page route with the given URL path and query.
@@ -14,10 +16,17 @@ import { shouldShowDeepLinkInterstitial } from './security-policy';
  * unsigned or invalidly signed deferred deep links.
  *
  * @param urlPathAndQuery - The URL path and query to pass to the interstitial page.
+ * @param entryType - Where a referral code came from, when this is a deferred link.
  * @returns The interstitial page route (e.g., /link?u=/buy?address=0x...)
  */
-export function buildInterstitialRoute(urlPathAndQuery: string): string {
+export function buildInterstitialRoute(
+  urlPathAndQuery: string,
+  entryType?: ReferralEntryType,
+): string {
   const params = new URLSearchParams({ u: urlPathAndQuery });
+  if (entryType === 'restored_context') {
+    params.set(REFERRAL_ENTRY_TYPE_PARAM, entryType);
+  }
   return `${DEEP_LINK_ROUTE}?${params.toString()}`;
 }
 

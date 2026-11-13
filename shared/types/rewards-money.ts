@@ -1,3 +1,15 @@
+/**
+ * Where a pending Money referral code came from: a link the user opened
+ * directly, or a deferred link restored after install or onboarding.
+ */
+export type ReferralEntryType = 'deeplink' | 'restored_context';
+
+/** A referral code waiting to be offered, with its analytics origin. */
+export type PendingReferral = {
+  code: string;
+  entryType: ReferralEntryType;
+};
+
 /** A relationship the caller holds. An empty `roles` list means none of these. */
 export type ReferralRole =
   | 'REFERRER'

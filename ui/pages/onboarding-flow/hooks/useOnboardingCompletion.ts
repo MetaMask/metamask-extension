@@ -4,7 +4,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { getReferralCode } from '#shared/lib/deep-links/referral';
-import { setPendingReferralCode } from '#ui/ducks/rewards-money';
+import { setPendingReferral } from '#ui/ducks/rewards-money';
 import {
   getOnboardingRedirect,
   setOnboardingRedirect,
@@ -117,7 +117,12 @@ export function useOnboardingCompletion() {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
         ) {
-          dispatch(setPendingReferralCode(getReferralCode(url.searchParams)));
+          const code = getReferralCode(url.searchParams);
+          dispatch(
+            setPendingReferral(
+              code ? { code, entryType: 'restored_context' } : null,
+            ),
+          );
         }
         await trackEvent(
           createEvent({
@@ -151,7 +156,10 @@ export function useOnboardingCompletion() {
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Interstitial
         ) {
           navigate(
-            buildInterstitialRoute(deferredDeepLinkResult.urlPathAndQuery),
+            buildInterstitialRoute(
+              deferredDeepLinkResult.urlPathAndQuery,
+              'restored_context',
+            ),
           );
         }
       } else if (!completedWithSidePanelFlow) {

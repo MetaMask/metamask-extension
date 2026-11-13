@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -24,7 +31,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import type { ReferralLocalizedText } from '../../../../../shared/types/rewards-money';
+import type {
+  ReferralEntryType,
+  ReferralLocalizedText,
+} from '../../../../../shared/types/rewards-money';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
@@ -87,6 +97,7 @@ const referralCodeInputProps = {
 
 type AcceptInviteSheetProps = {
   initialCode: string;
+  entryType: ReferralEntryType;
   onClose: () => void;
 };
 
@@ -94,6 +105,7 @@ type ReferralInteraction = 'viewed' | 'accepted' | 'declined' | 'dismissed';
 
 const AcceptInviteSheetContent = ({
   initialCode,
+  entryType,
   onClose,
 }: AcceptInviteSheetProps) => {
   const titleId = useId();
@@ -162,15 +174,22 @@ const AcceptInviteSheetContent = ({
   const showSheet =
     isOfferOnScreen || (failedRead && geoSettled && !shouldDismissForGeo);
 
+  const referralProperties = useMemo(() => {
+    const properties: Record<string, string> = {};
+    properties.entry_type = entryType;
+    if (code) {
+      properties.referral_code = code;
+    }
+    return properties;
+  }, [code, entryType]);
+
   const trackInteraction = useCallback(
     (interactionType: ReferralInteraction) => {
       const properties: Record<string, string> = {
+        ...referralProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
         interaction_type: interactionType,
       };
-      if (code) {
-        properties.referral_code = code;
-      }
       trackEvent(
         createEventBuilder(
           MetaMetricsEventName.RewardsMoneyReferralOfferInteracted,
@@ -180,7 +199,7 @@ const AcceptInviteSheetContent = ({
           .build(),
       ).catch(() => undefined);
     },
-    [code, createEventBuilder, trackEvent],
+    [createEventBuilder, referralProperties, trackEvent],
   );
 
   const trackResponded = useCallback(
@@ -193,12 +212,10 @@ const AcceptInviteSheetContent = ({
         return;
       }
       const properties: Record<string, string> = {
+        ...referralProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
         interaction_type: interactionType,
       };
-      if (code) {
-        properties.referral_code = code;
-      }
       if (
         refusalReason &&
         (interactionType === 'declined' || interactionType === 'dismissed')
@@ -214,7 +231,7 @@ const AcceptInviteSheetContent = ({
           .build(),
       ).catch(() => undefined);
     },
-    [code, createEventBuilder, refusalReason, trackEvent],
+    [createEventBuilder, referralProperties, refusalReason, trackEvent],
   );
 
   const trackRefused = useCallback(
@@ -223,14 +240,12 @@ const AcceptInviteSheetContent = ({
         return;
       }
       const properties: Record<string, string> = {
+        ...referralProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
         interaction_type: 'refused',
         // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
         refusal_reason: reason,
       };
-      if (code) {
-        properties.referral_code = code;
-      }
       trackEvent(
         createEventBuilder(
           MetaMetricsEventName.RewardsMoneyReferralOfferInteracted,
@@ -240,7 +255,7 @@ const AcceptInviteSheetContent = ({
           .build(),
       ).catch(() => undefined);
     },
-    [code, createEventBuilder, trackEvent],
+    [createEventBuilder, referralProperties, trackEvent],
   );
 
   useEffect(() => {
@@ -418,10 +433,12 @@ const AcceptInviteSheetContent = ({
  *
  * @param props - The code from the home query and the close handler.
  * @param props.initialCode - Prefill from `ref`.
+ * @param props.entryType - Where the code came from.
  * @param props.onClose - Unmounts the sheet.
  */
 export function AcceptInviteSheet({
   initialCode,
+  entryType,
   onClose,
 }: AcceptInviteSheetProps) {
   return (
@@ -429,7 +446,11 @@ export function AcceptInviteSheet({
       path="rewards-money-accept-invite"
       capabilities={REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES}
     >
-      <AcceptInviteSheetContent initialCode={initialCode} onClose={onClose} />
+      <AcceptInviteSheetContent
+        initialCode={initialCode}
+        entryType={entryType}
+        onClose={onClose}
+      />
     </RouteMessengerProvider>
   );
 }
