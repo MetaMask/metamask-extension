@@ -411,8 +411,11 @@ export function useMoneyActivityValuations({
     for (const entry of fetchedEntries) {
       map.set(getVaultShareValuationCacheIdentity(entry), entry);
     }
+    for (const entry of valuationState.entries) {
+      map.set(getVaultShareValuationCacheIdentity(entry), entry);
+    }
     return map;
-  }, [cache.entries, fetchedEntries]);
+  }, [cache.entries, fetchedEntries, valuationState.entries]);
 
   const valuationFetchedByIdentity = useMemo(() => {
     const map = new Map<string, boolean>();
