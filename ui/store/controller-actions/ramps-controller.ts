@@ -47,7 +47,7 @@ export async function setRampsSelectedPaymentMethod(
 }
 
 export function getRampsCountries(): Promise<Country[]> {
-  return submitRequestToBackground('getRampsCountries');
+  return submitRequestToBackground('RampsController:getCountries');
 }
 
 export async function getRampsTokens(

@@ -898,7 +898,7 @@ describe('useRampsNavigation goToBuy', () => {
     // Countries are not persisted, so a first buy can land before the
     // controller has anything to resolve the geolocation against.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsCountries = () => [region.country];
+    backgroundHandlers['RampsController:getCountries'] = () => [region.country];
     backgroundHandlers['RampsController:setUserRegion'] = () => region;
     backgroundHandlers['RampsController:getTokens'] = () => ({
       topTokens: [],
@@ -917,7 +917,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe('native');
     expect(mockBackground.mock.calls.map(([method]) => method)).toStrictEqual([
       'GeolocationController:getGeolocation',
-      'getRampsCountries',
+      'RampsController:getCountries',
       'RampsController:setUserRegion',
       'RampsController:getTokens',
       'RampsController:setSelectedToken',
@@ -934,7 +934,9 @@ describe('useRampsNavigation goToBuy', () => {
       isoCode: 'FR',
       supported: { buy: false },
     } as Country;
-    backgroundHandlers.getRampsCountries = () => [unsupportedCountry];
+    backgroundHandlers['RampsController:getCountries'] = () => [
+      unsupportedCountry,
+    ];
     backgroundHandlers['RampsController:setUserRegion'] = () => ({
       country: unsupportedCountry,
       state: null,
@@ -966,7 +968,7 @@ describe('useRampsNavigation goToBuy', () => {
   it('cold fetch whose countries fetch fails → skips the fetch and shows RAMPS_UNSUPPORTED', async () => {
     // Without countries, seeding fails; preselect fails closed.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsCountries = () => {
+    backgroundHandlers['RampsController:getCountries'] = () => {
       throw new Error('network down');
     };
     backgroundHandlers['RampsController:setSelectedToken'] = () => {
