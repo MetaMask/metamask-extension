@@ -94,16 +94,9 @@ export function BasicFunctionalityMigrationModal() {
             </Text>
           </Box>
         </ModalHeader>
-        <Box
-          marginHorizontal={4}
-          marginBottom={3}
-          flexDirection={BoxFlexDirection.Column}
-          gap={4}
-        >
+        <Box marginHorizontal={4} marginBottom={3}>
           <Text variant={TextVariant.BodyMd}>
-            {t('basicFunctionalityMigrationSocialModalBody1')}
-          </Text>
-          <Text variant={TextVariant.BodyMd}>
+            {t('basicFunctionalityMigrationSocialModalBody1')}{' '}
             {t('basicFunctionalityMigrationSocialModalBody2', [
               <TextButton
                 asChild
@@ -147,7 +140,7 @@ export function BasicFunctionalityMigrationModal() {
             }}
             data-testid="basic-functionality-migration-modal-accept"
           >
-            {t('acceptAndClose')}
+            {t('continue')}
           </Button>
         </ModalFooter>
       </ModalContent>

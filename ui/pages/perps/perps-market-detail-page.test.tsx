@@ -15,8 +15,10 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   PERPS_ACTIVITY_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
@@ -51,6 +53,7 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -259,6 +262,14 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockPerpsTrack = jest.fn();
+const mockAboutRef = jest.fn();
+const mockUsePerpsMarketAboutTracking = jest.fn(
+  ({ description }: { description?: string; isPageRendered?: boolean }) => ({
+    hasDescription: Boolean(description?.trim()),
+    aboutRef: mockAboutRef,
+  }),
+);
 // Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
 // properties the page constructs.
 const mockPerpsScreenViewedOptions: {
@@ -275,8 +286,12 @@ jest.mock('../../hooks/perps', () => ({
       mockPerpsScreenViewedOptions.push(options);
       return undefined;
     }
-    return { track: jest.fn() };
+    return { track: mockPerpsTrack };
   },
+  usePerpsMarketAboutTracking: (options: {
+    description?: string;
+    isPageRendered?: boolean;
+  }) => mockUsePerpsMarketAboutTracking(options),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
@@ -311,10 +326,16 @@ jest.mock(
   }),
 );
 
-const mockLivePositions = jest.fn(() => ({
-  positions: mockPositions,
-  isInitialLoading: false,
-}));
+const mockLivePositions = jest.fn(
+  (): {
+    positions: typeof mockPositions;
+    isInitialLoading: boolean;
+    isSeeded?: boolean;
+  } => ({
+    positions: mockPositions,
+    isInitialLoading: false,
+  }),
+);
 const mockLiveMarketData = jest.fn(() => ({
   markets: [...mockCryptoMarkets, ...mockHip3Markets],
   isInitialLoading: false,
@@ -1232,10 +1253,9 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        { pathname: '/', search: 'tab=perps' },
-        { replace: true },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
+        replace: true,
+      });
 
       Object.defineProperty(window.history, 'length', {
         value: originalLength,
@@ -1320,7 +1340,7 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(chart);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetVisibleCandleCount',
+        'PerpsController:setVisibleCandleCount',
         [75],
       );
     });
@@ -1460,6 +1480,80 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText(messages.perps24hVolume.message)).toBeInTheDocument();
     });
 
+    it('displays the About section between Stats and Recent Activity', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH'
+            ? { ...market, description: 'Ethereum market description.' }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState(true));
+      const { getByTestId, getByText } = await renderPage(store);
+
+      const statsHeader = getByTestId('perps-stats-section-header');
+      const aboutSection = getByTestId('perps-market-about-section');
+      const recentActivityHeader = getByText(
+        messages.perpsRecentActivity.message,
+      );
+
+      expect(statsHeader.compareDocumentPosition(aboutSection)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(aboutSection.compareDocumentPosition(recentActivityHeader)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(mockUsePerpsMarketAboutTracking).toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: 'ETH',
+          description: 'Ethereum market description.',
+          isPageRendered: true,
+        }),
+      );
+    });
+
+    it('reattaches the about view observer when navigating between markets with descriptions', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH' || market.symbol === 'BTC'
+            ? { ...market, description: `${market.symbol} market description.` }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+      const { rerender } = await renderPage(mockStore(createMockState(true)));
+      const initialNode = mockAboutRef.mock.calls.findLast(
+        ([node]) => node instanceof HTMLElement,
+      )?.[0];
+
+      expect(initialNode).toBeInstanceOf(HTMLElement);
+
+      mockAboutRef.mockClear();
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      await act(async () => {
+        rerender(<PerpsMarketDetailPage />);
+      });
+
+      expect(mockAboutRef).toHaveBeenCalledWith(null);
+      const nextNode = mockAboutRef.mock.calls.findLast(
+        ([node]) => node instanceof HTMLElement,
+      )?.[0];
+      expect(nextNode).toBeInstanceOf(HTMLElement);
+      expect(nextNode).not.toBe(initialNode);
+    });
+
+    it('does not render the About section without a description', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { queryByTestId } = await renderPage(store);
+
+      expect(
+        queryByTestId('perps-market-about-section'),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays recent activity section', async () => {
       const store = mockStore(createMockState(true));
 
@@ -1555,6 +1649,17 @@ describe('PerpsMarketDetailPage', () => {
       const marginMenu = screen.getByTestId('perps-margin-menu');
       expect(marginMenu).toBeInTheDocument();
       expect(marginMenu.parentElement).toBe(document.body);
+      expect(mockPerpsTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'button_clicked',
+          button_clicked: 'margin',
+          button_location: 'asset_details',
+        }),
+      );
+      mockPerpsTrack.mock.calls.forEach(([, properties]) => {
+        expect(properties).not.toHaveProperty('button_type');
+      });
       expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();
@@ -1814,7 +1919,7 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
+        'PreferencesController:setPreference',
         ['perpsSelectedCandlePeriod', '30m'],
       );
     });
@@ -1827,14 +1932,14 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-candle-period-15m'));
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
+        'PreferencesController:setPreference',
         ['perpsSelectedCandlePeriod', '15m'],
       );
     });
 
     it('updates chart even if preference save fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'setPreference') {
+        if (method === 'PreferencesController:setPreference') {
           return Promise.reject(new Error('save failed'));
         }
         return Promise.resolve({ success: true });
@@ -1907,6 +2012,26 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByText(messages.perpsDisclaimer.message),
       ).toBeInTheDocument();
+    });
+
+    it('disables TP/SL and close controls while positions are a seeded snapshot', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+        isSeeded: true,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-close-cta-button')).toBeDisabled();
+      expect(screen.getByTestId('perps-modify-cta-button')).toBeDisabled();
+      const autoCloseRow = screen.getByTestId('perps-auto-close-row');
+      expect(autoCloseRow).toHaveAttribute('aria-disabled', 'true');
+      fireEvent.click(autoCloseRow);
+      expect(
+        screen.queryByText(messages.perpsTakeProfit.message),
+      ).not.toBeInTheDocument();
     });
 
     it('opens TP/SL modal when Auto Close row is clicked', async () => {
@@ -2199,6 +2324,35 @@ describe('PerpsMarketDetailPage', () => {
           replace: true,
         }),
       );
+    });
+
+    it('does not mark About as rendered when cached metadata exists but perps is unavailable', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH'
+            ? { ...market, description: 'Ethereum market description.' }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+
+      await renderPage(mockStore(createMockState(false)));
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: '/',
+          replace: true,
+        }),
+      );
+      expect(mockUsePerpsMarketAboutTracking).toHaveBeenCalledWith(
+        expect.objectContaining({
+          description: 'Ethereum market description.',
+          isPageRendered: false,
+        }),
+      );
+      expect(
+        screen.queryByTestId('perps-market-about-section'),
+      ).not.toBeInTheDocument();
     });
   });
 

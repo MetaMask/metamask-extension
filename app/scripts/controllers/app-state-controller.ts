@@ -59,6 +59,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { recordUiInteraction } from '../../../shared/lib/telemetry/last-activity';
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
@@ -150,6 +151,8 @@ export type AppStateControllerState = {
   perpsTabBadgeSeen: boolean;
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
+  moneyEarnBannerDismissedTokenKeys: string[];
+  moneyFtueSeen: boolean;
   showShieldEntryModalOnce: boolean | null;
   /**
    * The pending redirect route to be applied after the default page is loaded.
@@ -193,6 +196,10 @@ export type AppStateControllerState = {
    * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
   passkeyAutoUnlockSuppressed: boolean;
+  /**
+   * Timestamp when the legacy passkey PRF migration reminder was last shown.
+   */
+  lastShownPrfMigrationReminderAt: number | null;
 
   /**
    * The entry point that initiated the last Perps deposit flow (e.g.
@@ -324,6 +331,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   perpsTabBadgeSeen: false,
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
+  moneyEarnBannerDismissedTokenKeys: [],
+  moneyFtueSeen: false,
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
   lastVisitedRoute: null,
@@ -333,6 +342,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  lastShownPrfMigrationReminderAt: null,
   lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
 });
@@ -626,6 +636,18 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  moneyEarnBannerDismissedTokenKeys: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  moneyFtueSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   showShieldEntryModalOnce: {
     includeInStateLogs: true,
     persist: true,
@@ -698,6 +720,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  lastShownPrfMigrationReminderAt: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   deferredDeepLink: {
     includeInStateLogs: false,
     persist: true,
@@ -714,6 +742,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
 
 const MESSENGER_EXPOSED_METHODS = [
   'addAddressSecurityAlertResponse',
+  'addMoneyEarnBannerDismissedTokenKey',
   'addMusdConversionDismissedCtaKey',
   'addPollingToken',
   'addSignatureSecurityAlertResponse',
@@ -730,6 +759,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSignatureSecurityAlertResponse',
   'getThrottledOriginState',
   'getUnlockPromise',
+  'recordUiInteraction',
   'removeDeferredDeepLink',
   'removePollingToken',
   'removeSlide',
@@ -753,12 +783,14 @@ const MESSENGER_EXPOSED_METHODS = [
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
   'setLastVisitedRoute',
+  'setMoneyFtueSeen',
   'setMusdConversionEducationSeen',
   'setNewPrivacyPolicyToastClickedOrClosed',
   'setNewPrivacyPolicyToastShownDate',
   'setOnboardingDate',
   'setOutdatedBrowserWarningLastShown',
   'setPasskeyAutoUnlockSuppressed',
+  'setLastShownPrfMigrationReminderAt',
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
   'setPendingShieldCohort',
@@ -963,6 +995,17 @@ export class AppStateController extends BaseController<
     });
   }
 
+  /**
+   * Records when the legacy passkey PRF migration reminder was last shown.
+   *
+   * @param lastShown - Timestamp when the reminder was shown.
+   */
+  setLastShownPrfMigrationReminderAt(lastShown: number): void {
+    this.update((state) => {
+      state.lastShownPrfMigrationReminderAt = lastShown;
+    });
+  }
+
   setNewPrivacyPolicyToastClickedOrClosed(): void {
     this.update((state) => {
       state.newPrivacyPolicyToastClickedOrClosed = true;
@@ -1124,6 +1167,13 @@ export class AppStateController extends BaseController<
    */
   setLastActiveTime(): void {
     this.#resetTimer();
+  }
+
+  /**
+   * Records a click or keypress inside a MetaMask UI for state-write telemetry.
+   */
+  recordUiInteraction(): void {
+    recordUiInteraction();
   }
 
   /**
@@ -1352,6 +1402,18 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Sets whether the Money account first-time-user-experience (FTUE) splash
+   * has been seen.
+   *
+   * @param value - Whether the Money FTUE splash has been seen
+   */
+  setMoneyFtueSeen(value: boolean): void {
+    this.update((state) => {
+      state.moneyFtueSeen = value;
+    });
+  }
+
+  /**
    * Sets whether the mUSD conversion education screen has been seen.
    *
    * @param value - Whether the education screen has been seen
@@ -1372,6 +1434,21 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       if (!state.musdConversionDismissedCtaKeys.includes(key)) {
         state.musdConversionDismissedCtaKeys.push(key);
+      }
+    });
+  }
+
+  /**
+   * Adds a token whose Money earn banner on token details was dismissed, so
+   * the banner stays hidden for it.
+   *
+   * @param key - Key in `chainId:address` format, both lowercased (e.g.
+   * "0x1:0xa0b86991...").
+   */
+  addMoneyEarnBannerDismissedTokenKey(key: string): void {
+    this.update((state) => {
+      if (!state.moneyEarnBannerDismissedTokenKeys.includes(key)) {
+        state.moneyEarnBannerDismissedTokenKeys.push(key);
       }
     });
   }

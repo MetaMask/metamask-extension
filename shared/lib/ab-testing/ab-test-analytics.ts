@@ -1,6 +1,5 @@
 import type { Json } from '@metamask/utils';
 
-import { BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING } from './configs/bottom-nav-bar';
 import { DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING } from './configs/defi-referral-ui';
 import {
   createActiveABTestAssignment,
@@ -17,7 +16,6 @@ export type ABTestAnalyticsMapping = {
 
 export const AB_TEST_ANALYTICS_MAPPINGS: ABTestAnalyticsMapping[] = [
   DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING,
-  BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING,
 ];
 export function clearABTestAnalyticsMappings(): void {
   AB_TEST_ANALYTICS_MAPPINGS.length = 0;

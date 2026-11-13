@@ -1,20 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
   ButtonIconSize,
-  FontWeight,
   IconName,
-  Text,
-  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 import {
-  PREPARE_SWAP_ROUTE,
-  PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  PREPARE_SWAP_ASSETS_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
@@ -32,7 +30,7 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { useBottomNavBar } from '../../hooks/useBottomNavBar';
+import { resetBridgeController } from '../../ducks/bridge/actions';
 import { getFromChain } from '../../ducks/bridge/selectors';
 import {
   startSwapViewLoadTrace,
@@ -43,6 +41,7 @@ import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBrid
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
@@ -57,12 +56,18 @@ const CrossChainSwap = () => {
 
   useBridging();
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { key: locationKey, state: locationState } = useLocation();
   const {
     navigateToDefaultRoute,
     search,
     swapViewTraceId,
     swapViewPrefilledAmount,
   } = useBridgeNavigation();
+  const hasNoInAppHistory =
+    locationKey === 'default' ||
+    (locationState as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
   const [swapViewTrace] = useState(() => {
     if (swapViewTraceId) {
       return {
@@ -142,14 +147,19 @@ const CrossChainSwap = () => {
       clearAllBridgeCacheItems();
     };
   }, [fetchTokens]);
-
-  const showBottomBar = useBottomNavBar();
-
   const handleBack = () => {
-    transitionBack(() => navigateToDefaultRoute());
-  };
+    transitionBack(() => {
+      // Direct open or deep link: leave Swap for Home, or Transaction Shield.
+      if (hasNoInAppHistory) {
+        navigateToDefaultRoute();
+        return;
+      }
 
-  const containerClass = 'flex min-h-full w-full flex-col';
+      // Opened from another page: reset Swap and return to that page.
+      dispatch(resetBridgeController()).catch(() => undefined);
+      navigate(PREVIOUS_ROUTE);
+    });
+  };
 
   const prepareBody = (
     <>
@@ -166,22 +176,7 @@ const CrossChainSwap = () => {
     </>
   );
 
-  const swapHeader = showBottomBar ? (
-    <div className="flex items-center justify-between p-4 gap-4">
-      <Text variant={DsTextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-        {t('swap')}
-      </Text>
-      <ButtonIcon
-        iconName={IconName.Setting}
-        size={ButtonIconSize.Md}
-        ariaLabel={t('settings')}
-        data-testid="bridge__header-settings-button"
-        onClick={() => {
-          setIsSettingsModalOpen(true);
-        }}
-      />
-    </div>
-  ) : (
+  const swapHeader = (
     <Header
       textProps={{ variant: TextVariant.headingSm }}
       startAccessory={
@@ -222,43 +217,26 @@ const CrossChainSwap = () => {
       <Route
         path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
         element={
-          showBottomBar ? (
-            <div className={containerClass}>
-              {swapHeader}
-              {prepareBody}
-            </div>
-          ) : (
-            <Page className="bridge__container">
-              {swapHeader}
-              <Content padding={0}>{prepareBody}</Content>
-            </Page>
-          )
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>{prepareBody}</Content>
+          </Page>
         }
       />
       <Route
         path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
         element={
-          showBottomBar ? (
-            <div className={containerClass}>
-              {swapHeader}
-              <AwaitingSignatures />
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>
+              <Content>
+                <AwaitingSignatures />
+              </Content>
               <Footer>
                 <AwaitingSignaturesCancelButton />
               </Footer>
-            </div>
-          ) : (
-            <Page className="bridge__container">
-              {swapHeader}
-              <Content padding={0}>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </Content>
-            </Page>
-          )
+            </Content>
+          </Page>
         }
       />
     </Routes>

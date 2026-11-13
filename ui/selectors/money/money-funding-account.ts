@@ -1,9 +1,12 @@
 import { createSelector } from 'reselect';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountsState } from '../../../shared/lib/selectors/accounts';
 import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../multichain-accounts/account-tree.types';
 import { EMPTY_OBJECT } from '../shared';
 
 // Returns the accounts map itself, not `Object.values(...)`: a fresh array on
@@ -14,62 +17,149 @@ const getInternalAccountsMap = (
 ): Record<string, InternalAccount> =>
   state.metamask.internalAccounts?.accounts ?? EMPTY_OBJECT;
 
+const getSelectedGroupEvmAccount = (state: MultichainAccountsState) =>
+  getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa);
+
+export type MoneyFundingAccountState = AccountsState & MultichainAccountsState;
+
+function isEvmAccount(
+  account: InternalAccount | null | undefined,
+): account is InternalAccount {
+  return Boolean(account && isEvmAccountType(account.type));
+}
+
 /**
- * Whether an account can fund or receive a Money Account transaction.
+ * Whether an account can fund a Money Account deposit.
  *
- * Money Account deposits and withdrawals are executed as a batch by the Money
- * keyring, and a hardware device cannot sign for that batch — so hardware
- * accounts are not eligible, matching the account picker on the confirmation
- * and `usePayHardwareAccountAlert`.
+ * Hardware accounts are not eligible unless `allowHardware` is set, matching
+ * the account picker on the confirmation and `usePayHardwareAccountAlert`.
+ * QR accounts are never eligible: the funding transactions are signed in the
+ * background and cannot drive the QR scan flow.
  *
  * The Money Account itself is never a candidate: `AccountsController` filters
  * the Money keyring out of `internalAccounts` entirely, because it is owned by
  * `MoneyAccountController` rather than being a real user account.
  *
  * @param account - The account to test.
- * @returns Whether the account is a valid Money Account counterparty.
+ * @param allowHardware - Whether non-QR hardware accounts are eligible.
+ * @returns Whether the account is a valid Money Account funding account.
  */
 function isEligibleMoneyFundingAccount(
-  account: InternalAccount | undefined,
+  account: InternalAccount | null | undefined,
+  allowHardware: boolean,
 ): account is InternalAccount {
-  return Boolean(
-    account && isEvmAccountType(account.type) && !isHardwareAccount(account),
-  );
+  if (!isEvmAccount(account)) {
+    return false;
+  }
+
+  if (!isHardwareAccount(account)) {
+    return true;
+  }
+
+  return allowHardware && account.metadata?.keyring?.type !== KeyringTypes.qr;
 }
 
 /**
- * The account used to fund a Money Account deposit, or to receive a Money
- * Account withdrawal.
+ * Picks the globally selected account, then the selected group's EVM
+ * account, then the first account in keyring order that passes `isEligible`.
  *
- * Prefers the globally selected account, which is what the user expects. When
- * that account is ineligible — most commonly because it is a hardware wallet,
- * which cannot sign the batch — this falls back to the user's first eligible
+ * @param selectedAccount - The globally selected account.
+ * @param groupEvmAccount - The EVM account of the selected account group.
+ * @param accounts - All internal accounts.
+ * @param isEligible - Eligibility check for a candidate.
+ * @returns The first eligible account, if any.
+ */
+function findMoneyCounterpartyAccount(
+  selectedAccount: InternalAccount | undefined,
+  groupEvmAccount: InternalAccount | null,
+  accounts: Record<string, InternalAccount>,
+  isEligible: (account: InternalAccount | null | undefined) => boolean,
+): InternalAccount | undefined {
+  if (selectedAccount && isEligible(selectedAccount)) {
+    return selectedAccount;
+  }
+
+  if (groupEvmAccount && isEligible(groupEvmAccount)) {
+    return groupEvmAccount;
+  }
+
+  return Object.values(accounts).find((account) => isEligible(account));
+}
+
+/**
+ * The account used to fund a Money Account deposit.
+ *
+ * Prefers the globally selected account, which is what the user expects.
+ *
+ * When that account is not EVM, this uses the EVM account of the selected
+ * account group instead. Selecting a non-EVM network in the network filter
+ * switches the globally selected account to that namespace's account (for
+ * example a Solana account), but the group it belongs to still has the EVM
+ * account the user would expect to fund from.
+ *
+ * Falls back — most commonly because the group's account is a hardware
+ * wallet and hardware funding is not allowed — to the user's first eligible
  * EVM account, rather than failing.
  *
- * The fallback reads `internalAccounts.accounts`, which `AccountsController`
- * rebuilds in keyring order, so "first" is the same account the rest of the UI
- * would call first. It deliberately avoids the balance-joined ordered-accounts
- * selector: this runs on entry points that only need an address, and that
- * selector pulls in keyring and balance state those callers do not otherwise
- * depend on.
+ * The final fallback reads `internalAccounts.accounts`, which
+ * `AccountsController` rebuilds in keyring order, so "first" is the same
+ * account the rest of the UI would call first. It deliberately avoids the
+ * balance-joined ordered-accounts selector: this runs on entry points that
+ * only need an address, and that selector pulls in keyring and balance state
+ * those callers do not otherwise depend on.
  *
  * Returns `undefined` only when the user has no eligible account at all (for
- * example, a hardware-only wallet). Callers must treat that as "cannot
- * initiate" rather than substituting an address of their own.
+ * example, a hardware-only wallet without hardware funding). Callers must
+ * treat that as "cannot initiate" rather than substituting an address of
+ * their own.
  *
+ * @param _state - The MetaMask state object.
+ * @param allowHardware - Whether non-QR hardware accounts may be used. Only
+ * Money Account deposits with hardware funding enabled pass `true`.
  * @returns The account to use, or `undefined` when none is eligible.
  */
 export const selectMoneyFundingAccount = createSelector(
   getMaybeSelectedInternalAccount,
+  getSelectedGroupEvmAccount,
+  getInternalAccountsMap,
+  (_state: MoneyFundingAccountState, allowHardware: boolean = false) =>
+    allowHardware,
+  (
+    selectedAccount: InternalAccount | undefined,
+    groupEvmAccount: InternalAccount | null,
+    accounts: Record<string, InternalAccount>,
+    allowHardware: boolean,
+  ): InternalAccount | undefined =>
+    findMoneyCounterpartyAccount(
+      selectedAccount,
+      groupEvmAccount,
+      accounts,
+      (account) => isEligibleMoneyFundingAccount(account, allowHardware),
+    ),
+);
+
+/**
+ * The account that receives a Money Account withdrawal.
+ *
+ * Any EVM account is eligible, hardware (including QR) included: the money
+ * account signs the withdrawal, and the recipient only appears in the
+ * transfer calldata. Resolution order matches `selectMoneyFundingAccount`.
+ *
+ * Returns `undefined` only when the user has no EVM account.
+ */
+export const selectMoneyWithdrawalRecipient = createSelector(
+  getMaybeSelectedInternalAccount,
+  getSelectedGroupEvmAccount,
   getInternalAccountsMap,
   (
     selectedAccount: InternalAccount | undefined,
+    groupEvmAccount: InternalAccount | null,
     accounts: Record<string, InternalAccount>,
-  ): InternalAccount | undefined => {
-    if (isEligibleMoneyFundingAccount(selectedAccount)) {
-      return selectedAccount;
-    }
-
-    return Object.values(accounts).find(isEligibleMoneyFundingAccount);
-  },
+  ): InternalAccount | undefined =>
+    findMoneyCounterpartyAccount(
+      selectedAccount,
+      groupEvmAccount,
+      accounts,
+      isEvmAccount,
+    ),
 );

@@ -9,12 +9,17 @@ import { MessengerClientInitFunction } from './types';
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the service.
+ * @param request.appBuildType - The extension build type.
+ * @param request.appEnvironment - The extension environment.
+ * @param request.appVersion - The extension version.
+ * @param request.extension - The extension browser API.
  * @param request.infuraProjectId - The Infura project ID.
  * @param request.getRequestAccountTabIds - A function that returns a record of account tab IDs.
  * @param request.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
  * @param request.getPermittedAccounts - A function that returns the permitted accounts for an origin.
  * @param request.getTabUrl - A function that returns the current URL of a browser tab.
  * @param request.updateTabUrl - A function that navigates a browser tab to a URL.
+ * @param request.closeNotificationPopup - A function that closes the notification popup window.
  * @param request.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
  * @param request.requestSafeReload - A function that triggers a safe reload of the extension.
  * @param request.sendUpdate - A function to send updates to the UI.
@@ -26,25 +31,35 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   LegacyBackgroundApiServiceMessenger
 > = ({
   controllerMessenger,
+  appBuildType,
+  appEnvironment,
+  appVersion,
   infuraProjectId,
   getRequestAccountTabIds,
   getOpenMetamaskTabsIds,
   getPermittedAccounts,
   getTabUrl,
   updateTabUrl,
+  closeNotificationPopup,
   markNotificationPopupAsAutomaticallyClosed,
   requestSafeReload,
   sendUpdate,
   offscreenPromise,
+  extension,
 }) => {
   const messengerClient = new LegacyBackgroundApiService({
     messenger: controllerMessenger,
+    appBuildType,
+    appEnvironment,
+    appVersion,
+    setUninstallURL: extension.runtime.setUninstallURL.bind(extension.runtime),
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
     getPermittedAccounts,
     getTabUrl,
     updateTabUrl,
+    closeNotificationPopup,
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,

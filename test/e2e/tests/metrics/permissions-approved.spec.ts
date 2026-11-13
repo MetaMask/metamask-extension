@@ -54,7 +54,7 @@ describe('Permissions Approved Event', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -64,7 +64,7 @@ describe('Permissions Approved Event', function (this: Suite) {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

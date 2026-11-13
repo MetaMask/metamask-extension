@@ -5,7 +5,9 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import RegisterPasskeySettings from '../../page-objects/pages/settings/security-and-password/register-passkey-settings';
+import SecurityAndPasswordSettings from '../../page-objects/pages/settings/security-and-password/security-and-password-settings';
+import TurnOffPasskeySettings from '../../page-objects/pages/settings/security-and-password/turn-off-passkey-settings';
 import { completeOnboardingWithPasskey } from '../../page-objects/flows/onboarding.flow';
 import {
   lockAndWaitForLoginPage,
@@ -15,7 +17,7 @@ import {
   closeSettings,
   navigateToSecurityAndPassword,
 } from '../../page-objects/flows/settings.flow';
-import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
+import { MOCK_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 describe('Passkey settings', function () {
   it('Turns off biometrics with passkey fallback to password', async function () {
@@ -27,7 +29,7 @@ describe('Passkey settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withPasskeyController({ passkeyRecord: DUMMY_PASSKEY_RECORD })
+          .withPasskeyController({ passkeyRecord: MOCK_PASSKEY_RECORD })
           .build(),
         title: this.test?.fullTitle(),
         virtualAuthenticator: true,
@@ -37,15 +39,17 @@ describe('Passkey settings', function () {
 
         await navigateToSecurityAndPassword(driver);
 
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPasskeyRowIsDisplayed();
-        await privacySettings.clickPasskeyToggle();
-
-        await privacySettings.enterPasswordAndContinueForPasskeyTurnOff(
-          WALLET_PASSWORD,
+        const securityAndPasswordSettings = new SecurityAndPasswordSettings(
+          driver,
         );
+        await securityAndPasswordSettings.checkPasskeyRowIsDisplayed();
+        await securityAndPasswordSettings.clickPasskeyToggle();
 
-        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
+        const turnOffPasskeySettings = new TurnOffPasskeySettings(driver);
+        await turnOffPasskeySettings.checkPageIsLoaded();
+        await turnOffPasskeySettings.enterPasswordAndContinue(WALLET_PASSWORD);
+
+        await securityAndPasswordSettings.checkPageIsLoaded();
 
         await closeSettings(driver);
 
@@ -87,26 +91,27 @@ describe('Passkey settings', function () {
 
         await navigateToSecurityAndPassword(driver);
 
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPasskeyRowIsDisplayed();
-        await privacySettings.clickPasskeyToggle();
-
-        await privacySettings.enterPasswordAndContinueForPasskeyTurnOff(
-          WALLET_PASSWORD,
+        const securityAndPasswordSettings = new SecurityAndPasswordSettings(
+          driver,
         );
+        await securityAndPasswordSettings.checkPasskeyRowIsDisplayed();
+        await securityAndPasswordSettings.clickPasskeyToggle();
 
-        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
+        const turnOffPasskeySettings = new TurnOffPasskeySettings(driver);
+        await turnOffPasskeySettings.checkPageIsLoaded();
+        await turnOffPasskeySettings.enterPasswordAndContinue(WALLET_PASSWORD);
 
-        await privacySettings.checkPasskeyRowIsDisplayed();
-        await privacySettings.clickPasskeyToggle();
+        await securityAndPasswordSettings.checkPageIsLoaded();
 
-        await privacySettings.enterPasswordAndContinueForPasskeyRegister(
-          WALLET_PASSWORD,
-        );
+        await securityAndPasswordSettings.checkPasskeyRowIsDisplayed();
+        await securityAndPasswordSettings.clickPasskeyToggle();
 
-        await privacySettings.waitForPasskeyEnrollmentSuccess();
+        const registerPasskeySettings = new RegisterPasskeySettings(driver);
+        await registerPasskeySettings.checkPageIsLoaded();
+        await registerPasskeySettings.enterPasswordAndContinue(WALLET_PASSWORD);
+        await registerPasskeySettings.waitForEnrollmentSuccess();
 
-        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
+        await securityAndPasswordSettings.checkPageIsLoaded();
       },
     );
   });

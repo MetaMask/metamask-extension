@@ -30,8 +30,8 @@ type JsonLike = Record<string, unknown>;
 /**
  * Returns a list of keys to ignore when comparing fixture schemas.
  * These are properties that change frequently or are impractical to include
- * (making the diff file unreadable). Keep this list small: RPC fields such as
- * `failoverUrls` are validated so unintended network config changes surface in CI.
+ * (making the diff file unreadable). Keep this list small: other fields are
+ * validated so unintended network config changes surface in CI.
  *
  * @returns Array of dot-separated key paths to ignore
  */
@@ -76,19 +76,20 @@ const getFixtureIgnoredKeys = (): string[] => [
   // because controllers are constructed from the fixture state at boot, but there is
   // nothing to validate against.
   'data.CurrencyController',
-  'data.MultichainAssetsRatesController',
   'data.MultichainAssetsController',
-  'data.MultichainBalancesController',
-  'data.TokenRatesController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
+  // MoneyAccountController populates moneyAccounts and defaultMoneyAccountId
+  // on unlock alongside the Money keyring in KeyringController.vault
+  // (which is also ignored below).
+  'data.MoneyAccountController.moneyAccounts',
+  'data.MoneyAccountController.defaultMoneyAccountId',
   'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
-  'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
@@ -103,12 +104,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AnalyticsController.preConsentEventQueue',
   'data.MultichainTransactionsController.nonEvmTransactions',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
-  'data.NetworkController.networkConfigurationsByChainId.0x1.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0x2105.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0x89.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xa.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xa4b1.rpcEndpoints[0].failoverUrls',
-  'data.NetworkController.networkConfigurationsByChainId.0xe708.rpcEndpoints[0].failoverUrls',
   'data.NetworkController.networksMetadata',
   'data.NetworkController.selectedNetworkClientId',
   'data.ProfileMetricsController.syncQueue',
@@ -120,7 +115,11 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RewardsController.rewardsAccounts.eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsActiveAccount.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastFreshOptInStatusCheck',
+  'data.RewardsController.rewardsAccounts.stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3.lastFreshOptInStatusCheck',
+  // ConfigRegistryController.lastFetched is a Date.now() timestamp written on
+  // every successful poll, so its value never matches between runs.
+  'data.ConfigRegistryController.lastFetched',
 ];
 
 /**
@@ -520,7 +519,7 @@ export const formatSchemaDiff = ({
   }
 
   messages.push(
-    '\nUpdate the fixture and commit the change. Options: comment `@metamaskbot update-e2e-fixture` on the pull request (CI-aligned state), or regenerate locally using the same env as CI (e.g. QUICKNODE_* and other build vars from a CI job artifact) so RPC fields such as `failoverUrls` match.',
+    '\nUpdate the fixture and commit the change. Options: comment `@metamaskbot update-e2e-fixture` on the pull request (CI-aligned state), or regenerate locally using the same env as CI (e.g. build vars from a CI job artifact) so the state matches.',
   );
 
   return messages.join('\n\n');

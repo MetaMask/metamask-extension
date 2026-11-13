@@ -20,6 +20,8 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
+  MoneyOnboardingStepAction,
   MoneyRedirectTargetType,
   MoneyScreenName,
   MoneySurfaceType,
@@ -48,11 +50,14 @@ const mockState = {
     currentLocale: 'fr',
     current: {
       moneyAdd: { message: 'Ajouter' },
+      moneyGetApy: { message: 'Obtenez $1 APY' },
     },
     en: {
       moneyAdd: { message: 'Add' },
+      moneyGetApy: { message: 'Get $1 APY' },
       money: { message: 'Money' },
       moneyLearnMore: { message: 'Learn more' },
+      moneyOnboardingFundTitle: { message: 'Fund your Money account' },
     },
   },
 };
@@ -169,6 +174,24 @@ describe('useMoneyAnalytics', () => {
       });
     });
 
+    it('serializes the FTUE entry point and originating component', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.MoneyFtue,
+        componentName: MoneyComponentName.FtueSplash,
+        entryPoint: MoneyFtueEntryPoint.AssetDetail,
+        originatingComponentName: MoneyComponentName.EarnBanner,
+      }).trackScreenViewed();
+
+      expectEvent(MetaMetricsEventName.MoneySurfaceViewed, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.MoneyFtue,
+        component_name: MoneyComponentName.FtueSplash,
+        entry_point: MoneyFtueEntryPoint.AssetDetail,
+        originating_component_name: MoneyComponentName.EarnBanner,
+        surface_type: MoneySurfaceType.Screen,
+      });
+    });
+
     it('reports an unfunded account for a zero balance', () => {
       arrangeBalance({
         status: 'success',
@@ -260,6 +283,31 @@ describe('useMoneyAnalytics', () => {
         redirect_target_type: MoneyRedirectTargetType.Screen,
         button_position: 1,
         button_row_button_count: 2,
+      });
+    });
+
+    it('substitutes label placeholders into both labels', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.WalletHome,
+      }).trackButtonClicked({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.AddMoney,
+        labelKey: 'moneyGetApy',
+        labelSubstitutions: ['6%'],
+        componentName: MoneyComponentName.TokenListItemCta,
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+      });
+
+      expectEvent(MetaMetricsEventName.MoneyButtonClicked, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.WalletHome,
+        button_type: MoneyButtonType.Text,
+        button_intent: MoneyButtonIntent.AddMoney,
+        component_name: MoneyComponentName.TokenListItemCta,
+        label_en: 'Get 6% APY',
+        label_localized: 'Obtenez 6% APY',
+        redirect_target: MoneyScreenName.MoneyDeposit,
+        redirect_target_type: MoneyRedirectTargetType.Screen,
       });
     });
 
@@ -367,6 +415,35 @@ describe('useMoneyAnalytics', () => {
         token_chain_id: '0x1',
         token_position_in_list: 2,
         tokens_in_list: 5,
+        token_has_balance: true,
+      });
+    });
+  });
+
+  describe('trackTokenSurfaceClicked', () => {
+    it('tracks a surface click with token properties', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.AssetDetail,
+      }).trackTokenSurfaceClicked({
+        componentName: MoneyComponentName.EarnBanner,
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+        tokenSymbol: 'USDC',
+        tokenChainId: '0x1',
+        tokenPositionInList: 1,
+        tokensInList: 1,
+        tokenHasBalance: true,
+      });
+
+      expectEvent(MetaMetricsEventName.MoneySurfaceClicked, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.AssetDetail,
+        component_name: MoneyComponentName.EarnBanner,
+        redirect_target: MoneyScreenName.MoneyDeposit,
+        redirect_target_type: MoneyRedirectTargetType.Screen,
+        token_symbol: 'USDC',
+        token_chain_id: '0x1',
+        token_position_in_list: 1,
+        tokens_in_list: 1,
         token_has_balance: true,
       });
     });
@@ -522,6 +599,33 @@ describe('useMoneyAnalytics', () => {
         component_name: MoneyComponentName.BalanceCard,
         tooltip_name: MoneyTooltipName.MoneyBalance,
         tooltip_type: MoneyTooltipType.Info,
+      });
+    });
+  });
+
+  describe('trackOnboardingEvent', () => {
+    it('tracks the step with its English title and derived redirect type', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      }).trackOnboardingEvent({
+        step: 1,
+        stepTitleKey: 'moneyOnboardingFundTitle',
+        totalSteps: 2,
+        stepAction: MoneyOnboardingStepAction.DepositInitiated,
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+      });
+
+      expectEvent(MetaMetricsEventName.MoneyOnboardingEvent, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.MoneyHome,
+        component_name: MoneyComponentName.OnboardingCard,
+        step: 1,
+        step_title: 'Fund your Money account',
+        total_steps: 2,
+        step_action: MoneyOnboardingStepAction.DepositInitiated,
+        redirect_target: MoneyScreenName.MoneyDeposit,
+        redirect_target_type: MoneyRedirectTargetType.Screen,
       });
     });
   });

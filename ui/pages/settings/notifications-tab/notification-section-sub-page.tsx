@@ -8,7 +8,12 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import Preloader from '../../../components/ui/icon/preloader/preloader-icon.component';
-import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  NotificationsSettingsQueryParams,
+  type NotificationsSettingsSectionType,
+} from '../../../../shared/lib/notifications-settings';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
@@ -19,8 +24,6 @@ import { NotificationSettingsSection } from '../../notifications-settings/notifi
 import { useNotificationAccountGroups } from '../../notifications-settings/notifications-settings-helpers';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getNotificationsSettingsSectionConfigs } from '../../notifications-settings/notifications-settings-types';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
 
 type NotificationSectionSubPageProps = {
   sectionType: NotificationsSettingsSectionType;
@@ -63,16 +66,31 @@ export const NotificationSectionSubPage = ({
     if (
       !section ||
       !isMetamaskNotificationsEnabled ||
-      (!isLoadingPreferences && !hasNotificationPreferences)
+      (!isLoadingPreferences &&
+        (!hasNotificationPreferences || !preferences?.[sectionType]))
     ) {
-      navigate(NOTIFICATIONS_SETTINGS_ROUTE, { replace: true });
+      // Preserve a supported section while the user enables notifications.
+      const search = new URLSearchParams();
+      if (section && !isMetamaskNotificationsEnabled) {
+        const sectionRoute = NOTIFICATIONS_SETTINGS_SECTION_ROUTES[sectionType];
+        search.set(
+          NotificationsSettingsQueryParams.Section,
+          sectionRoute.slice(NOTIFICATIONS_SETTINGS_ROUTE.length + 1),
+        );
+      }
+      navigate(
+        { pathname: NOTIFICATIONS_SETTINGS_ROUTE, search: search.toString() },
+        { replace: true },
+      );
     }
   }, [
     hasNotificationPreferences,
     isLoadingPreferences,
     isMetamaskNotificationsEnabled,
     navigate,
+    preferences,
     section,
+    sectionType,
   ]);
 
   // Valid section with notifications enabled, but preferences are still being
@@ -102,7 +120,7 @@ export const NotificationSectionSubPage = ({
     !section ||
     !isMetamaskNotificationsEnabled ||
     !hasNotificationPreferences ||
-    !preferences
+    !preferences?.[sectionType]
   ) {
     return null;
   }

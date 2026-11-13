@@ -2,20 +2,23 @@ import { Driver } from '../../../webdriver/driver';
 import { largeDelayMs } from '../../../helpers';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../../constants';
+import { BASE_ACCOUNT_SYNC_TIMEOUT } from '../../../tests/identity/account-syncing/helpers';
 
 /**
  * Multichain account list: wallets, accounts, add/hide/pin, and related menus.
  *
  * Screen: `#/account-list`, usually opened from `HeaderNavbar.openAccountMenu`.
- * Owns: listing and selecting accounts/wallets, add-wallet / choose-wallet-type
- * flows, pin/hide/remove account actions, manage-mode delete for imported
+ * Owns: listing and selecting accounts/wallets, the add account and add wallet
+ * buttons, pin/hide/remove account actions, manage-mode delete for imported
  * private-key accounts, SRP export entry, search, and balance assertions on
  * list items.
- * Boundaries: the account list surface only. Account details, wallet details,
- * hardware connect, and confirmation dialogs belong to their own page objects
- * once navigated away.
+ * Boundaries: the account list surface only. The add wallet menu and the
+ * import / watch screens it opens belong to `ChooseWalletTypePage`,
+ * `ImportSrpPage`, `ImportAccountPage` and `WatchAccountPage` (see
+ * `add-wallet.flow.ts`). Account details, wallet details, hardware connect,
+ * and confirmation dialogs belong to their own page objects.
  * Related: `HeaderNavbar` (how tests open this), `WalletDetailsPage`,
- * `AccountDetailsPage`.
+ * `AccountDetailsPage`, `ChooseWalletTypePage`.
  *
  * @see ui/pages/multichain-accounts/account-list/account-list.tsx
  * @see ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx
@@ -103,9 +106,6 @@ class AccountListPage {
     text: 'Syncing...',
   };
 
-  private readonly addHardwareWalletButton =
-    '[data-testid="choose-wallet-type-hardware-wallet"]';
-
   private readonly addingAccountMessage = {
     text: 'Adding account...',
     tag: 'p',
@@ -129,9 +129,6 @@ class AccountListPage {
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
 
-  private readonly addSnapAccountButton =
-    '[data-testid="choose-wallet-type-snap-account"]';
-
   private readonly addWalletButtonEnabled =
     '[data-testid="account-list-add-wallet-button"]:not([disabled])';
 
@@ -144,11 +141,6 @@ class AccountListPage {
     tag: 'p',
     text: 'Syncing...',
   };
-
-  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
-
-  private readonly chooseWalletTypeWatchEthereumAccountButton =
-    '[data-testid="choose-wallet-type-watch-ethereum-account"]';
 
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
@@ -186,38 +178,6 @@ class AccountListPage {
 
   private readonly hideAccountButton =
     '[data-testid="multichain-account-menu-item-hideAccount"]';
-
-  private readonly importAccountConfirmButton =
-    '[data-testid="import-account-confirm-button"]';
-
-  private readonly importAccountDropdownOption = '.dropdown__select';
-
-  private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-account"]';
-
-  private readonly importAccountJsonFileInput =
-    'input[data-testid="file-input"]';
-
-  private readonly importAccountJsonFileOption = {
-    text: 'JSON File',
-    tag: 'option',
-  };
-
-  private readonly importAccountJsonPasswordInput =
-    'input[id="json-password-box"]';
-
-  private readonly importAccountPrivateKeyInput = '#private-key-box';
-
-  private readonly importSrpConfirmButton = {
-    text: 'Continue',
-    tag: 'span',
-  };
-
-  private readonly importSrpInput =
-    '[data-testid="srp-input-import__srp-note"]';
-
-  private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-wallet"]';
 
   private readonly manageAccountsButton =
     '[data-testid="account-list-page-manage-button"]';
@@ -318,54 +278,8 @@ class AccountListPage {
   private readonly walletHeader =
     '[data-testid="multichain-account-tree-wallet-header"]';
 
-  private readonly watchAccountAddressInput =
-    'input#address-input[type="text"]';
-
-  private readonly watchAccountConfirmButton = {
-    text: 'Watch account',
-    tag: 'button',
-  };
-
-  private readonly watchAccountModalTitle = {
-    text: 'Watch any Ethereum account',
-    tag: 'h4',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  /**
-   * Watch an EOA (external owned account).
-   *
-   * @param address - The address to watch.
-   * @param expectedErrorMessage - Optional error message to display if the address is invalid.
-   */
-  async addEoaAccount(
-    address: string,
-    expectedErrorMessage: string = '',
-  ): Promise<void> {
-    console.log(`Watch EOA account with address ${address}`);
-    await this.clickAddWalletButton();
-    await this.driver.clickElement(
-      this.chooseWalletTypeWatchEthereumAccountButton,
-    );
-    await this.driver.waitForSelector(this.watchAccountModalTitle);
-    await this.driver.fill(this.watchAccountAddressInput, address);
-    if (expectedErrorMessage) {
-      await this.driver.clickElement(this.watchAccountConfirmButton);
-      console.log(
-        `Check if error message is displayed: ${expectedErrorMessage}`,
-      );
-      await this.driver.waitForSelector({
-        css: '.snap-ui-renderer__text',
-        text: expectedErrorMessage,
-      });
-    } else {
-      await this.driver.clickElementAndWaitToDisappear(
-        this.watchAccountConfirmButton,
-      );
-    }
   }
 
   /**
@@ -382,49 +296,6 @@ class AccountListPage {
     await this.driver.clickElement(
       this.addMultichainAccountButtonByIndex(buttonIndex),
     );
-  }
-
-  /**
-   * Adds a new multichain wallet.
-   */
-  async addMultichainWallet(): Promise<void> {
-    console.log(`Adding new multichain wallet`);
-    await this.clickAddWalletButton();
-  }
-
-  /**
-   * Import a new account with a private key.
-   *
-   * On success, the wallet navigates home with the imported account selected.
-   *
-   * @param privateKey - Private key of the account
-   * @param expectedErrorMessage - Expected error message if the import should fail
-   */
-  async addNewImportedAccount(
-    privateKey: string,
-    expectedErrorMessage?: string,
-  ): Promise<void> {
-    console.log(`Adding new imported account`);
-    await this.clickAddWalletButton();
-    await this.driver.clickElement(
-      this.importAccountFromMultichainWalletModalButton,
-    );
-    await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
-    if (expectedErrorMessage) {
-      await this.driver.clickElement(this.importAccountConfirmButton);
-      await this.driver.waitForSelector({
-        css: '.mm-help-text',
-        text: expectedErrorMessage,
-      });
-    } else {
-      // Import + forceUpdateMetamaskState can outlive the default 3s staleness
-      // wait under multi-SRP / Solana load on CI before the Add Wallet page
-      // navigates home.
-      await this.driver.clickElementAndWaitToDisappear(
-        this.importAccountConfirmButton,
-        10000,
-      );
-    }
   }
 
   /**
@@ -608,44 +479,9 @@ class AccountListPage {
     );
   }
 
-  async checkAddAccountSnapButtonIsDisplayed(): Promise<void> {
-    console.log('Check add account snap button is displayed');
-    await this.driver.waitForSelector(this.addSnapAccountButton);
-  }
-
-  async checkAddAccountSnapButtonNotPresent(): Promise<void> {
-    console.log('Check add account snap button is not present');
-    await this.driver.assertElementNotPresent(this.addSnapAccountButton);
-  }
-
   async checkAddWalletButtonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
     await this.driver.waitForSelector(this.addWalletButtonReady);
-  }
-
-  /**
-   * Checks that the watch ethereum account option is displayed in the choose wallet type page.
-   *
-   * @param expectedAvailability - Whether the watch ethereum account option is expected to be displayed.
-   */
-  async checkAddWatchAccountAvailable(
-    expectedAvailability: boolean,
-  ): Promise<void> {
-    console.log(
-      `Check watch ethereum account option is ${
-        expectedAvailability ? 'displayed ' : 'not displayed'
-      }`,
-    );
-    await this.clickAddWalletButton();
-    if (expectedAvailability) {
-      await this.driver.waitForSelector(
-        this.chooseWalletTypeWatchEthereumAccountButton,
-      );
-    } else {
-      await this.driver.assertElementNotPresent(
-        this.chooseWalletTypeWatchEthereumAccountButton,
-      );
-    }
   }
 
   async checkCurrentAccountIsImported(): Promise<void> {
@@ -654,42 +490,6 @@ class AccountListPage {
       css: this.currentSelectedAccount,
       text: 'Imported',
     });
-  }
-
-  /**
-   * Check that the SRP is imported through a single field, rather than one
-   * input per word.
-   */
-  async checkImportSrpInputIsDisplayed(): Promise<void> {
-    console.log('Check that the import SRP input is displayed');
-    await this.driver.waitForSelector(this.importSrpInput);
-  }
-
-  /**
-   * Wait until the import SRP input displays the expected value. A textarea
-   * holds its value as a property rather than an attribute, so this polls the
-   * value instead of matching it with a locator.
-   *
-   * @param expectedValue - The expected value.
-   */
-  async checkImportSrpInputValue(expectedValue: string): Promise<void> {
-    console.log(`Check that the import SRP input value is "${expectedValue}"`);
-    let actualValue: string | null = null;
-    try {
-      await this.driver.waitUntil(
-        async () => {
-          const srpInput = await this.driver.findElement(this.importSrpInput);
-          actualValue = await srpInput.getAttribute('value');
-          return actualValue === expectedValue;
-        },
-        { interval: 100, timeout: this.driver.timeout },
-      );
-    } catch (error: unknown) {
-      const reason = error instanceof Error ? error.message : String(error);
-      throw new Error(
-        `Import SRP input value should match the typed word. Expected "${expectedValue}", got "${actualValue}". ${reason}`,
-      );
-    }
   }
 
   /**
@@ -914,7 +714,7 @@ class AccountListPage {
       throw e;
     }
     if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted(timeout);
+      await this.waitUntilSyncingIsCompleted();
     }
     console.log('Account list is loaded');
   }
@@ -955,17 +755,9 @@ class AccountListPage {
    * Click the Add wallet footer button once it is enabled and not syncing.
    */
   async clickAddWalletButton(): Promise<void> {
+    console.log('Click add wallet button in account list');
     await this.waitForAddWalletButtonStablyReady();
     await this.driver.clickElement(this.addMultichainWalletButton);
-  }
-
-  /**
-   * Import a wallet.
-   */
-  async clickImportWallet(): Promise<void> {
-    await this.driver.clickElement(
-      this.importWalletFromMultichainWalletModalButton,
-    );
   }
 
   /**
@@ -991,13 +783,6 @@ class AccountListPage {
     console.log(`Close account modal in account list`);
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
-    );
-  }
-
-  async closeChooseWalletTypePage(): Promise<void> {
-    console.log(`Navigate back from choose wallet type page`);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.chooseWalletTypeBackButton,
     );
   }
 
@@ -1074,39 +859,6 @@ class AccountListPage {
   }
 
   /**
-   * Import an account with a JSON file.
-   *
-   * On success, the wallet navigates home with the imported account selected.
-   *
-   * @param jsonFilePath - Path to the JSON file to import
-   * @param password - Password for the imported account
-   */
-  async importAccountWithJsonFile(
-    jsonFilePath: string,
-    password: string,
-  ): Promise<void> {
-    console.log(`Adding new imported account`);
-    await this.clickAddWalletButton();
-    await this.driver.clickElement(
-      this.importAccountFromMultichainWalletModalButton,
-    );
-    await this.driver.clickElement(this.importAccountDropdownOption);
-    await this.driver.clickElement(this.importAccountJsonFileOption);
-
-    const fileInput = await this.driver.findElement(
-      this.importAccountJsonFileInput,
-    );
-    await fileInput.sendKeys(jsonFilePath);
-    await this.driver.fill(this.importAccountJsonPasswordInput, password);
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.importAccountConfirmButton,
-    );
-  }
-
-  /**
    * Open the account details modal for the specified account in account list.
    *
    * @param accountLabel - The label of the account to open the details modal for.
@@ -1140,15 +892,6 @@ class AccountListPage {
     await this.driver.clickElement(this.multichainAccountOptionsMenuButton);
   }
 
-  async openConnectHardwareWalletModal(): Promise<void> {
-    console.log(`Open connect hardware wallet modal`);
-    await this.clickAddWalletButton();
-    await this.driver.clickElement(this.addHardwareWalletButton);
-    // This delay is needed to mitigate an existing bug
-    // See https://github.com/metamask/metamask-extension/issues/25851
-    await this.driver.delay(largeDelayMs);
-  }
-
   async openHiddenAccountOptions(): Promise<void> {
     console.log(`Open hidden accounts options menu`);
     await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
@@ -1169,9 +912,11 @@ class AccountListPage {
     console.log(
       `Open multichain account menu in account list for account ${accountLabel}`,
     );
-    // To ensure no pending Create Account action is in progress
+    // To ensure no pending Create Account action is in progress. Creating a
+    // group can include starting the non-EVM account snaps, which is slow on CI.
     await this.driver.assertElementNotPresent(this.addingAccountMessage, {
       waitAtLeastGuard: largeDelayMs,
+      timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
     });
 
     await this.driver.clickElement({
@@ -1235,17 +980,6 @@ class AccountListPage {
     await this.driver.clickElement(this.exportSrpButton);
   }
 
-  async startImportSecretPhrase(srp: string): Promise<void> {
-    console.log(`Importing ${srp.split(' ').length} word srp`);
-
-    await this.clickAddWalletButton();
-    await this.driver.clickElement(
-      this.importWalletFromMultichainWalletModalButton,
-    );
-    await this.driver.pasteIntoField(this.importSrpInput, srp);
-    await this.driver.clickElement(this.importSrpConfirmButton);
-  }
-
   async switchToAccount(expectedLabel: string): Promise<void> {
     console.log(
       `Switch to account with label ${expectedLabel} in account list`,
@@ -1254,17 +988,6 @@ class AccountListPage {
       css: this.accountListItem,
       text: expectedLabel,
     });
-  }
-
-  /**
-   * Type into the import SRP input.
-   *
-   * @param text - The text to type.
-   */
-  async typeIntoImportSrpInput(text: string): Promise<void> {
-    console.log(`Type "${text}" into the import SRP input`);
-    const srpInput = await this.driver.findVisibleElement(this.importSrpInput);
-    await srpInput.sendKeys(text);
   }
 
   async unpinAccount(): Promise<void> {
@@ -1320,7 +1043,7 @@ class AccountListPage {
    * @param timeout - Maximum time in ms to wait for the button to stay ready.
    */
   async waitForAddWalletButtonStablyReady(
-    timeout: number = 15000,
+    timeout: number = BASE_ACCOUNT_SYNC_TIMEOUT,
   ): Promise<void> {
     console.log('Waiting for add wallet button to be stably enabled');
     await this.driver.waitUntil(
@@ -1346,7 +1069,9 @@ class AccountListPage {
    *
    * @param timeout - Maximum time in ms to wait for syncing to finish.
    */
-  async waitUntilSyncingIsCompleted(timeout: number = 15000): Promise<void> {
+  async waitUntilSyncingIsCompleted(
+    timeout: number = BASE_ACCOUNT_SYNC_TIMEOUT,
+  ): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
     await this.waitForAddWalletButtonStablyReady(timeout);
   }

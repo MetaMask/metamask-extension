@@ -7,7 +7,6 @@ describe('Tabs', () => {
   const renderTabs = (props = {}) => {
     const defaultProps = {
       onTabClick: () => null,
-      subHeader: null,
     };
 
     return render(
@@ -98,13 +97,6 @@ describe('Tabs', () => {
     expect(onTabClick).toHaveBeenCalledWith('tab2');
   });
 
-  it('renders subHeader when provided', () => {
-    const subHeader = <div data-testid="sub-header">Sub Header Content</div>;
-    const { getByTestId } = renderTabs({ subHeader });
-
-    expect(getByTestId('sub-header')).toBeInTheDocument();
-  });
-
   it('applies tabListProps to the tab list', () => {
     const tabListProps = {
       'data-testid': 'tab-list',
@@ -114,6 +106,21 @@ describe('Tabs', () => {
 
     const tabList = getByTestId('tab-list');
     expect(tabList).toHaveClass('custom-list-class');
+  });
+
+  it('applies tabRowClassName to the row around the tab list and end slot', () => {
+    const { getByRole, container } = renderTabs({
+      hasTabEndSlot: true,
+      tabRowClassName: 'stuck-top-border',
+    });
+
+    const tabList = getByRole('tablist');
+    const row = tabList.parentElement?.parentElement;
+    const endSlot = container.querySelector<HTMLElement>('.tab-end-slot');
+
+    expect(row).toHaveClass('stuck-top-border');
+    expect(endSlot?.parentElement).toBe(row);
+    expect(tabList).not.toHaveClass('stuck-top-border');
   });
 
   it('applies tabContentProps to the content container', () => {
@@ -480,6 +487,38 @@ describe('Tabs', () => {
     );
 
     expect(getByText('Tab 1 Content')).toBeInTheDocument();
+  });
+
+  it('realigns active tab index when a preceding tab is removed', () => {
+    const { rerender, getByText, queryByText } = render(
+      <Tabs activeTab="tab3" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+        <Tab tabKey="tab3" name="Tab 3">
+          Tab 3 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 3 Content')).toBeInTheDocument();
+
+    rerender(
+      <Tabs activeTab="tab3" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab3" name="Tab 3">
+          Tab 3 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    expect(getByText('Tab 3 Content')).toBeInTheDocument();
+    expect(queryByText('Tab 2 Content')).not.toBeInTheDocument();
   });
 
   it('does not crash when children are removed and activeTabIndex is out of bounds', () => {

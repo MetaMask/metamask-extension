@@ -36,7 +36,6 @@ import {
 import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   getAllPermittedAccountsForCurrentTab,
-  getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
 } from '../../../selectors';
 import {
@@ -68,7 +67,6 @@ export const AccountList = () => {
   const { wallets } = accountTree;
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   // The metrics counts below are read from the store at click time so they
   // reflect the moment the manage view opened. They are not used during render.
@@ -204,22 +202,17 @@ export const AccountList = () => {
         {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          paddingTop={1}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingBottom={2}
-        >
+        <search className="px-4 pt-1 pb-2">
           <TextFieldSearch
             className="w-full"
             clearButtonOnClick={clearSearch}
             data-testid="multichain-account-list-search"
+            inputAriaLabel={t('searchYourAccounts')}
             onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
             value={searchPattern}
           />
-        </Box>
+        </search>
         <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
           {hasFilteredWallets ? (
             <MultichainAccountList
@@ -228,7 +221,7 @@ export const AccountList = () => {
               isInSearchMode={isInSearchMode}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
-              showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+              showDefaultAddress={showDefaultAddress}
               isEditMode={isEditMode}
             />
           ) : (

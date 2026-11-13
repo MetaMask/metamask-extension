@@ -4,14 +4,29 @@ import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException, captureMessage } from '../sentry';
 import {
+  INACCESSIBLE_DATABASE_ERROR,
   MISSING_VAULT_ERROR,
   isBrowserShuttingDownError,
 } from '../../constants/errors';
+import { StateCorruptionErrorType } from '../../constants/critical-error';
 import { getManifestFlags } from '../manifestFlags';
-import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
+import type { EnvironmentType } from '../../constants/app';
+import { getEnvironmentType } from '../environment-type';
+import {
+  getLastActivityContext,
+  hydrateLastActivity,
+  recordWrite,
+  type LastActivityContext,
+} from '../telemetry/last-activity';
+import type { CurrentActivity, IdleStatus } from '../telemetry/idle-status';
+import { buildActivityAttributes } from '../telemetry/activity-attributes';
 import { IndexedDBStore } from './indexeddb-store';
+import {
+  BACKUP_INDEXED_DB_NAME,
+  BACKUP_INDEXED_DB_VERSION,
+} from './indexeddb-storage-constants';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
@@ -25,7 +40,6 @@ export type StorageKind = 'data' | 'split';
 export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
-  'MetaMetricsController',
   'AnalyticsController',
 ] as const;
 
@@ -44,7 +58,7 @@ export type Backup = {
 
 export type VaultCorruptionDetectedEvent = {
   backup: Backup;
-  corruptionType: VaultCorruptionType;
+  corruptionType: StateCorruptionErrorType;
 };
 
 export type SplitStateMigrationSucceededEvent = {
@@ -69,14 +83,27 @@ export type WriteRetryRecoveredEvent = {
 };
 
 export type SplitStateWriteEvent = {
-  bytesByController: Record<string, number>;
+  /**
+   * Per-controller size measurements. Exact storage bytes when
+   * {@link sizeMeasurementSource} is `storage_get_bytes_in_use`; otherwise
+   * estimates from `JSON.stringify(value).length`.
+   */
+  bytesByController: Map<string, number>;
   coalescedUpdates: number;
-  controllerKeys: string[];
-  idleStatus: 'active' | 'idle' | 'unknown';
+  idleStatus: IdleStatus;
   measurementDurationMs: number;
   sampleRate: number;
+  sizeMeasurementSource:
+    | 'storage_get_bytes_in_use'
+    | 'json_string_length_estimate';
+  /**
+   * Sum of {@link bytesByController} values.
+   */
   totalBytes: number;
   writeDurationMs: number;
+  environmentType: EnvironmentType | 'unknown';
+  currentActivity: CurrentActivity;
+  lastActivity: LastActivityContext;
 };
 
 export type PersistenceManagerEventMap = {
@@ -88,11 +115,17 @@ export type PersistenceManagerEventMap = {
 };
 
 export type PersistenceManagerOptions = {
-  getIsIdle?: () => boolean | undefined;
+  getIsIdle?: (
+    currentActivity: CurrentActivity,
+    lastActivity: LastActivityContext,
+  ) => IdleStatus | undefined;
   getPersistenceWriteSampleRate?: () => number;
   localStore: BaseStore;
   random?: () => number;
 };
+
+type PersistenceWriteTarget = 'primary' | 'backup';
+type PersistenceWriteOperation = 'set' | 'persist';
 
 type WriteRetryOptions = {
   supersedable: boolean;
@@ -102,13 +135,6 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
-
-function getSerializedByteLength(value: unknown): number {
-  const serializedValue = JSON.stringify(value);
-  return serializedValue === undefined
-    ? 0
-    : new TextEncoder().encode(serializedValue).byteLength;
-}
 
 function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
   return new Promise((resolve) => {
@@ -131,7 +157,6 @@ function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
     signal?.addEventListener('abort', handleAbort, { once: true });
   });
 }
-
 /**
  * Checks whether IndexedDB mutations are blocked, as can happen for Firefox
  * extensions in private browsing mode.
@@ -161,7 +186,7 @@ export class PersistenceError extends Error {
    * - InaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
    * - MissingVaultInDatabase: The database was accessible but the vault was missing
    */
-  corruptionType: VaultCorruptionType;
+  corruptionType: StateCorruptionErrorType;
 
   /**
    * The original error that caused the persistence failure, if any.
@@ -172,16 +197,16 @@ export class PersistenceError extends Error {
 
   constructor(
     message: string,
+    corruptionType: StateCorruptionErrorType,
     backup: object | null,
-    corruptionType: VaultCorruptionType,
     cause?: Error,
   ) {
     super(message);
     this.name = 'PersistenceError';
+    this.corruptionType = corruptionType;
     // closure around `backup` to prevent it from being serialized with the
     // error in debug logs, error reporting, etc.
     this.getBackup = () => backup;
-    this.corruptionType = corruptionType;
     this.cause = cause;
   }
 }
@@ -276,12 +301,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     : null) ?? 'split') as StorageKind;
 
   /**
-   * dataPersistenceFailing is a boolean that is set to true if the storage
-   * system attempts to write state and the write operation fails. This is only
-   * used as a way of deduplicating error reports sent to sentry as it is
-   * likely that multiple writes will fail concurrently.
+   * dataPersistenceFailures tracks failing storage write targets. This is
+   * used to deduplicate error reports sent to Sentry while still allowing
+   * recovery reporting to match the write target that actually failed.
    */
-  #dataPersistenceFailing: boolean = false;
+  #dataPersistenceFailures = new Map<
+    PersistenceWriteTarget,
+    PersistenceWriteOperation
+  >();
 
   /**
    * mostRecentRetrievedState is a property that holds the most recent state
@@ -329,7 +356,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  #getIsIdle: () => boolean | undefined;
+  #getIsIdle: (
+    currentActivity: CurrentActivity,
+    lastActivity: LastActivityContext,
+  ) => IdleStatus | undefined;
+
+  #getCurrentActivity: (() => CurrentActivity) | undefined;
 
   #getPersistenceWriteSampleRate: () => number;
 
@@ -346,6 +378,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#localStore = localStore;
     this.#getPersistenceWriteSampleRate = getPersistenceWriteSampleRate;
     this.#random = random;
+  }
+
+  /**
+   * Sets the current-activity provider (background only).
+   *
+   * @param getCurrentActivity - Returns the current activity snapshot.
+   */
+  setCurrentActivityProvider(getCurrentActivity: () => CurrentActivity) {
+    this.#getCurrentActivity = getCurrentActivity;
   }
 
   /**
@@ -397,6 +438,157 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #normalizePersistError(error: unknown): Error {
     return error instanceof Error ? error : new Error(String(error));
+  }
+
+  /**
+   * Activity snapshot shared by sampled write traces and storage error reports.
+   *
+   * A missing or throwing provider becomes an empty snapshot, and a throwing
+   * idle classifier becomes `'unknown'`. Session restore runs first so an
+   * early startup write still sees timestamps from before the service-worker
+   * restart.
+   *
+   * @returns The activity snapshot for this event.
+   */
+  async #getActivitySnapshot(): Promise<{
+    currentActivity: CurrentActivity;
+    environmentType: EnvironmentType | 'unknown';
+    idleStatus: IdleStatus;
+    lastActivity: LastActivityContext;
+  }> {
+    let currentActivity: CurrentActivity = {};
+    if (this.#getCurrentActivity) {
+      try {
+        currentActivity = this.#getCurrentActivity();
+      } catch {
+        // Keep empty snapshot.
+      }
+    }
+
+    let lastActivity: LastActivityContext = {};
+    try {
+      await hydrateLastActivity();
+    } catch {
+      // Snapshot whatever is already in memory.
+    }
+    try {
+      lastActivity = getLastActivityContext();
+    } catch {
+      // Keep empty snapshot.
+    }
+
+    let idleStatus: IdleStatus = 'unknown';
+    try {
+      idleStatus = this.#getIsIdle(currentActivity, lastActivity) ?? 'unknown';
+    } catch {
+      // Keep unknown status.
+    }
+
+    let environmentType: EnvironmentType | 'unknown' = 'unknown';
+    try {
+      const href = globalThis.self?.location?.href;
+      if (href !== undefined && href !== '') {
+        environmentType = getEnvironmentType(href) as EnvironmentType;
+      }
+    } catch {
+      // Keep unknown. `getEnvironmentType` parses with `new URL`.
+    }
+
+    return { currentActivity, environmentType, idleStatus, lastActivity };
+  }
+
+  async #capturePersistenceException(
+    error: unknown,
+    failure: string,
+    writeDetails?: { controllers: string[]; coalescedUpdates?: number },
+  ) {
+    // Callers intentionally do not await this method so reporting cannot hold
+    // STATE_LOCK. Swallow failures so the floating promise never rejects.
+    try {
+      const snapshot = await this.#getActivitySnapshot();
+      const activity = buildActivityAttributes(
+        snapshot.currentActivity,
+        snapshot.lastActivity,
+        snapshot.idleStatus,
+        snapshot.environmentType,
+      );
+
+      const extra: Record<string, number | string | boolean> = {};
+      for (const [key, value] of Object.entries(activity)) {
+        if (key === 'idle_status' || key === 'environment_type') {
+          continue;
+        }
+        extra[`persistence.${key}`] = value;
+      }
+
+      if (writeDetails) {
+        extra['persistence.controllers'] = writeDetails.controllers.join(',');
+        extra['persistence.controller_count'] = writeDetails.controllers.length;
+        if (writeDetails.coalescedUpdates !== undefined) {
+          extra['persistence.coalesced_updates'] =
+            writeDetails.coalescedUpdates;
+        }
+      }
+
+      // Custom fingerprint prevents Sentry's deduplication from dropping
+      // this event when other persistence errors with the same underlying
+      // error message (e.g., "An unexpected error occurred") are reported.
+      // `idle_status` and `environment_type` are tags so they can be filtered.
+      captureException(error, {
+        tags: {
+          'persistence.error': failure,
+          'persistence.environment_type': snapshot.environmentType,
+          'persistence.idle_status': snapshot.idleStatus,
+        },
+        extra,
+        fingerprint: ['persistence-error', failure],
+      });
+    } catch {
+      // Telemetry must not surface reporting failures.
+    }
+  }
+
+  async #captureWriteFailure(
+    error: unknown,
+    target: PersistenceWriteTarget,
+    operation: PersistenceWriteOperation,
+    writeDetails: { controllers: string[]; coalescedUpdates?: number },
+  ) {
+    if (this.#dataPersistenceFailures.has(target)) {
+      return;
+    }
+
+    this.#dataPersistenceFailures.set(target, operation);
+    const failure =
+      target === 'primary'
+        ? `${operation}-failed`
+        : `${operation}-backup-failed`;
+
+    this.#capturePersistenceException(error, failure, writeDetails);
+  }
+
+  #captureWriteRecovery(
+    target: PersistenceWriteTarget,
+    successfulOperation: PersistenceWriteOperation,
+  ) {
+    const failedOperation = this.#dataPersistenceFailures.get(target);
+    if (failedOperation === undefined) {
+      return;
+    }
+    this.#dataPersistenceFailures.delete(target);
+
+    const recovery = `${target}-write-recovered`;
+    // Track recovery to understand how often failures are temporary.
+    // This helps answer: "Do write calls ever fail and then succeed in the same session?"
+    captureMessage('Data persistence recovered after temporary failure', {
+      level: 'info',
+      tags: {
+        'persistence.event': recovery,
+        'persistence.failed_operation': failedOperation,
+        'persistence.successful_operation': successfulOperation,
+      },
+      fingerprint: ['persistence-event', recovery, failedOperation],
+    });
   }
 
   #emitWriteRetryRecovered(
@@ -487,7 +679,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // cost is negligible here because the write is skipped unless the
       // serialized backup actually changed.
       const db = new IndexedDBStore({ strictDurability: true });
-      await db.open('metamask-backup', 1);
+      await db.open(BACKUP_INDEXED_DB_NAME, BACKUP_INDEXED_DB_VERSION);
       this.#backupDb = db;
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of
@@ -677,6 +869,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             'set-retry-recovered',
             { supersedable: true },
           );
+          this.#captureWriteRecovery('primary', 'set');
 
           const backup = makeBackup(state, meta);
           // if we have a vault we can back it up
@@ -694,6 +887,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                     'set-backup-retry-recovered',
                     { supersedable: false },
                   );
+                  this.#captureWriteRecovery('backup', 'set');
                 }
                 this.#backup = stringifiedBackup;
               } catch (backupErr) {
@@ -703,27 +897,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             }
           }
 
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'set-recovered' },
-                fingerprint: ['persistence-event', 'set-recovered'],
-              },
-            );
-          }
-
           return [true, undefined];
         } catch (err) {
           // A write that failed only because the browser is closing is not a
           // storage problem, so none of the failure handling below applies.
           // Sentry is handled globally by `ignoreErrors`; returning early here
           // is about the two effects that outlive this call - it must not latch
-          // `#dataPersistenceFailing`, which would suppress the report of a
+          // a write failure, which would suppress the report of a
           // later real failure, and it must not run `#notifySetFailed`, which
           // persists a storage-error flag that would warn the user in their
           // next session. Both are unlikely to be reached with the browser
@@ -734,19 +914,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             );
             return [false, err];
           }
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
-
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
-          }
+          this.#captureWriteFailure(
+            err,
+            backupFailed ? 'backup' : 'primary',
+            'set',
+            { controllers: Object.keys(state) },
+          );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
@@ -776,50 +949,79 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#pendingUpdateCount += 1;
   }
 
-  #recordSplitStateWrite(
+  async #recordSplitStateWrite(
     pairs: Map<string, unknown>,
     coalescedUpdates: number,
     writeDurationMs: number,
-  ): void {
-    const controllerPairs = [...pairs.entries()]
-      .filter(([key]) => key !== 'data' && key !== 'manifest' && key !== 'meta')
-      .toSorted(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
+  ): Promise<void> {
     const sampleRate = this.#getPersistenceWriteSampleRate();
-    if (
-      controllerPairs.length === 0 ||
-      sampleRate <= 0 ||
-      this.#random() >= sampleRate
-    ) {
+    if (sampleRate <= 0 || this.#random() >= sampleRate) {
       return;
     }
 
     const measurementStartedAt = performance.now();
-    const bytesByController = Object.fromEntries(
-      controllerPairs.map(([key, value]) => [
-        key,
-        getSerializedByteLength(value),
-      ]),
+    const controllerKeys = [...pairs.keys()].filter(
+      (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
     );
-    const totalBytes = getSerializedByteLength(
-      Object.fromEntries(controllerPairs),
-    );
-    const isIdle = this.#getIsIdle();
-    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
-    if (isIdle === true) {
-      idleStatus = 'idle';
-    } else if (isIdle === false) {
-      idleStatus = 'active';
+
+    if (controllerKeys.length === 0) {
+      return;
+    }
+
+    // Snapshot before size measurement so init / UI changes during that await
+    // cannot skew the write's reported context.
+    const { currentActivity, environmentType, idleStatus, lastActivity } =
+      await this.#getActivitySnapshot();
+
+    let bytesByController: Map<string, number> | undefined;
+    let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'] =
+      'json_string_length_estimate';
+    let totalBytes = 0;
+
+    try {
+      const storageBytes =
+        await this.#localStore.getBytesInUseByKey?.(controllerKeys);
+      if (storageBytes && storageBytes.size > 0) {
+        bytesByController = storageBytes;
+        sizeMeasurementSource = 'storage_get_bytes_in_use';
+        totalBytes = [...bytesByController.values()].reduce(
+          (total, bytes) => total + bytes,
+          0,
+        );
+      }
+    } catch {
+      // Fall back to a synchronous estimate when exact storage bytes are
+      // unavailable or fail. Telemetry must not fail a successful write.
+    }
+
+    if (!bytesByController) {
+      bytesByController = new Map();
+      totalBytes = 0;
+      for (const key of controllerKeys) {
+        const value = pairs.get(key);
+        // Cheap size estimate for telemetry: `JSON.stringify` string length
+        // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
+        const serializedValue = JSON.stringify(value);
+        const serializedLength =
+          serializedValue === undefined ? 0 : serializedValue.length;
+        bytesByController.set(key, serializedLength);
+        totalBytes += serializedLength;
+      }
+      sizeMeasurementSource = 'json_string_length_estimate';
     }
 
     this.emit('splitStateWrite', {
       bytesByController,
       coalescedUpdates,
-      controllerKeys: controllerPairs.map(([key]) => key),
       idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,
+      sizeMeasurementSource,
       totalBytes,
       writeDurationMs,
+      environmentType,
+      currentActivity,
+      lastActivity,
     });
   }
 
@@ -860,6 +1062,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
+        // Read before cloning so a failed clone still reports what was pending.
+        const failedWriteControllers = [...this.#pendingPairs.keys()].filter(
+          (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
+        );
+        const failedCoalescedUpdates = this.#pendingUpdateCount;
         try {
           const clone = structuredClone(this.#pendingPairs);
           const coalescedUpdates = this.#pendingUpdateCount;
@@ -875,6 +1082,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               'persist-retry-recovered',
               { supersedable: true },
             );
+            this.#captureWriteRecovery('primary', 'persist');
             writeDurationMs = performance.now() - writeStartedAt;
           } catch (err) {
             // merge the clone with the pending pairs again
@@ -892,7 +1100,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           try {
             // Telemetry must not treat a successful write as a failure.
-            this.#recordSplitStateWrite(
+            // Snapshot before recordWrite() so msSinceLastWrite is the prior
+            // interval, not ~0 for this write.
+            await this.#recordSplitStateWrite(
               clone,
               coalescedUpdates,
               writeDurationMs,
@@ -900,6 +1110,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           } catch {
             // Ignore measurement/reporting failures after a successful write.
           }
+
+          // Every successful write, including unsampled ones.
+          recordWrite();
 
           const partialState = Object.create(null);
           for (const [key, value] of clone.entries()) {
@@ -919,25 +1132,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                   'persist-backup-retry-recovered',
                   { supersedable: false },
                 );
+                this.#captureWriteRecovery('backup', 'persist');
               }
             } catch (backupErr) {
               backupFailed = true;
               throw backupErr;
             }
-          }
-
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'persist-recovered' },
-                fingerprint: ['persistence-event', 'persist-recovered'],
-              },
-            );
           }
 
           return [true, undefined];
@@ -946,7 +1146,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           // storage problem, so none of the failure handling below applies.
           // Sentry is handled globally by `ignoreErrors`; returning early here
           // is about the two effects that outlive this call - it must not latch
-          // `#dataPersistenceFailing`, which would suppress the report of a
+          // a write failure, which would suppress the report of a
           // later real failure, and it must not run `#notifySetFailed`, which
           // persists a storage-error flag that would warn the user in their
           // next session. Both are unlikely to be reached with the browser
@@ -957,21 +1157,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             );
             return [false, err];
           }
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed
-              ? 'persist-backup-failed'
-              : 'persist-failed';
-
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
-          }
+          this.#captureWriteFailure(
+            err,
+            backupFailed ? 'backup' : 'primary',
+            'persist',
+            {
+              controllers: failedWriteControllers,
+              coalescedUpdates: failedCoalescedUpdates,
+            },
+          );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
@@ -1023,13 +1217,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             localStoreError,
           );
           if (reportErrors) {
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(localStoreError, {
-              tags: { 'persistence.error': 'get-failed' },
-              fingerprint: ['persistence-error', 'get-failed'],
-            });
+            this.#capturePersistenceException(localStoreError, 'get-failed');
           }
 
           // A read that failed only because the browser is closing says nothing
@@ -1072,11 +1260,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               log.info('Backup vault found in IndexedDB, triggering recovery');
 
               // Track vault corruption detected event directly to Segment.
-              // We do this here (before throwing) because MetaMetricsController
+              // We do this here (before throwing) because AnalyticsController
               // is not initialized yet, so we use the backup state for consent/ID.
               const corruptionType = localStoreError
-                ? VaultCorruptionType.InaccessibleDatabase
-                : VaultCorruptionType.MissingVaultInDatabase;
+                ? StateCorruptionErrorType.InaccessibleDatabase
+                : StateCorruptionErrorType.MissingVaultInDatabase;
               this.emit('vaultCorruptionDetected', {
                 backup,
                 corruptionType,
@@ -1086,9 +1274,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               // background+UI are responsible for determining what happens now).
               // Include the original error as cause for debugging purposes.
               throw new PersistenceError(
-                MISSING_VAULT_ERROR,
-                backup,
+                localStoreError
+                  ? INACCESSIBLE_DATABASE_ERROR
+                  : MISSING_VAULT_ERROR,
                 corruptionType,
+                backup,
                 localStoreError,
               );
             } else if (localStoreError) {
@@ -1142,7 +1332,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         ]);
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
-        this.#dataPersistenceFailing = false;
+        this.#dataPersistenceFailures.clear();
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();

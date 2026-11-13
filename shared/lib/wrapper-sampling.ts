@@ -19,6 +19,8 @@ import { getRemoteWrapperSampleRate } from './sentry-remote-rates';
  */
 const WRAPPER_SAMPLE_RATE = 0.005;
 
+const admittedTraceIds = new Set<string>();
+
 /**
  * Deterministic per-trace sub-sampling decision for wrapper spans.
  *
@@ -33,7 +35,38 @@ export function shouldSampleWrappers(traceId: string | undefined): boolean {
   if (!traceId || traceId.length < 8) {
     return false;
   }
+  if (admittedTraceIds.has(traceId)) {
+    return true;
+  }
   const rate = getRemoteWrapperSampleRate() ?? WRAPPER_SAMPLE_RATE;
   const hashBucket = parseInt(traceId.slice(0, 8), 16) % 10000;
   return hashBucket < rate * 10000;
+}
+
+/**
+ * Whether a wrapper span that starts its own trace is created. Such a root is
+ * sampled by `tracesSampleRate` like any other root; a second draw here would
+ * hide a rate Sentry cannot see, and its extrapolated counts would read low.
+ *
+ * @returns false only when distributed tracing is disabled.
+ */
+export function isRootWrapperEnabled(): boolean {
+  return !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
+}
+
+// A root wrapper is sampled before its trace id exists, so its nested wrappers
+// cannot reach the same decision by hashing that id. Admit them while it runs.
+export async function admitTraceWrappers<Result>(
+  traceId: string | undefined,
+  fn: () => Result | Promise<Result>,
+): Promise<Result> {
+  if (!traceId) {
+    return await fn();
+  }
+  admittedTraceIds.add(traceId);
+  try {
+    return await fn();
+  } finally {
+    admittedTraceIds.delete(traceId);
+  }
 }

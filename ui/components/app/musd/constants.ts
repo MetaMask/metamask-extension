@@ -6,6 +6,7 @@
  */
 
 import type { Hex } from '@metamask/utils';
+import { MUSD_TOKEN } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 /**
@@ -34,13 +35,11 @@ export const MUSD_TOKEN_ADDRESS: Hex =
   '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 
 /**
- * mUSD token metadata
+ * mUSD token metadata — re-exported from @metamask/money-account-utils,
+ * the shared single source of truth for mUSD token metadata across clients
+ * (symbol "mUSD", name "MetaMask USD", matching the on-chain token).
  */
-export const MUSD_TOKEN = {
-  symbol: 'MUSD',
-  name: 'MUSD',
-  decimals: 6,
-} as const;
+export { MUSD_TOKEN };
 
 /**
  * mUSD token decimals (derived from MUSD_TOKEN for single source of truth)
@@ -116,14 +115,14 @@ export const DEFAULT_MUSD_BLOCKED_COUNTRIES: string[] = ['GB'];
  * Displayed in the education screen
  */
 export const MUSD_CONVERSION_BONUS_TERMS_OF_USE =
-  'https://metamask.io/musd-bonus-terms-of-use';
+  'https://metamask.com/musd-bonus-terms-of-use';
 
 /**
  * URL for the mUSD Help Center article
  * Linked from the asset details bonus and convert sections
  */
 export const MUSD_SUPPORT_ARTICLE_URL =
-  'https://support.metamask.io/manage-crypto/tokens/musd';
+  'https://support.metamask.com/manage-crypto/tokens/musd';
 
 /**
  * Minimum asset balance required in USD for a token to be eligible for conversion

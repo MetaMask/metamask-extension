@@ -3,8 +3,11 @@ import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
 } from '../../../shared/lib/passkey';
+import { WEEK } from '../../../shared/constants/time';
+import { getIsPasskeyUserHandleBased } from '../../selectors';
+import { getLastShownPrfMigrationReminderAt } from '../../ducks/metamask/metamask';
 import type { RouteMessenger } from '../../messengers/route-messenger';
-import { useDispatch } from '../../store/hooks';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import {
   forceUpdateMetamaskState,
   hideLoadingIndication,
@@ -14,13 +17,20 @@ import { useMessenger } from '../useMessenger';
 
 type PasskeyUnlockMessenger = RouteMessenger<
   | 'PasskeyController:generateAuthenticationOptions'
-  | 'LegacyBackgroundApiService:unlockWithPasskey',
+  | 'LegacyBackgroundApiService:unlockWithPasskey'
+  | 'AppStateController:setLastShownPrfMigrationReminderAt',
   never
 >;
 
 export function usePasskeyUnlock() {
   const dispatch = useDispatch();
   const messenger = useMessenger<PasskeyUnlockMessenger>();
+  const isPasskeyMigrationEligible = useAppSelector(
+    getIsPasskeyUserHandleBased,
+  );
+  const lastShownPrfMigrationReminderAt = useAppSelector(
+    getLastShownPrfMigrationReminderAt,
+  );
 
   useEffect(
     () => () => {
@@ -44,8 +54,28 @@ export function usePasskeyUnlock() {
         authenticationResponse,
       );
       await forceUpdateMetamaskState(dispatch);
+
+      const now = Date.now();
+      const shouldShowMigrationNotice =
+        isPasskeyMigrationEligible &&
+        (lastShownPrfMigrationReminderAt === null ||
+          now - lastShownPrfMigrationReminderAt >= WEEK);
+
+      if (shouldShowMigrationNotice) {
+        await messenger.call(
+          'AppStateController:setLastShownPrfMigrationReminderAt',
+          now,
+        );
+      }
+
+      return shouldShowMigrationNotice;
     } finally {
       dispatch(hideLoadingIndication());
     }
-  }, [dispatch, messenger]);
+  }, [
+    dispatch,
+    isPasskeyMigrationEligible,
+    messenger,
+    lastShownPrfMigrationReminderAt,
+  ]);
 }

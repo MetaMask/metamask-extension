@@ -4,7 +4,11 @@ import {
   Box,
   ButtonBase,
   ButtonBaseSize,
+  FontWeight,
   IconName,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
@@ -139,14 +143,18 @@ export const NetworkFilter = ({
     });
   }, [tokens, nfts]);
 
+  const isSingleNetworkSelected = selectedChainId !== null;
+
   const displayName = useMemo(() => {
     if (selectedChainId === null) {
       return t('allNetworks');
     }
 
-    const networkName = getChainNetworkDetails(selectedChainId)?.networkName;
+    const networkName =
+      getChainNetworkDetails(selectedChainId)?.networkName ||
+      `Chain ${selectedChainId}`;
 
-    return networkName || `Chain ${selectedChainId}`;
+    return `${t('network')}: ${networkName}`;
   }, [getChainNetworkDetails, selectedChainId, t]);
 
   const handleNetworkFilterClick = useCallback(() => {
@@ -225,9 +233,22 @@ export const NetworkFilter = ({
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ 'data-testid': 'icon-filter' }}
-          className="bg-transparent border border-border-muted hover:bg-hover active:bg-pressed my-2"
+          className={`bg-transparent border border-border-muted hover:bg-hover active:bg-pressed my-2 ${
+            isSingleNetworkSelected ? 'text-primary-default' : 'text-default'
+          }`}
         >
-          {displayName}
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            color={
+              isSingleNetworkSelected
+                ? TextColor.PrimaryDefault
+                : TextColor.TextDefault
+            }
+            ellipsis
+          >
+            {displayName}
+          </Text>
         </ButtonBase>
       </Box>
       <NetworkSelectionModal

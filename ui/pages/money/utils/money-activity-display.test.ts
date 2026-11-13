@@ -96,7 +96,7 @@ describe('getMoneyActivityDisplayInfo', () => {
       primaryAmount: '-0.00 mUSD',
       fiatAmount: '-$0.00',
       isIncoming: false,
-      icon: IconName.SwapHorizontal,
+      icon: IconName.Arrow2UpRight,
       status: 'failed',
     });
   });
@@ -184,5 +184,67 @@ describe('getAccountsApiActivityDisplayInfo', () => {
       icon: IconName.Card,
       status: 'confirmed',
     });
+  });
+
+  const cardActivity = {
+    kind: 'card',
+    hash: '0xabc',
+    time: 1,
+    chainId: '0x8f',
+    token: {
+      address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      symbol: 'vmUSD',
+      decimals: 6,
+    },
+    amount: '1000000',
+    paidTo: '0xdef',
+  } as const;
+
+  it('renders the historical valuation', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      {
+        ...cardActivity,
+        displayAmount: { type: 'historical', value: '1017488', decimals: 6 },
+      },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('-1.02 mUSD');
+    expect(display.fiatAmount).toBe('-$1.02');
+  });
+
+  it('marks the approximate valuation', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      {
+        ...cardActivity,
+        displayAmount: { type: 'approximate', value: '1500000', decimals: 6 },
+      },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('≈-1.50 mUSD');
+    expect(display.fiatAmount).toBe('≈-$1.50');
+  });
+
+  it('renders a placeholder while the valuation is pending', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      { ...cardActivity, displayAmount: { type: 'pending' } },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('—');
+    expect(display.fiatAmount).toBe('');
+  });
+
+  it('renders the unavailable copy when no valuation exists', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      { ...cardActivity, displayAmount: { type: 'unavailable' } },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe(
+      messages.moneyActivityAmountUnavailable.message,
+    );
+    expect(display.fiatAmount).toBe('');
   });
 });

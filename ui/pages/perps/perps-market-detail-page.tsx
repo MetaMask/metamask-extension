@@ -22,6 +22,7 @@ import {
   SensitiveText,
   TextVariant,
   TextColor,
+  FontFamily,
   FontWeight,
   Icon,
   IconName,
@@ -49,6 +50,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import {
   getIsPerpsExperienceAvailable,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsShowFullAssetNamesEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -58,6 +60,7 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
@@ -72,6 +75,7 @@ import {
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
+  usePerpsMarketAboutTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
@@ -80,14 +84,15 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
+import { PerpsMarketAbout } from '../../components/app/perps/perps-market-about';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   PerpsCandlestickChart,
   PerpsCandlestickChartRef,
 } from '../../components/app/perps/perps-candlestick-chart';
-import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-chart-content/build-perps-chart-price-lines';
+import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import {
   CandlePeriod,
   TimeDuration,
@@ -288,6 +293,9 @@ const PerpsMarketDetailPage = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -341,7 +349,10 @@ const PerpsMarketDetailPage = () => {
   ]);
 
   // Use stream hooks for real-time data
-  const { positions: allPositions } = usePerpsLivePositions();
+  // A seeded position may already be closed: keep its TP/SL and close
+  // controls disabled until a live update confirms it.
+  const { positions: allPositions, isSeeded: isPositionSeeded } =
+    usePerpsLivePositions();
   const orderFilledToastShownRef = useRef(false);
 
   useEffect(() => {
@@ -412,6 +423,22 @@ const PerpsMarketDetailPage = () => {
     );
   }, [decodedSymbol, allMarkets]);
   const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
+  // This hook runs before the feature-availability redirect below. Pass the
+  // same guards that mount the market body so a cached description cannot emit
+  // displayed while the page returns Navigate or another non-About state.
+  const isMarketDetailRendered =
+    isPerpsExperienceAvailable &&
+    Boolean(symbol) &&
+    Boolean(decodedSymbol) &&
+    marketCatalogReady &&
+    Boolean(market);
+  const { hasDescription: hasAboutDescription, aboutRef } =
+    usePerpsMarketAboutTracking({
+      symbol: market?.symbol,
+      marketType: market?.marketType,
+      description: market?.description,
+      isPageRendered: isMarketDetailRendered,
+    });
 
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
@@ -438,6 +465,8 @@ const PerpsMarketDetailPage = () => {
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
       // watchlisted only surfaces on the asset_detail screen.
       [PERPS_EVENT_PROPERTY.WATCHLISTED]: isInWatchlist,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
     resetKey: decodedSymbol,
   });
@@ -685,8 +714,16 @@ const PerpsMarketDetailPage = () => {
   const [cancelOrderTarget, setCancelOrderTarget] = useState<Order | null>(
     null,
   );
-  const modifyMenuRef = useRef<HTMLDivElement>(null);
-  const marginMenuRef = useRef<HTMLDivElement>(null);
+  const [marginMenuElement, setMarginMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const [modifyMenuElement, setModifyMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const setMarginMenuRef = useCallback((node: HTMLDivElement | null) => {
+    setMarginMenuElement(node);
+  }, []);
+  const setModifyMenuRef = useCallback((node: HTMLDivElement | null) => {
+    setModifyMenuElement(node);
+  }, []);
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -725,7 +762,7 @@ const PerpsMarketDetailPage = () => {
       return formatPerpsFiatUniversal(market.price);
     }
     return '$0.00';
-  }, [market?.price, livePrice?.price, chartCurrentPrice]);
+  }, [market, livePrice?.price, chartCurrentPrice]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange = formatSignedChangePercent(
@@ -798,7 +835,7 @@ const PerpsMarketDetailPage = () => {
   const handlePeriodChange = useCallback(
     (period: CandlePeriod) => {
       setLocalPeriodOverride(period);
-      submitRequestToBackground('setPreference', [
+      submitRequestToBackground('PreferencesController:setPreference', [
         'perpsSelectedCandlePeriod',
         period,
       ]).catch(() => {
@@ -812,11 +849,11 @@ const PerpsMarketDetailPage = () => {
   );
 
   const handleVisibleCandleCountChange = useCallback((count: number) => {
-    submitRequestToBackground('perpsSetVisibleCandleCount', [count]).catch(
-      () => {
-        // The chart remains interactive if preference persistence fails.
-      },
-    );
+    submitRequestToBackground('PerpsController:setVisibleCandleCount', [
+      count,
+    ]).catch(() => {
+      // The chart remains interactive if preference persistence fails.
+    });
   }, []);
 
   const handleBackClick = useCallback(() => {
@@ -824,7 +861,7 @@ const PerpsMarketDetailPage = () => {
       navigate(PREVIOUS_ROUTE);
       return;
     }
-    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
+    navigate(PERPS_HOME_PAGE_ROUTE, { replace: true });
   }, [navigate]);
 
   const handleMarketListClick = useCallback(() => {
@@ -855,7 +892,7 @@ const PerpsMarketDetailPage = () => {
         track(MetaMetricsEventName.PerpsUiInteraction, {
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -899,7 +936,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -917,7 +954,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -943,7 +980,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -984,7 +1021,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -1001,7 +1038,7 @@ const PerpsMarketDetailPage = () => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.MARGIN,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -1041,7 +1078,7 @@ const PerpsMarketDetailPage = () => {
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
     });
-    submitRequestToBackground('perpsToggleWatchlistMarket', [
+    submitRequestToBackground('PerpsController:toggleWatchlistMarket', [
       decodedSymbol,
     ]).catch((error) => {
       // The star icon renders from `isInWatchlist`, a controller-backed Redux
@@ -1325,8 +1362,8 @@ const PerpsMarketDetailPage = () => {
         data-testid="perps-market-detail-summary"
       >
         <Text
-          variant={TextVariant.HeadingLg}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           data-testid="perps-market-detail-price"
         >
           {displayPrice}
@@ -1509,7 +1546,7 @@ const PerpsMarketDetailPage = () => {
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
                 <Box
-                  ref={marginMenuRef}
+                  ref={setMarginMenuRef}
                   className="relative flex-1 rounded-xl bg-muted px-4 py-3 cursor-pointer hover:bg-muted-hover active:bg-muted-pressed transition-colors"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={handleOpenMarginMenu}
@@ -1532,7 +1569,7 @@ const PerpsMarketDetailPage = () => {
                     {formatPerpsFiatMinimal(position.marginUsed)}
                   </SensitiveText>
                   <Popover
-                    referenceElement={marginMenuRef.current}
+                    referenceElement={marginMenuElement}
                     isOpen={isMarginMenuOpen}
                     isPortal
                     onClickOutside={() => setIsMarginMenuOpen(false)}
@@ -1569,11 +1606,12 @@ const PerpsMarketDetailPage = () => {
 
               {/* Third Row: Auto Close - Click to open modal */}
               <Box
-                className="rounded-xl bg-muted cursor-pointer px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed transition-colors"
+                className={`rounded-xl bg-muted px-4 py-3 transition-colors ${isPositionSeeded ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-muted-hover active:bg-muted-pressed'}`}
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
-                onClick={handleOpenTPSLModal}
+                onClick={isPositionSeeded ? undefined : handleOpenTPSLModal}
+                aria-disabled={isPositionSeeded}
                 data-testid="perps-auto-close-row"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
@@ -1966,6 +2004,18 @@ const PerpsMarketDetailPage = () => {
           </Box>
         </Box>
 
+        {hasAboutDescription && (
+          // Key the observed wrapper, not only the section. A market change
+          // must detach the intersection observer so `viewed` fires again
+          // when this section stays on screen.
+          <div key={market.symbol} ref={aboutRef}>
+            <PerpsMarketAbout
+              description={market.description}
+              assetName={market.name}
+            />
+          </div>
+        )}
+
         {/* Recent Activity Section - always visible */}
         <Box paddingTop={4} paddingBottom={4}>
           <PerpsMarketRecentActivity symbol={decodedSymbol} />
@@ -1982,7 +2032,7 @@ const PerpsMarketDetailPage = () => {
                 track(MetaMetricsEventName.PerpsUiInteraction, {
                   [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
                     PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-                  [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+                  [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
                     PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
                   [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
                     PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -2029,7 +2079,7 @@ const PerpsMarketDetailPage = () => {
             data-testid="perps-position-cta-buttons"
           >
             {/* Modify dropdown */}
-            <Box ref={modifyMenuRef} className="flex-1 min-w-0">
+            <Box ref={setModifyMenuRef} className="flex-1 min-w-0">
               <Button
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
@@ -2044,6 +2094,7 @@ const PerpsMarketDetailPage = () => {
                     console.error(error);
                   });
                 }}
+                disabled={isPositionSeeded}
                 className="w-full flex items-center gap-2"
                 data-testid="perps-modify-cta-button"
               >
@@ -2057,7 +2108,7 @@ const PerpsMarketDetailPage = () => {
                 />
               </Button>
               <Popover
-                referenceElement={modifyMenuRef.current}
+                referenceElement={modifyMenuElement}
                 isOpen={isModifyMenuOpen}
                 isPortal
                 onClickOutside={() => setIsModifyMenuOpen(false)}
@@ -2116,6 +2167,7 @@ const PerpsMarketDetailPage = () => {
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
                 onClick={handleClosePosition}
+                disabled={isPositionSeeded}
                 className="w-full"
                 data-testid="perps-close-cta-button"
               >

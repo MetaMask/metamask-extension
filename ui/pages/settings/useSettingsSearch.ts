@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
 import { selectIsTickerWidgetFeatureEnabled } from '../../selectors';
+import { getIsMfaUiKitEnabled } from '../../selectors/identity/mfa-ui-kit';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
 import { SETTINGS_SEARCH_CONFIG, type TabSearchConfig } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';
@@ -158,11 +159,15 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   const isTickerWidgetFeatureEnabled = useSelector(
     selectIsTickerWidgetFeatureEnabled,
   );
+  const isMfaUiKitEnabled = useSelector(getIsMfaUiKitEnabled);
 
   const fuse = useMemo(() => {
     const hiddenItemIds = new Set<string>();
     if (!isTickerWidgetFeatureEnabled) {
       hiddenItemIds.add('show-ticker-widget');
+    }
+    if (!isMfaUiKitEnabled) {
+      hiddenItemIds.add('mfa');
     }
 
     const items = buildSearchableItems(
@@ -185,6 +190,7 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   }, [
     isBasicFunctionalityConsolidationEnabled,
     isTickerWidgetFeatureEnabled,
+    isMfaUiKitEnabled,
     t,
   ]);
 

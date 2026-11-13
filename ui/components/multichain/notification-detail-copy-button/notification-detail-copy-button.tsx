@@ -55,7 +55,7 @@ export const NotificationDetailCopyButton: FC<
   color = TextColor.textAlternative,
 }): JSX.Element => {
   // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -80,7 +80,7 @@ export const NotificationDetailCopyButton: FC<
       };
 
       trackEvent(
-        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+        createEventBuilder(MetaMetricsEventName.NotificationDetailItemClicked)
           .addCategory(MetaMetricsEventCategory.NotificationInteraction)
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */

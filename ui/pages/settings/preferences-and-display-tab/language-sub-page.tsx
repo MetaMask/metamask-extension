@@ -16,7 +16,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { updateCurrentLocale } from '../../../store/actions';
-import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -52,7 +51,7 @@ const LanguageSubPage = () => {
 
   const handleSelect = (value: string) => {
     dispatch(updateCurrentLocale(value));
-    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
+    transitionBack(() => navigate(-1));
   };
 
   const renderLocaleRows = (entries: LocaleEntry[]) =>

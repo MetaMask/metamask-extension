@@ -15,6 +15,23 @@ describe('formatAmount', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
+      [0.0004567, '0.0004567'],
+      [1.234567, '1.234567'],
+      [12.0345, '12.0345'],
+      [121.456, '121.456'],
+      [1034.123, '1,034.123'],
+      ['1034.10000000', '1,034.1'],
+      ['1.123456789', '1.12345679'],
+      ['12130982923409.5', '12,130,982,923,409.5'],
+    ])(
+      'formats amount with up to 8 decimal places (%s => %s)',
+      (amount: number | string, expected: string) => {
+        expect(formatAmount(locale, new BigNumber(amount))).toBe(expected);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
       [0.0000456, '0.000046'],
       [0.0004567, '0.000457'],
       [0.003456, '0.00346'],
@@ -23,7 +40,11 @@ describe('formatAmount', () => {
     ])(
       'formats amount less than 1 with maximum significant digits (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount))).toBe(expected);
+        expect(
+          formatAmount(locale, new BigNumber(amount), undefined, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
 
@@ -46,7 +67,11 @@ describe('formatAmount', () => {
     ])(
       'formats amount greater than or equal to 1 with appropriate decimal precision (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount))).toBe(expected);
+        expect(
+          formatAmount(locale, new BigNumber(amount), undefined, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
   });
@@ -80,9 +105,11 @@ describe('formatAmount', () => {
     ])(
       'truncates amount less than 1 toward zero (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount), roundDown)).toBe(
-          expected,
-        );
+        expect(
+          formatAmount(locale, new BigNumber(amount), roundDown, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
 
@@ -101,9 +128,11 @@ describe('formatAmount', () => {
     ])(
       'truncates amount greater than or equal to 1 toward zero (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount), roundDown)).toBe(
-          expected,
-        );
+        expect(
+          formatAmount(locale, new BigNumber(amount), roundDown, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
   });

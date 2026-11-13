@@ -36,11 +36,7 @@ describe('Test Snap multichain provider', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectMultichainProviderButton',
-        );
-
-        await testSnaps.checkInstallationComplete(
-          'connectMultichainProviderButton',
-          'Reconnect to Multichain Provider Snap',
+          { expectedMessage: 'Reconnect to Multichain Provider Snap' },
         );
 
         await testSnaps.scrollAndClickButton('sendCreateSessionButton');
