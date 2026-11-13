@@ -115,6 +115,7 @@ describe('Popular Networks', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
         await networksPage.disableNetwork(NetworkId.ARBITRUM);
         await networksPage.clickCloseButton();
+        await headerNavbar.clickDrawerBackButton();
 
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();

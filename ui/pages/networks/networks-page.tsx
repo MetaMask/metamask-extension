@@ -482,8 +482,13 @@ export const NetworksPage = () => {
 
   const handleRootBack = useCallback(() => {
     dispatch(setEditedNetwork());
-    runCloseTransition(() => navigate(DEFAULT_ROUTE));
-  }, [dispatch, navigate, runCloseTransition]);
+    const route =
+      searchParams.get('drawerOpen') === 'true'
+        ? `${DEFAULT_ROUTE}?drawerOpen=true`
+        : DEFAULT_ROUTE;
+
+    runCloseTransition(() => navigate(route));
+  }, [dispatch, navigate, runCloseTransition, searchParams]);
 
   return (
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
