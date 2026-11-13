@@ -8,6 +8,10 @@ import type { LegacyBackgroundApiService } from './legacy-background-api-service
 /**
  * Sets the selected currency on the AssetsController.
  *
+ * The controller action is synchronous. This still returns a promise because
+ * the legacy background API invokes it through the messenger, which callers
+ * await.
+ *
  * @param currencyCode - The currency code to set as the current currency.
  */
 export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
