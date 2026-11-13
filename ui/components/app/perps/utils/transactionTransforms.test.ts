@@ -19,6 +19,10 @@ import {
 } from '../types/transactionHistory';
 import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
 import {
+  enLocale as messages,
+  tEn,
+} from '../../../../../test/lib/i18n-helpers';
+import {
   aggregateFillsByTimestamp,
   transformFillsToTransactions,
   transformOrdersToTransactions,
@@ -149,6 +153,34 @@ const createMockUserHistory = (
 
 describe('Transaction Transform Utilities', () => {
   describe('aggregateFillsByTimestamp', () => {
+    it('preserves unknown PnL when any grouped close fill omits it', () => {
+      const timestamp = Date.now();
+      const result = aggregateFillsByTimestamp([
+        createMockFill({ direction: 'Close Long', timestamp, pnl: '50' }),
+        createMockFill({ direction: 'Close Long', timestamp, pnl: undefined }),
+      ]);
+      expect(result).toHaveLength(1);
+      expect(result[0].pnl).toBeUndefined();
+    });
+
+    it('preserves a reported zero PnL', () => {
+      const timestamp = Date.now();
+      const result = aggregateFillsByTimestamp([
+        createMockFill({ direction: 'Close Long', timestamp, pnl: '0' }),
+        createMockFill({ direction: 'Close Long', timestamp, pnl: '0' }),
+      ]);
+      expect(result[0].pnl).toBe('0');
+    });
+
+    it('displays unknown net PnL without subtracting fees from a fabricated zero', () => {
+      const [transaction] = transformFillsToTransactions([
+        createMockFill({ direction: 'Close Long', pnl: undefined, fee: '2' }),
+      ]);
+      expect(transaction.fill?.amount).toBe('Unknown');
+      expect(transaction.fill?.amountNumber).toBeUndefined();
+      expect(transaction.fill?.pnl).toBeUndefined();
+    });
+
     it('aggregates fills with same timestamp and close direction', () => {
       const timestamp = Date.now();
       const fills = [
@@ -305,6 +337,24 @@ describe('Transaction Transform Utilities', () => {
       expect(result[0].fill?.fillType).toBe(FillType.Liquidation);
     });
 
+    it('preserves liquidation metadata without a liquidated user', () => {
+      const fill = createMockFill({
+        direction: 'Close Long',
+        liquidation: {
+          markPx: '49000',
+          method: 'market',
+        },
+      });
+
+      const result = transformFillsToTransactions([fill]);
+
+      expect(result[0].fill?.liquidation).toStrictEqual({
+        markPx: '49000',
+        method: 'market',
+      });
+      expect(result[0].fill?.fillType).toBe(FillType.Liquidation);
+    });
+
     it('sets fillType to TakeProfit when detailedOrderType includes Take Profit', () => {
       const fill = createMockFill({
         direction: 'Close Long',
@@ -336,6 +386,93 @@ describe('Transaction Transform Utilities', () => {
 
       expect(buyResult[0].title).toBe('Bought');
       expect(sellResult[0].title).toBe('Sold');
+    });
+
+    // Net closed PnL comes from Core's calculateNetClosedPnl (pnl - fee).
+    describe('net closed PnL', () => {
+      const closeAt = (overrides: Partial<OrderFill>) =>
+        createMockFill({
+          direction: 'Close Long',
+          timestamp: 1_700_000_000_000,
+          ...overrides,
+        });
+
+      it('nets split fills of one close, fees included', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ orderId: 'a', size: '0.4', pnl: '30', fee: '1.25' }),
+          closeAt({ orderId: 'b', size: '0.6', pnl: '45', fee: '1.75' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('+$72.00');
+        expect(transaction.fill?.amountNumber).toBe(72);
+        expect(transaction.fill?.fee).toBe('3');
+      });
+
+      it('shows a zero net PnL as $0.00', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ pnl: '2.5', fee: '2.5' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('$0.00');
+        expect(transaction.fill?.amountNumber).toBe(0);
+      });
+
+      it('adds a maker rebate (negative fee) to the PnL', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ pnl: '-1', fee: '-0.25' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('-$0.75');
+        expect(transaction.fill?.amountNumber).toBe(-0.75);
+      });
+
+      it('groups thousands in a large net PnL', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ pnl: '1240', fee: '5.44' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('+$1,234.56');
+      });
+
+      it('rounds a net PnL half up to the cent', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ pnl: '-1.005', fee: '0' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('-$1.01');
+      });
+
+      it('shows a sub-cent net PnL as $0.00 rather than below a threshold', () => {
+        const [transaction] = transformFillsToTransactions([
+          closeAt({ pnl: '0.004', fee: '0' }),
+        ]);
+
+        expect(transaction.fill?.amount).toBe('+$0.00');
+      });
+
+      it('keeps the PnL unknown when the fee is unknown', () => {
+        const [transaction] = transformFillsToTransactions(
+          [closeAt({ pnl: '10', fee: '' })],
+          tEn,
+        );
+
+        expect(transaction.fill?.amount).toBe(messages.unknown.message);
+        expect(transaction.fill?.amountNumber).toBeUndefined();
+      });
+
+      it('keeps an aggregated fee unknown when one split fill has no fee', () => {
+        const fills = [
+          closeAt({ orderId: 'a', size: '0.4', pnl: '30', fee: '1.25' }),
+          closeAt({ orderId: 'b', size: '0.6', pnl: '45', fee: '' }),
+        ];
+
+        const [aggregated] = aggregateFillsByTimestamp(fills);
+        const [transaction] = transformFillsToTransactions(fills, tEn);
+
+        expect(aggregated.fee).toBe('');
+        expect(transaction.fill?.amount).toBe(messages.unknown.message);
+        expect(transaction.fill?.amountNumber).toBeUndefined();
+      });
     });
   });
 

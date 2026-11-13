@@ -1,10 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import {
-  BtcAccountType,
-  BtcScope,
-  EthAccountType,
-} from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TokenFiatDisplayInfo } from '../../types';
 import { TokenCellTitle } from './token-cell-title';
 
@@ -23,14 +19,6 @@ jest.mock('../../../../multichain/token-list-item/stakeable-link', () => ({
     >
       Stake
     </div>
-  ),
-}));
-
-jest.mock('../../../../component-library', () => ({
-  Tag: ({ label }: { label: string }) => (
-    <span data-testid="tag" data-label={label}>
-      {label}
-    </span>
   ),
 }));
 
@@ -97,13 +85,6 @@ describe('TokenCellTitle', () => {
     expect(getByTestId('asset-cell-title')).toHaveTextContent('My Test Token');
   });
 
-  it('renders without any tag when token.type is undefined', () => {
-    const token = createMockToken({ accountType: EthAccountType.Eoa });
-    const { queryByTestId } = render(<TokenCellTitle token={token} />);
-
-    expect(queryByTestId('tag')).not.toBeInTheDocument();
-  });
-
   it('renders inactive trustline badge when token requires activation', () => {
     const token = createMockToken({
       accountType: undefined,
@@ -118,49 +99,6 @@ describe('TokenCellTitle', () => {
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(getByTestId('asset-inactive-badge')).toBeInTheDocument();
-  });
-
-  it('does not render tag when accountType is undefined', () => {
-    const token = createMockToken({ accountType: undefined });
-    const { queryByTestId } = render(<TokenCellTitle token={token} />);
-
-    expect(queryByTestId('tag')).not.toBeInTheDocument();
-  });
-
-  it('renders Legacy tag for P2pkh account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2pkh });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Legacy');
-    expect(tag).toHaveAttribute('data-label', 'Legacy');
-  });
-
-  it('renders Nested SegWit tag for P2sh account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2sh });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Nested SegWit');
-    expect(tag).toHaveAttribute('data-label', 'Nested SegWit');
-  });
-
-  it('renders Native SegWit tag for P2wpkh account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2wpkh });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Native SegWit');
-    expect(tag).toHaveAttribute('data-label', 'Native SegWit');
-  });
-
-  it('renders Taproot tag for P2tr account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2tr });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Taproot');
-    expect(tag).toHaveAttribute('data-label', 'Taproot');
   });
 
   it('renders StakeableLink when isStakeable is true', () => {
@@ -189,27 +127,6 @@ describe('TokenCellTitle', () => {
     const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(queryByTestId('stakeable-link')).not.toBeInTheDocument();
-  });
-
-  it('renders both tag and StakeableLink when both conditions are met', () => {
-    const token = createMockToken({
-      title: 'Bitcoin',
-      accountType: BtcAccountType.P2tr,
-      isStakeable: true,
-      chainId: BtcScope.Mainnet,
-      symbol: 'BTC',
-    });
-    const { container } = render(<TokenCellTitle token={token} />);
-
-    expect(
-      container.querySelector('[data-testid="asset-cell-title"]'),
-    ).toHaveTextContent('Bitcoin');
-    expect(container.querySelector('[data-testid="tag"]')).toHaveTextContent(
-      'Taproot',
-    );
-    expect(
-      container.querySelector('[data-testid="stakeable-link"]'),
-    ).toBeInTheDocument();
   });
 
   describe('StockBadge', () => {

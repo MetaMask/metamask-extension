@@ -61,15 +61,6 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
 };
 
 export const ETH_CONVERSION_RATE_USD = 1;
-export const MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: ETH_CONVERSION_RATE_USD,
-      usdConversionRate: ETH_CONVERSION_RATE_USD,
-    },
-  },
-};
 
 const ETH_ASSET_PRICE_ENTRY = (ethConversionRate: number) => ({
   allTimeHigh: 4946.05,
@@ -2970,7 +2961,7 @@ export const EXPECTED_INPUT_CHANGES = {
   ],
   resetPage: [
     {
-      token_source: 'eip155:1/slip44:60',
+      chain_source: 'eip155:1',
     },
     {
       chain_destination: 'eip155:1',

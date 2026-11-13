@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
@@ -17,6 +18,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import {
@@ -50,6 +52,7 @@ import {
 const BridgeAssetPickerPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
@@ -59,8 +62,7 @@ const BridgeAssetPickerPage = () => {
   const toChain = useSelector(getToChain);
   const selectedAccount = useSelector(getFromAccount);
 
-  const { navigateToBridgePage, isDestinationAssetPickerPage: isDestination } =
-    useBridgeNavigation();
+  const { isDestinationAssetPickerPage: isDestination } = useBridgeNavigation();
 
   const ensureNetworkEnabled = useEnsureNetworkEnabled();
 
@@ -78,7 +80,7 @@ const BridgeAssetPickerPage = () => {
   const contentRef = useRef<BridgeAssetPickerContentHandle>(null);
 
   const handleClose = () => {
-    navigateToBridgePage();
+    navigate(PREVIOUS_ROUTE);
   };
 
   const selectedAsset = isDestination ? toToken : fromToken;

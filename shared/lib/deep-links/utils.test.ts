@@ -21,6 +21,7 @@ const routesProtectedByInterstitial = [
   '/card-onboarding',
   '/swap',
   '/money',
+  '/money-account-deposit',
   '/earn-musd',
   '/perps',
   '/perps-markets',

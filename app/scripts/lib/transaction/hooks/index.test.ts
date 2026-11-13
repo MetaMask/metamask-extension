@@ -328,6 +328,45 @@ describe('Transaction Controller Hooks', () => {
       });
     });
 
+    it('records stx_get_fees_error submission via metrics fragment on STX hook failure', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockResolvedValue({
+          transactionHash: undefined,
+          getFeesError: 'BACKEND_CALL_FAILED',
+        });
+
+      const upsertFragmentMock = jest.fn();
+      const request = buildMockRequest({
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: upsertFragmentMock,
+          }) as never,
+      });
+
+      const { publish } = getTransactionControllerHooks(request);
+
+      await publish?.(mockTransactionMeta);
+
+      expect(upsertFragmentMock).toHaveBeenCalledWith(mockTransactionMeta.id, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { stx_get_fees_error: 'BACKEND_CALL_FAILED' },
+      });
+    });
+
     it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on sentinel_relay path', async () => {
       const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
       delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
@@ -404,6 +443,49 @@ describe('Transaction Controller Hooks', () => {
       expect(result).toStrictEqual({ transactionHash: '0xstxHash' });
     });
 
+    it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on stx_get_fees_error path', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockResolvedValue({
+          transactionHash: '0xstxHash',
+          getFeesError: 'BACKEND_CALL_FAILED',
+        });
+
+      const request = buildMockRequest({
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: jest
+              .fn()
+              .mockImplementationOnce(jest.fn())
+              .mockImplementationOnce(() => {
+                throw new Error('metrics error');
+              }),
+          }) as never,
+      });
+
+      const { publish } = getTransactionControllerHooks(request);
+
+      const result = await publish?.(mockTransactionMeta);
+
+      expect(result).toStrictEqual({
+        transactionHash: '0xstxHash',
+        getFeesError: 'BACKEND_CALL_FAILED',
+      });
+    });
+
     it('returns transactionHash undefined when no hooks match', async () => {
       const request = buildMockRequest();
       const { publish } = getTransactionControllerHooks(request);
@@ -411,38 +493,6 @@ describe('Transaction Controller Hooks', () => {
       const result = await publish?.(mockTransactionMeta);
 
       expect(result).toStrictEqual({ transactionHash: undefined });
-    });
-
-    it('sets Activity tab when a hook was attempted but fell back', async () => {
-      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
-      delegation7702HookFn.mockResolvedValue({ transactionHash: undefined });
-      jest.mocked(Delegation7702PublishHook).mockImplementation(
-        () =>
-          ({
-            getHook: () => delegation7702HookFn,
-          }) as unknown as Delegation7702PublishHook,
-      );
-
-      const messenger = buildMockMessenger();
-      (messenger.call as jest.Mock).mockImplementation((action: string) => {
-        if (action === 'KeyringController:getKeyringForAccount') {
-          return { type: 'HD Key Tree' };
-        }
-        return undefined;
-      });
-
-      const request = buildMockRequest({ messenger });
-      const { publish } = getTransactionControllerHooks(request);
-
-      await publish?.({
-        ...mockTransactionMeta,
-        isExternalSign: true,
-      } as TransactionMeta);
-
-      expect(messenger.call).toHaveBeenCalledWith(
-        'AppStateController:setDefaultHomeActiveTabName',
-        expect.anything(),
-      );
     });
 
     it('calls Delegation7702PublishHook when isGasFeeIncluded is true even on STX+sendBundle chain', async () => {

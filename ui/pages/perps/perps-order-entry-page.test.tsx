@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import type {
   AccountState,
   CandleData,
@@ -124,6 +125,7 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -170,6 +172,7 @@ jest.mock('@metamask/perps-controller', () => ({
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
+    PRICE_MOVED: 'PRICE_MOVED',
     RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
@@ -185,15 +188,19 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
   usePerpsMarketInfo: () => mockUsePerpsMarketInfo(),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
   ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
-  usePerpsOrderFees: () => ({
-    // combined = protocol + discounted builder; hl_fee_rate must report only
-    // the protocol part.
-    feeRate: 0.00145,
-    protocolFeeRate: 0.00045,
-    isLoading: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      // combined = protocol + discounted builder; hl_fee_rate must report only
+      // the protocol part.
+      feeRate: 0.00145,
+      protocolFeeRate: 0.00045,
+      isLoading: false,
+    };
+  },
 }));
 
 const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
@@ -248,6 +255,7 @@ const mockStreamManagerBase = {
   setOptimisticTPSL: jest.fn(),
   clearOptimisticTPSL: jest.fn(),
   pushPositionsWithOverrides: jest.fn(),
+  refreshPositions: jest.fn().mockResolvedValue(undefined),
   prewarm: jest.fn(),
   cleanupPrewarm: jest.fn(),
   isInitialized: () => true,
@@ -259,6 +267,12 @@ const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+const mockCaptureException = jest.fn();
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
@@ -298,7 +312,7 @@ jest.mock(
 );
 
 const mockLivePositions = jest.fn<
-  { positions: Position[]; isInitialLoading: boolean },
+  { positions: Position[]; isInitialLoading: boolean; isSeeded?: boolean },
   []
 >(() => ({
   positions: [],
@@ -541,6 +555,26 @@ describe('PerpsOrderEntryPage', () => {
       maxSlippageSource: 'default',
       setMaxSlippage: jest.fn(),
       isLoading: false,
+    });
+  });
+
+  it('passes the edited USD notional to the page fee quote', () => {
+    renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+    const input = screen
+      .getByTestId('amount-input-field')
+      .querySelector('input') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: '100' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '100',
+    });
+    mockUsePerpsOrderFees.mockClear();
+    fireEvent.change(input, { target: { value: '1000' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '1000',
     });
   });
 
@@ -863,14 +897,14 @@ describe('PerpsOrderEntryPage', () => {
       enterAmount('25');
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         expect.anything(),
       );
 
       unmount();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         [
           'ETH',
           expect.objectContaining({
@@ -907,7 +941,7 @@ describe('PerpsOrderEntryPage', () => {
       unmount();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         [
           'ETH',
           expect.objectContaining({
@@ -955,15 +989,15 @@ describe('PerpsOrderEntryPage', () => {
       fireEvent.click(screen.getByTestId('direction-tab-short'));
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetSelectedOrderType',
+        'PerpsController:setSelectedOrderType',
         ['limit'],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSaveTradeConfiguration',
+        'PerpsController:saveTradeConfiguration',
         ['ETH', 5],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsClearPendingTradeConfiguration',
+        'PerpsController:clearPendingTradeConfiguration',
         ['ETH'],
       );
     });
@@ -985,13 +1019,13 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsClearPendingTradeConfiguration',
+        'PerpsController:clearPendingTradeConfiguration',
         ['ETH'],
       );
       mockSubmitRequestToBackground.mockClear();
       unmount();
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         expect.anything(),
       );
     });
@@ -1006,7 +1040,7 @@ describe('PerpsOrderEntryPage', () => {
       fireEvent.click(chart);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetVisibleCandleCount',
+        'PerpsController:setVisibleCandleCount',
         [75],
       );
     });
@@ -1276,13 +1310,13 @@ describe('PerpsOrderEntryPage', () => {
 
       fireEvent.click(toggle);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
+        'PerpsController:setProLayoutPreferences',
         [{ orderBookExpanded: true }],
       );
 
       fireEvent.click(toggle);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
+        'PerpsController:setProLayoutPreferences',
         [{ orderBookExpanded: false }],
       );
     });
@@ -1775,7 +1809,7 @@ describe('PerpsOrderEntryPage', () => {
 
         fireEvent.click(toggle);
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsSetProLayoutPreferences',
+          'PerpsController:setProLayoutPreferences',
           [{ chartExpanded: true }],
         );
         const cta = screen.getByTestId('submit-order-button').parentElement;
@@ -1784,7 +1818,7 @@ describe('PerpsOrderEntryPage', () => {
 
         fireEvent.click(toggle);
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsSetProLayoutPreferences',
+          'PerpsController:setProLayoutPreferences',
           [{ chartExpanded: false }],
         );
         expect(cta?.style.left).toBe('');
@@ -1806,7 +1840,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
+        'PreferencesController:setPreference',
         ['perpsSelectedCandlePeriod', '15m'],
       );
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
@@ -3289,11 +3323,9 @@ describe('PerpsOrderEntryPage', () => {
       await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
         timeout: 2000,
       });
-      // These three moved here when the client trade event was removed: the
-      // controller's TrackingData has no slippage fields. Coverage is partial by
-      // construction — see the note in report.md. Exact values, not shapes: the
-      // mocks fix maxSlippageBps at 300 and estimatedSlippageBps at 50, so a
-      // regression in the bps->pct conversion or the source mapping fails here.
+      // Exact values, not shapes: the mocks fix maxSlippageBps at 300 and
+      // estimatedSlippageBps at 50, so a regression in the bps->pct conversion
+      // or the source mapping fails here.
       expect(consideredCalls()[0][0].properties).toEqual(
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: 3,
@@ -3553,7 +3585,7 @@ describe('PerpsOrderEntryPage', () => {
         }),
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSavePendingTradeConfiguration',
+        'PerpsController:savePendingTradeConfiguration',
         [
           'ETH',
           expect.objectContaining({
@@ -3687,6 +3719,9 @@ describe('PerpsOrderEntryPage', () => {
             orderType: 'market',
             trackingData: expect.objectContaining({
               hlFeeRate: 0.00045,
+              maxSlippageBps: 300,
+              maxSlippageSource: PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+              estimatedSlippageBps: 50,
               // No existing position -> create_position; the controller only
               // emits the tx `action` when trackingData.tradeAction is set.
               tradeAction: PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
@@ -3800,6 +3835,142 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
+    it('uses the structured error code when the order price moved', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Price moved too much',
+            errorCode: 'PRICE_MOVED',
+            errorDetails: {
+              code: 'PRICE_MOVED',
+              priceDeltaBps: 336,
+              maxSlippageBps: 300,
+              expectedPrice: 788.71,
+              currentPrice: 815.22,
+            },
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsPriceMoved', ['3.36', '3']),
+      });
+    });
+
+    it('explains IOC cancellation using the submitted tolerance', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'IOC_CANCEL',
+            errorCode: 'IOC_CANCEL',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['3']),
+      });
+    });
+
+    it('uses the default tolerance when slippage configuration is disabled', async () => {
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 500,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'IOC_CANCEL',
+            errorCode: 'IOC_CANCEL',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+      const state = createMockState();
+      state.metamask.remoteFeatureFlags.perpsSlippageConfig2 = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            maxSlippageBps: 300,
+            trackingData: expect.objectContaining({
+              maxSlippageBps: 300,
+              maxSlippageSource: 'default',
+            }),
+          }),
+        ],
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['3']),
+      });
+    });
+
+    it('explains a thrown IOC cancellation using the submitted tolerance', async () => {
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 500,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.reject(
+            Object.assign(new Error('IOC_CANCEL'), { code: 'IOC_CANCEL' }),
+          );
+        }
+        return Promise.resolve({ success: true });
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['5']),
+      });
+    });
+
     it('shows order failure toast when controller throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
@@ -3827,6 +3998,46 @@ describe('PerpsOrderEntryPage', () => {
         description: 'A network error occurred. Please try again.',
       });
     });
+
+    it.each(['', '   ', '.', '2 ETH', 'Infinity'])(
+      'renders close mode with malformed live size %p and restores submission after recovery',
+      async (size) => {
+        mockSearchParams.set('mode', 'close');
+        mockLivePositions.mockReturnValue({
+          positions: [{ ...mockPositions[0], size }],
+          isInitialLoading: false,
+        });
+        const store = mockStore(createMockState());
+        const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        const submit = screen.getByTestId('submit-order-button');
+        expect(submit).toBeDisabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: undefined,
+        });
+        await act(async () => fireEvent.click(submit));
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsClosePosition',
+          expect.anything(),
+        );
+
+        mockUsePerpsOrderFees.mockClear();
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        rerender(<PerpsOrderEntryPage />);
+
+        expect(submit).toBeEnabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: String(Math.abs(Number(mockPositions[0].size)) * 3025.5),
+        });
+      },
+    );
 
     it('calls closePosition when in close mode', async () => {
       mockSearchParams.set('mode', 'close');
@@ -4570,6 +4781,107 @@ describe('PerpsOrderEntryPage', () => {
     beforeEach(() => {
       mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
+
+    it.each(['modify', 'close'])(
+      'reports an already-closed position instead of placing an order in %s mode',
+      async (mode) => {
+        mockSearchParams.set('mode', mode);
+
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('submit-order-button'));
+        });
+
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+        expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+          replace: true,
+        });
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsPlaceOrder',
+          expect.anything(),
+        );
+      },
+    );
+
+    it('reports a failed refresh after an already-closed position', async () => {
+      const refreshError = new Error('positions unavailable');
+      mockStreamManagerBase.refreshPositions.mockRejectedValueOnce(
+        refreshError,
+      );
+      mockSearchParams.set('mode', 'close');
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockCaptureException).toHaveBeenCalledWith(refreshError);
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastPositionAlreadyClosed',
+      });
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+      });
+    });
+
+    it.each([
+      ['close', 'perpsClosePosition'],
+      ['modify', 'perpsUpdatePositionTPSL'],
+    ])(
+      'reports an already-closed position when %s is rejected with POSITION_NOT_FOUND',
+      async (mode, method) => {
+        mockSearchParams.set('mode', mode);
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        mockSubmitRequestToBackground.mockImplementation((name: string) =>
+          Promise.resolve(
+            name === method
+              ? { success: false, error: 'POSITION_NOT_FOUND' }
+              : { success: true },
+          ),
+        );
+
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('submit-order-button'));
+        });
+
+        expect(mockReplacePerpsToastByKey).toHaveBeenLastCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+        expect(mockStreamManagerBase.refreshPositions).toHaveBeenCalledTimes(1);
+        expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+          replace: true,
+        });
+      },
+    );
+
+    it.each(['modify', 'close'])(
+      'disables submit in %s mode until live positions replace a seeded snapshot',
+      (mode) => {
+        mockSearchParams.set('mode', mode);
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+          isSeeded: true,
+        });
+
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      },
+    );
 
     it('shows close failure toast when closePosition fails', async () => {
       mockSearchParams.set('mode', 'close');

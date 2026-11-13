@@ -13,6 +13,7 @@ import {
 import {
   enrichEventContext,
   enrichEventProperties,
+  getUserAgent,
   type PlatformAdapterEnrichmentContext,
 } from '../../controllers/analytics/platform-adapter';
 import { segment } from '.';
@@ -168,6 +169,7 @@ export function trackEarlySegmentEvent({
       name: 'MetaMask Extension',
       version: process.env.METAMASK_VERSION,
     },
+    userAgent: getUserAgent(),
   };
 
   const mergedContext = context

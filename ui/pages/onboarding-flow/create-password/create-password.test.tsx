@@ -27,6 +27,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreatePassword from './create-password';
 
 const mockTrackEvent = jest.fn();
+const mockEndJourney = jest.fn();
+
+jest.mock('../../../contexts/onboarding-trace', () => ({
+  useOnboardingTrace: () => ({
+    endJourney: mockEndJourney,
+  }),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -407,6 +414,7 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should create new wallet without marketing checked when its social login flow', async () => {
+      const optOutOfMarketingSpy = jest.spyOn(Actions, 'optOutOfMarketing');
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -457,7 +465,47 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockCreateNewAccount).toHaveBeenCalled();
+        expect(optOutOfMarketingSpy).toHaveBeenCalled();
       });
+    });
+
+    it('should opt in locally and write marketing consent to OAuth when marketing is checked in social login flow', async () => {
+      const optInToMarketingSpy = jest.spyOn(Actions, 'optInToMarketing');
+      const setMarketingConsentSpy = jest.spyOn(Actions, 'setMarketingConsent');
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
+
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: '12345678' },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        { target: { value: '12345678' } },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(mockCreateNewAccount).toHaveBeenCalled();
+        expect(optInToMarketingSpy).toHaveBeenCalled();
+      });
+      expect(setMarketingConsentSpy).toHaveBeenCalledWith(true);
     });
   });
 
@@ -742,6 +790,7 @@ describe('Onboarding Create Password', () => {
           },
         );
       });
+      expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
     });
 
     it('tracks Wallet Imported when import succeeds', async () => {
@@ -1463,6 +1512,7 @@ describe('Onboarding Create Password', () => {
           { replace: true },
         );
       });
+      expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
     });
   });
 

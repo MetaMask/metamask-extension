@@ -3,6 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
+import DeveloperToolsSettings from '../../page-objects/pages/settings/developer-tools-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
@@ -39,8 +40,10 @@ describe('Clear account activity', function (this: Suite) {
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToDeveloperOptions();
-        await settingsPage.clickDeveloperOptionsDeleteActivityAndNonceData();
-        await settingsPage.confirmDeleteActivityAndNonceModal();
+        const developerToolsSettings = new DeveloperToolsSettings(driver);
+        await developerToolsSettings.checkPageIsLoaded();
+        await developerToolsSettings.clickDeleteActivityAndNonceData();
+        await developerToolsSettings.confirmDeleteActivityAndNonceModal();
         await closeSettings(driver);
 
         await homePage.goToActivityList();

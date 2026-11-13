@@ -5,8 +5,14 @@ import {
   TransactionType,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { EthAccountType } from '@metamask/keyring-api';
+import {
+  createCacheKey,
+  ResultType,
+} from '../../../../shared/lib/trust-signals';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
+import * as shieldModule from '../../../../shared/lib/shield';
 import { createMockMessenger } from '../test-utils';
 import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { getTransactionControllerInstanceOptions } from './transaction-controller';
@@ -14,6 +20,7 @@ import { getTransactionControllerInstanceOptions } from './transaction-controlle
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
 jest.mock('../../../../shared/lib/selectors');
+jest.mock('../../../../shared/lib/shield');
 jest.mock('../../lib/transaction/hooks', () => ({
   getTransactionControllerHooks: jest.fn(() => ({ beforeSign: jest.fn() })),
 }));
@@ -155,6 +162,66 @@ describe('TransactionController wallet instance options', () => {
     });
 
     expect(isSimulationEnabled?.()).toBe(true);
+  });
+
+  it('returns only the simulation URL from the Shield gateway config', async () => {
+    jest.mocked(shieldModule.getShieldGatewayConfig).mockResolvedValue({
+      authorization: 'Bearer token',
+      newUrl: 'https://shield.test/simulate',
+    });
+
+    const getSimulationConfig = testConstructorOption('getSimulationConfig');
+
+    expect(
+      await getSimulationConfig?.('https://sentinel.test/simulate'),
+    ).toStrictEqual({ newUrl: 'https://shield.test/simulate' });
+  });
+
+  it('determines transaction trust from current trust signals and accounts', () => {
+    const target = '0x0000000000000000000000000000000000000001';
+    const internalAddress = '0x0000000000000000000000000000000000000002';
+    let resultType: ResultType = ResultType.Loading;
+    const getFlatState = jest.fn(
+      () =>
+        ({
+          addressSecurityAlertResponses: {
+            [createCacheKey(CHAIN_ID_MOCK, target)]: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              result_type: resultType,
+              label: resultType.toLowerCase(),
+              timestamp: Date.now(),
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              internal: {
+                address: internalAddress,
+                type: EthAccountType.Eoa,
+              },
+            },
+          },
+        }) as never,
+    );
+    const options = getTransactionControllerInstanceOptions({
+      initMessenger: getTransactionControllerInitMessenger(
+        createMockMessenger(),
+      ),
+      getFlatState,
+      getPermittedAccounts: jest.fn(() => []),
+      getTransactionMetricsRequest: jest.fn(() => ({}) as never),
+    });
+    const transactionMeta = {
+      chainId: CHAIN_ID_MOCK,
+      txParams: { to: target },
+      nestedTransactions: [{ to: internalAddress }],
+    } as unknown as TransactionMeta;
+
+    expect(options.isTransactionTrusted?.(transactionMeta)).toBe(false);
+
+    resultType = ResultType.Trusted;
+
+    expect(options.isTransactionTrusted?.(transactionMeta)).toBe(true);
+    expect(getFlatState).toHaveBeenCalledTimes(2);
   });
 
   describe('isAutomaticGasFeeUpdateEnabled', () => {

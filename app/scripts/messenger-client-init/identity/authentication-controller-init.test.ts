@@ -124,6 +124,7 @@ describe('AuthenticationControllerInit', () => {
         env: Env.PRD,
         isSocialPairingEnabled: expect.any(Function),
       },
+      trace: expect.any(Function),
     });
   });
 
