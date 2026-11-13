@@ -43,7 +43,6 @@ import {
   Hex,
   hexToBytes,
   Json,
-  KnownCaipNamespace,
   NonEmptyArray,
   parseCaipAccountId,
   parseCaipChainId,
@@ -1366,46 +1365,10 @@ export class LegacyBackgroundApiService {
       );
       await this.lookupSelectedNetworks();
 
-      // Wait for NetworkEnablementController's async #onAddNetwork to finish
-      // processing (SLIP-44 lookup and enablement decision) BEFORE calling
-      // cleanup(), so the chain is still in #nonActiveAdditions when
-      // #onAddNetwork checks isNonActiveAddition.
-      await this.#waitForNetworkEnablementControllerUpdate(
-        networkConfiguration.chainId,
-      );
-
       return addedNetwork;
     } finally {
       cleanup();
     }
-  }
-
-  /**
-   * Waits for NetworkEnablementController to finish processing a newly added
-   * network. Resolves once the chain appears in enabledNetworkMap with any
-   * value (enabled or disabled).
-   *
-   * @param chainId - The chain ID of the newly added network.
-   */
-  async #waitForNetworkEnablementControllerUpdate(chainId: Hex): Promise<void> {
-    const currentState = this.#messenger.call(
-      'NetworkEnablementController:getState',
-    );
-
-    // If chain is already in the map, NetworkEnablementController is done
-    if (
-      currentState.enabledNetworkMap[KnownCaipNamespace.Eip155]?.[chainId] !==
-      undefined
-    ) {
-      return;
-    }
-
-    // Wait for chain to appear in the map
-    await this.#messenger.waitUntil('NetworkEnablementController:stateChange', {
-      condition: (state) =>
-        state.enabledNetworkMap[KnownCaipNamespace.Eip155]?.[chainId] !==
-        undefined,
-    });
   }
 
   /**

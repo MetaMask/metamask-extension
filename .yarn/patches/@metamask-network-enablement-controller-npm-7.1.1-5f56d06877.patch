@@ -217,11 +217,14 @@ index b4fb88a9b8f52741ff16388c23da97ee41b74054..17154148516b44b92906eece74ae65c5
       */
      async #onAddNetwork(chainId) {
          const { namespace, storageKey, reference, caipChainId } = deriveKeys(chainId);
-@@ -516,21 +570,38 @@ export class NetworkEnablementController extends BaseController {
++        // Capture isNonActiveAddition synchronously BEFORE any await, so the flag
++        // is checked while the chainId is still in #nonActiveAdditions (before
++        // cleanup runs in the extension's addNetwork finally block).
++        const isNonActiveAddition = this.#nonActiveAdditions.has(chainId);
+@@ -516,21 +573,35 @@ export class NetworkEnablementController extends BaseController {
          // EVM networks: use getEvmSlip44 (chainid.network data)
          const slip44CoinType = await Slip44Service.getEvmSlip44(numericChainId);
          const isRegistryAutoAdded = selectEvmAutoEnabledNetworksChainIds(this.messenger.call('ConfigRegistryController:getState')).includes(caipChainId);
-+        const isNonActiveAddition = this.#nonActiveAdditions.has(chainId);
          this.update((state) => {
              // Ensure the namespace bucket exists
              this.#ensureNamespaceBucket(state, namespace);

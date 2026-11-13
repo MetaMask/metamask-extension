@@ -2140,9 +2140,7 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'NetworkEnablementController:getState',
-          jest.fn().mockReturnValue({
-            enabledNetworkMap: { eip155: { '0x1': true } },
-          }),
+          jest.fn().mockReturnValue({ enabledNetworkMap: {} }),
         );
         rootMessenger.registerActionHandler(
           'NetworkEnablementController:setNetworkAdditionMode',
@@ -2231,67 +2229,6 @@ describe('LegacyBackgroundApiService', () => {
         ).rejects.toThrow('add network failed');
 
         expect(lookupNetworkHandler).not.toHaveBeenCalled();
-        expect(cleanupFn).toHaveBeenCalled();
-      });
-    });
-
-    it('waits for NetworkEnablementController to process the chain before calling cleanup', async () => {
-      await withService(async ({ rootMessenger }) => {
-        const addNetworkHandler = jest.fn().mockReturnValue(addedNetwork);
-        const lookupNetworkHandler = jest.fn().mockResolvedValue(undefined);
-        const cleanupFn = jest.fn();
-        const setNetworkAdditionModeHandler = jest
-          .fn()
-          .mockReturnValue(cleanupFn);
-
-        let getStateCallCount = 0;
-        const getStateHandler = jest.fn().mockImplementation(() => {
-          getStateCallCount += 1;
-          // First call: chain not yet in map (simulate async processing)
-          // Second call: chain now in map (processing complete)
-          return {
-            enabledNetworkMap: {
-              eip155: getStateCallCount === 1 ? {} : { '0x1': true },
-            },
-          };
-        });
-
-        rootMessenger.registerActionHandler(
-          'NetworkController:addNetwork',
-          addNetworkHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkController:lookupNetwork',
-          lookupNetworkHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkController:getState',
-          jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkEnablementController:getState',
-          getStateHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'NetworkEnablementController:setNetworkAdditionMode',
-          setNetworkAdditionModeHandler,
-        );
-
-        // Simulate NetworkEnablementController processing by publishing state change
-        setTimeout(() => {
-          rootMessenger.publish('NetworkEnablementController:stateChange', {
-            enabledNetworkMap: { eip155: { '0x1': true } },
-          });
-        }, 10);
-
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:addNetwork',
-          networkConfiguration,
-          { setActive: false },
-        );
-
-        // Verify getState was called at least twice (once for check, once for wait)
-        expect(getStateHandler.mock.calls.length).toBeGreaterThanOrEqual(1);
         expect(cleanupFn).toHaveBeenCalled();
       });
     });
