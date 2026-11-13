@@ -107,3 +107,11 @@ export const selectPaymentOverrideByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.paymentOverride,
 );
+
+/**
+ * Fiat on-ramp payment state for a transaction, when the user pays by card.
+ */
+export const selectTransactionPayFiatPaymentByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.fiatPayment,
+);

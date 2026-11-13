@@ -41,6 +41,9 @@ class SelectNetworkModal {
 
   protected readonly driver: Driver;
 
+  private readonly enabledNetworkListItemByName = (networkName: string) =>
+    `${this.networkListItemClass}:not(${this.networkListItemClass}--disabled) ${this.networkListItemByName(networkName)}`;
+
   private readonly manageNetworksButton =
     '[data-testid="home-network-filter-manage-networks"]';
 
@@ -176,6 +179,13 @@ class SelectNetworkModal {
 
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
+    // Non-EVM networks stay disabled until the selected account group has an
+    // account for them, e.g. while fixtures with a non-default vault recreate
+    // the non-EVM accounts on unlock. Clicking a disabled row is a no-op.
+    await this.driver.waitForSelector(
+      this.enabledNetworkListItemByName(networkName),
+      { timeout: 45000 },
+    );
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
     );

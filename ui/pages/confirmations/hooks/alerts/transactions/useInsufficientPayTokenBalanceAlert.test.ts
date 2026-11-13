@@ -234,6 +234,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     useSendTokensMock.mockReturnValue([]);
     useIsFundingAccountBalanceSettlingMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatFormatted: '$10.00',
       withdrawableFiatRaw: '10',
     });
@@ -1059,6 +1060,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       setPayToken: jest.fn(),
     });
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatRaw: '10',
       withdrawableFiatFormatted: '$10.00',
     });

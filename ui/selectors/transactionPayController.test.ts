@@ -16,6 +16,7 @@ import {
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayAccountOverrideByTransactionId,
   selectTransactionPayEvmAccountOverrideByTransactionId,
+  selectTransactionPayFiatPaymentByTransactionId,
   selectPaymentOverrideByTransactionId,
   TransactionPayAccountsState,
   TransactionPayState,
@@ -394,6 +395,31 @@ describe('transactionPayController selectors', () => {
       const state = createMockState({ isLoading: false });
 
       const result = selectPaymentOverrideByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('selectTransactionPayFiatPaymentByTransactionId', () => {
+    it('returns the selected fiat payment method', () => {
+      const fiatPayment = { selectedPaymentMethodId: 'apple-pay' };
+      const state = createMockState({ fiatPayment });
+
+      const result = selectTransactionPayFiatPaymentByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toStrictEqual(fiatPayment);
+    });
+
+    it('returns undefined when no fiat payment is selected', () => {
+      const state = createMockState({ isLoading: false });
+
+      const result = selectTransactionPayFiatPaymentByTransactionId(
         state,
         TRANSACTION_ID,
       );

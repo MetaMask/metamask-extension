@@ -187,6 +187,7 @@ describe('PayWithRow', () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     getFieldAlertsMock.mockReturnValue([]);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      isLoading: false,
       withdrawableFiatFormatted: '$12.34',
       withdrawableFiatRaw: '12.34',
     });

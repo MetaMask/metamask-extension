@@ -2755,6 +2755,22 @@
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
+  "chartNoData": {
+    "message": "No chart data",
+    "description": "Title shown when advanced chart fails to load"
+  },
+  "chartNoDataDescription": {
+    "message": "We couldn't load the chart. Try switching to Line mode.",
+    "description": "Description shown when advanced chart fails to load, suggesting user switch to line chart"
+  },
+  "chartTypeCandlestick": {
+    "message": "Candlestick chart",
+    "description": "Accessible label for the candlestick chart type toggle button on the token details page chart"
+  },
+  "chartTypeLine": {
+    "message": "Line chart",
+    "description": "Accessible label for the line chart type toggle button on the token details page chart"
+  },
   "checkNetworkConnectivity": {
     "message": "Check network connectivity."
   },
@@ -3521,6 +3537,12 @@
   "deepLink_GoToTheHomePageButton": {
     "message": "Go to the home page"
   },
+  "deepLink_MobileShareDescription": {
+    "message": "Scan this QR code with your mobile device to open this link in MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Continue on MetaMask Mobile"
+  },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
   },
@@ -3648,10 +3670,6 @@
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain the same. This process may take up to 30 days. View our $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3659,14 +3677,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "We are unable to delete this data right now"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Unable to delete"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "We are about to remove all your MetaMetrics data. Are you sure?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Delete MetaMetrics data?"
@@ -5160,6 +5172,18 @@
     "message": "JSON file",
     "description": "format for importing an account"
   },
+  "jsonImportPasswordIncorrect": {
+    "message": "That password didn't work.",
+    "description": "Shown under the JSON import password field when a password was entered after a blank attempt already failed"
+  },
+  "jsonImportPasswordIncorrectOrOptional": {
+    "message": "That password didn't work. If your file has no password, leave this blank.",
+    "description": "Shown under the JSON import password field when a password was entered and no blank attempt has failed yet"
+  },
+  "jsonImportPasswordRequired": {
+    "message": "This file needs a password.",
+    "description": "Shown under the JSON import password field when importing with the password left blank fails"
+  },
   "keyringAccountName": {
     "message": "Account name"
   },
@@ -5549,9 +5573,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Since you've never opted into MetaMetrics, there's no data to delete here."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5912,6 +5933,14 @@
   "moneyAccountAvailableBalance": {
     "message": "Available balance: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountDepositConvert": {
+    "message": "Convert $1",
+    "description": "Confirm button on a MetaMask Money deposit. $1 is the pay token symbol, for example USDC."
+  },
+  "moneyAccountDepositHeader": {
+    "message": "Add to MetaMask Money",
+    "description": "Header on the MetaMask Money deposit confirmation"
   },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
@@ -6916,6 +6945,10 @@
   "noDefaultAddress": {
     "message": "No $1 address",
     "description": "$1 is the default address scope"
+  },
+  "noDepositFee": {
+    "message": "No deposit fee",
+    "description": "Label shown next to Money account when depositing into Perps incurs no deposit fee"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -11693,6 +11726,14 @@
   "sortByDecliningBalance": {
     "message": "Declining balance ($1 high-low)",
     "description": "Indicates a descending order based on token fiat balance. $1 is the preferred currency symbol"
+  },
+  "sortedAscending": {
+    "message": "sorted ascending",
+    "description": "Accessible name for a column sorted with the lowest value, or A to Z, first."
+  },
+  "sortedDescending": {
+    "message": "sorted descending",
+    "description": "Accessible name for a column sorted with the highest value, or Z to A, first."
   },
   "source": {
     "message": "Source"

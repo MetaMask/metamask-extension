@@ -72,3 +72,84 @@ export const switchToAccount = async (
   await accountListPage.switchToAccount(accountName);
   await homePage.headerNavbar.checkAccountLabel(accountName);
 };
+
+type AssertAddressAtIndexOptions = {
+  index: number;
+  networkName: string;
+  expectedAddress: string;
+};
+
+/**
+ * Asserts the derived address for the account at `index` (0-based) on the
+ * given network: opens the account's multichain menu, enters the address list,
+ * verifies the shortened address is shown for the network row, and copies it
+ * to the clipboard.
+ *
+ * @param driver - The WebDriver instance.
+ * @param options - Assertion options.
+ * @param options.index - Zero-based account index.
+ * @param options.networkName - Network row to assert.
+ * @param options.expectedAddress - Full address expected for the account.
+ */
+export async function assertAddressAtIndex(
+  driver: Driver,
+  { index, networkName, expectedAddress }: AssertAddressAtIndexOptions,
+): Promise<void> {
+  const accountListPage = new AccountListPage(driver);
+  const accountAddressListPage = new AccountAddressListPage(driver);
+  const accountLabel = `Account ${index + 1}`;
+
+  await accountListPage.openMultichainAccountMenu({ accountLabel });
+  await accountListPage.clickMultichainAccountMenuItem('Addresses');
+  await accountAddressListPage.checkPageIsLoaded();
+  await accountAddressListPage.checkNetworkAddressIsDisplayedForNetwork({
+    networkName,
+    networkAddress: shortenAddress(expectedAddress),
+  });
+  await accountAddressListPage.clickCopyButtonForNetworkAndAssertClipboard({
+    networkName,
+    expectedAddress,
+  });
+  await accountAddressListPage.goBack();
+}
+
+type AssertNetworkAddressesForAccountsOptions = {
+  total: number;
+  networkName: string;
+  expectedAddresses: readonly string[];
+};
+
+/**
+ * Asserts the derived addresses for the first `total` HD accounts.
+ *
+ * @param driver - The WebDriver instance.
+ * @param options - Assertion options.
+ * @param options.total - Number of accounts to assert, starting at index 0.
+ * @param options.networkName - Network row to assert.
+ * @param options.expectedAddresses - Expected addresses by account index.
+ */
+export async function assertNetworkAddressesForAccounts(
+  driver: Driver,
+  {
+    total,
+    networkName,
+    expectedAddresses,
+  }: AssertNetworkAddressesForAccountsOptions,
+): Promise<void> {
+  const homePage = new HomePage(driver);
+  const accountListPage = new AccountListPage(driver);
+
+  await homePage.headerNavbar.openAccountMenu();
+  await accountListPage.checkPageIsLoaded();
+  await accountListPage.waitUntilSyncingIsCompleted();
+
+  for (let index = 0; index < total; index += 1) {
+    await assertAddressAtIndex(driver, {
+      index,
+      networkName,
+      expectedAddress: expectedAddresses[index],
+    });
+  }
+
+  await accountListPage.closeMultichainAccountsPage();
+}

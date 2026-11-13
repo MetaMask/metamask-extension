@@ -66,8 +66,6 @@ const fetchAssetMetadata = async (
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
-
-  const abortController = useRef<AbortController>(new AbortController());
   const appliedSearch = useRef<string | null>(null);
 
   const { search } = useBridgeNavigation();
@@ -82,19 +80,10 @@ export const usePrefillFromSearchQuery = () => {
 
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
 
-  // Cleanup abort controller on unmount
-  useEffect(() => {
-    return () => {
-      abortController.current.abort();
-    };
-  }, []);
-
   const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
     ReturnType<typeof fetchAssetMetadataForAssetIds>
   > | null>(null);
 
-  // Only update parsed values and fetch metadata if the search params
-  // are set (once) to prevent infinite re-renders
   useEffect(() => {
     if (appliedSearch.current === search) {
       return;
@@ -120,17 +109,30 @@ export const usePrefillFromSearchQuery = () => {
 
       // Fetch asset metadata for both tokens in 1 call
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
-        abortController.current.abort();
-        abortController.current = new AbortController();
+        const controller = new AbortController();
+        let isFetchComplete = false;
         fetchAssetMetadata(
-          abortController.current.signal,
+          controller.signal,
           searchParamsFrom?.assetId,
           searchParamsTo?.assetId,
         ).then((result) => {
-          setAssetMetadataByAssetId(result);
+          if (!controller.signal.aborted) {
+            isFetchComplete = true;
+            setAssetMetadataByAssetId(result);
+          }
         });
+
+        return () => {
+          // Cleanup abort controller on unmount
+          controller.abort();
+          // Re-apply only if the fetch was interrupted
+          if (!isFetchComplete) {
+            appliedSearch.current = null;
+          }
+        };
       }
     }
+    return undefined;
   }, [search, searchParams]);
 
   const setToChainAndToken = useCallback(
