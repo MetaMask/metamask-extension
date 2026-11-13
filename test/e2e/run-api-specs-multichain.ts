@@ -127,6 +127,7 @@ async function main() {
           result: {
             name: 'wallet_getSessionResultExample',
             value: {
+              sessionProperties: {},
               sessionScopes: {},
             },
           },

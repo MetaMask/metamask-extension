@@ -93,6 +93,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
+  getPermittedEthChainIds,
   getSessionScopes,
   setPermittedEthChainIds,
   getPermittedAccountsForScopes,
@@ -4494,8 +4495,20 @@ export default class MetamaskController extends EventEmitter {
           ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
-        getCapabilities: ({ address }) =>
-          this.getEip5792Capabilities(address, undefined),
+        // Limit the capabilities in the session properties to the EVM chains
+        // the session permits, instead of every configured network.
+        getCapabilities: async ({ address }) => {
+          const caveat = this.permissionController.getCaveat(
+            origin,
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+          );
+          const chainIds = getPermittedEthChainIds(caveat.value);
+          if (chainIds.length === 0) {
+            return {};
+          }
+          return await this.getEip5792Capabilities(address, chainIds);
+        },
       }),
     );
 
