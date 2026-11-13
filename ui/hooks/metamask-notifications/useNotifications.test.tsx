@@ -36,7 +36,8 @@ describe('useNotifications', () => {
         isMetamaskNotificationsEnabled: false,
         isBackupAndSyncEnabled: false,
         isFeatureAnnouncementsEnabled: false,
-        dataCollectionForMarketing: true,
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
         internalAccounts: {
           accounts: [
             {

@@ -43,9 +43,9 @@ const mockPerpsEventPropertyKeys = {
   SOURCE: 'source',
   HAS_PERP_BALANCE: 'has_perp_balance',
   BUTTON_LOCATION: 'button_location',
-  BUTTON_TYPE: 'button_type',
   OPEN_POSITION: 'open_position',
   OPEN_ORDER: 'open_order',
+  OUTAGE_BANNER_SHOWN: 'outage_banner_shown',
   MAX_SLIPPAGE_PCT: 'max_slippage_pct',
   MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
   ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',
@@ -154,6 +154,9 @@ const mockPerpsEventValueLiterals = {
     CLOSE_ALL_CANCELLED: 'close_all_cancelled',
     ORDER_BOOK_OPENED: 'order_book_opened',
     ORDER_BOOK_CLOSED: 'order_book_closed',
+    DEPOSIT_FLOW_OPENED: 'deposit_flow_opened',
+    DEPOSIT_CONFIRMED: 'deposit_confirmed',
+    TRADE_SUBMITTED_AFTER_DEPOSIT: 'trade_submitted_after_deposit',
     SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
     SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
     SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
@@ -244,6 +247,7 @@ const mockPerpsEventValueLiterals = {
     PERPS_TAB: 'perps_tab',
     PERPS_HOME: 'perps_home',
     PERPS_HOME_EMPTY_STATE: 'perps_home_empty_state',
+    AMOUNT_INPUT: 'amount_input',
   },
 };
 
@@ -464,7 +468,21 @@ function mockSelectVisibleCandleCount(state) {
     : mockDefaultVisibleCandleCount;
 }
 
+// Shared Perps calculations come from the real package so tests assert Core's
+// formulas, not a copy. These modules import only `bignumber.js` and constants,
+// so they load without the Hyperliquid SDK.
+const mockCloseCalculations = require('@metamask/perps-controller/utils/closeCalculations');
+const mockTpslCalculations = require('@metamask/perps-controller/utils/tpslCalculations');
+const mockPerpsConfig = require('@metamask/perps-controller/constants/perpsConfig');
+const mockPerpsFormatters = require('@metamask/perps-controller/utils/perpsFormatters');
+
 module.exports = {
+  ...mockCloseCalculations,
+  ...mockTpslCalculations,
+  CLOSE_POSITION_CONFIG: mockPerpsConfig.CLOSE_POSITION_CONFIG,
+  TP_SL_PRECISION_CONFIG: mockPerpsConfig.TP_SL_PRECISION_CONFIG,
+  formatPerpsFiat: mockPerpsFormatters.formatPerpsFiat,
+  formatPnl: mockPerpsFormatters.formatPnl,
   DEFAULT_ORDER_BOOK_PREFERENCES: mockDefaultOrderBookPreferences,
   DEFAULT_PRO_LAYOUT_PREFERENCES: mockDefaultProLayoutPreferences,
   DEFAULT_SELECTED_ORDER_TYPE: 'market',

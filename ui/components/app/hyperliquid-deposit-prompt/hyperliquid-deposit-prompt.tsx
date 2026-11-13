@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { type Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
 import {
   Box,
@@ -31,25 +31,27 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
-import { TokenIcon } from '../token-icon';
+import { TokenIcon } from '../token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/feature-flags';
 import { getAvailableTokens } from '../../../pages/confirmations/utils/transaction-pay';
 import { Asset } from '../../../pages/confirmations/components/send/asset/asset';
 import type { Asset as AssetType } from '../../../pages/confirmations/types/send';
-import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
@@ -187,7 +189,6 @@ export const HyperliquidDepositPrompt: React.FC<
 > = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const perpsHomeRoute = usePerpsHomeRoute();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -313,7 +314,7 @@ export const HyperliquidDepositPrompt: React.FC<
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
         search: new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
-          goBackTo: buildGoBackToWithSource(perpsHomeRoute),
+          goBackTo: buildGoBackToWithSource(PERPS_HOME_PAGE_ROUTE),
         }).toString(),
       },
       { replace: true },
@@ -325,7 +326,6 @@ export const HyperliquidDepositPrompt: React.FC<
     displayToken,
     navigate,
     onActionComplete,
-    perpsHomeRoute,
     startPerpsDeposit,
     trackPromptInteracted,
   ]);

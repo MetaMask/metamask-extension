@@ -1,0 +1,87 @@
+import type {
+  AuthenticationControllerProfileSignInEvent,
+  AuthenticationControllerState,
+  AuthenticationControllerStateChangeEvent,
+} from '@metamask/profile-sync-controller/auth';
+import type { PreferencesController } from '../controllers/preferences-controller';
+import {
+  authenticationStateIncludesLinkedSocialLogin,
+  profileAliasesIncludeSocialLogin,
+} from '../../../shared/lib/linked-social-login-profile';
+import type { RootMessenger } from './messenger';
+
+type LinkedSocialLoginProfileSyncMessenger = RootMessenger<
+  | {
+      type: 'AuthenticationController:getState';
+      handler: () => AuthenticationControllerState;
+    }
+  | {
+      type: 'PreferencesController:consolidateBasicFunctionality';
+      handler: () => void;
+    },
+  | AuthenticationControllerProfileSignInEvent
+  | AuthenticationControllerStateChangeEvent
+>;
+
+/**
+ * Persists linked-social-login state. Re-runs consolidation only for wallets
+ * that are already consolidated, so unmarked wallets still go through
+ * `useBasicFunctionalityConsolidation` and the remote kill switch.
+ *
+ * @param preferencesController - Preferences controller used to persist the flag.
+ * @param hasLinkedSocialLogin - Whether linked social identifiers were detected.
+ */
+export function applyLinkedSocialLoginProfileDetection(
+  preferencesController: PreferencesController,
+  hasLinkedSocialLogin: boolean,
+): void {
+  if (!hasLinkedSocialLogin) {
+    return;
+  }
+
+  const {
+    hasLinkedSocialLoginProfile,
+    isBasicFunctionalityConsolidatedEnabled,
+  } = preferencesController.getPreferences();
+
+  if (!hasLinkedSocialLoginProfile) {
+    preferencesController.setPreference('hasLinkedSocialLoginProfile', true);
+  }
+
+  if (isBasicFunctionalityConsolidatedEnabled) {
+    preferencesController.consolidateBasicFunctionality();
+  }
+}
+
+/**
+ * Registers background listeners that mirror Core auth signals into the
+ * `hasLinkedSocialLoginProfile` preference.
+ *
+ * Depends on Core exposing `profile.pairedIdentifierIds` on the primary SRP
+ * session in `srpSessionData` after SRP login (Core PR #10394), and on
+ * `AuthenticationController:profileSignIn` for multi-SRP alias events.
+ *
+ * @param messenger - Root controller messenger.
+ * @param preferencesController - Preferences controller to update.
+ */
+export function registerLinkedSocialLoginProfileSync(
+  messenger: LinkedSocialLoginProfileSyncMessenger,
+  preferencesController: PreferencesController,
+): void {
+  messenger.subscribe(
+    'AuthenticationController:profileSignIn',
+    ({ profileAliases }) => {
+      applyLinkedSocialLoginProfileDetection(
+        preferencesController,
+        profileAliasesIncludeSocialLogin(profileAliases),
+      );
+    },
+  );
+
+  messenger.subscribe('AuthenticationController:stateChange', (authState) => {
+    applyLinkedSocialLoginProfileDetection(
+      preferencesController,
+      authenticationStateIncludesLinkedSocialLogin(authState),
+    );
+  });
+}

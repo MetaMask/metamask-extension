@@ -47,25 +47,6 @@
     }
   }
 
-  &__checkbox {
-    height: 13px;
-    width: 13px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  &__checkbox-label {
-    @include design-system.H7;
-
-    color: var(--color-text-default);
-    margin-left: 8px;
-    margin-top: 1px;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    cursor: pointer;
-  }
-
   &__ignore-button.button {
     width: auto;
     padding: 8px 16px;

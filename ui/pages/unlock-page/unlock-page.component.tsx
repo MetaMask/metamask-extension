@@ -42,6 +42,7 @@ import Mascot from '../../components/ui/mascot';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
 import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unlock';
@@ -65,8 +66,13 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
+import { UnlockReady } from './unlock-performance';
 import { getCaretCoordinates } from './unlock-page.util';
-import { UnlockPasskeyIconButton, UnlockPasskeySection } from './passkey';
+import {
+  UnlockPasskeyIconButton,
+  UnlockPasskeySection,
+  type PasskeyUnlockSuccessContext,
+} from './passkey';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
@@ -77,7 +83,7 @@ type UnlockPageProps = UnlockPageContext & {
   isUnlocked: boolean;
   isOnboardingCompleted: boolean;
   onSubmit: (password: string) => Promise<void>;
-  navigateAfterUnlock: () => Promise<void>;
+  navigateAfterUnlock: (context?: PasskeyUnlockSuccessContext) => Promise<void>;
   isPasskeyActive: boolean;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
@@ -222,9 +228,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      * When true, passkey unlock UI defers ceremony to a full extension tab (sidepanel + incompatible AAGUID).
      */
     mustDeferPasskeyToBrowserTab: PropTypes.bool,
-    /**
-     * Completes passkey unlock and navigates after success (same redirect rules as password onSubmit).
-     */
   };
 
   state: UnlockPageState = {
@@ -357,9 +360,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       if (!isOnboardingCompleted) {
         this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingPasswordLoginAttempt,
-        });
-        this.ctx.bufferedEndTrace({
-          name: TraceName.OnboardingJourneyOverall,
         });
       }
 
@@ -561,6 +561,20 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     this.setState({ isPasswordUnlockMode, error: null });
   };
 
+  handlePasskeyUnlockSuccess = async ({
+    isPasskeyMigrationEligible,
+  }: PasskeyUnlockSuccessContext) => {
+    if (isPasskeyMigrationEligible) {
+      this.props.navigate(ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE, {
+        replace: true,
+        state: this.props.location.state,
+      });
+      return;
+    }
+
+    await this.props.navigateAfterUnlock();
+  };
+
   handleUnlockPasskeyFromPasswordForm = () => {
     if (this.props.mustDeferPasskeyToBrowserTab) {
       cancelPasskeyCeremony();
@@ -655,6 +669,13 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
     const showPasswordUnlockForm =
       !this.props.isPasskeyActive || isPasswordUnlockMode;
+    const isUnlockReady =
+      isOnboardingCompleted &&
+      !isLocked &&
+      !isSubmitting &&
+      !showResetPasswordModal &&
+      !showLoginErrorModal &&
+      !showConnectionsRemovedModal;
 
     return (
       <Box
@@ -671,6 +692,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
             onClose={() => this.setState({ showResetPasswordModal: false })}
           />
         )}
+        {showPasswordUnlockForm && <UnlockReady ready={isUnlockReady} />}
         {showLoginErrorModal && (
           <LoginErrorModal
             loginError={LOGIN_ERROR.RESET_WALLET}
@@ -821,6 +843,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
           ) : (
             <UnlockPasskeySection
               logoSection={this.renderLogoSection(isRehydrationFlow)}
+              isUnlockReady={isUnlockReady}
               isPasskeyActive={this.props.isPasskeyActive}
               passkeyAutoUnlockSuppressed={
                 this.props.passkeyAutoUnlockSuppressed
@@ -829,7 +852,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                 this.props.mustDeferPasskeyToBrowserTab
               }
               isPasswordInProgress={isSubmitting}
-              onUnlockSuccess={this.props.navigateAfterUnlock}
+              onUnlockSuccess={this.handlePasskeyUnlockSuccess}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
             />
           )}

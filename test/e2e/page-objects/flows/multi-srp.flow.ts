@@ -4,8 +4,11 @@ import AccountListPage from '../pages/accounts/list-page';
 import TokensTab from '../pages/home/tokens-tab';
 import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
-import PrivacySettings from '../pages/settings/privacy-settings';
-import SettingsPage from '../pages/settings/settings-page';
+import RevealSrpPage from '../pages/reveal-srp-page';
+import ManageWalletRecoverySettings from '../pages/settings/security-and-password/manage-wallet-recovery-settings';
+import SecurityAndPasswordSettings from '../pages/settings/security-and-password/security-and-password-settings';
+import { importWalletWithSrp } from './add-wallet.flow';
+import { navigateToSecurityAndPassword, openRevealSrp } from './settings.flow';
 
 export const SECOND_TEST_E2E_SRP =
   'bench top weekend buyer spoon side resist become detect gauge eye feed';
@@ -31,7 +34,7 @@ export async function importAdditionalSecretRecoveryPhrase(
   await headerNavbar.openAccountMenu();
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
-  await accountListPage.startImportSecretPhrase(srpWords);
+  await importWalletWithSrp(driver, srpWords);
   await homePage.checkNewSrpAddedToastIsDisplayed();
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();
@@ -44,17 +47,13 @@ export async function verifySrp(
   srp: string,
   srpIndex: number,
 ): Promise<void> {
-  await new HeaderNavbar(driver).openSettingsPage();
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToSecurityAndPasswordSettings();
+  await navigateToSecurityAndPassword(driver);
+  await openRevealSrp(driver, srpIndex);
 
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-  await privacySettings.openRevealSrpQuiz(srpIndex);
-  await privacySettings.completeRevealSrpQuiz();
-  await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-  await privacySettings.checkSrpTextIsDisplayed(srp);
+  const revealSrpPage = new RevealSrpPage(driver);
+  await revealSrpPage.completeRevealSrpQuiz();
+  await revealSrpPage.fillPasswordToRevealSrp(WALLET_PASSWORD);
+  await revealSrpPage.checkSrpTextIsDisplayed(srp);
 }
 
 /**
@@ -70,13 +69,13 @@ export async function verifyAccountBelongsToSrp(
   driver: Driver,
   { accountName, srpIndex }: { accountName: string; srpIndex: number },
 ): Promise<void> {
-  await new HeaderNavbar(driver).openSettingsPage();
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToSecurityAndPasswordSettings();
+  await navigateToSecurityAndPassword(driver);
+  await new SecurityAndPasswordSettings(driver).openManageWalletRecovery();
 
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-  await privacySettings.openSrpList();
-  await privacySettings.checkAccountBelongsToSrp({ accountName, srpIndex });
+  const manageWalletRecoverySettings = new ManageWalletRecoverySettings(driver);
+  await manageWalletRecoverySettings.checkPageIsLoaded();
+  await manageWalletRecoverySettings.checkAccountBelongsToSrp({
+    accountName,
+    srpIndex,
+  });
 }

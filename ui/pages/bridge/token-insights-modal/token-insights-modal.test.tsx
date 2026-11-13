@@ -184,6 +184,22 @@ describe('TokenInsightsModal', () => {
   });
 
   describe('Modal Behavior', () => {
+    it('leaves clicks in another native dialog untouched', () => {
+      const onClose = jest.fn();
+      renderComponent({ onClose });
+      const { getByText } = render(
+        <dialog open>
+          <button>Native dialog</button>
+        </dialog>,
+      );
+      const press = new MouseEvent('mousedown', {
+        bubbles: true,
+        cancelable: true,
+      });
+      fireEvent(getByText('Native dialog'), press);
+      expect(onClose).not.toHaveBeenCalled();
+      expect(press.defaultPrevented).toBe(false);
+    });
     it('should call onClose when close button is clicked', () => {
       const onClose = jest.fn();
       renderComponent({ onClose });

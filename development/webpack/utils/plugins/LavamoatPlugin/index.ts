@@ -21,6 +21,7 @@ const nullUnsafeEntries: Set<string> = new Set([
 const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by different mm deps outside of lm compartment
   'window',
+  'Window',
   'Proxy',
   'toString',
   'getComputedStyle',
@@ -77,6 +78,8 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'logEncryptedVault',
   'WebAssembly',
   'Request',
+  // Sentry builds fetch trace headers with it; scuttled, they are dropped.
+  'Headers',
   // needed by Sentry and react-router-dom v6 HashRouter
   'history',
   // globals used by react-dom
@@ -85,6 +88,13 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'opr',
   // for @popperjs/core and snap simple keyring site
   'devicePixelRatio',
+  // for @floating-ui/dom (via @metamask/design-system-react Popover), which
+  // reads these off the real window returned by `ownerDocument.defaultView`
+  'parent',
+  'frameElement',
+  'scrollX',
+  'scrollY',
+  'Node',
   // for @tanstack/react-virtual
   'ResizeObserver',
   'setTimeout',
@@ -96,7 +106,29 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];
 
-export const lavamoatPlugin = (args: Args) =>
+type IsolatedHtmlEntries = {
+  isIsolatedHtmlEntry: (name?: string | null) => boolean;
+  getIsolatedHtmlEntryNames: () => string[];
+};
+
+const lockdownBase = [
+  String.raw`runtime\.[0-9a-h]{20}\.js`,
+  String.raw`scripts\/contentscript\.js`,
+  String.raw`service-worker\.js`,
+];
+
+function lockdownPattern(isolatedHtmlNames: string[]) {
+  const isolated = isolatedHtmlNames.map(
+    (name) =>
+      `${name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}(?:\\.[0-9a-h]{20})?\\.js`,
+  );
+  return new RegExp(`^(?:${[...lockdownBase, ...isolated].join('|')})$`, 'u');
+}
+
+export const lavamoatPlugin = (
+  args: Args,
+  isolatedHtml?: IsolatedHtmlEntries,
+) =>
   new LavaMoatPlugin({
     rootDir,
     policyLocation: join(
@@ -109,9 +141,15 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and 'service-worker.js'.
-    inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
+    // Apply lockdown to shared runtimes and self-contained extension entrypoints.
+    // LavaMoat copies options at construct time, before WAR HTML entries exist,
+    // so this must resolve names when `.test` runs during emit.
+    inlineLockdown: {
+      test: (file: string) =>
+        lockdownPattern(isolatedHtml?.getIsolatedHtmlEntryNames() ?? []).test(
+          file,
+        ),
+    } as RegExp,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -155,6 +193,20 @@ export const lavamoatPlugin = (args: Args) =>
             },
           },
         };
+      } else if (isolatedHtml?.isIsolatedHtmlEntry(chunk.name)) {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              exceptions: [
+                ...getScuttleGlobalThisExceptions(args),
+                'browser',
+                'chrome',
+              ],
+            },
+          },
+        };
       } else if (chunk.name === 'runtime') {
         return {
           mode: 'safe',
@@ -180,7 +232,7 @@ export const lavamoatPlugin = (args: Args) =>
 // Matches the app's `background` root module, which the service worker imports.
 // This is the boundary at which the 'unsafe' layer must stop, so that `background`
 // and its entire dependency graph run inside LavaMoat.
-const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.js$/u;
+const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.(?:js|ts)$/u;
 
 // Unsafe layer that runs code without LavaMoat. `background` is excluded here
 // because, although it is imported from the unsafe service worker, it must

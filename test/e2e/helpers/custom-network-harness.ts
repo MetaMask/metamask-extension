@@ -5,6 +5,10 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
+  checksumErc20AssetId,
+  v6AccountsApiBalancesJson,
+} from './accounts-api-v6-balances';
+import {
   type CatalogAsset,
   type PriceMode,
   mockTokenAndPriceApis,
@@ -16,7 +20,11 @@ export type CustomNetworkId =
   | 'chiliz'
   | 'plasma'
   | 'rootstock'
-  | 'hyperevm';
+  | 'hyperevm'
+  | 'gnosis'
+  | 'stable'
+  | 'mantle'
+  | 'metis';
 
 export type CustomNetworkScenario =
   | 'nativeSend'
@@ -43,8 +51,14 @@ export const SEEDED_ERC20_SYMBOL = 'TST';
 
 const SEEDED_ERC20_ADDRESS = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
 const SEEDED_ERC20_ASSET_ID = `eip155:50/erc20:${SEEDED_ERC20_ADDRESS}`;
+const SEEDED_ERC20_CHECKSUM_ASSET_ID = checksumErc20AssetId(
+  SEEDED_ERC20_ASSET_ID,
+);
 const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const MAINNET_CHAIN_ID_HEX = '0x1';
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const DEAD_NATIVE_ADDRESS = '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000';
+const METIS_CHAIN_ID_HEX = '0x440' as Hex;
 
 const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
   xdc: {
@@ -127,14 +141,79 @@ const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
     clientId: 'hyperevm-local',
     inDefaultFixture: false,
   },
+  gnosis: {
+    id: 'gnosis',
+    name: 'Gnosis',
+    chainIdHex: CHAIN_IDS.GNOSIS,
+    chainIdDecimal: 100,
+    nativeSymbol: 'XDAI',
+    nativeAssetId: `eip155:100/erc20:${ZERO_ADDRESS}`,
+    uiNativeAssetId: `eip155:100/erc20:${ZERO_ADDRESS}`,
+    caipChainId: 'eip155:100',
+    blockExplorerUrl: 'https://gnosisscan.io',
+    clientId: 'gnosis-local',
+    inDefaultFixture: false,
+  },
+  stable: {
+    id: 'stable',
+    name: 'Stable',
+    chainIdHex: CHAIN_IDS.STABLE_MAINNET,
+    chainIdDecimal: 988,
+    nativeSymbol: 'USDT0',
+    nativeAssetId: `eip155:988/erc20:${ZERO_ADDRESS}`,
+    uiNativeAssetId: `eip155:988/erc20:${ZERO_ADDRESS}`,
+    caipChainId: 'eip155:988',
+    blockExplorerUrl: 'https://stablescan.io',
+    clientId: 'stable-local',
+    inDefaultFixture: false,
+  },
+  mantle: {
+    id: 'mantle',
+    name: 'Mantle',
+    chainIdHex: CHAIN_IDS.MANTLE,
+    chainIdDecimal: 5000,
+    nativeSymbol: 'MNT',
+    nativeAssetId: `eip155:5000/erc20:${DEAD_NATIVE_ADDRESS}`,
+    uiNativeAssetId: `eip155:5000/erc20:${DEAD_NATIVE_ADDRESS}`,
+    caipChainId: 'eip155:5000',
+    blockExplorerUrl: 'https://mantlescan.xyz',
+    clientId: 'mantle-local',
+    inDefaultFixture: false,
+  },
+  metis: {
+    id: 'metis',
+    name: 'Metis Andromeda',
+    chainIdHex: METIS_CHAIN_ID_HEX,
+    chainIdDecimal: 1088,
+    nativeSymbol: 'METIS',
+    nativeAssetId: `eip155:1088/erc20:${DEAD_NATIVE_ADDRESS}`,
+    uiNativeAssetId: `eip155:1088/erc20:${DEAD_NATIVE_ADDRESS}`,
+    caipChainId: 'eip155:1088',
+    blockExplorerUrl: 'https://explorer.metis.io',
+    clientId: 'metis-local',
+    inDefaultFixture: false,
+  },
 };
 
+/**
+ * Networks whose conversion-rate data contract is covered by table-driven
+ * unit tests in `custom-network-harness.test.ts`. Tokens-tab behavior is
+ * exercised once in `conversion-rates-custom-networks.spec.ts`.
+ */
 export const CONVERSION_RATE_NETWORKS: CustomNetworkId[] = [
   'injective',
   'chiliz',
   'plasma',
   'rootstock',
   'hyperevm',
+];
+
+export const NON_ZERO_NATIVE_NETWORKS: CustomNetworkId[] = [
+  'rootstock',
+  'stable',
+  'mantle',
+  'metis',
+  'gnosis',
 ];
 
 export function getCustomNetwork(id: CustomNetworkId): CustomNetworkConfig {
@@ -157,7 +236,9 @@ function erc20CatalogAsset(): CatalogAsset {
     symbol: SEEDED_ERC20_SYMBOL,
     decimals: 4,
     priceInUsd: 1,
-    assetIds: [SEEDED_ERC20_ASSET_ID],
+    assetIds: [
+      ...new Set([SEEDED_ERC20_ASSET_ID, SEEDED_ERC20_CHECKSUM_ASSET_ID]),
+    ],
   };
 }
 
@@ -290,6 +371,118 @@ function applyScenarioState(
   }
 }
 
+const ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL =
+  'https://accounts.api.cx.metamask.io/v2/supportedNetworks';
+
+const ACCOUNTS_API_V6_BALANCES_URL =
+  'https://accounts.api.cx.metamask.io/v6/multiaccount/balances';
+
+async function mockXdcAccountsApiSupportedNetworks(mockServer: Mockttp) {
+  return mockServer
+    .forGet(ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL)
+    .asPriority(99)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+        'eip155:50',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
+    });
+}
+
+async function mockXdcNativeAndErc20V6Balances(
+  mockServer: Mockttp,
+  network: CustomNetworkConfig,
+) {
+  return mockServer
+    .forGet(ACCOUNTS_API_V6_BALANCES_URL)
+    .asPriority(99)
+    .always()
+    .thenCallback((request) => {
+      const accountIds = (
+        new URL(request.url).searchParams.get('accountIds') ?? ''
+      )
+        .split(',')
+        .map((accountId) => accountId.trim())
+        .filter(Boolean);
+      const chainRef = String(network.chainIdDecimal);
+      const chain50AccountIds: string[] = [];
+      const otherAddresses: string[] = [];
+      for (const accountId of accountIds) {
+        const parts = accountId.split(':');
+        if (parts.length < 3 || parts[0] !== 'eip155') {
+          continue;
+        }
+        const address = parts.slice(2).join(':');
+        if (!address) {
+          continue;
+        }
+        if (parts[1] === chainRef) {
+          chain50AccountIds.push(accountId);
+        } else {
+          otherAddresses.push(address);
+        }
+      }
+      const seen = new Set(
+        chain50AccountIds.map((accountId) => accountId.toLowerCase()),
+      );
+      for (const address of otherAddresses) {
+        const chain50AccountId = `eip155:${chainRef}:${address}`;
+        if (seen.has(chain50AccountId.toLowerCase())) {
+          continue;
+        }
+        seen.add(chain50AccountId.toLowerCase());
+        chain50AccountIds.push(chain50AccountId);
+      }
+      const tstRows = accountIds.flatMap((accountId) => {
+        const rows = [
+          {
+            accountId,
+            assetId: SEEDED_ERC20_CHECKSUM_ASSET_ID,
+            balance: '10',
+          },
+        ];
+        if (SEEDED_ERC20_CHECKSUM_ASSET_ID !== SEEDED_ERC20_ASSET_ID) {
+          rows.push({
+            accountId,
+            assetId: SEEDED_ERC20_ASSET_ID,
+            balance: '10',
+          });
+        }
+        return rows;
+      });
+      const nativeZeroAddressAssetId = `eip155:${chainRef}/erc20:${ZERO_ADDRESS}`;
+      const balances = [
+        ...chain50AccountIds.flatMap((accountId) => [
+          {
+            accountId,
+            assetId: network.nativeAssetId,
+            balance: '25',
+          },
+          {
+            accountId,
+            assetId: nativeZeroAddressAssetId,
+            balance: '25',
+          },
+        ]),
+        ...tstRows,
+      ];
+
+      return {
+        statusCode: 200,
+        json: v6AccountsApiBalancesJson(request.url, balances),
+      };
+    });
+}
+
 export type CustomNetworkSetup = {
   fixtures: ReturnType<FixtureBuilderV2['build']>;
   localNodeOptions: { type: 'anvil'; options: { chainId: number } }[];
@@ -330,10 +523,18 @@ export function prepareCustomNetwork(
       { type: 'anvil', options: { chainId: network.chainIdDecimal } },
     ],
     testSpecificMock: async (mockServer: Mockttp) => {
-      return mockTokenAndPriceApis(mockServer, {
+      const tokenAndPriceMocks = await mockTokenAndPriceApis(mockServer, {
         assets,
         priceMode,
       });
+      if (scenario !== 'nativeAndErc20') {
+        return tokenAndPriceMocks;
+      }
+      return [
+        ...tokenAndPriceMocks,
+        await mockXdcAccountsApiSupportedNetworks(mockServer),
+        await mockXdcNativeAndErc20V6Balances(mockServer, network),
+      ];
     },
     network,
   };

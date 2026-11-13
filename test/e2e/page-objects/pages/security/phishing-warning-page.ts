@@ -1,4 +1,4 @@
-import { WebElement } from 'selenium-webdriver';
+import { retry } from '../../../../../development/lib/retry';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -63,22 +63,41 @@ class PhishingWarningPage {
     console.log(
       'Clicking open warning in new tab link on phishing warning page',
     );
-    const iframe = (await this.driver.findElement(
-      this.iframeSelector,
-    )) as WebElement;
-    await this.driver.switchToFrame(iframe as unknown as string);
-    await this.checkPageIsLoaded();
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          await this.driver.switchToDefaultContent();
+          const iframe = await this.driver.findElement(this.iframeSelector);
+          await this.driver.switchToFrame(iframe as unknown as string);
+          return await this.driver.isElementPresentAndVisible(
+            this.phishingWarningPageTitle,
+            1000,
+          );
+        } catch {
+          return false;
+        }
+      },
+      { timeout: 10000, interval: 500 },
+    );
     await this.driver.clickElement(this.openWarningInNewTabLink);
     try {
-      // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
       await this.driver.switchToDefaultContent();
     } catch {
       // context may already be discarded
     }
   }
 
-  async clickProceedAnywayButton(): Promise<void> {
+  async clickProceedAnywayButton({
+    waitForNavigation = true,
+  }: { waitForNavigation?: boolean } = {}): Promise<void> {
     console.log('Clicking proceed anyway button on phishing warning page');
+    if (waitForNavigation) {
+      // Retry in case the phishing page hasn't fully loaded yet by the time we click it.
+      await retry({ retries: 3, delay: 1000 }, async () =>
+        this.driver.clickElementAndWaitToDisappear(this.proceedAnywayButton),
+      );
+      return;
+    }
     await this.driver.clickElement(this.proceedAnywayButton);
   }
 

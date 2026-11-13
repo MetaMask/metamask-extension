@@ -16,17 +16,23 @@ import { ConnectionState } from './connectionState';
 describe('useDeviceEventHandlers', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
-    connectingPromiseRef: { current: Promise<void> | null };
+    connectingPromiseRef: {
+      current: Promise<HardwareWalletError | null> | null;
+    };
     isConnectingRef: { current: boolean };
     adapterRef: { current: HardwareWalletAdapter | null };
     currentConnectionIdRef: { current: number | null };
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };
     isEnsuringDeviceReadyRef: { current: boolean };
-    connectRef: { current: (() => Promise<void>) | null };
+    connectRef: {
+      current: (() => Promise<HardwareWalletError | null>) | null;
+    };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
-    ensureDeviceReadyPromiseRef: { current: Map<string, Promise<boolean>> };
+    ensureDeviceReadyPromiseRef: {
+      current: Map<string, Promise<HardwareWalletError | null>>;
+    };
     isSigningInProgressRef: { current: boolean };
   };
   let mockSetters: {

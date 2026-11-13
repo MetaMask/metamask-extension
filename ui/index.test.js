@@ -2,12 +2,24 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { setupLocale } from '../shared/lib/error-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
+import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
+import * as traceModule from '../shared/lib/trace';
+import defaultMockState from '../test/data/mock-state.json';
 import * as actions from './store/actions';
 import * as selectors from './selectors';
 import * as metamaskBaseSelectors from './ducks/metamask/base-selectors';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
-import { getCleanAppState, runInitialActions } from '.';
+import {
+  readPerpsLifecycleContext,
+  primePerpsLifecycleContext,
+} from './helpers/perps/entry-trace';
+import {
+  connectToBackground,
+  getCleanAppState,
+  launchMetamaskUi,
+  runInitialActions,
+} from '.';
 
 const enMessages = {
   troubleStarting: {
@@ -20,9 +32,6 @@ const enMessages = {
   stillGettingMessage: {
     message: 'Still getting this message?',
   },
-  sendBugReport: {
-    message: 'Send us a bug report.',
-  },
 };
 
 const esMessages = {
@@ -32,9 +41,6 @@ const esMessages = {
   },
   restartMetamask: {
     message: 'Reiniciar metamáscara',
-  },
-  sendBugReport: {
-    message: 'Envíenos un informe de errores.',
   },
 };
 
@@ -55,6 +61,24 @@ jest.mock('./selectors', () => ({
   getIsSocialLoginFlow: jest.fn(),
 }));
 
+const mockRender = jest.fn();
+
+jest.mock('react-dom/client', () => ({
+  createRoot: jest.fn(() => ({ render: mockRender })),
+}));
+
+jest.mock('./pages', () => ({
+  __esModule: true,
+  default: () => null,
+  router: {},
+}));
+
+jest.mock('./pages/confirmations/confirmation-performance');
+jest.mock('./pages/home/home-performance');
+jest.mock('./pages/unlock-page/unlock-performance');
+jest.mock('./helpers/utils/web-vitals');
+jest.mock('./helpers/utils/tags', () => ({ getStartupTraceTags: () => ({}) }));
+
 jest.mock('./ducks/metamask/base-selectors', () => ({
   ...jest.requireActual('./ducks/metamask/base-selectors'),
   getIsUnlocked: jest.fn(),
@@ -64,6 +88,26 @@ describe('Index Tests', () => {
   afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
+  });
+  it('primes Perps lifecycle once the background starts UI sync', async () => {
+    const background = {
+      perpsGetLifecycleContext: jest.fn().mockResolvedValue('cold_process'),
+      onNotification: jest.fn(),
+    };
+    connectToBackground(background, jest.fn());
+    expect(background.perpsGetLifecycleContext).not.toHaveBeenCalled();
+    await background.onNotification.mock.calls[0][0]({
+      method: START_UI_SYNC,
+      params: [{}],
+    });
+    await primePerpsLifecycleContext();
+    expect(background.perpsGetLifecycleContext).toHaveBeenCalledTimes(1);
+    expect(readPerpsLifecycleContext()).toBe('cold_process');
+    await background.onNotification.mock.calls[0][0]({
+      method: 'perpsStreamUpdate',
+      params: [{ channel: 'lifecycleContext', data: 'warm' }],
+    });
+    expect(readPerpsLifecycleContext()).toBe('warm');
   });
 
   it('should get locale messages by calling setupLocale', async () => {
@@ -79,8 +123,6 @@ describe('Index Tests', () => {
       enMessages.stillGettingMessage,
     );
 
-    expect(clm.sendBugReport).toStrictEqual(enMessages.sendBugReport);
-
     result = await setupLocale('es_419');
 
     const { currentLocaleMessages: clm2, enLocaleMessages: elm2 } = result;
@@ -95,8 +137,6 @@ describe('Index Tests', () => {
     expect(elm2.stillGettingMessage).toStrictEqual(
       enMessages.stillGettingMessage,
     );
-
-    expect(clm2.sendBugReport).toStrictEqual(esMessages.sendBugReport);
   });
 
   it('should get clean app state with socialLoginEmail undefined', async () => {
@@ -312,6 +352,64 @@ describe('Index Tests', () => {
       );
 
       expect(store.getState).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('launchMetamaskUi', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest
+        .spyOn(browserRuntimeUtils, 'getBrowserName')
+        .mockReturnValue('chrome');
+      selectors.getNetworkToAutomaticallySwitchTo.mockReturnValue(undefined);
+      metamaskBaseSelectors.getIsUnlocked.mockReturnValue(false);
+      mockRender.mockClear();
+      window.stateHooks = {};
+    });
+
+    afterEach(() => {
+      delete window.stateHooks;
+      jest.clearAllTimers();
+      jest.useRealTimers();
+      jest.restoreAllMocks();
+    });
+
+    const launch = (onFirstCommit) =>
+      launchMetamaskUi({
+        activeTab: {},
+        container: document.createElement('div'),
+        backgroundConnection: { startSendingPatches: jest.fn() },
+        traceContext: undefined,
+        initialState: { ...defaultMockState.metamask, currentLocale: 'en' },
+        onFirstCommit,
+      });
+
+    it('ends the First Render trace and calls onFirstCommit when React commits the root', async () => {
+      const endTraceSpy = jest.spyOn(traceModule, 'endTrace');
+      const onFirstCommit = jest.fn();
+
+      await launch(onFirstCommit);
+
+      expect(mockRender).toHaveBeenCalledTimes(1);
+      expect(onFirstCommit).not.toHaveBeenCalled();
+      expect(endTraceSpy).not.toHaveBeenCalledWith({
+        name: traceModule.TraceName.FirstRender,
+      });
+
+      mockRender.mock.calls[0][0].props.onFirstCommit();
+
+      expect(endTraceSpy).toHaveBeenCalledWith({
+        name: traceModule.TraceName.FirstRender,
+      });
+      expect(onFirstCommit).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not require an onFirstCommit callback', async () => {
+      await launch(undefined);
+
+      expect(() =>
+        mockRender.mock.calls[0][0].props.onFirstCommit(),
+      ).not.toThrow();
     });
   });
 });

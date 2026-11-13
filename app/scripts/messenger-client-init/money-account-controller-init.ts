@@ -5,6 +5,7 @@ import {
 } from '@metamask/money-account-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
+import { isMnemonicMoneyAccount } from '../../../shared/lib/money/money-accounts';
 import type { MoneyAccountControllerInitMessenger } from './messengers/money-account-controller-messenger';
 import type { MessengerClientInitFunction } from './types';
 
@@ -77,7 +78,7 @@ export const MoneyAccountControllerInit: MessengerClientInitFunction<
    * a user permanently without one.
    */
   const hasMoneyAccountForPrimarySeed = () =>
-    controller.getMoneyAccount() !== undefined;
+    controller.getMoneyAccount({ type: 'mnemonic' }) !== undefined;
 
   const hasAnyMoneyAccount = () =>
     Object.keys(controller.state.moneyAccounts).length > 0;
@@ -89,7 +90,8 @@ export const MoneyAccountControllerInit: MessengerClientInitFunction<
    * This happens after a vault restore over an existing wallet: the restore
    * replaces every keyring, so accounts recorded against the old keyring ids
    * become orphans that nothing will ever match again — but they stay in
-   * persisted, UI-visible state unless removed here.
+   * persisted, UI-visible state unless removed here. MPC-backed money accounts
+   * have no entropy source ID, so they can never look stale.
    *
    * @param keyrings - The current keyring list, from an unlocked wallet with
    * at least one HD keyring — while locked or mid-rebuild the list is empty
@@ -101,7 +103,9 @@ export const MoneyAccountControllerInit: MessengerClientInitFunction<
     );
 
     return Object.values(controller.state.moneyAccounts).some(
-      (account) => !entropySourceIds.has(account.options.entropy.id),
+      (account) =>
+        isMnemonicMoneyAccount(account) &&
+        !entropySourceIds.has(account.options.entropy.id),
     );
   };
 

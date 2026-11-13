@@ -4,15 +4,23 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { createDeferredPromise } from '@metamask/utils';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import { UnlockReady } from '../unlock-performance';
 import { UnlockPasskeySection } from './unlock-passkey-section';
 
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
+
+jest.mock('../unlock-performance', () => ({
+  discardUnlockMeasurement: jest.fn(),
+  UnlockReady: jest.fn(() => null),
+}));
 
 jest.mock('../../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
@@ -99,6 +107,7 @@ function setMockPasskeyRecord(passkeyRecord: unknown) {
 describe('UnlockPasskeySection', () => {
   const baseProps = {
     logoSection: <div data-testid="logo-mock" />,
+    isUnlockReady: true,
     isPasskeyActive: true,
     passkeyAutoUnlockSuppressed: true,
     mustDeferPasskeyToBrowserTab: false,
@@ -189,6 +198,49 @@ describe('UnlockPasskeySection', () => {
         }),
       }),
     );
+  });
+
+  it('passes legacy passkey migration eligibility after successful unlock', async () => {
+    setMockPasskeyRecord({
+      keyDerivation: { method: 'userHandle' },
+    });
+    const onUnlockSuccess = jest.fn().mockResolvedValue(undefined);
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection {...baseProps} onUnlockSuccess={onUnlockSuccess} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(onUnlockSuccess).toHaveBeenCalledWith({
+        isPasskeyMigrationEligible: true,
+      });
+    });
+  });
+
+  it('uses the unlock hook result when migration eligibility is capped', async () => {
+    setMockPasskeyRecord({
+      keyDerivation: { method: 'userHandle' },
+    });
+    mockUnlockWithPasskey.mockResolvedValue(false);
+    const onUnlockSuccess = jest.fn().mockResolvedValue(undefined);
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection {...baseProps} onUnlockSuccess={onUnlockSuccess} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(onUnlockSuccess).toHaveBeenCalledWith({
+        isPasskeyMigrationEligible: false,
+      });
+    });
   });
 
   it('does not throw when unmounted while passkey authentication is pending', async () => {
@@ -295,6 +347,27 @@ describe('UnlockPasskeySection', () => {
         clientExtensionResults: {},
       });
       await Promise.resolve();
+    });
+  });
+
+  describe('useful screen readiness', () => {
+    it('waits for the troubleshooting modal to close after authentication finishes', async () => {
+      getEnvironmentTypeMock.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      const unlock = createDeferredPromise<void>();
+      mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
+      const { getByTestId, getByRole } = renderWithProvider(
+        <UnlockPasskeySection {...baseProps} />,
+        mockStore,
+        '/unlock',
+      );
+      fireEvent.click(getByTestId('unlock-passkey-button'));
+      fireEvent.click(getByTestId('unlock-passkey-troubleshoot-button'));
+      await act(async () => unlock.resolve());
+
+      expect(jest.mocked(UnlockReady).mock.lastCall?.[0].ready).toBe(false);
+
+      fireEvent.click(getByRole('button', { name: messages.close.message }));
+      expect(jest.mocked(UnlockReady).mock.lastCall?.[0].ready).toBe(true);
     });
   });
 

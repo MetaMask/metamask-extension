@@ -2,13 +2,20 @@ import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import {
   ConfirmationLoader,
   PayWithOption,
 } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { setLastPerpsDepositEntryPoint } from '../../../../store/actions';
+import { isUnfundedDepositFunnelActive } from '../utils/unfunded-deposit-funnel';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsNetworkManagement } from './usePerpsNetworkManagement';
 
@@ -48,8 +55,9 @@ export function usePerpsDepositConfirmation(
   } = options;
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = useSelector(getSelectedInternalAccount)?.address;
   const { ensureArbitrumNetworkExists } = usePerpsNetworkManagement();
+  const { track } = usePerpsEventTracking();
   const [isLoading, setIsLoading] = useState(false);
 
   // Guard against accidental double-trigger in the same tick
@@ -60,7 +68,7 @@ export function usePerpsDepositConfirmation(
       return null;
     }
 
-    if (!selectedAccount?.address) {
+    if (!selectedAddress) {
       console.error('No selected account');
       return null;
     }
@@ -79,6 +87,15 @@ export function usePerpsDepositConfirmation(
       setLastPerpsDepositEntryPoint(entryPoint ?? null);
 
       const { transactionId } = await createPerpsDepositTransaction({});
+
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_FLOW_OPENED,
+        // Always emit the property so a funded deposit is distinguishable from
+        // an older client that did not report it at all.
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
+          !isUnfundedDepositFunnelActive(selectedAddress),
+      });
 
       if (navigateOnCreate) {
         const params = new URLSearchParams({
@@ -118,12 +135,13 @@ export function usePerpsDepositConfirmation(
     entryPoint,
     isLoading,
     location.pathname,
+    track,
     location.search,
     navigate,
     navigateOnCreate,
     onCreated,
     payWithOption,
-    selectedAccount?.address,
+    selectedAddress,
   ]);
 
   return {

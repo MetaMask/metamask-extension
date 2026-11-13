@@ -44,6 +44,10 @@ const EMPTY_APPLIED_RATES = {
 };
 
 describe('applySentryRemoteRates', () => {
+  beforeEach(() => {
+    globalThis.stateHooks = {} as typeof globalThis.stateHooks;
+  });
+
   afterEach(() => {
     resetSentryRemoteRates();
     mockedGetManifestFlags.mockReturnValue({});
@@ -362,6 +366,35 @@ describe('applySentryRemoteRates', () => {
         expect(getRemoteTransactionSampleRates()).toBeUndefined();
       });
     }
+  });
+
+  describe('globalThis cache — cross-bundle instance isolation', () => {
+    // Simulates the MV2 scenario where Webpack bundles sentry-remote-rates.ts
+    // into two separate <script> chunks. Each chunk gets its own module
+    // instance with its own local variable, but both share `globalThis`.
+    // This test uses `jest.resetModules()` to create a second isolated
+    // instance and verifies that rates written through one instance are
+    // immediately visible to getters on the other.
+    it('rates written by one module instance are visible to another instance', async () => {
+      // Instance A: simulates the Sentry chunk that calls applySentryRemoteRates.
+      mockPersistedState({ persistenceWriteSampleRate: 0.75 });
+      await applySentryRemoteRates();
+
+      // Instance B: simulates the main background bundle that only calls getters.
+      // jest.resetModules() creates a fresh module registry, giving us a new
+      // module instance with its own local variables — but the same globalThis.
+      jest.resetModules();
+      const {
+        getPersistenceWriteTelemetrySampleRate:
+          getPersistenceWriteTelemetrySampleRateB,
+        getRemoteWrapperSampleRate: getRemoteWrapperSampleRateB,
+      } = await import('./sentry-remote-rates');
+
+      // The fresh instance must see the value written by instance A via globalThis.
+      expect(getPersistenceWriteTelemetrySampleRateB()).toBe(0.75);
+      // Unset fields fall back to their defaults on the new instance too.
+      expect(getRemoteWrapperSampleRateB()).toBeUndefined();
+    });
   });
 
   describe('shouldSampleWrappers integration', () => {

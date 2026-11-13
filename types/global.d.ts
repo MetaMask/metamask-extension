@@ -14,10 +14,20 @@ import type {
   Backup,
   StorageKind,
 } from '../shared/lib/stores/persistence-manager';
+import type { SentryRemoteRates } from '../shared/lib/sentry-remote-rates';
+import type {
+  CurrentActivity,
+  IdleStatus,
+} from '../shared/lib/telemetry/idle-status';
+import type { LastActivityContext } from '../shared/lib/telemetry/last-activity';
 
 type StateHooks = {
+  getSentryRemoteRates?: () => SentryRemoteRates;
   getCustomTraces?: () => { [name: string]: number };
-  getIsIdle?: () => boolean;
+  getIsIdle?: (
+    currentActivity: CurrentActivity,
+    lastActivity: LastActivityContext,
+  ) => IdleStatus;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getCleanAppState?: () => Promise<any>;
@@ -66,7 +76,7 @@ type StateHooks = {
   hasConsoleAccess?: () => boolean;
 
   /**
-   * This is initialized by the service worker in MV3. It is handled in `background.js`.
+   * This is initialized by the service worker in MV3. It is handled in `background.ts`.
    */
   lazyListener?: ExtensionLazyListener<typeof chrome>;
   /**
@@ -123,6 +133,11 @@ type StateHooks = {
 };
 
 declare global {
+  /**
+   * Debug helper to log encrypted vault state
+   */
+  var logEncryptedVault: () => void;
+
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: Sentry | undefined;
@@ -208,3 +223,15 @@ declare global {
   }
 }
 // #endregion
+
+declare global {
+  namespace JSX {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface IntrinsicElements {
+      search: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+    }
+  }
+}

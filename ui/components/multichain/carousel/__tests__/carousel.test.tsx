@@ -240,14 +240,17 @@ describe('Carousel', () => {
       expected: { navigate: '/?openNetworkSelector=true' },
     },
     {
-      testName: 'deep link subdomain that resolves to an internal route',
-      linkUrl: 'https://links.link.metamask.io/home?openNetworkSelector=true',
-      expected: { navigate: '/?openNetworkSelector=true' },
+      testName: 'deep link subdomain that remains an external URL',
+      linkUrl: 'https://invalid.link.metamask.io/home?openNetworkSelector=true',
+      expected: {
+        openTab:
+          'https://invalid.link.metamask.io/home?openNetworkSelector=true',
+      },
     },
     {
       testName: 'deep link that resolves to a redirect URL',
-      linkUrl: 'https://link.metamask.io/buy?amount=100',
-      expected: { openTab: 'https://app.metamask.io/buy?amount=100' },
+      linkUrl: 'https://link.metamask.io/card-onboarding?amount=100',
+      expected: { openTab: 'https://metamask.com/card?amount=100' },
     },
     {
       testName: 'external URL that only starts with the deep link host',

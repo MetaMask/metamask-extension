@@ -31,6 +31,8 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
+import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
+import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
 import { AccountSelectModal } from '../../account-select-modal';
 
@@ -50,9 +52,8 @@ type FromAccountRowProps = {
  * rather than the source, so the row must read "To" instead of "From".
  *
  * A money-account withdraw moves mUSD out of the vault into an EVM account, so
- * the account picked here is the recipient — see
- * `replaceAccountInNestedTransactions`, which rewrites the transfer recipient
- * in the nested calldata when the selection changes. Mirrors mobile
+ * the account picked here is the recipient. Setting it re-encodes the
+ * transfer in the background. Mirrors mobile
  * `PayAccountSelector`, which only labels the row "From" for deposits and
  * otherwise falls back to the "To" default.
  */
@@ -73,6 +74,12 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
  * deposit) read "From", whereas withdraws read "To" because the selected
  * account receives the funds.
  *
+ * Flows that cannot be funded by a hardware device (Perps, Predict, and Money
+ * Account deposit unless enabled) hide hardware accounts from the modal, so
+ * the user cannot pick an account that `usePayHardwareAccountAlert` would then
+ * block. Money Account withdraws list hardware accounts because the recipient
+ * never signs.
+ *
  * @param props - Component props.
  * @param props.showDivider - Whether to render a divider below the row.
  * @param props.variant - Row size variant.
@@ -85,6 +92,15 @@ export function FromAccountRow({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isHardwareBlocked = useIsPayHardwareBlocked();
+  const excludeQrAccounts = hasTransactionType(
+    currentConfirmation,
+    PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES,
+  );
+  const isRecipientRow = hasTransactionType(
+    currentConfirmation,
+    RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES,
+  );
   const transactionId = currentConfirmation?.id ?? '';
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
@@ -118,32 +134,36 @@ export function FromAccountRow({
         return;
       }
 
-      // Rewrite nested calldata first and await persistence so confirm cannot
-      // approve a previously funded batch that still transfers to the old
-      // recipient, then seed accountOverride.
+      // Withdraws re-encode the transfer in the background when the override
+      // is set. Other flows rewrite nested calldata first.
       try {
-        await replaceAccountInNestedTransactions({
-          transactionId: currentConfirmation.id,
-          nestedTransactions: currentConfirmation.nestedTransactions,
-          oldAddress: accountOverride ?? txFrom,
-          newAddress: address,
-        });
+        if (!isRecipientRow) {
+          await replaceAccountInNestedTransactions({
+            transactionId: currentConfirmation.id,
+            nestedTransactions: currentConfirmation.nestedTransactions,
+            oldAddress: accountOverride ?? txFrom,
+            newAddress: address,
+          });
+        }
         await setAccountOverride(currentConfirmation.id, address as Hex);
       } catch (error) {
         console.error('Failed to update pay account override', error);
       }
     },
-    [accountOverride, closeModal, currentConfirmation, from, txFrom],
+    [
+      accountOverride,
+      closeModal,
+      currentConfirmation,
+      from,
+      isRecipientRow,
+      txFrom,
+    ],
   );
 
   if (!currentConfirmation || !from) {
     return null;
   }
 
-  const isRecipientRow = hasTransactionType(
-    currentConfirmation,
-    RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES,
-  );
   const directionLabel = isRecipientRow ? t('to') : t('from');
   const label = fromWalletName
     ? `${directionLabel} ${fromWalletName}`
@@ -196,6 +216,8 @@ export function FromAccountRow({
           onSelect={handleSelect}
           onClose={closeModal}
           title={isRecipientRow ? t('selectRecipient') : undefined}
+          excludeHardwareAccounts={isHardwareBlocked}
+          excludeQrAccounts={excludeQrAccounts}
         />
       )}
     </>

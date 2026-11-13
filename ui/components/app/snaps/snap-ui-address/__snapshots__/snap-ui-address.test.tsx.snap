@@ -53,7 +53,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      128Lkh3...Mp8p6
+      128Lk...Mp8p6
     </p>
   </div>
 </div>
@@ -79,7 +79,7 @@ exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      128Lkh3...Mp8p6
+      128Lk...Mp8p6
     </p>
   </div>
 </div>
@@ -138,7 +138,7 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      cosmos1...6hdc0
+      cosmo...6hdc0
     </p>
   </div>
 </div>
@@ -164,7 +164,7 @@ exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      cosmos1...6hdc0
+      cosmo...6hdc0
     </p>
   </div>
 </div>
@@ -308,7 +308,7 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      0.0.123...zbhlt
+      0.0.1...zbhlt
     </p>
   </div>
 </div>
@@ -334,7 +334,7 @@ exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      0.0.123...zbhlt
+      0.0.1...zbhlt
     </p>
   </div>
 </div>
@@ -393,7 +393,7 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      5hmuyxw...egmfy
+      5hmuy...egmfy
     </p>
   </div>
 </div>
@@ -419,7 +419,7 @@ exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
       style="line-break: anywhere;"
     >
-      5hmuyxw...egmfy
+      5hmuy...egmfy
     </p>
   </div>
 </div>

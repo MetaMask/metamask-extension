@@ -28,7 +28,6 @@ import {
 import {
   formatMoneyActivityDetailsDate,
   getMoneyActivityExplorerUrl,
-  getMoneyApiActivityDetailsHeroAmount,
   shortenMoneyActivityHex,
 } from '../utils/money-transaction-details-display';
 import { MoneyTransactionDetailsRow } from './money-transaction-details-row';
@@ -61,10 +60,11 @@ export function MoneyApiActivityDetails({
 }: MoneyApiActivityDetailsProps) {
   const t = useI18nContext() as MoneyActivityTranslate;
   // useCopyToClipboard analysis: Copies a public transaction hash
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   const display = getAccountsApiActivityDisplayInfo(activity, t);
-  const hero = getMoneyApiActivityDetailsHeroAmount(activity);
+  const heroAmount = display.fiatAmount || display.primaryAmount;
+  const isHeroSuccess = display.isIncoming && display.fiatAmount !== '';
   const explorerUrl = getMoneyActivityExplorerUrl(
     activity.chainId,
     activity.hash,
@@ -129,15 +129,13 @@ export function MoneyApiActivityDetails({
             variant={TextVariant.DisplayMd}
             fontWeight={FontWeight.Medium}
             color={
-              hero.isSuccessColor
-                ? TextColor.SuccessDefault
-                : TextColor.TextDefault
+              isHeroSuccess ? TextColor.SuccessDefault : TextColor.TextDefault
             }
             isHidden={privacyMode}
             length={SensitiveTextLength.Medium}
             data-testid="money-api-activity-details-hero-amount"
           >
-            {hero.amount}
+            {heroAmount}
           </SensitiveText>
         </Box>
       </Box>

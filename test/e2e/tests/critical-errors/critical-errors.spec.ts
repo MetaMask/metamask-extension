@@ -109,7 +109,7 @@ describe('Critical errors', function (this: Suite) {
           'Background initialization timeout',
         );
 
-        await criticalErrorPage.clickAttemptRecoveryLink({ confirm: true });
+        await criticalErrorPage.clickRepairButton({ confirm: true });
 
         await completeVaultRecoveryOnboardingFlow({
           driver,
@@ -155,7 +155,7 @@ describe('Critical errors', function (this: Suite) {
           'Background state sync timeout',
         );
 
-        await criticalErrorPage.clickAttemptRecoveryLink({ confirm: true });
+        await criticalErrorPage.clickRepairButton({ confirm: true });
 
         await completeVaultRecoveryOnboardingFlow({
           driver,

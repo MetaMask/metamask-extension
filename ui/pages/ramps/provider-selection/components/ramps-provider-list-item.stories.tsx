@@ -61,7 +61,7 @@ const bestRateTag: ProviderTag = {
 
 const mostReliableTag: ProviderTag = {
   label: 'Most reliable',
-  severity: TagSeverity.Neutral,
+  severity: TagSeverity.Info,
 };
 
 const meta: Meta<typeof RampsProviderListItem> = {

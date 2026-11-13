@@ -1,6 +1,7 @@
 import type {
   Country,
   Provider,
+  RampsOrder,
   RampsToken,
   ResourceState,
   TokensResponse,
@@ -16,12 +17,30 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { PORTFOLIO_ORIGINS } from '../utils/portfolioConnection';
-import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
+import {
+  hasAttemptedPortfolioBuyMigration,
+  markPortfolioBuyMigrationAttempted,
+  PORTFOLIO_ORIGINS,
+} from '../utils/portfolioConnection';
+import useRampsNavigation, {
+  type RampIntent,
+  type RampsNavigationResult,
+} from './useRampsNavigation';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
+
+jest.mock('../utils/portfolioConnection', () => ({
+  ...jest.requireActual('../utils/portfolioConnection'),
+  hasAttemptedPortfolioBuyMigration: jest.fn().mockResolvedValue(false),
+  markPortfolioBuyMigrationAttempted: jest.fn().mockResolvedValue(undefined),
+}));
+
+const mockHasAttemptedPortfolioBuyMigration =
+  hasAttemptedPortfolioBuyMigration as jest.Mock;
+const mockMarkPortfolioBuyMigrationAttempted =
+  markPortfolioBuyMigrationAttempted as jest.Mock;
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -33,6 +52,9 @@ const mockBackground = submitRequestToBackground as jest.Mock;
 // `submitRequestToBackground` backs both the geolocation lookup and
 // `setRampsSelectedToken`; the geolocation result is what the gate reads.
 const mockGetGeolocation = mockBackground;
+// Per-method responses; unlisted methods (e.g. `getRampsTokens`) resolve to
+// undefined, like a controller with nothing to return.
+const backgroundHandlers: Record<string, () => unknown> = {};
 const openTab = jest.fn();
 
 const region: UserRegion = {
@@ -47,9 +69,19 @@ const loaded: ResourceState<Country[]> = {
   error: null,
 };
 
+const connectedPortfolioHistory = {
+  [PORTFOLIO_ORIGINS[0]]: {
+    // Permission controller history key (snake_case RPC method).
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    eth_accounts: {
+      accounts: { '0xabc': 1 },
+      lastApproved: 1,
+    },
+  },
+};
+
 type MetamaskOverrides = Partial<{
   remoteFeatureFlags: {
-    rampsEnabled: boolean;
     rampsServiceDisruption: boolean;
   };
   userRegion: UserRegion | null;
@@ -58,12 +90,15 @@ type MetamaskOverrides = Partial<{
   tokens: ResourceState<TokensResponse | null, RampsToken | null>;
   subjects: Record<string, unknown>;
   permissionHistory: Record<string, unknown>;
+  isBackupAndSyncEnabled: boolean;
+  isRampsSyncingEnabled: boolean;
+  orders: RampsOrder[];
 }>;
 
 const buildState = (over: MetamaskOverrides = {}) => ({
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    remoteFeatureFlags: { rampsEnabled: true, rampsServiceDisruption: false },
+    remoteFeatureFlags: { rampsServiceDisruption: false },
     userRegion: region,
     countries: { ...loaded, data: [region.country] },
     providers: {
@@ -80,6 +115,9 @@ const buildState = (over: MetamaskOverrides = {}) => ({
     },
     subjects: {},
     permissionHistory: {},
+    isBackupAndSyncEnabled: true,
+    isRampsSyncingEnabled: true,
+    orders: [],
     ...over,
   },
 });
@@ -100,8 +138,8 @@ const run = (state: ReturnType<typeof buildState>) => {
 const goToBuy = async (
   result: { current: ReturnType<typeof useRampsNavigation> },
   intent: RampIntent = { chainId: '0x1' },
-): Promise<boolean | undefined> => {
-  let opened: boolean | undefined;
+): Promise<RampsNavigationResult | undefined> => {
+  let opened: RampsNavigationResult | undefined;
   await act(async () => {
     opened = await result.current.goToBuy(intent);
   });
@@ -116,28 +154,18 @@ beforeAll(() => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockHasAttemptedPortfolioBuyMigration.mockResolvedValue(false);
   // Default: geolocation resolves to a known location so the geo-unknown gate
   // passes and later gates are exercised.
-  mockGetGeolocation.mockResolvedValue('US-CA');
+  Object.keys(backgroundHandlers).forEach((m) => delete backgroundHandlers[m]);
+  backgroundHandlers['GeolocationController:getGeolocation'] = () => 'US-CA';
+  mockBackground.mockImplementation(async (method: string) =>
+    backgroundHandlers[method]?.(),
+  );
 });
 
 describe('useRampsNavigation goToBuy', () => {
-  it('flag off → opens Portfolio (no modal, no geolocation lookup)', async () => {
-    const { result, getModalName } = run(
-      buildState({
-        remoteFeatureFlags: {
-          rampsEnabled: false,
-          rampsServiceDisruption: false,
-        },
-      }),
-    );
-    await goToBuy(result);
-    expect(openTab).toHaveBeenCalled();
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
-    expect(getModalName()).toBeNull();
-  });
-
-  it('flag on + ever connected to Portfolio → opens Portfolio (skips in-app)', async () => {
+  it('connected to Portfolio + no orders → opens Portfolio once', async () => {
     const { result, getModalName } = run(
       buildState({
         subjects: {
@@ -168,29 +196,205 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result);
-    expect(opened).toBe(true);
-    expect(result.current.opensBuyInPortfolioTab).toBe(true);
-    expect(openTab).toHaveBeenCalled();
+    expect(opened).toBe('portfolio');
+    expect(mockHasAttemptedPortfolioBuyMigration).toHaveBeenCalledTimes(1);
+    expect(mockMarkPortfolioBuyMigrationAttempted).toHaveBeenCalledTimes(1);
+    expect(openTab.mock.invocationCallOrder[0]).toBeLessThan(
+      mockMarkPortfolioBuyMigrationAttempted.mock.invocationCallOrder[0],
+    );
+    expect(openTab).toHaveBeenCalledTimes(1);
     expect(mockNavigate).not.toHaveBeenCalled();
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 
-  it('flag on + never connected to Portfolio → in-app token selection', async () => {
+  it('runs the Portfolio migration before native eligibility checks', async () => {
+    const { result, getModalName } = run(
+      buildState({
+        permissionHistory: connectedPortfolioHistory,
+        userRegion: null,
+      }),
+    );
+
+    expect(await goToBuy(result)).toBe('portfolio');
+    expect({
+      geolocationCalls: mockGetGeolocation.mock.calls,
+      markerWrites: mockMarkPortfolioBuyMigrationAttempted.mock.calls,
+      openTabCalls: openTab.mock.calls.length,
+      modalName: getModalName(),
+    }).toMatchInlineSnapshot(`
+      {
+        "geolocationCalls": [],
+        "markerWrites": [
+          [],
+        ],
+        "modalName": null,
+        "openTabCalls": 1,
+      }
+    `);
+  });
+
+  it('migration with a Portfolio redirect URL → opens that URL verbatim', async () => {
+    // The `/buy` deep-link entry passes the link's params through verbatim;
+    // falling back to `openBuyCryptoInPdapp` would drop them.
+    const portfolioRedirectUrl =
+      'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
+    const { result } = run(
+      buildState({ permissionHistory: connectedPortfolioHistory }),
+    );
+    let opened: RampsNavigationResult | undefined;
+    await act(async () => {
+      opened = await result.current.goToBuy(
+        { chainId: '0x1' },
+        { portfolioRedirectUrl },
+      );
+    });
+    expect(opened).toBe('portfolio');
+    expect(openTab).toHaveBeenCalledTimes(1);
+    expect(openTab).toHaveBeenCalledWith({ url: portfolioRedirectUrl });
+  });
+
+  it('does not consume the migration when Portfolio fails to open', async () => {
+    openTab.mockRejectedValueOnce(new Error('failed to open'));
+    const { result } = run(
+      buildState({ permissionHistory: connectedPortfolioHistory }),
+    );
+
+    await expect(goToBuy(result)).rejects.toThrow('failed to open');
+    expect(
+      mockMarkPortfolioBuyMigrationAttempted.mock.calls,
+    ).toMatchInlineSnapshot(`[]`);
+  });
+
+  it('shares an in-flight Portfolio migration between concurrent Buy clicks', async () => {
+    const { result } = run(
+      buildState({ permissionHistory: connectedPortfolioHistory }),
+    );
+    let destinations: RampsNavigationResult[] = [];
+
+    await act(async () => {
+      destinations = await Promise.all([
+        result.current.goToBuy({ chainId: '0x1' }),
+        result.current.goToBuy({ chainId: '0x1' }),
+      ]);
+    });
+
+    expect({
+      destinations,
+      markerReadCount: mockHasAttemptedPortfolioBuyMigration.mock.calls.length,
+      markerWriteCount:
+        mockMarkPortfolioBuyMigrationAttempted.mock.calls.length,
+      openTabCount: openTab.mock.calls.length,
+    }).toMatchInlineSnapshot(`
+      {
+        "destinations": [
+          "portfolio",
+          "portfolio",
+        ],
+        "markerReadCount": 1,
+        "markerWriteCount": 1,
+        "openTabCount": 1,
+      }
+    `);
+  });
+
+  it('connected to Portfolio + migration attempted → opens native buy', async () => {
+    mockHasAttemptedPortfolioBuyMigration.mockResolvedValue(true);
+    const { result } = run(
+      buildState({
+        permissionHistory: connectedPortfolioHistory,
+      }),
+    );
+    const opened = await goToBuy(result);
+    expect({
+      opened,
+      markerReadCount: mockHasAttemptedPortfolioBuyMigration.mock.calls.length,
+      markerWriteCount:
+        mockMarkPortfolioBuyMigrationAttempted.mock.calls.length,
+      openTabCount: openTab.mock.calls.length,
+      navigationCalls: mockNavigate.mock.calls,
+    }).toMatchInlineSnapshot(`
+      {
+        "markerReadCount": 1,
+        "markerWriteCount": 0,
+        "navigationCalls": [
+          [
+            "/ramps/token-selection",
+            {
+              "replace": false,
+            },
+          ],
+        ],
+        "openTabCount": 0,
+        "opened": "native",
+      }
+    `);
+  });
+
+  it('connected to Portfolio + synced orders → opens native buy', async () => {
+    const { result } = run(
+      buildState({
+        permissionHistory: connectedPortfolioHistory,
+        orders: [{ id: 'synced-order' } as RampsOrder],
+      }),
+    );
+    const opened = await goToBuy(result);
+    expect({
+      opened,
+      markerReadCount: mockHasAttemptedPortfolioBuyMigration.mock.calls.length,
+      markerWriteCount:
+        mockMarkPortfolioBuyMigrationAttempted.mock.calls.length,
+      openTabCount: openTab.mock.calls.length,
+      navigationCalls: mockNavigate.mock.calls,
+    }).toMatchInlineSnapshot(`
+      {
+        "markerReadCount": 0,
+        "markerWriteCount": 0,
+        "navigationCalls": [
+          [
+            "/ramps/token-selection",
+            {
+              "replace": false,
+            },
+          ],
+        ],
+        "openTabCount": 0,
+        "opened": "native",
+      }
+    `);
+  });
+
+  it('never connected to Portfolio → in-app token selection', async () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
-    expect(opened).toBe(true);
-    expect(result.current.opensBuyInPortfolioTab).toBe(false);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(opened).toBe('native');
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('opens native buy when order syncing is disabled', async () => {
+    for (const syncState of [
+      { isRampsSyncingEnabled: false },
+      { isBackupAndSyncEnabled: false },
+    ]) {
+      const { result } = run(
+        buildState({
+          permissionHistory: connectedPortfolioHistory,
+          ...syncState,
+        }),
+      );
+      await goToBuy(result);
+    }
+    expect(mockHasAttemptedPortfolioBuyMigration).not.toHaveBeenCalled();
+    expect(mockMarkPortfolioBuyMigrationAttempted).not.toHaveBeenCalled();
   });
 
   it('service disruption → shows RAMPS_SERVICE_DISRUPTION (before geolocation)', async () => {
     const { result, getModalName } = run(
       buildState({
         remoteFeatureFlags: {
-          rampsEnabled: true,
           rampsServiceDisruption: true,
         },
       }),
@@ -250,10 +454,46 @@ describe('useRampsNavigation goToBuy', () => {
   it('gate passes, no assetId → navigates to token selection', async () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
-    expect(opened).toBe(true);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(opened).toBe('native');
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(openTab).not.toHaveBeenCalled();
+    expect(mockHasAttemptedPortfolioBuyMigration).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('replace option → in-app navigations replace instead of push', async () => {
+    const assetId = 'eip155:1/erc20:0xabc';
+    const { result } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    await act(async () => {
+      await result.current.goToBuy({ assetId }, { replace: true });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+      replace: true,
+    });
+
+    await act(async () => {
+      await result.current.goToBuy(undefined, { replace: true });
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: true,
+    });
   });
 
   it('providers fetch errored → fails open and navigates to token selection', async () => {
@@ -268,7 +508,9 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(getModalName()).toBeNull();
   });
 
@@ -284,7 +526,9 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(getModalName()).toBeNull();
   });
 
@@ -298,8 +542,34 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(getModalName()).toBeNull();
+  });
+
+  it('no intent on a cold catalog → navigates without fetching the catalog', async () => {
+    // The token-selection page hydrates itself; only an intent needs the
+    // catalog up front.
+    const { result } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    await goToBuy(result);
+
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'setRampsUserRegion',
+      expect.anything(),
+    );
   });
 
   it('intent with supported assetId → pre-selects token and navigates to build quote', async () => {
@@ -318,27 +588,22 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result, { assetId });
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
 
   it('intent with assetId when pre-select fails → shows RAMPS_UNSUPPORTED and does not navigate', async () => {
     const assetId = 'eip155:1/erc20:0xabc';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'setRampsSelectedToken') {
-        throw new Error('Token not found');
-      }
-      return undefined;
-    });
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error('Token not found');
+    };
     const { result, getModalName } = run(
       buildState({
         tokens: {
@@ -376,9 +641,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result, { assetId: 'eip155:1/erc20:0xabc' });
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
+      replace: false,
     });
   });
 
@@ -408,12 +674,13 @@ describe('useRampsNavigation goToBuy', () => {
       assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
     });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       catalogAssetId,
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -443,9 +710,10 @@ describe('useRampsNavigation goToBuy', () => {
       assetId: 'eip155:59144/erc20:0xabc',
     });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
+      replace: false,
     });
   });
 
@@ -470,9 +738,10 @@ describe('useRampsNavigation goToBuy', () => {
 
     const opened = await goToBuy(result, { assetId });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -524,9 +793,306 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
   });
 
+  it('cold catalog fetches tokens for the persisted region, then pre-selects and navigates to build quote', async () => {
+    // Tokens aren't persisted after a service-worker restart; fetch the
+    // catalog before pre-selecting the intent.
+    const assetId = 'eip155:1/erc20:0xabc';
+    const catalogAssetId = 'eip155:1/erc20:0xABC';
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [
+        { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+      ],
+    });
+    const { result, getModalName } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe('native');
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us',
+      'buy',
+    ]);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: catalogAssetId },
+      replace: false,
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('resolves the cold-start fetch region through the controller when the persisted region is unavailable', async () => {
+    // Use the controller-resolved region, not a lowercased geolocation string.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+    });
+    backgroundHandlers.setRampsUserRegion = () => region;
+    const { result } = run(
+      buildState({
+        userRegion: null,
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    await goToBuy(result, { assetId });
+
+    expect(mockBackground).toHaveBeenCalledWith('setRampsUserRegion', [
+      'US-CA',
+    ]);
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us',
+      'buy',
+    ]);
+  });
+
+  it('warm catalog with no persisted region → fetches nothing and does not touch the controller region', async () => {
+    // setUserRegion can wipe controller state, so skip it when the catalog is
+    // already loaded.
+    const assetId = 'eip155:1/erc20:0xabc';
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe('native');
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'setRampsUserRegion',
+      expect.anything(),
+    );
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      assetId,
+    ]);
+    expect(getModalName()).toBeNull();
+  });
+
+  it('loads the countries catalog before seeding the region on a fresh install', async () => {
+    // Countries are not persisted, so a first buy can land before the
+    // controller has anything to resolve the geolocation against.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsCountries = () => [region.country];
+    backgroundHandlers.setRampsUserRegion = () => region;
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+    });
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [] },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe('native');
+    expect(mockBackground.mock.calls.map(([method]) => method)).toStrictEqual([
+      'GeolocationController:getGeolocation',
+      'getRampsCountries',
+      'setRampsUserRegion',
+      'getRampsTokens',
+      'setRampsSelectedToken',
+    ]);
+    expect(getModalName()).toBeNull();
+  });
+
+  it('seeded region that does not support buy → shows RAMPS_UNSUPPORTED without fetching tokens', async () => {
+    // The gate runs before a fresh install has resolved a region, so the
+    // seeded region is the first definitive eligibility answer: it must block
+    // the intent instead of reaching build-quote.
+    const assetId = 'eip155:1/erc20:0xabc';
+    const unsupportedCountry = {
+      isoCode: 'FR',
+      supported: { buy: false },
+    } as Country;
+    backgroundHandlers.getRampsCountries = () => [unsupportedCountry];
+    backgroundHandlers.setRampsUserRegion = () => ({
+      country: unsupportedCountry,
+      state: null,
+      regionCode: 'fr',
+    });
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [] },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'setRampsSelectedToken',
+      expect.anything(),
+    );
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('cold fetch whose countries fetch fails → skips the fetch and shows RAMPS_UNSUPPORTED', async () => {
+    // Without countries, seeding fails; preselect fails closed.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsCountries = () => {
+      throw new Error('network down');
+    };
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error(
+        'Tokens not loaded. Cannot set selected token before tokens are fetched.',
+      );
+    };
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [] },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+  });
+
+  it('skips the fetch when seeding the region fails', async () => {
+    // An unresolvable region ends at the unsupported modal.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error(
+        'Tokens not loaded. Cannot set selected token before tokens are fetched.',
+      );
+    };
+    backgroundHandlers.setRampsUserRegion = () => {
+      throw new Error('No countries found');
+    };
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+  });
+
+  it('cold catalog fetch that fails and a controller that cannot pre-select → shows RAMPS_UNSUPPORTED', async () => {
+    // Without a fetched catalog, preselect fails closed.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsTokens = () => {
+      throw new Error('network down');
+    };
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error(
+        'Tokens not loaded. Cannot set selected token before tokens are fetched.',
+      );
+    };
+    const { result, getModalName } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('cold catalog fetch is not gated by the never-fetched providers snapshot', async () => {
+    // A stale providers snapshot must not mark a freshly fetched catalog as
+    // empty.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+    });
+    const { result, getModalName } = run(
+      buildState({
+        providers: { data: [], selected: null, isLoading: false, error: null },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe('native');
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      assetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+      replace: false,
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('freshly fetched catalog that lacks the token → shows RAMPS_UNSUPPORTED', async () => {
+    // A freshly fetched catalog is authoritative when it lacks the token.
+    const assetId = 'eip155:1/erc20:0xmissing';
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [
+        {
+          assetId: 'eip155:1/erc20:0xother',
+          tokenSupported: true,
+        } as RampsToken,
+      ],
+    });
+    const { result, getModalName } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+  });
+
   it('intent with assetId but catalog not settled → fails open to build quote', async () => {
-    // tokens.data === null (never fetched): cannot verify the token, so fail
-    // open and proceed with it pre-selected rather than blocking.
+    // No fetched data still means the catalog is unsettled: fail open.
     const assetId = 'eip155:1/erc20:0xabc';
     const { result, getModalName } = run(
       buildState({
@@ -534,12 +1100,13 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result, { assetId });
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -569,7 +1136,7 @@ describe('useRampsNavigation goToBuy', () => {
       assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
     });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       catalogAssetId,
     ]);
@@ -593,12 +1160,13 @@ describe('useRampsNavigation goToBuy', () => {
 
     const opened = await goToBuy(result, { assetId });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });

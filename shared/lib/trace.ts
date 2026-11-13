@@ -1,11 +1,21 @@
 import type * as Sentry from '@sentry/browser';
-import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
+import type {
+  MeasurementUnit,
+  Span,
+  StartSpanOptions,
+  TraceparentData,
+} from '@sentry/types';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,
   TraceRequest as ControllerTraceRequest,
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
+import type {
+  SwapTraceRequest,
+  SwapRelatedTraceName,
+} from '@metamask/bridge-controller';
 import { sentryLogger } from './sentry';
 
 /**
@@ -14,14 +24,23 @@ import { sentryLogger } from './sentry';
 export enum TraceName {
   AccountList = 'Account List',
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
+  HomepageReady = 'Homepage Ready',
+  // Homepage Section Performance
+  HomepageSectionTimeToContent = 'Homepage Section Time To Content',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
   AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BackgroundPoll = 'Background Poll',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
+  BridgeTransactionApprovalCompleted = 'Bridge Transaction Approval Completed',
+  BridgeTransactionCompleted = 'Bridge Transaction Completed',
+  SwapOperationCompleted = 'Swap Operation Completed',
+  SwapTransactionApprovalCompleted = 'Swap Transaction Approval Completed',
+  SwapTransactionCompleted = 'Swap Transaction Completed',
   ConnectPage = 'Connect Page',
   CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
@@ -43,17 +62,21 @@ export enum TraceName {
   SetupStore = 'Setup Store',
   Signature = 'Signature',
   SwapQuoteFetch = 'Swap Quote Fetch',
+  SwapTokenSearch = 'Swap Token Search',
+  SwapPopularTokensFetch = 'Swap Popular Tokens Fetch',
   SwapQuotesFetched = 'Swap Quotes Fetched',
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  // Initial document navigation to the first screen's useful content.
+  UsefulScreenReady = 'Useful Screen Ready',
   RevealSeed = 'Reveal Seed',
   ImportSrp = 'Import Srp',
   AddAccount = 'Add Account',
   LoadCollectibles = 'Load Collectibles',
   GetAssetHistoricalPrices = 'Get Asset Historical Prices',
   OnFinishedTransaction = 'On Finished Transaction',
-  AccountSyncFull = 'Account Sync Full',
+  AccountSyncFull = 'Multichain Account Syncing - Full',
   AccountSyncSaveIndividual = 'Account Sync Save Individual',
   ContactSyncFull = 'Contact Sync Full',
   ContactSyncDeleteRemote = 'Contact Sync Delete Remote',
@@ -69,11 +92,15 @@ export enum TraceName {
   OnboardingSocialLoginAttempt = 'Onboarding - Social Login Attempt',
   OnboardingPasswordSetupAttempt = 'Onboarding - Password Setup Attempt',
   OnboardingPasswordLoginAttempt = 'Onboarding - Password Login Attempt',
+  OnboardingSRPAccountCreationTime = 'Onboarding SRP Account Creation Time',
+  OnboardingSRPAccountImportTime = 'Onboarding SRP Account Import Time',
   OnboardingResetPassword = 'Onboarding - Reset Password',
   OnboardingCreateKeyAndBackupSrp = 'Onboarding - Create Key and Backup SRP',
   OnboardingAddSrp = 'Onboarding - Add SRP',
   OnboardingFetchSrps = 'Onboarding - Fetch SRPs',
   OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
+  OnboardingOAuthProviderLaunch = 'Onboarding - OAuth Provider Launch',
+  OnboardingOAuthProviderInteraction = 'Onboarding - OAuth Provider Interaction',
   OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
   OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
   OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
@@ -96,6 +123,53 @@ export enum TraceName {
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
   StatePersist = 'State Persist',
+  // Money
+  MoneyActivityVaultShareValuationsFetch = 'Money Activity Vault Share Valuations Fetch',
+  MoneyActivityValuationsReady = 'Money Activity Valuations Ready',
+  // Perps
+  PerpsOpenPosition = 'Perps Open Position',
+  PerpsClosePosition = 'Perps Close Position',
+  PerpsDeposit = 'Perps Deposit',
+  PerpsWithdraw = 'Perps Withdraw',
+  PerpsPlaceOrder = 'Perps Place Order',
+  PerpsEditOrder = 'Perps Edit Order',
+  PerpsCancelOrder = 'Perps Cancel Order',
+  PerpsUpdateTPSL = 'Perps Update TP/SL',
+  PerpsUpdateMargin = 'Perps Update Margin',
+  PerpsFlipPosition = 'Perps Flip Position',
+  PerpsMarketDataUpdate = 'Perps Market Data Update',
+  PerpsOrderView = 'Perps Order View',
+  PerpsTabView = 'Perps Tab View',
+  PerpsMarketListView = 'Perps Market List View',
+  PerpsPositionDetailsView = 'Perps Position Details View',
+  PerpsAdjustMarginView = 'Perps Adjust Margin View',
+  PerpsOrderDetailsView = 'Perps Order Details View',
+  PerpsOrderBookView = 'Perps Order Book View',
+  PerpsFlipPositionSheet = 'Perps Flip Position Sheet',
+  PerpsTransactionsView = 'Perps Transactions View',
+  PerpsOrderFillsFetch = 'Perps Order Fills Fetch',
+  PerpsOrdersFetch = 'Perps Orders Fetch',
+  PerpsFundingFetch = 'Perps Funding Fetch',
+  PerpsGetPositions = 'Perps Get Positions',
+  PerpsGetAccountState = 'Perps Get Account State',
+  PerpsGetHistoricalPortfolio = 'Perps Get Historical Portfolio',
+  PerpsGetMarkets = 'Perps Get Markets',
+  PerpsGetMarketDataWithPrices = 'Perps Get Market Data With Prices',
+  PerpsFetchHistoricalCandles = 'Perps Fetch Historical Candles',
+  PerpsWebSocketConnected = 'Perps WebSocket Connected',
+  PerpsWebSocketDisconnected = 'Perps WebSocket Disconnected',
+  PerpsWebSocketFirstPositions = 'Perps WebSocket First Positions',
+  PerpsWebSocketFirstOrders = 'Perps WebSocket First Orders',
+  PerpsWebSocketFirstAccount = 'Perps WebSocket First Account',
+  PerpsDataLakeReport = 'Perps Data Lake Report',
+  PerpsRewardsAPICall = 'Perps Rewards API Call',
+  PerpsClosePositionView = 'Perps Close Position View',
+  PerpsWithdrawView = 'Perps Withdraw View',
+  PerpsConnectionEstablishment = 'Perps Connection Establishment',
+  PerpsAccountSwitchReconnection = 'Perps Account Switch Reconnection',
+  PerpsMarketDataPreload = 'Perps Market Data Preload',
+  PerpsUserDataPreload = 'Perps User Data Preload',
+  PerpsEntryToLiveMarketList = 'Perps Entry To Live Market List',
 }
 
 /**
@@ -110,19 +184,57 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  HomepagePerformance = 'homepage.performance',
+  HomepageSectionPerformance = 'homepage.section.performance',
+  UiScreenPerformance = 'ui.screen.performance',
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
   StateWrite = 'state.write',
+  BridgeScreenPerformance = 'bridge.screen.performance',
+  BridgeDataFetch = 'bridge.data_fetch',
+  // Money
+  MoneyAccountDataFetch = 'money.account.data_fetch',
+  // Perps
+  PerpsOperation = 'perps.operation',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
+export const ONBOARDING_MACHINE_TIME_ATTRIBUTE = 'onboarding.machine.ms';
+
+/**
+ * Machine-time spans summed into the overall onboarding journey. These spans
+ * represent application work and deliberately exclude user interaction such
+ * as password/SRP entry and external OAuth provider login.
+ *
+ * OnboardingCreateKeyAndBackupSrp is excluded because it is nested inside
+ * OnboardingSRPAccountCreationTime and summing both would double-count it.
+ */
+const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
+  TraceName.OnboardingSRPAccountCreationTime,
+  TraceName.OnboardingSRPAccountImportTime,
+  TraceName.OnboardingOAuthProviderLaunch,
+  TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+  TraceName.OnboardingOAuthSeedlessAuthenticate,
+  TraceName.OnboardingFetchSrps,
+  TraceName.OnboardingAddSrp,
+  TraceName.OnboardingResetPassword,
+]);
+
+const W3C_TRACEPARENT_VERSION = '00';
+
+const TRACE_FLAG_SAMPLED = 0x1;
+
+/** W3C `traceparent`, lowercase hex; captures traceId, parentId, flags. */
+const W3C_TRACEPARENT_REGEXP =
+  /^[0-9a-f]{2}-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/u;
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
+let onboardingMachineTimeByKey = new Map<string, number>();
 
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
@@ -140,16 +252,43 @@ type PendingTrace = {
  */
 export type TraceContext = unknown;
 
+export type TraceValue = string | number | boolean;
+
 /**
  * Serialized trace context for cross-boundary propagation.
- * Contains trace/span IDs for distributed tracing and optional name/id for
- * same-process parent lookup via the tracesByKey map.
+ * Carries a W3C `traceparent` string for distributed tracing and optional
+ * name/id for same-process parent lookup via the tracesByKey map.
  */
 export type SerializedTraceContext = {
   _name?: string;
   _id?: string;
-  _traceId?: string;
-  _spanId?: string;
+  traceparent?: string;
+};
+
+/**
+ * Tracing metadata sent by the UI alongside a background RPC request.
+ */
+export type SerializedTraceMetadata = {
+  /**
+   * W3C `traceparent` of the originating UI span, present when one is active.
+   */
+  traceparent?: string;
+  /**
+   * The dispatched messenger action, when the request uses the messenger.
+   */
+  messengerAction?: string;
+  /**
+   * The background operation's display name.
+   */
+  spanName: `Background RPC: ${string}`;
+};
+
+/**
+ * {@link SerializedTraceMetadata} as the background reads it, with the
+ * `traceparent` parsed.
+ */
+export type TraceMetadata = Omit<SerializedTraceMetadata, 'traceparent'> & {
+  traceContext?: TraceparentData;
 };
 
 /**
@@ -190,6 +329,13 @@ export type TraceRequest = {
   parentContext?: TraceContext;
 
   /**
+   * Inherit the active span, as a transaction, when no `parentContext` is given.
+   * Defaults to `false`, which starts a parentless span. Set it only where the
+   * active span is known to be the correct parent.
+   */
+  allowActiveSpanFallback?: boolean;
+
+  /**
    * Override the start time of the trace.
    */
   startTime?: number;
@@ -203,6 +349,12 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Start the span as the root of a new trace, ignoring the active span. A
+   * `parentContext` that resolves still takes precedence.
+   */
+  root?: boolean;
 };
 
 /**
@@ -226,18 +378,70 @@ export type EndTraceRequest = {
   timestamp?: number;
 
   /**
+   * Final status to record on the span.
+   */
+  status?: 'ok' | 'error';
+
+  /**
    * Custom data to associate with the trace when ending it.
    * These will be set as attributes on the span.
    */
   data?: Record<string, number | string | boolean>;
 };
 
-export function trace<ResultType>(
-  request: TraceRequest,
+/**
+ * Return the active span for a pending manual trace.
+ *
+ * This is useful when a child trace is started after navigation or another
+ * async boundary and the parent must be resolved from the local trace registry
+ * instead of being threaded through route parameters.
+ * @param request
+ */
+export function getTraceContext(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+): TraceContext {
+  return tracesByKey.get(getTraceKey(request))?.span;
+}
+
+/**
+ * Attach attributes to an active trace without requiring callers to retain the
+ * raw Sentry span. Missing or non-Sentry contexts are intentionally ignored.
+ * @param context
+ * @param attributes
+ */
+export function annotateTrace(
+  context: TraceContext,
+  attributes: Record<string, TraceValue>,
+): void {
+  if (!isValidSentrySpan(context)) {
+    return;
+  }
+
+  for (const [key, value] of Object.entries(attributes)) {
+    context.setAttribute(key, value);
+  }
+}
+
+type GenericTraceName = TraceRequest['name'];
+
+/**
+ * Overloads the {@link TraceRequest} type for swap-related trace names.
+ * The {@link SwapTraceRequest} type defines required properties for swap-related traces
+ */
+type TraceRequestFor<TName extends GenericTraceName> = [TName] extends [
+  SwapRelatedTraceName<TraceName>,
+]
+  ? Omit<SwapTraceRequest<TName>, 'op'> & { op?: TraceOperation }
+  : Omit<TraceRequest, 'name'> & { name: TName };
+
+export function trace<ResultType, TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
   fn: TraceCallback<ResultType>,
 ): ResultType;
 
-export function trace(request: TraceRequest): TraceContext;
+export function trace<TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
+): TraceContext;
 
 /**
  * Create a Sentry transaction to analyse the duration of a code flow.
@@ -260,6 +464,93 @@ export function trace<T>(
   }
 
   return traceCallback(request, fn);
+}
+
+function sumOnboardingMachineTime(): number {
+  let total = 0;
+
+  for (const duration of onboardingMachineTimeByKey.values()) {
+    total += duration;
+  }
+
+  return total;
+}
+
+function recordOnboardingMachineTime(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+  duration: number,
+): void {
+  onboardingMachineTimeByKey.set(getTraceKey(request), Math.max(duration, 0));
+}
+
+function addOnboardingMachineTime(
+  request: EndTraceRequest,
+  duration: number,
+): void {
+  if (
+    !MACHINE_TIME_TRACE_NAMES.has(request.name) ||
+    request.data?.success === false ||
+    !Number.isFinite(duration)
+  ) {
+    return;
+  }
+
+  recordOnboardingMachineTime(request, duration);
+}
+
+function addOpenOnboardingMachineTime(
+  request: EndTraceRequest,
+  journeyEndTime: number,
+): void {
+  if (request.data?.success === false) {
+    return;
+  }
+
+  for (const pendingTrace of tracesByKey.values()) {
+    if (!MACHINE_TIME_TRACE_NAMES.has(pendingTrace.request.name as TraceName)) {
+      continue;
+    }
+
+    const duration = journeyEndTime - pendingTrace.startTime;
+    if (Number.isFinite(duration)) {
+      recordOnboardingMachineTime(pendingTrace.request, duration);
+    }
+  }
+}
+
+function finalizeOnboardingMachineTime(span?: Span | null): void {
+  if (span && typeof span.setAttribute === 'function') {
+    span.setAttribute(
+      ONBOARDING_MACHINE_TIME_ATTRIBUTE,
+      Math.round(sumOnboardingMachineTime()),
+    );
+  }
+
+  onboardingMachineTimeByKey = new Map();
+}
+
+/**
+ * Run one background polling cycle as its own `Background Poll` root trace.
+ *
+ * @param controllerName - The polling controller, recorded as `controller` span data.
+ * @param fn - The polling cycle to trace.
+ * @returns The result of the polling cycle.
+ */
+export function traceBackgroundPoll<ResultType>(
+  controllerName: string,
+  fn: () => ResultType,
+): ResultType {
+  return trace(
+    {
+      name: TraceName.BackgroundPoll,
+      op: 'background.poll',
+      // Span data, not a scope tag: a tag stays on the scope while the poll is
+      // pending and lands on unrelated concurrent transactions.
+      data: { controller: controllerName },
+      root: true,
+    },
+    fn,
+  );
 }
 
 /**
@@ -303,14 +594,27 @@ export function endTrace(request: EndTraceRequest): void {
     }
   }
 
-  pendingTrace.end(timestamp);
+  if (request.status && pendingTrace.span) {
+    pendingTrace.span.setStatus({
+      code: request.status === 'ok' ? SPAN_STATUS_OK : SPAN_STATUS_ERROR,
+    });
+  }
+
+  const endTime = timestamp ?? getPerformanceTimestamp();
+
+  if (name === TraceName.OnboardingJourneyOverall) {
+    addOpenOnboardingMachineTime(request, endTime);
+    finalizeOnboardingMachineTime(pendingTrace.span);
+  }
+
+  pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
 
   const { request: pendingRequest, startTime } = pendingTrace;
-  const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+  addOnboardingMachineTime(request, endTime - startTime);
 }
 
 /**
@@ -321,11 +625,9 @@ export function endTrace(request: EndTraceRequest): void {
  * are correctly nested under the originating UI trace regardless of whether
  * wrapper spans themselves are sub-sampled in.
  *
- * @returns Serialized context with traceId/spanId, or undefined if no active span or kill switch is set.
+ * @returns A W3C `traceparent` string, or undefined if no active span or kill switch is set.
  */
-export function getSerializedTraceContext():
-  | SerializedTraceContext
-  | undefined {
+export function getSerializedTraceContext(): string | undefined {
   if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
     return undefined;
   }
@@ -334,46 +636,88 @@ export function getSerializedTraceContext():
     return undefined;
   }
   try {
-    const ctx = activeSpan.spanContext();
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    return { _traceId: ctx.traceId, _spanId: ctx.spanId };
+    return spanContextToTraceparent(activeSpan.spanContext());
   } catch {
     return undefined;
   }
 }
 
 /**
- * Extract trace context appended by submitRequestToBackground from RPC params.
- * Returns the clean params (without trace context) and the trace context if present.
- * Only strips when the last param has `_traceContext` with our expected shape
- * (`_traceId`, `_spanId`) to avoid eating legitimate params.
+ * Run the callback with no active span, so a `submitRequestToBackground` call
+ * inside it carries no trace context and the background emits no wrapper spans
+ * for it. The callback runs inside a void wrapper because Sentry keeps the
+ * forked scope until a returned promise settles, which would hide the active
+ * span from unrelated UI work in the meantime.
+ *
+ * @param callback - Code whose background calls should not join the active trace.
+ * @returns The callback's return value.
+ */
+export function withoutTraceContext<ReturnValue>(
+  callback: () => ReturnValue,
+): ReturnValue {
+  const withActiveSpan = globalThis.sentry?.withActiveSpan;
+  if (!withActiveSpan) {
+    return callback();
+  }
+  let result: ReturnValue | undefined;
+  withActiveSpan(null, () => {
+    result = callback();
+  });
+  return result as ReturnValue;
+}
+
+/**
+ * Extract tracing metadata appended by submitRequestToBackground.
+ *
+ * Only a valid trailing `_trace` wrapper is removed, preserving ordinary
+ * application arguments that happen to contain a similarly named property.
+ * A `traceparent` in it must be a valid W3C `traceparent` string.
  *
  * @param params - RPC call parameters.
- * @returns Clean params (without the trace wrapper) and the extracted context
- * if present, or `undefined` if no valid trace context was found.
+ * @returns Clean params and the tracing metadata, with the `traceparent`
+ * parsed, if present.
  */
-export function extractTraceContext(
+export function extractTraceMetadata(
   params: unknown,
 ):
-  | { cleanParams: unknown[]; traceContext: SerializedTraceContext }
-  | { cleanParams: unknown; traceContext: undefined } {
+  | { cleanParams: unknown[]; traceMetadata: TraceMetadata }
+  | { cleanParams: unknown; traceMetadata: undefined } {
   if (!Array.isArray(params) || params.length === 0) {
-    return { cleanParams: params, traceContext: undefined };
+    return { cleanParams: params, traceMetadata: undefined };
   }
 
   const lastParam = params[params.length - 1];
   if (
     isObject(lastParam) &&
-    hasProperty(lastParam, '_traceContext') &&
-    hasDistributedTraceIds(lastParam._traceContext)
+    hasProperty(lastParam, '_trace') &&
+    isObject(lastParam._trace) &&
+    hasProperty(lastParam._trace, 'spanName') &&
+    typeof lastParam._trace.spanName === 'string' &&
+    lastParam._trace.spanName.startsWith('Background RPC: ') &&
+    (!hasProperty(lastParam._trace, 'messengerAction') ||
+      typeof lastParam._trace.messengerAction === 'string')
   ) {
-    return {
-      cleanParams: params.slice(0, -1),
-      traceContext: lastParam._traceContext,
-    };
+    const traceContext = hasProperty(lastParam._trace, 'traceparent')
+      ? parseTraceparent(lastParam._trace.traceparent)
+      : undefined;
+    if (!hasProperty(lastParam._trace, 'traceparent') || traceContext) {
+      return {
+        cleanParams: params.slice(0, -1),
+        traceMetadata: {
+          // Type assertion: the prefix check above validates this template literal.
+          spanName: lastParam._trace
+            .spanName as SerializedTraceMetadata['spanName'],
+          ...(hasProperty(lastParam._trace, 'messengerAction') &&
+            typeof lastParam._trace.messengerAction === 'string' && {
+              messengerAction: lastParam._trace.messengerAction,
+            }),
+          ...(traceContext && { traceContext }),
+        },
+      };
+    }
   }
 
-  return { cleanParams: params, traceContext: undefined };
+  return { cleanParams: params, traceMetadata: undefined };
 }
 
 /**
@@ -384,21 +728,55 @@ export function extractTraceContext(
  * span itself (e.g. when `shouldSampleWrappers` rejects the wrapper but
  * trace continuity for downstream spans is still desired).
  *
- * @param parentContext - Serialized trace context with `_traceId` / `_spanId`.
+ * @param parentContext - Parsed trace context with `traceId` / `parentSpanId`.
  * @param fn - Callback to run within the propagated trace scope.
  * @returns The callback's return value.
  */
 export function continueTraceContext<ResultType>(
-  parentContext: SerializedTraceContext | undefined,
+  parentContext: TraceparentData | undefined,
   fn: () => ResultType,
 ): ResultType {
-  if (!hasDistributedTraceIds(parentContext)) {
+  if (!hasTraceparentData(parentContext)) {
     return fn();
   }
-  const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
+  const sentryTrace = traceparentDataToSentryTrace(parentContext);
   return sentryContinueTrace(sentryTrace, () =>
     sentryWithIsolationScope(() => fn()),
   );
+}
+
+/**
+ * Serialize a span for a later `parentContext`: name/id for same-process
+ * lookup, plus the span's W3C `traceparent`.
+ *
+ * @param span - The Sentry span to build the `traceparent` from.
+ * @param request - Request metadata for same-process lookup.
+ * @param request.name - The trace name for same-process map lookup.
+ * @param request.id - Optional trace ID for same-process map lookup.
+ * @returns Serialized trace context.
+ */
+export function serializeTraceContext(
+  span: Sentry.Span | null | undefined,
+  request: { name: string; id?: string },
+): SerializedTraceContext {
+  // Only assign defined fields: `undefined` leaks across the snap response
+  // boundary and fails its JSON validation (the snap trace round-trips this).
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const ctx: SerializedTraceContext = { _name: request.name };
+  if (request.id !== undefined) {
+    ctx._id = request.id;
+  }
+  if (span) {
+    try {
+      const traceparent = spanContextToTraceparent(span.spanContext());
+      if (traceparent) {
+        ctx.traceparent = traceparent;
+      }
+    } catch {
+      // Span may have ended or be invalid
+    }
+  }
+  return ctx;
 }
 
 function traceCallback<ResultType>(
@@ -440,6 +818,10 @@ function startTrace(request: TraceRequest): TraceContext {
   const startTime = requestStartTime ?? getPerformanceTimestamp();
   const id = getTraceId(request);
 
+  if (name === TraceName.OnboardingJourneyOverall) {
+    onboardingMachineTimeByKey = new Map();
+  }
+
   const callback = (span: Sentry.Span | null) => {
     const end = (timestamp?: number) => {
       span?.end(timestamp);
@@ -451,6 +833,14 @@ function startTrace(request: TraceRequest): TraceContext {
 
     const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
+
+    // Same name and `id` (or both without one) means the same key: this `set`
+    // drops the pending trace, whose span then never ends.
+    if (tracesByKey.has(key)) {
+      log('WARNING: trace key collision, dropping pending trace', key);
+      span?.setAttribute('trace.key_collision', true);
+    }
+
     tracesByKey.set(key, pendingTrace);
 
     log('Started trace', name, id, request);
@@ -458,7 +848,7 @@ function startTrace(request: TraceRequest): TraceContext {
     return span;
   };
 
-  return startSpan(request, (spanOptions) =>
+  return startSpan({ ...request, startTime }, (spanOptions) =>
     sentryStartSpanManual(spanOptions, callback),
   );
 }
@@ -486,7 +876,7 @@ function isValidSentrySpan(value: unknown): value is Sentry.Span {
  * @returns Resolved Sentry Span or null.
  */
 function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
-  if (!parentContext) {
+  if (parentContext === null || parentContext === undefined) {
     return null;
   }
 
@@ -511,15 +901,87 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   return null;
 }
 
-function hasDistributedTraceIds(
+type SpanContextLike = {
+  traceId?: string;
+  spanId?: string;
+  traceFlags?: number;
+};
+
+/**
+ * Parsed trace context whose distributed-tracing ids are guaranteed present.
+ */
+type ResolvedTraceparentData = {
+  traceId: string;
+  parentSpanId: string;
+  parentSampled?: boolean;
+};
+
+/**
+ * Whether a W3C `trace-flags` byte has the sampled bit (bit 0) set. Uses
+ * modulo rather than a bitwise mask, which lint disallows.
+ *
+ * @param flags - The decimal value of the `trace-flags` byte.
+ * @returns True when the sampled bit is set.
+ */
+function isSampled(flags: number): boolean {
+  return flags % 2 === TRACE_FLAG_SAMPLED;
+}
+
+function spanContextToTraceparent(
+  spanContext: SpanContextLike,
+): string | undefined {
+  const { traceId, spanId, traceFlags } = spanContext;
+  if (!traceId || !spanId) {
+    return undefined;
+  }
+  // Sentry always sets `traceFlags`; treat an input without it as sampled.
+  const flags = isSampled(traceFlags ?? TRACE_FLAG_SAMPLED) ? '01' : '00';
+  return `${W3C_TRACEPARENT_VERSION}-${traceId}-${spanId}-${flags}`;
+}
+
+/**
+ * Parse a W3C `traceparent`, keeping only the sampled bit of its flags.
+ *
+ * @param value - The candidate `traceparent`.
+ * @returns Parsed trace context, or undefined when `value` is not a valid W3C
+ * `traceparent` string.
+ */
+function parseTraceparent(value: unknown): TraceparentData | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  const match = W3C_TRACEPARENT_REGEXP.exec(value.trim());
+  if (!match) {
+    return undefined;
+  }
+  const [, traceId, parentId, flags] = match;
+  return {
+    traceId,
+    parentSpanId: parentId,
+    parentSampled: isSampled(parseInt(flags, 16)),
+  };
+}
+
+/**
+ * Build a `sentry-trace` header. An unset `parentSampled` encodes as sampled.
+ *
+ * @param data - Parsed trace context with `traceId` and `parentSpanId`.
+ * @returns A `sentry-trace` header string.
+ */
+function traceparentDataToSentryTrace(data: ResolvedTraceparentData): string {
+  const sampled = data.parentSampled === false ? '0' : '1';
+  return `${data.traceId}-${data.parentSpanId}-${sampled}`;
+}
+
+function hasTraceparentData(
   value: unknown,
-): value is { _traceId: string; _spanId: string } {
+): value is TraceparentData & ResolvedTraceparentData {
   return (
     isObject(value) &&
-    hasProperty(value, '_traceId') &&
-    hasProperty(value, '_spanId') &&
-    typeof value._traceId === 'string' &&
-    typeof value._spanId === 'string'
+    hasProperty(value, 'traceId') &&
+    hasProperty(value, 'parentSpanId') &&
+    typeof value.traceId === 'string' &&
+    typeof value.parentSpanId === 'string'
   );
 }
 
@@ -529,16 +991,25 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    allowActiveSpanFallback,
+    root,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
-  // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withIsolationScope
-  // severs the active span context chain.
-  // forceTransaction preserves transaction-level visibility for monitoring while
-  // linking to the auto-instrumentation hierarchy.
+  // `undefined` means no parent was declared; `null` means one was intended but
+  // has no span. `resolveParentSpan` returns `null` for both, so read the input.
+  const parentDeclared = parentContext !== undefined;
+
+  // Read the active span before `withScope` forks the scope. `forceTransaction`
+  // keeps an inherited span in transaction-level dashboards.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!root && !parentSpan && !parentDeclared && allowActiveSpanFallback) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -552,25 +1023,56 @@ function startSpan<T>(
     op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
-    forceTransaction,
+    ...(forceTransaction === undefined ? {} : { forceTransaction }),
   };
 
-  // Cross-process propagation via continueTrace when we have serialized
-  // trace/span IDs but couldn't resolve a local parent span from the map.
-  if (!parentSpan && hasDistributedTraceIds(parentContext)) {
-    const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
-    return sentryContinueTrace(sentryTrace, () =>
-      sentryWithIsolationScope((scope: Sentry.Scope) => {
-        initScope(scope, request);
-        return callback({ ...spanOptions, parentSpan: undefined });
-      }),
-    );
+  // No local parent: continue from parsed `TraceparentData`, or from the
+  // `traceparent` a snap's `SerializedTraceContext` keeps after its parent ended.
+  if (!parentSpan) {
+    let traceparentData;
+    if (hasTraceparentData(parentContext)) {
+      traceparentData = parentContext;
+    } else if (
+      isObject(parentContext) &&
+      hasProperty(parentContext, 'traceparent')
+    ) {
+      const parsed = parseTraceparent(parentContext.traceparent);
+      if (hasTraceparentData(parsed)) {
+        traceparentData = parsed;
+      }
+    }
+    if (traceparentData) {
+      const sentryTrace = traceparentDataToSentryTrace(traceparentData);
+      return sentryContinueTrace(sentryTrace, () =>
+        sentryWithScope((scope: Sentry.Scope) => {
+          initScope(scope, request);
+          return callback({ ...spanOptions, parentSpan: undefined });
+        }),
+      );
+    }
   }
 
-  return sentryWithIsolationScope((scope: Sentry.Scope) => {
-    initScope(scope, request);
-    return callback(spanOptions);
-  });
+  // A declared parent that did not resolve nests under the active span, without
+  // `forceTransaction`: a failed lookup is not a request for a root.
+  if (!root && !parentSpan && parentDeclared) {
+    const activeSpan = sentryGetActiveSpan();
+    if (activeSpan) {
+      return sentryWithScope((scope: Sentry.Scope) => {
+        initScope(scope, request);
+        return callback({ ...spanOptions, parentSpan: activeSpan });
+      });
+    }
+  }
+
+  const runInScope = () =>
+    sentryWithScope((scope: Sentry.Scope) => {
+      initScope(scope, request);
+      return callback(spanOptions);
+    });
+
+  // `withScope` alone keeps the ambient trace id; `startNewTrace` issues a new
+  // one, which is what moves a `root` span off the ambient trace.
+  return root ? sentryStartNewTrace(runInScope) : runInScope();
 }
 
 function logTrace(
@@ -716,6 +1218,41 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   return actual(callback);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryStartNewTrace<T>(callback: () => T): T {
+  const actual = globalThis.sentry?.startNewTrace;
+
+  if (!actual) {
+    return callback();
+  }
+
+  return actual(callback);
+}
+
+/**
+ * Run the callback in a forked current scope, so tags set on it reach this
+ * trace's own events only. The browser SDK's `withIsolationScope` hands the
+ * callback the existing isolation scope rather than a fork, so a tag set there
+ * stays on every later event in the process.
+ *
+ * @param callback - Receives the forked scope.
+ * @returns The callback's return value.
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryWithScope<T>(callback: (scope: Sentry.Scope) => T): T {
+  const actual = globalThis.sentry?.withScope;
+
+  if (!actual) {
+    const scope = {
+      // eslint-disable-next-line no-empty-function
+      setTag: () => {},
+    } as unknown as Sentry.Scope;
+    return callback(scope);
+  }
+  return actual(callback);
+}
+
 function sentrySetMeasurement(
   key: string,
   value: number,
@@ -746,6 +1283,21 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
   return actual() ?? null;
 }
 
+/**
+ * Baggage for a continued trace. It must carry `sentry-sampled`, which backends
+ * route spans to Sentry on.
+ *
+ * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
+ * @returns A `baggage` string, or undefined when the header is malformed.
+ */
+function sentryTraceToBaggage(sentryTrace: string): string | undefined {
+  const [traceId, , sampled] = sentryTrace.split('-');
+  if (!traceId || (sampled !== '0' && sampled !== '1')) {
+    return undefined;
+  }
+  return `sentry-trace_id=${traceId},sentry-sampled=${sampled === '1'}`;
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryContinueTrace<T>(sentryTrace: string, callback: () => T): T {
@@ -755,5 +1307,8 @@ function sentryContinueTrace<T>(sentryTrace: string, callback: () => T): T {
     return callback();
   }
 
-  return actual({ sentryTrace, baggage: undefined }, callback);
+  return actual(
+    { sentryTrace, baggage: sentryTraceToBaggage(sentryTrace) },
+    callback,
+  );
 }

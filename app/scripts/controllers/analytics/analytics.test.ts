@@ -8,8 +8,11 @@ import type {
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
   AnalyticsControllerOptInAction,
+  AnalyticsControllerOptInToMarketingAction,
   AnalyticsControllerOptOutAction,
+  AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
+  AnalyticsControllerSetMarketingCampaignCookieIdAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
 } from '@metamask/analytics-controller';
@@ -23,17 +26,17 @@ import type { Browser } from 'webextension-polyfill';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
-import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
-import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../metametrics-controller-method-action-types';
 import type {
   SentryTracingServiceClearTracesAfterMetricsOptInAction,
   SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from '../../services/sentry/sentry-tracing-service-method-action-types';
-import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
+import { getAnalyticsControllerInitMessenger } from '../../wallet-init/messengers/analytics-controller-messenger';
+import { LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction } from '../../services/legacy-background-api-service-method-action-types';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
   identify,
+  setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
   trackEvent,
   updateProfileSessionData,
@@ -55,9 +58,8 @@ function createConfiguredMessenger({
     analyticsId: TEST_ANALYTICS_ID,
     optedIn,
     consentDecisionMade,
-  };
-  const metaMetricsControllerState = {
-    dataCollectionForMarketing: false,
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: false,
     marketingCampaignCookieId,
   };
   const trackEventHandler = jest.fn();
@@ -71,10 +73,28 @@ function createConfiguredMessenger({
     analyticsControllerState.optedIn = false;
     analyticsControllerState.consentDecisionMade = true;
   });
+  const optInToMarketingHandler = jest.fn(async () => {
+    analyticsControllerState.optedInToMarketing = true;
+    analyticsControllerState.marketingConsentDecisionMade = true;
+  });
+  const optOutOfMarketingHandler = jest.fn(() => {
+    analyticsControllerState.optedInToMarketing = false;
+    analyticsControllerState.marketingConsentDecisionMade = true;
+    // Core's optOutOfMarketing auto-clears the cookie ID; mirror that here.
+    analyticsControllerState.marketingCampaignCookieId = null;
+  });
   const resetConsentDecisionHandler = jest.fn(() => {
     analyticsControllerState.optedIn = false;
     analyticsControllerState.consentDecisionMade = false;
   });
+  const setParticipateInMetaMetricsHandler = jest.fn<
+    ReturnType<
+      LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction['handler']
+    >,
+    Parameters<
+      LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction['handler']
+    >
+  >();
   const trackTracesHandler = jest.fn();
   const clearTracesHandler = jest.fn();
   const setMarketingCampaignCookieIdHandler = jest.fn();
@@ -91,8 +111,6 @@ function createConfiguredMessenger({
     | NetworkControllerGetStateAction
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
-    | MetaMetricsControllerGetStateAction
-    | MetaMetricsControllerSetMarketingCampaignCookieIdAction
     | SentryTracingServiceTrackTracesAfterMetricsOptInAction
     | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
@@ -100,8 +118,12 @@ function createConfiguredMessenger({
     | AnalyticsControllerIdentifyAction
     | AnalyticsControllerTrackViewAction
     | AnalyticsControllerOptInAction
+    | AnalyticsControllerOptInToMarketingAction
     | AnalyticsControllerOptOutAction
+    | AnalyticsControllerOptOutOfMarketingAction
     | AnalyticsControllerResetConsentDecisionAction
+    | AnalyticsControllerSetMarketingCampaignCookieIdAction
+    | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction
     | ActionConstraint,
     never
   >({
@@ -148,13 +170,9 @@ function createConfiguredMessenger({
       }) as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:getState',
-    () => metaMetricsControllerState as never,
-  );
-  rootMessenger.registerActionHandler(
-    'MetaMetricsController:setMarketingCampaignCookieId',
+    'AnalyticsController:setMarketingCampaignCookieId',
     ((cookieId: string | null) => {
-      metaMetricsControllerState.marketingCampaignCookieId = cookieId;
+      analyticsControllerState.marketingCampaignCookieId = cookieId;
       setMarketingCampaignCookieIdHandler(cookieId);
     }) as never,
   );
@@ -191,8 +209,20 @@ function createConfiguredMessenger({
     optOutHandler as never,
   );
   rootMessenger.registerActionHandler(
+    'AnalyticsController:optInToMarketing',
+    optInToMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:optOutOfMarketing',
+    optOutOfMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
     'AnalyticsController:resetConsentDecision',
     resetConsentDecisionHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+    setParticipateInMetaMetricsHandler,
   );
 
   const analyticsMessenger = getAnalyticsControllerInitMessenger(rootMessenger);
@@ -208,13 +238,15 @@ function createConfiguredMessenger({
     trackViewHandler,
     optInHandler,
     optOutHandler,
+    optInToMarketingHandler,
+    optOutOfMarketingHandler,
     resetConsentDecisionHandler,
     trackTracesHandler,
     clearTracesHandler,
     setMarketingCampaignCookieIdHandler,
     setUninstallURL,
     analyticsControllerState,
-    metaMetricsControllerState,
+    setParticipateInMetaMetricsHandler,
   };
 }
 
@@ -338,163 +370,25 @@ describe('analytics', () => {
   });
 
   describe('setParticipateInMetaMetrics', () => {
-    it('opts in and out via AnalyticsController and records the consent decision', async () => {
-      const {
-        analyticsControllerState,
-        optInHandler,
-        optOutHandler,
-        trackTracesHandler,
-        clearTracesHandler,
-      } = createConfiguredMessenger({
-        optedIn: false,
-        consentDecisionMade: false,
-      });
-
-      expect(analyticsControllerState.consentDecisionMade).toBe(false);
+    it('delegates to LegacyBackgroundApiService:setParticipateInMetaMetrics', async () => {
+      const { setParticipateInMetaMetricsHandler } =
+        createConfiguredMessenger();
 
       await setParticipateInMetaMetrics(true);
-      expect(optInHandler).toHaveBeenCalledTimes(1);
-      expect(trackTracesHandler).toHaveBeenCalledTimes(1);
-      expect(clearTracesHandler).toHaveBeenCalledTimes(1);
-      expect(analyticsControllerState.optedIn).toBe(true);
-      expect(analyticsControllerState.consentDecisionMade).toBe(true);
+      expect(setParticipateInMetaMetricsHandler).toHaveBeenCalledWith(true);
 
       await setParticipateInMetaMetrics(false);
-      expect(optOutHandler).toHaveBeenCalledTimes(1);
-      expect(clearTracesHandler).toHaveBeenCalledTimes(2);
-      expect(analyticsControllerState.optedIn).toBe(false);
-      expect(analyticsControllerState.consentDecisionMade).toBe(true);
+      expect(setParticipateInMetaMetricsHandler).toHaveBeenCalledWith(false);
     });
 
-    it('resets the consent decision when set to null', async () => {
-      const { analyticsControllerState, resetConsentDecisionHandler } =
-        createConfiguredMessenger({
-          optedIn: true,
-          consentDecisionMade: true,
-        });
+    it('returns what LegacyBackgroundApiService:setParticipateInMetaMetrics returns', async () => {
+      const { setParticipateInMetaMetricsHandler } =
+        createConfiguredMessenger();
+      setParticipateInMetaMetricsHandler.mockResolvedValue('some-analytics-id');
 
-      await setParticipateInMetaMetrics(null);
+      const analyticsId = await setParticipateInMetaMetrics(true);
 
-      expect(resetConsentDecisionHandler).toHaveBeenCalledTimes(1);
-      expect(analyticsControllerState.optedIn).toBe(false);
-      expect(analyticsControllerState.consentDecisionMade).toBe(false);
-    });
-
-    it('preserves the analyticsId when opting out and back in', async () => {
-      const { analyticsControllerState } = createConfiguredMessenger();
-
-      const analyticsIdAfterOptOut = await setParticipateInMetaMetrics(false);
-
-      expect(analyticsIdAfterOptOut).toStrictEqual(TEST_ANALYTICS_ID);
-      expect(analyticsControllerState.analyticsId).toStrictEqual(
-        TEST_ANALYTICS_ID,
-      );
-
-      const analyticsIdAfterOptIn = await setParticipateInMetaMetrics(true);
-
-      expect(analyticsIdAfterOptIn).toStrictEqual(TEST_ANALYTICS_ID);
-      expect(analyticsControllerState.analyticsId).toStrictEqual(
-        TEST_ANALYTICS_ID,
-      );
-    });
-
-    it('nullifies the marketingCampaignCookieId when participation is toggled off', async () => {
-      const {
-        metaMetricsControllerState,
-        setMarketingCampaignCookieIdHandler,
-      } = createConfiguredMessenger({
-        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
-      });
-
-      expect(
-        metaMetricsControllerState.marketingCampaignCookieId,
-      ).toStrictEqual(TEST_GA_COOKIE_ID);
-
-      await setParticipateInMetaMetrics(false);
-
-      expect(setMarketingCampaignCookieIdHandler).toHaveBeenCalledWith(null);
-      expect(metaMetricsControllerState.marketingCampaignCookieId).toBeNull();
-    });
-
-    describe('the extension uninstall URL', () => {
-      const originalEnvironment = process.env.METAMASK_ENVIRONMENT;
-      const originalBuildType = process.env.METAMASK_BUILD_TYPE;
-      const originalVersion = process.env.METAMASK_VERSION;
-      const testVersion = '13.0.0';
-      const encodedAnalyticsId =
-        Buffer.from(TEST_ANALYTICS_ID).toString('base64');
-
-      beforeEach(() => {
-        process.env.METAMASK_VERSION = testVersion;
-      });
-
-      afterEach(() => {
-        process.env.METAMASK_ENVIRONMENT = originalEnvironment;
-        process.env.METAMASK_BUILD_TYPE = originalBuildType;
-        process.env.METAMASK_VERSION = originalVersion;
-      });
-
-      it('updates it when opting in on a main production build', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'main';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { setUninstallURL } = createConfiguredMessenger();
-
-        await setParticipateInMetaMetrics(true);
-
-        expect(setUninstallURL).toHaveBeenCalledTimes(1);
-        expect(setUninstallURL).toHaveBeenCalledWith(
-          `https://metamask.io/uninstalled?${new URLSearchParams({
-            av: testVersion,
-            mmi: encodedAnalyticsId,
-            env: ENVIRONMENT.PRODUCTION,
-          }).toString()}`,
-        );
-      });
-
-      it('updates it when opting out on a main production build', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'main';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { setUninstallURL } = createConfiguredMessenger();
-
-        await setParticipateInMetaMetrics(false);
-
-        expect(setUninstallURL).toHaveBeenCalledTimes(1);
-        expect(setUninstallURL).toHaveBeenCalledWith(
-          `https://metamask.io/uninstalled?${new URLSearchParams({
-            av: testVersion,
-          }).toString()}`,
-        );
-      });
-
-      it('does not update it when participation is reset to null', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'main';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { setUninstallURL } = createConfiguredMessenger();
-
-        await setParticipateInMetaMetrics(null);
-
-        expect(setUninstallURL).not.toHaveBeenCalled();
-      });
-
-      it('does not update it in development', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'main';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-        const { setUninstallURL } = createConfiguredMessenger();
-
-        await setParticipateInMetaMetrics(true);
-
-        expect(setUninstallURL).not.toHaveBeenCalled();
-      });
-
-      it('does not update it for a non-main build', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'flask';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { setUninstallURL } = createConfiguredMessenger();
-
-        await setParticipateInMetaMetrics(true);
-
-        expect(setUninstallURL).not.toHaveBeenCalled();
-      });
+      expect(analyticsId).toBe('some-analytics-id');
     });
   });
 });

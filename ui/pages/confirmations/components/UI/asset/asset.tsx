@@ -1,10 +1,10 @@
 import React, { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box as DSBox,
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
   AvatarToken,
@@ -29,10 +29,10 @@ import {
   NFT_STANDARDS,
 } from '../../../types/send';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
-import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
-import { AccountTypeLabel } from '../account-type-label';
+import { getUseCurrencyRateCheck } from '../../../../../selectors';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import { SecurityBadge } from '../../../../../components/app/security-trust/security-trust-inline-badge';
 
 export type TokenTagRenderer = (token: AssetType) => ReactNode;
 
@@ -44,6 +44,7 @@ type AssetRowProps = {
 
 type TokenAssetProps = AssetRowProps & {
   hideBalances?: boolean;
+  safetyResult?: string;
   tagRenderers?: TokenTagRenderer[];
   /**
    * Optional renderers for a row-end accessory (e.g. ramps' unavailable-token
@@ -145,6 +146,7 @@ const TokenAsset = ({
   onClick,
   isSelected,
   hideBalances = false,
+  safetyResult,
   tagRenderers,
   endRenderers,
 }: TokenAssetProps) => {
@@ -163,7 +165,7 @@ const TokenAsset = ({
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
-  const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const assetImage = chainId
     ? getAvatarTokenSrc({
@@ -245,9 +247,9 @@ const TokenAsset = ({
         <DSBox
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          className="min-w-0 overflow-hidden"
+          className="min-w-0 gap-1 overflow-hidden"
         >
-          <DSBox className="mr-1 min-w-0 overflow-hidden" style={dimmedStyle}>
+          <DSBox className="min-w-0 overflow-hidden" style={dimmedStyle}>
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -256,12 +258,8 @@ const TokenAsset = ({
               {name}
             </Text>
           </DSBox>
+          <SecurityBadge value={safetyResult} />
           {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
-          {typeLabel ? (
-            <DSBox className="shrink-0" style={dimmedStyle}>
-              <AccountTypeLabel label={typeLabel} />
-            </DSBox>
-          ) : null}
         </DSBox>
         <Text
           variant={TextVariant.bodySmMedium}
@@ -290,12 +288,14 @@ const TokenAsset = ({
           className="shrink-0"
           style={dimmedStyle}
         >
-          <Text variant={TextVariant.bodyMdMedium}>
-            {formatCurrencyWithMinThreshold(
-              fiat?.balance ?? 0,
-              fiat?.currency || '',
-            )}
-          </Text>
+          {useCurrencyRateCheck && (
+            <Text variant={TextVariant.bodyMdMedium}>
+              {formatCurrencyWithMinThreshold(
+                fiat?.balance ?? 0,
+                fiat?.currency || '',
+              )}
+            </Text>
+          )}
           <Text
             variant={TextVariant.bodySmMedium}
             color={TextColor.textAlternative}
@@ -313,6 +313,7 @@ export const Asset = ({
   onClick,
   isSelected,
   hideBalances,
+  safetyResult,
   tagRenderers,
   endRenderers,
 }: TokenAssetProps) => {
@@ -325,6 +326,7 @@ export const Asset = ({
       onClick={onClick}
       isSelected={isSelected}
       hideBalances={hideBalances}
+      safetyResult={safetyResult}
       tagRenderers={tagRenderers}
       endRenderers={endRenderers}
     />

@@ -30,12 +30,12 @@ import {
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
-import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
+import type { AnalyticsControllerInitMessenger } from '../../wallet-init/messengers/analytics-controller-messenger';
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
 import { ANONYMOUS_EVENT_PROPERTY } from './platform-adapter';
 
-const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+const EXTENSION_UNINSTALL_URL = 'https://metamask.com/uninstalled';
 
 type SegmentTrackPayload = Omit<
   SegmentEventPayload,
@@ -91,35 +91,45 @@ export function configureAnalytics({
  * Sets an uninstall URL ("Sorry to see you go!" page), which is opened if a
  * user uninstalls the extension. Call only after a MetaMetrics consent decision.
  *
- * @param participateInMetaMetrics - Whether the user opted into metrics.
- * @param analyticsId - The current analytics id.
+ * @param args - The arguments.
+ * @param args.participateInMetaMetrics - Whether the user opted into metrics.
+ * @param args.analyticsId - The current analytics id.
+ * @param args.appVersion - The current version of the extension.
+ * @param args.appEnvironment - The enviroment under which the extension is
+ * being loaded.
+ * @param args.setUninstallURL - Sets the uninstall URL.
  */
-function updateExtensionUninstallUrl(
-  participateInMetaMetrics: boolean,
-  analyticsId: string,
-): void {
-  const version = process.env.METAMASK_VERSION as string;
-  const environment = process.env.METAMASK_ENVIRONMENT as string;
-  const appVersion =
-    environment === 'production' ? version : `${version}-${environment}`;
+export function updateExtensionUninstallUrl({
+  participateInMetaMetrics,
+  analyticsId,
+  appVersion,
+  appEnvironment,
+  setUninstallURL,
+}: {
+  participateInMetaMetrics: boolean;
+  analyticsId: string;
+  appVersion: string;
+  appEnvironment: string;
+  setUninstallURL: (uninstallUrl: string) => void;
+}): void {
+  const fullAppVersion =
+    appEnvironment === 'production'
+      ? appVersion
+      : `${appVersion}-${appEnvironment}`;
   const query: {
     mmi?: string;
     env?: string;
     av: string;
   } = {
-    av: appVersion,
+    av: fullAppVersion,
   };
   if (participateInMetaMetrics) {
     query.mmi = Buffer.from(analyticsId).toString('base64');
-    query.env = environment;
+    query.env = appEnvironment;
   }
   const queryString = new URLSearchParams(query);
 
-  if (extension?.runtime) {
-    extension.runtime.setUninstallURL(
-      `${EXTENSION_UNINSTALL_URL}?${queryString}`,
-    );
-  }
+  setUninstallURL(`${EXTENSION_UNINSTALL_URL}?${queryString}`);
 }
 
 /**
@@ -367,7 +377,9 @@ export function trackEvent(
         analyticsId,
         event: MetaMetricsEventName.MetricsOptOut,
         properties: eventPayload.properties as Record<string, Json> | undefined,
-        context: eventPayload.context as AnalyticsContext | undefined,
+        context: eventPayload.context as
+          | Partial<MetaMetricsContext>
+          | undefined,
       });
       return;
     }
@@ -431,45 +443,24 @@ export async function setParticipateInMetaMetrics(
   participateInMetaMetrics: boolean | null,
 ): Promise<string | null> {
   const analyticsMessenger = getMessenger();
+  return await analyticsMessenger.call(
+    'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+    participateInMetaMetrics,
+  );
+}
+
+export async function setDataCollectionForMarketing(
+  dataCollectionForMarketing: boolean,
+): Promise<string> {
+  const analyticsMessenger = getMessenger();
   const { analyticsId } = analyticsMessenger.call(
     'AnalyticsController:getState',
   );
 
-  if (participateInMetaMetrics === true) {
-    await analyticsMessenger.call('AnalyticsController:optIn');
-    analyticsMessenger.call(
-      'SentryTracingService:trackTracesAfterMetricsOptIn',
-    );
-    analyticsMessenger.call(
-      'SentryTracingService:clearTracesAfterMetricsOptIn',
-    );
+  if (dataCollectionForMarketing) {
+    await analyticsMessenger.call('AnalyticsController:optInToMarketing');
   } else {
-    if (participateInMetaMetrics === false) {
-      analyticsMessenger.call('AnalyticsController:optOut');
-      analyticsMessenger.call(
-        'SentryTracingService:clearTracesAfterMetricsOptIn',
-      );
-    } else {
-      analyticsMessenger.call('AnalyticsController:resetConsentDecision');
-    }
-
-    const { marketingCampaignCookieId } = analyticsMessenger.call(
-      'MetaMetricsController:getState',
-    );
-    if (marketingCampaignCookieId) {
-      analyticsMessenger.call(
-        'MetaMetricsController:setMarketingCampaignCookieId',
-        null,
-      );
-    }
-  }
-
-  if (
-    isMain() &&
-    process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
-    participateInMetaMetrics !== null
-  ) {
-    updateExtensionUninstallUrl(participateInMetaMetrics === true, analyticsId);
+    analyticsMessenger.call('AnalyticsController:optOutOfMarketing');
   }
 
   return analyticsId;

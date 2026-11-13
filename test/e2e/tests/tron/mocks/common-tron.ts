@@ -96,24 +96,6 @@ function tronInfuraUrl(path: string): RegExp {
   return new RegExp(`^${TRON_INFURA_BASE_URL}${path}($|\\?)`, 'u');
 }
 
-// BIP44 Stage 2 feature flags - enables automatic multichain account creation
-export const BIP44_STAGE_TWO = {
-  enableMultichainAccountsState2: {
-    enabled: true,
-    featureVersion: '2',
-    minimumVersion: '12.19.0',
-  },
-  bitcoinAccounts: {
-    enabled: true,
-    minimumVersion: '13.6.0',
-  },
-  tronAccounts: {
-    enabled: true,
-    minimumVersion: '13.6.0',
-  },
-  tronTestnetsEnabled: true,
-};
-
 export const TRON_SWAP_TOKEN_REGISTRY = {
   TRX: {
     address: '0x0000000000000000000000000000000000000000',
@@ -177,8 +159,10 @@ function buildTronAsset(symbol: TronSwapSymbol) {
 }
 
 /**
- * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
- * This enables automatic Tron account creation
+ * Mocks the feature flags endpoint with the production flag defaults.
+ *
+ * The overrides below only neutralize unrelated behaviors (bridge quoting
+ * and RPC failover).
  *
  * @param mockServer
  */
@@ -196,7 +180,6 @@ export async function mockTronFeatureFlags(
       statusCode: 200,
       json: [
         ...getProductionRemoteFlagApiResponse(),
-        BIP44_STAGE_TWO,
         // The Tron mocks answer `getQuote`, not the SSE `getQuoteStream` that
         // the production bridge config turns on. An unparseable `bridgeConfig`
         // resolves to the bridge controller's built-in default, which is what
@@ -206,6 +189,9 @@ export async function mockTronFeatureFlags(
         // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
         // Disabling the failover feature to avoid new privacy hosts
         { corePlatformRpcFailoverMode: 'disabled' },
+        // Not part of the production defaults, but required by the network
+        // spec that asserts the Tron testnets are listed.
+        { tronTestnetsEnabled: true },
       ],
     }));
 }
@@ -885,6 +871,29 @@ export async function mockFiatExchangeRates(
         },
       },
     }));
+}
+
+/**
+ * Assets-controller only prices chains listed in `spotPricesV3`. The default
+ * e2e mock omits Tron, so {@link mockTronSpotPrices} never runs and fiat stays
+ * at $0.00.
+ *
+ * @param mockServer - Mockttp server for this test.
+ * @returns The mocked supported-networks endpoint.
+ */
+export async function mockTronPriceSupportedNetworks(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, {
+      fullSupport: [TRON_CHAIN_ID],
+      partialSupport: {
+        spotPricesV2: [TRON_CHAIN_ID],
+        spotPricesV3: [TRON_CHAIN_ID],
+      },
+    });
 }
 
 export async function mockTronSpotPrices(
@@ -1652,7 +1661,7 @@ export async function mockTronApis(
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint[]> {
   return [
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
     await mockAccountsApiV2WithTron(mockServer),
     await mockAccountsApiV5WithTron(mockServer, mockZeroBalance),
@@ -1667,6 +1676,7 @@ export async function mockTronApis(
     await mockTronGetTransactions(mockServer),
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
+    await mockTronPriceSupportedNetworks(mockServer),
     await mockTronSpotPrices(mockServer),
     await mockTronAssets(mockServer),
     await mockBroadTransaction(mockServer),

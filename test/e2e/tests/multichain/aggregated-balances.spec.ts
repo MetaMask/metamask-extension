@@ -8,12 +8,15 @@ import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetsSettings from '../../page-objects/pages/settings/assets-settings';
+import DeveloperToolsSettings from '../../page-objects/pages/settings/developer-tools-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { Anvil } from '../../seeder/anvil';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
+import { NetworkName } from '../../helpers/network-constants';
 import {
   getMockAssetsPrice,
   mockPriceApi,
@@ -22,8 +25,8 @@ import {
 } from '../tokens/utils/mocks';
 
 const EXPECTED_BALANCE_USD = '$85,025.00';
-const NETWORK_NAME_MAINNET = 'Ethereum';
-const NETWORK_NAME_SEPOLIA = 'Sepolia';
+const NETWORK_NAME_MAINNET = NetworkName.ETHEREUM;
+const NETWORK_NAME_SEPOLIA = NetworkName.SEPOLIA;
 
 const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
 const SEPOLIA_NATIVE_ZERO_ADDRESS_ASSET_ID =
@@ -85,7 +88,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           hardfork: 'muirGlacier',
         },
         smartContract,
-        ethConversionInUsd: MOCK_ETH_CONVERSION_RATE, // 25 ETH × $3401 = $85,025.00
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockPriceApi(mockServer);
@@ -129,7 +131,10 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await switchToNetworkFromNetworkSelect(driver, NETWORK_NAME_MAINNET);
 
         await headerNavbar.openSettingsPage();
-        await settingsPage.toggleBalanceSetting();
+        await settingsPage.goToAssetsSettings();
+        const assetsSettings = new AssetsSettings(driver);
+        await assetsSettings.checkPageIsLoaded();
+        await assetsSettings.toggleShowNativeTokenAsMainBalance();
         await closeSettings(driver);
 
         await homepage.checkExpectedBalanceIsDisplayed(
@@ -146,7 +151,9 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
 
         await headerNavbar.openSettingsPage();
         await settingsPage.goToDeveloperOptions();
-        await settingsPage.toggleShowFiatOnTestnets();
+        const developerToolsSettings = new DeveloperToolsSettings(driver);
+        await developerToolsSettings.checkPageIsLoaded();
+        await developerToolsSettings.toggleShowFiatOnTestnets();
         await closeSettings(driver);
 
         await homepage.checkExpectedBalanceIsDisplayed(

@@ -34,6 +34,11 @@ import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  prepareDeepLinkUrl,
+} from '../deep-link/helpers';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -187,15 +192,6 @@ describe('MetaMask onboarding', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-            },
-          })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_PRICE,
-                usdConversionRate: MOCK_ETH_PRICE,
-              },
             },
           })
           .withAssetsController({
@@ -370,38 +366,6 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('User can turn off basic functionality in default settings', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await importSRPOnboardingFlow({ driver });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
-
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-      },
-    );
-  });
-
   it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
     // We don't use onboarding: true here because we want there to be a vault,
     // simulating what will happen when a user eventually restores their vault
@@ -418,7 +382,7 @@ describe('MetaMask onboarding', function () {
             seedPhraseBackedUp: null,
             hasSeenOnboardingCompletionPage: false,
           })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             consentDecisionMade: false,
             optedIn: false,
             analyticsId: null,
@@ -493,10 +457,16 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Navigates to an external web page using deferred deep link after onboarding completes', async function () {
-    const referringLink =
-      'https://link.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1&sig=aagQN9osZ1tfoYIEKvU6t5i8FVaW4Gi6EGimMcZ0VTDmAlPDk800-Nx3131QlDTmO3UF2JCmR2Y2RAJhceNOYw';
-    const expectedUrlOpened =
-      'https://app.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1';
+    const keyPair = await generateECDSAKeyPair();
+    const deepLinkPublicKey = bytesToB64(
+      await crypto.subtle.exportKey('raw', keyPair.publicKey),
+    );
+    const referringLink = await prepareDeepLinkUrl({
+      route: '/card-onboarding?amount=100',
+      signed: 'signed with sig_params',
+      privateKey: keyPair.privateKey,
+    });
+    const expectedUrlOpened = 'https://metamask.com/card?amount=100';
 
     await withFixtures(
       {
@@ -508,6 +478,11 @@ describe('MetaMask onboarding', function () {
             },
           })
           .build(),
+        manifestFlags: {
+          testing: {
+            deepLinkPublicKey,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

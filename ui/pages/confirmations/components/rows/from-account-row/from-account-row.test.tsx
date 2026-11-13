@@ -8,9 +8,11 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
+import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { FromAccountRow } from './from-account-row';
 
 jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/pay/useIsPayHardwareBlocked');
 jest.mock('../../../../../hooks/useDisplayName');
 jest.mock(
   '../../../../../store/controller-actions/transaction-pay-controller',
@@ -28,15 +30,28 @@ jest.mock('../../account-select-modal', () => ({
     onSelect,
     onClose,
     title,
+    excludeHardwareAccounts,
+    excludeQrAccounts,
+    restrictHardwareAccountsToSelected,
   }: {
     selectedAddress: string;
     onSelect: (address: string) => void;
     onClose: () => void;
     title?: string;
+    excludeHardwareAccounts?: boolean;
+    excludeQrAccounts?: boolean;
+    restrictHardwareAccountsToSelected?: boolean;
   }) => (
     <div data-testid="account-select-modal">
       <span data-testid="selected-address">{selectedAddress}</span>
       <span data-testid="modal-title">{title}</span>
+      <span data-testid="exclude-hardware-accounts">
+        {String(excludeHardwareAccounts)}
+      </span>
+      <span data-testid="exclude-qr-accounts">{String(excludeQrAccounts)}</span>
+      <span data-testid="restrict-hardware-accounts-to-selected">
+        {String(restrictHardwareAccountsToSelected ?? false)}
+      </span>
       <button
         data-testid="select-other"
         onClick={() => onSelect('0x1234567890abcdef1234567890abcdef12345678')}
@@ -116,9 +131,12 @@ describe('FromAccountRow', () => {
   const replaceAccountInNestedTransactionsMock = jest.mocked(
     replaceAccountInNestedTransactions,
   );
+  const useIsPayHardwareBlockedMock = jest.mocked(useIsPayHardwareBlocked);
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useIsPayHardwareBlockedMock.mockReturnValue(false);
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
@@ -355,6 +373,31 @@ describe('FromAccountRow', () => {
     });
   });
 
+  it('leaves the money account withdraw transfer for the background to re-encode', async () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        txParams: { from: FROM_ADDRESS_MOCK },
+        type: TransactionType.moneyAccountWithdraw,
+        nestedTransactions: [{ data: '0xabc', to: '0x1' }],
+      },
+    } as never);
+
+    renderWithProvider(<FromAccountRow />, createStore());
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+    fireEvent.click(screen.getByTestId('select-other'));
+
+    await waitFor(() => {
+      expect(setAccountOverrideMock).toHaveBeenCalledWith(
+        TX_ID_MOCK,
+        OTHER_ADDRESS_MOCK,
+      );
+    });
+    expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
+  });
+
   it('does not set the account override when the current account is chosen', () => {
     const store = createStore();
     renderWithProvider(<FromAccountRow />, store);
@@ -375,6 +418,54 @@ describe('FromAccountRow', () => {
 
     expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
     expect(setAccountOverrideMock).not.toHaveBeenCalled();
+  });
+
+  it('excludes hardware accounts from the modal when the flow blocks them', () => {
+    useIsPayHardwareBlockedMock.mockReturnValue(true);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'true',
+    );
+  });
+
+  it('allows hardware accounts in the modal when the flow permits them', () => {
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'false',
+    );
+  });
+
+  it('excludes QR accounts from money account deposits', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-qr-accounts')).toHaveTextContent('true');
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'false',
+    );
+    expect(
+      screen.getByTestId('restrict-hardware-accounts-to-selected'),
+    ).toHaveTextContent('false');
   });
 
   it('renders nothing when there is no from address', () => {

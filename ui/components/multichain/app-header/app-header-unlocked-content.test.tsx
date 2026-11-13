@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { SUPPORT_LINK } from '#shared/lib/ui-utils';
 import { openWindow } from '#ui/helpers/utils/window';
+import { UPDATE_METAMASK_STATE } from '#ui/store/actionConstants';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -33,6 +34,15 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('#ui/helpers/utils/window', () => ({
   openWindow: jest.fn(),
+}));
+
+const mockUnreadNotificationsCount = jest.fn().mockReturnValue(0);
+
+jest.mock('../../../hooks/metamask-notifications/useCounter', () => ({
+  ...jest.requireActual('../../../hooks/metamask-notifications/useCounter'),
+  useUnreadNotificationsCounter: () => ({
+    notificationsUnreadCount: mockUnreadNotificationsCount(),
+  }),
 }));
 
 describe('AppHeaderUnlockedContent trace', () => {
@@ -88,19 +98,18 @@ describe('AppHeaderUnlockedContent trace', () => {
 });
 
 describe('Default address section', () => {
-  it('renders the default address when feature flag and preference is on', async () => {
-    const stateWithFlagOn = {
+  it('renders the default address when the preference is on', async () => {
+    const stateWithPreferenceOn = {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: true,
         },
       },
     };
-    const store = configureStore(stateWithFlagOn);
+    const store = configureStore(stateWithPreferenceOn);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
 
@@ -116,7 +125,6 @@ describe('Default address section', () => {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: false,
@@ -135,9 +143,69 @@ describe('Default address section', () => {
   });
 });
 
+describe('Unread notifications badge', () => {
+  const stateWithSearchEnabled = {
+    ...mockDefaultState,
+    metamask: {
+      ...mockDefaultState.metamask,
+      remoteFeatureFlags: { extensionUXSearch: true },
+    },
+  };
+
+  afterEach(() => {
+    mockUnreadNotificationsCount.mockReturnValue(0);
+  });
+
+  it('anchors the badge to the menu button rather than the header icon row', async () => {
+    mockUnreadNotificationsCount.mockReturnValue(2);
+    const store = configureStore(stateWithSearchEnabled);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
+
+    const badge = await screen.findByTestId(
+      'notifications-tag-counter__unread-dot',
+    );
+    const menuButton = screen.getByTestId('account-options-menu-button');
+    const searchButton = screen.getByTestId('discover-search-button');
+
+    // The badge is positioned against the menu button alone, so adding icons to
+    // the header cannot move it onto a neighbouring icon.
+    const badgeWrapper = menuButton.parentElement?.parentElement;
+    expect(badgeWrapper).toContainElement(badge);
+    expect(badgeWrapper).not.toContainElement(searchButton);
+  });
+});
+
 describe('Global menu', () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('waits for Terms before opening a requested drawer', async () => {
+    const store = configureStore({
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        completedOnboarding: true,
+        termsOfUseLastAgreed: 0,
+      },
+    });
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={{ current: null }} />,
+      store,
+      '/?drawerOpen=true',
+    );
+
+    const drawer = screen.getByRole('dialog', { hidden: true });
+    await waitFor(() => expect(drawer).not.toHaveAttribute('open'));
+
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: { termsOfUseLastAgreed: Date.now() },
+      });
+    });
+    expect(drawer).toHaveAttribute('open');
   });
 
   it('opens settings from the account options menu', async () => {
@@ -192,6 +260,103 @@ describe('Global menu', () => {
       await waitFor(() => {
         expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
       });
+    });
+  });
+});
+
+describe('Fullscreen design', () => {
+  const stateWithSearchEnabled = {
+    ...mockDefaultState,
+    metamask: {
+      ...mockDefaultState.metamask,
+      remoteFeatureFlags: { extensionUXSearch: true },
+    },
+  };
+
+  // Wait for the header's effects to settle so their updates run inside act.
+  const renderHeader = async (isWideLayout: boolean) => {
+    const store = configureStore(stateWithSearchEnabled);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    await act(async () => {
+      renderWithProvider(
+        <AppHeaderUnlockedContent
+          menuRef={menuRef}
+          isWideLayout={isWideLayout}
+        />,
+        store,
+      );
+    });
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('when the fullscreen design is off', () => {
+    it('renders the account picker button and the search icon button', async () => {
+      await renderHeader(false);
+
+      expect(screen.getByTestId('account-menu-icon')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('app-header-account-name'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('discover-search-button').tagName).toBe(
+        'BUTTON',
+      );
+    });
+  });
+
+  describe('when the fullscreen design is on', () => {
+    it('renders the account name as plain text instead of the account picker', async () => {
+      await renderHeader(true);
+
+      expect(screen.getByTestId('app-header-account-name')).toHaveTextContent(
+        'Account 1',
+      );
+      expect(screen.queryByTestId('account-menu-icon')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('app-header-account-name').closest('button'),
+      ).toBe(null);
+    });
+
+    it('renders an open search field instead of the search icon button', async () => {
+      await renderHeader(true);
+
+      const searchInput = screen.getByTestId('discover-search-button');
+      expect(searchInput.tagName).toBe('INPUT');
+      expect(searchInput).toHaveAttribute('readonly');
+      expect(searchInput).toHaveAttribute(
+        'placeholder',
+        messages.searchTokens.message,
+      );
+      expect(searchInput).toHaveAttribute(
+        'aria-label',
+        messages.searchTokens.message,
+      );
+    });
+
+    it('opens the discover search page when the search field is clicked', async () => {
+      await renderHeader(true);
+
+      fireEvent.click(screen.getByTestId('discover-search-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/discover-search',
+        expect.anything(),
+      );
+    });
+
+    it('opens the discover search page when Enter is pressed in the search field', async () => {
+      await renderHeader(true);
+
+      fireEvent.keyDown(screen.getByTestId('discover-search-button'), {
+        key: 'Enter',
+      });
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/discover-search',
+        expect.anything(),
+      );
     });
   });
 });

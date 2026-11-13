@@ -1,0 +1,259 @@
+import React from 'react';
+import { act, fireEvent, screen } from '@testing-library/react';
+import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import { useHomeNetworkFilter } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
+import { useNetworkPillBalances } from './use-network-pill-balances';
+import { NetworkPillSelector } from './network-pill-selector';
+
+jest.mock(
+  '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter',
+  () => ({
+    ...jest.requireActual(
+      '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter',
+    ),
+    useHomeNetworkFilter: jest.fn(),
+  }),
+);
+jest.mock('./use-network-pill-balances');
+
+const ETHEREUM = {
+  chainId: 'eip155:1',
+  name: 'Ethereum',
+  isEvm: true,
+} as unknown as MultichainNetworkConfiguration;
+const OPTIMISM = {
+  chainId: 'eip155:10',
+  name: 'Optimism',
+  isEvm: true,
+} as unknown as MultichainNetworkConfiguration;
+
+const mockHandleSelectNetwork = jest.fn();
+const mockHandleSelectAll = jest.fn();
+
+const mockFilter = (overrides = {}) => {
+  jest.mocked(useHomeNetworkFilter).mockReturnValue({
+    defaultNetworks: [ETHEREUM, OPTIMISM],
+    handleSelectAllDefaultNetworks: mockHandleSelectAll,
+    handleSelectNetwork: mockHandleSelectNetwork,
+    hasOnlyDefaultNetworks: false,
+    isAllDefaultSelected: true,
+    isNetworkDisabled: () => false,
+    isNetworkSelected: () => false,
+    isPending: false,
+    ...overrides,
+  } as unknown as ReturnType<typeof useHomeNetworkFilter>);
+};
+
+const renderSelector = () =>
+  renderWithProvider(<NetworkPillSelector />, configureStore(mockState));
+
+describe('NetworkPillSelector', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockFilter();
+    jest.mocked(useNetworkPillBalances).mockReturnValue({
+      balanceByChainId: { 'eip155:1': 8.17, 'eip155:10': 8.14 },
+      total: 16.31,
+      currency: 'usd',
+      isLoading: false,
+    });
+  });
+
+  it('shows the default networks with their balances', () => {
+    renderSelector();
+
+    expect(screen.getByTestId('network-pill-all-default')).toHaveTextContent(
+      '$16.31',
+    );
+    expect(screen.getByTestId('network-pill-0x1')).toHaveTextContent(
+      'Ethereum$8.17',
+    );
+    expect(screen.getByTestId('network-pill-0xa')).toHaveTextContent(
+      'Optimism$8.14',
+    );
+  });
+
+  it('shows a skeleton instead of the pills while the balances load', () => {
+    jest.mocked(useNetworkPillBalances).mockReturnValue({
+      balanceByChainId: { 'eip155:1': undefined, 'eip155:10': undefined },
+      total: undefined,
+      currency: undefined,
+      isLoading: true,
+    });
+
+    renderSelector();
+
+    expect(
+      screen.getByTestId('network-pill-selector-skeleton'),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('network-pill-0x1')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('network-pill-all-default'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('selects a network or all default networks using the dropdown handlers', () => {
+    renderSelector();
+
+    fireEvent.click(screen.getByTestId('network-pill-0xa'));
+    expect(mockHandleSelectNetwork).toHaveBeenCalledWith(
+      'eip155:10',
+      'Network Pill',
+    );
+
+    fireEvent.click(screen.getByTestId('network-pill-all-default'));
+    expect(mockHandleSelectAll).toHaveBeenCalledTimes(1);
+  });
+
+  it('marks the selected network', () => {
+    mockFilter({
+      isAllDefaultSelected: false,
+      isNetworkSelected: (network: MultichainNetworkConfiguration) =>
+        network.chainId === 'eip155:1',
+    });
+
+    renderSelector();
+
+    expect(screen.getByTestId('network-pill-0x1')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByTestId('network-pill-0xa')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  it('leaves out networks the account does not support, including from the total', () => {
+    mockFilter({
+      isNetworkDisabled: (network: MultichainNetworkConfiguration) =>
+        network.chainId === 'eip155:10',
+    });
+
+    renderSelector();
+
+    expect(screen.queryByTestId('network-pill-0xa')).not.toBeInTheDocument();
+    expect(screen.getByTestId('network-pill-0x1')).toBeInTheDocument();
+    expect(useNetworkPillBalances).toHaveBeenCalledWith([ETHEREUM]);
+  });
+
+  describe('when pills wrap onto more than one line', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('toggles between the collapsed and expanded view', () => {
+      // Three 100px pills in a 250px row, so the last one wraps. The toggle
+      // is 40px and still fits beside the first two.
+      jest
+        .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+        .mockReturnValue(250);
+      jest
+        .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
+        .mockImplementation(function mock(this: HTMLElement) {
+          if (this.dataset.testid === 'network-pill-toggle') {
+            return 40;
+          }
+          if (this.dataset.testid?.startsWith('network-pill')) {
+            return 100;
+          }
+          return 0;
+        });
+
+      renderSelector();
+      const toggle = screen.getByTestId('network-pill-toggle');
+      const pills = screen.getByTestId(
+        'network-pill-selector',
+      ).firstElementChild;
+      expect(toggle).toHaveTextContent('Show all (3)');
+
+      fireEvent.click(toggle);
+      const expandedToggle = screen.getByTestId('network-pill-toggle');
+      expect(expandedToggle).toHaveTextContent('Show fewer');
+
+      fireEvent.click(expandedToggle);
+      const collapsedToggle = screen.getByTestId('network-pill-toggle');
+      expect(collapsedToggle).toHaveTextContent('Show all (3)');
+    });
+
+    it('remeasures when a pill changes width', () => {
+      let notify: ResizeObserverCallback | undefined;
+      const observed: Element[] = [];
+      const originalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class {
+        constructor(callback: ResizeObserverCallback) {
+          notify = callback;
+        }
+
+        observe(target: Element) {
+          observed.push(target);
+        }
+
+        unobserve() {
+          // no-op
+        }
+
+        disconnect() {
+          // no-op
+        }
+      } as typeof ResizeObserver;
+
+      jest
+        .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+        .mockReturnValue(400);
+      const offsetWidth = jest
+        .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
+        .mockImplementation(function mock(this: HTMLElement) {
+          if (this.dataset.testid === 'network-pill-toggle') {
+            return 40;
+          }
+          if (this.dataset.testid?.startsWith('network-pill')) {
+            return 100;
+          }
+          return 0;
+        });
+
+      try {
+        renderSelector();
+        expect(
+          screen.queryByTestId('network-pill-toggle'),
+        ).not.toBeInTheDocument();
+        expect(
+          observed.some(
+            (element) =>
+              element.getAttribute('data-testid') === 'network-pill-0x1',
+          ),
+        ).toBe(true);
+
+        offsetWidth.mockImplementation(function mock(this: HTMLElement) {
+          if (this.dataset.testid === 'network-pill-toggle') {
+            return 40;
+          }
+          if (this.dataset.testid?.startsWith('network-pill')) {
+            return 200;
+          }
+          return 0;
+        });
+        act(() => {
+          notify?.([], {} as ResizeObserver);
+        });
+
+        expect(screen.getByTestId('network-pill-toggle')).toHaveTextContent(
+          'Show all (3)',
+        );
+        expect(screen.getByTestId('network-pill-0xa')).toHaveAttribute('inert');
+      } finally {
+        window.ResizeObserver = originalResizeObserver;
+      }
+    });
+  });
+
+  it('hides the toggle when every pill fits on one line', () => {
+    renderSelector();
+
+    expect(screen.queryByTestId('network-pill-toggle')).not.toBeInTheDocument();
+  });
+});
