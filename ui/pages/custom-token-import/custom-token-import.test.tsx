@@ -582,6 +582,14 @@ describe('CustomTokenImportPage', () => {
   it('shows a non-blocking mainnet token warning when importing a mainnet token address on another network', async () => {
     const actions = getMockedActions();
     const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+    const apeAddress = '0x1111111111111111111111111111111111111111';
+
+    actions.getTokenStandardAndDetailsByChain.mockResolvedValue({
+      standard: 'ERC20',
+      symbol: 'DAI',
+      decimals: '18',
+      name: 'Dai Stablecoin',
+    });
 
     renderPage({
       selectedNetworkClientId: 'pulsechain',
@@ -610,10 +618,28 @@ describe('CustomTokenImportPage', () => {
       await screen.findByTestId('custom-token-import-mainnet-warning'),
     ).toBeInTheDocument();
 
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: apeAddress },
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId('custom-token-import-mainnet-warning'),
+      ).not.toBeInTheDocument(),
+    );
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: daiAddress },
+    });
+
+    expect(
+      await screen.findByTestId('custom-token-import-mainnet-warning'),
+    ).toBeInTheDocument();
+
     const symbolInput = (await screen.findByTestId(
       'custom-token-import-symbol-input',
     )) as HTMLInputElement;
-    expect(symbolInput.value).toBe('APE');
+    expect(symbolInput.value).toBe('DAI');
 
     const submit = screen.getByTestId('custom-token-import-submit-button');
     await waitFor(() => expect(submit).not.toBeDisabled());
@@ -625,7 +651,7 @@ describe('CustomTokenImportPage', () => {
         [
           expect.objectContaining({
             address: daiAddress,
-            symbol: 'APE',
+            symbol: 'DAI',
             decimals: 18,
             isERC721: false,
           }),
