@@ -243,6 +243,8 @@ export function useMoneyActivityValuations({
     loaded: boolean;
     entries: VaultShareValuationCacheEntry[];
   }>({ loaded: false, entries: EMPTY_CACHE });
+  const [fetchedEntries, setFetchedEntries] =
+    useState<VaultShareValuationCacheEntry[]>(EMPTY_CACHE);
 
   useEffect(() => {
     if (!enabled) {
@@ -363,15 +365,6 @@ export function useMoneyActivityValuations({
               ];
               if (newEntries.length > 0) {
                 await writeCachedVaultShareValuations(newEntries);
-                setCache((current) => ({
-                  loaded: current.loaded,
-                  entries: [
-                    ...entriesByIdentity([
-                      ...current.entries,
-                      ...newEntries,
-                    ]).values(),
-                  ],
-                }));
               }
 
               /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
@@ -396,13 +389,30 @@ export function useMoneyActivityValuations({
     combine: combineValuationQueries,
   });
 
+  useEffect(() => {
+    if (valuationState.entries.length === 0) {
+      return;
+    }
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- query results arrive asynchronously and must survive query-key changes
+    setFetchedEntries((current) => {
+      const merged = [
+        ...entriesByIdentity([...current, ...valuationState.entries]).values(),
+      ];
+      const isUnchanged =
+        merged.length === current.length &&
+        merged.every((entry, index) => entry === current[index]);
+      return isUnchanged ? current : merged;
+    });
+  }, [valuationState.entries]);
+
   const valuationsByIdentity = useMemo(() => {
     const map = entriesByIdentity(cache.entries);
-    for (const entry of valuationState.entries) {
+    for (const entry of fetchedEntries) {
       map.set(getVaultShareValuationCacheIdentity(entry), entry);
     }
     return map;
-  }, [cache.entries, valuationState.entries]);
+  }, [cache.entries, fetchedEntries]);
 
   const valuationFetchedByIdentity = useMemo(() => {
     const map = new Map<string, boolean>();
