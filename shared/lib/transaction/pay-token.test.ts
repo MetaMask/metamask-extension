@@ -70,6 +70,12 @@ describe('pay-token', () => {
         getEvmAssetId(POLYGON_NATIVE_TOKEN_ADDRESS, CHAIN_IDS.POLYGON),
       ).toBe('eip155:137/slip44:966');
     });
+
+    it('treats the zero address as native POL on Polygon', () => {
+      expect(getEvmAssetId(ZERO_ADDRESS, CHAIN_IDS.POLYGON)).toBe(
+        'eip155:137/slip44:966',
+      );
+    });
   });
 
   describe('getEvmPaymentToken', () => {
