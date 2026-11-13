@@ -14,7 +14,7 @@ const clampSideNavWidth = (width: number) =>
     Math.max(SIDE_NAV_MIN_WIDTH_PX, Math.round(width)),
   );
 
-const setSideNavWidth = (sideNav: HTMLDivElement, width: number) => {
+const setSideNavWidth = (sideNav: HTMLElement, width: number) => {
   const nextWidth = clampSideNavWidth(width);
   sideNav.style.setProperty('--side-nav-width', `${nextWidth}px`);
   return nextWidth;
