@@ -7,6 +7,9 @@
 
 set -euo pipefail
 
+# Stale suggestion reviews are removed on every run, including a clean one.
+bash .github/scripts/e2e-api-mock-dismiss-stale-suggestions.sh
+
 MARKER="<!-- e2e-api-mock-sync -->"
 # One comment. Exit 0 means the fixtures match, so delete a previous drift
 # comment. Other non-drift exits leave it: a fetch failure or a refused

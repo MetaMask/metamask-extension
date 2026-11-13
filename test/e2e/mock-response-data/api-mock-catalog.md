@@ -15,11 +15,15 @@ drift. Decimal and `0x` hex keys are chain ids: data, not fields. Add `map`
 after the mode (`write:<file>#<key> map`, or `map:<path>` for a nested object)
 when an object's keys are data, such as chain names. A write that would drop
 most top-level fields, which looks like an error body, is refused with a
-warning. `$NAME` in an endpoint comes from the environment; the row is
+warning. Exit 0 prints `No API changes detected`. Exit 1 means a fixture was
+written. Exit 4 means the only writes were rows this pull request did not
+change, so a pull-request run does not fail. Exit 5 means a refused write was
+on a row this run blocks on (every row weekly, or a row the pull request
+changed) and is never reported as exit 4. A refused write on any other row
+warns and does not fail. `$NAME` in an endpoint comes from the environment; the row is
 skipped, with a warning, without it. `derived` follows another row; `skip` is
-not fetched, for the reason given. With no drift it prints `No API changes
-detected`. Otherwise it prints each changed API (its id, endpoint and what
-changed) and any fetch errors. Every Monday,
+not fetched, for the reason given. A run with drift prints each changed API
+(its id, endpoint and what changed) and any fetch errors. Every Monday,
 `.github/workflows/sync-e2e-api-mocks.yml` opens or updates one PR when a
 fixture changes. On a same-repo pull request that changes these mocks, all
 live drift gets suggestions, but only drift in rows that pull request

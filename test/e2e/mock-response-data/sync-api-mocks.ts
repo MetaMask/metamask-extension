@@ -741,12 +741,17 @@ export function catalogSkipWarnings(text: string): string[] {
 
 /**
  * Exit code for one sync run, after discovery errors (exit 3) are handled.
- * A refused write is exit 5 so it is not reported as "No API changes".
+ *
+ * `refused` means a 200 body looked like an error on a row this run blocks
+ * on: every row in weekly mode, and only rows the pull request changed
+ * otherwise. That fails the check (exit 5) and is not hidden by drift that
+ * only touched other rows (exit 4). A refused write on a non-blocking row is
+ * a warning and is not passed here.
  *
  * @param outcome - What the run did.
- * @param outcome.changed - A row this run blocks on was written.
+ * @param outcome.changed - A blocking row was written.
  * @param outcome.changedOther - Only a non-blocking row was written.
- * @param outcome.refused - A 200 body looked like an error, so it was not written.
+ * @param outcome.refused - A blocking row's write was refused.
  * @param outcome.failed - A fetch failed.
  * @returns 0, 1, 2, 4, or 5.
  */
@@ -764,11 +769,11 @@ export function syncExitCode({
   if (changed) {
     return 1;
   }
-  if (changedOther) {
-    return 4;
-  }
   if (refused) {
     return 5;
+  }
+  if (changedOther) {
+    return 4;
   }
   if (failed) {
     return 2;
@@ -944,6 +949,7 @@ async function main(): Promise<number> {
   let changedOther = false;
   let failed = false;
   let refused = false;
+  let refusedOther = false;
   for (const [index, row] of fetchable.entries()) {
     const result = fetched[index];
     if ('error' in result) {
@@ -953,7 +959,14 @@ async function main(): Promise<number> {
     }
     const outcome = await applyRow(row, result.live);
     if (outcome === 'refused') {
-      refused = true;
+      if (blocking.has(row.id)) {
+        refused = true;
+      } else {
+        refusedOther = true;
+        console.warn(
+          `info ${row.id} ${row.url}: refused write is not in rows this pull request changed, so it does not fail the check`,
+        );
+      }
       continue;
     }
     if (outcome !== 'changed') {
@@ -969,7 +982,7 @@ async function main(): Promise<number> {
     }
   }
   const exitCode = syncExitCode({ changed, changedOther, refused, failed });
-  if (exitCode === 5) {
+  if (exitCode === 5 || refusedOther) {
     console.warn(
       'refused: a response looked like an error body, so the fixture was not written',
     );

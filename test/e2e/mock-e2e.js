@@ -37,6 +37,7 @@ const {
 const {
   API_MOCKS,
   SPOT_PRICE_FALLBACK,
+  contentfulServedAssets,
   withPins,
 } = require('./mock-response-data/api-mocks');
 
@@ -2302,9 +2303,7 @@ async function setupMocking(
           items: API_MOCKS.contentful.items.filter((item) => item.sys.id),
           includes: {
             ...API_MOCKS.contentful.includes,
-            Asset: (API_MOCKS.contentful.includes?.Asset ?? []).filter(
-              (asset) => asset.sys.id,
-            ),
+            Asset: contentfulServedAssets(API_MOCKS.contentful),
           },
         },
       };

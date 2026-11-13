@@ -275,31 +275,20 @@ describe('catalog skips and refused writes', () => {
     expect(catalog.every((line) => line.startsWith('skip '))).toBe(true);
   });
 
-  it('exits 5 when a write was refused and nothing was written', () => {
-    expect(
-      syncExitCode({
-        changed: false,
-        changedOther: false,
-        refused: true,
-        failed: false,
-      }),
-    ).toBe(5);
-    expect(
-      syncExitCode({
-        changed: true,
-        changedOther: false,
-        refused: true,
-        failed: false,
-      }),
-    ).toBe(1);
-    expect(
-      syncExitCode({
-        changed: false,
-        changedOther: false,
-        refused: false,
-        failed: false,
-      }),
-    ).toBe(0);
+  it('fails a blocking refused write even when other rows drifted', () => {
+    const base = {
+      changed: false,
+      changedOther: false,
+      refused: false,
+      failed: false,
+    };
+    expect(syncExitCode({ ...base, refused: true })).toBe(5);
+    expect(syncExitCode({ ...base, refused: true, changedOther: true })).toBe(
+      5,
+    );
+    expect(syncExitCode({ ...base, changed: true, refused: true })).toBe(1);
+    expect(syncExitCode({ ...base, changedOther: true })).toBe(4);
+    expect(syncExitCode(base)).toBe(0);
   });
 });
 
@@ -308,9 +297,12 @@ describe('fixture git paths', () => {
     expect(fixtureGitPath('../mock-cdn/ppom-version.json')).toBe(
       'test/e2e/mock-cdn/ppom-version.json',
     );
-    expect(readFixtureAtRef('HEAD', '../mock-cdn/ppom-version.json')).toEqual(
-      expect.stringContaining('"version": "0.0.66"'),
+    const text = readFixtureAtRef('HEAD', '../mock-cdn/ppom-version.json');
+    const onDisk = readFileSync(
+      path.join(__dirname, '../mock-cdn/ppom-version.json'),
+      'utf8',
     );
+    expect(text).toBe(onDisk);
   });
 });
 

@@ -121,6 +121,19 @@ export const SPOT_PRICE_FALLBACK = placeholder(
 );
 
 /**
+ * Assets to serve from a Contentful banner response. The synced fixture can
+ * omit `includes`, and placeholder assets have an empty id.
+ *
+ * @param response - Contentful body.
+ * @returns Assets that have an id.
+ */
+export function contentfulServedAssets(
+  response: Pick<ContentfulBannerResponse, 'includes'>,
+): NonNullable<NonNullable<ContentfulBannerResponse['includes']>['Asset']> {
+  return (response.includes?.Asset ?? []).filter((asset) => asset.sys.id);
+}
+
+/**
  * Applies the values tests assert over a synced mock. Nested objects merge, so
  * fields a sync added are kept; arrays and scalars in `pins` win.
  *

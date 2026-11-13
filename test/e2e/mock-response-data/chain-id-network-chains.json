@@ -71,29 +71,13 @@
         "icon": ""
       }
     ],
-    "title": "",
-    "status": "",
-    "redFlags": [""],
-    "parent": {
-      "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
-    }
+    "title": ""
   },
   {
     "name": "Orderly Mainnet",
     "chain": "ETH",
     "icon": "orderly",
     "rpc": ["https://rpc.orderly.network"],
-    "features": [
-      {
-        "name": ""
-      }
-    ],
     "faucets": [],
     "nativeCurrency": {
       "name": "Ether",
@@ -115,29 +99,13 @@
         "icon": ""
       }
     ],
-    "title": "",
-    "status": "",
-    "redFlags": [""],
-    "parent": {
-      "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
-    }
+    "title": ""
   },
   {
     "name": "PrimusChain mainnet",
     "chain": "PC",
     "icon": "",
     "rpc": ["https://ethnode.primusmoney.com/mainnet"],
-    "features": [
-      {
-        "name": ""
-      }
-    ],
     "faucets": [],
     "nativeCurrency": {
       "name": "Primus Ether",
@@ -159,29 +127,13 @@
         "icon": ""
       }
     ],
-    "title": "",
-    "status": "",
-    "redFlags": [""],
-    "parent": {
-      "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
-    }
+    "title": ""
   },
   {
     "name": "Camino C-Chain",
     "chain": "CAM",
     "icon": "camino",
     "rpc": ["https://api.camino.network/ext/bc/C/rpc"],
-    "features": [
-      {
-        "name": ""
-      }
-    ],
     "faucets": [],
     "nativeCurrency": {
       "name": "Camino",
@@ -203,29 +155,13 @@
         "icon": ""
       }
     ],
-    "title": "",
-    "status": "",
-    "redFlags": [""],
-    "parent": {
-      "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
-    }
+    "title": ""
   },
   {
     "name": "Elysium Testnet",
     "chain": "Atlantis",
     "icon": "",
     "rpc": ["https://rpc.atlantischain.network"],
-    "features": [
-      {
-        "name": ""
-      }
-    ],
     "faucets": ["https://faucet.atlantischain.network"],
     "nativeCurrency": {
       "name": "ELY",
@@ -247,29 +183,13 @@
         "icon": ""
       }
     ],
-    "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged",
-    "status": "",
-    "redFlags": [""],
-    "parent": {
-      "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
-    }
+    "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged"
   },
   {
     "name": "Geth Testnet",
     "chain": "ETH",
     "icon": "",
     "rpc": ["http://127.0.0.1:8545"],
-    "features": [
-      {
-        "name": ""
-      }
-    ],
     "faucets": [],
     "nativeCurrency": {
       "name": "Geth Testnet Ether",
@@ -292,18 +212,7 @@
         "icon": ""
       }
     ],
-    "title": "Go Ethereum (Geth) Private Testnet",
-    "status": "",
-    "redFlags": [""],
-    "parent": {
-      "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
-    }
+    "title": "Go Ethereum (Geth) Private Testnet"
   },
   {
     "name": "Linea Sepolia",
@@ -316,11 +225,6 @@
       "wss://linea-sepolia.infura.io/ws/v3/${INFURA_API_KEY}",
       "https://linea-sepolia-rpc.publicnode.com",
       "wss://linea-sepolia-rpc.publicnode.com"
-    ],
-    "features": [
-      {
-        "name": ""
-      }
     ],
     "faucets": [],
     "nativeCurrency": {
@@ -352,7 +256,6 @@
     ],
     "title": "Linea Sepolia Testnet",
     "status": "active",
-    "redFlags": [""],
     "parent": {
       "type": "L2",
       "chain": "eip155-11155111",
@@ -368,11 +271,6 @@
     "chain": "ETH",
     "icon": "",
     "rpc": ["https://carrot.megaeth.com/rpc", "wss://carrot.megaeth.com/ws"],
-    "features": [
-      {
-        "name": ""
-      }
-    ],
     "faucets": [],
     "nativeCurrency": {
       "name": "MegaETH Testnet Ether",
@@ -396,7 +294,6 @@
     ],
     "title": "",
     "status": "",
-    "redFlags": [""],
     "parent": {
       "type": "",
       "chain": "",
@@ -439,17 +336,6 @@
         "icon": ""
       }
     ],
-    "title": "",
-    "status": "",
-    "redFlags": [""],
-    "parent": {
-      "type": "",
-      "chain": "",
-      "bridges": [
-        {
-          "url": ""
-        }
-      ]
-    }
+    "title": ""
   }
 ]

@@ -75,13 +75,6 @@
       "occurrences": 0,
       "iconUrl": "",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -102,21 +95,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     },
     {
       "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
@@ -130,13 +127,6 @@
       "occurrences": 0,
       "iconUrl": "",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -157,21 +147,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     },
     {
       "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
@@ -185,13 +179,6 @@
       "occurrences": 0,
       "iconUrl": "",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -212,21 +199,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     },
     {
       "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
@@ -240,13 +231,6 @@
       "occurrences": 0,
       "iconUrl": "",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -267,21 +251,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     }
   ],
   "bridge-tokens-linea": [
@@ -296,15 +284,7 @@
       "aggregators": [""],
       "occurrences": 0,
       "iconUrl": "",
-      "coinLabel": "",
-      "erc20Permit": false,
-      "honeypotStatus": {
-        "goPlus": false
-      },
-      "storage": {
-        "balance": 0,
-        "approval": 0
-      }
+      "coinLabel": ""
     },
     {
       "address": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
@@ -317,15 +297,7 @@
       "aggregators": [""],
       "occurrences": 0,
       "iconUrl": "",
-      "coinLabel": "",
-      "erc20Permit": false,
-      "honeypotStatus": {
-        "goPlus": false
-      },
-      "storage": {
-        "balance": 0,
-        "approval": 0
-      }
+      "coinLabel": ""
     },
     {
       "address": "0xa219439258ca9da29e9cc4ce5596924745e12b93",
@@ -338,15 +310,7 @@
       "aggregators": [""],
       "occurrences": 0,
       "iconUrl": "",
-      "coinLabel": "",
-      "erc20Permit": false,
-      "honeypotStatus": {
-        "goPlus": false
-      },
-      "storage": {
-        "balance": 0,
-        "approval": 0
-      }
+      "coinLabel": ""
     },
     {
       "address": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
@@ -359,15 +323,7 @@
       "aggregators": [""],
       "occurrences": 0,
       "iconUrl": "",
-      "coinLabel": "",
-      "erc20Permit": false,
-      "honeypotStatus": {
-        "goPlus": false
-      },
-      "storage": {
-        "balance": 0,
-        "approval": 0
-      }
+      "coinLabel": ""
     }
   ],
   "bridge-top-assets": [
@@ -1331,13 +1287,6 @@
       "occurrences": 100,
       "iconUrl": "https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -1358,21 +1307,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     },
     {
       "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
@@ -1396,13 +1349,6 @@
       "occurrences": 9,
       "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -1423,21 +1369,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     },
     {
       "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
@@ -1460,13 +1410,6 @@
       "occurrences": 8,
       "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -1487,21 +1430,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     },
     {
       "address": "0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f",
@@ -1515,13 +1462,6 @@
       "occurrences": 1,
       "iconUrl": "https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596",
       "coinLabel": "",
-      "storage": {
-        "approval": 0,
-        "balance": 0,
-        "approvalStr": "",
-        "balanceStr": ""
-      },
-      "isContractVerified": false,
       "rwaData": {
         "instrumentType": "",
         "market": {
@@ -1542,21 +1482,25 @@
         "isOpen": false
       },
       "badgeLabel": "",
-      "description": {
-        "en": "",
-        "ko": ""
-      },
+      "containsProfanity": false,
       "erc20Permit": false,
       "fees": {
-        "avgFee": 0,
         "maxFee": 0,
+        "avgFee": 0,
         "minFee": 0
       },
       "honeypotStatus": {
         "honeypotIs": false,
         "goPlus": false
       },
-      "containsProfanity": false
+      "storage": {
+        "balance": 0,
+        "approval": 0
+      },
+      "isContractVerified": false,
+      "description": {
+        "en": ""
+      }
     }
   ],
   "swaps-top-assets": [

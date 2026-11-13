@@ -1,4 +1,21 @@
-import { withPins } from './api-mocks';
+import { contentfulServedAssets, withPins } from './api-mocks';
+
+describe('contentfulServedAssets', () => {
+  it('returns no assets when includes is missing', () => {
+    expect(contentfulServedAssets({})).toStrictEqual([]);
+    expect(contentfulServedAssets({ includes: {} })).toStrictEqual([]);
+  });
+
+  it('drops placeholder assets that have no id', () => {
+    expect(
+      contentfulServedAssets({
+        includes: {
+          Asset: [{ sys: { id: '' } }, { sys: { id: 'banner' } }],
+        },
+      }),
+    ).toStrictEqual([{ sys: { id: 'banner' } }]);
+  });
+});
 
 describe('withPins', () => {
   it('merges nested objects, keeps synced fields, and lets pins win', () => {
