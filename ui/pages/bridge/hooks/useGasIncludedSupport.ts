@@ -121,8 +121,8 @@ export const useGasIncludedSupport = () => {
 
   return {
     nativeGasIncluded,
-    /** True if STX and sendBundle are available, or if gasIncluded7702 is true */
-    gasIncluded: gasIncluded || gasIncluded7702,
+    /** True if fees can be included through simulation, STX/sendBundle, or 7702 */
+    gasIncluded: Boolean(nativeGasIncluded) || gasIncluded || gasIncluded7702,
     /** True if 7702 is enabled AND sendBundle is not supported */
     gasIncluded7702,
   };

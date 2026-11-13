@@ -7,6 +7,7 @@ export enum AlertsName {
   GasEstimateFailed = 'gasEstimateFailed',
   GasFeeLow = 'gasFeeLow',
   GasTooLow = 'gasTooLow',
+  HexDataWhileInteractingWithNonContractAddress = 'hexDataWhileInteractingWithNonContractAddress',
   InsufficientBalance = 'insufficientBalance',
   InsufficientPayTokenBalance = 'insufficientPayTokenBalance',
   InsufficientPayTokenNative = 'insufficientPayTokenNative',

@@ -941,6 +941,59 @@ describe('TokenManagementPage', () => {
     );
   });
 
+  describe('native token on a chain outside the swaps default-token map', () => {
+    const somniaNativeAssetId = 'eip155:5031/slip44:5031';
+    const somniaNativeToken = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: '0x0000000000000000000000000000000000000000',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x13a7',
+      image: '',
+      name: 'Somnia Native',
+      symbol: 'SOMI',
+      decimals: 18,
+      isNative: true,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+    const somniaNativeResult = {
+      assetId: somniaNativeAssetId,
+      symbol: 'SOMI',
+      decimals: 18,
+      name: 'SOMI',
+    };
+    const somniaState = () =>
+      createState({
+        enabledNetworks: { '0x13a7': true },
+        accountGroupAssets: { '0x13a7': [somniaNativeToken] },
+      });
+
+    it('does not duplicate the native token from API browse results', () => {
+      setTokenSearchState({ results: [somniaNativeResult] });
+
+      renderPage(somniaState());
+
+      expect(screen.getByText('Somnia Native')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(
+          `token-management-cell-search-${somniaNativeAssetId}`,
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the owned balance on the native search result', () => {
+      setTokenSearchState({ results: [somniaNativeResult] });
+
+      renderPage(somniaState());
+      fireEvent.change(screen.getByTestId('token-management-search-input'), {
+        target: { value: 'somi' },
+      });
+
+      expect(screen.getByText('1.0 SOMI')).toBeInTheDocument();
+    });
+  });
+
   it('renders API-backed results in place of the home-page list while a query is active', () => {
     setTokenSearchState({
       results: [

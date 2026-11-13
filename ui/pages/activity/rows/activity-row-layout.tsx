@@ -39,13 +39,11 @@ export function ActivityRowLayout({
           >
             {title}
           </Text>
-          {typeof subtitle === 'string' ? (
-            <Text variant="body-sm" className="truncate text-alternative">
+          {subtitle ? (
+            <div className="text-s-body-sm truncate text-alternative">
               {subtitle}
-            </Text>
-          ) : (
-            subtitle
-          )}
+            </div>
+          ) : null}
         </div>
         <div className="flex flex-col items-end whitespace-nowrap">
           {primaryAmount && (

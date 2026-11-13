@@ -140,7 +140,7 @@ describe('SnapUIDateTimePicker', () => {
       });
 
       expect(submitRequestToBackground).toHaveBeenCalledWith(
-        'updateInterfaceState',
+        'SnapInterfaceController:updateInterfaceState',
         [MOCK_INTERFACE_ID, { picker: expect.stringMatching(/^2024-01-15/u) }],
       );
       expect(screen.getByRole('textbox', { hidden: true })).toHaveValue(
@@ -168,7 +168,7 @@ describe('SnapUIDateTimePicker', () => {
       });
 
       expect(submitRequestToBackground).toHaveBeenCalledWith(
-        'updateInterfaceState',
+        'SnapInterfaceController:updateInterfaceState',
         [MOCK_INTERFACE_ID, { picker: expect.stringMatching(/^2024-01-05/u) }],
       );
     });
@@ -188,7 +188,7 @@ describe('SnapUIDateTimePicker', () => {
       });
 
       expect(submitRequestToBackground).not.toHaveBeenCalledWith(
-        'updateInterfaceState',
+        'SnapInterfaceController:updateInterfaceState',
         expect.anything(),
       );
     });
@@ -211,7 +211,7 @@ describe('SnapUIDateTimePicker', () => {
       });
 
       expect(submitRequestToBackground).toHaveBeenCalledWith(
-        'updateInterfaceState',
+        'SnapInterfaceController:updateInterfaceState',
         [MOCK_INTERFACE_ID, { picker: null }],
       );
     });
@@ -267,7 +267,7 @@ describe('SnapUIDateTimePicker', () => {
       });
 
       expect(submitRequestToBackground).toHaveBeenCalledWith(
-        'updateInterfaceState',
+        'SnapInterfaceController:updateInterfaceState',
         [MOCK_INTERFACE_ID, { picker: expect.stringMatching(/^2024-01-15/u) }],
       );
     });

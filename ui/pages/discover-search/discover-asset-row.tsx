@@ -123,7 +123,7 @@ const getSecurityResultType = (securityData: TrendingAsset['securityData']) =>
   (securityData as { type?: SecurityResultType } | undefined)?.type;
 
 /**
- * Discover row for crypto / stocks: icon, name, security badge, cap·vol, price, 24h %.
+ * Discover row for crypto / stocks: icon, name, security badge, symbol·cap·vol, price, 24h %.
  * @param options0
  * @param options0.asset
  * @param options0.onPress
@@ -182,10 +182,13 @@ export const DiscoverAssetRow = ({
       ),
       displayCurrency,
     );
-    return `${cap} ${t('discoverSearchCap')} \u00B7 ${vol} ${t('discoverSearchVol')}`;
+    const metrics = `${cap} ${t('discoverSearchCap')} \u00B7 ${vol} ${t('discoverSearchVol')}`;
+
+    return asset.symbol ? `${asset.symbol} \u00B7 ${metrics}` : metrics;
   }, [
     asset.aggregatedUsdVolume,
     asset.marketCap,
+    asset.symbol,
     displayCurrency,
     shouldConvertUsd,
     t,
