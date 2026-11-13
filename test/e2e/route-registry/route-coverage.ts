@@ -31,18 +31,27 @@ export type RouteCoverageReport = {
   staleEntries: string[];
 };
 
+const byPath = (a: string, b: string): number => {
+  if (a === b) {
+    return 0;
+  }
+  return a < b ? -1 : 1;
+};
+
 /**
  * Compares the routes with the page object registry.
  *
  * @param routes - The routes to cover, normally `ROUTES`.
  * @param registry - Route path → page object, `NOT_A_SCREEN` or `null`.
- * @returns Per-route status, stale registry entries and a summary.
+ * @returns Per-route status and stale registry entries, both sorted by path,
+ * and a summary.
  */
 export function getRouteCoverage(
   routes: readonly { path: string; label: string }[],
   registry: RoutePageObjectRegistry,
 ): RouteCoverageReport {
-  const entries = routes.map(({ path, label }): RouteCoverageEntry => {
+  const sortedRoutes = [...routes].sort((a, b) => byPath(a.path, b.path));
+  const entries = sortedRoutes.map(({ path, label }): RouteCoverageEntry => {
     if (!Object.hasOwn(registry, path)) {
       return { path, label, status: 'unregistered' };
     }
@@ -56,9 +65,9 @@ export function getRouteCoverage(
   });
 
   const routePaths = new Set(routes.map(({ path }) => path));
-  const staleEntries = Object.keys(registry).filter(
-    (path) => !routePaths.has(path),
-  );
+  const staleEntries = Object.keys(registry)
+    .filter((path) => !routePaths.has(path))
+    .sort(byPath);
   const count = (status: RouteCoverageStatus) =>
     entries.filter((entry) => entry.status === status).length;
   const withPageObject = count('page-object');
