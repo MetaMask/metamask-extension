@@ -7692,20 +7692,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^1.6.2":
-  version: 1.7.0
-  resolution: "@metamask/chain-agnostic-permission@npm:1.7.0"
-  dependencies:
-    "@metamask/api-specs": "npm:^0.15.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/permission-controller": "npm:^13.1.1"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.11.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/25de22b86057c64828b12c4424770c7a4668ca7eb54186e06fb4c8a5f56d1d1e625686f7834fdfee47733e9a64d1f2213f5efef5e3488d9b541b1218da11789c
-  languageName: node
-  linkType: hard
-
 "@metamask/chain-agnostic-permission@npm:^2.1.0":
   version: 2.1.0
   resolution: "@metamask/chain-agnostic-permission@npm:2.1.0"
@@ -7878,7 +7864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^12.2.0, @metamask/controller-utils@npm:^12.3.0":
+"@metamask/controller-utils@npm:^12.3.0":
   version: 12.3.0
   resolution: "@metamask/controller-utils@npm:12.3.0"
   dependencies:
@@ -9343,24 +9329,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:^3.1.4":
-  version: 3.1.4
-  resolution: "@metamask/multichain-api-middleware@npm:3.1.4"
+"@metamask/multichain-api-middleware@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/multichain-api-middleware@npm:5.1.0"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.1"
+    "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/api-specs": "npm:^0.15.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.6.2"
-    "@metamask/controller-utils": "npm:^12.2.0"
-    "@metamask/json-rpc-engine": "npm:^10.5.0"
-    "@metamask/network-controller": "npm:^32.0.0"
-    "@metamask/permission-controller": "npm:^13.1.1"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    "@open-rpc/meta-schema": "npm:^1.14.6"
-    "@open-rpc/schema-utils-js": "npm:^2.0.5"
+    "@metamask/chain-agnostic-permission": "npm:^2.1.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/json-rpc-engine": "npm:^11.0.0"
+    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/permission-controller": "npm:^14.1.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/snaps-controllers": "npm:^19.0.1"
+    "@metamask/utils": "npm:^12.0.1"
+    "@open-rpc/meta-schema": "npm:^1.14.9"
+    "@open-rpc/schema-utils-js": "npm:^2.2.1"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/c69888c66ac6b48cdecedbcbd52dc0208c905d2a8f3d0e0fcb92db7daefd3ffa8308006a33f29a97899186096dffc11f872f5cf9d48e39179f4781ef1e104851
+  checksum: 10/bbf5811a59969e4855edc3d5173d1e770f27de050c5adccd3161af7690d98a37679e294bc23765eb69909c2a5f7e36b3830b3a0f903f0d0ad5080260b80bf71a
   languageName: node
   linkType: hard
 
@@ -12083,21 +12069,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/schema-utils-js@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "@open-rpc/schema-utils-js@npm:2.0.5"
+"@open-rpc/schema-utils-js@npm:^2.0.5, @open-rpc/schema-utils-js@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "@open-rpc/schema-utils-js@npm:2.2.1"
   dependencies:
     "@json-schema-tools/dereferencer": "npm:^1.6.3"
     "@json-schema-tools/meta-schema": "npm:^1.7.5"
     "@json-schema-tools/reference-resolver": "npm:^1.2.6"
-    "@open-rpc/meta-schema": "npm:^1.14.9"
+    "@open-rpc/spec-types": "npm:0.0.2"
+    "@open-rpc/specification-extension-spec": "npm:^1.0.2"
     ajv: "npm:^6.10.0"
     detect-node: "npm:^2.0.4"
     fast-safe-stringify: "npm:^2.0.7"
     fs-extra: "npm:^10.1.0"
     is-url: "npm:^1.2.4"
     isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/9e10215606e9a00a47b082c9cfd70d05bf0d38de6cf1c147246c545c6997375d94cd3caafe919b71178df58b5facadfd0dcc8b6857bf5e79c40e5e33683dd3d5
+  checksum: 10/8ac30b3880e57638af8c75e8cc130cb97237bbd55c4cae0948c5e1dbf01e6c639caa0515fa8eacb4b350f5410a9f02f47617244249c6231bc550b791478ee515
   languageName: node
   linkType: hard
 
@@ -12114,6 +12101,29 @@ __metadata:
     node-ipc: "npm:9.1.1"
     ws: "npm:^8.0.0"
   checksum: 10/27005f6a782f99892989a5e6df8d7d5ce00aa83f09f009d5826a19fe3d8c2d65ea51613a0d10ae4f798774279c4b5dd204aa5cf57eb657d7c74c9bb3a317d77e
+  languageName: node
+  linkType: hard
+
+"@open-rpc/spec-types@npm:0.0.2":
+  version: 0.0.2
+  resolution: "@open-rpc/spec-types@npm:0.0.2"
+  dependencies:
+    "@open-rpc/spec": "npm:1.4.1"
+  checksum: 10/e2698a458df89fa4a538b9773438cbe057e9514a2b298c7e4357ca1a13921d7ac8fc559048ec047d3e664292ae43ff598b57d19e73b237cb0793ab186222f333
+  languageName: node
+  linkType: hard
+
+"@open-rpc/spec@npm:1.4.1":
+  version: 1.4.1
+  resolution: "@open-rpc/spec@npm:1.4.1"
+  checksum: 10/6e6679a1b85039a724f9938b1840a020f75428b2ef899704ce7a964e16024be620b97d467a7e5d69b56a735026db62c465b841c3c349034e60ba243e9aae2db5
+  languageName: node
+  linkType: hard
+
+"@open-rpc/specification-extension-spec@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@open-rpc/specification-extension-spec@npm:1.0.2"
+  checksum: 10/04111d8ce84deb45358c504b425f8d3e5c0b8991c739708b6b2662de665002da541fc7b39065d2394a9509866f580c3a5aaedc56b42c0d679fe6054eda034b9b
   languageName: node
   linkType: hard
 
@@ -35408,7 +35418,7 @@ __metadata:
     "@metamask/money-account-utils": "npm:^2.2.0"
     "@metamask/multichain-account-service": "npm:^14.1.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
-    "@metamask/multichain-api-middleware": "npm:^3.1.4"
+    "@metamask/multichain-api-middleware": "npm:^5.1.0"
     "@metamask/multichain-network-controller": "npm:^4.1.1"
     "@metamask/multichain-transactions-controller": "npm:^8.0.0"
     "@metamask/name-controller": "npm:^10.0.0"

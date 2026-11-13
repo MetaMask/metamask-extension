@@ -1005,6 +1005,31 @@ export default class MetamaskController extends EventEmitter {
       return this.getPermittedAccounts(innerOrigin, scope);
     };
 
+    this.getEip5792Capabilities = (address, chainIds) =>
+      getCapabilities(
+        {
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
+          getIsSmartTransaction: (chainId) =>
+            getIsSmartTransaction(this._getMetaMaskState(), chainId),
+          getSmartTransactionsPreferenceEnabled: () =>
+            getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+          getSmartTransactionsEnabled: (chainId) =>
+            getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
+          isRelaySupported,
+          getSendBundleSupportedChains,
+          isAuxiliaryFundsSupported: (chainId) =>
+            ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+        },
+        this.controllerMessenger,
+        address,
+        chainIds,
+      );
+
     this.eip5792Middleware = createScaffoldMiddleware({
       wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
         walletGetCapabilities(req, res, {
@@ -1012,29 +1037,7 @@ export default class MetamaskController extends EventEmitter {
           getPermittedAccountsForOrigin: async () => {
             return getAccounts({ origin: req.origin });
           },
-          getCapabilities: getCapabilities.bind(
-            null,
-            {
-              getDismissSmartAccountSuggestionEnabled: () =>
-                this.preferencesController.state.preferences
-                  .dismissSmartAccountSuggestionEnabled,
-              getIsSmartTransaction: (chainId) =>
-                getIsSmartTransaction(this._getMetaMaskState(), chainId),
-              getSmartTransactionsPreferenceEnabled: () =>
-                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
-              getSmartTransactionsEnabled: (chainId) =>
-                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
-              isAtomicBatchSupported:
-                this.txController.isAtomicBatchSupported.bind(
-                  this.txController,
-                ),
-              isRelaySupported,
-              getSendBundleSupportedChains,
-              isAuxiliaryFundsSupported: (chainId) =>
-                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
-            },
-            this.controllerMessenger,
-          ),
+          getCapabilities: this.getEip5792Capabilities,
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
@@ -4491,6 +4494,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
+        getCapabilities: ({ address }) =>
+          this.getEip5792Capabilities(address, undefined),
       }),
     );
 

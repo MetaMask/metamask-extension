@@ -490,7 +490,7 @@
     "@metamask/money-account-utils": "^2.2.0",
     "@metamask/multichain-account-service": "^14.1.0",
     "@metamask/multichain-api-client": "^0.10.1",
-    "@metamask/multichain-api-middleware": "^3.1.4",
+    "@metamask/multichain-api-middleware": "^5.1.0",
     "@metamask/multichain-network-controller": "^4.1.1",
     "@metamask/multichain-transactions-controller": "^8.0.0",
     "@metamask/name-controller": "^10.0.0",
