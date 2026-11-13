@@ -519,40 +519,40 @@
     "message": "Closed short - market"
   },
   "activity_moneyAccountDeposit_failed_description": {
-    "message": "To: Money account"
+    "message": "To: MetaMask Money"
   },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit failed"
   },
   "activity_moneyAccountDeposit_pending_description": {
-    "message": "To: Money account"
+    "message": "To: MetaMask Money"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Depositing $1",
     "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_description": {
-    "message": "To: Money account"
+    "message": "To: MetaMask Money"
   },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Deposited $1",
     "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_description": {
-    "message": "From: Money account"
+    "message": "From: MetaMask Money"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Receive failed"
   },
   "activity_moneyAccountWithdraw_pending_description": {
-    "message": "From: Money account"
+    "message": "From: MetaMask Money"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Receiving $1",
     "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_description": {
-    "message": "From: Money account"
+    "message": "From: MetaMask Money"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Received $1",
@@ -5816,7 +5816,7 @@
     "message": "Authenticator app can’t be removed"
   },
   "mfaSettingsNotice": {
-    "message": "These methods add protection to Money account transactions. They can’t recover your wallet."
+    "message": "These methods add protection to MetaMask Money transactions. They can’t recover your wallet."
   },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Your other methods only work in the MetaMask mobile app. Remove your email from there."
@@ -6081,7 +6081,7 @@
     "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
-    "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
+    "message": "Get full liquidity with no lockups and direct access"
   },
   "moneyBenefitSend": {
     "message": "Send to any of your wallets across MetaMask"
@@ -6106,7 +6106,7 @@
     "message": "Earn up to $1 APY"
   },
   "moneyEarnBalanceDescription": {
-    "message": "Add your $1 to your Money account and earn up to $2 in one year.",
+    "message": "Add your $1 to MetaMask Money and earn up to $2 in one year.",
     "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
@@ -6114,11 +6114,11 @@
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerDescription": {
-    "message": "Add $1 to your Money account—no lockups or minimums.",
+    "message": "Add $1 to MetaMask Money—no lockups or minimums.",
     "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
-    "message": "Earn with your Money account",
+    "message": "Earn with MetaMask Money",
     "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
@@ -6177,10 +6177,10 @@
     "message": "Trade from the same balance"
   },
   "moneyFtueBenefitWithdrawDescription": {
-    "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
+    "message": "No lockups, notice periods, or penalties."
   },
   "moneyFtueBenefitWithdrawTitle": {
-    "message": "Withdraw anytime"
+    "message": "Direct access"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
@@ -6196,10 +6196,10 @@
     "message": "MetaMask Money"
   },
   "moneyFundDescription": {
-    "message": "Fund your Money account and watch your balance grow."
+    "message": "Fund your MetaMask Money balance."
   },
   "moneyFundDescriptionWithApy": {
-    "message": "Fund your Money account and watch your balance grow with up to $1 APY."
+    "message": "Fund your MetaMask Money balance and earn up to $1 APY."
   },
   "moneyGetApy": {
     "message": "Get $1 APY",
@@ -6209,91 +6209,91 @@
     "message": "The rate shown is the current Annual Percentage Yield (APY). APY is variable and is not guaranteed."
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "Your Money account earns up to $1 APY automatically.",
+    "message": "Your MetaMask Money balance earns up to $1 APY automatically.",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
-    "message": "Money account is powered by Monad."
+    "message": "MetaMask Money is powered by Monad."
   },
   "moneyHowItWorks": {
     "message": "How it works"
   },
   "moneyHowItWorksDescription": {
-    "message": "Add mUSD and your dollar-backed balance is ready to spend, trade, or send anytime."
+    "message": "Add mUSD. You have direct access to spend, trade, or send your dollar-backed balance."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Convert any crypto into your Money account and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lock-ups.",
+    "message": "Convert any crypto into MetaMask Money and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lockups.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescriptionWithApy": {
-    "message": "Add mUSD and earn up to $1. Your balance is dollar-backed and ready to spend, trade, or send anytime.",
+    "message": "Add mUSD and earn up to $1. You have direct access to your dollar-backed balance.",
     "description": "$1 is the current mUSD APY."
   },
   "moneyHowItWorksDisclosuresBody": {
-    "message": "Money account is not a bank account, savings account, or insured deposit product. APY is variable and not guaranteed. Money account involves smart contract, protocol, liquidity, and other risks, and you may lose some or all of your funds. Subject to regional restrictions. Terms apply."
+    "message": "MetaMask Money is not a bank account, savings account, or insured deposit product. APY is variable and not guaranteed. MetaMask Money involves smart contract, protocol, liquidity, and other risks, and you may lose some or all of your funds. Subject to regional restrictions. Terms apply."
   },
   "moneyHowItWorksDisclosuresTitle": {
     "message": "Risk and Disclosures"
   },
   "moneyHowItWorksFaqApyAnswer": {
-    "message": "Up to $1 APY. The rate is variable and fluctuates with market conditions. The current rate is always visible inside the Money account.",
+    "message": "Up to $1 APY. The rate is variable and fluctuates with market conditions. The current rate is always visible in MetaMask Money.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "How much can I earn with a MetaMask Money account?"
+    "message": "How much can I earn with MetaMask Money?"
   },
   "moneyHowItWorksFaqControlsAnswer": {
     "message": "You! MetaMask is a self-custodial wallet, meaning only the account holder's Private Keys control it. MetaMask can't access, freeze, or move your funds. This is what distinguishes us from traditional bank accounts and custodial crypto platforms—there's no third party holding your funds."
   },
   "moneyHowItWorksFaqControlsQuestion": {
-    "message": "Who controls my MetaMask Money account?"
+    "message": "Who controls my MetaMask Money?"
   },
   "moneyHowItWorksFaqCountriesAnswer": {
     "message": "Most places! We currently aren't available in the UK and countries on the USA sanctions list."
   },
   "moneyHowItWorksFaqCountriesQuestion": {
-    "message": "Which countries is MetaMask Money account available in?"
+    "message": "Which countries is MetaMask Money available in?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "There's no fee to open a Money account and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens."
+    "message": "There's no fee to open MetaMask Money and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "What are MetaMask Money account fees?"
+    "message": "What are MetaMask Money fees?"
   },
   "moneyHowItWorksFaqIdentityAnswer": {
-    "message": "No, opening a Money account doesn't require identity verification. However, certain features, including Card and Ramps, do require verification. Checks are carried out by third-party providers that operate regulated services, not by MetaMask. If needed, you will be guided through the process inside the app during sign-up."
+    "message": "No, opening MetaMask Money doesn't require identity verification. However, certain features, including Card and Ramps, do require verification. Checks are carried out by third-party providers that operate regulated services, not by MetaMask. If needed, you will be guided through the process inside the app during sign-up."
   },
   "moneyHowItWorksFaqIdentityQuestion": {
-    "message": "Do I need to complete identity verification to use MetaMask Money account?"
+    "message": "Do I need to complete identity verification to use MetaMask Money?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Yes. You can send or withdraw your full balance at any time with no notice periods, no penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
+    "message": "Yes. No lockups, no notice periods or penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Can I withdraw from the MetaMask Money account anytime?"
+    "message": "Can I access my MetaMask Money balance?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "An account that earns up to $1 variable APY. You deposit funds, which are held in the account as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties.",
+    "message": "MetaMask Money earns up to $1 variable APY. You deposit funds, which are held as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. No lockups, and no penalties.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "What is a MetaMask Money account?"
+    "message": "What is MetaMask Money?"
   },
   "moneyHowItWorksFaqSafeAnswer": {
-    "message": "Yes, but like all DeFi products, it carries risk. It's a self-custodial wallet, meaning you have full control over your account with your Private Keys.\n\nRisks include smart-contract failures, protocol exploits, liquidity shortages, third-party failures, and legal or regulatory restrictions. The Money account isn't insured by the FDIC or any government agency. There is a risk of loss."
+    "message": "Yes, but like all DeFi products, it carries risk. It's a self-custodial wallet, meaning you have full control over your account with your Private Keys.\n\nRisks include smart-contract failures, protocol exploits, liquidity shortages, third-party failures, and legal or regulatory restrictions. MetaMask Money isn't insured by the FDIC or any government agency. There is a risk of loss."
   },
   "moneyHowItWorksFaqSafeQuestion": {
-    "message": "Is MetaMask Money account safe?"
+    "message": "Is MetaMask Money safe?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
   },
   "moneyHowItWorksFaqTokensAnswer": {
-    "message": "You can deposit the following stablecoins and aTokens into your Money account with no conversion fees:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nAll other EVM tokens can be deposited into the Money account, but standard fees may apply. You can also fund your Money account using a debit card, credit card, bank account, PayPal, Apple Pay, or Google Pay.\n\nNote: There's an initial max deposit of $1 per token to ensure liquidity.",
+    "message": "You can deposit the following stablecoins and aTokens into MetaMask Money with no conversion fees:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nAll other EVM tokens can be deposited into MetaMask Money, but standard fees may apply. You can also fund MetaMask Money using a debit card, credit card, bank account, PayPal, Apple Pay, or Google Pay.\n\nNote: There's an initial max deposit of $1 per token to ensure liquidity.",
     "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
   },
   "moneyHowItWorksFaqTokensQuestion": {
-    "message": "What tokens can I deposit into the Money account?"
+    "message": "What tokens can I deposit into MetaMask Money?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "When you deposit funds, they're put in established DeFi protocols, like Aave and Morpho, where they earn returns from real economic activity. These returns are then delivered to you in the form of APY.\n\nA third-party service provider called Steakhouse Financial monitors how funds are allocated in the protocols. Veda, a third-party infrastructure provider, deploys and maintains the vault smart contracts that hold your funds.\n\nEarnings are not interest paid by MetaMask or by the issuer of mUSD. They are the onchain returns generated by positions in third-party DeFi protocols."
@@ -6311,13 +6311,13 @@
     "message": "Lifetime"
   },
   "moneyLifetimeTooltip": {
-    "message": "The total you've earned on your Money account balance over time."
+    "message": "The total you've earned on your MetaMask Money balance over time."
   },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
   },
   "moneyMonthlyTooltip": {
-    "message": "The total you've earned on your Money account balance in the last 30 days."
+    "message": "The total you've earned on your MetaMask Money balance in the last 30 days."
   },
   "moneyMoreInformation": {
     "message": "More information"
@@ -6329,7 +6329,7 @@
     "message": "mUSD"
   },
   "moneyOnboardingFundTitle": {
-    "message": "Fund your Money account",
+    "message": "Fund MetaMask Money",
     "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
@@ -6367,11 +6367,11 @@
     "message": "Converting crypto"
   },
   "moneyToastDepositSuccessDescription": {
-    "message": "$1 added to Money account.",
+    "message": "$1 added to MetaMask Money.",
     "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
   },
   "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Added to Money account."
+    "message": "Added to MetaMask Money."
   },
   "moneyToastDepositSuccessTitleAddMusd": {
     "message": "Funds added"
@@ -7650,7 +7650,7 @@
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
   "payWithMoneyAccount": {
-    "message": "Money account",
+    "message": "MetaMask Money",
     "description": "Label for paying with the user's Money account in the Pay with picker"
   },
   "payWithOtherAssets": {
@@ -12380,7 +12380,7 @@
     "message": "You’re getting $1% back on fees"
   },
   "swapsRebateTooltipContent": {
-    "message": "Get $1% of the MetaMask fee on this trade back as a reward, paid in mUSD to your Money account. Network fees aren’t included. See the Rewards tab for details."
+    "message": "Get $1% of the MetaMask fee on this trade back as a reward, paid in mUSD to your MetaMask Money balance. Network fees aren’t included. See the Rewards tab for details."
   },
   "swapsRebateTooltipTitle": {
     "message": "Trading Rewards"

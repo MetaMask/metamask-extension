@@ -445,7 +445,7 @@ describe('PayWithRow', () => {
       screen.getByTestId('pay-with-money-account-icon'),
     ).toBeInTheDocument();
     expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
-      'Money account',
+      'MetaMask Money',
     );
     expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
       '($12.34)',

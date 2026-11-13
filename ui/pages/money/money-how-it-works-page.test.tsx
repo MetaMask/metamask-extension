@@ -176,7 +176,7 @@ describe('MoneyHowItWorksPage', () => {
     expect(
       screen.getByTestId('money-how-it-works-faq-money-account-answer'),
     ).toHaveTextContent(
-      'An account that earns up to 4.2% variable APY. You deposit funds, which are held in the account as mUSD, and earn up to 4.2% APY.',
+      'MetaMask Money earns up to 4.2% variable APY. You deposit funds, which are held as mUSD, and earn up to 4.2% APY.',
     );
   });
 

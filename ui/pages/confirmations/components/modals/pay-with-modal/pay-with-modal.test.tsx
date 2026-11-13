@@ -516,7 +516,7 @@ describe('PayWithModal', () => {
               {
                 id: 'money-account-musd',
                 icon: <span />,
-                title: 'Money account',
+                title: 'MetaMask Money',
                 subtitle: '$7.05 available',
                 testId: 'pay-with-money-account-row',
               },
