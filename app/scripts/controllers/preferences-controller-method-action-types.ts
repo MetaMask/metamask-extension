@@ -433,6 +433,16 @@ export type PreferencesControllerSetAccountsReferralApprovedAction = {
 };
 
 /**
+ * Merges backed-up preferences into the current state.
+ *
+ * @param backupState - The preferences state restored from a backup.
+ */
+export type PreferencesControllerLoadBackupAction = {
+  type: `PreferencesController:loadBackup`;
+  handler: PreferencesController['loadBackup'];
+};
+
+/**
  * Union of all PreferencesController action types.
  */
 export type PreferencesControllerMethodActions =
@@ -480,4 +490,5 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerAddReferralPassedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
-  | PreferencesControllerSetAccountsReferralApprovedAction;
+  | PreferencesControllerSetAccountsReferralApprovedAction
+  | PreferencesControllerLoadBackupAction;

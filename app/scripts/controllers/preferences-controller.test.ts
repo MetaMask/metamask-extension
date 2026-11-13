@@ -1708,4 +1708,34 @@ describe('preferences controller', () => {
       );
     });
   });
+
+  describe('loadBackup', () => {
+    it('merges backup state into the current state', () => {
+      const { controller } = setupController({
+        state: {
+          currentLocale: 'en',
+          theme: ThemeType.dark,
+        },
+      });
+
+      controller.loadBackup({
+        ...controller.state,
+        currentLocale: 'fr',
+      });
+
+      expect(controller.state.currentLocale).toBe('fr');
+      expect(controller.state.theme).toBe(ThemeType.dark);
+    });
+
+    it('is exposed through the messenger', () => {
+      const { controller, messenger } = setupController();
+
+      messenger.call('PreferencesController:loadBackup', {
+        ...controller.state,
+        currentLocale: 'fr',
+      });
+
+      expect(controller.state.currentLocale).toBe('fr');
+    });
+  });
 });

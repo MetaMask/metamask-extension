@@ -26,7 +26,7 @@ function getMockPreferencesController() {
 
   return {
     state,
-    update: jest.fn(),
+    loadBackup: jest.fn(),
   };
 }
 
@@ -206,6 +206,9 @@ describe('Backup', function () {
     it('should restore backup', async function () {
       const backup = getBackup();
       await backup.restoreUserData(jsonData);
+      expect(backup.preferencesController.loadBackup).toHaveBeenCalledWith(
+        JSON.parse(jsonData).preferences,
+      );
       // check networks backup
       expect(
         backup.networkController.state.networkConfigurationsByChainId['0x539']
