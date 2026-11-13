@@ -28,10 +28,10 @@ The spec mocks only the ramps hosts and the fake provider page:
 
 Everything else in the extension E2E harness remains mocked as usual.
 
-The privacy snapshot includes the two mock-only hosts
-(`provider-mock.test`, `127.0.0.1:8000`).
+The privacy snapshot includes the mock-only host `provider-mock.test`.
 
-Do not commit unrelated local-network hosts, such as an ISP CDN that Chrome
-happens to request on your machine. If one appears, run with
-`--update-privacy-snapshot` to diagnose it, then revert that host before
-committing. CI runners do not make that request.
+Do not commit unrelated local-network hosts, such as an ISP CDN or a local
+process probing the harness proxy on `127.0.0.1:8000`; both are recorded as
+new hosts even though the extension never requested them. If one appears, run
+with `--update-privacy-snapshot` to diagnose it, then revert that host before
+committing. CI runners do not make those requests.
