@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -11,7 +11,6 @@ import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockOptInToMarketing = jest.fn();
 const mockOptOutOfMarketing = jest.fn();
-const mockGetMarketingConsent = jest.fn().mockResolvedValue(true);
 
 jest.mock('../../../selectors/first-time-flow', () => {
   const actual = jest.requireActual<
@@ -33,13 +32,18 @@ jest.mock('../../../store/actions', () => ({
     mockOptOutOfMarketing();
     return { type: 'MOCK_ACTION' };
   },
-  setMarketingConsent: jest.fn().mockResolvedValue(undefined),
-  getMarketingConsent: () => mockGetMarketingConsent(),
 }));
+
+const mockMessengerCall = jest.fn().mockResolvedValue(undefined);
 
 const backgroundConnectionMock = new Proxy(
   {},
-  { get: () => jest.fn().mockResolvedValue(undefined) },
+  {
+    get: (_target, method) =>
+      method === 'messengerCall'
+        ? mockMessengerCall
+        : jest.fn().mockResolvedValue(undefined),
+  },
 );
 
 const createMockStore = (overrides = {}) =>
@@ -140,14 +144,35 @@ describe('DataCollectionToggleItem', () => {
     expect(mockOptInToMarketing).toHaveBeenCalled();
   });
 
-  it('fetches remote marketing consent on mount when social login flow is active', async () => {
+  it('writes marketing consent through OAuth without reading it when social login flow is active', () => {
     (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
-    const mockStore = createMockStore();
+    const mockStore = createMockStore({ optedInToMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    await waitFor(() => {
-      expect(mockGetMarketingConsent).toHaveBeenCalled();
-    });
-    expect(mockOptInToMarketing).toHaveBeenCalled();
+    expect(mockOptInToMarketing).not.toHaveBeenCalled();
+    expect(mockOptOutOfMarketing).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    expect(mockOptInToMarketing).toHaveBeenCalledTimes(1);
+    const messengerActions = mockMessengerCall.mock.calls.map(
+      ([method]) => method,
+    );
+    expect(messengerActions).toContain('OAuthService:setMarketingConsent');
+    expect(messengerActions).not.toContain('OAuthService:getMarketingConsent');
+  });
+
+  it('does not write marketing consent through OAuth when social login flow is inactive', () => {
+    const mockStore = createMockStore({ optedInToMarketing: false });
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    expect(mockOptInToMarketing).toHaveBeenCalledTimes(1);
+    const messengerActions = mockMessengerCall.mock.calls.map(
+      ([method]) => method,
+    );
+    expect(messengerActions).not.toContain('OAuthService:setMarketingConsent');
+    expect(messengerActions).not.toContain('OAuthService:getMarketingConsent');
   });
 });

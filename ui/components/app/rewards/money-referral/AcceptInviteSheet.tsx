@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -9,19 +9,17 @@ import {
   HelpText,
   HelpTextSeverity,
   Label,
-  Modal,
   ModalBody,
-  ModalContent,
-  ModalContentSize,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   Text,
+  TextAlign,
   TextColor,
   TextField,
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
+import { normalizeMoneyReferralCode } from '#shared/lib/money-referral-code';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -47,9 +45,8 @@ import {
 import { useReferralMe } from '../../../../hooks/rewards/useReferralMe';
 import { REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES } from '../../../../hooks/rewards/rewards-money-messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
+import { ReferralDialog } from './ReferralDialog';
 import { ReferralActivatedModal } from './ReferralActivatedModal';
-
-const MONEY_REFERRAL_CODE_MAX_LENGTH = 24;
 
 const MONEY_REFERRAL_CODE_ERROR_ID = 'money-referral-code-error';
 
@@ -58,8 +55,8 @@ type Translate = (key: string) => string;
 /**
  * Invite copy, resolved per key.
  *
- * The server owns this screen's words. A missing key means referral me never
- * arrived. Title and body stay empty, and the body is omitted. The buttons
+ * The server owns this screen's words. A missing title falls back to the
+ * localized referral-code label, and a missing body is omitted. The buttons
  * reuse strings the app already has. The code label uses
  * `rewardsMoneyReferralCodeLabel`, the same words as mobile's referral-code
  * string, which extension did not already have.
@@ -73,7 +70,7 @@ function inviteCopy(
   t: Translate,
 ) {
   return {
-    title: localizedText?.inviteTitle ?? '',
+    title: localizedText?.inviteTitle || t('rewardsMoneyReferralCodeLabel'),
     body: localizedText?.inviteMessageBody ?? '',
     codeLabel:
       localizedText?.inviteReferralCode ?? t('rewardsMoneyReferralCodeLabel'),
@@ -88,19 +85,6 @@ const referralCodeInputProps = {
   'data-testid': 'money-referral-code-input',
 };
 
-/**
- * Keeps letters and digits, uppercases them, and caps the length at 24.
- *
- * @param value - Raw code from the route or the text field.
- * @returns The normalized code.
- */
-function normalizeMoneyReferralCode(value: string): string {
-  return value
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/gu, '')
-    .slice(0, MONEY_REFERRAL_CODE_MAX_LENGTH);
-}
-
 type AcceptInviteSheetProps = {
   initialCode: string;
   onClose: () => void;
@@ -112,6 +96,7 @@ const AcceptInviteSheetContent = ({
   initialCode,
   onClose,
 }: AcceptInviteSheetProps) => {
+  const titleId = useId();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { referralMe, isSettled, fetchReferralMe } = useReferralMe();
@@ -125,6 +110,14 @@ const AcceptInviteSheetContent = ({
   const [acceptStarted, setAcceptStarted] = useState(false);
   const hasTrackedViewRef = useRef(false);
   const hasRespondedRef = useRef(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const acceptAllowedForGeo = useSelector(selectMoneyReferralAllowedForGeo);
   const geoLoading = useSelector(selectOptinAllowedForGeoLoading);
@@ -274,20 +267,29 @@ const AcceptInviteSheetContent = ({
   }, [onClose, shouldDismissForGeo, trackResponded]);
 
   const handleDecline = useCallback(() => {
+    if (isAccepting) {
+      return;
+    }
     trackResponded('declined');
     onClose();
-  }, [onClose, trackResponded]);
+  }, [isAccepting, onClose, trackResponded]);
 
   const handleDismiss = useCallback(() => {
+    if (isAccepting) {
+      return;
+    }
     trackResponded('dismissed');
     onClose();
-  }, [onClose, trackResponded]);
+  }, [isAccepting, onClose, trackResponded]);
 
   const handleAccept = useCallback(() => {
     setAcceptStarted(true);
     setHasSeenEligibleInvite(true);
     accept(code)
       .then((result) => {
+        if (!mountedRef.current) {
+          return;
+        }
         if (result.accepted) {
           trackResponded('accepted');
           return;
@@ -316,89 +318,94 @@ const AcceptInviteSheetContent = ({
     isValid && acceptAllowedForGeo && !isAccepting && !isAcceptCoolingDown;
 
   return (
-    <Modal isOpen onClose={handleDismiss} data-testid="money-referral-invite">
-      <ModalOverlay />
-      <ModalContent className="items-center" size={ModalContentSize.Md}>
-        <ModalHeader
-          onClose={handleDismiss}
-          closeButtonProps={{ ariaLabel: t('close') }}
+    <ReferralDialog
+      onClose={handleDismiss}
+      data-testid="money-referral-invite"
+      aria-labelledby={titleId}
+    >
+      <ModalHeader
+        onClose={handleDismiss}
+        closeButtonProps={{ ariaLabel: t('close'), isDisabled: isAccepting }}
+      >
+        <Text
+          asChild
+          variant={TextVariant.HeadingSm}
+          textAlign={TextAlign.Center}
         >
-          {copy.title}
-        </ModalHeader>
-        <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            {copy.body ? (
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                {copy.body}
-              </Text>
+          <h2 id={titleId}>{copy.title}</h2>
+        </Text>
+      </ModalHeader>
+      <ModalBody>
+        <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+          {copy.body ? (
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {copy.body}
+            </Text>
+          ) : null}
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Label
+              htmlFor="money-referral-code"
+              color={TextColor.TextAlternative}
+            >
+              {copy.codeLabel}
+            </Label>
+            <TextField
+              id="money-referral-code"
+              value={code}
+              size={TextFieldSize.Lg}
+              isError={Boolean(fieldError)}
+              isDisabled={isAccepting}
+              className="h-14 w-full"
+              onChange={(event) => {
+                setCode(normalizeMoneyReferralCode(event.target.value));
+                clearError();
+              }}
+              inputProps={{
+                ...referralCodeInputProps,
+                'aria-describedby': fieldError
+                  ? MONEY_REFERRAL_CODE_ERROR_ID
+                  : undefined,
+              }}
+            />
+            {fieldError ? (
+              <HelpText severity={HelpTextSeverity.Danger} asChild>
+                <span id={MONEY_REFERRAL_CODE_ERROR_ID} role="alert">
+                  {fieldError}
+                </span>
+              </HelpText>
             ) : null}
-            <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-              <Label
-                htmlFor="money-referral-code"
-                color={TextColor.TextAlternative}
-              >
-                {copy.codeLabel}
-              </Label>
-              <TextField
-                id="money-referral-code"
-                value={code}
-                size={TextFieldSize.Lg}
-                isError={Boolean(fieldError)}
-                className="h-14 w-full"
-                onChange={(event) => {
-                  setCode(normalizeMoneyReferralCode(event.target.value));
-                  clearError();
-                }}
-                inputProps={{
-                  ...referralCodeInputProps,
-                  'aria-describedby': fieldError
-                    ? MONEY_REFERRAL_CODE_ERROR_ID
-                    : undefined,
-                }}
-              />
-              {fieldError ? (
-                <HelpText severity={HelpTextSeverity.Danger} asChild>
-                  <span id={MONEY_REFERRAL_CODE_ERROR_ID} role="alert">
-                    {fieldError}
-                  </span>
-                </HelpText>
-              ) : null}
-            </Box>
           </Box>
-        </ModalBody>
-        <ModalFooter>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-            className="w-full"
+        </Box>
+      </ModalBody>
+      <ModalFooter>
+        <Box flexDirection={BoxFlexDirection.Column} gap={2} className="w-full">
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            isFullWidth
+            isDisabled={!canAccept}
+            onClick={handleAccept}
+            data-testid="money-referral-accept"
           >
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              isDisabled={!canAccept}
-              onClick={handleAccept}
-              data-testid="money-referral-accept"
-            >
-              {copy.accept}
-            </Button>
-            <Button
-              variant={ButtonVariant.Tertiary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              onClick={handleDecline}
-              className="text-default"
-              data-testid="money-referral-decline"
-            >
-              {copy.decline}
-            </Button>
-          </Box>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+            {copy.accept}
+          </Button>
+          <Button
+            variant={ButtonVariant.Tertiary}
+            size={ButtonSize.Lg}
+            isFullWidth
+            onClick={handleDecline}
+            isDisabled={isAccepting}
+            className="text-default"
+            data-testid="money-referral-decline"
+          >
+            {copy.decline}
+          </Button>
+        </Box>
+      </ModalFooter>
+    </ReferralDialog>
   );
 };
 

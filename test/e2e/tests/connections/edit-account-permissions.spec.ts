@@ -51,7 +51,6 @@ describe('Edit Accounts Permissions', function () {
         // ensure non EVM accounts are loaded for Account 2
         const homepage = new Homepage(driver);
         await homepage.checkExpectedBalanceIsDisplayed();
-        await homepage.waitForNonEvmAccountsLoaded();
 
         // create third account with custom label
         await homepage.headerNavbar.openAccountMenu();
@@ -62,7 +61,6 @@ describe('Edit Accounts Permissions', function () {
 
         // ensure non EVM accounts are loaded for Account 3
         await homepage.checkExpectedBalanceIsDisplayed();
-        await homepage.waitForNonEvmAccountsLoaded();
 
         // select back Account 1
         await homepage.headerNavbar.openAccountMenu();

@@ -304,7 +304,7 @@ describe('EmailEntryStep', () => {
     );
     expect(screen.getByTestId(MfaFlowTestIds.ERROR_LINK)).toHaveAttribute(
       'href',
-      'https://support.metamask.io/configure/wallet/email-in-use',
+      'https://support.metamask.com/configure/wallet/email-in-use',
     );
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.ERROR_LINK));
     expect(onAction).toHaveBeenCalledWith({
