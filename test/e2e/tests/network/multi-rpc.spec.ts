@@ -23,6 +23,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+import { NetworkId } from '../../helpers/network-constants';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
 
 const MOCK_ETH_PRICE = 1700;
@@ -88,9 +89,6 @@ describe('MultiRpc:', function (this: Suite) {
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
-                    failoverUrls: [
-                      'https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/',
-                    ],
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
                     type: RpcEndpointType.Custom,
                     url: 'https://arbitrum-mainnet.infura.io/',
@@ -157,7 +155,7 @@ describe('MultiRpc:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // check rpc number
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkNetworkRPCNumber(2);
       },
     );
@@ -290,7 +288,7 @@ describe('MultiRpc:', function (this: Suite) {
         await headerNavbar.openGlobalNetworksMenu();
         const networksPage = new NetworksPage(driver);
         await networksPage.checkPageIsLoaded();
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkNetworkRPCNumber(2);
         await networksPage.selectRPC('Arbitrum mainnet 2');
         await networksPage.checkPageIsLoaded();
@@ -298,7 +296,7 @@ describe('MultiRpc:', function (this: Suite) {
           'Arbitrum mainnet',
         );
         // Re-open the chain's RPC list to confirm the new RPC is selected.
-        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.openNetworkRPC(NetworkId.ARBITRUM);
         await networksPage.checkRpcIsSelected('Arbitrum mainnet 2');
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
@@ -412,7 +410,7 @@ describe('MultiRpc:', function (this: Suite) {
         await networksPage.checkPageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openNetworkListOptions(NetworkId.ARBITRUM);
         await networksPage.openEditNetworkPage();
 
         const editNetworkPage = new AddEditNetworkPage(driver);
@@ -538,7 +536,7 @@ describe('MultiRpc:', function (this: Suite) {
           driver,
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
-        await onboardingPrivacySettingsPage.navigateToGeneralSettings();
+        await onboardingPrivacySettingsPage.navigateToNetworksSettings();
 
         // open edit network modal during onboarding and select the second rpc
         await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');

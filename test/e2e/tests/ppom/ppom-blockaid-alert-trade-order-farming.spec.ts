@@ -170,7 +170,6 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
       async ({ driver }) => {
         await login(driver, {
           expectedBalance: PPOM_MOCK_ETH_BALANCE_DISPLAY,
-          waitForNonEvmAccounts: false,
         });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });

@@ -1,5 +1,10 @@
 import { getMfaErrorCode } from '@metamask/profile-sync-controller/sdk';
-import type { MfaFlowErrorCode, MfaMethod, MfaErrorHandling } from './types';
+import type {
+  MfaFlowErrorCode,
+  MfaFlowState,
+  MfaMethod,
+  MfaErrorHandling,
+} from './types';
 
 // Keys are the server's error codes, which are snake_case.
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -7,7 +12,9 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   aal2_required: 'refresh',
   email_socially_verified: 'refresh',
   email_already_enrolled: 'refresh',
+  totp_already_enrolled: 'refresh',
   credential_not_enrolled: 'refresh',
+  credential_not_found: 'refresh',
   mfa_identity_missing: 'refresh',
   verification_token_invalid: 'refresh',
 
@@ -16,6 +23,7 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   invalid_attestation: 'inline',
   passkey_ceremony_cancelled: 'inline',
   credential_already_enrolled: 'inline',
+  email_claimed: 'inline',
 
   flow_expired: 'restart',
   invalid_flow: 'restart',
@@ -25,8 +33,12 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   rate_limited: 'cooldown',
 
   max_passkeys_reached: 'failure',
-  max_identifiers_reached: 'failure',
-  multi_primary_srp: 'failure',
+  // The profile has paired as many wallets as it can: only support can help.
+  max_identifiers_reached: 'support',
+  multi_primary_srp: 'support',
+  // Removal only, outside the flow: the settings page shows its own error.
+  cross_type_step_up_required: 'failure',
+  last_credential: 'failure',
   invalid_response: 'failure',
   invalid_request: 'failure',
   passkey_unsupported: 'failure',
@@ -82,3 +94,25 @@ export class MfaFlowError extends Error {
     this.data = { completed };
   }
 }
+
+/**
+ * Whether the email code screen shows the state's error as the countdown on
+ * its resend button instead of as an error: a cooldown that came with a wait
+ * time, also once that wait ended.
+ *
+ * @param state - The flow's state.
+ * @param state.step - The screen shown.
+ * @param state.error - The error, if any.
+ * @param state.resendAvailableAt - When the next code may be requested.
+ * @returns Whether the error is the countdown.
+ */
+export const isCooldownCountdown = ({
+  step,
+  error,
+  resendAvailableAt,
+}: MfaFlowState): boolean =>
+  step.name === 'otp' &&
+  step.method === 'email_otp' &&
+  error !== undefined &&
+  resendAvailableAt !== undefined &&
+  getErrorHandling(error) === 'cooldown';

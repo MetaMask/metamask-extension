@@ -62,15 +62,13 @@ const fetchAssetMetadata = async (
 /**
  * This sets the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
- * It also clears the search params after setting the values.
  */
 export const usePrefillFromSearchQuery = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
+  const appliedSearch = useRef<string | null>(null);
 
-  const abortController = useRef<AbortController>(new AbortController());
-
-  const { resetSearchParams, search } = useBridgeNavigation();
+  const { search } = useBridgeNavigation();
 
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -82,20 +80,15 @@ export const usePrefillFromSearchQuery = () => {
 
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
 
-  // Cleanup abort controller on unmount
-  useEffect(() => {
-    return () => {
-      abortController.current.abort();
-    };
-  }, []);
-
   const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
     ReturnType<typeof fetchAssetMetadataForAssetIds>
   > | null>(null);
 
-  // Only update parsed values and fetch metadata if the search params
-  // are set (once) to prevent infinite re-renders
   useEffect(() => {
+    if (appliedSearch.current === search) {
+      return;
+    }
+
     const searchParamsFrom = parseAsset(
       searchParams.get(BridgeQueryParams.From),
     );
@@ -103,6 +96,7 @@ export const usePrefillFromSearchQuery = () => {
     const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
+      appliedSearch.current = search;
       // Defer state updates so they are not synchronous effect setStates
       // (react-hooks/set-state-in-effect).
       queueMicrotask(() => {
@@ -112,26 +106,34 @@ export const usePrefillFromSearchQuery = () => {
           setParsedAmount(searchParamsAmount);
         }
       });
-      resetSearchParams([
-        BridgeQueryParams.From,
-        BridgeQueryParams.To,
-        BridgeQueryParams.Amount,
-      ]);
 
       // Fetch asset metadata for both tokens in 1 call
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
-        abortController.current.abort();
-        abortController.current = new AbortController();
+        const controller = new AbortController();
+        let isFetchComplete = false;
         fetchAssetMetadata(
-          abortController.current.signal,
+          controller.signal,
           searchParamsFrom?.assetId,
           searchParamsTo?.assetId,
         ).then((result) => {
-          setAssetMetadataByAssetId(result);
+          if (!controller.signal.aborted) {
+            isFetchComplete = true;
+            setAssetMetadataByAssetId(result);
+          }
         });
+
+        return () => {
+          // Cleanup abort controller on unmount
+          controller.abort();
+          // Re-apply only if the fetch was interrupted
+          if (!isFetchComplete) {
+            appliedSearch.current = null;
+          }
+        };
       }
     }
-  }, [searchParams]);
+    return undefined;
+  }, [search, searchParams]);
 
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {

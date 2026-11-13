@@ -7,6 +7,8 @@ import {
   isNonEvmChainId,
   assetIdsMatch,
   MetaMetricsSwapsEventSource,
+  BridgeControllerMetricsLocation,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
@@ -86,33 +88,34 @@ export {
   setIsDestAssetPickerOpen,
 };
 
-const callBridgeControllerMethod = (
-  bridgeAction: keyof BridgeController,
-  ...args: unknown[]
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
-    await forceUpdateMetamaskState(dispatch);
-  };
-};
-
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(callBridgeControllerMethod('resetState'));
+    await submitRequestToBackground('BridgeController:resetState');
+    await forceUpdateMetamaskState(dispatch);
     await clearAllBridgeCacheItems();
   };
 };
 
-export const setBridgeLocation = (location: MetaMetricsSwapsEventSource) =>
-  callBridgeControllerMethod('setLocation', location);
+export const setBridgeLocation =
+  (location: MetaMetricsSwapsEventSource) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('BridgeController:setLocation', [location]);
+    await forceUpdateMetamaskState(dispatch);
+  };
 
-export const getBridgeLocation = (): Promise<MetaMetricsSwapsEventSource> =>
-  submitRequestToBackground('getLocation');
+export const getBridgeLocation = (): Promise<BridgeControllerMetricsLocation> =>
+  submitRequestToBackground('BridgeController:getLocation');
 
-export const setInputPrimaryDenomination = (
-  denomination: InputPrimaryDenomination,
-) => callBridgeControllerMethod('setInputPrimaryDenomination', denomination);
+export const setInputPrimaryDenomination =
+  (denomination: InputPrimaryDenomination) =>
+  async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground(
+      'BridgeController:setInputPrimaryDenomination',
+      [denomination],
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
 
 export const trackUnifiedSwapBridgeEvent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -124,13 +127,11 @@ export const trackUnifiedSwapBridgeEvent = <
   propertiesFromClient: Pick<RequiredEventContextFromClient, T>[T],
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(
-      callBridgeControllerMethod(
-        'trackUnifiedSwapBridgeEvent',
-        eventName,
-        propertiesFromClient,
-      ),
+    await submitRequestToBackground(
+      'BridgeController:trackUnifiedSwapBridgeEvent',
+      [eventName, propertiesFromClient],
     );
+    await forceUpdateMetamaskState(dispatch);
   };
 };
 
@@ -144,15 +145,11 @@ export const updateQuoteRequestParams = (
   ]: Parameters<BridgeController['updateBridgeQuoteRequestParams']>
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(
-      callBridgeControllerMethod(
-        'updateBridgeQuoteRequestParams',
-        params,
-        context,
-        quoteRequestIndex,
-        quoteRequestCount,
-      ),
+    await submitRequestToBackground(
+      'BridgeController:updateBridgeQuoteRequestParams',
+      [params, context, quoteRequestIndex, quoteRequestCount],
     );
+    await forceUpdateMetamaskState(dispatch);
   };
 };
 
@@ -222,6 +219,7 @@ export const setFromToken = (token: TokenPayload) => {
           // this is a configuration bug that must be fixed in FEATURED_RPCS.
           captureException(
             new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
+            { tags: { feature: SwapFeatureTag.SWAP } },
           );
           return;
         }

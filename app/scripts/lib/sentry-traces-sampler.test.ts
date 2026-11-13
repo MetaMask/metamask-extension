@@ -135,6 +135,19 @@ describe('createTracesSampler', () => {
     );
   });
 
+  it('caps useful-screen readiness at 0.1% regardless of parent sampling', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: TraceName.UsefulScreenReady })).toBe(0.001);
+    expect(
+      sampler({ name: TraceName.UsefulScreenReady, parentSampled: true }),
+    ).toBe(0.001);
+    expect(
+      sampler({ name: TraceName.UsefulScreenReady, parentSampled: false }),
+    ).toBe(0.001);
+  });
+
   it('samples Perps preload transactions at 0.1% even with a sampled parent', () => {
     delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
     const sampler = createTracesSampler({ defaultSampleRate });
