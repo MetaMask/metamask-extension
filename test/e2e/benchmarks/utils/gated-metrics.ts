@@ -37,7 +37,6 @@ const GATED_METRIC_VALUES = [
   METRIC.assetDetails.cls,
   METRIC.solanaAssetDetails.cls,
   METRIC.solanaAssetDetails.assetClickToPriceChart,
-  METRIC.loadNewAccount.load_new_account,
   METRIC.assetDetails.assetClickToPriceChart,
   METRIC.bridgeUserActions.bridge_load_page,
   METRIC.bridgeUserActions.bridge_load_asset_picker,
