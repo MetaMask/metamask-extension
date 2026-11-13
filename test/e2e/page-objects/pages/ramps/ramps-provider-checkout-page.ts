@@ -2,8 +2,8 @@ import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Local `ramp-provider` checkout page opened by the extension after Continue.
- * The page is served by the standalone mock provider, not the extension.
+ * Mock provider checkout page opened by the extension after Continue. The page
+ * is static HTML served by the ramps E2E fixtures, not by the extension.
  */
 class RampsProviderCheckoutPage {
   private readonly completePurchaseLink = {
