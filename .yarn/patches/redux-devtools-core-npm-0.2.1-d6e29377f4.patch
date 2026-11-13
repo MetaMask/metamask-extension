@@ -1,0 +1,13 @@
+diff --git a/lib/utils/index.js b/lib/utils/index.js
+index fcda6adc562c2bac4b81ff04f08a934140f46f4f..c9556814bce38b44fd0d6e044fb9825b5b61de99 100644
+--- a/lib/utils/index.js
++++ b/lib/utils/index.js
+@@ -32,7 +32,7 @@ var _serialize2 = _interopRequireDefault(_serialize);
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+ 
+ function generateId(id) {
+-  return id || (0, _nonSecure2.default)(7);
++  return id || (0, _nonSecure.nanoid)(7);
+ }
+ 
+ function flatTree(obj) {
