@@ -27,12 +27,18 @@ import {
  *
  * @param driver - The E2E test Driver instance.
  * @param testDapp - The multichain test dapp page object.
+ * @param initialNumberOfResultItems - Result rows expected on the first
+ * attempt. Defaults to 3 (create + revoke + getSession); pass 4 when a
+ * `getSession` call was already made before the revoke.
+ * @returns The empty session scopes returned by `wallet_getSession`.
  */
 async function waitForEmptySessionAfterRevoke(
   driver: Driver,
   testDapp: TestDappMultichain,
-): Promise<void> {
-  let numberOfResultItems = 3; // create + revoke + getSession
+  initialNumberOfResultItems = 3,
+): Promise<Record<string, unknown>> {
+  let numberOfResultItems = initialNumberOfResultItems;
+  let emptySessionScopes: Record<string, unknown> = {};
   await driver.waitUntil(
     async () => {
       try {
@@ -40,11 +46,14 @@ async function waitForEmptySessionAfterRevoke(
           numberOfResultItems,
         });
         const sessionScopes = result?.sessionScopes;
-        return (
+        const isEmpty =
           typeof sessionScopes === 'object' &&
           sessionScopes !== null &&
-          Object.keys(sessionScopes).length === 0
-        );
+          Object.keys(sessionScopes).length === 0;
+        if (isEmpty) {
+          emptySessionScopes = sessionScopes;
+        }
+        return isEmpty;
       } catch {
         return false;
       } finally {
@@ -53,6 +62,7 @@ async function waitForEmptySessionAfterRevoke(
     },
     { timeout: 10000, interval: 1000 },
   );
+  return emptySessionScopes;
 }
 
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
@@ -106,10 +116,12 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
 
         await testDapp.revokeSession();
 
-        const parsedResult = await testDapp.getSession({
-          numberOfResultItems: 3,
-        });
-        const resultSessionScopes = parsedResult.sessionScopes;
+        // create + getSession + revoke + getSession = 4 rows on first attempt
+        const resultSessionScopes = await waitForEmptySessionAfterRevoke(
+          driver,
+          testDapp,
+          4,
+        );
         assert.deepStrictEqual(
           resultSessionScopes,
           {},
