@@ -17,6 +17,7 @@ import Alert from '../../components/ui/alert';
 import Alerts from '../../components/app/alerts';
 
 import {
+  ASSET_ACTIVATION_LOADER_ROUTE,
   ASSET_DETAILS_ROUTE,
   ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
@@ -236,6 +237,9 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
+const AssetActivationLoader = mmLazy(
+  () => import('../asset/components/asset-activation-loader/index.ts'),
+);
 const SecurityTrustPage = mmLazy(
   () => import('../asset/security-trust/index.ts'),
 );
@@ -509,6 +513,12 @@ export const routeConfig = [
       {
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
+      },
+      {
+        // Static path must be registered before ASSET_DETAILS_ROUTE so
+        // `/asset/activation/loader` is not captured as `:chainId`.
+        path: ASSET_ACTIVATION_LOADER_ROUTE,
+        element: <AssetActivationLoader />,
       },
       createRouteWithMessenger({
         path: ASSET_DETAILS_ROUTE,

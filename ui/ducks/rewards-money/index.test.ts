@@ -17,6 +17,8 @@ const referralMe = {
     inviteReferralCode: 'Code',
     inviteDecline: 'Decline',
     inviteAccept: 'Accept',
+    inviteTermsLearnMore: 'Learn more',
+    inviteTermsUrl: '',
     inviteAcceptedEyebrow: 'Eyebrow',
     inviteAcceptedTitle: 'Title',
     inviteAcceptedBody: 'Body {date}',
@@ -47,6 +49,7 @@ describe('rewardsMoney slice', () => {
     const state = reducer(initialState, setRewardsMoneyReferralMe(referralMe));
 
     expect(state).toStrictEqual({
+      ...initialState,
       referralMe,
       referralMeSettled: true,
     });
@@ -59,14 +62,17 @@ describe('rewardsMoney slice', () => {
     expect(state.referralMeSettled).toBe(true);
   });
 
-  it('resets to the initial state', () => {
+  it('resets referral data while preserving a pending invite', () => {
     const populated: RewardsMoneyState = {
+      ...initialState,
       referralMe,
       referralMeSettled: true,
+      pendingReferralCode: 'ABC123',
     };
 
-    expect(reducer(populated, resetRewardsMoneyReferralMe())).toStrictEqual(
-      initialState,
-    );
+    expect(reducer(populated, resetRewardsMoneyReferralMe())).toStrictEqual({
+      ...initialState,
+      pendingReferralCode: 'ABC123',
+    });
   });
 });

@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Cập nhật lên phiên bản MetaMask mới nhất",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Không có URL nào được cung cấp để điều hướng."
@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Xóa dữ liệu MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên quan đến quá trình sử dụng của bạn trên thiết bị này. Ví và tài khoản của bạn sẽ vẫn như hiện tại sau khi dữ liệu này bị xóa. Quá trình này có thể mất đến 30 ngày. Xem $1 của chúng tôi.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên kết với ví của bạn. MetaMetrics bao gồm dữ liệu sử dụng và chẩn đoán đã được ẩn danh. Ví và các tài khoản của bạn sẽ không thay đổi. Quá trình này có thể mất tới 30 ngày. Xem $1 của chúng tôi.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hiện không thể hoàn tất yêu cầu này do sự cố máy chủ của hệ thống phân tích. Hãy thử lại sau."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Chúng tôi không thể xóa dữ liệu này bây giờ"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Không thể xóa"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Chúng tôi sắp xóa tất cả dữ liệu MetaMetrics của bạn. Bạn có chắc không?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Xóa dữ liệu MetaMetrics?"
@@ -5396,9 +5386,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Nút trạng thái kết nối sẽ hiển thị nếu trang web mà bạn đang truy cập được kết nối với tài khoản bạn đang chọn."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Vì bạn chưa bao giờ chọn tham gia MetaMetrics, nên ở đây không có dữ liệu nào để xóa."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 được lưu trữ trên npm và $2 là mã định danh duy nhất của Snap này.",
@@ -11755,7 +11742,7 @@
   },
   "stxFailureDescription": {
     "message": "Thị trường thay đổi đột ngột có thể gây thất bại. Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Bật Giao dịch thông minh để có giao dịch đáng tin cậy và an toàn hơn. $1"
@@ -11899,7 +11886,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Đã xảy ra lỗi giao dịch và chúng tôi sẵn sàng trợ giúp bạn. Nếu vấn đề này tiếp diễn, bạn có thể liên hệ với bộ phận hỗ trợ khách hàng tại $1 để được hỗ trợ thêm.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Hoán đổi không thành công"
