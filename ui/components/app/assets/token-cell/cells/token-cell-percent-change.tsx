@@ -37,16 +37,21 @@ export const TokenCellPercentChange = React.memo(
       );
     }
 
-    const tokenPercentageChange =
-      typeof price === 'number' && typeof comparePrice === 'number'
-        ? ((price - comparePrice) / comparePrice) * 100
-        : getCachedPercentChange({
-            isNative: Boolean(token.isNative),
-            chainId: token.chainId,
-            address: token.address,
-            marketData: multiChainMarketData,
-            conversionRates: nonEvmConversionRates,
-          });
+    let tokenPercentageChange;
+
+    if (typeof price === 'number' && typeof comparePrice === 'number') {
+      tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
+    } else if (typeof token.pricePercentChange1d === 'number') {
+      tokenPercentageChange = token.pricePercentChange1d;
+    } else {
+      tokenPercentageChange = getCachedPercentChange({
+        isNative: Boolean(token.isNative),
+        chainId: token.chainId,
+        address: token.address,
+        marketData: multiChainMarketData,
+        conversionRates: nonEvmConversionRates,
+      });
+    }
 
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />
@@ -55,6 +60,8 @@ export const TokenCellPercentChange = React.memo(
   (prevProps, nextProps) =>
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.isFiatLoading === nextProps.token.isFiatLoading &&
+    prevProps.token.pricePercentChange1d ===
+      nextProps.token.pricePercentChange1d &&
     prevProps.price === nextProps.price &&
     prevProps.comparePrice === nextProps.comparePrice,
 );

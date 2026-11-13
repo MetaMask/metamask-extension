@@ -7,6 +7,10 @@ import {
 import { isCaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  useLiveAssetPrice,
+  useWatchAssetPrice,
+} from '../../../hooks/assets/market-stats-live-prices';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { getCachedSpotPrice } from '../../../../shared/lib/token-price';
 import { getCurrencyRates, getMarketData } from '../../../selectors';
@@ -75,7 +79,11 @@ export const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
 const useSpotPrice = (
   asset: Asset,
   enabled: boolean,
-): { currentPrice?: number; marketData?: AssetMarketData } => {
+): {
+  currentPrice?: number;
+  marketData?: AssetMarketData;
+  assetId?: string;
+} => {
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
   const { chainId, type } = asset;
@@ -134,7 +142,11 @@ const useSpotPrice = (
     },
   });
 
-  return { currentPrice: data?.currentPrice, marketData: data?.marketData };
+  return {
+    currentPrice: data?.currentPrice,
+    marketData: data?.marketData,
+    assetId,
+  };
 };
 
 /**
@@ -152,10 +164,13 @@ export const useCurrentPrice = (
   asset: Asset,
 ): { currentPrice?: number; marketData?: AssetMarketData } => {
   const { currentPrice: cachedPrice } = useCachedPrice(asset);
-  const { currentPrice: spotPrice, marketData } = useSpotPrice(
-    asset,
-    cachedPrice === undefined,
-  );
+  const {
+    currentPrice: spotPrice,
+    marketData,
+    assetId,
+  } = useSpotPrice(asset, cachedPrice === undefined);
+  const livePrice = useLiveAssetPrice(assetId);
+  useWatchAssetPrice(assetId);
 
-  return { currentPrice: cachedPrice ?? spotPrice, marketData };
+  return { currentPrice: livePrice ?? cachedPrice ?? spotPrice, marketData };
 };

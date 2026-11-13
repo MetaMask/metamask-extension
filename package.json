@@ -177,7 +177,9 @@
   },
   "resolutions": {
     "@metamask/design-system-react": "0.51.1",
-    "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@20.4.1-preview-e80304db4",
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@14.1.0-preview-e80304db4",
+    "@metamask/wallet": "npm:@metamask-previews/wallet@21.0.3-preview-e80304db4",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^38.0.0",

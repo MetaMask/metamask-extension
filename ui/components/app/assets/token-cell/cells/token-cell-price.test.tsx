@@ -41,6 +41,16 @@ const renderPrice = (
   );
 
 describe('TokenCellPrice', () => {
+  it('renders the live price ahead of the cached price', () => {
+    mockUseCachedPrice.mockReturnValue({ currentPrice: 1 });
+
+    const { getByTestId } = renderPrice(createToken({ livePrice: 73.48 }));
+
+    expect(getByTestId('multichain-token-list-item-price')).toHaveTextContent(
+      '$73.48',
+    );
+  });
+
   it('renders the cached price in the current currency', () => {
     mockUseCachedPrice.mockReturnValue({ currentPrice: 1234.5 });
 

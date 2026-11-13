@@ -61,6 +61,10 @@ export type TokenWithFiatAmount = Token &
   TokenDisplayValues &
   TokenBalanceValues & {
     caipAssetId?: CaipAssetType;
+    /** Unit price from `MarketStatsService:pricesUpdated`. Absent until a tick. */
+    livePrice?: number;
+    /** 24h change from `MarketStatsService:pricesUpdated`. Absent until a tick. */
+    pricePercentChange1d?: number;
     isStakeable?: boolean;
     title: string;
     rwaData?: TokenListToken['rwaData'];

@@ -3,11 +3,13 @@ import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
+  getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
 } from '../../../selectors/assets';
+import { useLiveAssetPrices } from '../../../hooks/assets/market-stats-live-prices';
 import { useAccountGroupBalanceDisplay } from '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
@@ -15,6 +17,12 @@ jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 jest.mock(
   '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay',
 );
+jest.mock('../../../hooks/assets/market-stats-live-prices', () => ({
+  ...jest.requireActual('../../../hooks/assets/market-stats-live-prices'),
+  useLiveAssetPrices: jest.fn(),
+}));
+
+const ETH_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 
 const ETHEREUM = {
   chainId: 'eip155:1',
@@ -31,22 +39,30 @@ const mockState = ({
   isLoaded = true,
   isAssetsLoading = false,
   isNetworkLoading = false,
+  assetsByChain = {},
+  livePrices = new Map(),
 }: {
   getBalance: (map: Record<string, unknown>) => unknown;
   hasBalance?: boolean;
   isLoaded?: boolean;
   isAssetsLoading?: boolean;
   isNetworkLoading?: boolean;
+  assetsByChain?: Record<string, unknown[]>;
+  livePrices?: ReadonlyMap<string, { price: number }>;
 }) => {
   jest.mocked(useAccountGroupBalanceDisplay).mockReturnValue({
     isLoading: isNetworkLoading,
   } as ReturnType<typeof useAccountGroupBalanceDisplay>);
+  jest
+    .mocked(useLiveAssetPrices)
+    .mockReturnValue(livePrices as ReturnType<typeof useLiveAssetPrices>);
   jest.mocked(useSelector).mockImplementation((selector: unknown) => {
     const values = new Map<unknown, unknown>([
       [selectUnifiedBalanceGetterBySelectedAccountGroup, getBalance],
       [selectAccountGroupBalanceForEmptyState, hasBalance],
       [selectAccountGroupBalanceIsLoadedForEmptyState, isLoaded],
       [selectIsAssetsLoadingForSelectedAccountGroup, isAssetsLoading],
+      [getAssetsBySelectedAccountGroup, assetsByChain],
     ]);
     return values.get(selector);
   });
@@ -78,6 +94,61 @@ describe('useNetworkPillBalances', () => {
       currency: 'usd',
       isLoading: false,
     });
+  });
+
+  it('adds the streamed price change to the network and the total', () => {
+    mockState({
+      getBalance: () => ({
+        totalBalanceInUserCurrency: 100,
+        userCurrency: 'usd',
+      }),
+      assetsByChain: {
+        '0x1': [
+          {
+            assetId: ETH_NATIVE_ASSET_ID,
+            chainId: '0x1',
+            isNative: true,
+            balance: '2',
+            fiat: { balance: 100 },
+          },
+        ],
+      },
+      livePrices: new Map([[ETH_NATIVE_ASSET_ID, { price: 55 }]]),
+    });
+
+    const { result } = renderHook(() => useNetworkPillBalances([ETHEREUM]));
+
+    expect(result.current.balanceByChainId).toStrictEqual({
+      'eip155:1': 110,
+    });
+    expect(result.current.total).toBe(110);
+  });
+
+  it('keeps the polled balance for a network with no streamed price', () => {
+    mockState({
+      getBalance: () => ({
+        totalBalanceInUserCurrency: 100,
+        userCurrency: 'usd',
+      }),
+      assetsByChain: {
+        '0x1': [
+          {
+            assetId: ETH_NATIVE_ASSET_ID,
+            chainId: '0x1',
+            isNative: true,
+            balance: '2',
+            fiat: { balance: 100 },
+          },
+        ],
+      },
+    });
+
+    const { result } = renderHook(() => useNetworkPillBalances([ETHEREUM]));
+
+    expect(result.current.balanceByChainId).toStrictEqual({
+      'eip155:1': 100,
+    });
+    expect(result.current.total).toBe(100);
   });
 
   it('returns no balances when there is no selected account group', () => {

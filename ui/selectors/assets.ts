@@ -1571,6 +1571,33 @@ const selectAllAssetsGrouped = createSelector(
   (assetListState: AssetListState) => selectAllAssets(assetListState),
 );
 
+const EMPTY_ASSETS_BY_GROUP: Record<string, AccountGroupAssets> = {};
+
+/**
+ * Assets for every account group, with excluded homonym tokens removed.
+ * Sidebar totals add a streamed-price delta computed from these rows.
+ *
+ * @returns Per-group, per-chain asset rows.
+ */
+export const getAssetsByAllAccountGroups = createDeepEqualSelector(
+  selectAllAssetsGrouped,
+  (allAssets): Record<string, AccountGroupAssets> => {
+    if (!allAssets || typeof allAssets !== 'object') {
+      return EMPTY_ASSETS_BY_GROUP;
+    }
+
+    const filtered: Record<string, AccountGroupAssets> = {};
+    for (const [groupId, assets] of Object.entries(
+      allAssets as Record<string, AccountGroupAssets>,
+    )) {
+      filtered[groupId] = filterExcludedAssets(
+        assets ?? EMPTY_ACCOUNT_GROUP_ASSETS,
+      );
+    }
+    return filtered;
+  },
+);
+
 const selectAllAssetsGroupedIncludingHidden = createSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
