@@ -3566,7 +3566,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "这将会删除与您的钱包关联的历史 MetaMetrics 数据。MetaMetrics 包含匿名使用数据和诊断数据。您的钱包和账户将保持不变。此过程最长可能需要 30 天。查看我们的 $1。",
-    "description": "$1 will have text saying Privacy Policy "
+    "description": "$1 will have text saying Privacy Notice "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "由于分析系统服务器问题，此请求目前无法完成。请稍后再试。"
@@ -6979,13 +6979,6 @@
   },
   "onboardedMetametricsKey3": {
     "message": "其他相关宣传材料"
-  },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
-  "onboardedMetametricsParagraph1": {
-    "message": "除了 $1，我们还想使用数据来了解您如何与营销通信交互。",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "这可以帮助我们个性化与您分享的内容，例如："

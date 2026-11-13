@@ -25,7 +25,6 @@ import {
   optInToMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
-import { METAMETRICS_SETTINGS_LINK } from '../../../helpers/constants/common';
 import { useDispatch } from '../../../store/hooks';
 
 export function MetaMetricsConsentContainer() {
@@ -96,18 +95,7 @@ export function MetaMetricsConsentContainer() {
         </ModalHeader>
         <ModalBody>
           <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-            <Text>
-              {t('onboardedMetametricsParagraph1', [
-                <a
-                  href={METAMETRICS_SETTINGS_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="retention-link"
-                >
-                  {t('onboardedMetametricsLink')}
-                </a>,
-              ])}
-            </Text>
+            <Text>{t('onboardedMetametricsParagraph1')}</Text>
             <Text>{t('onboardedMetametricsParagraph2')}</Text>
             <ul className="home__onboarding_list">
               <li>{t('onboardedMetametricsKey1')}</li>

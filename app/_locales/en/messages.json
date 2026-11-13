@@ -3428,7 +3428,7 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll collect data on how you interact with our marketing communications, so we can share relevant news (like product features and other materials)."
+    "message": "We'll collect data on how you interact with our marketing communications to personalize the updates we send you."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
@@ -3671,8 +3671,8 @@
     "message": "Delete MetaMetrics data"
   },
   "deleteMetaMetricsDataDescriptionV2": {
-    "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain the same. This process may take up to 30 days. View our $1.",
-    "description": "$1 will have text saying Privacy Policy "
+    "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain exactly as they are now. This process may take up to 30 days. View our $1.",
+    "description": "$1 will have text saying Privacy Notice "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
@@ -3682,6 +3682,9 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Delete MetaMetrics data?"
+  },
+  "deleteMetaMetricsDataPrivacyNotice": {
+    "message": "Privacy Notice"
   },
   "deleteMetaMetricsDataRequestedDescription": {
     "message": "You initiated deletion on $1. This process can take up to 30 days. View the $2.",
@@ -7248,18 +7251,14 @@
   "onboardedMetametricsKey3": {
     "message": "Other relevant promotional materials"
   },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
   "onboardedMetametricsParagraph1": {
-    "message": "In addition to $1, we'd like to use data to understand how you interact with marketing communications.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+    "message": "We'd like to use data (like information from cookies) to learn how you interact with our marketing communications."
   },
   "onboardedMetametricsParagraph2": {
     "message": "This helps us personalize what we share with you, like:"
   },
   "onboardedMetametricsParagraph3": {
-    "message": "Remember, we never sell the data you provide and you can opt out any time."
+    "message": "We'll never sell or share the data you provide. You can opt out anytime."
   },
   "onboardedMetametricsTitle": {
     "message": "Help us enhance your experience"
@@ -7305,22 +7304,22 @@
     "message": "We’ll collect basic product usage data. We may associate this information with on-chain data."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+    "message": "We’ll collect data to learn how you interact with our marketing communications. We may use this data to share relevant news (like product updates)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Gather basic usage data"
+    "message": "Basic usage data"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Marketing updates"
+    "message": "Marketing data"
   },
   "onboardingMetametricsContinue": {
     "message": "Continue"
   },
   "onboardingMetametricsDescription": {
-    "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
+    "message": "We’d like to request these permissions. You can opt out or delete your usage data anytime."
   },
   "onboardingMetametricsTitle": {
-    "message": "Help improve MetaMask"
+    "message": "Help us improve MetaMask"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",

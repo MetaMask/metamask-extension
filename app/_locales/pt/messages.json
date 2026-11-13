@@ -3566,7 +3566,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Isso excluirá os dados históricos do MetaMetrics associados à sua carteira. O MetaMetrics inclui dados de uso e de diagnóstico anonimizados. Sua carteira e suas contas permanecerão as mesmas. Esse processo pode levar até 30 dias. Consulte nossa $1.",
-    "description": "$1 will have text saying Privacy Policy "
+    "description": "$1 will have text saying Privacy Notice "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Não é possível concluir essa solicitação no momento devido a um problema no servidor do sistema de análise. Tente novamente mais tarde."
@@ -6979,13 +6979,6 @@
   },
   "onboardedMetametricsKey3": {
     "message": "Outros materiais promocionais relevantes"
-  },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
-  "onboardedMetametricsParagraph1": {
-    "message": "Além do $1, gostaríamos de usar dados para entender como você interage com comunicações de marketing.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Isso nos ajuda a personalizar o que compartilhamos com você, como:"

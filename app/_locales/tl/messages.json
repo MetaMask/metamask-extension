@@ -3566,7 +3566,7 @@
   },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa iyong wallet. Kabilang sa MetaMetrics ang walang pagkakakilanlan na paggamit at diagnostic data. Hindi magbabago ang wallet at mga account mo. Ang proseso na ito ay maaaring tumagal ng 30 araw. Tingnan ang aming $1.",
-    "description": "$1 will have text saying Privacy Policy "
+    "description": "$1 will have text saying Privacy Notice "
   },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system. Subukan muli mamaya."
@@ -6979,13 +6979,6 @@
   },
   "onboardedMetametricsKey3": {
     "message": "Iba pang kaugnay na mga materyal sa promosyon"
-  },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
-  "onboardedMetametricsParagraph1": {
-    "message": "Dagdag pa sa $1, nais naming gamitin ang data upang maunawaan kung paano ka nakikipag-ugnayan sa komunikasyon sa marketing.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
     "message": "Tumutulong ito sa amin na maiangkop ang aming ibinabahagi sa iyo, tulad ng:"

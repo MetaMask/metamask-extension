@@ -3,7 +3,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
@@ -131,6 +133,15 @@ describe('DeleteMetametricsDataItem', () => {
         screen.getByTestId('delete-metametrics-modal'),
       ).toBeInTheDocument();
     });
+
+    expect(screen.getByTestId('delete-metametrics-modal')).toHaveTextContent(
+      'Your wallet and accounts will remain exactly as they are now',
+    );
+    expect(
+      screen.getByRole('link', {
+        name: messages.deleteMetaMetricsDataPrivacyNotice.message,
+      }),
+    ).toHaveAttribute('href', CONSENSYS_PRIVACY_LINK);
   });
 
   it('opens deletion in progress modal when deletion was requested this session', async () => {
