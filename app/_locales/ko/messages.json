@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics 데이터 삭제"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "이렇게 하면 이 기기에서 사용한 과거 MetaMetrics 데이터가 삭제됩니다. 이 데이터를 삭제해도 지갑과 계정에는 아무런 영향이 없습니다. 삭제는 최대 30일 정도 소요됩니다. 다음을 참고하세요: $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "이렇게 하면 지갑과 연결된 과거 MetaMetrics 데이터가 삭제됩니다. MetaMetrics에는 익명화된 사용 데이터와 진단 데이터가 포함됩니다. 지갑과 계정은 그대로 유지됩니다. 이 절차는 최대 30일 정도 소요됩니다. 다음을 참고하세요: $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "분석 시스템 서버 문제로 지금 요청을 처리할 수 없습니다. 나중에 다시 시도해 주세요."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "지금은 데이터를 삭제할 수 없습니다"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "삭제할 수 없음"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "모든 MetaMetrics 데이터를 삭제하려고 합니다. 확실합니까?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics 데이터를 삭제할까요?"
@@ -5396,9 +5386,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "방문 중인 웹사이트가 현재 선택한 계정에 연결되어 있다면 연결 상태 버튼이 표시됩니다."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "MetaMetrics에 가입한 적이 없으므로 여기에는 삭제할 데이터가 없습니다"
   },
   "metadataModalSourceTooltip": {
     "message": "$1 스냅은 npm이 호스팅합니다. 이 Snap의 고유 식별자는 $2 입니다.",

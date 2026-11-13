@@ -998,12 +998,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/gator-permissions-controller>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2858,7 +2852,8 @@
         ]
       },
       "packages": {
-        "@metamask/gator-permissions-controller>@metamask/abi-utils": true,
+        "@metamask/7715-permission-types": true,
+        "@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/delegation-core": true,
@@ -3865,14 +3860,6 @@
         "eslint>fast-deep-equal": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/transaction-pay-controller>@metamask/controller-utils": true
-      }
-    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
@@ -4303,7 +4290,6 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "fetch": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -4329,6 +4315,7 @@
         "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
+        "@metamask/sentinel-api-service": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "async-mutex": true,
@@ -4363,7 +4350,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -8895,7 +8882,8 @@
     },
     "@metamask/transaction-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/user-operation-controller>uuid": {

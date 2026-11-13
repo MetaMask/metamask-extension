@@ -1414,4 +1414,86 @@ describe('AdvancedChartIframe', () => {
       });
     });
   });
+
+  describe('interaction forwarding', () => {
+    let openTabSpy: jest.Mock;
+    let originalPlatform: typeof global.platform;
+
+    beforeEach(() => {
+      openTabSpy = jest.fn();
+      originalPlatform = global.platform;
+      global.platform = {
+        ...global.platform,
+        openTab: openTabSpy,
+      } as unknown as typeof global.platform;
+    });
+
+    afterEach(() => {
+      global.platform = originalPlatform;
+    });
+
+    const dispatch = (data: Record<string, unknown>) =>
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify(data),
+          }),
+        );
+      });
+
+    it('forwards gesture interactions reported by the chart engine', () => {
+      const onChartInteracted = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onChartInteracted={onChartInteracted}
+        />,
+      );
+
+      dispatch({
+        type: 'CHART_INTERACTED',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- engine payload key
+        payload: { interaction_type: 'pan' },
+      });
+
+      expect(onChartInteracted).toHaveBeenCalledWith('pan');
+    });
+
+    it('opens a TradingView attribution click and reports it', () => {
+      const onTradingViewClicked = jest.fn();
+      const url = 'https://www.tradingview.com/symbols/ETHUSD/';
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onTradingViewClicked={onTradingViewClicked}
+        />,
+      );
+
+      dispatch({ type: 'CHART_TRADINGVIEW_CLICKED', payload: { url } });
+
+      expect(openTabSpy).toHaveBeenCalledWith({ url });
+      expect(onTradingViewClicked).toHaveBeenCalledTimes(1);
+    });
+
+    it('sanitises a non-TradingView url to the TradingView homepage but still reports the click', () => {
+      const onTradingViewClicked = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onTradingViewClicked={onTradingViewClicked}
+        />,
+      );
+
+      dispatch({
+        type: 'CHART_TRADINGVIEW_CLICKED',
+        payload: { url: 'https://evil.example.com/phish' },
+      });
+
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: 'https://www.tradingview.com',
+      });
+      expect(onTradingViewClicked).toHaveBeenCalledTimes(1);
+    });
+  });
 });
