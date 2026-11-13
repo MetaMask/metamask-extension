@@ -6,8 +6,9 @@
  * Exit 0: no change. Exit 1: a fixture was written. Exit 2: nothing was
  * written and a fetch failed. Exit 3: an `api-responses` fixture has no source.
  *
- * `--changed-since <ref>` writes only rows whose catalog entry or fixture
- * value differs from `<ref>`. Drift in other rows goes to stderr as `info`.
+ * `--changed-since <ref>` still writes all drift, but exit 1 only covers rows
+ * whose catalog entry or fixture value differs from `<ref>`. Drift only in
+ * other rows exits 4 and is noted on stderr as `info`.
  */
 import { execFileSync } from 'child_process';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
@@ -393,22 +394,16 @@ export function refuseWriteReason(current: Json, aligned: Json): string | null {
 }
 
 /** Outcome of comparing one row with its live response. */
-export type RowResult = 'unchanged' | 'changed' | 'reported' | 'refused';
+export type RowResult = 'unchanged' | 'changed' | 'refused';
 
 /**
  * Aligns one row's fixture with an already-fetched live response.
  *
  * @param row - Catalog row.
  * @param live - Live response body.
- * @param options - Whether this run may write the row's fixture.
- * @param options.write - When false, drift is printed as info, not written.
  * @returns What happened to the row.
  */
-async function applyRow(
-  row: SyncRow,
-  live: Json,
-  { write }: { write: boolean },
-): Promise<RowResult> {
+async function applyRow(row: SyncRow, live: Json): Promise<RowResult> {
   const { id, url, mode, mapPaths = [] } = row;
   const [file, key] = mode.slice('write:'.length).split('#');
   const filePath = path.join(__dirname, file);
@@ -424,12 +419,6 @@ async function applyRow(
       `refused ${id} ${url}: ${refusal}. The response may be an error body; the fixture was not changed.`,
     );
     return 'refused';
-  }
-  if (!write) {
-    console.warn(
-      `info ${id} ${url}: ${describeChange(current, aligned)} (not changed by this pull request; left for the weekly sync)`,
-    );
-    return 'reported';
   }
   const next = key === undefined ? aligned : { ...fixture, [key]: aligned };
   // Loaded only when a file is written. A static import breaks Jest, which
@@ -764,10 +753,11 @@ async function main(): Promise<number> {
     })),
   );
 
-  // With a base revision, only rows this pull request changed are written.
-  // Drift in other rows is printed as info and left for the weekly sync.
+  // With a base revision, every drifted row is still written, so a pull
+  // request can apply all of it, but only rows that pull request changed
+  // make the run fail. Decided before any write.
   const changedSince = argValue('--changed-since');
-  let isWritable = (_row: SyncRow & { entry: string }) => true;
+  let isBlocking = (_row: SyncRow & { entry: string }) => true;
   if (changedSince) {
     const baseCatalog = readAtRef(changedSince, 'api-mock-catalog.md');
     const baseEntries = new Map(
@@ -785,7 +775,7 @@ async function main(): Promise<number> {
         baseEntries.set(row.id, JSON.stringify(baseSources[row.id]));
       }
     }
-    isWritable = (row) => {
+    isBlocking = (row) => {
       const file = row.mode.slice('write:'.length).split('#')[0];
       return isRowChanged({
         baseEntry: baseEntries.get(row.id),
@@ -811,6 +801,9 @@ async function main(): Promise<number> {
     }
     return true;
   });
+  const blocking = new Set(
+    fetchable.filter((row) => isBlocking(row)).map((row) => row.id),
+  );
   const fetched = await mapWithConcurrency(
     fetchable,
     FETCH_CONCURRENCY,
@@ -829,8 +822,8 @@ async function main(): Promise<number> {
 
   // Rows are applied one at a time, in catalog order: several share a file.
   let changed = false;
+  let changedOther = false;
   let failed = false;
-  let reported = false;
   for (const [index, row] of fetchable.entries()) {
     const result = fetched[index];
     if ('error' in result) {
@@ -838,21 +831,29 @@ async function main(): Promise<number> {
       console.error(`${row.id} ${row.url}: ${String(result.error)}`);
       continue;
     }
-    const outcome = await applyRow(row, result.live, {
-      write: isWritable(row),
-    });
-    changed = outcome === 'changed' || changed;
-    reported = outcome === 'reported' || reported;
+    if ((await applyRow(row, result.live)) !== 'changed') {
+      continue;
+    }
+    if (blocking.has(row.id)) {
+      changed = true;
+    } else {
+      changedOther = true;
+      console.warn(
+        `info ${row.id} ${row.url}: not changed by this pull request, so this drift does not fail the check`,
+      );
+    }
   }
-  if (!changed && !failed) {
-    console.log(
-      reported
-        ? 'No API changes detected in the mocks this pull request changed'
-        : 'No API changes detected',
-    );
+  if (changed) {
+    return 1;
+  }
+  if (changedOther) {
+    return 4;
+  }
+  if (!failed) {
+    console.log('No API changes detected');
     return 0;
   }
-  return changed ? 1 : 2;
+  return 2;
 }
 
 if (process.argv[1]?.endsWith('sync-api-mocks.ts')) {

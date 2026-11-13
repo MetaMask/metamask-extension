@@ -3,11 +3,14 @@
 # Writes drift-readable.txt, drift-stat.txt, and e2e-api-mock-drift.diff, and
 # adds a drift section to the job summary.
 #
-# Usage: e2e-api-mock-drift-report.sh <pull_request|weekly>
+# Usage: e2e-api-mock-drift-report.sh <pull_request|weekly> [sync-exit-code]
+# On a pull request, exit code 4 means the drift is only in mocks the pull
+# request did not change, so it does not fail the check.
 
 set -euo pipefail
 
 TRIGGER="${1:?trigger required}"
+SYNC_EXIT="${2:-1}"
 
 while IFS= read -r line || [ -n "${line}" ]; do
   [ -z "${line}" ] && continue
@@ -41,7 +44,11 @@ git diff > e2e-api-mock-drift.diff
   cat drift-readable.txt
   echo
   if [ "${TRIGGER}" = "pull_request" ]; then
-    echo "These mocks are changed by this pull request and differ from the live APIs. The check fails until the update is on the branch."
+    if [ "${SYNC_EXIT}" = "4" ]; then
+      echo "None of these mocks is changed by this pull request, so this drift does not fail the check. The suggestions let you apply it here, or the weekly sync will."
+    else
+      echo "Drift in mocks this pull request changed fails the check until the update is on the branch. Drift in other mocks is listed under Other API drift and does not fail it."
+    fi
     echo
     echo "Run \`yarn test:e2e:sync-api-mocks\` and commit the result. The full diff is the \`e2e-api-mock-drift\` artifact."
   else

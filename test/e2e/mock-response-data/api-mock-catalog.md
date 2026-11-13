@@ -21,10 +21,11 @@ not fetched, for the reason given. With no drift it prints `No API changes
 detected`. Otherwise it prints each changed API (its id, endpoint and what
 changed) and any fetch errors. Every Monday,
 `.github/workflows/sync-e2e-api-mocks.yml` opens or updates one PR when a
-fixture changes. On a same-repo pull request that changes these mocks, only
-the rows that pull request changed (catalog entry or fixture value, against
-the merge base) fail the check. Other drift is listed as info and left for
-the weekly PR. Nothing is pushed, and Contentful rows are skipped. Fork pull
+fixture changes. On a same-repo pull request that changes these mocks, all
+live drift gets suggestions, but only drift in rows that pull request
+changed (catalog entry or fixture value, against the merge base) fails the
+check. Other drift is noted in the job summary and does not fail it.
+Nothing is pushed, and Contentful rows are skipped. Fork pull
 requests are skipped. A fetch failure is logged and does not fail the pull
 request check.
 

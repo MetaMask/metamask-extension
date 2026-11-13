@@ -21,6 +21,12 @@ if [ -f suggest-reason.txt ]; then
 fi
 
 SHAPE_ONLY='The change is shape-only: existing values stay, new fields are placeholders, and removed fields are dropped.'
+# Sync exit 4: drift only in mocks this pull request did not change.
+if [ "${EXIT:-1}" = "4" ]; then
+  STATUS='None of these mocks is changed by this pull request, so the check does not fail. Applying the suggestions here is optional; the weekly sync picks it up otherwise.'
+else
+  STATUS='The check fails until the drift in mocks this pull request changed is on the branch. Drift in other mocks is included and does not fail it.'
+fi
 if [ -n "${COMMIT_SHA:-}" ]; then
   INTRO="$(printf '%s\n\n%s\n\n%s' \
     "Updated the E2E API mocks on this pull request. ${SHAPE_ONLY}" \
@@ -28,13 +34,13 @@ if [ -n "${COMMIT_SHA:-}" ]; then
     'Workflow runs on this pull request stay waiting until a maintainer approves them. The commit was pushed with the workflow token.')"
 elif [ "${MODE}" = "suggestions" ]; then
   INTRO="$(printf '%s\n\n%s\n\n%s' \
-    'E2E API mocks this pull request changed differ from the live response shapes. This run did not push.' \
+    'E2E API mocks differ from the live response shapes. This run did not push.' \
     'A review on this pull request has suggestions. Use Commit suggestion, or batch them and commit them together. That commit is authored by you, so the other checks are not held for approval.' \
-    "${SHAPE_ONLY} The check stays red until that commit is on the branch.")"
+    "${SHAPE_ONLY} ${STATUS}")"
 else
   INTRO="$(printf '%s\n\n%s\n\n%s' \
-    'E2E API mocks this pull request changed differ from the live response shapes. This run did not push.' \
-    "${REASON:-GitHub cannot attach a suggestion for this drift. Run \`yarn test:e2e:sync-api-mocks\` locally and commit the result.}" \
+    'E2E API mocks differ from the live response shapes. This run did not push.' \
+    "${REASON:-GitHub cannot attach a suggestion for this drift. Run \`yarn test:e2e:sync-api-mocks\` locally and commit the result.} ${STATUS}" \
     "${SHAPE_ONLY} The full diff is the \`e2e-api-mock-drift\` artifact on this run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")"
   bytes="$(wc -c < e2e-api-mock-drift.diff)"
   if [ "${bytes}" -le 20000 ]; then

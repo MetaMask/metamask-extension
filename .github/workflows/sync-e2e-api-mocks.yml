@@ -4,12 +4,12 @@ name: Sync E2E API Mocks
 # test/e2e/mock-response-data/api-mock-catalog.md.
 #
 # pull-request: a same-repo pull request that touches the mocks. Read-only
-# contents and no Contentful secrets (those rows are skipped). Only rows the
-# pull request changed (catalog entry or fixture value, against the merge
-# base) can fail the check. Other drift is listed in the job summary and left
-# for the weekly sync. When the drift is small and in the pull request diff,
-# one review of suggestion blocks lets the author commit it. Nothing is
-# pushed. Fork pull requests are skipped. A fetch failure does not fail.
+# contents and no Contentful secrets (those rows are skipped). All live drift
+# gets suggestions, but only drift in rows the pull request changed (catalog
+# entry or fixture value, against the merge base) fails the check. When the
+# drift is small and in the pull request diff, one review of suggestion
+# blocks lets the author commit it. Nothing is pushed. Fork pull requests are
+# skipped. A fetch failure does not fail.
 #
 # weekly: Mondays and workflow_dispatch. Commits all drift to
 # sync/e2e-api-mocks and opens or updates one labeled PR. The push uses
@@ -83,19 +83,25 @@ jobs:
           set -e
           bash .github/scripts/e2e-api-mock-sync-summary.sh "${EXIT}"
           echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
-          # 0: no drift in rows this pull request changed. 1: drift in those
-          # rows, which fails the check. 2: a fetch failed and nothing was
+          # 0: no drift. 1: drift in rows this pull request changed, which
+          # fails the check. 4: drift only in other rows, which gets the same
+          # suggestions but does not fail. 2: a fetch failed and nothing was
           # written, which does not fail. 3: an api-responses fixture has no
           # sources.json entry, which fails.
-          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ]
+          if [ "${EXIT}" -eq 1 ] || [ "${EXIT}" -eq 4 ]; then
+            echo "DRIFT=true" >> "${GITHUB_OUTPUT}"
+          fi
+          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ] || [ "${EXIT}" -eq 4 ]
 
       - name: Record the fixture diff
-        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
+        if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
         shell: bash
-        run: bash .github/scripts/e2e-api-mock-drift-report.sh pull_request
+        run: bash .github/scripts/e2e-api-mock-drift-report.sh pull_request "${EXIT}"
+        env:
+          EXIT: ${{ steps.sync.outputs.EXIT }}
 
       - name: Upload the fixture diff
-        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
+        if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: e2e-api-mock-drift
@@ -103,7 +109,7 @@ jobs:
           if-no-files-found: error
 
       - name: Post suggestion review
-        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
+        if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -185,12 +191,13 @@ jobs:
           } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Comment on the pull request
-        if: ${{ !cancelled() && steps.sync.outputs.EXIT == '1' }}
+        if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           COMMIT_SHA: ''
+          EXIT: ${{ steps.sync.outputs.EXIT }}
         run: bash .github/scripts/e2e-api-mock-comment.sh
 
   weekly:
