@@ -1,11 +1,13 @@
 import type {
   BuyWidget,
+  Country,
   ExecuteRequestOptions,
   PaymentMethod,
   Provider,
   Quote,
   QuotesResponse,
   RampsOrder,
+  TokensResponse,
   UserRegion,
 } from '@metamask/ramps-controller';
 import { submitRequestToBackground } from '../background-connection';
@@ -39,10 +41,14 @@ export async function setRampsSelectedPaymentMethod(
   ]);
 }
 
+export function getRampsCountries(): Promise<Country[]> {
+  return submitRequestToBackground('getRampsCountries');
+}
+
 export async function getRampsTokens(
   region: string,
   action: 'buy' | 'sell' = 'buy',
-): Promise<void> {
+): Promise<TokensResponse> {
   return submitRequestToBackground('getRampsTokens', [region, action]);
 }
 
@@ -90,7 +96,8 @@ export async function addRampsPrecreatedOrder(params: {
   orderId: string;
   providerCode: string;
   walletAddress: string;
-  chainId?: string;
+  // Required since ramps-controller v20: precreated stubs must carry a network.
+  chainId: string;
 }): Promise<void> {
   return submitRequestToBackground('addRampsPrecreatedOrder', [params]);
 }
@@ -127,6 +134,10 @@ export async function getRampsOrderFromCallback(
   ]);
 }
 
+export async function syncRampsOrdersWithUserStorage(): Promise<void> {
+  return submitRequestToBackground('syncRampsOrdersWithUserStorage');
+}
+
 export async function watchRampsCheckoutTab(params: {
   url: string;
   providerCode: string;
@@ -137,4 +148,13 @@ export async function watchRampsCheckoutTab(params: {
   providerName?: string;
 }): Promise<void> {
   return submitRequestToBackground('watchRampsCheckoutTab', [params]);
+}
+
+export async function watchRampsProviderOrderTab(params: {
+  url: string;
+  providerCode: string;
+  walletAddress: string;
+  orderCode?: string;
+}): Promise<void> {
+  return submitRequestToBackground('watchRampsProviderOrderTab', [params]);
 }

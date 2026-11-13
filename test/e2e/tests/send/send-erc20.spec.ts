@@ -112,7 +112,7 @@ describe('Send ERC20', function () {
           await sendPage.pressContinueButton();
 
           await confirmation.checkPageIsLoaded();
-          await confirmation.clickFooterConfirmButton();
+          await confirmation.clickFooterButton({ button: 'confirm' });
 
           await homePage.goToActivityList();
           await activityTab.checkTransactionActivityByText('Sent');
@@ -149,25 +149,26 @@ describe('Send ERC20', function () {
           await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
           // Watch the token first
-          await driver.delay(1000);
           await testDapp.clickERC20WatchAssetButton();
-
-          await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-          await watchAssetConfirmation.clickFooterConfirmButton();
+          await watchAssetConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Initiate transfer
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.clickERC20TokenTransferButton();
-
-          await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const tokenTransferConfirmation =
             new TokenTransferTransactionConfirmation(driver);
           await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
-          await tokenTransferConfirmation.clickFooterConfirmButton();
+          await tokenTransferConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,

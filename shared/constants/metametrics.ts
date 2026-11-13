@@ -162,40 +162,43 @@ export type MetaMetricsEventOptions = {
   contextPropsIntoEventProperties?: string | string[];
 };
 
-export type MetaMetricsEventFragment = {
+/**
+ * Options accepted when opening an event fragment.
+ *
+ * Fragments themselves live in the `AnalyticsController`, which stores the
+ * platform-agnostic `properties`, `sensitiveProperties` and `context`. The
+ * extension-specific fields below are flattened into those by
+ * `app/scripts/controllers/analytics`, so every event a fragment emits is
+ * shaped exactly like one built through `trackEvent`.
+ */
+export type MetaMetricsEventFragmentOptions = {
+  /**
+   * The fragment id. Generated when not supplied.
+   */
+  id?: string;
+  /**
+   * An event name to fire immediately upon fragment creation. This is useful
+   * for building funnels and for reduction of code duplication.
+   */
+  initialEvent?: string;
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
-  successEvent: string;
+  successEvent?: string;
   /**
    * The event name to fire when the fragment is closed with a rejection.
    */
   failureEvent?: string;
   /**
-   * An event name to fire immediately upon fragment creation. This is useful
-   * for building funnels in mixpanel and for reduction of code duplication.
-   */
-  initialEvent?: string;
-  /**
-   * The event category to use for both the success and failure events.
+   * The event category to use for every event the fragment fires.
    */
   category?: string;
   /**
-   * Should this fragment be persisted in state and progressed after the
-   * extension is locked and unlocked.
+   * Should this fragment survive a restart of the background process. Fragments
+   * that do not set this are discarded on the next initialization, since the
+   * journey they belonged to cannot be resumed.
    */
   persist?: boolean;
-  /**
-   * Time in seconds the event should be persisted for. After the timeout the
-   * fragment will be closed as abandoned. If not supplied the fragment is
-   * stored indefinitely.
-   */
-  timeout?: number;
-  /**
-   * `Date.now()` when the fragment was last updated. Used to determine if the
-   * timeout has expired and the fragment should be closed.
-   */
-  lastUpdated?: number;
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
@@ -207,18 +210,10 @@ export type MetaMetricsEventFragment = {
    */
   sensitiveProperties?: Record<string, Json>;
   /**
-   * Amount of currency that the event creates in revenue for MetaMask.
+   * The type of environment the fragment was opened in. Defaults to the
+   * background process type.
    */
-  revenue?: number;
-  /**
-   * ISO-4127-formatted currency for events with revenue. Defaults to US
-   * dollars.
-   */
-  currency?: string;
-  /**
-   * Abstract business "value" attributable to customers who trigger this event.
-   */
-  value?: number;
+  environmentType?: string;
   /**
    * The page/route that the event occurred on.
    */
@@ -227,32 +222,15 @@ export type MetaMetricsEventFragment = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * Overrides the automatic generation of UUID for the event fragment. This is
-   * useful when tracking events for subsystems that already generate UUIDs so
-   * to avoid unnecessary lookups and reduce accidental duplication.
-   */
-  uniqueIdentifier?: string;
-  /*
-   * The event id.
-   */
-  id: string;
-  /*
-   * The environment type.
-   */
-  environmentType?: string;
-  /*
-   * The event name.
-   */
-  event?: string;
-
-  /**
-   * HACK: "transaction-submitted-<id>" fragment hack
-   * If this is true and the fragment is found as an abandoned fragment,
-   * then delete the fragment instead of finalizing it.
-   */
-  canDeleteIfAbandoned?: boolean;
 };
+
+/**
+ * The fields that can be written to an already open event fragment.
+ */
+export type MetaMetricsEventFragmentPayload = Pick<
+  MetaMetricsEventFragmentOptions,
+  'properties' | 'sensitiveProperties'
+>;
 
 /**
  * Data sent to the `segment.track` method.
@@ -511,7 +489,8 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers?: string[];
   /**
-   * Does the user change the token sort order on the asset list
+   * Does the user change the token sort order on the asset list.
+   * Event values are {@link MetaMetricsTokenSortPreference}.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -554,24 +533,6 @@ export type MetaMetricsUserTraits = {
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   chain_id_list?: string[];
-  /**
-   * Whether the user has opted into Rewards.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  has_rewards_opted_in?: string;
-  /**
-   * Whether the user was referred when opting into Rewards.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  rewards_referred?: boolean;
-  /**
-   * The referral code used when opting into Rewards.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  rewards_referral_code_used?: string;
   /**
    * The platform (browser) where the extension is running.
    */
@@ -761,12 +722,6 @@ export enum MetaMetricsUserTrait {
    */
   ChainIdList = 'chain_id_list',
   /**
-   * Rewards-specific traits
-   */
-  HasRewardsOptedIn = 'has_rewards_opted_in',
-  RewardsReferred = 'rewards_referred',
-  RewardsReferralCodeUsed = 'rewards_referral_code_used',
-  /**
    * The platform (browser) where the extension is running.
    */
   Platform = 'platform',
@@ -850,6 +805,7 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountPinned = 'Account Pinned',
   AccountHidden = 'Account Hidden',
+  ManageAccountsViewed = 'Manage Accounts Viewed',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
@@ -889,11 +845,12 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
-  ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
   ForceUpgradeUpdateNeededPromptViewed = 'Force Upgrade Update Needed Prompt Viewed',
   ForceUpgradeSkipped = 'Force Upgrade Skipped',
   ForceUpgradeClickedUpdateToLatestVersion = 'Force Upgrade Clicked Update to Latest Version',
+  HyperliquidDepositPromptViewed = 'Hyperliquid Deposit Prompt Viewed',
+  HyperliquidDepositPromptInteracted = 'Hyperliquid Deposit Prompt Interacted',
   ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
@@ -909,6 +866,17 @@ export enum MetaMetricsEventName {
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
+  MfaCodeResent = 'MFA Code Resent',
+  MfaErrorCtaClicked = 'MFA Error CTA Clicked',
+  MfaErrorViewed = 'MFA Error Viewed',
+  MfaFlowStatusUpdated = 'MFA Flow Status Updated',
+  MfaMethodSelected = 'MFA Method Selected',
+  MfaStepViewed = 'MFA Step Viewed',
+  MoneyButtonClicked = 'Money Button Clicked',
+  MoneyOnboardingEvent = 'Money Onboarding Event',
+  MoneySurfaceClicked = 'Money Surface Clicked',
+  MoneySurfaceViewed = 'Money Surface Viewed',
+  MoneyTooltipClicked = 'Money Tooltip Clicked',
   MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
   MusdClaimBonusCtaDisplayed = 'mUSD Claim Bonus CTA Displayed',
   MusdClaimBonusStatusUpdated = 'MUSD Claim Bonus Status Updated',
@@ -936,6 +904,8 @@ export enum MetaMetricsEventName {
   StorageErrorToastViewed = 'Storage Error Toast Viewed',
   StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
   StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  NetworkUsageNoticeToastViewed = 'Network Usage Notice Toast Viewed',
+  NetworkUsageNoticeToastInteracted = 'Network Usage Notice Toast Interacted',
   DataPersistenceWriteRetryRecovered = 'Data Persistence Write Retry Recovered',
   StateMigrationSucceeded = 'State Migration Succeeded',
   StateMigrationFailed = 'State Migration Failed',
@@ -1002,6 +972,7 @@ export enum MetaMetricsEventName {
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
   SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
+  BasicFunctionalityMigrated = 'Basic Functionality Migrated',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
@@ -1059,7 +1030,6 @@ export enum MetaMetricsEventName {
   TokenImportClicked = 'Token Import Clicked',
   ToastDisplayed = 'Toast Displayed',
   WalletSetupStarted = 'Wallet Setup Started',
-  WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
@@ -1090,10 +1060,15 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   ChainlistAddClicked = 'Chainlist Add Clicked',
   ChainlistNetworkSelected = 'Chainlist Network Selected',
+  ChainlistRpcSelected = 'Chainlist RPC Selected',
   CustomNetworkFormViewed = 'Custom Network Form Viewed',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  WebWidgetViewed = 'Web Widget Viewed',
+  TokenDetailsCtaClicked = 'Token Details CTA Clicked',
   ExploreSearchInteracted = 'Explore Search Interacted',
+  ChartInteracted = 'Chart Interacted',
+  ChartEmptyDisplayed = 'Chart Empty Displayed',
   TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
   TokenDetailsSecuritySectionViewed = 'token_details_security_section_viewed',
   NftScreenViewed = 'NFT Screen Viewed',
@@ -1166,7 +1141,7 @@ export enum MetaMetricsEventName {
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
   NotificationClicked = 'InApp Notification Clicked',
-  NotificationDetailClicked = 'InApp Notification Detail Clicked',
+  NotificationDetailItemClicked = 'InApp Notification Detail Item Clicked',
   NotificationsMenuOpened = 'InApp Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   PushNotificationClicked = 'Push Notification Clicked',
@@ -1190,7 +1165,10 @@ export enum MetaMetricsEventName {
   SendAmountSelected = 'Send Amount Selected',
   SendAssetSelected = 'Send Asset Selected',
   SendRecipientSelected = 'Send Recipient Selected',
+  SendFailed = 'Send Failed',
   Wallet5792Called = 'EIP-5792 API Called',
+  WalletPayRequested = 'Wallet Pay Requested',
+  WalletPayCompleted = 'Wallet Pay Completed',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
   // Extension Port Stream
@@ -1219,12 +1197,13 @@ export enum MetaMetricsEventName {
   RewardsAccountLinkingStarted = 'REWARDS_ACCOUNT_LINKING_STARTED',
   RewardsAccountLinkingCompleted = 'REWARDS_ACCOUNT_LINKING_COMPLETED',
   RewardsAccountLinkingFailed = 'REWARDS_ACCOUNT_LINKING_FAILED',
+  RewardsMoneyReferralOfferInteracted = 'Rewards Money Referral Offer Interacted',
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
-  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
-  ShieldMembershipCancelled = 'Shield Membership Cancelled',
-  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart',
+  ShieldMembershipCancelled = 'Shield Membership Canceled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Changed',
   ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
   ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
   ShieldBillingHistoryOpened = 'Shield Billing History Opened',
@@ -1293,6 +1272,16 @@ export enum MetaMetricsEventAccountType {
   Snap = 'snap',
 }
 
+/**
+ * Segment `source` for the `Manage Accounts Viewed` event — the entry point
+ * that opened the account management view.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/manage-accounts-viewed.yaml` (`source` enum).
+ */
+export enum MetaMetricsManageAccountsSource {
+  AccountList = 'account_list',
+  AccountMenu = 'account_menu',
+}
+
 export enum QueueType {
   NavigationHeader = 'navigation_header',
 }
@@ -1323,6 +1312,7 @@ export enum MetaMetricsEventCategory {
   MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
+  Money = 'Money',
   MusdConversion = 'MUSD Conversion',
   Navigation = 'Navigation',
   Network = 'Network',
@@ -1414,6 +1404,24 @@ export enum MetaMetricsRequestedThrough {
   MultichainApi = 'multichain_api',
 }
 
+/**
+ * Where a token sort preference was chosen.
+ */
+export enum MetaMetricsTokenSortLocation {
+  SortMenu = 'Sort Menu',
+  TokenColumnHeader = 'Token Column Header',
+}
+
+/**
+ * `token_sort_preference` values for Token Sort Preference Updated.
+ */
+export enum MetaMetricsTokenSortPreference {
+  Title = 'title',
+  TokenFiatAmount = 'tokenFiatAmount',
+  Price = 'price',
+  PercentChange = 'percentChange',
+}
+
 export enum MetaMetricsEventLocation {
   AlertFrictionModal = 'alert_friction_modal',
   Confirmation = 'confirmation',
@@ -1423,6 +1431,30 @@ export enum MetaMetricsEventLocation {
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
   Transaction = 'transaction',
+}
+
+/**
+ * Segment `location` for the `Account Hidden` event — the surface the hide or
+ * unhide was performed from.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/account-hidden.yaml` (`location` enum).
+ *
+ * Kept separate from {@link MetaMetricsAccountRemovedLocation} because the two
+ * events accept different sets of surfaces, so a shared enum would let an
+ * invalid value through (e.g. `account_details` is not a valid hide location).
+ */
+export enum MetaMetricsAccountHiddenLocation {
+  ManageAccounts = 'manage_accounts',
+  AccountMenu = 'account_menu',
+}
+
+/**
+ * Segment `location` for the `Account Removed` event — the surface the removal
+ * was performed from.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/account-removed.yaml` (`location` enum).
+ */
+export enum MetaMetricsAccountRemovedLocation {
+  ManageAccounts = 'manage_accounts',
+  AccountDetails = 'account_details',
 }
 
 export enum MetaMetricsEventUiCustomization {

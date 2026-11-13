@@ -37,7 +37,6 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
           expectedBalance: '1.21M',
-          waitForNonEvmAccounts: false,
         });
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
@@ -56,7 +55,10 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.clickERC20WatchAssetButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-        await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await watchAssetConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -97,7 +99,6 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
           expectedBalance: '1.21M',
-          waitForNonEvmAccounts: false,
         });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
@@ -109,7 +110,10 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.clickERC20WatchAssetButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-        await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await watchAssetConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Transfer token
@@ -160,7 +164,6 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
           expectedBalance: '1.21M',
-          waitForNonEvmAccounts: false,
         });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
@@ -173,7 +176,10 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const txConfirmation = new TransactionConfirmation(driver);
-        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await txConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -217,7 +223,6 @@ describe('Ledger Hardware', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
           expectedBalance: '1.21M',
-          waitForNonEvmAccounts: false,
         });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
@@ -232,7 +237,10 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const txConfirmation = new TransactionConfirmation(driver);
-        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await txConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

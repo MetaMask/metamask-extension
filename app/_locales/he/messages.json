@@ -211,10 +211,6 @@
   "fast": {
     "message": "מהיר"
   },
-  "fileImportFail": {
-    "message": "ייבוא הקובץ לא עובד? לחצ/י כאן!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "מחיקת המכשיר הזה"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "הגבלת דלק"
-  },
-  "gasLimitTooLow": {
-    "message": "הגבלת הדלק חייבת להיות לפחות 21000"
   },
   "gasUsed": {
     "message": "דלק שנעשה בו שימוש"
@@ -392,10 +385,6 @@
   "passwordsDontMatch": {
     "message": "ססמאות אינן תואמות"
   },
-  "pastePrivateKey": {
-    "message": "הדבק/י את מחרוזת המפתח הפרטי שלך כאן:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "בהמתנה"
   },
@@ -411,9 +400,6 @@
   "privateKey": {
     "message": "מפתח פרטי",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "אזהרה: לעולם אין למסור מפתח זה. מי שיקבל את המפתחות הפרטיים שלך יוכל לגנוב את כל הנכסים השמורים בחשבון שלך."
   },
   "privateNetwork": {
     "message": "רשת פרטית"
@@ -586,9 +572,6 @@
   },
   "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."
-  },
-  "usedByClients": {
-    "message": "בשימוש על ידי מגוון לקוחות שונים"
   },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"

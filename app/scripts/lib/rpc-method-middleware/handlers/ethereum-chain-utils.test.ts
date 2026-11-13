@@ -1,4 +1,4 @@
-import * as Multichain from '@metamask/chain-agnostic-permission';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
@@ -24,8 +24,8 @@ describe('Ethereum Chain Utils', () => {
       rejectApprovalRequestsForOrigin: jest.fn(),
       requestUserApproval: jest.fn(),
       hasApprovalRequestsForOrigin: jest.fn(),
-      toNetworkConfiguration: {},
-      fromNetworkConfiguration: {},
+      toNetworkConfiguration: {} as NetworkConfiguration,
+      fromNetworkConfiguration: {} as NetworkConfiguration,
       ...mks,
     };
     const response: { result?: true } = {};
@@ -140,16 +140,13 @@ describe('Ethereum Chain Utils', () => {
       });
 
       it('check for user approval is user already has access on the chain', async () => {
-        jest
-          .spyOn(Multichain, 'getPermittedEthChainIds')
-          .mockReturnValue(['0x1']);
         const { mocks, switchChain } = createMockedSwitchChain();
         mocks.hasApprovalRequestsForOrigin.mockReturnValue(true);
         mocks.autoApprove = false;
         mocks.getCaveat.mockReturnValue({
           value: {
             requiredScopes: {},
-            optionalScopes: {},
+            optionalScopes: { 'eip155:1': { accounts: [] } },
             isMultichainOrigin: false,
           },
         });
@@ -348,6 +345,26 @@ describe('Ethereum Chain Utils', () => {
         chainId: '0x1',
         chainName: 'Mainnet',
         firstValidBlockExplorerUrl: 'https://explorer.test.com/',
+        firstValidRPCUrl: 'https://test.com/rpc',
+        ticker: 'ETH',
+      });
+    });
+
+    it('accepts params when blockExplorerUrls is omitted', () => {
+      expect(
+        EthChainUtils.validateAddEthereumChainParams({
+          chainId: '0x1',
+          chainName: 'Mainnet',
+          rpcUrls: ['https://test.com/rpc'],
+          nativeCurrency: {
+            symbol: 'ETH',
+            decimals: 18,
+          },
+        }),
+      ).toStrictEqual({
+        chainId: '0x1',
+        chainName: 'Mainnet',
+        firstValidBlockExplorerUrl: null,
         firstValidRPCUrl: 'https://test.com/rpc',
         ticker: 'ETH',
       });

@@ -1,3 +1,8 @@
+import type {
+  CanonicalMoneyAccountBalanceResponse,
+  FetchBalanceWithFallbackOptions,
+} from '@metamask/money-account-balance-service';
+import { Hex } from '@metamask/utils';
 import {
   MoneyAccountApiDataServiceQueryKeys,
   MoneyAccountBalanceServiceQueryKeys,
@@ -24,37 +29,86 @@ import { submitRequestToBackground } from '../../store/background-connection';
 export async function invalidateMoneyAccountBalanceCaches(
   address: string,
 ): Promise<void> {
+  await invalidateMoneyAccountBalanceSourceCaches(address);
+
+  await queryClient.invalidateQueries(
+    {
+      queryKey: [
+        MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK,
+        address,
+      ],
+      refetchType: 'all',
+    },
+    // The UI client forwards this argument to the background service over
+    // JSON-RPC, where an omitted argument arrives as `null` — bypassing
+    // tanstack's `options = {}` default and crashing its
+    // `options.cancelRefetch` read. Must stay an explicit object.
+    {},
+  );
+}
+
+/**
+ * Bust only the background source caches, without triggering a UI refetch.
+ *
+ * Every fetch through the facade re-caches whatever the sources return with a
+ * fresh `staleTime` — including a stale post-transaction read. Busting the
+ * source caches after such a read means the next poll fetches the sources
+ * anew instead of being served that re-cached stale value for another
+ * `staleTime` window.
+ *
+ * @param address - Money account address (same casing as used by the UI query).
+ */
+export async function invalidateMoneyAccountBalanceSourceCaches(
+  address: string,
+): Promise<void> {
   await Promise.all([
-    submitRequestToBackground<void>('messengerCall', [
-      'MoneyAccountBalanceService:invalidateQueries',
-      [
-        {
-          queryKey: [
-            MoneyAccountBalanceServiceQueryKeys.GET_MONEY_ACCOUNT_BALANCE,
-            address,
-          ],
-        },
-      ],
+    submitRequestToBackground('MoneyAccountBalanceService:invalidateQueries', [
+      {
+        queryKey: [
+          MoneyAccountBalanceServiceQueryKeys.GET_MONEY_ACCOUNT_BALANCE,
+          address,
+        ],
+      },
     ]),
-    submitRequestToBackground<void>('messengerCall', [
-      'MoneyAccountApiDataService:invalidateQueries',
-      [
-        {
-          queryKey: [
-            MoneyAccountApiDataServiceQueryKeys.FETCH_POSITIONS,
-            // Package lowercases the address when building the positions query key.
-            address.toLowerCase(),
-          ],
-        },
-      ],
+    submitRequestToBackground('MoneyAccountApiDataService:invalidateQueries', [
+      {
+        queryKey: [
+          MoneyAccountApiDataServiceQueryKeys.FETCH_POSITIONS,
+          // Package lowercases the address when building the positions query key.
+          address.toLowerCase(),
+        ],
+      },
     ]),
   ]);
+}
 
-  await queryClient.invalidateQueries({
-    queryKey: [
-      MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK,
-      address,
-    ],
-    refetchType: 'all',
-  });
+/**
+ * Read the Money Account balance with cache bypass and seed the UI facade cache.
+ *
+ * `useQuery` cannot pass `fresh` / `minBlock` without changing the cache key,
+ * and `fetchBalanceWithFallback` has no background cache entry of its own. A
+ * direct messenger call applies those options on the API source (the service
+ * ignores them for RPC), then `setQueryData` publishes the result to observers
+ * of the existing facade key.
+ *
+ * @param address - Money account address (same casing as used by the UI query).
+ * @param options - Freshness controls forwarded to `fetchBalanceWithFallback`.
+ * @returns The canonical balance, including source provenance.
+ */
+export async function fetchFreshMoneyAccountBalance(
+  address: string,
+  options: FetchBalanceWithFallbackOptions,
+): Promise<CanonicalMoneyAccountBalanceResponse> {
+  const result = await submitRequestToBackground(
+    'MoneyAccountBalanceService:fetchBalanceWithFallback',
+    // TODO: Ensure that address is a hex before calling this action.
+    [address as Hex, options],
+  );
+
+  queryClient.setQueryData(
+    [MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK, address],
+    result,
+  );
+
+  return result;
 }

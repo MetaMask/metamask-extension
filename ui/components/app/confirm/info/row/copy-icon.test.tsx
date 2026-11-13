@@ -1,7 +1,12 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import { CopyIcon } from './copy-icon';
+
+jest.mock('../../../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: () => [false, jest.fn().mockResolvedValue(true)],
+}));
 
 describe('CopyIcon', () => {
   it('should match snapshot', () => {
@@ -16,25 +21,27 @@ describe('CopyIcon', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('does not stop propagation by default', () => {
+  it('does not stop propagation by default', async () => {
+    const user = userEvent.setup();
     const parentClickHandler = jest.fn();
     const { getByLabelText } = render(
       <div onClick={parentClickHandler}>
         <CopyIcon copyText="dummy text" />
       </div>,
     );
-    fireEvent.click(getByLabelText('copy-button'));
+    await user.click(getByLabelText('copy-button'));
     expect(parentClickHandler).toHaveBeenCalled();
   });
 
-  it('stops propagation when isStopPropagationEnabled is true', () => {
+  it('stops propagation when isStopPropagationEnabled is true', async () => {
+    const user = userEvent.setup();
     const parentClickHandler = jest.fn();
     const { getByLabelText } = render(
       <div onClick={parentClickHandler}>
         <CopyIcon copyText="dummy text" isStopPropagationEnabled />
       </div>,
     );
-    fireEvent.click(getByLabelText('copy-button'));
+    await user.click(getByLabelText('copy-button'));
     expect(parentClickHandler).not.toHaveBeenCalled();
   });
 });

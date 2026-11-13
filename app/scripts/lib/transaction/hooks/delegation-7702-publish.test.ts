@@ -9,12 +9,17 @@ import {
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import {
+  TransactionContainerType,
   TransactionControllerGetNonceLockAction,
   TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerUpdateTransactionAction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import {
+  type FeatureFlags,
+  RemoteFeatureFlagControllerGetStateAction,
+} from '@metamask/remote-feature-flag-controller';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
@@ -23,9 +28,11 @@ import {
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { getSentinelSigners } from '../sentinel-api';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
 
 jest.mock('../transaction-relay');
+jest.mock('../sentinel-api');
 jest.mock('../delegation', () => {
   return {
     ...jest.requireActual('../delegation'),
@@ -49,6 +56,9 @@ const UPGRADE_CONTRACT_ADDRESS_MOCK =
 const DELEGATION_MANAGER_ADDRESS_MOCK =
   '0x12345678901234567890123456789012345678a0';
 
+const SENTINEL_SIGNER_1_MOCK = '0xB01caEa8c6C47bbf4F4b4c5080Ca642043359C2E';
+const SENTINEL_SIGNER_2_MOCK = '0xB42F812A44c22cc6b861478900401ee759EbEAD6';
+
 const TRANSACTION_META_MOCK = {
   chainId: '0x1',
   txParams: {
@@ -63,9 +73,11 @@ const TRANSACTION_META_MOCK = {
 describe('Delegation 7702 Publish Hook', () => {
   const submitRelayTransactionMock = jest.mocked(submitRelayTransaction);
   const waitForRelayResultMock = jest.mocked(waitForRelayResult);
+  const getSentinelSignersMock = jest.mocked(getSentinelSigners);
 
   let messenger: TransactionControllerInitMessenger;
   let hookClass: Delegation7702PublishHook;
+  const remoteFeatureFlags: FeatureFlags = {};
 
   const signTypedMessageMock: jest.MockedFn<
     KeyringControllerSignTypedMessageAction['handler']
@@ -102,6 +114,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
+      | RemoteFeatureFlagControllerGetStateAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction
       | TransactionControllerUpdateTransactionAction,
@@ -115,6 +128,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
+      | RemoteFeatureFlagControllerGetStateAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction
       | TransactionControllerUpdateTransactionAction,
@@ -130,6 +144,7 @@ describe('Delegation 7702 Publish Hook', () => {
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
+        'RemoteFeatureFlagController:getState',
         'TransactionController:getNonceLock',
         'TransactionController:isAtomicBatchSupported',
         'TransactionController:updateTransaction',
@@ -152,6 +167,11 @@ describe('Delegation 7702 Publish Hook', () => {
     );
 
     baseMessenger.registerActionHandler(
+      'RemoteFeatureFlagController:getState',
+      () => ({ cacheTimestamp: 0, remoteFeatureFlags }),
+    );
+
+    baseMessenger.registerActionHandler(
       'TransactionController:updateTransaction',
       updateTransactionMock,
     );
@@ -171,6 +191,7 @@ describe('Delegation 7702 Publish Hook', () => {
     });
 
     isAtomicBatchSupportedMock.mockResolvedValue([]);
+    getSentinelSignersMock.mockResolvedValue([SENTINEL_SIGNER_1_MOCK]);
     signTypedMessageMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
     signDelegationControllerMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
 
@@ -220,6 +241,31 @@ describe('Delegation 7702 Publish Hook', () => {
       expect(result).toEqual({
         transactionHash: undefined,
       });
+    });
+
+    it('throws for a sponsored transaction when EIP-7702 is not supported', async () => {
+      // Sponsored transactions skip local signing; a silent skip here would
+      // raw-send an unsigned payload ("Transaction decoding error").
+      const upgradedElsewhere = '0x12345678901234567890123456789012345678ff';
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: TRANSACTION_META_MOCK.chainId,
+          delegationAddress: upgradedElsewhere as never,
+          isSupported: false,
+        },
+      ]);
+
+      await expect(
+        hookClass.getHook()(
+          {
+            ...TRANSACTION_META_MOCK,
+            isGasFeeSponsored: true,
+          },
+          SIGNED_TX_MOCK,
+        ),
+      ).rejects.toThrow(
+        'Chain must support EIP-7702 for sponsored or gas included transaction',
+      );
     });
 
     it('no gas fee tokens', async () => {
@@ -504,7 +550,60 @@ describe('Delegation 7702 Publish Hook', () => {
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
-    expect(signArgs.delegation.caveats).toHaveLength(2);
+    expect(signArgs.delegation.caveats).toHaveLength(4);
+  });
+
+  it('relays the parent execute as a single execution for sponsored batches with nested calls', async () => {
+    // Money Account withdrawals are `[withdraw, transfer]` batches sponsored
+    // on Monad. Same as mobile: the delegation must enforce the parent
+    // `execute()` (single ExactExecution), not a batch of the nested calls —
+    // the batch shape mined on-chain without moving funds.
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        type: TransactionType.batch,
+        isGasFeeSponsored: true,
+        txParams: {
+          ...TRANSACTION_META_MOCK.txParams,
+          data: '0xdeadbeef',
+        },
+        nestedTransactions: [
+          {
+            to: '0x1111111111111111111111111111111111111111',
+            data: '0xaaaa',
+          },
+          {
+            to: '0x2222222222222222222222222222222222222222',
+            data: '0xbbbb',
+          },
+        ],
+      } as unknown as TransactionMeta,
+      SIGNED_TX_MOCK,
+    );
+
+    expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
+    expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
+
+    const { caveatEnforcers } = getDeleGatorEnvironment(
+      parseInt(TRANSACTION_META_MOCK.chainId, 16),
+    );
+    const signArgs = signDelegationControllerMock.mock.calls[0][0];
+    const enforcers = signArgs.delegation.caveats.map(
+      (caveat: { enforcer: string }) => caveat.enforcer,
+    );
+    expect(enforcers).toContain(caveatEnforcers.ExactExecutionEnforcer);
+    expect(enforcers).not.toContain(
+      caveatEnforcers.ExactExecutionBatchEnforcer,
+    );
   });
 
   it('signs delegation for gasless 7702 swap without gas fee tokens', async () => {
@@ -534,7 +633,7 @@ describe('Delegation 7702 Publish Hook', () => {
     // Ensure caveats contain a single exactExecution for gasless flow
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
     expect(Array.isArray(signArgs.delegation.caveats)).toBe(true);
-    expect(signArgs.delegation.caveats).toHaveLength(2);
+    expect(signArgs.delegation.caveats).toHaveLength(4);
     // No transfer execution should be included for gasless flow
   });
 
@@ -559,6 +658,95 @@ describe('Delegation 7702 Publish Hook', () => {
 
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
-    expect(signArgs.delegation.caveats).toHaveLength(2);
+    expect(signArgs.delegation.caveats).toHaveLength(4);
+  });
+
+  describe('redeemer caveat', () => {
+    beforeEach(() => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: TRANSACTION_META_MOCK.chainId,
+          delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+          isSupported: true,
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+    });
+
+    it('restricts redemption to the Sentinel signers', async () => {
+      getSentinelSignersMock.mockResolvedValueOnce([
+        SENTINEL_SIGNER_1_MOCK,
+        SENTINEL_SIGNER_2_MOCK,
+      ]);
+
+      await hookClass.getHook()(
+        {
+          ...TRANSACTION_META_MOCK,
+          isGasFeeSponsored: true,
+        },
+        SIGNED_TX_MOCK,
+      );
+
+      const { caveatEnforcers } = getDeleGatorEnvironment(
+        parseInt(TRANSACTION_META_MOCK.chainId, 16),
+      );
+
+      expect(getSentinelSignersMock).toHaveBeenCalledWith(
+        TRANSACTION_META_MOCK.chainId,
+      );
+
+      const signArgs = signDelegationControllerMock.mock.calls[0][0];
+
+      expect(signArgs.delegation.caveats).toHaveLength(4);
+      expect(signArgs.delegation.caveats).toContainEqual({
+        enforcer: caveatEnforcers.RedeemerEnforcer,
+        terms:
+          `0x${SENTINEL_SIGNER_1_MOCK.slice(2)}${SENTINEL_SIGNER_2_MOCK.slice(2)}`.toLowerCase(),
+        args: '0x',
+      });
+    });
+
+    it('includes the redeemer caveat for enforced simulations', async () => {
+      await hookClass.getHook()(
+        {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+          isGasFeeSponsored: true,
+        },
+        SIGNED_TX_MOCK,
+      );
+
+      const { caveatEnforcers } = getDeleGatorEnvironment(
+        parseInt(TRANSACTION_META_MOCK.chainId, 16),
+      );
+
+      const signArgs = signDelegationControllerMock.mock.calls[0][0];
+      const enforcers = signArgs.delegation.caveats.map(
+        (caveat: { enforcer: string }) => caveat.enforcer,
+      );
+
+      expect(enforcers).toContain(caveatEnforcers.RedeemerEnforcer);
+      expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('throws if no Sentinel signers are available', async () => {
+      getSentinelSignersMock.mockResolvedValueOnce([]);
+
+      await expect(
+        hookClass.getHook()(
+          {
+            ...TRANSACTION_META_MOCK,
+            isGasFeeSponsored: true,
+          },
+          SIGNED_TX_MOCK,
+        ),
+      ).rejects.toThrow(
+        `No relay signers found for chain ${TRANSACTION_META_MOCK.chainId}`,
+      );
+
+      expect(signDelegationControllerMock).not.toHaveBeenCalled();
+      expect(updateTransactionMock).not.toHaveBeenCalled();
+      expect(submitRelayTransactionMock).not.toHaveBeenCalled();
+    });
   });
 });

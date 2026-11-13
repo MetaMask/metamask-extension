@@ -31,6 +31,7 @@ type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
   onSubmit: (password: string, termsChecked: boolean) => Promise<void>;
   onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  error?: boolean;
   loading?: boolean;
 };
 
@@ -38,6 +39,7 @@ const CreatePasswordForm = ({
   isSocialLoginFlow,
   onSubmit,
   onBack,
+  error = false,
   loading = false,
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
@@ -48,8 +50,9 @@ const CreatePasswordForm = ({
     toggle,
   } = useBoolean();
   const hasUserInteractedWithTermsRef = useRef(false);
-  const geolocation = useSelector(
-    (state: { metamask: { location: string } }) => state.metamask?.location,
+  const country = useSelector(
+    (state: { metamask: { country: string | null } }) =>
+      state.metamask?.country,
   );
 
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -58,13 +61,13 @@ const CreatePasswordForm = ({
     if (
       isSocialLoginFlow &&
       // For Social login users in US region, we set the marketing consent to true by default for the first time render
-      geolocation === 'US' &&
+      country === 'US' &&
       !hasUserInteractedWithTermsRef.current
     ) {
       setTermsChecked(true);
       hasUserInteractedWithTermsRef.current = true;
     }
-  }, [setTermsChecked, isSocialLoginFlow, geolocation]);
+  }, [setTermsChecked, isSocialLoginFlow, country]);
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -159,6 +162,19 @@ const CreatePasswordForm = ({
             onChange={(newPassword) => setPassword(newPassword)}
             disabled={loading}
           />
+          {error ? (
+            <Box marginTop={4}>
+              <Text
+                asChild
+                color={TextColor.ErrorDefault}
+                variant={TextVariant.BodySm}
+              >
+                <span role="alert" data-testid="create-password-error">
+                  {t('notificationsSettingsBoxError')}
+                </span>
+              </Text>
+            </Box>
+          ) : null}
           <Box
             className="create-password__terms-container rounded-lg"
             marginTop={6}

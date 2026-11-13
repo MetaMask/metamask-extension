@@ -35,7 +35,7 @@ enum TransactionDetailRowIndex {
 async function confirmTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const transactionConfirmation = new TransactionConfirmation(driver);
-  await transactionConfirmation.clickFooterConfirmButton();
+  await transactionConfirmation.clickFooterButton({ button: 'confirm' });
 }
 
 async function expectTransactionDetailsMatchReceipt(

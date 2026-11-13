@@ -6,8 +6,9 @@ import { withFixtures } from '../../helpers';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { login } from '../../page-objects/flows/login.flow';
+import { openConnectHardwareWallet } from '../../page-objects/flows/add-wallet.flow';
 
 describe('Lattice hardware wallet', function (this: Suite) {
   it('lattice page rendering validation', async function () {
@@ -17,14 +18,14 @@ describe('Lattice hardware wallet', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();

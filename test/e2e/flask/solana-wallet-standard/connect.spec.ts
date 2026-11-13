@@ -5,7 +5,9 @@ import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { addAccount } from '../../page-objects/flows/add-account.flow';
+import { addAccounts } from '../../page-objects/flows/add-account.flow';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HomePage from '../../page-objects/pages/home/homepage';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
@@ -152,7 +154,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
         async ({ driver }) => {
           await login(driver);
-          await addAccount({ driver, switchToAccount: 'Account 1' });
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
+          await addAccounts({
+            driver,
+            count: 1,
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+            onDone: ({ accountList }) => accountList.selectAccount('Account 1'),
+          });
 
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
@@ -193,7 +204,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
         async ({ driver }) => {
           await login(driver);
-          await addAccount({ driver, switchToAccount: 'Account 1' });
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
+          await addAccounts({
+            driver,
+            count: 1,
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+            onDone: ({ accountList }) => accountList.selectAccount('Account 1'),
+          });
 
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
@@ -273,7 +293,16 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
         async ({ driver }) => {
           await login(driver);
-          await addAccount({ driver, switchToAccount: 'Account 1' });
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
+          await addAccounts({
+            driver,
+            count: 1,
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+            onDone: ({ accountList }) => accountList.selectAccount('Account 1'),
+          });
 
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();

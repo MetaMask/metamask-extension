@@ -32,7 +32,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           SignatureType.SIWE_BadDomain,
         );
 
-        await confirmation.clickScrollToBottomButton();
         await confirmation.clickInlineAlert();
 
         await alertModal.acknowledgeAlert();
@@ -56,12 +55,15 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const confirmation = new Confirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SIWE_BadDomain,
         );
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await testDapp.assertUserRejectedRequest();
@@ -117,7 +119,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const alertModal = new ConfirmAlertModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SIWE_BadDomain,
         );

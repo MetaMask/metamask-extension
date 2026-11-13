@@ -8,7 +8,19 @@ import {
   getNativeAssetForChainId,
   sumAmounts,
 } from '@metamask/bridge-controller';
-import { Skeleton } from '@metamask/design-system-react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  FontWeight,
+  Skeleton,
+  Text as DsText,
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
 import {
   SuccessPill,
   Text,
@@ -198,13 +210,16 @@ export const MultichainBridgeQuoteCard = ({
   const includedTxFees = getIncludedTxFees(activeQuote);
   const gasFees = getGasFees(activeQuote);
   const totalNetworkFee = getTotalNetworkFee(activeQuote);
+  const relayerFees = sumAmounts(activeQuote.quote.feeData.relayer);
 
   return (
     <>
-      <BridgeQuotesModal
-        isOpen={showAllQuotes}
-        onClose={() => setShowAllQuotes(false)}
-      />
+      {showAllQuotes && (
+        <BridgeQuotesModal
+          isOpen={showAllQuotes}
+          onClose={() => setShowAllQuotes(false)}
+        />
+      )}
       <Column gap={2}>
         {/* Rate and timer */}
         <Row justifyContent={JustifyContent.spaceBetween}>
@@ -245,10 +260,12 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {`1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
-                locale,
-                activeQuote.quote.priceData?.swapRate,
-              )} ${activeQuote.quote.dest.asset.symbol}`}
+              {activeQuote.quote.priceData?.swapRate
+                ? `1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
+                    locale,
+                    activeQuote.quote.priceData.swapRate,
+                  )} ${activeQuote.quote.dest.asset.symbol}`
+                : ''}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
@@ -331,23 +348,32 @@ export const MultichainBridgeQuoteCard = ({
                       ? TextColor.warningDefault
                       : TextColor.textAlternative
                   }
-                  style={{ textDecoration: 'line-through' }}
                   data-testid="network-fees-included-original-amount"
                 >
                   {includedTxFees?.valueInCurrency
                     ? formatNetworkFee(includedTxFees.valueInCurrency, currency)
                     : formatNetworkFee(gasFees?.valueInCurrency, currency)}
                 </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textAlternative
-                  }
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+                  className="gap-0.5 px-1.5 rounded-md"
+                  data-testid="network-fees-included-token"
                 >
-                  {t('swapGasFeesIncluded')}
-                </Text>
+                  <AvatarToken
+                    size={AvatarTokenSize.Xs}
+                    src={fromToken?.iconUrl ?? undefined}
+                    name={fromToken?.symbol}
+                  />
+                  <DsText
+                    variant={DsTextVariant.BodyXs}
+                    fontWeight={FontWeight.Medium}
+                    color={DsTextColor.TextAlternative}
+                  >
+                    {fromToken?.symbol}
+                  </DsText>
+                </Box>
               </Row>
             )}
             {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
@@ -363,6 +389,24 @@ export const MultichainBridgeQuoteCard = ({
                 {formatNetworkFee(gasFees?.valueInCurrency, currency)}
               </Text>
             )}
+          </Row>
+        )}
+
+        {relayerFees && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('relayerFee')}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              data-testid="relayer-fees"
+            >
+              {formatNetworkFee(relayerFees?.valueInCurrency, currency)}
+            </Text>
           </Row>
         )}
 
@@ -401,10 +445,6 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         </Row>
 
-        <PriceImpactQuoteDetailsRow
-          onOpenPriceImpactWarningModal={onOpenPriceImpactWarningModal}
-        />
-
         {/* Minimum Received */}
         {activeQuote.quote.dest?.minAmountNormalized && (
           <Row justifyContent={JustifyContent.spaceBetween}>
@@ -437,6 +477,10 @@ export const MultichainBridgeQuoteCard = ({
             </Text>
           </Row>
         )}
+
+        <PriceImpactQuoteDetailsRow
+          onOpenPriceImpactWarningModal={onOpenPriceImpactWarningModal}
+        />
 
         {/* Recipient */}
         {isCrossChainBridge && selectedDestinationAccount && (

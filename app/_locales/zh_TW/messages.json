@@ -266,9 +266,6 @@
   "currencySymbolDefinition": {
     "message": "用來代表這個網路的貨幣的代碼。"
   },
-  "currentAccountNotConnected": {
-    "message": "您目前的帳戶並未連結"
-  },
   "currentExtension": {
     "message": "目前擴充功能頁面"
   },
@@ -407,10 +404,6 @@
   "fast": {
     "message": "快"
   },
-  "fileImportFail": {
-    "message": "檔案匯入失敗？點擊這裡！",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forbiddenIpfsGateway": {
     "message": "禁止使用的 IPFS Gateway：請指定一個 CID gateway"
   },
@@ -422,9 +415,6 @@
   },
   "gasLimit": {
     "message": "Gas 上限"
-  },
-  "gasLimitTooLow": {
-    "message": "Gas 上限至少為 21000"
   },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
@@ -707,10 +697,6 @@
   "passwordsDontMatch": {
     "message": "您所輸入的密碼不一致"
   },
-  "pastePrivateKey": {
-    "message": "請貼上您的私鑰字串：",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "等待處理"
   },
@@ -729,9 +715,6 @@
   "privateKey": {
     "message": "私鑰",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "警告：永遠不要公開這個私鑰。任何取得這把私鑰的人都可以竊取這個帳戶中的所有資產。"
   },
   "privateNetwork": {
     "message": "私有網路"
@@ -977,9 +960,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "遇到針對以太坊使用者的釣魚網域名稱的時候顯示警告"
-  },
-  "usedByClients": {
-    "message": "可用於各種不同的客戶端"
   },
   "viewOnCustomBlockExplorer": {
     "message": "在 $1 瀏覽",

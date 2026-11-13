@@ -7,9 +7,8 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
-import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
+import type { SupportedCurrency } from '@metamask/core-backend';
 import { fromIso8601DurationToPriceApiTimePeriod } from '../util';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { apiClient } from '../../../helpers/api-client';
@@ -49,6 +48,11 @@ type UseHistoricalPricesParams = {
   address: string;
   currency: string;
   timeRange: string;
+  /**
+   * Set false to keep the query idle, for callers that render this data only
+   * some of the time and should not pay for it otherwise.
+   */
+  enabled?: boolean;
 };
 
 /**
@@ -96,22 +100,12 @@ const transformPricesToPoints = (
   data: { prices?: number[][] } | undefined,
 ): Point[] => data?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
 
-type PricesClientFetch = {
-  fetch: (
-    baseUrl: string,
-    path: string,
-    options?: {
-      signal?: AbortSignal;
-      params?: Record<string, string | undefined>;
-    },
-  ) => Promise<{ prices?: [number, number][] }>;
-};
-
-/** TanStack Query key prefix — distinct from `@metamask/core-backend` `['prices', ...]` keys to avoid cache/queryFn mismatches. */
-const V3_HISTORICAL_PRICES_QUERY_KEY_ROOT = [
+/** Query key used when the asset cannot be resolved and the query is disabled. */
+const DISABLED_QUERY_KEY = [
   'metamask-extension',
   'assetHistoricalPrices',
   'v3',
+  'disabled',
 ] as const;
 
 /**
@@ -160,6 +154,7 @@ function getV3HistoricalPricesCaipParams(
  * @param param0.address - The address of the asset.
  * @param param0.currency - The currency of the asset.
  * @param param0.timeRange - The chart time range, as an ISO 8601 duration string ("P1D", "P1M", "P1Y", "P3YT45S", ...)
+ * @param param0.enabled - Set false to keep the query idle.
  * @returns The historical prices for the given asset and time range.
  */
 export const useHistoricalPrices = ({
@@ -167,6 +162,7 @@ export const useHistoricalPrices = ({
   address,
   currency,
   timeRange,
+  enabled = true,
 }: UseHistoricalPricesParams) => {
   const flatlinePlaceholder: { prices: [number, number][] } = {
     prices: [
@@ -185,61 +181,44 @@ export const useHistoricalPrices = ({
     [timeRange],
   );
 
-  const queryKey = useMemo(() => {
-    if (!v3Params) {
-      return [...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT, 'disabled'] as const;
-    }
-    return [
-      ...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT,
-      v3Params.caipChainId,
-      v3Params.assetType,
-      currency,
-      timePeriod,
-    ] as const;
-  }, [v3Params, currency, timePeriod]);
+  // The client's query options carry the canonical queryKey, queryFn (with
+  // the configured base URL), staleTime, and gcTime.
+  const queryOptions = useMemo(
+    () =>
+      v3Params
+        ? apiClient.prices.getV3HistoricalPricesQueryOptions(
+            v3Params.caipChainId,
+            v3Params.assetType,
+            {
+              currency: currency as SupportedCurrency,
+              timePeriod,
+            },
+          )
+        : null,
+    [v3Params, currency, timePeriod],
+  );
 
   const {
     data: prices = [],
     isFetching,
-    isInitialLoading,
+    isLoading,
     isFetchedAfterMount,
     isPlaceholderData,
   } = useQuery({
-    // @ts-expect-error - fix once extension in react-query v5
-    queryKey,
-    queryFn: async ({ queryKey: qk, signal }) => {
-      if (qk[3] === 'disabled') {
-        return { prices: [] as [number, number][] };
-      }
-      const caipChainId = qk[3] as CaipChainId;
-      const assetType = qk[4] as string;
-      const curr = qk[5] as string;
-      const period = qk[6] as string;
-      return (apiClient.prices as unknown as PricesClientFetch).fetch(
-        API_URLS.PRICES,
-        `/v3/historical-prices/${caipChainId}/${assetType}`,
-        {
-          signal,
-          params: {
-            vsCurrency: curr,
-            timePeriod: period,
-          },
-        },
-      );
-    },
-    enabled: Boolean(v3Params),
-    keepPreviousData: true,
-    placeholderData: flatlinePlaceholder,
+    queryKey: queryOptions?.queryKey ?? DISABLED_QUERY_KEY,
+    queryFn: queryOptions?.queryFn ?? (() => ({ prices: [] })),
+    staleTime: queryOptions?.staleTime,
+    gcTime: queryOptions?.gcTime,
+    enabled: enabled && Boolean(queryOptions),
+    placeholderData: (previousData) => previousData ?? flatlinePlaceholder,
     retry: false,
-    staleTime: STALE_TIMES.PRICES,
-    gcTime: GC_TIMES.DEFAULT,
     select: transformPricesToPoints,
   });
 
   const metadata = useMemo(() => deriveMetadata(prices), [prices]);
 
   return {
-    loading: isInitialLoading,
+    loading: isLoading,
     isFetching,
     isFetchedAfterMount,
     isPlaceholderData,

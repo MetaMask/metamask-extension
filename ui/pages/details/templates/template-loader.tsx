@@ -1,12 +1,12 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ApprovalDetails } from './approval-details';
-import { BridgeDetails } from './bridge-details/bridge-details';
-import { ConvertDetails } from './convert-details';
+import { BridgeDetails } from './bridge/bridge-details';
 import { DefaultDetails } from './default-details';
+import { MoneyAccountDetails } from './money/money-account-details';
 import { NftDetails } from './nft-details';
-import { PerpsDepositDetails } from './perps-deposit-details';
-import { PerpsDetails } from './perps-details';
+import { PerpsDepositDetails } from './perps/perps-deposit-details';
+import { PerpsDetails } from './perps/perps-details';
 import { RampOrderDetails } from './ramps/ramp-order-details';
 import { SendDetails } from './send-details';
 import { SwapDetails } from './swap-details';
@@ -31,8 +31,6 @@ export function TemplateLoader({ item }: Props) {
       return <SendDetails item={item} />;
     case 'bridge':
       return <BridgeDetails item={item} />;
-    case 'convert':
-      return <ConvertDetails item={item} />;
     case 'swap':
     case 'lendingDeposit':
     case 'lendingWithdrawal':
@@ -43,6 +41,9 @@ export function TemplateLoader({ item }: Props) {
     case 'revokeSpendingCap':
     case 'increaseSpendingCap':
       return <ApprovalDetails item={item} />;
+    case 'moneyAccountDeposit':
+    case 'moneyAccountWithdraw':
+      return <MoneyAccountDetails item={item} />;
     case 'perpsAddFunds':
       return <PerpsDepositDetails item={item} />;
     case 'perpsWithdraw':

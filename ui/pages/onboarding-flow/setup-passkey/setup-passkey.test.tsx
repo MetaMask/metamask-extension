@@ -14,7 +14,7 @@ import {
 import configureStore from '../../../store/store';
 import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import { forceUpdateMetamaskState } from '../../../store/actions';
-import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
+import SetupPasskeyContent from '../../../components/app/passkey-setup/setup-passkey-content';
 import SetupPasskey from './setup-passkey';
 import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './messenger';
 

@@ -37,7 +37,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         const accountDetailsModal = new AccountDetailsModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedData,
         );
@@ -48,7 +48,10 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await assertInfoValues(driver);
 
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await assertAccountDetailsMetrics(
           driver,
@@ -79,12 +82,15 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         const confirmation = new SignTypedData(driver);
         const testDapp = new TestDapp(driver);
 
-        await login(driver);
+        await login(driver, { waitForSignIn: true });
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedData,
         );
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         await assertSignatureRejectedMetrics({
           driver,

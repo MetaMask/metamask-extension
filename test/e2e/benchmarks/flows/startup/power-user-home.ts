@@ -8,7 +8,7 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import { userStorageHostMock } from '../../mocks/performance-mocks';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import {
@@ -20,11 +20,7 @@ import {
   WITH_STATE_POWER_USER,
   POWER_USER_NUM_BROWSER_LOADS,
 } from '../../utils/constants';
-import {
-  runPageLoadBenchmark,
-  collectWebVitals,
-  collectGarbageBetweenIterations,
-} from '../../utils';
+import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
@@ -42,7 +38,6 @@ async function measurePagePowerUser(
   await withFixtures(
     {
       title,
-      isBenchmark: true,
       fixtures: (
         await generateWalletState(WITH_STATE_POWER_USER, true)
       ).build(),
@@ -89,10 +84,6 @@ async function measurePagePowerUser(
           webVitalsRuns.push(await collectWebVitals(driver));
         } catch (error) {
           console.error(`Error collecting web vitals for ${pageName}:`, error);
-        }
-
-        if (i < pageLoads - 1) {
-          await collectGarbageBetweenIterations(driver);
         }
       }
     },

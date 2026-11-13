@@ -2,10 +2,18 @@
 // node is missing the navigator.locks API so we polyfill it for the tests
 import 'navigator.locks';
 import log from 'loglevel';
+import { it as jestIt } from '@jest/globals';
 
 import { captureException, captureMessage } from '../sentry';
 import { getManifestFlags } from '../manifestFlags';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  BROWSER_SHUTTING_DOWN_ERROR,
+  CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
+  INACCESSIBLE_DATABASE_ERROR,
+  MISSING_VAULT_ERROR,
+} from '../../constants/errors';
+import { StateCorruptionErrorType } from '../../constants/critical-error';
+import { StartupPhase } from '../telemetry/startup-phase';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -19,22 +27,34 @@ const MOCK_DATA = { config: { foo: 'bar' } };
 const WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
 
+const mockGetLastActivityContext = jest.fn(() => ({}));
+const mockHydrateLastActivity = jest.fn(() => Promise.resolve());
+const mockRecordWrite = jest.fn();
 const mockStoreSet = jest.fn();
 const mockStoreSetKeyValues = jest.fn();
+const mockStoreGetBytesInUseByKey = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
+
+jest.mock('../telemetry/last-activity', () => ({
+  getLastActivityContext: () => mockGetLastActivityContext(),
+  hydrateLastActivity: () => mockHydrateLastActivity(),
+  recordWrite: () => mockRecordWrite(),
+}));
 
 jest.mock('./extension-store', () => {
   return jest.fn().mockImplementation(() => {
     return {
       set: mockStoreSet,
       setKeyValues: mockStoreSetKeyValues,
+      getBytesInUseByKey: mockStoreGetBytesInUseByKey,
       get: mockStoreGet,
       reset: mockStoreReset,
     };
   });
 });
 jest.mock('loglevel', () => ({
+  debug: jest.fn(),
   error: jest.fn(),
   info: jest.fn(),
 }));
@@ -45,12 +65,39 @@ jest.mock('../sentry', () => ({
 jest.mock('../manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
 }));
+jest.mock('./utils/run-tracked-task', () => ({
+  runTrackedTask: jest.fn((_taskName: string, task: () => Promise<unknown>) =>
+    task(),
+  ),
+}));
 jest.mock('../trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),
   TraceName: {},
 }));
 const mockedCaptureException = jest.mocked(captureException);
+
+/**
+ * Existing failure tests only care that the persistence.error tag is unchanged.
+ * Activity fields are covered by the focused tests below.
+ *
+ * @param error - The error passed to captureException.
+ * @param persistenceError - The `persistence.error` tag value.
+ */
+function expectPersistenceErrorReport(
+  error: unknown,
+  persistenceError: string,
+) {
+  expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+    tags: expect.objectContaining({
+      'persistence.error': persistenceError,
+      'persistence.idle_status': expect.any(String),
+      'persistence.environment_type': expect.any(String),
+    }),
+    extra: expect.any(Object),
+    fingerprint: ['persistence-error', persistenceError],
+  });
+}
 const mockedCaptureMessage = jest.mocked(captureMessage);
 const mockedGetManifestFlags = jest.mocked(getManifestFlags);
 
@@ -96,11 +143,21 @@ describe('PersistenceManager', () => {
   beforeEach(() => {
     process.env.IN_TEST = 'true';
     jest.clearAllMocks();
+    mockStoreSet.mockReset();
+    mockStoreSetKeyValues.mockReset();
+    mockStoreGet.mockReset();
+    mockStoreReset.mockReset();
+    mockGetLastActivityContext.mockReturnValue({});
+    mockHydrateLastActivity.mockResolvedValue(undefined);
     mockedGetManifestFlags.mockReturnValue({});
-    manager = new PersistenceManager({ localStore: new ExtensionStore() });
+    manager = new PersistenceManager({
+      getPersistenceWriteSampleRate: () => 0,
+      localStore: new ExtensionStore(),
+    });
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
     jest.useRealTimers();
   });
 
@@ -126,13 +183,140 @@ describe('PersistenceManager', () => {
       const listener = jest.fn();
       expect(() => {
         manager.on('splitStateMigrationSucceeded', listener);
+        manager.on('splitStateWrite', listener);
         manager.on('writeRetryRecovered', listener);
         manager.off('splitStateMigrationSucceeded', listener);
+        manager.off('splitStateWrite', listener);
         manager.off('vaultCorruptionDetected', listener);
         manager.off('writeRetryRecovered', listener);
       }).not.toThrow();
     });
   });
+
+  jestIt.each(['set', 'persist'] as const)(
+    'tracks primary recovery in %s even when the backup write fails',
+    async (operation) => {
+      manager.storageKind = operation === 'set' ? 'data' : 'split';
+      manager.setMetadata({ version: 17 });
+      await manager.open();
+      jest.useFakeTimers();
+
+      const primaryError = new Error('primary write error');
+      const backupError = new Error('backup write error');
+      const primaryWrite =
+        operation === 'set' ? mockStoreSet : mockStoreSetKeyValues;
+      const backupWrite = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValue(backupError);
+      const write = async () => {
+        const keyringState = { vault: 'encrypted-vault' };
+        if (operation === 'set') {
+          return manager.set({
+            KeyringController: keyringState,
+          } as unknown as MetaMaskStateType);
+        }
+        manager.update('KeyringController', keyringState);
+        return manager.persist();
+      };
+
+      primaryWrite.mockRejectedValue(primaryError);
+      const firstWrite = write();
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await firstWrite).toStrictEqual([false, primaryError]);
+      expect(backupWrite).not.toHaveBeenCalled();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      primaryWrite.mockResolvedValue(undefined);
+      const secondWrite = write();
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await secondWrite).toStrictEqual([false, backupError]);
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': operation,
+            'persistence.successful_operation': operation,
+          },
+          fingerprint: [
+            'persistence-event',
+            'primary-write-recovered',
+            operation,
+          ],
+        },
+      );
+      expectPersistenceErrorReport(backupError, `${operation}-backup-failed`);
+
+      primaryWrite.mockRejectedValue(primaryError);
+      const thirdWrite = write();
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await thirdWrite).toStrictEqual([false, primaryError]);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(3);
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  jestIt.each(['primary', 'backup'] as const)(
+    'deduplicates %s failures across set and persist until migration recovers',
+    async (target) => {
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 17 });
+      await manager.open();
+      jest.useFakeTimers();
+
+      const state = {
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType;
+      const error = new Error(`${target} write error`);
+      const backupWrite = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockResolvedValue(undefined);
+      const failingWrite = target === 'primary' ? mockStoreSet : backupWrite;
+      failingWrite.mockRejectedValue(error);
+
+      const failedWrite = manager.set(state);
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await failedWrite).toStrictEqual([false, error]);
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      if (target === 'primary') {
+        mockStoreSetKeyValues.mockRejectedValue(error);
+      }
+      const failedMigration = manager.migrateToSplitState(state);
+      await Promise.all([
+        expect(failedMigration).rejects.toBe(error),
+        jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS),
+      ]);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+
+      jest.useRealTimers();
+      failingWrite.mockResolvedValue(undefined);
+      mockStoreSetKeyValues.mockResolvedValue(undefined);
+      manager.update('KeyringController', state.KeyringController);
+      expect(await manager.persist()).toStrictEqual([true, undefined]);
+
+      const recovery = `${target}-write-recovered`;
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': recovery,
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'persist',
+          },
+          fingerprint: ['persistence-event', recovery, 'set'],
+        },
+      );
+
+      manager.update('KeyringController', state.KeyringController);
+      await manager.persist();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+    },
+  );
 
   describe('set', () => {
     beforeEach(() => {
@@ -165,7 +349,7 @@ describe('PersistenceManager', () => {
     });
 
     it('retries store.set once before reporting success', async () => {
-      prepareForWriteRetry();
+      jest.useFakeTimers();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -199,7 +383,7 @@ describe('PersistenceManager', () => {
     });
 
     it('recovers after a simulated one-time storage failure', async () => {
-      prepareForWriteRetry();
+      jest.useFakeTimers();
       manager.setMetadata({ version: 10 });
       mockedGetManifestFlags.mockReturnValue({
         testing: { simulateStorageSetFailure: 'once' },
@@ -260,16 +444,17 @@ describe('PersistenceManager', () => {
       expect(firstPersistError).toBe(error);
       expect(secondResult).toBe(true);
       expect(secondPersistError).toBeUndefined();
-      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
-        tags: { 'persistence.error': 'set-failed' },
-        fingerprint: ['persistence-error', 'set-failed'],
-      });
+      expectPersistenceErrorReport(error, 'set-failed');
       expect(mockedCaptureMessage).toHaveBeenCalledWith(
         'Data persistence recovered after temporary failure',
         {
           level: 'info',
-          tags: { 'persistence.event': 'set-recovered' },
-          fingerprint: ['persistence-event', 'set-recovered'],
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'set',
+          },
+          fingerprint: ['persistence-event', 'primary-write-recovered', 'set'],
         },
       );
       expect(writeRetryRecoveredListener).not.toHaveBeenCalled();
@@ -347,10 +532,7 @@ describe('PersistenceManager', () => {
       await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
 
       const [result, persistError] = await setPromise;
-      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
-        tags: { 'persistence.error': 'set-failed' },
-        fingerprint: ['persistence-error', 'set-failed'],
-      });
+      expectPersistenceErrorReport(error, 'set-failed');
       expect(mockStoreSet).toHaveBeenCalledTimes(2);
       expect(result).toBe(false);
       expect(persistError).toBe(error);
@@ -376,6 +558,57 @@ describe('PersistenceManager', () => {
       await secondSetPromise;
 
       expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when the browser is shutting down', () => {
+      it('does not report the failure or flag a storage write error for the UI', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreSet
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError);
+
+        const setPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [result, setError] = await setPromise;
+
+        expect(result).toBe(false);
+        expect(setError).toBe(shutdownError);
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        // `#notifySetFailed` persists `storageWriteErrorType`, which would show
+        // the user a storage warning in their next session.
+        expect(onSetFailed).not.toHaveBeenCalled();
+      });
+
+      it('does not latch the duplicate-report flag, so a later real failure still reports', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        const realError = new Error('store.set error');
+        mockStoreSet
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(realError)
+          .mockRejectedValueOnce(realError);
+
+        const firstSetPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await firstSetPromise;
+
+        const secondSetPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await secondSetPromise;
+
+        // Had the shutdown error set `#dataPersistenceFailing`, this real
+        // failure would have been swallowed as a duplicate.
+        expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+        expectPersistenceErrorReport(realError, 'set-failed');
+      });
     });
 
     it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
@@ -425,8 +658,12 @@ describe('PersistenceManager', () => {
         'Data persistence recovered after temporary failure',
         {
           level: 'info',
-          tags: { 'persistence.event': 'set-recovered' },
-          fingerprint: ['persistence-event', 'set-recovered'],
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'set',
+          },
+          fingerprint: ['persistence-event', 'primary-write-recovered', 'set'],
         },
       );
     });
@@ -439,6 +676,54 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { working: true } });
 
       expect(mockedCaptureMessage).not.toHaveBeenCalled();
+    });
+
+    it('only tracks backup recovery after a backup write succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+
+      const error = new Error('backup set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValue(error);
+
+      const [firstResult, firstError] = await manager.set({
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType);
+
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expectPersistenceErrorReport(error, 'set-backup-failed');
+
+      backupSetSpy.mockResolvedValue(undefined);
+
+      const [secondResult, secondError] = await manager.set({
+        appState: { working: true },
+      });
+
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      const [thirdResult, thirdError] = await manager.set({
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType);
+
+      expect(thirdResult).toBe(true);
+      expect(thirdError).toBeUndefined();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'backup-write-recovered',
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'set',
+          },
+          fingerprint: ['persistence-event', 'backup-write-recovered', 'set'],
+        },
+      );
+      expect(backupSetSpy).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -553,9 +838,95 @@ describe('PersistenceManager', () => {
         },
       });
 
-      await expect(manager.get({ validateVault: true })).rejects.toThrow(
-        MISSING_VAULT_ERROR,
-      );
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: MISSING_VAULT_ERROR,
+        corruptionType: StateCorruptionErrorType.MissingVaultInDatabase,
+      });
+    });
+
+    it('does throw when validating state fails but has a backup', async () => {
+      mockStoreGet.mockRejectedValueOnce(new Error('storage failed'));
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: INACCESSIBLE_DATABASE_ERROR,
+        corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+      });
+    });
+
+    describe('when the browser is shutting down', () => {
+      /**
+       * Uses a non-empty backup so the tests prove vault recovery is
+       * deliberately skipped rather than merely unavailable.
+       *
+       * @returns The shutdown error the store was made to reject with.
+       */
+      function mockShutdownDuringRead(): Error {
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreGet.mockRejectedValueOnce(shutdownError);
+        jest.spyOn(manager, 'getBackup').mockResolvedValue({
+          KeyringController: { vault: 'vault' },
+        });
+        return shutdownError;
+      }
+
+      it('re-throws the original error rather than a vault error', async () => {
+        const shutdownError = mockShutdownDuringRead();
+
+        // Not MISSING_VAULT_ERROR: the vault is fine, the browser is closing.
+        // It still throws, so callers abort instead of treating the store as
+        // empty and regenerating initial state over the top of it.
+        await expect(manager.get({ validateVault: true })).rejects.toThrow(
+          shutdownError,
+        );
+      });
+
+      it('does not emit vaultCorruptionDetected', async () => {
+        mockShutdownDuringRead();
+        const vaultCorruptionListener = jest.fn();
+        manager.on('vaultCorruptionDetected', vaultCorruptionListener);
+
+        await expect(manager.get({ validateVault: true })).rejects.toThrow(
+          BROWSER_SHUTTING_DOWN_ERROR,
+        );
+
+        // Would otherwise send a false-positive `VaultCorruptionDetected`
+        // event to Segment for a browser that is merely closing.
+        expect(vaultCorruptionListener).not.toHaveBeenCalled();
+      });
+
+      it('still reports to Sentry, leaving the filtering to ignoreErrors', async () => {
+        const shutdownError = mockShutdownDuringRead();
+
+        await expect(manager.get({ validateVault: true })).rejects.toThrow(
+          BROWSER_SHUTTING_DOWN_ERROR,
+        );
+
+        // Deliberate: this class decides what the error means for application
+        // behaviour, not whether it is reportable. `ignoreErrors` in
+        // `setupSentry.js` drops the event.
+        expectPersistenceErrorReport(shutdownError, 'get-failed');
+      });
+
+      it('still triggers recovery for a genuine read failure', async () => {
+        mockStoreGet.mockRejectedValueOnce(
+          new Error(CORRUPTION_BLOCK_CHECKSUM_MISMATCH),
+        );
+        jest.spyOn(manager, 'getBackup').mockResolvedValue({
+          KeyringController: { vault: 'vault' },
+        });
+
+        await expect(
+          manager.get({ validateVault: true }),
+        ).rejects.toMatchObject({
+          message: INACCESSIBLE_DATABASE_ERROR,
+          corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+        });
+      });
     });
   });
 
@@ -575,7 +946,6 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,
@@ -593,7 +963,6 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,
@@ -603,6 +972,32 @@ describe('PersistenceManager', () => {
           version: 10,
         },
       });
+    });
+  });
+
+  describe('backup durability', () => {
+    it('requests strict durability for backup writes', async () => {
+      await manager.open();
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+      mockStoreSet.mockResolvedValueOnce(undefined);
+
+      // Spy after `open()` so only the backup write itself is captured.
+      const transactionSpy = jest.spyOn(IDBDatabase.prototype, 'transaction');
+
+      const [result] = await manager.set({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+      } as unknown as MetaMaskStateType);
+
+      expect(result).toBe(true);
+      expect(transactionSpy).toHaveBeenCalledTimes(1);
+      expect(transactionSpy.mock.calls[0]).toStrictEqual([
+        'store',
+        'readwrite',
+        { durability: 'strict' },
+      ]);
     });
   });
 
@@ -644,6 +1039,499 @@ describe('PersistenceManager', () => {
       /* eslint-enable jest/prefer-strict-equal */
       expect(passedMap.has('BarController')).toBe(true);
       expect(passedMap.get('BarController')).toBeUndefined();
+    });
+
+    it('reports the ambient emitting context and activity snapshot on write events', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'chrome-extension://abc/popup.html' } },
+        configurable: true,
+      });
+      try {
+        manager = new PersistenceManager({
+          getPersistenceWriteSampleRate: () => 1,
+          localStore: new ExtensionStore(),
+          random: () => 0,
+        });
+        manager.setCurrentActivityProvider(() => ({
+          fullscreenCount: 1,
+          notificationIsOpen: false,
+          popupCount: 2,
+          sidePanelCount: 3,
+          startupPhase: StartupPhase.SettingUpController,
+        }));
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', { foo: 'bar' });
+        const listener = jest.fn();
+        manager.on('splitStateWrite', listener);
+
+        await manager.persist();
+
+        expect(listener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            environmentType: 'popup',
+            currentActivity: {
+              fullscreenCount: 1,
+              notificationIsOpen: false,
+              popupCount: 2,
+              sidePanelCount: 3,
+              startupPhase: StartupPhase.SettingUpController,
+            },
+          }),
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
+    });
+
+    it('reports an empty activity when no provider is configured', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currentActivity: {},
+        }),
+      );
+    });
+
+    it('reports the unavailable snapshot and still emits when the provider throws', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setCurrentActivityProvider(() => {
+        throw new Error('provider failed');
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currentActivity: {},
+          totalBytes: expect.any(Number),
+          writeDurationMs: expect.any(Number),
+        }),
+      );
+    });
+
+    it('reports the last-activity snapshot on write events', async () => {
+      mockGetLastActivityContext.mockReturnValue({
+        msSinceLastAppStart: 200,
+        msSinceLastWrite: 100,
+        msSinceLastUiOpen: 300,
+        msSinceLastUiClosed: 400,
+        msSinceLastWindowEvent: 500,
+      });
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lastActivity: {
+            msSinceLastAppStart: 200,
+            msSinceLastWrite: 100,
+            msSinceLastUiOpen: 300,
+            msSinceLastUiClosed: 400,
+            msSinceLastWindowEvent: 500,
+          },
+        }),
+      );
+    });
+
+    it('reports an empty last-activity snapshot and still emits when getLastActivityContext throws', async () => {
+      mockGetLastActivityContext.mockImplementation(() => {
+        throw new Error('getLastActivityContext failed');
+      });
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lastActivity: {},
+        }),
+      );
+    });
+
+    it('calls recordWrite on every successful write, independent of sampling', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 0,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+
+      await manager.persist();
+
+      expect(mockRecordWrite).toHaveBeenCalledTimes(1);
+    });
+
+    it('snapshots last activity before recordWrite so msSinceLastWrite is the prior interval', async () => {
+      const callOrder: string[] = [];
+      mockGetLastActivityContext.mockImplementation(() => {
+        callOrder.push('getLastActivity');
+        return {
+          msSinceLastAppStart: 1_000,
+          msSinceLastWrite: 750,
+        };
+      });
+      mockRecordWrite.mockImplementation(() => {
+        callOrder.push('recordWrite');
+      });
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(callOrder).toStrictEqual(['getLastActivity', 'recordWrite']);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lastActivity: expect.objectContaining({
+            msSinceLastWrite: 750,
+          }),
+        }),
+      );
+    });
+
+    it('waits for last-activity hydrate before snapshotting a write', async () => {
+      let releaseHydrate: () => void = () => undefined;
+      const hydrateStarted = new Promise<void>((resolveStarted) => {
+        mockHydrateLastActivity.mockImplementation(
+          () =>
+            new Promise<void>((resolve) => {
+              releaseHydrate = resolve;
+              resolveStarted();
+            }),
+        );
+      });
+      mockGetLastActivityContext.mockReturnValue({
+        msSinceLastAppStart: 5_000,
+        serviceWorkerReloadCount: 2,
+      });
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      const persistPromise = manager.persist();
+      await hydrateStarted;
+
+      expect(mockGetLastActivityContext).not.toHaveBeenCalled();
+
+      releaseHydrate();
+      await persistPromise;
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lastActivity: {
+            msSinceLastAppStart: 5_000,
+            serviceWorkerReloadCount: 2,
+          },
+        }),
+      );
+    });
+
+    it('reports sampled write size, frequency, controllers, and idle status without state values', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'chrome-extension://abc/popup.html' } },
+        configurable: true,
+      });
+      try {
+        manager = new PersistenceManager({
+          getIsIdle: () => 'idle',
+          getPersistenceWriteSampleRate: () => 1,
+          localStore: new ExtensionStore(),
+          random: () => 0,
+        });
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', {
+          privateValue: 'controller state value',
+        });
+        manager.update('FooController', {
+          privateValue: 'latest controller state value',
+        });
+        manager.update('BarController', { enabled: true });
+        const listener = jest.fn();
+        manager.on('splitStateWrite', listener);
+
+        await manager.persist();
+
+        expect(listener).toHaveBeenCalledTimes(1);
+        const [event] = listener.mock.calls[0];
+        const fooControllerLength = JSON.stringify({
+          privateValue: 'latest controller state value',
+        }).length;
+        const barControllerLength = JSON.stringify({ enabled: true }).length;
+        expect(event).toStrictEqual({
+          currentActivity: {},
+          lastActivity: {},
+          bytesByController: new Map([
+            ['BarController', barControllerLength],
+            ['FooController', fooControllerLength],
+          ]),
+          coalescedUpdates: 3,
+          environmentType: 'popup',
+          idleStatus: 'idle',
+          measurementDurationMs: expect.any(Number),
+          sampleRate: 1,
+          sizeMeasurementSource: 'json_string_length_estimate',
+          totalBytes: barControllerLength + fooControllerLength,
+          writeDurationMs: expect.any(Number),
+        });
+        expect(JSON.stringify(event)).not.toContain(
+          'latest controller state value',
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
+    });
+
+    it('calls getIsIdle with the current and last activity snapshots', async () => {
+      mockGetLastActivityContext.mockReturnValue({ msSinceLastAppStart: 42 });
+      const getIsIdle = jest.fn(() => 'idle' as const);
+      manager = new PersistenceManager({
+        getIsIdle,
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setCurrentActivityProvider(() => ({
+        startupPhase: StartupPhase.Initialized,
+      }));
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(getIsIdle).toHaveBeenCalledWith(
+        { startupPhase: StartupPhase.Initialized },
+        { msSinceLastAppStart: 42 },
+      );
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currentActivity: { startupPhase: StartupPhase.Initialized },
+          lastActivity: { msSinceLastAppStart: 42 },
+          idleStatus: 'idle',
+        }),
+      );
+    });
+
+    it('uses exact storage byte measurements when available', async () => {
+      mockStoreGetBytesInUseByKey.mockResolvedValue(
+        new Map([
+          ['BarController', 11],
+          ['FooController', 29],
+        ]),
+      );
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      manager.update('BarController', { bar: 'baz' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(mockStoreGetBytesInUseByKey).toHaveBeenCalledWith([
+        'FooController',
+        'BarController',
+      ]);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bytesByController: new Map([
+            ['FooController', 29],
+            ['BarController', 11],
+          ]),
+          sizeMeasurementSource: 'storage_get_bytes_in_use',
+          totalBytes: 40,
+        }),
+      );
+    });
+
+    it('falls back to string length estimates when getBytesInUseByKey returns an empty Map', async () => {
+      mockStoreGetBytesInUseByKey.mockResolvedValue(new Map());
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sizeMeasurementSource: 'json_string_length_estimate',
+        }),
+      );
+    });
+
+    it('does not serialize write measurements when the write is not sampled', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const stringifySpy = jest.spyOn(JSON, 'stringify');
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).not.toHaveBeenCalled();
+      expect(mockStoreGetBytesInUseByKey).not.toHaveBeenCalled();
+      expect(stringifySpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          FooController: expect.anything(),
+        }),
+      );
+      stringifySpy.mockRestore();
+    });
+
+    it('falls back to string length estimates when exact storage byte measurement fails', async () => {
+      mockStoreGetBytesInUseByKey.mockRejectedValue(
+        new Error('getBytesInUse failed'),
+      );
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bytesByController: new Map([
+            ['FooController', JSON.stringify({ foo: 'bar' }).length],
+          ]),
+          sizeMeasurementSource: 'json_string_length_estimate',
+          totalBytes: JSON.stringify({ foo: 'bar' }).length,
+        }),
+      );
+    });
+
+    it('reports unknown idle status when no idle source is configured', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({ idleStatus: 'unknown' }),
+      );
+    });
+
+    it('reports unknown idle status and still emits when getIsIdle throws', async () => {
+      manager = new PersistenceManager({
+        getIsIdle: () => {
+          throw new Error('idle check failed');
+        },
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      const [result, persistError] = await manager.persist();
+
+      expect(result).toBe(true);
+      expect(persistError).toBeUndefined();
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({ idleStatus: 'unknown' }),
+      );
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+      expect(
+        (mockStoreSetKeyValues.mock.calls[0]?.[0] as Map<string, unknown>).has(
+          'FooController',
+        ),
+      ).toBe(true);
+
+      // A successful write must not be merged back into pending pairs.
+      await manager.persist();
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
+      expect(
+        (mockStoreSetKeyValues.mock.calls[1]?.[0] as Map<string, unknown>).has(
+          'FooController',
+        ),
+      ).toBe(false);
     });
 
     it('retries store.setKeyValues once before reporting success', async () => {
@@ -723,16 +1611,21 @@ describe('PersistenceManager', () => {
       expect(firstPersistError).toBe(error);
       expect(secondResult).toBe(true);
       expect(secondPersistError).toBeUndefined();
-      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
-        tags: { 'persistence.error': 'persist-failed' },
-        fingerprint: ['persistence-error', 'persist-failed'],
-      });
+      expectPersistenceErrorReport(error, 'persist-failed');
       expect(mockedCaptureMessage).toHaveBeenCalledWith(
         'Data persistence recovered after temporary failure',
         {
           level: 'info',
-          tags: { 'persistence.event': 'persist-recovered' },
-          fingerprint: ['persistence-event', 'persist-recovered'],
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': 'persist',
+            'persistence.successful_operation': 'persist',
+          },
+          fingerprint: [
+            'persistence-event',
+            'primary-write-recovered',
+            'persist',
+          ],
         },
       );
       expect(writeRetryRecoveredListener).not.toHaveBeenCalled();
@@ -818,10 +1711,7 @@ describe('PersistenceManager', () => {
 
       const [result, persistError] = await persistPromise;
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
-        tags: { 'persistence.error': 'persist-failed' },
-        fingerprint: ['persistence-error', 'persist-failed'],
-      });
+      expectPersistenceErrorReport(error, 'persist-failed');
       expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
       expect(result).toBe(false);
       expect(persistError).toBe(error);
@@ -863,6 +1753,88 @@ describe('PersistenceManager', () => {
       expect(retryMap.get('meta')).toEqual({ version: 10 });
       expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
       /* eslint-enable jest/prefer-strict-equal */
+    });
+
+    describe('when the browser is shutting down', () => {
+      it('does not report the failure or flag a storage write error for the UI', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        manager.update('FooController', { foo: 'bar' });
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreSetKeyValues
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError);
+
+        const persistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [result, persistError] = await persistPromise;
+
+        expect(result).toBe(false);
+        expect(persistError).toBe(shutdownError);
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        // `#notifySetFailed` persists `storageWriteErrorType`, which would show
+        // the user a storage warning in their next session.
+        expect(onSetFailed).not.toHaveBeenCalled();
+      });
+
+      it('does not latch the duplicate-report flag, so a later real failure still reports', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        manager.update('FooController', { foo: 'bar' });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        const realError = new Error('store.setKeyValues error');
+        mockStoreSetKeyValues
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(realError)
+          .mockRejectedValueOnce(realError);
+
+        const firstPersistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await firstPersistPromise;
+
+        const secondPersistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await secondPersistPromise;
+
+        // Had the shutdown error set `#dataPersistenceFailing`, this real
+        // failure would have been swallowed as a duplicate.
+        expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+        expectPersistenceErrorReport(realError, 'persist-failed');
+      });
+
+      it('keeps pending pairs so the next write can retry them', async () => {
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10 });
+        manager.update('FooController', { foo: 'bar' });
+
+        const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+        mockStoreSetKeyValues
+          .mockRejectedValueOnce(shutdownError)
+          .mockRejectedValueOnce(shutdownError)
+          .mockResolvedValueOnce(undefined);
+
+        const persistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await persistPromise;
+
+        // The early return must not skip the pending-pairs restore that runs
+        // before it, or the update would be lost.
+        await manager.persist();
+
+        const retriedPairs = mockStoreSetKeyValues.mock.calls.at(
+          -1,
+        )?.[0] as Map<string, unknown>;
+        // Spread first: the value has been through `structuredClone`, so its
+        // prototype comes from another realm.
+        expect({
+          ...(retriedPairs.get('FooController') as object),
+        }).toStrictEqual({ foo: 'bar' });
+      });
     });
 
     it('captures exception only once if store.setKeyValues throws multiple times', async () => {
@@ -910,6 +1882,55 @@ describe('PersistenceManager', () => {
 
       expect(mockedCaptureException).toHaveBeenCalledTimes(2);
     });
+
+    it('only tracks backup recovery after a backup write succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+
+      const error = new Error('backup set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValue(error);
+
+      const [firstResult, firstError] = await manager.persist();
+
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expectPersistenceErrorReport(error, 'persist-backup-failed');
+
+      backupSetSpy.mockResolvedValue(undefined);
+
+      manager.update('FooController', { foo: 'bar' });
+      const [secondResult, secondError] = await manager.persist();
+
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      const [thirdResult, thirdError] = await manager.persist();
+
+      expect(thirdResult).toBe(true);
+      expect(thirdError).toBeUndefined();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'backup-write-recovered',
+            'persistence.failed_operation': 'persist',
+            'persistence.successful_operation': 'persist',
+          },
+          fingerprint: [
+            'persistence-event',
+            'backup-write-recovered',
+            'persist',
+          ],
+        },
+      );
+      expect(backupSetSpy).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('cleanUpMostRecentRetrievedState', () => {
@@ -947,19 +1968,23 @@ describe('PersistenceManager', () => {
         });
       navigator.locks.request = mockLocksRequest;
 
-      // should be saved
-      const one = manager.set({ appState: { test: 1 } });
-      // should be tossed
-      const two = manager.set({ appState: { test: 2 } });
-      // should be saved
-      const three = manager.set({ appState: { test: 3 } });
+      try {
+        // should be saved
+        const one = manager.set({ appState: { test: 1 } });
+        // should be tossed
+        const two = manager.set({ appState: { test: 2 } });
+        // should be saved
+        const three = manager.set({ appState: { test: 3 } });
 
-      await Promise.race([one, two, three]);
+        await Promise.race([one, two, three]);
 
-      // lock should be requested 3 times
-      expect(mockLocksRequest).toHaveBeenCalledTimes(3);
-      // but the mockCallback should only be called twice!
-      expect(mockCallback).toHaveBeenCalledTimes(2);
+        // lock should be requested 3 times
+        expect(mockLocksRequest).toHaveBeenCalledTimes(3);
+        // but the mockCallback should only be called twice!
+        expect(mockCallback).toHaveBeenCalledTimes(2);
+      } finally {
+        navigator.locks.request = request;
+      }
     });
   });
 
@@ -1036,6 +2061,276 @@ describe('PersistenceManager', () => {
       expect(mockedCaptureException).not.toHaveBeenCalled();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
       expect(consoleErrorSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('persistence error activity context', () => {
+    async function withPopup<Result>(
+      run: () => Promise<Result>,
+    ): Promise<Result> {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'chrome-extension://abc/popup.html' } },
+        configurable: true,
+      });
+      try {
+        return await run();
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
+    }
+
+    it('attaches idle status and write details when persist fails', async () => {
+      await withPopup(async () => {
+        manager = new PersistenceManager({
+          getIsIdle: () => 'active_recent_ui_interaction',
+          getPersistenceWriteSampleRate: () => 0,
+          localStore: new ExtensionStore(),
+        });
+        manager.setCurrentActivityProvider(() => ({
+          popupCount: 1,
+          startupPhase: StartupPhase.Initialized,
+        }));
+        mockGetLastActivityContext.mockReturnValue({
+          msSinceLastUiInteraction: 100,
+        });
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', { foo: 'secret-value' });
+        manager.update('BarController', { bar: true });
+
+        const error = new Error('store.setKeyValues error');
+        mockStoreSetKeyValues.mockRejectedValue(error);
+        const persistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [didPersist, persistError] = await persistPromise;
+
+        expect(didPersist).toBe(false);
+        expect(persistError).toBe(error);
+        expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+          tags: {
+            'persistence.error': 'persist-failed',
+            'persistence.environment_type': 'popup',
+            'persistence.idle_status': 'active_recent_ui_interaction',
+          },
+          extra: expect.objectContaining({
+            'persistence.coalesced_updates': 2,
+            'persistence.controller_count': 2,
+            'persistence.controllers': 'FooController,BarController',
+            'persistence.ms_since_ui_interaction': 100,
+            'persistence.startup_phase': StartupPhase.Initialized,
+            'persistence.ui_count.popup': 1,
+          }),
+          fingerprint: ['persistence-error', 'persist-failed'],
+        });
+        expect(JSON.stringify(mockedCaptureException.mock.calls)).not.toContain(
+          'secret-value',
+        );
+      });
+    });
+
+    it('attaches write details when cloning the pending writes fails', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 0,
+        localStore: new ExtensionStore(),
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: true });
+      manager.update('BarController', { bar: true });
+
+      const error = new DOMException(
+        'Data cannot be cloned, out of memory.',
+        'DataCloneError',
+      );
+      jest.spyOn(globalThis, 'structuredClone').mockImplementationOnce(() => {
+        throw error;
+      });
+      const [didPersist] = await manager.persist();
+
+      expect(didPersist).toBe(false);
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          extra: expect.objectContaining({
+            'persistence.coalesced_updates': 2,
+            'persistence.controller_count': 2,
+            'persistence.controllers': 'FooController,BarController',
+          }),
+        }),
+      );
+    });
+
+    it('attaches controller keys when set fails', async () => {
+      await withPopup(async () => {
+        manager = new PersistenceManager({
+          getIsIdle: () => 'idle',
+          getPersistenceWriteSampleRate: () => 0,
+          localStore: new ExtensionStore(),
+        });
+        prepareForWriteRetry();
+        manager.storageKind = 'data';
+        manager.setMetadata({ version: 10 });
+
+        const error = new Error('store.set error');
+        mockStoreSet.mockRejectedValue(error);
+        const setPromise = manager.set({
+          KeyringController: { vault: 'encrypted-vault' },
+        } as unknown as MetaMaskStateType);
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [didSet, setError] = await setPromise;
+
+        expect(didSet).toBe(false);
+        expect(setError).toBe(error);
+        expect(mockedCaptureException).toHaveBeenCalledWith(
+          error,
+          expect.objectContaining({
+            extra: expect.objectContaining({
+              'persistence.controller_count': 1,
+              'persistence.controllers': 'KeyringController',
+            }),
+            tags: expect.objectContaining({
+              'persistence.error': 'set-failed',
+              'persistence.environment_type': 'popup',
+              'persistence.idle_status': 'idle',
+            }),
+          }),
+        );
+        expect(JSON.stringify(mockedCaptureException.mock.calls)).not.toContain(
+          'encrypted-vault',
+        );
+      });
+    });
+
+    it('attaches activity context when a read fails', async () => {
+      await withPopup(async () => {
+        manager = new PersistenceManager({
+          getIsIdle: () => 'idle',
+          localStore: new ExtensionStore(),
+        });
+        manager.setCurrentActivityProvider(() => ({
+          startupPhase: StartupPhase.Initialized,
+        }));
+        mockGetLastActivityContext.mockReturnValue({ msSinceLastAppStart: 42 });
+
+        const error = new Error('store.get error');
+        mockStoreGet.mockRejectedValueOnce(error);
+
+        await expect(manager.get({ validateVault: false })).rejects.toThrow(
+          error,
+        );
+
+        expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+          tags: {
+            'persistence.error': 'get-failed',
+            'persistence.environment_type': 'popup',
+            'persistence.idle_status': 'idle',
+          },
+          extra: {
+            'persistence.ms_since_app_start': 42,
+            'persistence.startup_phase': StartupPhase.Initialized,
+          },
+          fingerprint: ['persistence-error', 'get-failed'],
+        });
+      });
+    });
+
+    it('still reports a write failure when getIsIdle throws', async () => {
+      await withPopup(async () => {
+        manager = new PersistenceManager({
+          getIsIdle: () => {
+            throw new Error('idle check failed');
+          },
+          getPersistenceWriteSampleRate: () => 0,
+          localStore: new ExtensionStore(),
+        });
+        prepareForWriteRetry();
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', { foo: 'bar' });
+
+        const error = new Error('store.setKeyValues error');
+        mockStoreSetKeyValues.mockRejectedValue(error);
+        const persistPromise = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        await persistPromise;
+
+        expect(mockedCaptureException).toHaveBeenCalledWith(
+          error,
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.error': 'persist-failed',
+              'persistence.idle_status': 'unknown',
+            }),
+          }),
+        );
+      });
+    });
+
+    it('still reports a read failure when getIsIdle throws', async () => {
+      await withPopup(async () => {
+        manager = new PersistenceManager({
+          getIsIdle: () => {
+            throw new Error('idle check failed');
+          },
+          localStore: new ExtensionStore(),
+        });
+        const error = new Error('store.get error');
+        mockStoreGet.mockRejectedValueOnce(error);
+
+        await expect(manager.get({ validateVault: false })).rejects.toThrow(
+          error,
+        );
+
+        expect(mockedCaptureException).toHaveBeenCalledWith(
+          error,
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.error': 'get-failed',
+              'persistence.idle_status': 'unknown',
+            }),
+          }),
+        );
+      });
+    });
+
+    it('reports unknown environment type when location href is malformed', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'not a url' } },
+        configurable: true,
+      });
+      try {
+        manager = new PersistenceManager({
+          getIsIdle: () => 'idle',
+          localStore: new ExtensionStore(),
+        });
+        const error = new Error('store.get error');
+        mockStoreGet.mockRejectedValueOnce(error);
+
+        await expect(manager.get({ validateVault: false })).rejects.toThrow(
+          error,
+        );
+
+        expect(mockedCaptureException).toHaveBeenCalledWith(
+          error,
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.error': 'get-failed',
+              'persistence.environment_type': 'unknown',
+              'persistence.idle_status': 'idle',
+            }),
+          }),
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
     });
   });
 });

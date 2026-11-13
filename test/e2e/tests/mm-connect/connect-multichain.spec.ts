@@ -6,6 +6,7 @@ import {
   SOLANA_MAINNET_SCOPE,
   WINDOW_TITLES,
 } from '../../constants';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
@@ -152,7 +153,10 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
           // Handle the signing dialog in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signingConfirmation = new Confirmation(driver);
-          await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await signingConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Back in test dapp: validate result is a hex signature string
           await testDapp.switchTo();
@@ -200,9 +204,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // eth_chainId must return the hex chain ID specific to each scope
         const expectedChainIds: [string, string][] = [
-          [MM_CONNECT_EVM_CHAINS.LOCALHOST, '0x539'],
-          [MM_CONNECT_EVM_CHAINS.POLYGON, '0x89'],
-          [MM_CONNECT_EVM_CHAINS.LINEA, '0xe708'],
+          [MM_CONNECT_EVM_CHAINS.LOCALHOST, CHAIN_IDS.LOCALHOST],
+          [MM_CONNECT_EVM_CHAINS.POLYGON, CHAIN_IDS.POLYGON],
+          [MM_CONNECT_EVM_CHAINS.LINEA, CHAIN_IDS.LINEA_MAINNET],
         ];
 
         for (const [chainId, expectedHex] of expectedChainIds) {

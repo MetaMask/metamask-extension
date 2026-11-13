@@ -5,6 +5,7 @@ import {
   Category,
   LEDGER_ERROR_MAPPINGS,
   QR_WALLET_ERROR_MAPPINGS,
+  KEYRING_ERROR_MAPPINGS,
 } from '@metamask/hw-wallet-sdk';
 import { HardwareWalletType } from './types';
 
@@ -83,6 +84,7 @@ const ERROR_PROPERTIES_MAP = (() => {
   // Extract from Ledger
   extractFromMappings(LEDGER_ERROR_MAPPINGS);
   extractFromMappings(QR_WALLET_ERROR_MAPPINGS);
+  extractFromMappings(KEYRING_ERROR_MAPPINGS);
 
   return map;
 })();

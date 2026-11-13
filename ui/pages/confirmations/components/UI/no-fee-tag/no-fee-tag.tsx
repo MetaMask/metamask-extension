@@ -16,8 +16,34 @@ export function NoFeeTag({ testId = 'no-fee-tag' }: NoFeeTagProps = {}) {
   const t = useI18nContext();
 
   return (
-    <Tag severity={TagSeverity.Info} data-testid={testId}>
+    <Tag
+      severity={TagSeverity.Info}
+      data-testid={testId}
+      className="shrink-0 whitespace-nowrap"
+    >
       {t('noFee')}
+    </Tag>
+  );
+}
+
+/**
+ * Info tag shown next to Money account when a Perps deposit has no deposit fee.
+ *
+ * @param props - Component props.
+ * @param props.testId - Optional test id override.
+ */
+export function NoDepositFeeTag({
+  testId = 'no-deposit-fee-tag',
+}: NoFeeTagProps = {}) {
+  const t = useI18nContext();
+
+  return (
+    <Tag
+      severity={TagSeverity.Info}
+      data-testid={testId}
+      className="shrink-0 whitespace-nowrap"
+    >
+      {t('noDepositFee')}
     </Tag>
   );
 }

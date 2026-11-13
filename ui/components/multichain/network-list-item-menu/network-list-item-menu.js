@@ -1,15 +1,12 @@
 import React, { useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Box,
-  IconName,
-  ModalFocus,
   Popover,
   PopoverPosition,
   PopoverRole,
-  Text,
-} from '../../component-library';
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Box, IconName, ModalFocus, Text } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
 
 export const NetworkListItemMenu = ({
@@ -111,13 +108,12 @@ export const NetworkListItemMenu = ({
 
   return (
     <Popover
-      className="multichain-network-list-item-menu__popover"
+      className="multichain-network-list-item-menu__popover p-0"
       onClickOutside={onClose}
       referenceElement={anchorElement}
       role={PopoverRole.Dialog}
       position={PopoverPosition.BottomEnd}
       offset={[8, 0]}
-      padding={0}
       isOpen={isOpen}
       isPortal
       preventOverflow

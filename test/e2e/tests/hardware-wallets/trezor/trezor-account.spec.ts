@@ -3,11 +3,12 @@ import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import AccountDetailsPage from '../../../page-objects/pages/accounts/details-page';
 import { login } from '../../../page-objects/flows/login.flow';
+import { openConnectHardwareWallet } from '../../../page-objects/flows/add-wallet.flow';
 import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
 
 describe('Trezor Hardware', function () {
@@ -18,7 +19,7 @@ describe('Trezor Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -26,7 +27,7 @@ describe('Trezor Hardware', function () {
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
@@ -65,14 +66,14 @@ describe('Trezor Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
+        await openConnectHardwareWallet(driver);
 
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();

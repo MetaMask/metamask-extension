@@ -1,9 +1,14 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import type { V1TransactionByHashResponse } from '@metamask/core-backend';
-import { type CaipChainId, hexToNumber } from '@metamask/utils';
+import { skipToken, useQuery } from '@tanstack/react-query';
+import type { V5TransactionRecord } from '@metamask/core-backend';
+import {
+  isCaipChainId,
+  KnownCaipNamespace,
+  parseCaipChainId,
+  toCaipAccountId,
+} from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
+import { selectEvmAddress } from '#ui/selectors/activity';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { apiClient } from '../../helpers/api-client';
 
@@ -17,24 +22,26 @@ export function useTransactionQuery({
   txHash: string | undefined;
 }) {
   const locale = useSelector(getIntlLocale);
-  const numericChainId = useMemo(() => {
-    if (!chainId) {
+  const selectedAddress = useSelector(selectEvmAddress);
+
+  const accountId = useMemo(() => {
+    if (!chainId || !selectedAddress || !isCaipChainId(chainId)) {
       return undefined;
     }
+    const { reference } = parseCaipChainId(chainId);
+    return toCaipAccountId(
+      KnownCaipNamespace.Eip155,
+      reference,
+      selectedAddress.toLowerCase(),
+    );
+  }, [chainId, selectedAddress]);
 
-    try {
-      return hexToNumber(convertCaipToHexChainId(chainId as CaipChainId));
-    } catch {
-      return undefined;
-    }
-  }, [chainId]);
-
-  const queryOptions = apiClient.accounts.getV1TransactionByHashQueryOptions(
-    numericChainId ?? 1,
+  const queryOptions = apiClient.accounts.getV5TransactionByIdQueryOptions(
+    accountId ?? toCaipAccountId(KnownCaipNamespace.Eip155, '0', '0x0'),
     txHash ?? '',
     {
       includeLogs: false,
-      includeValueTransfers: true,
+      includeMiscOperations: false,
       includeTxMetadata: true,
       lang: locale.split('-')[0],
     },
@@ -42,10 +49,9 @@ export function useTransactionQuery({
 
   return useQuery({
     ...queryOptions,
-    // @ts-expect-error apiClient returns v5 types, repo still in v4
-    enabled: enabled && Boolean(numericChainId && txHash),
+    queryFn: enabled && accountId && txHash ? queryOptions.queryFn : skipToken,
+    enabled: enabled && Boolean(accountId && txHash),
     retry: false,
-    select: (response: unknown) =>
-      (response as unknown as { data: V1TransactionByHashResponse }).data,
+    select: (response): V5TransactionRecord => response.data,
   });
 }

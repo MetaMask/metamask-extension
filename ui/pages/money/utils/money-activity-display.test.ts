@@ -4,10 +4,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { IconName } from '@metamask/design-system-react';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import {
   getMoneyActivityDisplayInfo,
+  getAccountsApiActivityDisplayInfo,
   type MoneyActivityTranslate,
 } from './money-activity-display';
 
@@ -94,7 +96,7 @@ describe('getMoneyActivityDisplayInfo', () => {
       primaryAmount: '-0.00 mUSD',
       fiatAmount: '-$0.00',
       isIncoming: false,
-      icon: IconName.SwapHorizontal,
+      icon: IconName.Arrow2UpRight,
       status: 'failed',
     });
   });
@@ -133,5 +135,116 @@ describe('getMoneyActivityDisplayInfo', () => {
     expect(display.description).toBe('From: 0x12345...45678');
     expect(display.primaryAmount).toBe('+1.00 mUSD');
     expect(display.fiatAmount).toBe('+$1.00');
+  });
+
+  it('renders requiredAssets as the mUSD amount for a live deposit', () => {
+    const display = getMoneyActivityDisplayInfo(
+      makeTx({
+        type: TransactionType.moneyAccountDeposit,
+        requiredAssets: [
+          {
+            address: MUSD_TOKEN_ADDRESS,
+            amount: '2500000',
+          },
+        ],
+      }),
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('+2.50 mUSD');
+    expect(display.fiatAmount).toBe('+$2.50');
+  });
+});
+
+describe('getAccountsApiActivityDisplayInfo', () => {
+  it('renders a card purchase as a signed outflow with a Card subtitle', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      {
+        kind: 'card',
+        hash: '0xabc',
+        time: 1,
+        chainId: '0x8f',
+        token: {
+          address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+          symbol: 'mUSD',
+          decimals: 6,
+        },
+        amount: '1500000',
+        paidTo: '0xdef',
+      },
+      t,
+    );
+
+    expect(display).toMatchObject({
+      label: messages.moneyActivityPurchase.message,
+      description: messages.moneyActivityCard.message,
+      primaryAmount: '-1.50 mUSD',
+      fiatAmount: '-$1.50',
+      isIncoming: false,
+      icon: IconName.Card,
+      status: 'confirmed',
+    });
+  });
+
+  const cardActivity = {
+    kind: 'card',
+    hash: '0xabc',
+    time: 1,
+    chainId: '0x8f',
+    token: {
+      address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      symbol: 'vmUSD',
+      decimals: 6,
+    },
+    amount: '1000000',
+    paidTo: '0xdef',
+  } as const;
+
+  it('renders the historical valuation', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      {
+        ...cardActivity,
+        displayAmount: { type: 'historical', value: '1017488', decimals: 6 },
+      },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('-1.02 mUSD');
+    expect(display.fiatAmount).toBe('-$1.02');
+  });
+
+  it('marks the approximate valuation', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      {
+        ...cardActivity,
+        displayAmount: { type: 'approximate', value: '1500000', decimals: 6 },
+      },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('≈-1.50 mUSD');
+    expect(display.fiatAmount).toBe('≈-$1.50');
+  });
+
+  it('renders a placeholder while the valuation is pending', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      { ...cardActivity, displayAmount: { type: 'pending' } },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('—');
+    expect(display.fiatAmount).toBe('');
+  });
+
+  it('renders the unavailable copy when no valuation exists', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      { ...cardActivity, displayAmount: { type: 'unavailable' } },
+      t,
+    );
+
+    expect(display.primaryAmount).toBe(
+      messages.moneyActivityAmountUnavailable.message,
+    );
+    expect(display.fiatAmount).toBe('');
   });
 });

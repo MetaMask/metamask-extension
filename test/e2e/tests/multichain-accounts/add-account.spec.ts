@@ -3,18 +3,19 @@ import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
-import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransaction } from '../../page-objects/flows/transaction.flow';
 import {
   login,
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
+import { importAccountWithPrivateKey } from '../../page-objects/flows/add-wallet.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
 import { Driver } from '../../webdriver/driver';
 import {
   getMainnet25EthAssetsControllerPatch,
@@ -28,7 +29,7 @@ const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
 const CUSTOM_ACCOUNT_NAME = 'Custom 1';
 const TEST_PRIVATE_KEY =
   '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
-// Matches mock-e2e default `ethConversionInUsd`; 25 ETH × 3010 = $75,250.00
+// Matches mock-e2e `DEFAULT_ETH_USD_PRICE`; 25 ETH × 3010 = $75,250.00
 const ETH_USD_CONVERSION_RATE = 3010;
 
 const importedAccount = {
@@ -72,14 +73,15 @@ describe('Add account', function () {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        await sendRedesignedTransactionToAccount({
+        await sendTransaction({
           driver,
-          recipientAccount: SECOND_ACCOUNT_NAME,
+          recipientName: SECOND_ACCOUNT_NAME,
           amount: '2.8',
         });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('-2.8 ETH');
         await activityTab.waitPendingTxToNotBeVisible();
@@ -144,8 +146,9 @@ describe('Add account', function () {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
+        await importAccountWithPrivateKey(driver, TEST_PRIVATE_KEY);
 
+        await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: importedAccount.name,
@@ -215,8 +218,10 @@ describe('Add account', function () {
         await accountDetailsPage.navigateBack();
 
         // Create 3rd account with private key
-        await accountListPage.addNewImportedAccount(testPrivateKey);
+        await importAccountWithPrivateKey(driver, testPrivateKey);
 
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
@@ -278,13 +283,6 @@ describe('Add account', function () {
         await accountListPage.switchToAccount(CUSTOM_ACCOUNT_NAME);
 
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
-
-        // Wait for the runtime-created non-EVM (Solana/Bitcoin) accounts to finish
-        // loading before locking. Otherwise account creation is still in-flight in
-        // the background when the wallet locks, which slows the service-worker restart
-        // and makes the post-lock navigate time out waiting for `.controller-loaded`.
-        const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Lock and unlock wallet
         await lockAndWaitForLoginPage(driver);

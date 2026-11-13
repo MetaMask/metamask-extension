@@ -11,6 +11,7 @@ import {
   convertTokenAmountToFiat,
   formatCurrencyAmount,
   formatTokenAmount,
+  getNativeReserve,
   readMmFee,
 } from './quote';
 
@@ -135,6 +136,29 @@ describe('Bridge quote utils', () => {
   it('converts amounts and handles unavailable token precision', () => {
     expect(convertFiatToTokenAmount('3.09', 2.5, 6)).toBe('1.236');
     expect(convertFiatToTokenAmount('3.09', 2.5, undefined)).toBeUndefined();
+  });
+
+  it('returns the quote-carried native reserve', () => {
+    const asset = getNativeAssetForChainId(ChainId.STELLAR);
+    const quote = {
+      quote: {
+        feeData: {
+          reserve: [
+            {
+              amount: '15000000',
+              normalizedAmount: '1.5',
+              asset,
+            },
+          ],
+        },
+      },
+    } as unknown as QuoteResponse;
+
+    expect(getNativeReserve(quote)).toMatchObject({
+      amount: '15000000',
+      normalizedAmount: '1.5',
+      asset,
+    });
   });
 
   describe('formatProviderLabel', () => {

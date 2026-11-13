@@ -1,17 +1,15 @@
 import React, { useCallback } from 'react';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
-  Text,
-  FontWeight,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { WATCHLIST_MARKET_FILTER } from '../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { MarketRow } from '../market-row';
+import { PerpsSectionHeader } from '../perps-section-header';
 
 /**
  * PerpsWatchlist displays a list of watched markets.
@@ -34,6 +32,10 @@ export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
     [navigate],
   );
 
+  const handleHeaderClick = useCallback(() => {
+    navigate(`${PERPS_MARKET_LIST_ROUTE}?filter=${WATCHLIST_MARKET_FILTER}`);
+  }, [navigate]);
+
   if (markets.length === 0) {
     return null;
   }
@@ -44,17 +46,11 @@ export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
       gap={2}
       data-testid="perps-watchlist"
     >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        marginBottom={2}
-      >
-        <Text fontWeight={FontWeight.Medium}>{t('perpsWatchlist')}</Text>
-      </Box>
+      <PerpsSectionHeader
+        label={t('perpsWatchlist')}
+        onClick={handleHeaderClick}
+        data-testid="perps-watchlist-header"
+      />
       <Box flexDirection={BoxFlexDirection.Column}>
         {markets.map((market) => (
           <MarketRow

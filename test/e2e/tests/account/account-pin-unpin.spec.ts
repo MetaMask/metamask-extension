@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 
 // Pin/unpin is not available in BIP44 stage 2
 describe('Account list - pin/unpin functionality', function (this: Suite) {
@@ -49,12 +49,12 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
 
         // hide the same account and check the account is unpinned automatically
         await accountListPage.hideAccount();
-        await accountListPage.checkHiddenAccountsListExists();
         await accountListPage.checkAccountIsUnpinned();
 
         // unhide the same account and check the account is still unpinned
-        await accountListPage.openHiddenAccountsList();
-        await accountListPage.unhideAccount();
+        await accountListPage.enterManageAccountsMode();
+        await accountListPage.revealHiddenAccount();
+        await accountListPage.exitManageAccountsMode();
         await accountListPage.checkAccountDisplayedInAccountList();
         await accountListPage.checkAccountIsUnpinned();
       },

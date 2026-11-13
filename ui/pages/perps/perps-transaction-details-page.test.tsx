@@ -328,6 +328,25 @@ describe('PerpsTransactionDetailsPage', () => {
   });
 
   describe('trade transaction PnL uses the net-of-fees amount', () => {
+    it('renders unknown PnL when the venue omits it', () => {
+      const transaction = findTransaction('tx-002');
+      if (!transaction.fill) {
+        throw new Error('Missing test fill');
+      }
+      renderWithTransaction({
+        ...transaction,
+        fill: {
+          ...transaction.fill,
+          pnl: undefined,
+          amountNumber: undefined,
+          amount: 'Unknown',
+        },
+      });
+      expect(getRowValueByLabel(messages.perpsPnl.message)).toBe(
+        messages.unknown.message,
+      );
+    });
+
     it('renders fill.amountNumber (pnl - fee) rather than the raw gross fill.pnl', () => {
       const baseTransaction = findTransaction('tx-002');
       const baseFill = baseTransaction.fill;
@@ -351,6 +370,49 @@ describe('PerpsTransactionDetailsPage', () => {
       // The net-of-fees value (150 - 25 = 125) is shown, not the gross $150.
       expect(screen.getByText('+$125.00')).toBeInTheDocument();
       expect(screen.queryByText('+$150.00')).not.toBeInTheDocument();
+    });
+
+    it('shows a zero net PnL with the same text as the activity row', () => {
+      const transaction = findTransaction('tx-002');
+      if (!transaction.fill) {
+        throw new Error('Missing test fill');
+      }
+
+      renderWithTransaction({
+        ...transaction,
+        fill: {
+          ...transaction.fill,
+          pnl: '2.5',
+          fee: '2.5',
+          amount: '$0.00',
+          amountNumber: 0,
+          isPositive: true,
+        },
+      });
+
+      expect(getRowValueByLabel(messages.perpsPnl.message)).toBe('$0.00');
+    });
+
+    it('shows an unknown fee as unavailable rather than $0', () => {
+      const transaction = findTransaction('tx-002');
+      if (!transaction.fill) {
+        throw new Error('Missing test fill');
+      }
+
+      renderWithTransaction({
+        ...transaction,
+        fill: {
+          ...transaction.fill,
+          fee: '',
+          amount: 'Unknown',
+          amountNumber: undefined,
+        },
+      });
+
+      expect(getRowValueByLabel(messages.perpsPnl.message)).toBe(
+        messages.unknown.message,
+      );
+      expect(getRowValueByLabel(messages.perpsFees.message)).toBe('$---');
     });
 
     it('labels the price row "Close price" for a closed position fill', () => {

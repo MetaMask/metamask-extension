@@ -123,10 +123,6 @@
   "fast": {
     "message": "வேகமான"
   },
-  "fileImportFail": {
-    "message": "கோப்பு இறக்குமதி வேலை செய்யவில்லையா? இங்கே கிளிக் செய்யவும்!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "இந்தச் சாதனத்தை அகற்று"
   },
@@ -135,9 +131,6 @@
   },
   "gasLimit": {
     "message": "எரிவாயு வரம்பு"
-  },
-  "gasLimitTooLow": {
-    "message": "எரிவாயு வரம்பு குறைந்தது 21000 ஆக இருக்க வேண்டும்"
   },
   "here": {
     "message": "இங்கே",
@@ -250,10 +243,6 @@
   "passwordsDontMatch": {
     "message": "கடவுச்சொற்கள் பொருந்தாதே"
   },
-  "pastePrivateKey": {
-    "message": "இங்கே உங்கள் தனிப்பட்ட விசை சரத்தை ஒட்டுக:",
-    "description": "For importing an account from a private key"
-  },
   "personalAddressDetected": {
     "message": "தனிப்பட்ட முகவரி கண்டறியப்பட்டது. டோக்கன் ஒப்பந்த முகவரியை உள்ளிடவும்."
   },
@@ -263,9 +252,6 @@
   "privateKey": {
     "message": "தனிப்பட்ட விசை",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "எச்சரிக்கை: இந்த விசையை எப்போதும் வெளியிட வேண்டாம். உங்கள் தனிப்பட்ட விசைகளைக் கொண்ட எவரும் உங்கள் கணக்கில் உள்ள எந்த சொத்துக்களையும் திருடலாம்."
   },
   "privateNetwork": {
     "message": "தனியார் நெட்வொர்க்"
@@ -369,9 +355,6 @@
   },
   "urlErrorMsg": {
     "message": "URI கள் சரியான HTTP / HTTPS முன்னொட்டு தேவை."
-  },
-  "usedByClients": {
-    "message": "பல்வேறு வாடிக்கையாளர்கள் பல்வேறு பயன்படுத்திய"
   },
   "visitWebSite": {
     "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"

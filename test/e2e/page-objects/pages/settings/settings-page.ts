@@ -1,15 +1,15 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Settings hub: search, tab navigation, and a few in-hub toggles/actions.
+ * Settings hub: search and tab navigation.
  *
  * Screen: `#/settings`, usually opened from `HeaderNavbar.openSettingsPage`.
  * Owns: settings search, navigation into child tabs (privacy, assets,
- * developer tools, notifications, Transaction Shield, etc.), auto-lock entry,
- * and closing settings back toward home.
+ * developer tools, notifications, Transaction Shield, etc.), and closing
+ * settings back toward home.
  * Boundaries: the hub and its nav only. Once a child tab or sub-page opens,
- * that page object takes over (e.g. `PrivacySettings`,
- * `PreferencesAndDisplaySettings`, `ShieldDetailPage`).
+ * that page object takes over (e.g. `PrivacySettings`, `AssetsSettings`,
+ * `DeveloperToolsSettings`, `ShieldDetailPage`).
  * Related: child page objects under `pages/settings/`;
  * `flows/settings.flow.ts` for common journeys.
  *
@@ -23,14 +23,6 @@ class SettingsPage {
   private readonly assetsSettingsButton =
     '[data-testid="settings-tab-item-assets"]';
 
-  private readonly autoLockOptionQuarterMinute =
-    '[data-testid="auto-lock-option-0.25"]';
-
-  private readonly autoLockOptionsList =
-    '[data-testid="auto-lock-options-list"]';
-
-  private readonly autoLockSettingsButton = '[data-testid="auto-lock-button"]';
-
   private readonly backButton = {
     testId: 'page-header-back-button',
   };
@@ -41,15 +33,6 @@ class SettingsPage {
   /** Full internal developer options (crash, remote flags, etc.); see `debug-tab.tsx`. */
   private readonly debugSettingsButton =
     '[data-testid="settings-tab-item-debug"]';
-
-  private readonly deleteActivityAndNonceConfirmButton =
-    '[data-testid="delete-activity-and-nonce-data-button"]';
-
-  private readonly deleteActivityAndNonceModal =
-    '[data-testid="delete-activity-and-nonce-data-modal"]';
-
-  private readonly developerOptionsDeleteActivityAndNonceData =
-    '[data-testid="developer-options-delete-activity-and-nonce-data"]';
 
   private readonly developerToolsSettingsButton =
     '[data-testid="settings-tab-item-developer-tools"]';
@@ -92,16 +75,6 @@ class SettingsPage {
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';
 
-  private readonly showFiatOnTestnetsToggleLabel = {
-    xpath:
-      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
-  };
-
-  private readonly showNativeTokenAsMainBalanceToggleLabel = {
-    xpath:
-      "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
-  };
-
   private readonly syncAccountsSettingsButton =
     '[data-testid="settings-tab-item-sync-accounts"]';
 
@@ -139,12 +112,6 @@ class SettingsPage {
     await this.driver.clickElementSafe(this.backButton);
   }
 
-  async clickDeveloperOptionsDeleteActivityAndNonceData(): Promise<void> {
-    await this.driver.clickElement(
-      this.developerOptionsDeleteActivityAndNonceData,
-    );
-  }
-
   /**
    * Close the Settings page and return to the wallet home with the navbar open.
    *
@@ -160,15 +127,8 @@ class SettingsPage {
         return;
       }
       await this.clickBackButton();
-      await this.driver.delay(1000);
+      await this.driver.delay(300);
     }
-  }
-
-  async confirmDeleteActivityAndNonceModal(): Promise<void> {
-    await this.driver.waitForSelector(this.deleteActivityAndNonceModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.deleteActivityAndNonceConfirmButton,
-    );
   }
 
   async fillSearchSettingsInput(text: string): Promise<void> {
@@ -183,23 +143,9 @@ class SettingsPage {
     await this.driver.clickElement(this.aboutViewButton);
   }
 
-  /**
-   * Legacy V1 "Advanced" tab does not exist in Settings V2. Uses Developer Tools
-   * tab (closest surface for former advanced-style controls).
-   */
-  async goToAdvancedSettings(): Promise<void> {
-    console.log('Navigating to Advanced Settings page (Developer Tools in V2)');
-    await this.goToDeveloperOptions();
-  }
-
   async goToAssetsSettings(): Promise<void> {
     console.log('Navigating to Assets Settings page');
     await this.driver.clickElement(this.assetsSettingsButton);
-  }
-
-  async goToAutoLockSettings(): Promise<void> {
-    console.log('Navigating to Auto-lock settings page');
-    await this.driver.clickElement(this.autoLockSettingsButton);
   }
 
   async goToBackupAndSyncSettings(): Promise<void> {
@@ -282,31 +228,6 @@ class SettingsPage {
     await this.driver.clickElement(this.searchButton);
     await this.driver.waitForSelector(this.searchSettingsInput);
     console.log('Search input is opened');
-  }
-
-  async selectQuarterMinuteAutoLockOption(): Promise<void> {
-    await this.driver.clickElement(this.autoLockOptionQuarterMinute);
-  }
-
-  async toggleBalanceSetting(): Promise<void> {
-    console.log('Toggling balance setting');
-    await this.goToAssetsSettings();
-    await this.driver.waitForSelector(
-      this.showNativeTokenAsMainBalanceToggleLabel,
-    );
-    await this.driver.clickElement(
-      this.showNativeTokenAsMainBalanceToggleLabel,
-    );
-  }
-
-  async toggleShowFiatOnTestnets(): Promise<void> {
-    console.log('Toggling Show Fiat on Testnets setting');
-    await this.driver.waitForSelector(this.showFiatOnTestnetsToggleLabel);
-    await this.driver.clickElement(this.showFiatOnTestnetsToggleLabel);
-  }
-
-  async waitForAutoLockOptionsList(): Promise<void> {
-    await this.driver.waitForSelector(this.autoLockOptionsList);
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {

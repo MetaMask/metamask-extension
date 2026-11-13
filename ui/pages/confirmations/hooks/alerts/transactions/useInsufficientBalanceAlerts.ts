@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -9,13 +12,16 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseTransactionSimulations } from '../../../../../selectors';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
+import { useGasSponsorshipPreference } from '../../gas/useGasSponsorshipPreference';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
+import { useIsMonadReserveViolation } from './useIsMonadReserveViolation';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -41,6 +47,9 @@ export function useInsufficientBalanceAlerts({
     isSupported: isGaslessSupported,
     pending: isGaslessSupportedPending,
   } = useIsGaslessSupported();
+  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
+    currentConfirmation?.chainId,
+  );
 
   const isUsingPay = useTransactionPayHasSourceAmount();
   const { payToken } = useTransactionPayToken();
@@ -49,13 +58,29 @@ export function useInsufficientBalanceAlerts({
   const isPayPendingInput =
     Boolean(payToken) && primaryRequiredToken?.amountRaw === '0';
 
+  // Money-account batches execute from the money account, which has no native
+  // MON. Gas is sponsored, so the EOA native-balance check is wrong. Direct
+  // withdraws also skip initial gas estimate, so this alert otherwise blocks
+  // Send after the user types an amount.
+  const isMoneyAccountTransaction = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
+  ]);
+
+  // Prefer the Monad reserve-balance alert over the generic "pay for network
+  // fees" message when the protocol reserve (not max-fee solvency) is the cause.
+  const hasMonadReserveViolation = useIsMonadReserveViolation();
+
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 
   // Check if gasless check has completed (regardless of result)
   const isGaslessCheckComplete = !isGaslessSupportedPending;
 
-  // Transaction is sponsored only if it's marked as sponsored AND gasless is supported
-  const isSponsoredTransaction = isSponsored && isGaslessSupported;
+  // Transaction is sponsored only if it's marked as sponsored, gasless is
+  // supported AND the user has not opted out of sponsorship on this chain
+  // (in which case the transaction is submitted unsponsored on confirm).
+  const isSponsoredTransaction =
+    isSponsored && isGaslessSupported && !isSponsorshipOptedOut;
 
   // Simulation is complete if it's disabled, or if enabled and gasFeeTokens is loaded
   const isSimulationComplete = !isSimulationEnabled || Boolean(gasFeeTokens);
@@ -89,7 +114,9 @@ export function useInsufficientBalanceAlerts({
     hasNoGasFeeTokenSelected &&
     shouldCheckGaslessConditions &&
     !isSponsoredTransaction &&
-    !isPostQuoteWithdraw;
+    !isPostQuoteWithdraw &&
+    !isMoneyAccountTransaction &&
+    !hasMonadReserveViolation;
 
   return useMemo(() => {
     if (!showAlert) {

@@ -44,7 +44,7 @@ const makeTxAlert = (overrides: Partial<TxAlert> = {}): TxAlert => ({
 describe('useSecurityAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(useI18nContext).mockReturnValue(mockT as never);
+    jest.mocked(useI18nContext).mockReturnValue(mockT);
     jest.mocked(reactRedux.useSelector).mockImplementation((selector) => {
       if (selector === getTxAlerts) {
         return null;

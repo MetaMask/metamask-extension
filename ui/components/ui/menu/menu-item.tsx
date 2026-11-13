@@ -96,20 +96,21 @@ const MenuItem = React.forwardRef<
             badge={<BadgeStatus status={BadgeStatusStatus.New} />}
             position={BadgeWrapperPosition.TopRight}
             positionXOffset={4}
+            // Keep spacing outside BadgeWrapper so the badge anchors to the
+            // icon bounds, not icon + margin (which pushed it into the label).
+            className="mr-3"
           >
             {useNewSystem && iconName && (
               <Icon
                 name={iconName}
                 size={iconSize || IconSize.Md}
                 color={iconColor}
-                className="mr-2"
               />
             )}
             {!useNewSystem && iconNameLegacy && (
               <IconLegacy
                 name={iconNameLegacy}
                 size={iconSizeLegacy || IconSizeLegacy.Sm}
-                marginRight={2}
               />
             )}
           </BadgeWrapper>

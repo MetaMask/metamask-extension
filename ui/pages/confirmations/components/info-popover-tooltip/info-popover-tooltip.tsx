@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, type ReactNode } from 'react';
+import React, { useCallback, useState, type ReactNode } from 'react';
 import {
   Box,
   ButtonIcon,
@@ -54,7 +54,16 @@ export function InfoPopoverTooltip({
   'data-testid': dataTestId,
 }: Readonly<InfoPopoverTooltipProps>) {
   const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement & HTMLDivElement>(null);
+  const [referenceElement, setReferenceElement] = useState<
+    (HTMLButtonElement & HTMLDivElement) | null
+  >(null);
+
+  const setTriggerRef = useCallback(
+    (node: (HTMLButtonElement & HTMLDivElement) | null) => {
+      setReferenceElement(node);
+    },
+    [],
+  );
 
   const handleToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -72,7 +81,7 @@ export function InfoPopoverTooltip({
     <Box>
       {plainIcon ? (
         <button
-          ref={triggerRef as React.Ref<HTMLButtonElement>}
+          ref={setTriggerRef}
           type="button"
           aria-label={ariaLabel ?? 'info'}
           onClick={handleToggle}
@@ -94,7 +103,7 @@ export function InfoPopoverTooltip({
         </button>
       ) : (
         <ButtonIcon
-          ref={triggerRef as React.Ref<HTMLButtonElement>}
+          ref={setTriggerRef}
           ariaLabel={ariaLabel ?? 'info'}
           iconName={iconName}
           size={iconSize}
@@ -107,7 +116,7 @@ export function InfoPopoverTooltip({
       <Popover
         isOpen={isOpen}
         position={position}
-        referenceElement={triggerRef.current}
+        referenceElement={referenceElement}
         hasArrow
         flip
         preventOverflow

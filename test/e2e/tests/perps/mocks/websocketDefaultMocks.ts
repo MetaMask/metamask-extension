@@ -17,6 +17,23 @@ import type { WebSocketMessageMock } from '../../../websocket/types';
 const WS_MOCK_DEFAULT_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 /**
+ * Single non-funding ledger entry served by the default
+ * `userNonFundingLedgerUpdates` mock. Its only job is to be a non-empty array:
+ * `#isWalletOnHyperliquid` in perps-controller only checks that the wallet has
+ * interacted with Hyperliquid at least once.
+ */
+const WS_DEFAULT_LEDGER_DEPOSIT = {
+  time: 1735689600000,
+  hash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+  delta: {
+    type: 'deposit',
+    amount: '10000.0',
+    nonce: 1,
+    usdc: '10000.0',
+  },
+};
+
+/**
  * Fills returned by the default `userFills` subscribe / POST mocks.
  * `pushUserFillsClosePositionSnapshot` updates this so a home remount
  * re-subscribe still delivers the close fill.
@@ -31,6 +48,30 @@ export function clearPendingUserFills(): void {
   pendingUserFills = [];
 }
 
+/**
+ * Last clearing-house state broadcast by `pushPositionUpdate` /
+ * `pushPositionClosed`. Position mocks serve it on later subscribe follow-ups
+ * and REST/WS `clearinghouseState` reads, so a refetch after a simulated fill
+ * returns the new account state instead of the initial one.
+ */
+let pushedClearinghouseState: object | null = null;
+
+export function setPushedClearinghouseState(state: object): void {
+  pushedClearinghouseState = state;
+}
+
+export function clearPushedClearinghouseState(): void {
+  pushedClearinghouseState = null;
+}
+
+/**
+ * @param initialState - State served until a position push happens.
+ * @returns The last pushed clearing-house state, or `initialState`.
+ */
+export function getCurrentClearinghouseState(initialState: object): object {
+  return pushedClearinghouseState ?? initialState;
+}
+
 export function getResponsePayload(mock: WebSocketMessageMock): object | null {
   if (!mock.response) {
     return null;
@@ -43,7 +84,11 @@ export function getResponsePayload(mock: WebSocketMessageMock): object | null {
  *
  * The @nktkas/hyperliquid SDK's WebSocketSubscriptionManager awaits a `subscriptionResponse`
  * event and checks isSubset(subscriptionPayload, responseData). Sending back the original
- * message as `data` satisfies that check regardless of subscription type.
+ * message as `data` satisfies that check regardless of subscription type (and also confirms
+ * `unsubscribe` requests, which reach the generic fallback mock).
+ *
+ * Without a matching confirmation the SDK times the subscribe request out after 10 s and
+ * removes the channel listener, so every later push on that channel is silently dropped.
  *
  * @param message - The raw WebSocket message string to echo back.
  * @returns The subscription confirmation object, or a fallback with empty data.
@@ -51,9 +96,9 @@ export function getResponsePayload(mock: WebSocketMessageMock): object | null {
 export function buildSubscribedConfirmation(message: string): object | null {
   try {
     const parsed = JSON.parse(message);
-    return { channel: 'subscribed', data: parsed };
+    return { channel: 'subscriptionResponse', data: parsed };
   } catch {
-    return { channel: 'subscribed', data: {} };
+    return { channel: 'subscriptionResponse', data: {} };
   }
 }
 
@@ -478,6 +523,55 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     logMessage: 'Hyperliquid WS POST userFills',
   },
   {
+    // WS INFO POST for userNonFundingLedgerUpdates — perps-controller 15.1.0 probes
+    // this from `#isWalletOnHyperliquid` before the unified-account migration and
+    // the referral write, and treats a non-array or empty ledger as "wallet has no
+    // Hyperliquid account yet". The generic catch-all below answers `{}`, so every
+    // fixture looked unregistered. Returning one deposit matches the funded
+    // clearinghouse state the other default mocks serve.
+    messageIncludes: [
+      '"method":"post"',
+      '"type":"userNonFundingLedgerUpdates"',
+    ],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, [WS_DEFAULT_LEDGER_DEPOSIT])
+        : null;
+    },
+    delay: 50,
+    logMessage: 'Hyperliquid WS userNonFundingLedgerUpdates POST received',
+  },
+  {
+    // WS INFO POST for userAbstraction — 15.1.0 reads the account's abstraction
+    // mode here (12.x asked `userDexAbstraction`, which is a different request and
+    // is still mocked above for the exchange action). `unifiedAccount` is a
+    // compatible mode, so the controller skips the EIP-712 migration it now drives
+    // at action time instead of on Perps section open.
+    messageIncludes: ['"method":"post"', '"type":"userAbstraction"'],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, 'unifiedAccount')
+        : null;
+    },
+    delay: 50,
+    logMessage: 'Hyperliquid WS userAbstraction POST received',
+  },
+  {
+    // WS INFO POST for userToMultiSigSigners — `#isHyperliquidMultiSigAccount`
+    // treats any non-null/undefined answer as a multi-sig account, so the generic
+    // `{}` made every fixture look multi-sig. Hyperliquid returns null for a
+    // single-signer account.
+    messageIncludes: ['"method":"post"', '"type":"userToMultiSigSigners"'],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req ? buildWsPostResponse(req.id, req.type, null) : null;
+    },
+    delay: 50,
+    logMessage: 'Hyperliquid WS userToMultiSigSigners POST received',
+  },
+  {
     // Generic catch-all for any remaining WS POST (userFills, historicalOrders,
     // userFunding, userNonFundingLedgerUpdates, userFees, spotMeta, etc.).
     // Responds immediately with {} so the SDK promise resolves instead of timing out (10s).
@@ -623,22 +717,28 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     // Candle subscription — return a single candle so `chartCurrentPrice` is > 0
     // in the market detail page. Without this the close-position modal submit
     // stays disabled (isPriceValid = false).
+    //
+    // Stamp the time when the subscription arrives. A module-load timestamp is
+    // older than the snapshot history, and lightweight-charts rejects the update.
     messageIncludes: ['"method":"subscribe"', '"type":"candle"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
-      channel: 'candle',
-      data: {
-        t: Date.now() - 300000,
-        T: Date.now() - 1,
-        s: 'AVAX',
-        i: '5m',
-        o: '25',
-        c: '25',
-        h: '25',
-        l: '25',
-        v: '1000.0',
-        n: 10,
-      },
+    dynamicFollowUp: () => {
+      const now = Date.now();
+      return {
+        channel: 'candle',
+        data: {
+          t: now,
+          T: now + 300000 - 1,
+          s: 'AVAX',
+          i: '5m',
+          o: '25',
+          c: '25',
+          h: '25',
+          l: '25',
+          v: '1000.0',
+          n: 10,
+        },
+      };
     },
     followUpDelay: 50,
     delay: 50,

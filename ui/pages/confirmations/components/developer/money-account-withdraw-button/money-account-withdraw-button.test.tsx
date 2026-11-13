@@ -1,63 +1,78 @@
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { TransactionType } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../../constants/musd';
-import { useDeveloperTransferTransaction } from '../utils';
+import configureMockStore from 'redux-mock-store';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
+import { useMoneyAccountWithdrawal } from '../../../../../hooks/money/useMoneyAccountWithdrawal';
 import { MoneyAccountWithdrawButton } from './money-account-withdraw-button';
 
-jest.mock('../utils', () => ({
-  useDeveloperTransferTransaction: jest.fn(),
+const render = () =>
+  renderWithProvider(
+    <MoneyAccountWithdrawButton />,
+    configureMockStore()(mockState),
+  );
+
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawal', () => ({
+  useMoneyAccountWithdrawal: jest.fn(),
 }));
 
-const useDeveloperTransferTransactionMock = jest.mocked(
-  useDeveloperTransferTransaction,
-);
+jest.mock('../../../../../hooks/money/useMoneyAccountInfo', () => ({
+  useMoneyAccountInfo: jest.fn(),
+}));
+
+const useMoneyAccountWithdrawalMock = jest.mocked(useMoneyAccountWithdrawal);
+const useMoneyAccountInfoMock = jest.mocked(useMoneyAccountInfo);
 
 describe('MoneyAccountWithdrawButton', () => {
-  const handleTriggerMock = jest.fn();
+  const initiateWithdrawalMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    useDeveloperTransferTransactionMock.mockReturnValue({
+    initiateWithdrawalMock.mockResolvedValue(undefined);
+    useMoneyAccountWithdrawalMock.mockReturnValue({
+      initiateWithdrawal: initiateWithdrawalMock,
       isLoading: false,
-      handleTrigger: handleTriggerMock,
     });
+    useMoneyAccountInfoMock.mockReturnValue({
+      isMoneyAccountFeatureEnabled: true,
+      hasMoneyAccount: true,
+      primaryMoneyAccount: { address: '0xd5fe' },
+    } as unknown as ReturnType<typeof useMoneyAccountInfo>);
   });
 
-  it('configures the transfer hook for a Monad mUSD money account withdraw', () => {
-    render(<MoneyAccountWithdrawButton />);
-
-    expect(useDeveloperTransferTransactionMock).toHaveBeenCalledWith({
-      chainId: CHAIN_IDS.MONAD,
-      tokenAddress: MUSD_TOKEN_ADDRESS,
-      decimals: MUSD_TOKEN.decimals,
-      type: TransactionType.moneyAccountWithdraw,
-      errorMessage: 'Failed to create money account withdraw transaction',
-    });
-  });
-
-  it('renders the developer button and triggers the transaction on click', () => {
-    render(<MoneyAccountWithdrawButton />);
+  it('initiates the withdrawal on click', () => {
+    render();
 
     const button = screen.getByRole('button', {
       name: 'Money Account Withdraw',
     });
-    expect(button).toBeInTheDocument();
     expect(button).not.toBeDisabled();
 
     fireEvent.click(button);
-    expect(handleTriggerMock).toHaveBeenCalledTimes(1);
+    expect(initiateWithdrawalMock).toHaveBeenCalledTimes(1);
   });
 
-  it('disables the button while loading', () => {
-    useDeveloperTransferTransactionMock.mockReturnValue({
+  it('renders nothing at all when the money account is unavailable', () => {
+    useMoneyAccountInfoMock.mockReturnValue({
+      isMoneyAccountFeatureEnabled: false,
+      hasMoneyAccount: false,
+      primaryMoneyAccount: undefined,
+    } as unknown as ReturnType<typeof useMoneyAccountInfo>);
+
+    const { container } = render();
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('disables the button while initiating', () => {
+    useMoneyAccountWithdrawalMock.mockReturnValue({
+      initiateWithdrawal: initiateWithdrawalMock,
       isLoading: true,
-      handleTrigger: handleTriggerMock,
     });
 
-    render(<MoneyAccountWithdrawButton />);
+    render();
 
     expect(
       screen.getByRole('button', { name: 'Money Account Withdraw' }),

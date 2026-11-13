@@ -2,7 +2,7 @@
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
 import { strict as assert } from 'assert';
-import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope, XlmScope } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   ACCOUNT_2,
@@ -40,7 +40,7 @@ const SOLANA_PERMISSIONS = buildSolanaFixtureScopes();
 
 /**
  * CAIP chain IDs granted by a default connect: every non-test network in the
- * default fixture.
+ * default fixture, including EVM, Solana, Bitcoin, Tron, and Stellar.
  */
 const DEFAULT_PERMITTED_CAIP_CHAIN_IDS = [
   toEvmCaipChainId(CHAIN_IDS.MAINNET),
@@ -52,6 +52,7 @@ const DEFAULT_PERMITTED_CAIP_CHAIN_IDS = [
   toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
   toEvmCaipChainId(CHAIN_IDS.MONAD),
   SolScope.Mainnet,
+  XlmScope.Pubnet,
   BtcScope.Mainnet,
   TrxScope.Mainnet,
 ];

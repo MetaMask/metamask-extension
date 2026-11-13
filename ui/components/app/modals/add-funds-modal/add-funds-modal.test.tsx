@@ -7,7 +7,7 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import AddFundsModal from './add-funds-modal';
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
 jest.mock(
   '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation',
   () => ({
@@ -15,6 +15,14 @@ jest.mock(
     __esModule: true,
     default: () => ({ goToBuy: mockGoToBuy }),
   }),
+);
+
+jest.mock('../../../../helpers/utils/show-buy-tab-opened-toast', () => ({
+  showBuyTabOpenedToast: jest.fn(),
+}));
+const mockShowBuyTabOpenedToast = jest.mocked(
+  jest.requireMock('../../../../helpers/utils/show-buy-tab-opened-toast')
+    .showBuyTabOpenedToast,
 );
 
 const mockTrackEvent = jest.fn();
@@ -115,5 +123,29 @@ describe('Add funds modal Component', () => {
     await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
     expect(mockTrackEvent).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('shows the tab-opened toast when Buy opens Portfolio', async () => {
+    mockGoToBuy.mockResolvedValueOnce('portfolio');
+    const { getByTestId } = renderWithProvider(
+      <AddFundsModal
+        onClose={jest.fn()}
+        token={{
+          address: '0x0',
+          decimals: 18,
+          symbol: 'USDC',
+          conversionRate: { usd: '1' },
+        }}
+        chainId="0x1"
+        payerAddress="0x0"
+      />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('add-funds-modal-buy-crypto-button'));
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
+    expect(mockShowBuyTabOpenedToast.mock.calls.length).toMatchInlineSnapshot(
+      `1`,
+    );
   });
 });

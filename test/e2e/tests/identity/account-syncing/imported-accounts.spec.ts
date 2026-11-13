@@ -11,8 +11,9 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { login } from '../../../page-objects/flows/login.flow';
+import { importAccountWithPrivateKey } from '../../../page-objects/flows/add-wallet.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { skipOnFirefox } from '../helpers';
@@ -108,15 +109,9 @@ describe('Account syncing - Unsupported Account types', function () {
         );
 
         // Import a private key account (this should NOT sync)
-        await accountListPage.addNewImportedAccount(IMPORTED_PRIVATE_KEY);
+        await importAccountWithPrivateKey(driver, IMPORTED_PRIVATE_KEY);
 
-        // Verify imported account is visible in current session
-        // TODO: uncomment this when the naming issue is fixed
-        // await accountListPage.checkAccountDisplayedInAccountList(
-        //   IMPORTED_ACCOUNT_NAME,
-        // );
-
-        await accountListPage.closeMultichainAccountsPage();
+        await homePage.checkPageIsLoaded();
       },
     );
 

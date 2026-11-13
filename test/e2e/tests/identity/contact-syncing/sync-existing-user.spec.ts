@@ -12,8 +12,13 @@ import {
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
 import { completeOnboardFlowIdentity } from '../../../page-objects/flows/identity.flow';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import ContactsListPage from '../../../page-objects/pages/contacts/contacts-list-page';
+import {
+  addContact,
+  deleteContact,
+  editContact,
+} from '../../../page-objects/flows/contacts.flow';
 
 import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
@@ -171,16 +176,14 @@ describe('Contact Syncing - Existing User', function () {
 
           const header = new HeaderNavbar(driver);
           await header.checkPageIsLoaded();
-          const contactsSettings = new ContactsSettings(driver);
-
           // STEP 2: Add new contact
           console.log('STEP 2: Adding new contact...');
           await header.openContactsPage();
-          await contactsSettings.checkPageIsLoaded();
-          await contactsSettings.addContact(
-            newContact.name,
-            newContact.address,
-          );
+          await new ContactsListPage(driver).checkPageIsLoaded();
+          await addContact(driver, {
+            name: newContact.name,
+            address: newContact.address,
+          });
 
           // Debug: Check if contact syncing is still enabled and not in progress
           const debugState = await driver.executeScript(() =>
@@ -228,7 +231,7 @@ describe('Contact Syncing - Existing User', function () {
           // STEP 3: Modify existing contact (Alice)
           console.log('STEP 3: Modifying existing contact...');
 
-          await contactsSettings.editContact({
+          await editContact(driver, {
             existingContactName: 'Alice Smith',
             newContactName: modifiedContactName,
             newContactAddress: MOCK_CONTACTS.ALICE_MAINNET.a,
@@ -246,7 +249,7 @@ describe('Contact Syncing - Existing User', function () {
           // STEP 4: Delete existing contact (Bob)
           console.log('STEP 4: Deleting existing contact...');
 
-          await contactsSettings.deleteContact('Bob Johnson');
+          await deleteContact(driver, 'Bob Johnson');
 
           // Wait for deletion to sync
           await driver.wait(async () => {

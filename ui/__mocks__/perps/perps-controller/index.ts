@@ -488,7 +488,7 @@ export type SortButtonPreset =
  * External resources and content for Perps education
  */
 export const LEARN_MORE_CONFIG = {
-  ExternalUrl: 'https://metamask.io/perps',
+  ExternalUrl: 'https://metamask.com/perps',
   TitleKey: 'perps.tutorial.card.title',
   DescriptionKey: 'perps.learn_more.description',
   CtaKey: 'perps.learn_more.cta',
@@ -515,7 +515,7 @@ export const FEEDBACK_CONFIG = {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
+    'https://support.metamask.com/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
 } as const;
 
 /**
@@ -771,17 +771,18 @@ export type MarketType =
   | 'commodity'
   | 'forex';
 
-export type MarketTypeFilter = MarketType | 'all' | 'new';
+export type MarketTypeFilter = MarketType | 'all' | 'new' | 'memecoin';
 
 export const MARKET_CATEGORIES = [
   'crypto',
+  'memecoin',
   'stock',
   'pre-ipo',
   'index',
   'etf',
   'commodity',
   'forex',
-] as const satisfies readonly MarketType[];
+] as const satisfies readonly MarketTypeFilter[];
 
 export function isHip3Market(
   market: Pick<PerpsMarketData, 'isHip3' | 'marketSource'>,
@@ -797,6 +798,35 @@ export function getMarketTypeFilter(
   }
 
   return isHip3Market(market) ? 'new' : 'crypto';
+}
+
+export function matchesCategory(
+  market: Pick<
+    PerpsMarketData,
+    'isHip3' | 'marketSource' | 'marketType' | 'tags'
+  >,
+  category: MarketTypeFilter,
+): boolean {
+  switch (category) {
+    case 'all': {
+      return true;
+    }
+    case 'crypto': {
+      return !isHip3Market(market) || market.marketType === 'crypto';
+    }
+    case 'memecoin': {
+      return (
+        (!isHip3Market(market) || market.marketType === 'crypto') &&
+        (market.tags?.includes('memecoin') ?? false)
+      );
+    }
+    case 'new': {
+      return isHip3Market(market) && market.marketType === undefined;
+    }
+    default: {
+      return market.marketType !== undefined && market.marketType === category;
+    }
+  }
 }
 
 // Badge type for market badges in UI (used by marketUtils)
@@ -1103,6 +1133,10 @@ export type PerpsMarketData = {
    * - forex: Foreign exchange pairs (HIP-3)
    */
   marketType?: MarketType;
+  /**
+   * Terminal backend tags (e.g. `'memecoin'`). Used for derived categories.
+   */
+  tags?: string[];
   /**
    * Multi-provider: which provider this market data comes from (injected by aggregator)
    */
@@ -1720,11 +1754,11 @@ export type PerpsProvider = {
  * Provider identifier type for multi-provider support.
  * Add new providers here as they are implemented.
  */
-export type PerpsProviderType = 'hyperliquid' | 'myx';
+export type PerpsProviderType = 'hyperliquid' | 'lighter';
 
 /**
  * Active provider mode for PerpsController state.
- * - Direct providers: 'hyperliquid', 'myx'
+ * - Direct providers: 'hyperliquid', 'lighter'
  * - 'aggregated': Multi-provider aggregation mode
  */
 export type PerpsActiveProviderMode = PerpsProviderType | 'aggregated';

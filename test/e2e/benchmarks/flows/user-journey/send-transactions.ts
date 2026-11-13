@@ -8,7 +8,7 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';

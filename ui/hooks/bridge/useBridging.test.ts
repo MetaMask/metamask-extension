@@ -10,7 +10,7 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigat
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, type ChainId } from '../../../shared/constants/network';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import * as bridgeActions from '../../ducks/bridge/actions';
@@ -193,7 +193,7 @@ describe('useBridging', () => {
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
             {
-              location: location as never,
+              location,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -229,6 +229,8 @@ describe('useBridging', () => {
                     chainId: formatChainIdToCaip(expectedState.token.chainId),
                   }
                 : null,
+              swapViewTraceId: expect.any(String),
+              swapViewPrefilledAmount: false,
             },
           },
         );
@@ -549,7 +551,7 @@ describe('useBridging', () => {
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
             {
-              location: location as never,
+              location,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -583,10 +585,79 @@ describe('useBridging', () => {
                   chainId: formatChainIdToCaip(expectedState.token.chainId),
                 }
               : null,
+            swapViewTraceId: expect.any(String),
+            swapViewPrefilledAmount: false,
           },
         });
         expect(openTabSpy).not.toHaveBeenCalled();
       },
     );
+  });
+
+  describe('single EVM network filter', () => {
+    const polygonAssetId = getNativeAssetForChainId(CHAIN_IDS.POLYGON).assetId;
+
+    const singlePolygonStore = (providerChainId: ChainId) =>
+      createBridgeMockStore({
+        metamaskStateOverrides: {
+          useExternalServices: true,
+          analyticsId: MOCK_ANALYTICS_ID,
+          ...mockNetworkState({ chainId: providerChainId }),
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.POLYGON]: true,
+            },
+          },
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 5000,
+            minimumVersion: '0.0.0',
+            maxRefreshCount: 5,
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+            ],
+          },
+        },
+      });
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest
+        .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+      jest
+        .spyOn(bridgeActions, 'resetInputFields')
+        .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+    });
+
+    it('uses the filtered chain when the provider is still Ethereum Mainnet', () => {
+      const { result } = renderUseBridging(
+        singlePolygonStore(CHAIN_IDS.MAINNET),
+      );
+
+      result.current.openBridgeExperience(MetaMetricsSwapsEventSource.MainView);
+
+      const navigateArgs = mockUseNavigate.mock.calls[0][0] as {
+        search: string;
+      };
+      const fromAssetId = new URLSearchParams(navigateArgs.search).get('from');
+
+      expect(fromAssetId).toBe(polygonAssetId);
+    });
+
+    it('does not override the source when the provider matches the filter', () => {
+      const { result } = renderUseBridging(
+        singlePolygonStore(CHAIN_IDS.POLYGON),
+      );
+
+      result.current.openBridgeExperience(MetaMetricsSwapsEventSource.MainView);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({ search: '' }),
+        expect.anything(),
+      );
+    });
   });
 });

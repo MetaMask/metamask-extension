@@ -208,10 +208,6 @@
   "fast": {
     "message": "Ràpid"
   },
-  "fileImportFail": {
-    "message": "La importació no funciona? Fes clic aquí!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Oblida aquest dispositiu"
   },
@@ -220,9 +216,6 @@
   },
   "gasLimit": {
     "message": "Límit de gas"
-  },
-  "gasLimitTooLow": {
-    "message": "El límit de gas ha de ser al menys 21000"
   },
   "gasUsed": {
     "message": "Gas utilitzat"
@@ -383,10 +376,6 @@
   "passwordsDontMatch": {
     "message": "Les contrasenyes no coincideixen"
   },
-  "pastePrivateKey": {
-    "message": "Enganxa la teva cadena clau privada aquí:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "pendent"
   },
@@ -399,9 +388,6 @@
   "privateKey": {
     "message": "Clau privada",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Atenció: No divulguis mai aquesta clau. Qualsevol amb les teves claus privades pot robar qualsevol actiu que tinguis al teu compte."
   },
   "privateNetwork": {
     "message": "Xarxa privada"
@@ -568,9 +554,6 @@
   },
   "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
-  },
-  "usedByClients": {
-    "message": "Utilitzat per tot tipus de clients"
   },
   "visitWebSite": {
     "message": "Visita el nostre lloc web"

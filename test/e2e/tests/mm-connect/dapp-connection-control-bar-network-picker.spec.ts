@@ -16,7 +16,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { approveConnect } from '../../page-objects/flows/connect.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 

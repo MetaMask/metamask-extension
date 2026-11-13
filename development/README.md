@@ -113,7 +113,7 @@ Environments are determined by `development/build/utils.js:getEnvironment()`:
 
 ### DSN Selection Logic
 
-The Sentry target DSN is determined by `app/scripts/lib/setupSentry.js:getSentryTarget()`:
+The Sentry target DSN is determined by `app/scripts/lib/setupSentry.ts:getSentryTarget()`:
 
 ```
 if (IN_TEST && !SENTRY_DSN_DEV)     → SENTRY_DSN_FAKE (no events sent)

@@ -1,34 +1,30 @@
-import React from 'react';
-import { screen } from '@testing-library/react';
+import React, { useState } from 'react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import {
-  useIsTransactionPayLoading,
-  useTransactionPayIsMaxAmount,
-} from '../../../hooks/pay/useTransactionPayData';
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../../../test/lib/mock-resize-observer';
 import { CustomAmount, CustomAmountSkeleton } from './custom-amount';
-
-jest.mock('../../../hooks/pay/useTransactionPayData');
-
-const mockUseTransactionPayIsMaxAmount = jest.mocked(
-  useTransactionPayIsMaxAmount,
-);
-const mockUseIsTransactionPayLoading = jest.mocked(useIsTransactionPayLoading);
 
 const mockStore = configureStore([thunk]);
 
-const getMockState = (currentCurrency = 'usd') => ({
+const getMockState = (selectedCurrency = 'usd') => ({
   metamask: {
-    currentCurrency,
+    selectedCurrency,
   },
 });
+
+const CustomAmountHarness = ({ initialAmount }: { initialAmount: string }) => {
+  const [amountFiat, setAmountFiat] = useState(initialAmount);
+  return <CustomAmount amountFiat={amountFiat} onChange={setAmountFiat} />;
+};
 
 describe('CustomAmount', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(false);
-    mockUseIsTransactionPayLoading.mockReturnValue(false);
   });
 
   it('renders amount', () => {
@@ -47,7 +43,7 @@ describe('CustomAmount', () => {
       store,
     );
 
-    expect(screen.getByText('€')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-prefix')).toHaveTextContent('€');
   });
 
   it('renders selected currency symbol if currency not specified', () => {
@@ -55,7 +51,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
-    expect(screen.getByText('$')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-prefix')).toHaveTextContent('$');
   });
 
   it('renders skeleton if loading', () => {
@@ -64,39 +60,6 @@ describe('CustomAmount', () => {
     renderWithProvider(<CustomAmount amountFiat="123.45" isLoading />, store);
 
     expect(screen.getByTestId('custom-amount-skeleton')).toBeInTheDocument();
-  });
-
-  it('renders skeleton when max amount and quotes are loading', () => {
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(true);
-    mockUseIsTransactionPayLoading.mockReturnValue(true);
-
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
-
-    expect(screen.getByTestId('custom-amount-skeleton')).toBeInTheDocument();
-  });
-
-  it('renders amount when max amount but quotes are not loading', () => {
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(true);
-    mockUseIsTransactionPayLoading.mockReturnValue(false);
-
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
-
-    expect(screen.getByTestId('custom-amount-input')).toHaveValue('123.45');
-  });
-
-  it('renders amount when quotes are loading but not max amount', () => {
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(false);
-    mockUseIsTransactionPayLoading.mockReturnValue(true);
-
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
-
-    expect(screen.getByTestId('custom-amount-input')).toHaveValue('123.45');
   });
 
   it('renders with error color when hasAlert is true', () => {
@@ -117,7 +80,23 @@ describe('CustomAmount', () => {
     expect(amountElement).toBeInTheDocument();
   });
 
-  it('uses smaller font size for longer amounts', () => {
+  it('sets the symbol, measuring text and input in Hero at the same size', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="100" />, store);
+
+    const symbol = screen.getByTestId('custom-amount-prefix');
+    const input = screen.getByTestId('custom-amount-input');
+    const measuringText = screen.getByTestId('custom-amount-value');
+
+    expect(measuringText).toHaveTextContent('100');
+    for (const element of [symbol, measuringText, input]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
+    }
+  });
+
+  it('steps down the shared amount scale for longer amounts', () => {
     const store = mockStore(getMockState());
 
     renderWithProvider(
@@ -125,35 +104,134 @@ describe('CustomAmount', () => {
       store,
     );
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '20px' });
-  });
-
-  it('uses larger font size for shorter amounts', () => {
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="100" />, store);
-
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '64px' });
+    expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
+      fontSize: '32px',
+      lineHeight: '32px',
+    });
   });
 
   it('accounts for the fiat symbol when choosing font size', () => {
     const store = mockStore(getMockState());
 
-    renderWithProvider(<CustomAmount amountFiat="7.863083" />, store);
+    renderWithProvider(<CustomAmount amountFiat="1234567.89" />, store);
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '40px' });
+    expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
+      fontSize: '60px',
+    });
   });
 
-  it('counts decimal separators as half a character when calculating input width', () => {
+  describe('measured width', () => {
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    const renderAtWidth = (width: number) => {
+      renderWithProvider(
+        <CustomAmount amountFiat="1234567.89" />,
+        mockStore(getMockState()),
+      );
+      act(() => resizeObserver.resize(width));
+      return screen.getByTestId('custom-amount-input');
+    };
+
+    it('keeps a long amount larger in a wide layout', () => {
+      expect(renderAtWidth(600)).toHaveStyle({ fontSize: '88px' });
+    });
+
+    it('steps a long amount down in a narrow layout', () => {
+      expect(renderAtWidth(250)).toHaveStyle({ fontSize: '48px' });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      renderWithProvider(
+        <CustomAmountHarness initialAmount="0" />,
+        mockStore(getMockState()),
+      );
+      act(() => resizeObserver.resize(600));
+      const input = screen.getByTestId('custom-amount-input');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
+
+      for (const value of ['1', '1234', '1234567', '1234567.89']) {
+        fireEvent.change(input, { target: { value } });
+      }
+
+      expect(input).toHaveValue('1234567.89');
+      expect(input).toHaveStyle({ fontSize: '88px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
+    });
+  });
+
+  it('displays at most 2 decimals for a parent-driven amount', () => {
     const store = mockStore(getMockState());
 
-    renderWithProvider(<CustomAmount amountFiat="1.33" />, store);
+    renderWithProvider(<CustomAmount amountFiat="7.863083" />, store);
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ width: '3.5ch' });
+    expect(screen.getByTestId('custom-amount-input')).toHaveValue('7.86');
+  });
+
+  it('keeps sub-cent parent-driven amounts fully visible', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="0.004" />, store);
+
+    expect(screen.getByTestId('custom-amount-input')).toHaveValue('0.004');
+  });
+
+  it('applies an edited amount', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmountHarness initialAmount="7.863083" />, store);
+
+    const input = screen.getByTestId('custom-amount-input');
+    expect(input).toHaveValue('7.86');
+
+    fireEvent.change(input, { target: { value: '1.23' } });
+
+    expect(input).toHaveValue('1.23');
+  });
+
+  it('ignores an edit with more than 2 decimals', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmountHarness initialAmount="0.00" />, store);
+
+    const input = screen.getByTestId('custom-amount-input');
+
+    fireEvent.change(input, { target: { value: '0.001' } });
+
+    expect(input).toHaveValue('0.00');
+  });
+
+  it('ignores an edit with more than 2 decimals after a comma separator', () => {
+    const store = mockStore(getMockState());
+    const onChange = jest.fn();
+
+    renderWithProvider(
+      <CustomAmount amountFiat="0" onChange={onChange} />,
+      store,
+    );
+
+    const input = screen.getByTestId('custom-amount-input');
+
+    fireEvent.change(input, { target: { value: '0,001' } });
+    expect(onChange).not.toHaveBeenCalled();
+
+    fireEvent.change(input, { target: { value: '0,01' } });
+    expect(onChange).toHaveBeenCalledWith('0,01');
   });
 
   it('auto-focuses the input when autoFocus is true', () => {

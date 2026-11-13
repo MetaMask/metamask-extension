@@ -39,6 +39,47 @@ function seedNetworkIfNeeded(order: RampsOrder): RampsOrder {
 }
 
 /**
+ * Returns the `0x`-prefixed form of a bare 64-character hex hash, identity
+ * otherwise.
+ *
+ * Coinbase (and possibly other providers) return settlement hashes without
+ * the `0x` prefix, while EVM consumers (`getExplorerTxUrl`, the Transaction
+ * ID row, and settlement dedupe) require `0x`-prefixed strict hex. Non-EVM
+ * chains use bare hashes natively (Bitcoin, Tron), so callers must not apply
+ * this to hashes on non-EVM chains.
+ *
+ * @param hash - The provider's raw tx hash.
+ * @returns The hash, `0x`-prefixed when it is a bare 64-character hex string.
+ */
+export function withEvmHashPrefix(
+  hash: string | undefined,
+): string | undefined {
+  return hash && /^[\da-f]{64}$/iu.test(hash) ? `0x${hash}` : hash;
+}
+
+/**
+ * Normalizes a mapped order's settlement hash for downstream EVM consumers.
+ *
+ * Non-EVM chains use bare hashes natively (Bitcoin, Tron), so their hashes
+ * pass through untouched. An all-zero hash is a provider placeholder, not a
+ * settlement, so it maps to undefined.
+ *
+ * @param hash - The mapped item's hash, already filtered for placeholders.
+ * @param chainId - The mapped item's resolved CAIP chain id.
+ * @returns The hash, `0x`-prefixed when it is a bare EVM hash.
+ */
+function normalizeItemHash(
+  hash: string | undefined,
+  chainId: string | undefined,
+): string | undefined {
+  if (!hash || !chainId?.startsWith('eip155:')) {
+    return hash;
+  }
+  const prefixed = withEvmHashPrefix(hash);
+  return prefixed && /^0x0+$/iu.test(prefixed) ? undefined : prefixed;
+}
+
+/**
  * Coerces a missing `txHash` to `''` for the shared mapper.
  *
  * @param order - The raw ramps order.
@@ -74,6 +115,7 @@ export function mapRampsOrderSafely(
 
     return {
       ...item,
+      hash: normalizeItemHash(item.hash, item.chainId),
       data: {
         ...item.data,
         token: item.data.token

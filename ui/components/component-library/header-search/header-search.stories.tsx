@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import type { StoryFn, Meta } from '@storybook/react';
+import React, { useState } from 'react';
+import type { StoryFn, Meta } from '@storybook/react-webpack5';
 import { HeaderSearch } from './header-search';
 import { HeaderSearchVariant } from './header-search.types';
 
@@ -20,6 +20,7 @@ export default {
     textFieldSearchProps: {
       value: '',
       placeholder: 'Search',
+      inputAriaLabel: 'Search',
     },
   },
 } as Meta<typeof HeaderSearch>;
@@ -27,10 +28,12 @@ export default {
 const Template: StoryFn<typeof HeaderSearch> = (args) => {
   const initialValue = (args.textFieldSearchProps?.value as string) ?? '';
   const [value, setValue] = useState(initialValue);
+  const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
 
-  useEffect(() => {
+  if (initialValue !== prevInitialValue) {
+    setPrevInitialValue(initialValue);
     setValue(initialValue);
-  }, [initialValue]);
+  }
 
   const handleChangeText = (text: string) => {
     setValue(text);
@@ -56,6 +59,7 @@ Screen.args = {
   textFieldSearchProps: {
     value: '',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };
 
@@ -66,6 +70,7 @@ Inline.args = {
   textFieldSearchProps: {
     value: '',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };
 
@@ -76,6 +81,7 @@ ScreenWithValue.args = {
   textFieldSearchProps: {
     value: 'Search query',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };
 
@@ -86,5 +92,6 @@ InlineWithValue.args = {
   textFieldSearchProps: {
     value: 'Search query',
     placeholder: 'Search',
+    inputAriaLabel: 'Search',
   },
 };

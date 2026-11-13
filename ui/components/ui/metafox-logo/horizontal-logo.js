@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { ThemeType } from '../../../../shared/constants/preferences';
 
@@ -9,21 +9,12 @@ export default function MetaFoxHorizontalLogo({
   theme: themeProps,
   className,
 }) {
-  const [theme, setTheme] = useState(() =>
+  const theme =
     themeProps === undefined
       ? document.documentElement.getAttribute('data-theme')
-      : themeProps,
-  );
+      : themeProps;
 
   const fill = theme === ThemeType.dark ? 'rgb(255,255,255)' : 'rgb(22,22,22)';
-
-  useEffect(() => {
-    let newTheme = themeProps;
-    if (newTheme === undefined) {
-      newTheme = document.documentElement.getAttribute('data-theme');
-    }
-    setTheme(newTheme);
-  }, [themeProps, setTheme]);
 
   return (
     <svg

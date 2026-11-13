@@ -8,6 +8,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import {
+  type CaipAssetType,
   type CaipChainId,
   type Hex,
   parseCaipAssetType,
@@ -16,16 +17,21 @@ import {
   AssetType,
   FeatureId,
   formatAddressToCaipReference,
+  formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
+  SwapFeatureTag,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { v4 as uuidv4 } from 'uuid';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
+import { getChainIdFromAssetId } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
+  ACTIVITY_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -41,6 +47,7 @@ import {
 } from '../../ducks/bridge/actions';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { useDispatch } from '../../store/hooks';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -60,12 +67,6 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
           isNative?: boolean;
         })
       | null;
-    /**
-     * If this is set, the user will be redirected back to the home page regardless of
-     * the presence of a bridgeState or token. Used to prevent redirecting back to the bridge
-     * page after transaction submission.
-     */
-    stayOnHomePage?: boolean;
     /**
      * Prepared sendBundle transaction metadata for hardware-wallet signing on
      * the shared signing page.
@@ -101,30 +102,68 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
        */
       gasSymbol?: string;
     } | null;
+    swapViewTraceId?: string;
+    swapViewPrefilledAmount?: boolean;
   };
 };
 
 const clearSendBundleIfPresent = (state: BridgeNavigationOptions['state']) =>
   Object.hasOwn(state, 'sendBundle') ? { sendBundle: null } : {};
 
+export const startSwapViewLoadTrace = ({
+  token,
+  search,
+  entryPoint,
+}: {
+  token: BridgeNavigationOptions['state']['token'];
+  search: URLSearchParams;
+  entryPoint?: string;
+}) => {
+  const id = uuidv4();
+  const srcChainId = token?.chainId
+    ? formatChainIdToCaip(token.chainId)
+    : getChainIdFromAssetId(
+        search.get(BridgeQueryParams.From) as CaipAssetType,
+      );
+  const destChainId = getChainIdFromAssetId(
+    search.get(BridgeQueryParams.To) as CaipAssetType,
+  );
+
+  trace({
+    name: TraceName.SwapViewLoaded,
+    op: TraceOperation.BridgeScreenPerformance,
+    tags: { feature: SwapFeatureTag.SWAP },
+    id,
+    data: {
+      /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
+      entry_point: entryPoint ?? 'unknown',
+      view_mode: 'Unified',
+      prefilled_amount: Boolean(search.get(BridgeQueryParams.Amount)),
+      ...(srcChainId && { src_chain_id: srcChainId }),
+      ...(destChainId && { dest_chain_id: destChainId }),
+      /* eslint-enable @typescript-eslint/naming-convention */
+    },
+    startTime: Date.now(),
+  });
+
+  return id;
+};
+
 /**
  * Builds a "cleared" bridge navigation state: preserves any extra props from
  * `baseState` while resetting `bridgeState`, `token`, and any existing
- * `sendBundle` to null and setting `stayOnHomePage` to the given value.
+ * `sendBundle` to null.
  *
  * @param baseState - The base navigation state to spread (extra props pass through).
- * @param stayOnHomePage - Whether the user should be kept on the home page.
  * @returns The cleared navigation state.
  */
 const clearedBridgeState = (
   baseState: BridgeNavigationOptions['state'],
-  stayOnHomePage: boolean,
 ): BridgeNavigationOptions['state'] => ({
   ...baseState,
   bridgeState: null,
   token: null,
   ...clearSendBundleIfPresent(baseState),
-  stayOnHomePage,
 });
 
 /**
@@ -150,43 +189,13 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (
-      to: To = { pathname },
-      options: { replace?: boolean } = {},
-      stayOnHomePage = false,
-    ) => {
+    (to: To = { pathname, search }, options: { replace?: boolean } = {}) => {
       navigate(to, {
-        state: clearedBridgeState(state, stayOnHomePage),
+        state: clearedBridgeState(state),
         ...options,
       });
     },
-    [navigate, state, pathname],
-  );
-
-  /**
-   * Clears the search params for the given parameters.
-   * @param paramsToRemove - The parameters to clear.
-   */
-  const resetSearchParams = useCallback(
-    (paramsToRemove: BridgeQueryParams[]) => {
-      const updatedSearchParams = new URLSearchParams(search);
-      paramsToRemove.forEach((param) => {
-        if (updatedSearchParams.get(param)) {
-          updatedSearchParams.delete(param);
-        }
-      });
-      navigate(
-        {
-          pathname,
-          search: updatedSearchParams.toString(),
-        },
-        {
-          replace: true,
-          state,
-        },
-      );
-    },
-    [navigate, search, pathname, state],
+    [navigate, state, pathname, search],
   );
 
   /**
@@ -201,13 +210,21 @@ export const useBridgeNavigation = () => {
         token: BridgeNavigationOptions['state']['token'];
         search: URLSearchParams;
         isEntrypoint: boolean;
+        entryPoint?: string;
       } = {
         token: state?.token,
         search: new URLSearchParams(''),
         isEntrypoint: false,
       },
     ) => {
-      const { token, search: searchParams, isEntrypoint } = params;
+      const { token, search: searchParams, isEntrypoint, entryPoint } = params;
+      const swapViewTraceId = isEntrypoint
+        ? startSwapViewLoadTrace({
+            token,
+            search: searchParams,
+            entryPoint,
+          })
+        : undefined;
       // Publish PageViewed event on initial page view
       isEntrypoint &&
         dispatch(
@@ -227,6 +244,14 @@ export const useBridgeNavigation = () => {
           state: {
             ...state,
             token,
+            ...(swapViewTraceId
+              ? {
+                  swapViewTraceId,
+                  swapViewPrefilledAmount: Boolean(
+                    searchParams.get(BridgeQueryParams.Amount),
+                  ),
+                }
+              : {}),
             ...clearSendBundleIfPresent(state),
           },
           replace: !isEntrypoint,
@@ -298,28 +323,37 @@ export const useBridgeNavigation = () => {
   const navigateToHwSigningPage = useCallback(
     (nextState: Partial<BridgeNavigationOptions['state']> = {}) => {
       const hasSendBundleState = Object.hasOwn(nextState, 'sendBundle');
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
-        // For the sendBundle (send) flow, the signing page replaces the
-        // /confirm-transaction entry so that cancelling returns the user
-        // cleanly to the send flow (and back-button -> home) instead of
-        // leaving a stale confirmation entry in the history stack.
-        ...(hasSendBundleState ? { replace: true } : {}),
-        state: {
-          ...state,
-          ...clearSendBundleIfPresent(state),
-          ...nextState,
+      // Carried over so post-signing navigation can return to Transaction Shield.
+      const shieldSearch = new URLSearchParams(search).get(
+        BridgeQueryParams.IsFromTransactionShield,
+      )
+        ? `?${BridgeQueryParams.IsFromTransactionShield}=true`
+        : '';
+      navigate(
+        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}${shieldSearch}`,
+        {
+          // For the sendBundle (send) flow, the signing page replaces the
+          // /confirm-transaction entry so that cancelling returns the user
+          // cleanly to the send flow (and back-button -> home) instead of
+          // leaving a stale confirmation entry in the history stack.
+          ...(hasSendBundleState ? { replace: true } : {}),
+          state: {
+            ...state,
+            ...clearSendBundleIfPresent(state),
+            ...nextState,
+          },
         },
-      });
+      );
     },
-    [navigate, state],
+    [navigate, search, state],
   );
 
   /**
    * Navigates to the activity page and clears the navigation state.
    */
   const navigateToActivityPage = useCallback(() => {
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      state: clearedBridgeState(state, true),
+    navigate(ACTIVITY_ROUTE, {
+      state: clearedBridgeState(state),
       replace: true,
     });
   }, [navigate, state]);
@@ -333,7 +367,7 @@ export const useBridgeNavigation = () => {
       if (isFromTransactionShield) {
         resetLocationState(TRANSACTION_SHIELD_ROUTE, options);
       } else {
-        resetLocationState(DEFAULT_ROUTE, options, true);
+        resetLocationState(DEFAULT_ROUTE, options);
       }
     },
     [dispatch, search, resetLocationState],
@@ -352,9 +386,10 @@ export const useBridgeNavigation = () => {
      * from the asset page
      */
     token: memoizedToken,
+    swapViewTraceId: state.swapViewTraceId,
+    swapViewPrefilledAmount: state.swapViewPrefilledAmount,
     search,
     resetLocationState,
-    resetSearchParams,
     navigateToAssetPage,
     navigateToBridgePage,
     navigateToBridgeAssetPickerPage,

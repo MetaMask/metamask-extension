@@ -155,6 +155,7 @@ describe('build-quote utils', () => {
           hasQuoteFetchError: true,
           quotesResponse: null,
           selectedQuote: null,
+          quoteUnavailableMessage: 'Quote unavailable.',
         }),
         providerError: resolveDisplayedQuoteError({
           quoteFetchErrorMessage: null,
@@ -167,6 +168,7 @@ describe('build-quote utils', () => {
             error: [{ provider: 'transak', error: 'Something opaque' }],
           },
           selectedQuote: null,
+          quoteUnavailableMessage: 'Quote unavailable.',
         }),
         noError: resolveDisplayedQuoteError({
           quoteFetchErrorMessage: null,
@@ -179,8 +181,42 @@ describe('build-quote utils', () => {
             error: [],
           },
           selectedQuote: { provider: 'transak' },
+          quoteUnavailableMessage: 'Quote unavailable.',
         }),
       }).toMatchSnapshot();
+    });
+
+    it('returns the fallback message when quotes settle with none and no provider error', () => {
+      expect(
+        resolveDisplayedQuoteError({
+          quoteFetchErrorMessage: null,
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          hasQuoteFetchError: false,
+          quotesResponse: { success: [], error: [] },
+          selectedQuote: null,
+          quoteUnavailableMessage: 'Quote unavailable.',
+        }),
+      ).toBe('Quote unavailable.');
+    });
+
+    it('returns null while a quote is available', () => {
+      expect(
+        resolveDisplayedQuoteError({
+          quoteFetchErrorMessage: null,
+          hasAmount: true,
+          hasSettledQuoteAmount: true,
+          selectedQuoteLoading: false,
+          hasQuoteFetchError: false,
+          quotesResponse: {
+            success: [{ provider: 'transak' }] as Quote[],
+            error: [],
+          },
+          selectedQuote: { provider: 'transak' },
+          quoteUnavailableMessage: 'Quote unavailable.',
+        }),
+      ).toBeNull();
     });
   });
 

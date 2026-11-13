@@ -211,10 +211,6 @@
   "fast": {
     "message": "Gyors"
   },
-  "fileImportFail": {
-    "message": "Nem működik a fájl importálása? Kattintson ide!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Felejtse el ezt az eszközt"
   },
@@ -223,9 +219,6 @@
   },
   "gasLimit": {
     "message": "Gáz határértéke"
-  },
-  "gasLimitTooLow": {
-    "message": "A gáz határértéke legyen legalább 21000"
   },
   "gasUsed": {
     "message": "Használt gáz"
@@ -392,10 +385,6 @@
   "passwordsDontMatch": {
     "message": "A jelszavak nem egyeznek"
   },
-  "pastePrivateKey": {
-    "message": "Illessze be ide a privát kulcs karakterláncát:",
-    "description": "For importing an account from a private key"
-  },
   "pending": {
     "message": "folyamatban"
   },
@@ -411,9 +400,6 @@
   "privateKey": {
     "message": "Privát kulcs",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Figyelem! Soha ne adja át másnak ezt a kulcsot. A privát kulcs birtokában ellophatják a számláján lévő pénzeszközöket."
   },
   "privateNetwork": {
     "message": "Magánhálózat"
@@ -583,9 +569,6 @@
   },
   "urlErrorMsg": {
     "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."
-  },
-  "usedByClients": {
-    "message": "Számos különböző ügyfél használja"
   },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"

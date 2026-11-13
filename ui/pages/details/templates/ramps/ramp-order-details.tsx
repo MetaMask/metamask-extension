@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Button,
   ButtonSize,
@@ -7,6 +7,8 @@ import {
   IconName,
   IconSize,
   Text,
+  ModalBody,
+  ModalFooter,
 } from '@metamask/design-system-react';
 import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { isCaipAssetType } from '@metamask/utils';
@@ -18,8 +20,10 @@ import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRa
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
 import { useRampsScreenViewed } from '../../../../hooks/ramps/useRampsScreenViewed';
 import { hasPositiveNumericAmount } from '../../../../hooks/ramps/utils/hasPositiveNumericAmount';
+import { useBoolean } from '../../../../hooks/useBoolean';
+import { watchRampsProviderOrderTab } from '../../../../store/controller-actions/ramps-controller';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
-import { Footer, Row, Section } from '../../components/shared';
+import { Row, Section } from '../../components/shared';
 import { RampMetadataSection } from './ramp-metadata-section';
 import { RampTokensSection } from './ramp-tokens-section';
 
@@ -40,9 +44,14 @@ export function RampOrderDetails({
 }) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
   const { goToBuy } = useRampsNavigation();
   const { getOrderById } = useRampsOrders();
+  const {
+    value: isOpeningProviderOrder,
+    setTrue: setOpeningProviderOrder,
+    setFalse: setProviderOrderOpened,
+  } = useBoolean();
 
   // Reached from the activity list rather than the buy flow, so no region is
   // ever fetched here — fire on mount instead of waiting for one.
@@ -69,11 +78,43 @@ export function RampOrderDetails({
     ? t('rampsOrderDetailsProviderFee', [provider.name])
     : t('rampsOrderDetailsFees');
 
-  const handleViewOnProvider = () => {
-    if (provider?.orderLink) {
-      global.platform.openTab({ url: provider.orderLink });
+  const handleViewOnProvider = useCallback(async () => {
+    if (!provider?.orderLink || isOpeningProviderOrder) {
+      return;
     }
-  };
+
+    setOpeningProviderOrder();
+
+    // Re-open the provider order page under the background callback watcher so
+    // the provider's "Return to MetaMask" redirect lands back in the extension
+    // instead of on the blank callback page. Without the raw order (provider
+    // and wallet) the callback cannot be resolved, so just open the link.
+    try {
+      if (rawOrder?.provider?.id && rawOrder.walletAddress) {
+        await watchRampsProviderOrderTab({
+          url: provider.orderLink,
+          providerCode: rawOrder.provider.id,
+          walletAddress: rawOrder.walletAddress,
+          orderCode: orderId,
+        });
+        return;
+      }
+    } catch {
+      // Fall back to a plain tab open below.
+    } finally {
+      setProviderOrderOpened();
+    }
+
+    global.platform.openTab({ url: provider.orderLink });
+  }, [
+    isOpeningProviderOrder,
+    orderId,
+    rawOrder?.provider?.id,
+    rawOrder?.walletAddress,
+    setOpeningProviderOrder,
+    setProviderOrderOpened,
+    provider,
+  ]);
 
   const handleBuyAgain = () => {
     goToBuy(
@@ -84,8 +125,8 @@ export function RampOrderDetails({
   };
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <RampTokensSection item={item} />
         <RampMetadataSection
           item={item}
@@ -136,14 +177,16 @@ export function RampOrderDetails({
             )}
           </Section>
         ) : null}
-      </div>
-      <Footer>
+      </ModalBody>
+      <ModalFooter className="grid gap-4">
         {provider?.orderLink ? (
           <Button
             className="w-full"
             size={ButtonSize.Lg}
             variant={ButtonVariant.Secondary}
             onClick={handleViewOnProvider}
+            isDisabled={isOpeningProviderOrder}
+            isLoading={isOpeningProviderOrder}
           >
             {t('rampsOrderDetailsViewOnProvider', [provider.name ?? ''])}
           </Button>
@@ -159,7 +202,7 @@ export function RampOrderDetails({
             {t('rampsOrderDetailsBuyAgain')}
           </Button>
         ) : null}
-      </Footer>
-    </div>
+      </ModalFooter>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';

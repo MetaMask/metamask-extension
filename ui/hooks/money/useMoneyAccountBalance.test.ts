@@ -7,6 +7,7 @@ import type {
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
+import { reportMoneyQueryErrorOnce } from '../../helpers/money/report-money-error';
 import type { PersistedMoneyBalance } from '../../ducks/money-balance';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 import { useMoneyAccountBalance } from './useMoneyAccountBalance';
@@ -19,6 +20,11 @@ jest.mock('../../helpers/money/invalidate-balance-caches', () => ({
   invalidateMoneyAccountBalanceCaches: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('../../helpers/money/report-money-error', () => ({
+  ...jest.requireActual('../../helpers/money/report-money-error'),
+  reportMoneyQueryErrorOnce: jest.fn(),
+}));
+
 jest.mock('./useMoneyAccountInfo', () => ({
   useMoneyAccountInfo: jest.fn(),
 }));
@@ -26,6 +32,7 @@ jest.mock('./useMoneyAccountInfo', () => ({
 const mockUseQuery = jest.mocked(useQuery);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockInvalidateCaches = jest.mocked(invalidateMoneyAccountBalanceCaches);
+const mockReportMoneyQueryErrorOnce = jest.mocked(reportMoneyQueryErrorOnce);
 
 const MONEY_ADDRESS: Hex = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B';
 const OTHER_ADDRESS: Hex = '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117';
@@ -39,6 +46,7 @@ type QueryStub<Data> = {
   isLoading: boolean;
   isError?: boolean;
   isFetching?: boolean;
+  error?: unknown;
 };
 
 const LOADED_BALANCE: CanonicalMoneyAccountBalanceResponse = {
@@ -234,6 +242,49 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.withdrawableFiatRaw).toBe('2');
     });
 
+    it('rounds the withdrawable display down so it stays withdrawable', () => {
+      // Regression: CONF-2196. A $0.50 deposit credits 499,999 micro-units
+      // (one unit lost to vault-share conversion). Half-up rounding showed
+      // "Available balance: $0.50", but the amount field only accepts two
+      // decimals, so the smallest typable match was 0.50 — a hundredth of a
+      // cent more than held. That failed the balance check and blocked the
+      // withdraw outright, with no typable amount that would work.
+      stubQueries({
+        ...BALANCE_LOADED,
+        data: {
+          ...LOADED_BALANCE,
+          musdBalance: '0',
+          vmusdValueInMusd: '499999',
+          totalBalance: '499999',
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.withdrawableFiatFormatted).toBe('$0.49');
+      // Raw keeps full precision so Max still drains the whole vault.
+      expect(result.current.withdrawableFiatRaw).toBe('0.499999');
+      expect(result.current.withdrawableMusd?.toString()).toBe('0.499999');
+    });
+
+    it('keeps the total balance on half-up rounding', () => {
+      // Only the withdrawable figure doubles as a spendable target. The total
+      // is read-only, so it stays byte-identical with mobile's formatting.
+      stubQueries({
+        ...BALANCE_LOADED,
+        data: {
+          ...LOADED_BALANCE,
+          musdBalance: '0',
+          vmusdValueInMusd: '499999',
+          totalBalance: '499999',
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.totalFiatFormatted).toBe('$0.50');
+    });
+
     it('distinguishes a genuine zero from an unknown balance', () => {
       stubQueries({
         ...BALANCE_LOADED,
@@ -302,6 +353,20 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.withdrawableFiatRaw).toBeUndefined();
     });
 
+    it('forwards the failure to Sentry', () => {
+      const error = new Error('balance down');
+      stubQueries({ ...BALANCE_ERROR, error });
+
+      renderBalanceHook();
+
+      expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+        'fetchBalanceWithFallback',
+        '[Money Account] Balance fetch failed',
+        error,
+        { query: 'fetchBalanceWithFallback' },
+      );
+    });
+
     it('offers the last known balance instead', () => {
       const { result } = renderBalanceHook(undefined, {
         lastKnownBalance: {
@@ -349,6 +414,21 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.apyDecimal).toBe(0.05);
       expect(result.current.apyPercent).toBe(5);
       expect(result.current.apyPercentFormatted).toBe('5%');
+    });
+
+    it('survives a live APY with full float precision', () => {
+      // Real service values carry >15 significant digits, which
+      // `bignumber.js@4` rejects when passed as a number. Regression test for
+      // the crash that took down the whole balance surface.
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: apyResponse(0.06632893279913232),
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.apyPercent).toBe(6.6);
+      expect(result.current.apyPercentFormatted).toBe('6.6%');
     });
 
     it('prefers the override over the live APY', () => {
@@ -404,6 +484,20 @@ describe('useMoneyAccountBalance', () => {
 
       expect(result.current.apyDecimal).toBe(0.04);
       expect(result.current.apyPercentFormatted).toBe('4%');
+    });
+
+    it('forwards an APY fetch failure to Sentry', () => {
+      const error = new Error('apy down');
+      stubQueries(BALANCE_LOADED, { ...APY_ERROR, error });
+
+      renderBalanceHook();
+
+      expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+        'getVaultApy',
+        '[Money Account] Vault APY fetch failed',
+        error,
+        { query: 'getVaultApy' },
+      );
     });
 
     it('uses the fallback during the first load', () => {
