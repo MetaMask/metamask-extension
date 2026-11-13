@@ -351,9 +351,14 @@ export const NetworksPage = () => {
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
 
+        // An empty chain id becomes 0x0. Leave it off the event instead.
+        const reportedChainId = networkFormState.chainId?.trim()
+          ? getHexChainId(networkFormState.chainId)
+          : undefined;
+
         if (source === 'chainlist') {
           const rpcDomain = getRpcNickname(url);
-          const chainIdHex = getHexChainId(networkFormState.chainId);
+          const chainIdHex = reportedChainId;
           /* eslint-disable @typescript-eslint/naming-convention */
           trackEvent(
             createEventBuilder(MetaMetricsEventName.ChainlistRpcSelected)
@@ -384,7 +389,7 @@ export const NetworksPage = () => {
         trackRpcAdded(
           { trackEvent, createEventBuilder },
           {
-            chainId: getHexChainId(networkFormState.chainId),
+            chainId: reportedChainId,
             rpcCount: networkFormState.rpcUrls.rpcEndpoints.length + 1,
             source:
               source === 'chainlist'

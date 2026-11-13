@@ -44,7 +44,9 @@ export const useAddEthereumChain = () => {
   const onSubmit = useCallback(async () => {
     await dispatch(resolvePendingApproval(id, requestData));
 
-    if (chainId) {
+    // An approval for a chain that is already configured is an update.
+    // Network Added is only the new-network outcome.
+    if (chainId && !alreadyAdded) {
       trackNetworkAdded(
         { trackEvent, createEventBuilder },
         {
@@ -56,7 +58,15 @@ export const useAddEthereumChain = () => {
         },
       );
     }
-  }, [chainId, createEventBuilder, dispatch, id, requestData, trackEvent]);
+  }, [
+    alreadyAdded,
+    chainId,
+    createEventBuilder,
+    dispatch,
+    id,
+    requestData,
+    trackEvent,
+  ]);
 
   const onReject = useCallback(() => {
     if (!chainId) {
