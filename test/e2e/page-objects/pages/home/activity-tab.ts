@@ -362,7 +362,9 @@ class ActivityTab extends HomePage {
     tokenSymbol: string,
   ): Promise<void> {
     await this.driver.waitForSelector({
-      xpath: `//*[@data-testid="activity-list-item" and contains(., 'Bought ${tokenSymbol}') and contains(., '${providerName}')]`,
+      xpath: `//*[@data-testid="activity-list-item" and contains(., ${quoteXPathText(
+        `Bought ${tokenSymbol}`,
+      )}) and contains(., ${quoteXPathText(providerName)})]`,
     });
   }
 
