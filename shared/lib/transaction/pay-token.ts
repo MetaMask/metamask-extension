@@ -76,8 +76,14 @@ export function getEvmAsset(
  * @returns The CAIP-19 asset ID.
  */
 export function getEvmAssetId(address: Hex, chainId: Hex): CaipAssetType {
-  const isNative =
-    address.toLowerCase() === getPayNativeTokenAddress(chainId).toLowerCase();
+  // On Polygon, token lists use the zero address for native POL while Pay uses
+  // `0x…1010`; both are the native asset.
+  const isNative = [
+    NATIVE_TOKEN_ADDRESS,
+    getPayNativeTokenAddress(chainId),
+  ].some(
+    (nativeAddress) => address.toLowerCase() === nativeAddress.toLowerCase(),
+  );
   const nativeAssetId = isNative ? getNativeAssetId(chainId) : undefined;
 
   return (
