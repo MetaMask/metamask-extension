@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mapApiTransaction, mapV5ApiTransaction } from '@metamask/client-utils';
+import { mapV5ApiTransaction } from '@metamask/client-utils';
 import { isValidTransactionHash } from '../../../shared/lib/transactions.utils';
 import {
   selectEvmAddress,
@@ -54,17 +54,9 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       return rampsActivityItem;
     }
 
-    let apiActivityItem;
-    if (!apiTransaction) {
-      apiActivityItem = undefined;
-    } else if ('tx' in apiTransaction) {
-      apiActivityItem = mapV5ApiTransaction({ transaction: apiTransaction });
-    } else if (selectedAddress) {
-      apiActivityItem = mapApiTransaction({
-        subjectAddress: selectedAddress,
-        transaction: apiTransaction,
-      });
-    }
+    const apiActivityItem = apiTransaction
+      ? mapV5ApiTransaction({ transaction: apiTransaction })
+      : undefined;
 
     if (localActivityItem) {
       // More categorized items take precedence, unless it's a generic interaction
@@ -97,7 +89,6 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     localActivityItem,
     nonEvmActivityItem,
     rampsActivityItem,
-    selectedAddress,
   ]);
 
   return (
