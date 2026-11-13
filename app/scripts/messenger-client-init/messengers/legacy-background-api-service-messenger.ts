@@ -40,6 +40,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'NetworkEnablementController:enableAllPopularNetworks',
       'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
+      'NetworkEnablementController:setNetworkAdditionMode',
+      'NetworkEnablementController:isNonActiveAddition',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
