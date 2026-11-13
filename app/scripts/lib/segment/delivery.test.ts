@@ -1,8 +1,16 @@
-import { AnalyticsController } from '@metamask/analytics-controller';
-import { Messenger } from '@metamask/messenger';
+import { it as jestIt } from '@jest/globals';
+import {
+  AnalyticsController,
+  type AnalyticsControllerMessenger,
+} from '@metamask/analytics-controller';
+import type { ConfigRegistryControllerGetStateAction } from '@metamask/config-registry-controller';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getRootMessenger } from '../messenger';
-import { getAnalyticsControllerMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   createSegmentDeliveryGate,
   type SegmentDeliveryState,
@@ -79,7 +87,7 @@ describe('createSegmentDeliveryGate', () => {
     expect(client.track).toHaveBeenCalledTimes(1);
   });
 
-  it.each(['track', 'identify', 'page'] as const)(
+  jestIt.each(['track', 'identify', 'page'] as const)(
     'gates %s delivery',
     (method) => {
       const { segment, client, updateState } = setup();
@@ -193,10 +201,12 @@ describe('createSegmentDeliveryGate', () => {
     function startSession(state?: AnalyticsController['state']) {
       const gate = setup();
       const root = getRootMessenger();
-      const configMessenger = new Messenger({
-        namespace: 'ConfigRegistryController',
-        parent: root,
-      });
+      const configMessenger = new Messenger<
+        'ConfigRegistryController',
+        ConfigRegistryControllerGetStateAction,
+        never,
+        typeof root
+      >({ namespace: 'ConfigRegistryController', parent: root });
       configMessenger.registerActionHandler(
         'ConfigRegistryController:getState',
         () => ({
@@ -206,8 +216,22 @@ describe('createSegmentDeliveryGate', () => {
           etag: null,
         }),
       );
+      const analyticsMessenger = new Messenger<
+        'AnalyticsController',
+        MessengerActions<AnalyticsControllerMessenger>,
+        MessengerEvents<AnalyticsControllerMessenger>,
+        typeof root
+      >({ namespace: 'AnalyticsController', parent: root });
+      root.delegate({
+        messenger: analyticsMessenger,
+        actions: [
+          'ConfigRegistryController:getState',
+          'GeolocationController:getGeolocationData',
+        ],
+        events: ['ConfigRegistryController:stateChanged'],
+      });
       const controller = new AnalyticsController({
-        messenger: getAnalyticsControllerMessenger(root),
+        messenger: analyticsMessenger,
         platformAdapter: {
           skipUUIDv4Check: true,
           onSetupCompleted: () => undefined,
@@ -236,7 +260,7 @@ describe('createSegmentDeliveryGate', () => {
           OnboardingController: { completedOnboarding },
           AnalyticsController: controller.state,
         });
-      root.subscribe('AnalyticsController:stateChanged', () => syncState());
+      root.subscribe('AnalyticsController:stateChange', () => syncState());
       syncState();
       return { ...gate, controller, syncState };
     }
