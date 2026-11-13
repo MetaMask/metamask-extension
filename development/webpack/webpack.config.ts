@@ -228,6 +228,12 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // SPIKE: copied verbatim (not bundled) so it stays outside LavaMoat and
+      // runs before the deferred bundles. Must have zero imports.
+      {
+        from: join(context, 'scripts/load/home-shell.js'),
+        to: 'home-shell.js',
+      },
       // TODO: find alternative way to handle cashtag widget styles
       {
         from: join(context, 'scripts/cashtag/widget/widget.css'),
