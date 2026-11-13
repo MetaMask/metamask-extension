@@ -2154,7 +2154,7 @@ describe('LegacyBackgroundApiService', () => {
 
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        // Core processes the network
+        // NetworkEnablementController processes the network
         currentState = {
           enabledNetworkMap: { eip155: { '0x1': true } },
         };
@@ -2173,7 +2173,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('restores the previous map with the added network enabled when core enables it', async () => {
+    it('restores the previous map with the added network enabled when NetworkEnablementController enables it', async () => {
       await withService(async ({ rootMessenger }) => {
         const restoreEnabledNetworkMapHandler = jest.fn();
         let currentState: {
@@ -2209,7 +2209,7 @@ describe('LegacyBackgroundApiService', () => {
 
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        // Core enables the added network
+        // NetworkEnablementController enables the added network
         currentState = {
           enabledNetworkMap: { eip155: { '0x1': true, '0xa': true } },
         };
@@ -2227,7 +2227,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('restores the previous map unchanged when core replaced the selection', async () => {
+    it('restores the previous map unchanged when NetworkEnablementController replaced the selection', async () => {
       await withService(async ({ rootMessenger }) => {
         const restoreEnabledNetworkMapHandler = jest.fn();
         let currentState: {
@@ -2263,7 +2263,7 @@ describe('LegacyBackgroundApiService', () => {
 
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        // Core replaced the selection: disabled 0x1, enabled only 0xa
+        // NetworkEnablementController replaced the selection: disabled 0x1, enabled only 0xa
         currentState = {
           enabledNetworkMap: { eip155: { '0x1': false, '0xa': true } },
         };
@@ -2275,14 +2275,14 @@ describe('LegacyBackgroundApiService', () => {
 
         await promise;
 
-        // Restored map unchanged (excludes 0xa) to cancel core's selection switch
+        // Restored map unchanged (excludes 0xa) to cancel NetworkEnablementController's selection switch
         expect(restoreEnabledNetworkMapHandler).toHaveBeenCalledWith({
           eip155: { '0x1': true },
         });
       });
     });
 
-    it('restores only Solana when core replaces non-EVM selection with new EVM chain', async () => {
+    it('restores only Solana when NetworkEnablementController replaces non-EVM selection with new EVM chain', async () => {
       await withService(async ({ rootMessenger }) => {
         const restoreEnabledNetworkMapHandler = jest.fn();
         let currentState: {
@@ -2325,7 +2325,7 @@ describe('LegacyBackgroundApiService', () => {
 
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        // Core replaced selection: disabled Solana, enabled only new EVM chain
+        // NetworkEnablementController replaced selection: disabled Solana, enabled only new EVM chain
         currentState = {
           enabledNetworkMap: {
             solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': false },
@@ -2392,7 +2392,7 @@ describe('LegacyBackgroundApiService', () => {
 
         await new Promise((resolve) => setTimeout(resolve, 0));
 
-        // Core in popular mode: added new chain, kept all others including Solana
+        // NetworkEnablementController in popular mode: added new chain, kept all others including Solana
         currentState = {
           enabledNetworkMap: {
             eip155: {
