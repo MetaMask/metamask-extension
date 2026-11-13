@@ -949,9 +949,7 @@ describe('MetaMaskController', () => {
           ).resolves.toBeUndefined();
 
           await waitForAllPromises();
-          expect(captureException).toHaveBeenCalledWith(persistenceError, {
-            extra: { assetId: expect.any(String), chainId: '0x1' },
-          });
+          expect(captureException).toHaveBeenCalledWith(persistenceError);
         });
       });
     });
