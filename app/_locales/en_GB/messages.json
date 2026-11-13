@@ -3523,7 +3523,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Update to the latest version of MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
@@ -3536,6 +3536,12 @@
   },
   "deepLink_GoToTheHomePageButton": {
     "message": "Go to the home page"
+  },
+  "deepLink_MobileShareDescription": {
+    "message": "Scan this QR code with your mobile device to open this link in MetaMask Mobile."
+  },
+  "deepLink_MobileShareTitle": {
+    "message": "Continue on MetaMask Mobile"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
@@ -3664,10 +3670,6 @@
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "This will delete historical MetaMetrics data associated with your wallet. MetaMetrics includes anonymized usage and diagnostic data. Your wallet and accounts will remain the same. This process may take up to 30 days. View our $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3675,14 +3677,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "We are unable to delete this data right now"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Unable to delete"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "We are about to remove all your MetaMetrics data. Are you sure?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Delete MetaMetrics data?"
@@ -5577,9 +5573,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Since you've never opted into MetaMetrics, there's no data to delete here."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -5958,6 +5951,10 @@
   },
   "moneyActivity": {
     "message": "Activity"
+  },
+  "moneyActivityAmountUnavailable": {
+    "message": "Amount unavailable",
+    "description": "Shown in place of a Money card activity amount when the historical mUSD value cannot be calculated"
   },
   "moneyActivityCard": {
     "message": "Card"
@@ -9916,7 +9913,7 @@
     "message": "Failed to add account"
   },
   "rewardsMoneyReferralActiveTrader": {
-    "message": "You cannot be referred because of recent trading activity."
+    "message": "This referral code is only valid for new traders."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "You have already been referred by another user."
@@ -12036,7 +12033,7 @@
   },
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Turn on Smart Transactions for more reliable and secure transactions. $1"
@@ -12180,7 +12177,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Swap failed"

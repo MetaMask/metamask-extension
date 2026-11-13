@@ -17,6 +17,8 @@ const referralMe = {
     inviteReferralCode: 'Code',
     inviteDecline: 'Decline',
     inviteAccept: 'Accept',
+    inviteTermsLearnMore: 'Learn more',
+    inviteTermsUrl: '',
     inviteAcceptedEyebrow: 'Eyebrow',
     inviteAcceptedTitle: 'Title',
     inviteAcceptedBody: 'Body {date}',
