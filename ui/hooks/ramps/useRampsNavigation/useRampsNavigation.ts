@@ -64,7 +64,9 @@ type TokensState = ResourceState<TokensResponse | null, unknown>;
 // Resolve geolocation on demand; a failed lookup fails closed (undefined).
 async function resolveGeolocation(): Promise<string | undefined> {
   try {
-    return await submitRequestToBackground<string>('getGeolocation');
+    return await submitRequestToBackground(
+      'GeolocationController:getGeolocation',
+    );
   } catch {
     return undefined;
   }

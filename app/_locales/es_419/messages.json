@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Eliminar datos de MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Esto eliminará los datos históricos de MetaMetrics asociados con su uso en este dispositivo. Su monedero y cuentas permanecerán exactamente como están ahora después de que se eliminen estos datos. Este proceso puede tardar hasta 30 días. Consulte nuestra $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Esto eliminará los datos históricos de MetaMetrics asociados con tu billetera. MetaMetrics incluye datos de uso y diagnóstico anonimizados. Tu billetera y cuentas permanecerán iguales. Este proceso puede tardar hasta 30 días. Consulta nuestra $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Esta solicitud no se puede completar en este momento debido a un problema con el servidor del sistema de análisis. Vuelve a intentarlo más tarde."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "No pudimos eliminar estos datos en este momento"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "No se puede eliminar"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Estamos a punto de eliminar todos sus datos de MetaMetrics. ¿Está seguro?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "¿Eliminar datos de MetaMetrics?"
@@ -5396,9 +5386,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "El botón de estado de la conexión muestra si el sitio web que visita está conectado a la cuenta seleccionada actualmente."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Como nunca ha utilizado MetaMetrics, no hay datos que eliminar aquí."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 está alojado en npm y $2 es el identificador único de este Snap.",

@@ -3,6 +3,19 @@
 import nock from 'nock';
 import '@testing-library/jest-dom';
 
+// JSDOM does not implement native dialog lifecycle or browser focus isolation.
+if (globalThis.HTMLDialogElement) {
+  globalThis.HTMLDialogElement.prototype.showModal = function () {
+    this.open = true;
+  };
+  globalThis.HTMLDialogElement.prototype.close = function () {
+    if (this.open) {
+      this.open = false;
+      this.dispatchEvent(new Event('close'));
+    }
+  };
+}
+
 jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
