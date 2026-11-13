@@ -51,7 +51,10 @@ import {
   setTokenNetworkFilter,
   detectNfts,
 } from '../../../store/actions';
-import { isDisableableDefaultNetwork } from '../../../helpers/utils/network-sections';
+import {
+  getNetworkSectionKey,
+  isDisableableDefaultNetwork,
+} from '../../../helpers/utils/network-sections';
 import type { NetworkItemCallbacks } from '../network-manager/hooks/useNetworkItemCallbacks';
 import {
   CHAIN_IDS,
@@ -103,9 +106,8 @@ import {
   trackNetworkRemoved,
   trackRpcAdded,
   useTrackNetworkManagementStep,
-  getNetworkManagementStep,
+  type NetworkManagementStep,
 } from '../../../helpers/utils/network-management-metrics';
-import { getNetworkSectionKey } from '../../../helpers/utils/network-sections';
 import {
   convertCaipToHexChainId,
   sortNetworks,
@@ -153,6 +155,14 @@ export enum ACTION_MODE {
 type NetworkListMenuProps = {
   onClose: () => void;
 };
+
+const PICKER_STEPS: Partial<Record<ACTION_MODE, NetworkManagementStep>> = {
+  [ACTION_MODE.ADD_RPC]: 'rpc-form-add',
+  [ACTION_MODE.SELECT_RPC]: 'rpc-selector',
+};
+
+const getOptionalNetworkSectionKey = (chainId?: string) =>
+  chainId ? getNetworkSectionKey(chainId) : undefined;
 
 const isCustomNetworkConfiguration = (
   network: MultichainNetworkConfiguration,
@@ -290,21 +300,14 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const networkFormState = useNetworkFormState(editedNetwork);
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
-  const pickerView =
-    actionMode === ACTION_MODE.ADD_RPC ? 'add-rpc' : 'select-rpc';
-  const pickerStep =
-    actionMode === ACTION_MODE.ADD_RPC || actionMode === ACTION_MODE.SELECT_RPC
-      ? getNetworkManagementStep(pickerView)
-      : null;
+  const pickerStep = PICKER_STEPS[actionMode] ?? null;
 
   useTrackNetworkManagementStep({
     step: pickerStep,
     entryPoint: NetworkManagementEntryPoint.NetworkPicker,
     chainId: editedNetwork?.chainId,
     rpcCount: rpcUrls.rpcEndpoints.length,
-    networkType: editedNetwork?.chainId
-      ? getNetworkSectionKey(editedNetwork.chainId)
-      : undefined,
+    networkType: getOptionalNetworkSectionKey(editedNetwork?.chainId),
   });
 
   const [orderedNetworks, setOrderedNetworks] = useState(

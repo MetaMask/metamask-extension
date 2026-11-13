@@ -13,7 +13,10 @@ import {
   getRpcDataByChainId,
 } from '../../../../../shared/lib/network.utils';
 import { openWindow } from '../../../../helpers/utils/window';
-import { isDisableableDefaultNetwork } from '../../../../helpers/utils/network-sections';
+import {
+  getNetworkSectionKey,
+  isDisableableDefaultNetwork,
+} from '../../../../helpers/utils/network-sections';
 import {
   removeNetwork,
   setEditedNetwork,
@@ -38,7 +41,6 @@ import {
   trackNetworkManagementInteracted,
   trackNetworkRemoved,
 } from '../../../../helpers/utils/network-management-metrics';
-import { getNetworkSectionKey } from '../../../../helpers/utils/network-sections';
 
 export type NetworkItemCallbacks = {
   onDelete?: () => void;

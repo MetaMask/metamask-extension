@@ -40,12 +40,15 @@ const trackNetworkEvent = (
   event: MetaMetricsEventName,
   properties: Record<string, Json | undefined>,
 ) => {
-  trackEvent(
-    createEventBuilder(event)
-      .addCategory(MetaMetricsEventCategory.Network)
-      .addProperties(definedProperties(properties))
-      .build(),
-  );
+  // Analytics must not block the network flow when tracking fails.
+  Promise.resolve(
+    trackEvent(
+      createEventBuilder(event)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .addProperties(definedProperties(properties))
+        .build(),
+    ),
+  ).catch(() => undefined);
 };
 
 export const getChangedNetworkFields = (

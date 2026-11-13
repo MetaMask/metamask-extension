@@ -372,17 +372,18 @@ export const NetworksForm = ({
     );
 
     if (!existingNetwork) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
-          .addCategory(MetaMetricsEventCategory.Network)
-          .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            source_connection_method:
-              MetaMetricsNetworkEventSource.CustomNetworkForm,
-          })
-          .build(),
-      );
+      Promise.resolve(
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              source_connection_method:
+                MetaMetricsNetworkEventSource.CustomNetworkForm,
+            })
+            .build(),
+        ),
+      ).catch(() => undefined);
     }
     // Fire once when the form opens. Later field edits are not new views.
     // eslint-disable-next-line react-hooks/exhaustive-deps

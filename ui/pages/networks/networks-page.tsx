@@ -370,19 +370,21 @@ export const NetworksPage = () => {
               })
               .build(),
           );
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.ChainlistNetworkSelected)
-              .addCategory(MetaMetricsEventCategory.Network)
-              .addProperties({
-                chain_id: chainIdHex,
-                network_name: networkFormState.name,
-                already_added: Boolean(
-                  evmNetworks[chainIdHex as keyof typeof evmNetworks],
-                ),
-                entry_point: NetworkManagementEntryPoint.AddRpcForm,
-              })
-              .build(),
-          );
+          Promise.resolve(
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.ChainlistNetworkSelected)
+                .addCategory(MetaMetricsEventCategory.Network)
+                .addProperties({
+                  chain_id: chainIdHex,
+                  network_name: networkFormState.name,
+                  already_added: Boolean(
+                    evmNetworks[chainIdHex as keyof typeof evmNetworks],
+                  ),
+                  entry_point: NetworkManagementEntryPoint.AddRpcForm,
+                })
+                .build(),
+            ),
+          ).catch(() => undefined);
           /* eslint-enable @typescript-eslint/naming-convention */
         }
 
