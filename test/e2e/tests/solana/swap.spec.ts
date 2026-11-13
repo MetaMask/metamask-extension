@@ -547,7 +547,6 @@ describe('Swap on Solana', function () {
         await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
@@ -719,7 +718,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
@@ -760,7 +758,6 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
         const selectNetworkModal = new SelectNetworkModal(driver);
