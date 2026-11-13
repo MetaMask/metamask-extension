@@ -1,6 +1,6 @@
-import type * as Sentry from '@sentry/browser';
-import { it as jestIt } from '@jest/globals';
+import * as Sentry from '@sentry/browser';
 import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
+import { it as jestIt } from '@jest/globals';
 import {
   annotateTrace,
   endTrace,
@@ -15,6 +15,7 @@ import {
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
+  startNewTrace: jest.fn(),
   withScope: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
@@ -28,6 +29,7 @@ const {
   startSpan,
   startSpanManual,
   withIsolationScope,
+  startNewTrace,
   withScope,
   getActiveSpan,
   continueTrace,
@@ -55,6 +57,7 @@ describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
+  const startNewTraceMock = jest.mocked(startNewTrace);
   const withScopeMock = jest.mocked(withScope);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
@@ -68,16 +71,24 @@ describe('Trace', () => {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
+      startNewTrace: startNewTraceMock,
       withScope: withScopeMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
     };
 
-    startSpanMock.mockImplementation((_, fn) => fn({} as Sentry.Span));
+    startSpanMock.mockImplementation((_, fn) =>
+      fn({ setAttribute: jest.fn() } as unknown as Sentry.Span),
+    );
+
+    // Pass-through: run the wrapped callback so root traces still create spans.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    startNewTraceMock.mockImplementation((fn: any) => fn());
 
     startSpanManualMock.mockImplementation((_, fn) =>
-      fn({} as Sentry.Span, () => {
+      fn({ setAttribute: jest.fn() } as unknown as Sentry.Span, () => {
         // Intentionally empty
       }),
     );
@@ -291,6 +302,7 @@ describe('Trace', () => {
       const parentSpanMock = {
         end: spanEndMock,
         spanContext: jest.fn(),
+        setAttribute: jest.fn(),
       } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
@@ -326,6 +338,7 @@ describe('Trace', () => {
       const parentSpanMock = {
         end: spanEndMock,
         spanContext: jest.fn(),
+        setAttribute: jest.fn(),
       } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
@@ -359,7 +372,10 @@ describe('Trace', () => {
   describe('endTrace', () => {
     it('ends Sentry span matching name and specified ID', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -410,7 +426,10 @@ describe('Trace', () => {
 
     it('ends Sentry span matching name and default ID', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -432,7 +451,10 @@ describe('Trace', () => {
 
     it('ends Sentry span with custom timestamp', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -484,7 +506,10 @@ describe('Trace', () => {
 
     it('does not end Sentry span if name and ID does not match', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const spanMock = {
+        end: spanEndMock,
+        setAttribute: jest.fn(),
+      } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -522,8 +547,8 @@ describe('Trace', () => {
     });
   });
 
-  describe('getActiveSpan fallback', () => {
-    it('inherits from active span when no parentContext provided', () => {
+  describe('active-span fallback (opt-in via allowActiveSpanFallback)', () => {
+    it('does not inherit from the active span when the flag is absent', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
           traceId: 'abc123',
@@ -535,28 +560,89 @@ describe('Trace', () => {
 
       trace({ name: NAME_MOCK }, () => true);
 
-      expect(getActiveSpanMock).toHaveBeenCalledTimes(1);
+      // The span must start as a root, not grafted onto the ambient span, and
+      // the ambient span must not even be looked up.
       expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+      expect(startSpanMock).not.toHaveBeenCalledWith(
         expect.objectContaining({
           parentSpan: activeSpanMock,
         }),
         expect.any(Function),
       );
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('does not call getActiveSpan when parentContext is provided', () => {
+    it('inherits the active span and forces a transaction only when the flag is set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      trace({ name: NAME_MOCK, id: ID_MOCK }, () => true);
+
+      // Asserted as a pair: the flag, and nothing else, is what separates the
+      // inheriting call from the rooting one.
+      const [optedIn] = startSpanMock.mock.calls[0];
+      const [optedOut] = startSpanMock.mock.calls[1];
+
+      expect(optedIn).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
+      );
+      expect(optedOut).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+      );
+      expect(optedOut).not.toHaveProperty('forceTransaction');
+    });
+
+    it('lets an explicit parentContext win over the flag, without consulting getActiveSpan', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
       trace(
-        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        {
+          name: NAME_MOCK,
+          parentContext: PARENT_CONTEXT_MOCK,
+          allowActiveSpanFallback: true,
+        },
         () => true,
       );
 
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: PARENT_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
       expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('uses null parentSpan when no active span and no parentContext', () => {
+    it('roots the span when the flag is set but no active span exists', () => {
       getActiveSpanMock.mockReturnValue(undefined);
 
-      trace({ name: NAME_MOCK }, () => true);
+      expect(() => {
+        trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      }).not.toThrow();
 
       expect(startSpanMock).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -564,6 +650,121 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('still honours an explicitly provided parentContext', () => {
+      trace(
+        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        () => true,
+      );
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: PARENT_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe('forceTransaction', () => {
+    it('is absent when an active span exists but the flag is not set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK }, () => true);
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('is absent when a parentContext is provided', () => {
+      trace(
+        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        () => true,
+      );
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('is absent on the manually-ended (startSpanManual) path when the flag is not set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, id: ID_MOCK });
+
+      const [spanOptions] = startSpanManualMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({ parentSpan: null }),
+      );
+    });
+
+    it('is true on the manually-ended (startSpanManual) path when the flag is set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, id: ID_MOCK, allowActiveSpanFallback: true });
+
+      const [spanOptions] = startSpanManualMock.mock.calls[0];
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
+      );
+    });
+
+    it('does not inherit from the active span when root is true, even with allowActiveSpanFallback', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace(
+        { name: NAME_MOCK, root: true, allowActiveSpanFallback: true },
+        () => true,
+      );
+
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({ parentSpan: null }),
+      );
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('starts a new trace (fresh propagation context) when root is true', () => {
+      trace({ name: NAME_MOCK, root: true }, () => true);
+
+      // `withScope` alone would keep the ambient trace id.
+      expect(startNewTraceMock).toHaveBeenCalledTimes(1);
+      expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not start a new trace when root is not set', () => {
+      trace({ name: NAME_MOCK }, () => true);
+
+      expect(startNewTraceMock).not.toHaveBeenCalled();
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -612,6 +813,7 @@ describe('Trace', () => {
       const parentSpanMock = {
         end: spanEndMock,
         spanContext: jest.fn(),
+        setAttribute: jest.fn(),
       } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
@@ -649,6 +851,56 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+    });
+
+    // A named in-process parent missing from `tracesByKey` must not go through
+    // `continueTrace`, which would bill a new segment.
+    it('does not promote an unresolvable in-process parent to a segment', () => {
+      continueTraceMock.mockImplementation((_opts, fn) => fn());
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      // No pending trace is created, so the map lookup misses.
+      trace(
+        {
+          name: TraceName.Middleware,
+          parentContext: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _name: TraceName.Transaction,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _id: 'absent-from-map',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _traceId: 'trace123',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _spanId: 'span456',
+          },
+        },
+        () => true,
+      );
+
+      // A parent was named. Failing to resolve it locally must not silently
+      // convert the span into a billed root.
+      expect(continueTraceMock).not.toHaveBeenCalled();
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
+      expect(spanOptions.forceTransaction).toBeUndefined();
+    });
+
+    // `undefined` and `null` are different statements; only the first may be
+    // promoted to a transaction. See MetaMask/MetaMask-planning#7569.
+    it('does not promote a null parentContext to a segment', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, parentContext: null }, () => true);
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
   });
 
@@ -985,6 +1237,64 @@ describe('Trace', () => {
     });
   });
 
+  describe('trace key collision', () => {
+    it('flags the span that displaces an earlier pending trace of the same name', () => {
+      const firstSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+      const secondSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+
+      startSpanManualMock
+        .mockImplementationOnce((_, fn) =>
+          fn(firstSpan, () => {
+            // Intentionally empty
+          }),
+        )
+        .mockImplementationOnce((_, fn) =>
+          fn(secondSpan, () => {
+            // Intentionally empty
+          }),
+        );
+
+      // Same name, neither supplying an `id`, so both resolve to the key
+      // `<name>:default` and the second displaces the first.
+      trace({ name: TraceName.DisconnectAllModal });
+      trace({ name: TraceName.DisconnectAllModal });
+
+      expect(secondSpan.setAttribute).toHaveBeenCalledWith(
+        'trace.key_collision',
+        true,
+      );
+      expect(firstSpan.setAttribute).not.toHaveBeenCalledWith(
+        'trace.key_collision',
+        true,
+      );
+    });
+
+    it('does not flag distinct ids under the same name', () => {
+      const firstSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+      const secondSpan = { setAttribute: jest.fn() } as unknown as Sentry.Span;
+
+      startSpanManualMock
+        .mockImplementationOnce((_, fn) =>
+          fn(firstSpan, () => {
+            // Intentionally empty
+          }),
+        )
+        .mockImplementationOnce((_, fn) =>
+          fn(secondSpan, () => {
+            // Intentionally empty
+          }),
+        );
+
+      trace({ name: TraceName.ReceiveModal, id: 'a' });
+      trace({ name: TraceName.ReceiveModal, id: 'b' });
+
+      expect(secondSpan.setAttribute).not.toHaveBeenCalledWith(
+        'trace.key_collision',
+        true,
+      );
+    });
+  });
+
   // We intentionally use lots of underscore-prefixed properties in these tests.
   /* eslint-disable @typescript-eslint/naming-convention */
   describe('extractTraceMetadata', () => {
@@ -1045,4 +1355,160 @@ describe('Trace', () => {
     );
   });
   /* eslint-enable @typescript-eslint/naming-convention */
+});
+
+describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
+  // Real SDK in place of this file's `globalThis.sentry` mock: the overlap
+  // effect lives in Sentry's shared scope stack, not in trace.ts.
+
+  function deferred<Value = void>() {
+    let resolve!: (value: Value) => void;
+    const promise = new Promise<Value>((res) => {
+      resolve = res;
+    });
+    return { promise, resolve };
+  }
+
+  function initRealSentryClient(): void {
+    const client = new Sentry.BrowserClient({
+      dsn: 'https://public@example.ingest.sentry.io/1',
+      transport: () => ({
+        send: () => Promise.resolve({}),
+        flush: () => Promise.resolve(true),
+      }),
+      stackParser: Sentry.defaultStackParser,
+      integrations: [],
+      tracesSampleRate: 1,
+    });
+    Sentry.getCurrentScope().setClient(client);
+    client.init();
+    globalThis.sentry = { ...Sentry } as typeof globalThis.sentry;
+  }
+
+  // Steps N microtask ticks so pending `.then()` continuations settle in
+  // order. Nothing here is time-based -- it's purely promise-resolution
+  // order -- so this uses plain microtask stepping rather than fake timers.
+  async function tick(times = 1) {
+    for (let i = 0; i < times; i += 1) {
+      await Promise.resolve();
+    }
+  }
+
+  beforeEach(() => {
+    initRealSentryClient();
+  });
+
+  afterEach(() => {
+    Sentry.getCurrentScope().clear();
+    Sentry.getIsolationScope().clear();
+  });
+
+  describe('when two trace() calls run sequentially', () => {
+    it('does not parent the second span under the first', async () => {
+      await trace(
+        { name: NAME_MOCK, id: 'A-sequential' },
+        async () => undefined,
+      );
+      const spanB = await trace({ name: NAME_MOCK, id: 'B-sequential' }, () =>
+        Sentry.getActiveSpan(),
+      );
+
+      expect(spanB).toBeTruthy();
+      expect(spanB && Sentry.spanToJSON(spanB).parent_span_id).toBeUndefined();
+    });
+  });
+
+  describe('when a second, unrelated trace() call starts while the first is still pending', () => {
+    // Parentage only: root spans share a trace id even without overlap.
+    it('does not parent the second span under the still-pending first one', async () => {
+      const aGate = deferred<void>();
+      let spanA: Sentry.Span | null | undefined;
+
+      // A awaits aGate, so its scope layer stays on the stack until then.
+      const aPromise = trace({ name: NAME_MOCK, id: 'A-pending' }, async () => {
+        spanA = Sentry.getActiveSpan();
+        await aGate.promise;
+        return spanA;
+      });
+
+      expect(spanA).toBeTruthy();
+
+      try {
+        // B is a logically unrelated trace() call (no parentContext) issued
+        // while A is still pending.
+        let spanB: Sentry.Span | null | undefined;
+        const bPromise = trace(
+          { name: NAME_MOCK, id: 'B-concurrent-unrelated' },
+          () => {
+            spanB = Sentry.getActiveSpan();
+            return spanB;
+          },
+        );
+        await tick(3);
+
+        expect(spanB).toBeTruthy();
+        expect(
+          spanB && Sentry.spanToJSON(spanB).parent_span_id,
+        ).toBeUndefined();
+
+        await bPromise;
+      } finally {
+        aGate.resolve();
+        await aPromise;
+      }
+    });
+
+    // `spanC` should not inherit B's lineage.
+    it('does not let a third concurrent call inherit an already-corrupted lineage', async () => {
+      const aGate = deferred<void>();
+      const bGate = deferred<void>();
+
+      let spanA: Sentry.Span | null | undefined;
+      const aPromise = trace(
+        { name: NAME_MOCK, id: 'A-pending-2' },
+        async () => {
+          spanA = Sentry.getActiveSpan();
+          await aGate.promise;
+          return spanA;
+        },
+      );
+
+      let spanB: Sentry.Span | null | undefined;
+      const bPromise = trace(
+        { name: NAME_MOCK, id: 'B-pending-2' },
+        async () => {
+          spanB = Sentry.getActiveSpan();
+          await bGate.promise;
+          return spanB;
+        },
+      );
+
+      try {
+        let spanC: Sentry.Span | null | undefined;
+        const cPromise = trace(
+          { name: NAME_MOCK, id: 'C-concurrent-2' },
+          () => {
+            spanC = Sentry.getActiveSpan();
+            return spanC;
+          },
+        );
+        await tick(3);
+
+        expect(spanA).toBeTruthy();
+        expect(spanB).toBeTruthy();
+        expect(spanC).toBeTruthy();
+
+        expect(
+          spanC && Sentry.spanToJSON(spanC).parent_span_id,
+        ).toBeUndefined();
+
+        await cPromise;
+      } finally {
+        bGate.resolve();
+        await bPromise;
+        aGate.resolve();
+        await aPromise;
+      }
+    });
+  });
 });

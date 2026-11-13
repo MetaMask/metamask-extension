@@ -303,6 +303,13 @@ export type TraceRequest = {
   parentContext?: TraceContext;
 
   /**
+   * Inherit the active span, as a transaction, when no `parentContext` is given.
+   * Defaults to `false`, which starts a parentless span. Set it only where the
+   * active span is known to be the correct parent.
+   */
+  allowActiveSpanFallback?: boolean;
+
+  /**
    * Override the start time of the trace.
    */
   startTime?: number;
@@ -316,6 +323,12 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Start the span as the root of a new trace, ignoring the active span. A
+   * `parentContext` that resolves still takes precedence.
+   */
+  root?: boolean;
 };
 
 /**
@@ -735,6 +748,14 @@ function startTrace(request: TraceRequest): TraceContext {
 
     const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
+
+    // Same name and `id` (or both without one) means the same key: this `set`
+    // drops the pending trace, whose span then never ends.
+    if (tracesByKey.has(key)) {
+      log('WARNING: trace key collision, dropping pending trace', key);
+      span?.setAttribute('trace.key_collision', true);
+    }
+
     tracesByKey.set(key, pendingTrace);
 
     log('Started trace', name, id, request);
@@ -770,7 +791,7 @@ function isValidSentrySpan(value: unknown): value is Sentry.Span {
  * @returns Resolved Sentry Span or null.
  */
 function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
-  if (!parentContext) {
+  if (parentContext === null || parentContext === undefined) {
     return null;
   }
 
@@ -795,6 +816,14 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   return null;
 }
 
+function hasInProcessIdentity(value: unknown): value is { _name: string } {
+  return (
+    isObject(value) &&
+    hasProperty(value, '_name') &&
+    typeof value._name === 'string'
+  );
+}
+
 function hasDistributedTraceIds(
   value: unknown,
 ): value is { _traceId: string; _spanId: string } {
@@ -813,16 +842,25 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    allowActiveSpanFallback,
+    root,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
-  // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withScope
-  // forks the scope.
-  // forceTransaction preserves transaction-level visibility for monitoring while
-  // linking to the auto-instrumentation hierarchy.
+  // `undefined` means no parent was declared; `null` means one was intended but
+  // has no span. `resolveParentSpan` returns `null` for both, so read the input.
+  const parentDeclared = parentContext !== undefined;
+
+  // Read the active span before `withScope` forks the scope. `forceTransaction`
+  // keeps an inherited span in transaction-level dashboards.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!root && !parentSpan && !parentDeclared && allowActiveSpanFallback) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -836,12 +874,18 @@ function startSpan<T>(
     op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
-    forceTransaction,
+    ...(forceTransaction === undefined ? {} : { forceTransaction }),
   };
 
   // Cross-process propagation via continueTrace when we have serialized
   // trace/span IDs but couldn't resolve a local parent span from the map.
-  if (!parentSpan && hasDistributedTraceIds(parentContext)) {
+  // A context carrying `_name` was meant to resolve from the map; sending its
+  // lookup miss here would start a new, billed segment.
+  if (
+    !parentSpan &&
+    hasDistributedTraceIds(parentContext) &&
+    !hasInProcessIdentity(parentContext)
+  ) {
     const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
     return sentryContinueTrace(sentryTrace, () =>
       sentryWithScope((scope: Sentry.Scope) => {
@@ -851,10 +895,27 @@ function startSpan<T>(
     );
   }
 
-  return sentryWithScope((scope: Sentry.Scope) => {
-    initScope(scope, request);
-    return callback(spanOptions);
-  });
+  // A declared parent that did not resolve nests under the active span, without
+  // `forceTransaction`: a failed lookup is not a request for a root.
+  if (!root && !parentSpan && parentDeclared) {
+    const activeSpan = sentryGetActiveSpan();
+    if (activeSpan) {
+      return sentryWithScope((scope: Sentry.Scope) => {
+        initScope(scope, request);
+        return callback({ ...spanOptions, parentSpan: activeSpan });
+      });
+    }
+  }
+
+  const runInScope = () =>
+    sentryWithScope((scope: Sentry.Scope) => {
+      initScope(scope, request);
+      return callback(spanOptions);
+    });
+
+  // `withScope` alone keeps the ambient trace id; `startNewTrace` issues a new
+  // one, which is what moves a `root` span off the ambient trace.
+  return root ? sentryStartNewTrace(runInScope) : runInScope();
 }
 
 function logTrace(
@@ -995,6 +1056,18 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
     } as unknown as Sentry.Scope;
 
     return callback(scope);
+  }
+
+  return actual(callback);
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryStartNewTrace<T>(callback: () => T): T {
+  const actual = globalThis.sentry?.startNewTrace;
+
+  if (!actual) {
+    return callback();
   }
 
   return actual(callback);
