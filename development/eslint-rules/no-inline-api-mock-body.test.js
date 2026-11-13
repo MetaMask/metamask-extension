@@ -51,6 +51,22 @@ ruleTester.run('no-inline-api-mock-body', rule, {
       name: 'thenJson headers are not the body',
       code: 'server.forGet(url).thenJson(200, fixture, { "content-type": "application/json" });',
     },
+    {
+      name: 'spread and non-string keys are not response bodies',
+      code: 'server.forGet(url).thenCallback(() => ({ ...base, 1: value, [key]: { a: 1 }, json: fixture }));',
+    },
+    {
+      name: 'empty return and a non-function callback are ignored',
+      code: 'server.forGet(url).thenCallback(() => { return; }); server.forGet(url).thenCallback(handler);',
+    },
+    {
+      name: 'a computed method name is ignored',
+      code: 'server["thenJson"](200, { a: 1 });',
+    },
+    {
+      name: 'thenJson without a body is ignored',
+      code: 'server.forGet(url).thenJson();',
+    },
   ],
   invalid: [
     {
@@ -92,6 +108,50 @@ ruleTester.run('no-inline-api-mock-body', rule, {
         return { statusCode: 200, json };
       });`,
       errors: [{ messageId: 'inlineBody' }],
+    },
+    {
+      name: 'thenJson body asserted with as',
+      code: 'server.forGet(url).thenJson(200, ({ a: 1 } as object));',
+      errors: [{ messageId: 'inlineBody' }],
+    },
+    {
+      name: 'string-keyed json property',
+      code: 'server.forGet(url).thenCallback(() => ({ "json": { a: 1 } }));',
+      errors: [{ messageId: 'inlineBody' }],
+    },
+    {
+      name: 'logical expression used as the body',
+      code: 'server.forGet(url).thenJson(200, flag && { a: 1 });',
+      errors: [{ messageId: 'inlineBody' }],
+    },
+    {
+      name: 'conditional and logical returned objects',
+      code: `server.forGet(url).thenCallback(() => {
+        if (ready) {
+          return ready ? { json: fixture } : { json: { a: 1 } };
+        }
+        return base || { json: { a: 1 } };
+      });`,
+      errors: [{ messageId: 'inlineBody' }, { messageId: 'inlineBody' }],
+    },
+    {
+      name: 'switch and try returns',
+      code: `server.forGet(url).thenCallback(() => {
+        switch (kind) {
+          case 'a':
+            return { json: { a: 1 } };
+          default:
+            break;
+        }
+        try {
+          return { json: fixture };
+        } catch (error) {
+          return { json: { b: 1 } };
+        } finally {
+          done();
+        }
+      });`,
+      errors: [{ messageId: 'inlineBody' }, { messageId: 'inlineBody' }],
     },
   ],
 });
