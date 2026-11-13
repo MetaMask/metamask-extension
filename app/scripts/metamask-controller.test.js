@@ -892,6 +892,54 @@ describe('MetaMaskController', () => {
             metamaskController.assetsController.addCustomAsset,
           ).not.toHaveBeenCalled();
         });
+
+        it('resolves the watch asset request even when the post-approval asset refresh never settles', async () => {
+          jest
+            .spyOn(metamaskController.assetsController, 'addCustomAsset')
+            .mockImplementation(() => new Promise(() => undefined));
+
+          const asset = {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            decimals: 4,
+          };
+
+          await expect(
+            metamaskController.handleWatchAssetRequest({
+              asset,
+              type: ERC20,
+              origin: 'https://example.com',
+              networkClientId: watchAssetNetworkClientId,
+            }),
+          ).resolves.toBeUndefined();
+
+          expect(
+            metamaskController.assetsController.addCustomAsset,
+          ).toHaveBeenCalledTimes(1);
+        });
+
+        it('resolves the watch asset request when the post-approval asset refresh rejects', async () => {
+          jest
+            .spyOn(metamaskController.assetsController, 'addCustomAsset')
+            .mockRejectedValue(
+              new Error('No provider available for chain 0x171'),
+            );
+
+          const asset = {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            decimals: 4,
+          };
+
+          await expect(
+            metamaskController.handleWatchAssetRequest({
+              asset,
+              type: ERC20,
+              origin: 'https://example.com',
+              networkClientId: watchAssetNetworkClientId,
+            }),
+          ).resolves.toBeUndefined();
+        });
       });
     });
 
