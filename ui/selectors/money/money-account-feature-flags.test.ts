@@ -4,14 +4,18 @@ import {
   FALLBACK_MONEY_DEPOSIT_MIN_BALANCE,
   selectMoneyAccountDepositQuotePipelineEnabled,
   selectMoneyAccountFeatureEnabled,
+  selectMoneyAccountPremiumVaultConfig,
   selectMoneyAccountVaultConfig,
   selectMoneyActivityDetailsEnabled,
   selectMoneyActivityMockDataEnabled,
   selectMoneyEarningSectionEnabled,
+  selectMoneyEnableHistoricalVaultShareValuations,
   selectMoneyHomeScreenCardEnabled,
   selectMoneyDepositMinBalance,
   selectMoneyDepositCtaTokenKeys,
   selectMoneyTokenListItemCtaEnabled,
+  selectMoneyEarnBannerEnabled,
+  selectMoneyAssetOverviewBalanceCtaEnabled,
   selectMoneyVaultApyRemoteConfig,
 } from './money-account-feature-flags';
 
@@ -188,6 +192,33 @@ describe('selectMoneyAccountVaultConfig', () => {
       selectMoneyAccountVaultConfig(
         mockState({
           moneyAccountVaultConfig: { ...VALID_CONFIG, lensAddress: '0x0' },
+        }),
+      ),
+    ).toBeUndefined();
+  });
+});
+
+describe('selectMoneyAccountPremiumVaultConfig', () => {
+  it('returns the parsed config from the flag', () => {
+    expect(
+      selectMoneyAccountPremiumVaultConfig(
+        mockState({ moneyAccountPremiumVaultConfig: { ...VALID_CONFIG } }),
+      ),
+    ).toStrictEqual(VALID_CONFIG);
+  });
+
+  it('returns undefined when the flag is unserved', () => {
+    expect(selectMoneyAccountPremiumVaultConfig(mockState())).toBeUndefined();
+  });
+
+  it('returns undefined when the flag is malformed', () => {
+    expect(
+      selectMoneyAccountPremiumVaultConfig(
+        mockState({
+          moneyAccountPremiumVaultConfig: {
+            ...VALID_CONFIG,
+            lensAddress: '0x0',
+          },
         }),
       ),
     ).toBeUndefined();
@@ -408,13 +439,12 @@ describe('selectMoneyActivityDetailsEnabled', () => {
   });
 });
 
-describe('selectMoneyTokenListItemCtaEnabled', () => {
-  it('is true when both the CTA and Money Account flags are on', () => {
+describe('selectMoneyEnableHistoricalVaultShareValuations', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
     expect(
-      selectMoneyTokenListItemCtaEnabled(
+      selectMoneyEnableHistoricalVaultShareValuations(
         mockState({
-          moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
-          earnMoneyTokenListItemCtaEnabled: {
+          moneyEnableHistoricalVaultShareValuations: {
             enabled: true,
             minimumVersion: '0.0.1',
           },
@@ -423,16 +453,85 @@ describe('selectMoneyTokenListItemCtaEnabled', () => {
     ).toBe(true);
   });
 
-  it('is false when the CTA flag is unserved', () => {
+  it('is false when the flag is disabled', () => {
     expect(
-      selectMoneyTokenListItemCtaEnabled(
+      selectMoneyEnableHistoricalVaultShareValuations(
         mockState({
-          moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
+          moneyEnableHistoricalVaultShareValuations: {
+            enabled: false,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the flag is unserved', () => {
+    expect(selectMoneyEnableHistoricalVaultShareValuations(mockState())).toBe(
+      false,
+    );
+  });
+
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyEnableHistoricalVaultShareValuations(
+        mockState({
+          moneyEnableHistoricalVaultShareValuations: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
         }),
       ),
     ).toBe(false);
   });
 });
+
+// @ts-expect-error This is missing from the Mocha type definitions
+describe.each([
+  [
+    'selectMoneyTokenListItemCtaEnabled',
+    selectMoneyTokenListItemCtaEnabled,
+    'earnMoneyTokenListItemCtaEnabled',
+  ],
+  [
+    'selectMoneyEarnBannerEnabled',
+    selectMoneyEarnBannerEnabled,
+    'earnMoneyEarnBannerEnabled',
+  ],
+  [
+    'selectMoneyAssetOverviewBalanceCtaEnabled',
+    selectMoneyAssetOverviewBalanceCtaEnabled,
+    'earnMoneyAssetOverviewBalanceCtaEnabled',
+  ],
+])(
+  '%s',
+  (
+    _name: string,
+    selector: (state: ReturnType<typeof mockState>) => boolean,
+    flagName: string,
+  ) => {
+    it('is true when both the flag and Money Account flags are on', () => {
+      expect(
+        selector(
+          mockState({
+            moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
+            [flagName]: { enabled: true, minimumVersion: '0.0.1' },
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('is false when the flag is unserved', () => {
+      expect(
+        selector(
+          mockState({
+            moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
+          }),
+        ),
+      ).toBe(false);
+    });
+  },
+);
 
 describe('selectMoneyDepositCtaTokenKeys', () => {
   it('returns lowercased chainId:address keys', () => {

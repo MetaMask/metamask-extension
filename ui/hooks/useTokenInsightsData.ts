@@ -69,7 +69,7 @@ export const useTokenInsightsData = (
   const isEvm = token ? isEvmChainId(token.chainId as Hex) : false;
   const { formatCurrencyWithMinThreshold } = useFormatters();
 
-  // Check TokenRatesController cache (EVM only)
+  // Check marketData cache via assets-migration selectors (EVM only)
   const marketDataState = useSelector(getMarketData) as
     | EvmMarketDataState
     | undefined;

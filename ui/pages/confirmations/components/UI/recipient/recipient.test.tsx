@@ -33,7 +33,7 @@ describe('Recipient', () => {
     );
 
     expect(getByText('John Doe')).toBeInTheDocument();
-    expect(getByText('0x12345...45678')).toBeInTheDocument();
+    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
   });
 
   it('renders account recipient with correct information', () => {
@@ -46,7 +46,7 @@ describe('Recipient', () => {
     );
 
     expect(getByText('My Accounts')).toBeInTheDocument();
-    expect(getByText('0xabcde...def12')).toBeInTheDocument();
+    expect(getByText('0xabcdef12...90abcdef12')).toBeInTheDocument();
   });
 
   it('calls onClick when recipient is clicked', () => {
@@ -128,7 +128,7 @@ describe('Recipient', () => {
       <Recipient recipient={recipientWithoutName} onClick={jest.fn()} />,
     );
 
-    expect(getByText('0x12345...45678')).toBeInTheDocument();
+    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
   });
 
   it('handles recipient with no account group name', () => {
@@ -143,21 +143,6 @@ describe('Recipient', () => {
       />,
     );
 
-    expect(getByText('0x12345...45678')).toBeInTheDocument();
-  });
-
-  it('renders account type label when account type is provided', () => {
-    const { getByText } = render(
-      <Recipient
-        isAccount={true}
-        recipient={{
-          ...mockAccountRecipient,
-          accountType: BtcAccountType.P2wpkh,
-        }}
-        onClick={jest.fn()}
-      />,
-    );
-
-    expect(getByText('Native SegWit')).toBeInTheDocument();
+    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
   });
 });

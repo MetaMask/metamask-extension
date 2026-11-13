@@ -47,7 +47,7 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
+import { getFailoverUrlsForEndpoint } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -62,7 +62,10 @@ import {
 } from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/lib/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
@@ -272,6 +275,7 @@ export const NetworksForm = ({
     };
   }, [isChainlistOpen]);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
@@ -295,20 +299,13 @@ export const NetworksForm = ({
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
-  const chainFailoverUrls = networkChainIdHex
-    ? getFailoverUrlsForChainId(networkChainIdHex)
-    : [];
 
-  // Failover only applies to Infura RPC endpoints. NetworkController wires
-  // failover URLs solely for Infura endpoints; applying them to custom RPCs
-  // would leak requests to the failover, so it does not. Only surface failover
-  // in the form for Infura endpoints so the UI matches the actual behaviour.
-  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
-    return endpoint?.url &&
-      new URL(endpoint.url).hostname.endsWith('.infura.io')
-      ? chainFailoverUrls
+  // Failover only applies to Infura RPC endpoints (see
+  // `getFailoverUrlsForEndpoint`), so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) =>
+    networkChainIdHex
+      ? getFailoverUrlsForEndpoint(networkChainIdHex, endpoint?.url)
       : [];
-  };
 
   const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
 
@@ -566,9 +563,14 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
+          // Passing a replacement index makes NetworkController switch to that
+          // RPC. Only do that for the network that is already selected.
+          const isEditingSelectedNetwork = existingNetwork.rpcEndpoints?.some(
+            (endpoint) => endpoint.networkClientId === selectedNetworkClientId,
+          );
           const options = {
             replacementSelectedRpcEndpointIndex:
-              chainIdHex === existingNetwork.chainId
+              chainIdHex === existingNetwork.chainId && isEditingSelectedNetwork
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
@@ -602,8 +604,8 @@ export const NetworksForm = ({
               const chainIdAsDecimal = hexToNumber(chainIdHex);
 
               const sanitizeRpcUrl = async (url: string) => {
-                const isPublic = await submitRequestToBackground<boolean>(
-                  'isPublicEndpointUrl',
+                const isPublic = await submitRequestToBackground(
+                  'LegacyBackgroundApiService:isPublicEndpointUrl',
                   [url],
                 );
                 return isPublic ? onlyKeepHost(url) : 'custom';

@@ -57,11 +57,31 @@ export const MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME =
   'moneyEnableActivityDetails';
 
 /**
+ * The LaunchDarkly flag that gates historical vault-share valuations for card
+ * spend and cashback rows. Same name and version-gated shape as mobile.
+ */
+export const MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME =
+  'moneyEnableHistoricalVaultShareValuations';
+
+/**
  * The LaunchDarkly flag that gates the "Get X% APY" Money deposit CTA on
  * token list rows. Same name and version-gated shape as mobile.
  */
 export const MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME =
   'earnMoneyTokenListItemCtaEnabled';
+
+/**
+ * The LaunchDarkly flag that gates the dismissible "Earn up to X% APY" Money
+ * banner on token details. Same name and version-gated shape as mobile.
+ */
+export const MONEY_EARN_BANNER_ENABLED_FLAG_NAME = 'earnMoneyEarnBannerEnabled';
+
+/**
+ * The LaunchDarkly flag that gates the Money earn CTA in the token details
+ * "Your balance" section. Same name and version-gated shape as mobile.
+ */
+export const MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME =
+  'earnMoneyAssetOverviewBalanceCtaEnabled';
 
 /**
  * The LaunchDarkly flag listing, per hex chain ID, the ERC-20 addresses that
@@ -242,6 +262,35 @@ export function isMoneyActivityDetailsEnabled(
 }
 
 /**
+ * Whether card spend and cashback rows should use historical vault-share
+ * valuations instead of treating the raw share amount as mUSD.
+ *
+ * The flag is version-gated and fails closed when absent, malformed, or below
+ * the current extension version.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether historical vault-share valuations are enabled.
+ */
+export function isMoneyHistoricalVaultShareValuationsEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return (
+    validatedVersionGatedFeatureFlag(
+      remoteFeatureFlags?.[
+        MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME
+      ],
+    ) ?? false
+  );
+}
+
+const isMoneyAccountSubFeatureEnabled = (
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+  flagName: string,
+): boolean =>
+  isMoneyAccountEnabled(remoteFeatureFlags) &&
+  (validatedVersionGatedFeatureFlag(remoteFeatureFlags?.[flagName]) ?? false);
+
+/**
  * Whether the token list row Money deposit CTA is enabled.
  *
  * Both this flag and {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME} are
@@ -253,12 +302,45 @@ export function isMoneyActivityDetailsEnabled(
 export function isMoneyTokenListItemCtaEnabled(
   remoteFeatureFlags: Record<string, unknown> | undefined,
 ): boolean {
-  return (
-    isMoneyAccountEnabled(remoteFeatureFlags) &&
-    (validatedVersionGatedFeatureFlag(
-      remoteFeatureFlags?.[MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME],
-    ) ??
-      false)
+  return isMoneyAccountSubFeatureEnabled(
+    remoteFeatureFlags,
+    MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME,
+  );
+}
+
+/**
+ * Whether the token details Money earn banner is enabled.
+ *
+ * Both this flag and {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME} are
+ * version-gated and fail closed.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the earn banner is enabled.
+ */
+export function isMoneyEarnBannerEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return isMoneyAccountSubFeatureEnabled(
+    remoteFeatureFlags,
+    MONEY_EARN_BANNER_ENABLED_FLAG_NAME,
+  );
+}
+
+/**
+ * Whether the token details "Your balance" Money earn CTA is enabled.
+ *
+ * Both this flag and {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME} are
+ * version-gated and fail closed.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the balance CTA is enabled.
+ */
+export function isMoneyAssetOverviewBalanceCtaEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return isMoneyAccountSubFeatureEnabled(
+    remoteFeatureFlags,
+    MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME,
   );
 }
 

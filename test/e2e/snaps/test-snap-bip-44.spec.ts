@@ -40,13 +40,8 @@ describe('Test Snap bip-44', function () {
         // Navigate to `test-snaps` page, and install the Snap.
         await openTestSnapClickButtonAndInstall(driver, 'connectBip44Button', {
           withWarning: true,
+          expectedMessage: 'Reconnect to BIP-44 Snap',
         });
-
-        // check the installation status
-        await testSnaps.checkInstallationComplete(
-          'connectBip44Button',
-          'Reconnect to BIP-44 Snap',
-        );
 
         // Click bip44 button to get private key and validate the result
         await testSnaps.scrollAndClickButton('publicKeyBip44Button');

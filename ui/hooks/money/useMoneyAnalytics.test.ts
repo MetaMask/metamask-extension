@@ -20,6 +20,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyRedirectTargetType,
   MoneyScreenName,
@@ -169,6 +170,24 @@ describe('useMoneyAnalytics', () => {
 
       expectEvent(MetaMetricsEventName.MoneySurfaceViewed, {
         ...FUNDED_BASE,
+        surface_type: MoneySurfaceType.Screen,
+      });
+    });
+
+    it('serializes the FTUE entry point and originating component', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.MoneyFtue,
+        componentName: MoneyComponentName.FtueSplash,
+        entryPoint: MoneyFtueEntryPoint.AssetDetail,
+        originatingComponentName: MoneyComponentName.EarnBanner,
+      }).trackScreenViewed();
+
+      expectEvent(MetaMetricsEventName.MoneySurfaceViewed, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.MoneyFtue,
+        component_name: MoneyComponentName.FtueSplash,
+        entry_point: MoneyFtueEntryPoint.AssetDetail,
+        originating_component_name: MoneyComponentName.EarnBanner,
         surface_type: MoneySurfaceType.Screen,
       });
     });
@@ -396,6 +415,35 @@ describe('useMoneyAnalytics', () => {
         token_chain_id: '0x1',
         token_position_in_list: 2,
         tokens_in_list: 5,
+        token_has_balance: true,
+      });
+    });
+  });
+
+  describe('trackTokenSurfaceClicked', () => {
+    it('tracks a surface click with token properties', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.AssetDetail,
+      }).trackTokenSurfaceClicked({
+        componentName: MoneyComponentName.EarnBanner,
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+        tokenSymbol: 'USDC',
+        tokenChainId: '0x1',
+        tokenPositionInList: 1,
+        tokensInList: 1,
+        tokenHasBalance: true,
+      });
+
+      expectEvent(MetaMetricsEventName.MoneySurfaceClicked, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.AssetDetail,
+        component_name: MoneyComponentName.EarnBanner,
+        redirect_target: MoneyScreenName.MoneyDeposit,
+        redirect_target_type: MoneyRedirectTargetType.Screen,
+        token_symbol: 'USDC',
+        token_chain_id: '0x1',
+        token_position_in_list: 1,
+        tokens_in_list: 1,
         token_has_balance: true,
       });
     });

@@ -1,14 +1,8 @@
-import {
-  bindHostColorScheme,
-  injectPageStyles,
-  removePageStyles,
-} from '../lib/ui';
+import { bindHostColorScheme } from '../lib/ui';
 import { bindWidgetTriggers, injectWidget } from './host';
 
 jest.mock('../lib/ui', () => ({
   bindHostColorScheme: jest.fn(),
-  injectPageStyles: jest.fn(),
-  removePageStyles: jest.fn(),
 }));
 
 describe('injectWidget', () => {
@@ -49,7 +43,6 @@ describe('injectWidget', () => {
     const widget = injectWidget();
     const frame = widget.shadowHost.shadowRoot?.querySelector('iframe');
 
-    expect(injectPageStyles).toHaveBeenCalledTimes(1);
     widget.show('ETH');
     expect(frame?.src).toBe(
       'chrome-extension://test/cashtag-widget.html?symbol=ETH&theme=light',
@@ -65,7 +58,6 @@ describe('injectWidget', () => {
 
     widget.stop();
     expect(unbind).toHaveBeenCalledTimes(1);
-    expect(removePageStyles).toHaveBeenCalledTimes(1);
     expect(widget.shadowHost.isConnected).toBe(false);
   });
 });

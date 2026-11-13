@@ -5,10 +5,13 @@ import {
   MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
   MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
   MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
+  MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
   MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
   MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME,
   MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME,
+  MONEY_EARN_BANNER_ENABLED_FLAG_NAME,
+  MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME,
   getMoneyAccountGeoBlockedCountries,
   getMoneyDepositCtaTokenAddresses,
   isMoneyAccountEnabled,
@@ -16,8 +19,11 @@ import {
   isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHistoricalVaultShareValuationsEnabled,
   isMoneyHomeScreenCardEnabled,
   isMoneyTokenListItemCtaEnabled,
+  isMoneyEarnBannerEnabled,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 } from './feature-flags';
 
 const CURRENT_VERSION = packageJson.version;
@@ -432,59 +438,137 @@ describe('isMoneyActivityDetailsEnabled', () => {
   });
 });
 
-describe('isMoneyTokenListItemCtaEnabled', () => {
-  const enabled = { enabled: true, minimumVersion: '0.0.1' };
-
-  it('returns true when both the CTA and Money Account flags are on', () => {
+describe('isMoneyHistoricalVaultShareValuationsEnabled', () => {
+  it('returns true for an enabled flag the current version satisfies', () => {
     expect(
-      isMoneyTokenListItemCtaEnabled({
-        [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
-        [MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME]: enabled,
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: '0.0.1',
+        },
       }),
     ).toBe(true);
   });
 
-  it('returns false when the Money Account flag is off', () => {
+  it('returns true for an enabled flag inside a progressive rollout wrapper', () => {
     expect(
-      isMoneyTokenListItemCtaEnabled({
-        [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: { ...enabled, enabled: false },
-        [MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME]: enabled,
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
+          name: 'money-rollout',
+          value: { enabled: true, minimumVersion: CURRENT_VERSION },
+        },
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it('returns false when the CTA flag is off', () => {
+  it('returns false for a disabled flag', () => {
     expect(
-      isMoneyTokenListItemCtaEnabled({
-        [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
-        [MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME]: {
-          ...enabled,
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
           enabled: false,
+          minimumVersion: '0.0.1',
         },
       }),
     ).toBe(false);
   });
 
-  it('returns false when the CTA flag requires a newer version', () => {
+  it('returns false when the flag is unserved', () => {
+    expect(isMoneyHistoricalVaultShareValuationsEnabled(undefined)).toBe(false);
+    expect(isMoneyHistoricalVaultShareValuationsEnabled({})).toBe(false);
+  });
+
+  it('returns false when the current version is below the flag minimum', () => {
     expect(
-      isMoneyTokenListItemCtaEnabled({
-        [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
-        [MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME]: {
+      isMoneyHistoricalVaultShareValuationsEnabled({
+        [MONEY_ENABLE_HISTORICAL_VAULT_SHARE_VALUATIONS_FLAG_NAME]: {
           enabled: true,
           minimumVersion: '9999.0.0',
         },
       }),
     ).toBe(false);
   });
-
-  it('returns false when the CTA flag is unserved', () => {
-    expect(
-      isMoneyTokenListItemCtaEnabled({
-        [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
-      }),
-    ).toBe(false);
-  });
 });
+
+// @ts-expect-error This is missing from the Mocha type definitions
+describe.each([
+  [
+    'isMoneyTokenListItemCtaEnabled',
+    isMoneyTokenListItemCtaEnabled,
+    MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME,
+  ],
+  [
+    'isMoneyEarnBannerEnabled',
+    isMoneyEarnBannerEnabled,
+    MONEY_EARN_BANNER_ENABLED_FLAG_NAME,
+  ],
+  [
+    'isMoneyAssetOverviewBalanceCtaEnabled',
+    isMoneyAssetOverviewBalanceCtaEnabled,
+    MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME,
+  ],
+])(
+  '%s',
+  (
+    _name: string,
+    isEnabled: (flags: Record<string, unknown> | undefined) => boolean,
+    flagName: string,
+  ) => {
+    const enabled = { enabled: true, minimumVersion: '0.0.1' };
+
+    it('returns true when both the CTA and Money Account flags are on', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+          [flagName]: enabled,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when the Money Account flag is off', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
+            ...enabled,
+            enabled: false,
+          },
+          [flagName]: enabled,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when the CTA flag is off', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+          [flagName]: {
+            ...enabled,
+            enabled: false,
+          },
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when the CTA flag requires a newer version', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+          [flagName]: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when the CTA flag is unserved', () => {
+      expect(
+        isEnabled({
+          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: enabled,
+        }),
+      ).toBe(false);
+    });
+  },
+);
 
 describe('getMoneyDepositCtaTokenAddresses', () => {
   const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';

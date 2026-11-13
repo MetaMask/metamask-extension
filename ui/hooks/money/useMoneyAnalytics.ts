@@ -26,6 +26,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneySurfaceType,
@@ -44,6 +45,8 @@ export type MoneyAnalyticsLocation = {
   screenName?: MoneyScreenName;
   bottomSheetName?: MoneyBottomSheetName;
   componentName?: MoneyComponentName;
+  entryPoint?: MoneyFtueEntryPoint;
+  originatingComponentName?: MoneyComponentName;
 };
 
 type MoneyButtonClickedBase = {
@@ -62,7 +65,7 @@ export type MoneyButtonClickedProperties =
     } & MoneyButtonClickedBase)
   | ({ buttonType: MoneyButtonType.Icon } & MoneyButtonClickedBase);
 
-export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties & {
+type MoneyTokenProperties = {
   tokenSymbol: string;
   tokenChainId: string;
   tokenPositionInList: number;
@@ -70,10 +73,16 @@ export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties & {
   tokenHasBalance: boolean;
 };
 
+export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties &
+  MoneyTokenProperties;
+
 export type MoneySurfaceClickedProperties = {
   componentName?: MoneyComponentName;
   redirectTarget: MoneyRedirectTarget;
 };
+
+export type MoneyTokenSurfaceClickedProperties = MoneySurfaceClickedProperties &
+  MoneyTokenProperties;
 
 export type MoneyActivitySurfaceClickedProperties =
   MoneySurfaceClickedProperties & {
@@ -110,7 +119,13 @@ const asLabel = (message: unknown, fallback: string) =>
   typeof message === 'string' && message.length > 0 ? message : fallback;
 
 export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
-  const { screenName, bottomSheetName, componentName } = location;
+  const {
+    screenName,
+    bottomSheetName,
+    componentName,
+    entryPoint,
+    originatingComponentName,
+  } = location;
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const { availability } = useMoneyAccountAvailability();
@@ -146,12 +161,21 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
       screenName,
       componentName,
       bottomSheetName,
+      entryPoint,
+      originatingComponentName,
       isMoneyBalanceLoading,
       isAccountFunded: isMoneyBalanceLoading
         ? null
         : new BigNumber(settledTotal ?? '0').gt(0),
     };
-  }, [bottomSheetName, componentName, moneyAccountAddress, screenName]);
+  }, [
+    bottomSheetName,
+    componentName,
+    entryPoint,
+    moneyAccountAddress,
+    originatingComponentName,
+    screenName,
+  ]);
 
   const resolveLabel = useCallback(
     (labelKey: string, substitutions?: string[]) => ({
@@ -216,6 +240,12 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
       });
     },
     [track],
+  );
+
+  const trackTokenSurfaceClicked = useCallback(
+    (properties: MoneyTokenSurfaceClickedProperties) =>
+      trackSurfaceClicked(properties),
+    [trackSurfaceClicked],
   );
 
   const trackActivitySurfaceClicked = useCallback(
@@ -287,6 +317,7 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     trackButtonClicked,
     trackTokenButtonClicked,
     trackSurfaceClicked,
+    trackTokenSurfaceClicked,
     trackActivitySurfaceClicked,
     trackTooltipClicked,
     trackScreenViewed,

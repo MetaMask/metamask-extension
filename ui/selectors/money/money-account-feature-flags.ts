@@ -8,10 +8,16 @@ import {
   isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHistoricalVaultShareValuationsEnabled,
   isMoneyHomeScreenCardEnabled,
   isMoneyTokenListItemCtaEnabled,
+  isMoneyEarnBannerEnabled,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 } from '../../../shared/lib/money/feature-flags';
-import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
+import {
+  getMoneyAccountPremiumVaultConfig,
+  getMoneyAccountVaultConfig,
+} from '../../../shared/lib/money/vault-config';
 
 /**
  * The APY controls from the `earnMoneyVaultApyControl` remote feature flag.
@@ -102,6 +108,18 @@ export const selectMoneyAccountVaultConfig = createSelector(
 );
 
 /**
+ * Selects the Money Account premium vault config, or `undefined` when the
+ * flag is unserved or malformed.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The parsed premium vault config, or `undefined`.
+ */
+export const selectMoneyAccountPremiumVaultConfig = createSelector(
+  getRemoteFeatureFlags,
+  getMoneyAccountPremiumVaultConfig,
+);
+
+/**
  * Selects the Money vault APY fallback and override.
  *
  * @param state - The MetaMask state object.
@@ -177,6 +195,18 @@ export const selectMoneyActivityDetailsEnabled = createSelector(
 );
 
 /**
+ * Selects whether card spend and cashback rows use historical vault-share
+ * valuations.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether historical vault-share valuations are enabled.
+ */
+export const selectMoneyEnableHistoricalVaultShareValuations = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyHistoricalVaultShareValuationsEnabled,
+);
+
+/**
  * Selects whether the token list row Money deposit CTA is enabled.
  *
  * @param state - The MetaMask state object.
@@ -185,6 +215,28 @@ export const selectMoneyActivityDetailsEnabled = createSelector(
 export const selectMoneyTokenListItemCtaEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyTokenListItemCtaEnabled,
+);
+
+/**
+ * Selects whether the token details Money earn banner is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the earn banner is enabled.
+ */
+export const selectMoneyEarnBannerEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyEarnBannerEnabled,
+);
+
+/**
+ * Selects whether the token details "Your balance" Money earn CTA is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the balance CTA is enabled.
+ */
+export const selectMoneyAssetOverviewBalanceCtaEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 );
 
 /**

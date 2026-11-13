@@ -290,7 +290,11 @@ export default function OnboardingWelcome() {
   const handleSocialLogin = useCallback(
     async (socialConnectionType: LoginType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
-        bufferedTrace?.({
+        const parentTraceContext = {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          _name: TraceName.OnboardingSocialLoginAttempt,
+        };
+        await bufferedTrace?.({
           name: TraceName.OnboardingSocialLoginAttempt,
           op: TraceOperation.OnboardingUserJourney,
           tags: { provider: socialConnectionType },
@@ -302,6 +306,7 @@ export default function OnboardingWelcome() {
             bufferedTrace,
             bufferedEndTrace,
             trackLegacyEventForAction,
+            parentTraceContext,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
