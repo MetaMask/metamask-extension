@@ -91,10 +91,6 @@ import {
 } from './static-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
-  getCurrencyRateControllerInitMessenger,
-  getCurrencyRateControllerMessenger,
-} from './currency-rate-controller-messenger';
-import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
@@ -199,11 +195,6 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-export type { CurrencyRateControllerInitMessenger } from './currency-rate-controller-messenger';
-export {
-  getCurrencyRateControllerMessenger,
-  getCurrencyRateControllerInitMessenger,
-} from './currency-rate-controller-messenger';
 export {
   getDecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
@@ -366,10 +357,6 @@ export const MESSENGER_FACTORIES = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
-  },
-  CurrencyRateController: {
-    getMessenger: getCurrencyRateControllerMessenger,
-    getInitMessenger: getCurrencyRateControllerInitMessenger,
   },
   DataDeletionService: {
     getMessenger: getDataDeletionServiceMessenger,

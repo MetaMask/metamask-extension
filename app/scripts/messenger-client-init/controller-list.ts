@@ -17,7 +17,6 @@ import { AccountsController } from '@metamask/accounts-controller';
 import {
   AccountTrackerController,
   AssetsContractController,
-  CurrencyRateController,
   DeFiPositionsController,
   DeFiPositionsControllerV2,
   MultichainAssetsController,
@@ -160,7 +159,6 @@ export type MessengerClient =
   | ChompApiService
   | ClaimsController
   | CronjobController
-  | CurrencyRateController
   | DataDeletionService
   | UserTraitsService
   | DecryptMessageController
@@ -285,7 +283,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   ComplianceController['state'] &
   ConfigRegistryController['state'] &
   CronjobController['state'] &
-  CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
   DeFiPositionsControllerV2['state'] &
   DelegationController['state'] &

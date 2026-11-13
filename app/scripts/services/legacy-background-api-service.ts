@@ -129,7 +129,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  CurrencyRateControllerSetCurrentCurrencyAction,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
@@ -642,7 +641,6 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | ClaimsControllerClearStateAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
   | GasFeeControllerEnableNonRPCGasFeeApisAction
@@ -934,17 +932,17 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the current currency for the CurrencyRateController and AssetsController.
+   * Sets the selected currency on the AssetsController.
+   *
+   * The controller action is synchronous. This still returns a promise because
+   * the legacy background API invokes it through the messenger, which callers
+   * await.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
-  async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
-    await this.#messenger.call(
-      'CurrencyRateController:setCurrentCurrency',
-      currencyCode,
-    );
-
+  setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
+    return Promise.resolve();
   }
 
   /**
