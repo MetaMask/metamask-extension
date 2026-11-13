@@ -8,6 +8,20 @@
 set -euo pipefail
 
 MARKER="<!-- e2e-api-mock-sync -->"
+# One comment. Exit 0 means the fixtures match, so delete a previous drift
+# comment. Other non-drift exits leave it: a fetch failure or a refused
+# write did not confirm the drift is gone.
+COMMENT_IDS="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id")"
+if [ "${EXIT:-1}" != "1" ] && [ "${EXIT:-1}" != "4" ]; then
+  if [ "${EXIT:-1}" = "0" ] && [ -n "${COMMENT_IDS}" ]; then
+    while IFS= read -r COMMENT_ID || [ -n "${COMMENT_ID}" ]; do
+      [ -z "${COMMENT_ID}" ] && continue
+      gh api --method DELETE "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}"
+    done <<< "${COMMENT_IDS}"
+  fi
+  exit 0
+fi
+
 READABLE="$(cat drift-readable.txt)"
 STAT="$(cat drift-stat.txt)"
 DIFF=""
@@ -61,7 +75,7 @@ jq -n \
   )}' \
   > comment.json
 
-COMMENT_ID="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" | head -n 1)"
+COMMENT_ID="$(printf '%s\n' "${COMMENT_IDS}" | head -n 1)"
 if [ -n "${COMMENT_ID}" ]; then
   gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" --input comment.json
 else

@@ -5,6 +5,7 @@
  *
  * Exit 0: no change. Exit 1: a fixture was written. Exit 2: nothing was
  * written and a fetch failed. Exit 3: an `api-responses` fixture has no source.
+ * Exit 5: nothing was written because a 200 body looked like an error.
  *
  * `--changed-since <ref>` still writes all drift, but exit 1 only covers rows
  * whose catalog entry or fixture value differs from `<ref>`. Drift only in
@@ -105,9 +106,11 @@ function unionShape(list: { [key: string]: Json }[]): { [key: string]: Json } {
 
 /**
  * Reshapes `mock` to `live`, keeping mock values whose kind did not change.
- * An empty mock list stays empty. For a list of objects, `keepExtraKeys` is
- * set so a field only some entries have is optional: once the fixture has it,
- * a later response that omits it is not drift.
+ * An empty mock list stays empty. A live `null` keeps the mock value: a new
+ * asset often has `pricePercentChange1y: null`, and replacing that with null
+ * (then `0` the next week) would wipe the fixture. For a list of objects, a
+ * field no live item returns is dropped. A field only some items return stays
+ * on mock items that already have it and is not copied onto the others.
  *
  * @param mock - The current fixture value.
  * @param live - The live value.
@@ -121,11 +124,10 @@ export function alignShape(
   keepExtraKeys = false,
   options: AlignOptions = {},
 ): Json {
+  if (live === null) {
+    return mock;
+  }
   if (kindOf(mock) !== kindOf(live)) {
-    // A later sample that is only null must not flip a value we already kept.
-    if (keepExtraKeys && live === null && mock !== null) {
-      return mock;
-    }
     return placeholder(live);
   }
   if (Array.isArray(mock) && Array.isArray(live)) {
@@ -134,8 +136,7 @@ export function alignShape(
     }
     const objects = live.filter(isObject);
     if (objects.length === live.length) {
-      const union = unionShape(objects);
-      return mock.map((item) => alignShape(item, union, true, options));
+      return alignObjectList(mock, objects, options);
     }
     return mock.map((item) =>
       alignShape(item, live[0], keepExtraKeys, options),
@@ -153,6 +154,42 @@ export type AlignOptions = {
   /** Path of the value being aligned. Arrays do not add a segment. */
   path?: string;
 };
+
+/**
+ * Aligns each mock list item with the live list.
+ *
+ * A field no live item returns is dropped, including one the fixture already
+ * has. A field only some live items return is optional: it stays on a mock
+ * item that already has it, and it is not added to the others. Adding it
+ * would invent a placeholder (`0`, `""`) for a field that item never had,
+ * which a reader can mistake for a real value (`slip44: 0` is Bitcoin).
+ * A field every live item returns is added where the mock item lacks it.
+ *
+ * @param mock - Current list items.
+ * @param live - Live list items, all objects.
+ * @param options - Data-map paths for this row and the current path.
+ * @returns The aligned list.
+ */
+function alignObjectList(
+  mock: Json[],
+  live: { [key: string]: Json }[],
+  options: AlignOptions,
+): Json[] {
+  const union = unionShape(live);
+  const required = new Set(
+    Object.keys(union).filter((key) => live.every((item) => key in item)),
+  );
+  return mock.map((item) => {
+    const present = isObject(item) ? item : {};
+    const shape: { [key: string]: Json } = {};
+    for (const [key, value] of Object.entries(union)) {
+      if (required.has(key) || key in present) {
+        shape[key] = value;
+      }
+    }
+    return alignShape(item, shape, false, options);
+  });
+}
 
 /** Decimal chain ids and `0x` hex chain ids are data keys, not fields. */
 export const isIdKey = (key: string): boolean =>
@@ -676,7 +713,81 @@ export function parseCatalogRows(
     .filter(({ mode }) => mode.startsWith('write:'));
 }
 
+/**
+ * Skip warnings for catalog rows. `sources.json` skips are warned during
+ * discovery; catalog skips used to be dropped, so the job summary never
+ * showed them.
+ *
+ * @param text - `api-mock-catalog.md`.
+ * @returns One `skip <id> <method> <url>: <reason>` line per skip row.
+ */
+export function catalogSkipWarnings(text: string): string[] {
+  return text
+    .split('\n')
+    .filter((line) => /^\| [a-z0-9]/u.test(line))
+    .flatMap((line) => {
+      const [id, method, url, , syncCell, reason = ''] = line
+        .slice(1, -1)
+        .split(/(?<!\\)\|/u)
+        .map((cell) => cell.trim().replace(/^`|`$/gu, ''));
+      if (syncCell !== 'skip') {
+        return [];
+      }
+      return [
+        `skip ${id} ${method || 'GET'} ${url}: ${reason || 'catalog skip'}`,
+      ];
+    });
+}
+
+/**
+ * Exit code for one sync run, after discovery errors (exit 3) are handled.
+ * A refused write is exit 5 so it is not reported as "No API changes".
+ *
+ * @param outcome - What the run did.
+ * @param outcome.changed - A row this run blocks on was written.
+ * @param outcome.changedOther - Only a non-blocking row was written.
+ * @param outcome.refused - A 200 body looked like an error, so it was not written.
+ * @param outcome.failed - A fetch failed.
+ * @returns 0, 1, 2, 4, or 5.
+ */
+export function syncExitCode({
+  changed,
+  changedOther,
+  refused,
+  failed,
+}: {
+  changed: boolean;
+  changedOther: boolean;
+  refused: boolean;
+  failed: boolean;
+}): number {
+  if (changed) {
+    return 1;
+  }
+  if (changedOther) {
+    return 4;
+  }
+  if (refused) {
+    return 5;
+  }
+  if (failed) {
+    return 2;
+  }
+  return 0;
+}
+
 const MOCK_DATA_DIR = 'test/e2e/mock-response-data';
+
+/**
+ * Git path of a fixture. `path.posix.normalize` collapses `..`, which `git
+ * show` rejects (exit 128). The PPOM row is `../mock-cdn/ppom-version.json`.
+ *
+ * @param relativePath - Path under `mock-response-data/`, possibly with `..`.
+ * @returns Path from the repository root.
+ */
+export function fixtureGitPath(relativePath: string): string {
+  return path.posix.normalize(`${MOCK_DATA_DIR}/${relativePath}`);
+}
 
 /**
  * Reads a file as it was at `ref`.
@@ -685,11 +796,14 @@ const MOCK_DATA_DIR = 'test/e2e/mock-response-data';
  * @param relativePath - Path under `mock-response-data/`.
  * @returns The file text, or `undefined` when it did not exist.
  */
-function readAtRef(ref: string, relativePath: string): string | undefined {
+export function readFixtureAtRef(
+  ref: string,
+  relativePath: string,
+): string | undefined {
   try {
     return execFileSync(
       'git',
-      ['show', `${ref}:${MOCK_DATA_DIR}/${relativePath}`],
+      ['show', `${ref}:${fixtureGitPath(relativePath)}`],
       {
         encoding: 'utf8',
         stdio: ['ignore', 'pipe', 'ignore'],
@@ -742,9 +856,14 @@ async function main(): Promise<number> {
     console.warn(warning);
   }
 
-  const catalogRows = parseCatalogRows(
-    readFileSync(path.join(__dirname, 'api-mock-catalog.md'), 'utf8'),
+  const catalogText = readFileSync(
+    path.join(__dirname, 'api-mock-catalog.md'),
+    'utf8',
   );
+  for (const warning of catalogSkipWarnings(catalogText)) {
+    console.warn(warning);
+  }
+  const catalogRows = parseCatalogRows(catalogText);
   const { sources } = readApiResponseSources(responsesDir);
   const rows: (SyncRow & { entry: string })[] = catalogRows.concat(
     discovered.rows.map((row) => ({
@@ -759,11 +878,11 @@ async function main(): Promise<number> {
   const changedSince = argValue('--changed-since');
   let isBlocking = (_row: SyncRow & { entry: string }) => true;
   if (changedSince) {
-    const baseCatalog = readAtRef(changedSince, 'api-mock-catalog.md');
+    const baseCatalog = readFixtureAtRef(changedSince, 'api-mock-catalog.md');
     const baseEntries = new Map(
       parseCatalogRows(baseCatalog ?? '').map((row) => [row.id, row.entry]),
     );
-    const baseSourcesText = readAtRef(
+    const baseSourcesText = readFixtureAtRef(
       changedSince,
       `${API_RESPONSES_DIR_NAME}/${API_RESPONSE_SOURCES_FILE}`,
     );
@@ -780,7 +899,7 @@ async function main(): Promise<number> {
       return isRowChanged({
         baseEntry: baseEntries.get(row.id),
         headEntry: row.entry,
-        baseValue: rowValue(readAtRef(changedSince, file), row.mode),
+        baseValue: rowValue(readFixtureAtRef(changedSince, file), row.mode),
         headValue: rowValue(
           readFileSync(path.join(__dirname, file), 'utf8'),
           row.mode,
@@ -824,6 +943,7 @@ async function main(): Promise<number> {
   let changed = false;
   let changedOther = false;
   let failed = false;
+  let refused = false;
   for (const [index, row] of fetchable.entries()) {
     const result = fetched[index];
     if ('error' in result) {
@@ -831,7 +951,12 @@ async function main(): Promise<number> {
       console.error(`${row.id} ${row.url}: ${String(result.error)}`);
       continue;
     }
-    if ((await applyRow(row, result.live)) !== 'changed') {
+    const outcome = await applyRow(row, result.live);
+    if (outcome === 'refused') {
+      refused = true;
+      continue;
+    }
+    if (outcome !== 'changed') {
       continue;
     }
     if (blocking.has(row.id)) {
@@ -843,17 +968,15 @@ async function main(): Promise<number> {
       );
     }
   }
-  if (changed) {
-    return 1;
-  }
-  if (changedOther) {
-    return 4;
-  }
-  if (!failed) {
+  const exitCode = syncExitCode({ changed, changedOther, refused, failed });
+  if (exitCode === 5) {
+    console.warn(
+      'refused: a response looked like an error body, so the fixture was not written',
+    );
+  } else if (exitCode === 0) {
     console.log('No API changes detected');
-    return 0;
   }
-  return 2;
+  return exitCode;
 }
 
 if (process.argv[1]?.endsWith('sync-api-mocks.ts')) {

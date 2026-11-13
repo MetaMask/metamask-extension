@@ -1,10 +1,13 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from 'fs';
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
 import {
   alignShape,
+  catalogSkipWarnings,
   discoverApiResponses,
   fetchJsonWithRetry,
+  fixtureGitPath,
+  type Json,
   isIdKey,
   isRowChanged,
   listApiResponseFixtureIds,
@@ -12,8 +15,10 @@ import {
   missingApiResponseSourceMessage,
   parseSyncCell,
   placeholder,
+  readFixtureAtRef,
   refuseWriteReason,
   selectFixtureChangeLines,
+  syncExitCode,
 } from './sync-api-mocks';
 
 function jsonResponse(status: number, body: unknown): Response {
@@ -33,6 +38,45 @@ describe('placeholder', () => {
     expect(
       placeholder([{ id: 'a', tags: ['x'], enabled: true }]),
     ).toStrictEqual([{ id: '', tags: [], enabled: false }]);
+  });
+});
+
+describe('alignShape lists and nulls', () => {
+  it('drops a field once no live list item returns it', () => {
+    const mock: Json[] = [
+      { symbol: 'ETH', decimals: 18, legacy: true },
+      { symbol: 'DAI', legacy: false },
+    ];
+    const live: Json[] = [
+      { symbol: 'ETH', decimals: 18 },
+      { symbol: 'USDC', name: 'USD Coin' },
+    ];
+    expect(alignShape(mock, live)).toStrictEqual([
+      { symbol: 'ETH', decimals: 18 },
+      { symbol: 'DAI' },
+    ]);
+  });
+
+  it('adds a field every live item returns and leaves optional fields off items that lack them', () => {
+    const mock: Json[] = [{ symbol: 'ETH' }];
+    const live: Json[] = [
+      { symbol: 'ETH', chainId: 1, name: 'Ether' },
+      { symbol: 'DAI', chainId: 2 },
+    ];
+    expect(alignShape(mock, live)).toStrictEqual([
+      { symbol: 'ETH', chainId: 0 },
+    ]);
+  });
+
+  it('keeps the mock value when the live value is null', () => {
+    expect(
+      alignShape(
+        { pricePercentChange1y: 1.2, price: 3 },
+        { pricePercentChange1y: null, price: 4 },
+      ),
+    ).toStrictEqual({ pricePercentChange1y: 1.2, price: 3 });
+    expect(alignShape(5, null)).toBe(5);
+    expect(alignShape(null, null)).toBeNull();
   });
 });
 
@@ -212,6 +256,63 @@ function responsesDir(): string {
 function writeJson(dir: string, name: string, value: unknown) {
   writeFileSync(path.join(dir, name), `${JSON.stringify(value, null, 2)}\n`);
 }
+
+describe('catalog skips and refused writes', () => {
+  it('warns for a catalog skip row and ignores write rows', () => {
+    const text = [
+      '| id | method | url | where | sync | notes |',
+      '| --- | --- | --- | --- | --- | --- |',
+      '| gas-prices | GET | `https://gas.example/p` | mock-e2e.js | `write:a.json` | |',
+      '| client-config-flags | GET | `client-config.example/flags` | mock-e2e.js | skip | owned by feature-flags |',
+    ].join('\n');
+    expect(catalogSkipWarnings(text)).toStrictEqual([
+      'skip client-config-flags GET client-config.example/flags: owned by feature-flags',
+    ]);
+    const catalog = catalogSkipWarnings(
+      readFileSync(path.join(__dirname, 'api-mock-catalog.md'), 'utf8'),
+    );
+    expect(catalog.length).toBeGreaterThan(0);
+    expect(catalog.every((line) => line.startsWith('skip '))).toBe(true);
+  });
+
+  it('exits 5 when a write was refused and nothing was written', () => {
+    expect(
+      syncExitCode({
+        changed: false,
+        changedOther: false,
+        refused: true,
+        failed: false,
+      }),
+    ).toBe(5);
+    expect(
+      syncExitCode({
+        changed: true,
+        changedOther: false,
+        refused: true,
+        failed: false,
+      }),
+    ).toBe(1);
+    expect(
+      syncExitCode({
+        changed: false,
+        changedOther: false,
+        refused: false,
+        failed: false,
+      }),
+    ).toBe(0);
+  });
+});
+
+describe('fixture git paths', () => {
+  it('normalizes a path that steps out of mock-response-data', () => {
+    expect(fixtureGitPath('../mock-cdn/ppom-version.json')).toBe(
+      'test/e2e/mock-cdn/ppom-version.json',
+    );
+    expect(readFixtureAtRef('HEAD', '../mock-cdn/ppom-version.json')).toEqual(
+      expect.stringContaining('"version": "0.0.66"'),
+    );
+  });
+});
 
 describe('selectFixtureChangeLines', () => {
   it('drops skip warnings from a mixed sync report', () => {

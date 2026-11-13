@@ -104,7 +104,6 @@
     "shortName": "orderly",
     "chainId": 291,
     "networkId": 291,
-    "slip44": 0,
     "ens": {
       "registry": ""
     },
@@ -149,7 +148,6 @@
     "shortName": "primuschain",
     "chainId": 78,
     "networkId": 78,
-    "slip44": 0,
     "ens": {
       "registry": ""
     },
@@ -194,7 +192,6 @@
     "shortName": "Camino",
     "chainId": 500,
     "networkId": 1000,
-    "slip44": 0,
     "ens": {
       "registry": ""
     },
@@ -239,7 +236,6 @@
     "shortName": "ATL",
     "chainId": 1338,
     "networkId": 1338,
-    "slip44": 0,
     "ens": {
       "registry": ""
     },
@@ -387,7 +383,6 @@
     "shortName": "megatest",
     "chainId": 6343,
     "networkId": 6343,
-    "slip44": 1,
     "ens": {
       "registry": ""
     },

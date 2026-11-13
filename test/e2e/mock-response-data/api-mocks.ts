@@ -97,9 +97,13 @@ type SwapsToken = {
 
 /**
  * Mocks written by `yarn test:e2e:sync-api-mocks`. `yarn lint:tsc` fails when
- * a synced shape no longer matches the type the wallet reads. A list that
- * would otherwise be empty keeps one placeholder element, so its type is
- * checked; `mock-e2e.js` serves the list without it.
+ * one of the keys annotated below no longer matches the type the wallet
+ * reads. The other `api-fixtures.json` keys, and every `api-responses/*.json`
+ * file, are typed as their own JSON: removing a field changes the inferred
+ * type and does not fail `lint:tsc`. No exported controller type covers those
+ * remaining fixtures. A list that would otherwise be empty keeps one
+ * placeholder element, so its type is checked; `mock-e2e.js` serves the list
+ * without it.
  */
 export const API_MOCKS: typeof fixtures & {
   contentful: ContentfulBannerResponse;
@@ -119,6 +123,12 @@ export const SPOT_PRICE_FALLBACK = placeholder(
 /**
  * Applies the values tests assert over a synced mock. Nested objects merge, so
  * fields a sync added are kept; arrays and scalars in `pins` win.
+ *
+ * This does not cover `4byte-signatures`, `swaps-feature-flags`,
+ * `token-list`, or `bridge-tokens` (including Linea). Those handlers serve
+ * the fixture directly. An array mock is replaced outright, so pins cannot
+ * overlay fields on the token lists. Specs that need a specific value install
+ * their own mock.
  *
  * @param mock - The synced mock.
  * @param pins - Values the tests depend on.

@@ -1031,6 +1031,11 @@ async function setupMocking(
     };
   });
 
+  // 4byte, swaps feature flags, the token list, and bridge token lists are
+  // served as the raw fixture. `withPins` replaces an array outright, so it
+  // cannot overlay fields on those lists, and these handlers have no asserted
+  // scalar to pin. Specs that need a specific signature, flag, or token
+  // install their own mock.
   await server
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .thenCallback(() => {
@@ -2297,7 +2302,7 @@ async function setupMocking(
           items: API_MOCKS.contentful.items.filter((item) => item.sys.id),
           includes: {
             ...API_MOCKS.contentful.includes,
-            Asset: API_MOCKS.contentful.includes.Asset.filter(
+            Asset: (API_MOCKS.contentful.includes?.Asset ?? []).filter(
               (asset) => asset.sys.id,
             ),
           },
