@@ -5,7 +5,10 @@ import { Provider } from 'react-redux';
 import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { withResolvers } from '#shared/lib/promise-with-resolvers';
-import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
+import type {
+  ReferralEntryType,
+  ReferralMeDto,
+} from '../../../../../shared/types/rewards-money';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AcceptInviteSheet } from './AcceptInviteSheet';
 
@@ -166,12 +169,14 @@ function renderSheet({
   geoLocation = 'GB',
   geoError = false,
   excludedRegions = [] as string[] | null,
+  entryType = 'deeplink',
   onClose = jest.fn(),
 }: {
   initialCode?: string;
   geoLocation?: string | null;
   geoError?: boolean;
   excludedRegions?: string[] | null;
+  entryType?: ReferralEntryType;
   onClose?: () => void;
 } = {}) {
   const store = configureStore({
@@ -188,7 +193,11 @@ function renderSheet({
 
   const view = render(
     <Provider store={store}>
-      <AcceptInviteSheet initialCode={initialCode} onClose={onClose} />
+      <AcceptInviteSheet
+        initialCode={initialCode}
+        entryType={entryType}
+        onClose={onClose}
+      />
     </Provider>,
   );
 
@@ -229,6 +238,28 @@ describe('AcceptInviteSheet', () => {
     fireEvent.change(input, { target: { value: 'zz-99' } });
     expect(input.value).toBe('ZZ99');
   });
+
+  it.each(['deeplink', 'restored_context'] as ReferralEntryType[])(
+    'sends entry_type %s with each interaction',
+    async (entryType) => {
+      const user = userEvent.setup();
+      const view = renderSheet({ initialCode: 'AB12CD', entryType });
+
+      await act(async () => {
+        await user.click(view.getByTestId('money-referral-decline'));
+      });
+
+      expect(mockTrackEvent.mock.calls.length).toBeGreaterThanOrEqual(2);
+      for (const [call] of mockTrackEvent.mock.calls) {
+        expect(call.properties).toMatchObject({
+          /* eslint-disable @typescript-eslint/naming-convention -- analytics properties */
+          entry_type: entryType,
+          referral_code: 'AB12CD',
+          /* eslint-enable @typescript-eslint/naming-convention */
+        });
+      }
+    },
+  );
 
   it('shows an invalid code from validation and keeps accept disabled', () => {
     mockValidation.isValid = false;
@@ -690,7 +721,11 @@ describe('AcceptInviteSheet', () => {
     });
     view.rerender(
       <Provider store={view.store}>
-        <AcceptInviteSheet initialCode="ab12" onClose={onClose} />
+        <AcceptInviteSheet
+          initialCode="ab12"
+          entryType="deeplink"
+          onClose={onClose}
+        />
       </Provider>,
     );
 

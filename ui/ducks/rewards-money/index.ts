@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { ReferralMeDto } from '../../../shared/types/rewards-money';
+import type {
+  PendingReferral,
+  ReferralMeDto,
+} from '../../../shared/types/rewards-money';
 
 export type RewardsMoneyState = {
-  pendingReferralCode: string | null;
+  pendingReferral: PendingReferral | null;
   referralMe: ReferralMeDto | null;
   referralMeSettled: boolean;
 };
 
 export const initialState: RewardsMoneyState = {
-  pendingReferralCode: null,
+  pendingReferral: null,
   referralMe: null,
   referralMeSettled: false,
 };
@@ -17,8 +20,11 @@ const rewardsMoneySlice = createSlice({
   name: 'rewardsMoney',
   initialState,
   reducers: {
-    setPendingReferralCode: (state, action: PayloadAction<string | null>) => {
-      state.pendingReferralCode = action.payload;
+    setPendingReferral: (
+      state,
+      action: PayloadAction<PendingReferral | null>,
+    ) => {
+      state.pendingReferral = action.payload;
     },
     setRewardsMoneyReferralMe: (
       state,
@@ -41,7 +47,7 @@ const rewardsMoneySlice = createSlice({
 });
 
 export const {
-  setPendingReferralCode,
+  setPendingReferral,
   setRewardsMoneyReferralMe,
   setRewardsMoneyReferralMeSettled,
   resetRewardsMoneyReferralMe,

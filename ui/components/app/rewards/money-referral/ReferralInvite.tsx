@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { setPendingReferralCode } from '#ui/ducks/rewards-money';
+import { setPendingReferral } from '#ui/ducks/rewards-money';
 import { selectIsMoneyReferralInviteEnabled } from '#ui/ducks/rewards-money/selectors';
 import { DEFAULT_ROUTE } from '#ui/helpers/constants/routes';
 import { selectShowTermsOfUse } from '#ui/selectors/home-modals';
@@ -11,17 +11,22 @@ import { AcceptInviteSheet } from '#ui/components/app/rewards/money-referral/Acc
 export function ReferralInvite() {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const code = useAppSelector(
-    (state) => state.rewardsMoney.pendingReferralCode,
+  const pendingReferral = useAppSelector(
+    (state) => state.rewardsMoney.pendingReferral,
   );
   const enabled = useAppSelector(selectIsMoneyReferralInviteEnabled);
   const showTermsOfUse = useAppSelector(selectShowTermsOfUse);
   const handleClose = useCallback(() => {
-    dispatch(setPendingReferralCode(null));
+    dispatch(setPendingReferral(null));
   }, [dispatch]);
 
   const validRoute = !(pathname === DEFAULT_ROUTE && showTermsOfUse);
-  return code && enabled && validRoute ? (
-    <AcceptInviteSheet key={code} initialCode={code} onClose={handleClose} />
+  return pendingReferral && enabled && validRoute ? (
+    <AcceptInviteSheet
+      key={pendingReferral.code}
+      initialCode={pendingReferral.code}
+      entryType={pendingReferral.entryType}
+      onClose={handleClose}
+    />
   ) : null;
 }

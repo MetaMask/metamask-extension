@@ -1376,7 +1376,7 @@
     }
   },
   "rewardsMoney": {
-    "pendingReferralCode": "null",
+    "pendingReferral": "null",
     "referralMe": "null",
     "referralMeSettled": "boolean"
   },

@@ -1,6 +1,7 @@
 import { it as jestIt } from '@jest/globals';
 import {
   getReferralCode,
+  getReferralEntryType,
   withReferralCode,
 } from '#shared/lib/deep-links/referral';
 
@@ -23,11 +24,39 @@ describe('getReferralCode', () => {
   });
 });
 
+describe('getReferralEntryType', () => {
+  it('defaults to a direct link', () => {
+    expect(getReferralEntryType(new URLSearchParams())).toBe('deeplink');
+    expect(
+      getReferralEntryType(new URLSearchParams('refEntryType=unknown')),
+    ).toBe('deeplink');
+  });
+
+  it('reads a restored deferred context', () => {
+    expect(
+      getReferralEntryType(
+        new URLSearchParams('refEntryType=restored_context'),
+      ),
+    ).toBe('restored_context');
+  });
+});
+
 describe('withReferralCode', () => {
   it('carries the code outside the product route without changing its parameters', () => {
     const params = new URLSearchParams('ref=abc123&unsigned=ignored');
     const result = withReferralCode('scheme://id/home.html?a=v#/r?t=E', params);
     expect(result).toBe('scheme://id/home.html?a=v&ref=ABC123#/r?t=E');
+  });
+
+  it('marks a code restored from a deferred link', () => {
+    const result = withReferralCode(
+      'scheme://id/home.html#/m',
+      new URLSearchParams('ref=abc123'),
+      'restored_context',
+    );
+    expect(result).toBe(
+      'scheme://id/home.html?ref=ABC123&refEntryType=restored_context#/m',
+    );
   });
 
   it('preserves the destination when there is no valid referral', () => {

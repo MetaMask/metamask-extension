@@ -888,6 +888,7 @@ describe('useOnboardingCompletion', () => {
         expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
         expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
           urlPathAndQuery,
+          'restored_context',
         );
         expect(mockUseNavigate).toHaveBeenCalledWith(
           `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
@@ -1009,7 +1010,10 @@ describe('useOnboardingCompletion', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       });
-      expect(store.getState().rewardsMoney.pendingReferralCode).toBe('ABC123');
+      expect(store.getState().rewardsMoney.pendingReferral).toStrictEqual({
+        code: 'ABC123',
+        entryType: 'restored_context',
+      });
       const [event] = mockTrackEvent.mock.calls[0];
       expect(event.name).toBe('Deep Link Used');
       expect(event.properties.referral_code).toBe('ABC123');

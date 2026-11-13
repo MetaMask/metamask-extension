@@ -45,7 +45,10 @@ function renderInvite({
       appState: () => ({ termsOpen }),
     },
     preloadedState: {
-      rewardsMoney: { ...initialState, pendingReferralCode: 'ABC123' },
+      rewardsMoney: {
+        ...initialState,
+        pendingReferral: { code: 'ABC123', entryType: 'deeplink' },
+      },
     },
   });
   const router = createMemoryRouter(
@@ -76,7 +79,7 @@ describe('ReferralInvite', () => {
     expect(screen.getByText('Destination')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'ABC123' }));
 
-    expect(store.getState().rewardsMoney.pendingReferralCode).toBeNull();
+    expect(store.getState().rewardsMoney.pendingReferral).toBeNull();
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
     expect(screen.getByText('Destination')).toBeInTheDocument();
   });
@@ -89,6 +92,9 @@ describe('ReferralInvite', () => {
     const store = renderInvite(options);
 
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
-    expect(store.getState().rewardsMoney.pendingReferralCode).toBe('ABC123');
+    expect(store.getState().rewardsMoney.pendingReferral).toStrictEqual({
+      code: 'ABC123',
+      entryType: 'deeplink',
+    });
   });
 });

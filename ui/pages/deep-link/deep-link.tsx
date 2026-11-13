@@ -19,8 +19,10 @@ import {
 } from '@metamask/design-system-react';
 import {
   getReferralCode,
+  getReferralEntryType,
   withReferralCode,
 } from '#shared/lib/deep-links/referral';
+import type { ReferralEntryType } from '#shared/types/rewards-money';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -63,6 +65,7 @@ const { getExtensionURL } = globalThis.platform;
  * @param abortController
  * @param setPageNotFoundError - The function to call when the destination is missing.
  * @param referralInviteEnabled - Whether local gates allow a Money referral invite.
+ * @param entryType - Where a referral code came from, when this page was reached from a deferred link.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -76,6 +79,7 @@ async function updateStateFromUrl(
   abortController: AbortController,
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
   referralInviteEnabled: boolean,
+  entryType: ReferralEntryType,
 ) {
   try {
     const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
@@ -97,6 +101,7 @@ async function updateStateFromUrl(
                 destination.query.toString() ?? null,
               ),
               url.searchParams,
+              entryType,
             );
       const title = parsed.route.getTitle(url.searchParams);
 
@@ -196,6 +201,7 @@ const DeepLinkInterstitial = () => {
       const params = new URLSearchParams(location.search);
       const urlStr = params.get('u');
       const errorCode = params.get('errorCode');
+      const entryType = getReferralEntryType(params);
 
       if (!urlStr || errorCode) {
         setRoute(null);
@@ -259,6 +265,7 @@ const DeepLinkInterstitial = () => {
         abortController,
         setPageNotFoundError,
         referralInviteEnabled,
+        entryType,
       );
     };
 

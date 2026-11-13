@@ -183,10 +183,30 @@ describe('DeepLink', () => {
         const anchor = await findByTestId('deep-link-continue-button');
         const href = new URL(anchor.getAttribute('href') ?? '');
         expect(href.searchParams.get('ref')).toBe('ABC123');
+        expect(href.searchParams.has('refEntryType')).toBe(false);
         expect(href.hash).toBe('#/money?asset=ETH');
         expect(anchor.tagName).toBe('A');
       },
     );
+
+    it('marks a referral restored from a deferred link', async () => {
+      parseMock.mockResolvedValue({
+        signature: 'missing',
+        destination: { path: '/money', query: new URLSearchParams() },
+        route: { getTitle: () => 'deepLink_theMoneyPage' },
+      } as unknown as ParsedDeepLink);
+      const { findByTestId } = renderDeepLink(
+        new URLSearchParams({
+          u: '/money?ref=abc123',
+          refEntryType: 'restored_context',
+        }).toString(),
+      );
+
+      const anchor = await findByTestId('deep-link-continue-button');
+      const href = new URL(anchor.getAttribute('href') ?? '');
+      expect(href.searchParams.get('ref')).toBe('ABC123');
+      expect(href.searchParams.get('refEntryType')).toBe('restored_context');
+    });
   });
 
   describe('referral interstitial copy', () => {

@@ -59,6 +59,16 @@ describe('Deep link utils', () => {
         '/link?u=%2Fbuy%3Faddress%3D0xacA92E438df0B2401fF60dA7E4337B687a2435DA%26amount%3D100%26chainId%3D1',
       );
     });
+
+    it('marks a restored referral context', () => {
+      const result = buildInterstitialRoute(
+        '/home?ref=ABC123',
+        'restored_context',
+      );
+      expect(result).toBe(
+        '/link?u=%2Fhome%3Fref%3DABC123&refEntryType=restored_context',
+      );
+    });
   });
 
   describe('getDeferredDeepLinkRoute', () => {

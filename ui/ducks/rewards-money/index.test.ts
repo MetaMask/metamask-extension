@@ -65,12 +65,12 @@ describe('rewardsMoney slice', () => {
       ...initialState,
       referralMe,
       referralMeSettled: true,
-      pendingReferralCode: 'ABC123',
+      pendingReferral: { code: 'ABC123', entryType: 'deeplink' },
     };
 
     expect(reducer(populated, resetRewardsMoneyReferralMe())).toStrictEqual({
       ...initialState,
-      pendingReferralCode: 'ABC123',
+      pendingReferral: { code: 'ABC123', entryType: 'deeplink' },
     });
   });
 });
