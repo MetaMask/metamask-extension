@@ -2395,66 +2395,9 @@ export default class MetamaskController extends EventEmitter {
    * New methods should be defined in controllers and exposed via the messenger, rather than being added to this API object.
    */
   getApi() {
-    const {
-      appStateController,
-      nftController,
-      nftDetectionController,
-      currencyRateController,
-      tokenDetectionController,
-      gasFeeController,
-      announcementController,
-      preferencesController,
-      backup,
-      authenticationController,
-      deFiPositionsController,
-      staticAssetsController,
-    } = this;
+    const { appStateController, backup } = this;
 
     return {
-      // subscription
-
-      subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
-        this.subscriptionController,
-      ),
-      subscriptionsStopPolling:
-        this.subscriptionController.stopPollingByPollingToken.bind(
-          this.subscriptionController,
-        ),
-
-      // MultichainNetworkController
-
-      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
-        this.multichainNetworkController,
-      ),
-
-      // PreferencesController
-
-      dismissSidePanelMigrationToast:
-        preferencesController.dismissSidePanelMigrationToast.bind(
-          preferencesController,
-        ),
-
-      // NftController
-
-      // These are only called from the UI import flow, i.e. a manual import.
-      addNft: (address, tokenId, networkClientId) =>
-        nftController.addNft(address, tokenId, networkClientId, {
-          source: Source.Custom,
-        }),
-      addNftVerifyOwnership: (address, tokenId, networkClientId) =>
-        nftController.addNftVerifyOwnership(address, tokenId, networkClientId, {
-          source: Source.Custom,
-        }),
-      removeAndIgnoreNft: nftController.removeAndIgnoreNft.bind(nftController),
-      removeNft: nftController.removeNft.bind(nftController),
-      checkAndUpdateAllNftsOwnershipStatus:
-        nftController.checkAndUpdateAllNftsOwnershipStatus.bind(nftController),
-      checkAndUpdateSingleNftOwnershipStatus:
-        nftController.checkAndUpdateSingleNftOwnershipStatus.bind(
-          nftController,
-        ),
-      isNftOwner: nftController.isNftOwner.bind(nftController),
-
       // AppStateController
 
       setArcUsageNoticeShown: () => {
@@ -2473,87 +2416,15 @@ export default class MetamaskController extends EventEmitter {
         );
       },
 
-      // GeolocationController
-
-      getGeolocation: this.geolocationController.getGeolocation.bind(
-        this.geolocationController,
-      ),
-
       // MetaMetrics
 
       trackAnalyticsEvent: trackEvent,
       trackMetaMetricsPage: trackPage,
 
-      // Notifications
-
-      resetViewedNotifications: announcementController.resetViewed.bind(
-        announcementController,
-      ),
-      updateViewedNotifications: announcementController.updateViewed.bind(
-        announcementController,
-      ),
-
-      // CurrencyRateController
-
-      currencyRateStartPolling: currencyRateController.startPolling.bind(
-        currencyRateController,
-      ),
-      currencyRateStopPollingByPollingToken:
-        currencyRateController.stopPollingByPollingToken.bind(
-          currencyRateController,
-        ),
-
-      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
-        tokenDetectionController,
-      ),
-      tokenDetectionStopPollingByPollingToken:
-        tokenDetectionController.stopPollingByPollingToken.bind(
-          tokenDetectionController,
-        ),
-
-      staticAssetsStartPolling: staticAssetsController.startPolling.bind(
-        staticAssetsController,
-      ),
-      staticAssetsStopPollingByPollingToken:
-        staticAssetsController.stopPollingByPollingToken.bind(
-          staticAssetsController,
-        ),
-
-      // DeFiPositionsController
-
-      deFiStartPolling: deFiPositionsController.startPolling.bind(
-        deFiPositionsController,
-      ),
-      deFiStopPolling: deFiPositionsController.stopPollingByPollingToken.bind(
-        deFiPositionsController,
-      ),
-
-      // GasFeeController
-
-      gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
-      gasFeeStopPollingByPollingToken:
-        gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
-
       // Backup
 
       backupUserData: backup.backupUserData.bind(backup),
       restoreUserData: backup.restoreUserData.bind(backup),
-
-      // NftDetectionController
-      detectNfts: nftDetectionController.detectNfts.bind(
-        nftDetectionController,
-      ),
-
-      // Authentication Controller
-
-      getUserProfileLineage:
-        authenticationController.getUserProfileLineage.bind(
-          authenticationController,
-        ),
-      requestProfilePairing:
-        authenticationController.requestProfilePairing.bind(
-          authenticationController,
-        ),
     };
   }
 
