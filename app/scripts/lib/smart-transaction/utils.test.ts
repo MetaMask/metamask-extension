@@ -47,6 +47,14 @@ describe('toAccountHardwareType', () => {
     expect(toAccountHardwareType('Ledger Hardware')).toBe('Ledger');
   });
 
+  it('maps the other known hardware keyring types', () => {
+    expect(toAccountHardwareType('Trezor Hardware')).toBe('Trezor');
+    expect(toAccountHardwareType('QR Hardware Wallet Device')).toBe(
+      'QR Hardware',
+    );
+    expect(toAccountHardwareType('Lattice Hardware')).toBe('Lattice');
+  });
+
   it('omits labels that are not known keyring types', () => {
     for (const label of [undefined, '', 'OneKey Hardware', 'Ledger']) {
       expect(toAccountHardwareType(label)).toBeUndefined();
