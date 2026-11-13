@@ -1,5 +1,6 @@
 import type { SplitStateWriteEvent } from '../stores/persistence-manager';
 import { trace, TraceName, TraceOperation } from '../trace';
+import { buildActivityAttributes } from './activity-attributes';
 
 /**
  * Sentry transaction name for sampled split-state persistence writes.
@@ -18,8 +19,6 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     'state.write.coalesced_updates': event.coalescedUpdates,
     'state.write.controller_count': event.bytesByController.size,
     'state.write.controllers': [...event.bytesByController.keys()].join(','),
-    'state.write.environment_type': event.environmentType,
-    'state.write.idle_status': event.idleStatus,
     'state.write.measurement_duration_ms': event.measurementDurationMs,
     'state.write.sample_rate': event.sampleRate,
     'state.write.size_measurement_source': event.sizeMeasurementSource,
@@ -27,24 +26,14 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     'state.write.write_duration_ms': event.writeDurationMs,
   };
 
-  if (event.currentActivity.startupPhase !== undefined) {
-    data['state.write.startup_phase'] = event.currentActivity.startupPhase;
-  }
-
-  if (event.currentActivity.notificationIsOpen !== undefined) {
-    data['state.write.notification_is_open'] =
-      event.currentActivity.notificationIsOpen;
-  }
-
-  const uiCounts = {
-    popup: event.currentActivity.popupCount,
-    fullscreen: event.currentActivity.fullscreenCount,
-    sidepanel: event.currentActivity.sidePanelCount,
-  } as const;
-  for (const [uiType, count] of Object.entries(uiCounts)) {
-    if (count !== undefined) {
-      data[`state.write.ui_count.${uiType}`] = count;
-    }
+  const activity = buildActivityAttributes(
+    event.currentActivity,
+    event.lastActivity,
+    event.idleStatus,
+    event.environmentType,
+  );
+  for (const [key, value] of Object.entries(activity)) {
+    data[`state.write.${key}`] = value;
   }
 
   for (const [controllerKey, bytes] of event.bytesByController) {
@@ -56,6 +45,9 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
       data,
       name: TraceName.StatePersist,
       op: TraceOperation.StateWrite,
+      // The write is debounced, lock-gated and size-measured before this runs,
+      // so the active span here is not what triggered it.
+      root: true,
     },
     () => undefined,
   );

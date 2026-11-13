@@ -1,4 +1,3 @@
-import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { getAttentionRequiredApprovalCount } from '../approval/utils';
 import { NOTIFICATION_MANAGER_EVENTS } from '../notification-manager';
 import {
@@ -37,7 +36,6 @@ function createMockBrowser() {
 function createMockController(): BadgeManagerController & {
   subscribe: jest.Mock;
   hubOn: jest.Mock;
-  setDefaultHomeActiveTabName: jest.Mock;
   rejectUnapproved: jest.Mock;
   rejectDecrypt: jest.Mock;
   rejectEncryption: jest.Mock;
@@ -45,7 +43,6 @@ function createMockController(): BadgeManagerController & {
 } {
   const subscribe = jest.fn();
   const hubOn = jest.fn();
-  const setDefaultHomeActiveTabName = jest.fn();
   const rejectUnapproved = jest.fn();
   const rejectDecrypt = jest.fn();
   const rejectEncryption = jest.fn();
@@ -55,9 +52,6 @@ function createMockController(): BadgeManagerController & {
     approvalController: {
       state: { pendingApprovals: {} },
     } as BadgeManagerController['approvalController'],
-    appStateController: {
-      setDefaultHomeActiveTabName,
-    },
     controllerMessenger: {
       subscribe,
     },
@@ -76,7 +70,6 @@ function createMockController(): BadgeManagerController & {
     },
     subscribe,
     hubOn,
-    setDefaultHomeActiveTabName,
     rejectUnapproved,
     rejectDecrypt,
     rejectEncryption,
@@ -207,7 +200,6 @@ describe('createBadgeManager', () => {
     expect(extensionBrowser.action.setBadgeText).toHaveBeenLastCalledWith({
       text: '3',
     });
-    expect(controller.setDefaultHomeActiveTabName).not.toHaveBeenCalled();
   });
 
   it('skips failed-tx tracking when persistent UI is open', () => {
@@ -223,7 +215,6 @@ describe('createBadgeManager', () => {
     });
 
     expect(api.getFailedTxCount()).toBe(0);
-    expect(controller.setDefaultHomeActiveTabName).not.toHaveBeenCalled();
   });
 
   it('ignores duplicate failed nonces', () => {
@@ -243,21 +234,6 @@ describe('createBadgeManager', () => {
     onTransactionStatusUpdated(payload);
 
     expect(api.getFailedTxCount()).toBe(1);
-  });
-
-  it('sets the Activity landing tab for a failed transaction', () => {
-    const { controller } = setup();
-    const onTransactionStatusUpdated = getTransactionHandler(
-      controller.subscribe,
-    );
-
-    onTransactionStatusUpdated({
-      transactionMeta: { status: 'failed' },
-    });
-
-    expect(controller.setDefaultHomeActiveTabName).toHaveBeenCalledWith(
-      AccountOverviewTabKey.Activity,
-    );
   });
 
   it('clears failed-tx state and restores the pending-approval badge', () => {

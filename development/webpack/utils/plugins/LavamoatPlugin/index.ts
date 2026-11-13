@@ -20,6 +20,7 @@ const nullUnsafeEntries: Set<string> = new Set([
 const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by different mm deps outside of lm compartment
   'window',
+  'Window',
   'Proxy',
   'toString',
   'getComputedStyle',
@@ -76,6 +77,8 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'logEncryptedVault',
   'WebAssembly',
   'Request',
+  // Sentry builds fetch trace headers with it; scuttled, they are dropped.
+  'Headers',
   // needed by Sentry and react-router-dom v6 HashRouter
   'history',
   // globals used by react-dom

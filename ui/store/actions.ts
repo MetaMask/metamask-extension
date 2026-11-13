@@ -23,6 +23,7 @@ import {
   AssetsContractController,
   BalanceMap,
   Nft,
+  Source,
   Token,
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -158,7 +159,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
-  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
   createEventBuilder,
@@ -198,6 +198,7 @@ import {
   TraceName,
   TraceOperation,
   TraceRequest,
+  withoutTraceContext,
 } from '../../shared/lib/trace';
 import type { SerializedTraceContext } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
@@ -528,7 +529,7 @@ export function subscriptionsStartPolling(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const pollingToken = await submitRequestToBackground(
-        'subscriptionsStartPolling',
+        'SubscriptionController:startPolling',
         // We need to provide the polling input when start polling
         // Otherwise, stop polling won't work with `undefined` input.
         [SUBSCRIPTIONS_POLLING_INPUT],
@@ -979,15 +980,10 @@ export async function setShieldSubscriptionError(
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
- * @param trackEvent - The track event function from MetaMetrics context.
  * @returns The seed phrase.
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-  trackEvent?: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => Promise<void>,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     // restore the vault using the seed phrase
@@ -995,20 +991,6 @@ export function restoreSocialBackupAndGetSeedPhrase(
       'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
       [password],
     );
-
-    // sync marketing consent with metametrics
-    const marketingConsent = await getMarketingConsent();
-    dispatch(setDataCollectionForMarketing(marketingConsent));
-
-    await trackEvent?.({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-      properties: {
-        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-        [MetaMetricsUserTrait.HasMarketingConsent]: marketingConsent,
-        location: 'onboarding_social_login_rehydration',
-      },
-    });
 
     await forceUpdateMetamaskState(dispatch);
     return mnemonic;
@@ -3252,10 +3234,11 @@ export function addNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNft', [
+      await submitRequestToBackground('NftController:addNft', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -3286,10 +3269,11 @@ export function addNftVerifyOwnership(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNftVerifyOwnership', [
+      await submitRequestToBackground('NftController:addNftVerifyOwnership', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -3327,7 +3311,7 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [
+      await submitRequestToBackground('NftController:removeAndIgnoreNft', [
         address,
         tokenID,
         networkClientId,
@@ -3372,7 +3356,7 @@ export function removeNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeNft', [
+      await submitRequestToBackground('NftController:removeNft', [
         address,
         tokenID,
         networkClientId,
@@ -3389,9 +3373,10 @@ export function removeNft(
 export async function checkAndUpdateAllNftsOwnershipStatus(
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus', [
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateAllNftsOwnershipStatus',
+    [networkClientId],
+  );
 }
 
 export async function isNftOwner(
@@ -3400,7 +3385,7 @@ export async function isNftOwner(
   nftId: string,
   networkClientId: NetworkClientId,
 ): Promise<boolean> {
-  return await submitRequestToBackground('isNftOwner', [
+  return await submitRequestToBackground('NftController:isNftOwner', [
     ownerAddress,
     nftAddress,
     nftId,
@@ -3412,10 +3397,10 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
   nft: Nft,
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
-    nft,
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateSingleNftOwnershipStatus',
+    [nft, networkClientId],
+  );
 }
 
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
@@ -3729,7 +3714,10 @@ export function removeNetwork(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('removeNetwork', [chainId]);
+      await submitRequestToBackground(
+        'MultichainNetworkController:removeNetwork',
+        [chainId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4521,8 +4509,8 @@ export function setParticipateInMetaMetrics(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
     try {
-      const metaMetricsId = await submitRequestToBackground<string>(
-        'setParticipateInMetaMetrics',
+      const metaMetricsId = await submitRequestToBackground(
+        'LegacyBackgroundApiService:setParticipateInMetaMetrics',
         [participationPreference],
       );
 
@@ -4539,22 +4527,32 @@ export function setParticipateInMetaMetrics(
   };
 }
 
-export function setDataCollectionForMarketing(
-  dataCollectionPreference: boolean,
-): ThunkAction<
-  Promise<[boolean, string]>,
+export function optInToMarketing(): ThunkAction<
+  Promise<void>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setDataCollectionForMarketing`);
-    await submitRequestToBackground('setDataCollectionForMarketing', [
-      dataCollectionPreference,
-    ]);
+    await submitRequestToBackground('AnalyticsController:optInToMarketing');
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-      value: dataCollectionPreference,
+      value: true,
+    });
+  };
+}
+
+export function optOutOfMarketing(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('AnalyticsController:optOutOfMarketing');
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: false,
     });
   };
 }
@@ -4784,7 +4782,9 @@ export function detectNfts(
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts', [chainIds]);
+      await submitRequestToBackground('NftDetectionController:detectNfts', [
+        chainIds,
+      ]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
@@ -5743,6 +5743,29 @@ export function setLastActiveTime(): ThunkAction<
   };
 }
 
+/**
+ * Forwards a trusted UI click or keypress to the background for state-write
+ * telemetry. Failures are ignored so activity tracking never breaks the UI.
+ *
+ * @returns A thunk that reports the interaction.
+ */
+export function recordUiInteraction(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await withoutTraceContext(() =>
+        submitRequestToBackground('AppStateController:recordUiInteraction'),
+      );
+    } catch {
+      // Telemetry must not surface background failures in the UI.
+    }
+  };
+}
+
 export function setDismissSeedBackUpReminder(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -6154,7 +6177,7 @@ export async function currencyRateStartPolling(
   nativeCurrencies: string[],
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'currencyRateStartPolling',
+    'CurrencyRateController:startPolling',
     [{ nativeCurrencies }],
   );
   await addPollingTokenToAppState(pollingToken);
@@ -6171,9 +6194,10 @@ export async function currencyRateStartPolling(
 export async function currencyRateStopPollingByPollingToken(
   pollingToken: string,
 ) {
-  await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'CurrencyRateController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6187,7 +6211,7 @@ export async function tokenDetectionStartPolling(
   chainIds: string[],
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'tokenDetectionStartPolling',
+    'TokenDetectionController:startPolling',
     [{ chainIds }],
   );
 
@@ -6203,9 +6227,10 @@ export async function tokenDetectionStartPolling(
 export async function tokenDetectionStopPollingByPollingToken(
   pollingToken: string,
 ) {
-  await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'TokenDetectionController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6225,7 +6250,7 @@ export async function staticAssetsStartPolling(params: {
   selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'staticAssetsStartPolling',
+    'StaticAssetsController:startPolling',
     [params],
   );
   await addPollingTokenToAppState(pollingToken);
@@ -6235,9 +6260,10 @@ export async function staticAssetsStartPolling(params: {
 export async function staticAssetsStopPollingByPollingToken(
   pollingToken: string,
 ) {
-  await submitRequestToBackground('staticAssetsStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'StaticAssetsController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6264,9 +6290,10 @@ export async function accountTrackerStopPollingByPollingToken(
 export async function gasFeeStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  const pollingToken = await submitRequestToBackground('gasFeeStartPolling', [
-    { networkClientId },
-  ]);
+  const pollingToken = await submitRequestToBackground(
+    'GasFeeController:startPolling',
+    [{ networkClientId }],
+  );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
 }
@@ -6279,9 +6306,10 @@ export async function gasFeeStartPollingByNetworkClientId(
  * @param pollingToken - Poll token received from calling gasFeeStartPolling
  */
 export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
-  await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'GasFeeController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6369,6 +6397,36 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
+export async function trackErrorAsAnalytics(
+  error: unknown,
+  options: {
+    source: string;
+    volumeControls?: object;
+    excludeMetaMetricsId?: boolean;
+    environmentType?: string;
+  },
+  properties?: Record<string, unknown>,
+) {
+  const { excludeMetaMetricsId, environmentType, ...controllerOptions } =
+    options;
+  const controllerProperties: Record<string, unknown> = {
+    ...properties,
+    ...(excludeMetaMetricsId ? { anonymous: true } : {}),
+  };
+  if (environmentType) {
+    controllerProperties.environment_type = environmentType;
+  }
+
+  try {
+    await submitRequestToBackground(
+      'AnalyticsController:trackErrorAsAnalytics',
+      [getErrorMessage(error), controllerOptions, controllerProperties],
+    );
+  } catch {
+    // Swallow background RPC failures. Error reporting must not break UI.
+  }
+}
+
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
   payload: MetaMetricsEventFragmentPayload,
@@ -6397,13 +6455,13 @@ export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
 }
 
 export function resetViewedNotifications() {
-  return submitRequestToBackground('resetViewedNotifications');
+  return submitRequestToBackground('AnnouncementController:resetViewed');
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap: {
   [notificationId: string]: boolean;
 }) {
-  return submitRequestToBackground('updateViewedNotifications', [
+  return submitRequestToBackground('AnnouncementController:updateViewed', [
     notificationIdViewedStatusMap,
   ]);
 }
@@ -7190,7 +7248,9 @@ export function requestProfilePairing(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('requestProfilePairing');
+      await submitRequestToBackground(
+        'AuthenticationController:requestProfilePairing',
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7263,7 +7323,7 @@ export async function getUserProfileLineage(): Promise<
 > {
   try {
     const userProfileLineage = await submitRequestToBackground(
-      'getUserProfileLineage',
+      'AuthenticationController:getUserProfileLineage',
     );
     return userProfileLineage;
   } catch (error) {
@@ -7751,6 +7811,20 @@ export function setMusdConversionEducationSeen(value: boolean) {
       'AppStateController:setMusdConversionEducationSeen',
       [value],
     );
+  };
+}
+
+/**
+ * Persist that the Money account FTUE splash has been seen.
+ * Stored in AppStateController until uninstall.
+ *
+ * @param value
+ */
+export function setMoneyFtueSeen(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('AppStateController:setMoneyFtueSeen', [
+      value,
+    ]);
   };
 }
 

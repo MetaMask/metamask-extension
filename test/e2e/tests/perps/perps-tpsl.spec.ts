@@ -6,8 +6,9 @@
  * the clearinghouse state the server would send once that trigger has filled (UI cannot
  * run the real price-crossing matcher in E2E). Each test then pushes a `userFills`
  * snapshot and opens Perps Activity to assert the close-long trade row.
- * A short delay before `pushPositionClosed` is required: `PerpsStreamManager` ignores
- * incoming position WS pushes for 3000 ms after optimistic TP/SL (`WEBSOCKET_BLOCK_MS`).
+ * The fill is simulated as soon as the UI confirms the TP/SL: `PerpsStreamManager` holds
+ * position pushes received right after an optimistic TP/SL update and applies the latest
+ * one when that window ends, so no wait is needed before `pushPositionClosed`.
  *
  * PREREQUISITE: PERPS_ENABLED=true in the extension build (.metamaskrc).
  */
@@ -52,10 +53,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         await marketDetailPage.setTakeProfit('3500.00');
 
         await marketDetailPage.checkAutoCloseRowContains('3,500');
-
-        // PerpsStreamManager drops incoming `positions` WS updates for WEBSOCKET_BLOCK_MS (3000)
-        // after optimistic TP/SL; wait so `pushPositionClosed` is not ignored.
-        await driver.delay(3200);
 
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
@@ -105,9 +102,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         await marketDetailPage.setStopLoss('2500.00');
 
         await marketDetailPage.checkAutoCloseRowContains('2,500');
-
-        // Same WEBSOCKET_BLOCK_MS window as optimistic TP/SL (see TP scenario above).
-        await driver.delay(3200);
 
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
