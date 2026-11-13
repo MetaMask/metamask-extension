@@ -22,6 +22,8 @@ export type PaintDiagnostics = {
   balancePainted: number | null;
   tokenNamePainted: number | null;
   tokenIconPainted: number | null;
+  shellPainted: number | null;
+  shellInserted: number | null;
   tokenImages: number;
   maxIconNaturalWidth: number;
   iconResponseEnd: number | null;
@@ -55,6 +57,8 @@ const READ_SCRIPT = `
     balancePainted: time('balance'),
     tokenNamePainted: time('token-name'),
     tokenIconPainted: time('token-icon'),
+    shellPainted: time('shell-balance'),
+    shellInserted: (performance.getEntriesByName('home-shell-inserted')[0] || {}).startTime ?? null,
     tokenImages: imgs.length,
     maxIconNaturalWidth: imgs.reduce((m, i) => Math.max(m, i.naturalWidth), 0),
     iconResponseEnd: icon ? icon.responseEnd : null,

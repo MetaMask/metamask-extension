@@ -74,6 +74,12 @@ async function measurePageStandard(
         if (diagnostics.tokenIconPainted !== null) {
           metricsThisLoad['Token Icon Painted'] = diagnostics.tokenIconPainted;
         }
+        if (diagnostics.shellPainted !== null) {
+          metricsThisLoad['Shell Painted'] = diagnostics.shellPainted;
+        }
+        if (diagnostics.shellInserted !== null) {
+          metricsThisLoad['Shell Inserted'] = diagnostics.shellInserted;
+        }
         if (iconArm) {
           console.log(
             '[icon-arm]',

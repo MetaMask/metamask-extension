@@ -68,6 +68,8 @@ export const ALL_METRICS = {
   balancePainted: 'Balance Painted',
   tokenNamePainted: 'Token Name Painted',
   tokenIconPainted: 'Token Icon Painted',
+  shellPainted: 'Shell Painted',
+  shellInserted: 'Shell Inserted',
   initialActions: 'Initial Actions',
   loadScripts: 'Load Scripts',
   setupStore: 'Setup Store',

@@ -51,14 +51,14 @@ jobs:
           skip-allow-scripts: true
           fetch-depth: 2
 
-      - name: Remove the async edits (build A only)
+      - name: Remove the shell edits (build A only)
         if: ${{ matrix.build == 'a' }}
         run: |
           set -euo pipefail
-          git checkout HEAD~1 -- ui
+          git checkout HEAD~1 -- app development/webpack
           git status --short
-          if git diff --quiet HEAD~1 HEAD -- ui; then
-            echo "::error::The tip commit does not change ui/, so A and B would be identical"
+          if git diff --quiet HEAD~1 HEAD -- app development/webpack; then
+            echo "::error::The tip commit does not change app/, so A and B would be identical"
             exit 1
           fi
 
@@ -98,7 +98,7 @@ jobs:
           fi
           matrix=$(jq -nc --argjson s "$shards" '
             {include: [
-              ("default", "pain", "big1", "synthetic") as $arm
+              ("default") as $arm
               | range(1; $s + 1) as $shard
               | {arm: $arm, shard: $shard, flip: (($shard - 1) % 2)}
             ]}')

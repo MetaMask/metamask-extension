@@ -49,6 +49,8 @@ export type Metrics = {
   'Balance Painted'?: number;
   'Token Name Painted'?: number;
   'Token Icon Painted'?: number;
+  'Shell Painted'?: number;
+  'Shell Inserted'?: number;
   'Initial Actions': number;
   'Load Scripts': number;
   'Setup Store': number;
