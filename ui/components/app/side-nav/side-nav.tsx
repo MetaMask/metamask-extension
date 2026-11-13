@@ -26,6 +26,10 @@ export const SideNav = () => {
   const items = useMainNavItems();
 
   const resize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.currentTarget.dataset.resizing !== 'true') {
+      return;
+    }
+
     const sideNav = event.currentTarget.parentElement;
     if (!sideNav) {
       return;
@@ -102,13 +106,16 @@ export const SideNav = () => {
         className="absolute -right-1 top-0 z-10 h-full w-2 cursor-col-resize touch-none focus-visible:outline-none before:absolute before:inset-y-0 before:left-[3px] before:w-px before:bg-border-muted hover:before:bg-primary-default focus-visible:before:bg-primary-default"
         data-testid="side-nav-resize-handle"
         onPointerDown={(event) => {
+          event.currentTarget.dataset.resizing = 'true';
           event.currentTarget.setPointerCapture?.(event.pointerId);
         }}
         onPointerMove={resize}
         onPointerUp={(event) => {
+          delete event.currentTarget.dataset.resizing;
           event.currentTarget.releasePointerCapture?.(event.pointerId);
         }}
         onPointerCancel={(event) => {
+          delete event.currentTarget.dataset.resizing;
           event.currentTarget.releasePointerCapture?.(event.pointerId);
         }}
         onKeyDown={resizeByKey}
