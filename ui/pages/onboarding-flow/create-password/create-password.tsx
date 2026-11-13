@@ -100,7 +100,6 @@ export default function CreatePassword({
     [bufferedEndTrace],
   );
 
-
   const validateSocialLoginAuthenticatedState = useCallback(async () => {
     const isSeedlessOnboardingUserAuthenticated = await dispatch(
       getIsSeedlessOnboardingUserAuthenticated(),
