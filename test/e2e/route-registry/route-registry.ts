@@ -181,6 +181,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
 
   // Assets and tokens
   '/asset/image/:asset/:id': NFTDetailsPage,
+  '/asset/activation/loader': NOT_A_SCREEN,
   '/asset/:chainId/:asset?/:id?': AssetDetailsPage,
   '/asset/:chainId/:asset?/:id?/security-trust': null,
   '/defi': DeFiDetailsPage,

@@ -5,6 +5,7 @@ import {
   MUSD_MONEY_ACCOUNT_CHAIN_IDS,
 } from '@metamask/money-account-utils';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
+import type { VaultShareToken } from '../../../../shared/lib/money/vault-share-valuations';
 import type { AccountsApiActivity } from '../types/money-activity';
 
 export const METAMASK_CARD_PAYMENT_TYPE = 'METAMASK_CARD_PAYMENT';
@@ -44,6 +45,7 @@ type AccountsApiTransaction = {
   hash: string;
   timestamp: string;
   chainId: number;
+  blockNumber?: number;
   from: string;
   to: string;
   isError?: boolean;
@@ -81,6 +83,39 @@ function inboundMusdTransfer(
   );
 }
 
+function isVaultShareTokenOnChain(
+  tokenAddress: string,
+  chainId: Hex,
+  vaultShareTokens: readonly VaultShareToken[],
+): boolean {
+  return vaultShareTokens.some(
+    (token) =>
+      token.chainId.toLowerCase() === chainId.toLowerCase() &&
+      isEqualCaseInsensitive(token.address, tokenAddress),
+  );
+}
+
+function inboundSettlementTransfer(
+  tx: AccountsApiTransaction,
+  moneyAddress: string,
+  vaultShareTokens: readonly VaultShareToken[],
+): AccountsApiValueTransfer | undefined {
+  const chainId = parseChainId(tx.chainId);
+  if (!chainId) {
+    return undefined;
+  }
+  return (tx.valueTransfers ?? []).find(
+    (transfer) =>
+      isEqualCaseInsensitive(transfer.to, moneyAddress) &&
+      (isMusdOnMoneyAccountChain(transfer.contractAddress, chainId) ||
+        isVaultShareTokenOnChain(
+          transfer.contractAddress,
+          chainId,
+          vaultShareTokens,
+        )),
+  );
+}
+
 const AMOUNT_PATTERN = /^\d+$/u;
 
 function parseChainId(chainId: unknown): Hex | undefined {
@@ -99,6 +134,7 @@ type ParsedSettlement = {
   hash: Hex;
   time: number;
   chainId: Hex;
+  blockNumber?: number;
   token: { address: Hex; symbol: string; decimals: number };
   amount: string;
 };
@@ -121,10 +157,17 @@ function parseSettlement(
   ) {
     return undefined;
   }
+  const blockNumber =
+    typeof tx.blockNumber === 'number' &&
+    Number.isInteger(tx.blockNumber) &&
+    tx.blockNumber >= 0
+      ? tx.blockNumber
+      : undefined;
   return {
     hash: tx.hash as Hex,
     time,
     chainId,
+    ...(blockNumber === undefined ? {} : { blockNumber }),
     token: {
       address: transfer.contractAddress as Hex,
       symbol: transfer.symbol,
@@ -169,12 +212,15 @@ export function oldestRawActivityTime(
  * @param response - One Accounts API transactions page.
  * @param moneyAddress - Money Account address used to pick settlement legs.
  * @param cashbackMultisendContracts - Known Baanx cashback multisend targets.
+ * @param vaultShareTokens - Configured vault-share tokens that count as a
+ * cashback settlement.
  * @returns Parsed activity rows from this page.
  */
 export function parseAccountsApiActivity(
   response: AccountsApiTransactionsResponse,
   moneyAddress: string,
   cashbackMultisendContracts: readonly string[] = DEFAULT_MONEY_CARD_ACTIVITY_CASHBACK_MULTISEND_CONTRACTS,
+  vaultShareTokens: readonly VaultShareToken[] = [],
 ): AccountsApiActivity[] {
   return (response.data ?? []).flatMap((tx): AccountsApiActivity[] => {
     if (tx.transactionType === METAMASK_CARD_PAYMENT_TYPE) {
@@ -193,8 +239,19 @@ export function parseAccountsApiActivity(
       }
       return [{ ...parsed, kind: 'refund', receivedFrom: inbound.from as Hex }];
     }
-    if (isCashbackTransaction(tx, moneyAddress, cashbackMultisendContracts)) {
-      const transfer = inboundMusdTransfer(tx, moneyAddress);
+    if (
+      isCashbackTransaction(
+        tx,
+        moneyAddress,
+        cashbackMultisendContracts,
+        vaultShareTokens,
+      )
+    ) {
+      const transfer = inboundSettlementTransfer(
+        tx,
+        moneyAddress,
+        vaultShareTokens,
+      );
       const parsed = parseSettlement(tx, transfer);
       if (!parsed || !transfer) {
         return [];
@@ -220,6 +277,7 @@ function isCashbackTransaction(
   tx: AccountsApiTransaction,
   moneyAddress: string,
   cashbackMultisendContracts: readonly string[],
+  vaultShareTokens: readonly VaultShareToken[],
 ): boolean {
   if (tx.isError) {
     return false;
@@ -235,7 +293,7 @@ function isCashbackTransaction(
   }
   if (
     !isCashbackMultisendTarget(tx.to, cashbackMultisendContracts) ||
-    !inboundMusdTransfer(tx, moneyAddress)
+    !inboundSettlementTransfer(tx, moneyAddress, vaultShareTokens)
   ) {
     return false;
   }

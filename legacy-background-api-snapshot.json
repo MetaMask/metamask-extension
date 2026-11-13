@@ -98,37 +98,10 @@
     "upsertTransactionUIMetricsFragment"
   ],
   "MetamaskController.getApi": [
-    "addNft",
-    "addNftVerifyOwnership",
     "backupUserData",
-    "checkAndUpdateAllNftsOwnershipStatus",
-    "checkAndUpdateSingleNftOwnershipStatus",
-    "currencyRateStartPolling",
-    "currencyRateStopPollingByPollingToken",
-    "deFiStartPolling",
-    "deFiStopPolling",
-    "detectNfts",
-    "dismissSidePanelMigrationToast",
-    "gasFeeStartPolling",
-    "gasFeeStopPollingByPollingToken",
-    "getGeolocation",
-    "getUserProfileLineage",
-    "isNftOwner",
-    "removeAndIgnoreNft",
-    "removeNetwork",
-    "removeNft",
-    "requestProfilePairing",
-    "resetViewedNotifications",
     "restoreUserData",
     "setArcUsageNoticeShown",
-    "staticAssetsStartPolling",
-    "staticAssetsStopPollingByPollingToken",
-    "subscriptionsStartPolling",
-    "subscriptionsStopPolling",
-    "tokenDetectionStartPolling",
-    "tokenDetectionStopPollingByPollingToken",
     "trackAnalyticsEvent",
-    "trackMetaMetricsPage",
-    "updateViewedNotifications"
+    "trackMetaMetricsPage"
   ]
 }
