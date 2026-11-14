@@ -379,7 +379,9 @@
     "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
-    "@metamask/utils": "^12.0.1"
+    "@metamask/utils": "^12.0.1",
+    "@open-rpc/schema-utils-js@npm:^2.0.5": "patch:@open-rpc/schema-utils-js@npm%3A2.2.1#~/.yarn/patches/@open-rpc-schema-utils-js-npm-2.2.1-309fa9ab1e.patch",
+    "@open-rpc/schema-utils-js@npm:^2.2.1": "patch:@open-rpc/schema-utils-js@npm%3A2.2.1#~/.yarn/patches/@open-rpc-schema-utils-js-npm-2.2.1-309fa9ab1e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -490,7 +492,7 @@
     "@metamask/money-account-utils": "^2.2.0",
     "@metamask/multichain-account-service": "^14.1.0",
     "@metamask/multichain-api-client": "^0.10.1",
-    "@metamask/multichain-api-middleware": "^3.1.4",
+    "@metamask/multichain-api-middleware": "^5.1.0",
     "@metamask/multichain-network-controller": "^4.1.1",
     "@metamask/multichain-transactions-controller": "^8.0.0",
     "@metamask/name-controller": "^10.0.0",

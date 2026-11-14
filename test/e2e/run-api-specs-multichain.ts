@@ -127,6 +127,7 @@ async function main() {
           result: {
             name: 'wallet_getSessionResultExample',
             value: {
+              sessionProperties: {},
               sessionScopes: {},
             },
           },
@@ -134,7 +135,7 @@ async function main() {
       ];
 
       const results = await testCoverage({
-        openrpcDocument: doc,
+        openrpcDocument: doc as OpenrpcDocument,
         transport: createMultichainDriverTransport(driver, extensionId),
         reporters: ['console-streaming'],
         skip: ['wallet_invokeMethod'],

@@ -4491,6 +4491,10 @@ export default class MetamaskController extends EventEmitter {
           ),
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
+        // The session handlers hydrate `sessionProperties.eip155Capabilities`
+        // through this hook. Resolving without a value leaves the account out
+        // of that record, so dapps keep calling `wallet_getCapabilities`.
+        getCapabilities: async () => undefined,
       }),
     );
 
