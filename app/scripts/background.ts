@@ -77,6 +77,7 @@ import {
   recordWindowEvent,
 } from '../../shared/lib/telemetry/last-activity';
 
+import { updateSegmentDeliveryState } from './lib/segment';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
 import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
@@ -742,6 +743,10 @@ export function setupController(
   });
 
   const metamaskController = controller;
+  const updateAnalyticsDelivery = () =>
+    updateSegmentDeliveryState(metamaskController.store.getState());
+  metamaskController.store.subscribe(updateAnalyticsDelivery);
+  updateAnalyticsDelivery();
 
   // Wire up the callback to notify the UI when set operations fail
   persistenceManager.setOnSetFailed((errorType) => {
