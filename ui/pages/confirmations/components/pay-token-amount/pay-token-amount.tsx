@@ -17,6 +17,7 @@ import {
 import { useConfirmContext } from '../../context/confirm';
 import { formatAmount } from '../../../../../shared/lib/format-amount';
 import { getTokenAddress } from '../../utils/transaction-pay';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
 
@@ -30,17 +31,18 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId } = currentConfirmation ?? { chainId: '0x0' as Hex };
   const { payToken } = useTransactionPayToken();
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const targetTokenAddress = getTokenAddress(currentConfirmation);
   const isQuotesLoading = useIsTransactionPayLoading();
   const isMaxAmount = useTransactionPayIsMaxAmount();
 
   const fiatRequests = useMemo(
     () =>
-      payToken && targetTokenAddress
+      evmPayToken && targetTokenAddress
         ? [
             {
-              chainId: payToken.chainId,
-              address: payToken.address,
+              chainId: evmPayToken.chainId,
+              address: evmPayToken.address,
             },
             {
               chainId: chainId as Hex,
@@ -48,7 +50,7 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
             },
           ]
         : [],
-    [chainId, payToken, targetTokenAddress],
+    [chainId, evmPayToken, targetTokenAddress],
   );
 
   const fiatRates = useTokenFiatRates(fiatRequests);

@@ -119,12 +119,13 @@ export function isPostQuoteWithdrawTransaction(
  * legs on-device.
  *
  * Most flows use `txParams.from`. Money Account deposits are signed by the
- * money account but funded by the account in `accountOverride`. Post-quote
+ * money account but funded by the MetaMask Pay account override. Post-quote
  * withdraws (including Money Account withdraws) keep `from` because their
  * override is only the recipient, which must never be asked to sign.
  *
  * @param transactionMeta - The transaction metadata.
- * @param accountOverride - MetaMask Pay account override for the transaction.
+ * @param accountOverride - Address of the MetaMask Pay account override for
+ * the transaction.
  * @returns The paying account address, if known.
  */
 export function getTransactionPayingAccount(

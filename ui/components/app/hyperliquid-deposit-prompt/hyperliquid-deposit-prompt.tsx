@@ -37,6 +37,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getEvmAssetId } from '../../../../shared/lib/transaction/pay-token';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
@@ -296,8 +297,10 @@ export const HyperliquidDepositPrompt: React.FC<
       try {
         await updateTransactionPaymentToken({
           transactionId,
-          tokenAddress: displayToken.address as Hex,
-          chainId: displayToken.chainId as Hex,
+          assetId: getEvmAssetId(
+            displayToken.address as Hex,
+            displayToken.chainId as Hex,
+          ),
         });
       } catch (error) {
         // The confirmation falls back to its automatic pay token selection,

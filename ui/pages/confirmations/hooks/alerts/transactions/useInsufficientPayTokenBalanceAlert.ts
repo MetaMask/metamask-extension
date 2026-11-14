@@ -23,6 +23,7 @@ import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
 import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { getEvmPaymentToken } from '../../../../../../shared/lib/transaction/pay-token';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
 import { useIsFundingAccountBalanceSettling } from '../../pay/useIsFundingAccountBalanceSettling';
 import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
@@ -45,6 +46,7 @@ export function useInsufficientPayTokenBalanceAlert({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();
   const isLoading = useIsTransactionPayLoading();
@@ -72,7 +74,7 @@ export function useInsufficientPayTokenBalanceAlert({
   const sourceChainId = (
     isPostQuote
       ? (currentConfirmation?.chainId ?? '0x0')
-      : (payToken?.chainId ?? '0x0')
+      : (evmPayToken?.chainId ?? '0x0')
   ) as Hex;
 
   const networkConfigurationsByChainId = useSelector(
@@ -117,9 +119,9 @@ export function useInsufficientPayTokenBalanceAlert({
   const isPayTokenNative =
     !isPostQuote &&
     Boolean(
-      payToken &&
-      payToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
-      payToken.chainId === sourceChainId,
+      evmPayToken &&
+      evmPayToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
+      evmPayToken.chainId === sourceChainId,
     );
 
   // Live funding-account balance (USD already reconciles snapshot vs live

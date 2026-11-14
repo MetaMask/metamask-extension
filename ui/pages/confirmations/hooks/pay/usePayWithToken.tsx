@@ -10,6 +10,7 @@ import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import {
@@ -99,7 +100,8 @@ export function usePayWithToken(): PayWithToken {
 
   const firstRequiredToken = requiredTokens?.[0];
   const resolvedToken =
-    payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
+    getEvmPaymentToken(payToken) ??
+    (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
   const hasAvailableTokens = useMemo(
     () => (availableTokens ?? []).some((token) => !token.disabled),

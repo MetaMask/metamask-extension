@@ -24,7 +24,7 @@ import {
 } from '../../../shared/lib/trace';
 import { getTransactions } from '../../selectors/transactions';
 import {
-  selectTransactionPaymentTokenByTransactionId,
+  selectEvmPaymentTokenByTransactionId,
   selectTransactionPayQuotesByTransactionId,
   type TransactionPayState,
 } from '../../selectors/transactionPayController';
@@ -78,7 +78,7 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
 
   const paymentToken = useSelector((state: TransactionPayState) =>
     effectiveTxId
-      ? selectTransactionPaymentTokenByTransactionId(state, effectiveTxId)
+      ? selectEvmPaymentTokenByTransactionId(state, effectiveTxId)
       : undefined,
   );
 

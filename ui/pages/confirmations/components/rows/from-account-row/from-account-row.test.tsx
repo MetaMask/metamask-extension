@@ -4,6 +4,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { createMockInternalAccounts } from '../../../../../../test/data/mock-accounts';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
@@ -101,8 +102,15 @@ jest.mock('../../../../../components/app/preferred-avatar', () => ({
 
 const FROM_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
 const OTHER_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
+const FROM_ACCOUNT_ID_MOCK = 'from-account-id';
+const OTHER_ACCOUNT_ID_MOCK = 'other-account-id';
 const CHAIN_ID_MOCK = '0x1';
 const TX_ID_MOCK = 'test-id';
+
+const ACCOUNTS_MOCK = createMockInternalAccounts([
+  { id: FROM_ACCOUNT_ID_MOCK, address: FROM_ADDRESS_MOCK },
+  { id: OTHER_ACCOUNT_ID_MOCK, address: OTHER_ADDRESS_MOCK },
+]);
 
 const mockStore = configureStore([thunk]);
 
@@ -113,6 +121,10 @@ function createStore({
 } = {}) {
   return mockStore({
     metamask: {
+      internalAccounts: {
+        accounts: ACCOUNTS_MOCK,
+        selectedAccount: FROM_ACCOUNT_ID_MOCK,
+      },
       transactionData: accountOverride
         ? {
             [TX_ID_MOCK]: {
@@ -306,7 +318,7 @@ describe('FromAccountRow', () => {
       subtitle: 'Wallet 2',
     } as never);
 
-    const store = createStore({ accountOverride: OTHER_ADDRESS_MOCK });
+    const store = createStore({ accountOverride: OTHER_ACCOUNT_ID_MOCK });
     renderWithProvider(<FromAccountRow />, store);
 
     expect(screen.getByText('From Wallet 2')).toBeInTheDocument();
@@ -321,7 +333,7 @@ describe('FromAccountRow', () => {
     );
   });
 
-  it('sets the pay account override with the chosen address', async () => {
+  it('sets the pay account override to the ID of the chosen account', async () => {
     const store = createStore();
     renderWithProvider(<FromAccountRow />, store);
 
@@ -337,7 +349,7 @@ describe('FromAccountRow', () => {
     await waitFor(() => {
       expect(setAccountOverrideMock).toHaveBeenCalledWith(
         TX_ID_MOCK,
-        OTHER_ADDRESS_MOCK,
+        OTHER_ACCOUNT_ID_MOCK,
       );
     });
   });
@@ -353,7 +365,7 @@ describe('FromAccountRow', () => {
       },
     } as never);
 
-    const store = createStore({ accountOverride: OTHER_ADDRESS_MOCK });
+    const store = createStore({ accountOverride: OTHER_ACCOUNT_ID_MOCK });
     renderWithProvider(<FromAccountRow />, store);
 
     fireEvent.click(screen.getByTestId('from-account-pill'));
@@ -368,7 +380,7 @@ describe('FromAccountRow', () => {
     await waitFor(() => {
       expect(setAccountOverrideMock).toHaveBeenCalledWith(
         TX_ID_MOCK,
-        FROM_ADDRESS_MOCK,
+        FROM_ACCOUNT_ID_MOCK,
       );
     });
   });
@@ -392,7 +404,7 @@ describe('FromAccountRow', () => {
     await waitFor(() => {
       expect(setAccountOverrideMock).toHaveBeenCalledWith(
         TX_ID_MOCK,
-        OTHER_ADDRESS_MOCK,
+        OTHER_ACCOUNT_ID_MOCK,
       );
     });
     expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
@@ -410,7 +422,7 @@ describe('FromAccountRow', () => {
   });
 
   it('does not set the account override when the currently overridden account is chosen', () => {
-    const store = createStore({ accountOverride: OTHER_ADDRESS_MOCK });
+    const store = createStore({ accountOverride: OTHER_ACCOUNT_ID_MOCK });
     renderWithProvider(<FromAccountRow />, store);
 
     fireEvent.click(screen.getByTestId('from-account-pill'));

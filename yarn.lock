@@ -10596,13 +10596,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:^31.1.0":
-  version: 31.1.0
-  resolution: "@metamask/transaction-pay-controller@npm:31.1.0"
+"@metamask/transaction-pay-controller@npm:@metamask-previews/transaction-pay-controller@31.1.0-preview-0c535b603":
+  version: 31.1.0-preview-0c535b603
+  resolution: "@metamask-previews/transaction-pay-controller@npm:31.1.0-preview-0c535b603"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.8.0"
+    "@metamask/account-tree-controller": "npm:^11.2.0"
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/assets-controller": "npm:^20.3.1"
     "@metamask/base-controller": "npm:^10.1.0"
@@ -10621,7 +10622,7 @@ __metadata:
     bn.js: "npm:^5.2.5"
     immer: "npm:^11.1.18"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/332fd77e9bb807dd0d34d4123bb0ba2975f2f44694d8995c9a93a2fa751d74997059bcc2ea0884d0298c914e40fa6811d93667de2fa1399b2105418354bbf2ae
+  checksum: 10/d0ba80d2476b0c7ece4d1c6f4e66f43af8e0eba0e43ec811050b7c22b3f51dd6819ce7d80b294023ccbb2eaff45643c913d337658ba253f85422977dc02dadcd
   languageName: node
   linkType: hard
 

@@ -23,6 +23,7 @@ import { getMarketData } from '../../../../selectors';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayAvailableTokens } from '../pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
@@ -145,9 +146,10 @@ export function useDepositPrefill(): DepositPrefillResult {
   // TransactionPayController needs real market data to build source amounts.
   // `useTokenFiatRate` cannot be used as this readiness gate because it falls
   // back to a synthetic $1 token price when market data is absent.
-  const payTokenMarketPrice = payToken
-    ? marketData?.[payToken.chainId]?.[
-        toChecksumHexAddress(payToken.address) as Hex
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
+  const payTokenMarketPrice = evmPayToken
+    ? marketData?.[evmPayToken.chainId]?.[
+        toChecksumHexAddress(evmPayToken.address) as Hex
       ]?.price
     : undefined;
   const hasPayTokenMarketPrice =
@@ -157,14 +159,14 @@ export function useDepositPrefill(): DepositPrefillResult {
   // The confirmation id is part of the key so a following deposit rendered by
   // the same mounted UI releases the commit and prefills again, instead of
   // inheriting the previous confirmation's amount.
-  const tokenKey = `${transactionMeta?.id ?? ''}:${payToken?.address}:${payToken?.chainId}:${accountOverride ?? ''}`;
+  const tokenKey = `${transactionMeta?.id ?? ''}:${evmPayToken?.address}:${evmPayToken?.chainId}:${accountOverride ?? ''}`;
   const [committedKey, setCommittedKey] = useState<string | null>(null);
 
   const { prefillAmount, percentage, isLimitCapped, isUncappedMaxPrefill } =
     useMemo(() => {
       const balanceUsdValue = new BigNumber(balanceUsd);
 
-      if (!enabled || !payToken) {
+      if (!enabled || !evmPayToken) {
         return {
           prefillAmount: undefined,
           percentage: undefined,
@@ -184,8 +186,8 @@ export function useDepositPrefill(): DepositPrefillResult {
 
       const stable = isListedStablecoin(
         stablecoins,
-        payToken.chainId,
-        payToken.address,
+        evmPayToken.chainId,
+        evmPayToken.address,
       );
       const supportsMaxPrefill = hasTransactionType(
         transactionMeta,
@@ -224,8 +226,8 @@ export function useDepositPrefill(): DepositPrefillResult {
       balanceUsd,
       depositLimit,
       enabled,
+      evmPayToken,
       isLiveBalance,
-      payToken,
       stablecoins,
       transactionMeta,
     ]);

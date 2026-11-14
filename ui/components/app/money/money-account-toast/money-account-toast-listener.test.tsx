@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, renderHook, screen } from '@testing-library/react';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
@@ -143,12 +144,13 @@ function createState({
             id: 'ledger-account',
             address: LEDGER_ADDRESS,
             metadata: { keyring: { type: KeyringTypes.ledger } },
+            type: EthAccountType.Eoa,
           },
         },
       },
       transactionData: {
         [transactionId]: {
-          accountOverride: LEDGER_ADDRESS,
+          accountOverride: 'ledger-account',
           fiatPayment: fiatPaymentMethodId
             ? { selectedPaymentMethodId: fiatPaymentMethodId }
             : undefined,
