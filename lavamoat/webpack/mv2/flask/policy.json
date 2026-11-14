@@ -5,6 +5,42 @@
         "regeneratorRuntime": "write"
       }
     },
+    "@braze/web-sdk": {
+      "globals": {
+        "CustomEvent": true,
+        "EventSource": true,
+        "Intl": true,
+        "Notification": true,
+        "ServiceWorkerRegistration": true,
+        "XMLHttpRequest": true,
+        "addEventListener": true,
+        "atob": true,
+        "btoa": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto": true,
+        "dispatchEvent": true,
+        "document": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "localStorage": true,
+        "location": "write",
+        "navigator": true,
+        "open": true,
+        "orientation": true,
+        "removeEventListener": true,
+        "safari": true,
+        "screen.height": true,
+        "screen.mozOrientation": true,
+        "screen.msOrientation": true,
+        "screen.width": true,
+        "setInterval": true,
+        "setTimeout": true
+      }
+    },
     "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": {
       "globals": {
         "SuppressedError": true
