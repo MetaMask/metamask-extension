@@ -96,7 +96,30 @@ mm cleanup
 - **Auto-start**: `mm launch` starts the daemon if it's not running.
 - **Worktree Isolation**: Each worktree has its own daemon, tracked in `.mm-server`.
 - **Idle Timeout**: Daemon shuts down after 30 minutes of inactivity.
-- **Logs**: Activity is logged to `.mm-daemon.log`.
+- **Logs**: Activity is logged to `.mm-daemon.log`. Each request line has the outcome, for example `POST /tool/click 200 ok=false code=MM_CLICK_TIMEOUT 2038ms`.
+- **Artifacts**: Screenshots go to `test-artifacts/screenshots/` and session metadata to `test-artifacts/<sessionId>/session.json`. Set `MM_ARTIFACTS_DIR` before `mm launch` to write them to another directory.
+
+### 3. Output and Errors
+
+Every command prints JSON on stdout. A failed command prints one JSON line on stdout (not `Error: ...` on stderr) and exits with a non-zero code:
+
+```json
+{"ok":false,"error":{"code":"MM_CLICK_TIMEOUT","message":"Click timed out after 3000ms; state unknown (last Playwright step: element is not enabled). ...","hint":"...","retryable":false},"meta":{...}}
+```
+
+| Exit code | Meaning                                          |
+| --------- | ------------------------------------------------ |
+| 0         | Success (the response has no `ok` field)         |
+| 1         | Other error                                      |
+| 2         | Usage or validation error                        |
+| 3         | No session, or the daemon is not running or lost |
+| 4         | Target not found or not actionable               |
+| 5         | Timeout                                          |
+| 6         | Platform or device not available                 |
+
+Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
+
+`mm click` without `--timeout` fails after 2 seconds with `MM_TARGET_NOT_FOUND` (exit code 4) when no element matches the target, for example `Selector [data-testid="x"] (testId:x) matched 0 elements after 2000ms`. Check the target with `mm describe-screen`. With `--timeout <ms>`, the click waits that long for the target to appear. A `MM_CLICK_TIMEOUT` message ends with the last Playwright step, which tells why the click failed: for example `element is not enabled`, or `<div class="mm-modal" ...> subtree intercepts pointer events` (close the modal first).
 
 ---
 
@@ -114,13 +137,18 @@ mm cleanup
 - `mm type <ref> <text>`: Types text into an element.
 - `mm describe-screen`: Captures the current screen state and element references.
 - `mm screenshot`: Takes a screenshot of the current page.
-- `mm wait-for <ref>`: Waits for an element to appear.
+- `mm wait-for <ref>`: Waits for an element to appear. Use it instead of `sleep`.
+- `mm scroll-to-element <ref>`: Scrolls an element into view.
+- `mm inspect <ref>`: Shows the attributes, disabled and read-only flags, and computed styles of an element.
+- `mm hover <ref>` / `mm unhover`: Moves the pointer over an element / off the page.
+- `mm set-viewport <width> <height>` / `mm reset-viewport`: Resizes the page / restores its size.
 
 ### Navigation
 
 - `mm navigate <url>`: Navigates to a specific URL.
 - `mm navigate-home`: Navigates to the extension home.
 - `mm navigate-settings`: Navigates to the extension settings.
+- `mm reload`: Reloads the active page.
 
 ---
 

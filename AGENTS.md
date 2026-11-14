@@ -1023,7 +1023,7 @@ When the user explicitly asks for visual verification of UI behavior (e.g., "ver
 
 0. Build if needed (`yarn build:test`), then `mm launch` (this auto-starts the daemon)
 1. Always call `mm describe-screen` before acting to discover targets
-2. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
+2. Use `mm click`/`mm type`/`mm wait-for` to drive the flow. A failed command prints one JSON line on stdout, `{"ok":false,"error":{"code","message","hint","retryable"}}`, and exits non-zero; read `error.code` and `error.hint` (not stderr)
 3. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output
 4. Always end with `mm cleanup` (even on failure)
 
