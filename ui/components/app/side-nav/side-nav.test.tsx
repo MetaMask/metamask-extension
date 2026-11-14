@@ -100,6 +100,35 @@ describe('SideNav', () => {
     expect(getByTestId('side-nav-accounts')).toBeInTheDocument();
   });
 
+  it('resizes from the divider without rerendering the nav', () => {
+    const { getByTestId } = renderSideNav();
+    const sideNav = getByTestId('side-nav');
+    const resizeHandle = getByTestId('side-nav-resize-handle');
+
+    const rect = sideNav.getBoundingClientRect();
+    jest.spyOn(sideNav, 'getBoundingClientRect').mockReturnValue({
+      ...rect,
+      left: 0,
+    });
+
+    fireEvent.pointerDown(resizeHandle, { pointerId: 1 });
+    fireEvent.pointerMove(resizeHandle, { clientX: 400, pointerId: 1 });
+    fireEvent.pointerUp(resizeHandle, { pointerId: 1 });
+
+    expect(sideNav.style.getPropertyValue('--side-nav-width')).toBe('400px');
+  });
+
+  it('resizes from the keyboard', () => {
+    const { getByTestId } = renderSideNav();
+    const sideNav = getByTestId('side-nav');
+
+    fireEvent.keyDown(getByTestId('side-nav-resize-handle'), {
+      key: 'ArrowRight',
+    });
+
+    expect(sideNav.style.getPropertyValue('--side-nav-width')).toBe('336px');
+  });
+
   it('renders the nav items in order', () => {
     const { getByRole } = renderSideNav();
 
