@@ -6,6 +6,8 @@ import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
+import RevealRecoveryPhrasePage from '../pages/onboarding/reveal-recovery-phrase-page';
+import ConfirmRecoveryPhrasePage from '../pages/onboarding/confirm-recovery-phrase-page';
 import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
@@ -131,6 +133,32 @@ export const skipPasskeySetup = async (
     await setupPasskeyPage.checkPageIsLoaded(timeout);
     await setupPasskeyPage.skipPasskeySetup();
   }
+};
+
+/**
+ * Reveal the SRP and complete the confirm quiz.
+ * Expects the review recovery phrase screen to be open, or the password gate
+ * when `password` is passed (backup started from the home reminder).
+ *
+ * @param driver - The WebDriver instance.
+ * @param password - The wallet password, only needed when the backup starts
+ * from the home reminder.
+ */
+export const revealAndConfirmSrp = async (
+  driver: Driver,
+  password?: string,
+): Promise<void> => {
+  if (password) {
+    const revealRecoveryPhrasePage = new RevealRecoveryPhrasePage(driver);
+    await revealRecoveryPhrasePage.checkPageIsLoaded();
+    await revealRecoveryPhrasePage.enterPasswordAndContinue(password);
+  }
+
+  await new SecureWalletPage(driver).revealAndContinue();
+
+  const confirmRecoveryPhrasePage = new ConfirmRecoveryPhrasePage(driver);
+  await confirmRecoveryPhrasePage.checkPageIsLoaded();
+  await confirmRecoveryPhrasePage.answerQuizAndConfirm();
 };
 
 /**
@@ -361,7 +389,7 @@ export const createNewWalletOnboardingFlow = async ({
   if (skipSRPBackup) {
     await secureWalletPage.skipSRPBackup();
   } else {
-    await secureWalletPage.revealAndConfirmSRP();
+    await revealAndConfirmSrp(driver);
   }
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
@@ -603,9 +631,8 @@ export const completeOnboardingWithPasskey = async ({
   await setupPasskeyPage.waitForEnrollmentSteps();
   await setupPasskeyPage.waitForEnrollmentSuccess();
 
-  const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.checkPageIsLoaded();
-  await secureWalletPage.revealAndConfirmSRP();
+  await new SecureWalletPage(driver).checkPageIsLoaded();
+  await revealAndConfirmSrp(driver);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
     await onboardingMetricsFlow(driver);

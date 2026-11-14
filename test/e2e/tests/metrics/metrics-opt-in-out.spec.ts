@@ -9,7 +9,10 @@ import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboardi
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import { skipPasskeySetup } from '../../page-objects/flows/onboarding.flow';
+import {
+  revealAndConfirmSrp,
+  skipPasskeySetup,
+} from '../../page-objects/flows/onboarding.flow';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -98,7 +101,7 @@ describe('Metrics Opt In/Out events', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -152,7 +155,7 @@ describe('Metrics Opt In/Out events', function () {
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
-        await secureWalletPage.revealAndConfirmSRP();
+        await revealAndConfirmSrp(driver);
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);

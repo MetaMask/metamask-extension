@@ -1,31 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Wallet-ready / completion step at the end of onboarding (and optional
- * download-app continue).
+ * Wallet-ready / completion step at the end of onboarding.
  *
- * Screen: `#/onboarding/completion`; also covers continuing past
- * `#/onboarding/download-app` when that step is shown.
- * Owns: wallet-ready / keep-SRP-safe messaging, Done, manage default
- * settings entry, and download-app continue.
+ * Screen: `#/onboarding/completion`.
+ * Owns: wallet-ready / keep-SRP-safe messaging, Done, and the manage default
+ * settings entry.
  * Boundaries: completion CTAs only. Default privacy settings are
  * `OnboardingPrivacySettingsPage` after `navigateToDefaultPrivacySettings`.
- * Related: preceded by `OnboardingMetricsPage` (or earlier steps on Firefox);
- * optional detour to `OnboardingPrivacySettingsPage`; then home via Done;
- * `flows/onboarding.flow.ts`.
+ * The download-app step before this screen belongs to `DownloadAppPage`.
+ * Related: preceded by `OnboardingMetricsPage` (or earlier steps on Firefox)
+ * or `DownloadAppPage`; optional detour to `OnboardingPrivacySettingsPage`;
+ * then home via Done; `flows/onboarding.flow.ts`.
  *
  * @see ui/pages/onboarding-flow/creation-successful/creation-successful.tsx
- * @see ui/pages/onboarding-flow/download-app/download-app.tsx
  */
 class OnboardingCompletePage {
-  private readonly downloadAppContinueButton =
-    '[data-testid="download-app-continue"]';
-
-  private readonly downloadAppTitle = {
-    text: 'Scan QR code and download the app',
-    tag: 'h2',
-  };
-
   private driver: Driver;
 
   private readonly keepSrpSafeMessage = {
@@ -107,13 +97,6 @@ class OnboardingCompletePage {
   async completeOnboarding(): Promise<void> {
     console.log('Complete onboarding');
     await this.clickCreateWalletDoneButton();
-  }
-
-  async displayDownloadAppPageAndContinue(): Promise<void> {
-    await this.driver.waitForSelector(this.downloadAppTitle);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.downloadAppContinueButton,
-    );
   }
 
   async navigateToDefaultPrivacySettings(): Promise<void> {
