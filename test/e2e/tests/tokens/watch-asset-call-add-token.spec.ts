@@ -1,5 +1,6 @@
 import {
   DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT,
   LOCALHOST_NETWORK_CLIENT_ID,
   SECOND_NODE_NETWORK_CLIENT_ID,
   WINDOW_TITLES,
@@ -11,6 +12,12 @@ import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-tok
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
+import {
+  deployErc20AtMainnetListedAddress,
+  MAINNET_LISTED_TOKEN_ADDRESS,
+  MAINNET_LISTED_TOKEN_MINTED_AMOUNT,
+  MAINNET_LISTED_TOKEN_SYMBOL,
+} from './mainnet-listed-token.helpers';
 
 describe('Add token using wallet_watchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -134,6 +141,53 @@ describe('Add token using wallet_watchAsset', function () {
         await addTokenConfirmation.checkPageIsLoaded();
         await addTokenConfirmation.checkSuggestedTokenBalanceIsDisplayed(
           '10 TST',
+        );
+      },
+    );
+  });
+
+  it('adds a token at a Mainnet-listed address when the dapp is on a non-Mainnet network', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, localNodes }) => {
+        // Put a real DAI ERC-20 at the Mainnet DAI address on the local chain
+        // (0x539), mirroring fork chains like PulseChain where every Mainnet
+        // token lives at its Mainnet address.
+        await deployErc20AtMainnetListedAddress(
+          localNodes[0],
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
+
+        // The deployment spends gas from the Anvil account the wallet uses,
+        // so its native balance no longer matches the fixture's.
+        await login(driver, { validateBalance: false });
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        await testDapp.requestWatchErc20Asset({
+          address: MAINNET_LISTED_TOKEN_ADDRESS,
+          decimals: 18,
+          symbol: MAINNET_LISTED_TOKEN_SYMBOL,
+        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const addTokenConfirmation = new AddTokenConfirmation(driver);
+        await addTokenConfirmation.checkPageIsLoaded();
+        await addTokenConfirmation.confirmAddToken();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await new TokensTab(driver).checkTokenAmountIsDisplayed(
+          `${MAINNET_LISTED_TOKEN_MINTED_AMOUNT} ${MAINNET_LISTED_TOKEN_SYMBOL}`,
         );
       },
     );
