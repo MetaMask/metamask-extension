@@ -15,6 +15,19 @@ import { stripProtocol } from '../rpc-list-item';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { SelectRpcUrlModal } from './select-rpc-url-modal';
 
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: jest.fn(),
+    }),
+  };
+});
+
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -62,17 +75,6 @@ const store = mockStore({
 describe('SelectRpcUrlModal Component', () => {
   beforeEach(() => {
     mockDispatch.mockClear();
-  });
-
-  it('renders select rpc url', () => {
-    const { container } = renderWithProvider(
-      <SelectRpcUrlModal
-        networkConfiguration={networkConfiguration}
-        onNetworkChange={mockOnNetworkChange}
-      />,
-      store,
-    );
-    expect(container).toMatchSnapshot();
   });
 
   it('should render the component correctly with network image and name', () => {

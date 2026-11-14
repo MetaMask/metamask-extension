@@ -42,8 +42,16 @@ import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsNetworkEventSource,
+  NetworkManagementEntryPoint,
+  NetworkManagementSource,
 } from '../../../shared/constants/metametrics';
+import {
+  trackRpcAdded,
+  useTrackNetworkManagementStep,
+  getNetworkManagementStep,
+  type NetworkManagementStep,
+} from '../../helpers/utils/network-management-metrics';
+import { getNetworkSectionKey } from '../../helpers/utils/network-sections';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
@@ -179,6 +187,18 @@ export const NetworksPage = () => {
   }, [editingChainId, editCompleted, evmNetworks, view]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+  const networkStep: NetworkManagementStep = getNetworkManagementStep(view);
+  const stepChainId = networkFormState.chainId
+    ? getHexChainId(networkFormState.chainId)
+    : undefined;
+
+  useTrackNetworkManagementStep({
+    step: networkStep,
+    entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+    chainId: stepChainId,
+    rpcCount: networkFormState.rpcUrls.rpcEndpoints.length,
+    networkType: stepChainId ? getNetworkSectionKey(stepChainId) : undefined,
+  });
   const existingRpcUrls = useMemo(
     () => networkFormState.rpcUrls.rpcEndpoints.map((endpoint) => endpoint.url),
     [networkFormState.rpcUrls.rpcEndpoints],
@@ -231,19 +251,8 @@ export const NetworksPage = () => {
 
   const handleAddCustomNetworkClick = useCallback(() => {
     dispatch(setEditedNetwork());
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
-        .addCategory(MetaMetricsEventCategory.Network)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          source_connection_method:
-            MetaMetricsNetworkEventSource.CustomNetworkForm,
-        })
-        .build(),
-    );
     handleNewNetwork();
-  }, [createEventBuilder, dispatch, handleNewNetwork, trackEvent]);
+  }, [dispatch, handleNewNetwork]);
 
   const handleAddFromChainlist = useCallback(() => {
     trackEvent(
@@ -268,6 +277,7 @@ export const NetworksPage = () => {
             chain_id: chainIdHex,
             network_name: networkName,
             already_added: Boolean(existingNetwork),
+            entry_point: NetworkManagementEntryPoint.AddNetworkForm,
             ...(searchQuery ? { search_query: searchQuery } : {}),
           })
           .build(),
@@ -341,26 +351,67 @@ export const NetworksPage = () => {
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
 
+        // An empty chain id becomes 0x0. Leave it off the event instead.
+        const reportedChainId = networkFormState.chainId?.trim()
+          ? getHexChainId(networkFormState.chainId)
+          : undefined;
+
         if (source === 'chainlist') {
           const rpcDomain = getRpcNickname(url);
+          const chainIdHex = reportedChainId;
           /* eslint-disable @typescript-eslint/naming-convention */
           trackEvent(
             createEventBuilder(MetaMetricsEventName.ChainlistRpcSelected)
               .addCategory(MetaMetricsEventCategory.Network)
               .addProperties({
-                chain_id: getHexChainId(networkFormState.chainId),
+                chain_id: chainIdHex,
                 network_name: networkFormState.name,
                 ...(rpcDomain ? { rpc_domain: rpcDomain } : {}),
               })
               .build(),
           );
+          Promise.resolve(
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.ChainlistNetworkSelected)
+                .addCategory(MetaMetricsEventCategory.Network)
+                .addProperties({
+                  chain_id: chainIdHex,
+                  network_name: networkFormState.name,
+                  already_added: Boolean(
+                    evmNetworks[chainIdHex as keyof typeof evmNetworks],
+                  ),
+                  entry_point: NetworkManagementEntryPoint.AddRpcForm,
+                })
+                .build(),
+            ),
+          ).catch(() => undefined);
           /* eslint-enable @typescript-eslint/naming-convention */
         }
+
+        trackRpcAdded(
+          { trackEvent, createEventBuilder },
+          {
+            chainId: reportedChainId,
+            rpcCount: networkFormState.rpcUrls.rpcEndpoints.length + 1,
+            source:
+              source === 'chainlist'
+                ? NetworkManagementSource.Chainlist
+                : NetworkManagementSource.Manual,
+            entryPoint: NetworkManagementEntryPoint.SettingsNetworks,
+          },
+        );
 
         setView(getViewAfterRpcAdd(view));
       }
     },
-    [createEventBuilder, networkFormState, setView, trackEvent, view],
+    [
+      createEventBuilder,
+      evmNetworks,
+      networkFormState,
+      setView,
+      trackEvent,
+      view,
+    ],
   );
 
   const handleAddExplorerUrl = useCallback(
@@ -667,6 +718,7 @@ export const NetworksPage = () => {
           <NetworksPageFormBody>
             <SelectRpcUrlModal
               networkConfiguration={editedNetwork as NetworkConfiguration}
+              entryPoint={NetworkManagementEntryPoint.SettingsNetworks}
               onNetworkChange={handleSelectRpc}
             />
           </NetworksPageFormBody>

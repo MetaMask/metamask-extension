@@ -2,10 +2,25 @@ import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import * as actions from '../../../store/actions';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useConfirmContext } from '../context/confirm';
 import { useAddEthereumChain } from './useAddEthereumChain';
 
 const mockDispatch = jest.fn();
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: mockTrackEvent,
+    }),
+  };
+});
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -46,6 +61,11 @@ describe('useAddEthereumChain', () => {
     (useSelector as jest.Mock).mockReturnValue({});
   });
 
+  const networkAddedCalls = () =>
+    mockTrackEvent.mock.calls.filter(
+      ([event]) => event?.name === MetaMetricsEventName.NetworkAdded,
+    );
+
   it('returns onSubmit function', () => {
     (useConfirmContext as jest.Mock).mockReturnValue({
       currentConfirmation: mockConfirmation,
@@ -73,5 +93,28 @@ describe('useAddEthereumChain', () => {
       '1',
       mockConfirmation.requestData,
     );
+    expect(networkAddedCalls()).toHaveLength(1);
+  });
+
+  it('does not emit Network Added when the chain is already configured', async () => {
+    (actions.resolvePendingApproval as jest.Mock).mockReturnValue(
+      Promise.resolve(),
+    );
+    (useSelector as jest.Mock).mockReturnValue({
+      '0x9999': { chainId: '0x9999' },
+    });
+    (useConfirmContext as jest.Mock).mockReturnValue({
+      currentConfirmation: mockConfirmation,
+    });
+
+    const { result } = renderHook(() => useAddEthereumChain());
+
+    await result.current.onSubmit();
+
+    expect(actions.resolvePendingApproval).toHaveBeenCalledWith(
+      '1',
+      mockConfirmation.requestData,
+    );
+    expect(networkAddedCalls()).toHaveLength(0);
   });
 });

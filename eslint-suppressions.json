@@ -791,11 +791,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/useAddEthereumChain.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/useCancelSpeedupInitialGas.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
