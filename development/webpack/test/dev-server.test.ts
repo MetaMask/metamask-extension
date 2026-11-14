@@ -119,25 +119,32 @@ function getOnlyModuleRule(compiler: Compiler): ReactRefreshRule {
 function createManifestPlugin({
   addedScripts = [],
   serviceWorkerEntryName,
+  hasBackgroundPage = false,
 }: {
   addedScripts?: string[];
   serviceWorkerEntryName?: string;
+  hasBackgroundPage?: boolean;
 } = {}): ManifestPlugin<boolean> {
   const manifestPlugin = Object.create(
     ManifestPlugin.prototype,
   ) as ManifestPlugin<boolean>;
   manifestPlugin.addedScripts = new Set(addedScripts);
-  manifestPlugin.manifests = new Map([
+  manifestPlugin.addEntrypointBrowsers = mock.fn();
+  manifestPlugin.manifests = new Map(
     [
-      'chrome',
-      serviceWorkerEntryName
-        ? {
-            manifest_version: 3,
-            background: { service_worker: serviceWorkerEntryName },
-          }
-        : { manifest_version: 2 },
-    ],
-  ]) as ManifestPlugin<boolean>['manifests'];
+      serviceWorkerEntryName && [
+        'chrome',
+        {
+          manifest_version: 3,
+          background: { service_worker: serviceWorkerEntryName },
+        },
+      ],
+      hasBackgroundPage && [
+        'firefox',
+        { manifest_version: 2, background: { page: 'background.html' } },
+      ],
+    ].filter(Boolean),
+  ) as ManifestPlugin<boolean>['manifests'];
   return manifestPlugin;
 }
 
@@ -344,6 +351,33 @@ describe('./utils/dev-server', () => {
         name: 'service-worker',
       });
     });
+
+    it('registers both background-client entries for combined browser builds', () => {
+      const devServerOptions = getDevServerOptions({
+        uiClientRule: { include: '/test/context/scripts/load/ui.ts' },
+      });
+      const manifestPlugin = createManifestPlugin({
+        serviceWorkerEntryName: 'service-worker',
+        hasBackgroundPage: true,
+      });
+      const { compiler, entryPluginCalls } = createCompiler({
+        plugins: [manifestPlugin],
+      });
+      const { devServer } = createDevServer();
+      const { setupMiddlewares } = devServerOptions;
+      assert(setupMiddlewares, 'setupMiddlewares should be set');
+
+      setupMiddlewares([], { ...devServer, compiler } as never);
+
+      assert.strictEqual(entryPluginCalls.length, 2);
+      assert.deepStrictEqual(entryPluginCalls[0].options, {
+        name: 'service-worker',
+      });
+      assert.deepStrictEqual(entryPluginCalls[1].options, {
+        name: BACKGROUND_CLIENT_ENTRY_NAME,
+        chunkLoading: false,
+      });
+    });
   });
 
   describe('injectEntryScripts', () => {
@@ -481,7 +515,7 @@ describe('./utils/dev-server', () => {
     });
 
     it('registers a standalone background client entry for MV2', () => {
-      const manifestPlugin = createManifestPlugin();
+      const manifestPlugin = createManifestPlugin({ hasBackgroundPage: true });
       const { compiler, entryPluginCalls } = createCompiler({
         plugins: [manifestPlugin],
       });
@@ -494,6 +528,14 @@ describe('./utils/dev-server', () => {
         name: BACKGROUND_CLIENT_ENTRY_NAME,
         chunkLoading: false,
       });
+      assert.strictEqual(
+        manifestPlugin.addEntrypointBrowsers.mock.calls.length,
+        1,
+      );
+      assert.deepStrictEqual(
+        manifestPlugin.addEntrypointBrowsers.mock.calls[0].arguments,
+        [BACKGROUND_CLIENT_ENTRY_NAME, ['firefox']],
+      );
     });
 
     it('announces UI hashes only when the privileged-code fingerprint is unchanged', () => {

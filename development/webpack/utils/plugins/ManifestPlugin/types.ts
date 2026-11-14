@@ -32,14 +32,14 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
   browsers: readonly [Browser, ...Browser[]];
 
   /**
+   * Asset path prefixes that are emitted only for the specified browser.
+   */
+  browserAssetPaths?: Partial<Record<Browser, readonly string[]>>;
+
+  /**
    * An array of strings specifying the paths of additional web-accessible resources.
    */
   web_accessible_resources?: readonly string[];
-
-  /**
-   * An integer specifying the version of the manifest file format your package requires
-   */
-  manifest_version: 2 | 3;
 
   /**
    * One to four dot-separated integers identifying the version of this extension. A couple of rules apply to the integers:

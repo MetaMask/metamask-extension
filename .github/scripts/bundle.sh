@@ -44,7 +44,6 @@ export SENTRY_DSN_DEV=""
 export SENTRY_DSN_PERFORMANCE=""
 export TZ="UTC"
 export VAPID_KEY=""
-export ENABLE_MV3="false"
 
 # 1. Download and install nvm:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/179d45050be0a71fd57591b0ed8aedf9b177ba10/install.sh | bash
