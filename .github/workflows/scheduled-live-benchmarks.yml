@@ -1,0 +1,139 @@
+name: Scheduled live benchmarks
+
+# Measures the most recent release against live endpoints, on a schedule.
+#
+# This is deliberately NOT the per-commit path. Per-commit runs measure the
+# mocked population, because a live timing is substantially a property of CDN
+# cache state rather than of the commit (extension#45446) and cannot decide
+# whether a merge proceeds.
+#
+# What this series is for: a consistent real-world measure over time. The most
+# recent release is the only reference that is both real and stable — production
+# moves with userbase, device mix and browser versions, and `main` moves with
+# whatever landed that hour, so one bad commit contaminates the series. Neither
+# `main` nor the release candidate is affected by bugs that never shipped.
+#
+# Tracked by extension#45472. Mock-drift detection is a different question with a
+# different source and is tracked separately by extension#45446.
+#
+# This workflow gates nothing.
+
+on:
+  schedule:
+    # 03:17 UTC daily. Off-hour and off-minute deliberately: this competes with
+    # nothing for runners, and the exact minute carries no meaning.
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      release-tag:
+        required: false
+        type: string
+        description: >-
+          Release tag to measure. Defaults to the most recent published release.
+          Set explicitly to backfill a point or to re-measure after an incident.
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  resolve-release:
+    name: Resolve the release under measurement
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.pick.outputs.tag }}
+      sha: ${{ steps.pick.outputs.sha }}
+    steps:
+      - name: Pick the release tag
+        id: pick
+        uses: actions/github-script@v8
+        env:
+          REQUESTED_TAG: ${{ inputs.release-tag }}
+        with:
+          script: |
+            const requested = process.env.REQUESTED_TAG;
+            const resolve = async (tag) => {
+              // The stats entry is keyed by commit, so the tag alone is not
+              // enough — a tag can be moved, and an entry filed under a moved
+              // tag would silently describe different code than it claims.
+              const { data: ref } = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${tag}`,
+              });
+              const sha = ref.object.type === 'tag'
+                ? (await github.rest.git.getTag({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    tag_sha: ref.object.sha,
+                  })).data.object.sha
+                : ref.object.sha;
+              core.info(`${tag} -> ${sha}`);
+              core.setOutput('tag', tag);
+              core.setOutput('sha', sha);
+            };
+
+            if (requested) {
+              core.info(`Using requested tag: ${requested}`);
+              await resolve(requested);
+              return;
+            }
+
+            // The most recent *published* release, not the newest tag. A tag can
+            // exist for a build that was never shipped, and measuring one would
+            // put a number in this series that no user ever ran.
+            const { data: release } = await github.rest.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            core.info(`Latest published release: ${release.tag_name}`);
+            await resolve(release.tag_name);
+
+  build-test-webpack:
+    needs: resolve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-webpack
+      build-command: yarn build:test --zip
+      builds-from-run: ${{ github.run_id }}
+      ref: ${{ needs.resolve-release.outputs.tag }}
+    secrets: inherit
+
+  build-test-mv2-webpack:
+    needs: resolve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:mv2 --zip
+      builds-from-run: ${{ github.run_id }}
+      ref: ${{ needs.resolve-release.outputs.tag }}
+    secrets: inherit
+
+  benchmarks:
+    name: live benchmarks (${{ needs.resolve-release.outputs.tag }})
+    needs:
+      - resolve-release
+      - build-test-webpack
+      - build-test-mv2-webpack
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
+    uses: ./.github/workflows/run-benchmarks.yml
+    with:
+      builds-from-run: ${{ github.run_id }}
+      # On a schedule `github.ref_name` is the default branch and `github.sha`
+      # is its head, so without these the results are stored against `main`
+      # rather than the release they describe.
+      measured-ref: ${{ needs.resolve-release.outputs.tag }}
+      measured-sha: ${{ needs.resolve-release.outputs.sha }}
+      # One series across all releases, not one file per tag. Entries are keyed
+      # by the release commit and carry `releaseTag`, so the file reads
+      # release-over-release and the retention cap in #45451 applies to it.
+      series-name: scheduled-live
+      # Overrides the branch heuristic in resolveBenchmarkMockMode(). A release
+      # *tag* is neither `main` nor `release/*`, so the heuristic alone would
+      # resolve `mocked` and measure the wrong population.
+      benchmark-mock-mode: live
+    secrets: inherit
