@@ -1,4 +1,4 @@
-import { join, sep } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
 
@@ -92,6 +92,33 @@ export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
   const signals = ['SIGINT', 'SIGTERM'] as const;
   signals.forEach((signal) => process.on(signal, noop));
   return () => signals.forEach((signal) => process.off(signal, noop));
+}
+
+/**
+ * The name a source file gets inside a source map, in the same form webpack
+ * itself uses: `webpack://` followed by the path relative to the build context
+ * (`webpack://./scripts/x.ts`, `webpack://../ui/x.tsx`).
+ *
+ * Loaders that generate source maps (SWC, Babel) name the input file by its
+ * absolute path by default. webpack hashes a module's source map into the
+ * module's hash, so an absolute path there makes every module hash depend on
+ * where the project lives on disk, which in turn makes the chunk hashes
+ * embedded in the runtime chunk differ between two checkouts of the same
+ * code. Naming the file relative to the context keeps the build reproducible.
+ *
+ * @param rootContext - The build context (`loaderContext.rootContext`).
+ * @param resourcePath - The absolute path of the file being compiled.
+ * @returns The context-relative source name, with `/` separators on every OS.
+ */
+export function toWebpackSourceName(
+  rootContext: string | undefined,
+  resourcePath: string,
+): string {
+  if (!rootContext) {
+    return resourcePath;
+  }
+  const request = relative(rootContext, resourcePath).split(sep).join('/');
+  return `webpack://${request.startsWith('../') ? '' : './'}${request}`;
 }
 
 /**
