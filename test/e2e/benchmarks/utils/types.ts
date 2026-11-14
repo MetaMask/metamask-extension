@@ -16,12 +16,21 @@ export type TimerResult = {
 };
 
 export type LongTaskStepResult = {
+  /**
+   * The step id. Where the step also has an in-page timer, its harness-clock
+   * timer is reported as `<id>Legacy`.
+   */
   id: string;
   duration: number;
   longTaskCount: number;
   longTaskTotalDuration: number;
   longTaskMaxDuration: number;
   tbt: number;
+  /**
+   * Whether the `longtask` observer was attached for this step. False means the
+   * four counts above are initialized zeros rather than observations.
+   */
+  longTasksObserved: boolean;
 };
 
 export type PageLoadBenchmarkOptions = {
