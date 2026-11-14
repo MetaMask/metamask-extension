@@ -3,6 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import 'interestfor';
 
 import { consumeReferralCode } from '#ui/helpers/utils/consume-referral-code';
 import { setPendingReferralCode } from '#ui/ducks/rewards-money';

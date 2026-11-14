@@ -6916,6 +6916,22 @@
         "Iterator": true
       }
     },
+    "interestfor": {
+      "globals": {
+        "Element": true,
+        "Event": true,
+        "HTMLButtonElement.prototype.hasOwnProperty": true,
+        "InterestEvent": "write",
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "document": true,
+        "getComputedStyle": true,
+        "interestForPolyfillInstalled": "write",
+        "interestForUsePolyfillAlways": true,
+        "setTimeout": true
+      }
+    },
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-errors": true,
