@@ -7793,18 +7793,18 @@ __metadata:
   linkType: hard
 
 "@metamask/client-utils@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@metamask/client-utils@npm:3.3.0"
+  version: 3.3.1
+  resolution: "@metamask/client-utils@npm:3.3.1"
   dependencies:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/core-backend": "npm:^14.1.0"
     "@metamask/keyring-api": "npm:^24.3.0"
     "@metamask/slip44": "npm:^4.5.0"
-    "@metamask/transaction-controller": "npm:^73.1.2"
+    "@metamask/transaction-controller": "npm:^74.0.0"
     "@metamask/utils": "npm:^12.0.1"
     eth-chainlist: "npm:^0.0.873"
-  checksum: 10/0f1e217fbc4e042c5bc5287f72c158ee6fef88a4c60976b88b6171664d99fcc6e988ba002bb84091fcb8a748a9e569fd1825bf325069bb1aec583dd13c6733e4
+  checksum: 10/28b4e3cf589f19bc89d5f6e717a7fc1add0b11f3a6782e1f0c9ded95dbf83d8caebf9a59fab3efa5e997e19524afa9fb3a3e398d14efe78eaf2aa99b94788383
   languageName: node
   linkType: hard
 
@@ -35342,7 +35342,7 @@ __metadata:
     "@metamask/config-registry-controller": "npm:^5.0.0"
     "@metamask/connectivity-controller": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/core-backend": "npm:^14.1.0"
     "@metamask/delegation-controller": "npm:^4.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"

@@ -4,6 +4,7 @@ import {
   NetworkController,
 } from '@metamask/network-controller';
 import {
+  getChecksumAddress,
   Hex,
   Json,
   JsonRpcParams,
@@ -100,8 +101,16 @@ export function createPPOMMiddleware<
 
       const data = req.params[0];
       if (typeof data === 'string') {
-        const { isSIWEMessage } = detectSIWE({ data });
-        if (isSIWEMessage) {
+        const siwe = detectSIWE({ data });
+        // Only exempt SIWE messages whose address is already EIP-55
+        // checksummed. Comparing the address (rather than relying on parser
+        // warnings) keeps single-case addresses that equal their checksum
+        // exempt.
+        if (
+          siwe.isSIWEMessage &&
+          getChecksumAddress(siwe.parsedMessage.address as Hex) ===
+            siwe.parsedMessage.address
+        ) {
           return;
         }
       } else if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
