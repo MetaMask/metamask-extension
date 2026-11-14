@@ -36,7 +36,7 @@ describe('Test Snap RPC', function () {
         const snapInstall = new SnapInstall(driver);
         await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
           withWarning: true,
-          withExtraScreen: true,
+          expectedMessage: 'Reconnect to BIP-32 Snap',
         });
         await testSnaps.scrollAndClickButton('connectJsonRpcButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
