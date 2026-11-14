@@ -17,15 +17,37 @@ type ReferralDialogProps = {
 };
 
 /**
+ * Backdrop events target the dialog, as do clicks on its own padding.
+ *
+ * @param event - Mouse event received by the dialog.
+ * @returns Whether the event occurred outside the visible sheet.
+ */
+function isBackdropEvent(event: React.MouseEvent<HTMLDialogElement>): boolean {
+  const dialog = event.currentTarget;
+  const bounds = dialog.getBoundingClientRect();
+  return (
+    event.target === dialog &&
+    (event.clientX < bounds.left ||
+      event.clientX > bounds.right ||
+      event.clientY < bounds.top ||
+      event.clientY > bounds.bottom)
+  );
+}
+
+/**
  * MMDS does not support priority focus locks. Native modality keeps referrals
  * above other overlays and blocks background autofocus. The focus-lock opt-out also
  * stops background traps with autoFocus=false from blurring the active input.
+ * Return to the MMDS modal shell once priority overlays are supported.
+ *
+ * @see https://github.com/MetaMask/metamask-design-system/issues/1685
  */
 export function ReferralDialog({
   children,
   onClose,
   initialFocusRef,
-  ...props
+  'aria-labelledby': labelledBy,
+  'data-testid': testId,
 }: ReferralDialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const backdropPress = useRef(false);
@@ -43,43 +65,46 @@ export function ReferralDialog({
   };
 
   return (
-    <dialog
-      {...props}
-      ref={ref}
-      data-no-focus-lock
-      className="fixed inset-0 m-0 size-full max-h-none max-w-none items-center justify-center border-0 bg-overlay-default p-4 text-default open:flex sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 backdrop:bg-transparent"
-      onCancel={handleCancel}
-      onKeyDown={(event) => {
-        if (event.key === 'Escape') {
-          handleCancel(event);
-        }
-      }}
-      // Other modals listen on document; keep our interactions local.
-      onMouseDown={(event) => {
-        event.stopPropagation();
-        backdropPress.current = event.target === event.currentTarget;
-      }}
-      onClick={(event) => {
-        event.stopPropagation();
-        if (backdropPress.current && event.target === event.currentTarget) {
-          onClose();
-        }
-      }}
+    <Box
+      asChild
+      backgroundColor={BoxBackgroundColor.BackgroundElevated1}
+      borderColor={BoxBorderColor.BorderAlternative}
+      borderWidth={1}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Stretch}
+      justifyContent={BoxJustifyContent.Start}
+      paddingTop={4}
+      paddingBottom={4}
+      className="fixed inset-0 m-auto hidden max-h-[calc(100%-2rem)] w-[calc(100%-2rem)] max-w-[480px] rounded-4xl px-0 text-default shadow-lg open:flex motion-safe:animate-slide-up sm:max-h-[calc(100%-4rem)] md:max-h-[calc(100%-6rem)] [@media(max-height:475px)]:max-h-[calc(100%-1rem)] [@media(max-height:475px)]:w-[calc(100%-1rem)] backdrop:bg-overlay-default"
     >
-      {/* Keeps the existing MMDS sheet layout inside the native modal. */}
-      <Box
-        backgroundColor={BoxBackgroundColor.BackgroundElevated1}
-        borderColor={BoxBorderColor.BorderAlternative}
-        borderWidth={1}
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Stretch}
-        justifyContent={BoxJustifyContent.Start}
-        paddingTop={4}
-        paddingBottom={4}
-        className="flex max-h-full w-full max-w-[480px] rounded-4xl shadow-lg motion-safe:animate-slide-up"
+      <dialog
+        ref={ref}
+        aria-labelledby={labelledBy}
+        data-testid={testId}
+        data-no-focus-lock
+        onCancel={handleCancel}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            // Prevent native cancellation and keep Escape away from background modals.
+            handleCancel(event);
+          }
+        }}
+        // Other modals listen on document; keep our interactions local.
+        onMouseDown={(event) => {
+          event.stopPropagation();
+          backdropPress.current = isBackdropEvent(event);
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+          const dismiss = backdropPress.current && isBackdropEvent(event);
+          backdropPress.current = false;
+          if (dismiss) {
+            onClose();
+          }
+        }}
       >
         {children}
-      </Box>
-    </dialog>
+      </dialog>
+    </Box>
   );
 }
