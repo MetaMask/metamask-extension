@@ -77,12 +77,15 @@ type InferTransactionTypeResult = {
 
 type DataMessageParam = object | string | number | boolean | JsonRpcParams;
 
-const erc20Interface = new Interface(abiERC20);
-const erc721Interface = new Interface(abiERC721);
-const erc1155Interface = new Interface(abiERC1155);
-const USDCInterface = new Interface(abiFiatTokenV2);
-const permit2Interface = new Interface([ABI_PERMIT_2_APPROVE]);
-const legacyApprovalInterface = new Interface([ABI_LEGACY_INCREASE_APPROVAL]);
+const standardTokenAbis = [
+  abiERC20,
+  abiERC721,
+  abiERC1155,
+  abiFiatTokenV2,
+  [ABI_PERMIT_2_APPROVE],
+  [ABI_LEGACY_INCREASE_APPROVAL],
+];
+const standardTokenInterfaces: (Interface | undefined)[] = [];
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
@@ -175,16 +178,19 @@ export function getMarketFeeFromEstimates(
  * @returns TransactionDescription | undefined
  */
 export function parseStandardTokenTransactionData(data: string) {
-  const interfaces = [
-    erc20Interface,
-    erc721Interface,
-    erc1155Interface,
-    USDCInterface,
-    permit2Interface,
-    legacyApprovalInterface,
-  ];
+  // A function selector requires four bytes. Native transfers have no selector.
+  if (typeof data !== 'string' || data.length < 10) {
+    return undefined;
+  }
 
-  for (const iface of interfaces) {
+  for (const [index, abi] of standardTokenAbis.entries()) {
+    // Most screens never decode token data. Construct each ABI only on demand,
+    // retaining the search order for methods shared by multiple standards.
+    let iface = standardTokenInterfaces[index];
+    if (!iface) {
+      iface = new Interface(abi);
+      standardTokenInterfaces[index] = iface;
+    }
     try {
       return iface.parseTransaction({ data });
     } catch {
