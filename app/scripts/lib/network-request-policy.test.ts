@@ -1,0 +1,197 @@
+import { it } from '@jest/globals';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  initializeNetworkRequestPolicy,
+  refreshNetworkRequestPolicy,
+  setOnboardingNetworkDomains,
+  updateNetworkRequestDomains,
+} from './network-request-policy';
+
+describe('network request policy', () => {
+  const extensionId = 'a'.repeat(32);
+  const temporaryRuleIds = Array.from(
+    { length: 64 },
+    (_, index) => 1000100 + index,
+  );
+  const updateSessionRules = jest.fn().mockResolvedValue(undefined);
+  const lastAddedRules = () => updateSessionRules.mock.lastCall[0].addRules;
+  const modernDnr = {
+    updateSessionRules,
+    RuleConditionKeys: { TOP_DOMAINS: 'topDomains' },
+  };
+  beforeEach(async () => {
+    jest.replaceProperty(process, 'env', { ...process.env, IN_TEST: '' });
+    updateSessionRules.mockReset().mockResolvedValue(undefined);
+    await initializeNetworkRequestPolicy(extensionId, modernDnr);
+  });
+  afterEach(() => jest.restoreAllMocks());
+
+  it('clears stale grants at startup', () => {
+    expect(updateSessionRules).toHaveBeenCalledWith({
+      removeRuleIds: [1000001, 1000011, 1000002, 1000003, ...temporaryRuleIds],
+      addRules: [
+        {
+          id: 1000001,
+          priority: 1,
+          action: { type: 'block' },
+          condition: {
+            regexFilter: '^(https?|wss?)://',
+            topDomains: [extensionId],
+          },
+        },
+      ],
+    });
+  });
+
+  it('uses only initiator-scoped rules when the native capability is absent', async () => {
+    await initializeNetworkRequestPolicy(extensionId, {
+      updateSessionRules,
+    });
+    expect(updateSessionRules.mock.lastCall[0]).toEqual({
+      removeRuleIds: [1000001, 1000011, 1000002, 1000003, ...temporaryRuleIds],
+      addRules: [],
+    });
+    await updateNetworkRequestDomains(['rpc.example']);
+    expect(lastAddedRules()).toEqual([
+      {
+        id: 1000002,
+        priority: 2,
+        action: { type: 'allow' },
+        condition: {
+          regexFilter: '^(https?|wss?)://',
+          initiatorDomains: [extensionId],
+          requestDomains: ['rpc.example'],
+        },
+      },
+    ]);
+    await updateNetworkRequestDomains('*');
+    expect(lastAddedRules()).toHaveLength(1);
+    expect(lastAddedRules()[0].condition.requestDomains).toBeUndefined();
+    await updateNetworkRequestDomains([]);
+    expect(lastAddedRules()).toEqual([]);
+  });
+
+  it('allows localhost in top-frame rules only for test packages', async () => {
+    jest.replaceProperty(process, 'env', { ...process.env, IN_TEST: 'true' });
+    await initializeNetworkRequestPolicy(extensionId, modernDnr);
+    expect(lastAddedRules()[1]).toEqual({
+      id: 1000011,
+      priority: 3,
+      action: { type: 'allow' },
+      condition: {
+        regexFilter: '^(https?|wss?)://',
+        topDomains: [extensionId],
+        requestDomains: ['localhost'],
+      },
+    });
+  });
+
+  it('revokes stale grants and rejects startup when installing the frame guard fails', async () => {
+    updateSessionRules.mockRejectedValueOnce(new Error('DNR failed'));
+    await expect(
+      initializeNetworkRequestPolicy(extensionId, modernDnr),
+    ).rejects.toThrow('DNR failed');
+    expect(updateSessionRules.mock.lastCall[0]).toEqual({
+      removeRuleIds: [1000002, 1000003, ...temporaryRuleIds],
+    });
+  });
+
+  it.each([[], ['rpc.example'], '*'] as const)(
+    'publishes %j with extension-only scopes',
+    async (domains) => {
+      await updateNetworkRequestDomains('*');
+      await updateNetworkRequestDomains(domains === '*' ? '*' : [...domains]);
+      const { addRules } = updateSessionRules.mock.lastCall[0];
+      expect(addRules).toHaveLength(domains.length ? 2 : 0);
+      if (addRules.length) {
+        expect(addRules[0].condition.initiatorDomains).toEqual([extensionId]);
+        expect(addRules[1].condition.topDomains).toEqual([extensionId]);
+        expect(addRules[0].condition.requestDomains).toEqual(
+          domains === '*' ? undefined : domains,
+        );
+      }
+    },
+  );
+
+  it('permits a selected onboarding path and revokes it on reset', async () => {
+    await setOnboardingNetworkDomains(['auth.example']);
+    expect(lastAddedRules()[0].condition.requestDomains).toEqual([
+      'auth.example',
+    ]);
+    await setOnboardingNetworkDomains([]);
+    expect(lastAddedRules()).toEqual([]);
+  });
+
+  it('restricts SRP privacy mode to saved RPC and failover domains', async () => {
+    const preferences = {
+      useExternalServices: false,
+      preferences: { hasLinkedSocialLoginProfile: true },
+    };
+    await refreshNetworkRequestPolicy({
+      OnboardingController: { completedOnboarding: true },
+      PreferencesController: preferences,
+      NetworkController: {
+        networkConfigurationsByChainId: {
+          '0x1': {
+            chainId: '0x1',
+            name: 'Test',
+            nativeCurrency: 'ETH',
+            blockExplorerUrls: [],
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                type: RpcEndpointType.Custom,
+                networkClientId: 'test-rpc',
+                url: 'https://rpc.example:8545/key',
+                failoverUrls: ['https://fallback.example', 'invalid'],
+              },
+            ],
+          },
+        },
+      },
+    });
+    expect(lastAddedRules()[0].condition.requestDomains).toEqual([
+      'fallback.example',
+      'rpc.example',
+    ]);
+    await refreshNetworkRequestPolicy({
+      OnboardingController: { completedOnboarding: true },
+      PreferencesController: { useExternalServices: false },
+      NetworkController: { networkConfigurationsByChainId: {} },
+    });
+    expect(lastAddedRules()).toEqual([]);
+  });
+
+  it.each([
+    FirstTimeFlowType.create,
+    FirstTimeFlowType.socialCreate,
+    FirstTimeFlowType.socialImport,
+  ])(
+    'allows completed %s onboarding according to the chosen wallet flow',
+    async (firstTimeFlowType) => {
+      await refreshNetworkRequestPolicy({
+        OnboardingController: { completedOnboarding: true, firstTimeFlowType },
+        PreferencesController: {
+          useExternalServices: firstTimeFlowType === FirstTimeFlowType.create,
+        },
+      });
+      expect(lastAddedRules()[0].condition.requestDomains).toBeUndefined();
+    },
+  );
+
+  it('removes stale grants after failure and permits a retry', async () => {
+    await updateNetworkRequestDomains('*');
+    updateSessionRules.mockRejectedValueOnce(new Error('DNR failed'));
+    await expect(updateNetworkRequestDomains(['rpc.example'])).rejects.toThrow(
+      'DNR failed',
+    );
+    expect(updateSessionRules.mock.lastCall[0]).toEqual({
+      removeRuleIds: [1000002, 1000003],
+    });
+    await updateNetworkRequestDomains(['rpc.example']);
+    expect(lastAddedRules()[0].condition.requestDomains).toEqual([
+      'rpc.example',
+    ]);
+  });
+});

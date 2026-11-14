@@ -14,7 +14,10 @@ import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from '../controllers/onboarding';
-import type { PreferencesControllerStateChangeEvent } from '../controllers/preferences-controller';
+import type {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../controllers/preferences-controller';
 import type { RootMessenger } from '../lib/messenger';
 import type { MessengerClientFlatState } from '../messenger-client-init/controller-list';
 import type {
@@ -44,6 +47,7 @@ export type WalletInitMessenger = RootMessenger<
   | AuthenticationControllerGetStateAction
   | DefaultActions
   | OnboardingControllerGetStateAction
+  | PreferencesControllerGetStateAction
   | SeedlessOnboardingControllerInitMessengerActions
   | TransactionControllerInitMessengerActions
   | PermissionControllerInitMessengerActions,

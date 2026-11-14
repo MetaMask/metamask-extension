@@ -19,6 +19,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { withTemporaryAllowance } from '../../../shared/lib/network-request-policy';
 import { isWebUrl } from '../../../shared/lib/url-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -199,7 +200,11 @@ export const AddRpcUrlPageForm = ({
       validationRequestIdRef.current === requestId &&
       latestUrlRef.current.trim() === trimmedUrl;
 
-    jsonRpcRequest(templateInfuraRpc(trimmedUrl), 'eth_chainId')
+    const rpcUrl = templateInfuraRpc(trimmedUrl);
+    const { origin, pathname, search } = new URL(rpcUrl);
+    withTemporaryAllowance(`${origin}${pathname}${search}`, () =>
+      jsonRpcRequest(rpcUrl, 'eth_chainId'),
+    )
       .then(() => {
         if (isCurrentValidation()) {
           setRpcValidationError(undefined);

@@ -12,6 +12,7 @@ import {
 import { segment } from '.';
 
 jest.mock('.', () => ({
+  initializeSegmentDeliveryState: jest.fn(),
   segment: {
     track: jest.fn(),
     flush: jest.fn(),

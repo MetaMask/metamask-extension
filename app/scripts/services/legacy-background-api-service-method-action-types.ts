@@ -6,6 +6,16 @@
 import type { LegacyBackgroundApiService } from './legacy-background-api-service';
 
 /**
+ * Wait until the current network request policy has been published.
+ *
+ * @returns A promise that resolves after the browser policy is updated.
+ */
+export type LegacyBackgroundApiServiceWaitForNetworkRequestPolicyAction = {
+  type: `LegacyBackgroundApiService:waitForNetworkRequestPolicy`;
+  handler: LegacyBackgroundApiService['waitForNetworkRequestPolicy'];
+};
+
+/**
  * Sets the current currency for the CurrencyRateController and AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
@@ -1159,6 +1169,7 @@ export type LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction = {
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
+  | LegacyBackgroundApiServiceWaitForNetworkRequestPolicyAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceAddTokenAction

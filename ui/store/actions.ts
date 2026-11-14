@@ -304,9 +304,14 @@ export function startOAuthLogin(
           authConnection,
           ...(parentTraceContext ? [parentTraceContext] : []),
         ]),
-        submitRequestToBackground(
-          'SeedlessOnboardingController:preloadToprfNodeDetails',
-        ), // fetch the toprf node details for seedless authentication in parallel
+        (async () => {
+          await submitRequestToBackground(
+            'OAuthService:waitForOnboardingNetworkPolicy',
+          );
+          return submitRequestToBackground(
+            'SeedlessOnboardingController:preloadToprfNodeDetails',
+          );
+        })(), // fetch the toprf node details for seedless authentication in parallel
       ]);
 
       let seedlessAuthSuccess = false;
@@ -7489,6 +7494,9 @@ export function fetchAndUpdateMetamaskNotifications(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:waitForNetworkRequestPolicy',
+      );
       const response = await submitRequestToBackground(
         'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
         [previewToken],
@@ -7706,6 +7714,9 @@ export function getNotificationPreferences(): ThunkAction<
 > {
   return async () => {
     try {
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:waitForNetworkRequestPolicy',
+      );
       return (await submitRequestToBackground(
         'AuthenticatedUserStorageService:getNotificationPreferences',
       )) as NotificationPreferences | null;
@@ -7751,6 +7762,9 @@ export function enableMetamaskNotifications(
 ): ThunkAction<void, unknown, AnyAction> {
   return async () => {
     try {
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:waitForNetworkRequestPolicy',
+      );
       await submitRequestToBackground(
         'NotificationServicesController:enableMetamaskNotifications',
         options ? [options] : [],

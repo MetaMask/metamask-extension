@@ -15,6 +15,7 @@ import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import ExtensionPlatform from '../../platforms/extension';
+import * as networkRequestPolicy from '../../lib/network-request-policy';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
 import { getOAuthTraceTags } from './utils';
 import { OAuthService } from './oauth-service';
@@ -163,6 +164,30 @@ describe('OAuthService - startOAuthLogin', () => {
   afterEach(() => {
     mockBrowserRuntime.lastError = undefined;
     jest.clearAllMocks();
+  });
+
+  it('revokes selected onboarding domains when policy installation fails', async () => {
+    const failure = new Error('DNR installation failed');
+    const setDomains = jest
+      .spyOn(networkRequestPolicy, 'setOnboardingNetworkDomains')
+      .mockRejectedValueOnce(failure)
+      .mockResolvedValueOnce(undefined);
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      trackEvent: mockTrackEvent,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toBe(failure);
+
+    expect(setDomains).toHaveBeenLastCalledWith([]);
+    expect(launchWebAuthFlowSpy).not.toHaveBeenCalled();
+    await expect(oauthService.waitForOnboardingNetworkPolicy()).rejects.toThrow(
+      'Social login must start before preloading node details',
+    );
   });
 
   it('should start the OAuth login process with `Google`', async () => {

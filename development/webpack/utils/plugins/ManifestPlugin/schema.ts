@@ -110,6 +110,7 @@ export const schema = {
       },
       additionalProperties: false,
     },
+    test: { type: 'boolean' },
     buildType: {
       description: 'The build type to create.',
       type: 'string',

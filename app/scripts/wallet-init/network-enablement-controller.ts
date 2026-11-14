@@ -6,11 +6,12 @@ import {
   TrxScope,
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import type {
-  NetworkEnablementController,
-  NetworkEnablementControllerState,
+import {
+  Slip44Service,
+  type NetworkEnablementController,
+  type NetworkEnablementControllerState,
 } from '@metamask/network-enablement-controller';
-import { KnownCaipNamespace } from '@metamask/utils';
+import { KnownCaipNamespace, type Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { RootMessenger } from '../lib/messenger';
 import type { MessengerClientPersistedState } from '../messenger-client-init/types';
@@ -62,6 +63,43 @@ export function setupNetworkEnablementController({
   persistedState: MessengerClientPersistedState;
 }): void {
   const initMessenger = getNetworkEnablementControllerInitMessenger(messenger);
+
+  const canFetchMetadata = () => {
+    try {
+      return (
+        initMessenger.call('OnboardingController:getState')
+          .completedOnboarding &&
+        initMessenger.call('PreferencesController:getState').useExternalServices
+      );
+    } catch {
+      return false;
+    }
+  };
+  let metadataWasAllowed = canFetchMetadata();
+  const refreshMetadata = () => {
+    const allowed = canFetchMetadata();
+    const becameAllowed = allowed && !metadataWasAllowed;
+    metadataWasAllowed = allowed;
+    if (becameAllowed) {
+      Slip44Service.clearCache();
+      const networks = Object.entries(
+        initMessenger.call('NetworkController:getState')
+          .networkConfigurationsByChainId,
+      ).map(([chainId, { nativeCurrency }]) => ({
+        chainId: toEvmCaipChainId(chainId as Hex),
+        nativeCurrency,
+      }));
+      networkEnablementController
+        .initNativeAssetIdentifiers(networks)
+        .catch((error: unknown) => {
+          initMessenger.captureException?.(
+            error instanceof Error ? error : new Error(String(error)),
+          );
+        });
+    }
+  };
+  initMessenger.subscribe('OnboardingController:stateChange', refreshMetadata);
+  initMessenger.subscribe('PreferencesController:stateChange', refreshMetadata);
 
   // Adds every configured network missing from the map as disabled, and
   // populates `nativeAssetIdentifiers`. It completes in the background.

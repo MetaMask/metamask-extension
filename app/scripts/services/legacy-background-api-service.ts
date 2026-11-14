@@ -22,6 +22,7 @@ import {
   NetworkControllerResetConnectionAction,
   NetworkControllerSetActiveNetworkAction,
   Provider,
+  RpcEndpointType,
 } from '@metamask/network-controller';
 import {
   NetworkEnablementControllerActions,
@@ -298,6 +299,8 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/envir
 import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
+import { withTemporaryAllowance } from '../../../shared/lib/network-request-policy';
+import { refreshNetworkRequestPolicy } from '../lib/network-request-policy';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -488,6 +491,7 @@ type TokenStandardAndDetails = {
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'waitForNetworkRequestPolicy',
   'acceptPermissionsRequest',
   'addNetwork',
   'addPermittedAccount',
@@ -934,6 +938,15 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Wait until the current network request policy has been published.
+   *
+   * @returns A promise that resolves after the browser policy is updated.
+   */
+  async waitForNetworkRequestPolicy(): Promise<void> {
+    await refreshNetworkRequestPolicy();
+  }
+
+  /**
    * Sets the current currency for the CurrencyRateController and AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
@@ -1327,6 +1340,40 @@ export class LegacyBackgroundApiService {
    * @returns The added network configuration.
    */
   async addNetwork(
+    networkConfiguration: AddNetworkFields,
+    options: { setActive?: boolean } = {},
+  ): Promise<NetworkConfiguration> {
+    const urls = new Set(
+      networkConfiguration.rpcEndpoints.flatMap(
+        ({ url, type, failoverUrls = [] }) => [
+          type === RpcEndpointType.Infura
+            ? url.replace('{infuraProjectId}', this.#infuraProjectId)
+            : url,
+          ...failoverUrls,
+        ],
+      ),
+    );
+    const addNetwork = async () => {
+      try {
+        return await this.#addNetwork(networkConfiguration, options);
+      } finally {
+        // Keep temporary grants until Chrome confirms the saved-network policy,
+        // including when adding or activating the network fails.
+        await refreshNetworkRequestPolicy();
+      }
+    };
+    // Install every endpoint grant before controllers can start RPC requests.
+    return [...urls].reduceRight(
+      (add, url) => () => {
+        // RPC URL credentials become an Authorization header on the wire.
+        const { origin, pathname, search } = new URL(url);
+        return withTemporaryAllowance(`${origin}${pathname}${search}`, add);
+      },
+      addNetwork,
+    )();
+  }
+
+  async #addNetwork(
     networkConfiguration: AddNetworkFields,
     { setActive = true } = {},
   ): Promise<NetworkConfiguration> {
