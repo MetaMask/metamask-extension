@@ -891,25 +891,11 @@
     "ui/pages/srp-input-form/index.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 244
     },
-    "ui/pages/swaps/awaiting-signatures/awaiting-signatures.test.js": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/swaps/awaiting-swap/awaiting-swap.test.js": {
-      "React: PropTypes validation failures": 1,
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/swaps/loading-swaps-quotes/loading-swaps-quotes.test.js": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/pages/swaps/notification-page/notification-page.test.js": {
       "React: PropTypes validation failures": 1
     },
     "ui/pages/swaps/selected-token/selected-token.test.js": {
       "React: PropTypes validation failures": 1
-    },
-    "ui/pages/swaps/smart-transaction-status/smart-transaction-status.test.js": {
-      "React: Act warnings (component updates not wrapped)": 1,
-      "Reselect: Identity function warnings": 1
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,

@@ -25,7 +25,6 @@ import {
   getTokens,
 } from '../../../../ducks/metamask/metamask';
 import { getConversionRate } from '../../../../ducks/metamask/base-selectors';
-import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainCurrentChainId,
@@ -149,9 +148,6 @@ describe('AssetPickerModal', () => {
         return 'ETH';
       }
       if (selector === getTokens) {
-        return [];
-      }
-      if (selector === getTopAssets) {
         return [];
       }
       return undefined;
