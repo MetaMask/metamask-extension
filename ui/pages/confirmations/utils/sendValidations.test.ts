@@ -6,6 +6,7 @@ import { confusables } from 'unicode-confusables';
 import {
   isSolanaAddress,
   isStellarAddress,
+  isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
 
 import {
@@ -14,6 +15,7 @@ import {
   validateEvmHexAddress,
   validateSolanaAddress,
   validateStellarAddress,
+  validateTronAddress,
 } from './sendValidations';
 
 jest.mock('unicode-confusables');
@@ -21,6 +23,7 @@ jest.mock('../../../../shared/lib/multichain/accounts');
 
 const mockIsSolanaAddress = jest.mocked(isSolanaAddress);
 const mockIsStellarAddress = jest.mocked(isStellarAddress);
+const mockIsTronAddress = jest.mocked(isTronAddress);
 
 describe('SendValidations', () => {
   describe('findConfusablesInRecipient', () => {
@@ -165,6 +168,64 @@ describe('SendValidations', () => {
       expect(validateBtcAddress(invalidAddress)).toEqual({
         error: 'invalidAddress',
       });
+    });
+  });
+
+  describe('validateTronAddress', () => {
+    const fromAddress = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
+    const otherAddress = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
+    const fromAddressHex = '41588c5216750cceaad16cf5a757e3f7b32835a5e1';
+    const actualAccountsModule = jest.requireActual<
+      typeof import('../../../../shared/lib/multichain/accounts')
+    >('../../../../shared/lib/multichain/accounts');
+
+    beforeEach(() => {
+      mockIsTronAddress.mockImplementation(actualAccountsModule.isTronAddress);
+    });
+    const nativeTrxAsset = { isNative: true };
+    const trc10Asset = {
+      isNative: false,
+      assetId: 'tron:728126428/trc10:1005074',
+    };
+    const trc20Asset = {
+      isNative: false,
+      assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    };
+
+    it('blocks native TRX self-send to the same Base58 address', () => {
+      expect(
+        validateTronAddress(fromAddress, fromAddress, nativeTrxAsset),
+      ).toEqual({
+        error: 'tronSelfTransferError',
+      });
+    });
+
+    it('blocks native TRX self-send when recipient is the same address in hex form', () => {
+      expect(
+        validateTronAddress(fromAddressHex, fromAddress, nativeTrxAsset),
+      ).toEqual({
+        error: 'tronSelfTransferError',
+      });
+    });
+
+    it('blocks TRC-10 self-send to the sending address', () => {
+      expect(validateTronAddress(fromAddress, fromAddress, trc10Asset)).toEqual(
+        {
+          error: 'tronSelfTransferError',
+        },
+      );
+    });
+
+    it('allows TRC20 self-send to the sending address', () => {
+      expect(validateTronAddress(fromAddress, fromAddress, trc20Asset)).toEqual(
+        {},
+      );
+    });
+
+    it('allows native TRX send to a different address', () => {
+      expect(
+        validateTronAddress(otherAddress, fromAddress, nativeTrxAsset),
+      ).toEqual({});
     });
   });
 

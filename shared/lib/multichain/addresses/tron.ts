@@ -92,6 +92,53 @@ function isAddressValid(base58Str: string): boolean {
  * @param address - The address to validate
  * @returns True if valid Tron address, false otherwise
  */
+/**
+ * Normalizes a valid Tron address to Base58Check form for stable comparison.
+ *
+ * @param address - A valid Tron address in Base58 or hex (no 0x prefix).
+ * @returns The Base58 address, or undefined if the input is not a valid Tron address.
+ */
+export function normalizeTronAddressToBase58(
+  address: string,
+): string | undefined {
+  if (!isTronAddress(address)) {
+    return undefined;
+  }
+
+  if (address.length === 42) {
+    try {
+      const addressBytes = hexToBytes(`0x${address}`);
+      return getBase58CheckAddress(addressBytes);
+    } catch {
+      return undefined;
+    }
+  }
+
+  return address;
+}
+
+/**
+ * Returns whether two Tron addresses refer to the same account.
+ * Supports comparing Base58 and hex representations.
+ *
+ * @param firstAddress - First Tron address.
+ * @param secondAddress - Second Tron address.
+ * @returns True when both addresses are valid and equivalent.
+ */
+export function areTronAddressesEqual(
+  firstAddress: string,
+  secondAddress: string,
+): boolean {
+  const firstBase58 = normalizeTronAddressToBase58(firstAddress);
+  const secondBase58 = normalizeTronAddressToBase58(secondAddress);
+
+  return (
+    firstBase58 !== undefined &&
+    secondBase58 !== undefined &&
+    firstBase58 === secondBase58
+  );
+}
+
 export function isTronAddress(address: string): boolean {
   // Validate that address is a string using superstruct
   if (!is(address, string())) {
