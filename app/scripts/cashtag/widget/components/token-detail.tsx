@@ -130,7 +130,7 @@ export function TokenDetail({
 
       <section className="flex items-start justify-between">
         <div>
-          <div className="text-s-display-md font-bold">
+          <div className="text-s-display-md font-hero font-bold">
             {data.price === null ? '—' : formatUsd(data.price)}
           </div>
           <div className="flex gap-1 text-s-body-sm font-medium">
