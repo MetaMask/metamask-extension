@@ -39,7 +39,9 @@ export type Destination =
 export type RouteOptions = {
   /**
    * The pathname of the route.
-   * This is the deep link URL path that identifies the route, e.g. '/swap'.
+   * This is a case-insensitive deep link URL path, e.g. '/swap'.
+   * A '*' segment matches exactly one nonempty path segment.
+   * Wildcard and literal segments cannot be siblings in the route registry.
    */
   pathname: string;
   /**
