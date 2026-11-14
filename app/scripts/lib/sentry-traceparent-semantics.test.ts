@@ -34,7 +34,7 @@ function initClient(tracesSampleRate: number): BrowserClient {
 
 describe('SDK traceparent semantics (propagateTraceparent)', () => {
   afterEach(() => {
-    getCurrentScope().clear();
+    getCurrentScope().setClient(undefined);
   });
 
   it('propagates trace-flags 00 when no span is active (deferred decision)', () => {
