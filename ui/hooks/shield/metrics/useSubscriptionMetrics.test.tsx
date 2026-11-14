@@ -1,9 +1,9 @@
 import {
-  type ModalType,
   PAYMENT_TYPES,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
+import type { ModalType } from '@metamask/subscription-controller';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -34,10 +34,6 @@ jest.mock('../../useAnalytics', () => {
     }),
   };
 });
-
-jest.mock('../../useAccountTotalFiatBalance', () => ({
-  useAccountTotalFiatBalance: () => ({ totalFiatBalance: '250' }),
-}));
 
 const existingSubscription = {
   subscriptionStatus: SUBSCRIPTION_STATUSES.active,
