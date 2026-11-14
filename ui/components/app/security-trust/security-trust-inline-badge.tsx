@@ -60,12 +60,14 @@ type SecurityTrustInlineBadgeProps = {
   badge: TokenTrustConfig;
   testId?: string;
   onClick?: () => void;
+  iconSize?: IconSize;
 };
 
 export const SecurityTrustInlineBadge = ({
   badge,
   testId,
   onClick,
+  iconSize = IconSize.Sm,
 }: SecurityTrustInlineBadgeProps) => {
   if (badge.label === null) {
     const verifiedIcon = (
@@ -73,7 +75,7 @@ export const SecurityTrustInlineBadge = ({
         aria-label={badge.accessibleLabel}
         data-testid={onClick ? undefined : testId}
         name={badge.icon}
-        size={IconSize.Sm}
+        size={iconSize}
         color={badge.iconColor}
         className="shrink-0"
       />

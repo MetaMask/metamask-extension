@@ -1,4 +1,8 @@
-import { BannerAlertSeverity, Box } from '@metamask/design-system-react';
+import {
+  BannerAlertSeverity,
+  Box,
+  IconSize,
+} from '@metamask/design-system-react';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import React, {
@@ -306,6 +310,7 @@ export const AssetPageSecurityTrustHeaderBadge = () => {
       badge={context.securityConfig.badge}
       testId="security-badge-verified"
       onClick={context.openInfoSheet}
+      iconSize={IconSize.Md}
     />
   );
 };
