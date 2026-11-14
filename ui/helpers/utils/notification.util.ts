@@ -307,11 +307,16 @@ export const getNetworkNameByChainId = (
  * Retrieves the native currency logo URL for a given chain ID.
  *
  * @param chainId - The chain ID of the network.
+ * @param networkImageUrls - Chain ID (hex) to image URL map; defaults to the
+ * static map, pass the config-registry-aware map to honor registry logos.
  * @returns The logo URL of the native currency, or an empty string if not found.
  */
-export function getNativeCurrencyLogoByChainId(chainId: number): string {
+export function getNativeCurrencyLogoByChainId(
+  chainId: number,
+  networkImageUrls: Record<string, string> = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+): string {
   const hexChainId = `0x${decimalToHex(chainId)}`;
-  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId] ?? '';
+  return networkImageUrls[hexChainId] ?? '';
 }
 
 /**

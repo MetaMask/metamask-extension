@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -107,8 +109,10 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           />
         ),
         Asset: ({ notification }) => {
+          const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
+            networkImageUrls,
           );
           return (
             <NotificationDetailAsset
@@ -135,8 +139,10 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           );
         },
         AssetReceived: ({ notification }) => {
+          const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
+            networkImageUrls,
           );
           return (
             <NotificationDetailAsset

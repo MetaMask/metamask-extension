@@ -48,11 +48,17 @@ import {
   isTronSpecialAsset,
   toAssetId,
 } from '../../../shared/lib/asset-utils';
+import { getNetworkImageUrl } from '../../../shared/lib/network.utils';
+import { getChainIdToNativeTokenImageUrlMap } from '../../selectors/config-registry/config-registry';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
   chainId: ChainId | Hex | CaipChainId,
   token?: BridgeAsset | TokenListToken,
+  nativeTokenImageUrls: Record<string, string> = {
+    ...CHAIN_ID_TOKEN_IMAGE_MAP,
+    ...MULTICHAIN_TOKEN_IMAGE_MAP,
+  },
 ):
   | (AssetWithDisplayData<NativeAsset> & { assetId: CaipAssetType | string })
   | (AssetWithDisplayData<ERC20Asset> & { assetId: CaipAssetType | string })
@@ -71,14 +77,10 @@ const buildTokenData = (
   };
 
   if (isNativeAddress(token.address)) {
-    // Use MULTICHAIN_TOKEN_IMAGE_MAP for non-EVM chains
-    const image = isNonEvmChainId(chainId)
-      ? MULTICHAIN_TOKEN_IMAGE_MAP[
-          sharedFields.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
-        ]
-      : CHAIN_ID_TOKEN_IMAGE_MAP[
-          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ];
+    const image = getNetworkImageUrl(
+      sharedFields.chainId,
+      nativeTokenImageUrls,
+    );
 
     return {
       ...sharedFields,
@@ -140,6 +142,9 @@ export const useTokensWithFiltering = (
 
   const cachedTokens = useSelector(
     (state: BridgeAppState) => state.metamask.tokensChainsCache,
+  );
+  const nativeTokenImageUrls = useSelector((state: BridgeAppState) =>
+    getChainIdToNativeTokenImageUrlMap(state),
   );
 
   const cachedTokenList = useMemo(() => {
@@ -295,14 +300,16 @@ export const useTokensWithFiltering = (
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
-                image:
+                image: (getNetworkImageUrl(
+                  token.chainId,
+                  nativeTokenImageUrls,
+                ) ??
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ] ??
-                  MULTICHAIN_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
-                  ] ??
-                  (nativeAsset?.icon || nativeAsset?.iconUrl || assetImageUrl),
+                  (nativeAsset?.icon ||
+                    nativeAsset?.iconUrl ||
+                    assetImageUrl)) as AssetWithDisplayData<NativeAsset>['image'],
                 accountType: token.accountType,
               };
             } else {
@@ -340,7 +347,11 @@ export const useTokensWithFiltering = (
           const matchedToken =
             tokenList?.[token_.address] ??
             tokenList?.[token_.address.toLowerCase()];
-          const token = buildTokenData(chainId, matchedToken);
+          const token = buildTokenData(
+            chainId,
+            matchedToken,
+            nativeTokenImageUrls,
+          );
           // Filter out Tron special assets (resources, staking state, etc.)
           if (
             token &&
@@ -355,7 +366,7 @@ export const useTokensWithFiltering = (
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of Object.values(tokenList)) {
-          const token = buildTokenData(chainId, token_);
+          const token = buildTokenData(chainId, token_, nativeTokenImageUrls);
           // Filter out Tron special assets (resources, staking state, etc.)
           if (
             token &&
@@ -373,6 +384,7 @@ export const useTokensWithFiltering = (
       chainId,
       tokenList,
       tokenToExclude,
+      nativeTokenImageUrls,
     ],
   );
   return {

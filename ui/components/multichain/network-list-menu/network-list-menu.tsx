@@ -79,7 +79,10 @@ import {
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
-import { getFeaturedEvmNetworks } from '../../../selectors/config-registry/config-registry';
+import {
+  getFeaturedEvmNetworks,
+  getChainIdToNetworkImageUrlMap,
+} from '../../../selectors/config-registry/config-registry';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -214,6 +217,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
   const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const canSelectNetwork: boolean = useMemo(
     () =>
       Boolean(selectedTabOrigin) &&
@@ -678,7 +682,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDiscoverClick,
         onRpcSelect,
       } = getItemCallbacks(network);
-      const iconSrc = getNetworkIcon(network);
+      const iconSrc = getNetworkIcon(network, networkImageUrls);
 
       return (
         <NetworkListItem
@@ -719,6 +723,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       evmNetworks,
       handleNetworkChange,
       isNetworkEnabled,
+      networkImageUrls,
     ],
   );
 

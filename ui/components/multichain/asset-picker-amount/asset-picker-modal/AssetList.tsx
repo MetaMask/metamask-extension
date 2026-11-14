@@ -28,6 +28,7 @@ import {
   getMultichainNativeCurrency,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   type SafeChain,
@@ -91,6 +92,7 @@ export default function AssetList({
     getMultichainSelectedAccountCachedBalance,
   );
   const currentCurrency = useSelector(getMultichainCurrentCurrency);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -192,7 +194,10 @@ export default function AssetList({
                     tokenSymbol={token.symbol}
                     secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
-                    tokenChainImage={getImageForChainId(token.chainId)}
+                    tokenChainImage={getImageForChainId(
+                      token.chainId,
+                      networkImageUrls,
+                    )}
                     nativeCurrencySymbol={nativeCurrencySymbol}
                     rwaData={token.rwaData}
                     {...assetItemProps}

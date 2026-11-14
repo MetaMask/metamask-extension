@@ -1,7 +1,17 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
+import type {
+  ConfigRegistryControllerState,
+  RegistryNetworkConfig,
+} from '@metamask/config-registry-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import configureStore from '../../store/store';
@@ -251,6 +261,7 @@ describe('NetworksPage', () => {
     },
     editedNetwork,
     remoteFeatureFlags = {},
+    configs,
     showTestNetworks = false,
   }: {
     pathname?: string;
@@ -260,6 +271,7 @@ describe('NetworksPage', () => {
     enabledNetworkMap?: Record<string, Record<string, boolean>>;
     editedNetwork?: { chainId: string; nickname?: string };
     remoteFeatureFlags?: Record<string, unknown>;
+    configs?: ConfigRegistryControllerState['configs'];
     showTestNetworks?: boolean;
   } = {}) => {
     const store = configureStore({
@@ -276,6 +288,7 @@ describe('NetworksPage', () => {
           ...mockState.metamask.remoteFeatureFlags,
           ...remoteFeatureFlags,
         },
+        ...(configs ? { configs } : {}),
         providerConfig: {
           chainId: selectedProviderChainId,
           rpcUrl: 'https://mainnet.infura.io/v3/123',
@@ -362,6 +375,57 @@ describe('NetworksPage', () => {
     ).toHaveAttribute('src', './images/empty-state-activity-light.png');
     expect(screen.queryByText('Custom network 1')).not.toBeInTheDocument();
     expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+  });
+
+  it('uses the config registry logo for a featured network not yet enabled', () => {
+    const registryNetwork: RegistryNetworkConfig = {
+      chainId: 'eip155:1329',
+      name: 'Sei Network',
+      imageUrl: 'https://example.com/sei.png',
+      coingeckoPlatformId: 'sei-network',
+      assets: {
+        native: {
+          assetId: 'eip155:1329',
+          imageUrl: '',
+          name: 'Sei',
+          symbol: 'SEI',
+          decimals: 18,
+        },
+      },
+      rpcProviders: {
+        default: {
+          url: 'https://evm-rpc.sei.network',
+          type: 'custom',
+          networkClientId: 'evm-sei-1329',
+        },
+        fallbacks: [],
+      },
+      blockExplorerUrls: {
+        default: 'https://seitrace.com',
+        fallbacks: [],
+      },
+      config: {
+        isActive: true,
+        isTestnet: false,
+        isDefault: false,
+        isFeatured: true,
+        isDeprecated: false,
+        isDeletable: false,
+        priority: 0,
+      },
+    };
+
+    renderNetworksPage({
+      remoteFeatureFlags: { configRegistryApiEnabled: true },
+      configs: { networks: { 'eip155:1329': registryNetwork } },
+    });
+
+    const row = screen.getByTestId('popular-network-0x531');
+    expect(within(row).getByText('Sei Network')).toBeInTheDocument();
+    expect(within(row).getByRole('img')).toHaveAttribute(
+      'src',
+      'https://example.com/sei.png',
+    );
   });
 
   it('renders the add network flow from the query param', () => {

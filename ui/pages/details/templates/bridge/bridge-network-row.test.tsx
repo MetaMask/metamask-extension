@@ -9,7 +9,8 @@ import { BridgeNetworkRow } from './bridge-network-row';
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   // The component only reads mocked selectors, so state is irrelevant here.
-  useSelector: (selector: (state: unknown) => unknown) => selector({}),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({ metamask: {} }),
 }));
 
 jest.mock('@metamask/design-system-react', () => ({
@@ -69,8 +70,14 @@ describe('BridgeNetworkRow', () => {
       <BridgeNetworkRow fromChainId="eip155:1" toChainId="eip155:137" />,
     );
 
-    expect(mockGetImageForChainId).toHaveBeenCalledWith('0x1');
-    expect(mockGetImageForChainId).toHaveBeenCalledWith('0x89');
+    expect(mockGetImageForChainId).toHaveBeenCalledWith(
+      '0x1',
+      expect.anything(),
+    );
+    expect(mockGetImageForChainId).toHaveBeenCalledWith(
+      '0x89',
+      expect.anything(),
+    );
 
     const [fromAvatar, toAvatar] = getAllByTestId('avatar-network');
     expect(fromAvatar).toHaveAttribute('data-src', 'img:0x1');
@@ -84,7 +91,13 @@ describe('BridgeNetworkRow', () => {
       <BridgeNetworkRow fromChainId={nonEvmChainId} toChainId="eip155:1" />,
     );
 
-    expect(mockGetImageForChainId).toHaveBeenCalledWith(nonEvmChainId);
-    expect(mockGetImageForChainId).toHaveBeenCalledWith('0x1');
+    expect(mockGetImageForChainId).toHaveBeenCalledWith(
+      nonEvmChainId,
+      expect.anything(),
+    );
+    expect(mockGetImageForChainId).toHaveBeenCalledWith(
+      '0x1',
+      expect.anything(),
+    );
   });
 });

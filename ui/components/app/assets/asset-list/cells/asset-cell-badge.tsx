@@ -9,7 +9,8 @@ import {
   BadgeWrapper,
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../../hooks/useImageForChainId';
+import { getChainIdToNativeTokenImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   getAssetImageUrl,
@@ -29,12 +30,23 @@ export const getAvatarTokenSrc = (
   opts: Pick<
     AssetCellBadgeProps,
     'chainId' | 'isNative' | 'tokenImage' | 'assetId'
-  >,
+  > & {
+    /**
+     * Chain ID to native token image URL map; defaults to the static map,
+     * pass the config-registry-aware map to honor registry native assets.
+     */
+    nativeTokenImageUrls?: Record<string, string>;
+  },
 ): string => {
   try {
     const isEvm = isEvmChainId(opts.chainId);
     if (isEvm && opts.isNative) {
-      return getNativeCurrencyForChain(opts.chainId) ?? opts.tokenImage ?? '';
+      return (
+        opts.nativeTokenImageUrls?.[opts.chainId] ??
+        getNativeCurrencyForChain(opts.chainId) ??
+        opts.tokenImage ??
+        ''
+      );
     }
 
     // Fall back to the static CDN icon for any asset (including non-EVM natives
@@ -61,14 +73,18 @@ export const AssetCellBadge = React.memo(
     networkBadgeTestId,
   }: AssetCellBadgeProps) => {
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+    const nativeTokenImageUrls = useSelector(
+      getChainIdToNativeTokenImageUrlMap,
+    );
 
     const avatarTokenSrc = getAvatarTokenSrc({
       chainId,
       isNative,
       tokenImage,
       assetId,
+      nativeTokenImageUrls,
     });
-    const badgeWrapperSrc = getImageForChainId(chainId) ?? undefined;
+    const badgeWrapperSrc = useImageForChainId(chainId);
 
     return (
       <BadgeWrapper
