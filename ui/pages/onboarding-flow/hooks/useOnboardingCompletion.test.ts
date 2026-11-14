@@ -1,5 +1,6 @@
 import { act, waitFor } from '@testing-library/react';
 import { describe, it } from '@jest/globals';
+import { initialState as initialRewardsMoneyState } from '#ui/ducks/rewards-money';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
@@ -1084,6 +1085,58 @@ describe('useOnboardingCompletion', () => {
   ])(
     'Direct link after install (side panel: %s, auto-complete: %s)',
     (sidePanelEnabled, autoComplete) => {
+      it.each(['', '?ref=???', '?ref=def456'])(
+        'preserves the direct referral when the deferred link has query "%s"',
+        async (referralQuery) => {
+          jest
+            .mocked(useSidePanelEnabledHook.useSidePanelEnabled)
+            .mockReturnValue(sidePanelEnabled);
+          jest
+            .mocked(deepLinkUtils.getDeferredDeepLinkRoute)
+            .mockResolvedValue({
+              type: DeferredDeepLinkRouteType.Navigate,
+              route: '/swap',
+              signature: VALID,
+            });
+          const browserMock = jest.requireMock('webextension-polyfill');
+          browserMock.tabs.query.mockResolvedValue([{ windowId: 1, id: 1 }]);
+          const directRoute = '/settings/privacy';
+
+          const { result, store } = renderHookWithProvider(
+            () => useOnboardingCompletion(),
+            {
+              ...mockState,
+              appState: {
+                ...mockState.appState,
+                onboardingRedirect: directRoute,
+              },
+              rewardsMoney: {
+                ...initialRewardsMoneyState,
+                pendingReferralCode: 'ABC123',
+              },
+              metamask: {
+                ...mockState.metamask,
+                deferredDeepLink: {
+                  createdAt: Date.now(),
+                  referringLink: `https://link.metamask.io/swap${referralQuery}`,
+                },
+              },
+            },
+          );
+
+          await act(async () => {
+            await result.current.completeOnboarding(autoComplete);
+          });
+
+          expect(store.getState().rewardsMoney.pendingReferralCode).toBe(
+            'ABC123',
+          );
+          expect(mockUseNavigate).toHaveBeenCalledWith(directRoute, {
+            replace: true,
+          });
+        },
+      );
+
       it.each([
         {
           type: DeferredDeepLinkRouteType.Navigate,
