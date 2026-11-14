@@ -1,13 +1,23 @@
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
+import {
+  genUnapprovedApproveConfirmation,
+  genUnapprovedPermit2ApproveConfirmation,
+  PERMIT2_SPENDER_ADDRESS,
+} from '../../../../../../../../test/data/confirmations/token-approve';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { ApproveDetails } from './approve-details';
+
+jest.mock('../../../../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../../../../store/actions'),
+  getTokenStandardAndDetailsByChain: jest.fn(),
+}));
 
 jest.mock(
   '../../../../../../../components/app/alert-system/contexts/alertMetricsContext.tsx',
@@ -73,5 +83,54 @@ describe('<ApproveDetails />', () => {
     );
     expect(getByText(messages.network.message)).toBeInTheDocument();
     expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
+  });
+
+  describe('Permit2', () => {
+    function renderPermit2Details(expiration: number) {
+      const state = getMockConfirmStateForTransaction(
+        genUnapprovedPermit2ApproveConfirmation({ expiration }),
+      );
+      return renderWithConfirmContextProvider(
+        <ApproveDetails />,
+        configureMockStore(middleware)(state),
+      );
+    }
+
+    it('shows the spender and the expiration date', async () => {
+      const { getByTestId } = renderPermit2Details(1767225600);
+
+      await waitFor(() => {
+        expect(getByTestId('confirmation__approve-spender')).toHaveTextContent(
+          PERMIT2_SPENDER_ADDRESS,
+        );
+      });
+      expect(getByTestId('confirmation__approve-expiration')).toHaveTextContent(
+        `${messages.confirmFieldExpiration.message}01 January 2026, 00:00`,
+      );
+    });
+
+    it('shows never expires for the max uint48 expiration', async () => {
+      const { getByTestId } = renderPermit2Details(281474976710655);
+
+      await waitFor(() => {
+        expect(
+          getByTestId('confirmation__approve-expiration'),
+        ).toHaveTextContent(messages.confirmFieldNeverExpires.message);
+      });
+    });
+
+    it('shows the current time when the expiration is 0', async () => {
+      jest
+        .spyOn(Date, 'now')
+        .mockReturnValue(new Date('2026-11-10T12:30:00Z').getTime());
+
+      const { getByTestId } = renderPermit2Details(0);
+
+      await waitFor(() => {
+        expect(
+          getByTestId('confirmation__approve-expiration'),
+        ).toHaveTextContent('10 November 2026, 12:30');
+      });
+    });
   });
 });

@@ -12,3 +12,6 @@ export const TypedSignSignaturePrimaryTypes = {
   PERMIT: 'Permit',
   ORDER: 'Order',
 };
+
+// Permit2 uses this expiration for allowances that never expire.
+export const MAX_UINT48 = 2 ** 48 - 1;
