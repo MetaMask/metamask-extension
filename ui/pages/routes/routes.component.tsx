@@ -312,8 +312,8 @@ const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
 const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
-const MoneyDepositDeeplinkPage = mmLazy(
-  () => import('../money/money-deposit-deeplink-page.tsx'),
+const MoneyDepositInterstitialPage = mmLazy(
+  () => import('../money/money-deposit-interstitial-page.tsx'),
 );
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
@@ -777,7 +777,7 @@ export const routeConfig = [
               createRouteWithMessenger({
                 path: MONEY_DEPOSIT_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-                element: <MoneyDepositDeeplinkPage />,
+                element: <MoneyDepositInterstitialPage />,
               }),
             ],
           },

@@ -12,7 +12,7 @@ describe('money account deposit deep link route', () => {
     );
   });
 
-  it('navigates to the Money deposit bridge', () => {
+  it('navigates to the Money deposit interstitial', () => {
     const result = moneyAccountDeposit.handler(new URLSearchParams());
 
     expect(result).toStrictEqual({

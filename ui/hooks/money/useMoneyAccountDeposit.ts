@@ -52,8 +52,8 @@ export type InitiateDepositOptions = {
   ftueOrigin?: MoneyFtueOrigin;
   /**
    * Replace the current page with the confirmation instead of pushing it,
-   * for entry points that should not be returned to (e.g. the deeplink
-   * bridge).
+   * for entry points that should not be returned to (e.g. the deposit
+   * interstitial).
    */
   replaceConfirmation?: boolean;
   /**
