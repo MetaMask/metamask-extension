@@ -15,7 +15,6 @@ export type Properties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   attribution_id?: string;
-  referral?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
   referral_code?: string;
 } & { [key in UTMParameter]?: string };
@@ -61,17 +60,14 @@ export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
   const sensitiveProperties: Record<string, string> = {};
 
   for (const [key, value] of url.searchParams.entries()) {
-    if (key === 'sig' || key === 'ref') {
-      // Signatures are redundant; referral metadata is handled above.
+    if (key === 'sig' || key === 'ref' || key === 'referral') {
+      // Signatures are redundant; Money `ref` is handled above. Legacy
+      // `referral` is discarded — it is not tracked and not sensitive.
       continue;
     }
 
     if (key === 'attributionId') {
       properties.attribution_id = value;
-    } else if (key === 'referral') {
-      // Referral codes are public (partners share them openly), so they are
-      // tracked as a standard attribution property, not a sensitive one.
-      properties.referral = value;
     } else if (UTM_PARAMETERS.has(key)) {
       properties[key] = value;
     } else {
