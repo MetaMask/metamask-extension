@@ -1,11 +1,9 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
+import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
 import { getIsFullscreenRedesignEnabled } from '../selectors/multichain/feature-flags';
 
-// Minimum viewport width at which the fullscreen design is used
-// Matches the Tailwind `md` breakpoint
-export const FULL_SCREEN_DESIGN_MIN_WIDTH = 768;
-const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${FULL_SCREEN_DESIGN_MIN_WIDTH}px)`;
+const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${WIDE_SCREEN_DESIGN_MIN_WIDTH}px)`;
 
 /**
  * Subscribes to a media query and returns whether it currently matches.

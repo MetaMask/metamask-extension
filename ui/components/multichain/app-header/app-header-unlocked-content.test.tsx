@@ -297,9 +297,9 @@ describe('Fullscreen design', () => {
       await renderHeader(false);
 
       expect(screen.getByTestId('account-menu-icon')).toBeInTheDocument();
-      expect(
-        screen.queryByTestId('app-header-account-name'),
-      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('app-header-account-name')).toHaveTextContent(
+        'Account 1',
+      );
       expect(screen.getByTestId('discover-search-button').tagName).toBe(
         'BUTTON',
       );

@@ -109,7 +109,7 @@ export const SideNavAccounts = () => {
             size={ButtonIconSize.Sm}
             ariaLabel={t('manageAccounts')}
             onClick={handleManageClick}
-            data-testid="side-nav-accounts-manage-button"
+            data-testid="account-menu-icon"
           />
           <ButtonIcon
             iconName={IconName.Add}

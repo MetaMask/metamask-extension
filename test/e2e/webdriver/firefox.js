@@ -13,6 +13,10 @@ const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 const { getOrBuildXpi } = require('../helpers/xpi');
+const {
+  CONSTRAINED_WINDOW_SIZE,
+  DEFAULT_WINDOW_SIZE,
+} = require('./window-size');
 
 // geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
 // We pin the version as a temporary patch until migration to Playwright (in progress)
@@ -200,7 +204,17 @@ class FirefoxDriver {
       const internalExtensionId = await fxDriver.getInternalId();
 
       if (responsive || constrainWindowSize) {
-        await driver.manage().window().setRect({ width: 320, height: 600 });
+        await driver.manage().window().setRect({
+          width: CONSTRAINED_WINDOW_SIZE.width,
+          height: CONSTRAINED_WINDOW_SIZE.height,
+        });
+      } else if (!isHeadless('SELENIUM')) {
+        // A headed window uses the browser default; set the size explicitly
+        // so the wide screen design applies whenever its feature flag is on.
+        await driver.manage().window().setRect({
+          width: DEFAULT_WINDOW_SIZE.width,
+          height: DEFAULT_WINDOW_SIZE.height,
+        });
       }
 
       return {
