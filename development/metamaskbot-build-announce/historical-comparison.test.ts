@@ -196,6 +196,96 @@ describe('aggregateHistoricalData', () => {
     );
   });
 
+  it('averages every statistic over the same runs when one run is missing p75', () => {
+    // Runs 1 and 3 are complete; run 2 records no p75. Only complete runs may
+    // contribute, so mean and p75 must both average 100 and 1000 -> 550.
+    // Before MetaMask-planning#7204, mean averaged all three runs (400) while
+    // p75 averaged the two that had it (550): two numbers, two populations.
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 100 },
+              p75: { metric: 100 },
+              p95: { metric: 100 },
+            },
+          },
+        },
+      },
+      c2: {
+        timestamp: 2,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 100 },
+              p95: { metric: 100 },
+            },
+          },
+        },
+      },
+      c3: {
+        timestamp: 3,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 1000 },
+              p75: { metric: 1000 },
+              p95: { metric: 1000 },
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+    const baseline = result['pageLoad/entry']?.metric;
+
+    expect(baseline?.mean).toBe(550);
+    expect(baseline?.p75).toBe(550);
+    expect(baseline?.p75).toBe(baseline?.mean);
+  });
+
+  it('omits stdDev when only some contributing runs recorded it', () => {
+    // A stdDev averaged over a subset describes a different population than
+    // the mean beside it, which is how `stdDev ~ 0` could sit next to a p75
+    // far above the mean. Emitting nothing is correct.
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 100 },
+              stdDev: { metric: 5 },
+              p75: { metric: 100 },
+              p95: { metric: 100 },
+            },
+          },
+        },
+      },
+      c2: {
+        timestamp: 2,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 1000 },
+              p75: { metric: 1000 },
+              p95: { metric: 1000 },
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+    const baseline = result['pageLoad/entry']?.metric;
+
+    expect(baseline?.mean).toBe(550);
+    expect(baseline?.stdDev).toBeUndefined();
+  });
+
   it('includes stdDev in the baseline when stdDev data is present', () => {
     const data = asHistoricalFile({
       c1: {

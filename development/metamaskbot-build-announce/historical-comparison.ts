@@ -94,9 +94,17 @@ function collectMetrics(
         metricName
       ];
       const arr = bucket[statKey];
-      if (typeof raw === 'number' && !Number.isNaN(raw) && arr !== undefined) {
-        arr.push(raw);
+      if (arr === undefined) {
+        continue;
       }
+      // Push a placeholder for a missing statistic rather than skipping it, so
+      // index `i` is the same run in every series. Skipping shifted later
+      // entries and let `mean[i]`, `p75[i]` and `stdDev[i]` refer to different
+      // runs — which is what allowed the three published numbers to describe
+      // different populations (MetaMask-planning#7204).
+      arr.push(
+        typeof raw === 'number' && !Number.isNaN(raw) ? raw : Number.NaN,
+      );
     }
   }
 }
@@ -125,8 +133,25 @@ function collectCommitPresets(
 }
 
 /**
- * Converts averaged CollectedMetricValues for one benchmark key into
+ * Converts collected per-run values for one benchmark key into
  * HistoricalBaselineMetrics entries, skipping metrics with no valid data.
+ *
+ * Every published statistic is averaged over the **same** set of runs. The
+ * previous implementation averaged each independently — `mean` over every run,
+ * `stdDev` over only the runs that recorded one, `p75`/`p95` over only the runs
+ * that recorded those — so the three numbers need not have described the same
+ * population, or even the same runs. That is how a baseline could report
+ * `stdDev ≈ 0` alongside `p75` far above `mean` without anything being
+ * impossible (MetaMask-planning#7204).
+ *
+ * A run contributes only if it recorded `mean`, `p75` and `p95`. `stdDev`
+ * remains optional because older entries predate it, but when present it is
+ * averaged over exactly the contributing runs rather than over a wider set.
+ *
+ * Note what this `stdDev` is: the mean of each run's **within-run** scatter. It
+ * does not describe run-to-run variation, and is not interchangeable with the
+ * spread of the `mean` series. Consumers reasoning about between-run stability
+ * need a different quantity.
  *
  * @param name - Benchmark key (used only for warning messages).
  * @param metrics - Collected arrays of values per metric.
@@ -138,26 +163,69 @@ function buildMetricBaselines(
 ): Record<string, HistoricalBaselineMetrics> {
   const result: Record<string, HistoricalBaselineMetrics> = {};
   for (const [metric, values] of Object.entries(metrics)) {
-    if (values.mean.length === 0) {
+    // Runs are collected in parallel arrays, so a shared index is the same run.
+    // Only indices present in all three series describe a complete record.
+    const complete: number[] = [];
+    for (let i = 0; i < values.mean.length; i++) {
+      if (
+        Number.isFinite(values.mean[i]) &&
+        Number.isFinite(values.p75[i]) &&
+        Number.isFinite(values.p95[i])
+      ) {
+        complete.push(i);
+      }
+    }
+
+    const pick = (series: number[]): number[] => complete.map((i) => series[i]);
+
+    if (complete.length > 0) {
+      const meanVal = calculateMean(pick(values.mean));
+      if (Number.isNaN(meanVal)) {
+        continue;
+      }
+      const stdDevs = complete
+        .map((i) => values.stdDev?.[i])
+        .filter((v): v is number => Number.isFinite(v));
+
+      result[metric] = {
+        mean: meanVal,
+        // Emitted only when every contributing run recorded one. Averaging
+        // over a subset is what let `stdDev` describe a different population
+        // than `mean` and `p75`.
+        ...(stdDevs.length === complete.length
+          ? { stdDev: calculateMean(stdDevs) }
+          : {}),
+        p75: calculateMean(pick(values.p75)),
+        p95: calculateMean(pick(values.p95)),
+      };
       continue;
     }
-    const meanVal = calculateMean(values.mean);
+
+    // No run recorded all three. This is the pre-existing documented fallback:
+    // percentiles stand in as the mean. It is deliberately unchanged here —
+    // it is a separate question from this fix, which is about runs that
+    // recorded *some* statistics producing a baseline whose numbers came from
+    // different run sets.
+    const finiteMeans = values.mean.filter((v) => Number.isFinite(v));
+    if (finiteMeans.length === 0) {
+      continue;
+    }
+    const meanVal = calculateMean(finiteMeans);
     if (Number.isNaN(meanVal)) {
       continue;
     }
-    if (values.p75.length === 0) {
+    const finiteP75 = values.p75.filter((v) => Number.isFinite(v));
+    const finiteP95 = values.p95.filter((v) => Number.isFinite(v));
+    if (finiteP75.length === 0) {
       console.warn(`No p75 data for ${name}/${metric}, using mean as fallback`);
     }
-    if (values.p95.length === 0) {
+    if (finiteP95.length === 0) {
       console.warn(`No p95 data for ${name}/${metric}, using mean as fallback`);
     }
     result[metric] = {
       mean: meanVal,
-      ...(values.stdDev?.length
-        ? { stdDev: calculateMean(values.stdDev) }
-        : {}),
-      p75: values.p75.length > 0 ? calculateMean(values.p75) : meanVal,
-      p95: values.p95.length > 0 ? calculateMean(values.p95) : meanVal,
+      p75: finiteP75.length > 0 ? calculateMean(finiteP75) : meanVal,
+      p95: finiteP95.length > 0 ? calculateMean(finiteP95) : meanVal,
     };
   }
   return result;
