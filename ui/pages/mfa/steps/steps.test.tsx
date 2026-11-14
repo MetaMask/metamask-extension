@@ -2,6 +2,7 @@ import React from 'react';
 import { it } from '@jest/globals';
 import { act, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import mfaFailureImage from '../../../../shared/assets/images/mfa-failure.svg';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -789,6 +790,22 @@ describe('PasskeyStep', () => {
 });
 
 describe('FailureStep', () => {
+  it('renders the bundled failure illustration', () => {
+    render(
+      <FailureStep
+        {...buildState({
+          name: 'failure',
+          code: 'server_error',
+          canRetry: true,
+        })}
+        reason={reason}
+        onAction={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByAltText('')).toHaveAttribute('src', mfaFailureImage);
+  });
+
   it('offers a retry when the error allows it', () => {
     const onAction = jest.fn();
     render(

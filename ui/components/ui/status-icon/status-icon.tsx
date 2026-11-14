@@ -1,11 +1,11 @@
 import { useRive } from '@rive-app/react-canvas';
 import React, { useEffect } from 'react';
 import cn from 'clsx';
+import source from '../../../../shared/assets/animations/spinner_loader_with_states.riv';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
 import { useRiveFileLavamoat } from '../../../hooks/useRiveFileLavamoat';
 
-const source = './images/riv_animations/spinner_loader_with_states.riv';
 const stateMachine = 'SpinnerLoader';
 
 type Props = {
