@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Do kích thước giao dịch và thanh khoản hiện có, bạn sẽ nhận ít hơn khoảng $1 so với giá thị trường. Điều này đã được tính trong báo giá của bạn."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Đây là cách giao dịch của bạn làm thay đổi giá thị trường của một token. Nó phụ thuộc vào kích thước giao dịch, thanh khoản hiện có và phí của nhà cung cấp. MetaMask không kiểm soát tác động giá."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Tác động giá"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "Kết nối ví cứng"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "Sử dụng USB hoặc mã QR"
   },
   "connectAnyway": {
     "message": "Vẫn kết nối"
@@ -4800,9 +4794,6 @@
   "importAWallet": {
     "message": "Nhập ví"
   },
-  "importAWalletDescription": {
-    "message": "Sử dụng cụm từ khôi phục có 12, 18 hoặc 24 từ"
-  },
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
   },
@@ -4821,9 +4812,6 @@
   "importAccountJsonLoading2": {
     "message": "Chân thành xin lỗi bạn, chúng tôi sẽ cải thiện để quá trình này nhanh hơn trong tương lai."
   },
-  "importAccountMsg": {
-    "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm từ khôi phục bí mật MetaMask của bạn. Tìm hiểu thêm về tài khoản đã nhập"
-  },
   "importAccountWithSocialMsg": {
     "message": "Khóa riêng tư đã nhập sẽ được sao lưu vào tài khoản của bạn và tự động đồng bộ khi bạn đăng nhập bằng cùng một tài khoản Google hoặc Apple."
   },
@@ -4833,9 +4821,6 @@
   },
   "importAnAccount": {
     "message": "Nhập tài khoản"
-  },
-  "importAnAccountDescription": {
-    "message": "Thông qua khóa riêng tư"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -5009,10 +4994,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "Tập tin JSON",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "Tên tài khoản"
@@ -5463,9 +5444,6 @@
   "mfaErrorSignedOut": {
     "message": "Đăng nhập để tiếp tục."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Bạn đã thử quá nhiều lần. Hãy yêu cầu mã mới."
-  },
   "mfaErrorTotpExpired": {
     "message": "Đã quá thời gian cho phép. Hãy nhập mã hiện tại trong ứng dụng của bạn."
   },
@@ -5690,9 +5668,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Số lượng tối thiểu bạn sẽ nhận được nếu giá thay đổi trong quá trình giao dịch, dựa trên chế độ cài đặt trượt giá của bạn. Ước tính này đến từ các nhà cung cấp thanh khoản, nên số lượng cuối cùng có thể khác."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Số tiền tối thiểu nhận được"
   },
   "minimumReceivedLabel": {
     "message": "Tối thiểu nhận được"
@@ -8855,10 +8830,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Yêu cầu rút tiền đã được gửi"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn.",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "Rút tiền",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9635,9 +9606,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Thêm tài khoản không thành công"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Không thể giới thiệu bạn do đã có hoạt động giao dịch gần đây."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "Bạn đã được người dùng khác giới thiệu."

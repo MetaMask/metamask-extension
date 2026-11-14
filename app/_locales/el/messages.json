@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Λόγω του μεγέθους της συναλλαγής σας και της διαθέσιμης ρευστότητας, θα λάβετε περίπου $1 λιγότερο από την τιμή αγοράς. Αυτό έχει ήδη υπολογιστεί στην προσφορά σας."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Έτσι επηρεάζει η συναλλαγή σας την τιμή ενός token. Αυτό εξαρτάται από το μέγεθος της συναλλαγής, τη διαθέσιμη ρευστότητα και τις χρεώσεις του παρόχου. Το MetaMask δεν ελέγχει την επίδραση στην τιμή."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Επίδραση στην τιμή"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "Συνδέστε ένα πορτοφόλι υλικού"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "Χρήση USB ή κωδικού QR"
   },
   "connectAnyway": {
     "message": "Σύνδεση ούτως ή άλλως"
@@ -4796,9 +4790,6 @@
   "importAWallet": {
     "message": "Εισαγωγή πορτοφολιού"
   },
-  "importAWalletDescription": {
-    "message": "Χρησιμοποιώντας φράση ανάκτησης 12, 18 ή 24 λέξεων"
-  },
   "importAccountError": {
     "message": "Σφάλμα κατά την εισαγωγή του λογαριασμού."
   },
@@ -4817,9 +4808,6 @@
   "importAccountJsonLoading2": {
     "message": "Ζητάμε συγγνώμη και θα το κάνουμε πιο γρήγορα στο μέλλον."
   },
-  "importAccountMsg": {
-    "message": "Οι λογαριασμοί που έχουν εισαχθεί δεν θα συσχετίζονται με τη Μυστική Φράση Ανάκτησης στο MetaTask. Μάθετε περισσότερα για τους λογαριασμούς που έχουν εισαχθεί"
-  },
   "importAccountWithSocialMsg": {
     "message": "Τα ιδιωτικά κλειδιά που εισάγετε δημιουργούν αντίγραφα ασφαλείας στον λογαριασμό σας και συγχρονίζονται αυτόματα όταν συνδέεστε με τα ίδια στοιχεία στο Google ή Apple."
   },
@@ -4829,9 +4817,6 @@
   },
   "importAnAccount": {
     "message": "Εισαγωγή λογαριασμού"
-  },
-  "importAnAccountDescription": {
-    "message": "Μέσω ιδιωτικού κλειδιού"
   },
   "importNFT": {
     "message": "Εισαγωγή NFT"
@@ -5005,10 +4990,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "Αρχείο JSON",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "Όνομα λογαριασμού"
@@ -5459,9 +5440,6 @@
   "mfaErrorSignedOut": {
     "message": "Συνδεθείτε για να συνεχίσετε."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Ζητήστε νέο κωδικό."
-  },
   "mfaErrorTotpExpired": {
     "message": "Η διαδικασία διήρκεσε πολύ. Πληκτρολογήστε τον τρέχοντα κωδικό από την εφαρμογή σας."
   },
@@ -5686,9 +5664,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Το ελάχιστο ποσό που θα λάβετε, αν αλλάξει η τιμή κατά τη διάρκεια της επεξεργασίας της συναλλαγής σας, με βάση τη ρύθμιση απόκλισης. Η εκτίμηση προέρχεται από τους παρόχους ρευστότητας, επομένως το τελικό ποσό ενδέχεται να διαφέρει."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Ελάχιστο ποσό που θα λάβετε"
   },
   "minimumReceivedLabel": {
     "message": "Ελάχιστο που θα λάβετε"
@@ -8841,10 +8816,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
   },
-  "perpsWithdrawTooltip": {
-    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε.",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "Ανάληψη",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9621,9 +9592,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Αποτυχία προσθήκης λογαριασμού"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Δεν μπορείτε να εγγραφείτε μέσω παραπομπής λόγω της πρόσφατης δραστηριότητάς σας στις συναλλαγές."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "Έχετε ήδη παραπεμφθεί από άλλον χρήστη."

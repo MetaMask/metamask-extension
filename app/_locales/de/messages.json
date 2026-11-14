@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Aufgrund Ihres Handelsvolumens und der verfügbaren Liquidität erhalten Sie etwa $1 weniger als den Marktpreis. Dies ist bereits in Ihrem Angebot berücksichtigt."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Auf diese Weise beeinflusst Ihr Handel den Marktpreis eines Tokens. Abhängig sind dabei die Handelsgröße, die verfügbare Liquidität und die Gebühren des Anbieters. MetaMask hat keinen Einfluss auf die Preisauswirkungen."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Preiseinfluss"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "Verbinden Sie eine Hardware-Wallet"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "Verwendung von USB oder einem QR-Code"
   },
   "connectAnyway": {
     "message": "Trotzdem verbinden"
@@ -4796,9 +4790,6 @@
   "importAWallet": {
     "message": "Wallet importieren"
   },
-  "importAWalletDescription": {
-    "message": "Über einer 12-, 18- oder 24-Wort-Seedphrase"
-  },
   "importAccountError": {
     "message": "Fehler beim Importieren des Kontos."
   },
@@ -4817,9 +4808,6 @@
   "importAccountJsonLoading2": {
     "message": "Wir entschuldigen uns hierfür und werden dies in Zukunft beschleunigen."
   },
-  "importAccountMsg": {
-    "message": "Importierte Konten werden nicht mit der geheimen Wiederherstellungsphrase von MetaMask verknüpft. Erfahren Sie mehr über importierte Konten."
-  },
   "importAccountWithSocialMsg": {
     "message": "Importierte private Schlüssel werden in Ihrem Konto gesichert und automatisch synchronisiert, sobald Sie sich mit demselben Google- oder Apple-Login anmelden."
   },
@@ -4829,9 +4817,6 @@
   },
   "importAnAccount": {
     "message": "Ein Konto importieren"
-  },
-  "importAnAccountDescription": {
-    "message": "Über privaten Schlüssel"
   },
   "importNFT": {
     "message": "NFT importieren"
@@ -5005,10 +4990,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "JSON-Datei",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "Kontoname"
@@ -5459,9 +5440,6 @@
   "mfaErrorSignedOut": {
     "message": "Bitte anmelden, um fortzufahren."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Zu viele Versuche. Bitte fordern Sie einen neuen Code an."
-  },
   "mfaErrorTotpExpired": {
     "message": "Das hat zu lange gedauert. Geben Sie bitte den aktuellen Code aus Ihrer App ein."
   },
@@ -5686,9 +5664,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Der von Ihnen erhaltene Mindestbetrag, wenn sich der Kurs während der Abwicklung Ihrer Transaktion entsprechend Ihrer Slippage-Einstellung ändert. Diese Schätzung stammt von Liquiditätsanbietern, der Endbetrag kann daher abweichen."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Empfangener Mindestbetrag"
   },
   "minimumReceivedLabel": {
     "message": "Empfangenes Minimum"
@@ -8841,10 +8816,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Auszahlung abgesendet"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMask swappt den Token für Sie in den gewünschten Token um.",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "Auszahlung",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9621,9 +9592,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Hinzufügen des Kontos fehlgeschlagen"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Aufgrund Ihrer jüngsten Handelsaktivitäten können Sie nicht empfohlen werden."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "Sie wurden bereits von einem anderen Nutzer empfohlen."

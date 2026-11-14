@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "आपके ट्रेड साइज़ और उपलब्ध लिक्विडिटी की वजह से, आपको मार्केट प्राइस से लगभग $1 कम मिलेगा। यह आपके कोट में पहले से ही शामिल है।"
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "इस तरह आपका ट्रेड किसी टोकन की मार्केट कीमत बदलता है। यह ट्रेड साइज़, उपलब्ध लिक्विडिटी और प्रोवाइडर फीस पर निर्भर करता है। MetaMask प्राइस इम्पैक्ट को कंट्रोल नहीं करता है।"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "कीमत का प्रभाव"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "किसी hardware wallet को कनेक्ट करें"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "USB या QR कोड का उपयोग करना"
   },
   "connectAnyway": {
     "message": "कैसे भी कनेक्ट करें"
@@ -4796,9 +4790,6 @@
   "importAWallet": {
     "message": "एक वॉलेट इंपोर्ट करें"
   },
-  "importAWalletDescription": {
-    "message": "12, 18 या 24 शब्दों के सीड फ्रेज़ का इस्तेमाल करना"
-  },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"
   },
@@ -4817,9 +4808,6 @@
   "importAccountJsonLoading2": {
     "message": "हम क्षमा चाहते हैं, और भविष्य में हम इसे और तेज़ करेंगे।"
   },
-  "importAccountMsg": {
-    "message": "इम्पोर्ट किए एकाउंट्स आपके MetaMask सीक्रेट रिकवरी फ्रेज़ से जुड़े नहीं होंगे। इम्पोर्ट किए एकाउंट्स के बारे में अधिक जानें"
-  },
   "importAccountWithSocialMsg": {
     "message": "इंपोर्ट किए गए प्राइवेट कीज़ (keys) का आपके अकाउंट में बैकअप ले लिया जाता है और जब आप उसी Google या Apple लॉगिन से साइन इन करते हैं तो वे स्वचालित रूप से सिंक हो जाती हैं।"
   },
@@ -4829,9 +4817,6 @@
   },
   "importAnAccount": {
     "message": "एक खाता इम्पोर्ट करें"
-  },
-  "importAnAccountDescription": {
-    "message": "एक प्राइवेट की (key) के द्वारा"
   },
   "importNFT": {
     "message": "NFT आयात करें"
@@ -5005,10 +4990,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "JSON फाइल",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "अकाउंट का नाम"
@@ -5459,9 +5440,6 @@
   "mfaErrorSignedOut": {
     "message": "जारी रखने के लिए साइन इन करें।"
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "बहुत ज़्यादा कोशिशें की गईं। नए कोड का अनुरोध करें।"
-  },
   "mfaErrorTotpExpired": {
     "message": "इसमें बहुत ज़्यादा समय लगा। अपने ऐप से मौजूदा कोड डालें।"
   },
@@ -5686,9 +5664,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "यदि आपके ट्रांसेक्शन के दौरान प्राइस बदलती है, तो न्यूनतम राशि जो आपको मिलेगी, वह आपके स्लिपेज (slippage) सेटिंग पर आधारित होगी। यह अनुमान लिक्विडिटी प्रोवाइडर्स से लिया गया है, इसलिए अंतिम राशि अलग हो सकती है।"
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "न्यूनतम प्राप्त राशि"
   },
   "minimumReceivedLabel": {
     "message": "न्यूनतम प्राप्त किया गया"
@@ -8841,10 +8816,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "विदड्रॉवल सबमिट किया गया"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMask आपके लिए आपके पसंदीदा टोकन में स्वैप करेगा।",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "विदड्रॉवल",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9621,9 +9592,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "आपको हाल की ट्रेडिंग एक्टिविटी की वजह से रेफ़र नहीं किया जा सकता।"
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "आप पहले ही किसी अन्य उपयोगकर्ता द्वारा रेफर किए जा चुके हैं।"

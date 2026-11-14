@@ -1495,6 +1495,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "このアドレスは、セキュリティパートナーによって悪意のある活動であると判断されました。"
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "このアドレス$1は、セキュリティパートナーによって悪意のある活動であると判断されました。"
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "セキュリティパートナーは、このアドレス$1を検証するための信頼できる履歴を十分に保持していません。"
+  },
   "alertMessageBurnAddress": {
     "message": "資産をバーンアドレスに送金しようとしています。続行すると、資産が失われます。"
   },
@@ -1512,6 +1518,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "ネストされたトランザクションアドレス$1が、セキュリティパートナーによって悪意のある活動であると判断されました。"
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "セキュリティパートナーは、ネストされたこのトランザクション$1を検証するための信頼できる履歴を十分に保持していません。"
   },
   "alertMessageNoGasPrice": {
     "message": "手数料を手動で更新するまでこのトランザクションを進めることができません。"
@@ -1587,6 +1599,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "不要なアクセス許可"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "ネストされたアドレスが高リスクと判断されました"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "ネストされたアドレスのシグナルが限定的です"
   },
   "alertReasonNoGasPrice": {
     "message": "手数料の見積もりが利用できません"
@@ -2307,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "取引サイズと流動性の関係で、受取額が市場価格よりも約$1少なくなります。これはすでにクォートに反映されています。"
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "これは、お客様の取引でトークンの市場価格がどのように変化するかを示します。プライスインパクトは、取引サイズ、流動性、プロバイダーの手数料によって変わります。MetaMaskはプライスインパクトをコントロールできません。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "プライスインパクト"
   },
@@ -2972,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "ハードウェアウォレットの接続"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "USBまたはQRコードを使用"
   },
   "connectAnyway": {
     "message": "それでも接続する"
@@ -4782,9 +4794,6 @@
   "importAWallet": {
     "message": "ウォレットをインポート"
   },
-  "importAWalletDescription": {
-    "message": "12、18、または24単語のシードフレーズを使用"
-  },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
   },
@@ -4803,9 +4812,6 @@
   "importAccountJsonLoading2": {
     "message": "申し訳ございません。今後高速化できるよう取り組みます。"
   },
-  "importAccountMsg": {
-    "message": "インポートされたアカウントは、MetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
-  },
   "importAccountWithSocialMsg": {
     "message": "インポートした秘密鍵はアカウントにバックアップされ、同じGoogleまたはAppleのログイン情報でサインインすると自動的に同期されます。"
   },
@@ -4815,9 +4821,6 @@
   },
   "importAnAccount": {
     "message": "アカウントのインポート"
-  },
-  "importAnAccountDescription": {
-    "message": "秘密鍵を使用"
   },
   "importNFT": {
     "message": "NFTをインポート"
@@ -4991,10 +4994,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "JSONファイル",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "アカウント名"
@@ -5427,8 +5426,14 @@
   "mfaErrorGeneric": {
     "message": "問題が発生しました。もう一度お試しください。"
   },
+  "mfaErrorInvalidCode": {
+    "message": "このコードは正しくありません。もう一度やり直してください"
+  },
   "mfaErrorInvalidPasskey": {
     "message": "パスキーを認証できませんでした。もう一度お試しください。"
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "このコードは正しくありません。もう一度やり直してください"
   },
   "mfaErrorLimitReached": {
     "message": "この認証方法の上限回数に達しました。"
@@ -5438,9 +5443,6 @@
   },
   "mfaErrorSignedOut": {
     "message": "続行するにはサインインしてください。"
-  },
-  "mfaErrorTooManyAttempts": {
-    "message": "試行回数が多すぎます。新しいコードをリクエストしてください。"
   },
   "mfaErrorTotpExpired": {
     "message": "時間がかかりすぎています。アプリから最新のコードを入力してください。"
@@ -5465,6 +5467,12 @@
   },
   "mfaFailureRetry": {
     "message": "もう一度お試しください"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "続行するには、サポートまでお問い合わせください。"
+  },
+  "mfaFailureSupportTitle": {
+    "message": "お客様の情報を確認できませんでした"
   },
   "mfaFailureTitle": {
     "message": "問題が発生しました"
@@ -5571,8 +5579,14 @@
   "mfaSettingsAddedOn": {
     "message": "$1に追加"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "認証アプリが追加されました"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "メール認証が削除されました"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "メールが認証されました"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "このメールアドレスは、このアカウントの唯一の認証方法です。削除する前に別の方法を追加してください。"
@@ -5631,8 +5645,17 @@
   "mfaTotpSetupContinue": {
     "message": "続行"
   },
+  "mfaTotpSetupCopied": {
+    "message": "セットアップキーがコピーされました"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "認証アプリでQRコードをスキャンするか、セットアップキーを入力してください。"
+  },
   "mfaTotpSetupKey": {
     "message": "セットアップキー"
+  },
+  "mfaTotpSetupManual": {
+    "message": "または手動で入力"
   },
   "mfaTotpSetupQrAlt": {
     "message": "MetaMaskを認証アプリに追加するためのQRコード"
@@ -5645,9 +5668,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "トランザクションの処理中に価格が変動した場合に、お客様のスリッページ設定に基づいて受け取る最低額です。これは流動性プロバイダーから提供される見積もりであり、最終的な金額は異なる場合があります。"
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "最低受取額"
   },
   "minimumReceivedLabel": {
     "message": "最低受取額"
@@ -6284,6 +6304,10 @@
   },
   "musdEducationGetStarted": {
     "message": "利用を開始する"
+  },
+  "musdEducationHeadline": {
+    "message": "ステーブルコインで\n$1をゲット",
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "後で"
@@ -7116,6 +7140,10 @@
   },
   "paidByMetaMask": {
     "message": "MetaMaskが負担"
+  },
+  "paidBySponsor": {
+    "message": "$1が負担",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "支払方法:"
@@ -8792,10 +8820,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "出金が送信されました"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "出金",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9572,9 +9596,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "アカウントの追加に失敗しました"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "最近取引を行われているため、招待を受けることはできません。"
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "お客様はすでに別のユーザーにより招待されています。"
