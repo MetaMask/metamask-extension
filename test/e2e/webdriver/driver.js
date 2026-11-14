@@ -1798,7 +1798,62 @@ class Driver {
    * @returns {Promise<void>} Promise that resolves when alert is found and verified.
    */
   async waitForBrowserAlert({ text, windowTitle, timeout = this.timeout }) {
-    const currentTitle = await this.driver.getTitle();
+    const verifyUnexpectedAlertError = async (error) => {
+      if (
+        error.name === 'UnexpectedAlertOpenError' ||
+        (error.message && error.message.includes('unexpected alert open')) ||
+        (error.message &&
+          error.message.includes('Unexpected alert dialog detected'))
+      ) {
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // Firefox doesn't include alert text in error message
+          try {
+            const alert = await this.driver.switchTo().alert();
+            const alertText = await alert.getText();
+            if (alertText !== text) {
+              throw new Error(
+                `Expected alert text to be "${text}", but got "${alertText}".`,
+              );
+            }
+            return true;
+          } catch (alertError) {
+            if (alertError.message?.startsWith('Expected alert text to be')) {
+              throw alertError;
+            }
+            console.warn(
+              `Could not access alert directly. Expected: "${text}". Error: ${alertError.message}`,
+            );
+            return true;
+          }
+        } else {
+          const alertTextMatch = error.message.match(
+            /Alert text\s*:\s*(.+?)(?:\s*\}|$)/u,
+          );
+          if (alertTextMatch) {
+            const alertText = alertTextMatch[1].trim();
+            if (alertText !== text) {
+              throw new Error(
+                `Expected alert text to be "${text}", but got "${alertText}".`,
+              );
+            }
+            return true;
+          }
+          throw new Error(
+            `Could not extract alert text from UnexpectedAlertOpenError. Full error message: "${error.message}"`,
+          );
+        }
+      }
+      throw error;
+    };
+
+    let currentTitle;
+    try {
+      currentTitle = await this.driver.getTitle();
+    } catch (error) {
+      await verifyUnexpectedAlertError(error);
+      return;
+    }
+
     if (currentTitle === windowTitle) {
       await this.driver.wait(until.alertIsPresent(), timeout);
       const alert = await this.driver.switchTo().alert();
@@ -1816,50 +1871,7 @@ class Driver {
           // If window switch succeeds, alert hasn't appeared yet - keep waiting
           return false;
         } catch (error) {
-          if (
-            error.name === 'UnexpectedAlertOpenError' ||
-            (error.message &&
-              error.message.includes('unexpected alert open')) ||
-            (error.message &&
-              error.message.includes('Unexpected alert dialog detected'))
-          ) {
-            if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-              // Firefox doesn't include alert text in error message
-              try {
-                const alert = await this.driver.switchTo().alert();
-                const alertText = await alert.getText();
-                if (alertText !== text) {
-                  throw new Error(
-                    `Expected alert text to be "${text}", but got "${alertText}".`,
-                  );
-                }
-                return true;
-              } catch (alertError) {
-                console.warn(
-                  `Could not access alert directly. Expected: "${text}". Error: ${alertError.message}`,
-                );
-                return true;
-              }
-            } else {
-              const alertTextMatch = error.message.match(
-                /Alert text\s*:\s*(.+?)(?:\s*\}|$)/u,
-              );
-              if (alertTextMatch) {
-                const alertText = alertTextMatch[1].trim();
-                if (alertText !== text) {
-                  throw new Error(
-                    `Expected alert text to be "${text}", but got "${alertText}".`,
-                  );
-                }
-                return true;
-              }
-              throw new Error(
-                `Could not extract alert text from UnexpectedAlertOpenError. Full error message: "${error.message}"`,
-              );
-            }
-          } else {
-            throw error;
-          }
+          return await verifyUnexpectedAlertError(error);
         }
       }, timeout);
     }
