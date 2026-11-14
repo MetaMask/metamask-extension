@@ -5,19 +5,35 @@ import type {
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
 import type { ConfigRegistryControllerGetStateAction } from '@metamask/config-registry-controller';
-import type { NetworkControllerNetworkAddedEvent } from '@metamask/network-controller';
+import type {
+  NetworkControllerGetStateAction,
+  NetworkControllerNetworkAddedEvent,
+} from '@metamask/network-controller';
 import type { NetworkEnablementControllerStateChangeEvent } from '@metamask/network-enablement-controller';
 import type { RootMessenger } from '../../lib/messenger';
+import type {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../controllers/onboarding';
+import type {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../controllers/preferences-controller';
 
 export type NetworkEnablementControllerInitMessengerActions =
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-  | ConfigRegistryControllerGetStateAction;
+  | ConfigRegistryControllerGetStateAction
+  | NetworkControllerGetStateAction
+  | OnboardingControllerGetStateAction
+  | PreferencesControllerGetStateAction;
 
 export type NetworkEnablementControllerInitMessengerEvents =
   | AccountsControllerSelectedAccountChangeEvent
   | AccountTreeControllerSelectedAccountGroupChangeEvent
   | NetworkControllerNetworkAddedEvent
-  | NetworkEnablementControllerStateChangeEvent;
+  | NetworkEnablementControllerStateChangeEvent
+  | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent;
 
 export type NetworkEnablementControllerInitMessenger = ReturnType<
   typeof getNetworkEnablementControllerInitMessenger
@@ -53,12 +69,17 @@ export function getNetworkEnablementControllerInitMessenger(
     actions: [
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'ConfigRegistryController:getState',
+      'NetworkController:getState',
+      'OnboardingController:getState',
+      'PreferencesController:getState',
     ],
     events: [
       'AccountsController:selectedAccountChange',
       'AccountTreeController:selectedAccountGroupChange',
       'NetworkController:networkAdded',
       'NetworkEnablementController:stateChange',
+      'OnboardingController:stateChange',
+      'PreferencesController:stateChange',
     ],
   });
 

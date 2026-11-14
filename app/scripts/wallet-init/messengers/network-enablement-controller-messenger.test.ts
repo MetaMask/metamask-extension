@@ -22,12 +22,17 @@ describe('getNetworkEnablementControllerInitMessenger', () => {
         actions: [
           'AccountTreeController:getAccountsFromSelectedAccountGroup',
           'ConfigRegistryController:getState',
+          'NetworkController:getState',
+          'OnboardingController:getState',
+          'PreferencesController:getState',
         ],
         events: [
           'AccountsController:selectedAccountChange',
           'AccountTreeController:selectedAccountGroupChange',
           'NetworkController:networkAdded',
           'NetworkEnablementController:stateChange',
+          'OnboardingController:stateChange',
+          'PreferencesController:stateChange',
         ],
       }),
     );
