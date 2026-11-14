@@ -23,7 +23,7 @@ export function buildInterstitialRoute(urlPathAndQuery: string): string {
 
 /**
  * Extracts the route from a deferred deep link.
- * This function parses the referring link URL and extracts the destination.
+ * This function parses the original deep-link URL and extracts the destination.
  * If the destination is an external URL (redirectTo) with a valid signature,
  * it returns the full URL.
  * If the destination is an internal route with a valid signature, it returns the path with query parameters.
@@ -39,7 +39,7 @@ export function buildInterstitialRoute(urlPathAndQuery: string): string {
 export async function getDeferredDeepLinkRoute(
   deferredDeepLink: DeferredDeepLink | null,
 ): Promise<DeferredDeepLinkRoute> {
-  if (!deferredDeepLink?.referringLink) {
+  if (!deferredDeepLink?.originalUrl) {
     return null;
   }
 
@@ -53,8 +53,8 @@ export async function getDeferredDeepLinkRoute(
   }
 
   try {
-    // Parse the referring link as a URL
-    const url = new URL(deferredDeepLink.referringLink);
+    // Parse the original deep-link URL
+    const url = new URL(deferredDeepLink.originalUrl);
 
     // Parse the deep link to extract the destination path and query parameters
     const parsed = await parse(url);

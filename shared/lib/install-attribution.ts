@@ -134,7 +134,8 @@ function parseDeferredDeepLinkCookieValue(
 
     return {
       createdAt: cookieData.createdAt,
-      referringLink: cookieData.referringLink,
+      // Preserve the website cookie format at this external boundary.
+      originalUrl: cookieData.referringLink,
     };
   } catch (error) {
     log.error('Failed to parse deferred_deeplink cookie.', error);

@@ -674,7 +674,7 @@ describe('Onboarding Create Password', () => {
           firstTimeFlowType: FirstTimeFlowType.create,
           deferredDeepLink: {
             createdAt: 1765465337256,
-            referringLink:
+            originalUrl:
               'https://link.metamask.io/swap?utm_source=newsletter&utm_campaign=spring-sale&utm_medium=email&foo=bar',
           },
         },
@@ -891,7 +891,7 @@ describe('Onboarding Create Password', () => {
           ...importMockState.metamask,
           deferredDeepLink: {
             createdAt: 1765465337256,
-            referringLink:
+            originalUrl:
               'https://link.metamask.io/swap?utm_source=partner&utm_content=hero-banner&utm_term=wallet&foo=bar',
           },
         },

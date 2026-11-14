@@ -140,7 +140,7 @@ describe('install-lifecycle', () => {
         const deps = createDeps();
         const deferredDeepLink = {
           createdAt: 1,
-          referringLink: 'https://metamask.io/deeplink',
+          originalUrl: 'https://metamask.io/deeplink',
         };
         getInstallAttributionMock.mockResolvedValue({
           deferredDeepLink,
@@ -159,7 +159,7 @@ describe('install-lifecycle', () => {
         expect(trackedEvent.name).toBe(MetaMetricsEventName.AppInstalled);
         expect(trackedEvent.properties?.install_source).toBe('deeplink');
         expect(trackedEvent.properties?.deeplink_path).toBe(
-          deferredDeepLink.referringLink,
+          deferredDeepLink.originalUrl,
         );
       });
 

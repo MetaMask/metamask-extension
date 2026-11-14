@@ -408,7 +408,7 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Navigates to a route using deferred deep link after onboarding completes', async function () {
-    const referringLink =
+    const originalUrl =
       'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=KYoYO9beWAlLIT6GUATcHj98hoDiO9h3UZC76ZcMfreKsJcFtCp_vJCWqa9s8-6aO4FLPgoMI02k03t2WcL5bA';
     const expectedPath = '/cross-chain/swaps/';
 
@@ -418,7 +418,7 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),
@@ -461,7 +461,7 @@ describe('MetaMask onboarding', function () {
     const deepLinkPublicKey = bytesToB64(
       await crypto.subtle.exportKey('raw', keyPair.publicKey),
     );
-    const referringLink = await prepareDeepLinkUrl({
+    const originalUrl = await prepareDeepLinkUrl({
       route: '/card-onboarding?amount=100',
       signed: 'signed with sig_params',
       privateKey: keyPair.privateKey,
@@ -474,7 +474,7 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),
@@ -559,7 +559,7 @@ describe('MetaMask onboarding', function () {
 
   it('Shows interstitial warning page for unsigned deferred deep link after onboarding completes', async function () {
     // This deep link is unsigned (no sig parameter)
-    const referringLink =
+    const originalUrl =
       'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff';
     const expectedInterstitialPath = '/link';
 
@@ -569,7 +569,7 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),
@@ -615,7 +615,7 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Shows interstitial warning page for deferred deep link with invalid signature after onboarding completes', async function () {
-    const referringLink =
+    const originalUrl =
       'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=aW52YWxpZC1zaWduYXR1cmU=';
     const expectedInterstitialPath = '/link';
 
@@ -625,7 +625,7 @@ describe('MetaMask onboarding', function () {
           .withAppStateController({
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink,
+              originalUrl,
             },
           })
           .build(),

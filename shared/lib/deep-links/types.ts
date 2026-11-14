@@ -12,9 +12,9 @@ export type DeferredDeepLink = {
   createdAt: number;
 
   /**
-   * The referring link URL to redirect to after onboarding.
+   * The original deep-link URL received before installation or onboarding.
    */
-  referringLink: string;
+  originalUrl: string;
 };
 
 /**

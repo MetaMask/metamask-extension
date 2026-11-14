@@ -58,7 +58,10 @@ describe('install attribution', () => {
         url: 'https://metamask.io/',
       });
       expect(result).toStrictEqual({
-        deferredDeepLink,
+        deferredDeepLink: {
+          createdAt: 1234567890,
+          originalUrl: 'https://link.metamask.io/deep-link',
+        },
         traits: {
           [MetaMetricsUserTrait.CookieId]: gaCookieValue,
           [MetaMetricsUserTrait.GaClientId]: '12345.67890',
@@ -96,7 +99,10 @@ describe('install attribution', () => {
       );
 
       await expect(getInstallAttribution()).resolves.toStrictEqual({
-        deferredDeepLink: comDeferredDeepLink,
+        deferredDeepLink: {
+          createdAt: 1234567890,
+          originalUrl: 'https://link.metamask.io/com',
+        },
         traits: {
           [MetaMetricsUserTrait.CookieId]: 'GA1.1.111.222',
           [MetaMetricsUserTrait.GaClientId]: '111.222',
@@ -124,7 +130,7 @@ describe('install attribution', () => {
       await expect(getInstallAttribution()).resolves.toStrictEqual({
         deferredDeepLink: {
           createdAt: 1234567890,
-          referringLink: 'https://link.metamask.io/io',
+          originalUrl: 'https://link.metamask.io/io',
         },
         traits: {
           [MetaMetricsUserTrait.CookieId]: 'GA1.1.111.222',
