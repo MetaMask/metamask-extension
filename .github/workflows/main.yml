@@ -83,6 +83,14 @@ jobs:
           cache-node-modules: true
           skip-allow-scripts: true
 
+      # Keep a single checksum-verified fallback cache in the default branch's
+      # cache scope. Consumer jobs restore it only after a direct download fails.
+      - name: Maintain Anvil fallback cache
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'MetaMask/metamask-extension' }}
+        uses: ./.github/actions/install-anvil
+        with:
+          maintain-fallback-cache: true
+
   lint-workflows:
     name: Lint workflows
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
