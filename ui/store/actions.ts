@@ -2131,8 +2131,8 @@ export async function checkFirstTimeInteraction(request: {
   to: string;
   chainId: number;
 }): Promise<boolean | undefined> {
-  return submitRequestToBackground<boolean | undefined>(
-    'checkFirstTimeInteraction',
+  return submitRequestToBackground(
+    'LegacyBackgroundApiService:checkFirstTimeInteraction',
     [request],
   );
 }
