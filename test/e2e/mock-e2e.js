@@ -34,8 +34,15 @@ const {
 const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
+const {
+  API_MOCKS,
+  SPOT_PRICE_FALLBACK,
+  contentfulServedAssets,
+  withPins,
+} = require('./mock-response-data/api-mocks');
 
 const DEFAULT_ETH_USD_PRICE = 3010;
+const SPOT_PRICES = API_MOCKS['price-v3-spot'];
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -601,7 +608,10 @@ function getWellKnownTokenAssetMetadata(assetIds) {
     }
   }
 
-  return results;
+  return results.map((token) => ({
+    ...API_MOCKS['token-assets'][0],
+    ...token,
+  }));
 }
 
 /**
@@ -813,7 +823,7 @@ async function setupMocking(
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
-      json: { data: { version: '0', timestamp: 0, chains: [] } },
+      json: API_MOCKS['client-config-networks'],
     }));
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/config/events-config')
@@ -821,8 +831,10 @@ async function setupMocking(
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
+      // An empty map, so every event keeps its default purpose. The synced
+      // fixture lists live event names with placeholder purposes.
       json: {
-        data: { schemaVersion: '0', version: '0', timestamp: 0, events: {} },
+        data: { ...API_MOCKS['client-config-events'].data, events: {} },
       },
     }));
 
@@ -899,27 +911,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          auth: { message: '' },
-          chains: {
-            '0x8f': {
-              autoDepositDelegate: '0x0000000000000000000000000000000000000001',
-              protocol: {
-                vedaProtocol: {
-                  supportedTokens: [
-                    {
-                      tokenAddress:
-                        '0x00000000000000000000000000000000000000aa',
-                      tokenDecimals: 6,
-                    },
-                  ],
-                  adapterAddress: '0x0000000000000000000000000000000000000002',
-                  intentTypes: ['cash-deposit', 'cash-withdrawal'],
-                },
-              },
-            },
-          },
-        },
+        json: API_MOCKS.chomp,
       };
     });
 
@@ -1040,25 +1032,17 @@ async function setupMocking(
     };
   });
 
+  // 4byte, swaps feature flags, the token list, and bridge token lists are
+  // served as the raw fixture. `withPins` replaces an array outright, so it
+  // cannot overlay fields on those lists, and these handlers have no asserted
+  // scalar to pin. Specs that need a specific signature, flag, or token
+  // install their own mock.
   await server
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [
-            {
-              id: 1,
-              created_at: null,
-              text_signature: 'deposit()',
-              hex_signature: null,
-              bytes_signature: null,
-            },
-          ],
-        },
+        json: API_MOCKS['4byte-signatures'],
       };
     });
 
@@ -1069,6 +1053,7 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
+          ...API_MOCKS['gas-prices'],
           SafeGasPrice: '1',
           ProposeGasPrice: '2',
           FastGasPrice: '3',
@@ -1083,12 +1068,11 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
+          ...API_MOCKS['swaps-token'],
           symbol: 'AGLT',
           type: 'erc20',
           decimals: '18',
           address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
-          occurences: 1,
-          aggregators: ['dynamic'],
         },
       };
     });
@@ -1098,7 +1082,10 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_SUGGESTED_GAS_FEES,
+        json: withPins(
+          API_MOCKS['suggested-gas-fees'],
+          MOCK_SUGGESTED_GAS_FEES,
+        ),
       };
     });
 
@@ -1119,43 +1106,23 @@ async function setupMocking(
   };
   await server
     .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
-    .thenJson(200, txSentinelNetworksRegistry);
+    .thenJson(
+      200,
+      withPins(API_MOCKS['tx-sentinel-networks'], txSentinelNetworksRegistry),
+    );
   await server
     .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
-    .thenJson(200, txSentinelNetworksRegistry[1]);
+    .thenJson(
+      200,
+      withPins(API_MOCKS['tx-sentinel-network'], txSentinelNetworksRegistry[1]),
+    );
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          ethereum: {
-            fallbackToV1: false,
-            mobileActive: true,
-            extensionActive: true,
-          },
-          bsc: {
-            fallbackToV1: false,
-            mobileActive: true,
-            extensionActive: true,
-          },
-          polygon: {
-            fallbackToV1: false,
-            mobileActive: true,
-            extensionActive: true,
-          },
-          avalanche: {
-            fallbackToV1: false,
-            mobileActive: true,
-            extensionActive: true,
-          },
-          smartTransactions: {
-            mobileActive: false,
-            extensionActive: true,
-          },
-          updated_at: '2022-03-17T15:54:00.360Z',
-        },
+        json: API_MOCKS['swaps-feature-flags'],
       };
     });
 
@@ -1182,60 +1149,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-            symbol: 'BAT',
-            decimals: 18,
-            name: 'Basic Attention Token',
-            iconUrl:
-              'https://assets.coingecko.com/coins/images/677/thumb/basic-attention-token.png?1547034427',
-            aggregators: [
-              'aave',
-              'bancor',
-              'coinGecko',
-              'oneInch',
-              'paraswap',
-              'pmm',
-              'zapper',
-              'zerion',
-              'zeroEx',
-            ],
-            occurrences: 9,
-          },
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            symbol: 'DAI',
-            decimals: 18,
-            name: 'Dai Stablecoin',
-            iconUrl:
-              'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg',
-            type: 'erc20',
-            aggregators: [
-              'metamask',
-              'aave',
-              'bancor',
-              'cmc',
-              'cryptocom',
-              'coinGecko',
-              'oneInch',
-              'pmm',
-              'sushiswap',
-              'zerion',
-              'lifi',
-              'socket',
-              'squid',
-              'openswap',
-              'sonarwatch',
-              'uniswapLabs',
-              'coinmarketcap',
-            ],
-            occurrences: 17,
-            erc20Permit: true,
-            fees: { '0xb0da5965d43369968574d399dbe6374683773a65': 0 },
-            storage: { balance: 2 },
-          },
-        ],
+        json: API_MOCKS['token-list'],
       };
     });
 
@@ -1244,18 +1158,7 @@ async function setupMocking(
   await server
     .forGet('https://token.api.cx.metamask.io/v1/suggestedOccurrenceFloors')
     .always()
-    .thenJson(200, {
-      1: 3,
-      143: 1,
-      204: 1,
-      232: 1,
-      690: 1,
-      1329: 1,
-      4663: 1,
-      10143: 1,
-      59144: 1,
-      98866: 1,
-    });
+    .thenJson(200, API_MOCKS['token-occurrence-floors']);
 
   const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
   await server
@@ -1285,24 +1188,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'ETH',
-          },
-          {
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            symbol: 'USDC',
-          },
-          {
-            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            symbol: 'USDT',
-          },
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            symbol: 'DAI',
-          },
-        ],
+        json: API_MOCKS['bridge-top-assets'],
       };
     });
 
@@ -1321,48 +1207,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            chainId: 1,
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'ETH',
-            name: 'Ethereum',
-            decimals: 18,
-            icon: 'https://media.socket.tech/tokens/all/ETH',
-            logoURI: 'https://media.socket.tech/tokens/all/ETH',
-            chainAgnosticId: null,
-          },
-          {
-            chainId: 1,
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            symbol: 'USDC',
-            name: 'USD Coin',
-            decimals: 6,
-            icon: 'https://media.socket.tech/tokens/all/USDC',
-            logoURI: 'https://media.socket.tech/tokens/all/USDC',
-            chainAgnosticId: null,
-          },
-          {
-            chainId: 1,
-            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            symbol: 'USDT',
-            name: 'Tether USD',
-            decimals: 6,
-            icon: 'https://media.socket.tech/tokens/all/USDT',
-            logoURI: 'https://media.socket.tech/tokens/all/USDT',
-            chainAgnosticId: null,
-          },
-          {
-            chainId: 1,
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            symbol: 'DAI',
-            name: 'Dai Stablecoin',
-            decimals: 18,
-            icon: 'https://media.socket.tech/tokens/all/DAI',
-            logoURI: 'https://media.socket.tech/tokens/all/DAI',
-            chainAgnosticId: null,
-          },
-        ],
+        json: API_MOCKS['bridge-tokens'],
       };
     });
 
@@ -1372,24 +1217,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'ETH',
-          },
-          {
-            address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-            symbol: 'USDC',
-          },
-          {
-            address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
-            symbol: 'USDT',
-          },
-          {
-            address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
-            symbol: 'WETH',
-          },
-        ],
+        json: API_MOCKS['bridge-top-assets-linea'],
       };
     });
 
@@ -1400,7 +1228,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: JSON.parse(AGGREGATOR_METADATA),
+        json: API_MOCKS['bridge-aggregator-metadata-linea'],
       };
     });
 
@@ -1410,48 +1238,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            chainId: 59144,
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'ETH',
-            name: 'Ethereum',
-            decimals: 18,
-            icon: 'https://media.socket.tech/tokens/all/ETH',
-            logoURI: 'https://media.socket.tech/tokens/all/ETH',
-            chainAgnosticId: null,
-          },
-          {
-            chainId: 59144,
-            address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-            symbol: 'USDC',
-            name: 'USD Coin',
-            decimals: 6,
-            icon: 'https://media.socket.tech/tokens/all/USDC',
-            logoURI: 'https://media.socket.tech/tokens/all/USDC',
-            chainAgnosticId: null,
-          },
-          {
-            chainId: 59144,
-            address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
-            symbol: 'USDT',
-            name: 'Tether USD',
-            decimals: 6,
-            icon: 'https://media.socket.tech/tokens/all/USDT',
-            logoURI: 'https://media.socket.tech/tokens/all/USDT',
-            chainAgnosticId: null,
-          },
-          {
-            chainId: 59144,
-            address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
-            symbol: 'WETH',
-            name: 'Wrapped Ether',
-            decimals: 18,
-            icon: 'https://media.socket.tech/tokens/all/WETH',
-            logoURI: 'https://media.socket.tech/tokens/all/WETH',
-            chainAgnosticId: null,
-          },
-        ],
+        json: API_MOCKS['bridge-tokens-linea'],
       };
     });
 
@@ -1460,82 +1247,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-            type: 'native',
-            iconUrl:
-              'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
-            coingeckoId: 'ethereum',
-            address: '0x0000000000000000000000000000000000000000',
-            occurrences: 100,
-            aggregators: [],
-          },
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            symbol: 'DAI',
-            decimals: 18,
-            name: 'Dai Stablecoin',
-            iconUrl:
-              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
-            type: 'erc20',
-            aggregators: [
-              'aave',
-              'bancor',
-              'cmc',
-              'cryptocom',
-              'coinGecko',
-              'oneInch',
-              'pmm',
-              'zerion',
-              'lifi',
-            ],
-            occurrences: 9,
-            fees: {
-              '0xb0da5965d43369968574d399dbe6374683773a65': 0,
-            },
-            storage: {
-              balance: 2,
-            },
-          },
-          {
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            symbol: 'USDC',
-            decimals: 6,
-            name: 'USD Coin',
-            iconUrl:
-              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-            type: 'erc20',
-            aggregators: [
-              'aave',
-              'bancor',
-              'cryptocom',
-              'coinGecko',
-              'oneInch',
-              'pmm',
-              'zerion',
-              'lifi',
-            ],
-            occurrences: 8,
-            fees: {},
-            storage: {
-              balance: 9,
-            },
-          },
-          {
-            address: '0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f',
-            symbol: 'INUINU',
-            decimals: 18,
-            name: 'Inu Inu',
-            iconUrl:
-              'https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596',
-            type: 'erc20',
-            aggregators: ['coinGecko'],
-            occurrences: 1,
-          },
-        ],
+        json: API_MOCKS['swaps-tokens'],
       };
     });
 
@@ -1544,24 +1256,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            address: '0x0000000000000000000000000000000000000000',
-            symbol: 'ETH',
-          },
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            symbol: 'DAI',
-          },
-          {
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            symbol: 'USDC',
-          },
-          {
-            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            symbol: 'USDT',
-          },
-        ],
+        json: API_MOCKS['swaps-top-assets'],
       };
     });
 
@@ -1570,7 +1265,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {},
+        json: API_MOCKS['token-metadata'],
       };
     });
 
@@ -1600,6 +1295,7 @@ async function setupMocking(
         statusCode: 200,
         json: {
           'eip155:1/slip44:60': {
+            ...SPOT_PRICES['eip155:1/slip44:60'],
             id: 'ethereum',
             price: DEFAULT_ETH_USD_PRICE,
             marketCap: 382623505141,
@@ -1612,6 +1308,7 @@ async function setupMocking(
   // Sepolia native — TokenDataSource / Price API request either slip44:60 or
   // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
   const sepoliaSpotPrice = {
+    ...SPOT_PRICES['eip155:1/slip44:60'],
     id: 'ethereum',
     price: DEFAULT_ETH_USD_PRICE,
     marketCap: 382623505141,
@@ -1660,6 +1357,7 @@ async function setupMocking(
       statusCode: 200,
       json: {
         'eip155:1337/slip44:1': {
+          ...SPOT_PRICES['eip155:1/slip44:60'],
           id: 'ethereum',
           price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
@@ -1680,6 +1378,7 @@ async function setupMocking(
       statusCode: 200,
       json: {
         'eip155:143/slip44:268435779': {
+          ...SPOT_PRICES['eip155:143/slip44:268435779'],
           id: 'monad',
           price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
@@ -1700,10 +1399,7 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: Object.fromEntries(
-          assetIds.map((assetId) => [
-            assetId,
-            { price: 0, marketCap: 0, pricePercentChange1d: 0 },
-          ]),
+          assetIds.map((assetId) => [assetId, SPOT_PRICE_FALLBACK]),
         ),
       };
     });
@@ -1712,98 +1408,14 @@ async function setupMocking(
   // `fullSupport` and `partialSupport`; anything else (such as the empty-200
   // catch-all this used to land on) makes it silently fall back to its
   // hardcoded list without caching, so every later price fetch re-requests the
-  // endpoint. The lists below are that same hardcoded fallback
+  // endpoint. The fixture lists are that same hardcoded fallback
   // (`SPOT_PRICES_SUPPORT_INFO` in @metamask/assets-controllers), so supported
   // chains are unchanged and only the repeated requests go away.
-  const spotPricesSupportedChains = [
-    'eip155:1',
-    'eip155:10',
-    'eip155:25',
-    'eip155:30',
-    'eip155:42',
-    'eip155:50',
-    'eip155:56',
-    'eip155:57',
-    'eip155:82',
-    'eip155:88',
-    'eip155:100',
-    'eip155:106',
-    'eip155:122',
-    'eip155:128',
-    'eip155:137',
-    'eip155:143',
-    'eip155:146',
-    'eip155:196',
-    'eip155:232',
-    'eip155:250',
-    'eip155:252',
-    'eip155:288',
-    'eip155:321',
-    'eip155:324',
-    'eip155:336',
-    'eip155:361',
-    'eip155:747',
-    'eip155:988',
-    'eip155:999',
-    'eip155:1088',
-    'eip155:1101',
-    'eip155:1284',
-    'eip155:1285',
-    'eip155:1329',
-    'eip155:1776',
-    'eip155:1868',
-    'eip155:2525',
-    'eip155:2741',
-    'eip155:4217',
-    'eip155:4326',
-    'eip155:5000',
-    'eip155:5031',
-    'eip155:5042',
-    'eip155:7000',
-    'eip155:8453',
-    'eip155:4663',
-    'eip155:9745',
-    'eip155:10000',
-    'eip155:33139',
-    'eip155:41923',
-    'eip155:42161',
-    'eip155:42220',
-    'eip155:42262',
-    'eip155:42431',
-    'eip155:42793',
-    'eip155:43111',
-    'eip155:43114',
-    'eip155:57073',
-    'eip155:59144',
-    'eip155:60808',
-    'eip155:68414',
-    'eip155:73115',
-    'eip155:80094',
-    'eip155:81457',
-    'eip155:88888',
-    'eip155:97741',
-    'eip155:98866',
-    'eip155:167000',
-    'eip155:333999',
-    'eip155:534352',
-    'eip155:747474',
-    'eip155:984122',
-    'eip155:1440000',
-    'eip155:1313161554',
-    'eip155:1666600000',
-    'eip155:16661',
-  ];
   await server
     .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
     .asPriority(RulePriority.FALLBACK)
     .always()
-    .thenJson(200, {
-      fullSupport: spotPricesSupportedChains.slice(0, 11),
-      partialSupport: {
-        spotPricesV2: spotPricesSupportedChains,
-        spotPricesV3: spotPricesSupportedChains,
-      },
-    });
+    .thenJson(200, API_MOCKS['price-supported-networks']);
 
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
@@ -1818,25 +1430,9 @@ async function setupMocking(
       statusCode: 200,
       json: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          ...SPOT_PRICES['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
           id: 'solana',
           price: 112.87,
-          marketCap: 58245152246,
-          allTimeHigh: 293.31,
-          allTimeLow: 0.500801,
-          totalVolume: 6991628445,
-          high1d: 119.85,
-          low1d: 105.87,
-          circulatingSupply: 515615042.5147497,
-          dilutedMarketCap: 67566552200,
-          marketCapPercentChange1d: 6.43259,
-          priceChange1d: 6.91,
-          pricePercentChange1h: -0.10747351712871725,
-          pricePercentChange1d: 6.517062579985171,
-          pricePercentChange7d: -1.2651850097746231,
-          pricePercentChange14d: -17.42211401987578,
-          pricePercentChange30d: -7.317068682545842,
-          pricePercentChange200d: -22.09390252653303,
-          pricePercentChange1y: -31.856951873653344,
         },
       },
     }));
@@ -1852,25 +1448,9 @@ async function setupMocking(
       statusCode: 200,
       json: {
         'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          ...SPOT_PRICES['bip122:000000000019d6689c085ae165831e93/slip44:0'],
           id: 'bitcoin',
           price: DEFAULT_BTC_CONVERSION_RATE,
-          marketCap: 1910000000000,
-          allTimeHigh: 124000,
-          allTimeLow: 67.81,
-          totalVolume: 45000000000,
-          high1d: 96500,
-          low1d: 94800,
-          circulatingSupply: 19800000,
-          dilutedMarketCap: 1910000000000,
-          marketCapPercentChange1d: 0.5,
-          priceChange1d: 120,
-          pricePercentChange1h: 0.01,
-          pricePercentChange1d: 0.12,
-          pricePercentChange7d: 2.1,
-          pricePercentChange14d: -1.2,
-          pricePercentChange30d: 5.3,
-          pricePercentChange200d: 40,
-          pricePercentChange1y: 85,
         },
       },
     }));
@@ -1881,25 +1461,9 @@ async function setupMocking(
     .thenCallback(() => ({
       statusCode: 200,
       json: {
+        ...API_MOCKS['price-v1-btc'],
         id: 'bitcoin',
         price: DEFAULT_BTC_CONVERSION_RATE,
-        marketCap: 1836592437357,
-        allTimeHigh: 126080,
-        allTimeLow: 67.81,
-        totalVolume: 45216146754,
-        high1d: 92435,
-        low1d: 90129,
-        circulatingSupply: 19975290,
-        dilutedMarketCap: 1836592437357,
-        marketCapPercentChange1d: 1.72888,
-        priceChange1d: 1535.29,
-        pricePercentChange1h: -0.09840133404969334,
-        pricePercentChange1d: 1.6980683447716627,
-        pricePercentChange7d: -1.6285705945180806,
-        pricePercentChange14d: 4.795747124043681,
-        pricePercentChange30d: 2.1388997840239408,
-        pricePercentChange200d: -14.088182161660676,
-        pricePercentChange1y: -1.0484081200296924,
       },
     }));
 
@@ -2049,12 +1613,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
-          partialSupport: {
-            balances: [42220, 43114],
-          },
-        },
+        json: API_MOCKS['accounts-supported-networks-v1'],
       };
     });
 
@@ -2091,77 +1650,15 @@ async function setupMocking(
   // v2 supported networks — mocked globally so all tests work.
   // Rpc token detection calls token.api; TokenDataSource calls tokens.api.
   // Both responses use the same chain list.
-  const tokenSupportedNetworks = {
-    fullSupport: [
-      'eip155:1',
-      'eip155:10',
-      'eip155:25',
-      'eip155:56',
-      'eip155:100',
-      'eip155:137',
-      'eip155:143',
-      'eip155:250',
-      'eip155:324',
-      'eip155:1101',
-      'eip155:1284',
-      'eip155:1285',
-      'eip155:1329',
-      'eip155:8453',
-      'eip155:42161',
-      'eip155:42220',
-      'eip155:43114',
-      'eip155:59144',
-      'eip155:1313161554',
-      'eip155:1666600000',
-      'eip155:11297108109',
-      'eip155:13371',
-      'eip155:534352',
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      'tron:728126428',
-      'stellar:pubnet',
-      'eip155:698',
-      'eip155:16507',
-      'eip155:41923',
-      'eip155:747474',
-      'eip155:80094',
-      'eip155:33139',
-      'eip155:2741',
-      'eip155:1868',
-      'eip155:166',
-      'eip155:1440000',
-      'eip155:252',
-      'eip155:43111',
-      'eip155:50',
-      'eip155:42',
-      'eip155:9745',
-      'eip155:999',
-      'eip155:1776',
-      'eip155:4326',
-      'eip155:196',
-      'eip155:68414',
-      'eip155:42793',
-      'eip155:60808',
-      'eip155:30',
-      'bip122:000000000019d6689c085ae165831e93',
-      'eip155:88888',
-      'eip155:988',
-      'eip155:42431',
-      'eip155:4217',
-      'eip155:5000',
-      'eip155:1337',
-    ],
-    partialSupport: ['solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
-  };
-
   await server
     .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, tokenSupportedNetworks);
+    .thenJson(200, API_MOCKS['token-supported-networks']);
 
   await server
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, tokenSupportedNetworks);
+    .thenJson(200, API_MOCKS['tokens-supported-networks']);
 
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
   await server
@@ -2170,19 +1667,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          fullSupport: [
-            'eip155:1',
-            'eip155:137',
-            'eip155:56',
-            'eip155:59144',
-            'eip155:8453',
-            'eip155:10',
-            'eip155:42161',
-            'eip155:534352',
-          ],
-          partialSupport: ['eip155:42220', 'eip155:43114'],
-        },
+        json: API_MOCKS['accounts-supported-networks-v2'],
       };
     });
 
@@ -2194,12 +1679,7 @@ async function setupMocking(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        Response: {
-          apy: 0.045,
-          timestamp: '2026-01-01T00:00:00Z',
-        },
-      },
+      json: API_MOCKS['sevenseas-performance'],
     }));
 
   // Money API: positions for a Money account, fetched as the API leg of
@@ -2213,21 +1693,7 @@ async function setupMocking(
       const address = url.pathname.split('/').pop();
       return {
         statusCode: 200,
-        json: {
-          address,
-          as_of_block: 1,
-          as_of_timestamp: '2026-01-01T00:00:00Z',
-          data_freshness: 'live',
-          indexer_lag_seconds: 0,
-          balance: {
-            musd_balance: '0',
-            vmusd_value_in_musd: '0',
-            total_balance: '0',
-            by_asset: [],
-            total_balance_usd: '0',
-          },
-          positions: [],
-        },
+        json: { ...API_MOCKS['money-positions'], address },
       };
     });
 
@@ -2291,9 +1757,14 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
+          ...API_MOCKS['accounts-transactions'],
           data: [],
           unprocessedAccounts: [],
-          pageInfo: { hasNextPage: false, count: 0 },
+          pageInfo: {
+            ...API_MOCKS['accounts-transactions'].pageInfo,
+            hasNextPage: false,
+            count: 0,
+          },
         },
       };
     });
@@ -2367,7 +1838,12 @@ async function setupMocking(
     await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
       return {
         statusCode: 200,
-        json: { country: 'US', region: 'TX', timezone: 'America/Chicago' },
+        json: {
+          ...API_MOCKS['geolocation-v2'],
+          country: 'US',
+          region: 'TX',
+          timezone: 'America/Chicago',
+        },
       };
     });
   }
@@ -2383,7 +1859,10 @@ async function setupMocking(
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: [],
+          // The fixture keeps one placeholder country so its type is checked.
+          json: API_MOCKS['ramps-countries'].filter(
+            (country) => country.isoCode,
+          ),
         };
       });
   }
@@ -2815,11 +2294,17 @@ async function setupMocking(
       content_type: 'promotionalBanner',
     })
     .thenCallback(() => {
+      // The fixture keeps one placeholder banner and asset so their types are
+      // checked. No banner is shown.
       return {
         statusCode: 200,
         json: {
-          items: [],
-          includes: { Asset: [] },
+          ...API_MOCKS.contentful,
+          items: API_MOCKS.contentful.items.filter((item) => item.sys.id),
+          includes: {
+            ...API_MOCKS.contentful.includes,
+            Asset: contentfulServedAssets(API_MOCKS.contentful),
+          },
         },
       };
     });

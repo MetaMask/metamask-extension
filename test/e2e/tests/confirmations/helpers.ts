@@ -15,6 +15,7 @@ import {
   shapeV6AccountsApiBalances,
 } from '../../helpers/accounts-api-v6-balances';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import type { DefiPositionsResponse } from '../../mock-response-data/api-mocks';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -950,7 +951,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
                 ],
               },
             ],
-          },
+          } satisfies DefiPositionsResponse,
         };
       }),
     await mockServer
@@ -996,7 +997,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
         return {
           ok: true,
           statusCode: 200,
-          json: { data: [] },
+          json: { data: [] } satisfies DefiPositionsResponse,
         };
       }),
     await mockServer

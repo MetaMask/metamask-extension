@@ -87,6 +87,7 @@ module.exports = {
     '<rootDir>/development/**/*.test.(js|ts|tsx|mts)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
+    '<rootDir>/test/e2e/mock-response-data/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',

@@ -23,63 +23,88 @@
       "wss://eth.drpc.org",
       "https://api.securerpc.com/v1"
     ],
-    "features": [{ "name": "EIP155" }, { "name": "EIP1559" }],
+    "features": [
+      {
+        "name": "EIP155"
+      },
+      {
+        "name": "EIP1559"
+      }
+    ],
     "faucets": [],
-    "nativeCurrency": { "name": "Ether", "symbol": "ETH", "decimals": 18 },
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
     "infoURL": "https://ethereum.org",
     "shortName": "eth",
     "chainId": 1,
     "networkId": 1,
     "slip44": 60,
-    "ens": { "registry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e" },
+    "ens": {
+      "registry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+    },
     "explorers": [
       {
         "name": "etherscan",
         "url": "https://etherscan.io",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       },
       {
         "name": "blockscout",
         "url": "https://eth.blockscout.com",
-        "icon": "blockscout",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       },
       {
         "name": "dexguru",
         "url": "https://ethereum.dex.guru",
-        "icon": "dexguru",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       },
       {
         "name": "Routescan",
         "url": "https://ethereum.routescan.io",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
-    ]
+    ],
+    "title": ""
   },
   {
     "name": "Orderly Mainnet",
     "chain": "ETH",
+    "icon": "orderly",
     "rpc": ["https://rpc.orderly.network"],
     "faucets": [],
-    "nativeCurrency": { "name": "Ether", "symbol": "ETH", "decimals": 18 },
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
     "infoURL": "https://orderly.network/",
     "shortName": "orderly",
     "chainId": 291,
     "networkId": 291,
-    "icon": "orderly",
+    "ens": {
+      "registry": ""
+    },
     "explorers": [
       {
         "name": "orderlyscout",
         "url": "https://explorer.orderly.network",
-        "icon": "blockscout",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
-    ]
+    ],
+    "title": ""
   },
   {
     "name": "PrimusChain mainnet",
     "chain": "PC",
+    "icon": "",
     "rpc": ["https://ethnode.primusmoney.com/mainnet"],
     "faucets": [],
     "nativeCurrency": {
@@ -90,50 +115,80 @@
     "infoURL": "https://primusmoney.com",
     "shortName": "primuschain",
     "chainId": 78,
-    "networkId": 78
+    "networkId": 78,
+    "ens": {
+      "registry": ""
+    },
+    "explorers": [
+      {
+        "name": "",
+        "url": "",
+        "standard": "",
+        "icon": ""
+      }
+    ],
+    "title": ""
   },
   {
     "name": "Camino C-Chain",
     "chain": "CAM",
+    "icon": "camino",
     "rpc": ["https://api.camino.network/ext/bc/C/rpc"],
     "faucets": [],
-    "nativeCurrency": { "name": "Camino", "symbol": "CAM", "decimals": 18 },
+    "nativeCurrency": {
+      "name": "Camino",
+      "symbol": "CAM",
+      "decimals": 18
+    },
     "infoURL": "https://camino.network/",
     "shortName": "Camino",
     "chainId": 500,
     "networkId": 1000,
-    "icon": "camino",
+    "ens": {
+      "registry": ""
+    },
     "explorers": [
       {
         "name": "blockexplorer",
         "url": "https://suite.camino.network/explorer",
-        "standard": "none"
+        "standard": "none",
+        "icon": ""
       }
-    ]
+    ],
+    "title": ""
   },
   {
     "name": "Elysium Testnet",
-    "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged",
     "chain": "Atlantis",
+    "icon": "",
     "rpc": ["https://rpc.atlantischain.network"],
     "faucets": ["https://faucet.atlantischain.network"],
-    "nativeCurrency": { "name": "ELY", "symbol": "ELY", "decimals": 18 },
+    "nativeCurrency": {
+      "name": "ELY",
+      "symbol": "ELY",
+      "decimals": 18
+    },
     "infoURL": "https://elysiumchain.tech",
     "shortName": "ATL",
     "chainId": 1338,
     "networkId": 1338,
+    "ens": {
+      "registry": ""
+    },
     "explorers": [
       {
         "name": "Atlantis explorer",
         "url": "https://blockscout.atlantischain.network",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
-    ]
+    ],
+    "title": "An L1, carbon-neutral, tree-planting, metaverse dedicated blockchain created by VulcanForged"
   },
   {
     "name": "Geth Testnet",
-    "title": "Go Ethereum (Geth) Private Testnet",
     "chain": "ETH",
+    "icon": "",
     "rpc": ["http://127.0.0.1:8545"],
     "faucets": [],
     "nativeCurrency": {
@@ -145,12 +200,24 @@
     "shortName": "geth",
     "chainId": 1337,
     "networkId": 1337,
-    "slip44": 1
+    "slip44": 1,
+    "ens": {
+      "registry": ""
+    },
+    "explorers": [
+      {
+        "name": "",
+        "url": "",
+        "standard": "",
+        "icon": ""
+      }
+    ],
+    "title": "Go Ethereum (Geth) Private Testnet"
   },
   {
     "name": "Linea Sepolia",
-    "title": "Linea Sepolia Testnet",
     "chain": "ETH",
+    "icon": "linea",
     "rpc": [
       "https://rpc.sepolia.linea.build",
       "wss://rpc.sepolia.linea.build",
@@ -170,64 +237,105 @@
     "chainId": 59141,
     "networkId": 59141,
     "slip44": 1,
-    "icon": "linea",
-    "parent": {
-      "type": "L2",
-      "chain": "eip155-11155111",
-      "bridges": [{ "url": "https://bridge.linea.build/" }]
+    "ens": {
+      "registry": ""
     },
     "explorers": [
       {
         "name": "Etherscan",
         "url": "https://sepolia.lineascan.build",
         "standard": "EIP3091",
-        "icon": "linea"
+        "icon": ""
       },
       {
         "name": "Blockscout",
         "url": "https://explorer.sepolia.linea.build",
         "standard": "EIP3091",
-        "icon": "linea"
+        "icon": ""
       }
     ],
-    "status": "active"
+    "title": "Linea Sepolia Testnet",
+    "status": "active",
+    "parent": {
+      "type": "L2",
+      "chain": "eip155-11155111",
+      "bridges": [
+        {
+          "url": "https://bridge.linea.build/"
+        }
+      ]
+    }
   },
   {
     "name": "MegaETH Testnet",
     "chain": "ETH",
+    "icon": "",
+    "rpc": ["https://carrot.megaeth.com/rpc", "wss://carrot.megaeth.com/ws"],
+    "faucets": [],
     "nativeCurrency": {
       "name": "MegaETH Testnet Ether",
       "symbol": "ETH",
       "decimals": 18
     },
-    "rpc": ["https://carrot.megaeth.com/rpc", "wss://carrot.megaeth.com/ws"],
-    "faucets": [],
     "infoURL": "https://testnet.megaeth.com",
     "shortName": "megatest",
     "chainId": 6343,
     "networkId": 6343,
-    "slip44": 1
+    "ens": {
+      "registry": ""
+    },
+    "explorers": [
+      {
+        "name": "",
+        "url": "",
+        "standard": "",
+        "icon": ""
+      }
+    ],
+    "title": "",
+    "status": "",
+    "parent": {
+      "type": "",
+      "chain": "",
+      "bridges": [
+        {
+          "url": ""
+        }
+      ]
+    }
   },
   {
     "name": "Monad Testnet",
     "chain": "MON",
+    "icon": "",
+    "rpc": ["https://testnet-rpc.monad.xyz"],
+    "features": [
+      {
+        "name": ""
+      }
+    ],
+    "faucets": ["https://faucet.monad.xyz"],
     "nativeCurrency": {
       "name": "Monad Testnet Token",
       "symbol": "MON",
       "decimals": 18
     },
-    "rpc": ["https://testnet-rpc.monad.xyz"],
-    "faucets": ["https://faucet.monad.xyz"],
     "infoURL": "https://testnet.monad.xyz",
     "shortName": "monadtest",
     "chainId": 10143,
     "networkId": 10143,
+    "slip44": 1,
+    "ens": {
+      "registry": ""
+    },
     "explorers": [
       {
         "name": "Monad Testnet Explorer",
         "url": "https://testnet.monadexplorer.com",
-        "standard": "EIP3091"
+        "standard": "EIP3091",
+        "icon": ""
       }
-    ]
+    ],
+    "title": ""
   }
 ]

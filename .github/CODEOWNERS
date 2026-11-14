@@ -324,6 +324,8 @@ ui/selectors/activity/musd/                                    @MetaMask/core-ex
 
 # CI
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+# Last match wins. QA owns the shared E2E mocks (see test/e2e/mock-e2e.js).
+/.github/workflows/sync-e2e-api-mocks.yml             @MetaMask/qa
 /.github/scripts/                                     @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/dependabot.yml                               @MetaMask/extension-platform

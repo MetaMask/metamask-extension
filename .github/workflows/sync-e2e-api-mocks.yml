@@ -1,0 +1,344 @@
+name: Sync E2E API Mocks
+
+# Aligns the E2E API mock fixtures with the live response shapes. See
+# test/e2e/mock-response-data/api-mock-catalog.md.
+#
+# pull-request: a same-repo pull request that touches the mocks. Read-only
+# contents and no Contentful secrets (those rows are skipped). All live drift
+# gets suggestions, but only drift in rows the pull request changed (catalog
+# entry or fixture value, against the merge base) fails the check. When the
+# drift is small and in the pull request diff, one review of suggestion
+# blocks lets the author commit it. Nothing is pushed. Fork pull requests are
+# skipped. A fetch failure does not fail. A refused write fails (exit 5) only
+# when it is on a row this pull request changed. A refused write on any other
+# row is exit 6: the check passes and the drift comment stays. Only exit 0
+# removes that comment and stale suggestion reviews.
+#
+# weekly: Mondays and workflow_dispatch. Commits all drift to
+# sync/e2e-api-mocks and opens or updates one labeled PR. The push uses
+# GITHUB_TOKEN, so a maintainer approves the workflow runs on that PR.
+
+on:
+  schedule:
+    # Mondays at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - test/e2e/mock-e2e.js
+      - test/e2e/mock-response-data/**
+      - test/e2e/mock-cdn/ppom-version.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-e2e-api-mocks-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  pull-request:
+    name: Align E2E API mocks this pull request changed
+    if: >-
+      ${{
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.full_name == github.repository
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # pull-requests: write lets GITHUB_TOKEN post the COMMENT review and the
+    # sync comment. Commit suggestion authors the commit as the person who
+    # clicks it, so later workflows are not held for approval.
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          # The pull request head, not the merge commit, so the diff is the
+          # branch's fixtures against the live APIs.
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Find the merge base
+        id: base
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          MERGE_BASE="$(gh api "repos/${GITHUB_REPOSITORY}/compare/${BASE_SHA}...${HEAD_SHA}" --jq .merge_base_commit.sha)"
+          git fetch --no-tags --depth=1 origin "${MERGE_BASE}"
+          echo "sha=${MERGE_BASE}" >> "${GITHUB_OUTPUT}"
+
+      - name: Align fixtures
+        id: sync
+        shell: bash
+        env:
+          MERGE_BASE: ${{ steps.base.outputs.sha }}
+        run: |
+          set +e
+          yarn test:e2e:sync-api-mocks --changed-since "${MERGE_BASE}" > sync-report.txt 2> sync-warnings.txt
+          EXIT=$?
+          set -e
+          bash .github/scripts/e2e-api-mock-sync-summary.sh "${EXIT}"
+          echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
+          # 0: no drift. 1: drift in rows this pull request changed, which
+          # fails the check. 4: drift only in other rows, which gets the same
+          # suggestions but does not fail. 2: a fetch failed and nothing was
+          # written, which does not fail. 3: an api-responses fixture has no
+          # sources.json entry, which fails. 5: a refused write on a row this
+          # pull request changed, which fails. 6: a refused write on any other
+          # row. The check passes, and the drift comment is kept.
+          if [ "${EXIT}" -eq 1 ] || [ "${EXIT}" -eq 4 ]; then
+            echo "DRIFT=true" >> "${GITHUB_OUTPUT}"
+          fi
+          [ "${EXIT}" -eq 0 ] || [ "${EXIT}" -eq 2 ] || [ "${EXIT}" -eq 4 ] || [ "${EXIT}" -eq 6 ]
+
+      - name: Record the fixture diff
+        if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
+        shell: bash
+        run: bash .github/scripts/e2e-api-mock-drift-report.sh pull_request "${EXIT}"
+        env:
+          EXIT: ${{ steps.sync.outputs.EXIT }}
+
+      - name: Upload the fixture diff
+        if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-api-mock-drift
+          path: e2e-api-mock-drift.diff
+          if-no-files-found: error
+
+      - name: Post suggestion review
+        if: ${{ !cancelled() && steps.sync.outputs.DRIFT == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Zero context, so a suggestion covers only the drifted lines and
+          # not neighboring lines that are outside the pull request diff.
+          git diff -U0 > e2e-api-mock-drift-u0.diff
+          gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100" \
+            | jq 'add // []' > pr-files.json
+          yarn tsx .github/scripts/e2e-api-mock-suggestions.mts \
+            --diff e2e-api-mock-drift-u0.diff \
+            --files pr-files.json \
+            --readable drift-readable.txt \
+            --out suggest-plan.json
+          MODE="$(jq -r .mode suggest-plan.json)"
+          REASON="$(jq -r .reason suggest-plan.json)"
+          if [ "${MODE}" != "suggestions" ]; then
+            printf '%s\n' fallback > suggest-mode.txt
+            printf '%s\n' "${REASON}" > suggest-reason.txt
+            {
+              echo
+              echo "No suggestion review: ${REASON}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          MARKER="<!-- e2e-api-mock-sync-review -->"
+          HASH="$(jq -r .hash suggest-plan.json)"
+          gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews?per_page=100" \
+            | jq 'add // []' > pr-reviews.json
+          # A COMMENT review cannot be dismissed, so deleting its suggestion
+          # comments leaves the hash in the review body. Skip re-posting only
+          # when a matching review still has those comments.
+          MATCHING="$(jq -r --arg marker "${MARKER}" --arg hash "${HASH}" '
+            .[] | select(.user.login == "github-actions[bot]") | select((.body // "") | contains($marker)) | select((.body // "") | contains($hash)) | .id
+          ' pr-reviews.json)"
+          if [ -n "${MATCHING}" ]; then
+            gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/comments?per_page=100" \
+              | jq 'add // []' > pr-review-comments.json
+            if jq -e --arg ids "${MATCHING}" '
+              ($ids | split("\n") | map(select(length > 0))) as $reviewIds
+              | [.[] | select(($reviewIds | index(.pull_request_review_id | tostring)) != null)] | length > 0
+            ' pr-review-comments.json > /dev/null; then
+              printf '%s\n' suggestions > suggest-mode.txt
+              printf '\n' > suggest-reason.txt
+              echo "Suggestion review already matches this drift."
+              {
+                echo
+                echo "Suggestion review already matches this drift."
+              } >> "${GITHUB_STEP_SUMMARY}"
+              exit 0
+            fi
+          fi
+          OLD="$(jq -r --arg marker "${MARKER}" '
+            .[] | select(.user.login == "github-actions[bot]") | select((.body // "") | contains($marker)) | .id
+          ' pr-reviews.json)"
+          if [ -n "${OLD}" ]; then
+            gh api --paginate --slurp "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/comments?per_page=100" \
+              | jq 'add // []' > pr-review-comments.json
+            jq -r --arg old "${OLD}" '
+              ($old | split("\n") | map(select(length > 0))) as $ids
+              | .[] | select(($ids | index(.pull_request_review_id | tostring)) != null) | .id
+            ' pr-review-comments.json > old-comment-ids.txt
+            while IFS= read -r COMMENT_ID || [ -n "${COMMENT_ID}" ]; do
+              [ -z "${COMMENT_ID}" ] && continue
+              gh api --method DELETE "repos/${GITHUB_REPOSITORY}/pulls/comments/${COMMENT_ID}"
+            done < old-comment-ids.txt
+          fi
+          jq -n \
+            --arg sha "$(git rev-parse HEAD)" \
+            --slurpfile plan suggest-plan.json \
+            '{commit_id: $sha, event: "COMMENT", body: $plan[0].body, comments: $plan[0].comments}' \
+            > review.json
+          if ! gh api --method POST "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews" --input review.json > review-result.json; then
+            printf '%s\n' fallback > suggest-mode.txt
+            printf '%s\n' "GitHub rejected the suggestion review. Run \`yarn test:e2e:sync-api-mocks\` and commit the result." > suggest-reason.txt
+            {
+              echo
+              echo "GitHub rejected the suggestion review. The summary comment has the diff."
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          printf '%s\n' suggestions > suggest-mode.txt
+          printf '\n' > suggest-reason.txt
+          COUNT="$(jq '.comments | length' suggest-plan.json)"
+          {
+            echo
+            echo "Posted a review with ${COUNT} suggestion(s). Commit suggestion authors the commit as you."
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Comment on the pull request
+        if: ${{ !cancelled() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          COMMIT_SHA: ''
+          EXIT: ${{ steps.sync.outputs.EXIT }}
+        run: bash .github/scripts/e2e-api-mock-comment.sh
+
+  weekly:
+    name: Align E2E API mocks with live responses
+    if: ${{ github.event_name != 'pull_request' }}
+    environment: default-branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Align fixtures
+        id: sync
+        shell: bash
+        env:
+          CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+        run: |
+          set +e
+          yarn test:e2e:sync-api-mocks > sync-report.txt 2> sync-warnings.txt
+          EXIT=$?
+          set -e
+          bash .github/scripts/e2e-api-mock-sync-summary.sh "${EXIT}"
+          echo "EXIT=${EXIT}" >> "${GITHUB_OUTPUT}"
+          # 0: no drift. 1: fixtures written. 2: a fetch failed. 3: an
+          # api-responses fixture has no sources.json entry. 5: a write was
+          # refused. Exits above 1 fail the job.
+          [ "${EXIT}" -le 1 ]
+
+      - name: Record the fixture diff
+        if: ${{ steps.sync.outputs.EXIT == '1' }}
+        shell: bash
+        run: bash .github/scripts/e2e-api-mock-drift-report.sh weekly
+
+      - name: Open or update the review PR
+        id: weekly
+        if: ${{ steps.sync.outputs.EXIT == '1' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="sync/e2e-api-mocks"
+          TITLE="test: align E2E API mocks with live response shapes"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "${BRANCH}"
+          git add -u
+          git commit -m "${TITLE}"
+          if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null; then
+            # The checkout is a shallow clone of main, so the lease ref does
+            # not exist until this fetch.
+            git fetch origin "${BRANCH}:refs/remotes/origin/${BRANCH}"
+            git push --force-with-lease="refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" origin "HEAD:refs/heads/${BRANCH}"
+          else
+            git push -u origin "HEAD:refs/heads/${BRANCH}"
+          fi
+          {
+            echo "## **Description**"
+            echo
+            echo "Weekly shape sync of the E2E API mocks from \`yarn test:e2e:sync-api-mocks\`. Values the tests assert are pinned in \`mock-e2e.js\`, so only response shapes change."
+            echo
+            echo "This pull request is pushed with the workflow \`GITHUB_TOKEN\`, so GitHub holds its workflow runs until a maintainer approves them."
+            echo
+            cat drift-readable.txt
+            echo
+            echo '```'
+            cat drift-stat.txt
+            echo '```'
+            echo
+            echo "## **Changelog**"
+            echo
+            echo "CHANGELOG entry: null"
+            echo
+            echo "## **Related issues**"
+            echo
+            echo "Fixes: N/A"
+            echo
+            echo "## **Manual testing steps**"
+            echo
+            echo "1. Check out this branch and run \`yarn test:e2e:sync-api-mocks\`. It prints \`No API changes detected\`."
+            echo "2. Run \`yarn lint:tsc\`. It passes."
+            echo
+            echo "## **Screenshots/Recordings**"
+            echo
+            echo "N/A"
+            echo
+            echo "### **Before**"
+            echo
+            echo "N/A"
+            echo
+            echo "### **After**"
+            echo
+            echo "N/A"
+            echo
+            echo "## **Pre-merge author checklist**"
+            echo
+            echo "- [x] Opened by the weekly sync workflow."
+            echo
+            echo "## **Pre-merge reviewer checklist**"
+            echo
+            echo "- [ ] I've reviewed the shape changes and the CI results."
+          } > pr-body.md
+          EXISTING="$(gh pr list --head "${BRANCH}" --base main --json number --jq '.[0].number')"
+          if [ -n "${EXISTING}" ]; then
+            gh pr edit "${EXISTING}" --body-file pr-body.md --add-label team-qa --add-label no-changelog
+            NUMBER="${EXISTING}"
+          else
+            URL="$(gh pr create --base main --head "${BRANCH}" --title "${TITLE}" --body-file pr-body.md --label team-qa --label no-changelog)"
+            NUMBER="$(gh pr view "${URL}" --json number --jq .number)"
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+          echo "number=${NUMBER}" >> "${GITHUB_OUTPUT}"
+
+      - name: Comment on the review PR
+        if: ${{ steps.weekly.outputs.sha != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.weekly.outputs.number }}
+          COMMIT_SHA: ${{ steps.weekly.outputs.sha }}
+        run: bash .github/scripts/e2e-api-mock-comment.sh
