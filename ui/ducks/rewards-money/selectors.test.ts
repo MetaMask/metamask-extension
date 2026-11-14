@@ -1,6 +1,7 @@
 import type { MetaMaskReduxState } from '../../store/store';
 import {
   canAcceptMoneyReferralInvite,
+  selectIsMoneyReferralInviteEnabled,
   selectMoneyReferralAllowedForGeo,
 } from './selectors';
 
@@ -39,6 +40,55 @@ describe('canAcceptMoneyReferralInvite', () => {
       canAcceptMoneyReferralInvite({
         roles: ['CASHBACK_EXPERIMENT', 'REFEREE'],
       }),
+    ).toBe(false);
+  });
+});
+
+describe('selectIsMoneyReferralInviteEnabled', () => {
+  function gatedState({
+    enabled = true,
+    minimumVersion = '0.0.0',
+    useExternalServices = true,
+  }: {
+    enabled?: boolean;
+    minimumVersion?: string | null;
+    useExternalServices?: boolean;
+  } = {}): MetaMaskReduxState {
+    return {
+      metamask: {
+        useExternalServices,
+        remoteFeatureFlags: {
+          rewardsMoneyControllerEnabled: { enabled, minimumVersion },
+        },
+      },
+    } as unknown as MetaMaskReduxState;
+  }
+
+  it('allows the invite when Basic Functionality and the flag are on', () => {
+    expect(selectIsMoneyReferralInviteEnabled(gatedState())).toBe(true);
+  });
+
+  it('refuses the invite when Basic Functionality is off', () => {
+    expect(
+      selectIsMoneyReferralInviteEnabled(
+        gatedState({ useExternalServices: false }),
+      ),
+    ).toBe(false);
+  });
+
+  it('refuses the invite when the flag is off, missing, or version-gated', () => {
+    expect(
+      selectIsMoneyReferralInviteEnabled(gatedState({ enabled: false })),
+    ).toBe(false);
+    expect(
+      selectIsMoneyReferralInviteEnabled(
+        gatedState({ minimumVersion: '999.0.0' }),
+      ),
+    ).toBe(false);
+    expect(
+      selectIsMoneyReferralInviteEnabled({
+        metamask: { useExternalServices: true, remoteFeatureFlags: {} },
+      } as unknown as MetaMaskReduxState),
     ).toBe(false);
   });
 });

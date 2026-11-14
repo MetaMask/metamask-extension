@@ -3546,6 +3546,12 @@
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
   },
+  "deepLink_ReferralDescription": {
+    "message": "This link includes a referral code shared by someone outside MetaMask. Nothing changes unless you accept an invite, so continue only if you trust who shared it."
+  },
+  "deepLink_ReferralTitle": {
+    "message": "You're opening a referral link"
+  },
   "deepLink_ThirdPartyDescription": {
     "message": "You were sent here by a third party, not MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
