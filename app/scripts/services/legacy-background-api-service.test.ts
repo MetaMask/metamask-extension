@@ -8821,6 +8821,50 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('backupUserData', () => {
+    it('returns a JSON backup of preferences, accounts, address book, and networks', async () => {
+      const preferences = { theme: 'dark' };
+      const internalAccounts = { accounts: {}, selectedAccount: 'account-1' };
+      const addressBook = { addressBook: { '0x1': {} } };
+      const networkConfigurationsByChainId = { '0x1': { chainId: '0x1' } };
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PreferencesController:getState',
+          jest.fn().mockReturnValue(preferences),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts }),
+        );
+        rootMessenger.registerActionHandler(
+          'AddressBookController:getState',
+          jest.fn().mockReturnValue(addressBook),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ networkConfigurationsByChainId }),
+        );
+
+        const backup = await rootMessenger.call(
+          'LegacyBackgroundApiService:backupUserData',
+        );
+
+        expect(backup).toMatchObject({
+          fileName: expect.stringMatching(
+            /^MetaMaskUserData\.\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}\.json$/u,
+          ),
+          data: JSON.stringify({
+            preferences,
+            internalAccounts: { internalAccounts },
+            addressBook,
+            network: { networkConfigurationsByChainId },
+          }),
+        });
+      });
+    });
+  });
 });
 
 /**
@@ -8893,6 +8937,7 @@ function getMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
+      'AddressBookController:getState',
       'SelectedNetworkController:getNetworkClientIdForDomain',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:addNetwork',

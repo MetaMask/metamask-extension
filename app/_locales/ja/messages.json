@@ -9464,9 +9464,6 @@
   "restore": {
     "message": "復元"
   },
-  "restoreUserData": {
-    "message": "ユーザーデータの復元"
-  },
   "restoreWalletDescription": {
     "message": "$1を入力してください。ウォレットをインポートすると、現在のウォレットデータがこのデバイスから消去されます。この操作は元に戻せません。",
     "description": "$1 is the Secret Recovery Phrase"

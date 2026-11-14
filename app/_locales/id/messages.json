@@ -9521,9 +9521,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreUserData": {
-    "message": "Pulihkan data pengguna"
-  },
   "restoreWalletDescription": {
     "message": "Masukkan $1. Dengan mengimpor dompet, Anda akan menghapus data dompet saat ini dari perangkat ini. Tindakan ini tidak dapat dibatalkan.",
     "description": "$1 is the Secret Recovery Phrase"

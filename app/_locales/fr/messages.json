@@ -9513,9 +9513,6 @@
   "restore": {
     "message": "Restaurer"
   },
-  "restoreUserData": {
-    "message": "Restaurer les données de l’utilisateur"
-  },
   "restoreWalletDescription": {
     "message": "Saisissez votre $1. En important le portefeuille, vous effacerez les données actuelles de votre portefeuille sur cet appareil. Cette opération est irréversible.",
     "description": "$1 is the Secret Recovery Phrase"
