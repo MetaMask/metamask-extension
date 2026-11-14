@@ -246,6 +246,9 @@
     "approvalFlows": [],
     "assetExchangeRates": {},
     "assetPreferences": {},
+    "assetsBackgroundLoadingStatus": {
+      "*": "string"
+    },
     "assetsBalance": {
       "*": {
         "*": {
