@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -39,24 +39,17 @@ const ClaimsList = () => {
     useClaims();
   const { drafts } = useClaimDraft();
 
-  const [activeTab, setActiveTab] = useState(() => {
-    const tabParam = searchParams.get('tab');
-    if (
-      tabParam === CLAIMS_TAB_KEYS.PENDING ||
-      tabParam === CLAIMS_TAB_KEYS.HISTORY
-    ) {
-      return tabParam;
-    }
-    return CLAIMS_TAB_KEYS.PENDING;
-  });
+  // The URL is the source of truth for the active tab so that history
+  // navigation (e.g. Back from a claim) restores the tab the user was on.
+  const activeTab =
+    searchParams.get('tab') === CLAIMS_TAB_KEYS.HISTORY
+      ? CLAIMS_TAB_KEYS.HISTORY
+      : CLAIMS_TAB_KEYS.PENDING;
 
-  // Clear the tab param from the URL after reading it
-  useEffect(() => {
-    if (searchParams.has('tab')) {
-      searchParams.delete('tab');
-      setSearchParams(searchParams, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
+  const handleTabClick = useCallback(
+    (tabKey: string) => setSearchParams({ tab: tabKey }, { replace: true }),
+    [setSearchParams],
+  );
 
   const claimItem = useCallback(
     (claimData: Claim | ClaimDraft, tabKey: ClaimsTabKey, isDraft = false) => {
@@ -234,7 +227,7 @@ const ClaimsList = () => {
     <Tabs
       data-testid="claims-list-page"
       activeTab={activeTab}
-      onTabClick={setActiveTab}
+      onTabClick={handleTabClick}
       className="h-full flex flex-col overflow-y-hidden"
       tabListProps={{
         className: 'px-4',
