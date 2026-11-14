@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'clsx';
 import {
   AvatarBase,
@@ -6,12 +6,43 @@ import {
   AvatarToken,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import type { CaipAssetType } from '@metamask/utils';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../shared/constants/network';
 import { getCaipAssetImageUrl } from '../../../../shared/lib/asset-utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 
 export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
 
 const fallbackText = '?';
+
+const zeroAddressPattern = /^0x0+$/iu;
+
+function isNativeAssetId(assetId: string): boolean {
+  try {
+    const { assetNamespace, assetReference } = parseCaipAssetType(
+      assetId as CaipAssetType,
+    );
+    return (
+      assetNamespace === 'slip44' ||
+      (assetNamespace === 'erc20' && zeroAddressPattern.test(assetReference))
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getNativeImageForAssetId(assetId: string): string | undefined {
+  try {
+    const { chainId } = parseCaipAssetType(assetId as CaipAssetType);
+    const hexChainId = convertCaipToHexChainId(chainId as CaipChainId);
+    return CHAIN_ID_TOKEN_IMAGE_MAP[
+      hexChainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+    ];
+  } catch {
+    return undefined;
+  }
+}
 
 const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
   tokens.filter((token): token is string => Boolean(token));
@@ -20,13 +51,36 @@ const ActivityTokenAvatar = ({
   assetId,
   className,
 }: Readonly<{ assetId: string; className?: string }>) => {
+  const cdnSrc = getCaipAssetImageUrl(assetId as CaipAssetType);
+  const [src, setSrc] = useState(cdnSrc);
+
+  useEffect(() => {
+    setSrc(cdnSrc);
+  }, [cdnSrc]);
+
+  const handleImageError = () => {
+    if (!isNativeAssetId(assetId)) {
+      return;
+    }
+
+    const localNativeImage = getNativeImageForAssetId(assetId);
+    if (localNativeImage && localNativeImage !== src) {
+      setSrc(localNativeImage);
+    }
+  };
+
   return (
+    // Remount when src changes so AvatarToken clears its internal error state.
     <AvatarToken
+      key={src}
       size={AvatarTokenSize.Md}
       name={fallbackText}
-      src={getCaipAssetImageUrl(assetId as CaipAssetType)}
+      src={src}
       className={classnames(className)}
-      imageProps={{ className: 'bg-alternative' }}
+      imageProps={{
+        className: 'bg-alternative',
+        onError: handleImageError,
+      }}
       data-testid="activity-list-item-avatar-token"
     />
   );
