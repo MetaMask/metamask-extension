@@ -292,6 +292,59 @@ describe('Transaction Controller Hooks', () => {
       });
     });
 
+    it('looks up the keyring type for the signer address', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      let lookup:
+        | ((address?: string) => Promise<string | undefined>)
+        | undefined;
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockImplementation(async (submitRequest) => {
+          lookup = submitRequest.getAccountHardwareType;
+          return { transactionHash: '0xstxHash' };
+        });
+
+      const messenger = buildMockMessenger();
+      const request = buildMockRequest({ messenger });
+      const { publish } = getTransactionControllerHooks(request);
+
+      await publish?.(mockTransactionMeta);
+
+      expect(lookup).toEqual(expect.any(Function));
+      await expect(lookup?.()).resolves.toBeUndefined();
+
+      const call = messenger.call as jest.Mock;
+      call.mockResolvedValue({ type: 'Ledger Hardware' });
+      await expect(lookup?.('0xabc')).resolves.toBe('Ledger Hardware');
+
+      call.mockResolvedValue(null);
+      await expect(lookup?.('0xabc')).resolves.toBeUndefined();
+
+      call.mockResolvedValue(1);
+      await expect(lookup?.('0xabc')).resolves.toBeUndefined();
+
+      call.mockResolvedValue({});
+      await expect(lookup?.('0xabc')).resolves.toBeUndefined();
+
+      call.mockResolvedValue({ type: 1 });
+      await expect(lookup?.('0xabc')).resolves.toBeUndefined();
+
+      call.mockRejectedValue(new Error('keyring down'));
+      await expect(lookup?.('0xabc')).resolves.toBeUndefined();
+    });
+
     it('records sentinel_stx submission via metrics fragment on STX hook success', async () => {
       jest
         .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
