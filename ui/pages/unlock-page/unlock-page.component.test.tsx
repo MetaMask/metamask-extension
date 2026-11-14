@@ -7,8 +7,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { createDeferredPromise } from '@metamask/utils';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
 import { ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE } from '../../helpers/constants/routes';
 import { discardUnlockMeasurement, UnlockReady } from './unlock-performance';
@@ -66,7 +68,7 @@ jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
-describe('UnlockPage component (passkey UI)', () => {
+describe('UnlockPage component', () => {
   const selectedTestAccountId = 'test-unlock-account-id';
 
   const mockStore = configureMockStore([thunk])({
@@ -250,6 +252,129 @@ describe('UnlockPage component (passkey UI)', () => {
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalledWith('test-password');
       expect(props.navigateAfterUnlock).toHaveBeenCalled();
+    });
+  });
+
+  describe('password unlock metrics', () => {
+    beforeEach(() => {
+      mockTrackEvent.mockClear();
+    });
+
+    jestIt.each([
+      'Incorrect password',
+      SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
+    ])('counts repeated failures without error data: %s', async (message) => {
+      const onSubmit = jest
+        .fn()
+        .mockRejectedValueOnce(new Error(message))
+        .mockRejectedValueOnce(new Error(message))
+        .mockResolvedValue(undefined);
+      const props = buildProps({ isPasskeyActive: false, onSubmit });
+      const { getByTestId } = renderWithProvider(
+        <UnlockPage {...props} />,
+        mockStore,
+        '/unlock',
+      );
+
+      fireEvent.change(getByTestId('unlock-password'), {
+        target: { value: 'test-password' },
+      });
+
+      for (const failedAttempts of [1, 2]) {
+        fireEvent.click(getByTestId('unlock-submit'));
+
+        await waitFor(() => {
+          expect(mockTrackEvent).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+              name: MetaMetricsEventName.AppUnlockedFailed,
+              properties: expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                failed_attempts: failedAttempts,
+                reason: 'incorrect_password',
+              }),
+            }),
+          );
+        });
+      }
+
+      fireEvent.click(getByTestId('unlock-submit'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.AppUnlocked,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            properties: expect.objectContaining({ failed_attempts: 2 }),
+          }),
+        );
+        expect(props.navigateAfterUnlock).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    jestIt.each([
+      [SeedlessOnboardingControllerErrorMessage.IncorrectPassword, 0],
+      [SeedlessOnboardingControllerErrorMessage.IncorrectPassword, 4],
+      [SeedlessOnboardingControllerErrorMessage.TooManyLoginAttempts, 5],
+    ])('preserves the supplied count for %s: %s', async (message, count) => {
+      const props = buildProps({
+        isPasskeyActive: false,
+        onSubmit: jest.fn().mockRejectedValue({
+          message,
+          data: { numberOfAttempts: count },
+        }),
+      });
+      const { getByTestId } = renderWithProvider(
+        <UnlockPage {...props} />,
+        mockStore,
+        '/unlock',
+      );
+
+      fireEvent.change(getByTestId('unlock-password'), {
+        target: { value: 'test-password' },
+      });
+      fireEvent.click(getByTestId('unlock-submit'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.AppUnlockedFailed,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            properties: expect.objectContaining({ failed_attempts: count }),
+          }),
+        );
+      });
+    });
+
+    it('does not count unrelated errors as incorrect passwords', async () => {
+      const props = buildProps({
+        isPasskeyActive: false,
+        onSubmit: jest
+          .fn()
+          .mockRejectedValueOnce(new Error('Unexpected error'))
+          .mockResolvedValue(undefined),
+      });
+      const { getByTestId, findByText } = renderWithProvider(
+        <UnlockPage {...props} />,
+        mockStore,
+        '/unlock',
+      );
+
+      fireEvent.change(getByTestId('unlock-password'), {
+        target: { value: 'test-password' },
+      });
+      fireEvent.click(getByTestId('unlock-submit'));
+      await findByText('Unexpected error');
+      fireEvent.click(getByTestId('unlock-submit'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.AppUnlocked,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            properties: expect.objectContaining({ failed_attempts: 0 }),
+          }),
+        );
+      });
     });
   });
 
