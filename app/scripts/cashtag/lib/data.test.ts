@@ -62,7 +62,10 @@ describe('resolveTicker', () => {
       expect.stringMatching(/query=QQQ.*includeRwaData=true/u),
       expect.objectContaining({
         method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
+        headers: {
+          'X-Client-Id': 'extension',
+          'x-mm-service-profile': 'assets--cashtag-widget',
+        },
       }),
     );
   });
@@ -226,7 +229,10 @@ describe('fetchPriceHistory', () => {
       ),
       expect.objectContaining({
         method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
+        headers: {
+          'X-Client-Id': 'extension',
+          'x-mm-service-profile': 'assets--cashtag-widget',
+        },
       }),
     );
   });
