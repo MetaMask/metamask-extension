@@ -172,7 +172,7 @@ const manifestPlugin = new ManifestPlugin({
     : false,
 });
 
-const plugins: WebpackPluginInstance[] = [
+const basePlugins: WebpackPluginInstance[] = [
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
@@ -278,46 +278,56 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
-// MV2 requires self-injection
-if (MANIFEST_VERSION === 2) {
-  const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
-  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
-}
-if (args.lavamoat) {
-  const {
-    lavamoatPlugin,
-    lavamoatUnsafeLayerPlugin,
-  } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin(args, manifestPlugin), lavamoatUnsafeLayerPlugin);
-}
-if (args.progress) {
-  const { ProgressPlugin } = require('webpack');
-  plugins.push(new ProgressPlugin());
-}
-if (args.reactCompilerVerbose) {
-  const {
-    ReactCompilerPlugin,
-  } = require('./utils/plugins/ReactCompilerPlugin');
-  plugins.push(new ReactCompilerPlugin());
-}
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+/** Loads optional plugins in configuration order. */
+async function getPlugins() {
+  const plugins = [...basePlugins];
+  // MV2 requires self-injection
+  if (MANIFEST_VERSION === 2) {
+    const { SelfInjectPlugin } =
+      await import('./utils/plugins/SelfInjectPlugin');
+    plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+  }
+  if (args.lavamoat) {
+    const { lavamoatPlugin, lavamoatUnsafeLayerPlugin } =
+      await import('./utils/plugins/LavamoatPlugin');
+    plugins.push(
+      lavamoatPlugin(args, manifestPlugin),
+      lavamoatUnsafeLayerPlugin,
+    );
+  }
+  if (args.progress) {
+    const { ProgressPlugin } = require('webpack');
+    plugins.push(new ProgressPlugin());
+  }
+  if (args.reactCompilerVerbose) {
+    const { ReactCompilerPlugin } =
+      await import('./utils/plugins/ReactCompilerPlugin');
+    plugins.push(new ReactCompilerPlugin());
+  }
 
-if (isDevelopmentWatchMode) {
-  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-  plugins.push(
-    new HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin({
-      include: UI_DIR_RE,
-      overlay: false,
-      runtimeEntry: false,
-    }),
-  );
-}
+  if (isDevelopmentWatchMode) {
+    const { default: ReactRefreshWebpackPlugin } =
+      await import('@pmmmwh/react-refresh-webpack-plugin');
+    plugins.push(
+      new HotModuleReplacementPlugin(),
+      new ReactRefreshWebpackPlugin({
+        include: UI_DIR_RE,
+        overlay: false,
+        runtimeEntry: false,
+      }),
+    );
+  }
 
-if (args.bundleAnalyzer) {
-  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-  plugins.push(
-    new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
-  );
+  if (args.bundleAnalyzer) {
+    const { default: analyzer } = await import('webpack-bundle-analyzer');
+    const { BundleAnalyzerPlugin } = analyzer;
+    plugins.push(
+      new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+    );
+  }
+  return plugins;
 }
 
 // #endregion plugins
@@ -372,7 +382,6 @@ const config = {
   // an empty entry object prevents webpack's default entry.
   entry: {},
   cache,
-  plugins,
   context,
   mode: args.mode,
   stats: 'none',
@@ -631,9 +640,7 @@ const config = {
     // chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
-    ...(args.minify
-      ? { minimize: true, minimizer: getMinimizers() }
-      : { minimize: false }),
+    minimize: args.minify,
     // Make most chunks share a single runtime file, which contains the
     // webpack "runtime". The exception is @lavamoat/snow and all scripts
     // found in the extension manifest; these scripts must be self-contained
@@ -694,4 +701,16 @@ const config = {
   ],
 } as const satisfies Configuration;
 
-export default config;
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
+/** Finishes the configuration after loading optional dependencies. */
+export default async function createConfig() {
+  return {
+    ...config,
+    plugins: await getPlugins(),
+    optimization: {
+      ...config.optimization,
+      ...(args.minify ? { minimizer: await getMinimizers() } : {}),
+    },
+  };
+}
