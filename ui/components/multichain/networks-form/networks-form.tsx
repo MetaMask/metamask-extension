@@ -651,6 +651,9 @@ export const NetworksForm = ({
             }),
           );
           if (toggleNetworkMenuAfterSubmit) {
+            // Enable the network after adding (matching mobile behavior)
+            // Small delay to ensure background listeners complete
+            await new Promise((resolve) => setTimeout(resolve, 100));
             await dispatch(setEnabledNetworks(networkPayload.chainId));
           }
         }

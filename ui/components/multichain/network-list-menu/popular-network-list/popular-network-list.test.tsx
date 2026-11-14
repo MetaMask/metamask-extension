@@ -95,7 +95,7 @@ describe('PopularNetworkList', () => {
     expect(screen.getByText('Network 1')).toBeInTheDocument();
     expect(screen.getByText('Network 2')).toBeInTheDocument();
   });
-  it('calls the dispatch function when the add button is clicked', async () => {
+  it('calls dispatch when the add button is clicked', async () => {
     const props = {
       ...defaultProps,
       searchAddNetworkResults: [
@@ -121,6 +121,7 @@ describe('PopularNetworkList', () => {
     const addButton = screen.getByTestId('test-add-button');
     fireEvent.click(addButton);
 
+    // The component calls dispatch for toggleNetworkMenu, addNetwork, and setEnabledNetworks
     expect(useDispatchMock).toHaveBeenCalled();
   });
 });
