@@ -1,13 +1,14 @@
 import React from 'react';
 import { Point } from 'chart.js';
-import { Box } from '@metamask/design-system-react';
-import { Text, TextDirection } from '../../../../components/component-library';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import {
+  Box,
+  FontWeight,
+  Text,
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { useFormatters } from '../../../../hooks/useFormatters';
 
 // A label indicating the minimum or maximum price on the chart
 const ChartTooltip = ({
@@ -31,19 +32,14 @@ const ChartTooltip = ({
         ...(xAxisPercent < 0.5
           ? { paddingRight: `${100 - 2 * 100 * xAxisPercent}%` }
           : { paddingLeft: `${100 - 2 * (100 - 100 * xAxisPercent)}%` }),
-        direction:
-          xAxisPercent < 0.5
-            ? TextDirection.LeftToRight
-            : TextDirection.RightToLeft,
+        direction: xAxisPercent < 0.5 ? 'ltr' : 'rtl',
       }}
     >
       <Text
-        marginLeft={4}
-        marginRight={4}
-        marginBottom={1}
-        marginTop={1}
-        variant={TextVariant.bodyXsMedium}
-        color={TextColor.textAlternative}
+        className="mx-4 my-1"
+        variant={TextVariant.BodyXs}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextAlternative}
         textAlign={TextAlign.Center}
       >
         {point?.y === undefined
