@@ -8,6 +8,7 @@ import {
   getTokenAddressForMarketRates,
   toMarketRateLookupToken,
 } from './fiat';
+import type { TokenAmount } from './types';
 
 const ethToken: Token = {
   address: NATIVE_TOKEN_ADDRESS,
@@ -15,6 +16,9 @@ const ethToken: Token = {
   decimals: 18,
   chainId: '0x1',
 };
+
+// Parsed rather than typed so the API's off-contract values (null, strings) reach the helper as they do at runtime.
+const parseApiTokenAmount = (json: string): TokenAmount => JSON.parse(json);
 
 describe('calculateFiatFromMarketRates', () => {
   const marketRates = {
@@ -131,6 +135,35 @@ describe('getHumanReadableTokenAmount', () => {
         assetType: 'native',
       }),
     ).toBeUndefined();
+  });
+
+  [
+    { label: 'null', decimalsJson: 'null' },
+    { label: 'a numeric string', decimalsJson: '"6"' },
+    { label: 'a fraction', decimalsJson: '6.5' },
+  ].forEach(({ label, decimalsJson }) => {
+    it(`omits an EVM mapper amount whose decimals arrive from the API as ${label}`, () => {
+      const token = parseApiTokenAmount(
+        `{"amount":"111929862","decimals":${decimalsJson},"direction":"out","assetType":"erc20"}`,
+      );
+
+      const result = getHumanReadableTokenAmount(token);
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  it('scales an EVM mapper amount by zero decimals for zero-decimal tokens', () => {
+    const token: TokenAmount = {
+      amount: '42',
+      decimals: 0,
+      direction: 'in',
+      assetType: 'erc20',
+    };
+
+    const result = getHumanReadableTokenAmount(token);
+
+    expect(result).toBe('42');
   });
 
   it('keeps amounts from sources that omit decimals on already-human values', () => {
