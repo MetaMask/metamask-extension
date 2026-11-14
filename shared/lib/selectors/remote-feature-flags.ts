@@ -1,7 +1,4 @@
-import merge from 'lodash/merge';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { createSelector } from 'reselect';
-import { getManifestFlags, ManifestFlags } from '../manifestFlags';
 
 export type RemoteFeatureFlagsState = {
   metamask: {
@@ -11,22 +8,20 @@ export type RemoteFeatureFlagsState = {
 };
 
 /**
- * Gets the remote feature flags by combining flags from both the manifest and state.
- * Manifest flags take precedence and will override any duplicate flags from state.
- * This allows for both static (manifest) and dynamic (state) feature flag configuration.
+ * Gets the effective remote feature flags from controller state.
+ *
+ * The RemoteFeatureFlagController applies remote, local, and client-provided
+ * manifest overrides before publishing its state. Reading it directly keeps
+ * every consumer on the same effective flag values.
  *
  * @param state - The MetaMask state object
- * @returns Combined feature flags object with manifest flags taking precedence over state flags
+ * @returns The effective remote feature flags
  */
-export const getRemoteFeatureFlags = createSelector(
-  (): ManifestFlags['remoteFeatureFlags'] =>
-    getManifestFlags().remoteFeatureFlags,
-  (
-    state: RemoteFeatureFlagsState,
-  ): RemoteFeatureFlagControllerState['remoteFeatureFlags'] =>
-    state.metamask.remoteFeatureFlags,
-  (manifestFlags, stateFlags) => merge({}, stateFlags, manifestFlags),
-);
+export function getRemoteFeatureFlags(
+  state: RemoteFeatureFlagsState,
+): RemoteFeatureFlagControllerState['remoteFeatureFlags'] {
+  return state.metamask.remoteFeatureFlags;
+}
 
 // Stable reference for the empty case so the selector does not return a fresh
 // object each call (which would break referential equality and cause redundant

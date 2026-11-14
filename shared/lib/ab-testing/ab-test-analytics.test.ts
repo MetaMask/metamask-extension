@@ -1,9 +1,7 @@
 import type { Json } from '@metamask/utils';
-import * as ManifestFlags from '../manifestFlags';
 import type { AnalyticsEvent } from '../analytics/create-event-builder';
 import {
   enrichWithABTests,
-  getRemoteFeatureFlagsWithManifestOverrides,
   hasABTestAnalyticsMappingForEvent,
 } from './ab-test-analytics';
 import { createActiveABTestAssignment } from './active-ab-test-assignment';
@@ -214,47 +212,6 @@ describe('ab-test-analytics', () => {
       });
       expect(result.sensitiveProperties).toStrictEqual({
         sensitive: 'value',
-      });
-    });
-  });
-
-  describe('getRemoteFeatureFlagsWithManifestOverrides', () => {
-    it('prefers manifest overrides over controller state flags', () => {
-      jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
-        remoteFeatureFlags: {
-          [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
-        },
-      });
-
-      expect(
-        getRemoteFeatureFlagsWithManifestOverrides({
-          [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'control' },
-          otherFlag: true,
-        }),
-      ).toStrictEqual({
-        [TEST_QUICK_AMOUNTS_FLAG_KEY]: { name: 'treatment' },
-        otherFlag: true,
-      });
-    });
-
-    it('replaces array-valued flags instead of merging array items', () => {
-      jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
-        remoteFeatureFlags: {
-          [TEST_QUICK_AMOUNTS_FLAG_KEY]: [
-            { percentage: 100, value: 'control' },
-          ],
-        },
-      });
-
-      expect(
-        getRemoteFeatureFlagsWithManifestOverrides({
-          [TEST_QUICK_AMOUNTS_FLAG_KEY]: [
-            { percentage: 50, value: 'control' },
-            { percentage: 50, value: 'treatment' },
-          ],
-        }),
-      ).toStrictEqual({
-        [TEST_QUICK_AMOUNTS_FLAG_KEY]: [{ percentage: 100, value: 'control' }],
       });
     });
   });
