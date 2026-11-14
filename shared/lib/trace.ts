@@ -571,6 +571,115 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
   ) as Promise<Result>;
 
 /**
+ * Children of a segment root that were still running when the root ended and
+ * were handed to the standalone-span path, so they are sent when they end.
+ */
+export const IN_FLIGHT_STANDALONE_ATTRIBUTE =
+  'trace.in_flight_children.standalone';
+
+/**
+ * Children of a segment root that were still running when the root ended and
+ * could not be handed off, so the SDK will never send them.
+ */
+export const IN_FLIGHT_LOST_ATTRIBUTE = 'trace.in_flight_children.lost';
+
+/**
+ * Finished children past the SDK's per-transaction cap, which it cuts without
+ * reporting.
+ */
+export const OVER_SPAN_LIMIT_ATTRIBUTE = 'trace.children_over_span_limit';
+
+/**
+ * `MAX_SPAN_COUNT` in `@sentry/core`'s `SentrySpan`, which is not exported.
+ */
+const MAX_CHILD_SPANS_PER_TRANSACTION = 1000;
+
+type StandaloneCapableSpan = Span & {
+  // Private `SentrySpan` field read by its `_onSpanEnded`.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  _isStandaloneSpan?: boolean;
+  isStandaloneSpan?: () => boolean;
+};
+
+function isStandaloneSpan(span: Span): boolean {
+  const { isStandaloneSpan: check } = span as StandaloneCapableSpan;
+  return typeof check === 'function' && check.call(span);
+}
+
+/**
+ * Mark a span standalone so the SDK sends it in its own envelope when it ends.
+ * There is no public setter, so this writes the field `isStandaloneSpan()`
+ * reads and confirms the write took; an SDK that renames the field makes this
+ * return false, which the caller counts as a loss.
+ *
+ * @param span - A running child span.
+ * @returns Whether the span is now standalone.
+ */
+function markStandalone(span: Span): boolean {
+  const candidate = span as StandaloneCapableSpan;
+  if (typeof candidate.isStandaloneSpan !== 'function') {
+    return false;
+  }
+  candidate._isStandaloneSpan = true;
+  return candidate.isStandaloneSpan();
+}
+
+/**
+ * Keep the still-running children of a segment root from being lost when it
+ * ends. Ending a root serializes it into a transaction at that instant and
+ * leaves out every child without an end time, and nothing sends such a child
+ * later. Those are the slow requests, so losing them hides them and biases
+ * latency percentiles toward the fast half.
+ *
+ * Each running child is switched to the SDK's standalone-span path instead: it
+ * is sent alone when it ends, under its original span and trace ids, so
+ * backends that received its `traceparent` still find their parent.
+ *
+ * Records the outcome on the root as counts, zero included, so a loss is a
+ * measured value rather than an absence. Does nothing for a span that is not
+ * a segment root: its children still belong to the root's transaction.
+ *
+ * @param span - The span about to end.
+ */
+function preserveInFlightChildren(span: Span | null | undefined): void {
+  const getRootSpan = globalThis.sentry?.getRootSpan;
+  const getSpanDescendants = globalThis.sentry?.getSpanDescendants;
+
+  if (!span || !getRootSpan || !getSpanDescendants) {
+    return;
+  }
+
+  if (getRootSpan(span) !== span) {
+    return;
+  }
+
+  let standalone = 0;
+  let lost = 0;
+  let finished = 0;
+
+  // Only sampled spans are returned, so a non-recording one has ended.
+  for (const child of getSpanDescendants(span)) {
+    if (child === span || isStandaloneSpan(child)) {
+      continue;
+    }
+    if (!child.isRecording()) {
+      finished += 1;
+    } else if (markStandalone(child)) {
+      standalone += 1;
+    } else {
+      lost += 1;
+    }
+  }
+
+  span.setAttribute(IN_FLIGHT_STANDALONE_ATTRIBUTE, standalone);
+  span.setAttribute(IN_FLIGHT_LOST_ATTRIBUTE, lost);
+  span.setAttribute(
+    OVER_SPAN_LIMIT_ATTRIBUTE,
+    Math.max(0, finished - MAX_CHILD_SPANS_PER_TRANSACTION),
+  );
+}
+
+/**
  * End a pending trace that was started without a callback.
  * Does nothing if the pending trace cannot be found.
  *
@@ -607,6 +716,7 @@ export function endTrace(request: EndTraceRequest): void {
     finalizeOnboardingMachineTime(pendingTrace.span);
   }
 
+  preserveInFlightChildren(pendingTrace.span);
   pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
@@ -802,6 +912,8 @@ function traceCallback<ResultType>(
         throw currentError;
       },
       () => {
+        // Runs before the SDK ends the span on return or settlement.
+        preserveInFlightChildren(span);
         const end = Date.now();
         logTrace(request, start, end, error);
       },
