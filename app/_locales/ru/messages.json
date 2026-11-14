@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Из-за размера вашей сделки и доступной ликвидности вы получите примерно на $1 меньше рыночной цены. Это уже учтено в вашей котировке."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Так ваша сделка изменяет рыночную цену токена. Это зависит от размера сделки, доступной ликвидности и комиссий поставщика. MetaMask не контролирует влияние на цену."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Влияние на цену"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "Подключить аппаратный кошелек"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "Использование USB или QR-кода"
   },
   "connectAnyway": {
     "message": "Все равно подключиться"
@@ -4796,9 +4790,6 @@
   "importAWallet": {
     "message": "Импортировать кошелек"
   },
-  "importAWalletDescription": {
-    "message": "Используя секретную фразу из 12, 18 или 24 слов"
-  },
   "importAccountError": {
     "message": "Ошибка импорта счета."
   },
@@ -4817,9 +4808,6 @@
   "importAccountJsonLoading2": {
     "message": "Мы приносим свои извинения, и мы сделаем это быстрее в будущем."
   },
-  "importAccountMsg": {
-    "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления MetaMask. Узнайте больше об импортированных счетах"
-  },
   "importAccountWithSocialMsg": {
     "message": "Импортированные закрыте ключи сохраняются в вашем счете и автоматически синхронизируются при входе с помощью того же аккаунта Google или Apple."
   },
@@ -4829,9 +4817,6 @@
   },
   "importAnAccount": {
     "message": "Импортировать счет"
-  },
-  "importAnAccountDescription": {
-    "message": "С помощью закрытого ключа"
   },
   "importNFT": {
     "message": "Импорт NFT"
@@ -5005,10 +4990,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "JSON-файл",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "Имя счета"
@@ -5459,9 +5440,6 @@
   "mfaErrorSignedOut": {
     "message": "Войдите, чтобы продолжить."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Слишком много попыток. Запросите новый код."
-  },
   "mfaErrorTotpExpired": {
     "message": "Это заняло слишком много времени. Введите текущий код из вашего приложения."
   },
@@ -5686,9 +5664,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Минимум, которые вы получите, если цена изменится во время обработки вашей транзакции, рассчитывается на основе настроек проскальзывания. Оценка предоставляется поставщиками ликвидности, поэтому окончательная сумма может отличаться."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Минимальная полученная сумма"
   },
   "minimumReceivedLabel": {
     "message": "Полученный минимум"
@@ -8841,10 +8816,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Выводимые средства отправлены"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMask автоматически обменяет ваш токен на желаемый.",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "Вывод средств",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9621,9 +9592,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Не удалось добавить счет"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Вы не можете воспользоваться приглашением из-за недавней торговой активности."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "Вас уже направил другой пользователь."

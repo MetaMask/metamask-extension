@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Karena ukuran perdagangan dan likuiditas yang tersedia, Anda akan mendapatkan sekitar $1 lebih rendah dari harga pasar. Hal ini sudah diperhitungkan dalam kuotasi Anda."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Beginilah cara perdagangan Anda mengubah harga pasar suatu token. Hal ini bergantung pada ukuran perdagangan, likuiditas yang tersedia, dan biaya penyedia. MetaMask tidak mengontrol dampak harga."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Dampak harga"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "Hubungkan dompet perangkat keras"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "Menggunakan USB atau Kode QR"
   },
   "connectAnyway": {
     "message": "Tetap hubungkan"
@@ -4800,9 +4794,6 @@
   "importAWallet": {
     "message": "Impor dompet"
   },
-  "importAWalletDescription": {
-    "message": "Menggunakan seed phrase yang terdiri dari 12, 18, atau 24 kata"
-  },
   "importAccountError": {
     "message": "Terjadi kesalahan saat mengimpor akun."
   },
@@ -4821,9 +4812,6 @@
   "importAccountJsonLoading2": {
     "message": "Mohon maaf, kami akan berupaya untuk membuatnya semakin cepat di masa mendatang."
   },
-  "importAccountMsg": {
-    "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia MetaMask Anda. Pelajari selengkapnya tentang akun yang diimpor"
-  },
   "importAccountWithSocialMsg": {
     "message": "Kunci pribadi yang diimpor dicadangkan ke akun dan disinkronkan secara otomatis saat Anda masuk dengan login Google atau Apple yang sama."
   },
@@ -4833,9 +4821,6 @@
   },
   "importAnAccount": {
     "message": "Impor akun"
-  },
-  "importAnAccountDescription": {
-    "message": "Melalui kunci pribadi"
   },
   "importNFT": {
     "message": "Impor NFT"
@@ -5009,10 +4994,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "File JSON",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "Nama akun"
@@ -5463,9 +5444,6 @@
   "mfaErrorSignedOut": {
     "message": "Masuk untuk melanjutkan."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Terlalu banyak percobaan. Minta kode baru."
-  },
   "mfaErrorTotpExpired": {
     "message": "Prosesnya terlalu lama. Masukkan kode saat ini dari aplikasi Anda."
   },
@@ -5690,9 +5668,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Nilai minimum yang akan Anda dapatkan jika harga berubah selama proses transaksi, berdasarkan pengaturan selip. Estimasi ini berasal dari penyedia likuiditas, sehingga jumlah akhirnya dapat berbeda."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Jumlah minimum yang diterima"
   },
   "minimumReceivedLabel": {
     "message": "Minimum yang diterima"
@@ -8849,10 +8824,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Penarikan dikirim"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMask akan menukar token Anda ke token yang diinginkan.",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "Penarikan",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9629,9 +9600,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Gagal menambahkan akun"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Anda tidak dapat dirujuk karena aktivitas perdagangan baru-baru ini."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "Anda telah dirujuk oleh pengguna lain."

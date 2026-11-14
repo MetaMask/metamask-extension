@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "İşleminizin boyutundan ve kullanılabilir likiditeden dolayı piyasa fiyatından yaklaşık $1 daha az alacaksınız. Bu zaten teklifinize dahil edilmiştir."
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Bu, işleminizin bir tokenın piyasa fiyatını nasıl değiştirdiğini gösterir. İşlem boyutuna, mevcut likiditeye ve sağlayıcı ücretlerine bağlıdır. MetaMask fiyat etkisini kontrol etmez."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Fiyat etkisi"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "Bir donanım cüzdanı bağlayın"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "USB veya QR Kodu kullanımı"
   },
   "connectAnyway": {
     "message": "Yine de bağlan"
@@ -4800,9 +4794,6 @@
   "importAWallet": {
     "message": "Bir cüzdanı içe aktarın"
   },
-  "importAWalletDescription": {
-    "message": "12, 18 veya 24 sözcükten oluşan anahtar cümle kullanarak"
-  },
   "importAccountError": {
     "message": "Hesap içe aktarılırken hata oluştu."
   },
@@ -4821,9 +4812,6 @@
   "importAccountJsonLoading2": {
     "message": "Özür dileriz, bunu gelecekte daha hızlı hale getireceğiz."
   },
-  "importAccountMsg": {
-    "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
-  },
   "importAccountWithSocialMsg": {
     "message": "İçe aktarılan özel anahtarlar hesabınıza yedeklenir ve aynı Google veya Apple oturumu ile giriş yaptığınızda otomatik olarak senkronize olur."
   },
@@ -4833,9 +4821,6 @@
   },
   "importAnAccount": {
     "message": "Bir hesabı içe aktar"
-  },
-  "importAnAccountDescription": {
-    "message": "Özel anahtar ile"
   },
   "importNFT": {
     "message": "NFT'yi içe aktar"
@@ -5009,10 +4994,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "JSON Dosyası",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "Hesap adı"
@@ -5463,9 +5444,6 @@
   "mfaErrorSignedOut": {
     "message": "Devam etmek için giriş yapın."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Çok sayıda deneme yapıldı. Yeni bir kod isteyin."
-  },
   "mfaErrorTotpExpired": {
     "message": "Bu işlem çok uzun sürdü. Mevcut kodu uygulamanızdan girin."
   },
@@ -5690,9 +5668,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Kayma ayarlarınıza göre işleminiz gerçekleştirilirken fiyat değişirse alacağınız minimum tutar. Bu tahmin likidite sağlayıcılarından alınır, yani nihai tutar değişiklik gösterebilir."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Alınan minimum tutar"
   },
   "minimumReceivedLabel": {
     "message": "Alınan minimum"
@@ -8855,10 +8830,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Çekim gönderildi"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek.",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "Çekme işlemi",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9635,9 +9606,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Hesap eklenemedi"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Son zamanlardaki işlem hareketleriniz nedeniyle referansla katılamazsınız."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "Zaten başka bir kullanıcının referansı ile geldiniz."

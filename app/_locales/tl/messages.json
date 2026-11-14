@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "Dahil sa laki ng trade at available na liquidity mo, mas mababa nang $1 sa market price ang makukuha mo. Naibilang na ito sa quote mo. "
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "Sa ganitong paraan nababago ng trade mo ang market pirce ng isang token. Nakadepende ito sa laki ng trade, available na liquidity, at mga bayarin sa provider. Hindi kinokontrol ng MetaMask ang epekto sa presyo."
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Epekto ng presyo"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "Magkonekta ng wallet na hardware"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "Paggamit ng USB o QR Code"
   },
   "connectAnyway": {
     "message": "Kumonekta pa rin"
@@ -4796,9 +4790,6 @@
   "importAWallet": {
     "message": "Mag-import ng wallet"
   },
-  "importAWalletDescription": {
-    "message": "Paggamit ng 12, 18, 0 24 na salitang seed phrase"
-  },
   "importAccountError": {
     "message": "Error sa pag-import ng account."
   },
@@ -4817,9 +4808,6 @@
   "importAccountJsonLoading2": {
     "message": "Humihingi kami ng paumanhin, at gagawin namin itong mas mabilis sa hinaharap."
   },
-  "importAccountMsg": {
-    "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
-  },
   "importAccountWithSocialMsg": {
     "message": "Naka-back up ang mga na-import na pribadong key sa iyong account at awtomatikong nagsi-sync ang mga ito kapag nag-sign in ka gamit ang parehong Google o Apple login."
   },
@@ -4829,9 +4817,6 @@
   },
   "importAnAccount": {
     "message": "Mag-import ng account"
-  },
-  "importAnAccountDescription": {
-    "message": "Sa pamamagitan ng pribadong key"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -5005,10 +4990,6 @@
   },
   "jazzicons": {
     "message": "Mga Jazzicon"
-  },
-  "jsonFile": {
-    "message": "File na JSON",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "Pangalan ng account"
@@ -5459,9 +5440,6 @@
   "mfaErrorSignedOut": {
     "message": "Mag-sign in para magpatuloy."
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "Napakaraming pagtatangka. Humiling ng bagong code."
-  },
   "mfaErrorTotpExpired": {
     "message": "Masyadong matagal ang paghihintay. Ilagay ang kasalukuyang code mula sa iyong app."
   },
@@ -5686,9 +5664,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "Ang pinakamababang halaga na iyong matatanggap kapag nagbago ang presyo habang pinoproseso ang iyong transaksyon, batay sa setting ng iyong slippage. Mula sa pagtatantiya ang mga liquidity provider, kaya psibleng mag-iba ang huling halaga."
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "Minimum na matatanggap"
   },
   "minimumReceivedLabel": {
     "message": "Minimum na matatanggap"
@@ -8841,10 +8816,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "Naisumite ang pagwi-withdraw"
   },
-  "perpsWithdrawTooltip": {
-    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo.",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "Pag-withdraw",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9621,9 +9592,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Bigong maidagdag ang account"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Hindi ka maaaring i-refer dahil sa kamakailang aktibidad sa pagti-trade."
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "Nai-refer ka na ng ibang user."

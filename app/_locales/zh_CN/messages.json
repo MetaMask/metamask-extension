@@ -2325,9 +2325,6 @@
   "bridgePriceImpactHighDescription": {
     "message": "由于您的交易规模和可用流动性，您的价格将比市场价格低约 $1。此差额已计入当前报价中。"
   },
-  "bridgePriceImpactNormalDescription": {
-    "message": "这是您的交易对代币市场价格产生的影响。具体取决于交易规模、可用流动性以及服务商费用。MetaMask 无法控制价格影响。"
-  },
   "bridgePriceImpactTooltipTitle": {
     "message": "价格影响"
   },
@@ -2990,9 +2987,6 @@
   },
   "connectAHardwareWallet": {
     "message": "连接硬件钱包"
-  },
-  "connectAHardwareWalletDescription": {
-    "message": "使用 USB 或二维码"
   },
   "connectAnyway": {
     "message": "仍然连接"
@@ -4796,9 +4790,6 @@
   "importAWallet": {
     "message": "导入钱包"
   },
-  "importAWalletDescription": {
-    "message": "使用 12、18 或 24 个单词的助记词"
-  },
   "importAccountError": {
     "message": "导入账户时出错。"
   },
@@ -4817,9 +4808,6 @@
   "importAccountJsonLoading2": {
     "message": "很抱歉，在未来我们将会加快此流程。"
   },
-  "importAccountMsg": {
-    "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
-  },
   "importAccountWithSocialMsg": {
     "message": "导入的私钥会备份到您的账户中，并在您使用相同的 Google 或 Apple 账户登录时自动同步。"
   },
@@ -4829,9 +4817,6 @@
   },
   "importAnAccount": {
     "message": "导入账户"
-  },
-  "importAnAccountDescription": {
-    "message": "通过私钥"
   },
   "importNFT": {
     "message": "导入NFT"
@@ -5005,10 +4990,6 @@
   },
   "jazzicons": {
     "message": "Jazzicons"
-  },
-  "jsonFile": {
-    "message": "JSON 文件",
-    "description": "format for importing an account"
   },
   "keyringAccountName": {
     "message": "账户名称"
@@ -5459,9 +5440,6 @@
   "mfaErrorSignedOut": {
     "message": "请登录以继续。"
   },
-  "mfaErrorTooManyAttempts": {
-    "message": "尝试次数过多。请请求新的验证码。"
-  },
   "mfaErrorTotpExpired": {
     "message": "耗时过长。请输入您应用中的当前验证码。"
   },
@@ -5686,9 +5664,6 @@
   },
   "minimumReceivedExplanation": {
     "message": "若交易处理期间价格发生波动，根据您设置的滑点容差范围，此为您至少可获得的代币数量。该估算值由流动性提供商提供，因此实际兑换数量可能有所差异。"
-  },
-  "minimumReceivedExplanationTitle": {
-    "message": "最少可获得的代币数量"
   },
   "minimumReceivedLabel": {
     "message": "最低收款金额"
@@ -8847,10 +8822,6 @@
   "perpsWithdrawToastSuccessTitle": {
     "message": "提现已提交"
   },
-  "perpsWithdrawTooltip": {
-    "message": "MetaMask 将为您兑换为您想要的代币。",
-    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
-  },
   "perpsWithdrawalEmptyTitle": {
     "message": "提取",
     "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
@@ -9627,9 +9598,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "添加账户失败"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "由于近期的交易活动，您不能被推荐。"
   },
   "rewardsMoneyReferralAlreadyReferred": {
     "message": "您已被其他用户推荐过。"
