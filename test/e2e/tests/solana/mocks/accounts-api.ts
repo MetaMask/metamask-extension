@@ -1,6 +1,10 @@
 import { Mockttp } from 'mockttp';
 
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
+import {
+  API_RESPONSES,
+  buildAccountsSupportedNetworksV2,
+} from '../../../mock-response-data/api-responses';
 
 /**
  * Mock GET /v2/supportedNetworks for the Accounts API.
@@ -17,20 +21,15 @@ export function mockAccountsApiV2SupportedNetworks(mockServer: Mockttp) {
   return mockServer
     .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
-    .thenJson(200, {
-      fullSupport: [
-        'eip155:1',
-        'eip155:137',
-        'eip155:56',
-        'eip155:59144',
-        'eip155:8453',
-        'eip155:10',
-        'eip155:42161',
-        'eip155:534352',
-        'eip155:1337',
-      ],
-      partialSupport: ['eip155:42220', 'eip155:43114'],
-    });
+    .thenJson(
+      200,
+      buildAccountsSupportedNetworksV2({
+        fullSupport: [
+          ...API_RESPONSES['accounts-v2-supported-networks'].fullSupport,
+          'eip155:1337',
+        ],
+      }),
+    );
 }
 
 /**

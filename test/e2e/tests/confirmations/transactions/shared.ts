@@ -3,6 +3,7 @@ import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
+import { buildFourByteSignatures } from '../../../mock-response-data/api-responses';
 
 export type TestSuiteArguments = {
   driver: Driver;
@@ -38,28 +39,14 @@ export async function mocked4BytesApprove(mockServer: MockttpServer) {
     .withQuery({ hex_signature: '0x095ea7b3' })
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            id: 149,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            created_at: '2016-07-09T03:58:29.617584Z',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            text_signature: 'approve(address,uint256)',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hex_signature: '0x095ea7b3',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            bytes_signature: '\t^§³',
-          },
-        ],
-      },
+      json: buildFourByteSignatures({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hex_signature: '0x095ea7b3',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        text_signature: 'approve(address,uint256)',
+      }),
     }));
 }
 
@@ -72,28 +59,14 @@ export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            bytes_signature: '¢,´e',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            created_at: '2018-04-11T21:47:39.980645Z',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hex_signature: '0xa22cb465',
-            id: 29659,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            text_signature: 'setApprovalForAll(address,bool)',
-          },
-        ],
-      },
+      json: buildFourByteSignatures({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hex_signature: '0xa22cb465',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        text_signature: 'setApprovalForAll(address,bool)',
+      }),
     }));
 }
 
@@ -104,31 +77,15 @@ export async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x39509351' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [
-            {
-              id: 46002,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              created_at: '2018-06-24T21:43:27.354648Z',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              text_signature: 'increaseAllowance(address,uint256)',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hex_signature: '0x39509351',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              bytes_signature: '9PQ',
-            },
-          ],
-        },
-      };
-    });
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: buildFourByteSignatures({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hex_signature: '0x39509351',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        text_signature: 'increaseAllowance(address,uint256)',
+      }),
+    }));
 }

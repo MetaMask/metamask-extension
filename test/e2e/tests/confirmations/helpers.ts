@@ -15,6 +15,11 @@ import {
   shapeV6AccountsApiBalances,
 } from '../../helpers/accounts-api-v6-balances';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import {
+  API_RESPONSES,
+  buildFourByteSignatures,
+  buildSpotPrice,
+} from '../../mock-response-data/api-responses';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -116,25 +121,7 @@ async function createMockSignatureDecodingEvent(mockServer: Mockttp) {
     .forPost(`${DECODING_E2E_API_URL}/signature`)
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        stateChanges: [
-          {
-            assetType: 'NATIVE',
-            changeType: 'RECEIVE',
-            address: '',
-            amount: '900000000000000000',
-            contractAddress: '',
-          },
-          {
-            assetType: 'ERC721',
-            changeType: 'LISTING',
-            address: '',
-            amount: '',
-            contractAddress: '0xafd4896984CA60d2feF66136e57f958dCe9482d5',
-            tokenID: '2101',
-          },
-        ],
-      },
+      json: API_RESPONSES['signature-insights-signature'],
     }));
 }
 
@@ -208,28 +195,14 @@ export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            bytes_signature: '©\u0005»',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            created_at: '2016-07-09T03:58:28.234977Z',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hex_signature: '0xa9059cbb',
-            id: 145,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            text_signature: 'transfer(address,uint256)',
-          },
-        ],
-      },
+      json: buildFourByteSignatures({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hex_signature: '0xa9059cbb',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        text_signature: 'transfer(address,uint256)',
+      }),
     }));
 }
 
@@ -973,11 +946,10 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
-            'eip155:1/slip44:60': {
+            'eip155:1/slip44:60': buildSpotPrice({
               price: 1700,
               marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
+            }),
           },
         };
       }),
