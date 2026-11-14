@@ -1367,7 +1367,7 @@
     "rewardsEnabled": "boolean",
     "rewardsBadgeHidden": "boolean",
     "accountLinkedTimestamp": "null",
-    "rewardsDeeplinkUrl": "null",
+    "rewardsDeepLinkUrl": "null",
     "errorToast": {
       "actionText": "string",
       "description": "string",

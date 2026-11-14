@@ -9,7 +9,7 @@ import {
 } from '../../../../ducks/rewards/selectors';
 import {
   setRewardsModalOpen,
-  setRewardsDeeplinkUrl,
+  setRewardsDeepLinkUrl,
 } from '../../../../ducks/rewards';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
@@ -130,7 +130,7 @@ describe('RewardsModal', () => {
     });
   });
 
-  it('dispatches close and clears the deeplink url when close button is clicked', () => {
+  it('dispatches close and clears the deep link url when close button is clicked', () => {
     setupSelectors({ isOpen: true, candidateSubscriptionId: null });
     const dispatchMock = jest.fn();
     mockedUseAppDispatch.mockReturnValue(dispatchMock);
@@ -143,7 +143,7 @@ describe('RewardsModal', () => {
     fireEvent.click(closeButton as Element);
 
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsModalOpen(false));
-    expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeeplinkUrl(null));
+    expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeepLinkUrl(null));
   });
 
   it('sets header theme attribute based on useTheme: light', () => {

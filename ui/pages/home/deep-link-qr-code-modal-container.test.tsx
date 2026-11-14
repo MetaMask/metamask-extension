@@ -5,15 +5,15 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
-import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
-import type { HomeDeepLinkQrCode } from './HomeDeepLinkActions';
+import { DeepLinkQrCodeModalContainer } from './deep-link-qr-code-modal-container';
+import type { HomeDeepLinkQrCode } from './home-deep-link-actions';
 
-jest.mock('../../components/app/deeplink-qr-code', () => {
+jest.mock('../../components/app/deep-link-qr-code', () => {
   const { enLocale: mockMessages } = jest.requireActual(
     '../../../test/lib/i18n-helpers',
   );
   return {
-    DeeplinkQRCode: ({
+    DeepLinkQRCode: ({
       title,
       description,
       onDone,
@@ -73,39 +73,39 @@ function buildState({
 
 function renderContainer(stateOverrides = {}) {
   const store = mockStore(buildState(stateOverrides));
-  return renderWithProvider(<DeeplinkQrCodeModalContainer />, store);
+  return renderWithProvider(<DeepLinkQrCodeModalContainer />, store);
 }
 
-describe('DeeplinkQrCodeModalContainer', () => {
+describe('DeepLinkQrCodeModalContainer', () => {
   it('renders nothing when homeDeepLinkQrCode is null', () => {
     const { queryByTestId } = renderContainer({ homeDeepLinkQrCode: null });
-    expect(queryByTestId('deeplink-qrcode-modal')).toBeNull();
+    expect(queryByTestId('deep-link-qr-code-modal')).toBeNull();
   });
 
   it('renders the modal when homeDeepLinkQrCode is set and canShow is true', () => {
     const { getByTestId } = renderContainer({
       homeDeepLinkQrCode: {
-        deeplinkUrl: 'metamask://predict?token=ETH',
+        deepLinkUrl: 'metamask://predict?token=ETH',
         titleKey: 'deepLinkQrPredictTitle',
         descriptionKey: 'deepLinkQrPredictDescription',
       },
     });
-    expect(getByTestId('deeplink-qrcode-modal')).toBeInTheDocument();
-    expect(getByTestId('deeplink-qrcode-container')).toBeInTheDocument();
+    expect(getByTestId('deep-link-qr-code-modal')).toBeInTheDocument();
+    expect(getByTestId('deep-link-qr-code-container')).toBeInTheDocument();
   });
 
   it('dispatches clearHomeDeepLinkQrCode when the Done button is clicked', () => {
     const store = mockStore(
       buildState({
         homeDeepLinkQrCode: {
-          deeplinkUrl: 'metamask://predict?token=ETH',
+          deepLinkUrl: 'metamask://predict?token=ETH',
           titleKey: 'deepLinkQrPredictTitle',
           descriptionKey: 'deepLinkQrPredictDescription',
         },
       }),
     );
     const { getByText } = renderWithProvider(
-      <DeeplinkQrCodeModalContainer />,
+      <DeepLinkQrCodeModalContainer />,
       store,
     );
 

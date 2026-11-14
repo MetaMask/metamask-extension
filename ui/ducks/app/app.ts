@@ -116,7 +116,7 @@ type AppState = {
     hasUserInteractedWithModal?: boolean;
   };
   homeDeepLinkQrCode: {
-    deeplinkUrl: string;
+    deepLinkUrl: string;
     descriptionKey: string;
     titleKey: string;
   } | null;
@@ -793,7 +793,7 @@ export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
 }
 
 export function setHomeDeepLinkQrCode(payload: {
-  deeplinkUrl: string;
+  deepLinkUrl: string;
   descriptionKey: string;
   titleKey: string;
 }): PayloadAction<typeof payload> {

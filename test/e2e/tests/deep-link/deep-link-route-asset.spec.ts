@@ -45,7 +45,7 @@ async function mockSolanaAssetMetadata(server: Mockttp): Promise<void> {
 }
 
 describe('Deep Link - /asset Route', function () {
-  it('redirects to home when a Solana asset deeplink opens with an EVM-only account selected', async function () {
+  it('redirects to home when a Solana asset deep link opens with an EVM-only account selected', async function () {
     const keyPair = await generateECDSAKeyPair();
     const deepLinkPublicKey = bytesToB64(
       await crypto.subtle.exportKey('raw', keyPair.publicKey),

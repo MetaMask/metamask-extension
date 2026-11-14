@@ -36,14 +36,14 @@ export const swap = new Route({
   getTitle: (_: URLSearchParams) => 'deepLink_theSwapsPage',
   handler: function handler(params: URLSearchParams) {
     if (params.get(BridgeQueryParams.Tab) === LIMIT_ORDER_TAB) {
-      const deeplinkUrl = new URL('/swap', DEEP_LINK_ORIGIN);
+      const deepLinkUrl = new URL('/swap', DEEP_LINK_ORIGIN);
       params.forEach((value, key) =>
-        deeplinkUrl.searchParams.append(key, value),
+        deepLinkUrl.searchParams.append(key, value),
       );
 
       return createHomeQrCodeDestination(
-        HomeQueryParams.LimitOrderDeeplinkUrl,
-        deeplinkUrl.toString(),
+        HomeQueryParams.LimitOrderDeepLinkUrl,
+        deepLinkUrl.toString(),
       );
     }
 

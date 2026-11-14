@@ -30,8 +30,8 @@ export type RewardsState = {
   rewardsBadgeHidden: boolean;
   // Account linked timestamp (when an account is linked to a subscription)
   accountLinkedTimestamp: number | null;
-  // Full deeplink URL stored when user arrives via a rewards deeplink, used as QR code value
-  rewardsDeeplinkUrl: string | null;
+  // Full deep link URL stored when user arrives via a rewards deep link, used as QR code value
+  rewardsDeepLinkUrl: string | null;
 };
 
 export const initialState: RewardsState = {
@@ -62,7 +62,7 @@ export const initialState: RewardsState = {
   rewardsBadgeHidden: true,
   // Account linked timestamp
   accountLinkedTimestamp: null,
-  rewardsDeeplinkUrl: null,
+  rewardsDeepLinkUrl: null,
 };
 
 const rewardsSlice = createSlice({
@@ -162,8 +162,8 @@ const rewardsSlice = createSlice({
       state.accountLinkedTimestamp = action.payload;
     },
 
-    setRewardsDeeplinkUrl: (state, action: PayloadAction<string | null>) => {
-      state.rewardsDeeplinkUrl = action.payload;
+    setRewardsDeepLinkUrl: (state, action: PayloadAction<string | null>) => {
+      state.rewardsDeepLinkUrl = action.payload;
     },
   },
 });
@@ -181,7 +181,7 @@ export const {
   setErrorToast,
   setRewardsBadgeHidden,
   setRewardsAccountLinkedTimestamp,
-  setRewardsDeeplinkUrl,
+  setRewardsDeepLinkUrl,
 } = rewardsSlice.actions;
 
 export default rewardsSlice.reducer;

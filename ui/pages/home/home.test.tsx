@@ -59,8 +59,8 @@ jest.mock(
   '../../components/app/modals/pna25-modal/pna25-modal-container',
   () => ({ Pna25ModalContainer: () => null }),
 );
-jest.mock('./deeplink-qrcode-modal-container', () => ({
-  DeeplinkQrCodeModalContainer: () => null,
+jest.mock('./deep-link-qr-code-modal-container', () => ({
+  DeepLinkQrCodeModalContainer: () => null,
 }));
 jest.mock('./shield-cohort-container', () => ({
   ShieldCohortContainer: () => null,
@@ -71,7 +71,9 @@ jest.mock('./home-notifications-container', () => ({
 jest.mock('../connected-sites', () => () => null);
 jest.mock('../connected-accounts', () => () => null);
 jest.mock('./beta-and-flask-home-footer.component', () => () => null);
-jest.mock('./HomeDeepLinkActions', () => ({ HomeDeepLinkActions: () => null }));
+jest.mock('./home-deep-link-actions', () => ({
+  HomeDeepLinkActions: () => null,
+}));
 jest.mock('../../contexts/shield/shield-subscription', () => ({
   useShieldSubscriptionContext: () => ({
     evaluateCohortEligibility: jest.fn(),

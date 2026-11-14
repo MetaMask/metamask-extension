@@ -24,7 +24,7 @@ export type LastVisitedPerpsRoute = {
 
 /**
  * Navigates immediately when `redirectAfterDefaultPage` is set and cleared in
- * the same tick — e.g. after a pending deeplink or perps-resume is resolved.
+ * the same tick — e.g. after a pending deep link or perps-resume is resolved.
  * @param options0
  * @param options0.redirectAfterDefaultPage
  * @param options0.navigate
