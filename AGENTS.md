@@ -936,7 +936,7 @@ yarn build:test:mv2           # Firefox MV2
 **Both:**
 
 - Code should use `browser.*` namespace (polyfilled for Chrome)
-- Conditional logic for browser differences in `app/scripts/lib/util.js`
+- Conditional logic for browser differences in `app/scripts/lib/util.ts`
 
 ---
 
