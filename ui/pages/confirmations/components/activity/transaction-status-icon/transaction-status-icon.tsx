@@ -2,10 +2,10 @@ import React from 'react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   Icon,
+  IconColor,
   IconName,
   IconSize,
-} from '../../../../../components/component-library';
-import { IconColor } from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 
 type TransactionStatusIconProps = {
   status: TransactionStatus;
@@ -26,12 +26,12 @@ function getStatusIcon(status: TransactionStatus): IconName {
 function getStatusIconColor(status: TransactionStatus): IconColor {
   switch (status) {
     case TransactionStatus.confirmed:
-      return IconColor.successDefault;
+      return IconColor.SuccessDefault;
     case TransactionStatus.failed:
     case TransactionStatus.dropped:
-      return IconColor.errorDefault;
+      return IconColor.ErrorDefault;
     default:
-      return IconColor.warningDefault;
+      return IconColor.WarningDefault;
   }
 }
 
