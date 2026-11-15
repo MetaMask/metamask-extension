@@ -297,4 +297,54 @@ describe('PPOMMiddleware', () => {
 
     expect(nextMock).toHaveBeenCalledTimes(1);
   });
+
+  it('forwards originPath onto the request passed to validateRequestWithPPOM', async () => {
+    const originPath =
+      'https://ipfs.io/ipfs/bafkreifmjawtugkhf7b4ellqrh6uk72ky7d2ev7q7ucdpvlryrzf2xuysi';
+
+    const { middlewareFunction } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+      originPath,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+
+    expect(validateRequestWithPPOM).toHaveBeenCalledTimes(1);
+    expect(validateRequestWithPPOM).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({ originPath }),
+      }),
+    );
+  });
+
+  it('omits originPath from the request when not provided', async () => {
+    const { middlewareFunction } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+
+    expect(validateRequestWithPPOM).toHaveBeenCalledTimes(1);
+    expect(validateRequestWithPPOM).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.not.objectContaining({ originPath: expect.anything() }),
+      }),
+    );
+  });
 });
