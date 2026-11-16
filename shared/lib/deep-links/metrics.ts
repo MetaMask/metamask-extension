@@ -60,9 +60,8 @@ export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
   const sensitiveProperties: Record<string, string> = {};
 
   for (const [key, value] of url.searchParams.entries()) {
-    if (key === 'sig' || key === 'ref' || key === 'referral') {
-      // Signatures are redundant; Money `ref` is handled above. Legacy
-      // `referral` is discarded — it is not tracked and not sensitive.
+    if (key === 'sig' || key === 'ref') {
+      // Signatures are redundant; Money `ref` is handled above.
       continue;
     }
 

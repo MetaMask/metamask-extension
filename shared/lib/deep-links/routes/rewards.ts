@@ -6,7 +6,7 @@ export const rewards = new Route({
   handler: function handler(params: URLSearchParams) {
     return {
       path: '/rewards',
-      query: new URLSearchParams(params),
+      query: params,
     };
   },
 });
