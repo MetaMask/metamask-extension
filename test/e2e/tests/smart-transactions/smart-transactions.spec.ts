@@ -91,7 +91,6 @@ async function withFixturesForSmartTransactions(
     async ({ driver }) => {
       await login(driver, {
         expectedBalance,
-        waitForNonEvmAccounts: false,
       });
       await runTestWithFixtures({ driver });
     },

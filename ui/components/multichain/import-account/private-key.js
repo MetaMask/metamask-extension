@@ -42,6 +42,7 @@ export default function PrivateKeyImportView({
         size={TextFieldSize.Lg}
         autoFocus
         helpText={importErrorMessage}
+        helpTextProps={importErrorMessage ? { role: 'alert' } : undefined}
         isError={Boolean(importErrorMessage)}
         placeholder={t('enterYourPrivateKey')}
         value={privateKey}

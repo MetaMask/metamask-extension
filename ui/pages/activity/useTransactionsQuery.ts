@@ -1,10 +1,13 @@
-import {
-  keepPreviousData,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
-import { parseCaipAssetType } from '@metamask/utils';
+import {
+  type CaipAccountId,
+  type CaipChainId,
+  isCaipChainId,
+  KnownCaipNamespace,
+  parseCaipAssetType,
+  toCaipAccountId,
+} from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { MINUTE } from '../../../shared/constants/time';
@@ -13,7 +16,6 @@ import { getIntlLocale } from '../../ducks/locale/locale';
 import { apiClient } from '../../helpers/api-client';
 import { getUseExternalServices } from '../../selectors';
 import { selectEvmAddress } from '../../selectors/activity';
-import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListFilter } from './helpers';
 import { useQueryFilters } from './query-filters/useQueryFilters';
 
@@ -79,12 +81,16 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
     'assetId' in filters
       ? [parseCaipAssetType(filters.assetId).chainId]
       : filters.networks;
-  const evmNetworks = networks.filter((network) =>
-    network.startsWith('eip155:'),
+  const evmNetworks: CaipChainId[] = networks.filter(
+    (network): network is CaipChainId =>
+      isCaipChainId(network) && network.startsWith('eip155:'),
   );
 
-  const accountIds = useMemo(
-    () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
+  const accountIds: CaipAccountId[] = useMemo(
+    () =>
+      evmAddress
+        ? [toCaipAccountId(KnownCaipNamespace.Eip155, '0', evmAddress)]
+        : [],
     [evmAddress],
   );
 
@@ -158,59 +164,4 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
   ]);
 
   return { ...query, fetchNextVisiblePage };
-}
-
-export function usePrefetchTransactions() {
-  const queryClient = useQueryClient();
-  const useExternalServices = useSelector(getUseExternalServices);
-  const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
-  const locale = useSelector(getIntlLocale);
-  const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
-
-  const evmNetworks = useMemo(
-    () => enabledNetworks.filter((id: string) => id.startsWith('eip155:')),
-    [enabledNetworks],
-  );
-
-  const accountIds = useMemo(
-    () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),
-    [evmAddress],
-  );
-
-  const queryOptions = useMemo(
-    () =>
-      apiClient.accounts.getV5MultiAccountTransactionsInfiniteQueryOptions({
-        accountIds,
-        networks: evmNetworks,
-        includeTxMetadata: true,
-        lang: locale.split('-')[0],
-      }),
-    [accountIds, evmNetworks, locale],
-  );
-
-  return useCallback(() => {
-    if (!useExternalServices || !evmAddress) {
-      return;
-    }
-
-    const { queryKey } = queryOptions;
-    if (!queryKey || queryClient.getQueryData(queryKey)) {
-      return;
-    }
-
-    if (queryClient.isFetching({ queryKey }) > 0) {
-      return;
-    }
-
-    queryClient
-      .prefetchInfiniteQuery({
-        ...queryOptions,
-        queryFn: withKnownApiResponse(queryOptions.queryFn),
-        retry: false,
-        staleTime: 5 * MINUTE,
-      })
-      .catch(() => {
-        // Prefetch is opportunistic
-      });
-  }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }

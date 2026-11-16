@@ -6,6 +6,9 @@ import { useFullScreenDesign } from '../hooks/useFullScreenDesign';
 import { RootLayout } from './root-layout';
 
 jest.mock('../hooks/useFullScreenDesign');
+jest.mock('#ui/components/app/rewards/money-referral/ReferralInvite', () => ({
+  ReferralInvite: () => null,
+}));
 
 const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 
