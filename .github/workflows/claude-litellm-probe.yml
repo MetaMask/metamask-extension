@@ -23,6 +23,8 @@ jobs:
           claude --version
           sudo apt-get install -y bubblewrap socat
           bwrap --version
+          # Ubuntu 24.04 blocks unprivileged user namespaces, which bwrap needs.
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
       - name: Control, the Bash tool inherits the credential
         env:
