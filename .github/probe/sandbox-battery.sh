@@ -11,7 +11,7 @@ record() {
     echo "PASS $name" >> sandbox-results.txt
   else
     echo "FAIL $name (exit $code)" >> sandbox-results.txt
-    { echo "--- $name"; printf '%s\n' "$out" | head -n 6 | cut -c1-300; echo '...'; printf '%s\n' "$out" | tail -n 6 | cut -c1-300; } >> sandbox-detail.txt
+    { echo "--- $name"; printf '%s\n' "$out" | head -n 6 | cut -c1-300; echo '...'; printf '%s\n' "$out" | tail -n 6 | cut -c1-300; echo 'hosts mentioned:'; printf '%s\n' "$out" | grep -oE 'https?://[^/ "]+' | sort | uniq -c | head -n 8; } >> sandbox-detail.txt
   fi
 }
 
@@ -37,6 +37,16 @@ restore() { git checkout -q -- package.json yarn.lock; git clean -fdq .yarn/patc
 export YARN_HTTP_PROXY="${HTTP_PROXY:-${http_proxy:-}}"
 export YARN_HTTPS_PROXY="${HTTPS_PROXY:-${https_proxy:-}}"
 { echo '--- env'; env | grep -ciE 'proxy' ; echo "HOME=$HOME uid=$(id -u)"; ls -ld "$HOME"; } >> sandbox-detail.txt
+
+{
+  echo '--- write locations (PASS means the write succeeded)'
+  for p in "$HOME/w-probe" "$HOME/.ssh-w-probe" /tmp/w-probe /etc/w-probe /usr/w-probe ./w-probe; do
+    if touch "$p" 2> /dev/null; then echo "writable: $p"; rm -f "$p"; else echo "denied:   $p"; fi
+  done
+  echo '--- sandbox parent'
+  tr '\0' ' ' < "/proc/$PPID/cmdline" 2> /dev/null | cut -c1-1500; echo
+  grep -E 'NoNewPrivs|Seccomp' /proc/self/status
+} >> sandbox-detail.txt
 
 # Isolation
 check_fails 'credential is hidden from the shell' bash -c '[ -n "${ANTHROPIC_AUTH_TOKEN:-}" ]'

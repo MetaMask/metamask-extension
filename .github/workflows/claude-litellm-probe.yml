@@ -149,6 +149,13 @@ jobs:
           corepack enable
           yarn --version
 
+      - name: Control, update-lockfile without any sandbox
+        run: |
+          yarn install --mode=update-lockfile > control.log 2>&1; echo "control exit=$?"
+          tail -n 6 control.log | cut -c1-200
+          git checkout -q -- package.json yarn.lock
+          git status --short
+
       - name: Install bubblewrap, socat and a narrow AppArmor profile
         run: |
           sudo apt-get install -y bubblewrap socat
@@ -194,3 +201,4 @@ jobs:
           echo '--- host view of the write probe'
           ls -l ~/sandbox-probe || true
           [ "$(tail -n1 sandbox-results.txt)" = DONE ] && ! grep -q '^FAIL' sandbox-results.txt
+
