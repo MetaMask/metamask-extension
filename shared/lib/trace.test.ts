@@ -1816,8 +1816,11 @@ describe('children still running when their root ends', () => {
     const spans = await flushItems('span');
     expect(spans).toHaveLength(1);
     expect(spans[0]).toMatchObject({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       span_id: child.spanContext().spanId,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       trace_id: root.spanContext().traceId,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       parent_span_id: root.spanContext().spanId,
     });
   });

@@ -70,7 +70,7 @@ export function normalizeMarketFilter(filter: string): MarketFilter | null {
  * Contact support (Help Center). Single source of truth aligned with mobile perpsConfig.
  */
 export const SUPPORT_CONFIG = {
-  Url: 'https://support.metamask.io/?utm_source=extension',
+  Url: 'https://support.metamask.com/?utm_source=extension',
 } as const;
 
 /**
@@ -81,7 +81,7 @@ export const SUPPORT_CONFIG = {
  */
 export const SERVICE_INTERRUPTION_CONFIG = {
   FaqUrl:
-    'https://support.metamask.io/trade/perps/troubleshoot/?utm_source=extension',
+    'https://support.metamask.com/trade/perps/troubleshoot/?utm_source=extension',
   SupportUrl: SUPPORT_CONFIG.Url,
 } as const;
 
@@ -97,5 +97,5 @@ export const FEEDBACK_CONFIG = {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
+    'https://support.metamask.com/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
 } as const;

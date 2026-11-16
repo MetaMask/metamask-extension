@@ -466,7 +466,7 @@ describe('MetaMask onboarding', function () {
       signed: 'signed with sig_params',
       privateKey: keyPair.privateKey,
     });
-    const expectedUrlOpened = 'https://metamask.io/card?amount=100';
+    const expectedUrlOpened = 'https://metamask.com/card?amount=100';
 
     await withFixtures(
       {
