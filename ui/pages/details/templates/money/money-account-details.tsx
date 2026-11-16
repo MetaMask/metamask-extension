@@ -35,10 +35,12 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
   const transactionMeta = useLocalTransactionMeta(item.hash);
-  const withdrawDestinationChainId =
+  const explorerChainId =
     transactionMeta && isMoneyWithdrawTx(transactionMeta)
-      ? transactionMeta.metamaskPay?.chainId
-      : undefined;
+      ? toEvmCaipChainId(
+          transactionMeta.metamaskPay?.chainId ?? transactionMeta.chainId,
+        )
+      : item.chainId;
   const { metamaskPay } = transactionMeta ?? {};
   const { bridgeFeeFiat, networkFeeFiat, totalFiat } = metamaskPay || {};
 
@@ -85,14 +87,7 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
             {t('addFunds')}
           </Button>
         ) : (
-          <BlockExplorerButton
-            chainId={
-              withdrawDestinationChainId
-                ? toEvmCaipChainId(withdrawDestinationChainId)
-                : item.chainId
-            }
-            txHash={item.hash}
-          />
+          <BlockExplorerButton chainId={explorerChainId} txHash={item.hash} />
         )
       }
       formatFiat={formatFiat}
