@@ -1155,6 +1155,8 @@ describe('useOnboardingCompletion', () => {
                 route: '/swap',
                 signature: deferredRoute.signature,
                 // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics properties
+                was_app_installed: false,
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics properties
                 attribution_id: 'install-123',
                 // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics properties
                 utm_source: 'campaign',
