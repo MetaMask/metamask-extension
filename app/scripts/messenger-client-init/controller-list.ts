@@ -78,6 +78,7 @@ import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   AccountActivityService,
   BackendWebSocketService,
+  OHLCVService,
 } from '@metamask/core-backend';
 import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
 import { ChompApiService } from '@metamask/chomp-api-service';
@@ -244,6 +245,7 @@ export type MessengerClient =
   | WebSocketService
   | BackendWebSocketService
   | AccountActivityService
+  | OHLCVService
   | SnapAccountService
   | MultichainAccountService
   | NetworkEnablementController

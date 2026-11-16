@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import BigNumber from 'bignumber.js';
 import { CaipChainId } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { getNativeAssetForChain } from '../../../../../ducks/batch-sell/selectors';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
 import {

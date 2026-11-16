@@ -2,7 +2,11 @@ import { defineAllowedRouteCapabilities } from '../../helpers/route-messenger-he
 import type { RouteMessengerFromCapabilities } from '../../messengers/route-messenger';
 
 export const ALLOWED_CAPABILITIES = defineAllowedRouteCapabilities({
-  actions: ['MoneyAccountAvailabilityService:getAvailability'],
+  actions: [
+    'MoneyAccountAvailabilityService:getAvailability',
+    'MoneyAccountApiDataService:fetchVaultRate',
+    'MoneyAccountApiDataService:fetchVaultShareValuations',
+  ],
   events: [],
 });
 

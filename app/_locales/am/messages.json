@@ -202,10 +202,6 @@
   "fast": {
     "message": "ፈጣን"
   },
-  "fileImportFail": {
-    "message": "ፋይል ማስመጣት እየሰራ አይደለም? እዚህ ላይ ጠቅ ያድርጉ!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "ይህን መሣሪያ እርሳ"
   },
@@ -376,10 +372,6 @@
   },
   "passwordsDontMatch": {
     "message": "የይለፍ ቃላት ተመሳሳይ አይደሉም"
-  },
-  "pastePrivateKey": {
-    "message": "የግል ቁልፍዎን ሕብረ ቁምፊ እዚህ ለጥፍ፡",
-    "description": "For importing an account from a private key"
   },
   "pending": {
     "message": "በእንጥልጥል ላይ ያለ"
@@ -568,9 +560,6 @@
   },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
-  },
-  "usedByClients": {
-    "message": "በተለያዩ ደንበኞች ጥቅም ላይ የዋለ ነው"
   },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"

@@ -57,6 +57,7 @@ export const createMfaFlow = ({
   now = Date.now,
   reportError,
   trackEvent,
+  whileLocked = false,
 }: MfaFlowOptions): MfaFlow => {
   const tokenReason = { operation: reason.operation };
   const tracker = createMfaTracker({ reason, request, trackEvent });
@@ -463,7 +464,9 @@ export const createMfaFlow = ({
     isRecovery: boolean,
   ): (() => Promise<void>) | undefined => {
     if (!isRecovery && current?.flowId && state.step.name === 'otp') {
-      if (current.method === 'email_otp') {
+      // Too many wrong codes: the user gets the new code themselves, once the
+      // resend limit allows it, rather than a silent send that may be refused.
+      if (current.method === 'email_otp' && code !== 'too_many_attempts') {
         return async () => {
           // Clear the previous notice first: the code screen empties the
           // boxes when `codeResent` changes, so a second expiry must change it
@@ -786,7 +789,7 @@ export const createMfaFlow = ({
     const needsPasskey =
       request.kind === 'enroll'
         ? request.method === 'passkey'
-        : request.methods.includes('passkey');
+        : !request.verifyOnly && request.methods.includes('passkey');
     if (needsPasskey && !passkey) {
       rejectWith('passkey_unsupported');
       return Promise.resolve();
@@ -799,6 +802,7 @@ export const createMfaFlow = ({
 
   return {
     reason,
+    whileLocked,
     result,
     start,
     getState: () => state,

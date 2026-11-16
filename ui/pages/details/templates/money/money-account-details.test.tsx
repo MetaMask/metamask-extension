@@ -10,6 +10,7 @@ import type { MoneyAccountActivityItem } from '../../../../../shared/lib/activit
 import { useLocalTransactionMeta } from '../../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { MoneyFtueEntryPoint } from '../../../../helpers/money/money-ftue-entry-point';
 import { MoneyAccountDetails } from './money-account-details';
 
 jest.mock('../../../../hooks/activity/useLocalTransactionMeta');
@@ -281,6 +282,11 @@ describe('MoneyAccountDetails', () => {
       await userEvent.click(screen.getByText('addFunds'));
 
       expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+      expect(mockInitiateDeposit).toHaveBeenCalledWith({
+        ftueOrigin: {
+          entryPoint: MoneyFtueEntryPoint.MoneyActivityDetails,
+        },
+      });
     });
 
     it('falls back to the block explorer for a withdrawal', () => {

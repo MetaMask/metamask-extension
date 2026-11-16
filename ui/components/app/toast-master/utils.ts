@@ -80,5 +80,7 @@ export function setPna25Acknowledged(acknowledged: boolean) {
 }
 
 export function dismissSidePanelMigrationToast() {
-  submitRequestToBackgroundAndCatch('dismissSidePanelMigrationToast');
+  submitRequestToBackgroundAndCatch(
+    'PreferencesController:dismissSidePanelMigrationToast',
+  );
 }

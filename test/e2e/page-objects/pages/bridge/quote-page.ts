@@ -573,14 +573,11 @@ class BridgeQuotePage {
   };
 
   /**
-   * Navigates away from the bridge page via the bottom nav bar home tab.
-   * Use this instead of `goBack` when the user is in the bottom nav AB test
-   * treatment, where the back button is removed on the swap/bridge page.
+   * Waits for the submitted swap to clear the amount, then leaves Swaps.
    */
-  goBackViaBottomNavHome = async () => {
-    const homeTab = '[data-testid="bottom-nav-home"]';
-    await this.driver.waitForSelector(homeTab);
-    await this.driver.clickElement(homeTab);
+  goBackAfterSubmit = async () => {
+    await this.driver.waitForSelector(`${this.sourceAmount}[value=""]`);
+    await this.goBack();
   };
 
   /**

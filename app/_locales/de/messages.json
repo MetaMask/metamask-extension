@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URL hinzufügen"
   },
-  "addAWallet": {
-    "message": "Wallet hinzufügen"
-  },
   "addAccount": {
     "message": "Konto hinzufügen"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "Contract-Interaktion"
   },
-  "convertAgain": {
-    "message": "Erneut konvertieren"
-  },
   "convertTokenToNFTDescription": {
     "message": "Wir haben festgestellt, dass dieses Asset eine NFT ist. MetaMask hat jetzt volle native Unterstützung für NFTs. Möchten Sie es aus Ihrer Tokenliste entfernen und als NFT hinzufügen?"
   },
@@ -3432,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Aktualisieren Sie auf die neueste Version von MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Es wurde keine URL zum Navigieren angegeben."
@@ -3570,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics-Daten löschen"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Dadurch werden historische, mit Ihrer Nutzung auf diesem Gerät verbundene MetaMetrics-Daten gelöscht. Ihre Wallet und Ihre Konten bleiben nach dem Löschen dieser Daten unverändert. Dieser Vorgang kann bis zu 30 Tage dauern. Lesen Sie unsere $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Hierdurch werden historische MetaMetrics-Daten in Verbindung mit Ihrer Wallet gelöscht. MetaMetrics enthält anonymisierte Nutzungs- und Diagnosedaten. Ihre Wallet und Ihre Konten bleiben unverändert. Dieser Vorgang kann bis zu 30 Tage dauern. Siehe unsere $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3581,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Die Anfrage kann aktuell nicht abgeschlossen werden, da ein Problem mit dem Analytik-System des Servers vorliegt. Versuchen Sie es später erneut."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Wir können diese Daten im Moment nicht löschen"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Löschen nicht möglich"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Wir löschen all Ihre MetaMetrics-Daten. Sind Sie sicher?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics-Daten löschen?"
@@ -4154,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "$1 ist erforderlich"
-  },
-  "fileImportFail": {
-    "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "Anklicken und hochladen oder ziehen und ablegen"
@@ -5403,9 +5383,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Die Schaltfläche „Verbindungsstatus“ zeigt an, ob die Seite, die Sie besuchen, mit Ihrem aktuell ausgewählten Konto verbunden ist."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Da Sie sich noch nie für MetaMetrics angemeldet haben, gibt es hier keine Daten zu löschen."
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 wird auf npm gehostet und $2 ist die einzige Kennung dieses Snaps.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -6342,19 +6319,6 @@
   "musdConversionTitle": {
     "message": "Zu mUSD konvertiert",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSD-Konvertierung fehlgeschlagen"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Konvertierung von $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD-Konvertierung erfolgreich"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Der Bonus kann innerhalb eines Tages eingefordert werden."
   },
   "musdConvert": {
     "message": "Konvertieren"
@@ -7401,10 +7365,6 @@
   "paste": {
     "message": "Einfügen"
   },
-  "pastePrivateKey": {
-    "message": "Geben Sie hier die Zeichenfolge Ihres privaten Schlüssels ein:",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "Bezahlen mit",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8447,7 +8407,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "wenden Sie sich an den Support,",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Einige Dienste sind vorübergehend nicht verfügbar. $1 oder $2.",
@@ -8455,7 +8415,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Informieren Sie sich in den FAQs über Ihre Optionen",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Wir haben einen Ausfall",
@@ -8882,7 +8842,7 @@
     "message": "Auszahlung abgesendet"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask swappt den Token für Sie in den gewünschten Token um. Beim Swap in mUSD fallen keine MetaMask-Gebühren an.",
+    "message": "MetaMask swappt den Token für Sie in den gewünschten Token um.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8983,10 +8943,6 @@
   "privateKeyHidden": {
     "message": "Der private Schlüssel ist verborgen",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "Eingabe des privaten Schlüssels anzeigen/ausblenden",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "Dieser private Schlüssel wird angezeigt",
@@ -11772,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Plötzliche Marktschwankungen können Fehlschläge verursachen. Sollte das Problem weiterhin bestehen, kontaktieren Sie $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen ein. $1"
@@ -11916,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Transaktionsfehler kommen vor und wir sind hier, um zu helfen. Wenn das Problem weiterhin besteht, können Sie unseren Kundensupport unter $1 erreichen, um weitere Hilfe zu erhalten.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Swap fehlgeschlagen"
@@ -11945,9 +11901,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "hier",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " Beinhaltet"
   },
   "swapGasFeesSplit": {
     "message": "Die Netzwerkgebühren auf dem vorherigen Bildschirm werden auf diese beiden Transaktionen aufgeteilt."
@@ -12695,9 +12648,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Die automatische Anzeige von Tokens, die an Ihr Konto gesendet werden, erfordert die Kommunikation mit Servern von Drittanbietern, um Token-Bilder abzurufen. Diese Server erhalten Zugriff auf Ihre IP-Adresse."
-  },
-  "usedByClients": {
-    "message": "Verwendet von einer Reihe von Kunden"
   },
   "userOpContractDeployError": {
     "message": "Contract-Bereitstellung von einem Smart-Konto wird nicht unterstützt"

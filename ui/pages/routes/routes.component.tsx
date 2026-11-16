@@ -8,6 +8,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
+import { ContentLayout } from '#ui/layouts/content-layout';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
@@ -16,6 +17,7 @@ import Alert from '../../components/ui/alert';
 import Alerts from '../../components/app/alerts';
 
 import {
+  ASSET_ACTIVATION_LOADER_ROUTE,
   ASSET_DETAILS_ROUTE,
   ASSET_SECURITY_TRUST_ROUTE,
   ASSET_IMAGE_ROUTE,
@@ -50,6 +52,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
   RAMPS_COMPLETE_BUY_ROUTE,
+  RAMPS_BUY_INTERSTITIAL_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -84,6 +87,7 @@ import {
   MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
   MONEY_EARN_ROUTE,
+  MONEY_DEPOSIT_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -102,6 +106,7 @@ import {
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
+import { useUiInteractionReporter } from '../../hooks/useUiInteractionReporter';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
@@ -232,6 +237,9 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
+const AssetActivationLoader = mmLazy(
+  () => import('../asset/components/asset-activation-loader/index.ts'),
+);
 const SecurityTrustPage = mmLazy(
   () => import('../asset/security-trust/index.ts'),
 );
@@ -244,6 +252,9 @@ const RampsTokenSelection = mmLazy(
 );
 const RampsPaymentMethod = mmLazy(
   () => import('../ramps/payment-method/index.ts'),
+);
+const BuyInterstitial = mmLazy(
+  () => import('../ramps/buy-interstitial/index.ts'),
 );
 const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
 const PermissionsPage = mmLazy(
@@ -301,6 +312,9 @@ const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
 const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
+const MoneyDepositDeeplinkPage = mmLazy(
+  () => import('../money/money-deposit-deeplink-page.tsx'),
+);
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -379,6 +393,12 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
+      // Not behind `RequireAuthenticated`: social login recovery runs it while
+      // the wallet is locked. The page sends any other flow to unlock.
+      {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
       createRouteWithMessenger({
         path: RESTORE_VAULT_ROUTE,
         element: <RestoreVaultPage />,
@@ -443,10 +463,6 @@ export const routeConfig = [
           ]
         : []),
       {
-        path: MFA_FLOW_ROUTE,
-        element: <MfaFlowHost />,
-      },
-      {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
       },
@@ -497,6 +513,12 @@ export const routeConfig = [
       {
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
+      },
+      {
+        // Static path must be registered before ASSET_DETAILS_ROUTE so
+        // `/asset/activation/loader` is not captured as `:chainId`.
+        path: ASSET_ACTIVATION_LOADER_ROUTE,
+        element: <AssetActivationLoader />,
       },
       createRouteWithMessenger({
         path: ASSET_DETAILS_ROUTE,
@@ -647,6 +669,11 @@ export const routeConfig = [
             ],
           },
           {
+            // Resolves the intent and redirects; no flow chrome to show.
+            path: RAMPS_BUY_INTERSTITIAL_ROUTE,
+            element: <BuyInterstitial />,
+          },
+          {
             path: RAMPS_COMPLETE_BUY_ROUTE,
             element: <RampsCompleteBuy />,
           },
@@ -717,6 +744,16 @@ export const routeConfig = [
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyHomePage />,
               }),
+            ],
+          },
+        ],
+      },
+      {
+        element: <ContentLayout />,
+        children: [
+          {
+            element: <RequireBasicFunctionality />,
+            children: [
               createRouteWithMessenger({
                 path: MONEY_ACTIVITY_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
@@ -736,6 +773,11 @@ export const routeConfig = [
                 path: MONEY_EARN_ROUTE,
                 capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
                 element: <MoneyEarnPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_DEPOSIT_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyDepositDeeplinkPage />,
               }),
             ],
           },
@@ -862,6 +904,8 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
+  useUiInteractionReporter();
+
   const handleIdleAction = useCallback(() => {
     dispatch(setLastActiveTime());
   }, [dispatch]);
@@ -930,7 +974,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked ? <MfaFlowLauncher /> : null}
+      <MfaFlowLauncher />
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}

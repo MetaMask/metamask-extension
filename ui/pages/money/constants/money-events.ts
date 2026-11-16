@@ -56,6 +56,8 @@ export enum MoneyComponentName {
   FtueSplash = 'money_ftue_splash',
 }
 
+export { MoneyFtueEntryPoint } from '../../../helpers/money/money-ftue-entry-point';
+
 export enum MoneyButtonIntent {
   AddMoney = 'add_money',
   GoToMoneyHome = 'go_to_money_home',
@@ -103,7 +105,7 @@ export enum MoneyRedirectTargetType {
 export const MONEY_URLS = {
   MONEY_LANDING: MONEY_LANDING_URL,
   MUSD_PRICE: MUSD_PRICE_URL,
-  METAMASK_SUPPORT: SUPPORT_LINK ?? 'https://support.metamask.io',
+  METAMASK_SUPPORT: SUPPORT_LINK ?? 'https://support.metamask.com',
 } as const;
 
 export type MoneyUrl = (typeof MONEY_URLS)[keyof typeof MONEY_URLS];
