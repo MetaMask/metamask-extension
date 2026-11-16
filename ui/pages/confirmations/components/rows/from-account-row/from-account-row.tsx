@@ -27,14 +27,16 @@ import {
   selectTransactionPayEvmAccountOverrideByTransactionId,
   type TransactionPayAccountsState,
 } from '../../../../../selectors/transactionPayController';
-import { getInternalAccounts } from '../../../../../selectors/accounts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
 import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
-import { AccountSelectModal } from '../../account-select-modal';
+import {
+  AccountSelectModal,
+  type SelectedAccount,
+} from '../../account-select-modal';
 
 export { ConfirmInfoRowSize };
 
@@ -108,7 +110,6 @@ export function FromAccountRow({
   const accountOverride = useSelector((state: TransactionPayAccountsState) =>
     selectTransactionPayEvmAccountOverrideByTransactionId(state, transactionId),
   );
-  const internalAccounts = useSelector(getInternalAccounts);
 
   // Prefer the pay-controller override so the pill updates when the user picks
   // a different funding account without mutating txParams.from.
@@ -125,34 +126,25 @@ export function FromAccountRow({
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   const handleSelect = useCallback(
-    async (address: string) => {
+    async (account: SelectedAccount) => {
       closeModal();
 
       if (
         !currentConfirmation?.id ||
-        address.toLowerCase() === from.toLowerCase()
+        account.address.toLowerCase() === from.toLowerCase()
       ) {
         return;
       }
 
       // Withdraws re-encode the transfer in the background when the override
       // is set. Other flows rewrite nested calldata first.
-      const account = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === address.toLowerCase(),
-      );
-
-      if (!account) {
-        return;
-      }
-
       try {
         if (!isRecipientRow) {
           await replaceAccountInNestedTransactions({
             transactionId: currentConfirmation.id,
             nestedTransactions: currentConfirmation.nestedTransactions,
             oldAddress: accountOverride ?? txFrom,
-            newAddress: address,
+            newAddress: account.address,
           });
         }
         await setAccountOverride(currentConfirmation.id, account.id);
@@ -165,7 +157,6 @@ export function FromAccountRow({
       closeModal,
       currentConfirmation,
       from,
-      internalAccounts,
       isRecipientRow,
       txFrom,
     ],
