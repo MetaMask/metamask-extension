@@ -4,7 +4,6 @@ import {
   STELLAR_ACCOUNT_ADDRESS,
   buildStellarFixture,
   mockStellarApis,
-  stellarFixtureOptions,
   type MockStellarApisOptions,
   type StellarAccountTransactionFixture,
 } from '../mocks/common-stellar';
@@ -22,9 +21,18 @@ export type StellarFixtureAccount = {
   horizonTransactions?: StellarAccountTransactionFixture['records'];
 };
 
+/**
+ * Console noise from EVM RPC while on Stellar (no Anvil / Infura). Same idea as
+ * Tron derivation's `includeAnvil: false` + `ignoredConsoleErrors`.
+ */
+const DEFAULT_STELLAR_IGNORED_CONSOLE_ERRORS = [
+  'Failed to get nonce',
+  'JsonRpcError: Failed to fetch',
+];
+
 export type WithStellarFixturesOptions = Omit<
   WithFixturesOptions,
-  'localNodeOptions' | 'testSpecificMock' | 'fixtures'
+  'localNodeOptions' | 'testSpecificMock'
 > & {
   accounts?: StellarFixtureAccount[];
   fixtures?: unknown;
@@ -37,9 +45,11 @@ export type WithStellarFixturesOptions = Omit<
    * progress Pending → Confirmed without a live Stellar node.
    */
   enableSend?: boolean;
+  ignoredConsoleErrors?: string[];
   testSpecificMock?: (
     mockServer: Mockttp,
   ) => Promise<MockedEndpoint[] | MockedEndpoint>;
+  title?: string;
 };
 
 /**
@@ -57,8 +67,9 @@ export async function withStellarFixtures(
     fixtures = buildStellarFixture().build(),
     horizonOptions = {},
     enableSend = false,
+    ignoredConsoleErrors,
     testSpecificMock,
-    ...rest
+    ...withFixtureOptions
   } = options;
 
   const transactions: StellarAccountTransactionFixture[] = accounts.map(
@@ -73,9 +84,14 @@ export async function withStellarFixtures(
     : undefined;
 
   await withFixtures(
-    stellarFixtureOptions({
-      ...rest,
+    {
+      ...withFixtureOptions,
       fixtures,
+      ignoredConsoleErrors: [
+        ...DEFAULT_STELLAR_IGNORED_CONSOLE_ERRORS,
+        ...(ignoredConsoleErrors ?? []),
+      ],
+      localNodeOptions: 'none',
       testSpecificMock: async (mockServer: Mockttp) => {
         const stellarMocks = await mockStellarApis(mockServer, {
           ...horizonOptions,
@@ -97,7 +113,7 @@ export async function withStellarFixtures(
           ...(Array.isArray(extra) ? extra : [extra]),
         ];
       },
-    }),
+    },
     testSuite,
   );
 }
