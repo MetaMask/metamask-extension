@@ -17,10 +17,7 @@ export {
   MarketInsightsDisclaimerModal,
 } from './market-insights-disclaimer-modal';
 export { SlidingTextCarousel } from './sliding-text-carousel';
-export {
-  useMarketInsightsTracking,
-  MARKET_INSIGHTS_CARD_VISIBILITY_THRESHOLD,
-} from './useMarketInsightsTracking';
+export { useMarketInsightsTracking } from './useMarketInsightsTracking';
 export {
   useMarketInsights,
   formatRelativeTime,
