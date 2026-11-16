@@ -1,11 +1,11 @@
 import type { InfiniteData } from '@tanstack/react-query';
 import type {
-  V1TransactionByHashResponse,
-  V4MultiAccountTransactionsResponse,
+  V5MultiAccountTransactionsResponse,
+  V5TransactionRecord,
 } from '@metamask/core-backend';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mapApiTransaction } from '@metamask/client-utils';
+import { mapV5ApiTransaction } from '@metamask/client-utils';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { selectProtectedLocalTransactions } from '../../../selectors/activity';
 import { selectRampsSettlementHashes } from '../../../selectors/rampsController';
@@ -30,9 +30,9 @@ export function useQueryFilters(queryFilters: Props) {
   const assetId = 'assetId' in queryFilters ? queryFilters.assetId : undefined;
 
   return useCallback(
-    (data: InfiniteData<V4MultiAccountTransactionsResponse>) => {
+    (data: InfiniteData<V5MultiAccountTransactionsResponse>) => {
       // Ideally we'd want to move some of these filters to the API
-      const txFilters: ((tx: V1TransactionByHashResponse) => boolean)[] = [
+      const txFilters: ((tx: V5TransactionRecord) => boolean)[] = [
         (tx) => !isZeroValueSelfSend(tx, subjectAddress),
         (tx) => !isExcludedTransactionHash(tx, excludedHashes),
       ];
@@ -49,9 +49,7 @@ export function useQueryFilters(queryFilters: Props) {
             .filter((transaction) =>
               txFilters.every((filter) => filter(transaction)),
             )
-            .map((transaction) =>
-              mapApiTransaction({ subjectAddress, transaction }),
-            )
+            .map((transaction) => mapV5ApiTransaction({ transaction }))
             .map((activity) => {
               const hash = activity.hash?.toLowerCase();
 

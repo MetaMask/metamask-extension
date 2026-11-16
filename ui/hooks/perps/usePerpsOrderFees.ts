@@ -240,6 +240,7 @@ export function usePerpsOrderFees({
     discountBips = metamaskFeeDiscountBips;
   } else if (
     feeResult?.feeSource === 'rewards' ||
+    feeResult?.feeSource === 'grant' ||
     feeResult?.feeSource === 'subscription'
   ) {
     discountBips = feeResult.metamaskFeeDiscountBips;

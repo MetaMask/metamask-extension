@@ -11,7 +11,8 @@ describe('getErrorHandling', () => {
       ['invalid_code', 'inline'],
       ['flow_expired', 'restart'],
       ['otp_resend_cooldown', 'cooldown'],
-      ['max_identifiers_reached', 'failure'],
+      ['max_passkeys_reached', 'failure'],
+      ['max_identifiers_reached', 'support'],
       ['kratos_unavailable', 'transient'],
     ] as const
   ).forEach(([code, handling]) => {

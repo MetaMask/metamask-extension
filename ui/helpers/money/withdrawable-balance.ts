@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js';
 import { projectVmusdValueInMusdToHuman } from '../../../shared/lib/money/withdrawable-balance';
-import { moneyFormatUsd } from './format';
+import { moneyFormatUsdSpendable } from './format';
 
 export {
   MUSD_UNIT,
@@ -8,7 +8,13 @@ export {
 } from '../../../shared/lib/money/withdrawable-balance';
 
 export type WithdrawableFiatProjection = {
+  /**
+   * Display figure, rounded *down* to cents. The amount input is limited to
+   * two decimals, so this label doubles as a spendable target and must never
+   * advertise more than is held — see {@link moneyFormatUsdSpendable}.
+   */
   withdrawableFiatFormatted: string | undefined;
+  /** Exact withdrawable amount. Drives Max, so it keeps full precision. */
   withdrawableFiatRaw: string | undefined;
 };
 
@@ -31,7 +37,7 @@ export function projectWithdrawableFiat(
   }
 
   return {
-    withdrawableFiatFormatted: moneyFormatUsd(withdrawableFiat),
+    withdrawableFiatFormatted: moneyFormatUsdSpendable(withdrawableFiat),
     withdrawableFiatRaw: withdrawableFiat.toString(),
   };
 }
@@ -53,7 +59,7 @@ export function formatWithdrawableFiat(
   }
 
   return {
-    withdrawableFiatFormatted: moneyFormatUsd(withdrawableFiat),
+    withdrawableFiatFormatted: moneyFormatUsdSpendable(withdrawableFiat),
     withdrawableFiatRaw: withdrawableFiat.toString(),
   };
 }

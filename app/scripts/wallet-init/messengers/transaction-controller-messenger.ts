@@ -5,7 +5,7 @@ import {
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import {
   AccountTrackerControllerGetStateAction,
-  CurrencyRateControllerActions,
+  CurrencyRateControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
   BridgeStatusControllerActions,
@@ -81,7 +81,9 @@ export type TransactionControllerInitMessengerActions =
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
-  | CurrencyRateControllerActions
+  // Compat shim only exposes getState. The rest of CurrencyRateControllerActions
+  // (polling, setCurrentCurrency, updateExchangeRate) are not on the root messenger.
+  | CurrencyRateControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
@@ -173,7 +175,6 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
-      'AppStateController:setDefaultHomeActiveTabName',
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',

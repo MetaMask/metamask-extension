@@ -89,7 +89,6 @@ describe('useNavigateOnQrScanComplete', () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
           replace: true,
           state: {
-            stayOnHomePage: true,
             token: null,
             bridgeState: null,
           },

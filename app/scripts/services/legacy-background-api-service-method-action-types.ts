@@ -8,6 +8,10 @@ import type { LegacyBackgroundApiService } from './legacy-background-api-service
 /**
  * Sets the selected currency on the AssetsController.
  *
+ * The controller action is synchronous. This still returns a promise because
+ * the legacy background API invokes it through the messenger, which callers
+ * await.
+ *
  * @param currencyCode - The currency code to set as the current currency.
  */
 export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
@@ -1141,6 +1145,21 @@ export type LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAc
   };
 
 /**
+ * Sets the user's MetaMetrics participation preference.
+ *
+ * The UI calls this through the background API so consent changes can also
+ * update the extension uninstall URL and tracing behavior.
+ *
+ * @param participateInMetaMetrics - Whether the user wants to participate,
+ * or `null` to reset the consent decision.
+ * @returns The current analytics ID.
+ */
+export type LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction = {
+  type: `LegacyBackgroundApiService:setParticipateInMetaMetrics`;
+  handler: LegacyBackgroundApiService['setParticipateInMetaMetrics'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -1236,4 +1255,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceAddPermittedChainsAction
   | LegacyBackgroundApiServiceRemovePermittedChainAction
   | LegacyBackgroundApiServiceSetPermittedChainsAction
-  | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction;
+  | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction
+  | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction;

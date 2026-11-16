@@ -35,6 +35,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMfa } from '../../../hooks/identity/mfa';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { isMethodSupported } from '../../../hooks/identity/mfa/engine/planner';
+import type { MfaReason } from '../../../hooks/identity/mfa/engine/types';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { removeMfaCredential } from '../../../hooks/identity/mfa/removeMfaCredential';
 import { getMfaUsedFor } from './mfa-used-for';
@@ -55,7 +56,7 @@ const COPY: Record<
     icon: IconName;
     remove: string;
     removed: string;
-    operation: string;
+    operation: MfaReason['operation'];
     testId: string;
     modals: Record<
       'confirm' | 'lastMethod' | 'elsewhere',

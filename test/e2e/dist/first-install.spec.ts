@@ -23,7 +23,11 @@ describe('First install', function () {
           await startOnboardingPage.checkLoginPageIsLoaded();
         }
 
-        await driver.executeScript('window.stateHooks.reloadExtension()');
+        await driver.executeScript(
+          process.env.SELENIUM_BROWSER === Browser.CHROME
+            ? `setTimeout(() => window.stateHooks.reloadExtension(), 100)`
+            : `window.stateHooks.reloadExtension()`,
+        );
 
         // Wait for extension to reload, signified by the onboarding tab closing
         await driver.waitUntilXWindowHandles(1);
