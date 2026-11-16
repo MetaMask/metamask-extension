@@ -4,8 +4,10 @@
 // shared by the title text, sparkle/arrow icons and the border sweep.
 // These are intentional gradient stops not yet available as official design
 // tokens.
+/* stylelint-disable color-no-hex */
 $market-insights-chrome-gradient-head: #ed666e;
 $market-insights-chrome-gradient-tail: #d86fcf;
+/* stylelint-enable color-no-hex */
 
 .market-insights-chrome-text {
   background: linear-gradient(
