@@ -257,13 +257,13 @@ describe('sample-rate ceiling (emergency throttle)', () => {
     ).toBe(0);
   });
 
-  it('caps a positive parent decision (forceTransaction path) at the ceiling', () => {
+  it('keeps a positive parent decision whole, above the ceiling', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Unlisted Transaction', parentSampled: true },
         ceilingOptions,
       ),
-    ).toBe(0.005);
+    ).toBe(1);
   });
 
   it('does not resurrect a negative parent decision', () => {
@@ -343,13 +343,29 @@ describe('createTracesSampler with the remote tracesSampleRate flag', () => {
     expect(sampler({ name: 'Boosted Transaction' })).toBe(0.001);
   });
 
-  it('caps a positive parent decision at the remote ceiling', async () => {
+  it('samples a span continuing a sampled parent at 1 under a remote rate of 0.01', async () => {
     const sampler = createTracesSampler({ defaultSampleRate });
-    await applyRemoteTracesSampleRate(0.001);
+    await applyRemoteTracesSampleRate(0.01);
 
     expect(sampler({ name: 'Unlisted Transaction', parentSampled: true })).toBe(
-      0.001,
+      1,
     );
+  });
+
+  it('sheds continued spans through the root decision under a remote throttle', async () => {
+    // The UI and the background both build their sampler with
+    // `createTracesSampler`, so one sampler stands in for both here.
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteTracesSampleRate(0.01);
+
+    const rootRate = sampler({ name: 'UI Root' });
+    const keptContinuations =
+      rootRate * sampler({ name: 'Background Span', parentSampled: true }) +
+      (1 - rootRate) *
+        sampler({ name: 'Background Span', parentSampled: false });
+
+    expect(rootRate).toBe(0.01);
+    expect(keptContinuations).toBe(0.01);
   });
 
   it('leaves a zero-pinned transaction at zero under the ceiling', async () => {
