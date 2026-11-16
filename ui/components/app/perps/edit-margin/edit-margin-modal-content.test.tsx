@@ -329,7 +329,31 @@ describe('EditMarginModalContent', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastMarginAdjustmentFailed',
-          description: 'Insufficient margin available',
+          description: messages.perpsInsufficientMargin.message,
+        });
+      });
+    });
+
+    it('shows the translated root cause instead of the controller code', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'MARGIN_ADJUSTMENT_FAILED',
+        errorCode: 'MARGIN_ADJUSTMENT_FAILED',
+      });
+
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const amountInput = screen.getByPlaceholderText('0.00');
+      fireEvent.change(amountInput, { target: { value: '100' } });
+      fireEvent.click(screen.getByTestId('perps-edit-margin-confirm'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: messages.perpsMarginAdjustmentFailed.message,
         });
       });
     });

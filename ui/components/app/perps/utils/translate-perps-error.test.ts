@@ -187,8 +187,8 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
       ['PROVIDER_LIFECYCLE_STALE', '[somethingWentWrong]'],
       ['ORDER_STRATEGY_ROUTE_UNAVAILABLE', '[perpsOrderFailed]'],
       ['ORDER_CHASE_MAX_DISTANCE_INVALID', '[perpsOrderFailed]'],
-      ['TPSL_PROTECTION_LOST', '[somethingWentWrong]'],
-      ['POSITION_NOT_FOUND', '[somethingWentWrong]'],
+      ['TPSL_PROTECTION_LOST', '[perpsTpslUpdateFailed]'],
+      ['POSITION_NOT_FOUND', '[perpsPositionNotFound]'],
       ['ORDER_MARGIN_MODE_INVALID', '[perpsOrderFailed]'],
       ['ORDER_MARGIN_MODE_UNSUPPORTED', '[perpsOrderFailed]'],
       ['ORDER_MARGIN_MODE_POSITION_OPEN', '[perpsOrderFailed]'],
@@ -313,6 +313,66 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
     expect(
       ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.EXCHANGE_ACCOUNT_NOT_FOUND],
     ).toBe('perpsExchangeAccountNotFound');
+  });
+
+  it('shows the root cause for codes Extension can produce', () => {
+    const cases = [
+      ['ORDER_LEVERAGE_REDUCTION_FAILED', 'You cannot reduce your leverage.'],
+      [
+        'REDUCE_ONLY_VIOLATION',
+        'This order would increase your position. Only reduce-only orders are allowed.',
+      ],
+      [
+        'POSITION_WOULD_FLIP',
+        'This order would flip your position direction. Please close your existing position first.',
+      ],
+      ['POSITION_NOT_FOUND', 'Position not found.'],
+      ['MARGIN_ADJUSTMENT_FAILED', 'Unable to adjust margin. Try again.'],
+      [
+        'TPSL_UPDATE_FAILED',
+        'Unable to update take profit/stop loss. Try again.',
+      ],
+      [
+        'TPSL_PROTECTION_LOST',
+        'Unable to update take profit/stop loss. Try again.',
+      ],
+      [
+        'TPSL_LEG_REPLACE_UNSUPPORTED',
+        'Unable to update take profit/stop loss. Try again.',
+      ],
+      [
+        'INSUFFICIENT_BALANCE',
+        'Insufficient balance to complete this operation. Check your available funds.',
+      ],
+      ['ORDER_SIZE_MIN', 'This order is below the minimum size.'],
+      ['ORDER_LEVERAGE_INVALID', 'This leverage is outside the allowed range.'],
+      [
+        'ORDER_LEVERAGE_BELOW_POSITION',
+        'Leverage must be at least as high as your existing position.',
+      ],
+      ['ORDER_MAX_VALUE_EXCEEDED', 'This order is above the maximum size.'],
+    ] as const;
+
+    expect(cases.map(([code]) => translatePerpsError(code, tEn))).toStrictEqual(
+      cases.map(([, expected]) => expected),
+    );
+  });
+
+  it('applies the cancel override only to perpsOrderFailed', () => {
+    expect(
+      translatePerpsError(
+        PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION,
+        mockT,
+        CANCEL_ORDER_I18N_KEY_OVERRIDES,
+      ),
+    ).toBe('[perpsReduceOnlyViolation]');
+    expect(
+      translatePerpsError(
+        PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN,
+        mockT,
+        CANCEL_ORDER_I18N_KEY_OVERRIDES,
+      ),
+    ).toBe('[perpsCancelOrderFailed]');
   });
 });
 

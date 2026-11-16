@@ -55,6 +55,7 @@ import {
   PERPS_LIQUIDATION_PRICE_FALLBACK,
 } from '../utils/formatPerpsDisplayPrice';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
+import { translatePerpsError } from '../utils/translate-perps-error';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -368,7 +369,14 @@ export const EditMarginModalContent = ({
 
           replacePerpsToastByKey(
             getMarginAdjustmentFailedToast(
-              errorMessage,
+              translatePerpsError(
+                {
+                  error: result.error ?? '',
+                  errorCode: result.errorCode,
+                  errorDetails: result.errorDetails,
+                },
+                t as (key: string, substitutions?: string[]) => string,
+              ) ?? errorMessage,
               t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
             ),
           );
@@ -421,7 +429,10 @@ export const EditMarginModalContent = ({
 
         replacePerpsToastByKey(
           getMarginAdjustmentFailedToast(
-            errorMessage,
+            translatePerpsError(
+              error,
+              t as (key: string, substitutions?: string[]) => string,
+            ) ?? errorMessage,
             t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
           ),
         );

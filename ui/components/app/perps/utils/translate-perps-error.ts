@@ -134,7 +134,8 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.UNKNOWN_ERROR]: 'somethingWentWrong',
 
   // Order errors
-  [PERPS_ERROR_CODES.ORDER_LEVERAGE_REDUCTION_FAILED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_LEVERAGE_REDUCTION_FAILED]:
+    'perpsLeverageReductionFailed',
   [PERPS_ERROR_CODES.IOC_CANCEL]: 'perpsIocCancel',
 
   // Connection
@@ -163,10 +164,13 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_SIZE_POSITIVE]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_PRICE_REQUIRED]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_SIZE_MIN]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_LEVERAGE_INVALID]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_LEVERAGE_BELOW_POSITION]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.ORDER_MAX_VALUE_EXCEEDED]: 'perpsOrderFailed',
+  // Mobile interpolates the limit into these; the controller result carries no
+  // limit, so the extension copy names the cause without the number.
+  [PERPS_ERROR_CODES.ORDER_SIZE_MIN]: 'perpsOrderSizeMin',
+  [PERPS_ERROR_CODES.ORDER_LEVERAGE_INVALID]: 'perpsLeverageInvalid',
+  [PERPS_ERROR_CODES.ORDER_LEVERAGE_BELOW_POSITION]:
+    'perpsLeverageBelowPosition',
+  [PERPS_ERROR_CODES.ORDER_MAX_VALUE_EXCEEDED]: 'perpsOrderMaxValueExceeded',
 
   // Order validation — trigger placements and partial TP/SL. The extension
   // places neither today, so these are unreachable from its UI and share the
@@ -266,17 +270,17 @@ export const ERROR_CODE_TO_I18N_KEY = {
 
   // Position / margin
   [PERPS_ERROR_CODES.INSUFFICIENT_MARGIN]: 'perpsInsufficientMargin',
-  [PERPS_ERROR_CODES.INSUFFICIENT_BALANCE]: 'perpsWithdrawInsufficient',
-  [PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.POSITION_WOULD_FLIP]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.POSITION_NOT_FOUND]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.MARGIN_ADJUSTMENT_FAILED]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.TPSL_UPDATE_FAILED]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.INSUFFICIENT_BALANCE]: 'perpsInsufficientBalance',
+  [PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION]: 'perpsReduceOnlyViolation',
+  [PERPS_ERROR_CODES.POSITION_WOULD_FLIP]: 'perpsPositionWouldFlip',
+  [PERPS_ERROR_CODES.POSITION_NOT_FOUND]: 'perpsPositionNotFound',
+  [PERPS_ERROR_CODES.MARGIN_ADJUSTMENT_FAILED]: 'perpsMarginAdjustmentFailed',
+  [PERPS_ERROR_CODES.TPSL_UPDATE_FAILED]: 'perpsTpslUpdateFailed',
   // The controller could not keep the position's TP/SL triggers in place. The
-  // user cannot re-arm them from the error toast, so it shares the generic copy
-  // with the update failure above.
-  [PERPS_ERROR_CODES.TPSL_PROTECTION_LOST]: 'somethingWentWrong',
-  [PERPS_ERROR_CODES.TPSL_LEG_REPLACE_UNSUPPORTED]: 'somethingWentWrong',
+  // user cannot re-arm them from the error toast, so it shares the copy with
+  // the update failure above.
+  [PERPS_ERROR_CODES.TPSL_PROTECTION_LOST]: 'perpsTpslUpdateFailed',
+  [PERPS_ERROR_CODES.TPSL_LEG_REPLACE_UNSUPPORTED]: 'perpsTpslUpdateFailed',
 
   // Order execution
   [PERPS_ERROR_CODES.ORDER_REJECTED]: 'perpsOrderRejected',
@@ -304,7 +308,7 @@ function isPerpsErrorCodeValue(value: unknown): value is PerpsErrorCode {
 /**
  * Cancel-flow remapping of the keys above.
  *
- * Every `ORDER_*` code funnels into `perpsOrderFailed` ("Order could not be
+ * Most `ORDER_*` codes funnel into `perpsOrderFailed` ("Order could not be
  * placed."), which is the wrong verb on a screen where the user just pressed
  * Cancel order — `ORDER_UNKNOWN_COIN` reaches it through the cancel retry.
  * Remapping the resolved key rather than enumerating codes keeps this correct
