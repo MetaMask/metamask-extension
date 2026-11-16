@@ -33,7 +33,8 @@ export const SortByButton = () => {
         onClick={toggle}
         size={SelectButtonSize.Sm}
         variant={SelectButtonVariant.Secondary}
-        placeholder={t('sortBy')}
+        value={t('sortBy')}
+        placeholder=""
         endArrowDirection={
           tokenSortConfig?.order === 'asc'
             ? SelectButtonEndArrow.Up

@@ -207,7 +207,8 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
         onClick={toggle}
         size={SelectButtonSize.Sm}
         variant={SelectButtonVariant.Primary}
-        placeholder={networkButtonText}
+        value={networkButtonText}
+        placeholder=""
         isLoading={isNetworkSwitchPending}
         isDisabled={isNetworkSwitchPending}
         startAccessory={
