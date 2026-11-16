@@ -1,6 +1,10 @@
 import * as Sentry from '@sentry/browser';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { getTraceContext, trace, TraceName } from '../../../shared/lib/trace';
+import {
+  expectNested,
+  type SpanWindow,
+} from '../../../test/e2e/helpers/span-nesting';
 import createTracingMiddleware from './createTracingMiddleware';
 
 const REQUEST_MOCK = {
@@ -108,6 +112,7 @@ describe('createTracingMiddleware trace roots (real SDK)', () => {
       );
       expect(middleware.trace_id).toBe(json.trace_id);
       expect(middleware.parent_span_id).toBe(json.span_id);
+      expectNested(middleware as SpanWindow, json as SpanWindow);
     },
   );
 });
