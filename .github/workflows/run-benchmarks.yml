@@ -7,6 +7,16 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
+      base-builds-from-run:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          The run ID to get the base commit's builds from. Set, each chrome job
+          runs the base and head builds paired in one job (BENCHMARK_PAIRED,
+          test/e2e/benchmarks/utils/paired.ts), once leading with each build
+          (ADR 0072's paired comparator). Unset, every job runs the head build
+          alone, as before.
 
 permissions:
   contents: read
@@ -16,7 +26,7 @@ permissions:
 jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
-    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
+    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pairedOrder != '' && format('{0}-{1}', matrix.pairedFlow.name, matrix.pairedOrder) || matrix.pageType }}
     # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
     strategy:
@@ -28,15 +38,25 @@ jobs:
         # Startup + interaction + user journeys: chrome/firefox × webpack × preset (test build: build-test-webpack / build-test-mv2-webpack).
         browser: [chrome, firefox]
         buildType: [webpack]
-        pageType:
-          - startupStandardHome
-          - startupPowerUserHome
-          - interactionUserActions
-          - userJourneyOnboardingImport
-          - userJourneyOnboardingNew
-          - userJourneyAssets
-          - userJourneyTransactions
-          - userJourneyAccountManagement
+        # Unset `base-builds-from-run`: one job per preset, as before, and
+        # `pairedFlow` and `pairedOrder` are each the one empty value.
+        pageType: ${{ fromJSON(inputs.base-builds-from-run == '' && '["startupStandardHome","startupPowerUserHome","interactionUserActions","userJourneyOnboardingImport","userJourneyOnboardingNew","userJourneyAssets","userJourneyTransactions","userJourneyAccountManagement"]' || '[""]') }}
+        # Set: one job per flow file, since six runs of a preset's flows in one job would pass
+        # the 25-minute step, and `pageType` is empty. Each entry is the flow's result key and
+        # file; startupPowerUserHome and the dapp page load stay unpaired.
+        pairedFlow: ${{ fromJSON(inputs.base-builds-from-run != '' && '[{"name":"loadNewAccount","file":"test/e2e/benchmarks/flows/interaction/load-new-account.ts"},{"name":"confirmTx","file":"test/e2e/benchmarks/flows/interaction/confirm-tx.ts"},{"name":"bridgeUserActions","file":"test/e2e/benchmarks/flows/interaction/bridge-user-actions.ts"},{"name":"onboardingImportWallet","file":"test/e2e/benchmarks/flows/user-journey/onboarding-import-wallet.ts"},{"name":"onboardingNewWallet","file":"test/e2e/benchmarks/flows/user-journey/onboarding-new-wallet.ts"},{"name":"assetDetails","file":"test/e2e/benchmarks/flows/user-journey/asset-details.ts"},{"name":"solanaAssetDetails","file":"test/e2e/benchmarks/flows/user-journey/solana-asset-details.ts"},{"name":"sendTransactions","file":"test/e2e/benchmarks/flows/user-journey/send-transactions.ts"},{"name":"swap","file":"test/e2e/benchmarks/flows/user-journey/swap.ts"},{"name":"importSrpHome","file":"test/e2e/benchmarks/flows/user-journey/import-srp-home.ts"},{"name":"startupStandardHome","file":"test/e2e/benchmarks/flows/startup/standard-home.ts"}]' || '[""]') }}
+        # Paired jobs, when `base-builds-from-run` is set: each job runs the base
+        # and head builds in one of the two orders the paired comparator
+        # alternates, so every head gets one job of each. Unset, the one empty
+        # value leaves the matrix as it was.
+        pairedOrder: ${{ fromJSON(inputs.base-builds-from-run != '' && '["base-head-head-base","head-base-base-head"]' || '[""]') }}
+        # The runner pairs Chrome only (Firefox reuses a cached .xpi across
+        # builds). startupPowerUserHome is not among the paired flows above.
+        exclude:
+          - browser: firefox
+            pairedOrder: base-head-head-base
+          - browser: firefox
+            pairedOrder: head-base-base-head
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -50,6 +70,21 @@ jobs:
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
       # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
+      # The job's results file. A paired job's name carries its order, so the
+      # jobs of one flow upload distinct artifacts.
+      BENCHMARK_JSON: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pairedOrder != '' && format('{0}-{1}', matrix.pairedFlow.name, matrix.pairedOrder) || matrix.pageType }}.json
+      # Paired jobs only. The head build goes to head-build/ and the base build
+      # to base-build/, and `dist` is left absent: the runner points it at each
+      # build in turn. Unpaired, BENCHMARK_PAIRED is empty, which is off.
+      BENCHMARK_PAIRED: ${{ matrix.pairedOrder != '' && '1' || '' }}
+      BENCHMARK_PAIRED_ORDER: ${{ matrix.pairedOrder }}
+      BENCHMARK_PAIRED_BASE_DIST: base-build/dist
+      BENCHMARK_PAIRED_HEAD_DIST: head-build/dist
+      # Paired jobs only: each run's iterations, the runner's `--iterations`.
+      # 5 is the runner's default.
+      BENCHMARK_PAIRED_ITERATIONS: '5'
+      # Paired startup jobs only: each run's browser loads, of 10 page loads.
+      BENCHMARK_PAIRED_BROWSER_LOADS: '4'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -71,6 +106,16 @@ jobs:
           name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.builds-from-run }}
+          path: ${{ matrix.pairedOrder != '' && 'head-build' || github.workspace }}
+
+      - name: Download the base commit's build artifact (paired jobs only)
+        if: ${{ matrix.pairedOrder != '' }}
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test-${{ matrix.buildType }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.base-builds-from-run }}
+          path: base-build
 
       - name: Pin geckodriver 0.36.0 (Firefox only)
         if: ${{ matrix.browser == 'firefox' }}
@@ -82,7 +127,7 @@ jobs:
         timeout-minutes: 25
         id: run-benchmark
         run: >-
-          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
+          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || matrix.pairedOrder != '' && startsWith(matrix.pairedFlow.name, 'startup') && format('yarn test:e2e:benchmark {0} --browserLoads {1} --pageLoads 10 --out test-artifacts/benchmarks/{2} --retries 2', matrix.pairedFlow.file, env.BENCHMARK_PAIRED_BROWSER_LOADS, env.BENCHMARK_JSON) || matrix.pairedOrder != '' && format('yarn test:e2e:benchmark {0} --iterations {1} --out test-artifacts/benchmarks/{2} --retries 2', matrix.pairedFlow.file, env.BENCHMARK_PAIRED_ITERATIONS, env.BENCHMARK_JSON) || format('yarn test:e2e:benchmark --preset {0} --out test-artifacts/benchmarks/{1} --retries 2', matrix.pageType, env.BENCHMARK_JSON) }}
         shell: bash
 
       - name: Send benchmark results to Sentry (main/release only)
@@ -94,7 +139,7 @@ jobs:
         run: |
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
-            --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json" \
+            --results "test-artifacts/benchmarks/${{ env.BENCHMARK_JSON }}" \
             --browser "${{ matrix.browser }}" \
             --buildType "${{ matrix.buildType }}"
         shell: bash
@@ -113,15 +158,15 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
-          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.BENCHMARK_JSON }}
+          path: test-artifacts/benchmarks/${{ env.BENCHMARK_JSON }}
 
       - name: Upload benchmark result as GitHub artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
-          name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
-          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+          name: ${{ env.BENCHMARK_JSON }}
+          path: test-artifacts/benchmarks/${{ env.BENCHMARK_JSON }}
           retention-days: 7
           if-no-files-found: ignore
 
