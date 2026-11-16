@@ -73,12 +73,13 @@ describe('createTracingMiddleware trace roots (real SDK)', () => {
     (globalThis as { sentry?: unknown }).sentry = Sentry;
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
     [MESSAGE_TYPE.ETH_SEND_TRANSACTION, TraceName.Transaction],
     [MESSAGE_TYPE.PERSONAL_SIGN, TraceName.Signature],
   ])(
     'starts a new trace for %s instead of joining the active span',
-    async (method, traceName) => {
+    async (method: string, traceName: TraceName) => {
       const req = { id: `${method}-id`, method } as {
         id: string;
         method: string;
