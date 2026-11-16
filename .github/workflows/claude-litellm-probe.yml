@@ -77,3 +77,57 @@ jobs:
           out=$(pi -p 'Run this exact shell command and print only its output: [ -n "$LITELLM_API_KEY" ] && echo VISIBLE || echo HIDDEN' --model "litellm/$MODEL")
           echo "$out"
           echo "$out" | grep -q VISIBLE
+
+  identity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Raw /v1/messages, compare requested model with what answered
+        env:
+          LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+        run: |
+          # Internal backend names stay out of this public log; only booleans print.
+          body=$(jq -n --arg m "$MODEL" '{model: $m, max_tokens: 16, messages: [{role: "user", content: "Reply with exactly OK"}]}')
+          curl -sS -D headers.txt -o response.json \
+            -H "Authorization: Bearer $LITELLM_KEY" \
+            -H 'anthropic-version: 2023-06-01' -H 'content-type: application/json' \
+            -d "$body" "$LITELLM_BASE_URL/v1/messages"
+          tr -d '\r' < headers.txt > headers.clean
+          echo "status line: $(head -n1 headers.clean)"
+          echo "x-litellm header names: $(awk -F: 'tolower($1) ~ /^x-litellm/ {print tolower($1)}' headers.clean | sort | tr '\n' ' ')"
+          header() { awk -F': ' -v k="$1" 'tolower($1) == k {print $2; exit}' headers.clean; }
+          fail=0
+
+          reported=$(jq -r '.model // empty' response.json)
+          if [ -z "$reported" ]; then echo "FAIL: response has no model field"; fail=1
+          elif [[ "$reported" == "$MODEL"* ]]; then echo "ok: body model is $reported"
+          else echo "FAIL: body model differs from the requested one (value hidden)"; fail=1; fi
+
+          group=$(header x-litellm-model-group)
+          if [ -z "$group" ]; then echo "note: no x-litellm-model-group header"
+          elif [ "$group" = "$MODEL" ]; then echo "ok: model group equals requested"
+          else echo "FAIL: model group differs from requested (value hidden)"; fail=1; fi
+
+          backend=$(header x-litellm-model-name)
+          if [ -z "$backend" ]; then echo "note: no x-litellm-model-name header"
+          elif echo "$backend" | grep -qi sonnet; then echo "ok: backend model name mentions sonnet"
+          else echo "FAIL: backend model name does not mention sonnet (value hidden)"; fail=1; fi
+
+          fallbacks=$(header x-litellm-attempted-fallbacks)
+          if [ -n "$fallbacks" ] && [ "$fallbacks" != "0" ]; then echo "FAIL: router used fallbacks ($fallbacks)"; fail=1
+          else echo "ok: no fallbacks reported (header value: ${fallbacks:-absent})"; fi
+
+          exit $fail
+
+      - name: Claude Code, models it actually called
+        env:
+          ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude -p "Reply with exactly the word OK" --model "$MODEL" --output-format json > claude.json
+          echo "result: $(jq -r '.result' claude.json)"
+          keys=$(jq -r '(.modelUsage // {}) | keys[]' claude.json)
+          echo "modelUsage keys: $(echo "$keys" | wc -l)"
+          extra=$(echo "$keys" | grep -vc "^$MODEL" || true)
+          echo "models other than the requested one: $extra"
+          [ -n "$keys" ] && [ "$extra" = "0" ]
