@@ -23,32 +23,12 @@ async function mockSentryCustomTrace(mockServer: MockttpServer) {
   ];
 }
 
-// Temporary diagnostic: log each Sentry envelope's items and arrival time.
-const logEnvelope = async (label: string, body: string) => {
-  const items = [...body.matchAll(/"type":"(\w+)"/gu)].map((m) => m[1]);
-  const names = [...body.matchAll(/"transaction":"([^"]+)"/gu)].map((m) => m[1]);
-  const finish = body.match(/"sentry\.idle_span_finish_reason":"(\w+)"/u)?.[1];
-  console.log(
-    `[envelope-diag] ${new Date().toISOString()} ${label} items=${items.join(',')} transactions=${names.join(',')} finish=${finish ?? '-'}`,
-  );
-};
-
 async function mockSentryAutomatedTrace(mockServer: MockttpServer) {
   return [
     await mockServer
       .forPost(/sentry/u)
       .withBodyIncluding('"transaction":"/home.html"')
-      .thenCallback(async (request) => {
-        await logEnvelope('match', (await request.body.getText()) ?? '');
-        return {
-          statusCode: 200,
-          json: {},
-        };
-      }),
-    await mockServer
-      .forPost(/sentry/u)
-      .thenCallback(async (request) => {
-        await logEnvelope('other', (await request.body.getText()) ?? '');
+      .thenCallback(() => {
         return {
           statusCode: 200,
           json: {},
@@ -129,8 +109,7 @@ pwTest.describe('Traces', () => {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
-          console.log(`[envelope-diag] ${new Date().toISOString()} wait-start`);
-          await expectMockRequest(driver, mockedEndpoint[0], { timeout: 20000 });
+          await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
         },
       );
     },
