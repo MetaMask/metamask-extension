@@ -1,0 +1,62 @@
+name: claude-litellm-probe
+
+on:
+  push:
+    branches:
+      - trigger-ci-copilot-probe
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  LITELLM_BASE_URL: https://litellm.consensys.info
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Claude Code
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude --version
+
+      - name: Pick a Claude model served by LiteLLM
+        env:
+          LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+        run: |
+          if [ -z "$LITELLM_KEY" ]; then echo '::error::AI_ANALYZER_LITELLM_KEY is empty'; exit 1; fi
+          ids=$(curl -sS --fail-with-body -H "Authorization: Bearer $LITELLM_KEY" "$LITELLM_BASE_URL/v1/models" | jq -r '.data[].id' | grep -i claude || true)
+          echo "Claude-like model ids:"
+          echo "$ids"
+          model=$(echo "$ids" | grep -i sonnet | head -n1)
+          [ -n "$model" ] || model=$(echo "$ids" | head -n1)
+          if [ -z "$model" ]; then echo '::error::No claude model found'; exit 1; fi
+          echo "MODEL=$model" >> "$GITHUB_ENV"
+
+      - name: One prompt through Claude Code
+        env:
+          ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
+        run: |
+          claude -p "Reply with exactly the word OK and nothing else." --model "$MODEL"
+
+      - name: Does the Bash tool inherit the credential
+        continue-on-error: true
+        env:
+          ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
+        run: |
+          claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash
+
+      - name: Same check with subprocess env scrubbing
+        continue-on-error: true
+        env:
+          ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
+          CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: '1'
+        run: |
+          claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash
