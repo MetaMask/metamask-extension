@@ -23,8 +23,9 @@ page (Firefox), which is a DOM context.
 - `braze-service-init.ts` selects the adapter at runtime with `isManifestV3`.
   The host is part of the shared background module graph, but its SDK chunk is
   loaded lazily and only on MV2; MV3 selects the offscreen client instead.
-- UI documents have no Braze code. They reach banners through the
-  `BrazeService` messenger actions and receive plain fields.
+- UI documents have no Braze code. The home banner
+  (`ui/components/multichain/braze-banner`) calls `BrazeService` through its
+  route messenger and renders plain fields.
 
 ## Lifecycle
 
@@ -119,7 +120,7 @@ service forwards them to the host, which calls the SDK.
   shipped. A banner received by the UI is considered displayed; the SDK
   deduplicates impressions per placement and session.
 
-The campaign properties the host reads are defined in `app/braze/braze-banner.ts`.
+The campaign properties and UI behavior are described in the component README.
 
 ## Storage
 

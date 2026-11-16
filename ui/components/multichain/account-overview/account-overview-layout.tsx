@@ -3,8 +3,10 @@ import { useSelector } from 'react-redux';
 import { TraceName, TraceOperation } from '#shared/lib/trace';
 import { TraceCoordinator } from '#ui/hooks/useTraceCoordinator';
 import { getSelectedAccountGroupNetworkGenerationKey } from '#ui/selectors/assets';
+import { getIsBrazeBannerHomeEnabled } from '#ui/selectors/braze';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import { MoneyAccountBalance } from '../../app/money/money-account-balance';
+import { BrazeBanner } from '../braze-banner';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -26,6 +28,7 @@ export const AccountOverviewLayout = ({
   const homepageTraceId = useSelector(
     getSelectedAccountGroupNetworkGenerationKey,
   );
+  const isBrazeBannerHomeEnabled = useSelector(getIsBrazeBannerHomeEnabled);
   const heroRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
       node.setAttribute('elementtiming', 'hero');
@@ -59,7 +62,9 @@ export const AccountOverviewLayout = ({
         */}
         <MoneyAccountBalance />
 
-        <Carousel />
+        {/* Like Mobile, the Braze flag replaces the carousel, even when no
+            Braze banner is available. */}
+        {isBrazeBannerHomeEnabled ? <BrazeBanner /> : <Carousel />}
       </div>
 
       <AccountOverviewTabs {...tabsProps} />
