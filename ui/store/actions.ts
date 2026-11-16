@@ -1726,32 +1726,17 @@ export function updateEditableParams(
 }
 
 export async function backupUserData(): Promise<{
-  filename: string;
+  fileName: string;
   data: string;
 }> {
-  let backedupData;
   try {
-    backedupData = await submitRequestToBackground<{
-      filename: string;
-      data: string;
-    }>('backupUserData');
+    return await submitRequestToBackground(
+      'LegacyBackgroundApiService:backupUserData',
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
   }
-
-  return backedupData;
-}
-
-export async function restoreUserData(jsonString: Json): Promise<true> {
-  try {
-    await submitRequestToBackground('restoreUserData', [jsonString]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-
-  return true;
 }
 
 export function updateSlides(

@@ -2272,6 +2272,24 @@ describe('Actions', () => {
     });
   });
 
+  describe('backupUserData', () => {
+    it('requests the backup from LegacyBackgroundApiService', async () => {
+      const backup = { fileName: 'MetaMaskUserData.json', data: '{}' };
+      background.messengerCall.resolves(backup);
+      setBackgroundConnection(background);
+
+      const result = await actions.backupUserData();
+
+      expect(result).toStrictEqual(backup);
+      expect(
+        background.messengerCall.calledOnceWithExactly(
+          'LegacyBackgroundApiService:backupUserData',
+          [],
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe('#updateTransaction', () => {
     const txParams = {
       from: '0x1',
