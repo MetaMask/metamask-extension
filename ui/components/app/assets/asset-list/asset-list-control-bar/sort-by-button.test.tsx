@@ -20,13 +20,25 @@ const getArrowPath = () =>
     .querySelector('path')
     ?.getAttribute('d');
 
-const renderSortByButton = (order: 'asc' | 'dsc') => {
+const BALANCE_SORT_CONFIG = {
+  key: 'tokenFiatAmount',
+  sortCallback: 'stringNumeric',
+  order: 'dsc' as const,
+};
+
+const ALPHABETICAL_SORT_CONFIG = {
+  key: 'title',
+  sortCallback: 'alphaNumeric',
+  order: 'asc' as const,
+};
+
+const renderSortByButton = (
+  tokenSortConfig:
+    | typeof BALANCE_SORT_CONFIG
+    | typeof ALPHABETICAL_SORT_CONFIG = BALANCE_SORT_CONFIG,
+) => {
   const state = createMockState();
-  state.metamask.preferences.tokenSortConfig = {
-    key: 'tokenFiatAmount',
-    sortCallback: 'stringNumeric',
-    order,
-  };
+  state.metamask.preferences.tokenSortConfig = tokenSortConfig;
   const store = configureMockStore([thunk])(state);
   return renderWithProvider(
     <AssetControls>
@@ -37,23 +49,48 @@ const renderSortByButton = (order: 'asc' | 'dsc') => {
 };
 
 describe('SortByButton', () => {
-  it('renders the sort button with a visible label and trailing arrow', async () => {
-    const { findByTestId } = renderSortByButton('dsc');
+  it('labels the button with the sort in force and points the arrow down while descending', async () => {
+    const { findByTestId } = renderSortByButton();
 
     const button = await findByTestId('sort-by-popover-toggle');
-    expect(button).toHaveTextContent('Sort by');
+    expect(button).toHaveTextContent('Declining balance ($ high-low)');
     expect(getArrowPath()).toContain(ARROW_PATH_PREFIX.down);
   });
 
+  it('labels the button Alphabetically while the alphabetical sort is in force', async () => {
+    const { findByTestId } = renderSortByButton(ALPHABETICAL_SORT_CONFIG);
+
+    const button = await findByTestId('sort-by-popover-toggle');
+    expect(button).toHaveTextContent('Alphabetically (A-Z)');
+  });
+
+  it('names the button with purpose, value and direction while ascending', async () => {
+    renderSortByButton(ALPHABETICAL_SORT_CONFIG);
+
+    expect(await screen.findByTestId('sort-by-popover-toggle')).toHaveAttribute(
+      'aria-label',
+      'Sort by, Alphabetically (A-Z), sorted ascending',
+    );
+  });
+
+  it('names the button with purpose, value and direction while descending', async () => {
+    renderSortByButton();
+
+    expect(await screen.findByTestId('sort-by-popover-toggle')).toHaveAttribute(
+      'aria-label',
+      'Sort by, Declining balance ($ high-low), sorted descending',
+    );
+  });
+
   it('points the trailing arrow up when the order in force is ascending', async () => {
-    renderSortByButton('asc');
+    renderSortByButton(ALPHABETICAL_SORT_CONFIG);
 
     await screen.findByTestId('sort-by-popover-toggle');
     expect(getArrowPath()).toContain(ARROW_PATH_PREFIX.up);
   });
 
   it('opens the sort popover when clicked', async () => {
-    const { findByTestId } = renderSortByButton('dsc');
+    const { findByTestId } = renderSortByButton();
 
     fireEvent.click(await findByTestId('sort-by-popover-toggle'));
 

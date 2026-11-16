@@ -3,10 +3,6 @@ import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   SelectButton,
   SelectButtonSize,
   SelectButtonVariant,
@@ -211,19 +207,6 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
         placeholder=""
         isLoading={isNetworkSwitchPending}
         isDisabled={isNetworkSwitchPending}
-        startAccessory={
-          isNetworkSwitchPending ? undefined : (
-            <Icon
-              name={IconName.Filter}
-              size={IconSize.Md}
-              color={
-                isSingleNetworkFilterSelected
-                  ? IconColor.PrimaryDefault
-                  : IconColor.IconDefault
-              }
-            />
-          )
-        }
         textProps={{
           color: networkFilterTextColor,
           className: 'min-w-0 truncate',
