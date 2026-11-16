@@ -11,52 +11,65 @@ permissions:
 
 env:
   LITELLM_BASE_URL: https://litellm.consensys.info
+  MODEL: claude-sonnet-4.5
 
 jobs:
-  probe:
+  claude:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Claude Code
+      - name: Install Claude Code and bubblewrap
         run: |
           npm install -g @anthropic-ai/claude-code
           claude --version
+          sudo apt-get install -y bubblewrap
+          bwrap --version
 
-      - name: Pick a Claude model served by LiteLLM
-        env:
-          LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
-        run: |
-          if [ -z "$LITELLM_KEY" ]; then echo '::error::AI_ANALYZER_LITELLM_KEY is empty'; exit 1; fi
-          ids=$(curl -sS --fail-with-body -H "Authorization: Bearer $LITELLM_KEY" "$LITELLM_BASE_URL/v1/models" | jq -r '.data[].id' | grep -i claude || true)
-          echo "Claude-like model ids:"
-          echo "$ids"
-          model=$(echo "$ids" | grep -i sonnet | head -n1)
-          [ -n "$model" ] || model=$(echo "$ids" | head -n1)
-          if [ -z "$model" ]; then echo '::error::No claude model found'; exit 1; fi
-          echo "MODEL=$model" >> "$GITHUB_ENV"
-
-      - name: One prompt through Claude Code
+      - name: Control, the Bash tool inherits the credential
         env:
           ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
           ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
         run: |
-          claude -p "Reply with exactly the word OK and nothing else." --model "$MODEL"
+          out=$(claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash)
+          echo "$out"
+          echo "$out" | grep -q VISIBLE
 
-      - name: Does the Bash tool inherit the credential
-        continue-on-error: true
-        env:
-          ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
-          ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
-          ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
-        run: |
-          claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash
-
-      - name: Same check with subprocess env scrubbing
-        continue-on-error: true
+      - name: With subprocess env scrubbing, the Bash tool must not see it
         env:
           ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
           ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
           CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: '1'
         run: |
-          claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash
+          out=$(claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash)
+          echo "$out"
+          echo "$out" | grep -q HIDDEN
+
+  pi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Pi and the LiteLLM provider, both pinned
+        run: |
+          npm install -g --ignore-scripts @earendil-works/pi-coding-agent@1.5.2
+          pi --version
+          pi install npm:pi-provider-litellm@4.8.0
+          # Skills and MCP from the proxy would add prompt text and tools.
+          mkdir -p ~/.pi/agent
+          echo '{"litellm":{"skills":{"enabled":false},"mcp":{"enabled":false},"budget":{"enabled":false}}}' > ~/.pi/agent/settings.json
+
+      - name: Model count and one prompt through Pi
+        env:
+          LITELLM_API_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          PI_SKIP_VERSION_CHECK: '1'
+        run: |
+          echo "models listed: $(pi --list-models | wc -l)"
+          pi -p "Reply with exactly the word OK and nothing else." --model "litellm/$MODEL"
+
+      - name: Control, the bash tool inherits the credential
+        env:
+          LITELLM_API_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          PI_SKIP_VERSION_CHECK: '1'
+        run: |
+          out=$(pi -p 'Run this exact shell command and print only its output: [ -n "$LITELLM_API_KEY" ] && echo VISIBLE || echo HIDDEN' --model "litellm/$MODEL")
+          echo "$out"
+          echo "$out" | grep -q VISIBLE
