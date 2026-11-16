@@ -312,13 +312,14 @@ describe('createMetaRPCHandler', () => {
       );
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       'getStatePatches',
       'isRelaySupported',
       'Geolocation.getGeolocation',
     ])(
       'starts no root for read-only method %s without UI context',
-      async (method) => {
+      async (method: string) => {
         const handlerFn = jest.fn().mockReturnValue('result');
         const streamTest = createStream();
         const handler = createMetaRPCHandler(
