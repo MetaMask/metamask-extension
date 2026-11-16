@@ -99,6 +99,7 @@
     "arcUsageNoticeShown": "boolean",
     "assetExchangeRates": "object",
     "assetPreferences": "object",
+    "assetsBackgroundLoadingStatus": "object",
     "assetsBalance": "object",
     "assetsInfo": "object",
     "assetsLoadingStatus": "object",
