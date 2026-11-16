@@ -36,7 +36,7 @@ jest.mock('../../account-select-modal', () => ({
     restrictHardwareAccountsToSelected,
   }: {
     selectedAddress: string;
-    onSelect: (address: string) => void;
+    onSelect: (account: { id: string; address: string }) => void;
     onClose: () => void;
     title?: string;
     excludeHardwareAccounts?: boolean;
@@ -55,19 +55,34 @@ jest.mock('../../account-select-modal', () => ({
       </span>
       <button
         data-testid="select-other"
-        onClick={() => onSelect('0x1234567890abcdef1234567890abcdef12345678')}
+        onClick={() =>
+          onSelect({
+            id: 'other-account-id',
+            address: '0x1234567890abcdef1234567890abcdef12345678',
+          })
+        }
       >
         other
       </button>
       <button
         data-testid="select-same"
-        onClick={() => onSelect('0xabcdef1234567890abcdef1234567890abcdef12')}
+        onClick={() =>
+          onSelect({
+            id: 'from-account-id',
+            address: '0xabcdef1234567890abcdef1234567890abcdef12',
+          })
+        }
       >
         same
       </button>
       <button
         data-testid="select-override"
-        onClick={() => onSelect('0x1234567890abcdef1234567890abcdef12345678')}
+        onClick={() =>
+          onSelect({
+            id: 'other-account-id',
+            address: '0x1234567890abcdef1234567890abcdef12345678',
+          })
+        }
       >
         override
       </button>
