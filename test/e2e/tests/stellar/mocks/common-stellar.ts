@@ -337,20 +337,14 @@ export async function mockStellarTokensV2SupportedNetworks(
 }
 
 /**
- * Builds Stellar native + USDC TokenAsset metadata for the requested asset ids.
+ * Stellar native + USDC TokenAsset metadata.
  *
- * Used by both `tokens.api` v3 and `token.api` (fetchTokenAssets / deep links).
- *
- * @param assetIds - Comma-joined or raw assetIds query value.
+ * Always returns the known list (Tron-style) so lowercased `useTokensData`
+ * requests still resolve. Used by both `tokens.api` v3 and `token.api`.
  */
-export function buildStellarTokenAssetMetadata(assetIds: string) {
-  const results: object[] = [];
-
-  if (
-    assetIds.includes(STELLAR_NATIVE_ASSET_ID) ||
-    assetIds.includes(STELLAR_CHAIN_ID)
-  ) {
-    results.push({
+export function buildStellarTokenAssetMetadata() {
+  return [
+    {
       assetId: STELLAR_NATIVE_ASSET_ID,
       name: 'Stellar',
       symbol: 'XLM',
@@ -359,15 +353,8 @@ export function buildStellarTokenAssetMetadata(assetIds: string) {
       iconUrl:
         'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/slip44/148.png',
       coingeckoId: 'stellar',
-    });
-  }
-
-  if (
-    assetIds.includes(STELLAR_USDC_ASSET_ID) ||
-    assetIds.includes(STELLAR_USDC_ISSUER) ||
-    assetIds.includes('USDC')
-  ) {
-    results.push({
+    },
+    {
       assetId: STELLAR_USDC_ASSET_ID,
       name: 'USD Coin',
       symbol: 'USDC',
@@ -375,21 +362,8 @@ export function buildStellarTokenAssetMetadata(assetIds: string) {
       iconUrl:
         'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/asset/USDC.png',
       coingeckoId: 'usd-coin',
-    });
-  }
-
-  return results;
-}
-
-function stellarAssetsRequestCallback(request: { url: string }) {
-  const assetIds =
-    new URL(request.url).searchParams.get('assetIds') ??
-    new URL(request.url).searchParams.getAll('assetIds').join(',');
-
-  return {
-    statusCode: 200,
-    json: buildStellarTokenAssetMetadata(assetIds),
-  };
+    },
+  ];
 }
 
 /**
@@ -403,7 +377,7 @@ export async function mockStellarTokensV3Assets(
   return mockServer
     .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
     .always()
-    .thenCallback(stellarAssetsRequestCallback);
+    .thenJson(200, buildStellarTokenAssetMetadata());
 }
 
 /**
@@ -419,7 +393,7 @@ export async function mockStellarTokenApiAssets(
   return mockServer
     .forGet('https://token.api.cx.metamask.io/assets')
     .always()
-    .thenCallback(stellarAssetsRequestCallback);
+    .thenJson(200, buildStellarTokenAssetMetadata());
 }
 
 /**
