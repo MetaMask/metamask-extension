@@ -11,6 +11,7 @@ import {
 } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import type { SignatureStatus } from '../../../shared/lib/deep-links/verify';
+import type { DeepLinkProps } from './types';
 
 let DeepLink: typeof import('./deep-link').DeepLink;
 
@@ -26,26 +27,11 @@ jest.mock('../../components/app/deeplink-qr-code', () => ({
 
 const parseMock = jest.mocked(parse);
 
-function renderDeepLink(
-  search: string,
-  {
-    referralEnabled = true,
-    useExternalServices = true,
-  }: { referralEnabled?: boolean; useExternalServices?: boolean } = {},
-) {
+function renderDeepLink(search: string, props: DeepLinkProps = {}) {
   const store = configureMockStore([thunk])({
-    metamask: {
-      preferences: {},
-      useExternalServices,
-      remoteFeatureFlags: {
-        rewardsMoneyControllerEnabled: {
-          enabled: referralEnabled,
-          minimumVersion: '0.0.0',
-        },
-      },
-    },
+    metamask: { preferences: {} },
   });
-  return renderWithProvider(<DeepLink />, store, `/link?${search}`);
+  return renderWithProvider(<DeepLink {...props} />, store, `/link?${search}`);
 }
 
 function mockParsedLink(
@@ -189,7 +175,7 @@ describe('DeepLink', () => {
     );
   });
 
-  describe('referral interstitial copy', () => {
+  describe('feature notice', () => {
     const homeDestination = { path: '/', query: new URLSearchParams() };
     const continueDescription = tEn('deepLink_ContinueDescription', [
       tEn('deepLink_theHomePage'),
@@ -197,6 +183,10 @@ describe('DeepLink', () => {
     const cautionDescription = tEn('deepLink_ThirdPartyDescription', [
       continueDescription,
     ]);
+    const notice = {
+      title: 'rewardsMoneyReferralLinkTitle',
+      description: 'rewardsMoneyReferralLinkDescription',
+    };
 
     async function expectCopy(
       { findByRole, findByTestId }: ReturnType<typeof renderDeepLink>,
@@ -209,20 +199,23 @@ describe('DeepLink', () => {
       );
     }
 
-    jestIt.each<[SignatureStatus, string]>([
-      ['missing', '/home?ref=ABCD12'],
-      ['invalid', '/home?ref=ABCD12'],
-      ['missing', '/home?ref=%20abcd12%20'],
-    ])(
-      'shows the referral copy for a %s signature and %s',
-      async (signature, u) => {
+    jestIt.each<SignatureStatus>(['missing', 'invalid'])(
+      'replaces the caution copy for a %s signature and keeps the destination',
+      async (signature) => {
         mockParsedLink(homeDestination, signature);
-        const result = renderDeepLink(new URLSearchParams({ u }).toString());
+        const getNotice = jest.fn().mockReturnValue(notice);
+        const result = renderDeepLink(
+          new URLSearchParams({ u: '/home?ref=ABCD12' }).toString(),
+          { getNotice },
+        );
 
         await expectCopy(
           result,
-          messages.deepLink_ReferralTitle.message,
-          messages.deepLink_ReferralDescription.message,
+          tEn(notice.title),
+          tEn(notice.description, [continueDescription]),
+        );
+        expect(getNotice).toHaveBeenCalledWith(
+          new URL(`https://${CANONICAL_DEEP_LINK_HOST}/home?ref=ABCD12`),
         );
         expect(
           await result.findByTestId('deep-link-continue-button'),
@@ -231,61 +224,48 @@ describe('DeepLink', () => {
       },
     );
 
-    jestIt.each([
-      ['no ref', '/home'],
-      ['a short ref', '/home?ref=ab'],
-      ['a malformed ref', '/home?ref=AB!'],
-      ['a duplicate ref', '/home?ref=ABC&ref=DEF'],
-    ])('keeps the caution copy for %s', async (_, u) => {
+    it('keeps the caution copy when the resolver returns null', async () => {
       mockParsedLink(homeDestination);
 
       await expectCopy(
-        renderDeepLink(new URLSearchParams({ u }).toString()),
+        renderDeepLink(new URLSearchParams({ u: '/home' }).toString(), {
+          getNotice: () => null,
+        }),
         messages.deepLink_Caution.message,
         cautionDescription,
       );
     });
 
-    jestIt.each([
-      ['the referral flag is off', { referralEnabled: false }],
-      ['Basic Functionality is off', { useExternalServices: false }],
-    ])('keeps the caution copy when %s', async (_, options) => {
-      mockParsedLink(homeDestination);
-
-      await expectCopy(
-        renderDeepLink(
-          new URLSearchParams({ u: '/home?ref=ABCD12' }).toString(),
-          options,
-        ),
-        messages.deepLink_Caution.message,
-        cautionDescription,
-      );
-    });
-
-    it('keeps the caution copy for a link that redirects to a website', async () => {
+    it('does not consult the resolver for a link that redirects to a website', async () => {
       mockParsedLink({
         redirectTo: new URL('https://metamask.io/news/top-traders'),
       });
+      const getNotice = jest.fn().mockReturnValue(notice);
 
       await expectCopy(
         renderDeepLink(
           new URLSearchParams({ u: '/top-traders?ref=ABCD12' }).toString(),
+          { getNotice },
         ),
         messages.deepLink_Caution.message,
         cautionDescription,
       );
+      expect(getNotice).not.toHaveBeenCalled();
     });
 
-    it('keeps the redirecting copy for a signed link with a ref', async () => {
+    it('does not consult the resolver for a signed link', async () => {
       mockParsedLink(homeDestination, 'valid');
+      const getNotice = jest.fn().mockReturnValue(notice);
 
       await expectCopy(
         renderDeepLink(
           new URLSearchParams({ u: '/home?ref=ABCD12' }).toString(),
+          { getNotice },
         ),
         messages.deepLink_RedirectingToMetaMask.message,
         continueDescription,
       );
+      expect(getNotice).not.toHaveBeenCalled();
     });
   });
 });

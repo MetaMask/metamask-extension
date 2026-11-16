@@ -17,10 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  getReferralCode,
-  withReferralCode,
-} from '#shared/lib/deep-links/referral';
+import { withReferralCode } from '#shared/lib/deep-links/referral';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -28,13 +25,13 @@ import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
-import { selectIsMoneyReferralInviteEnabled } from '../../ducks/rewards-money/selectors';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
 import { getMobileShareUrl } from '../../../shared/lib/deep-links/mobile-share';
 import { DeepLinkMobileShare } from './deep-link-mobile-share';
+import type { DeepLinkNoticeResolver, DeepLinkProps } from './types';
 
 type TranslateFunction = (
   key: string,
@@ -62,7 +59,7 @@ const { getExtensionURL } = globalThis.platform;
  * @param t - The translation function.
  * @param abortController
  * @param setPageNotFoundError - The function to call when the destination is missing.
- * @param referralInviteEnabled - Whether local gates allow a Money referral invite.
+ * @param getNotice - Optional feature copy for unsigned links that open inside MetaMask.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -75,7 +72,7 @@ async function updateStateFromUrl(
   t: TranslateFunction,
   abortController: AbortController,
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
-  referralInviteEnabled: boolean,
+  getNotice: DeepLinkNoticeResolver | undefined,
 ) {
   try {
     const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
@@ -102,20 +99,15 @@ async function updateStateFromUrl(
 
       const signed = parsed.signature === VALID;
       const continueMessage = t('deepLink_ContinueDescription', [t(title)]);
-      // Matches the links that open the referral invite. Account eligibility
-      // needs a server read, so it stays with the invite sheet: an
-      // already-referred user may still see the referral copy.
-      const opensReferralInvite =
-        referralInviteEnabled &&
-        !('redirectTo' in destination) &&
-        getReferralCode(url.searchParams) !== null;
+      const notice =
+        signed || 'redirectTo' in destination ? null : getNotice?.(url);
 
       if (signed) {
         setTitle(t('deepLink_RedirectingToMetaMask'));
         setDescription(continueMessage);
-      } else if (opensReferralInvite) {
-        setTitle(t('deepLink_ReferralTitle'));
-        setDescription(t('deepLink_ReferralDescription'));
+      } else if (notice) {
+        setTitle(t(notice.title));
+        setDescription(t(notice.description, [continueMessage]));
       } else {
         setTitle(t('deepLink_Caution'));
         setDescription(t('deepLink_ThirdPartyDescription', [continueMessage]));
@@ -157,7 +149,7 @@ async function updateStateFromUrl(
   }
 }
 
-const DeepLinkInterstitial = () => {
+const DeepLinkInterstitial = ({ getNotice }: DeepLinkProps) => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
@@ -169,7 +161,6 @@ const DeepLinkInterstitial = () => {
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
   );
-  const referralInviteEnabled = useSelector(selectIsMoneyReferralInviteEnabled);
 
   const [description, setDescription] = useState<string | null>(null);
   const [pageNotFoundError, setPageNotFoundError] = useState<boolean>(false);
@@ -258,7 +249,7 @@ const DeepLinkInterstitial = () => {
         t,
         abortController,
         setPageNotFoundError,
-        referralInviteEnabled,
+        getNotice,
       );
     };
 
@@ -266,7 +257,7 @@ const DeepLinkInterstitial = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError, referralInviteEnabled]);
+  }, [location.search, t, setPageNotFoundError, getNotice]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);
@@ -375,8 +366,13 @@ const DeepLinkInterstitial = () => {
   );
 };
 
-/** Displays the mobile QR fallback or the usual deep-link interstitial. */
-export const DeepLink = () => {
+/**
+ * Displays the mobile QR fallback or the usual deep-link interstitial.
+ *
+ * @param props - The component props.
+ * @param props.getNotice - Optional feature copy, see {@link DeepLinkNoticeResolver}.
+ */
+export const DeepLink = ({ getNotice }: DeepLinkProps) => {
   const location = useLocation();
   const urlPathAndQuery = new URLSearchParams(location.search).get(
     'mobileShare',
@@ -388,7 +384,7 @@ export const DeepLink = () => {
     : null;
 
   if (!mobileShareUrl) {
-    return <DeepLinkInterstitial />;
+    return <DeepLinkInterstitial getNotice={getNotice} />;
   }
 
   return <DeepLinkMobileShare url={mobileShareUrl} />;

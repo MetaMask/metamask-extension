@@ -136,6 +136,7 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
 import { MoneyFtueSplash } from '../../components/app/money/money-ftue-splash';
+import { useMoneyReferralLinkNotice } from '../../components/app/rewards/money-referral/useMoneyReferralLinkNotice';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -359,6 +360,11 @@ export const ImportNftsFeatureRoute = () => {
   return <ImportNftsPage />;
 };
 
+const DeepLinkRoute = () => {
+  const getNotice = useMoneyReferralLinkNotice();
+  return <DeepLink getNotice={getNotice} />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -383,7 +389,7 @@ export const routeConfig = [
       },
       {
         path: DEEP_LINK_ROUTE,
-        element: <DeepLink />,
+        element: <DeepLinkRoute />,
       },
       {
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
