@@ -9329,24 +9329,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@metamask/multichain-api-middleware@npm:5.1.0"
+"@metamask/multichain-api-middleware@npm:@metamask-previews/multichain-api-middleware@5.1.0-preview-76b7c67":
+  version: 5.1.0-preview-76b7c67
+  resolution: "@metamask-previews/multichain-api-middleware@npm:5.1.0-preview-76b7c67"
   dependencies:
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/api-specs": "npm:^0.15.0"
     "@metamask/chain-agnostic-permission": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/json-rpc-engine": "npm:^11.0.0"
-    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/network-controller": "npm:^38.0.1"
     "@metamask/permission-controller": "npm:^14.1.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-controllers": "npm:^19.0.1"
-    "@metamask/utils": "npm:^12.0.1"
+    "@metamask/utils": "npm:^12.0.2"
     "@open-rpc/meta-schema": "npm:^1.14.9"
     "@open-rpc/schema-utils-js": "npm:^2.2.1"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/bbf5811a59969e4855edc3d5173d1e770f27de050c5adccd3161af7690d98a37679e294bc23765eb69909c2a5f7e36b3830b3a0f903f0d0ad5080260b80bf71a
+  checksum: 10/b0fe883d6ac9559959dae6716fe3b653dbae540bad06170f07ae17a6093a57a6757a3b3e63367d3806ca70a02ab95c112f953baf2023b50f1537e272c021ee19
   languageName: node
   linkType: hard
 
@@ -12051,25 +12051,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/schema-utils-js@npm:2.2.1":
-  version: 2.2.1
-  resolution: "@open-rpc/schema-utils-js@npm:2.2.1"
-  dependencies:
-    "@json-schema-tools/dereferencer": "npm:^1.6.3"
-    "@json-schema-tools/meta-schema": "npm:^1.7.5"
-    "@json-schema-tools/reference-resolver": "npm:^1.2.6"
-    "@open-rpc/spec-types": "npm:0.0.2"
-    "@open-rpc/specification-extension-spec": "npm:^1.0.2"
-    ajv: "npm:^6.10.0"
-    detect-node: "npm:^2.0.4"
-    fast-safe-stringify: "npm:^2.0.7"
-    fs-extra: "npm:^10.1.0"
-    is-url: "npm:^1.2.4"
-    isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/8ac30b3880e57638af8c75e8cc130cb97237bbd55c4cae0948c5e1dbf01e6c639caa0515fa8eacb4b350f5410a9f02f47617244249c6231bc550b791478ee515
-  languageName: node
-  linkType: hard
-
 "@open-rpc/schema-utils-js@npm:^1.16.2":
   version: 1.16.2
   resolution: "@open-rpc/schema-utils-js@npm:1.16.2"
@@ -12088,9 +12069,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/schema-utils-js@patch:@open-rpc/schema-utils-js@npm%3A2.2.1#~/.yarn/patches/@open-rpc-schema-utils-js-npm-2.2.1-309fa9ab1e.patch":
+"@open-rpc/schema-utils-js@npm:^2.0.5, @open-rpc/schema-utils-js@npm:^2.2.1":
   version: 2.2.1
-  resolution: "@open-rpc/schema-utils-js@patch:@open-rpc/schema-utils-js@npm%3A2.2.1#~/.yarn/patches/@open-rpc-schema-utils-js-npm-2.2.1-309fa9ab1e.patch::version=2.2.1&hash=f4512d"
+  resolution: "@open-rpc/schema-utils-js@npm:2.2.1"
   dependencies:
     "@json-schema-tools/dereferencer": "npm:^1.6.3"
     "@json-schema-tools/meta-schema": "npm:^1.7.5"
@@ -12103,7 +12084,7 @@ __metadata:
     fs-extra: "npm:^10.1.0"
     is-url: "npm:^1.2.4"
     isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/4670938bc7106afaa9c2bad03283b80d75196332783cd69068ec6bf7b375c3a4e4735b3e7f9adb58e64dcd47a911d7723f0e4cc597cb04eea32fef63cb697fde
+  checksum: 10/8ac30b3880e57638af8c75e8cc130cb97237bbd55c4cae0948c5e1dbf01e6c639caa0515fa8eacb4b350f5410a9f02f47617244249c6231bc550b791478ee515
   languageName: node
   linkType: hard
 
