@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType } from '@metamask/utils';
+import { buildAssetMarketInsightsRoutePath } from '../../../../../shared/lib/asset-route';
+import { transitionForward } from '../../../../components/ui/transition';
 import { useTokenSecurityData } from '../../../../hooks/useTokenSecurityData';
 import { useMarketInsights } from '../../hooks/useMarketInsights';
 import { MarketInsightsDisclaimerModal } from './market-insights-disclaimer-modal';
@@ -49,6 +52,7 @@ export type AssetMarketInsightsSectionProps = {
 export const AssetMarketInsightsSection = ({
   assetId,
 }: AssetMarketInsightsSectionProps) => {
+  const navigate = useNavigate();
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
 
   const { securityData } = useTokenSecurityData({ assetId: assetId ?? null });
@@ -71,9 +75,13 @@ export const AssetMarketInsightsSection = ({
     (Boolean(report) || isLoading);
 
   const handleCardPress = useCallback(() => {
-    // Full Market Insights view lands in a follow-up. The press handler is
-    // the seam where navigation will be wired.
-  }, []);
+    if (!marketInsightsAssetId) {
+      return;
+    }
+    transitionForward(() =>
+      navigate(buildAssetMarketInsightsRoutePath(marketInsightsAssetId)),
+    );
+  }, [marketInsightsAssetId, navigate]);
 
   if (!shouldShowCard) {
     return null;
