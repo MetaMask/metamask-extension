@@ -7,10 +7,14 @@ import type {
 import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import {
   continueTraceContext,
-  extractTraceContext,
+  extractTraceMetadata,
+  sentryGetActiveSpan,
   trace,
 } from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import {
+  admitTraceWrappers,
+  isRootWrapperEnabled,
+} from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -24,7 +28,10 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     if (!isStreamWritable(outStream)) {
       return;
     }
-    if (!api[data.method]) {
+
+    const handler = api[data.method];
+
+    if (!handler) {
       outStream.write({
         jsonrpc: '2.0',
         error: rpcErrors.methodNotFound({
@@ -35,42 +42,57 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
       return;
     }
 
-    const { cleanParams, traceContext } = extractTraceContext(data.params);
-    const handler = api[data.method];
     const controller = handler._controllerName;
-    const spanName: `Background RPC: ${string}` = controller
+    const { cleanParams, traceMetadata } = extractTraceMetadata(data.params);
+    const traceContext = traceMetadata?.traceContext;
+    const name: `Background RPC: ${string}` = controller
       ? `Background RPC: ${controller}.${data.method}`
-      : `Background RPC: ${data.method}`;
+      : (traceMetadata?.spanName ?? `Background RPC: ${data.method}`);
+    const spanData = {
+      method: data.method,
+      ...(controller && { controller }),
+      ...(traceMetadata?.messengerAction && {
+        action: traceMetadata.messengerAction,
+      }),
+    };
+    const callHandler = () =>
+      Array.isArray(cleanParams)
+        ? handler.call(api, ...cleanParams)
+        : handler.call(api, cleanParams);
 
     let result: unknown;
     let error: unknown;
     try {
       if (!traceContext) {
-        if (Array.isArray(cleanParams)) {
-          result = await handler.call(api, ...cleanParams);
-        } else {
-          result = await handler.call(api, cleanParams);
-        }
-      } else if (shouldSampleWrappers(traceContext._traceId)) {
-        // Wrapper sub-sample passes: emit the `rpc.handler` span and
-        // propagate trace context for nested spans.
+        // No UI trace context: the dispatch roots its own trace, so
+        // concurrent handlers get independent trace ids.
+        result = isRootWrapperEnabled()
+          ? await trace(
+              { name, op: 'rpc.handler', root: true, data: spanData },
+              () =>
+                admitTraceWrappers(
+                  sentryGetActiveSpan()?.spanContext().traceId,
+                  callHandler,
+                ),
+            )
+          : await callHandler();
+      } else if (traceContext.parentSampled) {
+        // A sampled UI span always gets its `rpc.handler` child: without an
+        // active span, fetch starts no `http.client` span and its trace
+        // headers name a span that is never sent.
         result = await trace(
           {
-            name: spanName,
+            name,
             parentContext: traceContext,
             op: 'rpc.handler',
-            data: { method: data.method, ...(controller && { controller }) },
+            data: spanData,
           },
-          () => handler.call(api, ...cleanParams),
+          callHandler,
         );
       } else {
-        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
-        // propagate trace context so nested auto-instrumented and core-package
-        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
-        // attach to the originating UI trace instead of becoming orphans.
-        result = await continueTraceContext(traceContext, () =>
-          handler.call(api, ...cleanParams),
-        );
+        // An unsampled UI span: nothing under it is recorded, so continue its
+        // context, which carries the unsampled decision, without a span.
+        result = await continueTraceContext(traceContext, callHandler);
       }
     } catch (err) {
       error = err;

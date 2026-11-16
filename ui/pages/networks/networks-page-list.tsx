@@ -1,7 +1,4 @@
-import {
-  type AddNetworkFields,
-  type NetworkConfiguration,
-} from '@metamask/network-controller';
+import { type AddNetworkFields } from '@metamask/network-controller';
 import {
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,

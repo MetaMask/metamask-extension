@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { act } from '@testing-library/react';
 import { FeatureId } from '@metamask/bridge-controller';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -63,12 +64,14 @@ const renderConfirmationRouter = ({
   hasBatchSellQuotes = false,
   hasPendingApproval = false,
   environmentType = ENVIRONMENT_TYPE_POPUP,
+  isUnlocked = true,
 }: {
   pathname: string;
   hasQuotes?: boolean;
   hasBatchSellQuotes?: boolean;
   hasPendingApproval?: boolean;
   environmentType?: string;
+  isUnlocked?: boolean;
 }) => {
   (getEnvironmentType as jest.Mock).mockReturnValue(environmentType);
 
@@ -76,6 +79,7 @@ const renderConfirmationRouter = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      isUnlocked,
       ...(hasPendingApproval
         ? {}
         : { pendingApprovals: {}, pendingApprovalCount: 0, approvalFlows: [] }),
@@ -87,14 +91,14 @@ const renderConfirmationRouter = ({
     },
   });
 
-  return renderWithProvider(
+  const ui = (
     <>
       <ConfirmationRouter />
       <PathnameDisplay />
-    </>,
-    store,
-    pathname,
+    </>
   );
+
+  return { ...renderWithProvider(ui, store, pathname), store };
 };
 
 describe('ConfirmationRouter', () => {
@@ -252,6 +256,28 @@ describe('ConfirmationRouter', () => {
       });
 
       expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_REVIEW_ROUTE);
+    });
+  });
+
+  describe('resume on popup open', () => {
+    it('resumes swap after unlocking', () => {
+      const { getByTestId, store } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasQuotes: true,
+        isUnlocked: false,
+      });
+
+      // The unlock redirect would override a resume here
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+
+      act(() => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { isUnlocked: true },
+        });
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(SWAP_ROUTE);
     });
   });
 });

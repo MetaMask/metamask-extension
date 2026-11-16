@@ -8,7 +8,7 @@ import {
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import { NetworkId } from '../../page-objects/pages/networks/select-network-modal';
+import { NetworkId } from '../../helpers/network-constants';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   deleteNetworkFromNetworkSelect,

@@ -47,9 +47,9 @@ export const HeaderSearch = (props: HeaderSearchProps) => {
   const searchProps = adaptTextFieldSearchProps(textFieldSearchProps);
 
   const searchBox = (
-    <Box className="flex min-w-0 flex-1 items-center">
+    <search className="flex min-w-0 flex-1 items-center">
       <TextFieldSearch {...searchProps} />
-    </Box>
+    </search>
   );
 
   const rootClassName = classnames('mm-header-search w-full', className);

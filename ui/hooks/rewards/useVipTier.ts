@@ -61,15 +61,18 @@ function useVipTierAccountId() {
 }
 
 function useRewardsVipTierQuery(
-  accountId: string | null,
+  accountId: CaipAccountId | null,
   subscriptionId: string | null,
 ) {
   return useQuery({
     queryKey: ['rewardsVipTier', accountId, subscriptionId],
     queryFn: async () => {
-      const tier = await submitRequestToBackground<number | null>(
-        'rewardsGetVipTierForAccount',
-        [String(accountId)],
+      if (!accountId) {
+        return null;
+      }
+      const tier = await submitRequestToBackground(
+        'RewardsController:getVipTierForAccount',
+        [accountId],
       );
       return tier ?? null;
     },

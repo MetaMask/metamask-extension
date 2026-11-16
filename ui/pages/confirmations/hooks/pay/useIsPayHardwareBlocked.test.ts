@@ -63,6 +63,20 @@ describe('useIsPayHardwareBlocked', () => {
     }
   });
 
+  describe('moneyAccountWithdraw', () => {
+    for (const flagEnabled of [true, false]) {
+      it(`returns false when the flag is ${flagEnabled ? 'enabled' : 'disabled'}`, async () => {
+        const { result } = runHook(
+          TransactionType.moneyAccountWithdraw,
+          flagEnabled,
+        );
+        await waitFor(() => {
+          expect(result.current).toBe(false);
+        });
+      });
+    }
+  });
+
   describe('flag-gated types', () => {
     it('returns true for musdConversion when the flag is disabled', async () => {
       const { result } = runHook(TransactionType.musdConversion, false);

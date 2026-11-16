@@ -5,7 +5,6 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   ACCOUNT_2,
   DEFAULT_FIXTURE_ACCOUNT_ID,
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
 } from '../../../constants';
 import type { Anvil } from '../../../seeder/anvil';
@@ -83,32 +82,23 @@ function buildAssetsBalance(accountIds: string[]) {
  * deposit can be funded from another account.
  * @param options.remoteFlagOverrides - Extra remote flags seeded into
  * `RemoteFeatureFlagController` state (must also be served by the HTTP mock).
+ * @param options.moneyFtueSeen - Whether the fixture user has already seen the
+ * Money FTUE splash.
  * @returns The built fixture state.
  */
 export function buildMoneyAccountDepositFixture({
   withAccount2 = false,
   remoteFlagOverrides = {},
+  moneyFtueSeen = true,
 }: {
   withAccount2?: boolean;
   remoteFlagOverrides?: Record<string, Json>;
+  moneyFtueSeen?: boolean;
 } = {}) {
-  const accountAddresses = [
-    DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-    ...(withAccount2 ? [ACCOUNT_2.toLowerCase()] : []),
-  ];
   const accountIds = [
     DEFAULT_FIXTURE_ACCOUNT_ID,
     ...(withAccount2 ? [ACCOUNT_2_FIXTURE_ID] : []),
   ];
-  const usdcToken = {
-    address: MAINNET_USDC_ADDRESS,
-    symbol: 'USDC',
-    decimals: 6,
-    isERC721: false,
-    aggregators: [],
-    name: 'USD Coin',
-  };
-
   let builder = new FixtureBuilderV2();
   if (withAccount2) {
     builder = builder
@@ -117,6 +107,7 @@ export function buildMoneyAccountDepositFixture({
   }
 
   return builder
+    .withAppStateController({ moneyFtueSeen })
     .withRemoteFeatureFlagController({
       remoteFeatureFlags: {
         ...MONEY_ACCOUNT_DEPOSIT_REMOTE_FLAGS,
@@ -125,13 +116,6 @@ export function buildMoneyAccountDepositFixture({
     })
     .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({ eip155: { [CHAIN_IDS.MAINNET]: true } })
-    .withTokensController({
-      allTokens: {
-        [CHAIN_IDS.MAINNET]: Object.fromEntries(
-          accountAddresses.map((address) => [address, [usdcToken]]),
-        ),
-      },
-    })
     .withAssetsController({
       customAssets: Object.fromEntries(
         accountIds.map((accountId) => [accountId, [MAINNET_USDC_ASSET_ID]]),
@@ -224,21 +208,26 @@ export async function seedAnvilUsdcBalance(
  * USDC on Anvil.
  * @param options.remoteFlagOverrides - Extra remote flags applied to both the
  * seeded controller state and the `/v1/flags` mock.
+ * @param options.moneyFtueSeen - Whether the fixture user has already seen the
+ * Money FTUE splash.
  * @returns Partial `withFixtures` config.
  */
 export function getMoneyAccountDepositConfig({
   title,
   withAccount2 = false,
   remoteFlagOverrides = {},
+  moneyFtueSeen = true,
 }: {
   title?: string;
   withAccount2?: boolean;
   remoteFlagOverrides?: Record<string, Json>;
+  moneyFtueSeen?: boolean;
 }) {
   return {
     fixtures: buildMoneyAccountDepositFixture({
       withAccount2,
       remoteFlagOverrides,
+      moneyFtueSeen,
     }),
     title,
     localNodeOptions: [

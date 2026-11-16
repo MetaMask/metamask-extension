@@ -103,6 +103,13 @@ export type MultichainAccountListProps = {
    * @default false
    */
   isEditMode?: boolean;
+  /**
+   * Whether selecting an account with the default click handler navigates away
+   * from the list. Set to false when embedded in a persistent surface such as a
+   * side navigation. Ignored when a custom `handleAccountClick` is provided.
+   * @default true
+   */
+  shouldNavigateOnSelect?: boolean;
 };
 
 type WalletData = AccountTreeWallets[AccountWalletId];
@@ -204,6 +211,7 @@ export const MultichainAccountList = ({
   showConnectionStatus = false,
   showDefaultAddress = false,
   isEditMode = false,
+  shouldNavigateOnSelect = true,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox && !isEditMode;
 
@@ -445,6 +453,9 @@ export const MultichainAccountList = ({
 
       startTransition(() => {
         dispatch(setSelectedMultichainAccount(accountGroupId));
+        if (!shouldNavigateOnSelect) {
+          return;
+        }
         if (isFreshTab) {
           navigate(DEFAULT_ROUTE, { replace: true });
         } else {
@@ -461,6 +472,7 @@ export const MultichainAccountList = ({
       location.key,
       location.state,
       navigate,
+      shouldNavigateOnSelect,
       startTransition,
     ],
   );

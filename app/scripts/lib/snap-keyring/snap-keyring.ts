@@ -191,7 +191,7 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
     onceSaved: Promise<string>;
   }) {
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension';
+      'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension';
 
     const snapName = getSnapName(snapId, this.#messenger);
 
@@ -373,7 +373,7 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
     );
 
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension';
+      'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension';
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
       trackEvent(

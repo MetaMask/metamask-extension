@@ -1,5 +1,7 @@
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { Messenger } from '@metamask/messenger';
 import type { RootMessenger } from '../../lib/messenger';
+import { augmentTempoCurrencyRates } from '../../../../shared/lib/assets/enablement/tempo';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 
 export type CurrencyRateCompatState = {
@@ -32,6 +34,8 @@ const registeredRoots = new WeakSet<object>();
  *
  * Prefers `AssetsController:getStateForTransactionPay` when available (already
  * shaped for pay/rates), then falls back to AssetsController:getState.
+ * Tempo has no native asset, so both paths add its USD rate from token prices
+ * via `augmentTempoCurrencyRates`, matching `getCurrencyRateControllerCurrencyRates`.
  *
  * @param messenger - Root messenger used to read AssetsController state.
  * @returns Compat state with `currencyRates` and `currentCurrency`.
@@ -49,7 +53,10 @@ export function getCurrencyRateCompatState(
     ) as CurrencyRateCompatState | undefined;
     if (transactionPayState) {
       return {
-        currencyRates: transactionPayState.currencyRates ?? {},
+        currencyRates: withTempoCurrencyRates(
+          transactionPayState.currencyRates ?? {},
+          readAssetsPrice(messenger),
+        ),
         currentCurrency: transactionPayState.currentCurrency ?? '',
       };
     }
@@ -107,9 +114,53 @@ export function getCurrencyRateCompatState(
       };
     }
 
-    return { currencyRates, currentCurrency };
+    return {
+      currencyRates: withTempoCurrencyRates(
+        currencyRates,
+        assetsPrice as AssetsControllerState['assetsPrice'],
+      ),
+      currentCurrency,
+    };
   } catch {
     return EMPTY_CURRENCY_RATE_STATE;
+  }
+}
+
+/**
+ * Adds the Tempo USD rate when token prices can supply one.
+ * A failure here keeps the rates already derived for other chains.
+ *
+ * @param currencyRates - Rates keyed by native symbol.
+ * @param assetsPrice - Asset prices keyed by CAIP-19 asset id.
+ * @returns Rates including the derived Tempo USD rate when one is available.
+ */
+function withTempoCurrencyRates(
+  currencyRates: CurrencyRateCompatState['currencyRates'],
+  assetsPrice: AssetsControllerState['assetsPrice'],
+): CurrencyRateCompatState['currencyRates'] {
+  try {
+    return augmentTempoCurrencyRates(currencyRates, assetsPrice);
+  } catch {
+    return currencyRates;
+  }
+}
+
+/**
+ * Reads asset prices for Tempo rate derivation. Missing state leaves rates unchanged.
+ *
+ * @param messenger - Root messenger used to read AssetsController state.
+ * @returns Asset prices, or an empty map when state cannot be read.
+ */
+function readAssetsPrice(
+  messenger: CompatRootMessenger,
+): AssetsControllerState['assetsPrice'] {
+  try {
+    const assetsState = messenger.call('AssetsController:getState') as
+      | { assetsPrice?: AssetsControllerState['assetsPrice'] }
+      | undefined;
+    return assetsState?.assetsPrice ?? {};
+  } catch {
+    return {};
   }
 }
 

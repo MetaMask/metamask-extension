@@ -13,7 +13,7 @@ This README covers architecture, quick start, and available commands for the LLM
 
 The system uses a **decoupled, daemon-based architecture**:
 
-- **Generic Core**: `@metamask/client-mcp-core` package provides the HTTP daemon infrastructure, CLI interface, and knowledge store.
+- **Generic Core**: `@metamask/client-mcp-core` package provides the HTTP daemon infrastructure and CLI interface.
 - **MetaMask Implementation**: This directory implements MetaMask-specific capabilities (fixtures, chain, seeding) that plug into the core daemon.
 
 ```
@@ -32,7 +32,6 @@ The system uses a **decoupled, daemon-based architecture**:
 │  │  @metamask/client-mcp-core (generic core)                │   │
 │  │  - HTTP server & CLI infrastructure                             │   │
 │  │  - Tool logic (click, type, screenshot, etc.)                   │   │
-│  │  - Knowledge store                                              │   │
 │  └─────────────────────────────────────────────────────────────────┘   │
 │                                  │                                      │
 │  ┌─────────────────────────────────────────────────────────────────┐   │
@@ -122,12 +121,6 @@ mm cleanup
 - `mm navigate <url>`: Navigates to a specific URL.
 - `mm navigate-home`: Navigates to the extension home.
 - `mm navigate-settings`: Navigates to the extension settings.
-
-### Knowledge Store
-
-- `mm knowledge-search <query>`: Search steps across sessions.
-- `mm knowledge-last`: Get last N step records from this session.
-- `mm knowledge-sessions`: List recent sessions with metadata.
 
 ---
 

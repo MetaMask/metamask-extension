@@ -26,6 +26,7 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
+  getOHLCVServiceMessenger,
 } from './core-backend';
 import {
   getMultichainTransactionsControllerMessenger,
@@ -41,13 +42,11 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
-  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getAssetsContractControllerInitMessenger,
-  getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets';
@@ -576,6 +575,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAccountActivityServiceMessenger,
     getInitMessenger: noop,
   },
+  OHLCVService: {
+    getMessenger: getOHLCVServiceMessenger,
+    getInitMessenger: noop,
+  },
   SmartTransactionsController: {
     getMessenger: getSmartTransactionsControllerMessenger,
     getInitMessenger: getSmartTransactionsControllerInitMessenger,
@@ -587,10 +590,6 @@ export const MESSENGER_FACTORIES = {
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  NetworkEnablementController: {
-    getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,

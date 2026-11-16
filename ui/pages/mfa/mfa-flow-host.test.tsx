@@ -8,7 +8,7 @@ import type {
 } from '@metamask/profile-sync-controller/sdk';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE, UNLOCK_ROUTE } from '../../helpers/constants/routes';
 import {
   getActiveMfaFlow,
   startMfaFlow,
@@ -22,11 +22,16 @@ import { MfaFlowTestIds } from './test-ids';
 import MfaFlowHost from './mfa-flow-host';
 
 const mockNavigate = jest.fn();
+const mockRedirect = jest.fn();
 let mockLocation: { key: string; state: unknown };
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
   useLocation: () => mockLocation,
+  Navigate: (props: unknown) => {
+    mockRedirect(props);
+    return null;
+  },
 }));
 
 const activeEmail: EnrolledCredential = {
@@ -90,13 +95,15 @@ const start = async (
   controller: MfaControllerAdapter,
   // The extension offers no passkey yet: a picker needs a mobile flow.
   passkey?: MfaFlowOptions['passkey'],
+  whileLocked?: boolean,
 ) => {
   const outcome = startMfaFlow({
     request,
-    reason: { operation: 'test', enrollDescription: 'Why we ask' },
+    reason: { operation: 'qa.test', enrollDescription: 'Why we ask' },
     platform: passkey ? 'mobile' : 'extension',
     controller,
     passkey,
+    whileLocked,
   }).then(
     (value) => ({ ok: true as const, value }),
     (error) => ({ ok: false as const, code: error.mfaCode }),
@@ -105,8 +112,14 @@ const start = async (
   return { outcome };
 };
 
-const renderHost = () =>
-  renderWithProvider(<MfaFlowHost />, configureMockStore([thunk])(mockState));
+const renderHost = (isUnlocked = true) =>
+  renderWithProvider(
+    <MfaFlowHost />,
+    configureMockStore([thunk])({
+      ...mockState,
+      metamask: { ...mockState.metamask, isUnlocked },
+    }),
+  );
 
 const getInput = (testId: string) => {
   const element = screen.getByTestId(testId);
@@ -128,6 +141,67 @@ describe('MfaFlowHost', () => {
 
   afterEach(async () => {
     await act(async () => getActiveMfaFlow()?.dispatch({ type: 'cancel' }));
+  });
+
+  describe('when the wallet is locked', () => {
+    const VERIFY_EMAIL: MfaFlowRequest = {
+      kind: 'verifyOrEnroll',
+      methods: ['email_otp'],
+      verifyWith: 'email_otp',
+    };
+
+    it('sends a flow that needs an unlocked wallet to unlock, and cancels it', async () => {
+      const { outcome } = await start(
+        VERIFY_EMAIL,
+        createController([activeEmail]),
+      );
+
+      const { unmount } = renderHost(false);
+
+      expect(mockRedirect).toHaveBeenCalledWith(
+        expect.objectContaining({ to: UNLOCK_ROUTE, replace: true }),
+      );
+      expect(
+        screen.queryByTestId(`${MfaFlowTestIds.CONTAINER}-otp`),
+      ).not.toBeInTheDocument();
+      // The router replaces the page with the redirect, and leaving it
+      // cancels the flow.
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve));
+      });
+      expect(await outcome).toStrictEqual({
+        ok: false,
+        code: 'flow_cancelled',
+      });
+    });
+
+    it('keeps a flow that runs while locked on the page', async () => {
+      await start(
+        VERIFY_EMAIL,
+        createController([activeEmail]),
+        undefined,
+        true,
+      );
+
+      renderHost(false);
+
+      expect(mockRedirect).not.toHaveBeenCalled();
+      expect(
+        screen.getByTestId(`${MfaFlowTestIds.CONTAINER}-otp`),
+      ).toBeInTheDocument();
+    });
+
+    it('does not redirect when the wallet is unlocked', async () => {
+      await start(VERIFY_EMAIL, createController([activeEmail]));
+
+      renderHost();
+
+      expect(mockRedirect).not.toHaveBeenCalled();
+      expect(
+        screen.getByTestId(`${MfaFlowTestIds.CONTAINER}-otp`),
+      ).toBeInTheDocument();
+    });
   });
 
   it('runs email setup from entry to the code, then resolves and leaves', async () => {

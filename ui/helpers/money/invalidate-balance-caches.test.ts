@@ -22,17 +22,21 @@ const FACADE_QUERY_KEY = [
 const STALE_BALANCE = { totalBalance: '1000000' };
 const FRESH_BALANCE = { totalBalance: '2000000' };
 
-const messengerCalls = () =>
-  submitRequestToBackgroundMock.mock.calls
-    .filter(([method]) => method === 'messengerCall')
-    .map(([, args]) => args as [string, unknown[]]);
+const backgroundCalls = () =>
+  submitRequestToBackgroundMock.mock.calls.map(([method, args]) => {
+    if (method === 'messengerCall') {
+      return args as [string, unknown[]];
+    }
+    return [method, args] as [string, unknown[] | undefined];
+  });
 
 describe('invalidateMoneyAccountBalanceCaches', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     queryClient.clear();
-    submitRequestToBackgroundMock.mockImplementation(async (_method, args) => {
-      const [action] = args as [string, unknown[]];
+    submitRequestToBackgroundMock.mockImplementation(async (method, args) => {
+      const action =
+        method === 'messengerCall' ? (args as [string, unknown[]])[0] : method;
       return action === 'MoneyAccountBalanceService:fetchBalanceWithFallback'
         ? (FRESH_BALANCE as never)
         : (undefined as never);
@@ -43,17 +47,14 @@ describe('invalidateMoneyAccountBalanceCaches', () => {
     await invalidateMoneyAccountBalanceCaches(ADDRESS);
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'messengerCall',
+      'MoneyAccountBalanceService:invalidateQueries',
       [
-        'MoneyAccountBalanceService:invalidateQueries',
-        [
-          {
-            queryKey: [
-              'MoneyAccountBalanceService:getMoneyAccountBalance',
-              ADDRESS,
-            ],
-          },
-        ],
+        {
+          queryKey: [
+            'MoneyAccountBalanceService:getMoneyAccountBalance',
+            ADDRESS,
+          ],
+        },
       ],
     );
   });
@@ -62,17 +63,14 @@ describe('invalidateMoneyAccountBalanceCaches', () => {
     await invalidateMoneyAccountBalanceCaches(ADDRESS);
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'messengerCall',
+      'MoneyAccountApiDataService:invalidateQueries',
       [
-        'MoneyAccountApiDataService:invalidateQueries',
-        [
-          {
-            queryKey: [
-              'MoneyAccountApiDataService:fetchPositions',
-              ADDRESS.toLowerCase(),
-            ],
-          },
-        ],
+        {
+          queryKey: [
+            'MoneyAccountApiDataService:fetchPositions',
+            ADDRESS.toLowerCase(),
+          ],
+        },
       ],
     );
   });
@@ -82,7 +80,7 @@ describe('invalidateMoneyAccountBalanceCaches', () => {
 
     await invalidateMoneyAccountBalanceCaches(ADDRESS);
 
-    expect(messengerCalls().map(([action]) => action)).toStrictEqual([
+    expect(backgroundCalls().map(([action]) => action)).toStrictEqual([
       'MoneyAccountBalanceService:invalidateQueries',
       'MoneyAccountApiDataService:invalidateQueries',
       'MoneyAccountBalanceService:invalidateQueries',
@@ -98,9 +96,10 @@ describe('invalidateMoneyAccountBalanceCaches', () => {
 
     await invalidateMoneyAccountBalanceCaches(ADDRESS);
 
-    const forwardedParams = messengerCalls().find(
+    const forwardedParams = backgroundCalls().find(
       ([action, params]) =>
         action === 'MoneyAccountBalanceService:invalidateQueries' &&
+        Array.isArray(params) &&
         params.length === 2,
     )?.[1];
 
@@ -148,11 +147,8 @@ describe('fetchFreshMoneyAccountBalance', () => {
     );
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'messengerCall',
-      [
-        'MoneyAccountBalanceService:fetchBalanceWithFallback',
-        [ADDRESS, REQUEST_OPTIONS],
-      ],
+      'MoneyAccountBalanceService:fetchBalanceWithFallback',
+      [ADDRESS, REQUEST_OPTIONS],
     );
     expect(result).toStrictEqual(FRESH_BALANCE);
     expect(queryClient.getQueryData(FACADE_QUERY_KEY)).toStrictEqual(

@@ -200,6 +200,7 @@ function runHook({
   useDepositPrefillMock.mockReturnValue(depositPrefill);
   jest.mocked(useAccountTokensLoading).mockReturnValue(isAccountTokensLoading);
   jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
+    isLoading: false,
     withdrawableFiatRaw: moneyAccountWithdrawableFiatRaw,
     withdrawableFiatFormatted: undefined,
   });

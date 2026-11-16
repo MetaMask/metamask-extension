@@ -1,7 +1,7 @@
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
-import { MUSD_TOKEN_ADDRESS } from '../constants';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../constants';
 import { ensureMusdTokenImportedForChain } from './ensure-musd-token-imported';
 
 const mockImportCustomAssetsBatch = jest.fn();
@@ -61,8 +61,8 @@ describe('ensureMusdTokenImportedForChain', () => {
       {
         [assetId as string]: {
           address: MUSD_TOKEN_ADDRESS,
-          symbol: 'MUSD',
-          name: 'MUSD',
+          symbol: MUSD_TOKEN.symbol,
+          name: MUSD_TOKEN.symbol,
           decimals: 6,
           chainId: CHAIN_IDS.MAINNET,
         },

@@ -84,7 +84,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
 
         await createDappTransaction(driver);
@@ -154,7 +153,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

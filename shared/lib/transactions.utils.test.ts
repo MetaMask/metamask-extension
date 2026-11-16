@@ -362,6 +362,18 @@ describe('Transactions utils', () => {
         OVERRIDE,
         FROM,
       ],
+      [
+        'from for Money Account withdraws, ignoring the recipient override',
+        TransactionType.moneyAccountWithdraw,
+        OVERRIDE,
+        FROM,
+      ],
+      [
+        'the override for Money Account deposits',
+        TransactionType.moneyAccountDeposit,
+        OVERRIDE,
+        OVERRIDE,
+      ],
     ] as const;
 
     for (const [label, type, override, expected] of CASES) {
@@ -376,5 +388,20 @@ describe('Transactions utils', () => {
         ).toBe(expected);
       });
     }
+
+    it('returns from for a Money Account withdraw nested in a batch', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+        txParams: { from: FROM },
+      };
+
+      expect(
+        getTransactionPayingAccount(
+          transactionMeta as TransactionMeta,
+          OVERRIDE,
+        ),
+      ).toBe(FROM);
+    });
   });
 });

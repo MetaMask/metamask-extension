@@ -256,14 +256,15 @@ describe('NFT Items', () => {
   const checkAndUpdateAllNftsOwnershipStatusStub = jest.fn();
   const updateNftDropDownStateStub = jest.fn();
   setBackgroundConnection({
-    detectNfts: detectNftsStub,
     getState: getStateStub,
     getStatePatches: jest.fn().mockResolvedValue([]),
-    checkAndUpdateAllNftsOwnershipStatus:
-      checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
     messengerCall: (actionType, args = []) => {
       switch (actionType) {
+        case 'NftDetectionController:detectNfts':
+          return detectNftsStub(...args);
+        case 'NftController:checkAndUpdateAllNftsOwnershipStatus':
+          return checkAndUpdateAllNftsOwnershipStatusStub(...args);
         case 'PreferencesController:setUseNftDetection':
           return setUseNftDetectionStub(...args);
         case 'PreferencesController:setOpenSeaEnabled':
