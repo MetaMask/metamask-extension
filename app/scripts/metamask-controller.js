@@ -4492,9 +4492,12 @@ export default class MetamaskController extends EventEmitter {
         sortAccountIdsByLastSelected:
           this.sortAccountIdsByLastSelected.bind(this),
         // The session handlers hydrate `sessionProperties.eip155Capabilities`
-        // through this hook. Resolving without a value leaves the account out
-        // of that record, so dapps keep calling `wallet_getCapabilities`.
-        getCapabilities: async () => undefined,
+        // through this hook. Rejecting leaves the account out of that record,
+        // so dapps keep calling `wallet_getCapabilities`. Resolving with
+        // `undefined` instead is not valid JSON, which Snaps reject.
+        getCapabilities: async () => {
+          throw new Error('Session capabilities are not supported');
+        },
       }),
     );
 
