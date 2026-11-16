@@ -1739,7 +1739,6 @@
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -3274,7 +3273,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/base-data-service": true,
         "@metamask/ramps-controller>@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/ramps-controller>bignumber.js": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
