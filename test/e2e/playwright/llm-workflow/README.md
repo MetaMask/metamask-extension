@@ -6,7 +6,7 @@ CLI-based tooling for LLM agents to build, launch, and interact with the MetaMas
 
 This README covers architecture, quick start, and available commands for the LLM workflow.
 
-- For the full agent-facing command reference (targeting, scoping, batching, error recovery), see `.claude/skills/metamask-visual-testing/SKILL.md`.
+- For the full agent-facing command reference (targeting, scoping, batching, error recovery), see the `mms-visual-testing` skill: source `domains/testing/skills/visual-testing/skill.md` in [MetaMask/skills](https://github.com/MetaMask/skills), installed by `yarn skills` at `.claude/skills/mms-visual-testing/SKILL.md` and `.agents/skills/mms-visual-testing/SKILL.md`.
 - For the core package API and capability interfaces, see the `@metamask/client-mcp-core` README.
 
 ## Architecture
@@ -45,11 +45,13 @@ The system uses a **decoupled, daemon-based architecture**:
                                   │ Playwright
                                   ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    Headed Chrome Browser                                │
+│                    Chrome Browser (headed by default)                   │
 │                    + MetaMask Extension                                 │
 │                    + Anvil (local blockchain)                           │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
+
+The browser is headed by default. Set `MM_HEADLESS=true` before `mm launch` to run it headless; `PLAYWRIGHT_HEADLESS`/`HEADLESS` and `CI` also enable headless when `MM_HEADLESS` is unset (`metamask-provider.ts`).
 
 ### Key Components
 
@@ -101,7 +103,7 @@ mm cleanup
 
 ### 3. Output and Errors
 
-Every command prints JSON on stdout. A failed command prints one JSON line on stdout (not `Error: ...` on stderr) and exits with a non-zero code:
+Every command except `mm stop` prints JSON on stdout; `mm stop` prints a plain-text line. A failed command prints one JSON line on stdout (not `Error: ...` on stderr) and exits with a non-zero code:
 
 ```json
 {"ok":false,"error":{"code":"MM_CLICK_TIMEOUT","message":"Click timed out after 3000ms; state unknown (last Playwright step: element is not enabled). ...","hint":"...","retryable":false},"meta":{...}}
@@ -190,10 +192,12 @@ mm launch --state onboarding --self-onboarding < phrase.txt
 
 ### Custom Fixture
 
-Use a preset fixture or provide custom wallet state.
+`mm launch --state custom` needs a wallet fixture, and `mm launch` has no flag to pass one. The `launch` tool accepts `fixturePreset` (a preset name) or `fixture` (a fixture object), but `--preset` is not a launch flag in `@metamask/client-mcp-core` 0.14.0: `mm launch --state custom --preset <name>` warns `unknown launch flag '--preset'` and then fails with `MM_LAUNCH_FAILED` (`stateMode 'custom' requires either 'fixturePreset' or 'fixture'`).
 
-```bash
-mm launch --state custom --preset withMultipleAccounts
+The presets are defined by `createFixturePresets` in `fixture-helper.ts`: `default`, `onboarding`, `withMultipleAccounts`, `withERC20Tokens`, `withConnectedDapp`, `withMainnet`, `withNFTs`, `withFiatDisabled` and `withHSTToken`. Pass one as `fixturePreset` to the `launch` tool directly, for example in a `POST /launch` body (the daemon port is in `.mm-server`). From the CLI, only `--state default` and `--state onboarding` are usable, because they need no fixture.
+
+```json
+{ "stateMode": "custom", "fixturePreset": "withMultipleAccounts" }
 ```
 
 ---
@@ -206,6 +210,6 @@ mm launch --state custom --preset withMultipleAccounts
 
 ## See Also
 
-- **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Concise command reference for agents.
+- **Agent Skill**: `mms-visual-testing` - Concise command reference for agents. Source: `domains/testing/skills/visual-testing/skill.md` in [MetaMask/skills](https://github.com/MetaMask/skills). `yarn skills` installs it (gitignored) at `.claude/skills/mms-visual-testing/SKILL.md` and `.agents/skills/mms-visual-testing/SKILL.md`; if `.skills.local` restricts `SKILLS_DOMAINS`, include `testing`.
 - **Core Package**: `@metamask/client-mcp-core` - Generic daemon infrastructure.
 - **Migrating from MCP?** If you previously configured an MCP server for MetaMask, see [mcp-cli-migration.md](./mcp-cli-migration.md).
