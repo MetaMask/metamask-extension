@@ -32,6 +32,13 @@ PASSKEY_ENABLED='false'
 ; usually needed alongside the URL overrides above.
 ;MM_BACKEND_DISABLE_AUTH='true'
 
+; Advanced Charts iframe origin. Defaults to the UAT origin,
+; https://chart.uat.metamask-charts.com (production is
+; https://chart.metamask-charts.com). Your extension id must be in that
+; origin's frame-ancestors allowlist, so point this at the local
+; chart-origin server when it isn't.
+;CHART_ORIGIN_URL='http://localhost:8001'
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
