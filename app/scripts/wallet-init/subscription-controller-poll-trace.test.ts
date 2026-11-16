@@ -22,6 +22,7 @@ describe('traceSubscriptionControllerPolls', () => {
 
   it('runs each poll cycle inside a SubscriptionController background poll', async () => {
     const originalExecutePoll = jest.fn().mockResolvedValue(undefined);
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const controller = { _executePoll: originalExecutePoll };
 
     traceSubscriptionControllerPolls(controller);
@@ -38,6 +39,7 @@ describe('traceSubscriptionControllerPolls', () => {
   it("keeps the controller as the poll cycle's this", async () => {
     const controller = {
       seen: undefined as unknown,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       async _executePoll(this: { seen: unknown }) {
         this.seen = this;
       },
