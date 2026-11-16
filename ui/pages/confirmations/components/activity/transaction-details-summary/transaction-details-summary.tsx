@@ -27,7 +27,7 @@ import {
   type NetworkConfigurationsByChainIdState,
 } from '../../../../../../shared/lib/selectors/networks';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
-import { getMoneyWithdrawDestinationChainId } from '../../../../../helpers/money/money-transaction-guards';
+import { isMoneyWithdrawTx } from '../../../../../helpers/money/money-transaction-guards';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
@@ -308,9 +308,10 @@ function DefaultSummaryLine({
   const t = useI18nContext() as TranslateFunction;
   const { type } = transactionMeta;
 
-  const chainId =
-    getMoneyWithdrawDestinationChainId(transactionMeta) ??
-    transactionMeta.chainId;
+  // Not relying on TransactionType in case of batch withdraw
+  const chainId = isMoneyWithdrawTx(transactionMeta)
+    ? (transactionMeta.metamaskPay?.chainId ?? transactionMeta.chainId)
+    : transactionMeta.chainId;
 
   let title: string;
   switch (type) {

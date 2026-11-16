@@ -14,7 +14,7 @@ import type { MoneyAccountActivityItem } from '../../../../../shared/lib/activit
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../../shared/lib/money/constants';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../../components/app/money/messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
-import { getMoneyWithdrawDestinationChainId } from '../../../../helpers/money/money-transaction-guards';
+import { isMoneyWithdrawTx } from '../../../../helpers/money/money-transaction-guards';
 import { useLocalTransactionMeta } from '../../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
@@ -35,9 +35,10 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
   const transactionMeta = useLocalTransactionMeta(item.hash);
-  const withdrawDestinationChainId = transactionMeta
-    ? getMoneyWithdrawDestinationChainId(transactionMeta)
-    : undefined;
+  const withdrawDestinationChainId =
+    transactionMeta && isMoneyWithdrawTx(transactionMeta)
+      ? transactionMeta.metamaskPay?.chainId
+      : undefined;
   const { metamaskPay } = transactionMeta ?? {};
   const { bridgeFeeFiat, networkFeeFiat, totalFiat } = metamaskPay || {};
 
