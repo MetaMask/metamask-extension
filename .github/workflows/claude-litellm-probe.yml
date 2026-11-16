@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Install Claude Code and bubblewrap
         run: |
-          npm install -g --ignore-scripts @anthropic-ai/claude-code@2.1.323
+          npm install -g @anthropic-ai/claude-code@2.1.323
           claude --version
           sudo apt-get install -y bubblewrap socat
           bwrap --version
@@ -123,7 +123,7 @@ jobs:
           ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
         run: |
-          npm install -g --ignore-scripts @anthropic-ai/claude-code@2.1.323
+          npm install -g @anthropic-ai/claude-code@2.1.323
           claude -p "Reply with exactly the word OK" --model "$MODEL" --output-format json > claude.json
           echo "result: $(jq -r '.result' claude.json)"
           keys=$(jq -r '(.modelUsage // {}) | keys[]' claude.json)
@@ -166,7 +166,7 @@ jobs:
 
       - name: Install pinned Claude Code
         run: |
-          npm install -g --ignore-scripts @anthropic-ai/claude-code@2.1.323
+          npm install -g @anthropic-ai/claude-code@2.1.323
           claude --version
 
       - name: Run the battery inside the Claude Code sandbox
