@@ -7,6 +7,7 @@ import HomePage from '../pages/home/homepage';
 import RevealSrpPage from '../pages/reveal-srp-page';
 import ManageWalletRecoverySettings from '../pages/settings/security-and-password/manage-wallet-recovery-settings';
 import SecurityAndPasswordSettings from '../pages/settings/security-and-password/security-and-password-settings';
+import { importWalletWithSrp } from './add-wallet.flow';
 import { navigateToSecurityAndPassword, openRevealSrp } from './settings.flow';
 
 export const SECOND_TEST_E2E_SRP =
@@ -33,7 +34,7 @@ export async function importAdditionalSecretRecoveryPhrase(
   await headerNavbar.openAccountMenu();
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
-  await accountListPage.startImportSecretPhrase(srpWords);
+  await importWalletWithSrp(driver, srpWords);
   await homePage.checkNewSrpAddedToastIsDisplayed();
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();

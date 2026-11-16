@@ -390,7 +390,7 @@ describe('Feature announcement footer buttons', () => {
 
     await waitFor(() =>
       expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: 'https://metamask.io/card?amount=100',
+        url: 'https://metamask.com/card?amount=100',
       }),
     );
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();

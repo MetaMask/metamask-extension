@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import {
   Box,
   Icon,
@@ -12,12 +12,22 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  FlexWrap,
   IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import type { PayWithRowConfig } from './pay-with-modal.types';
+import type {
+  PayWithRowConfig,
+  PayWithRowTagRenderer,
+} from './pay-with-modal.types';
+
+const renderFirstTag = (
+  tagRenderers: PayWithRowTagRenderer[] | undefined,
+): ReactNode =>
+  tagRenderers?.reduce<ReactNode>((found, render) => found ?? render(), null) ??
+  null;
 
 export function PaymentMethodRow({
   id,
@@ -25,11 +35,13 @@ export function PaymentMethodRow({
   title,
   subtitle,
   isSelected,
+  tagRenderers,
   trailingElement = 'none',
   onPress,
   testId,
 }: PayWithRowConfig) {
   const resolvedTestId = testId ?? `payment-method-row-${id}`;
+  const tag = renderFirstTag(tagRenderers);
 
   return (
     <Box
@@ -97,13 +109,22 @@ export function PaymentMethodRow({
         flexDirection={FlexDirection.Column}
         style={{ flex: 1, minWidth: 0 }}
       >
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textDefault}
-          data-testid={`${resolvedTestId}-title`}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          flexWrap={FlexWrap.Wrap}
+          gap={2}
         >
-          {title}
-        </Text>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textDefault}
+            data-testid={`${resolvedTestId}-title`}
+          >
+            {title}
+          </Text>
+          {tag}
+        </Box>
         {subtitle ? (
           <Text
             variant={TextVariant.bodySm}

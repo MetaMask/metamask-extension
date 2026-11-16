@@ -3546,10 +3546,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetricsデータを削除"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "これにより、このデバイスでの使用に関連した過去のMetaMetricsデータが削除されます。このデータが削除された後も、ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。$1をご覧ください。",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "これにより、ウォレットに関連する過去のMetaMetricsデータが削除されます。MetaMetricsには匿名化された使用状況および診断データが含まれます。ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。当社の$1をご覧ください。",
     "description": "$1 will have text saying Privacy Policy "
@@ -3557,14 +3553,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "アナリティクスシステムサーバーの問題により、現在このリクエストを完了させることができません。後でもう一度お試しください。"
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "現在このデータを削除できません"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "削除できません"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "すべてのMetaMetricsデータを削除しようとしています。よろしいですか？"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetricsデータを削除しますか？"
@@ -5378,9 +5368,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "訪問しているWebサイトが現在選択しているアカウントに接続されている場合、接続ステータスボタンが表示されます。"
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "MetaMetricsにオプトインしていないため、ここで削除するデータはありません。"
   },
   "metadataModalSourceTooltip": {
     "message": "$1はnpmでホストされていて、$2はこのSnapの一意のIDです。",
