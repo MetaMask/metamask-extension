@@ -59,4 +59,13 @@ describe('MultichainAssetsControllerInit', () => {
       isDeprecated: expect.any(Function),
     });
   });
+
+  it('marks the controller as deprecated', () => {
+    const requestMock = buildInitRequestMock();
+    MultichainAssetsControllerInit(requestMock);
+
+    const [{ isDeprecated }] = MultichainAssetsControllerClassMock.mock
+      .calls[0] as unknown as [{ isDeprecated: () => boolean }];
+    expect(isDeprecated()).toBe(true);
+  });
 });

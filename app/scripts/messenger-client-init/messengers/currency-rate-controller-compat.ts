@@ -2,7 +2,6 @@ import type { AssetsControllerState } from '@metamask/assets-controller';
 import { Messenger } from '@metamask/messenger';
 import type { RootMessenger } from '../../lib/messenger';
 import { augmentTempoCurrencyRates } from '../../../../shared/lib/assets/enablement/tempo';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 
 export type CurrencyRateCompatState = {
   currencyRates: Record<
@@ -43,10 +42,6 @@ const registeredRoots = new WeakSet<object>();
 export function getCurrencyRateCompatState(
   messenger: CompatRootMessenger,
 ): CurrencyRateCompatState {
-  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-    return EMPTY_CURRENCY_RATE_STATE;
-  }
-
   try {
     const transactionPayState = messenger.call(
       'AssetsController:getStateForTransactionPay',

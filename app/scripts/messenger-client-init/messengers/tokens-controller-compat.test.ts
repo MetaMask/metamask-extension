@@ -1,21 +1,11 @@
 import { Messenger } from '@metamask/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   getTokensCompatState,
   registerTokensControllerGetStateCompat,
 } from './tokens-controller-compat';
 
-jest.mock('../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
-}));
-
 describe('tokens-controller-compat', () => {
-  beforeEach(() => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
-  });
-
   it('provides TokensController state backed by AssetsController pay state', () => {
     const messenger = getRootMessenger<never, never>();
     const assetsControllerMessenger = new Messenger({
@@ -66,25 +56,6 @@ describe('tokens-controller-compat', () => {
           call: (actionType: string, ...args: unknown[]) => unknown;
         },
       ),
-    ).toStrictEqual({
-      allTokens: {},
-      allIgnoredTokens: {},
-      allDetectedTokens: {},
-      tokens: [],
-      detectedTokens: [],
-      ignoredTokens: [],
-    });
-  });
-
-  it('provides empty TokensController state when assets are excluded', () => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
-    const messenger = getRootMessenger<never, never>();
-
-    registerTokensControllerGetStateCompat(messenger);
-
-    expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (messenger as any).call('TokensController:getState'),
     ).toStrictEqual({
       allTokens: {},
       allIgnoredTokens: {},
