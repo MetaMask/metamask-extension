@@ -2763,6 +2763,30 @@
     "message": "We couldn't load the chart. Try switching to Line mode.",
     "description": "Description shown when advanced chart fails to load, suggesting user switch to line chart"
   },
+  "chartOhlcvChange": {
+    "message": "Change",
+    "description": "Label for the price change value in the candle chart's OHLCV crosshair readout"
+  },
+  "chartOhlcvClose": {
+    "message": "Close",
+    "description": "Label for the close price in the candle chart's OHLCV crosshair readout"
+  },
+  "chartOhlcvHigh": {
+    "message": "High",
+    "description": "Label for the high price in the candle chart's OHLCV crosshair readout"
+  },
+  "chartOhlcvLow": {
+    "message": "Low",
+    "description": "Label for the low price in the candle chart's OHLCV crosshair readout"
+  },
+  "chartOhlcvOpen": {
+    "message": "Open",
+    "description": "Label for the open price in the candle chart's OHLCV crosshair readout"
+  },
+  "chartOhlcvVolume": {
+    "message": "Volume",
+    "description": "Label for the volume in the candle chart's OHLCV crosshair readout"
+  },
   "chartTypeCandlestick": {
     "message": "Candlestick chart",
     "description": "Accessible label for the candlestick chart type toggle button on the token details page chart"

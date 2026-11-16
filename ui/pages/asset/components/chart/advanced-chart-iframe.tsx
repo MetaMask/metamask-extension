@@ -29,6 +29,20 @@ export const CHART_ORIGIN_UAT = 'https://chart.uat.metamask-charts.com';
 export const CHART_ORIGIN_PRD = 'https://chart.metamask-charts.com';
 
 /**
+ * OHLC(V) of the bar under the crosshair, forwarded by the chart engine as it
+ * scrubs over the candles (`CROSSHAIR_MOVE`). Shape matches the engine's
+ * `CrosshairData` contract so the payload decodes without translation.
+ */
+export type CrosshairData = {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume?: number;
+};
+
+/**
  * Resolves the Advanced Charts iframe origin for the current MetaMask
  * environment. Production and release-candidate builds use the production
  * origin; every other environment (staging, dev, CI, PR, local) uses UAT.
@@ -228,6 +242,13 @@ type AdvancedChartIframeProps = {
    */
   onChartInteracted?: (interactionType: 'zoom' | 'pan' | 'tooltip') => void;
   /**
+   * Fired as the crosshair scrubs over the candles, with the OHLC(V) of the
+   * bar beneath it; `null` when the crosshair dismisses (mouse leaves the
+   * chart). The parent swaps the price header for its own OHLCV readout while
+   * the crosshair is active. Mirrors mobile's `onCrosshairMove`.
+   */
+  onCrosshairMove?: (data: CrosshairData | null) => void;
+  /**
    * Fired when a TradingView attribution link inside the chart is clicked. The
    * host already opens the (sanitised) URL; this is purely for analytics.
    */
@@ -258,6 +279,7 @@ const AdvancedChartIframe = forwardRef<
       onError,
       onReady,
       onChartInteracted,
+      onCrosshairMove,
       onTradingViewClicked,
       realtimeBar,
       fetchOlderBars,
@@ -341,6 +363,12 @@ const AdvancedChartIframe = forwardRef<
           ) {
             onChartInteracted?.(msg.payload.interaction_type);
           }
+          // Crosshair scrub: `data` carries the bar's OHLC(V), or `null` when
+          // the crosshair dismisses. Forwarded straight up so the parent can
+          // swap the price header for its own OHLCV readout.
+          if (msg?.type === 'CROSSHAIR_MOVE') {
+            onCrosshairMove?.(msg.payload?.data ?? null);
+          }
           // The TradingView attribution link must stay reachable (license
           // clause 3.2), but the iframe is sandboxed without allow-popups or
           // allow-top-navigation. The engine cancels the click and hands us
@@ -397,6 +425,7 @@ const AdvancedChartIframe = forwardRef<
       return () => window.removeEventListener('message', handleMessage);
     }, [
       onChartInteracted,
+      onCrosshairMove,
       onError,
       onReady,
       onTradingViewClicked,
