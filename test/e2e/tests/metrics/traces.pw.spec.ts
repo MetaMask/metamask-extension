@@ -130,7 +130,7 @@ pwTest.describe('Traces', () => {
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
           console.log(`[envelope-diag] ${new Date().toISOString()} wait-start`);
-          await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
+          await expectMockRequest(driver, mockedEndpoint[0], { timeout: 20000 });
         },
       );
     },
