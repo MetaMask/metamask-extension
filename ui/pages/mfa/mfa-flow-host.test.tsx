@@ -93,7 +93,7 @@ const start = async (
 ) => {
   const outcome = startMfaFlow({
     request,
-    reason: { operation: 'test', enrollDescription: 'Why we ask' },
+    reason: { operation: 'qa.test', enrollDescription: 'Why we ask' },
     platform: passkey ? 'mobile' : 'extension',
     controller,
     passkey,

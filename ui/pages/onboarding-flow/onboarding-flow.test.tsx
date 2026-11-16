@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
+import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -351,6 +352,18 @@ describe('Onboarding Flow', () => {
       });
     });
     expect(mockStartJourney).toHaveBeenCalledTimes(1);
+  });
+
+  it('sets the onboarding date through the messenger', () => {
+    renderOnboarding(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_WELCOME_ROUTE,
+    );
+
+    expect(submitRequestToBackgroundAndCatch).toHaveBeenCalledWith(
+      'AppStateController:setOnboardingDate',
+    );
   });
 
   it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', async () => {

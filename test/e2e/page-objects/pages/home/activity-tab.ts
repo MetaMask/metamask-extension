@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
+import { TxToastNotification } from '../../components/tx-toast-notification';
 import HomePage from './homepage';
 
 /**
- * Home activity list and per-transaction details opened from it.
+ * Activity list and per-transaction details opened from it.
  *
- * Screen: `#/` Activity tab (`account-overview__activity-tab`), or `#/activity`
- * when bottom nav is enabled; reached via `HomePage.goToActivityList()`.
+ * Screen: `#/activity`, reached via `HomePage.goToActivityList()`.
  * Owns: activity rows (status counts, amounts, swap/bridge labels), cancel /
  * speed-up actions, and opening a row to assert details, fees, and explorer
  * links.
@@ -531,6 +531,8 @@ class ActivityTab extends HomePage {
 
   async clickConfirmedTransaction(): Promise<void> {
     console.log('Clicking on confirmed transaction');
+    const toastNotification = new TxToastNotification(this.driver);
+    await toastNotification.dismissConfirmedToastIfPresent();
     await this.driver.clickElement(this.confirmedTransactions);
   }
 

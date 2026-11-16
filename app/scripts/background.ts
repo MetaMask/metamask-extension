@@ -28,7 +28,6 @@ import {
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
   BACKGROUND_LIVENESS_METHOD,
@@ -72,6 +71,11 @@ import {
   setStartupPhase,
   StartupPhase,
 } from '../../shared/lib/telemetry/startup-phase';
+import {
+  recordUiClosed,
+  recordUiOpen,
+  recordWindowEvent,
+} from '../../shared/lib/telemetry/last-activity';
 
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
@@ -230,6 +234,13 @@ persistenceManager.setCurrentActivityProvider(() => ({
   startupPhase: getStartupPhase(),
   ...uiPresence.getOpenUiCounts(),
 }));
+
+// Includes `WINDOW_ID_NONE` (focus left the browser).
+// We're not reusing listeners from `installActiveTabTracker`,
+// because they only track the active tab, and skip `WINDOW_ID_NONE`.
+browser.windows.onFocusChanged.addListener(() => {
+  recordWindowEvent();
+});
 
 // DappViewed / AppOpened metrics, tab→origin registries, and onNavigateToTab
 // (see app/scripts/lib/metrics/dapp-metrics.ts).
@@ -797,12 +808,7 @@ export function setupController(
   //
   // User Interface setup
   //
-  const {
-    updateBadge,
-    clearFailedTxBadge,
-    getFailedTxCount,
-    setClientLandingTab,
-  } = createBadgeManager({
+  const { updateBadge, clearFailedTxBadge } = createBadgeManager({
     getController: () =>
       // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
       metamaskController as BadgeManagerController,
@@ -852,6 +858,16 @@ export function setupController(
 
       // communication with popup
       metamaskController.isClientOpen = true;
+      // Defensive: Chrome marks any extension-origin port as UI, but only the
+      // four types below record a close. Limit open stamps to those types.
+      if (
+        processName === ENVIRONMENT_TYPE_POPUP ||
+        processName === ENVIRONMENT_TYPE_SIDEPANEL ||
+        processName === ENVIRONMENT_TYPE_NOTIFICATION ||
+        processName === ENVIRONMENT_TYPE_FULLSCREEN
+      ) {
+        recordUiOpen();
+      }
       metamaskController
         .setupTrustedCommunication(
           portStream,
@@ -881,6 +897,10 @@ export function setupController(
           openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          // Only when no MetaMask UI remains open.
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
@@ -901,6 +921,9 @@ export function setupController(
           openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
@@ -911,12 +934,12 @@ export function setupController(
         onStreamFinished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (getFailedTxCount() > 0) {
-            setClientLandingTab(AccountOverviewTabKey.Activity);
-          }
           updateBadge();
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(
             isClientOpen,
             ENVIRONMENT_TYPE_NOTIFICATION,
@@ -937,6 +960,9 @@ export function setupController(
           }
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(
             isClientOpen,
             ENVIRONMENT_TYPE_FULLSCREEN,

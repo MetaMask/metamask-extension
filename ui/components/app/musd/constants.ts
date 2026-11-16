@@ -115,7 +115,7 @@ export const DEFAULT_MUSD_BLOCKED_COUNTRIES: string[] = ['GB'];
  * Displayed in the education screen
  */
 export const MUSD_CONVERSION_BONUS_TERMS_OF_USE =
-  'https://metamask.io/musd-bonus-terms-of-use';
+  'https://metamask.com/musd-bonus-terms-of-use';
 
 /**
  * URL for the mUSD Help Center article

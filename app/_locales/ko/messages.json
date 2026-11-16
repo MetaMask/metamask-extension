@@ -8451,7 +8451,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "지원팀에 연락하여",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "일부 서비스를 일시적으로 이용할 수 없습니다. $1 또는 $2.",
@@ -8459,7 +8459,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "FAQ에서 이용 가능한 옵션을 확인하세요",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "서비스 장애가 발생했습니다",

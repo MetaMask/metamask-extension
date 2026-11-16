@@ -14,6 +14,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../pages/money/constants/money-events';
 import type { MoneyAccountAvailability } from './money/use-money-account-availability';
@@ -55,14 +56,17 @@ jest.mock('../../shared/lib/environment', () => ({
 const createState = ({
   isPerpsEnabled = true,
   defaultHomeActiveTabName,
+  moneyFtueSeen = true,
 }: {
   isPerpsEnabled?: boolean;
   defaultHomeActiveTabName?: string;
+  moneyFtueSeen?: boolean;
 } = {}) => ({
   metamask: {
     ...mockState.metamask,
     completedOnboarding: true,
     defaultHomeActiveTabName,
+    moneyFtueSeen,
     remoteFeatureFlags: {
       ...mockState.metamask.remoteFeatureFlags,
       perpsEnabledVersion: { enabled: isPerpsEnabled, minimumVersion: '0.0.1' },
@@ -180,7 +184,6 @@ describe('useMainNavItems', () => {
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
@@ -196,7 +199,6 @@ describe('useMainNavItems', () => {
       expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
@@ -206,19 +208,15 @@ describe('useMainNavItems', () => {
 
       act(() => getItem(result.current, 'perps').onClick());
 
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE);
     });
 
-    it('navigates to Money Home and tracks the click on Money click', () => {
+    it('navigates to Money Home and tracks the click on Money click when the splash has been seen', () => {
       const { result } = renderUseMainNavItems();
 
       act(() => getItem(result.current, 'money').onClick());
 
-      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
       expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
         componentName: MoneyComponentName.HomeTab,
       });
@@ -230,6 +228,32 @@ describe('useMainNavItems', () => {
       });
     });
 
+    it('opens the FTUE splash without navigating on the first Money click', () => {
+      const { result, store } = renderUseMainNavItems(
+        createState({ moneyFtueSeen: false }),
+      );
+
+      act(() => getItem(result.current, 'money').onClick());
+
+      expect(store.getState().moneyFtue).toStrictEqual({
+        isOpen: true,
+        source: 'moneyHome',
+        origin: {
+          entryPoint: MoneyFtueEntryPoint.MoneyTab,
+          componentName: MoneyComponentName.HomeTab,
+        },
+        pendingDeposit: null,
+        acknowledged: false,
+      });
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+        labelKey: 'money',
+        redirectTarget: MoneyScreenName.MoneyFtue,
+      });
+    });
+
     it('navigates to the activity route on Activity click', () => {
       const { result } = renderUseMainNavItems();
 
@@ -238,7 +262,6 @@ describe('useMainNavItems', () => {
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });

@@ -16,7 +16,7 @@ describe('extensionMfaControllerAdapter', () => {
     const request = {
       type: 'email_otp' as const,
       email: 'a@b.co',
-      reason: { operation: 'test' },
+      reason: { operation: 'qa.test' },
     };
     const response = { type: 'email_otp', flowId: 'flow-1', expiresAt: 1 };
     mockSubmitRequestToBackground.mockResolvedValue(response);

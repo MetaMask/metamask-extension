@@ -22,7 +22,7 @@ jest.mock('@metamask/perps-controller', () => ({
   HYPERLIQUID_ASSET_CONFIGS: {
     usdc: {
       mainnet: 'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-      testnet: 'eip155:421614/erc20:0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
+      testnet: 'eip155:421614/erc20:0x1baAbB04529D43a73232B713C0FE471f7c7334d5',
     },
   },
   HYPERLIQUID_WITHDRAWAL_MINUTES: 30,

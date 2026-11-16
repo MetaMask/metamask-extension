@@ -451,6 +451,7 @@ const AssetPage = ({
         data-testid="parent-selector-asset-details"
       >
         <AssetPageHeader
+          name={name}
           symbol={symbol}
           image={image}
           networkImage={tokenChainImage}

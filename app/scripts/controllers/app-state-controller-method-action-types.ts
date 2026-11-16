@@ -302,6 +302,17 @@ export type AppStateControllerSetPerpsTabBadgeSeenAction = {
 };
 
 /**
+ * Sets whether the Money account first-time-user-experience (FTUE) splash
+ * has been seen.
+ *
+ * @param value - Whether the Money FTUE splash has been seen
+ */
+export type AppStateControllerSetMoneyFtueSeenAction = {
+  type: `AppStateController:setMoneyFtueSeen`;
+  handler: AppStateController['setMoneyFtueSeen'];
+};
+
+/**
  * Sets whether the mUSD conversion education screen has been seen.
  *
  * @param value - Whether the education screen has been seen
@@ -636,6 +647,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerClearPollingTokensAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
   | AppStateControllerSetPerpsTabBadgeSeenAction
+  | AppStateControllerSetMoneyFtueSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction

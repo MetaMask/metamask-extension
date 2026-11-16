@@ -1,32 +1,9 @@
 @use "design-system";
 
 .prepare-bridge-page {
-  .mm-text-field {
-    background-color: inherit;
-
-    &--focused {
-      outline: none;
-    }
-  }
-
-  .defined {
-    & > .mm-input--disabled,
-    p {
-      opacity: 1;
-    }
-  }
-
   .mm-select-button__content {
     max-height: 100%;
     overflow: hidden;
-  }
-
-  .amount-input {
-    border: none;
-    padding: 0;
-    width: 100%;
-    gap: 4px;
-    height: fit-content;
   }
 
   &__switch-tokens {

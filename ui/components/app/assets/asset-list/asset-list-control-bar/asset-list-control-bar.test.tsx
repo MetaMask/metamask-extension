@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
@@ -464,6 +465,33 @@ describe('NFTs options', () => {
     await waitFor(() => expect(enableAllPopularNetworksSpy).toHaveBeenCalled());
   });
 
+  it('switches a non-EVM network filter to an EVM default when basic functionality is off', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const setActiveNetworkSpy = jest.spyOn(actions, 'setActiveNetwork');
+    const state = createMockState();
+    addSolanaAccountToSelectedGroup(state);
+    Object.assign(state.metamask, { useExternalServices: false });
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
+    await waitFor(() => {
+      expect(enableAllPopularNetworksSpy).toHaveBeenCalled();
+      expect(setActiveNetworkSpy).toHaveBeenCalledWith(
+        'selectedNetworkClientId',
+      );
+    });
+  });
+
   it('does not broaden an unsupported network filter when the selected account group supports that network', async () => {
     const enableAllPopularNetworksSpy = jest.spyOn(
       actions,
@@ -578,13 +606,90 @@ describe('NFTs options', () => {
     fireEvent.click(await findByTestId('refreshList__button'));
 
     expect(refreshAssetsSpy).toHaveBeenCalledWith(
-      [expect.objectContaining({ id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3' })],
+      [
+        expect.objectContaining({ id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3' }),
+        expect.objectContaining({ id: '07c2cfec-36c9-46c4-8115-3836d3ac9047' }),
+      ],
       {
         chainIds: ['eip155:1'],
         assetTypes: ['token', 'price', 'metadata'],
       },
     );
   });
+
+  it('does not refresh assets when the selected account group has no accounts', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const refreshAssetsSpy = jest.spyOn(
+      actions,
+      'refreshAssetsForSelectedAccount',
+    );
+    const state = createMockState();
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups[DEFAULT_ACCOUNT_GROUP_ID].accounts = [];
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar showTokensLinks />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
+    fireEvent.click(await findByTestId('refreshList__button'));
+
+    expect(refreshAssetsSpy).not.toHaveBeenCalled();
+    expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
+  });
+
+  it.each([
+    {
+      networkFilter: 'all default networks',
+      enabledNetworkMap: {
+        eip155: { '0x1': true },
+        solana: { [SOLANA_CHAIN_ID]: true },
+      },
+      chainIds: ['eip155:1', SOLANA_CHAIN_ID],
+    },
+    {
+      networkFilter: 'a single non-EVM network',
+      enabledNetworkMap: { solana: { [SOLANA_CHAIN_ID]: true } },
+      chainIds: [SOLANA_CHAIN_ID],
+    },
+  ])(
+    'refreshes accounts in the selected group with $networkFilter selected',
+    async ({ enabledNetworkMap, chainIds }) => {
+      setBackgroundConnection(backgroundConnectionMock as never);
+      const refreshAssetsSpy = jest.spyOn(
+        actions,
+        'refreshAssetsForSelectedAccount',
+      );
+      const state = createMockState();
+      addSolanaAccountToSelectedGroup(state);
+      state.metamask.enabledNetworkMap = enabledNetworkMap;
+      const groupAccountIds =
+        state.metamask.accountTree.wallets['entropy:01JKAF3DSGM3AB87EM9N0K41AJ']
+          .groups[DEFAULT_ACCOUNT_GROUP_ID].accounts;
+      const store = configureMockStore([thunk])(state);
+
+      const { findByTestId } = renderWithProvider(
+        <AssetListControlBar showTokensLinks />,
+        store,
+      );
+
+      fireEvent.click(
+        await findByTestId('asset-list-control-bar-action-button'),
+      );
+      fireEvent.click(await findByTestId('refreshList__button'));
+
+      expect(refreshAssetsSpy).toHaveBeenCalledWith(
+        groupAccountIds.map((id) => expect.objectContaining({ id })),
+        {
+          chainIds,
+          assetTypes: ['token', 'price', 'metadata'],
+        },
+      );
+    },
+  );
 
   it('keeps the original NFT overflow menu for non-EVM accounts', async () => {
     const state = createMockState();

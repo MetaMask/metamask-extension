@@ -288,6 +288,7 @@ describe('setup-initial-state-hooks', () => {
           sidePanelCount: 0,
           startupPhase: StartupPhase.Unknown,
         },
+        lastActivity: {},
         bytesByController: new Map([['FooController', 13]]),
         coalescedUpdates: 1,
         environmentType: 'unknown',

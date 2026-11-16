@@ -18,6 +18,7 @@ import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/uti
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   PERPS_ACTIVITY_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
@@ -1245,10 +1246,9 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        { pathname: '/', search: 'tab=perps' },
-        { replace: true },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
+        replace: true,
+      });
 
       Object.defineProperty(window.history, 'length', {
         value: originalLength,

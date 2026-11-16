@@ -402,6 +402,39 @@ class SendPage {
   }
 
   /**
+   * Waits until the amount input holds a stable non-empty value, then returns it.
+   * Use this after Max, which fills the input asynchronously.
+   *
+   * @returns The amount input value.
+   */
+  async getAmountInputValue(): Promise<string> {
+    console.log('Reading send amount input value');
+    let stableValue = '';
+    let stableReads = 0;
+    await this.driver.waitUntil(
+      async () => {
+        const inputElement = await this.driver.findElement(this.amountInput);
+        const value = await inputElement.getAttribute('value');
+        if (!value) {
+          stableValue = '';
+          stableReads = 0;
+          return false;
+        }
+        if (value === stableValue) {
+          stableReads += 1;
+        } else {
+          stableValue = value;
+          stableReads = 1;
+        }
+        return stableReads >= 2;
+      },
+      { interval: 200, timeout: 10000 },
+    );
+    console.log(`Send amount input value is ${stableValue}`);
+    return stableValue;
+  }
+
+  /**
    * Clicks Continue once the button is stably enabled, then acknowledges the
    * optional send-alert modal when present.
    */

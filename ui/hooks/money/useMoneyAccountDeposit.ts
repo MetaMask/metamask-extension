@@ -5,6 +5,12 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
 import {
+  openMoneyFtue,
+  selectHasSeenMoneyFtue,
+  type MoneyFtueOrigin,
+} from '../../ducks/money-ftue';
+import { MoneyFtueEntryPoint } from '../../pages/money/constants/money-events';
+import {
   selectMoneyFundingAccount,
   type MoneyFundingAccountState,
 } from '../../selectors/money/money-funding-account';
@@ -20,6 +26,7 @@ import {
 import type { SetPayTokenRequest } from '../../pages/confirmations/hooks/pay/types';
 import { selectIsPayHardwareEnabled } from '../../pages/confirmations/selectors/feature-flags';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
+import { useDispatch } from '../../store/hooks';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
 export type InitiateDepositOptions = {
@@ -33,6 +40,16 @@ export type InitiateDepositOptions = {
    * Token to pre-select as the source of funds.
    */
   preferredPaymentToken?: SetPayTokenRequest;
+  /**
+   * Internal: set only by the Money FTUE splash after the user has
+   * acknowledged it, so continuing the pending deposit does not re-open the
+   * splash.
+   */
+  skipFtue?: boolean;
+  /**
+   * Where the user came from, used only when this deposit opens the splash.
+   */
+  ftueOrigin?: MoneyFtueOrigin;
 };
 
 const DEPOSIT_FAILED_TOAST_COPY = {
@@ -107,6 +124,8 @@ let isDepositInitiationInFlight = false;
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const hasSeenFtue = useSelector(selectHasSeenMoneyFtue);
   const isHardwareFundingEnabled = useSelector((state) =>
     selectIsPayHardwareEnabled(state, TransactionType.moneyAccountDeposit),
   );
@@ -119,6 +138,20 @@ export function useMoneyAccountDeposit() {
   const initiateDeposit = useCallback(
     async (options?: InitiateDepositOptions) => {
       if (isDepositInitiationInFlight) {
+        return;
+      }
+
+      if (!hasSeenFtue && !options?.skipFtue) {
+        dispatch(
+          openMoneyFtue({
+            source: 'deposit',
+            origin: options?.ftueOrigin ?? {
+              entryPoint: MoneyFtueEntryPoint.Unknown,
+            },
+            preferredPaymentToken: options?.preferredPaymentToken,
+            intent: options?.intent,
+          }),
+        );
         return;
       }
 
@@ -166,7 +199,9 @@ export function useMoneyAccountDeposit() {
       }
     },
     [
+      dispatch,
       fundingAccount,
+      hasSeenFtue,
       location.pathname,
       location.search,
       navigateToTransaction,

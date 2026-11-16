@@ -2,7 +2,6 @@ import React, { type ReactNode } from 'react';
 import {
   Box,
   BoxFlexDirection,
-  FontWeight,
   Text,
   TextButton,
   TextColor,
@@ -32,6 +31,8 @@ export type StepProps<Name extends MfaFlowStep['name']> = {
 
 type StepLayoutProps = {
   title: string;
+  /** Sends the taps on the error's link to the flow. */
+  onAction: (action: MfaFlowAction) => void;
   description?: string;
   error?: MfaFlowErrorCode;
   top?: ReactNode;
@@ -77,7 +78,6 @@ export const StepMessage = ({
   <Text
     asChild
     variant={TextVariant.BodySm}
-    fontWeight={FontWeight.Medium}
     color={isError ? TextColor.ErrorDefault : TextColor.TextAlternative}
   >
     <p
@@ -140,9 +140,11 @@ export const StepHeader = ({
 export const StepError = ({
   code,
   method,
+  onAction,
 }: {
   code: MfaFlowErrorCode;
   method?: MfaMethod;
+  onAction: (action: MfaFlowAction) => void;
 }) => {
   const t = useI18nContext();
   const link = getErrorLink(code);
@@ -156,6 +158,9 @@ export const StepError = ({
               href={link}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() =>
+                onAction({ type: 'errorCtaClicked', cta: 'learn_more' })
+              }
               data-testid={MfaFlowTestIds.ERROR_LINK}
             >
               {t('learnMoreUpperCase')}
@@ -177,6 +182,7 @@ const StepLayout = ({
   children,
   footer,
   isVerticallyCentered = false,
+  onAction,
 }: StepLayoutProps) => (
   <Box flexDirection={BoxFlexDirection.Column} className="flex-1 min-h-0">
     <Box
@@ -196,7 +202,7 @@ const StepLayout = ({
         isCentered={top !== undefined}
       />
       {children}
-      {error ? <StepError code={error} /> : null}
+      {error ? <StepError code={error} onAction={onAction} /> : null}
     </Box>
     {footer ? (
       <Box flexDirection={BoxFlexDirection.Column} gap={2} padding={4}>

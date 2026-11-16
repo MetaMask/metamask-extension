@@ -46,7 +46,8 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import { ConfirmInfoRowSize } from '../../components/app/confirm/info/row/row';
-import { PerpsFiatHeroAmountInput } from '../../components/app/perps/perps-fiat-hero-amount-input';
+import { HeroAmountInput } from '../../components/ui/hero-amount-input';
+import { getCurrencySymbol } from '../../helpers/utils/common.util';
 import { PerpsFiatSummaryRows } from '../../components/app/perps/perps-fiat-summary-rows';
 import { PerpsWithdrawPercentageButtons } from '../../components/app/perps/perps-withdraw-percentage-buttons';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
@@ -612,12 +613,14 @@ const PerpsWithdrawPage = () => {
             className="w-full min-h-0 flex-1"
             style={{ flex: 1, minHeight: 0 }}
           >
-            <PerpsFiatHeroAmountInput
+            <HeroAmountInput
+              prefix={getCurrencySymbol('USD')}
               autoFocus
               value={amount}
               onChange={handleHeroAmountChange}
               disabled={isSubmitting}
-              hasAlert={amountHasAlert}
+              hasError={amountHasAlert}
+              data-testid="perps-fiat-hero-amount"
             />
 
             <Text

@@ -5,7 +5,10 @@ import {
   type TrendingAsset,
 } from '@metamask/assets-controllers';
 import type { CaipChainId } from '@metamask/utils';
-import { byMarketCap } from '#shared/lib/token-search/token-search-api';
+import {
+  byMarketCap,
+  TOKEN_SEARCH_SERVICE_PROFILE,
+} from '#shared/lib/token-search/token-search-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getIsStellarSupportEnabled } from '../../selectors/multichain/feature-flags';
 import {
@@ -129,6 +132,7 @@ export const useDiscoverCryptoSearch = ({
         after: pageParam,
         includeMarketData: true,
         includeTokenSecurityData: true,
+        serviceProfile: TOKEN_SEARCH_SERVICE_PROFILE,
       });
 
       if (response.error) {

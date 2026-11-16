@@ -1,14 +1,30 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { useAnalytics } from '../../useAnalytics';
 import { selectEnrolledCredentials } from '../../../selectors/identity/authentication';
 import { extensionMfaControllerAdapter } from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
+import type { MfaEvent, MfaTrackEvent } from './engine/analytics';
 import type {
   EnrollOptions,
   MfaFlowOptions,
   MfaFlowResult,
   VerifyOrEnrollOptions,
 } from './engine/types';
+
+const EVENTS: Record<MfaEvent, MetaMetricsEventName> = {
+  'MFA Flow Status Updated': MetaMetricsEventName.MfaFlowStatusUpdated,
+  'MFA Step Viewed': MetaMetricsEventName.MfaStepViewed,
+  'MFA Error Viewed': MetaMetricsEventName.MfaErrorViewed,
+  'MFA Error CTA Clicked': MetaMetricsEventName.MfaErrorCtaClicked,
+  'MFA Method Selected': MetaMetricsEventName.MfaMethodSelected,
+  'MFA Code Resent': MetaMetricsEventName.MfaCodeResent,
+};
 
 const clientOptions: Pick<
   MfaFlowOptions,
@@ -23,23 +39,6 @@ const clientOptions: Pick<
     });
   },
 };
-
-const verifyOrEnroll = ({
-  reason,
-  ...request
-}: VerifyOrEnrollOptions): Promise<MfaFlowResult> =>
-  startMfaFlow({
-    request: { kind: 'verifyOrEnroll', ...request },
-    reason,
-    ...clientOptions,
-  });
-
-const enroll = ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
-  startMfaFlow({
-    request: { kind: 'enroll', method },
-    reason,
-    ...clientOptions,
-  });
 
 /**
  * The MFA kit for features and settings.
@@ -59,5 +58,38 @@ const enroll = ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
  */
 export const useMfa = () => {
   const credentials = useSelector(selectEnrolledCredentials);
-  return { credentials, verifyOrEnroll, enroll };
+  // The extension sends events through a hook, which checks the user's
+  // consent, so the flow gets them from the caller.
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  const entryPoints = useMemo(() => {
+    const sendEvent: MfaTrackEvent = (event, properties) => {
+      trackEvent(
+        createEventBuilder(EVENTS[event])
+          .addCategory(MetaMetricsEventCategory.Auth)
+          .addProperties(properties)
+          .build(),
+      ).catch(() => undefined);
+    };
+    const options = { ...clientOptions, trackEvent: sendEvent };
+    return {
+      verifyOrEnroll: ({
+        reason,
+        ...request
+      }: VerifyOrEnrollOptions): Promise<MfaFlowResult> =>
+        startMfaFlow({
+          request: { kind: 'verifyOrEnroll', ...request },
+          reason,
+          ...options,
+        }),
+      enroll: ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
+        startMfaFlow({
+          request: { kind: 'enroll', method },
+          reason,
+          ...options,
+        }),
+    };
+  }, [trackEvent, createEventBuilder]);
+
+  return { credentials, ...entryPoints };
 };

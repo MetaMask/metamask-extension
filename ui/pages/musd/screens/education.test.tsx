@@ -239,7 +239,7 @@ describe('MusdEducationScreen', () => {
     const { container } = renderWithProvider(<MusdEducationScreen />, store);
 
     const termsLink = container.querySelector(
-      'a[href="https://metamask.io/musd-bonus-terms-of-use"]',
+      'a[href="https://metamask.com/musd-bonus-terms-of-use"]',
     ) as HTMLElement;
     expect(termsLink).not.toBeNull();
     fireEvent.click(termsLink);

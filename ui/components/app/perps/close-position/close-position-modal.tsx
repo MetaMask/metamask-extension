@@ -364,6 +364,30 @@ export const ClosePositionModal = ({
   const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  // ModalContent binds its document mousedown listener once on mount, so this
+  // dismiss handler has to read the ref when the event fires. The support
+  // consent dialog is portaled outside this dialog; a click on it would
+  // otherwise close the flow before the support tab opens.
+  const isSupportConsentOpenRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const handleSupportConsentOpenChange = useCallback(
+    (isConsentOpen: boolean) => {
+      isSupportConsentOpenRef.current = isConsentOpen;
+    },
+    [],
+  );
+
+  const handleModalDismiss = useCallback(() => {
+    if (isSupportConsentOpenRef.current) {
+      return;
+    }
+    onCloseRef.current();
+  }, []);
   const isServiceInterruptionBannerEnabled = useSelector(
     getIsPerpsServiceInterruptionBannerEnabled,
   );
@@ -891,12 +915,14 @@ export const ClosePositionModal = ({
     <>
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleModalDismiss}
         data-testid="perps-close-position-modal"
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <PerpsServiceInterruptionBanner />
+          <PerpsServiceInterruptionBanner
+            onSupportConsentOpenChange={handleSupportConsentOpenChange}
+          />
           <OrderEntryHeader
             displayName={displayName}
             displayPrice={headerDisplayPrice}

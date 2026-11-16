@@ -163,6 +163,40 @@ describe('RecipientInput', () => {
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
 
+  it('shows 10 characters on each side of an unnamed address', () => {
+    const address = '0x1234567890abcdef1234567890abcdef12345678';
+    mockUseSendContext.mockReturnValue({
+      to: address,
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText } = renderComponent({
+      recipientValidationResult: { toAddressValidated: address },
+    });
+
+    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
+  });
+
+  it('shows 10 characters on each side of the address under a contact name', () => {
+    const address = '0x1234567890abcdef1234567890abcdef12345678';
+    mockUseRecipients.mockReturnValue([
+      { address, contactName: 'Alice' },
+    ] as unknown as ReturnType<typeof useRecipients>);
+    mockUseSendContext.mockReturnValue({
+      to: address,
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText } = renderComponent({
+      recipientValidationResult: { toAddressValidated: address },
+    });
+
+    expect(getByText('Alice')).toBeInTheDocument();
+    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
+  });
+
   it('display confusable characters when they exist', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdefghijkl',

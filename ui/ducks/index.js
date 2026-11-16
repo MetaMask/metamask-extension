@@ -16,6 +16,7 @@ import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
 import rewardsMoneyReducer from './rewards-money';
 import moneyBalanceReducer from './money-balance';
+import { moneyFtueReducer } from './money-ftue';
 import { perpsTutorialReducer } from './perps';
 
 export default combineReducers({
@@ -38,4 +39,5 @@ export default combineReducers({
   rewardsMoney: rewardsMoneyReducer,
   perpsTutorial: perpsTutorialReducer,
   moneyBalance: moneyBalanceReducer,
+  moneyFtue: moneyFtueReducer,
 });
