@@ -947,8 +947,10 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           statusCode: 200,
           json: {
             'eip155:1/slip44:60': buildSpotPrice({
+              id: 'ethereum',
               price: 1700,
               marketCap: 382623505141,
+              pricePercentChange1d: 0,
             }),
           },
         };

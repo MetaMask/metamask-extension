@@ -2,17 +2,17 @@
   "4byte-signatures": {
     "method": "GET",
     "mode": "write",
-    "url": "https://www.4byte.directory/api/v1/signatures/?hex_signature=0xa9059cbb"
+    "url": "https://www.4byte.directory/api/v1/signatures/"
   },
-  "accounts-v2-supported-networks": {
-    "method": "GET",
-    "mode": "write",
-    "url": "https://accounts.api.cx.metamask.io/v2/supportedNetworks"
-  },
-  "accounts-v5-multiaccount-balances": {
+  "accounts-balances-v5": {
     "method": "GET",
     "mode": "write",
     "url": "https://accounts.api.cx.metamask.io/v5/multiaccount/balances?accountIds=eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1"
+  },
+  "accounts-supported-networks-v2": {
+    "method": "GET",
+    "mode": "write",
+    "url": "https://accounts.api.cx.metamask.io/v2/supportedNetworks"
   },
   "bridge-get-tokens-popular": {
     "method": "POST",
@@ -43,10 +43,10 @@
     "mode": "write",
     "url": "https://price.api.cx.metamask.io/v1/exchange-rates?baseCurrency=usd"
   },
-  "price-v3-spot-prices": {
+  "price-v3-spot": {
     "method": "GET",
     "mode": "write",
-    "url": "https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155:1/slip44:60&vsCurrency=usd&includeMarketData=true"
+    "url": "https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155:1/slip44:60,eip155:143/slip44:268435779,solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501,bip122:000000000019d6689c085ae165831e93/slip44:0&vsCurrency=usd&includeMarketData=true"
   },
   "signature-insights-signature": {
     "method": "POST",
@@ -54,7 +54,7 @@
     "reason": "POST with a request-specific body",
     "url": "https://signature-insights.api.cx.metamask.io/v1/signature"
   },
-  "token-tokens": {
+  "token-list": {
     "method": "GET",
     "mode": "write",
     "url": "https://token.api.cx.metamask.io/tokens/1"
@@ -62,7 +62,7 @@
   "tokens-v3-assets": {
     "method": "GET",
     "mode": "write",
-    "url": "https://tokens.api.cx.metamask.io/v3/assets?assetIds=eip155:1/slip44:60"
+    "url": "https://tokens.api.cx.metamask.io/v3/assets?assetIds=eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
   },
   "tx-sentinel-batch-status": {
     "method": "GET",

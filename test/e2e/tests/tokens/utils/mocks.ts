@@ -89,7 +89,14 @@ export async function mockTokenMetadataApis(
 
             const results = [
               ...(assetIds.includes('eip155:1')
-                ? [buildTokensV3Asset({ assetId: 'eip155:1/slip44:60' })]
+                ? [
+                    buildTokensV3Asset({
+                      assetId: 'eip155:1/slip44:60',
+                      name: 'Ethereum',
+                      symbol: 'ETH',
+                      decimals: 18,
+                    }),
+                  ]
                 : []),
               ...normalizedTokens
                 .filter((token) => {
@@ -135,6 +142,11 @@ export async function mockTokenMetadataApis(
                   symbol: token.symbol,
                   decimals: token.decimals,
                   name: token.name,
+                  iconUrl: '',
+                  type: 'erc20',
+                  aggregators: [],
+                  occurrences: 1,
+                  erc20Permit: false,
                 }),
               ),
           })),
@@ -222,7 +234,7 @@ export const mockSpotPrices = async (
       json: Object.fromEntries(
         Object.entries(prices).map(([assetId, price]) => [
           assetId,
-          buildSpotPrice(price),
+          buildSpotPrice({ id: assetId, ...price }),
         ]),
       ),
     }));
@@ -250,7 +262,14 @@ export async function mockPriceApi(
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        [nativeAssetId]: buildSpotPrice({ price: resolvedEthPrice }),
+        [nativeAssetId]: buildSpotPrice({
+          id: 'ethereum',
+          price: resolvedEthPrice,
+          marketCap: 112500000,
+          totalVolume: 4500000,
+          dilutedMarketCap: 120000000,
+          pricePercentChange1d: 0,
+        }),
       },
     }));
   const mockExchangeRates = await mockServer

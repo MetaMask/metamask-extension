@@ -1173,6 +1173,12 @@ async function mockSwapAggregatorLinea(mockServer: Mockttp) {
     });
 }
 
+const BRIDGE_GAS_PRICES = {
+  SafeGasPrice: '30',
+  ProposeGasPrice: '30',
+  FastGasPrice: '30',
+};
+
 export async function mockGasPricesArbitrum(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://gas.api.cx.metamask.io/networks/42161/gasPrices')
@@ -1180,7 +1186,7 @@ export async function mockGasPricesArbitrum(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: buildGasPrices(),
+        json: buildGasPrices(BRIDGE_GAS_PRICES),
       };
     });
 }
@@ -1192,7 +1198,7 @@ export async function mockGasPricesMainnet(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: buildGasPrices(),
+        json: buildGasPrices(BRIDGE_GAS_PRICES),
       };
     });
 }
@@ -1204,7 +1210,7 @@ export async function mockGasPricesMonad(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: buildGasPrices(),
+        json: buildGasPrices(BRIDGE_GAS_PRICES),
       };
     });
 }
@@ -1975,7 +1981,16 @@ async function mockSentinelNetworks(
   mockServer: Mockttp,
   sendBundle: boolean = true,
 ) {
-  const network = buildTxSentinelNetwork({ sendBundle });
+  const network = buildTxSentinelNetwork({
+    network: 'ethereum-mainnet',
+    explorer: 'https://etherscan.io',
+    confirmations: true,
+    smartTransactions: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    hidden: false,
+    sendBundle,
+  });
 
   await mockServer
     .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/network')

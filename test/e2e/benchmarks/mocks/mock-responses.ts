@@ -322,7 +322,11 @@ export const SUGGESTED_GAS_FEES = {
 
 export const GAS_PRICES = {
   statusCode: 200,
-  json: buildGasPrices(),
+  json: buildGasPrices({
+    SafeGasPrice: '30',
+    ProposeGasPrice: '30',
+    FastGasPrice: '30',
+  }),
 };
 
 export const TOP_ASSETS = {

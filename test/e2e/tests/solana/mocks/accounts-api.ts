@@ -25,7 +25,7 @@ export function mockAccountsApiV2SupportedNetworks(mockServer: Mockttp) {
       200,
       buildAccountsSupportedNetworksV2({
         fullSupport: [
-          ...API_RESPONSES['accounts-v2-supported-networks'].fullSupport,
+          ...API_RESPONSES['accounts-supported-networks-v2'].fullSupport,
           'eip155:1337',
         ],
       }),
