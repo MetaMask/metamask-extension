@@ -1173,6 +1173,7 @@ export type LegacyBackgroundApiServiceCheckFirstTimeInteractionAction = {
 };
 
 /**
+<<<<<<< HEAD
  * Creates a JSON backup of the user's preferences, accounts, address book,
  * and network configurations for download from the UI.
  *
@@ -1184,6 +1185,8 @@ export type LegacyBackgroundApiServiceBackupUserDataAction = {
 };
 
 /**
+=======
+>>>>>>> main
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
