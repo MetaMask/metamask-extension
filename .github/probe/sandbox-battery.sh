@@ -11,7 +11,7 @@ record() {
     echo "PASS $name" >> sandbox-results.txt
   else
     echo "FAIL $name (exit $code)" >> sandbox-results.txt
-    { echo "--- $name"; printf '%s\n' "$out" | head -n 6 | cut -c1-300; echo '...'; printf '%s\n' "$out" | tail -n 6 | cut -c1-300; echo 'hosts mentioned:'; printf '%s\n' "$out" | grep -oE 'https?://[^/ "]+' | sort | uniq -c | head -n 8; } >> sandbox-detail.txt
+    { echo "--- $name"; printf '%s\n' "$out" | head -n 6 | cut -c1-300; echo '...'; printf '%s\n' "$out" | tail -n 6 | cut -c1-300; echo 'errors:'; printf '%s\n' "$out" | grep -vE '^\s+at ' | grep -E 'YN0001|YN0035|YN0013|Error|ERR' | cut -c1-250 | sort | uniq -c | head -n 8; echo 'hosts mentioned:'; printf '%s\n' "$out" | grep -oE 'https?://[^/ "]+' | sort | uniq -c | head -n 8; } >> sandbox-detail.txt
   fi
 }
 
@@ -64,6 +64,8 @@ check 'yarn npm info' bash -c 'yarn npm info react --fields version --json | gre
 check 'yarn npm audit reaches the registry' bash -c '
   yarn npm audit --recursive --environment production --json > audit.json 2> audit.err
   ! grep -qiE "ENOTFOUND|ECONN|EAI_AGAIN|403|blocked|refused|YN0035" audit.json audit.err'
+# Full install first; the later checks need node_modules.
+check 'yarn install --immutable --mode=skip-build' yarn install --immutable --mode=skip-build
 check 'yarn install --mode=update-lockfile' yarn install --mode=update-lockfile
 restore
 check 'yarn dedupe --check' yarn lint:lockfile:dedupe
@@ -80,8 +82,7 @@ check 'yarn patch and patch-commit' bash -c '
   test -n "$new" && test -s "$new"'
 restore
 
-# Full install, then tools that need node_modules
-check 'yarn install --immutable --mode=skip-build' yarn install --immutable --mode=skip-build
+# Tools that need node_modules
 check 'yarn allow-scripts auto' yarn allow-scripts auto
 restore
 check 'jest runs one test' node --expose-gc ./node_modules/jest/bin/jest.js --no-watchman shared/lib/deep-links/utils.test.ts
