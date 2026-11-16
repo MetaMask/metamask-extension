@@ -75,12 +75,12 @@ jobs:
         run: |
           set -uo pipefail
           # name=tokens, tokens as read by BENCH_CHROME_ARM in test/e2e/webdriver/chrome.js
-          # Settle-delay test on the power-user preset (Chrome 137, no forced GC): name=ms:mode, where
-          # mode "first" waits only after load 1 and "all" waits after every load but the last.
+          # V8 code cache test on the power-user preset (Chrome 137, no forced GC): name=extra arm tokens.
+          # nocache turns the code cache off, eager caches on the first load, nowait is the control.
           presets=(startupStandardHome startupPowerUserHome)
           pageloads=(10 7)
           preset=${presets[$GROUP]}
-          arms=("nowait=0:first" "first15=15000:first" "all5=5000:all")
+          arms=("nowait=" "nocache=v8cache-none" "eager=v8cache-eager")
           n=${#arms[@]}
           mkdir -p test-artifacts/benchmarks
           for (( i = 0; i < n; i++ )); do
@@ -88,18 +88,17 @@ jobs:
             if (( SHARD % 2 == 0 )); then idx=$(( ((SHARD / 2) % n - i + n) % n ));
             else idx=$(( (SHARD / 2 + i) % n )); fi
             name="${arms[$idx]%%=*}"
-            spec="${arms[$idx]#*=}"
-            settle_ms="${spec%%:*}"
-            settle_mode="${spec#*:}"
-            tokens="v137,jsvis,nogc"
-            echo "::group::arm $name (position $i): settle $settle_ms ms, $settle_mode"
-            BENCH_NOGC=1 BENCH_SETTLE_MS="$settle_ms" BENCH_SETTLE_MODE="$settle_mode" \
+            extra="${arms[$idx]#*=}"
+            tokens="v137,jsvis,nogc${extra:+,$extra}"
+            echo "::group::arm $name (position $i): BENCH_CHROME_ARM=$tokens"
+            BENCH_NOGC=1 BENCH_ARM_NAME="$name" BENCH_PROFILES_DIR="$RUNNER_TEMP/profiles" \
               BENCH_CHROME_ARM="$tokens" timeout -k 10 1500 yarn test:e2e:benchmark \
               --preset "$preset" \
               --browserLoads "$BROWSER_LOADS" --pageLoads "${pageloads[$GROUP]}" --retries 2 \
               --out "test-artifacts/benchmarks/arm-$name-pos$i-$OS-g$GROUP-s$SHARD.json" \
               || echo "::warning::arm $name failed"
             pkill -f chromedriver || true; pkill -f chrome || true; pkill anvil || true
+            rm -rf "$RUNNER_TEMP/profiles"
             echo "::endgroup::"
           done
 

@@ -71,6 +71,23 @@ class ChromeDriver {
       args.push('--js-flags=--expose-gc');
     }
 
+    // TEMPORARY (1/1): v8cache-* arm tokens set Chrome's V8 code cache policy, and BENCH_PROFILES_DIR
+    // pins the profile so the flow can log its cache sizes. Remove with BENCH_CHROME_ARM.
+    if (ARM.has('v8cache-none')) {
+      args.push('--v8-cache-options=none');
+    }
+    if (ARM.has('v8cache-eager')) {
+      args.push('--v8-cache-options=code_without_heuristics');
+    }
+    if (process.env.BENCH_PROFILES_DIR) {
+      const profileDir = path.join(
+        process.env.BENCH_PROFILES_DIR,
+        `s-${process.pid}-${Date.now()}`,
+      );
+      process.env.BENCH_PROFILE_DIR_CURRENT = profileDir;
+      args.push(`--user-data-dir=${profileDir}`);
+    }
+
     if (process.env.MULTIPROVIDER) {
       args.push(
         `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,

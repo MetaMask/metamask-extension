@@ -3,6 +3,7 @@
  * Measures home page load time with power user state (30 accounts, transactions, etc.)
  */
 
+import { appendFileSync, readdirSync, statSync } from 'fs';
 import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../../helpers';
@@ -30,6 +31,50 @@ import type {
   PageLoadBenchmarkOptions,
   MeasurePageResult,
 } from '../../utils/types';
+
+// TEMPORARY (2/2): logs the browser profile's cache sizes after each load. Remove with BENCH_PROFILES_DIR in
+// .github/workflows/pilot-flags.yml.
+function dirStats(dir: string): { bytes: number; files: number } {
+  let bytes = 0;
+  let files = 0;
+  const walk = (current: string) => {
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      const entryPath = `${current}/${entry.name}`;
+      if (entry.isDirectory()) {
+        walk(entryPath);
+      } else {
+        bytes += statSync(entryPath).size;
+        files += 1;
+      }
+    }
+  };
+  try {
+    walk(dir);
+  } catch {
+    // The directory does not exist yet.
+  }
+  return { bytes, files };
+}
+
+function logProfileSizes(load: number, phase: string) {
+  const root = process.env.BENCH_PROFILE_DIR_CURRENT;
+  if (!root) {
+    return;
+  }
+  const row = {
+    session: root.split('/').pop(),
+    load,
+    phase,
+    t: Date.now(),
+    codeJs: dirStats(`${root}/Default/Code Cache/js`),
+    codeWasm: dirStats(`${root}/Default/Code Cache/wasm`),
+    serviceWorker: dirStats(`${root}/Default/Service Worker`),
+  };
+  appendFileSync(
+    `test-artifacts/benchmarks/codecache-${process.env.BENCH_ARM_NAME}.json`,
+    `${JSON.stringify(row)}\n`,
+  );
+}
 
 async function measurePagePowerUser(
   pageName: string,
@@ -91,14 +136,17 @@ async function measurePagePowerUser(
           console.error(`Error collecting web vitals for ${pageName}:`, error);
         }
 
+        logProfileSizes(i + 1, 'end');
+
         if (i < pageLoads - 1) {
           await collectGarbageBetweenIterations(driver);
-          // TEMPORARY (1/1): settle-delay A/B. Remove with BENCH_SETTLE_MS in .github/workflows/pilot-flags.yml.
+          // TEMPORARY (1/2): settle-delay A/B. Remove with BENCH_SETTLE_MS in .github/workflows/pilot-flags.yml.
           const settleMs = Number(process.env.BENCH_SETTLE_MS ?? 0);
           const settleAll = process.env.BENCH_SETTLE_MODE === 'all';
           if (settleMs > 0 && (settleAll || i === 0)) {
             await driver.delay(settleMs);
           }
+          logProfileSizes(i + 1, 'next');
         }
       }
     },
