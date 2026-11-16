@@ -73,10 +73,11 @@ export const isXSourceUrl = (source: string): boolean => {
 };
 
 /**
- * Whether a URL is safe to open (http or https only).
+ * Whether a URL is safe to open (https only; http is excluded because AI-sourced
+ * links must not open over plaintext).
  *
  * @param url - URL to validate.
- * @returns True when the URL parses with a safe scheme.
+ * @returns True when the URL parses with the https scheme.
  */
 export const isSafeUrl = (url: string): boolean => {
   try {

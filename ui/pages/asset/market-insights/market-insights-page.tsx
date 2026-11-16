@@ -218,14 +218,11 @@ const MarketInsightsPage = () => {
 
   const handleTweetPress = useCallback(
     (url: string) => {
-      if (!isXSourceUrl(url) || !isSafeUrl(url)) {
-        return;
+      if (isXSourceUrl(url)) {
+        handleSourcePress(url);
       }
-      trackInteraction('source_click', { sourceUrl: url });
-      setSelectedTrend(null);
-      globalThis.open(url, '_blank', 'noopener,noreferrer');
     },
-    [trackInteraction],
+    [handleSourcePress],
   );
 
   const handleTrendPress = useCallback((trend: MarketInsightsTrend) => {
@@ -267,7 +264,7 @@ const MarketInsightsPage = () => {
   }
 
   const showSkeleton = showLoadingSkeleton && !report && !error;
-  const isReportReady = Boolean(report) && !error;
+  const isReportReady = Boolean(report);
 
   let pageContent: React.ReactNode = null;
   if (showSkeleton) {
@@ -347,7 +344,11 @@ const MarketInsightsPage = () => {
                 <MarketInsightsTweetCard
                   key={`tweet-${index}`}
                   tweet={tweet}
-                  onPress={handleTweetPress}
+                  onPress={
+                    isXSourceUrl(tweet.url) && isSafeUrl(tweet.url)
+                      ? handleTweetPress
+                      : undefined
+                  }
                 />
               ))}
             </Box>

@@ -10,6 +10,7 @@ import {
   type MarketInsightsEventSource,
 } from '../../../../shared/constants/market-insights-events';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import type { MarketInsightsFeedbackReason } from './components/market-insights-feedback-modal';
 
 export type MarketInsightsInteractionType =
   | 'thumbs_up'
@@ -20,7 +21,7 @@ export type MarketInsightsInteractionType =
 
 export type TrackMarketInsightsInteractionOptions = {
   sourceUrl?: string;
-  feedbackReason?: string;
+  feedbackReason?: MarketInsightsFeedbackReason;
   feedbackText?: string;
 };
 

@@ -62,7 +62,7 @@ export const MarketInsightsPageHeader = ({
       >
         {t('marketInsightsTitle')}
       </Text>
-      <Box style={{ width: 24 }} />
+      <Box className="w-8" />
     </Box>
   );
 };

@@ -329,6 +329,19 @@ describe('MarketInsightsPage', () => {
       });
     });
 
+    it('renders the cached report when an error is set alongside it', () => {
+      const { getByTestId, queryByTestId } = renderPage({
+        error: 'Network error',
+      });
+
+      expect(getByTestId('market-insights-view-container')).toBeInTheDocument();
+      expect(getByTestId('market-insights-headline')).toBeInTheDocument();
+      expect(
+        queryByTestId('market-insights-view-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
     it('redirects to the previous route when the asset is missing', () => {
       renderPage({ params: {} });
 
@@ -420,7 +433,7 @@ describe('MarketInsightsPage', () => {
       );
     });
 
-    it('ignores presses on tweet URLs outside x.com and twitter.com', () => {
+    it('disables tweet cards whose URL is outside x.com and twitter.com', () => {
       const report: MarketInsightsReport = {
         ...mockReport,
         trends: [
@@ -441,8 +454,7 @@ describe('MarketInsightsPage', () => {
 
       const { getByTestId } = renderPage({ report });
 
-      fireEvent.click(getByTestId('market-insights-tweet-card'));
-
+      expect(getByTestId('market-insights-tweet-card')).toBeDisabled();
       expect(mockOpen).not.toHaveBeenCalled();
       expect(mockTrackInteraction).not.toHaveBeenCalled();
     });

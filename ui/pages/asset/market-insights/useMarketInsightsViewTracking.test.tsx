@@ -9,6 +9,7 @@ import {
   MARKET_INSIGHTS_EVENT_PROPERTY,
   MARKET_INSIGHTS_EVENT_VALUE,
 } from '../../../../shared/constants/market-insights-events';
+import { MarketInsightsFeedbackReason } from './components/market-insights-feedback-modal';
 import {
   useMarketInsightsViewTracking,
   type MarketInsightsInteractionType,
@@ -166,7 +167,7 @@ describe('useMarketInsightsViewTracking', () => {
 
     it('tracks thumbs_down interactions with the feedback reason and text', () => {
       renderAndTrack('thumbs_down', {
-        feedbackReason: 'not_accurate',
+        feedbackReason: MarketInsightsFeedbackReason.NotAccurate,
         feedbackText: 'The summary missed the latest move.',
       });
 
@@ -185,7 +186,9 @@ describe('useMarketInsightsViewTracking', () => {
     });
 
     it('tracks thumbs_down interactions without feedback text when none is provided', () => {
-      renderAndTrack('thumbs_down', { feedbackReason: 'something_else' });
+      renderAndTrack('thumbs_down', {
+        feedbackReason: MarketInsightsFeedbackReason.SomethingElse,
+      });
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
