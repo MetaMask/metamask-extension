@@ -31,10 +31,7 @@ describe('Swap max amount', function () {
           includeBridgeFlags: true,
         }),
         async ({ driver }) => {
-          await login(driver, {
-            validateBalance: false,
-            waitForNonEvmAccounts: false,
-          });
+          await login(driver, { validateBalance: false });
 
           const homePage = new HomePage(driver);
           await homePage.startSwapFlow();

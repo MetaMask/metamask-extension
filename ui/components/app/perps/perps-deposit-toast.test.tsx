@@ -420,7 +420,7 @@ describe('PerpsDepositToast', () => {
     });
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
+      'PerpsController:clearDepositResult',
       [],
     );
   });
@@ -474,11 +474,11 @@ describe('PerpsDepositToast', () => {
 
     expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(2);
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
+      'PerpsController:clearDepositResult',
       [],
     );
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'setLastPerpsDepositEntryPoint',
+      'AppStateController:setLastPerpsDepositEntryPoint',
       [null],
     );
   });

@@ -43,33 +43,48 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             GBP
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            GBP
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               25
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="25"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -741,33 +756,48 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            $
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -873,33 +903,48 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-error-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            $
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-error-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
           </span>
-        </div>
+        </label>
         <div
           class="gap-1 flex flex-col items-center"
         >
@@ -1029,33 +1074,48 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-error-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            $
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-error-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
           </span>
-        </div>
+        </label>
         <div
           class="gap-1 flex flex-col items-center"
         >
@@ -1185,33 +1245,48 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            $
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -1317,33 +1392,48 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            $
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
@@ -1766,33 +1856,48 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-error-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            $
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-error-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
           </span>
-        </div>
+        </label>
         <div
           class="gap-1 flex flex-col items-center"
         >
@@ -1922,33 +2027,48 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
       <div
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
-        <div
-          class="flex-row flex items-baseline justify-center"
+        <label
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            aria-hidden="true"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero pointer-events-none invisible absolute whitespace-pre"
+            style="font-size: 100px;"
           >
             GBP
           </span>
           <span
-            class="relative w-max min-w-[1ch]"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none shrink-0"
+            data-testid="ramps-build-quote-amount-prefix"
+            style="font-size: 88px; line-height: 88px;"
+          >
+            GBP
+          </span>
+          <span
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+              data-testid="ramps-build-quote-amount-value"
+              style="font-size: 88px; line-height: 88px;"
             >
               50
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              placeholder="0"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="50"
             />
           </span>
-        </div>
+        </label>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"

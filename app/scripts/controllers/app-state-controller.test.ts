@@ -14,6 +14,7 @@ import {
 } from '../../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { MINUTE } from '../../../shared/constants/time';
+import { recordUiInteraction } from '../../../shared/lib/telemetry/last-activity';
 import { AppStateController } from './app-state-controller';
 import type {
   AppStateControllerMessenger,
@@ -30,6 +31,9 @@ type RootMessenger = Messenger<
 
 jest.mock('webextension-polyfill');
 jest.mock('../../../shared/lib/deep-links/utils');
+jest.mock('../../../shared/lib/telemetry/last-activity', () => ({
+  recordUiInteraction: jest.fn(),
+}));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
 jest.mock('../../../shared/lib/mv3.utils', () => ({
@@ -241,10 +245,10 @@ describe('AppStateController', () => {
   describe('setDefaultHomeActiveTabName', () => {
     it('sets the default home tab name', async () => {
       await withController(({ controller }) => {
-        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Activity);
+        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Tokens);
 
         expect(controller.state.defaultHomeActiveTabName).toBe(
-          AccountOverviewTabKey.Activity,
+          AccountOverviewTabKey.Tokens,
         );
       });
     });
@@ -355,6 +359,16 @@ describe('AppStateController', () => {
         controller.setLastActiveTime();
 
         expect(setTimeout).toHaveBeenCalledTimes(0);
+      });
+    });
+  });
+
+  describe('recordUiInteraction', () => {
+    it('records a UI interaction for last-activity telemetry', async () => {
+      await withController(({ controller }) => {
+        controller.recordUiInteraction();
+
+        expect(recordUiInteraction).toHaveBeenCalledTimes(1);
       });
     });
   });

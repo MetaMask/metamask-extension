@@ -2,10 +2,12 @@ import { useSelector } from 'react-redux';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getAllMultichainNetworkConfigurations } from '../../../../selectors/multichain/networks';
+import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import { type Asset } from '../../types/send';
 import { useSendAssets } from './useSendAssets';
 import * as useSendTokensModule from './useSendTokens';
 import * as useSendNftsModule from './useSendNfts';
+import { useEnsureAccountGroupAssets } from './useEnsureAccountGroupAssets';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -14,10 +16,16 @@ jest.mock('react-redux', () => ({
 
 jest.mock('./useSendTokens');
 jest.mock('./useSendNfts');
+jest.mock('./useEnsureAccountGroupAssets', () => ({
+  useEnsureAccountGroupAssets: jest.fn(),
+}));
 
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseSendTokens = jest.spyOn(useSendTokensModule, 'useSendTokens');
 const mockUseSendNfts = jest.spyOn(useSendNftsModule, 'useSendNfts');
+const mockUseEnsureAccountGroupAssets = jest.mocked(
+  useEnsureAccountGroupAssets,
+);
 
 // Mock network configurations with CAIP chain IDs
 // Note: 0x1 = 1 (Ethereum), 0x89 = 137 (Polygon), 0xaa36a7 = 11155111 (Sepolia)
@@ -61,8 +69,25 @@ describe('useSendAssets', () => {
       if (selector === getAllMultichainNetworkConfigurations) {
         return mockMultichainNetworkConfigurations;
       }
+      if (selector === getSelectedAccountGroup) {
+        return 'entropy:wallet1/group1';
+      }
       return undefined;
     });
+  });
+
+  it('loads the selected account group across every configured network', () => {
+    mockUseSendTokens.mockReturnValue([]);
+    mockUseSendNfts.mockReturnValue([]);
+
+    renderHookWithProvider(
+      () => useSendAssets(),
+      mockStateWithExternalServices,
+    );
+
+    expect(mockUseEnsureAccountGroupAssets).toHaveBeenCalledWith(
+      'entropy:wallet1/group1',
+    );
   });
 
   it('returns tokens and nfts from respective hooks', () => {
