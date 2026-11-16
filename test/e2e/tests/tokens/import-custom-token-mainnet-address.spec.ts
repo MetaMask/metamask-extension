@@ -64,6 +64,7 @@ describe('Import a Mainnet-listed token address on a non-Mainnet network', funct
           MAINNET_LISTED_TOKEN_MINTED_AMOUNT,
           MAINNET_LISTED_TOKEN_SYMBOL,
         );
+        await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
       },
     );
   });
