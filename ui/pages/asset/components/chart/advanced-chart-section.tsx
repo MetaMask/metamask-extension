@@ -156,7 +156,6 @@ export const AdvancedChartSection = ({
     realtimePrice,
     realtimeTimestamp,
     price: ohlcvPrice,
-    percentChange: ohlcvPercentChange,
     isLoading: isOhlcvLoading,
     error: ohlcvError,
     resolvedCurrency,
@@ -168,19 +167,20 @@ export const AdvancedChartSection = ({
     needsHistory: !isLineChart,
   });
 
-  // Candle mode normally has no need for the historical-prices series, but when
-  // the OHLCV API fails we fall back to it for both the price and a real 24H
-  // change. The fallback is always pinned to 24h (P1D) regardless of the line
-  // selector, so the candle header's percentage stays a 24H figure.
-  const candleHistoricalFallback = !isLineChart && Boolean(ohlcvError);
+  // Candle mode always sources its 24H % from the P1D historical series rather
+  // than from the candle data. Candles are interval-bucketed, so a candle-
+  // derived 24H baseline drifts as the interval changes and collapses entirely
+  // on coarse intervals like 1w (no bar sits inside the trailing 24h window).
+  // The P1D series is interval-independent, so the percentage is a true 24H
+  // figure that stays identical across candle intervals and is still available
+  // when the OHLCV API fails. Line mode keeps using the range it is showing.
   const historical = useHistoricalPrices({
     chainId,
     address,
     currency,
-    timeRange: candleHistoricalFallback
-      ? DEFAULT_LINE_ISO8601
-      : (LINE_TIME_RANGE_TO_ISO8601[lineTimeRange] ?? DEFAULT_LINE_ISO8601),
-    enabled: isLineChart || candleHistoricalFallback,
+    timeRange: isLineChart
+      ? (LINE_TIME_RANGE_TO_ISO8601[lineTimeRange] ?? DEFAULT_LINE_ISO8601)
+      : DEFAULT_LINE_ISO8601,
   });
 
   // Line mode anchors the header to the opening price of the range the chart
@@ -218,24 +218,22 @@ export const AdvancedChartSection = ({
       : '--color-success-default';
 
   // The live/spot price the candle header falls back to when the OHLCV API
-  // fails, so the header is never blank. Also the current-value side of the
-  // 24H change computed from historical prices in that same failure case.
+  // fails, so the header is never blank.
   const candleFallbackPrice = realtimePrice ?? currentPrice;
+  // On an /ohlcv-chart failure there is no candle price, so fall back to the
+  // live/spot price rather than render a blank header.
+  const candlePrice =
+    ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined);
   const candleHeader = {
-    // On an /ohlcv-chart failure there is no candle price, so fall back to the
-    // live/spot price rather than render a blank header.
-    price: ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined),
-    // Candle mode always shows the last-24H change. On an OHLCV failure the
-    // candles are gone, so derive the same 24H figure from historical prices
-    // (the P1D fallback series) instead of leaving it blank.
-    percentChange: ohlcvError
-      ? computePercentChange(
-          candleFallbackPrice,
-          historical.isPlaceholderData
-            ? undefined
-            : historical.data.prices?.[0]?.y,
-        )
-      : ohlcvPercentChange,
+    price: candlePrice,
+    // Always the last-24H change, derived from the interval-independent P1D
+    // historical series (see the historical hook above). This keeps the figure
+    // identical across candle intervals and a true 24H change, and behaves the
+    // same whether or not the OHLCV API succeeded.
+    percentChange: computePercentChange(
+      candlePrice,
+      historical.isPlaceholderData ? undefined : historical.data.prices?.[0]?.y,
+    ),
     // Candle mode shows the last-24H change, labelled "Today" to match mobile,
     // instead of the latest bar's date.
     timestamp: undefined as number | undefined,

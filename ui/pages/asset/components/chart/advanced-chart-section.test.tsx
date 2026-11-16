@@ -151,7 +151,6 @@ function setupData(
     realtimePrice: undefined,
     realtimeTimestamp: undefined,
     price: undefined,
-    percentChange: undefined,
     timestamp: undefined,
     isLoading: false,
     error: null,
@@ -241,7 +240,7 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
-        expect.objectContaining({ timeRange: 'P1D', enabled: true }),
+        expect.objectContaining({ timeRange: 'P1D' }),
       );
       expect(mockUseAdvancedChartData).toHaveBeenCalledWith(
         expect.objectContaining({ needsHistory: false }),
@@ -499,14 +498,16 @@ describe('AdvancedChartSection', () => {
       expect(isSlotVisible('legacy-chart-slot')).toBe(false);
     });
 
-    it('fetches the candle history and skips the historical prices', () => {
+    it('fetches the candle history plus the P1D historical series for the 24H change', () => {
       render();
 
       expect(mockUseAdvancedChartData).toHaveBeenCalledWith(
         expect.objectContaining({ needsHistory: true }),
       );
+      // The 24H percentage is always sourced from the interval-independent P1D
+      // series, so it is fetched in candle mode regardless of the interval.
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
-        expect.objectContaining({ enabled: false }),
+        expect.objectContaining({ timeRange: 'P1D' }),
       );
     });
 
@@ -560,13 +561,35 @@ describe('AdvancedChartSection', () => {
     });
 
     it('labels the 24H change with "Today" rather than a date', () => {
-      setupData({ price: 1234, percentChange: 5, resolvedCurrency: 'usd' });
+      // 24H change is derived from the P1D historical series (opens at 100, see
+      // PRICES), not from the candle data: (150 - 100) / 100 = +50%.
+      setupData({ price: 150, resolvedCurrency: 'usd' });
       render();
 
       expect(
         screen.getByTestId('asset-price-percent-change'),
-      ).toHaveTextContent('+5.00%');
+      ).toHaveTextContent('+50.00%');
       expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('keeps the 24H change identical across candle intervals', () => {
+      // The percentage comes from the interval-independent P1D series, so it
+      // must not change when the candle interval does. A naive candle-derived
+      // baseline would differ between a 15m and a 1w interval (and collapse to
+      // 0% on 1w).
+      setupData({ price: 150 });
+
+      setupPreferences(CHART_TYPE_CANDLE, { interval: '15m' });
+      const { rerender } = render();
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
+
+      setupPreferences(CHART_TYPE_CANDLE, { interval: '1w' });
+      rerender(<AdvancedChartSection {...DEFAULT_PROPS} />);
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+50.00%');
     });
   });
 
@@ -657,7 +680,6 @@ describe('AdvancedChartSection', () => {
       // Historical P1D series opens at 100 (see PRICES), live price is 175.
       setupData({
         price: undefined,
-        percentChange: undefined,
         realtimePrice: 175,
         error: 'OHLCV API error: 500',
       });
@@ -676,12 +698,12 @@ describe('AdvancedChartSection', () => {
       expect(screen.getByText(messages.today.message)).toBeInTheDocument();
     });
 
-    it('enables the 24H historical fallback series only when the candle API fails', () => {
+    it('keeps the P1D historical series for the 24H change when the candle API fails', () => {
       setupData({ error: 'OHLCV API error: 500' });
       render();
 
       expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
-        expect.objectContaining({ timeRange: 'P1D', enabled: true }),
+        expect.objectContaining({ timeRange: 'P1D' }),
       );
     });
 
@@ -689,7 +711,6 @@ describe('AdvancedChartSection', () => {
       setupHistorical({ isPlaceholderData: true });
       setupData({
         price: undefined,
-        percentChange: undefined,
         realtimePrice: 175,
         error: 'OHLCV API error: 500',
       });
@@ -707,7 +728,6 @@ describe('AdvancedChartSection', () => {
     it('falls back to the wallet-wide current price when there is no live price', () => {
       setupData({
         price: undefined,
-        percentChange: undefined,
         realtimePrice: undefined,
         error: 'OHLCV API error: 500',
       });
