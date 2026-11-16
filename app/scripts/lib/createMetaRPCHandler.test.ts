@@ -24,7 +24,9 @@ jest.mock('../../../shared/lib/trace', () => {
 jest.mock('../../../shared/lib/wrapper-sampling', () => ({
   shouldSampleWrappers: jest.fn().mockReturnValue(true),
   isRootWrapperEnabled: jest.fn().mockReturnValue(true),
-  admitTraceWrappers: jest.fn((_traceId: unknown, fn: () => unknown) => fn()),
+  admitTraceWrappers: jest.fn(async (_traceId: unknown, fn: () => unknown) =>
+    fn(),
+  ),
 }));
 
 type Api = Record<string, TaggedApiMethod>;
