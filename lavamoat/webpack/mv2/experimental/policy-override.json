@@ -2,13 +2,21 @@
   "resources": {
     "@braze/web-sdk": {
       "globals": {
+        "DOMParser": false,
+        "Document": false,
+        "Element": false,
         "EventSource": false,
         "Intl": false,
         "Intl.DateTimeFormat": true,
+        "Node": false,
         "Notification": false,
         "ServiceWorkerRegistration": false,
+        "SharedWorker": false,
+        "Worker": false,
         "atob": false,
+        "browser": false,
         "btoa": false,
+        "chrome": false,
         "crypto": false,
         "crypto.getRandomValues": true,
         "innerHeight": false,
@@ -18,6 +26,7 @@
         "location.href": true,
         "open": false,
         "orientation": false,
+        "postMessage": false,
         "safari": false,
         "screen.mozOrientation": false,
         "screen.msOrientation": false

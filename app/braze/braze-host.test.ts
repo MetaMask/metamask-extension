@@ -1,170 +1,154 @@
-import { it } from '@jest/globals';
-import type { BrazeSdk } from './braze-sdk';
 import { createBrazeHost } from './braze-host';
 
-const createSdk = () => {
-  let initialized = false;
-  let userId: string | null = null;
-  const sdk = {
-    initialize: jest.fn(() => {
-      initialized = true;
-      return true;
-    }),
-    isInitialized: jest.fn(() => initialized),
-    getUser: jest.fn(() => (initialized ? { getUserId: () => userId } : null)),
-    changeUser: jest.fn((id: string) => {
-      userId = id;
-    }),
-    requestImmediateDataFlush: jest.fn(),
-    wipeData: jest.fn(() => {
-      userId = null;
-    }),
-    destroy: jest.fn(() => {
-      initialized = false;
-    }),
+function createWorker() {
+  const events = new EventTarget();
+  const worker = {
+    addEventListener: events.addEventListener.bind(events),
+    postMessage: jest.fn(),
+    terminate: jest.fn(),
   };
-  return sdk as typeof sdk & BrazeSdk;
-};
-
-const configureBraze = () => {
-  process.env.BRAZE_WEB_API_KEY = 'test-key';
-  process.env.BRAZE_SDK_ENDPOINT = 'sdk.example.com';
-  delete process.env.IN_TEST;
-};
+  return {
+    worker: worker as unknown as Worker,
+    postMessage: worker.postMessage,
+    terminate: worker.terminate,
+    reply: (data: unknown) =>
+      events.dispatchEvent(new MessageEvent('message', { data })),
+    fail: () => events.dispatchEvent(new Event('error')),
+  };
+}
 
 describe('createBrazeHost', () => {
-  const originalEnv = process.env;
+  beforeEach(() => jest.useFakeTimers());
+  afterEach(() => jest.useRealTimers());
 
-  beforeEach(() => {
-    process.env = { ...originalEnv };
-    configureBraze();
-    process.env.METAMASK_VERSION = '13.55.0';
-    delete process.env.METAMASK_DEBUG;
+  it('starts a worker only when identifying a user', async () => {
+    const factory = jest.fn(() => createWorker().worker);
+    const sync = createBrazeHost({ createWorker: factory });
+
+    await sync(null);
+
+    expect(factory).not.toHaveBeenCalled();
   });
 
-  afterEach(() => {
-    process.env = originalEnv;
-  });
+  it('sends only the identity and waits for its acknowledgement', async () => {
+    const worker = createWorker();
+    const sync = createBrazeHost({ createWorker: () => worker.worker });
 
-  it('initializes with extension-safe options and identifies the user', async () => {
-    const sdk = createSdk();
-    const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
-
-    await syncBrazeUser('canonical-123');
-
-    expect(sdk.initialize).toHaveBeenCalledWith('test-key', {
-      baseUrl: 'sdk.example.com',
-      enableLogging: false,
-      noCookies: true,
-      doNotLoadFontAwesome: true,
-      allowUserSuppliedJavascript: false,
-      manageServiceWorkerExternally: true,
-      disablePushTokenMaintenance: true,
-      appVersion: '13.55.0',
+    const result = sync('profile');
+    expect(worker.postMessage).toHaveBeenCalledWith({
+      id: 1,
+      profileId: 'profile',
     });
-    expect(sdk.changeUser).toHaveBeenCalledWith('canonical-123');
-    expect(sdk.requestImmediateDataFlush).toHaveBeenCalled();
+    worker.reply({ id: 1, success: true });
+
+    await expect(result).resolves.toBeUndefined();
+    expect(jest.getTimerCount()).toBe(0);
   });
 
-  it('does not call changeUser for the current user', async () => {
-    const sdk = createSdk();
-    const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
+  it('ignores DOM commands and unmatched acknowledgements', async () => {
+    const worker = createWorker();
+    const sync = createBrazeHost({ createWorker: () => worker.worker });
+    const completed = jest.fn();
+    const result = sync('profile').then(completed);
+    const createElement = jest.spyOn(document, 'createElement');
 
-    await syncBrazeUser('canonical-123');
-    await syncBrazeUser('canonical-123');
-
-    expect(sdk.changeUser).toHaveBeenCalledTimes(1);
-    expect(sdk.requestImmediateDataFlush).toHaveBeenCalledTimes(2);
-  });
-
-  it('does not load the SDK to clear when Braze has no data', async () => {
-    const loadSdk = jest.fn();
-    const syncBrazeUser = createBrazeHost({ loadSdk });
-
-    await syncBrazeUser(null);
-
-    expect(loadSdk).not.toHaveBeenCalled();
-  });
-
-  it('loads the SDK to wipe data after identifying', async () => {
-    const sdk = createSdk();
-    const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
-    await syncBrazeUser('canonical-123');
-
-    await syncBrazeUser(null);
-
-    expect(sdk.wipeData).toHaveBeenCalled();
-    expect(sdk.destroy).toHaveBeenCalled();
-    expect(sdk.changeUser).toHaveBeenCalledTimes(1);
-  });
-
-  it('wipes data before destroying the SDK', async () => {
-    const sdk = createSdk();
-    const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
-    await syncBrazeUser('canonical-123');
-
-    await syncBrazeUser(null);
-
-    expect(sdk.wipeData.mock.invocationCallOrder[0]).toBeLessThan(
-      sdk.destroy.mock.invocationCallOrder[0],
-    );
-  });
-
-  it('still destroys the SDK when wiping throws', async () => {
-    const sdk = createSdk();
-    sdk.wipeData.mockImplementationOnce(() => {
-      throw new Error('wipe failed');
+    worker.reply({
+      id: 1,
+      html: '<script src="https://example.test/remote.js"></script>',
     });
-    const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
-    await syncBrazeUser('canonical-123');
+    worker.reply({ id: 2, success: true });
+    await Promise.resolve();
 
-    await expect(syncBrazeUser(null)).rejects.toThrow('wipe failed');
-    expect(sdk.destroy).toHaveBeenCalled();
+    expect(completed).not.toHaveBeenCalled();
+    expect(createElement).not.toHaveBeenCalled();
+    worker.reply({ id: 1, success: true });
+    await result;
   });
 
-  it('applies only the latest user while the SDK is loading', async () => {
-    const sdk = createSdk();
-    let resolveLoad: (value: BrazeSdk) => void = () => undefined;
-    const syncBrazeUser = createBrazeHost({
-      loadSdk: () =>
-        new Promise<BrazeSdk>((resolve) => {
-          resolveLoad = resolve;
-        }),
-    });
+  it('rejects failed acknowledgements', async () => {
+    const worker = createWorker();
+    const sync = createBrazeHost({ createWorker: () => worker.worker });
+    const result = sync('profile');
 
-    const identify = syncBrazeUser('canonical-123');
-    const clear = syncBrazeUser(null);
-    resolveLoad(sdk);
-    await Promise.all([identify, clear]);
+    worker.reply({ id: 1, success: false, error: 'SDK incompatible' });
 
-    expect(sdk.changeUser).not.toHaveBeenCalled();
-    expect(sdk.isInitialized()).toBe(false);
+    await expect(result).rejects.toThrow('SDK incompatible');
   });
 
-  it('throws when the SDK does not initialize', async () => {
-    const sdk = createSdk();
-    sdk.initialize.mockReturnValueOnce(false);
-    const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
+  it('terminates the worker after clearing its identity', async () => {
+    const worker = createWorker();
+    const sync = createBrazeHost({ createWorker: () => worker.worker });
+    const identify = sync('profile');
+    worker.reply({ id: 1, success: true });
+    await identify;
 
-    await expect(syncBrazeUser('canonical-123')).rejects.toThrow(
-      'Braze SDK failed to initialize',
-    );
-    expect(sdk.requestImmediateDataFlush).not.toHaveBeenCalled();
+    const clear = sync(null);
+    expect(worker.terminate).not.toHaveBeenCalled();
+    worker.reply({ id: 2, success: true });
+    await clear;
+
+    expect(worker.terminate).toHaveBeenCalledTimes(1);
   });
 
-  it('retries a failed SDK load', async () => {
-    const sdk = createSdk();
-    const loadSdk = jest
+  it('preserves the worker when a newer identity follows a clear', async () => {
+    const worker = createWorker();
+    const sync = createBrazeHost({ createWorker: () => worker.worker });
+    const identify = sync('profile');
+    const clear = sync(null);
+    const next = sync('new-profile');
+
+    worker.reply({ id: 1, success: true });
+    worker.reply({ id: 2, success: true });
+    worker.reply({ id: 3, success: true });
+    await Promise.all([identify, clear, next]);
+
+    expect(worker.terminate).not.toHaveBeenCalled();
+  });
+
+  it('terminates the worker even if SDK cleanup fails', async () => {
+    const worker = createWorker();
+    const sync = createBrazeHost({ createWorker: () => worker.worker });
+    const identify = sync('profile');
+    worker.reply({ id: 1, success: true });
+    await identify;
+
+    const clear = sync(null);
+    worker.reply({ id: 2, success: false, error: 'Cleanup failed' });
+
+    await expect(clear).rejects.toThrow('Cleanup failed');
+    expect(worker.terminate).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries a crashed worker and ignores its stale events', async () => {
+    const first = createWorker();
+    const second = createWorker();
+    const factory = jest
       .fn()
-      .mockRejectedValueOnce(new Error('chunk failed'))
-      .mockResolvedValueOnce(sdk);
-    const syncBrazeUser = createBrazeHost({ loadSdk });
+      .mockReturnValueOnce(first.worker)
+      .mockReturnValueOnce(second.worker);
+    const sync = createBrazeHost({ createWorker: factory });
+    const failed = sync('profile');
+    first.fail();
+    await expect(failed).rejects.toThrow('Braze worker failed');
 
-    await expect(syncBrazeUser('canonical-123')).rejects.toThrow(
-      'chunk failed',
-    );
-    await syncBrazeUser('canonical-123');
+    const retried = sync('profile');
+    first.fail();
+    first.reply({ id: 2, success: true });
+    second.reply({ id: 2, success: true });
+    await retried;
 
-    expect(sdk.changeUser).toHaveBeenCalledWith('canonical-123');
+    expect(first.terminate).toHaveBeenCalledTimes(1);
+    expect(second.terminate).not.toHaveBeenCalled();
+  });
+
+  it('terminates an unresponsive worker', async () => {
+    const worker = createWorker();
+    const sync = createBrazeHost({ createWorker: () => worker.worker });
+    const result = sync('profile');
+
+    jest.advanceTimersByTime(30_000);
+
+    await expect(result).rejects.toThrow('Braze worker sync timed out');
+    expect(worker.terminate).toHaveBeenCalled();
   });
 });

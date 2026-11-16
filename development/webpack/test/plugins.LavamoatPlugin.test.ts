@@ -117,6 +117,31 @@ describe('LavamoatPlugin', () => {
     const runtimeConfig =
       plugin.options.runtimeConfigurationPerChunk_experimental;
 
+    it('scuttles the Braze worker without Snow and preserves its chunk loader', () => {
+      const result = runtimeConfig(mockChunk('braze-worker')) as {
+        mode: string;
+        embeddedOptions: {
+          scuttleGlobalThis: {
+            enabled: boolean;
+            scuttlerName?: string;
+            exceptions: (string | RegExp)[];
+          };
+        };
+      };
+
+      assert.equal(result.mode, 'safe');
+      assert.equal(result.embeddedOptions.scuttleGlobalThis.enabled, true);
+      assert.equal(
+        result.embeddedOptions.scuttleGlobalThis.scuttlerName,
+        undefined,
+      );
+      assert.ok(
+        result.embeddedOptions.scuttleGlobalThis.exceptions.includes(
+          'importScripts',
+        ),
+      );
+    });
+
     it('gives service-worker.ts chunk safe mode (regression guard)', () => {
       // Before the fix, service-worker.ts was in nullUnsafeEntries and got
       // null_unsafe mode, so background.js had no LavaMoat runtime to run against.

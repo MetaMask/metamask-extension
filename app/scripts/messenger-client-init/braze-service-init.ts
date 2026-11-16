@@ -8,9 +8,9 @@ import { MessengerClientInitFunction } from './types';
 /**
  * Initialize the Braze service.
  *
- * On MV3 the SDK runs in the offscreen document, so the service messages it.
- * On MV2 the background page is a DOM context, so the service calls the host
- * directly. Only registered in builds with Braze configuration.
+ * Both platforms run the SDK in a dedicated worker. On MV3 the offscreen
+ * document owns the worker; on MV2 the background page owns it. Only registered
+ * in builds with Braze configuration.
  *
  * @param request - The init request.
  * @param request.controllerMessenger - The service messenger.

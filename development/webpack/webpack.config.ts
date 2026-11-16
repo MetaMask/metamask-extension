@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
+  EntryPlugin,
   HotModuleReplacementPlugin,
   ProvidePlugin,
   type Chunk,
@@ -46,6 +47,7 @@ import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
 import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
+import { brazeWorkerIsolationPlugin } from './utils/plugins/LavamoatPlugin';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -173,6 +175,21 @@ const manifestPlugin = new ManifestPlugin({
 });
 
 const plugins: WebpackPluginInstance[] = [
+  brazeWorkerIsolationPlugin,
+  // A separate entry avoids relying on webpack's Worker URL helper, which
+  // LavaMoat does not expose to wrapped modules. Keep its name stable for the
+  // host and give the worker its own importScripts runtime.
+  ...(variables.get('BRAZE_WEB_API_KEY') && variables.get('BRAZE_SDK_ENDPOINT')
+    ? [
+        new EntryPlugin(context, './braze/braze-worker.ts', {
+          name: 'braze-worker',
+          filename: 'braze-worker.js',
+          runtime: false,
+          chunkLoading: 'import-scripts',
+          wasmLoading: 'fetch',
+        }),
+      ]
+    : []),
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({

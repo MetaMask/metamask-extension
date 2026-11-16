@@ -1,6 +1,6 @@
 import * as braze from '@braze/web-sdk';
 import type { BrazeSdk } from './braze-sdk';
-import { createBrazeHost } from './braze-host';
+import { createBrazeSdkHost } from './braze-sdk-host';
 
 // Bypass the global SDK stub: these tests exercise the real SDK lifecycle.
 jest.mock('@braze/web-sdk', () =>
@@ -33,7 +33,7 @@ describe('Braze SDK lifecycle in the host', () => {
   const originalEnv = process.env;
   const { indexedDB } = window;
   let documentHidden = false;
-  let syncBrazeUser: ReturnType<typeof createBrazeHost>;
+  let syncBrazeUser: ReturnType<typeof createBrazeSdkHost>;
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -66,7 +66,7 @@ describe('Braze SDK lifecycle in the host', () => {
         });
         this.onload?.(new window.ProgressEvent('load'));
       });
-    syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
+    syncBrazeUser = createBrazeSdkHost({ loadSdk: async () => sdk });
   });
 
   afterEach(() => {
@@ -150,7 +150,7 @@ describe('Braze SDK lifecycle in the host', () => {
     braze.destroy();
     send().mockClear();
 
-    await createBrazeHost({ loadSdk: async () => sdk })(null);
+    await createBrazeSdkHost({ loadSdk: async () => sdk })(null);
     await jest.advanceTimersByTimeAsync(60_000);
 
     expect(braze.isInitialized()).toBe(false);
@@ -163,7 +163,7 @@ describe('Braze SDK lifecycle in the host', () => {
     braze.destroy();
     send().mockClear();
 
-    await createBrazeHost({ loadSdk: async () => sdk })('canonical-123');
+    await createBrazeSdkHost({ loadSdk: async () => sdk })('canonical-123');
     await jest.advanceTimersByTimeAsync(0);
 
     expect(braze.getUser()?.getUserId()).toBe('canonical-123');

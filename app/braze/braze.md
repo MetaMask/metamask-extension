@@ -1,9 +1,8 @@
 # Braze identity
 
 Braze identifies users with the primary SRP's Profile Sync canonical profile
-ID, the same `external_id` Mobile uses. The SDK runs once per extension: in the
-MV3 offscreen document, or in the MV2 background page (Firefox), which is a DOM
-context.
+ID, the same `external_id` Mobile uses. The SDK runs once per extension, inside
+a dedicated worker. The MV3 offscreen document or MV2 background page owns the worker; neither page evaluates the SDK.
 
 ## Ownership
 
@@ -11,17 +10,19 @@ context.
   gates. It listens to `OnboardingController`, `PreferencesController`
   (`useExternalServices`), `AuthenticationController`, and `KeyringController`,
   and applies the desired user when it changes.
-- The host (`app/braze/braze-host.ts`) holds the only SDK instance and loads
-  the SDK chunk on the first identify. The platform only chooses how the
-  background reaches it:
+- The host (`app/braze/braze-host.ts`) starts the dedicated worker on the first
+  identify and sends only profile IDs. The worker installs its compatibility
+  environment before loading `braze-sdk-host.ts` and the SDK. The platform only
+  chooses how the background reaches it:
   - MV3: `app/offscreen/braze.ts` runs the host in the offscreen document,
     with `app/offscreen/braze-client.ts` sending `syncUser` messages from the
     extension's service worker only.
-  - MV2: `BrazeServiceInit` calls the host directly, because the background
-    page is a DOM context.
+  - MV2: `BrazeServiceInit` calls the worker host directly in the background
+    page.
 - `braze-service-init.ts` selects the adapter at runtime with `isManifestV3`.
-  The host is part of the shared background module graph, but its SDK chunk is
-  loaded lazily and only on MV2; MV3 selects the offscreen client instead.
+  The host contains no SDK code. On MV3 the offscreen client reaches the worker
+  host; on MV2 the background calls it directly. Configured MV3 builds also
+  declare the offscreen document's `WORKERS` reason.
 - UI documents have no Braze code.
 
 ## Lifecycle
@@ -40,7 +41,8 @@ context.
   re-identifying the same user sends nothing.
 - Clearing wipes local data before destroying the SDK, because `destroy`
   flushes queued data. A host that never loaded the SDK does not load it to
-  clear: with no storage grant it holds no data.
+  clear: with no worker it holds no data. Clearing an active worker waits for
+  the SDK acknowledgement before terminating it.
 - Lock never clears data.
 - **Identifying waits for an open UI document.** `changeUser` opens a Braze
   session and the SDK cannot end one early, so the service also reads
@@ -50,7 +52,7 @@ context.
   document flips `isUiOpen` and identifies; closing the last document only
   stops new sessions from being started — the current one expires on Braze's
   side after `sessionTimeoutInSeconds` (30 minutes by default) and the
-  offscreen document keeps flushing queued events, so nothing is lost.
+  worker keeps flushing queued events, so nothing is lost.
 - Reopening inside that window keeps the same session (`changeUser` is a no-op
   for the same ID). Reopening after it expired starts a new session on the next
   flush, because `requestImmediateDataFlush` re-evaluates the session.
@@ -60,7 +62,7 @@ context.
   which fails safe (no session) but also means no identity until the next open.
   A UI-driven Braze call (fetching banners, for example) is the natural place
   to re-sync if that ever needs to be tightened.
-- The host is recreated when the service worker restarts (MV3) or the
+- The worker is recreated when the service worker restarts (MV3) or the
   background page reloads (MV2). On MV3 `createOffscreen` closes and recreates
   an existing offscreen document on every service worker boot, so the host is
   recreated on every boot, not only on browser restart. The service re-syncs on
@@ -68,10 +70,9 @@ context.
   open identifies again and starts a new session. Until the offscreen document
   survives the service worker, expect one session start per boot with a UI
   document open (see "Storage").
-- Braze defers its periodic flush while the document is hidden. The MV2
-  background page can be hidden, so the host calls
-  `requestImmediateDataFlush` after applying an identified user. This is a
-  no-op when the queue is empty.
+- The worker facade reports `document.hidden: false`, so the SDK continues to
+  flush regardless of the owning page's visibility. The SDK host also calls
+  `requestImmediateDataFlush` after applying an identified user.
 - The SDK is not suspended when the UI closes. After identification it only
   runs a flush timer that sends nothing while its queue is empty.
 - Builds without `BRAZE_WEB_API_KEY` and `BRAZE_SDK_ENDPOINT`, and test builds,
@@ -83,145 +84,92 @@ by the message sender's fields rather than by the manifest.
 
 ## Storage
 
-Braze is not granted `localStorage` or `indexedDB`, and cookie-based storage is
-disabled with `noCookies: true`, so the SDK falls back to an in-memory store.
-No Braze state is persisted in the extension's storage, and `wipeData` only
-clears the in-process instance.
+The SDK receives no persistent storage. Both `indexedDB` and `localStorage` are
+unavailable, and `noCookies: true` keeps normal cookie storage disabled. The
+facade discards the cookie probes that SDK initialization still performs.
+Nothing reads or writes the extension's real cookie jar.
 
-What the SDK keeps in memory is lost when the host is recreated: the device ID,
-the session, queued events, the server config, the banner cache, impression
-dedupe state, and pending dismissals. Identity is re-applied from the background
-on startup, so no user data outlives the clear path. The cost is traffic and
-reporting: a new session start, a new anonymous device ID, and a `/data/` fetch
-per host, plus a `/banners/sync` before the banner cache is warm again.
+Device IDs, sessions, queued events, and server configuration live only in the
+worker. They disappear on clear, worker termination, offscreen recreation, or
+background reload. Identity is re-applied from background state after restart.
+This retains the existing cost of a new device/session on host recreation.
 
-If those costs matter, the fixes are, in order:
+## Security boundary
 
-1. Keep the offscreen document (and therefore the SDK instance) alive across
-   service worker restarts. That restores session continuity, keeps the device
-   ID and the banner cache, and reduces the cost to one host per browser
-   session. It is an offscreen-lifecycle change, owned by core-platform.
-2. Cache banners in extension state and render from that cache while the SDK
-   refreshes in the background. This also makes the carousel independent of the
-   SDK's lifecycle and keeps request frequency under our control.
-3. Back the SDK's store with extension storage by replacing its internal
-   in-memory adapter (`StorageManager.rg`). It gives full persistence, but the
-   hook is a minified static that only exists in 7.0.0 and the adapter interface
-   is synchronous, so we would own serialization, quota, and migrations. Not
-   worth it unless the first two options fail.
+The invariant is that SDK code has no live DOM objects and no page operation
+broker. It is enforced independently of the SDK version and of tree shaking.
 
-The one write that does reach the extension origin is the SDK's own opt-out
-probe: `initialize` constructs the cookie store before `noCookies` is applied,
-which writes and clears `ab._gd` and reads `ab.optOut`. Those cookies belong to
-Braze's namespace and are not part of the wallet's state.
+1. **Dedicated worker.** Web workers have no browsing context or page DOM. A
+   future SDK can request another API, but it cannot obtain a page's document
+   through the worker's events or network responses. In particular, worker XHR
+   cannot return a document through `responseXML`.
+2. **Worker-only build.** `brazeWorkerIsolationPlugin` rejects every emitted
+   `@braze/web-sdk` module whose runtime is not exclusively `braze-worker`.
+   This check runs in development too, without LavaMoat. The worker entry is
+   emitted only when both Braze configuration values are present. It uses a
+   stable packaged filename and its own `importScripts` chunk loader.
+3. **Runtime check.** `installBrazeWorkerEnvironment` refuses to run in a page
+   or in a context without `importScripts`. It runs before the dynamic SDK
+   import, so SDK module initialization also sees the restricted environment.
+4. **Compatibility facade.** `createBrazeDocument` provides only URL parsing,
+   empty message cleanup queries, a visible state, and discarded cookie writes.
+   Its anchor is a frozen plain object with `href`, `pathname`, and `toString`.
+   It has no `ownerDocument`, `defaultView`, native element prototype, or DOM
+   insertion methods. Creating any tag other than `a`, including `script` and
+   `iframe`, throws. No facade operation accesses a real document.
+5. **No privileged worker globals.** The environment supplies scalar snapshots
+   of navigator and location, fixed screen dimensions, and denies extension
+   APIs, nested workers, persistent storage, notifications, and EventSource.
+   These restrictions also run in development without LavaMoat.
+6. **Acknowledgements only.** The document host sends `{ id, profileId }` and
+   accepts only `{ id, success, error? }`. It never renders worker data, follows
+   worker URLs, evaluates worker strings, or handles DOM commands. Structured
+   cloning cannot transmit a live DOM node or a function. Worker startup errors,
+   message failures, and a 30-second timeout terminate it and reject pending
+   requests; a later request can retry.
 
-## LavaMoat policy
+The current host identity API and initialization options remain unchanged.
+SDK-rendered HTML messages, banners, and JavaScript actions are intentionally
+unsupported. Future messaging should expose structured data for MetaMask-owned
+rendering, with a separate review of the data and action contract.
 
-Braze is bundled in the MV3 offscreen entry and the MV2 background entry, so
-`lavamoat/webpack/mv3/*` and `lavamoat/webpack/mv2/*` reference it in both
-`policy.json` and `policy-override.json`. The overrides deny what Braze does not
-need for identity and banners:
+The guarantee assumes the browser's worker isolation and the checked-in
+boundary remain intact. It is not a guarantee against browser vulnerabilities
+or future application changes that deliberately add a rendering or execution
+broker. An incompatible SDK upgrade must fail rather than receive a real DOM.
 
-- push and Safari notifications (`Notification`, `ServiceWorkerRegistration`,
-  `safari`, `btoa`), the real-time `EventSource`, and `open`
-- action and trigger decoding (`atob`)
-- Braze-hosted HTML rendering (`innerHeight`, `innerWidth`, `orientation`,
-  `screen.mozOrientation`, `screen.msOrientation`)
-- any persistent storage (`localStorage`; `indexedDB` is not granted)
+## LavaMoat and CSP
 
-`screen.width`/`screen.height` stay granted: the SDK reads them while building
-the device block of every request, and denying them throws on every flush.
-`resolution` is never sent — the SDK writes it to a field its serializer does
-not read.
+Both platform policies apply to the SDK **inside its worker**. The `document`
+and `navigator` grants now refer to the installed compatibility objects, not to
+native page objects. Whole-document grants in a page would not be safe: even a
+single native `createElement` or selector can return an element that exposes its
+`ownerDocument`.
 
-`crypto` is narrowed to `getRandomValues`, `Intl` to `DateTimeFormat`, and
-`window.location` to `location.href`, so `_openUri` (Braze-hosted link clicks)
-cannot navigate.
+Overrides explicitly deny DOM constructors, extension APIs, nested workers,
+notifications, EventSource, action decoding, navigation, and persistent storage.
+The capability test checks all eight variants and requires an explicit update
+for any new permitted global. The worker has its own LavaMoat lockdown and
+scuttling, without Snow, and preserves `importScripts` only for webpack's
+packaged chunk loader. The extension CSP still disallows remote JavaScript and
+string evaluation.
 
-`document` and `navigator` stay whole. `initialize` needs
-`document.createElement` and `document.location.hostname`, the opt-out probe
-needs `document.cookie`, every flush reads `document.hidden`, and `changeUser`
-calls `document.querySelectorAll`/`getElementById`/`getElementsByClassName` to
-remove its own in-app message nodes. The `querySelectorAll` grant already
-reaches the whole document, so narrowing its siblings would not reduce what the
-SDK can read. It also means `document.location` (including `assign`) and
-`document.cookie` stay reachable, which is why the `location` narrowing above
-only removes the `window.location` write. `navigator` is read at module load by
-the browser detector (`userAgent`, `userAgentData`, `platform`, `language`) and
-during `initialize` (`cookieEnabled`), and it is a read-only grant.
+Named identity imports continue to keep unused SDK rendering code out of
+optimized production chunks. This reduces the bundle size; it is no longer the
+security boundary. Development bundles may contain those renderers and still
+cannot operate on a page DOM.
 
-These grants describe what the SDK does; they are not what contains it. The
-containment story is in "Security" below.
+## Verification
 
-`development/webpack/test/lavamoat.braze.test.ts` asserts that the eight build
-variants share one policy and that the capabilities denied above stay denied, so
-a variant that drifts fails the test instead of landing silently. It
-deliberately does not restate the granted set: a new grant is a question for the
-`policy.json` review, not a test assertion.
-
-## Security
-
-Braze is third-party code with network access, so we do not assume its code is
-sound. The boundary is architectural; the policy is defence in depth.
-
-**Where it runs.** `app/braze/braze-sdk.ts` is the only import of
-`@braze/web-sdk`, and no UI document imports it. The SDK therefore only ever
-runs in the offscreen document (MV3) or the background page (MV2). The wallet
-UI, its Redux store, the provider, and the unlocked keyrings live in other
-documents and cannot be reached from there.
-
-**What the shipped bundle contains.** Because `braze-sdk.ts` imports only
-identity functions, webpack tree-shakes everything that renders or interprets
-Braze content. In the built `braze-sdk` chunk:
-
-```sh
-grep -c -E 'innerHTML|srcdoc|insertAdjacentHTML|document\.write|createContextualFragment' dist/chrome/*.js
-# 0
-```
-
-There is also no `eval`, `new Function`, `iframe`, `postMessage`,
-`insertBanner`, `showInAppMessage` or `handleBrazeAction` in it. This is what
-makes "Braze cannot inject HTML or script" true of the artifact rather than of
-its configuration: `allowUserSuppliedJavascript: false` is irrelevant because
-the code that would honour it is not shipped. Re-run the grep after changing
-the imports, especially for the banners work — `Banner/index.js` re-exports
-`insertBanner` from the same barrel.
-
-**What LavaMoat adds.** `scuttleGlobalThis` (driven through Snow in production
-builds) removes most ambient globals from the document the SDK runs in, so
-reaching the real window through `document.defaultView` does not hand back
-extension authority. Measured on production builds by evaluating
-`document.createElement('a').ownerDocument.defaultView.<name>` in the offscreen
-document (Chrome MV3) and in the background page (Firefox MV2):
-
-- **Blocked on both** (access throws): `eval`, `chrome`, `browser`, `indexedDB`,
-  `localStorage`, `EventSource`, `XMLHttpRequest`, `WebSocket`, `Worker`,
-  `SharedWorker`, `open`, `atob`, `btoa`, `structuredClone`, `queueMicrotask`.
-- **Reachable on both**: the scuttling exceptions — `fetch`, `crypto` (including
-  `subtle`), `performance`, `navigator`, `WebAssembly`, `Request`, `history`,
-  `parent`, `frameElement`, `scrollX`/`scrollY`, `devicePixelRatio`, `Node`,
-  `ResizeObserver`, `setTimeout`/`clearTimeout` — plus `location`, which is an
-  unforgeable own binding. `Function` is reachable too, but evaluating a string
-  with it is refused by CSP ("call to Function() blocked by CSP").
-- **Firefox-only checks, all negative**: `browser` and `chrome` are blocked, so
-  MV2's `browser.extension.getViews()` — live `Window` handles for the popup and
-  tabs, with no MV3 equivalent — is unreachable. `wrappedJSObject`,
-  `ChromeUtils`, `Services` and `content` are absent; `Components` and
-  `InstallTrigger` are scuttled. A newly created iframe reports "Snow detected a
-  new realm creation attempt … Performing scuttling on new realm" and its
-  `localStorage` throws, so the SDK cannot escape into an unscuttled realm.
-
-Firefox's MV2 manifest sets no `content_security_policy`, so the CSP that blocks
-string evaluation there is Firefox's default (`script-src 'self'
-'wasm-unsafe-eval'`). That default allows `WebAssembly`, which is the one
-dynamic-code capability that survives on both platforms — inside the document
-that runs the SDK, not in the UI.
-
-So there is no extension API, no worker realm, and no string evaluation. What
-remains is network egress for what the compartment can already see (the
-canonical profile ID, device properties, its own document) and `WebAssembly` in
-that document. Neither reaches the wallet UI or its data.
-
-`chrome`, `browser` and `indexedDB` are scuttling exceptions in **test builds**,
-so containment must be measured on a production build. If a future SDK version
-needs another exception, that is a security review, not a policy edit.
+- Colocated facade tests cover rejected tags, absence of node traversal,
+  immutable objects, endpoint parsing, empty queries, and discarded cookies.
+- Host tests cover acknowledgement validation, ignored HTML messages, clear
+  termination, concurrent updates, worker failures, retry, and timeout.
+- Existing real-SDK lifecycle tests cover identity, sessions, flush, and clear.
+- `development/webpack/test/lavamoat.braze.test.ts` compiles the real SDK and
+  rejects direct page imports, shared page/worker imports, and SDK code
+  concatenated into application modules.
+- Browser verification must also exercise the compiled worker with the real
+  SDK under production LavaMoat and development settings. Mock network I/O at
+  the worker boundary and verify identity, repeat identity, clear, rejected
+  script/iframe creation, and absence of document/window traversal.

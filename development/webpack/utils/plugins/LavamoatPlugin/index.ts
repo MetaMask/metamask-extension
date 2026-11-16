@@ -1,5 +1,11 @@
 import { join } from 'node:path';
-import type { WebpackPluginInstance, RuleSetRule, Chunk } from 'webpack';
+import {
+  WebpackError,
+  type WebpackPluginInstance,
+  type RuleSetRule,
+  type Chunk,
+  type Module,
+} from 'webpack';
 import {
   LavaMoatPlugin,
   exclude as LavamoatExcludeLoader,
@@ -111,6 +117,7 @@ type IsolatedHtmlEntries = {
 
 const lockdownBase = [
   String.raw`runtime\.[0-9a-h]{20}\.js`,
+  String.raw`braze-worker(?:\.[0-9a-h]{20})?\.js`,
   String.raw`scripts\/contentscript\.js`,
   String.raw`service-worker\.js`,
 ];
@@ -162,6 +169,21 @@ export const lavamoatPlugin = (
       if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
         // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
+      } else if (chunk.name === 'braze-worker') {
+        // A dedicated worker has no Window or Snow. Its own runtime must
+        // preserve importScripts for webpack's packaged chunk loader.
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              exceptions: [
+                ...getScuttleGlobalThisExceptions(args),
+                'importScripts',
+              ],
+            },
+          },
+        };
       } else if (chunk.name === 'service-worker.ts') {
         // The SW entry module and its static bootstrap imports are excluded
         // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
@@ -279,3 +301,80 @@ export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
     });
   },
 };
+
+/**
+ * Enforce worker confinement independently of LavaMoat and tree shaking.
+ * An accidental SDK import from a page must fail the build, including in
+ * development. Shared SDK chunks must belong exclusively to this worker.
+ */
+export const brazeWorkerIsolationPlugin: WebpackPluginInstance = {
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap(
+      'BrazeWorkerIsolation',
+      (compilation) => {
+        compilation.hooks.afterOptimizeChunkIds.tap(
+          'BrazeWorkerIsolation',
+          () => {
+            const entrypoint = compilation.entrypoints.get('braze-worker');
+            const entry = compilation.entries.get('braze-worker');
+            const hasWorkerBootstrap = entry?.dependencies.some((dependency) =>
+              /[/\\]app[/\\]braze[/\\]braze-worker\.ts$/u.test(
+                compilation.moduleGraph
+                  .getModule(dependency)
+                  ?.nameForCondition() ?? '',
+              ),
+            );
+            const workerRuntime =
+              hasWorkerBootstrap &&
+              entrypoint &&
+              'chunkLoading' in entrypoint.options &&
+              entrypoint.options.chunkLoading === 'import-scripts'
+                ? entrypoint.getRuntimeChunk()?.runtime
+                : undefined;
+            for (const module of compilation.modules) {
+              if (!containsBrazeSdk(module)) {
+                continue;
+              }
+              for (const chunk of compilation.chunkGraph.getModuleChunksIterable(
+                module,
+              )) {
+                const { runtime } = chunk;
+                const isolated =
+                  typeof workerRuntime === 'string' &&
+                  (runtime === workerRuntime ||
+                    (typeof runtime === 'object' &&
+                      runtime.size === 1 &&
+                      runtime.has(workerRuntime)));
+                if (!isolated) {
+                  compilation.errors.push(
+                    new WebpackError(
+                      'Braze SDK must be bundled exclusively in braze-worker',
+                    ),
+                  );
+                  return;
+                }
+              }
+            }
+          },
+        );
+      },
+    );
+  },
+};
+
+/**
+ * Inspect concatenated modules too: their identifiers name only the outer
+ * application module, while their nested modules retain the SDK's identity.
+ *
+ * @param module - A webpack module, possibly containing concatenated modules.
+ * @returns Whether this module contains code from the SDK package.
+ */
+function containsBrazeSdk(module: Module): boolean {
+  if (
+    /[/\\]node_modules[/\\]@braze[/\\]web-sdk[/\\]/u.test(module.identifier())
+  ) {
+    return true;
+  }
+  const nested = (module as Module & { modules?: Iterable<Module> }).modules;
+  return nested ? [...nested].some(containsBrazeSdk) : false;
+}

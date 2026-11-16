@@ -1,4 +1,5 @@
 import { captureException } from '../../shared/lib/sentry';
+import { isBrazeConfigured } from '../../shared/lib/braze';
 import {
   OFFSCREEN_LOAD_TIMEOUT,
   OffscreenCommunicationEvents,
@@ -92,9 +93,12 @@ export async function createOffscreen() {
 
     await chrome.offscreen.createDocument({
       url: './offscreen.html',
-      reasons: ['IFRAME_SCRIPTING'],
-      justification:
-        'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
+      reasons: isBrazeConfigured()
+        ? ['IFRAME_SCRIPTING', 'WORKERS']
+        : ['IFRAME_SCRIPTING'],
+      justification: isBrazeConfigured()
+        ? 'Used for hardware wallet and Snaps scripts and an isolated Braze worker.'
+        : 'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
     });
   } catch (error) {
     if (offscreenDocumentLoadedListener) {
