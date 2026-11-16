@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { MarketInsightsReport } from '@metamask/ai-controllers';
+import { MARKET_INSIGHTS_EVENT_VALUE } from '../../../../../shared/constants/market-insights-events';
 import {
   en as enLocale,
   renderWithProvider,
@@ -14,6 +15,9 @@ import {
 
 const mockUseTokenSecurityData = jest.fn();
 const mockUseMarketInsights = jest.fn();
+const mockTrackOpened = jest.fn();
+const mockTrackingCardRef = jest.fn();
+const mockUseMarketInsightsTracking = jest.fn();
 
 jest.mock('../../../../hooks/useTokenSecurityData', () => ({
   useTokenSecurityData: (args: unknown) => mockUseTokenSecurityData(args),
@@ -22,6 +26,13 @@ jest.mock('../../../../hooks/useTokenSecurityData', () => ({
 jest.mock('../../hooks/useMarketInsights', () => ({
   useMarketInsights: (assetId: unknown, enabled: unknown) =>
     mockUseMarketInsights(assetId, enabled),
+}));
+
+jest.mock('./useMarketInsightsTracking', () => ({
+  useMarketInsightsTracking: (options: unknown) => {
+    mockUseMarketInsightsTracking(options);
+    return { cardRef: mockTrackingCardRef, trackOpened: mockTrackOpened };
+  },
 }));
 
 const en = enLocale as unknown as Record<string, { message: string }>;
@@ -218,5 +229,71 @@ describe('AssetMarketInsightsSection', () => {
     expect(
       queryByTestId('market-insights-disclaimer-modal'),
     ).not.toBeInTheDocument();
+  });
+
+  it('wires the tracking hook to the resolved asset, report, and token details source', () => {
+    mockUseMarketInsights.mockReturnValue({
+      report: mockReport,
+      isLoading: false,
+      error: null,
+      timeAgo: '5d ago',
+    });
+
+    renderWithProvider(<AssetMarketInsightsSection assetId={assetId} />);
+
+    expect(mockUseMarketInsightsTracking).toHaveBeenCalledWith({
+      assetId,
+      report: mockReport,
+      source: MARKET_INSIGHTS_EVENT_VALUE.SOURCE.TOKEN_DETAILS,
+    });
+  });
+
+  it('wires the tracking hook to a null asset when the token is too new', () => {
+    const twoDaysAgo = new Date(
+      Date.now() - 2 * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    mockUseTokenSecurityData.mockReturnValue({
+      securityData: { created: twoDaysAgo } as TokenSecurityData,
+    });
+
+    renderWithProvider(<AssetMarketInsightsSection assetId={assetId} />);
+
+    expect(mockUseMarketInsightsTracking).toHaveBeenCalledWith(
+      expect.objectContaining({ assetId: null }),
+    );
+  });
+
+  it('attaches the tracking ref to the section container', () => {
+    mockUseMarketInsights.mockReturnValue({
+      report: mockReport,
+      isLoading: false,
+      error: null,
+      timeAgo: '5d ago',
+    });
+
+    const { container } = renderWithProvider(
+      <AssetMarketInsightsSection assetId={assetId} />,
+    );
+
+    expect(mockTrackingCardRef).toHaveBeenCalledWith(
+      container.querySelector('[data-testid="asset-market-insights"]'),
+    );
+  });
+
+  it('tracks the opened event when the card is pressed', () => {
+    mockUseMarketInsights.mockReturnValue({
+      report: mockReport,
+      isLoading: false,
+      error: null,
+      timeAgo: '5d ago',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <AssetMarketInsightsSection assetId={assetId} />,
+    );
+
+    fireEvent.click(getByTestId('market-insights-entry-card-button'));
+
+    expect(mockTrackOpened).toHaveBeenCalledTimes(1);
   });
 });
