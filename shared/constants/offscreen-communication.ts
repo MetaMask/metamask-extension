@@ -1,3 +1,5 @@
+import type { BrazeBanner, BrazeBannerInteraction } from '../lib/braze';
+
 export const OFFSCREEN_LEDGER_INIT_TIMEOUT = 4000;
 export const OFFSCREEN_LOAD_TIMEOUT = OFFSCREEN_LEDGER_INIT_TIMEOUT + 1000;
 
@@ -137,16 +139,35 @@ export enum BrazeAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   syncUser = 'braze-sync-user',
+  /**
+   * Get the banner for a placement.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getBanner = 'braze-get-banner',
+  /**
+   * Log an impression, click, or dismissal of a banner.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  logBannerInteraction = 'braze-log-banner-interaction',
 }
 
-export type BrazeSyncUserMessage = {
+export type BrazeMessage = {
   target: OffscreenCommunicationTarget.brazeOffscreen;
-  action: BrazeAction.syncUser;
-  profileId: string | null;
-};
+} & (
+  | { action: BrazeAction.syncUser; profileId: string | null }
+  | { action: BrazeAction.getBanner; placementId: string }
+  | {
+      action: BrazeAction.logBannerInteraction;
+      placementId: string;
+      bannerId: string;
+      interaction: BrazeBannerInteraction;
+    }
+);
 
-export type BrazeSyncUserResponse =
-  | { success: true }
+export type BrazeResponse =
+  | { success: true; banner?: BrazeBanner | null }
   | { success: false; error: string };
 
 /**

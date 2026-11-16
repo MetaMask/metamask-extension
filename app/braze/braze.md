@@ -1,28 +1,30 @@
-# Braze identity
+# Braze
 
 Braze identifies users with the primary SRP's Profile Sync canonical profile
-ID, the same `external_id` Mobile uses. The SDK runs once per extension: in the
-MV3 offscreen document, or in the MV2 background page (Firefox), which is a DOM
-context.
+ID, the same `external_id` Mobile uses, and serves them banners. The SDK runs
+once per extension: in the MV3 offscreen document, or in the MV2 background
+page (Firefox), which is a DOM context.
 
 ## Ownership
 
 - `BrazeService` (`app/scripts/services/braze-service.ts`, background) owns the
   gates. It listens to `OnboardingController`, `PreferencesController`
   (`useExternalServices`), `AuthenticationController`, and `KeyringController`,
-  and applies the desired user when it changes.
+  and applies the desired user when it changes. It also exposes the banner
+  actions to the UI (see "Banners").
 - The host (`app/braze/braze-host.ts`) holds the only SDK instance and loads
   the SDK chunk on the first identify. The platform only chooses how the
   background reaches it:
   - MV3: `app/offscreen/braze.ts` runs the host in the offscreen document,
-    with `app/offscreen/braze-client.ts` sending `syncUser` messages from the
+    with `app/offscreen/braze-client.ts` sending its messages from the
     extension's service worker only.
   - MV2: `BrazeServiceInit` calls the host directly, because the background
     page is a DOM context.
 - `braze-service-init.ts` selects the adapter at runtime with `isManifestV3`.
   The host is part of the shared background module graph, but its SDK chunk is
   loaded lazily and only on MV2; MV3 selects the offscreen client instead.
-- UI documents have no Braze code.
+- UI documents have no Braze code. They reach banners through the
+  `BrazeService` messenger actions and receive plain fields.
 
 ## Lifecycle
 
@@ -57,9 +59,8 @@ context.
 - `ClientController.isUiOpen` is derived from the UI ports and is not persisted,
   so a service worker restart while a document stays open leaves it `false`
   until that document reconnects or is reopened. The service then stays idle,
-  which fails safe (no session) but also means no identity until the next open.
-  A UI-driven Braze call (fetching banners, for example) is the natural place
-  to re-sync if that ever needs to be tightened.
+  which fails safe (no session) but also means no identity, and no banner,
+  until the next open. Banner requests do not identify the user themselves.
 - The host is recreated when the service worker restarts (MV3) or the
   background page reloads (MV2). On MV3 `createOffscreen` closes and recreates
   an existing offscreen document on every service worker boot, so the host is
@@ -80,6 +81,45 @@ context.
 Offscreen documents only expose part of `chrome.runtime` (for example,
 `getManifest` is not available), so the MV3 listener identifies the background
 by the message sender's fields rather than by the manifest.
+
+## Banners
+
+The UI reaches banners through four `BrazeService` messenger actions:
+`getBanner`, `logBannerImpression`, `logBannerClick` and `dismissBanner`. The
+service forwards them to the host, which calls the SDK.
+
+- **Gated on identity.** Each action first waits for pending syncs, then only
+  proceeds if the host is identified as the user the gates want. Otherwise
+  `getBanner` returns `null` and the others do nothing, so the UI never sees
+  another user's banner and nothing is logged for a user Braze must not track.
+  Placements must be listed in `BRAZE_BANNER_PLACEMENT_IDS`.
+- **Synced on demand.** The first `getBanner` for a user requests every known
+  placement with `requestBannersRefresh`, and waits for the result. Users who
+  never see a placement cause no banner requests. Later syncs are left to the
+  SDK, which refreshes requested placements on new sessions. A failed sync is
+  retried on the next request, and a changed user syncs again.
+- **Completion comes from the event stream.** Until the SDK has its server
+  config, banners count as disabled: `requestBannersRefresh` fails immediately
+  with `FEATURE_DISABLED`, then the SDK retries on its own once the config
+  enables banners, reporting only to `subscribeToBannersEvents`. The host
+  therefore waits for `DATA_UPDATED` or a final error on that stream, for at
+  most `BRAZE_BANNERS_REFRESH_TIMEOUT_MS` (5 seconds). After a timeout it
+  returns whatever is cached; a later sync serves the next request.
+- **Plain fields only.** The host reduces a banner to `BrazeBanner`
+  (`app/braze/braze-banner.ts`): text properties, an `https` image, and a link
+  only if it is a MetaMask universal link. Banner HTML is never read. Control
+  banners carry no content.
+- **Interactions are checked against the cache.** Each interaction names the
+  banner the user saw. The host ignores it if the cache now holds another
+  banner for the placement, then logs the impression, click, or dismissal, plus
+  Mobile's `Banner Display`, `Banner Select` or `Banner Dismissed` custom event
+  when the campaign sets `campaign_name`, and flushes. Control banners log
+  their impression but no custom event.
+- **Impressions are logged by the UI**, not by the SDK's renderer, which is not
+  shipped. A banner received by the UI is considered displayed; the SDK
+  deduplicates impressions per placement and session.
+
+The campaign properties the host reads are defined in `app/braze/braze-banner.ts`.
 
 ## Storage
 
@@ -102,8 +142,8 @@ If those costs matter, the fixes are, in order:
    ID and the banner cache, and reduces the cost to one host per browser
    session. It is an offscreen-lifecycle change, owned by core-platform.
 2. Cache banners in extension state and render from that cache while the SDK
-   refreshes in the background. This also makes the carousel independent of the
-   SDK's lifecycle and keeps request frequency under our control.
+   refreshes in the background. This also makes the home banner independent of
+   the SDK's lifecycle and keeps request frequency under our control.
 3. Back the SDK's store with extension storage by replacing its internal
    in-memory adapter (`StorageManager.rg`). It gives full persistence, but the
    hook is a minified static that only exists in 7.0.0 and the adapter interface
@@ -171,8 +211,8 @@ UI, its Redux store, the provider, and the unlocked keyrings live in other
 documents and cannot be reached from there.
 
 **What the shipped bundle contains.** Because `braze-sdk.ts` imports only
-identity functions, webpack tree-shakes everything that renders or interprets
-Braze content. In the built `braze-sdk` chunk:
+identity, banner data and analytics functions, webpack tree-shakes everything
+that renders or interprets Braze content. In the built `braze-sdk` chunk:
 
 ```sh
 grep -c -E 'innerHTML|srcdoc|insertAdjacentHTML|document\.write|createContextualFragment' dist/chrome/*.js
@@ -184,8 +224,8 @@ There is also no `eval`, `new Function`, `iframe`, `postMessage`,
 makes "Braze cannot inject HTML or script" true of the artifact rather than of
 its configuration: `allowUserSuppliedJavascript: false` is irrelevant because
 the code that would honour it is not shipped. Re-run the grep after changing
-the imports, especially for the banners work — `Banner/index.js` re-exports
-`insertBanner` from the same barrel.
+the imports: `Banner/index.js` re-exports `insertBanner` and the control-banner
+renderer from the same barrel as the banner data functions.
 
 **What LavaMoat adds.** `scuttleGlobalThis` (driven through Snow in production
 builds) removes most ambient globals from the document the SDK runs in, so

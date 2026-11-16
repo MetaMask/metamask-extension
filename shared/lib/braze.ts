@@ -1,10 +1,75 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 
 /**
- * Applies the desired Braze user. Implemented by the platform-specific host
- * adapter: the offscreen client on MV3, or the direct host on MV2.
+ * Banner placement on the wallet home. Mobile's equivalent is
+ * `mobile-wallet-home`.
  */
-export type SyncBrazeUser = (profileId: string | null) => Promise<void>;
+export const BRAZE_BANNER_HOME_PLACEMENT_ID = 'extension-wallet-home';
+
+/**
+ * Every banner placement the extension renders. Braze only syncs placements
+ * that are requested, so a new placement must be added here.
+ */
+export const BRAZE_BANNER_PLACEMENT_IDS: readonly string[] = [
+  BRAZE_BANNER_HOME_PLACEMENT_ID,
+];
+
+/**
+ * A Braze banner, reduced to the fields the UI renders. Campaign HTML never
+ * leaves the Braze host.
+ *
+ * Control banners (users held out of a campaign) carry no content. The UI
+ * renders nothing for them but still reports the impression, so the campaign
+ * can compare both groups.
+ */
+export type BrazeBanner = {
+  id: string;
+  placementId: string;
+  isControl: boolean;
+  title: string | null;
+  /** Always present for non-control banners. */
+  body: string | null;
+  /** An `https` URL. */
+  imageUrl: string | null;
+  ctaLabel: string | null;
+  /** A MetaMask universal link, or `null` for a non-interactive banner. */
+  deeplink: string | null;
+};
+
+export type BrazeBannerInteraction = 'impression' | 'click' | 'dismiss';
+
+/**
+ * The Braze SDK host, as seen from the background: the offscreen client on
+ * MV3, or the in-process host on MV2.
+ */
+export type BrazeHost = {
+  /**
+   * Apply the desired Braze user.
+   *
+   * @param profileId - The canonical profile ID, or `null` to clear.
+   */
+  syncUser: (profileId: string | null) => Promise<void>;
+  /**
+   * Get the banner for a placement. The first call for a user syncs banners
+   * from Braze.
+   *
+   * @param placementId - The placement ID.
+   */
+  getBanner: (placementId: string) => Promise<BrazeBanner | null>;
+  /**
+   * Log an interaction with the banner currently held for a placement. Ignored
+   * when that banner is no longer `bannerId`.
+   *
+   * @param placementId - The placement ID.
+   * @param bannerId - The ID of the banner the user interacted with.
+   * @param interaction - The interaction.
+   */
+  logBannerInteraction: (
+    placementId: string,
+    bannerId: string,
+    interaction: BrazeBannerInteraction,
+  ) => Promise<void>;
+};
 
 /**
  * Whether this build has the configuration required to activate Braze.

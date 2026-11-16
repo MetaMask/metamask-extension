@@ -49,10 +49,19 @@ Segment to record the decision, so it needs its own exclusion.
 ## Braze SDK
 
 The Braze SDK runs in the offscreen document (MV3) or background page (MV2). It
-only calls `changeUser` with the same external ID, which starts Braze sessions.
-It sends no custom events or attributes, so Cloud Mode is the only path for
-both. If the SDK starts logging events, do not forward the
-same events through Cloud Mode, or Braze will ingest them twice.
+calls `changeUser` with the same external ID, which starts Braze sessions, and
+serves the home banner. It sends no attributes, so Cloud Mode is the only path
+for those.
+
+The SDK sends exactly three custom events, for banners whose campaign sets
+`campaign_name`: `Banner Display`, `Banner Select` and `Banner Dismissed`, with
+`campaign_name` and `variant_name`. The Braze banner sends no Segment events,
+so nothing reaches Braze twice. The Contentful carousel's Segment events use the
+same names with a `banner_name` property and reach Braze through Cloud Mode.
+Only one of the two is shown at a time, but Braze sees both kinds of event, so
+segments and triggers built on these names should filter on `campaign_name`.
+Do not forward other events through Cloud Mode if the SDK starts logging them,
+or Braze will ingest them twice.
 
 ## Data deletion
 

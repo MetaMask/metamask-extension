@@ -13,9 +13,12 @@ import type {
   AuthenticationControllerStateChangeEvent,
 } from '@metamask/profile-sync-controller/auth';
 import {
+  BRAZE_BANNER_PLACEMENT_IDS,
   getDesiredBrazeUser,
   getPrimaryCanonicalProfileId,
-  type SyncBrazeUser,
+  type BrazeBanner,
+  type BrazeBannerInteraction,
+  type BrazeHost,
 } from '../../../shared/lib/braze';
 import { captureException } from '../../../shared/lib/sentry';
 import type {
@@ -26,8 +29,18 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../controllers/preferences-controller';
+import type { BrazeServiceMethodActions } from './braze-service-method-action-types';
 
 const SERVICE_NAME = 'BrazeService';
+
+const MESSENGER_EXPOSED_METHODS = [
+  'getBanner',
+  'logBannerImpression',
+  'logBannerClick',
+  'dismissBanner',
+] as const;
+
+export type BrazeServiceActions = BrazeServiceMethodActions;
 
 type AllowedActions =
   | AuthenticationControllerGetStateAction
@@ -45,24 +58,29 @@ type AllowedEvents =
 
 export type BrazeServiceMessenger = Messenger<
   typeof SERVICE_NAME,
-  AllowedActions,
+  BrazeServiceActions | AllowedActions,
   AllowedEvents
 >;
 
 /**
- * Keeps the Braze SDK identified with the user's canonical profile ID.
+ * Keeps the Braze SDK identified with the user's canonical profile ID, and
+ * serves that user's banners to the UI.
  *
  * The background owns every gate (onboarding, Basic Functionality, Profile
  * Sync sign-in, lock state, an open UI document) and applies the desired user
- * whenever it changes through a platform-specific `syncUser`: the offscreen
- * document on MV3, and the background page itself on MV2.
+ * whenever it changes through a platform-specific host: the offscreen document
+ * on MV3, and the background page itself on MV2.
+ *
+ * Banner calls only reach the host while it is identified as the desired user,
+ * so the UI never sees another user's banners, and nothing is logged for a
+ * user Braze must not track.
  */
 export class BrazeService {
   readonly name: typeof SERVICE_NAME = SERVICE_NAME;
 
   readonly #messenger: BrazeServiceMessenger;
 
-  readonly #syncUser: SyncBrazeUser;
+  readonly #host: BrazeHost;
 
   /**
    * The user last applied in this background lifetime. A failed sync is
@@ -77,18 +95,23 @@ export class BrazeService {
    *
    * @param options - Options.
    * @param options.messenger - The service messenger.
-   * @param options.syncUser - Sends the user to the offscreen document on MV3,
-   * or calls the in-process host on MV2.
+   * @param options.host - The offscreen client on MV3, or the in-process host
+   * on MV2.
    */
   constructor({
     messenger,
-    syncUser,
+    host,
   }: {
     messenger: BrazeServiceMessenger;
-    syncUser: SyncBrazeUser;
+    host: BrazeHost;
   }) {
     this.#messenger = messenger;
-    this.#syncUser = syncUser;
+    this.#host = host;
+
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
 
     const sync = () => this.#sync();
     this.#messenger.subscribe('AuthenticationController:stateChange', sync);
@@ -106,6 +129,100 @@ export class BrazeService {
 
     // Re-apply after a background restart; the host is recreated with it.
     this.#sync();
+  }
+
+  /**
+   * Get the banner for a placement.
+   *
+   * @param placementId - The placement ID.
+   * @returns The banner, or `null` when there is none or the user is not
+   * identified with Braze.
+   */
+  async getBanner(placementId: string): Promise<BrazeBanner | null> {
+    try {
+      if (!(await this.#canUseBanners(placementId))) {
+        return null;
+      }
+      return await this.#host.getBanner(placementId);
+    } catch (error) {
+      captureException(error);
+      return null;
+    }
+  }
+
+  /**
+   * Log that a banner was shown. Call it for control banners too, even though
+   * they render nothing.
+   *
+   * @param placementId - The placement ID.
+   * @param bannerId - The banner ID.
+   */
+  async logBannerImpression(
+    placementId: string,
+    bannerId: string,
+  ): Promise<void> {
+    await this.#logBannerInteraction(placementId, bannerId, 'impression');
+  }
+
+  /**
+   * Log that a banner was clicked.
+   *
+   * @param placementId - The placement ID.
+   * @param bannerId - The banner ID.
+   */
+  async logBannerClick(placementId: string, bannerId: string): Promise<void> {
+    await this.#logBannerInteraction(placementId, bannerId, 'click');
+  }
+
+  /**
+   * Dismiss a banner. Braze stops serving it to this user.
+   *
+   * @param placementId - The placement ID.
+   * @param bannerId - The banner ID.
+   */
+  async dismissBanner(placementId: string, bannerId: string): Promise<void> {
+    await this.#logBannerInteraction(placementId, bannerId, 'dismiss');
+  }
+
+  async #logBannerInteraction(
+    placementId: string,
+    bannerId: string,
+    interaction: BrazeBannerInteraction,
+  ): Promise<void> {
+    try {
+      if (!(await this.#canUseBanners(placementId))) {
+        return;
+      }
+      await this.#host.logBannerInteraction(placementId, bannerId, interaction);
+    } catch (error) {
+      captureException(error);
+    }
+  }
+
+  /**
+   * Whether the host is identified as the desired user, once pending syncs
+   * have settled.
+   *
+   * @param placementId - The requested placement.
+   * @returns True when banner calls may reach the host.
+   */
+  async #canUseBanners(placementId: string): Promise<boolean> {
+    if (!BRAZE_BANNER_PLACEMENT_IDS.includes(placementId)) {
+      return false;
+    }
+
+    // A sync can be queued while waiting, for example when another UI
+    // document opens.
+    let queue: Promise<void>;
+    do {
+      queue = this.#queue;
+      await queue;
+    } while (queue !== this.#queue);
+
+    const desiredUser = this.#getDesiredUser();
+    return (
+      typeof desiredUser === 'string' && desiredUser === this.#lastSyncedUser
+    );
   }
 
   #getDesiredUser(): string | null | undefined {
@@ -147,7 +264,7 @@ export class BrazeService {
         }
         this.#lastSyncedUser = desiredUser;
 
-        await this.#syncUser(desiredUser);
+        await this.#host.syncUser(desiredUser);
       } catch (error) {
         // A failed sync must be retried on the next state change; otherwise a
         // missing offscreen document or a failed SDK load leaves Braze

@@ -1,10 +1,14 @@
 import {
   BrazeAction,
   OffscreenCommunicationTarget,
-  type BrazeSyncUserMessage,
-  type BrazeSyncUserResponse,
+  type BrazeResponse,
 } from '../../shared/constants/offscreen-communication';
-import { isBrazeConfigured } from '../../shared/lib/braze';
+import {
+  isBrazeConfigured,
+  type BrazeBanner,
+  type BrazeBannerInteraction,
+  type BrazeHost,
+} from '../../shared/lib/braze';
 import { captureException } from '../../shared/lib/sentry';
 import { createBrazeHost } from '../braze/braze-host';
 
@@ -29,8 +33,8 @@ function isFromServiceWorker(sender: chrome.runtime.MessageSender): boolean {
 }
 
 /**
- * Listen for Braze user updates from the background. Does nothing in builds
- * without Braze configuration.
+ * Listen for Braze calls from the background. Does nothing in builds without
+ * Braze configuration.
  *
  * Never throws, so a Braze failure cannot prevent the rest of the offscreen
  * document (hardware wallets, Snaps) from initializing.
@@ -48,32 +52,94 @@ export default function initBraze(): void {
 }
 
 /**
- * Register the offscreen listener that applies Braze user updates.
+ * The fields of any `BrazeMessage`, none of which are trusted.
+ */
+type UntrustedBrazeMessage = {
+  target?: unknown;
+  action?: unknown;
+  profileId?: unknown;
+  placementId?: unknown;
+  bannerId?: unknown;
+  interaction?: unknown;
+};
+
+const BANNER_INTERACTIONS: readonly unknown[] = [
+  'impression',
+  'click',
+  'dismiss',
+] satisfies BrazeBannerInteraction[];
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0;
+}
+
+/**
+ * Call the host for a Braze message.
+ *
+ * @param host - The Braze host.
+ * @param message - The message, whose fields are not trusted.
+ * @returns The host call, or `undefined` for an unknown or malformed message.
+ */
+function handleBrazeMessage(
+  host: BrazeHost,
+  message: UntrustedBrazeMessage,
+): Promise<BrazeBanner | null | void> | undefined {
+  switch (message.action) {
+    case BrazeAction.syncUser:
+      return host.syncUser(
+        isNonEmptyString(message.profileId) ? message.profileId : null,
+      );
+    case BrazeAction.getBanner:
+      return isNonEmptyString(message.placementId)
+        ? host.getBanner(message.placementId)
+        : undefined;
+    case BrazeAction.logBannerInteraction:
+      return isNonEmptyString(message.placementId) &&
+        isNonEmptyString(message.bannerId) &&
+        BANNER_INTERACTIONS.includes(message.interaction)
+        ? host.logBannerInteraction(
+            message.placementId,
+            message.bannerId,
+            message.interaction as BrazeBannerInteraction,
+          )
+        : undefined;
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Register the offscreen listener that serves the background's Braze calls.
  */
 function registerBrazeMessageListener(): void {
-  const syncBrazeUser = createBrazeHost();
+  const host = createBrazeHost();
 
   chrome.runtime.onMessage.addListener(
     (
-      message: Partial<BrazeSyncUserMessage>,
+      message: UntrustedBrazeMessage | undefined,
       sender,
-      sendResponse: (response: BrazeSyncUserResponse) => void,
+      sendResponse: (response: BrazeResponse) => void,
     ) => {
       if (
         message?.target !== OffscreenCommunicationTarget.brazeOffscreen ||
-        message.action !== BrazeAction.syncUser ||
         !isFromServiceWorker(sender)
       ) {
         return false;
       }
 
-      const profileId =
-        typeof message.profileId === 'string' && message.profileId
-          ? message.profileId
-          : null;
+      const request = handleBrazeMessage(host, message);
+      if (!request) {
+        return false;
+      }
 
-      syncBrazeUser(profileId)
-        .then(() => sendResponse({ success: true }))
+      request
+        .then((banner) =>
+          sendResponse(
+            banner === undefined
+              ? { success: true }
+              : { success: true, banner },
+          ),
+        )
         .catch((error: unknown) => {
           captureException(error);
           sendResponse({

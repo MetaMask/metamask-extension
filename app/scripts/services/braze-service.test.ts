@@ -116,11 +116,16 @@ function setup(initialState: WalletState = eligibleState) {
     ],
   });
 
-  const syncUser = jest.fn().mockResolvedValue(undefined);
+  const host = {
+    syncUser: jest.fn().mockResolvedValue(undefined),
+    getBanner: jest.fn().mockResolvedValue(null),
+    logBannerInteraction: jest.fn().mockResolvedValue(undefined),
+  };
+  const { syncUser } = host;
 
   const service = new BrazeService({
     messenger,
-    syncUser,
+    host,
   });
 
   const update = async (changes: Partial<WalletState>) => {
@@ -143,7 +148,15 @@ function setup(initialState: WalletState = eligibleState) {
     decisionError = error;
   };
 
-  return { service, syncUser, update, updateUiOpen, failNextDecision };
+  return {
+    service,
+    host,
+    rootMessenger,
+    syncUser,
+    update,
+    updateUiOpen,
+    failNextDecision,
+  };
 }
 
 describe('BrazeService', () => {
@@ -347,5 +360,142 @@ describe('BrazeService', () => {
     await update({});
 
     expect(syncUser).toHaveBeenCalledWith('canonical-123');
+  });
+
+  describe('banners', () => {
+    const PLACEMENT_ID = 'extension-wallet-home';
+    const banner = {
+      id: 'banner-1',
+      placementId: PLACEMENT_ID,
+      isControl: false,
+      title: null,
+      body: 'Explore your wallet',
+      imageUrl: null,
+      ctaLabel: null,
+      deeplink: null,
+    };
+
+    it('returns the banner for the identified user', async () => {
+      const { host, rootMessenger } = setup();
+      host.getBanner.mockResolvedValueOnce(banner);
+
+      expect(
+        await rootMessenger.call('BrazeService:getBanner', PLACEMENT_ID),
+      ).toStrictEqual(banner);
+      expect(host.getBanner).toHaveBeenCalledWith(PLACEMENT_ID);
+    });
+
+    it('waits for a pending sync before getting the banner', async () => {
+      const { host, rootMessenger, updateUiOpen } = setup();
+      await flush();
+      let resolveSync: () => void = () => undefined;
+      host.syncUser.mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          resolveSync = resolve;
+        }),
+      );
+      await updateUiOpen(true);
+
+      const result = rootMessenger.call('BrazeService:getBanner', PLACEMENT_ID);
+      await flush();
+      expect(host.getBanner).not.toHaveBeenCalled();
+      resolveSync();
+      await result;
+
+      expect(host.getBanner).toHaveBeenCalled();
+    });
+
+    it.each([
+      ['the wallet was never unlocked', { isUnlocked: false }],
+      ['the user is signed out', { isSignedIn: false }],
+      ['Basic Functionality is off', { useExternalServices: false }],
+    ])('returns null when %s', async (_, change) => {
+      const { host, rootMessenger } = setup({ ...eligibleState, ...change });
+
+      expect(
+        await rootMessenger.call('BrazeService:getBanner', PLACEMENT_ID),
+      ).toBeNull();
+      expect(host.getBanner).not.toHaveBeenCalled();
+    });
+
+    it('returns null after the user changes until the new user is synced', async () => {
+      const { host, rootMessenger, update } = setup();
+      await flush();
+      host.syncUser.mockRejectedValueOnce(new Error('SDK unavailable'));
+      await update({ canonicalProfileId: 'canonical-456' });
+
+      expect(
+        await rootMessenger.call('BrazeService:getBanner', PLACEMENT_ID),
+      ).toBeNull();
+      expect(host.getBanner).not.toHaveBeenCalled();
+    });
+
+    it('returns null for an unknown placement', async () => {
+      const { host, rootMessenger } = setup();
+
+      expect(
+        await rootMessenger.call('BrazeService:getBanner', 'other-placement'),
+      ).toBeNull();
+      expect(host.getBanner).not.toHaveBeenCalled();
+    });
+
+    it('returns null when the host fails', async () => {
+      const { host, rootMessenger } = setup();
+      const error = new Error('SDK unavailable');
+      host.getBanner.mockRejectedValueOnce(error);
+
+      expect(
+        await rootMessenger.call('BrazeService:getBanner', PLACEMENT_ID),
+      ).toBeNull();
+      expect(captureException).toHaveBeenCalledWith(error);
+    });
+
+    it.each([
+      { action: 'BrazeService:logBannerImpression', interaction: 'impression' },
+      { action: 'BrazeService:logBannerClick', interaction: 'click' },
+      { action: 'BrazeService:dismissBanner', interaction: 'dismiss' },
+    ] as const)(
+      'forwards $action to the host',
+      async ({ action, interaction }) => {
+        const { host, rootMessenger } = setup();
+
+        await rootMessenger.call(action, PLACEMENT_ID, 'banner-1');
+
+        expect(host.logBannerInteraction).toHaveBeenCalledWith(
+          PLACEMENT_ID,
+          'banner-1',
+          interaction,
+        );
+      },
+    );
+
+    it('does not forward interactions for a user who is not identified', async () => {
+      const { host, rootMessenger } = setup({
+        ...eligibleState,
+        isSignedIn: false,
+      });
+
+      await rootMessenger.call(
+        'BrazeService:logBannerImpression',
+        PLACEMENT_ID,
+        'banner-1',
+      );
+
+      expect(host.logBannerInteraction).not.toHaveBeenCalled();
+    });
+
+    it('reports interaction failures', async () => {
+      const { host, rootMessenger } = setup();
+      const error = new Error('SDK unavailable');
+      host.logBannerInteraction.mockRejectedValueOnce(error);
+
+      await rootMessenger.call(
+        'BrazeService:dismissBanner',
+        PLACEMENT_ID,
+        'banner-1',
+      );
+
+      expect(captureException).toHaveBeenCalledWith(error);
+    });
   });
 });

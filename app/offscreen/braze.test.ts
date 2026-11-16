@@ -10,9 +10,13 @@ jest.mock('../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
-const mockSyncBrazeUser = jest.fn();
+const mockHost = {
+  syncUser: jest.fn(),
+  getBanner: jest.fn(),
+  logBannerInteraction: jest.fn(),
+};
 jest.mock('../braze/braze-host', () => ({
-  createBrazeHost: () => mockSyncBrazeUser,
+  createBrazeHost: () => mockHost,
 }));
 
 const configureBraze = () => {
@@ -35,7 +39,9 @@ describe('initBraze', () => {
     process.env = { ...originalEnv };
     configureBraze();
     jest.clearAllMocks();
-    mockSyncBrazeUser.mockResolvedValue(undefined);
+    mockHost.syncUser.mockResolvedValue(undefined);
+    mockHost.getBanner.mockResolvedValue(null);
+    mockHost.logBannerInteraction.mockResolvedValue(undefined);
     Object.defineProperty(globalThis, 'chrome', {
       configurable: true,
       value: {
@@ -96,7 +102,7 @@ describe('initBraze', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(handled).toBe(true);
-    expect(mockSyncBrazeUser).toHaveBeenCalledWith(null);
+    expect(mockHost.syncUser).toHaveBeenCalledWith(null);
     expect(sendResponse).toHaveBeenCalledWith({ success: true });
   });
 
@@ -112,13 +118,13 @@ describe('initBraze', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(handled).toBe(true);
-    expect(mockSyncBrazeUser).toHaveBeenCalledWith('canonical-123');
+    expect(mockHost.syncUser).toHaveBeenCalledWith('canonical-123');
     expect(sendResponse).toHaveBeenCalledWith({ success: true });
   });
 
   it('reports a host failure to the background', async () => {
     const error = new Error('SDK unavailable');
-    mockSyncBrazeUser.mockRejectedValueOnce(error);
+    mockHost.syncUser.mockRejectedValueOnce(error);
     initBraze();
     const sendResponse = jest.fn();
 
@@ -147,7 +153,7 @@ describe('initBraze', () => {
     );
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(mockSyncBrazeUser).toHaveBeenCalledWith(null);
+    expect(mockHost.syncUser).toHaveBeenCalledWith(null);
   });
 
   it.each([
@@ -172,7 +178,120 @@ describe('initBraze', () => {
       listener(message, sender as chrome.runtime.MessageSender, sendResponse),
     ).toBe(false);
     expect(sendResponse).not.toHaveBeenCalled();
-    expect(mockSyncBrazeUser).not.toHaveBeenCalled();
+    expect(mockHost.syncUser).not.toHaveBeenCalled();
+  });
+
+  describe('banners', () => {
+    const sender = { id: extensionId, url: serviceWorkerUrl };
+    const banner = {
+      id: 'banner-1',
+      placementId: 'extension-wallet-home',
+      isControl: false,
+      title: null,
+      body: 'Explore your wallet',
+      imageUrl: null,
+      ctaLabel: null,
+      deeplink: null,
+    };
+
+    it('responds with the banner for a placement', async () => {
+      mockHost.getBanner.mockResolvedValueOnce(banner);
+      initBraze();
+      const sendResponse = jest.fn();
+
+      const handled = listener(
+        {
+          target: OffscreenCommunicationTarget.brazeOffscreen,
+          action: BrazeAction.getBanner,
+          placementId: 'extension-wallet-home',
+        },
+        sender,
+        sendResponse,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(handled).toBe(true);
+      expect(mockHost.getBanner).toHaveBeenCalledWith('extension-wallet-home');
+      expect(sendResponse).toHaveBeenCalledWith({ success: true, banner });
+    });
+
+    it('responds with null when there is no banner', async () => {
+      initBraze();
+      const sendResponse = jest.fn();
+
+      listener(
+        {
+          target: OffscreenCommunicationTarget.brazeOffscreen,
+          action: BrazeAction.getBanner,
+          placementId: 'extension-wallet-home',
+        },
+        sender,
+        sendResponse,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(sendResponse).toHaveBeenCalledWith({
+        success: true,
+        banner: null,
+      });
+    });
+
+    it('forwards a banner interaction', async () => {
+      initBraze();
+      const sendResponse = jest.fn();
+
+      const handled = listener(
+        {
+          target: OffscreenCommunicationTarget.brazeOffscreen,
+          action: BrazeAction.logBannerInteraction,
+          placementId: 'extension-wallet-home',
+          bannerId: 'banner-1',
+          interaction: 'click',
+        },
+        sender,
+        sendResponse,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(handled).toBe(true);
+      expect(mockHost.logBannerInteraction).toHaveBeenCalledWith(
+        'extension-wallet-home',
+        'banner-1',
+        'click',
+      );
+      expect(sendResponse).toHaveBeenCalledWith({ success: true });
+    });
+
+    it.each([
+      { action: BrazeAction.getBanner },
+      { action: BrazeAction.getBanner, placementId: 1 },
+      {
+        action: BrazeAction.logBannerInteraction,
+        placementId: 'extension-wallet-home',
+        interaction: 'click',
+      },
+      {
+        action: BrazeAction.logBannerInteraction,
+        placementId: 'extension-wallet-home',
+        bannerId: 'banner-1',
+        interaction: 'render',
+      },
+      { action: 'braze-unknown' },
+    ])('ignores the malformed message %o', (fields) => {
+      initBraze();
+      const sendResponse = jest.fn();
+
+      expect(
+        listener(
+          { target: OffscreenCommunicationTarget.brazeOffscreen, ...fields },
+          sender,
+          sendResponse,
+        ),
+      ).toBe(false);
+      expect(mockHost.getBanner).not.toHaveBeenCalled();
+      expect(mockHost.logBannerInteraction).not.toHaveBeenCalled();
+      expect(sendResponse).not.toHaveBeenCalled();
+    });
   });
 
   it('ignores other offscreen messages', () => {

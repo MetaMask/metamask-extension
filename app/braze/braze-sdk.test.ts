@@ -3,8 +3,9 @@ import path from 'node:path';
 import { brazeSdk } from './braze-sdk';
 
 /**
- * The only SDK functions the host may use. Everything here is identity or data
- * work; none of it renders Braze-authored content.
+ * The only SDK functions the host may use. Everything here is identity,
+ * banner data, or analytics work; none of it renders Braze-authored content
+ * (`insertBanner` is deliberately absent).
  *
  * This list drives tree-shaking: `braze-sdk.ts` must import exactly these
  * names, so the renderers and the Braze-action decoder stay out of the shipped
@@ -13,10 +14,18 @@ import { brazeSdk } from './braze-sdk';
 const ALLOWED_SDK_IMPORTS = [
   'changeUser',
   'destroy',
+  'dismissBanner',
+  'getBanner',
   'getUser',
   'initialize',
   'isInitialized',
+  'logBannerClick',
+  'logBannerImpressions',
+  'logCustomEvent',
+  'removeSubscription',
+  'requestBannersRefresh',
   'requestImmediateDataFlush',
+  'subscribeToBannersEvents',
   'wipeData',
 ];
 
@@ -26,7 +35,7 @@ const brazeSdkSource = readFileSync(
 );
 
 describe('brazeSdk', () => {
-  it('exposes only the identity API', () => {
+  it('exposes only the allowed API', () => {
     expect(Object.keys(brazeSdk).sort()).toStrictEqual(
       [...ALLOWED_SDK_IMPORTS].sort(),
     );

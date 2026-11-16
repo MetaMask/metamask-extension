@@ -56,8 +56,8 @@ describe('BrazeServiceInit', () => {
 
   it('messages the offscreen document on MV3', () => {
     const requestMock = buildInitRequestMock();
-    const syncUser = jest.fn();
-    mockCreateOffscreenBrazeClient.mockReturnValueOnce(syncUser);
+    const host = { syncUser: jest.fn() };
+    mockCreateOffscreenBrazeClient.mockReturnValueOnce(host);
 
     BrazeServiceInit(requestMock);
 
@@ -67,15 +67,15 @@ describe('BrazeServiceInit', () => {
     expect(mockCreateBrazeHost).not.toHaveBeenCalled();
     expect(BrazeService).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      syncUser,
+      host,
     });
   });
 
   it('calls the host directly on MV2', () => {
     mockIsManifestV3 = false;
     const requestMock = buildInitRequestMock();
-    const syncUser = jest.fn();
-    mockCreateBrazeHost.mockReturnValueOnce(syncUser);
+    const host = { syncUser: jest.fn() };
+    mockCreateBrazeHost.mockReturnValueOnce(host);
 
     BrazeServiceInit(requestMock);
 
@@ -83,7 +83,7 @@ describe('BrazeServiceInit', () => {
     expect(mockCreateOffscreenBrazeClient).not.toHaveBeenCalled();
     expect(BrazeService).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      syncUser,
+      host,
     });
   });
 });
