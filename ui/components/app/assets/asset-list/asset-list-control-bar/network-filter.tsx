@@ -5,8 +5,6 @@ import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   SelectButton,
   SelectButtonSize,
-  SelectButtonVariant,
-  TextColor,
   twMerge,
 } from '@metamask/design-system-react';
 import { getUseExternalServices } from '../../../../../selectors';
@@ -95,7 +93,6 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
-  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
   const networkButtonText = useNetworkFilterButtonLabel();
 
   useEffect(() => {
@@ -187,28 +184,17 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
     }
   }, [allNetworks, dispatch, shouldSwitchFromHiddenNonEvmNetwork]);
 
-  const networkFilterTextColor = isSingleNetworkFilterSelected
-    ? TextColor.PrimaryDefault
-    : TextColor.TextDefault;
-
   return (
     <>
       <SelectButton
         data-testid="sort-by-networks"
-        className={twMerge(
-          'w-auto min-w-[auto]',
-          isFullScreen && 'mr-2',
-          isOpen && 'bg-pressed',
-        )}
+        className={twMerge(isFullScreen && 'mr-2', isOpen && 'bg-pressed')}
         onClick={toggle}
         size={SelectButtonSize.Sm}
-        variant={SelectButtonVariant.Primary}
         value={networkButtonText}
         placeholder=""
         isLoading={isNetworkSwitchPending}
-        isDisabled={isNetworkSwitchPending}
         textProps={{
-          color: networkFilterTextColor,
           className: 'min-w-0 truncate',
         }}
       />
