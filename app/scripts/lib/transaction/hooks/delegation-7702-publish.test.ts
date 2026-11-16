@@ -77,6 +77,10 @@ describe('Delegation 7702 Publish Hook', () => {
 
   let messenger: TransactionControllerInitMessenger;
   let hookClass: Delegation7702PublishHook;
+  const getHardwareTypeForMetricMock = jest.fn<
+    Promise<string | undefined>,
+    [string]
+  >();
   const remoteFeatureFlags: FeatureFlags = {};
 
   const signTypedMessageMock: jest.MockedFn<
@@ -186,8 +190,11 @@ describe('Delegation 7702 Publish Hook', () => {
       isAtomicBatchSupportedMock,
     );
 
+    getHardwareTypeForMetricMock.mockResolvedValue(undefined);
+
     hookClass = new Delegation7702PublishHook({
       messenger,
+      getHardwareTypeForMetric: getHardwareTypeForMetricMock,
     });
 
     isAtomicBatchSupportedMock.mockResolvedValue([]);
@@ -345,6 +352,88 @@ describe('Delegation 7702 Publish Hook', () => {
         to: expectedDelegationManager,
       }),
     );
+  });
+
+  it('sends the signer hardware type returned by metrics', async () => {
+    getHardwareTypeForMetricMock.mockResolvedValue('Ledger');
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    expect(getHardwareTypeForMetricMock).toHaveBeenCalledWith(
+      TRANSACTION_META_MOCK.txParams.from,
+    );
+    expect(submitRelayTransactionMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        metadata: expect.objectContaining({
+          accountHardwareType: 'Ledger',
+        }),
+      }),
+    );
+  });
+
+  it('omits account hardware type when metrics has none', async () => {
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    const { metadata } = submitRelayTransactionMock.mock.calls[0][0];
+    expect(metadata).not.toHaveProperty('accountHardwareType');
+  });
+
+  it('still relays when the hardware type lookup fails', async () => {
+    getHardwareTypeForMetricMock.mockRejectedValue(new Error('keyring down'));
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    const result = await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    expect(result).toStrictEqual({
+      transactionHash: TRANSCATION_HASH_MOCK,
+    });
+    const { metadata } = submitRelayTransactionMock.mock.calls[0][0];
+    expect(metadata).not.toHaveProperty('accountHardwareType');
   });
 
   it('returns transaction hash from transaction relay result', async () => {

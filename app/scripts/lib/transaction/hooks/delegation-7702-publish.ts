@@ -43,15 +43,24 @@ type RelayTransactionTxType = NonNullable<
 
 const log = createProjectLogger('delegation-7702-publish-hook');
 
+type GetHardwareTypeForMetric = (
+  address: string,
+) => Promise<string | undefined>;
+
 export class Delegation7702PublishHook {
+  #getHardwareTypeForMetric: GetHardwareTypeForMetric;
+
   #messenger: TransactionControllerInitMessenger;
 
   constructor({
     messenger,
+    getHardwareTypeForMetric,
   }: {
     messenger: TransactionControllerInitMessenger;
+    getHardwareTypeForMetric: GetHardwareTypeForMetric;
   }) {
     this.#messenger = messenger;
+    this.#getHardwareTypeForMetric = getHardwareTypeForMetric;
   }
 
   getHook(): PublishHook {
@@ -194,16 +203,24 @@ export class Delegation7702PublishHook {
         useParentExecution: true,
       });
 
+    const accountHardwareType = await this.#lookupAccountHardwareType(from);
+
+    const metadata: NonNullable<RelaySubmitRequest['metadata']> = {
+      txType: transactionMeta.type as RelayTransactionTxType,
+      client: getClientForTransactionMetadata(),
+      clientVersion: getClientVersionForTransactionMetadata(),
+      origin: sanitizeOrigin(transactionMeta.origin),
+    };
+
+    if (accountHardwareType) {
+      metadata.accountHardwareType = accountHardwareType;
+    }
+
     const relayRequest: RelaySubmitRequest = {
       chainId,
       data,
       to,
-      metadata: {
-        txType: transactionMeta.type as RelayTransactionTxType,
-        client: getClientForTransactionMetadata(),
-        clientVersion: getClientVersionForTransactionMetadata(),
-        origin: sanitizeOrigin(transactionMeta.origin),
-      },
+      metadata,
     };
 
     if (authorizationList) {
@@ -227,6 +244,19 @@ export class Delegation7702PublishHook {
     return {
       transactionHash,
     };
+  }
+
+  async #lookupAccountHardwareType(from?: string): Promise<string | undefined> {
+    if (!from) {
+      return undefined;
+    }
+
+    try {
+      return await this.#getHardwareTypeForMetric(from);
+    } catch (error) {
+      log('Failed to read signer hardware type', error);
+      return undefined;
+    }
   }
 
   #buildTransferExecution(gasFeeToken: GasFeeToken): ExecutionStruct {

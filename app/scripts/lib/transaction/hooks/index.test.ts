@@ -252,6 +252,45 @@ describe('Transaction Controller Hooks', () => {
       expect(jest.mocked(Delegation7702PublishHook)).toHaveBeenCalled();
     });
 
+    it('passes the metrics hardware type lookup to the delegation hook', async () => {
+      const getHardwareTypeForMetric = jest.fn();
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockImplementation((action: string) => {
+        if (action === 'KeyringController:getKeyringForAccount') {
+          return { type: 'HD Key Tree' };
+        }
+        return undefined;
+      });
+
+      const request = buildMockRequest({
+        messenger,
+        getTransactionMetricsRequest: jest.fn().mockReturnValue({
+          upsertTransactionUIMetricsFragment: jest.fn(),
+          getHardwareTypeForMetric,
+        }),
+      });
+      const { publish } = getTransactionControllerHooks(request);
+
+      await publish?.({
+        ...mockTransactionMeta,
+        isExternalSign: true,
+      } as TransactionMeta);
+
+      expect(jest.mocked(Delegation7702PublishHook)).toHaveBeenCalledWith({
+        messenger,
+        getHardwareTypeForMetric: expect.any(Function),
+      });
+
+      const [[{ getHardwareTypeForMetric: passedLookup }]] = jest.mocked(
+        Delegation7702PublishHook,
+      ).mock.calls;
+      await passedLookup('0x0000000000000000000000000000000000000000');
+
+      expect(getHardwareTypeForMetric).toHaveBeenCalledWith(
+        '0x0000000000000000000000000000000000000000',
+      );
+    });
+
     it('records sentinel_relay submission via metrics fragment on delegation hook success', async () => {
       const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
       delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
@@ -290,6 +329,46 @@ describe('Transaction Controller Hooks', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         properties: { transaction_submission_method: 'sentinel_relay' },
       });
+    });
+
+    it('passes the metrics hardware type lookup to the smart transaction hook', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const getHardwareTypeForMetric = jest.fn().mockResolvedValue('Ledger');
+      let lookup:
+        | ((address: string) => Promise<string | undefined>)
+        | undefined;
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockImplementation(async (submitRequest) => {
+          lookup = submitRequest.getHardwareTypeForMetric;
+          return { transactionHash: '0xstxHash' };
+        });
+
+      const request = buildMockRequest({
+        getTransactionMetricsRequest: jest.fn().mockReturnValue({
+          upsertTransactionUIMetricsFragment: jest.fn(),
+          getHardwareTypeForMetric,
+        }),
+      });
+      const { publish } = getTransactionControllerHooks(request);
+
+      await publish?.(mockTransactionMeta);
+
+      await lookup?.('0xabc');
+
+      expect(getHardwareTypeForMetric).toHaveBeenCalledWith('0xabc');
     });
 
     it('records sentinel_stx submission via metrics fragment on STX hook success', async () => {
@@ -630,6 +709,56 @@ describe('Transaction Controller Hooks', () => {
       expect(
         smartTransactionsModule.submitBatchSmartTransactionHook,
       ).toHaveBeenCalled();
+    });
+
+    it('passes the metrics hardware type lookup to the batch hook', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const getHardwareTypeForMetric = jest.fn().mockResolvedValue('Ledger');
+      let lookup:
+        | ((address: string) => Promise<string | undefined>)
+        | undefined;
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockImplementation(async (submitRequest) => {
+          lookup = submitRequest.getHardwareTypeForMetric;
+          return { results: [] };
+        });
+
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockReturnValue({
+        transactions: [mockBatchTransactionMeta],
+      });
+
+      const request = buildMockRequest({
+        messenger,
+        getTransactionMetricsRequest: jest.fn().mockReturnValue({
+          upsertTransactionUIMetricsFragment: jest.fn(),
+          getHardwareTypeForMetric,
+        }),
+      });
+      const { publishBatch } = getTransactionControllerHooks(request);
+
+      await publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      await lookup?.('0xabc');
+
+      expect(getHardwareTypeForMetric).toHaveBeenCalledWith('0xabc');
     });
 
     it('throws when transaction is not found', async () => {

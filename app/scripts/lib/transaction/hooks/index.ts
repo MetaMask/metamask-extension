@@ -173,6 +173,8 @@ function publishHook({
     ) {
       const hook = new Delegation7702PublishHook({
         messenger,
+        getHardwareTypeForMetric: (address) =>
+          getTransactionMetricsRequest().getHardwareTypeForMetric(address),
       }).getHook();
 
       const result = await hook(transactionMeta, signedTx);
@@ -206,6 +208,8 @@ function publishHook({
         controllerMessenger: messenger,
         isSmartTransaction,
         featureFlags,
+        getHardwareTypeForMetric: (address) =>
+          getTransactionMetricsRequest().getHardwareTypeForMetric(address),
       });
 
       if (result?.getFeesError) {
@@ -289,6 +293,8 @@ function publishBatchHook({
       isSmartTransaction,
       featureFlags,
       transactionMeta,
+      getHardwareTypeForMetric: (address) =>
+        getTransactionMetricsRequest().getHardwareTypeForMetric(address),
     });
 
     if (result) {

@@ -52,9 +52,15 @@ type SmartTransactionSubmitSignedTransactionsRequest = Parameters<
   SmartTransactionsController['submitSignedTransactions']
 >[0];
 
+type GetHardwareTypeForMetric = (
+  address: string,
+) => Promise<string | undefined>;
+
 type SmartTransactionSentinelMeta = NonNullable<
   SignedTransactionWithMetadata['metadata']
->;
+> & {
+  accountHardwareType?: string;
+};
 
 type SmartTransactionTxType = SmartTransactionSentinelMeta['txType'];
 
@@ -67,6 +73,7 @@ export type SubmitSmartTransactionRequest = {
   controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
   transactions?: PublishBatchHookTransaction[];
+  getHardwareTypeForMetric?: GetHardwareTypeForMetric;
 };
 
 class SmartTransactionHook {
@@ -92,10 +99,12 @@ class SmartTransactionHook {
 
   #txParams: TransactionParams;
 
-  #getSentinelMetadata(
+  #getHardwareTypeForMetric?: GetHardwareTypeForMetric;
+
+  async #getSentinelMetadata(
     transactionMeta: TransactionMeta,
-  ): SmartTransactionSentinelMeta {
-    return {
+  ): Promise<SmartTransactionSentinelMeta> {
+    const metadata: SmartTransactionSentinelMeta = {
       // smart-transactions-controller still depends on transaction-controller
       // 64.x, while extension consumes 65.x. The enum values are strings at
       // runtime, so bridge the duplicate package types at this boundary.
@@ -104,6 +113,30 @@ class SmartTransactionHook {
       clientVersion: getClientVersionForTransactionMetadata(),
       origin: sanitizeOrigin(transactionMeta.origin),
     };
+    const accountHardwareType =
+      await this.#lookupAccountHardwareType(transactionMeta);
+    if (accountHardwareType) {
+      metadata.accountHardwareType = accountHardwareType;
+    }
+    return metadata;
+  }
+
+  async #lookupAccountHardwareType(
+    transactionMeta: TransactionMeta,
+  ): Promise<string | undefined> {
+    const from = transactionMeta.txParams?.from;
+    if (!from || !this.#getHardwareTypeForMetric) {
+      return undefined;
+    }
+    try {
+      return await this.#getHardwareTypeForMetric(from);
+    } catch (error) {
+      log.error(
+        'Smart Transaction: failed to read signer hardware type',
+        error,
+      );
+      return undefined;
+    }
   }
 
   constructor(request: SubmitSmartTransactionRequest) {
@@ -116,6 +149,7 @@ class SmartTransactionHook {
       controllerMessenger,
       featureFlags,
       transactions,
+      getHardwareTypeForMetric,
     } = request;
     this.#transactionMeta = transactionMeta as TransactionMeta;
     this.#signedTransactionInHex = signedTransactionInHex;
@@ -128,6 +162,7 @@ class SmartTransactionHook {
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
+    this.#getHardwareTypeForMetric = getHardwareTypeForMetric;
   }
 
   async submit(): Promise<{ transactionHash?: string; getFeesError?: string }> {
@@ -307,25 +342,28 @@ class SmartTransactionHook {
       this.#transactions.length > 0
     ) {
       // Batch transaction mode - extract signed transactions from this.#transactions[].signedTx
-      signedTransactionsWithMetadata = this.#transactions
-        .filter((tx) => tx?.signedTx)
-        .map((tx) => {
-          const transactionMeta = getTransactionById(
-            tx.id ?? '',
-            this.#transactionController,
-          );
-          const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
-          if (transactionMeta) {
-            signedTx.metadata = this.#getSentinelMetadata(transactionMeta);
-          }
-          return signedTx;
-        });
+      signedTransactionsWithMetadata = await Promise.all(
+        this.#transactions
+          .filter((tx) => tx?.signedTx)
+          .map(async (tx) => {
+            const transactionMeta = getTransactionById(
+              tx.id ?? '',
+              this.#transactionController,
+            );
+            const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
+            if (transactionMeta) {
+              signedTx.metadata =
+                await this.#getSentinelMetadata(transactionMeta);
+            }
+            return signedTx;
+          }),
+      );
     } else if (this.#signedTransactionInHex) {
       // Single transaction mode with pre-signed transaction
       signedTransactionsWithMetadata = [
         {
           tx: this.#signedTransactionInHex,
-          metadata: this.#getSentinelMetadata(this.#transactionMeta),
+          metadata: await this.#getSentinelMetadata(this.#transactionMeta),
         },
       ];
     } else if (getFeesResponse) {
@@ -333,10 +371,12 @@ class SmartTransactionHook {
       const signed = await this.#createSignedTransactions(
         getFeesResponse.tradeTxFees?.fees ?? [],
       );
-      signedTransactionsWithMetadata = signed.map((signedTx) => ({
-        tx: signedTx,
-        metadata: this.#getSentinelMetadata(this.#transactionMeta),
-      }));
+      signedTransactionsWithMetadata = await Promise.all(
+        signed.map(async (signedTx) => ({
+          tx: signedTx,
+          metadata: await this.#getSentinelMetadata(this.#transactionMeta),
+        })),
+      );
     }
     signedTransactions = signedTransactionsWithMetadata.map((tx) => tx.tx);
 
