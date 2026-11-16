@@ -88,6 +88,7 @@ export type MfaKitErrorCode =
   | 'flow_in_progress'
   | 'passkey_unsupported'
   | 'passkey_ceremony_cancelled'
+  | 'passkey_already_exists'
   | 'invalid_request'
   | 'email_already_enrolled'
   | 'totp_already_enrolled';
