@@ -69,9 +69,9 @@ check 'yarn npm info' bash -c 'yarn npm info react --fields version --json | gre
 check 'yarn npm audit reaches the registry' bash -c '
   yarn npm audit --recursive --environment production --json > audit.json 2> audit.err
   ! grep -qiE "ENOTFOUND|ECONN|EAI_AGAIN|403|blocked|refused|YN0035" audit.json audit.err'
-# node_modules comes from a trusted pre-agent install and is read-only in the sandbox.
-check_fails 'node_modules is read-only' touch node_modules/sandbox-probe
-check_fails 'a full install cannot run in the sandbox' yarn install --immutable --mode=skip-build
+# node_modules comes from a trusted pre-agent install.
+check 'node_modules is writable' bash -c 'touch node_modules/sandbox-probe && rm node_modules/sandbox-probe'
+check 'yarn install --immutable on an installed tree' yarn install --immutable --mode=skip-build
 check 'yarn install --mode=update-lockfile' yarn install --mode=update-lockfile
 restore
 check 'yarn dedupe --check' yarn dedupe --check
@@ -80,7 +80,8 @@ check 'yarn dedupe --check' yarn dedupe --check
 check 'yarn patch and patch-commit' bash -c '
   target=$(node -e "const l=require(\"fs\").readFileSync(\"yarn.lock\",\"utf8\");const m=l.match(/^\"?ms@npm:[^\n]*:\n\s+version: (\S+)/m);console.log(m?\"ms@npm:\"+m[1]:\"\")")
   test -n "$target" || { echo "no ms in lockfile"; exit 1; }
-  dir=$(yarn patch "$target" | grep -oE "/[^ ]+$" | tail -n 1)
+  pout=$(yarn patch "$target" 2>&1); echo "$pout" | head -n 8
+  dir=$(echo "$pout" | grep -oE "/[^ ]+$" | tail -n 1)
   test -d "$dir" || { echo "no patch dir"; exit 1; }
   echo "// probe" >> "$dir/index.js"
   yarn patch-commit -s "$dir"

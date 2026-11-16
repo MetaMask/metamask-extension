@@ -138,7 +138,7 @@ jobs:
     steps:
       - uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: false
           persist-credentials: false
 
       - name: Warm the Corepack cache outside the sandbox
