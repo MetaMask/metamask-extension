@@ -26,6 +26,13 @@ type SectionTitle = (typeof SECTION_TITLES)[number];
  * @see ui/components/app/wallet-overview/coin-overview.tsx
  */
 class AssetDetailsPage {
+  private readonly assetActivateButton =
+    '[data-testid="asset-activate-button"]';
+
+  private readonly assetActivateCard = '[data-testid="asset-activate-card"]';
+
+  private readonly assetInactiveBadge = '[data-testid="asset-inactive-badge"]';
+
   private readonly assetName = '[data-testid="asset-name"]';
 
   private driver: Driver;
@@ -135,6 +142,23 @@ class AssetDetailsPage {
     }
   }
 
+  /**
+   * Asserts the Stellar trustline activation card is not present.
+   */
+  async checkActivateCardIsAbsent(): Promise<void> {
+    console.log('Verify the asset activate card is absent');
+    await this.driver.assertElementNotPresent(this.assetActivateCard);
+  }
+
+  /**
+   * Asserts the Stellar trustline activation card is visible on the asset page.
+   */
+  async checkActivateCardIsDisplayed(): Promise<void> {
+    console.log('Verify the asset activate card is displayed');
+    await this.driver.waitForSelector(this.assetActivateCard);
+    await this.driver.waitForSelector(this.assetActivateButton);
+  }
+
   async checkAllStandardSections(): Promise<void> {
     for (const title of SECTION_TITLES) {
       await this.checkSection(title);
@@ -170,6 +194,22 @@ class AssetDetailsPage {
 
   async checkDailyResourcesSectionIsAbsent(): Promise<void> {
     await this.driver.assertElementNotPresent(this.tronDailyResourcesSection);
+  }
+
+  /**
+   * Asserts the Inactive trustline badge is not present.
+   */
+  async checkInactiveBadgeIsAbsent(): Promise<void> {
+    console.log('Verify the asset inactive badge is absent');
+    await this.driver.assertElementNotPresent(this.assetInactiveBadge);
+  }
+
+  /**
+   * Asserts the Inactive trustline badge is visible on the asset page header.
+   */
+  async checkInactiveBadgeIsDisplayed(): Promise<void> {
+    console.log('Verify the asset inactive badge is displayed');
+    await this.driver.waitForSelector(this.assetInactiveBadge);
   }
 
   /**
