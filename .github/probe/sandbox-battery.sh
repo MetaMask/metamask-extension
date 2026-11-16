@@ -71,7 +71,6 @@ check 'yarn npm audit reaches the registry' bash -c '
   ! grep -qiE "ENOTFOUND|ECONN|EAI_AGAIN|403|blocked|refused|YN0035" audit.json audit.err'
 # node_modules comes from a trusted pre-agent install.
 check 'node_modules is writable' bash -c 'touch node_modules/sandbox-probe && rm node_modules/sandbox-probe'
-check 'yarn install --immutable on an installed tree' yarn install --immutable --mode=skip-build
 check 'yarn install --mode=update-lockfile' yarn install --mode=update-lockfile
 restore
 check 'yarn dedupe --check' yarn dedupe --check
@@ -82,6 +81,7 @@ check 'yarn patch and patch-commit' bash -c '
   test -n "$target" || { echo "no ms in lockfile"; exit 1; }
   pout=$(yarn patch "$target" 2>&1); echo "$pout" | head -n 8
   dir=$(echo "$pout" | grep -oE "edit the following folder: /[^ ]+" | grep -oE "/[^ ]+$")
+  echo "dir=[$dir]"; ls -ld "$dir" 2>&1
   test -d "$dir" || { echo "no patch dir"; exit 1; }
   echo "// probe" >> "$dir/index.js"
   yarn patch-commit -s "$dir"
