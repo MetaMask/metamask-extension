@@ -115,8 +115,11 @@ export function getNetworkImageUrl(
   chainId: string,
   networkImageUrls: Record<string, string>,
 ): string | undefined {
-  if (isStrictHexString(chainId)) {
-    return networkImageUrls[chainId];
+  // Direct hit covers hex keys and non-EVM CAIP-2 keys alike; only EVM
+  // CAIP-2 IDs additionally need conversion to their hex key.
+  const directMatch = networkImageUrls[chainId];
+  if (directMatch) {
+    return directMatch;
   }
   try {
     return networkImageUrls[convertCaipToHexChainId(chainId as CaipChainId)];

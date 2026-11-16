@@ -235,21 +235,26 @@ export const getChainIdToNetworkImageUrlMap = createSelector(
 
 /**
  * Returns a chain ID to native token image URL map that layers the config
- * registry assets.native image URLs over the static CHAIN_ID_TOKEN_IMAGE_MAP,
- * so native token avatars also honor the registry. Keyed like the network
- * image map. Falls back to the static map when the config registry API is
+ * registry assets.native image URLs over the static CHAIN_ID_TOKEN_IMAGE_MAP
+ * (EVM, hex keys) and MULTICHAIN_TOKEN_IMAGE_MAP (non-EVM, CAIP-2 keys), so
+ * native token avatars also honor the registry. Keyed like the network
+ * image map. Falls back to the static maps when the config registry API is
  * disabled or has no configs.
  */
 export const getChainIdToNativeTokenImageUrlMap = createSelector(
   getRegistryConfigs,
   getIsConfigRegistryApiEnabled,
   (configs, isConfigRegistryEnabled): Record<string, string> => {
+    const staticMaps = {
+      ...CHAIN_ID_TOKEN_IMAGE_MAP,
+      ...MULTICHAIN_TOKEN_IMAGE_MAP,
+    };
     if (!isConfigRegistryEnabled || !configs?.networks) {
-      return CHAIN_ID_TOKEN_IMAGE_MAP;
+      return staticMaps;
     }
 
     return withRegistryImageUrls(
-      CHAIN_ID_TOKEN_IMAGE_MAP,
+      staticMaps,
       configs,
       (network) => network.assets?.native?.imageUrl,
     );

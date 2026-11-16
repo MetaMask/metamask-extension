@@ -30,6 +30,7 @@ import {
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
   getAllEnabledNetworkClientIds,
+  getNetworkImageUrl,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -574,5 +575,32 @@ describe('network utils', () => {
 
       expect(result).toStrictEqual(['mainnet']);
     });
+  });
+});
+
+describe('getNetworkImageUrl', () => {
+  it('resolves hex keys directly', () => {
+    expect(getNetworkImageUrl('0x1', { '0x1': 'https://x.png' })).toBe(
+      'https://x.png',
+    );
+  });
+
+  it('converts EVM CAIP-2 IDs to their hex key', () => {
+    expect(getNetworkImageUrl('eip155:1', { '0x1': 'https://x.png' })).toBe(
+      'https://x.png',
+    );
+  });
+
+  it('resolves non-EVM CAIP-2 keys directly', () => {
+    expect(
+      getNetworkImageUrl('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://sol.png',
+      }),
+    ).toBe('https://sol.png');
+  });
+
+  it('returns undefined for unknown chain IDs', () => {
+    expect(getNetworkImageUrl('eip155:9999', {})).toBeUndefined();
+    expect(getNetworkImageUrl('solana:unknown', {})).toBeUndefined();
   });
 });

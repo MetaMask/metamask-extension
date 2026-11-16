@@ -9,6 +9,7 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_IDS,
 } from '../../../shared/constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import {
   getRegistryConfigs,
   getIsConfigRegistryApiEnabled,
@@ -570,7 +571,7 @@ describe('config-registry selectors', () => {
       },
     });
 
-    it('returns the static token map when the feature flag is off', () => {
+    it('returns the static token maps when the feature flag is off', () => {
       const state = buildState(
         {
           'eip155:1329': {
@@ -580,7 +581,16 @@ describe('config-registry selectors', () => {
         false,
       );
       const result = getChainIdToNativeTokenImageUrlMap(state);
-      expect(result).toBe(CHAIN_ID_TOKEN_IMAGE_MAP);
+      expect(result[CHAIN_IDS.MAINNET]).toBe(
+        CHAIN_ID_TOKEN_IMAGE_MAP[CHAIN_IDS.MAINNET],
+      );
+      // non-EVM native token images come from MULTICHAIN_TOKEN_IMAGE_MAP
+      expect(result['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']).toBe(
+        MULTICHAIN_TOKEN_IMAGE_MAP[
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as never
+        ],
+      );
+      expect(result['eip155:1329']).toBeUndefined();
     });
 
     it('layers registry assets.native image URLs over the static token map', () => {
