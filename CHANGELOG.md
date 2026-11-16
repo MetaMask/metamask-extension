@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.57.0]
+
+### Added
+
+- Added support for withdrawing from a Money Account to hardware wallet accounts (#47111)
+- Added a first-visit Money Account splash that introduces earning, trading, sending, and spending (#47626)
+- Added a fee rebate banner in Swaps for users eligible for a MetaMask fee rebate (#47618)
+
+### Changed
+
+- Updated the Money onboarding splash with new hero artwork, heading styles, and card layout (#47716)
+- Updated the Perps withdrawal amount input to the Grotzec typeface (#47560)
+- Updated the MetaMask Pay amount input to the Grotzec typeface (#47565)
+- Made bottom navigation available by default (#47206)
+- Showed more of recipient addresses in Send (#47533)
+- Updated the Money home layout for the fullscreen redesign when enabled (#47581)
+- Increased the precision of send confirmation and estimated change amounts to up to eight decimal places (#47532)
+- Updated Swap and Bridge amount inputs to the Grotzec typeface (#47558)
+- Updated the Buy amount input to the Grotzec typeface (#47559)
+- Updated warnings for outdated browsers ahead of ending support in the following release (#47451)
+- Updated Terms of Use, Privacy Policy, and related legal links to use metamask.com instead of metamask.io (#47571)
+- Updated onboarding card corners to match modal corners (#47550)
+
+### Fixed
+
+- Fixed a bug where the close button on the Transaction Shield intro modal in Settings could not be clicked (#47916)
+- Fixed the nickname modal address field appearing disabled while keeping it read-only (#47593)
+- Fixed the token details header to show the token name with its ticker beneath it (#47552)
+- Fixed Tron balances being ignored when determining whether to show the wallet empty state (#47570)
+- Fixed the order of the "Minimum received" row and typos in Swap quote card tooltips (#47642)
+- Fixed Perps outage banner links so the FAQ opens the troubleshooting article and contact support opens the help center (#47617)
+- Fixed a bug where a just-closed Perps trade could be missing from Perps Activity (#47643)
+- Fixed spam tokens not being removed from the token list on unlock (#47609)
+- Fixed Money Account deposits and withdrawals on Monad failing after opting out of gas sponsorship (#47616)
+- Fixed HyperLiquid live fills stopping after a WebSocket reconnect (#47600)
+- Fixed Money Account withdrawals being rejected as "Insufficient funds" when the displayed available balance was rounded up (#47569)
+- Fixed native token icons for Fraxtal and Katana (#47583)
+- Fixed missing error messages when non-EVM sends failed after confirmation (#47528)
+- Fixed the home network filter remaining on a non-EVM network after Basic Functionality was turned off (#47494)
+
 ## [13.56.0]
 
 ### Added
@@ -3636,7 +3676,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.56.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.57.0...HEAD
+[13.57.0]: https://github.com/MetaMask/metamask-extension/compare/v13.56.0...v13.57.0
 [13.56.0]: https://github.com/MetaMask/metamask-extension/compare/v13.55.0...v13.56.0
 [13.55.0]: https://github.com/MetaMask/metamask-extension/compare/v13.54.0...v13.55.0
 [13.54.0]: https://github.com/MetaMask/metamask-extension/compare/v13.53.0...v13.54.0
