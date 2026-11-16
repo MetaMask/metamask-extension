@@ -175,12 +175,21 @@ function getSidePanelApi(
   return sidePanel as SidePanelApiWithBehavior;
 }
 
+function getUseSidePanelAsDefault(
+  controller: SidePanelToolbarBehaviorController | null | undefined,
+): boolean {
+  return (
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? true
+  );
+}
+
 /**
  * Prefer the side panel on toolbar clicks until the persisted preference is loaded.
  *
  * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
  */
-function applyEarlySidePanelToolbarBehavior(
+export function applyEarlySidePanelToolbarBehavior(
   sidePanelApi: SidePanelApiWithBehavior,
 ): void {
   sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
@@ -200,6 +209,16 @@ async function applyToolbarSidePanelPreference(
 
   await chrome.action.setPopup({ popup: POPUP_INIT_FILE });
   await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: false });
+}
+
+export async function applyToolbarSidePanelBehavior(
+  getController: SidePanelToolbarBehaviorDeps['getController'],
+  sidePanelApi: SidePanelApiWithBehavior,
+): Promise<void> {
+  await applyToolbarSidePanelPreference(
+    getUseSidePanelAsDefault(getController()),
+    sidePanelApi,
+  );
 }
 
 export async function openRoute({

@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import { openRoute } from '../sidepanel/background';
 import {
   createCashtagResponse,
   isAllowedCashtagSender,
@@ -7,35 +8,14 @@ import {
 } from './background';
 import type { Controller } from './lib/types';
 
-const extensionId = 'testid';
-const widgetUrl = `chrome-extension://${extensionId}/cashtag-widget.html?symbol=ETH`;
-const xTab = { id: 1, url: 'https://x.com/home' } as chrome.tabs.Tab;
-const mockRuntimeMessageListeners: ((
-  message: unknown,
-  sender: chrome.runtime.MessageSender,
-) => unknown)[] = [];
+jest.mock('../sidepanel/background', () => ({
+  openRoute: jest.fn().mockResolvedValue(undefined),
+}));
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     getURL: (path: string) => `chrome-extension://testid/${path}`,
-    sendMessage: jest.fn(async (message: unknown) => {
-      const extensionPageSender = {
-        id: 'testid',
-        url: 'chrome-extension://testid/sidepanel.html',
-      } as chrome.runtime.MessageSender;
-      for (const listener of [...mockRuntimeMessageListeners].reverse()) {
-        const response = await listener(message, extensionPageSender);
-        if (response !== undefined && response !== false) {
-          return response;
-        }
-      }
-      return undefined;
-    }),
-    onMessage: {
-      addListener: jest.fn((listener) =>
-        mockRuntimeMessageListeners.push(listener),
-      ),
-    },
+    sendMessage: jest.fn().mockResolvedValue(undefined),
   },
   tabs: {
     create: jest.fn().mockResolvedValue({}),
@@ -44,6 +24,10 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+const extensionId = 'testid';
+const widgetUrl = `chrome-extension://${extensionId}/cashtag-widget.html?symbol=ETH`;
+const xTab = { id: 1, url: 'https://x.com/home' } as chrome.tabs.Tab;
+
 function sender(
   overrides: Partial<chrome.runtime.MessageSender>,
 ): chrome.runtime.MessageSender {
@@ -51,30 +35,6 @@ function sender(
     id: extensionId,
     ...overrides,
   };
-}
-
-function consumeRoute(windowId: number) {
-  return browser.runtime.sendMessage({
-    type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
-    body: { windowId },
-  });
-}
-
-function getController(useExternalServices = true) {
-  return {
-    preferencesController: {
-      state: {
-        useExternalServices,
-        preferences: { showTickerWidget: true, useSidePanelAsDefault: true },
-      },
-    },
-    remoteFeatureFlagController: {
-      state: { remoteFeatureFlags: { cashtagInjection: true } },
-    },
-    bridgeController: {
-      setLocation: jest.fn(),
-    },
-  } satisfies Controller;
 }
 
 describe('isAllowedCashtagSender', () => {
@@ -184,6 +144,23 @@ describe('createCashtagResponse', () => {
     body: { page: 'swap', caipAssetId },
   };
 
+  function getController(useExternalServices = true) {
+    return {
+      preferencesController: {
+        state: {
+          useExternalServices,
+          preferences: { showTickerWidget: true, useSidePanelAsDefault: true },
+        },
+      },
+      remoteFeatureFlagController: {
+        state: { remoteFeatureFlags: { cashtagInjection: true } },
+      },
+      bridgeController: {
+        setLocation: jest.fn(),
+      },
+    } satisfies Controller;
+  }
+
   beforeEach(() => {
     jest.clearAllMocks();
     Object.assign(chrome.runtime, {
@@ -193,36 +170,34 @@ describe('createCashtagResponse', () => {
     });
   });
 
-  afterEach(() => {
-    delete (globalThis.chrome as { sidePanel?: unknown }).sidePanel;
-    delete (globalThis.chrome as { action?: unknown }).action;
-  });
-
-  it('hands the requested route to the shared side-panel handler', async () => {
-    const open = jest.fn().mockResolvedValue(undefined);
-    Object.assign(globalThis.chrome, { sidePanel: { open } });
+  it('delegates swap opens to the shared side-panel route handler', async () => {
+    const openRouteMock = openRoute as jest.Mock;
 
     await createCashtagResponse(openSwapMessage, widgetSender, getController);
 
-    expect(open).toHaveBeenCalledWith({ windowId: 7 });
-    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
-      type: EXTENSION_MESSAGES.OPEN_ROUTE,
-      body: { windowId: 7 },
-    });
-    await expect(consumeRoute(7)).resolves.toMatchObject({
-      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
-      body: {
-        path: '/cross-chain/swaps/prepare-bridge-page',
-        search: '?to=eip155%3A1%2Fslip44%3A60',
-      },
+    expect(openRouteMock).toHaveBeenCalledWith({
+      controller: expect.objectContaining({
+        preferencesController: expect.objectContaining({
+          state: expect.objectContaining({
+            preferences: expect.objectContaining({
+              useSidePanelAsDefault: true,
+            }),
+          }),
+        }),
+      }),
+      windowId: 7,
+      path: '/cross-chain/swaps/prepare-bridge-page',
+      search: '?to=eip155%3A1%2Fslip44%3A60',
     });
   });
 
   it('does not enable the widget when Basic Functionality is disabled', async () => {
+    const controller = getController(false);
+
     const response = await createCashtagResponse(
       { type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED },
       sender({ frameId: 0, url: 'https://x.com/home' }),
-      () => getController(false),
+      () => controller,
     );
 
     expect(response).toEqual({
@@ -232,19 +207,34 @@ describe('createCashtagResponse', () => {
   });
 
   it('does not fetch widget data when Basic Functionality is disabled', async () => {
+    const controller = getController(false);
+
     const response = await createCashtagResponse(
       {
         type: EXTENSION_MESSAGES.GET_DATA,
         body: { symbol: 'ETH', fields: ['priceHistory'] },
       },
       sender({ frameId: 0, url: 'https://x.com/home' }),
-      () => getController(false),
+      () => controller,
     );
 
     expect(response).toEqual({
       type: EXTENSION_MESSAGES.GET_DATA,
       body: { asset: null, similar: [], priceHistory: null },
     });
+  });
+
+  it('sets bridge location to x_widget before opening swap route', async () => {
+    const controller = getController();
+    await createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      () => controller,
+    );
+
+    expect(controller.bridgeController?.setLocation).toHaveBeenCalledWith(
+      'x_widget',
+    );
   });
 });
 
