@@ -439,6 +439,17 @@ function mockSelectPendingTradeConfiguration(state, coin) {
 
 /**
  * @param {object | undefined} state
+ * @param {string} coin
+ * @returns {{ leverage?: number } | undefined}
+ */
+function mockSelectTradeConfiguration(state, coin) {
+  const network = state?.isTestnet ? 'testnet' : 'mainnet';
+  const leverage = state?.tradeConfigurations?.[network]?.[coin]?.leverage;
+  return leverage === undefined ? undefined : { leverage };
+}
+
+/**
+ * @param {object | undefined} state
  * @returns {object}
  */
 function mockSelectOrderBookPreferences(state) {
@@ -493,6 +504,7 @@ module.exports = {
     PendingTradeConfigurationTtlMs: mockPendingTradeConfigurationTtlMs,
   },
   selectPendingTradeConfiguration: mockSelectPendingTradeConfiguration,
+  selectTradeConfiguration: mockSelectTradeConfiguration,
   selectOrderBookPreferences: mockSelectOrderBookPreferences,
   selectOrderBookGrouping: mockSelectOrderBookGrouping,
   selectVisibleCandleCount: mockSelectVisibleCandleCount,
