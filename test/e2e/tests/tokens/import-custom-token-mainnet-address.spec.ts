@@ -31,7 +31,7 @@ describe('Import a Mainnet-listed token address on a non-Mainnet network', funct
 
         // The deployment spends gas from the Anvil account the wallet uses,
         // so its native balance no longer matches the fixture's.
-        await login(driver, { validateBalance: false });
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -64,7 +64,6 @@ describe('Import a Mainnet-listed token address on a non-Mainnet network', funct
           MAINNET_LISTED_TOKEN_MINTED_AMOUNT,
           MAINNET_LISTED_TOKEN_SYMBOL,
         );
-        await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
       },
     );
   });
