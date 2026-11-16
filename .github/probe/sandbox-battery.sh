@@ -11,7 +11,7 @@ record() {
     echo "PASS $name" >> sandbox-results.txt
   else
     echo "FAIL $name (exit $code)" >> sandbox-results.txt
-    { echo "--- $name"; printf '%s\n' "$out" | head -n 6 | cut -c1-300; echo '...'; printf '%s\n' "$out" | tail -n 6 | cut -c1-300; echo 'errors:'; printf '%s\n' "$out" | grep -vE '^\s+at ' | grep -E 'YN0001|YN0035|YN0013|Error|ERR' | cut -c1-250 | sort | uniq -c | head -n 8; echo 'hosts mentioned:'; printf '%s\n' "$out" | grep -oE 'https?://[^/ "]+' | sort | uniq -c | head -n 8; } >> sandbox-detail.txt
+    { echo "--- $name"; printf '%s\n' "$out" | head -n 6 | cut -c1-300; echo '...'; printf '%s\n' "$out" | tail -n 6 | cut -c1-300; echo 'errors:'; printf '%s\n' "$out" | grep -vE '^\s+at ' | grep -E 'YN0001|YN0035|YN0013|Error|ERR' | cut -c1-250 | sort | uniq -c | head -n 8; echo 'yarn error context:'; printf '%s\n' "$out" | grep -B3 -A1 'YN0001' | cut -c1-250 | head -n 24; echo 'hosts mentioned:'; printf '%s\n' "$out" | grep -oE 'https?://[^/ "]+' | sort | uniq -c | head -n 8; } >> sandbox-detail.txt
   fi
 }
 
@@ -69,6 +69,9 @@ check 'yarn npm audit reaches the registry' bash -c '
   ! grep -qiE "ENOTFOUND|ECONN|EAI_AGAIN|403|blocked|refused|YN0035" audit.json audit.err'
 # Full install first; the later checks need node_modules.
 check 'yarn install --immutable --mode=skip-build' yarn install --immutable --mode=skip-build
+if grep -q '^FAIL yarn install --immutable' sandbox-results.txt; then
+  check 'yarn install retry, network concurrency 8' env YARN_NETWORK_CONCURRENCY=8 yarn install --immutable --mode=skip-build
+fi
 check 'yarn install --mode=update-lockfile' yarn install --mode=update-lockfile
 restore
 check 'yarn dedupe --check' yarn lint:lockfile:dedupe
