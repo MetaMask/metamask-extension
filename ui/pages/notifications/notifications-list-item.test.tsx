@@ -16,6 +16,8 @@ import {
   createMockNotificationLidoReadyToBeWithdrawn,
 } from '@metamask/notification-services-controller/notification-services/mocks';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -77,7 +79,10 @@ describe('NotificationsListItem', () => {
   });
 
   it('renders wallet activity copy from the API template', () => {
-    renderWithProvider(<NotificationsListItem notification={notification} />);
+    renderWithProvider(
+      <NotificationsListItem notification={notification} />,
+      configureStore(mockState),
+    );
 
     expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
     expect(screen.getByText(apiTemplate.body)).toBeInTheDocument();
@@ -91,13 +96,19 @@ describe('NotificationsListItem', () => {
       throw new Error('Expected notification details title');
     }
 
-    renderWithProvider(<DetailsTitle notification={notification} />);
+    renderWithProvider(
+      <DetailsTitle notification={notification} />,
+      configureStore(mockState),
+    );
 
     expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
   });
 
   it('tracks Notification Clicked when the notification item is clicked', () => {
-    renderWithProvider(<NotificationsListItem notification={notification} />);
+    renderWithProvider(
+      <NotificationsListItem notification={notification} />,
+      configureStore(mockState),
+    );
 
     const notificationListItem = screen.getByTestId(
       `notification-list-item-${notification.id}`,
@@ -178,7 +189,10 @@ describe('NotificationsListItem details title (other on-chain subtypes)', () => 
         throw new Error('Expected notification details title');
       }
 
-      renderWithProvider(<DetailsTitle notification={otherNotification} />);
+      renderWithProvider(
+        <DetailsTitle notification={otherNotification} />,
+        configureStore(mockState),
+      );
 
       expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
     },

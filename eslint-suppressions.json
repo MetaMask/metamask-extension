@@ -385,11 +385,6 @@
       "count": 1
     }
   },
-  "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    }
-  },
   "ui/components/multichain/asset-picker-amount/asset-picker-modal/hooks/useAssetMetadata.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
