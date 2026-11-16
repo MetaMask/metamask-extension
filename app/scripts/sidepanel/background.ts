@@ -215,14 +215,13 @@ async function applyToolbarSidePanelPreference(
   useSidePanelAsDefault: boolean,
   sidePanelApi: SidePanelApiWithBehavior,
 ) {
-  if (useSidePanelAsDefault) {
-    await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true });
-    await setActionPopup('');
-    return;
-  }
+  await sidePanelApi.setPanelBehavior({
+    openPanelOnActionClick: useSidePanelAsDefault,
+  });
 
-  await setActionPopup(POPUP_INIT_FILE);
-  await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: false });
+  if (!useSidePanelAsDefault) {
+    await setActionPopup(POPUP_INIT_FILE);
+  }
 }
 
 export async function applyToolbarSidePanelBehavior(

@@ -293,7 +293,7 @@ describe('applyToolbarSidePanelBehavior', () => {
 
     await applyToolbarSidePanelBehavior(() => ({}), sidePanelApi);
 
-    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
+    expect(setPopup).not.toHaveBeenCalled();
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
