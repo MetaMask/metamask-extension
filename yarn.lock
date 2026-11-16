@@ -9329,9 +9329,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:@metamask-previews/multichain-api-middleware@5.1.0-preview-76b7c67":
-  version: 5.1.0-preview-76b7c67
-  resolution: "@metamask-previews/multichain-api-middleware@npm:5.1.0-preview-76b7c67"
+"@metamask/multichain-api-middleware@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@metamask/multichain-api-middleware@npm:5.1.1"
   dependencies:
     "@metamask/accounts-controller": "npm:^40.2.0"
     "@metamask/api-specs": "npm:^0.15.0"
@@ -9346,7 +9346,7 @@ __metadata:
     "@open-rpc/meta-schema": "npm:^1.14.9"
     "@open-rpc/schema-utils-js": "npm:^2.2.1"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/b0fe883d6ac9559959dae6716fe3b653dbae540bad06170f07ae17a6093a57a6757a3b3e63367d3806ca70a02ab95c112f953baf2023b50f1537e272c021ee19
+  checksum: 10/17efa5a7cc6857ffbf3cca1022e621f9534245f24952cf476cf4761e3d992817c824ca0c054a0a79a34ec56be32848bb5738e67b5b41ec661e14f3dbb7b27285
   languageName: node
   linkType: hard
 
@@ -35418,7 +35418,7 @@ __metadata:
     "@metamask/money-account-utils": "npm:^2.2.0"
     "@metamask/multichain-account-service": "npm:^14.1.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
-    "@metamask/multichain-api-middleware": "npm:^5.1.0"
+    "@metamask/multichain-api-middleware": "npm:^5.1.1"
     "@metamask/multichain-network-controller": "npm:^4.1.1"
     "@metamask/multichain-transactions-controller": "npm:^8.0.0"
     "@metamask/name-controller": "npm:^10.0.0"
