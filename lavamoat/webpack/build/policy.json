@@ -1640,6 +1640,7 @@
         "path.posix.normalize": true,
         "path.win32.dirname": true,
         "path.win32.normalize": true,
+        "process.cwd": true,
         "process.nextTick": true,
         "process.versions.pnp": true,
         "url.fileURLToPath": true
@@ -1649,7 +1650,7 @@
         "TextDecoder": true,
         "URL": true,
         "clearTimeout": true,
-        "process.cwd": true,
+        "process": true,
         "setTimeout": true
       },
       "packages": {
@@ -2499,6 +2500,7 @@
         "path.relative": true,
         "path.resolve": true,
         "path.sep": true,
+        "worker_threads": true,
         "zlib": true
       },
       "globals": {
@@ -2513,7 +2515,6 @@
         "process.versions.node": true
       },
       "packages": {
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@swc/core": true,
         "html-bundler-webpack-plugin>html-minifier-terser>clean-css": true,
         "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano": true,
@@ -2525,7 +2526,8 @@
         "schema-utils": true,
         "sharp": true,
         "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo": true,
-        "terser-webpack-plugin>terser": true
+        "terser-webpack-plugin>terser": true,
+        "webpack": true
       }
     },
     "webpack-dev-server>bonjour-service>multicast-dns": {
@@ -3245,7 +3247,14 @@
       }
     },
     "schema-utils": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.relative": true,
+        "url.fileURLToPath": true
+      },
       "globals": {
+        "__non_webpack_require__": true,
         "process": true
       },
       "packages": {
@@ -3888,6 +3897,8 @@
         "console.error": true,
         "process.env.WATCHPACK_POLLING": true,
         "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
+        "process.env.WATCHPACK_RESCAN_DELAY": true,
+        "process.env.WATCHPACK_RESCAN_ON_RESTART": true,
         "process.env.WATCHPACK_RETRIES": true,
         "process.env.WATCHPACK_WATCHER_LIMIT": true,
         "process.nextTick": true,
@@ -3972,6 +3983,8 @@
         "Buffer.isEncoding": true,
         "Buffer.prototype.readBigUInt64LE": true,
         "Buffer.prototype.writeBigUInt64LE": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "URL": true,
         "URLSearchParams": true,
         "WebAssembly.Instance": true,
@@ -3981,17 +3994,7 @@
         "__webpack_require__": true,
         "clearTimeout": true,
         "console": true,
-        "process.argv": true,
-        "process.cwd": true,
-        "process.env": true,
-        "process.hrtime": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.version": true,
-        "process.versions.bun": true,
-        "process.versions.modules": true,
-        "process.versions.pnp": true,
+        "process": true,
         "setImmediate": true,
         "setTimeout": true
       },
