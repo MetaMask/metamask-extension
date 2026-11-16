@@ -1,4 +1,6 @@
 import { Mutex } from 'async-mutex';
+import nock from 'nock';
+import { it as jestIt } from '@jest/globals';
 import {
   AnalyticsController,
   type AnalyticsControllerInitialState,
@@ -5265,6 +5267,62 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('persists the original parameters and gas when containers are removed', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+          txParams: {
+            data: NEW_DATA_MOCK,
+            gas: '0x30000',
+            to: '0x2',
+            value: '0x0',
+          },
+          txParamsOriginal: {
+            data: '0xabc',
+            gas: '0x20000',
+            to: '0x1',
+            value: '0x1',
+          },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        const estimateGasMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          estimateGasMock,
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:applyTransactionContainersExisting',
+          TRANSACTION_ID_MOCK,
+          [],
+        );
+
+        expect(estimateGasMock).not.toHaveBeenCalled();
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          TRANSACTION_ID_MOCK,
+          expect.objectContaining({
+            containerTypes: [],
+            data: '0xabc',
+            gas: '0x20000',
+            to: '0x1',
+            value: '0x1',
+          }),
+        );
+      });
+    });
+
     it('rejects if the transaction container update fails', async () => {
       await withService(async ({ rootMessenger }) => {
         jest.mocked(enforceSimulations).mockResolvedValue({
@@ -8618,7 +8676,7 @@ describe('LegacyBackgroundApiService', () => {
 
             expect(setUninstallURL).toHaveBeenCalledTimes(1);
             expect(setUninstallURL).toHaveBeenCalledWith(
-              `https://metamask.io/uninstalled?${new URLSearchParams({
+              `https://metamask.com/uninstalled?${new URLSearchParams({
                 av: '13.0.0',
                 mmi: Buffer.from('test-analytics-id').toString('base64'),
                 env: 'production',
@@ -8649,7 +8707,7 @@ describe('LegacyBackgroundApiService', () => {
 
             expect(setUninstallURL).toHaveBeenCalledTimes(1);
             expect(setUninstallURL).toHaveBeenCalledWith(
-              'https://metamask.io/uninstalled?av=13.0.0',
+              'https://metamask.com/uninstalled?av=13.0.0',
             );
           },
         );
@@ -8722,6 +8780,44 @@ describe('LegacyBackgroundApiService', () => {
             expect(setUninstallURL).not.toHaveBeenCalled();
           },
         );
+      });
+    });
+  });
+
+  describe('checkFirstTimeInteraction', () => {
+    jestIt.each([
+      [0, true],
+      [1, false],
+      [undefined, undefined],
+    ])('returns %s interactions as %s', async (count, expected) => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .reply(200, count === undefined ? {} : { count });
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBe(expected);
+        expect(scope.isDone()).toBe(true);
+      });
+    });
+
+    it('returns undefined when the relationship request fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const scope = nock('https://accounts.api.cx.metamask.io')
+          .get('/v1/networks/1/accounts/0x123/relationships/0x456')
+          .replyWithError('Request failed');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkFirstTimeInteraction',
+          { chainId: 1, from: '0x123', to: '0x456' },
+        );
+
+        expect(result).toBeUndefined();
+        expect(scope.isDone()).toBe(true);
       });
     });
   });

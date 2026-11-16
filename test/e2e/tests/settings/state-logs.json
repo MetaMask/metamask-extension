@@ -63,6 +63,7 @@
     "newTokensImportedError": "string",
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
+    "onboardingRedirect": "null",
     "openMetaMaskTabs": {},
     "pendingTokens": {},
     "qrCodeData": "null",
@@ -71,8 +72,6 @@
     "sendInputCurrencySwitched": "boolean",
     "showBasicFunctionalityModal": "boolean",
     "showClaimSubmitToast": "null",
-    "showDataDeletionErrorModal": "boolean",
-    "showDeleteMetaMetricsDataModal": "boolean",
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
@@ -247,10 +246,17 @@
     "approvalFlows": [],
     "assetExchangeRates": {},
     "assetPreferences": {},
+    "assetsBackgroundLoadingStatus": {
+      "*": "string"
+    },
     "assetsBalance": {
       "*": {
         "*": {
-          "amount": "string"
+          "amount": "string",
+          "metadata": {
+            "minimumReserveBalance": "string",
+            "spendableBalance": "string"
+          }
         }
       }
     },
@@ -304,6 +310,7 @@
         "lastUpdated": "number"
       }
     },
+    "autorampTransactionRecords": {},
     "autoramps": [],
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
@@ -394,6 +401,7 @@
         "0x2105": "boolean",
         "0xa4b1": "boolean",
         "0x38": "boolean",
+        "0x531": "boolean",
         "0xa": "boolean",
         "0x89": "boolean"
       },
@@ -759,6 +767,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccountWalletRegistrations": [],
     "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
@@ -970,6 +979,9 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
+      "tdpChartType": "number",
+      "tdpChartInterval": "string",
+      "tdpChartIndicators": "array",
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },
@@ -1302,6 +1314,8 @@
     "usePhishDetect": "boolean",
     "userOperations": {},
     "userRegion": "null",
+    "vbaAutorampListFetchedAt": "null",
+    "vbaCustomerAbilities": "null",
     "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
@@ -1330,6 +1344,7 @@
   "moneyFtue": {
     "acknowledged": "boolean",
     "isOpen": "boolean",
+    "origin": "null",
     "pendingDeposit": "null",
     "source": "null"
   },
@@ -1364,6 +1379,7 @@
     }
   },
   "rewardsMoney": {
+    "pendingReferralCode": "null",
     "referralMe": "null",
     "referralMeSettled": "boolean"
   },

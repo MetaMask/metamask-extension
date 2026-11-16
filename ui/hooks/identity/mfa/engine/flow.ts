@@ -11,6 +11,7 @@ import {
   getFlowErrorCode,
   isCooldownCountdown,
   isReportable,
+  isRetryableFailure,
 } from './errors';
 import {
   getEnrollmentMaxSessionAgeMs,
@@ -57,6 +58,7 @@ export const createMfaFlow = ({
   now = Date.now,
   reportError,
   trackEvent,
+  whileLocked = false,
 }: MfaFlowOptions): MfaFlow => {
   const tokenReason = { operation: reason.operation };
   const tracker = createMfaTracker({ reason, request, trackEvent });
@@ -563,7 +565,7 @@ export const createMfaFlow = ({
         showInlineError(code);
         return undefined;
       case 'failure':
-        fail(code, false, error);
+        fail(code, isRetryableFailure(code), error);
         return undefined;
       case 'support':
         // Shown even before any other screen: the user needs a way to
@@ -788,7 +790,7 @@ export const createMfaFlow = ({
     const needsPasskey =
       request.kind === 'enroll'
         ? request.method === 'passkey'
-        : request.methods.includes('passkey');
+        : !request.verifyOnly && request.methods.includes('passkey');
     if (needsPasskey && !passkey) {
       rejectWith('passkey_unsupported');
       return Promise.resolve();
@@ -801,6 +803,7 @@ export const createMfaFlow = ({
 
   return {
     reason,
+    whileLocked,
     result,
     start,
     getState: () => state,

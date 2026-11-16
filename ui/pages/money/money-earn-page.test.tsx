@@ -16,6 +16,7 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import {
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -162,6 +163,7 @@ describe('MoneyEarnPage', () => {
     expect(mockUseMoneyAddDepositToken).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyPotentialEarnings,
       tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+      ftueEntryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
     });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyPotentialEarnings,

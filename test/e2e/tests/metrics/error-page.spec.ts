@@ -1,20 +1,11 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import {
-  getCleanAppState,
-  getEventPayloads,
-  withFixtures,
-} from '../../helpers';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import { Driver } from '../../webdriver/driver';
-import {
-  BASE_ACCOUNT_SYNC_INTERVAL,
-  BASE_ACCOUNT_SYNC_TIMEOUT,
-} from '../identity/account-syncing/helpers';
 import { mockIdentityServices } from '../identity/mocks';
 
 /**
@@ -50,25 +41,6 @@ async function mockSupportLinkConsentMetrics(mockServer: Mockttp) {
   return segmentMocks;
 }
 
-/**
- * Waits until AuthenticationController reports the user is signed in.
- *
- * @param driver - The webdriver instance.
- */
-async function waitForSignedInAuth(driver: Driver): Promise<void> {
-  console.log('Waiting for authentication sign-in to complete');
-  await driver.waitUntil(
-    async () => {
-      const uiState = await getCleanAppState(driver);
-      return uiState?.metamask?.isSignedIn === true;
-    },
-    {
-      interval: BASE_ACCOUNT_SYNC_INTERVAL,
-      timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
-    },
-  );
-}
-
 describe('Error Page', function () {
   it('sends "Support Link Click" event with customer_service_token when user consents', async function () {
     await withFixtures(
@@ -87,8 +59,7 @@ describe('Error Page', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
-        await waitForSignedInAuth(driver);
+        await login(driver, { waitForSignIn: true });
 
         await triggerCrash(driver);
 

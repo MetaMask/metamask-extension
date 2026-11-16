@@ -4,7 +4,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
+import { withResolvers } from '#shared/lib/promise-with-resolvers';
+import type {
+  ReferralLocalizedText,
+  ReferralMeDto,
+} from '../../../../../shared/types/rewards-money';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AcceptInviteSheet } from './AcceptInviteSheet';
 
@@ -20,6 +24,8 @@ const copy = {
   inviteReferralCode: 'Referral code',
   inviteDecline: 'No thanks',
   inviteAccept: 'Accept invite',
+  inviteTermsLearnMore: 'Learn more',
+  inviteTermsUrl: 'https://link.metamask.io/rewards/terms',
   inviteAcceptedEyebrow: 'You are in',
   inviteAcceptedTitle: 'Activated',
   inviteAcceptedBody: 'Cash back {date}',
@@ -68,7 +74,7 @@ const mockReferralState: {
 const mockT = (key: string) =>
   (
     ({
-      close: 'Close',
+      close: messages.close.message,
       rewardsMoneyReferralCodeError: 'Invalid referral code',
       rewardsMoneyReferralCodeUnknownError:
         'Referral code couldn’t be validated.',
@@ -212,7 +218,11 @@ describe('AcceptInviteSheet', () => {
   });
 
   it('prefills the route code and lets the user edit it', () => {
-    renderSheet({ initialCode: 'ab-12!' });
+    const view = renderSheet({ initialCode: 'ab-12!' });
+
+    expect(
+      view.getByRole('dialog', { name: copy.inviteTitle }),
+    ).toBeInTheDocument();
 
     const input = document.querySelector(
       '#money-referral-code',
@@ -245,6 +255,48 @@ describe('AcceptInviteSheet', () => {
     ).toBeDisabled();
   });
 
+  it('opens the terms link inline after the invite body in a new window', () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    renderSheet();
+
+    const link = document.querySelector(
+      '[data-testid="money-referral-invite-terms-link"]',
+    ) as HTMLElement;
+    expect(link).toHaveTextContent('Learn more');
+    expect(link.parentElement).toHaveTextContent('Invite body Learn more');
+
+    fireEvent.click(link);
+
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://link.metamask.io/rewards/terms',
+      '_blank',
+      'noopener,noreferrer',
+    );
+    openSpy.mockRestore();
+  });
+
+  it.each<[string, Partial<ReferralLocalizedText>]>([
+    ['a blank label', { inviteTermsLearnMore: '   ' }],
+    ['a blank URL', { inviteTermsUrl: '' }],
+    [
+      'a non-https URL',
+      { inviteTermsUrl: 'http://link.metamask.io/rewards/terms' },
+    ],
+  ])('hides the terms link when there is %s', (_, overrides) => {
+    mockReferralState.referralMe = buildReferralMe({
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+      localized_text: { ...copy, ...overrides },
+    });
+    renderSheet();
+
+    expect(document.body).toHaveTextContent('Invite body');
+    expect(
+      document.querySelector(
+        '[data-testid="money-referral-invite-terms-link"]',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   it('keeps the invite mounted when referral me settles without a payload', async () => {
     mockReferralState.referralMe = null;
     mockReferralState.isSettled = true;
@@ -255,7 +307,14 @@ describe('AcceptInviteSheet', () => {
     expect(onClose).not.toHaveBeenCalled();
     expect(view.getByTestId('money-referral-invite')).toBeInTheDocument();
     expect(
-      view.getByText(messages.rewardsMoneyReferralCodeLabel.message),
+      view.getByRole('textbox', {
+        name: messages.rewardsMoneyReferralCodeLabel.message,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      view.getByRole('dialog', {
+        name: messages.rewardsMoneyReferralCodeLabel.message,
+      }),
     ).toBeInTheDocument();
     expect(
       view.getByRole('button', { name: messages.continue.message }),
@@ -407,6 +466,77 @@ describe('AcceptInviteSheet', () => {
     }
   });
 
+  it.each(['validation', 'registration'] as const)(
+    'waits for pending %s before allowing dismissal',
+    async (phase) => {
+      const validation = withResolvers<string>();
+      const registration = withResolvers<void>();
+      if (phase === 'validation') {
+        mockValidation.validateCode.mockReturnValue(validation.promise);
+      } else {
+        mockRegister.mockReturnValue(registration.promise);
+      }
+      const view = renderSheet();
+      const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      const termsLink = view.getByTestId('money-referral-invite-terms-link');
+      expect(termsLink).toBeDisabled();
+      fireEvent.click(termsLink);
+      expect(openSpy).not.toHaveBeenCalled();
+      openSpy.mockRestore();
+      expect(view.getByTestId('money-referral-accept')).toBeDisabled();
+      expect(view.getByTestId('money-referral-decline')).toBeDisabled();
+      expect(view.getByTestId('money-referral-code-input')).toBeDisabled();
+      expect(
+        view.getByRole('button', { name: messages.close.message }),
+      ).toBeDisabled();
+      fireEvent.keyDown(document, { key: 'Escape' });
+      fireEvent.click(view.getByTestId('money-referral-decline'));
+      expect(view.onClose).not.toHaveBeenCalled();
+      expect(trackedTypes()).toEqual(['viewed']);
+
+      await act(async () => {
+        if (phase === 'validation') {
+          validation.resolve('');
+        } else {
+          registration.resolve();
+        }
+      });
+
+      expect(view.getByTestId('money-referral-activated')).toBeInTheDocument();
+      expect(trackedTypes()).toEqual(['viewed', 'accepted']);
+    },
+  );
+
+  it.each(['registration', 'read-back'] as const)(
+    'does not track acceptance when %s finishes after unmount',
+    async (phase) => {
+      const pending = withResolvers<void>();
+      if (phase === 'registration') {
+        mockRegister.mockReturnValue(pending.promise);
+      } else {
+        mockReferralState.fetch.mockReturnValue(pending.promise);
+      }
+      const view = renderSheet();
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      expect(mockReferralState.fetch).toHaveBeenCalledTimes(
+        phase === 'read-back' ? 1 : 0,
+      );
+      view.unmount();
+
+      await act(async () => {
+        pending.resolve();
+      });
+
+      expect(trackedTypes()).toEqual(['viewed']);
+    },
+  );
+
   it('records a refused accept without locking a later answer', async () => {
     const user = userEvent.setup();
     mockRegister.mockRejectedValueOnce({
@@ -420,6 +550,9 @@ describe('AcceptInviteSheet', () => {
     });
 
     expect(trackedTypes()).toEqual(['viewed', 'refused']);
+    expect(
+      view.getByRole('button', { name: messages.close.message }),
+    ).toBeEnabled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: expect.objectContaining({

@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'clsx';
 import { BigNumber } from 'bignumber.js';
 import { debounce } from 'lodash';
 import {
@@ -17,6 +16,10 @@ import {
   AvatarFavicon,
   AvatarFaviconSize,
   Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconColor,
+  IconName,
 } from '@metamask/design-system-react';
 import { toast, ToastContent } from '#ui/components/ui/toast/toast';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -55,14 +58,8 @@ import {
   getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
 import {
-  ButtonIcon as LegacyButtonIcon,
-  ButtonIconSize as LegacyButtonIconSize,
-  IconName as LegacyIconName,
-} from '../../../components/component-library';
-import {
   BackgroundColor,
   BlockSize,
-  IconColor as LegacyIconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -605,24 +602,27 @@ const PrepareBridgePage = ({
                 justifyContent: JustifyContent.center,
               }}
             >
-              <LegacyButtonIcon
-                size={LegacyButtonIconSize.Sm}
-                iconProps={{
-                  className: classnames({
-                    rotate: rotateSwitchTokens,
-                  }),
-                }}
+              <ButtonIcon
+                size={ButtonIconSize.Sm}
+                className="enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
                 style={{
                   alignSelf: 'center',
-                  borderRadius: '100%',
                   width: '100%',
                   height: '100%',
                 }}
+                iconProps={{
+                  color: IconColor.IconDefault,
+                  className: 'transition-all duration-300 ease-in-out',
+                  // Tailwind has no 360° rotate utility; the full turn is what
+                  // animates the spin on each switch.
+                  style: rotateSwitchTokens
+                    ? { transform: 'rotate(360deg)' }
+                    : undefined,
+                }}
                 data-testid="switch-tokens"
                 ariaLabel="switch-tokens"
-                iconName={LegacyIconName.Arrow2Down}
-                color={LegacyIconColor.iconDefault}
-                disabled={
+                iconName={IconName.Arrow2Down}
+                isDisabled={
                   isSwitchingTemporarilyDisabled ||
                   !isValidQuoteRequest(quoteRequest, false) ||
                   (toChain && !isNetworkAdded(fromChains, toChain.chainId))

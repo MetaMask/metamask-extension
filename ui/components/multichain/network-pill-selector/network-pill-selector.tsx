@@ -213,7 +213,7 @@ export const NetworkPillSelector = () => {
   if (isLoading) {
     return (
       <div
-        className="flex gap-2 px-4 py-2"
+        className="flex gap-2 p-4"
         data-testid="network-pill-selector-skeleton"
       >
         {[0, 1, 2].map((key) => (
@@ -224,7 +224,7 @@ export const NetworkPillSelector = () => {
   }
 
   return (
-    <div className="px-4 py-2" data-testid="network-pill-selector">
+    <div className="p-4" data-testid="network-pill-selector">
       <div
         ref={pillsRef}
         className={classnames(
