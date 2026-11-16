@@ -78,12 +78,13 @@ describe('trace with no caller after the service-worker pageload ends (real SDK)
     }));
   }
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
     ['unsampled', 0],
     ['sampled', 1],
   ])(
     'starts a new trace drawn at its own rate after a %s pageload',
-    (_label, pageloadRate) => {
+    (_label: string, pageloadRate: number) => {
       asServiceWorker();
       const noCallerRate = 1 - pageloadRate;
       const pageloadTraceId = endPageload({
