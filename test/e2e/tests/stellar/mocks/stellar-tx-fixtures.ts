@@ -7,6 +7,7 @@ import {
   TransactionType,
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
+import type { CaipAssetType } from '@metamask/utils';
 import {
   Account,
   Asset,
@@ -25,6 +26,9 @@ import {
   STELLAR_NATIVE_ASSET_ID,
   STELLAR_USDC_ISSUER,
 } from './common-stellar';
+
+const ETH_MAINNET_USDC_ASSET_ID =
+  'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as const;
 
 export const STELLAR_RECIPIENT_ADDRESS = EXPECTED_STELLAR_ADDRESSES_BY_INDEX[1];
 export const STELLAR_EXTERNAL_SENDER_ADDRESS =
@@ -69,6 +73,8 @@ function toHorizonRecord(params: {
   pagingToken: string;
 }): Horizon.ServerApi.TransactionRecord {
   const hash = params.built.hash().toString('hex');
+  // Partial Horizon shape is enough for the snap's XDR/activity parsing; cast
+  // through unknown because ServerApi.TransactionRecord also declares methods.
   return {
     id: hash,
     hash,
@@ -88,7 +94,7 @@ function toHorizonRecord(params: {
     fee_meta_xdr: '',
     memo_type: 'none',
     signatures: [],
-  } as Horizon.ServerApi.TransactionRecord;
+  } as unknown as Horizon.ServerApi.TransactionRecord;
 }
 
 function isoFromMs(timestampMs: number): string {
@@ -215,11 +221,13 @@ export function stellarBridgeHistoryItem(opts: {
   destAmount: string;
   timestamp?: number;
 }): BridgeHistoryItem {
+  // BridgeHistoryItem still models EVM-oriented numeric chainIds in places;
+  // Stellar activity fixtures use CAIP ids at runtime, so cast the seeded item.
   const srcAsset = {
     symbol: 'XLM',
     chainId: MultichainNetworks.STELLAR,
     name: 'Stellar',
-    assetId: STELLAR_NATIVE_ASSET_ID,
+    assetId: STELLAR_NATIVE_ASSET_ID as CaipAssetType,
     decimals: 7,
     address: '',
   };
@@ -227,7 +235,7 @@ export function stellarBridgeHistoryItem(opts: {
     symbol: 'USDC',
     chainId: 1,
     name: 'USD Coin',
-    assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    assetId: ETH_MAINNET_USDC_ASSET_ID,
     decimals: 6,
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   };
@@ -271,7 +279,7 @@ export function stellarBridgeHistoryItem(opts: {
     startTime: opts.timestamp ?? Date.now() - 60_000,
     estimatedProcessingTimeInSeconds: 60,
     slippagePercentage: 0.5,
-  };
+  } as unknown as BridgeHistoryItem;
 }
 
 /**
@@ -299,7 +307,7 @@ export function stellarKeyringSendTx(opts: {
   const timestamp = Math.floor(opts.timestampMs / 1000);
   const asset = {
     unit: 'XLM',
-    type: STELLAR_NATIVE_ASSET_ID,
+    type: STELLAR_NATIVE_ASSET_ID as CaipAssetType,
     amount: opts.amount,
     fungible: true as const,
   };

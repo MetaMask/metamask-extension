@@ -96,10 +96,7 @@ describe('Stellar - Activity types', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          validateBalance: false,
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver, { validateBalance: false });
         await selectStellarNetwork(driver);
 
         const homePage = new HomePage(driver);
@@ -176,10 +173,7 @@ describe('Stellar - Activity types', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          validateBalance: false,
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver, { validateBalance: false });
         await selectStellarNetwork(driver);
 
         const homePage = new HomePage(driver);
