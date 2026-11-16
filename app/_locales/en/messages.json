@@ -5857,6 +5857,9 @@
   "mfaSettingsUsedForMoney": {
     "message": "Verifying Money transactions"
   },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "Wallet recovery"
+  },
   "mfaTotpSetupContinue": {
     "message": "Continue"
   },
