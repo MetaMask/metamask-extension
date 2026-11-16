@@ -1743,6 +1743,108 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
   });
 });
 
+describe('operations that overlap across awaits', () => {
+  // Real SDK: the browser SDK keeps one process-wide scope stack, so an
+  // operation's scope stays on top of it for as long as its promise is pending.
+
+  function initRealSentryClient(): void {
+    const client = new Sentry.BrowserClient({
+      dsn: 'https://public@example.ingest.sentry.io/1',
+      transport: () => ({
+        send: () => Promise.resolve({}),
+        flush: () => Promise.resolve(true),
+      }),
+      stackParser: Sentry.defaultStackParser,
+      integrations: [],
+      tracesSampleRate: 1,
+    });
+    Sentry.getCurrentScope().setClient(client);
+    client.init();
+    globalThis.sentry = { ...Sentry } as typeof globalThis.sentry;
+  }
+
+  const gate = () => {
+    let open!: () => void;
+    const promise = new Promise<void>((resolve) => {
+      open = resolve;
+    });
+    return { promise, open };
+  };
+
+  const traceIdOf = (span?: Sentry.Span | null) =>
+    span ? span.spanContext().traceId : undefined;
+
+  beforeEach(() => {
+    initRealSentryClient();
+  });
+
+  afterEach(() => {
+    Sentry.getCurrentScope().clear();
+    Sentry.getIsolationScope().clear();
+  });
+
+  it.failing('keeps each root operation on its own trace after both have awaited', async () => {
+    const aGate = gate();
+    const bGate = gate();
+    const seen: Record<string, string | undefined> = {};
+
+    const a = trace({ name: NAME_MOCK, id: 'A', root: true }, async () => {
+      const before = traceIdOf(Sentry.getActiveSpan());
+      await aGate.promise;
+      seen.aBefore = before;
+      seen.aAfter = traceIdOf(Sentry.getActiveSpan());
+    });
+    const b = trace({ name: NAME_MOCK, id: 'B', root: true }, async () => {
+      seen.bBefore = traceIdOf(Sentry.getActiveSpan());
+      await bGate.promise;
+      seen.bAfter = traceIdOf(Sentry.getActiveSpan());
+    });
+
+    aGate.open();
+    await a;
+    bGate.open();
+    await b;
+
+    expect(seen.aBefore).not.toBe(seen.bBefore);
+    expect(seen.aAfter).toBe(seen.aBefore);
+    expect(seen.bAfter).toBe(seen.bBefore);
+  });
+
+  it.failing('does not expose a pending operation as the active span to unrelated work', async () => {
+    const aGate = gate();
+    const a = trace({ name: NAME_MOCK, id: 'A', root: true }, async () => {
+      await aGate.promise;
+    });
+
+    // Unrelated background work, e.g. a fetch started by another controller.
+    const unrelated = Sentry.getActiveSpan();
+
+    aGate.open();
+    await a;
+
+    expect(unrelated).toBeUndefined();
+  });
+
+  it.failing('keeps one operation tags off events captured by unrelated work', async () => {
+    const aGate = gate();
+    const a = trace(
+      { name: NAME_MOCK, id: 'A', root: true, tags: { operation: 'A' } },
+      async () => {
+        await aGate.promise;
+      },
+    );
+
+    const unrelatedTags = {
+      ...Sentry.getCurrentScope().getScopeData().tags,
+    };
+
+    aGate.open();
+    await a;
+
+    expect(unrelatedTags).toStrictEqual({});
+  });
+});
+
 describe('children still running when their root ends', () => {
   // Real SDK: the loss happens in `SentrySpan`'s conversion of the root to a
   // transaction, which this file's `globalThis.sentry` mock does not model.
