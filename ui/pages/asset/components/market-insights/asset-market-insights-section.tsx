@@ -1,10 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import type { CaipAssetType } from '@metamask/utils';
+import { MARKET_INSIGHTS_EVENT_VALUE } from '../../../../../shared/constants/market-insights-events';
 import { useTokenSecurityData } from '../../../../hooks/useTokenSecurityData';
 import { useMarketInsights } from '../../hooks/useMarketInsights';
 import { MarketInsightsDisclaimerModal } from './market-insights-disclaimer-modal';
 import { MarketInsightsEntryCard } from './market-insights-entry-card';
 import { MarketInsightsEntryCardSkeleton } from './market-insights-entry-card-skeleton';
+import { useMarketInsightsTracking } from './useMarketInsightsTracking';
 
 export const MARKET_INSIGHTS_SECTION_TEST_ID = 'asset-market-insights';
 
@@ -65,22 +67,31 @@ export const AssetMarketInsightsSection = ({
     isCardEnabled,
   );
 
+  const { cardRef, trackOpened } = useMarketInsightsTracking({
+    assetId: marketInsightsAssetId,
+    report,
+    source: MARKET_INSIGHTS_EVENT_VALUE.SOURCE.TOKEN_DETAILS,
+  });
+
   const shouldShowCard =
     isCardEnabled &&
     Boolean(marketInsightsAssetId) &&
     (Boolean(report) || isLoading);
 
   const handleCardPress = useCallback(() => {
-    // Full Market Insights view lands in a follow-up. The press handler is
-    // the seam where navigation will be wired.
-  }, []);
+    trackOpened();
+  }, [trackOpened]);
 
   if (!shouldShowCard) {
     return null;
   }
 
   return (
-    <div data-testid={MARKET_INSIGHTS_SECTION_TEST_ID} className="mb-4">
+    <div
+      data-testid={MARKET_INSIGHTS_SECTION_TEST_ID}
+      className="mb-4"
+      ref={cardRef}
+    >
       {report ? (
         <MarketInsightsEntryCard
           report={report}
