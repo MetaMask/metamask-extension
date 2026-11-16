@@ -17,19 +17,12 @@ import {
   TextArea,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MarketInsightsFeedbackReason } from '../../../../../shared/constants/market-insights-events';
 
 const MAX_FEEDBACK_LENGTH = 255;
 
 export const MARKET_INSIGHTS_FEEDBACK_MODAL_TEST_ID =
   'market-insights-feedback-modal';
-
-export enum MarketInsightsFeedbackReason {
-  NotRelevant = 'not_relevant',
-  NotAccurate = 'not_accurate',
-  HardToUnderstand = 'hard_to_understand',
-  HarmfulOrOffensive = 'harmful_or_offensive',
-  SomethingElse = 'something_else',
-}
 
 export type MarketInsightsFeedbackSubmitPayload = {
   reason: MarketInsightsFeedbackReason;

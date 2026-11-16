@@ -4,9 +4,9 @@ import {
   en as enLocale,
   renderWithProvider,
 } from '../../../../../test/lib/render-helpers-navigate';
+import { MarketInsightsFeedbackReason } from '../../../../../shared/constants/market-insights-events';
 import {
   MarketInsightsFeedbackModal,
-  MarketInsightsFeedbackReason,
   MARKET_INSIGHTS_FEEDBACK_MODAL_TEST_ID,
 } from './market-insights-feedback-modal';
 
