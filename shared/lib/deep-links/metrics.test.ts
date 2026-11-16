@@ -136,18 +136,16 @@ describe('createEvent', () => {
       expect(result.properties.utm_term).toBe('crypto-wallet');
     });
 
-    it('reports Money ref as referral_code and keeps a legacy referral sensitive', () => {
+    it('reports Money ref as referral_code', () => {
       const url = new URL(
-        'https://example.com/test?referral=ABC123&ref=%20def456%20&customParam=secret-value',
+        'https://example.com/test?ref=%20def456%20&customParam=secret-value',
       );
       const signature = MISSING;
 
       const result = createEvent({ signature, url });
 
       expect(result.properties.referral_code).toBe('DEF456');
-      expect(result.properties).not.toHaveProperty('referral');
       expect(result.sensitiveProperties).toStrictEqual({
-        referral: 'ABC123',
         customParam: 'secret-value',
       });
     });

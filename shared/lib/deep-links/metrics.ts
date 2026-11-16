@@ -61,7 +61,7 @@ export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
 
   for (const [key, value] of url.searchParams.entries()) {
     if (key === 'sig' || key === 'ref') {
-      // Signatures are redundant; Money `ref` is handled above.
+      // Signatures are redundant; referral metadata is handled above.
       continue;
     }
 
