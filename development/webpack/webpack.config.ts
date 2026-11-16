@@ -95,6 +95,12 @@ async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
 }
 
 // #region cache
+// Invalidates the build cache when the listed files change.
+// `__filename` makes all `require`d dependencies of *this* file
+// `buildDependencies`.
+// Modules loaded with `await import()` are not recorded as
+// `require` children, so `getPlugins` appends the optional
+// plugins it loads to keep their own dependencies tracked.
 const cacheBuildDependencies: string[] = args.cache
   ? [
       __filename,
@@ -134,11 +140,6 @@ const cache = args.cache
       allowCollectingMemory: false,
       buildDependencies: {
         defaultConfig: [__filename],
-        // Invalidates the build cache when the listed files change.
-        // `__filename` makes all `require`d dependencies of *this* file
-        // `buildDependencies`. Modules loaded with `await import()` are not
-        // recorded as `require` children, so `getPlugins` appends the optional
-        // plugins it loads to keep their own dependencies tracked.
         config: cacheBuildDependencies,
       },
     } as const satisfies FileCacheOptions)
