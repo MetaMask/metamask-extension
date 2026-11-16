@@ -500,6 +500,33 @@ describe('createMfaFlow', () => {
       await expect(flow.result).resolves.toBeDefined();
     });
 
+    it('asks the user for a new code after too many wrong ones, instead of sending one', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.controller.completeCredentialVerification.mockRejectedValueOnce(
+        new MfaError('too_many_attempts', 'too many'),
+      );
+      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+
+      await act(flow, { type: 'submitCode', code: '111111' });
+      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(flow.getState()).toMatchObject({
+        step: { name: 'otp', codeSent: true },
+        busy: false,
+        error: 'too_many_attempts',
+        // The wait left from the code already sent.
+        resendAvailableAt: NOW + 60_000,
+      });
+      expect(flow.getState().codeResent).toBeUndefined();
+
+      await act(flow, { type: 'resend' });
+      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
+        2,
+      );
+      expect(flow.getState().error).toBeUndefined();
+    });
+
     it('shows a countdown when a code was sent less than a minute ago', async () => {
       const fake = createFakeController([activeEmail]);
       fake.controller.beginCredentialVerification.mockRejectedValueOnce(
@@ -1505,5 +1532,97 @@ describe('createMfaFlow analytics', () => {
     });
 
     expect(flow.getState().step.name).toBe('otp');
+  });
+
+  describe('verify-only requests', () => {
+    const EVERY_METHOD: MfaMethod[] = ['passkey', 'totp', 'email_otp'];
+    const VERIFY_ONLY: MfaFlowRequest = {
+      kind: 'verifyOrEnroll',
+      methods: EVERY_METHOD,
+      verifyWith: EVERY_METHOD,
+      verifyOnly: true,
+    };
+
+    it('rejects upfront with no screen when the profile has nothing to verify with', async () => {
+      const fake = createFakeController([]);
+      const { flow, outcome } = await startFlow(VERIFY_ONLY, fake.controller);
+
+      expect(flow.getState().step).toStrictEqual({ name: 'idle' });
+      const result = await outcome;
+      expect(result.ok || getMfaErrorCode(result.error)).toBe(
+        'credential_not_enrolled',
+      );
+      expect(fake.controller.beginCredentialEnrollment).not.toHaveBeenCalled();
+    });
+
+    it('verifies with the one active method, fetching the credentials once and never setting anything up', async () => {
+      const fake = createFakeController([providerEmail]);
+      const { flow, outcome } = await startFlow(VERIFY_ONLY, fake.controller);
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'otp',
+        purpose: 'verify',
+        method: 'email_otp',
+        email: undefined,
+        codeSent: true,
+      });
+
+      await act(flow, { type: 'submitCode', code: '123456' });
+
+      expect((await outcome).ok).toBe(true);
+      expect(fake.controller.refreshEnrolledCredentials).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(fake.controller.beginCredentialEnrollment).not.toHaveBeenCalled();
+    });
+
+    it('does not need a passkey adapter when another method can verify', async () => {
+      const fake = createFakeController([providerEmail]);
+      const { flow } = await startFlow(VERIFY_ONLY, fake.controller, {
+        passkey: undefined,
+      });
+
+      expect(flow.getState().step).toMatchObject({
+        name: 'otp',
+        method: 'email_otp',
+      });
+    });
+
+    it('offers a picker when several methods are active', async () => {
+      const fake = createFakeController([activeEmail, authenticatorApp]);
+      const { flow } = await startFlow(VERIFY_ONLY, fake.controller);
+
+      expect(flow.getState().step).toMatchObject({
+        name: 'picker',
+        purpose: 'verify',
+        options: ['totp', 'email_otp'],
+      });
+    });
+
+    it('fails instead of setting up when the profile loses its method mid-flow', async () => {
+      const fake = createFakeController([providerEmail]);
+      fake.controller.completeCredentialVerification.mockImplementationOnce(
+        async () => {
+          fake.setCredentials([]);
+          throw new MfaError('credential_not_enrolled', 'stale');
+        },
+      );
+      const { flow, outcome } = await startFlow(VERIFY_ONLY, fake.controller);
+
+      await act(flow, { type: 'submitCode', code: '123456' });
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'failure',
+        code: 'credential_not_enrolled',
+        canRetry: false,
+      });
+      expect(fake.controller.beginCredentialEnrollment).not.toHaveBeenCalled();
+
+      await act(flow, { type: 'dismiss' });
+      const result = await outcome;
+      expect(result.ok || getMfaErrorCode(result.error)).toBe(
+        'credential_not_enrolled',
+      );
+    });
   });
 });

@@ -308,7 +308,7 @@ export function PerpsAttributionProvider({
       // only means controller-emitted events miss UTM enrichment; the client
       // still merges the mirrored context, so log for visibility rather than
       // swallow.
-      submitRequestToBackground('perpsSetAttributionContext', [
+      submitRequestToBackground('PerpsController:setAttributionContext', [
         mergedSessionUtm,
       ]).catch(captureException);
     }
@@ -369,7 +369,7 @@ export function PerpsAttributionProvider({
     }
 
     const mergedSessionUtm = rememberSessionUtm(utmContext);
-    submitRequestToBackground('perpsSetAttributionContext', [
+    submitRequestToBackground('PerpsController:setAttributionContext', [
       mergedSessionUtm,
     ]).catch(captureException);
   }, [locationSearch]);
@@ -390,9 +390,9 @@ export function PerpsAttributionProvider({
       return;
     }
     // fire-and-forget, same rationale as the setter above
-    submitRequestToBackground('perpsSetAttributionContext', [{}]).catch(
-      captureException,
-    );
+    submitRequestToBackground('PerpsController:setAttributionContext', [
+      {},
+    ]).catch(captureException);
   }, [locationSearch]);
 
   // UTM (keyed by PERPS_EVENT_PROPERTY) plus source override, merged into every

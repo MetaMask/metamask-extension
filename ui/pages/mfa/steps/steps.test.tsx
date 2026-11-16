@@ -304,7 +304,7 @@ describe('EmailEntryStep', () => {
     );
     expect(screen.getByTestId(MfaFlowTestIds.ERROR_LINK)).toHaveAttribute(
       'href',
-      'https://support.metamask.io/configure/wallet/email-in-use',
+      'https://support.metamask.com/configure/wallet/email-in-use',
     );
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.ERROR_LINK));
     expect(onAction).toHaveBeenCalledWith({
@@ -575,6 +575,29 @@ describe('CodeStep', () => {
     expect(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeDisabled();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
     expect(onAction).not.toHaveBeenCalled();
+  });
+
+  it('says the code is dead and counts down to a new one after too many attempts', () => {
+    const { onAction } = renderCode(otp(true), {
+      error: 'too_many_attempts',
+      resendAvailableAt: Date.now() + 30_000,
+    });
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      messages.mfaErrorTooManyAttempts.message,
+    );
+    expect(
+      screen.getByText(messages.mfaOtpGetNewCodeIn.message.replace('$1', '30')),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeDisabled();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
+    expect(onAction).not.toHaveBeenCalled();
+    act(() => {
+      jest.advanceTimersByTime(30_000);
+    });
+    expect(
+      screen.getByText(messages.mfaOtpGetNewCode.message),
+    ).toBeInTheDocument();
   });
 
   it('lets the user resend once the cooldown ends, without its error', () => {

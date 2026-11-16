@@ -1,23 +1,9 @@
 import React from 'react';
-import { it } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
 import WalletOverview from './wallet-overview';
 
-jest.mock('../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment-type'),
-  getEnvironmentType: jest.fn(),
-}));
-
-const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
-
-const renderWalletOverview = (className?: string) => {
+const renderWalletOverview = ({ className }: { className?: string } = {}) => {
   const { container } = render(
     <WalletOverview
       balance={<span data-testid="balance" />}
@@ -28,15 +14,11 @@ const renderWalletOverview = (className?: string) => {
 
   return {
     root: container.firstElementChild,
-    balanceContainer: screen.getByTestId('balance').parentElement,
+    buttonsContainer: screen.getByTestId('buttons').parentElement,
   };
 };
 
 describe('WalletOverview', () => {
-  beforeEach(() => {
-    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-  });
-
   it('renders the balance and the buttons', () => {
     renderWalletOverview();
 
@@ -45,39 +27,20 @@ describe('WalletOverview', () => {
   });
 
   it('passes className through to the root element', () => {
-    const { root } = renderWalletOverview('custom-class');
+    const { root } = renderWalletOverview({ className: 'custom-class' });
 
     expect(root).toHaveClass('custom-class');
   });
 
-  it.each([
-    [ENVIRONMENT_TYPE_POPUP, 'items-start'],
-    [ENVIRONMENT_TYPE_FULLSCREEN, 'items-center'],
-    [ENVIRONMENT_TYPE_SIDEPANEL, 'items-center'],
-  ])('aligns the root in %s with %s', (environmentType, alignment) => {
-    mockGetEnvironmentType.mockReturnValue(environmentType);
+  it('centres the content, and left-aligns it in the wide layout', () => {
+    const { root, buttonsContainer } = renderWalletOverview();
 
-    const { root } = renderWalletOverview();
-
-    expect(root).toHaveClass(alignment);
+    expect(root).toHaveClass('items-center', 'wide-layout:items-start');
+    expect(buttonsContainer).toHaveClass(
+      'max-w-[458px]',
+      'self-center',
+      'wide-layout:max-w-none',
+      'wide-layout:self-start',
+    );
   });
-
-  it.each([
-    [ENVIRONMENT_TYPE_POPUP, false],
-    [ENVIRONMENT_TYPE_FULLSCREEN, false],
-    [ENVIRONMENT_TYPE_SIDEPANEL, true],
-  ])(
-    'applies the narrow width left-align fallback in %s: %s',
-    (environmentType, hasFallback) => {
-      mockGetEnvironmentType.mockReturnValue(environmentType);
-
-      const { balanceContainer } = renderWalletOverview();
-
-      if (hasFallback) {
-        expect(balanceContainer).toHaveClass('max-[490px]:items-start');
-      } else {
-        expect(balanceContainer).not.toHaveClass('max-[490px]:items-start');
-      }
-    },
-  );
 });

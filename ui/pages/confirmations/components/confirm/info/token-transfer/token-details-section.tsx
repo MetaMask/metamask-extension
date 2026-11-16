@@ -42,6 +42,7 @@ export const TokenDetailsSection = () => {
       <ConfirmInfoRowAddress
         address={tokenAddress as string}
         chainId={chainId}
+        fillWidth
       />
     </ConfirmInfoRow>
   );

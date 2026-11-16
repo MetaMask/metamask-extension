@@ -123,6 +123,29 @@ describe('searchTokens', () => {
     );
   });
 
+  it('sends the X-Client-Id and x-mm-service-profile headers', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({
+        data: [],
+        count: 0,
+        totalCount: 0,
+        pageInfo: { hasNextPage: false, endCursor: '' },
+      }),
+    });
+    global.fetch = fetchMock as unknown as typeof global.fetch;
+
+    await searchTokens({ query: 'usdc' });
+
+    const [, init] = fetchMock.mock.calls[0];
+    expect(init.headers).toStrictEqual({
+      'X-Client-Id': 'extension',
+      'x-mm-service-profile': 'assets--trending-search',
+    });
+  });
+
   it('short-circuits with an empty page when the query is whitespace-only', async () => {
     const fetchMock = jest.fn();
     global.fetch = fetchMock as unknown as typeof global.fetch;

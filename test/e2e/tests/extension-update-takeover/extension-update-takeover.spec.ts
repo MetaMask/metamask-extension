@@ -6,7 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import ExtensionUpdateTakeover from '../../page-objects/pages/dialog/extension-update-takeover';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import {

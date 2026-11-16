@@ -5,7 +5,7 @@ import ExtensionUpdateTakeover from '../pages/dialog/extension-update-takeover';
 import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import HeaderNavbar from '../pages/home/header-navbar';
-import PrivacySettings from '../pages/settings/privacy-settings';
+import PrivacySettings from '../pages/settings/privacy/privacy-settings';
 import SettingsPage from '../pages/settings/settings-page';
 import TestDapp from '../pages/test-dapp';
 
