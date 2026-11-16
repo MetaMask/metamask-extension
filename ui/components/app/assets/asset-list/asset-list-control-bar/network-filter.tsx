@@ -223,7 +223,10 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
             />
           )
         }
-        textProps={{ color: networkFilterTextColor }}
+        textProps={{
+          color: networkFilterTextColor,
+          className: 'min-w-0 truncate',
+        }}
       />
 
       <HomeNetworkFilterModal
