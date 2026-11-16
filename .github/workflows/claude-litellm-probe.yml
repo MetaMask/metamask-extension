@@ -186,8 +186,8 @@ jobs:
           BASH_DEFAULT_TIMEOUT_MS: '3600000'
           BASH_MAX_TIMEOUT_MS: '3600000'
         run: |
-          mkdir -p ~/.cache ~/.yarn ~/.npm ~/.config
-          settings=$(jq -nc --arg ws "$GITHUB_WORKSPACE" '{sandbox: {enabled: true, failIfUnavailable: true, allowUnsandboxedCommands: false, autoAllowBashIfSandboxed: true, filesystem: {denyWrite: ["~"], allowWrite: [$ws, "~/.cache", "~/.yarn", "~/.npm", "~/.config"]}, network: {allowedDomains: ["registry.npmjs.org", "registry.yarnpkg.com", "repo.yarnpkg.com", "github.com", "codeload.github.com"]}}}')
+          mkdir -p ~/.cache ~/.yarn ~/.npm ~/.config ~/.ssh
+          settings=$(jq -nc --arg ws "$GITHUB_WORKSPACE" --arg tmp "$RUNNER_TEMP" --arg ssh "$HOME/.ssh" '{sandbox: {enabled: true, failIfUnavailable: true, allowUnsandboxedCommands: false, autoAllowBashIfSandboxed: true, filesystem: {denyWrite: [$tmp, $ssh], allowWrite: [$ws, "~/.cache", "~/.yarn", "~/.npm", "~/.config"]}, network: {allowedDomains: ["registry.npmjs.org", "registry.yarnpkg.com", "repo.yarnpkg.com", "github.com", "codeload.github.com"]}}}')
           claude -p 'Run exactly this shell command and reply with only the word DONE: bash .github/probe/sandbox-battery.sh' \
             --model "$MODEL" --settings "$settings" --permission-mode dontAsk \
             --allowedTools 'Bash(bash .github/probe/sandbox-battery.sh)' \
@@ -197,6 +197,7 @@ jobs:
         if: always()
         run: |
           jq '{is_error, num_turns, total_cost_usd, denials: ((.permission_denials // []) | length)}' claude-run.json || true
+          jq -r '.result' claude-run.json | cut -c1-600 || true
           cat sandbox-results.txt
           echo '--- detail of failures'
           cat sandbox-detail.txt

@@ -50,7 +50,10 @@ export YARN_HTTPS_PROXY="${HTTPS_PROXY:-${https_proxy:-}}"
 
 # Isolation
 check_fails 'credential is hidden from the shell' bash -c '[ -n "${ANTHROPIC_AUTH_TOKEN:-}" ]'
-check_fails 'writes outside the allowed paths fail' touch "$HOME/sandbox-probe"
+check_fails 'GITHUB_ENV is not writable' bash -c 'printf "" >> "$GITHUB_ENV"'
+check_fails 'GITHUB_PATH is not writable' bash -c 'printf "" >> "$GITHUB_PATH"'
+check_fails 'RUNNER_TEMP is not writable' touch "$RUNNER_TEMP/sandbox-probe"
+check_fails 'home .ssh is not writable' bash -c 'mkdir -p "$HOME/.ssh" 2>/dev/null; touch "$HOME/.ssh/sandbox-probe"'
 check_fails 'no direct network route' curl --noproxy '*' -sS --max-time 10 https://example.com
 check_fails 'host outside the allowlist is refused' curl -sS --max-time 15 -o /dev/null https://example.com
 check 'allowed registry host is reachable' curl -sS --max-time 20 -o /dev/null --fail https://registry.npmjs.org/react
