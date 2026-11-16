@@ -27,6 +27,7 @@ import {
   type NetworkConfigurationsByChainIdState,
 } from '../../../../../../shared/lib/selectors/networks';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
+import { getMoneyWithdrawDestinationChainId } from '../../../../../helpers/money/money-transaction-guards';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
@@ -327,7 +328,7 @@ function DefaultSummaryLine({
 
   return (
     <SummaryLine
-      chainId={chainId}
+      chainId={getMoneyWithdrawDestinationChainId(transactionMeta) ?? chainId}
       hash={transactionMeta.hash}
       status={transactionMeta.status}
       time={transactionMeta.submittedTime ?? transactionMeta.time}

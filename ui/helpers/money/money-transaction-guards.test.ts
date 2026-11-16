@@ -6,6 +6,7 @@ import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getMoneyPayChainIds,
+  getMoneyWithdrawDestinationChainId,
   isMoneyAccountTx,
   isMoneyDepositTx,
   isMoneyWithdrawTx,
@@ -149,5 +150,34 @@ describe('Perps/Predict money activity guards', () => {
   it('rejects a Perps deposit with no pay metadata', () => {
     const tx = makeTx({ type: TransactionType.perpsDeposit });
     expect(isPerpsPredictMoneyActivity(tx)).toBe(false);
+  });
+});
+
+describe('getMoneyWithdrawDestinationChainId', () => {
+  const withdraw = (overrides: Partial<TransactionMeta> = {}) =>
+    makeTx({
+      type: TransactionType.moneyAccountWithdraw,
+      chainId: CHAIN_IDS.MONAD,
+      metamaskPay: { chainId: CHAIN_IDS.BASE, isPostQuote: true },
+      ...overrides,
+    } as Partial<TransactionMeta>);
+
+  it('returns the payment chain for a post-quote Money withdraw', () => {
+    expect(getMoneyWithdrawDestinationChainId(withdraw())).toBe(CHAIN_IDS.BASE);
+  });
+
+  it('returns undefined for deposits and non-post-quote txs', () => {
+    expect(
+      getMoneyWithdrawDestinationChainId(
+        withdraw({ type: TransactionType.moneyAccountDeposit }),
+      ),
+    ).toBeUndefined();
+    expect(
+      getMoneyWithdrawDestinationChainId(
+        withdraw({
+          metamaskPay: { chainId: CHAIN_IDS.BASE },
+        } as Partial<TransactionMeta>),
+      ),
+    ).toBeUndefined();
   });
 });
