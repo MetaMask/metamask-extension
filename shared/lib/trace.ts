@@ -591,7 +591,6 @@ const MAX_CHILD_SPANS_PER_TRANSACTION = 1000;
 
 type StandaloneCapableSpan = Span & {
   // Private `SentrySpan` field read by its `_onSpanEnded`.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   _isStandaloneSpan?: boolean;
   isStandaloneSpan?: () => boolean;
 };
