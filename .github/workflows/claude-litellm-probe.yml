@@ -21,7 +21,7 @@ jobs:
         run: |
           npm install -g @anthropic-ai/claude-code
           claude --version
-          sudo apt-get install -y bubblewrap
+          sudo apt-get install -y bubblewrap socat
           bwrap --version
 
       - name: Control, the Bash tool inherits the credential
@@ -54,8 +54,12 @@ jobs:
           pi --version
           pi install npm:pi-provider-litellm@4.8.0
           # Skills and MCP from the proxy would add prompt text and tools.
-          mkdir -p ~/.pi/agent
-          echo '{"litellm":{"skills":{"enabled":false},"mcp":{"enabled":false},"budget":{"enabled":false}}}' > ~/.pi/agent/settings.json
+          # `pi install` registered the package in settings.json, so merge.
+          settings=~/.pi/agent/settings.json
+          [ -f "$settings" ] || { mkdir -p ~/.pi/agent; echo '{}' > "$settings"; }
+          jq '. + {litellm: {skills: {enabled: false}, mcp: {enabled: false}, budget: {enabled: false}}}' "$settings" > "$settings.new"
+          mv "$settings.new" "$settings"
+          jq 'keys' "$settings"
 
       - name: Model count and one prompt through Pi
         env:
