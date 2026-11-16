@@ -12,6 +12,7 @@ import type {
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
@@ -62,7 +63,6 @@ const excludedTransactionTypes: TransactionType[] = [
 
 // Ported from custom toasts that included pre-broadcast (approved/signed) stage
 const earlyPendingToastTypes = new Set([
-  TransactionType.musdConversion,
   TransactionType.musdClaim,
   TransactionType.perpsDeposit,
 ]);
@@ -173,6 +173,10 @@ export function useTransactionEventToasts(): void {
   const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
+    if (getManifestFlags().testing?.disableTransactionToasts) {
+      return undefined;
+    }
+
     // EVM via TransactionController
     const handleEvmStatusUpdate = (
       raw:

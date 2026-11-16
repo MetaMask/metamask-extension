@@ -4,7 +4,10 @@ import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
-import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
+import {
+  TOKEN_DETAILS_ADVANCED_CHARTS_FLAG,
+  TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG,
+} from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 export {
@@ -225,6 +228,27 @@ export const getIsAdvancedChartsEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) => {
     const rawFlagValue = remoteFeatureFlags[TOKEN_DETAILS_ADVANCED_CHARTS_FLAG];
+    return getBooleanFeatureFlag(rawFlagValue, false);
+  },
+);
+
+/**
+ * Selector that returns whether the Token Details Page line chart should be
+ * coloured by its range direction (green when the range is up, red when it is
+ * down) rather than always green.
+ *
+ * Reuses the existing `--color-success-default` / `--color-error-default`
+ * tokens; it introduces no new colours and does not affect candle mode, which
+ * already draws green/red candles.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True when directional line-chart colouring should apply.
+ */
+export const getIsAdvancedChartsThemingEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => {
+    const rawFlagValue =
+      remoteFeatureFlags[TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG];
     return getBooleanFeatureFlag(rawFlagValue, false);
   },
 );

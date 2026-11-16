@@ -22,11 +22,9 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
-import {
-  isResolvableName,
-  shortenString,
-} from '../../../../../helpers/utils/util';
+import { isResolvableName } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useStartTruncatedText } from '../../../../../hooks/useStartTruncatedText';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipients } from '../../../hooks/send/useRecipients';
 import { useAccountAddressSeedIconMap } from '../../../hooks/send/useAccountAddressSeedIconMap';
@@ -86,15 +84,12 @@ export const RecipientInput = ({
     const addressIsValid =
       to?.length && to === toAddressValidated && recipientError === undefined;
 
-    return addressIsValid
-      ? shortenString(recipientResolvedLookup ?? to, {
-          truncatedCharLimit: 24,
-          truncatedStartChars: 10,
-          truncatedEndChars: 10,
-          skipCharacterInEnd: false,
-        })
-      : undefined;
+    return addressIsValid ? (recipientResolvedLookup ?? to) : undefined;
   }, [recipientError, recipientResolvedLookup, toAddressValidated, to]);
+  const [addressRef, fittedAddress] = useStartTruncatedText(
+    resolvedAddress ?? '',
+    10,
+  );
 
   const recipientName = useMemo(() => {
     const matchingRecipient = recipients.find(
@@ -117,8 +112,13 @@ export const RecipientInput = ({
           borderWidth={1}
           borderRadius={BorderRadius.MD}
           padding={3}
+          gap={2}
         >
-          <Box alignItems={AlignItems.center} display={Display.Flex}>
+          <Box
+            alignItems={AlignItems.center}
+            display={Display.Flex}
+            className="min-w-0 flex-1"
+          >
             <PreferredAvatar
               address={avatarSeedAddress}
               size={AvatarAccountSize.Md}
@@ -127,22 +127,28 @@ export const RecipientInput = ({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               marginLeft={3}
+              className="min-w-0 flex-1"
             >
               {recipientConfusableCharacters?.length ? (
                 <ConfusableRecipientName
                   confusableCharacters={recipientConfusableCharacters}
                 />
               ) : (
-                <Text variant={TextVariant.bodyMd} className="break-all">
+                <Text
+                  variant={TextVariant.bodyMd}
+                  className={recipientName ? 'truncate' : 'break-all'}
+                >
                   {recipientName ?? resolvedAddress}
                 </Text>
               )}
               {recipientName && (
                 <Text
+                  ref={addressRef}
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySm}
+                  ellipsis
                 >
-                  {resolvedAddress}
+                  {fittedAddress}
                 </Text>
               )}
             </Box>

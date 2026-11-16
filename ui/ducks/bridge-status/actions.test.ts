@@ -29,17 +29,17 @@ describe('bridge status background actions', () => {
       expect(messengerCall).toHaveBeenCalledWith(
         'BridgeStatusController:submitTx',
         [
-          '0x123',
-          quote,
-          true,
-          {},
-          MetaMetricsSwapsEventSource.MainView,
-          undefined,
-          [],
-          null,
-          undefined,
-          'fiat_value',
-          BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+          {
+            accountAddress: '0x123',
+            quoteResponses: [quote],
+            isStxEnabled: true,
+            quotesReceivedContext: {},
+            location: MetaMetricsSwapsEventSource.MainView,
+            activeAbTests: [],
+            tokenSecurityTypeDestination: null,
+            inputPrimaryDenomination: 'fiat_value',
+            migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+          },
         ],
       );
     });

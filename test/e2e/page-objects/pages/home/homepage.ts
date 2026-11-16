@@ -19,11 +19,6 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
-
 /**
  * Wallet home / account overview: balance, primary CTAs, and tab navigation.
  *
@@ -58,8 +53,6 @@ class HomePage {
   // (`coin-overview__primary-currency`) balance containers.
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
-
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
   protected readonly bottomNavActivityButton =
     '[data-testid="bottom-nav-activity"]';
@@ -137,8 +130,6 @@ class HomePage {
     '[data-testid="shield-entry-modal-close-button"]';
 
   private readonly singleActionButton = '[data-testid$="-overview-default"]';
-
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
@@ -492,12 +483,20 @@ class HomePage {
 
   async clickOnShieldEntryModalGetStarted(): Promise<void> {
     console.log('Click on shield entry modal get started');
-    await this.driver.clickElement(this.shieldEntryModalGetStarted);
+    await this.driver.findClickableElement(this.shieldEntryModalGetStarted);
+    await this.driver.waitForElementToStopMoving(
+      this.shieldEntryModalGetStarted,
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.shieldEntryModalGetStarted,
+    );
   }
 
   async clickOnShieldEntryModalSkip(): Promise<void> {
     console.log('Click on shield entry modal skip');
-    await this.driver.clickElement(this.shieldEntryModalSkip);
+    await this.driver.findClickableElement(this.shieldEntryModalSkip);
+    await this.driver.waitForElementToStopMoving(this.shieldEntryModalSkip);
+    await this.driver.clickElementAndWaitToDisappear(this.shieldEntryModalSkip);
   }
 
   async clickOnSwapButton(): Promise<void> {
@@ -625,6 +624,15 @@ class HomePage {
     await this.checkPageIsLoaded();
   }
 
+  /**
+   * Refreshes the home page and waits for it to load again.
+   */
+  async refreshPage(): Promise<void> {
+    console.log('Refreshing home page');
+    await this.driver.refresh();
+    await this.checkPageIsLoaded();
+  }
+
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
   }
@@ -735,18 +743,6 @@ class HomePage {
       },
       { timeout: 15000, interval: 500, stableFor: 5000 },
     );
-  }
-
-  async waitForNonEvmAccountsLoaded(): Promise<void> {
-    console.log('Waiting for Non EVM account icons to be visible');
-    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
-    // as soon as the icons render.
-    await this.driver.waitForSelector(this.solanaAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
-    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
   }
 }
 

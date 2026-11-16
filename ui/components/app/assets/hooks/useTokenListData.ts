@@ -46,7 +46,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
+import {
+  sortTokenAssets,
+  type TokenTableSort,
+} from '../util/sortAssetsWithPriority';
 import { isMusdToken } from '../../musd/constants';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
@@ -67,6 +70,9 @@ type UseTokenListDataOptions = {
     address: string,
     assetId?: CaipAssetType,
   ) => void;
+  // Table sort. Not used by token list, which uses the token sort config.
+  // Price and 24h overrides carry the value for each asset.
+  sortOverride?: TokenTableSort | null;
 };
 
 let lowValueAssetsExpandedSessionValue = false;
@@ -109,9 +115,13 @@ export const getTokenListItemKey = (
  *
  * @param options - The hook options.
  * @param options.onTokenClick - Called when a token is opened.
+ * @param options.sortOverride - Token table sort. The token list doesn't use this.
  * @returns The display items and the handlers to render them.
  */
-export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
+export function useTokenListData({
+  onTokenClick,
+  sortOverride = null,
+}: UseTokenListDataOptions) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
@@ -143,8 +153,8 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
     getAllEnabledNetworksForAllNamespaces,
   );
 
-  const sortedFilteredTokens = useMemo(() => {
-    const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
+  const filteredAssets = useMemo(() => {
+    const accountAssets = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
         if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
           return [];
@@ -163,22 +173,34 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
       },
     );
 
-    const accountAssets = sortAssetsWithPriority(
-      accountAssetsPreSort,
-      tokenSortConfig,
-    );
-
     // Filter out non-EVM assets when basic functionality toggle is OFF
     // Exception: Keep assets for the currently selected non-EVM chain
-    const finalAccountAssets = useExternalServices
-      ? accountAssets
-      : accountAssets.filter(
-          (asset) =>
-            isEvmChainId(asset.chainId) ||
-            (!isEvm && asset.chainId === currentNetwork.chainId),
-        );
+    if (useExternalServices) {
+      return accountAssets;
+    }
 
-    return finalAccountAssets.map((asset) => {
+    return accountAssets.filter(
+      (asset) =>
+        isEvmChainId(asset.chainId) ||
+        (!isEvm && asset.chainId === currentNetwork.chainId),
+    );
+  }, [
+    accountGroupIdAssets,
+    allEnabledNetworksForAllNamespaces,
+    currentNetwork.chainId,
+    deferredShouldHideZeroBalanceTokens,
+    isEvm,
+    useExternalServices,
+  ]);
+
+  const sortedFilteredTokens = useMemo(() => {
+    const accountAssets = sortTokenAssets(
+      filteredAssets,
+      tokenSortConfig,
+      sortOverride,
+    );
+
+    return accountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -191,15 +213,7 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
 
       return token;
     });
-  }, [
-    isEvm,
-    currentNetwork.chainId,
-    tokenSortConfig,
-    accountGroupIdAssets,
-    allEnabledNetworksForAllNamespaces,
-    deferredShouldHideZeroBalanceTokens,
-    useExternalServices,
-  ]);
+  }, [filteredAssets, sortOverride, tokenSortConfig]);
 
   // Skeletons stand in for the native gas token and mUSD that render before
   // the rest of the account's tokens. Tokens already in state stay visible,
@@ -222,10 +236,11 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
   });
 
   // Low value collapse only applies to declining-balance sort.
-  const shouldPartitionLowValueTokens =
-    tokenSortConfig?.key === 'tokenFiatAmount' &&
-    tokenSortConfig?.order === 'dsc' &&
-    tokenSortConfig?.sortCallback === 'stringNumeric';
+  const shouldPartitionLowValueTokens = sortOverride
+    ? sortOverride.column === 'balance' && !sortOverride.reversed
+    : tokenSortConfig?.key === 'tokenFiatAmount' &&
+      tokenSortConfig?.order === 'dsc' &&
+      tokenSortConfig?.sortCallback === 'stringNumeric';
   const { visibleTokens, lowValueTokens } = useLowValueTokenPartition({
     tokens: sortedFilteredTokens,
     enabled: shouldPartitionLowValueTokens,

@@ -573,6 +573,14 @@ class BridgeQuotePage {
   };
 
   /**
+   * Waits for the submitted swap to clear the amount, then leaves Swaps.
+   */
+  goBackAfterSubmit = async () => {
+    await this.driver.waitForSelector(`${this.sourceAmount}[value=""]`);
+    await this.goBack();
+  };
+
+  /**
    * Opens an asset picker, giving the prepare page time to send its pending
    * quote parameter update first. Only needed by tests that assert on
    * `Input Changed` metrics events: when the network management feature flag is

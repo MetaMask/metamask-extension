@@ -111,7 +111,7 @@ describe('MusdConvertSection', () => {
     expect(learnMore).toBeInTheDocument();
     fireEvent.click(learnMore);
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://support.metamask.io/manage-crypto/tokens/musd',
+      url: 'https://support.metamask.com/manage-crypto/tokens/musd',
     });
 
     expect(

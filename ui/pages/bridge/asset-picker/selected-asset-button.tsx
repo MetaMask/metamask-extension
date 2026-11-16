@@ -43,8 +43,8 @@ export const SelectedAssetButton = ({
     <SelectButton
       className="bridge-selected-asset-button"
       borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderColor={BorderColor.borderMuted}
+      backgroundColor={BackgroundColor.backgroundMuted}
+      borderColor={BorderColor.transparent}
       style={{
         padding: 8,
         paddingRight: 11,

@@ -12,5 +12,5 @@
 
 html,
 body {
-  background-color: var(--color-background-default);
+  background-color: transparent;
 }
