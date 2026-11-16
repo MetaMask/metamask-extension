@@ -69,7 +69,6 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           expectedBalance: '20 ETH',
-          waitForNonEvmAccounts: false,
         });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -141,7 +140,6 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await login(driver, {
           expectedBalance: '20 ETH',
-          waitForNonEvmAccounts: false,
         });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

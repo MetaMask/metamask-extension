@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa paggamit mo sa device na ito. Hindi magbabago ang wallet at mga account mo sa kung ano ito ngayon pagkatapos mabura ang data na ito. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang aming $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa iyong wallet. Kabilang sa MetaMetrics ang walang pagkakakilanlan na paggamit at diagnostic data. Hindi magbabago ang wallet at mga account mo. Ang proseso na ito ay maaaring tumagal ng 30 araw. Tingnan ang aming $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system. Subukan muli mamaya."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Hindi namin matanggal ang data na ito sa ngayon"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Hindi matanggal"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Aalisin na namin ang lahat ng iyong data ng MetaMetrics. Sigurado ka ba?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
@@ -5392,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Makikita sa button ng katayuan ng koneksyon kung nakakonekta ang website na binibisita mo sa kasalukuyan mong napiling account."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Dahil hindi mo kailanman sinubukan ang MetaMetrics, walang data na tatanggalin dito."
   },
   "metadataModalSourceTooltip": {
     "message": "Ang $1 ay naka-host sa npm at $2 ang natatanging pagkakailanlan ng Snap.",
