@@ -14,33 +14,20 @@ import { ResolutionContext } from './module-resolution';
 import { LexicalDeclaration, resolveDeclarations } from './name-resolution';
 
 /**
- * The nodes currently being resolved, used to stop circular references.
- *
- * Nodes are removed again once they have been resolved, so a node that is
- * reached through two different paths is still resolved both times; only a
- * node that leads back to itself is cut short.
- */
-type ResolutionStack = Set<ts.Node>;
-
-/**
  * Collects the top-level property names of an object literal, including the
  * names contributed by its spreads.
  *
  * @param objectLiteral - The object literal to inspect.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The property names.
  */
 export function collectPropertyNamesFromObject(
   objectLiteral: ts.ObjectLiteralExpression,
   context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
 ): Set<string> {
-  const names = guardingAgainstCycles(objectLiteral, stack, () =>
-    objectLiteral.properties.flatMap((objectElement) => [
-      ...resolvePropertyNamesFromObjectElement(objectElement, context, stack),
-    ]),
-  );
+  const names = objectLiteral.properties.flatMap((objectElement) => [
+    ...resolvePropertyNamesFromObjectElement(objectElement, context),
+  ]);
   return new Set(names);
 }
 
@@ -60,13 +47,11 @@ export function collectPropertyNamesFromObject(
  *
  * @param objectElement - The object element to inspect.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The contributed property names.
  */
 export function resolvePropertyNamesFromObjectElement(
   objectElement: ts.ObjectLiteralElementLike,
   context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
 ): Set<string> {
   // EXAMPLE:
   //   ...this.getApi(),
@@ -76,13 +61,11 @@ export function resolvePropertyNamesFromObjectElement(
     const objectLiterals = resolveGuaranteedObjectLiterals(
       objectElement.expression,
       context,
-      stack,
     );
     for (const objectLiteral of objectLiterals) {
       const propertyNames = collectPropertyNamesFromObject(
         objectLiteral,
         context,
-        stack,
       );
       for (const name of propertyNames) {
         names.add(name);
@@ -122,15 +105,13 @@ export function resolvePropertyNamesFromObjectElement(
  *
  * @param expression - The expression to resolve.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The object literals, of which there is at least one.
  */
 export function resolveGuaranteedObjectLiterals(
   expression: ts.Expression,
   context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
 ): ts.ObjectLiteralExpression[] {
-  const objectLiterals = resolveObjectLiterals(expression, context, stack);
+  const objectLiterals = resolveObjectLiterals(expression, context);
   if (objectLiterals.length === 0) {
     throw new UnresolvableExpressionError(
       expression,
@@ -149,81 +130,60 @@ export function resolveGuaranteedObjectLiterals(
  *
  * @param expression - The expression to resolve.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The resolved object literals, which may be empty.
  */
 export function resolveObjectLiterals(
   expression: ts.Expression,
   context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
 ): ts.ObjectLiteralExpression[] {
   const normalizedExpression = unwrapExpression(expression);
 
-  return guardingAgainstCycles(normalizedExpression, stack, () => {
-    // EXAMPLE:
-    //   { setTheme: preferencesController.setTheme.bind(preferencesController) }
-    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    if (ts.isObjectLiteralExpression(normalizedExpression)) {
-      return [normalizedExpression];
-    }
+  // EXAMPLE:
+  //   { setTheme: preferencesController.setTheme.bind(preferencesController) }
+  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  if (ts.isObjectLiteralExpression(normalizedExpression)) {
+    return [normalizedExpression];
+  }
 
-    // EXAMPLES:
-    //   null
-    //   undefined
-    if (isNullishExpression(normalizedExpression)) {
-      return [];
-    }
+  // EXAMPLES:
+  //   null
+  //   undefined
+  if (isNullishExpression(normalizedExpression)) {
+    return [];
+  }
 
-    // EXAMPLE:
-    //   perpsStream ? perpsStream.bridgeApi() : {}
-    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    if (ts.isConditionalExpression(normalizedExpression)) {
-      return [
-        ...resolveObjectLiterals(normalizedExpression.whenTrue, context, stack),
-        ...resolveObjectLiterals(
-          normalizedExpression.whenFalse,
-          context,
-          stack,
-        ),
-      ];
-    }
+  // EXAMPLE:
+  //   perpsStream ? perpsStream.bridgeApi() : {}
+  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  if (ts.isConditionalExpression(normalizedExpression)) {
+    return [
+      ...resolveObjectLiterals(normalizedExpression.whenTrue, context),
+      ...resolveObjectLiterals(normalizedExpression.whenFalse, context),
+    ];
+  }
 
-    // EXAMPLE:
-    //   getTransactionControllerApi(this.txController)
-    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    if (ts.isCallExpression(normalizedExpression)) {
-      return resolveCallResults(normalizedExpression, context, stack).flatMap(
-        (result) => resolveObjectLiterals(result, context, stack),
-      );
-    }
-
-    // EXAMPLE:
-    //   sharedApi
-    //   ^^^^^^^^^
-    if (ts.isIdentifier(normalizedExpression)) {
-      return resolveIdentifierValues(
-        normalizedExpression,
-        context,
-        stack,
-      ).flatMap((value) => resolveObjectLiterals(value, context, stack));
-    }
-
-    // EXAMPLE:
-    //   this.sharedApi
-    //   ^^^^^^^^^^^^^^
-    if (ts.isPropertyAccessExpression(normalizedExpression)) {
-      return resolvePropertyValues(
-        normalizedExpression,
-        context,
-        stack,
-      ).flatMap((value) => resolveObjectLiterals(value, context, stack));
-    }
-
-    throw new UnresolvableExpressionError(
-      normalizedExpression,
-      'Cannot determine which object this expression produces',
+  // EXAMPLE:
+  //   getTransactionControllerApi(this.txController)
+  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  if (ts.isCallExpression(normalizedExpression)) {
+    return resolveCallResults(normalizedExpression, context).flatMap((result) =>
+      resolveObjectLiterals(result, context),
     );
-  });
+  }
+
+  // EXAMPLE:
+  //   sharedApi
+  //   ^^^^^^^^^
+  if (ts.isIdentifier(normalizedExpression)) {
+    return resolveIdentifierValues(normalizedExpression, context).flatMap(
+      (value) => resolveObjectLiterals(value, context),
+    );
+  }
+
+  throw new UnresolvableExpressionError(
+    normalizedExpression,
+    'Cannot determine which object this expression produces',
+  );
 }
 
 /**
@@ -231,18 +191,16 @@ export function resolveObjectLiterals(
  *
  * @param callExpression - The call to inspect.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The returned expressions.
  */
 function resolveCallResults(
   callExpression: ts.CallExpression,
   context: ResolutionContext,
-  stack: ResolutionStack,
 ): ts.Expression[] {
   // EXAMPLE:
   //   getTransactionControllerApi(this.txController)
   //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ callee (`callExpression.expression`)
-  const functions = resolveFunctions(callExpression.expression, context, stack);
+  const functions = resolveFunctions(callExpression.expression, context);
   return functions.flatMap(collectReturnExpressions);
 }
 
@@ -253,13 +211,11 @@ function resolveCallResults(
  *
  * @param expression - The expression that refers to a function.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The functions, of which there is at least one.
  */
 export function resolveFunctions(
   expression: ts.Expression,
   context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
 ): FunctionWithBody[] {
   const normalizedExpression = unwrapExpression(expression);
 
@@ -274,7 +230,7 @@ export function resolveFunctions(
   //   perpsStream.bridgeApi
   //   ^^^^^^^^^^^^^^^^^^^^^ (as in `perpsStream.bridgeApi()`)
   if (ts.isPropertyAccessExpression(normalizedExpression)) {
-    return resolveMethods(normalizedExpression, context, stack);
+    return resolveMethods(normalizedExpression, context);
   }
 
   // EXAMPLE:
@@ -296,8 +252,8 @@ export function resolveFunctions(
       // EXAMPLE:
       //   const PerpsControllerInit = (request) => { ... };
       //         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      return resolveDeclarationValues(declaration, context, stack).flatMap(
-        (value) => resolveFunctions(value, context, stack),
+      return resolveDeclarationValues(declaration, context).flatMap((value) =>
+        resolveFunctions(value, context),
       );
     });
   }
@@ -314,19 +270,16 @@ export function resolveFunctions(
  * @param propertyAccessExpression - The property access, such as
  * `perpsStream.bridgeApi`.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The methods, of which there is at least one.
  */
 function resolveMethods(
   propertyAccessExpression: ts.PropertyAccessExpression,
   context: ResolutionContext,
-  stack: ResolutionStack,
 ): FunctionWithBody[] {
   const memberName = getPropertyNameText(propertyAccessExpression.name);
   const classDeclarations = resolveRequiredReceiverClasses(
     propertyAccessExpression.expression,
     context,
-    stack,
   );
 
   const methods: FunctionWithBody[] = [];
@@ -339,16 +292,6 @@ function resolveMethods(
       //   }
       if (ts.isMethodDeclaration(member) && member.body) {
         methods.push(member);
-        continue;
-      }
-
-      // EXAMPLE:
-      //   class PerpsStreamBridge {
-      //     bridgeApi = () => ({ ... });
-      //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property declaration
-      //   }
-      if (ts.isPropertyDeclaration(member) && member.initializer) {
-        methods.push(...resolveFunctions(member.initializer, context, stack));
       }
     }
   }
@@ -369,15 +312,13 @@ function resolveMethods(
  * @param expression - The receiver, such as `perpsStream` in
  * `perpsStream.bridgeApi()`.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The classes, of which there is at least one.
  */
 function resolveRequiredReceiverClasses(
   expression: ts.Expression,
   context: ResolutionContext,
-  stack: ResolutionStack,
 ): ts.ClassDeclaration[] {
-  const classDeclarations = resolveReceiverClasses(expression, context, stack);
+  const classDeclarations = resolveReceiverClasses(expression, context);
   if (classDeclarations.length === 0) {
     throw new UnresolvableExpressionError(
       expression,
@@ -392,101 +333,66 @@ function resolveRequiredReceiverClasses(
  *
  * @param expression - The expression to resolve.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The classes, which may be empty.
  */
 function resolveReceiverClasses(
   expression: ts.Expression,
   context: ResolutionContext,
-  stack: ResolutionStack,
 ): ts.ClassDeclaration[] {
   const normalizedExpression = unwrapExpression(expression);
 
-  return guardingAgainstCycles(normalizedExpression, stack, () => {
-    // EXAMPLE:
-    //   this.getApi()
-    //   ^^^^
-    if (normalizedExpression.kind === ts.SyntaxKind.ThisKeyword) {
-      const classDeclaration =
-        getEnclosingClassDeclaration(normalizedExpression);
-      if (!classDeclaration) {
-        throw new UnresolvableExpressionError(
-          normalizedExpression,
-          'Cannot find the class that `this` refers to',
-        );
-      }
-      return [classDeclaration];
-    }
-
-    // EXAMPLES:
-    //   null
-    //   undefined
-    if (isNullishExpression(normalizedExpression)) {
-      return [];
-    }
-
-    // EXAMPLE:
-    //   new PerpsStreamBridge(options)
-    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ new expression
-    //       ^^^^^^^^^^^^^^^^^ identifier naming the class
-    if (ts.isNewExpression(normalizedExpression)) {
-      return resolveConstructedClasses(normalizedExpression, context);
-    }
-
-    // EXAMPLE:
-    //   perpsController ? new PerpsStreamBridge(options) : null
-    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    if (ts.isConditionalExpression(normalizedExpression)) {
-      return [
-        ...resolveReceiverClasses(
-          normalizedExpression.whenTrue,
-          context,
-          stack,
-        ),
-        ...resolveReceiverClasses(
-          normalizedExpression.whenFalse,
-          context,
-          stack,
-        ),
-      ];
-    }
-
-    // EXAMPLE:
-    //   createPerpsStream(options)
-    //   ^^^^^^^^^^^^^^^^^^^^^^^^^^
-    if (ts.isCallExpression(normalizedExpression)) {
-      return resolveCallResults(normalizedExpression, context, stack).flatMap(
-        (result) => resolveReceiverClasses(result, context, stack),
+  // EXAMPLE:
+  //   this.getApi()
+  //   ^^^^
+  if (normalizedExpression.kind === ts.SyntaxKind.ThisKeyword) {
+    const classDeclaration = getEnclosingClassDeclaration(normalizedExpression);
+    if (!classDeclaration) {
+      throw new UnresolvableExpressionError(
+        normalizedExpression,
+        'Cannot find the class that `this` refers to',
       );
     }
+    return [classDeclaration];
+  }
 
-    // EXAMPLE:
-    //   perpsStream
-    //   ^^^^^^^^^^^
-    if (ts.isIdentifier(normalizedExpression)) {
-      return resolveIdentifierValues(
-        normalizedExpression,
-        context,
-        stack,
-      ).flatMap((value) => resolveReceiverClasses(value, context, stack));
-    }
+  // EXAMPLES:
+  //   null
+  //   undefined
+  if (isNullishExpression(normalizedExpression)) {
+    return [];
+  }
 
-    // EXAMPLE:
-    //   this.perpsStream
-    //   ^^^^^^^^^^^^^^^^
-    if (ts.isPropertyAccessExpression(normalizedExpression)) {
-      return resolvePropertyValues(
-        normalizedExpression,
-        context,
-        stack,
-      ).flatMap((value) => resolveReceiverClasses(value, context, stack));
-    }
+  // EXAMPLE:
+  //   new PerpsStreamBridge(options)
+  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ new expression
+  //       ^^^^^^^^^^^^^^^^^ identifier naming the class
+  if (ts.isNewExpression(normalizedExpression)) {
+    return resolveConstructedClasses(normalizedExpression, context);
+  }
 
-    throw new UnresolvableExpressionError(
-      normalizedExpression,
-      'Cannot determine which class this expression is an instance of',
+  // EXAMPLE:
+  //   perpsController ? new PerpsStreamBridge(options) : null
+  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  if (ts.isConditionalExpression(normalizedExpression)) {
+    return [
+      ...resolveReceiverClasses(normalizedExpression.whenTrue, context),
+      ...resolveReceiverClasses(normalizedExpression.whenFalse, context),
+    ];
+  }
+
+  // EXAMPLE:
+  //   perpsStream
+  //   ^^^^^^^^^^^
+  if (ts.isIdentifier(normalizedExpression)) {
+    return resolveIdentifierValues(normalizedExpression, context).flatMap(
+      (value) => resolveReceiverClasses(value, context),
     );
-  });
+  }
+
+  throw new UnresolvableExpressionError(
+    normalizedExpression,
+    'Cannot determine which class this expression is an instance of',
+  );
 }
 
 /**
@@ -524,17 +430,15 @@ function resolveConstructedClasses(
  *
  * @param identifier - The identifier to resolve.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The values, of which there is at least one.
  */
 function resolveIdentifierValues(
   identifier: ts.Identifier,
   context: ResolutionContext,
-  stack: ResolutionStack,
 ): ts.Expression[] {
   const declarations = resolveGuaranteedDeclarations(identifier, context);
   return declarations.flatMap((declaration) =>
-    resolveDeclarationValues(declaration, context, stack),
+    resolveDeclarationValues(declaration, context),
   );
 }
 
@@ -567,13 +471,11 @@ function resolveGuaranteedDeclarations(
  *
  * @param declaration - The declaration to inspect.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The values, of which there is at least one.
  */
 function resolveDeclarationValues(
   declaration: LexicalDeclaration,
   context: ResolutionContext,
-  stack: ResolutionStack,
 ): ts.Expression[] {
   // EXAMPLE:
   //   const perpsStream = perpsController ? new PerpsStreamBridge(...) : null;
@@ -589,14 +491,8 @@ function resolveDeclarationValues(
     return [declaration.initializer];
   }
 
-  // EXAMPLE:
-  //   const { originalApi: myApi } = options;
-  //           ^^^^^^^^^^^^^^^^^^ binding element
-  if (ts.isBindingElement(declaration)) {
-    return resolveBindingElementValues(declaration, context, stack);
-  }
-
   // ANTI-EXAMPLES:
+  //   const { api } = options;    (destructuring is not followed)
   //   function getApi() { ... }   (a function, not an object)
   //   class Bridge { ... }        (a class, not an object)
   //   function f(api) { ... }     (a parameter, whose value depends on callers)
@@ -604,89 +500,6 @@ function resolveDeclarationValues(
     declaration,
     'Cannot follow this kind of definition to a value',
   );
-}
-
-/**
- * Finds the values that one destructured binding selects from its source.
- *
- * For `const { originalApi: myApi } = options`, this selects the values of
- * `options.originalApi`, not every property in `options`.
- *
- * @param bindingElement - The binding element, such as `originalApi: myApi`.
- * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
- * @returns The selected values, of which there is at least one.
- */
-function resolveBindingElementValues(
-  bindingElement: ts.BindingElement,
-  context: ResolutionContext,
-  stack: ResolutionStack,
-): ts.Expression[] {
-  // EXAMPLE:
-  //   const { firstApi, originalApi: myApi } = options;
-  //                     ^^^^^^^^^^^^^^^^^^ binding element (`bindingElement`)
-  //         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ object binding pattern (`bindingPattern`)
-  //         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ variable declaration (`variableDeclaration`)
-  //
-  // ANTI-EXAMPLES:
-  //   const { ...remainingApi } = options;
-  //           ^^^ dotDotDotToken (object rest binding)
-  //   const [firstApi] = apis;
-  //         ^^^^^^^^^^ array binding pattern
-  //   const { [apiKey]: myApi } = options;
-  //           ^^^^^^^^ computed property name
-  //   function f({ myApi }) { ... }
-  //              ^^^^^^^^^ parameter, whose value depends on callers
-  const bindingPattern = bindingElement.parent;
-  const variableDeclaration = bindingPattern.parent;
-  const propertyName = bindingElement.propertyName ?? bindingElement.name;
-  if (
-    !ts.isObjectBindingPattern(bindingPattern) ||
-    bindingElement.dotDotDotToken ||
-    !ts.isVariableDeclaration(variableDeclaration) ||
-    !(ts.isIdentifier(propertyName) || ts.isStringLiteral(propertyName))
-  ) {
-    throw new UnresolvableExpressionError(
-      bindingElement,
-      'Cannot follow this kind of destructuring to a value',
-    );
-  }
-
-  assertConstDeclaration(variableDeclaration);
-  if (!variableDeclaration.initializer) {
-    throw new UnresolvableExpressionError(
-      variableDeclaration,
-      'Cannot follow destructuring without an initializer',
-    );
-  }
-
-  // EXAMPLES (source property name versus locally declared name):
-  //   const { originalApi: myApi } = options;
-  //           ^^^^^^^^^^^ propertyName
-  //                        ^^^^^ name
-  //   const { myApi } = options;
-  //           ^^^^^ name (propertyName is absent, so use name)
-  const sourceObjectLiterals = resolveGuaranteedObjectLiterals(
-    variableDeclaration.initializer,
-    context,
-    stack,
-  );
-  const values = sourceObjectLiterals.flatMap((sourceObjectLiteral) =>
-    collectPropertyValuesFromObject(
-      sourceObjectLiteral,
-      propertyName.text,
-      context,
-      stack,
-    ),
-  );
-
-  if (values.length === 0) {
-    throw new UnresolvableExpressionError(
-      bindingElement,
-      `Cannot find "${propertyName.text}" in the destructured object`,
-    );
-  }
-  return values;
 }
 
 /**
@@ -719,57 +532,26 @@ function assertConstDeclaration(
 /**
  * Finds the values that an object literal may assign to one property.
  *
- * Properties contributed by spreads are included. All matches are returned
- * rather than only the last one, because which spread wins can depend on
- * runtime values.
+ * Spreads are not followed and throw instead, since no tracked code needs
+ * them yet.
  *
  * @param objectLiteral - The object literal to search.
  * @param propertyName - The name of the property to find.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The expressions that may be assigned to the property.
  */
 export function collectPropertyValuesFromObject(
   objectLiteral: ts.ObjectLiteralExpression,
   propertyName: string,
   context: ResolutionContext,
-  stack: ResolutionStack = new Set(),
 ): ts.Expression[] {
-  return guardingAgainstCycles(objectLiteral, stack, () =>
-    objectLiteral.properties.flatMap((objectElement) =>
-      resolvePropertyValuesFromObjectElement(
-        objectElement,
-        propertyName,
-        context,
-        stack,
-      ),
+  return objectLiteral.properties.flatMap((objectElement) =>
+    resolvePropertyValuesFromObjectElement(
+      objectElement,
+      propertyName,
+      context,
     ),
   );
-}
-
-/**
- * Resolves a node unless it is already being resolved further up the stack.
- *
- * @param node - The node about to be resolved.
- * @param stack - The nodes currently being resolved.
- * @param resolve - Resolves the node.
- * @returns The result of `resolve`, or an empty array for a circular reference.
- */
-function guardingAgainstCycles<Value>(
-  node: ts.Node,
-  stack: ResolutionStack,
-  resolve: () => Value[],
-): Value[] {
-  if (stack.has(node)) {
-    return [];
-  }
-
-  stack.add(node);
-  try {
-    return resolve();
-  } finally {
-    stack.delete(node);
-  }
 }
 
 /**
@@ -778,31 +560,20 @@ function guardingAgainstCycles<Value>(
  * @param objectElement - The object element to inspect.
  * @param propertyName - The name of the property to find.
  * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
  * @returns The expressions that may be assigned to the property.
  */
 function resolvePropertyValuesFromObjectElement(
   objectElement: ts.ObjectLiteralElementLike,
   propertyName: string,
   context: ResolutionContext,
-  stack: ResolutionStack,
 ): ts.Expression[] {
-  // EXAMPLE:
-  //   { ...getRampsControllerApi(messengerClient, platform) }
-  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ spread assignment
+  // ANTI-EXAMPLE:
+  //   { messengerClient, ...baseResult }
+  //                      ^^^^^^^^^^^^^ spread assignment
   if (ts.isSpreadAssignment(objectElement)) {
-    const objectLiterals = resolveGuaranteedObjectLiterals(
-      objectElement.expression,
-      context,
-      stack,
-    );
-    return objectLiterals.flatMap((spreadObjectLiteral) =>
-      collectPropertyValuesFromObject(
-        spreadObjectLiteral,
-        propertyName,
-        context,
-        stack,
-      ),
+    throw new UnresolvableExpressionError(
+      objectElement,
+      `Cannot look up "${propertyName}" through a spread`,
     );
   }
 
@@ -828,116 +599,10 @@ function resolvePropertyValuesFromObjectElement(
     return [objectElement.name];
   }
 
-  // EXAMPLE:
-  //   { get api() { return { ... }; } }
-  //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ getter
-  if (ts.isGetAccessorDeclaration(objectElement)) {
-    return collectReturnExpressions(objectElement);
-  }
-
   throw new UnresolvableExpressionError(
     objectElement,
     'Cannot determine the value of this property',
   );
-}
-
-/**
- * Finds the values that a property access may read from its receiver's classes.
- *
- * Fields, getters, and assignments in constructors are followed. A method is
- * rejected, because the value of a method reference is the function itself,
- * not the object it returns.
- *
- * @param propertyAccessExpression - The property access, such as
- * `this.messengerClientApi`.
- * @param context - The resolution context.
- * @param stack - The nodes currently being resolved.
- * @returns The values, of which there is at least one.
- */
-function resolvePropertyValues(
-  propertyAccessExpression: ts.PropertyAccessExpression,
-  context: ResolutionContext,
-  stack: ResolutionStack,
-): ts.Expression[] {
-  const memberName = getPropertyNameText(propertyAccessExpression.name);
-  const classDeclarations = resolveRequiredReceiverClasses(
-    propertyAccessExpression.expression,
-    context,
-    stack,
-  );
-
-  const values = classDeclarations.flatMap((classDeclaration) =>
-    resolveClassPropertyValues(
-      classDeclaration,
-      propertyAccessExpression,
-      memberName,
-    ),
-  );
-
-  if (values.length === 0) {
-    throw new UnresolvableExpressionError(
-      propertyAccessExpression,
-      `Cannot find a value for "${memberName}" on the receiver's class`,
-    );
-  }
-  return values;
-}
-
-/**
- * Finds the values that one class may store under a property name.
- *
- * @param classDeclaration - The class to search.
- * @param propertyAccessExpression - The property access being resolved, used
- * for error messages.
- * @param memberName - The property name to find.
- * @returns The values, which may be empty.
- */
-function resolveClassPropertyValues(
-  classDeclaration: ts.ClassDeclaration,
-  propertyAccessExpression: ts.PropertyAccessExpression,
-  memberName: string,
-): ts.Expression[] {
-  const values: ts.Expression[] = [];
-
-  for (const member of findClassMembers(classDeclaration, memberName)) {
-    // ANTI-EXAMPLE (spreading `this.getApi` spreads a function, not its result):
-    //   class MetamaskController {
-    //     getApi() { ... }
-    //     ^^^^^^^^^^^^^^^^ method declaration
-    //   }
-    if (ts.isMethodDeclaration(member)) {
-      throw new UnresolvableExpressionError(
-        propertyAccessExpression,
-        `"${memberName}" is a method; call it to use the object it returns`,
-      );
-    }
-
-    // EXAMPLE:
-    //   class MetamaskController {
-    //     get api() { return { ... }; }
-    //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ getter
-    //   }
-    if (ts.isGetAccessorDeclaration(member)) {
-      values.push(...collectReturnExpressions(member));
-    }
-
-    // EXAMPLE:
-    //   class MetamaskController {
-    //     messengerClientApi = { ... };
-    //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ property declaration
-    //   }
-    if (ts.isPropertyDeclaration(member) && member.initializer) {
-      values.push(member.initializer);
-    }
-  }
-
-  // Fields are often declared without an initializer, or not declared at all,
-  // and assigned in the constructor instead. Checking constructors only after
-  // members gives initialized fields priority.
-  if (values.length === 0) {
-    values.push(...collectConstructorAssignments(classDeclaration, memberName));
-  }
-  return values;
 }
 
 /**
@@ -986,42 +651,4 @@ export function collectReturnExpressions(
     }
   });
   return expressions;
-}
-
-/**
- * Collects the values assigned to `this.<memberName>` in a class's constructor.
- *
- * @param classDeclaration - The class to search.
- * @param memberName - The property name to find.
- * @returns The assigned values.
- */
-function collectConstructorAssignments(
-  classDeclaration: ts.ClassDeclaration,
-  memberName: string,
-): ts.Expression[] {
-  const values: ts.Expression[] = [];
-
-  for (const member of classDeclaration.members) {
-    if (!ts.isConstructorDeclaration(member) || !member.body) {
-      continue;
-    }
-
-    forEachNodeInFunctionBody(member.body, (node) => {
-      // EXAMPLE:
-      //   this.messengerClientApi = messengerClientApi;
-      //   ^^^^^^^^^^^^^^^^^^^^^^^ left (property access on `this`)
-      //                             ^^^^^^^^^^^^^^^^^^ right
-      if (
-        ts.isBinaryExpression(node) &&
-        node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-        ts.isPropertyAccessExpression(node.left) &&
-        node.left.expression.kind === ts.SyntaxKind.ThisKeyword &&
-        getPropertyNameText(node.left.name) === memberName
-      ) {
-        values.push(node.right);
-      }
-    });
-  }
-
-  return values;
 }

@@ -98,12 +98,7 @@ function findDefinitionsThroughImport(
   if (!importedSourceFile) {
     return [];
   }
-  return findExportedDeclarations(
-    importedSourceFile,
-    importedName,
-    context,
-    new Set(),
-  );
+  return findExportedDeclarations(importedSourceFile, importedName, context);
 }
 
 /**
@@ -121,13 +116,6 @@ function findImportedName(
   const clause = importDeclaration.importClause;
   if (!clause) {
     return undefined;
-  }
-
-  // EXAMPLE:
-  //   import PerpsStreamBridge from './perps-stream-bridge';
-  //          ^^^^^^^^^^^^^^^^^ default import
-  if (clause.name?.text === localName) {
-    return localName;
   }
 
   const { namedBindings } = clause;
@@ -156,21 +144,13 @@ function findImportedName(
  * @param sourceFile - The file whose exports to search.
  * @param exportedName - The name the file exports.
  * @param context - The resolution context.
- * @param visitedSourceFiles - Files already searched, to stop circular
- * re-exports.
  * @returns The matching declarations.
  */
 function findExportedDeclarations(
   sourceFile: ts.SourceFile,
   exportedName: string,
   context: ResolutionContext,
-  visitedSourceFiles: Set<ts.SourceFile>,
 ): LexicalDeclaration[] {
-  if (visitedSourceFiles.has(sourceFile)) {
-    return [];
-  }
-  visitedSourceFiles.add(sourceFile);
-
   // EXAMPLE:
   //   export const ExecutionServiceInit = (request) => { ... };
   //                ^^^^^^^^^^^^^^^^^^^^ top-level declaration
@@ -184,12 +164,7 @@ function findExportedDeclarations(
       continue;
     }
     declarations.push(
-      ...findDefinitionsThroughReexport(
-        statement,
-        exportedName,
-        context,
-        visitedSourceFiles,
-      ),
+      ...findDefinitionsThroughReexport(statement, exportedName, context),
     );
   }
   return declarations;
@@ -202,39 +177,29 @@ function findExportedDeclarations(
  * @param exportDeclaration - The export statement to inspect.
  * @param exportedName - The name being looked up.
  * @param context - The resolution context.
- * @param visitedSourceFiles - Files already searched.
  * @returns The matching declarations.
  */
 function findDefinitionsThroughReexport(
   exportDeclaration: ts.ExportDeclaration,
   exportedName: string,
   context: ResolutionContext,
-  visitedSourceFiles: Set<ts.SourceFile>,
 ): LexicalDeclaration[] {
   const { exportClause } = exportDeclaration;
-  let sourceName: string | undefined;
-
-  // EXAMPLE:
-  //   export * from './execution-service-init';
-  //          ^ (no export clause)
-  if (!exportClause) {
-    sourceName = exportedName;
+  if (!exportClause || !ts.isNamedExports(exportClause)) {
+    return [];
   }
 
   // EXAMPLE:
   //   export { ExecutionServiceInit as Init } from './execution-service-init';
   //            ^^^^^^^^^^^^^^^^^^^^ propertyName (name in the source file)
   //                                    ^^^^ name (name exported here)
-  if (exportClause && ts.isNamedExports(exportClause)) {
-    const element = exportClause.elements.find(
-      (candidate) => candidate.name.text === exportedName,
-    );
-    sourceName = element && (element.propertyName ?? element.name).text;
-  }
-
-  if (sourceName === undefined) {
+  const element = exportClause.elements.find(
+    (candidate) => candidate.name.text === exportedName,
+  );
+  if (!element) {
     return [];
   }
+  const sourceName = (element.propertyName ?? element.name).text;
 
   const reexportedSourceFile = loadImportedSourceFile(
     exportDeclaration,
@@ -243,12 +208,7 @@ function findDefinitionsThroughReexport(
   if (!reexportedSourceFile) {
     return [];
   }
-  return findExportedDeclarations(
-    reexportedSourceFile,
-    sourceName,
-    context,
-    visitedSourceFiles,
-  );
+  return findExportedDeclarations(reexportedSourceFile, sourceName, context);
 }
 
 /**

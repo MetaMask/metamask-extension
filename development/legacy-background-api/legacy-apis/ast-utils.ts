@@ -6,7 +6,6 @@ import ts from 'typescript';
 export type FunctionWithBody =
   | ts.FunctionDeclaration
   | ts.MethodDeclaration
-  | ts.GetAccessorDeclaration
   | ts.ArrowFunction
   | ts.FunctionExpression;
 

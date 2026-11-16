@@ -363,70 +363,6 @@ describe('getControllerConnectionApiMemberNames', () => {
       );
     });
 
-    it('follows a spread of a class field on this', () => {
-      const { sourceFile, context } = parseSource(`class MetamaskController {
-        sharedApi = { exposed() {} };
-        setupControllerConnection() { const api = { ...this.sharedApi }; }
-      }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['exposed']),
-      );
-    });
-
-    it('follows a spread of a property assigned in the constructor', () => {
-      const { sourceFile, context } = parseSource(`class MetamaskController {
-        constructor() {
-          this.other = {};
-          if (enabled) {
-            this.sharedApi = { exposed() {} };
-          }
-        }
-        setupControllerConnection() { const api = { ...this.sharedApi }; }
-      }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['exposed']),
-      );
-    });
-
-    it('prefers a class field initializer over a constructor assignment', () => {
-      const { sourceFile, context } = parseSource(`class MetamaskController {
-        constructor() { this.sharedApi = { fromConstructor() {} }; }
-        sharedApi = { fromField() {} };
-        setupControllerConnection() { const api = { ...this.sharedApi }; }
-      }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['fromField']),
-      );
-    });
-
-    it('follows a spread of a getter on an instance', () => {
-      const { sourceFile, context } = parseSource(`
-        class Bridge { get api() { return { exposed() {} }; } }
-        const bridge = new Bridge();
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...bridge.api }; }
-        }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['exposed']),
-      );
-    });
-
     it('rejects a spread of a method reference', () => {
       const { sourceFile, context } = parseSource(`class MetamaskController {
         getApi() { return { exposed() {} }; }
@@ -435,7 +371,7 @@ describe('getControllerConnectionApiMemberNames', () => {
 
       expect(() =>
         getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow('"getApi" is a method; call it to use the object it returns');
+      ).toThrow('Cannot determine which object this expression produces');
     });
 
     it('rejects a spread of a function value', () => {
@@ -460,25 +396,14 @@ describe('getControllerConnectionApiMemberNames', () => {
       ).toThrow('Cannot find a definition for "unknownApi"');
     });
 
-    it('rejects a spread of a missing property', () => {
+    it('rejects a spread of a property', () => {
       const { sourceFile, context } = parseSource(`class MetamaskController {
         setupControllerConnection() { const api = { ...this.missing }; }
       }`);
 
       expect(() =>
         getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow('Cannot find a value for "missing" on the receiver\'s class');
-    });
-
-    it('rejects a spread of a field that is never assigned', () => {
-      const { sourceFile, context } = parseSource(`class MetamaskController {
-        missing: unknown;
-        setupControllerConnection() { const api = { ...this.missing }; }
-      }`);
-
-      expect(() =>
-        getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow('Cannot find a value for "missing" on the receiver\'s class');
+      ).toThrow('Cannot determine which object this expression produces');
     });
 
     it('rejects a spread of an unsupported expression', () => {
@@ -489,18 +414,6 @@ describe('getControllerConnectionApiMemberNames', () => {
       expect(() =>
         getControllerConnectionApiMemberNames(sourceFile, context),
       ).toThrow('Cannot determine which object this expression produces');
-    });
-
-    it('rejects a spread that refers to itself', () => {
-      const { sourceFile, context } = parseSource(`
-        const sharedApi = { exposed() {}, ...sharedApi };
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...sharedApi }; }
-        }`);
-
-      expect(() =>
-        getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow('This expression does not resolve to any object');
     });
   });
 
@@ -616,22 +529,6 @@ describe('getControllerConnectionApiMemberNames', () => {
       );
     });
 
-    it('follows a call to an arrow-function field on an instance', () => {
-      const { sourceFile, context } = parseSource(`
-        class Bridge { bridgeApi = () => ({ exposed() {} }); }
-        const bridge = new Bridge();
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...bridge.bridgeApi() }; }
-        }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['exposed']),
-      );
-    });
-
     it('follows a receiver created conditionally, as with the Perps stream bridge', () => {
       const { sourceFile, context } = parseSource(`
         class PerpsStreamBridge { bridgeApi() { return { perpsInit() {} }; } }
@@ -651,25 +548,6 @@ describe('getControllerConnectionApiMemberNames', () => {
 
       expect(adhocControllerConnectionMethods).toStrictEqual(
         new Set(['perpsInit']),
-      );
-    });
-
-    it('follows a receiver stored in a field, not the class that holds it', () => {
-      const { sourceFile, context } = parseSource(`
-        class Bridge { bridgeApi() { return { fromBridge() {} }; } }
-        class MetamaskController {
-          bridge = new Bridge();
-          bridgeApi() { return { fromController() {} }; }
-          setupControllerConnection() {
-            const api = { ...this.bridge.bridgeApi() };
-          }
-        }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['fromBridge']),
       );
     });
 
@@ -716,21 +594,6 @@ describe('getControllerConnectionApiMemberNames', () => {
       expect(() =>
         getControllerConnectionApiMemberNames(sourceFile, context),
       ).toThrow('Cannot find a definition for "createBridge"');
-    });
-
-    it('rejects circular aliases of a receiver without overflowing the stack', () => {
-      const { sourceFile, context } = parseSource(`
-        const first = second;
-        const second = first;
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...first.bridgeApi() }; }
-        }`);
-
-      expect(() =>
-        getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow(
-        'Cannot determine which class this expression is an instance of',
-      );
     });
   });
 
@@ -865,130 +728,19 @@ describe('getControllerConnectionApiMemberNames', () => {
         new Set(['imported']),
       );
     });
-
-    it('follows an import through a wildcard re-export', () => {
-      const { sourceFile, context } = parseSource(`
-        import { createApi } from './factories';
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...createApi() }; }
-        }`);
-      addSource(context, 'factories/index.ts', "export * from './create-api';");
-      addSource(
-        context,
-        'factories/create-api.ts',
-        'export function createApi() { return { imported() {} }; }',
-      );
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['imported']),
-      );
-    });
   });
 
   describe('destructuring', () => {
-    it('selects the destructured property from an object literal', () => {
+    it('rejects a spread of a destructured name', () => {
       const { sourceFile, context } = parseSource(`
-        const { sharedApi } = {
-          sharedApi: { exposedMethod() {} },
-          unrelated: true,
-        };
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...sharedApi }; }
-        }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['exposedMethod']),
-      );
-    });
-
-    it('uses the original property name for a renamed binding', () => {
-      const { sourceFile, context } = parseSource(`
-        const options = { originalApi: { renamedMethod() {} }, unrelated: true };
-        const { originalApi: sharedApi } = options;
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...sharedApi }; }
-        }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['renamedMethod']),
-      );
-    });
-
-    it('follows a shorthand property in the destructured object', () => {
-      const { sourceFile, context } = parseSource(`
-        const originalApi = { exposedMethod() {} };
-        const { originalApi: sharedApi } = { originalApi, unrelated: true };
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...sharedApi }; }
-        }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['exposedMethod']),
-      );
-    });
-
-    it('selects the destructured property from a function result', () => {
-      const { sourceFile, context } = parseSource(`
-        function createApis() { return { sharedApi: { exposed() {} }, other: {} }; }
-        const { sharedApi } = createApis();
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...sharedApi }; }
-        }`);
-
-      const { adhocControllerConnectionMethods } =
-        getControllerConnectionApiMemberNames(sourceFile, context);
-
-      expect(adhocControllerConnectionMethods).toStrictEqual(
-        new Set(['exposed']),
-      );
-    });
-
-    it('rejects a destructured property that does not exist', () => {
-      const { sourceFile, context } = parseSource(`
-        const { sharedApi } = { unrelated() {} };
+        const { sharedApi } = { sharedApi: { exposedMethod() {} } };
         class MetamaskController {
           setupControllerConnection() { const api = { ...sharedApi }; }
         }`);
 
       expect(() =>
         getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow('Cannot find "sharedApi" in the destructured object');
-    });
-
-    it('rejects an object rest binding', () => {
-      const { sourceFile, context } = parseSource(`
-        const { ...sharedApi } = { unrelated() {} };
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...sharedApi }; }
-        }`);
-
-      expect(() =>
-        getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow('Cannot follow this kind of destructuring to a value');
-    });
-
-    it('rejects an array binding', () => {
-      const { sourceFile, context } = parseSource(`
-        const [sharedApi] = [{ unrelated() {} }];
-        class MetamaskController {
-          setupControllerConnection() { const api = { ...sharedApi }; }
-        }`);
-
-      expect(() =>
-        getControllerConnectionApiMemberNames(sourceFile, context),
-      ).toThrow('Cannot follow this kind of destructuring to a value');
+      ).toThrow('Cannot follow this kind of definition to a value');
     });
   });
 
@@ -1096,6 +848,26 @@ describe('getControllerConnectionApiMemberNames', () => {
         getControllerConnectionApiMemberNames(sourceFile, context);
 
       expect(messengerClientApiMethods).toStrictEqual(new Set(['perpsInit']));
+    });
+
+    it('rejects an init function result that spreads in its api', () => {
+      const { sourceFile, context } = parseSource(`
+        const baseResult = { api: { perpsInit() {} } };
+        const PerpsControllerInit = () => ({ messengerClient: {}, ...baseResult });
+        class MetamaskController {
+          constructor() {
+            const messengerClientInitFunctions = {
+              PerpsController: PerpsControllerInit,
+            };
+          }
+          setupControllerConnection() {
+            const api = { ...this.messengerClientApi };
+          }
+        }`);
+
+      expect(() =>
+        getControllerConnectionApiMemberNames(sourceFile, context),
+      ).toThrow('Cannot look up "api" through a spread');
     });
 
     it('rejects a controller without messengerClientInitFunctions', () => {
