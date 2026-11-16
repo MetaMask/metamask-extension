@@ -1,5 +1,4 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { selectStellarNetwork } from '../../page-objects/flows/stellar-network.flow';
@@ -8,12 +7,10 @@ import SelectNetworkModal from '../../page-objects/pages/networks/select-network
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
+import { withStellarFixtures } from '../stellar/fixtures/with-stellar-fixtures';
 import {
   STELLAR_CHAIN_ID,
   STELLAR_NETWORK_NAME,
-  buildStellarFixture,
-  mockStellarApis,
-  stellarFixtureOptions,
 } from '../stellar/mocks/common-stellar';
 
 describe('Stellar - Network', function (this: Suite) {
@@ -21,12 +18,10 @@ describe('Stellar - Network', function (this: Suite) {
 
   describe('default wallet', function () {
     it('shows Stellar across the default wallet mainnet flow', async function () {
-      await withFixtures(
-        stellarFixtureOptions({
-          fixtures: buildStellarFixture().build(),
+      await withStellarFixtures(
+        {
           title: this.test?.fullTitle(),
-          testSpecificMock: mockStellarApis,
-        }),
+        },
         async ({ driver }: { driver: Driver }) => {
           await login(driver, { validateBalance: false });
           const homePage = new HomePage(driver);
