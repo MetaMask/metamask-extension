@@ -82,19 +82,6 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     }
   }, [error, codeResent]);
 
-  // The first email code of a flow can hit the cooldown left by the previous
-  // one.
-  useEffect(() => {
-    if (
-      !isTotp &&
-      !codeSent &&
-      resendAvailableAt !== undefined &&
-      secondsLeft === 0
-    ) {
-      onAction({ type: 'resend', trigger: 'auto' });
-    }
-  }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
-
   useEffect(() => {
     if (codeSent) {
       inputRef.current?.focus();
@@ -142,7 +129,11 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         String(secondsLeft),
       ]);
     }
-    return t(busy && !codeSent ? 'mfaOtpSending' : 'mfaOtpResend');
+    if (busy && !codeSent) {
+      return t('mfaOtpSending');
+    }
+    // A first code that hit the resend limit is sent when the user asks.
+    return t(codeSent ? 'mfaOtpResend' : 'mfaOtpSend');
   };
   const canResend = !isCoolingDown && !busy;
 

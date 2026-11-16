@@ -5653,7 +5653,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many incorrect codes. Get a new code when it's available."
+    "message": "Too many incorrect codes. Get a new code."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5754,8 +5754,11 @@
   "mfaOtpRetryIn": {
     "message": "Try again in $1s"
   },
+  "mfaOtpSend": {
+    "message": "Send code"
+  },
   "mfaOtpSendIn": {
-    "message": "Sending a new code in $1s",
+    "message": "Send code in $1s",
     "description": "$1 is a number of seconds"
   },
   "mfaOtpSending": {

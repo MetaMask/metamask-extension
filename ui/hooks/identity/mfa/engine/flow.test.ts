@@ -226,7 +226,8 @@ describe('createMfaFlow', () => {
       email: 'new@b.co',
       codeSent: true,
     });
-    expect(flow.getState().resendAvailableAt).toBe(NOW + 60_000);
+    // No countdown of our own: the server's resend limit decides.
+    expect(flow.getState().resendAvailableAt).toBeUndefined();
 
     await act(flow, { type: 'back' });
     expect(flow.getState().step).toStrictEqual({
@@ -242,8 +243,6 @@ describe('createMfaFlow', () => {
       codeSent: true,
     });
     expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(1);
-    // Still the countdown of the code already sent.
-    expect(flow.getState().resendAvailableAt).toBe(NOW + 60_000);
 
     await act(flow, { type: 'submitCode', code: '111111' });
     expect(fake.controller.completeCredentialEnrollment).toHaveBeenCalledWith({
@@ -515,16 +514,16 @@ describe('createMfaFlow', () => {
         step: { name: 'otp', codeSent: true },
         busy: false,
         error: 'too_many_attempts',
-        // The wait left from the code already sent.
-        resendAvailableAt: NOW + 60_000,
       });
-      expect(flow.getState().codeResent).toBeUndefined();
 
       await act(flow, { type: 'resend' });
       expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
         2,
       );
-      expect(flow.getState().error).toBeUndefined();
+      expect(flow.getState()).toMatchObject({
+        error: undefined,
+        codeResent: true,
+      });
     });
 
     it('shows a countdown when a code was sent less than a minute ago', async () => {
@@ -541,31 +540,42 @@ describe('createMfaFlow', () => {
       });
 
       await act(flow, { type: 'resend' });
-      // The sent code starts the next cooldown.
       expect(flow.getState()).toMatchObject({
         step: { name: 'otp', codeSent: true },
         error: undefined,
-        resendAvailableAt: NOW + 60_000,
+        resendAvailableAt: undefined,
       });
     });
 
-    it('sends a new code when the flow expired', async () => {
-      const fake = createFakeController([activeEmail]);
-      fake.controller.completeCredentialVerification.mockRejectedValueOnce(
-        new MfaError('flow_expired', 'expired'),
-      );
-      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+    it.each(['flow_expired', 'invalid_flow', 'too_many_attempts'] as const)(
+      'shows a %s email code and sends a new one only when the user asks',
+      async (code) => {
+        const fake = createFakeController([activeEmail]);
+        fake.controller.completeCredentialVerification.mockRejectedValueOnce(
+          new MfaError(code, 'dead'),
+        );
+        const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
 
-      await act(flow, { type: 'submitCode', code: '123456' });
-      expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
-        2,
-      );
-      expect(flow.getState()).toMatchObject({
-        step: { name: 'otp', codeSent: true },
-        codeResent: true,
-        error: undefined,
-      });
-    });
+        await act(flow, { type: 'submitCode', code: '123456' });
+        expect(
+          fake.controller.beginCredentialVerification,
+        ).toHaveBeenCalledTimes(1);
+        expect(flow.getState()).toMatchObject({
+          step: { name: 'otp', codeSent: true },
+          error: code,
+          busy: false,
+        });
+
+        await act(flow, { type: 'resend' });
+        expect(
+          fake.controller.beginCredentialVerification,
+        ).toHaveBeenCalledTimes(2);
+        expect(flow.getState()).toMatchObject({
+          error: undefined,
+          codeResent: true,
+        });
+      },
+    );
 
     it('shows the error instead of resending when sending the code fails with too_many_attempts', async () => {
       const fake = createFakeController([activeEmail]);
@@ -580,28 +590,6 @@ describe('createMfaFlow', () => {
       expect(flow.getState()).toMatchObject({
         step: { name: 'otp', codeSent: false },
         error: 'too_many_attempts',
-        busy: false,
-      });
-    });
-
-    it('resends at most once when the code expired and the new send fails too', async () => {
-      const fake = createFakeController([]);
-      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
-      await act(flow, { type: 'continue' });
-      await act(flow, { type: 'submitEmail', email: 'new@b.co' });
-      fake.controller.completeCredentialEnrollment.mockRejectedValueOnce(
-        new MfaError('flow_expired', 'expired'),
-      );
-      fake.controller.beginCredentialEnrollment.mockRejectedValue(
-        new MfaError('flow_expired', 'expired'),
-      );
-
-      await act(flow, { type: 'submitCode', code: '111111' });
-      expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(
-        2,
-      );
-      expect(flow.getState()).toMatchObject({
-        error: 'flow_expired',
         busy: false,
       });
     });
@@ -1479,17 +1467,14 @@ describe('createMfaFlow analytics', () => {
     ]);
   });
 
-  it('flags each code sent after an expiry anew, so the code screen empties its boxes each time', async () => {
+  it('flags each code the user asks for anew, so the code screen empties its boxes each time', async () => {
     const fake = createFakeController([activeEmail]);
-    fake.controller.completeCredentialVerification
-      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'))
-      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'));
     const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
     const codeResent: (boolean | undefined)[] = [];
     flow.subscribe(() => codeResent.push(flow.getState().codeResent));
 
-    await act(flow, { type: 'submitCode', code: '111111' });
-    await act(flow, { type: 'submitCode', code: '222222' });
+    await act(flow, { type: 'resend' });
+    await act(flow, { type: 'resend' });
 
     const newCodes = codeResent.filter(
       (value, index) => value && !codeResent[index - 1],
@@ -1497,7 +1482,7 @@ describe('createMfaFlow analytics', () => {
     expect(newCodes).toHaveLength(2);
   });
 
-  it('tracks a code the user asked for, one the countdown asked for, and each one sent after an expiry', async () => {
+  it('tracks each code the user asks for, and none after an expiry', async () => {
     const trackEvent = jest.fn();
     const fake = createFakeController([activeEmail]);
     fake.controller.completeCredentialVerification
@@ -1508,44 +1493,12 @@ describe('createMfaFlow analytics', () => {
     });
 
     await act(flow, { type: 'resend' });
-    await act(flow, { type: 'resend', trigger: 'auto' });
     await act(flow, { type: 'submitCode', code: '111111' });
     await act(flow, { type: 'submitCode', code: '222222' });
 
     expect(
       sentEvents(trackEvent, 'MFA Code Resent').map(({ trigger }) => trigger),
-    ).toStrictEqual(['user', 'auto', 'auto', 'auto']);
-  });
-
-  it('tracks nothing after the flow ends while a new code is being sent', async () => {
-    const trackEvent = jest.fn();
-    const fake = createFakeController([activeEmail]);
-    fake.controller.completeCredentialVerification.mockRejectedValueOnce(
-      new MfaError('flow_expired', 'expired'),
-    );
-    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
-      trackEvent,
-    });
-    let sendCode: () => void = () => undefined;
-    fake.controller.beginCredentialVerification.mockImplementationOnce(
-      () =>
-        new Promise((resolve) => {
-          sendCode = () =>
-            resolve({ type: 'email_otp', flowId: 'verify-2', expiresAt: NOW });
-        }),
-    );
-
-    flow.dispatch({ type: 'submitCode', code: '111111' });
-    await flush();
-    await act(flow, { type: 'cancel' });
-    sendCode();
-    await flush();
-
-    expect(trackEvent.mock.calls.at(-1)).toStrictEqual([
-      'MFA Flow Status Updated',
-      expect.objectContaining({ status: 'cancelled' }),
-    ]);
-    expect(sentEvents(trackEvent, 'MFA Code Resent')).toHaveLength(0);
+    ).toStrictEqual(['user']);
   });
 
   it('keeps the flow running when analytics throws', async () => {
