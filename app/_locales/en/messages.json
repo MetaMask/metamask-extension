@@ -12490,6 +12490,9 @@
   "to": {
     "message": "To"
   },
+  "today": {
+    "message": "Today"
+  },
   "toggleDecodeDescription": {
     "message": "We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared."
   },

@@ -1,13 +1,16 @@
 import { useMemo } from 'react';
 import type { OHLCVBar } from './useOHLCVChart';
 
+/** 24 hours in milliseconds. OHLCV bar `time` values are in ms. */
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+
 /**
  * Price display data derived from OHLCV candle data.
  */
 export type OHLCVPriceData = {
   /** Current/latest price (close of the most recent bar) */
   price: number | undefined;
-  /** Percentage change from first bar's open to latest bar's close */
+  /** Percentage change over the last 24 hours (latest close vs the close ~24h ago) */
   percentChange: number | undefined;
   /** Timestamp of the latest bar */
   timestamp: number | undefined;
@@ -18,7 +21,8 @@ export type OHLCVPriceData = {
  *
  * This hook derives:
  * - `price`: The close price of the most recent candle
- * - `percentChange`: The percentage change from the first candle's open to the latest close
+ * - `percentChange`: The last-24H change (latest close vs the close ~24h ago),
+ *   matching mobile so the figure is independent of the candle interval
  * - `timestamp`: The timestamp of the most recent candle
  *
  * This allows the TokenPriceHeader to display OHLCV-based prices without
@@ -52,7 +56,6 @@ export function useOHLCVPriceData(ohlcvData: OHLCVBar[]): OHLCVPriceData {
       };
     }
 
-    const firstBar = ohlcvData[0];
     const latestBar = ohlcvData.at(-1);
     if (!latestBar) {
       return {
@@ -63,8 +66,16 @@ export function useOHLCVPriceData(ohlcvData: OHLCVBar[]): OHLCVPriceData {
     }
 
     const price = latestBar.close;
-    const comparePrice = firstBar.open;
     const timestamp = latestBar.time;
+
+    // Baseline is the close of the bar closest to 24h before the latest bar, so
+    // the percentage is always a 24H change regardless of the selected candle
+    // interval (matching mobile). Falls back to the first bar's close when the
+    // loaded history is shorter than 24h.
+    const target24h = latestBar.time - TWENTY_FOUR_HOURS_MS;
+    const comparePrice = (
+      ohlcvData.find((c) => c.time >= target24h) ?? ohlcvData[0]
+    ).close;
 
     // Calculate percentage change: ((current - compare) / compare) * 100
     // Guard against division by zero

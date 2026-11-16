@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 import { getIsAdvancedChartsThemingEnabled } from '../../../../selectors/multichain/feature-flags';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { computePercentChange } from '../../../../components/app/assets/util/percentChange';
 import AdvancedChartIframe from './advanced-chart-iframe';
@@ -96,6 +97,7 @@ export const AdvancedChartSection = ({
   currency,
   currentPrice,
 }: AdvancedChartSectionProps) => {
+  const t = useI18nContext();
   const {
     chartType,
     interval,
@@ -155,7 +157,6 @@ export const AdvancedChartSection = ({
     realtimeTimestamp,
     price: ohlcvPrice,
     percentChange: ohlcvPercentChange,
-    timestamp: ohlcvTimestamp,
     isLoading: isOhlcvLoading,
     error: ohlcvError,
     resolvedCurrency,
@@ -167,13 +168,19 @@ export const AdvancedChartSection = ({
     needsHistory: !isLineChart,
   });
 
+  // Candle mode normally has no need for the historical-prices series, but when
+  // the OHLCV API fails we fall back to it for both the price and a real 24H
+  // change. The fallback is always pinned to 24h (P1D) regardless of the line
+  // selector, so the candle header's percentage stays a 24H figure.
+  const candleHistoricalFallback = !isLineChart && Boolean(ohlcvError);
   const historical = useHistoricalPrices({
     chainId,
     address,
     currency,
-    timeRange:
-      LINE_TIME_RANGE_TO_ISO8601[lineTimeRange] ?? DEFAULT_LINE_ISO8601,
-    enabled: isLineChart,
+    timeRange: candleHistoricalFallback
+      ? DEFAULT_LINE_ISO8601
+      : (LINE_TIME_RANGE_TO_ISO8601[lineTimeRange] ?? DEFAULT_LINE_ISO8601),
+    enabled: isLineChart || candleHistoricalFallback,
   });
 
   // Line mode anchors the header to the opening price of the range the chart
@@ -187,6 +194,8 @@ export const AdvancedChartSection = ({
       historical.isPlaceholderData ? undefined : historical.data.prices?.[0]?.y,
     ),
     timestamp: hovered?.date ?? realtimeTimestamp,
+    // Line mode keeps rendering the formatted date, not a static label.
+    periodLabel: undefined as string | undefined,
     loading: historical.loading || historical.isPlaceholderData,
     currency,
   };
@@ -208,10 +217,29 @@ export const AdvancedChartSection = ({
       ? '--color-error-default'
       : '--color-success-default';
 
+  // The live/spot price the candle header falls back to when the OHLCV API
+  // fails, so the header is never blank. Also the current-value side of the
+  // 24H change computed from historical prices in that same failure case.
+  const candleFallbackPrice = realtimePrice ?? currentPrice;
   const candleHeader = {
-    price: ohlcvPrice,
-    percentChange: ohlcvPercentChange,
-    timestamp: ohlcvTimestamp,
+    // On an /ohlcv-chart failure there is no candle price, so fall back to the
+    // live/spot price rather than render a blank header.
+    price: ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined),
+    // Candle mode always shows the last-24H change. On an OHLCV failure the
+    // candles are gone, so derive the same 24H figure from historical prices
+    // (the P1D fallback series) instead of leaving it blank.
+    percentChange: ohlcvError
+      ? computePercentChange(
+          candleFallbackPrice,
+          historical.isPlaceholderData
+            ? undefined
+            : historical.data.prices?.[0]?.y,
+        )
+      : ohlcvPercentChange,
+    // Candle mode shows the last-24H change, labelled "Today" to match mobile,
+    // instead of the latest bar's date.
+    timestamp: undefined as number | undefined,
+    periodLabel: t('today'),
     loading: isOhlcvLoading,
     // The price API does not quote every fiat, so label whatever came back.
     currency: resolvedCurrency,
@@ -294,6 +322,7 @@ export const AdvancedChartSection = ({
         percentChange={header.percentChange}
         currency={header.currency}
         timestamp={header.timestamp}
+        periodLabel={header.periodLabel}
         loading={header.loading}
       />
 

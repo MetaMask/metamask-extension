@@ -554,6 +554,22 @@ describe('AdvancedChartSection', () => {
     });
   });
 
+  describe('candle mode header', () => {
+    beforeEach(() => {
+      setupPreferences(CHART_TYPE_CANDLE);
+    });
+
+    it('labels the 24H change with "Today" rather than a date', () => {
+      setupData({ price: 1234, percentChange: 5, resolvedCurrency: 'usd' });
+      render();
+
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+5.00%');
+      expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+  });
+
   describe('deferring the iframe', () => {
     it('does not mount the chart engine for users who stay in line mode', () => {
       render();
@@ -635,6 +651,71 @@ describe('AdvancedChartSection', () => {
       render();
 
       expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+    });
+
+    it('falls back to the live price and a 24H change from historical prices when candle data fails', () => {
+      // Historical P1D series opens at 100 (see PRICES), live price is 175.
+      setupData({
+        price: undefined,
+        percentChange: undefined,
+        realtimePrice: 175,
+        error: 'OHLCV API error: 500',
+      });
+      render();
+
+      // Chart keeps its overlay, but the header is no longer blank.
+      expect(screen.getByTestId('chart-error-state')).toBeInTheDocument();
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+      // 24H change derived from historical prices: (175 - 100) / 100 = +75%,
+      // still labelled "Today".
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+75.00%');
+      expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('enables the 24H historical fallback series only when the candle API fails', () => {
+      setupData({ error: 'OHLCV API error: 500' });
+      render();
+
+      expect(mockUseHistoricalPrices).toHaveBeenCalledWith(
+        expect.objectContaining({ timeRange: 'P1D', enabled: true }),
+      );
+    });
+
+    it('hides the percentage while the historical fallback is still loading', () => {
+      setupHistorical({ isPlaceholderData: true });
+      setupData({
+        price: undefined,
+        percentChange: undefined,
+        realtimePrice: 175,
+        error: 'OHLCV API error: 500',
+      });
+      render();
+
+      // Price is shown immediately, but the 24H change waits for real data.
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '175',
+      );
+      expect(
+        screen.queryByTestId('asset-price-percent-change'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('falls back to the wallet-wide current price when there is no live price', () => {
+      setupData({
+        price: undefined,
+        percentChange: undefined,
+        realtimePrice: undefined,
+        error: 'OHLCV API error: 500',
+      });
+      render({ currentPrice: 200 });
+
+      expect(screen.getByTestId('asset-hovered-price')).toHaveTextContent(
+        '200',
+      );
     });
 
     it('hides the indicator bar while the chart is failed', () => {

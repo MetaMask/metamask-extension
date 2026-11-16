@@ -159,6 +159,39 @@ describe('TokenPriceHeader', () => {
     });
   });
 
+  describe('periodLabel display', () => {
+    it('displays the periodLabel instead of the formatted timestamp', () => {
+      const timestamp = new Date(2025, 5, 15).getTime(); // June 15, 2025
+
+      render(
+        <TokenPriceHeader
+          {...defaultProps}
+          price={100}
+          percentChange={5}
+          timestamp={timestamp}
+          periodLabel="Today"
+        />,
+      );
+
+      // periodLabel wins over the timestamp-derived date.
+      expect(screen.getByText('Today')).toBeInTheDocument();
+      expect(screen.queryByText('6/15')).not.toBeInTheDocument();
+    });
+
+    it('hides the periodLabel when the percentage is in its empty state', () => {
+      // On an OHLCV failure the percentage is undefined and the label must
+      // disappear with it rather than render on its own.
+      render(
+        <TokenPriceHeader {...defaultProps} price={100} periodLabel="Today" />,
+      );
+
+      expect(screen.queryByText('Today')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('asset-price-percent-change'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('Edge cases', () => {
     it('handles NaN percentChange gracefully', () => {
       render(
