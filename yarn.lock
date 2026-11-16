@@ -9501,21 +9501,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:@metamask-previews/perps-controller@22.1.2-preview-2c49dc768":
-  version: 22.1.2-preview-2c49dc768
-  resolution: "@metamask-previews/perps-controller@npm:22.1.2-preview-2c49dc768"
+"@metamask/perps-controller@npm:@metamask-previews/perps-controller@24.0.0-preview-baf573897":
+  version: 24.0.0-preview-baf573897
+  resolution: "@metamask-previews/perps-controller@npm:24.0.0-preview-baf573897"
   dependencies:
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.1"
+    "@metamask/utils": "npm:^12.0.2"
     "@nktkas/hyperliquid": "npm:^0.33.3"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.3.0"
     uuid: "npm:^14.0.2"
-  checksum: 10/e9103c50154355bdff780c3ed54357d8bf028d9465127b1483f693fb3fa8c16a087a2068e7d379aa447ca4faa707ee371075e2ae6e824702b1a21b2334830da4
+  checksum: 10/307badd6d01961ecc82537136634efdb078646df41909901f0556cc0534f24d27802397b6239f90382faa64d1e60187ccfcb0dd845e9240436adadc92df282fb
   languageName: node
   linkType: hard
 

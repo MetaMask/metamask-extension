@@ -175,7 +175,7 @@
   "previewBuilds": {
     "@metamask/perps-controller": {
       "type": "non-breaking",
-      "previewVersion": "22.1.2-preview-2c49dc768"
+      "previewVersion": "24.0.0-preview-baf573897"
     }
   },
   "resolutions": {
