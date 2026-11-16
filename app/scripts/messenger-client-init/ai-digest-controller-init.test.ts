@@ -3,7 +3,7 @@ import {
   Messenger,
   MOCK_ANY_NAMESPACE,
 } from '@metamask/messenger';
-import { AiDigestController, AiDigestService } from '@metamask/ai-controllers';
+import { AiDigestController } from '@metamask/ai-controllers';
 import type { AiDigestControllerMessenger } from '@metamask/ai-controllers';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getAiDigestControllerMessenger } from './messengers/ai-digest-controller-messenger';
@@ -12,8 +12,6 @@ import {
   DIGEST_API_BASE_URL,
 } from './ai-digest-controller-init';
 import type { MessengerClientInitRequest } from './types';
-
-jest.mock('@metamask/ai-controllers');
 
 /**
  * Build the init request for the given base messenger.
@@ -32,37 +30,12 @@ function getInitRequestMock(
 }
 
 describe('AiDigestControllerInit', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('initializes the controller', () => {
     const { messengerClient } = AiDigestControllerInit(
       getInitRequestMock(new Messenger({ namespace: MOCK_ANY_NAMESPACE })),
     );
 
     expect(messengerClient).toBeInstanceOf(AiDigestController);
-  });
-
-  it('constructs the digest service with the digest API base URL', () => {
-    AiDigestControllerInit(
-      getInitRequestMock(new Messenger({ namespace: MOCK_ANY_NAMESPACE })),
-    );
-
-    expect(jest.mocked(AiDigestService)).toHaveBeenCalledWith({
-      baseUrl: DIGEST_API_BASE_URL,
-    });
-  });
-
-  it('constructs the controller with the controller messenger and service', () => {
-    AiDigestControllerInit(
-      getInitRequestMock(new Messenger({ namespace: MOCK_ANY_NAMESPACE })),
-    );
-
-    expect(jest.mocked(AiDigestController)).toHaveBeenCalledWith({
-      messenger: expect.any(Object),
-      digestService: expect.any(Object),
-    });
   });
 
   it('registers no persisted or mem state', () => {
@@ -72,5 +45,32 @@ describe('AiDigestControllerInit', () => {
 
     expect(result.persistedStateKey).toBeNull();
     expect(result.memStateKey).toBeNull();
+  });
+
+  it('fetches market insights from the digest API through the controller messenger', async () => {
+    const controllerMessenger = getAiDigestControllerMessenger(
+      new Messenger({ namespace: MOCK_ANY_NAMESPACE }),
+    );
+    AiDigestControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger,
+      initMessenger: undefined as never,
+    });
+    const fetchMock = jest
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue({ ok: false, status: 404 } as Response);
+
+    const report = await controllerMessenger.call(
+      'AiDigestController:fetchMarketInsights',
+      'eip155:1/slip44:60',
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${DIGEST_API_BASE_URL}/asset-summary?asset=${encodeURIComponent(
+        'eip155:1/slip44:60',
+      )}`,
+    );
+    expect(report).toBeNull();
   });
 });

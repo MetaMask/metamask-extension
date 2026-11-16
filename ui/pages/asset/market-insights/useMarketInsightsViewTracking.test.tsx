@@ -9,8 +9,8 @@ import {
 import {
   MARKET_INSIGHTS_EVENT_PROPERTY,
   MARKET_INSIGHTS_EVENT_VALUE,
+  MarketInsightsFeedbackReason,
 } from '../../../../shared/constants/market-insights-events';
-import { MarketInsightsFeedbackReason } from './components/market-insights-feedback-modal';
 import {
   useMarketInsightsViewTracking,
   type MarketInsightsInteractionType,

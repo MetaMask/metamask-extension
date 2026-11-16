@@ -8,9 +8,9 @@ import {
 import {
   MARKET_INSIGHTS_EVENT_PROPERTY,
   type MarketInsightsEventSource,
+  type MarketInsightsFeedbackReason,
 } from '../../../../shared/constants/market-insights-events';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import type { MarketInsightsFeedbackReason } from './components/market-insights-feedback-modal';
 
 export type MarketInsightsInteractionType =
   | 'thumbs_up'

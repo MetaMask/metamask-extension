@@ -6,6 +6,12 @@ import {
 import { getAiDigestControllerMessenger } from './messengers/ai-digest-controller-messenger';
 import type { MessengerClientInitFunction } from './types';
 
+/**
+ * Base URL for the MetaMask digest API. Deliberately hardcoded for phase
+ * one to match the MetaMask Mobile client, which pins the same production
+ * digest endpoint. A config seam (build-time env override) can replace this
+ * literal in a follow-up if operations needs a rotation path.
+ */
 export const DIGEST_API_BASE_URL = 'https://digest.api.cx.metamask.io/api/v1';
 
 /**

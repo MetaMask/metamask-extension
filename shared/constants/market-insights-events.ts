@@ -24,3 +24,11 @@ export const MARKET_INSIGHTS_EVENT_VALUE = {
 
 export type MarketInsightsEventSource =
   (typeof MARKET_INSIGHTS_EVENT_VALUE)['SOURCE'][keyof (typeof MARKET_INSIGHTS_EVENT_VALUE)['SOURCE']];
+
+export enum MarketInsightsFeedbackReason {
+  NotRelevant = 'not_relevant',
+  NotAccurate = 'not_accurate',
+  HardToUnderstand = 'hard_to_understand',
+  HarmfulOrOffensive = 'harmful_or_offensive',
+  SomethingElse = 'something_else',
+}
