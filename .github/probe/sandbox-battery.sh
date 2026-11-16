@@ -11,7 +11,7 @@ record() {
     echo "PASS $name" >> sandbox-results.txt
   else
     echo "FAIL $name (exit $code)" >> sandbox-results.txt
-    { echo "--- $name"; printf '%s\n' "$out" | tail -n 8 | cut -c1-300; } >> sandbox-detail.txt
+    { echo "--- $name"; printf '%s\n' "$out" | head -n 6 | cut -c1-300; echo '...'; printf '%s\n' "$out" | tail -n 6 | cut -c1-300; } >> sandbox-detail.txt
   fi
 }
 
@@ -32,6 +32,11 @@ check_fails() {
 }
 
 restore() { git checkout -q -- package.json yarn.lock; git clean -fdq .yarn/patches; }
+
+# Yarn ignores the standard proxy variables, so hand it the sandbox's proxy.
+export YARN_HTTP_PROXY="${HTTP_PROXY:-${http_proxy:-}}"
+export YARN_HTTPS_PROXY="${HTTPS_PROXY:-${https_proxy:-}}"
+{ echo '--- env'; env | grep -ciE 'proxy' ; echo "HOME=$HOME uid=$(id -u)"; ls -ld "$HOME"; } >> sandbox-detail.txt
 
 # Isolation
 check_fails 'credential is hidden from the shell' bash -c '[ -n "${ANTHROPIC_AUTH_TOKEN:-}" ]'

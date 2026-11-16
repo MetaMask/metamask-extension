@@ -191,4 +191,6 @@ jobs:
           cat sandbox-results.txt
           echo '--- detail of failures'
           cat sandbox-detail.txt
+          echo '--- host view of the write probe'
+          ls -l ~/sandbox-probe || true
           [ "$(tail -n1 sandbox-results.txt)" = DONE ] && ! grep -q '^FAIL' sandbox-results.txt
