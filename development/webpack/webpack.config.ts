@@ -95,6 +95,31 @@ async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
 }
 
 // #region cache
+const cacheBuildDependencies: string[] = args.cache
+  ? [
+      __filename,
+      ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+        existsSync,
+      ),
+      join(root, 'builds.yml'),
+      browsersListPath,
+    ]
+  : [];
+/**
+ * Tracks a lazily imported module as a cache build dependency, as a `require`
+ * of the same module would have done.
+ *
+ * @param id - The module specifier passed to `import()`.
+ */
+function trackBuildDependency(id: string) {
+  if (!args.cache) {
+    return;
+  }
+  const path = require.resolve(id);
+  if (!cacheBuildDependencies.includes(path)) {
+    cacheBuildDependencies.push(path);
+  }
+}
 const cache = args.cache
   ? ({
       type: 'filesystem',
@@ -111,15 +136,10 @@ const cache = args.cache
         defaultConfig: [__filename],
         // Invalidates the build cache when the listed files change.
         // `__filename` makes all `require`d dependencies of *this* file
-        // `buildDependencies`
-        config: [
-          __filename,
-          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
-            existsSync,
-          ),
-          join(root, 'builds.yml'),
-          browsersListPath,
-        ],
+        // `buildDependencies`. Modules loaded with `await import()` are not
+        // recorded as `require` children, so `getPlugins` appends the optional
+        // plugins it loads to keep their own dependencies tracked.
+        config: cacheBuildDependencies,
       },
     } as const satisfies FileCacheOptions)
   : ({ type: 'memory' } as const satisfies MemoryCacheOptions);
@@ -287,11 +307,13 @@ async function getPlugins() {
   if (MANIFEST_VERSION === 2) {
     const { SelfInjectPlugin } =
       await import('./utils/plugins/SelfInjectPlugin');
+    trackBuildDependency('./utils/plugins/SelfInjectPlugin');
     plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
   }
   if (args.lavamoat) {
     const { lavamoatPlugin, lavamoatUnsafeLayerPlugin } =
       await import('./utils/plugins/LavamoatPlugin');
+    trackBuildDependency('./utils/plugins/LavamoatPlugin');
     plugins.push(
       lavamoatPlugin(args, manifestPlugin),
       lavamoatUnsafeLayerPlugin,
@@ -304,6 +326,7 @@ async function getPlugins() {
   if (args.reactCompilerVerbose) {
     const { ReactCompilerPlugin } =
       await import('./utils/plugins/ReactCompilerPlugin');
+    trackBuildDependency('./utils/plugins/ReactCompilerPlugin');
     plugins.push(new ReactCompilerPlugin());
   }
 
