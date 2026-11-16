@@ -14,7 +14,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { getEvmAssetId } from '../../../shared/lib/transaction/pay-token';
+import { encodeEvmAssetId } from '../../../shared/lib/transaction/pay-token';
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import {
@@ -88,7 +88,7 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
       updatePaymentToken: ({ transactionId, tokenAddress, chainId }) => {
         updateTransactionPaymentToken({
           transactionId,
-          assetId: getEvmAssetId(tokenAddress, chainId),
+          assetId: encodeEvmAssetId({ address: tokenAddress, chainId }),
         }).catch((error) => {
           console.error('Failed to update the mUSD payment token', error);
         });
@@ -160,7 +160,7 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
       }
 
       // Same chain - just update the payment token
-      setPayToken(token);
+      setPayToken({ assetId: encodeEvmAssetId(token) });
     },
     [currentConfirmation, setPayToken, navigate, location.search, callbacks],
   );

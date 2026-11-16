@@ -6,7 +6,7 @@ import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../../../shared/lib/money/money-account-flow';
-import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
+import { decodePaymentTokenAssetId } from '../../../../../shared/lib/transaction/pay-token';
 import { getMaxSourceBalance } from './max-source-balance';
 import {
   getPayEvmAccountOverride,
@@ -41,7 +41,9 @@ export function getBalance(
     return undefined;
   }
 
-  const evmPaymentToken = getEvmPaymentToken(transactionData.paymentToken);
+  const paymentTokenAsset = decodePaymentTokenAssetId(
+    transactionData.paymentToken,
+  );
 
   const balanceRaw = getMaxSourceBalance({
     transactionId: transaction.id,
@@ -49,8 +51,8 @@ export function getBalance(
       messenger,
       transactionData.accountOverride,
     ),
-    chainId: evmPaymentToken?.chainId,
-    tokenAddress: evmPaymentToken?.address,
+    chainId: paymentTokenAsset?.chainId,
+    tokenAddress: paymentTokenAsset?.address,
   });
 
   return balanceRaw === undefined ? undefined : { balanceRaw };

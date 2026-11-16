@@ -9,6 +9,7 @@ import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useT
 import { rejectPendingApproval } from '../../store/actions';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
 import { useDispatch } from '../../store/hooks';
+import { encodeEvmAssetId } from '../../../shared/lib/transaction/pay-token';
 import { useMusdPaymentToken } from './useMusdPaymentToken';
 
 jest.mock('../../store/hooks', () => ({
@@ -117,7 +118,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(sameChainToken);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(sameChainToken);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(sameChainToken),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
       expect(mockNavigate).not.toHaveBeenCalled();
     });
@@ -141,7 +144,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(sameChainToken);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(sameChainToken);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(sameChainToken),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
   });
@@ -417,7 +422,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(token);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(token);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(token),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
 
@@ -440,7 +447,9 @@ describe('useMusdPaymentToken', () => {
         await result.current.onPaymentTokenChange(token);
       });
 
-      expect(mockSetPayToken).toHaveBeenCalledWith(token);
+      expect(mockSetPayToken).toHaveBeenCalledWith({
+        assetId: encodeEvmAssetId(token),
+      });
       expect(mockReplaceTransaction).not.toHaveBeenCalled();
     });
   });

@@ -22,6 +22,7 @@ import {
 } from '../../../../../store/actions';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
+import { encodeEvmAssetId } from '../../../../../../shared/lib/transaction/pay-token';
 import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
@@ -46,8 +47,8 @@ jest.mock('../../../../../store/actions', () => ({
 // Zero-balance non-native token used to exercise the perpsWithdraw addToken
 // import branch.
 const PERPS_WITHDRAW_TOKEN = {
-  address: '0xaaa0000000000000000000000000000000000aaa',
-  chainId: '0xa4b1',
+  address: '0xaaa0000000000000000000000000000000000aaa' as const,
+  chainId: '0xa4b1' as const,
   isNative: false,
   rawBalance: '0x0',
   symbol: 'BNB',
@@ -277,8 +278,10 @@ describe('PayWithModal', () => {
     fireEvent.click(selectButton);
 
     expect(setPayTokenMock).toHaveBeenCalledWith({
-      address: '0x123',
-      chainId: '0x1',
+      assetId: encodeEvmAssetId({
+        address: '0x123',
+        chainId: '0x1',
+      }),
     });
     expect(onCloseMock).toHaveBeenCalled();
   });
@@ -360,8 +363,10 @@ describe('PayWithModal', () => {
       fireEvent.click(screen.getByTestId('select-token'));
 
       expect(setPayTokenMock).toHaveBeenCalledWith({
-        address: '0x123',
-        chainId: '0x1',
+        assetId: encodeEvmAssetId({
+          address: '0x123',
+          chainId: '0x1',
+        }),
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
     });
@@ -430,8 +435,10 @@ describe('PayWithModal', () => {
 
       await waitFor(() => {
         expect(setPayTokenMock).toHaveBeenCalledWith({
-          address: PERPS_WITHDRAW_TOKEN.address,
-          chainId: PERPS_WITHDRAW_TOKEN.chainId,
+          assetId: encodeEvmAssetId({
+            address: PERPS_WITHDRAW_TOKEN.address,
+            chainId: PERPS_WITHDRAW_TOKEN.chainId,
+          }),
         });
       });
 

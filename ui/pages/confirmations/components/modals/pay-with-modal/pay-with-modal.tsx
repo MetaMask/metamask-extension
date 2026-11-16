@@ -18,7 +18,6 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
-import { getEvmPaymentToken } from '../../../../../../shared/lib/transaction/pay-token';
 import { useClearPaymentOverride } from '../../../hooks/pay/useClearPaymentOverride';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
@@ -37,6 +36,10 @@ import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
+import {
+  encodeEvmAssetId,
+  isSameAssetId,
+} from '../../../../../../shared/lib/transaction/pay-token';
 import { PayWithSection } from './pay-with-section';
 
 export type PayWithModalProps = {
@@ -105,22 +108,16 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
-      const evmPayToken = getEvmPaymentToken(payToken);
-
-      if (
-        evmPayToken &&
-        evmPayToken.address.toLowerCase() === token.address?.toLowerCase() &&
-        evmPayToken.chainId.toLowerCase() ===
-          (token.chainId as string)?.toLowerCase()
-      ) {
-        handleClose();
-        return;
-      }
-
       const tokenSelection = {
         address: token.address as Hex,
         chainId: token.chainId as Hex,
       };
+      const assetId = encodeEvmAssetId(tokenSelection);
+
+      if (isSameAssetId(payToken?.assetId, assetId)) {
+        handleClose();
+        return;
+      }
 
       // For mUSD conversions, use the specialized handler that enforces same-chain
       if (currentConfirmation?.type === TransactionType.musdConversion) {
@@ -167,7 +164,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       }
 
       clearOverride();
-      setPayToken(tokenSelection);
+      setPayToken({ assetId });
       handleClose();
     },
     [

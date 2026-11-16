@@ -10,7 +10,7 @@ import {
   type TransactionState,
 } from '../../../../selectors/transactionController';
 import {
-  selectEvmPaymentTokenByTransactionId,
+  selectPaymentTokenEvmAssetByTransactionId,
   selectTransactionPayEvmAccountOverrideByTransactionId,
   type TransactionPayAccountsState,
   type TransactionPayState,
@@ -96,7 +96,7 @@ export function useMoneyAccountWithdrawConfirm() {
       const amountHuman = getLastMoneyAccountWithdrawAmount(transactionMeta.id);
       const fromStore = readTransactionFromStore(dispatch, transactionMeta.id);
       const paymentToken = dispatch((_, getState) =>
-        selectEvmPaymentTokenByTransactionId(
+        selectPaymentTokenEvmAssetByTransactionId(
           getState() as unknown as TransactionPayState,
           transactionMeta.id,
         ),
@@ -193,11 +193,11 @@ export function useMoneyAccountWithdrawConfirm() {
           hasStoreTransaction: Boolean(fromStore),
           hasStoreNestedCalls: Boolean(
             fromStore?.nestedTransactions?.[0] &&
-            fromStore?.nestedTransactions[1],
+              fromStore?.nestedTransactions[1],
           ),
           hasConfirmationNestedCalls: Boolean(
             transactionMeta.nestedTransactions?.[0] &&
-            transactionMeta.nestedTransactions[1],
+              transactionMeta.nestedTransactions[1],
           ),
         },
       );

@@ -18,7 +18,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
-import { getEvmAssetId } from '../../../shared/lib/transaction/pay-token';
+import { encodeEvmAssetId } from '../../../shared/lib/transaction/pay-token';
 import {
   selectIsMusdConversionFlowEnabled,
   selectMusdConversionEducationSeen,
@@ -286,7 +286,10 @@ export function useMusdConversion(): UseMusdConversionResult {
         if (preferredToken?.address) {
           await updateTransactionPaymentToken({
             transactionId: txId,
-            assetId: getEvmAssetId(preferredToken.address as Hex, chainId),
+            assetId: encodeEvmAssetId({
+              address: preferredToken.address as Hex,
+              chainId,
+            }),
           }).catch((payTokenError) => {
             console.warn(
               '[MUSD] Failed to pre-select payment token:',
