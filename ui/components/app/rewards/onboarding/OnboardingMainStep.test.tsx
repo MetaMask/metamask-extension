@@ -7,11 +7,9 @@ import { useSelector } from 'react-redux';
 import { setErrorToast } from '../../../../ducks/rewards';
 import {
   selectCandidateSubscriptionId,
-  selectOnboardingReferralCode,
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
-  selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
 import { useDispatch, useAppSelector } from '../../../../store/hooks';
 import OnboardingMainStep from './OnboardingMainStep';
@@ -87,11 +85,6 @@ jest.mock('../../../../hooks/rewards/useOptIn', () => ({
   useOptIn: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/rewards/useValidateReferralCode', () => ({
-  REFERRAL_CODE_MIN_LENGTH: 3,
-  useValidateReferralCode: jest.fn(),
-}));
-
 jest.mock('../../../../hooks/rewards/useGeoRewardsMetadata', () => ({
   useGeoRewardsMetadata: jest.fn(() => ({
     fetchGeoRewardsMetadata: jest.fn(),
@@ -121,45 +114,25 @@ jest.mock(
 
 const mockedUseOptIn = jest.requireMock('../../../../hooks/rewards/useOptIn')
   .useOptIn as jest.Mock;
-const mockedUseValidateReferralCode = jest.requireMock(
-  '../../../../hooks/rewards/useValidateReferralCode',
-).useValidateReferralCode as jest.Mock;
 const mockedUseSelector = useSelector as jest.Mock;
 const mockedUseAppDispatch = useDispatch as jest.Mock;
 const mockedUseAppSelector = useAppSelector as jest.Mock;
 
 type SelectorState = {
   candidateSubscriptionId?: unknown;
-  onboardingReferralCode?: string | null;
   optinAllowedForGeo?: boolean | null;
   optinAllowedForGeoError?: boolean;
   optinAllowedForGeoLoading?: boolean;
   rewardsActiveAccountSubscriptionId?: string | null;
-  vipProgramEnabled?: boolean;
 };
 
 function setup({
-  referralCode = '',
-  isValid = false,
-  isVipCode = false,
-  isValidating = false,
-  isUnknownError = false,
   optinLoading = false,
   optinError = '',
   state = {} as SelectorState,
 } = {}) {
-  const setReferralCode = jest.fn();
   const optin = jest.fn();
   const dispatch = jest.fn();
-
-  mockedUseValidateReferralCode.mockReturnValue({
-    referralCode,
-    setReferralCode,
-    isValidating,
-    isValid,
-    isVipCode,
-    isUnknownError,
-  });
 
   mockedUseOptIn.mockReturnValue({
     optinLoading,
@@ -171,24 +144,16 @@ function setup({
 
   const fullState = {
     candidateSubscriptionId: null,
-    onboardingReferralCode: null,
     optinAllowedForGeo: true,
     optinAllowedForGeoError: false,
     optinAllowedForGeoLoading: false,
     rewardsActiveAccountSubscriptionId: null,
-    vipProgramEnabled: false,
     ...state,
   };
 
   mockedUseSelector.mockImplementation((selector: unknown) => {
     if (selector === selectCandidateSubscriptionId) {
       return fullState.candidateSubscriptionId;
-    }
-    if (selector === selectVipProgramEnabled) {
-      return fullState.vipProgramEnabled;
-    }
-    if (selector === selectOnboardingReferralCode) {
-      return fullState.onboardingReferralCode;
     }
     if (selector === selectOptinAllowedForGeo) {
       return fullState.optinAllowedForGeo;
@@ -215,7 +180,7 @@ function setup({
     return undefined;
   });
 
-  return { setReferralCode, optin, dispatch };
+  return { optin, dispatch };
 }
 
 describe('OnboardingMainStep', () => {
@@ -261,180 +226,6 @@ describe('OnboardingMainStep', () => {
     expect(hero.src).toBe(REWARDS_ONBOARD_HERO_IMAGE_URL);
   });
 
-  it('hides referral input by default and reveals it via the toggle', () => {
-    setup();
-    render(<OnboardingMainStep />);
-
-    expect(
-      screen.queryByPlaceholderText('rewardsOnboardingReferralCodePlaceholder'),
-    ).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByText('rewardsOnboardingReferralPrompt'));
-
-    expect(
-      screen.getByPlaceholderText('rewardsOnboardingReferralCodePlaceholder'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('rewardsOnboardingReferralHide'),
-    ).toBeInTheDocument();
-  });
-
-  it('focuses the referral input when it becomes visible', () => {
-    setup();
-    render(<OnboardingMainStep />);
-
-    fireEvent.click(screen.getByText('rewardsOnboardingReferralPrompt'));
-
-    const input = screen.getByPlaceholderText(
-      'rewardsOnboardingReferralCodePlaceholder',
-    );
-    expect(input).toHaveFocus();
-  });
-
-  it('renders the referral input above the CTA and the toggle below it', () => {
-    setup();
-    render(<OnboardingMainStep />);
-
-    fireEvent.click(screen.getByText('rewardsOnboardingReferralPrompt'));
-
-    const input = screen.getByPlaceholderText(
-      'rewardsOnboardingReferralCodePlaceholder',
-    );
-    const cta = within(
-      screen.getByTestId('rewards-onboarding-main-actions'),
-    ).getByRole('button');
-    const toggle = screen.getByText('rewardsOnboardingReferralHide');
-
-    const all = Array.from(document.body.querySelectorAll('*'));
-    expect(all.indexOf(input)).toBeLessThan(all.indexOf(cta));
-    expect(all.indexOf(cta)).toBeLessThan(all.indexOf(toggle));
-  });
-
-  it('clears the referral code when toggling the input back to hidden', () => {
-    const { setReferralCode } = setup({
-      referralCode: 'ABCDEF',
-      isValid: true,
-    });
-    render(<OnboardingMainStep />);
-
-    fireEvent.click(screen.getByText('rewardsOnboardingReferralPrompt'));
-    fireEvent.click(screen.getByText('rewardsOnboardingReferralHide'));
-
-    expect(setReferralCode).toHaveBeenCalledWith('');
-  });
-
-  it('shows the referral input pre-revealed when a referral code is prefilled from the store', () => {
-    setup({
-      state: { onboardingReferralCode: 'abcdef' },
-      referralCode: 'ABCDEF',
-      isValid: true,
-    });
-    render(<OnboardingMainStep />);
-
-    expect(
-      screen.getByPlaceholderText('rewardsOnboardingReferralCodePlaceholder'),
-    ).toBeInTheDocument();
-  });
-
-  it('shows the VIP referral tag for a valid VIP code when the VIP program is enabled', () => {
-    setup({
-      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: true },
-      referralCode: 'VIPCODE',
-      isValid: true,
-      isVipCode: true,
-    });
-    render(<OnboardingMainStep />);
-
-    expect(screen.getByTestId('rewards-vip-referral-tag')).toBeInTheDocument();
-  });
-
-  it('does not show the VIP referral tag when the VIP program flag is off', () => {
-    setup({
-      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: false },
-      referralCode: 'VIPCODE',
-      isValid: true,
-      isVipCode: true,
-    });
-    render(<OnboardingMainStep />);
-
-    expect(
-      screen.queryByTestId('rewards-vip-referral-tag'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('seeds validation with the trimmed + uppercased referral from the store', () => {
-    setup({ state: { onboardingReferralCode: ' abcd ' } });
-    const impl = jest.fn((initialValue?: string) => ({
-      referralCode: initialValue ?? '',
-      setReferralCode: jest.fn(),
-      isValidating: false,
-      isValid: false,
-      isUnknownError: false,
-    }));
-    mockedUseValidateReferralCode.mockImplementation(impl);
-
-    render(<OnboardingMainStep />);
-
-    expect(impl).toHaveBeenCalledWith('ABCD');
-  });
-
-  it('shows referral error message after validation completes and code is invalid', () => {
-    setup({
-      referralCode: 'ABCDEF',
-      isValid: false,
-      isValidating: false,
-      state: { onboardingReferralCode: 'ABCDEF' },
-    });
-    render(<OnboardingMainStep />);
-
-    expect(
-      screen.getByText('rewardsOnboardingReferralCodeError'),
-    ).toBeInTheDocument();
-  });
-
-  it('shows referral error message for vanity codes once validation reports invalid', () => {
-    setup({
-      referralCode: 'BANKLESS',
-      isValid: false,
-      isValidating: false,
-      state: { onboardingReferralCode: 'BANKLESS' },
-    });
-    render(<OnboardingMainStep />);
-
-    expect(
-      screen.getByText('rewardsOnboardingReferralCodeError'),
-    ).toBeInTheDocument();
-  });
-
-  it('does not show error while validation is still in flight', () => {
-    setup({
-      referralCode: 'ABC',
-      isValid: false,
-      isValidating: true,
-      state: { onboardingReferralCode: 'ABC' },
-    });
-    render(<OnboardingMainStep />);
-
-    expect(
-      screen.queryByText('rewardsOnboardingReferralCodeError'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders the unknown referral error banner when validation throws', () => {
-    setup({
-      isUnknownError: true,
-      state: { onboardingReferralCode: 'ABCDEF' },
-    });
-    render(<OnboardingMainStep />);
-
-    expect(screen.getByTestId('banner-title')).toHaveTextContent(
-      'rewardsOnboardingReferralCodeUnknownError',
-    );
-    expect(screen.getByTestId('banner-description')).toHaveTextContent(
-      'rewardsOnboardingReferralCodeUnknownErrorDescription',
-    );
-  });
-
   it('disables CTA when opt-in is loading', () => {
     setup({ optinLoading: true });
     render(<OnboardingMainStep />);
@@ -445,7 +236,7 @@ describe('OnboardingMainStep', () => {
     expect(button).toBeDisabled();
   });
 
-  it('shows the joining loading text on CTA and hides the referral toggle while opting in', () => {
+  it('shows the joining loading text on CTA while opting in', () => {
     setup({ optinLoading: true });
     render(<OnboardingMainStep />);
 
@@ -456,9 +247,6 @@ describe('OnboardingMainStep', () => {
       'data-loading-text',
       'rewardsOnboardingSignUpLoading',
     );
-    expect(
-      screen.queryByTestId('rewards-onboarding-main-referral-toggle'),
-    ).not.toBeInTheDocument();
   });
 
   it('shows the checking-region loading text on CTA when geo metadata is loading', () => {
@@ -474,29 +262,6 @@ describe('OnboardingMainStep', () => {
     );
   });
 
-  it('shows the verifying-referral loading text on CTA while validating a referral code', () => {
-    setup({ isValidating: true });
-    render(<OnboardingMainStep />);
-
-    const button = within(
-      screen.getByTestId('rewards-onboarding-main-actions'),
-    ).getByRole('button');
-    expect(button).toHaveAttribute(
-      'data-loading-text',
-      'rewardsOptInVerifyingReferralCode',
-    );
-  });
-
-  it('disables CTA when referral code is non-empty but invalid', () => {
-    setup({ referralCode: 'A', isValid: false });
-    render(<OnboardingMainStep />);
-
-    const button = within(
-      screen.getByTestId('rewards-onboarding-main-actions'),
-    ).getByRole('button');
-    expect(button).toBeDisabled();
-  });
-
   it('calls optin without referral code when CTA clicked with no code', () => {
     const { optin } = setup();
     render(<OnboardingMainStep />);
@@ -506,19 +271,7 @@ describe('OnboardingMainStep', () => {
     ).getByRole('button');
     fireEvent.click(button);
 
-    expect(optin).toHaveBeenCalledWith(undefined);
-  });
-
-  it('calls optin with the referral code when CTA clicked with a valid code', () => {
-    const { optin } = setup({ referralCode: 'REFCOD', isValid: true });
-    render(<OnboardingMainStep />);
-
-    const button = within(
-      screen.getByTestId('rewards-onboarding-main-actions'),
-    ).getByRole('button');
-    fireEvent.click(button);
-
-    expect(optin).toHaveBeenCalledWith('REFCOD');
+    expect(optin).toHaveBeenCalled();
   });
 
   it('dispatches an unsupported-region toast and does not opt-in when geo blocks', () => {

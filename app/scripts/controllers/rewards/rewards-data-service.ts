@@ -74,7 +74,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'mobileOptin',
   'getSeasonStatus',
   'fetchGeoLocation',
-  'validateReferralCode',
   'mobileJoin',
   'siweJoin',
   'getOptInStatus',
@@ -201,8 +200,17 @@ export class RewardsDataService {
       const version = extensionPlatform.getVersion();
       headers['rewards-client-id'] = `extension-${version}`;
     } catch (error) {
-      // Continue without client header if version retrieval fails
-      console.warn('Failed to retrieve app version for client header:', error);
+      // Unit tests and other non-extension runtimes have no browser manifest.
+      // The build-time version is set in those environments.
+      const fallbackVersion = process.env.METAMASK_VERSION;
+      if (fallbackVersion) {
+        headers['rewards-client-id'] = `extension-${fallbackVersion}`;
+      } else {
+        console.warn(
+          'Failed to retrieve app version for client header:',
+          error,
+        );
+      }
     }
 
     // Add bearer token for authenticated requests
@@ -455,32 +463,6 @@ export class RewardsDataService {
       console.error('RewardsDataService: Failed to fetch geolocation', e);
       return location;
     }
-  }
-
-  /**
-   * Validate a referral code.
-   *
-   * @param code - The referral code to validate.
-   * @returns Promise<{valid: boolean; isVipCode?: boolean}> - Object indicating
-   * if the code is valid and whether the backend considers it a VIP code.
-   */
-  async validateReferralCode(
-    code: string,
-  ): Promise<{ valid: boolean; isVipCode?: boolean }> {
-    const response = await this.makeRequest(
-      `/referral/validate?code=${encodeURIComponent(code)}`,
-      {
-        method: 'GET',
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to validate referral code. Please try again shortly.`,
-      );
-    }
-
-    return (await response.json()) as { valid: boolean; isVipCode?: boolean };
   }
 
   /**

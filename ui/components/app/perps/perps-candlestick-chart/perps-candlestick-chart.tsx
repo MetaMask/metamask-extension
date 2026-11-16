@@ -771,6 +771,8 @@ const PerpsCandlestickChart = forwardRef<
         data-testid="perps-candlestick-chart"
         style={{
           position: 'relative',
+          // Confines the chart canvas z-index so it cannot paint over the sticky footer.
+          isolation: 'isolate',
           width: '100%',
           height,
           borderRadius: '8px',

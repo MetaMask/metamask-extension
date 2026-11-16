@@ -7,6 +7,7 @@ import {
   validatedVersionGatedFeatureFlag,
   VersionGatedFeatureFlag,
 } from '../../../shared/lib/feature-flags/version-gating';
+import type { OnboardingControllerState } from '../controllers/onboarding';
 import { RewardsControllerMessenger } from '../controllers/rewards/rewards-controller.types';
 import { RewardsControllerInitMessenger } from './messengers/rewards-controller-messenger';
 import { MessengerClientInitFunction } from './types';
@@ -46,64 +47,16 @@ export const RewardsControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: rewardsControllerState,
     isDisabled: () => {
-      const { remoteFeatureFlags } = initMessenger.call(
-        'RemoteFeatureFlagController:getState',
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
       );
-      const rewardsFeatureFlag = remoteFeatureFlags?.rewardsEnabled as
-        | VersionGatedFeatureFlag
-        | undefined;
-
-      // Seed with manifest override first; fallback to remote flag
-      const manifestFlag =
-        getManifestFlags().remoteFeatureFlags?.rewardsEnabled;
-      const featureFlagEnabled =
-        manifestFlag === undefined
-          ? resolveFlag(rewardsFeatureFlag)
-          : resolveFlag(manifestFlag);
-
-      // Check if basic functionality is enabled
       const { useExternalServices } = initMessenger.call(
         'PreferencesController:getState',
       );
-      return !featureFlagEnabled || !useExternalServices;
-    },
-    isBitcoinDisabled: () => {
-      const { remoteFeatureFlags } = initMessenger.call(
-        'RemoteFeatureFlagController:getState',
-      );
-      const bitcoinFeatureFlag =
-        remoteFeatureFlags?.rewardsBitcoinEnabledExtension as
-          | VersionGatedFeatureFlag
-          | undefined;
-
-      // Seed with manifest override first; fallback to remote flag
-      const manifestFlag =
-        getManifestFlags().remoteFeatureFlags?.rewardsBitcoinEnabledExtension;
-      const featureFlagEnabled =
-        manifestFlag === undefined
-          ? resolveFlag(bitcoinFeatureFlag)
-          : resolveFlag(manifestFlag);
-
-      return !featureFlagEnabled;
-    },
-    isTronDisabled: () => {
-      const { remoteFeatureFlags } = initMessenger.call(
-        'RemoteFeatureFlagController:getState',
-      );
-      const tronFeatureFlag =
-        remoteFeatureFlags?.rewardsTronEnabledExtension as
-          | VersionGatedFeatureFlag
-          | undefined;
-
-      // Seed with manifest override first; fallback to remote flag
-      const manifestFlag =
-        getManifestFlags().remoteFeatureFlags?.rewardsTronEnabledExtension;
-      const featureFlagEnabled =
-        manifestFlag === undefined
-          ? resolveFlag(tronFeatureFlag)
-          : resolveFlag(manifestFlag);
-
-      return !featureFlagEnabled;
+      // Silent auth runs on vault unlock. During onboarding that unlock
+      // happens before the user can turn basic functionality off, so keep
+      // rewards off until onboarding is complete.
+      return !completedOnboarding || !useExternalServices;
     },
     isVipDisabled: () => {
       const { remoteFeatureFlags } = initMessenger.call(
@@ -124,6 +77,23 @@ export const RewardsControllerInit: MessengerClientInitFunction<
       return !featureFlagEnabled;
     },
   });
+
+  // Vault unlock during onboarding happens before basic functionality can be
+  // turned off, so silent auth is skipped then. Run it once onboarding
+  // finishes, when the preference is already final.
+  let authenticatedAfterOnboarding = false;
+  initMessenger.subscribe(
+    'OnboardingController:stateChange',
+    (state: OnboardingControllerState) => {
+      if (!state.completedOnboarding || authenticatedAfterOnboarding) {
+        return;
+      }
+      authenticatedAfterOnboarding = true;
+      messengerClient
+        .handleAuthenticationTrigger('Onboarding completed')
+        .catch(() => undefined);
+    },
+  );
 
   return { messengerClient };
 };

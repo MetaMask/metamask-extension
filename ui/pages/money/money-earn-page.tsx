@@ -24,6 +24,7 @@ import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { getPrivacyMode } from '../../selectors/selectors';
 import {
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -48,6 +49,7 @@ export function MoneyEarnPage() {
   const { handleAddToken, isDepositLoading } = useMoneyAddDepositToken({
     screenName: MoneyScreenName.MoneyPotentialEarnings,
     tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+    ftueEntryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
   });
   const { trackScreenViewed, trackTooltipClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyPotentialEarnings,

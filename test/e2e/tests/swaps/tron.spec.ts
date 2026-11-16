@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { landOnTronHome } from '../../page-objects/flows/tron-network.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { TRON_CHECK_BALANCE_ACCOUNT } from '../tron/fixtures/environments';
@@ -10,7 +11,6 @@ import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
   mockTronSwapApisWithoutFeeEstimation,
-  TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from '../tron/mocks/common-tron';
 
 describe('Swap on Tron', function (this: Suite) {
@@ -20,17 +20,17 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
-        ignoredConsoleErrors: [
-          `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
-        ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -55,15 +55,18 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) =>
           mockTronSwapApisWithoutFeeEstimation(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -83,14 +86,17 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApisNoQuotes(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -110,14 +116,17 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -140,14 +149,17 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -166,14 +178,17 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSwap({
@@ -199,14 +214,18 @@ describe('Swap on Tron', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+        localNode: false,
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await landOnTronHome(driver);
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('106.072');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.checkSourceToken('TRX');

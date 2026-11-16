@@ -9,11 +9,36 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
-import { trace } from '../../../../shared/lib/trace';
+import {
+  TraceName,
+  trace,
+  type TraceCallback,
+  type TraceContext,
+  type TraceRequest,
+} from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
 import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
 import { trackEvent } from '../../controllers/analytics';
+
+const CONTACT_SYNC_ROOT_TRACE_NAMES = new Set<string>([
+  TraceName.ContactSyncFull,
+]);
+
+function traceWithContactSyncRootBoundary<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
+function traceWithContactSyncRootBoundary(request: TraceRequest): TraceContext;
+function traceWithContactSyncRootBoundary<ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+): ResultType | TraceContext {
+  const boundedRequest = CONTACT_SYNC_ROOT_TRACE_NAMES.has(request.name)
+    ? { ...request, root: true }
+    : request;
+  return fn ? trace(boundedRequest, fn) : trace(boundedRequest);
+}
 
 /**
  * Initialize the UserStorage controller.
@@ -35,7 +60,7 @@ export const UserStorageControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
     // @ts-expect-error Controller uses string for names rather than enum
-    trace,
+    trace: traceWithContactSyncRootBoundary,
     config: {
       env,
       contactSyncing: {

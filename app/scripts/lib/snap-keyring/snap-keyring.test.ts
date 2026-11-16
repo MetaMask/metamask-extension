@@ -137,10 +137,10 @@ const createControllerMessenger = ({
         return mockEndFlow.mockReturnValue(true)(params);
 
       case 'ApprovalController:showSuccess':
-        return mockShowSuccess();
+        return mockShowSuccess(params);
 
       case 'ApprovalController:showError':
-        return mockShowError();
+        return mockShowError(params);
 
       case 'KeyringController:getAccounts':
         return mockGetAccounts.mockResolvedValue([])();
@@ -337,6 +337,20 @@ describe('Snap Keyring Methods', () => {
         sensitiveProperties: {},
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
+      expect(mockShowSuccess).toHaveBeenCalledWith([
+        expect.objectContaining({
+          message: expect.objectContaining({
+            key: 'snapAccountSuccessMessage',
+            name: 'SnapAccountSuccessMessage',
+            properties: {
+              message: 'Your new account is ready to use!',
+              address: address.toLowerCase(),
+              learnMoreLink:
+                'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension',
+            },
+          }),
+        }),
+      ]);
       expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
@@ -439,6 +453,22 @@ describe('Snap Keyring Methods', () => {
         errorMessage,
       );
 
+      expect(mockShowError).toHaveBeenCalledTimes(1);
+      expect(mockShowError).toHaveBeenCalledWith([
+        expect.objectContaining({
+          error: expect.objectContaining({
+            key: 'snapAccountErrorMessage',
+            name: 'SnapAccountErrorMessage',
+            properties: {
+              message: "mock-snap didn't manage to create an account for you.",
+              learnMoreLink:
+                'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension',
+              error: errorMessage,
+            },
+          }),
+        }),
+      ]);
+
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
@@ -468,6 +498,21 @@ describe('Snap Keyring Methods', () => {
       expect(mockRemoveAccountHelper).toHaveBeenCalledWith(
         address.toLowerCase(),
       );
+      expect(mockShowError).toHaveBeenCalledTimes(1);
+      expect(mockShowError).toHaveBeenCalledWith([
+        expect.objectContaining({
+          error: expect.objectContaining({
+            key: 'snapAccountErrorMessage',
+            name: 'SnapAccountErrorMessage',
+            properties: {
+              message:
+                'This account will no longer be available to use in MetaMask.',
+              learnMoreLink:
+                'https://support.metamask.com/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension',
+            },
+          }),
+        }),
+      ]);
     });
   });
 });

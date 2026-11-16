@@ -2,6 +2,8 @@ import {
   EthScope,
   SolAccountType,
   SolScope,
+  TrxAccountType,
+  TrxScope,
   XlmAccountType,
   XlmScope,
 } from '@metamask/keyring-api';
@@ -18,6 +20,7 @@ import type {
   AllWalletsBalance,
   BalanceChangeResult,
 } from '@metamask/assets-controller';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import type { MetaMaskReduxState } from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
@@ -43,6 +46,7 @@ import {
   type BalanceCalculationState,
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectUnifiedBalanceGetterBySelectedAccountGroup,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
   getAssetsByAccountGroupId,
@@ -1538,6 +1542,44 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     );
   };
 
+  const createMockStateWithTronNetworks = (
+    includeTestnets: boolean = false,
+  ): BalanceCalculationState => {
+    const multichainNetworks: Record<string, unknown> = {
+      [TrxScope.Mainnet]: {
+        chainId: TrxScope.Mainnet,
+        type: 'mainnet',
+      },
+    };
+
+    if (includeTestnets) {
+      multichainNetworks[TrxScope.Nile] = {
+        chainId: TrxScope.Nile,
+        type: 'testnet',
+      };
+    }
+
+    const baseState = createBaseMockState(
+      'tron-account',
+      TrxAccountType.Eoa,
+      [TrxScope.Mainnet],
+      {
+        snap: { id: 'npm:@metamask/tron-wallet-snap', enabled: true },
+      },
+    );
+
+    return {
+      metamask: {
+        ...baseState,
+        networkConfigurationsByChainId: {},
+        multichainNetworkConfigurationsByChainId: multichainNetworks,
+        snaps: {
+          'npm:@metamask/tron-wallet-snap': { enabled: true },
+        },
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+  };
+
   const ethNativeAssetId = 'eip155:1/slip44:60' as CaipAssetType;
   const ethSepoliaNativeAssetId = 'eip155:11155111/slip44:60' as CaipAssetType;
   const usdcAssetId =
@@ -1547,6 +1589,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
   const xlmNativeAssetId = `${XlmScope.Pubnet}/slip44:148` as CaipAssetType;
   const xlmTestnetNativeAssetId =
     `${XlmScope.Testnet}/slip44:148` as CaipAssetType;
+  const trxNativeAssetId = MultichainNativeAssets.TRON;
+  const trxNileNativeAssetId = MultichainNativeAssets.TRON_NILE;
 
   const ethNativeInfo = {
     type: 'native' as const,
@@ -1608,6 +1652,28 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.assetsBalance = {
       'stellar-account': {
         [xlmNativeAssetId]: { amount: '25.5' },
+      },
+    };
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns true when balance is greater than 0 for Tron mainnet', () => {
+    const state = createMockStateWithTronNetworks();
+
+    state.metamask.assetsInfo = {
+      [trxNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+    };
+    state.metamask.assetsBalance = {
+      'tron-account': {
+        [trxNativeAssetId]: { amount: '30' },
       },
     };
 
@@ -1784,6 +1850,28 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     expect(result).toBe(true);
   });
 
+  it('returns true for loaded state when a Tron mainnet zero balance record exists', () => {
+    const state = createMockStateWithTronNetworks();
+
+    state.metamask.assetsInfo = {
+      [trxNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+    };
+    state.metamask.assetsBalance = {
+      'tron-account': {
+        [trxNativeAssetId]: { amount: '0' },
+      },
+    };
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
   it('returns false for loaded state when only testnet balance records exist', () => {
     const state = createMockStateWithEVMNetworks(true);
 
@@ -1899,6 +1987,35 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     };
 
     const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(false);
+  });
+
+  it('excludes Tron testnet from balance calculation', () => {
+    const state = createMockStateWithTronNetworks(true);
+
+    state.metamask.assetsInfo = {
+      [trxNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+      [trxNileNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+    };
+    state.metamask.assetsBalance = {
+      'tron-account': {
+        [trxNativeAssetId]: { amount: '0' },
+        [trxNileNativeAssetId]: { amount: '30' },
+      },
+    };
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(false);
   });
@@ -2471,5 +2588,92 @@ describe('getAsset', () => {
         currency: 'USD',
       },
     });
+  });
+});
+
+describe('selectUnifiedBalanceGetterBySelectedAccountGroup', () => {
+  const walletId = 'entropy:wallet1';
+  const groupId = 'entropy:wallet1/group1';
+  const accountIds = ['account1', 'account2'];
+
+  const buildState = (
+    selectedAccountGroup: string | null = groupId,
+  ): AssetSelectorTestState => ({
+    metamask: {
+      selectedAccountGroup,
+      accountTree: {
+        wallets: {
+          [walletId]: {
+            id: walletId,
+            type: 'entropy',
+            groups: {
+              [groupId]: {
+                id: groupId,
+                type: 'multichain-account',
+                accounts: accountIds,
+                metadata: { name: 'Account 1' },
+              },
+            },
+            metadata: { name: 'Wallet 1' },
+          },
+        },
+      },
+      selectedCurrency: 'eur',
+    },
+  });
+
+  beforeEach(() => {
+    mockGetAggregatedBalanceForAccount.mockReset();
+  });
+
+  it('returns a getter that is null when no account group is selected', () => {
+    const getBalance = selectUnifiedBalanceGetterBySelectedAccountGroup(
+      buildState(null),
+    );
+
+    expect(getBalance({ eip155: { '0x1': true } })).toBeNull();
+    expect(mockGetAggregatedBalanceForAccount).not.toHaveBeenCalled();
+  });
+
+  it('computes the selected group balance for the given enabled networks', () => {
+    mockGetAggregatedBalanceForAccount.mockImplementation(((
+      _assetsState: unknown,
+      _account: unknown,
+      enabledNetworkMap: Record<string, Record<string, boolean>>,
+    ) => ({
+      totalBalanceInFiat: enabledNetworkMap.eip155?.['0x89'] ? 30 : 10,
+    })) as never);
+    const getBalance =
+      selectUnifiedBalanceGetterBySelectedAccountGroup(buildState());
+
+    expect(getBalance({ eip155: { '0x1': true } })).toStrictEqual({
+      walletId,
+      groupId,
+      totalBalanceInUserCurrency: 10,
+      userCurrency: 'eur',
+    });
+    expect(getBalance({ eip155: { '0x1': true, '0x89': true } })).toStrictEqual(
+      {
+        walletId,
+        groupId,
+        totalBalanceInUserCurrency: 30,
+        userCurrency: 'eur',
+      },
+    );
+    expect(mockGetAggregatedBalanceForAccount).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({ id: accountIds[0] }),
+      { eip155: { '0x1': true, '0x89': true } },
+      undefined,
+      accountIds,
+    );
+  });
+
+  it('returns the same getter while the balance state is unchanged', () => {
+    const state = buildState();
+
+    expect(selectUnifiedBalanceGetterBySelectedAccountGroup(state)).toBe(
+      selectUnifiedBalanceGetterBySelectedAccountGroup(state),
+    );
   });
 });

@@ -7,10 +7,12 @@ import { WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
-import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
+import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
+import SecurityAndPasswordSettings from '../page-objects/pages/settings/security-and-password/security-and-password-settings';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from '../page-objects/pages/vault/decryptor-page';
 import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
+import { openRevealSrp } from '../page-objects/flows/settings.flow';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -191,12 +193,12 @@ describe('Vault Decryptor Page', function () {
           await settingsPage.goToSecurityAndPasswordSettings();
 
           // fill password to reveal SRP and get the SRP
-          const privacySettings = new PrivacySettings(driver);
-          await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-          await privacySettings.openRevealSrpQuiz();
-          await privacySettings.completeRevealSrpQuiz();
-          await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-          const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+          await new SecurityAndPasswordSettings(driver).checkPageIsLoaded();
+          await openRevealSrp(driver);
+          const revealSrpPage = new RevealSrpPage(driver);
+          await revealSrpPage.completeRevealSrpQuiz();
+          await revealSrpPage.fillPasswordToRevealSrp(WALLET_PASSWORD);
+          const seedPhrase = await revealSrpPage.getSrpText();
 
           // compare the SRP values
           await driver.switchToWindowWithTitle('MetaMask Vault Decryptor');
@@ -250,12 +252,12 @@ describe('Vault Decryptor Page', function () {
         await settingsPage.goToSecurityAndPasswordSettings();
 
         // fill password to reveal SRP and get the SRP
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-        await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz();
-        await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-        const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+        await new SecurityAndPasswordSettings(driver).checkPageIsLoaded();
+        await openRevealSrp(driver);
+        const revealSrpPage = new RevealSrpPage(driver);
+        await revealSrpPage.completeRevealSrpQuiz();
+        await revealSrpPage.fillPasswordToRevealSrp(WALLET_PASSWORD);
+        const seedPhrase = await revealSrpPage.getSrpText();
 
         // retry-logic to ensure the file is written before copying it
         const extensionPath = await getExtensionStorageFilePath(driver);

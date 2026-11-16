@@ -6,6 +6,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
 import { selectMoneyTokenListItemCtaEnabled } from '../../selectors/money/money-account-feature-flags';
@@ -81,6 +82,10 @@ export function useMoneyTokenListCta(
         preferredPaymentToken: {
           address: token.address as Hex,
           chainId: token.chainId as Hex,
+        },
+        ftueOrigin: {
+          entryPoint: MoneyFtueEntryPoint.WalletHome,
+          componentName: MoneyComponentName.TokenListItemCta,
         },
       });
     },

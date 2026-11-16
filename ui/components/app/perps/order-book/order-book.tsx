@@ -467,18 +467,18 @@ export const PerpsOrderBook = ({
       setCurrency(next.currency);
       setMetric(next.metric);
       setSelectedGrouping(next.grouping);
-      submitRequestToBackground('perpsSetOrderBookPreferences', [
+      submitRequestToBackground('PerpsController:setOrderBookPreferences', [
         { currency: next.currency, metric: next.metric },
       ]).catch((error) =>
         console.error('Failed to persist order book preferences', error),
       );
-      submitRequestToBackground('perpsSaveOrderBookGrouping', [
+      submitRequestToBackground('PerpsController:saveOrderBookGrouping', [
         symbol,
         next.grouping,
       ]).catch((error) =>
         console.error('Failed to persist order book grouping', error),
       );
-      submitRequestToBackground('perpsSetProLayoutPreferences', [
+      submitRequestToBackground('PerpsController:setProLayoutPreferences', [
         { orderBookPosition: next.layout },
       ]).catch((error) =>
         console.error('Failed to persist order book layout', error),

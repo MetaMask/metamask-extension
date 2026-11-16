@@ -850,7 +850,7 @@ describe('Transaction Utils', () => {
               'securityAlertResponse',
             ),
             type: undefined,
-            gasFeeToken: '0x20c0000000000000000000000000000000000000',
+            gasFeeToken: '0x20c0000000000000000000006a37da5c996874be',
             excludeNativeTokenForFee: true,
           },
         );

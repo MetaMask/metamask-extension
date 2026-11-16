@@ -46,20 +46,27 @@ jest.mock(
   }),
 );
 
+const messengerCallMock = jest.fn((actionType: string) => {
+  switch (actionType) {
+    case 'LegacyBackgroundApiService:isSendBundleSupported':
+    case 'LegacyBackgroundApiService:isRelaySupported':
+      return Promise.resolve(true);
+    case 'NetworkController:getNetworkConfigurationByNetworkClientId':
+      return Promise.resolve({ chainId: '0x1' });
+    case 'AuthenticationController:getBearerToken':
+      return Promise.resolve('mock-bearer-token-for-tests');
+    default:
+      return Promise.resolve(undefined);
+  }
+});
+
 setBackgroundConnection({
   // @ts-expect-error - setSlippage is valid
   setSlippage,
   setSwapsLiveness: jest.fn(),
   getStatePatches: jest.fn(),
-  isSendBundleSupported: jest.fn(),
-  isRelaySupported: jest.fn(),
-  resetState: jest.fn(),
-  getNetworkConfigurationByNetworkClientId: jest.fn(),
+  messengerCall: messengerCallMock,
   gasFeeStartPolling: jest.fn(),
-  addPollingTokenToAppState: jest.fn(),
-  trackUnifiedSwapBridgeEvent: jest.fn(),
-  updateBridgeQuoteRequestParams: jest.fn(),
-  getBearerToken: jest.fn(),
 });
 
 const TX_MODAL = {
@@ -111,6 +118,11 @@ const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
   await waitForElementById(TX_MODAL.refElement);
 };
 
+const optionButton = (label: string) => {
+  const node = screen.getByText(label);
+  return node.closest('button') ?? node;
+};
+
 const expectButtonStates = (
   autoState: string | null,
   halfPercentState: string,
@@ -119,16 +131,14 @@ const expectButtonStates = (
   customLabel = messages.customSlippage.message,
 ) => {
   autoState &&
-    expect(screen.getByText(messages.slippageAuto.message)).toHaveClass(
-      autoState,
-    );
-  expect(screen.getByText('0.5%').parentElement).toHaveClass(halfPercentState);
-  expect(screen.getByText('2%').parentElement).toHaveClass(twoPercentState);
-  expect(screen.getByText(customLabel)).toHaveClass(customState);
+    expect(optionButton(messages.slippageAuto.message)).toHaveClass(autoState);
+  expect(optionButton('0.5%')).toHaveClass(halfPercentState);
+  expect(optionButton('2%')).toHaveClass(twoPercentState);
+  expect(optionButton(customLabel)).toHaveClass(customState);
 };
 
-const MUTED_CLASS = 'mm-box--background-color-background-muted';
-const DEFAULT_CLASS = 'mm-box--background-color-icon-default';
+const MUTED_CLASS = 'bg-muted';
+const DEFAULT_CLASS = 'bg-icon-default';
 
 describe('BridgeTransactionSettingsModal', () => {
   beforeEach(() => {
@@ -180,6 +190,10 @@ describe('BridgeTransactionSettingsModal', () => {
       expect(getByTestId(TX_MODAL.customInput)).toHaveAttribute(
         'inputmode',
         'decimal',
+      );
+      expect(getByTestId(TX_MODAL.customInput)).toHaveAttribute(
+        'aria-label',
+        messages.swapsMaxSlippage.message,
       );
       expect(baseElement.childNodes[2]).toMatchSnapshot();
     });
