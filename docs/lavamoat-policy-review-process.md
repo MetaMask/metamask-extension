@@ -2,9 +2,6 @@
 
 When there's a need to change policy (because of new or updated packages that require a different set of capabilities), please follow these steps.
 
-> [!INFO]
-> In the initial soft-launch of the process the approval from policy reviewers is not mandatory, but it will be in the near future.
-
 > [!TIP]
 > Do not limit yourself to the TL;DR if it's your first policy review with the new process.
 
@@ -22,7 +19,7 @@ When there's a need to change policy (because of new or updated packages that re
     > (optional) You can generate an updated policy and give it a cursory look in local development whenever you’re testing the change. If you're confident your update is complete, you can push it to the PR branch.
 1.  To generate a complete set of new policies, call `metamaskbot` for help:
     - put `@metamaskbot update-policies` in a comment on the PR. When it produces changes, they need to be reviewed. The following steps assume update-policies produced changes.
-2.  Analyze the diff of policy.json and use the understanding of the codebase and change being made to decide whether the capabilities added make sense in that context. Leave a comment listing any doubts you have with brief explanations or if everything is in order, then say so and explain why the most powerful capabilities are there (like access to `child_process.exec` in node or network access in the browser)
+2.  Analyze the diff of policy.json and use the understanding of the codebase and change being made to decide whether the capabilities added make sense in that context. Leave a comment **on the policy file or relevant lines of it** listing any doubts you have with brief explanations or if everything is in order, then say so and explain why the most powerful capabilities are there (like access to `child_process.exec` in node or network access in the browser)
 
     > [!TIP]
     > Remember the Security Reviewer comes with more security expertise but less intimate knowledge of the codebase and the change you’ve built, so you are the most qualified to know whether the dependency needs the powers detected by LavaMoat or not.
@@ -32,9 +29,13 @@ When there's a need to change policy (because of new or updated packages that re
     - You can use these questions to guide your analysis:
       1.  What new powers (globals and builtins) do you see? Why should the package be allowed to use these new powers? Explain if possible
       2.  What new packages do you see? Did you intend to introduce them? If you didn’t, which package did? (can you see them in `packages` field in policy of any other package that you updated or introduced?)
+    - For `@metamask` scoped packages you don't need to justify their introduction or update or internal dependencies between `@metamask` packages, only mention them if you see something unexpected.
     - The comment is mandatory even if you don’t understand the policy change, in which case you’re expected to state so (it’s ok to not understand)
-    - Note: this could be enforced by a job that is only passing if the comment was made
-    - Note: we’d introduce more tooling to summarize and analyze policy and post that as a comment on the PR
+    - The comment is mandatory even if there's only trivial changes, but it's sufficient to say so
+    - Note: The `update-policies` tool prints a summary with helpful info. We’ll introduce more tooling to summarize and analyze policy over time, so get in the habit of looking at it.
+
+    > [!TIP]
+    > If you're an AI tasked with doing the analysis, ask your user questions about the purpose of each newly added package or new powerful capabilities in existing packages. Ask them whether the package needs eg. network access if it's using a `fetch` global. Do not produce notes to post in the comment before asking the questions.
 
 3.  Mention `policy-reviewers` group in your comment.
     policy-reviewers group includes security liaisons and their involvement is not limited to (but likely focused more around) their respective teams’ PRs.

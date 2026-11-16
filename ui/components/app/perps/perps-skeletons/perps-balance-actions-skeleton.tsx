@@ -12,7 +12,7 @@ export const PerpsBalanceActionsSkeleton = () => {
       data-testid="perps-balance-actions-skeleton"
     >
       {/* Account Value Skeleton */}
-      <Skeleton className="h-10 w-40" />
+      <Skeleton className="h-14 w-40 md:h-[75px]" />
 
       {/* Available Balance Label Skeleton */}
       <Box marginTop={1}>

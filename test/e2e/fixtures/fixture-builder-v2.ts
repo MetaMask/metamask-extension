@@ -6,13 +6,12 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
-  TokenBalancesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -343,6 +342,17 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withMultichainTransactionsController(
+    data: Partial<MultichainTransactionsControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>)
+        .MultichainTransactionsController,
+      data,
+    );
+    return this;
+  }
+
   withNameController(data: Partial<NameControllerState>): this {
     merge(this.fixture.data.NameController, data);
     return this;
@@ -436,18 +446,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokenBalancesController(
-    data: Partial<TokenBalancesControllerState>,
-  ): this {
-    merge(this.fixture.data.TokenBalancesController, data);
-    return this;
-  }
-
-  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
-    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
@@ -1428,7 +1426,7 @@ class FixtureBuilderV2 {
       this
         // When `assetsUnifyState` is enabled the asset list is derived from the
         // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
-        // not from TokensController/TokenBalancesController.
+        // not from TokensController.
         .withAssetsController({
           customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
           assetsBalance: {

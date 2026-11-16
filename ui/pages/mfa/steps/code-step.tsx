@@ -1,15 +1,22 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react';
-import browser from 'webextension-polyfill';
 import {
   Box,
+  BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';
+import {
+  getErrorHandling,
+  isCooldownCountdown,
+} from '../../../hooks/identity/mfa/engine/errors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { MfaFlowTestIds } from '../test-ids';
@@ -31,53 +38,6 @@ const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
  */
 const getCodeDigits = (text: string) =>
   text.replace(/\D/gu, '').slice(0, CODE_LENGTH);
-
-const COOLDOWN_CODES = new Set(['otp_resend_cooldown', 'rate_limited']);
-
-const FOCUS_TIMEOUT_MS = 5000;
-
-/**
- * Waits for the page to get focus back, for a few seconds at most.
- *
- * @returns Resolves once the page has focus; rejects when it did not come back.
- */
-const waitForFocus = (): Promise<void> => {
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-  return new Promise<void>((resolve, reject) => {
-    const onFocus = () => {
-      clearTimeout(timeout);
-      window.removeEventListener('focus', onFocus);
-      resolve();
-    };
-    timeout = setTimeout(() => {
-      window.removeEventListener('focus', onFocus);
-      reject(new Error('The page did not get focus back'));
-    }, FOCUS_TIMEOUT_MS);
-    window.addEventListener('focus', onFocus);
-    // Focus can come back before the listener is added.
-    if (document.hasFocus()) {
-      onFocus();
-    }
-  });
-};
-
-/**
- * Reads the clipboard. Right after the browser's permission prompt the page
- * has no focus and the read fails: it is read again once focus is back.
- *
- * @returns The clipboard's text.
- */
-const readClipboard = async (): Promise<string> => {
-  try {
-    return await navigator.clipboard.readText();
-  } catch (error) {
-    if (document.hasFocus()) {
-      throw error;
-    }
-    await waitForFocus();
-    return navigator.clipboard.readText();
-  }
-};
 
 // The clock is state, as the React Compiler caches what render computes:
 // `Date.now()` read during render would never move. Being up to a second
@@ -104,6 +64,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   // resent.
   const isTotp = step.method === 'totp';
   const isCoolingDown = secondsLeft > 0;
+  // Every OTP method uses this shared screen, so future phone/SMS codes get
+  // the same progress state as email and authenticator app codes.
+  const isVerifying = busy && codeSent && code.length === CODE_LENGTH;
 
   const [clearedFor, setClearedFor] = useState({ error, codeResent });
   if (clearedFor.error !== error || clearedFor.codeResent !== codeResent) {
@@ -128,7 +91,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
       resendAvailableAt !== undefined &&
       secondsLeft === 0
     ) {
-      onAction({ type: 'resend' });
+      onAction({ type: 'resend', trigger: 'auto' });
     }
   }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
 
@@ -153,34 +116,28 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     setCode(getCodeDigits(text));
   };
 
-  // Reading the clipboard needs the optional `clipboardRead` permission, and
-  // focus on this page (see srp-input-import).
-  const paste = async () => {
-    try {
-      if (
-        !(await browser.permissions.request({ permissions: ['clipboardRead'] }))
-      ) {
-        return;
-      }
-      window.focus();
-      inputRef.current?.focus();
-      handleChange(await readClipboard());
-    } catch {
-      // Nothing to paste: the user can still type or paste in the boxes.
-    }
-  };
-
   // An email cooldown with a wait time shows as the countdown on the resend
   // button, also once it ended. Authenticator app errors always show.
-  const showError =
-    error !== undefined &&
-    (isTotp || !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error)));
+  const showError = error !== undefined && !isCooldownCountdown(state);
   // The code on screen can no longer be used: the main action is a new one.
   const needsNewCode =
     showError && error !== undefined && getErrorHandling(error) === 'restart';
+  // A wrong code clears the boxes; the error goes once the user types again.
+  const showErrorState = showError && code.length === 0;
+  // Matches the design system's text field: red on an error, else darker
+  // when focused.
+  const getCellBorder = (isCellFocused: boolean) => {
+    if (showErrorState) {
+      return 'border-error-default';
+    }
+    return isCellFocused ? 'border-default' : 'border-muted';
+  };
 
   const getResendLabel = () => {
     if (isCoolingDown) {
+      if (needsNewCode) {
+        return t('mfaOtpGetNewCodeIn', [String(secondsLeft)]);
+      }
       return t(codeSent ? 'mfaOtpResendIn' : 'mfaOtpSendIn', [
         String(secondsLeft),
       ]);
@@ -206,32 +163,21 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         size={ButtonSize.Lg}
         isFullWidth
         isDisabled={isCoolingDown}
-        onClick={() => onAction({ type: 'resend' })}
+        onClick={() => {
+          onAction({ type: 'errorCtaClicked', cta: 'try_again' });
+          onAction({ type: 'resend' });
+        }}
         data-testid={MfaFlowTestIds.RESEND_BUTTON}
       >
         {isCoolingDown
           ? t('mfaOtpRetryIn', [String(secondsLeft)])
           : t('mfaOtpRetry')}
       </Button>
-    ) : (
-      <Button
-        variant={ButtonVariant.Primary}
-        size={ButtonSize.Lg}
-        isFullWidth
-        // A complete code is submitted as it is typed; this shows the
-        // verification starting or the code being checked, or submits it again
-        // after an error.
-        isLoading={busy}
-        isDisabled={!codeSent || code.length < CODE_LENGTH}
-        onClick={() => onAction({ type: 'submitCode', code })}
-        data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
-      >
-        {t('mfaOtpVerify')}
-      </Button>
-    );
+    ) : null;
 
   return (
     <StepLayout
+      onAction={onAction}
       title={t('mfaOtpTitle')}
       description={getDescription()}
       footer={
@@ -244,28 +190,20 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             }
             size={ButtonSize.Lg}
             isFullWidth
-            // No submit button: this shows the code being checked.
-            isLoading={busy && codeSent}
+            // A complete code submits itself; the line under the boxes shows
+            // it being checked.
             isDisabled={!canResend}
             onClick={() => onAction({ type: 'resend' })}
             data-testid={MfaFlowTestIds.RESEND_BUTTON}
           >
-            {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}
+            {needsNewCode && !isCoolingDown
+              ? t('mfaOtpGetNewCode')
+              : getResendLabel()}
           </Button>
         )
       }
     >
-      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-        <Button
-          variant={ButtonVariant.Tertiary}
-          // The hover pill keeps its padding; the margin lines the text up
-          // with the last box.
-          className="self-end -mr-4"
-          onClick={paste}
-          data-testid={MfaFlowTestIds.PASTE_BUTTON}
-        >
-          {t('mfaOtpPaste')}
-        </Button>
+      <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingTop={2}>
         {/* One input for typing, pasting and one-time-code autofill, over
             the six boxes that show the code. */}
         <Box className="relative">
@@ -274,15 +212,11 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             {CELLS.map((index) => (
               <Box
                 key={index}
-                className={`flex-1 h-14 flex items-center justify-center rounded-xl border-[1.5px] bg-muted ${
-                  isFocused && index === Math.min(code.length, CODE_LENGTH - 1)
-                    ? 'border-primary-default'
-                    : 'border-muted'
-                }`}
+                className={`flex-1 h-14 flex items-center justify-center rounded-xl border bg-muted ${getCellBorder(
+                  isFocused && index === Math.min(code.length, CODE_LENGTH - 1),
+                )}`}
               >
-                <Text variant={TextVariant.HeadingMd} className="text-[22px]">
-                  {code[index] ?? ''}
-                </Text>
+                <Text variant={TextVariant.HeadingLg}>{code[index] ?? ''}</Text>
               </Box>
             ))}
           </Box>
@@ -297,14 +231,34 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             inputMode="numeric"
             spellCheck={false}
             autoCorrect="off"
-            aria-invalid={showError}
+            aria-invalid={showErrorState}
             {...INPUT_A11Y_PROPS}
             className="absolute inset-0 w-full h-full opacity-0 cursor-text"
             data-testid={MfaFlowTestIds.CODE_INPUT}
           />
         </Box>
-        {showError && error ? (
-          <StepError code={error} method={step.method} />
+        {isVerifying ? (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            gap={2}
+            paddingTop={2}
+            role="status"
+            aria-label={t('mfaOtpVerifying')}
+            data-testid={MfaFlowTestIds.VERIFYING_INDICATOR}
+          >
+            <Icon
+              name={IconName.Loading}
+              size={IconSize.Sm}
+              className="animate-spin"
+              aria-hidden
+            />
+            <Text variant={TextVariant.BodySm}>{t('mfaOtpVerifying')}</Text>
+          </Box>
+        ) : null}
+        {showErrorState && error ? (
+          <StepError code={error} method={step.method} onAction={onAction} />
         ) : null}
         {codeResent && !error ? (
           <StepMessage>{t('mfaOtpResent')}</StepMessage>

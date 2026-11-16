@@ -27,4 +27,12 @@
   .mm-select-button__content:empty {
     display: none;
   }
+
+  &.mm-select-button:hover:not(.mm-select-button--disabled) {
+    background-color: var(--color-background-muted-hover);
+  }
+
+  &.mm-select-button:active:not(.mm-select-button--disabled) {
+    background-color: var(--color-background-muted-pressed);
+  }
 }

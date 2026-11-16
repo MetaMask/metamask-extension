@@ -171,10 +171,20 @@ function buildFixtures(title: string) {
           ),
         },
         assetsInfo: Object.fromEntries(
-          TRACKED_ASSETS.map(({ assetId, name, symbol, decimals }) => [
-            assetId,
-            { type: 'erc20' as const, aggregators: [], decimals, name, symbol },
-          ]),
+          TRACKED_ASSETS.map(
+            ({ assetId, name, symbol, decimals, occurrences }) => [
+              assetId,
+              {
+                type: 'erc20' as const,
+                aggregators: [],
+                decimals,
+                image: 'icon',
+                name,
+                occurrences,
+                symbol,
+              },
+            ],
+          ),
         ),
         customAssets: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: [CUSTOM_ASSET.assetId],
@@ -237,6 +247,13 @@ async function mockOccurrenceApis(
           })),
         };
       }),
+    // Launchpad lookup for below-floor assets. None of the tracked assets are
+    // launchpad tokens, so none are exempted from the cleanup. An unmocked
+    // (empty-body) response fails the lookup and keeps every asset.
+    await mockServer
+      .forGet(`https://token.api.cx.metamask.io/v2/assets`)
+      .always()
+      .thenCallback(() => ({ statusCode: 200, json: [] })),
 
     // Mock balances as so it doesn't impact the original cleanup unlock logic.
     ...(await Promise.all(

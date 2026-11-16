@@ -42,6 +42,11 @@ export type LaunchOptions = {
   selfOnboarding?: boolean;
   /** Secret recovery phrase used when `selfOnboarding` is set. Cleared after use. */
   srp?: string;
+  /**
+   * Vault password set and used to unlock when `selfOnboarding` is set.
+   * Defaults to the e2e password. Cleared after use.
+   */
+  password?: string;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;
@@ -62,27 +67,12 @@ export type ScreenshotResult = {
   height: number;
 };
 
-export type ScreenName =
-  | 'unlock'
-  | 'home'
-  | 'onboarding-welcome'
-  | 'onboarding-import'
-  | 'onboarding-create'
-  | 'onboarding-srp'
-  | 'onboarding-password'
-  | 'onboarding-complete'
-  | 'onboarding-metametrics'
-  | 'onboarding-privacy'
-  | 'settings'
-  | 'send'
-  | 'swap'
-  | 'bridge'
-  | 'connect'
-  | 'confirmation'
-  | 'confirm-transaction'
-  | 'confirm-signature'
-  | 'notification'
-  | 'unknown';
+/**
+ * The route the extension shows, named by `getScreenName` (e.g. `home`,
+ * `activity`, `account-list`, `settings-privacy`), or `notification` /
+ * `unknown` when no route matches.
+ */
+export type ScreenName = string;
 
 export type ExtensionState = {
   isLoaded: boolean;

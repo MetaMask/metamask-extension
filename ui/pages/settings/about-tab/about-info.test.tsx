@@ -27,7 +27,7 @@ describe('AboutInfo', () => {
       });
       expect(privacyPolicyLink).toHaveAttribute(
         'href',
-        'https://metamask.io/privacy.html',
+        'https://metamask.com/privacy.html',
       );
     });
 
@@ -37,7 +37,7 @@ describe('AboutInfo', () => {
       });
       expect(termsOfUseLink).toHaveAttribute(
         'href',
-        'https://metamask.io/terms.html',
+        'https://metamask.com/terms.html',
       );
     });
 
@@ -63,7 +63,7 @@ describe('AboutInfo', () => {
       const websiteLink = getByRole('link', {
         name: messages.visitWebSite.message,
       });
-      expect(websiteLink).toHaveAttribute('href', 'https://metamask.io/');
+      expect(websiteLink).toHaveAttribute('href', 'https://metamask.com/');
     });
 
     it('should have correct href for "Contact us" link', () => {
@@ -72,7 +72,7 @@ describe('AboutInfo', () => {
       });
       expect(contactUsLink).toHaveAttribute(
         'href',
-        'https://support.metamask.io/?utm_source=extension',
+        'https://support.metamask.com/?utm_source=extension',
       );
     });
   });

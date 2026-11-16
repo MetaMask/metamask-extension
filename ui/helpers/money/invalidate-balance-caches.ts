@@ -2,6 +2,7 @@ import type {
   CanonicalMoneyAccountBalanceResponse,
   FetchBalanceWithFallbackOptions,
 } from '@metamask/money-account-balance-service';
+import { Hex } from '@metamask/utils';
 import {
   MoneyAccountApiDataServiceQueryKeys,
   MoneyAccountBalanceServiceQueryKeys,
@@ -61,28 +62,22 @@ export async function invalidateMoneyAccountBalanceSourceCaches(
   address: string,
 ): Promise<void> {
   await Promise.all([
-    submitRequestToBackground<void>('messengerCall', [
-      'MoneyAccountBalanceService:invalidateQueries',
-      [
-        {
-          queryKey: [
-            MoneyAccountBalanceServiceQueryKeys.GET_MONEY_ACCOUNT_BALANCE,
-            address,
-          ],
-        },
-      ],
+    submitRequestToBackground('MoneyAccountBalanceService:invalidateQueries', [
+      {
+        queryKey: [
+          MoneyAccountBalanceServiceQueryKeys.GET_MONEY_ACCOUNT_BALANCE,
+          address,
+        ],
+      },
     ]),
-    submitRequestToBackground<void>('messengerCall', [
-      'MoneyAccountApiDataService:invalidateQueries',
-      [
-        {
-          queryKey: [
-            MoneyAccountApiDataServiceQueryKeys.FETCH_POSITIONS,
-            // Package lowercases the address when building the positions query key.
-            address.toLowerCase(),
-          ],
-        },
-      ],
+    submitRequestToBackground('MoneyAccountApiDataService:invalidateQueries', [
+      {
+        queryKey: [
+          MoneyAccountApiDataServiceQueryKeys.FETCH_POSITIONS,
+          // Package lowercases the address when building the positions query key.
+          address.toLowerCase(),
+        ],
+      },
     ]),
   ]);
 }
@@ -104,14 +99,11 @@ export async function fetchFreshMoneyAccountBalance(
   address: string,
   options: FetchBalanceWithFallbackOptions,
 ): Promise<CanonicalMoneyAccountBalanceResponse> {
-  const result =
-    await submitRequestToBackground<CanonicalMoneyAccountBalanceResponse>(
-      'messengerCall',
-      [
-        'MoneyAccountBalanceService:fetchBalanceWithFallback',
-        [address, options],
-      ],
-    );
+  const result = await submitRequestToBackground(
+    'MoneyAccountBalanceService:fetchBalanceWithFallback',
+    // TODO: Ensure that address is a hex before calling this action.
+    [address as Hex, options],
+  );
 
   queryClient.setQueryData(
     [MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK, address],

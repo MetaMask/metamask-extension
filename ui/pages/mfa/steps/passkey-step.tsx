@@ -12,6 +12,7 @@ const PasskeyStep = ({ step, state, onAction }: StepProps<'passkey'>) => {
   const t = useI18nContext();
   return (
     <StepLayout
+      onAction={onAction}
       title={t(
         step.purpose === 'setup'
           ? 'mfaPasskeyTitleSetup'
@@ -24,7 +25,10 @@ const PasskeyStep = ({ step, state, onAction }: StepProps<'passkey'>) => {
           size={ButtonSize.Lg}
           isFullWidth
           isLoading={state.busy}
-          onClick={() => onAction({ type: 'continue' })}
+          onClick={() => {
+            onAction({ type: 'errorCtaClicked', cta: 'try_again' });
+            onAction({ type: 'continue' });
+          }}
           data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
         >
           {t('mfaFailureRetry')}

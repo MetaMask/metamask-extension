@@ -14,6 +14,8 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
@@ -133,12 +135,16 @@ export function BatchedApprovalFunction({
         <ConfirmInfoRowText text={method.name} />
       </ConfirmInfoRow>
       <Box paddingLeft={2}>
-        <ConfirmInfoRow label={t('spender')}>
+        <ConfirmInfoAlertRow
+          alertKey={`${RowAlertKey.Spender}-${nestedTransactionIndex}`}
+          ownerId={currentConfirmation.id}
+          label={t('spender')}
+        >
           <ConfirmInfoRowAddress
             address={value.spender ?? ''}
             chainId={chainId}
           />
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
         {value.amount && (
           <ConfirmInfoRow label={t('amount')}>
             <ConfirmInfoRowText text={value.amount} />

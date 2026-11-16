@@ -23,6 +23,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -30,7 +31,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACTIVITY_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useHideToasts } from '../../../hooks/useHideToasts';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -50,7 +54,10 @@ import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../../shared/constants/app';
 import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
@@ -384,9 +391,11 @@ export default function ConfirmationPage({
       const shouldShowActivity = SNAP_DIALOG_TYPE.includes(
         lastConfirmationTypeRef.current,
       );
-      const to = shouldShowActivity
-        ? `${DEFAULT_ROUTE}?tab=activity`
-        : DEFAULT_ROUTE;
+      const isNotification =
+        getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
+      // The notification window only closes from home, not the activity route
+      const to =
+        shouldShowActivity && !isNotification ? ACTIVITY_ROUTE : DEFAULT_ROUTE;
 
       navigate(to);
     }
