@@ -5,6 +5,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Content,
   Header,
@@ -13,11 +14,17 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { QR_SYNC_PHASES } from '../../../../shared/constants/qr-sync';
+import { selectQrSyncPhase } from '../../../selectors/qr-sync/qr-sync';
 import SyncAccountsSettings from './sync-accounts-settings';
 
 const SyncAccountsTab = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const qrSyncPhase = useSelector(selectQrSyncPhase);
+  const hasSubmittedImport =
+    qrSyncPhase === QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION ||
+    qrSyncPhase === QR_SYNC_PHASES.COMPLETED;
 
   const handleBack = async () => {
     await submitRequestToBackground('QrSyncController:cancelSync', []).catch(
@@ -33,13 +40,15 @@ const SyncAccountsTab = () => {
     >
       <Header
         startAccessory={
-          <ButtonIcon
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Md}
-            onClick={handleBack}
-            data-testid="sync-accounts-back-button"
-          />
+          hasSubmittedImport ? undefined : (
+            <ButtonIcon
+              ariaLabel={t('back')}
+              iconName={IconName.ArrowLeft}
+              size={ButtonIconSize.Md}
+              onClick={handleBack}
+              data-testid="sync-accounts-back-button"
+            />
+          )
         }
         marginBottom={0}
       />

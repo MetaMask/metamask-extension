@@ -6,87 +6,45 @@ import messages from '../../../../../app/_locales/en/messages.json';
 import Success from './success';
 
 describe('Success', () => {
-  it('renders the title and description for multiple wallets and imported accounts', () => {
+  it('renders the title, imported account count, and compact check illustration', () => {
     renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={2} importedAccountCount={5} />,
+      <Success onDone={jest.fn()} walletCount={2} importedAccountCount={18} />,
     );
 
     expect(
       screen.getByText(messages.add_device_success_title.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        '2 wallets and 5 imported accounts were synced to your phone.',
-      ),
+      screen.getByText('18 accounts imported to your other device.'),
     ).toBeInTheDocument();
+    const illustration = screen.getByTestId('qr-sync-success-illustration');
+    expect(illustration).toHaveClass('h-[72px]', 'w-[72px]', 'rounded-full');
+    expect(screen.getByTestId('qr-sync-success-check')).toHaveAttribute(
+      'src',
+      './images/qr-sync-success-check.svg',
+    );
+    expect(screen.getByTestId('qr-sync-success-check')).toHaveAttribute(
+      'width',
+      '32',
+    );
   });
 
-  it('renders singular copy when one wallet and one imported account are synced', () => {
+  it('renders singular copy for one imported account', () => {
     renderWithLocalization(
       <Success onDone={jest.fn()} walletCount={1} importedAccountCount={1} />,
     );
 
     expect(
-      screen.getByText(
-        messages.add_device_success_desc_wallet_singular_imported_singular
-          .message,
-      ),
+      screen.getByText('1 account imported to your other device.'),
     ).toBeInTheDocument();
   });
 
-  it('renders only the wallet clause when no imported accounts are synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={3} importedAccountCount={0} />,
-    );
+  it('anchors the done button to the bottom of the screen', () => {
+    renderWithLocalization(<Success onDone={jest.fn()} />);
 
     expect(
-      screen.getByText('3 wallets were synced to your phone.'),
-    ).toBeInTheDocument();
-  });
-
-  it('renders singular wallet copy when a single wallet and no imported accounts are synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={1} importedAccountCount={0} />,
-    );
-
-    expect(
-      screen.getByText(
-        messages.add_device_success_desc_wallet_singular.message,
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('renders only the imported account clause when no wallets are synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={0} importedAccountCount={4} />,
-    );
-
-    expect(
-      screen.getByText('4 imported accounts were synced to your phone.'),
-    ).toBeInTheDocument();
-  });
-
-  it('renders singular imported account copy when a single imported account and no wallets are synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={0} importedAccountCount={1} />,
-    );
-
-    expect(
-      screen.getByText(
-        messages.add_device_success_desc_imported_singular.message,
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('renders no description when nothing is synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={0} importedAccountCount={0} />,
-    );
-
-    expect(
-      screen.getByText(messages.add_device_success_title.message),
-    ).toBeInTheDocument();
-    expect(screen.queryByText(/synced to your phone/u)).not.toBeInTheDocument();
+      screen.getByRole('button', { name: messages.done.message }),
+    ).toHaveClass('mt-auto');
   });
 
   it('calls onDone when the done button is clicked', () => {

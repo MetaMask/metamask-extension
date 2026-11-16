@@ -12,6 +12,10 @@ describe('LoadingStep', () => {
 
     expect(screen.getByText('Validating device')).toBeInTheDocument();
     expect(screen.getByText('Please wait')).toBeInTheDocument();
+    expect(screen.getByTestId('qr-sync-loading-indicator')).toHaveClass(
+      'h-[72px]',
+      'w-[72px]',
+    );
   });
 
   it('calls onComplete after the default delay', () => {

@@ -383,11 +383,45 @@ describe('QrSyncController', () => {
       expect(controller.state.qrSyncConnectionStatus).toBe('connecting');
     });
 
+    it('returns after exposing the QR without waiting for the mobile handshake', async () => {
+      const { controller } = setupController();
+      let resolveConnection!: () => void;
+      const connectionPromise = new Promise<void>((resolve) => {
+        resolveConnection = resolve;
+      });
+      mockMwp.connect.mockImplementationOnce(() => {
+        mockEmitSessionRequest();
+        return connectionPromise;
+      });
+
+      await controller.createSession();
+
+      expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.DISPLAYING_QR);
+      expect(controller.state.qrSyncQrPayload).not.toBeNull();
+
+      resolveConnection();
+      await flushAsyncWork();
+    });
+
+    it('reuses an active session when another extension surface mounts', async () => {
+      const { controller } = setupController();
+
+      await mockStartSession(controller);
+      const qrPayload = controller.state.qrSyncQrPayload;
+
+      await controller.createSession();
+
+      expect(mockMwp.connect).toHaveBeenCalledTimes(1);
+      expect(controller.state.qrSyncQrPayload).toBe(qrPayload);
+      expect(controller.state.qrSyncSessionId).toBe(TEST_SESSION_ID);
+    });
+
     it('marks the session as failed when the relay connection fails', async () => {
       const { controller } = setupController();
       mockMwp.connect.mockRejectedValueOnce(new Error('Relay unavailable'));
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
@@ -409,6 +443,7 @@ describe('QrSyncController', () => {
       });
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(cancelOtp).toHaveBeenCalledTimes(1);
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
@@ -425,6 +460,7 @@ describe('QrSyncController', () => {
       mockMwp.connect.mockRejectedValueOnce(expiredError);
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(controller.state.qrSyncPhase).toBe(QR_SYNC_PHASES.FAILED);
       expect(controller.state.qrSyncConnectionStatus).toBe('errored');
@@ -837,6 +873,39 @@ describe('QrSyncController', () => {
       mockEmitSyncCompleted();
     });
 
+    it('expands prototype account selections into distinct payload groups', async () => {
+      const { controller, mockSnapshot, primaryGroupId } = setupController();
+      mockSnapshot.toPayloadId.mockReturnValue('wallet:primary-entropy-id/0');
+
+      await mockStartSession(controller);
+      await mockSetReviewingSyncOffer(controller);
+
+      await controller.syncAccounts(TEST_PASSWORD, [primaryGroupId], {
+        [primaryGroupId]: 3,
+      });
+
+      const syncReadyPayload = mockMwp.dappClient?.sendRequest.mock.calls.find(
+        ([message]) => message.type === QrSyncActionTypes.SYNC_READY,
+      )?.[0];
+
+      expect(syncReadyPayload?.data?.wallets[0].groups).toEqual([
+        expect.objectContaining({
+          id: 'wallet:primary-entropy-id/0',
+          groupIndex: 0,
+        }),
+        expect.objectContaining({
+          id: 'wallet:primary-entropy-id/1',
+          groupIndex: 1,
+        }),
+        expect.objectContaining({
+          id: 'wallet:primary-entropy-id/2',
+          groupIndex: 2,
+        }),
+      ]);
+
+      mockEmitSyncCompleted();
+    });
+
     it('sends multiple mnemonic wallets with primary first when exporting multiple entropy sources', async () => {
       const { controller, mockSnapshot } = setupController({
         entropyFixtures: [primaryEntropyFixture, secondaryEntropyFixture],
@@ -1173,6 +1242,7 @@ describe('QrSyncController', () => {
       mockMwp.connect.mockRejectedValueOnce(connectError);
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(captureException).toHaveBeenCalledTimes(1);
       const sentryError = captureException.mock.calls[0][0] as Error & {
@@ -1196,6 +1266,7 @@ describe('QrSyncController', () => {
       mockMwp.connect.mockRejectedValueOnce(expiredError);
 
       await controller.createSession();
+      await flushAsyncWork();
 
       expect(captureException).not.toHaveBeenCalled();
     });
