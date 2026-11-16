@@ -99,6 +99,10 @@ function isoFromMs(timestampMs: number): string {
  * Confirmed or failed native XLM payment from the E2E Stellar account.
  *
  * @param opts - Send fixture options.
+ * @param opts.amount - Human-readable XLM amount (e.g. '1.5').
+ * @param opts.destination - Recipient Stellar account id (G…).
+ * @param opts.status - Horizon success flag (`confirmed` / `failed`).
+ * @param opts.timestamp - Created-at time in ms.
  */
 export function xlmSendTx(opts: {
   amount: string;
@@ -129,6 +133,9 @@ export function xlmSendTx(opts: {
  * Confirmed native XLM payment to the E2E Stellar account from an external sender.
  *
  * @param opts - Receive fixture options.
+ * @param opts.amount - Human-readable XLM amount (e.g. '1.5').
+ * @param opts.from - External sender Stellar account id (G…).
+ * @param opts.timestamp - Created-at time in ms.
  */
 export function xlmReceiveTx(opts: {
   amount: string;
@@ -160,6 +167,9 @@ export function xlmReceiveTx(opts: {
  * `SwapTransactionXdrStruct` + `isSwapTransaction` in the Stellar snap.
  *
  * @param opts - Swap fixture options.
+ * @param opts.sendAmount - Human-readable XLM send amount.
+ * @param opts.destMin - Minimum USDC destination amount.
+ * @param opts.timestamp - Created-at time in ms.
  */
 export function xlmSwapTx(opts: {
   sendAmount: string;
@@ -194,6 +204,10 @@ export function xlmSwapTx(opts: {
  * send (keyed by Horizon tx hash / keyring `transaction.id`) as Bridged XLM.
  *
  * @param opts - Bridge history options.
+ * @param opts.txHash - Horizon / keyring transaction id to reclassify.
+ * @param opts.srcAmount - Human-readable source XLM amount.
+ * @param opts.destAmount - Human-readable destination amount.
+ * @param opts.timestamp - Optional start time in ms (defaults to ~1 min ago).
  */
 export function stellarBridgeHistoryItem(opts: {
   txHash: string;
@@ -265,6 +279,12 @@ export function stellarBridgeHistoryItem(opts: {
  * (used when Horizon cannot express Pending / Unconfirmed).
  *
  * @param opts - Keyring send options.
+ * @param opts.accountId - Multichain account id that owns the send.
+ * @param opts.amount - Human-readable XLM amount.
+ * @param opts.destination - Recipient Stellar account id (G…).
+ * @param opts.status - Keyring status (`Unconfirmed` or `Failed`).
+ * @param opts.timestampMs - Event time in ms (converted to seconds for keyring).
+ * @param opts.id - Stable transaction id used as the activity key.
  */
 export function stellarKeyringSendTx(opts: {
   accountId: string;
