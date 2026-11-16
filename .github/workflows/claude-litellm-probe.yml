@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Install Claude Code and bubblewrap
         run: |
-          npm install -g @anthropic-ai/claude-code
+          npm install -g --ignore-scripts @anthropic-ai/claude-code@2.1.323
           claude --version
           sudo apt-get install -y bubblewrap socat
           bwrap --version
@@ -123,7 +123,7 @@ jobs:
           ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
         run: |
-          npm install -g @anthropic-ai/claude-code
+          npm install -g --ignore-scripts @anthropic-ai/claude-code@2.1.323
           claude -p "Reply with exactly the word OK" --model "$MODEL" --output-format json > claude.json
           echo "result: $(jq -r '.result' claude.json)"
           keys=$(jq -r '(.modelUsage // {}) | keys[]' claude.json)
@@ -131,3 +131,64 @@ jobs:
           extra=$(echo "$keys" | grep -vc "^$MODEL" || true)
           echo "models other than the requested one: $extra"
           [ -n "$keys" ] && [ "$extra" = "0" ]
+
+  sandbox-yarn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Warm the Corepack cache outside the sandbox
+        run: |
+          corepack enable
+          yarn --version
+
+      - name: Install bubblewrap, socat and a narrow AppArmor profile
+        run: |
+          sudo apt-get install -y bubblewrap socat
+          sudo tee /etc/apparmor.d/bwrap > /dev/null <<'EOF'
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          EOF
+          sudo systemctl reload apparmor
+          which bwrap
+
+      - name: Install pinned Claude Code
+        run: |
+          npm install -g --ignore-scripts @anthropic-ai/claude-code@2.1.323
+          claude --version
+
+      - name: Run the battery inside the Claude Code sandbox
+        env:
+          ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: '1'
+          BASH_DEFAULT_TIMEOUT_MS: '3600000'
+          BASH_MAX_TIMEOUT_MS: '3600000'
+        run: |
+          mkdir -p ~/.cache ~/.yarn ~/.npm ~/.config
+          settings=$(jq -nc '{sandbox: {enabled: true, failIfUnavailable: true, allowUnsandboxedCommands: false, autoAllowBashIfSandboxed: true, filesystem: {allowWrite: ["~/.cache", "~/.yarn", "~/.npm", "~/.config"]}, network: {allowedDomains: ["registry.npmjs.org", "registry.yarnpkg.com", "repo.yarnpkg.com", "github.com", "codeload.github.com"]}}}')
+          claude -p 'Run exactly this shell command and reply with only the word DONE: bash .github/probe/sandbox-battery.sh' \
+            --model "$MODEL" --settings "$settings" --permission-mode dontAsk \
+            --allowedTools 'Bash(bash .github/probe/sandbox-battery.sh)' \
+            --max-turns 6 --output-format json > claude-run.json
+
+      - name: Assert on the results the script wrote
+        if: always()
+        run: |
+          jq '{is_error, num_turns, total_cost_usd, denials: ((.permission_denials // []) | length)}' claude-run.json || true
+          cat sandbox-results.txt
+          echo '--- detail of failures'
+          cat sandbox-detail.txt
+          [ "$(tail -n1 sandbox-results.txt)" = DONE ] && ! grep -q '^FAIL' sandbox-results.txt
