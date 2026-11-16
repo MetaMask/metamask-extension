@@ -102,6 +102,9 @@ export const SortDropdown = ({
   const currentFieldOption = SORT_FIELD_OPTIONS.find(
     (opt) => opt.id === selectedField,
   );
+  const currentFieldLabel = currentFieldOption
+    ? t(currentFieldOption.labelKey)
+    : undefined;
 
   return (
     <>
@@ -111,14 +114,16 @@ export const SortDropdown = ({
         variant={SelectButtonVariant.Secondary}
         onClick={handleOpen}
         data-testid="sort-dropdown-button"
-        value={currentFieldOption ? t(currentFieldOption.labelKey) : undefined}
+        value={currentFieldLabel}
         placeholder=""
-        startAccessory={
-          <Icon
-            name={IconName.SwapVertical}
-            size={IconSize.Xs}
-            color={IconColor.IconAlternative}
-          />
+        aria-label={
+          currentFieldLabel
+            ? `${t('perpsSortByTitle')}, ${currentFieldLabel}, ${
+                direction === 'desc'
+                  ? t('perpsSortByHighToLow')
+                  : t('perpsSortByLowToHigh')
+              }`
+            : t('perpsSortByTitle')
         }
         endArrowDirection={
           direction === 'asc'
@@ -128,7 +133,7 @@ export const SortDropdown = ({
         endArrowDirectionIconProps={{
           'data-testid': 'sort-dropdown-direction-arrow',
         }}
-        textProps={{ className: 'whitespace-nowrap' }}
+        textProps={{ className: 'min-w-0 truncate' }}
       />
 
       {/* Sort modal */}

@@ -30,6 +30,24 @@ describe('SortDropdown', () => {
       expect(screen.getByTestId('sort-dropdown-button')).toBeInTheDocument();
     });
 
+    it('renders no leading icon on the trigger button', () => {
+      // The trigger shows the field label and the direction arrow only.
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      expect(
+        screen.getByTestId('sort-dropdown-button').querySelectorAll('svg'),
+      ).toHaveLength(1);
+    });
+
+    it('names the trigger with purpose, field and direction', () => {
+      renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
+
+      expect(screen.getByTestId('sort-dropdown-button')).toHaveAttribute(
+        'aria-label',
+        'Sort by, Volume, High to low',
+      );
+    });
+
     it('points the trigger arrow down for a descending sort and up for ascending', () => {
       // The SelectButton's trailing arrow reflects the direction in force
       // instead of a static dropdown chevron.
