@@ -306,7 +306,11 @@ function DefaultSummaryLine({
   isLast: boolean;
 }) {
   const t = useI18nContext() as TranslateFunction;
-  const { type, chainId } = transactionMeta;
+  const { type } = transactionMeta;
+
+  const chainId =
+    getMoneyWithdrawDestinationChainId(transactionMeta) ??
+    transactionMeta.chainId;
 
   let title: string;
   switch (type) {
@@ -328,7 +332,7 @@ function DefaultSummaryLine({
 
   return (
     <SummaryLine
-      chainId={getMoneyWithdrawDestinationChainId(transactionMeta) ?? chainId}
+      chainId={chainId}
       hash={transactionMeta.hash}
       status={transactionMeta.status}
       time={transactionMeta.submittedTime ?? transactionMeta.time}

@@ -66,9 +66,11 @@ export const getMoneyPayChainIds = (
 };
 
 /**
- * Chain a Money withdraw (`isPostQuote`) settles on. The hash Pay records on
- * the parent is the settlement one, so it belongs on this chain's explorer,
- * not on `transactionMeta.chainId` (the Money account chain).
+ * Chain a Money withdraw settles on. A Money withdraw is always a post-quote
+ * flow, so `metamaskPay.chainId` is the destination whether or not
+ * `isPostQuote` survived on the stored tx. The hash Pay records on the parent
+ * is the settlement one, so it belongs on this chain's explorer, not on
+ * `transactionMeta.chainId` (the Money account chain).
  *
  * @param transactionMeta - The transaction to inspect.
  * @returns The destination chain id, or undefined when not a Money withdraw.
@@ -76,8 +78,8 @@ export const getMoneyPayChainIds = (
 export const getMoneyWithdrawDestinationChainId = (
   transactionMeta: TransactionMeta,
 ): Hex | undefined =>
-  isMoneyWithdrawTx(transactionMeta) && transactionMeta.metamaskPay?.isPostQuote
-    ? getMoneyPayChainIds(transactionMeta).destinationChainId
+  isMoneyWithdrawTx(transactionMeta)
+    ? (transactionMeta.metamaskPay?.chainId as Hex | undefined)
     : undefined;
 
 /**

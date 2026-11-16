@@ -166,7 +166,17 @@ describe('getMoneyWithdrawDestinationChainId', () => {
     expect(getMoneyWithdrawDestinationChainId(withdraw())).toBe(CHAIN_IDS.BASE);
   });
 
-  it('returns undefined for deposits and non-post-quote txs', () => {
+  it('still returns the payment chain when isPostQuote is missing', () => {
+    expect(
+      getMoneyWithdrawDestinationChainId(
+        withdraw({
+          metamaskPay: { chainId: CHAIN_IDS.BASE },
+        } as Partial<TransactionMeta>),
+      ),
+    ).toBe(CHAIN_IDS.BASE);
+  });
+
+  it('returns undefined for deposits and withdraws with no payment chain', () => {
     expect(
       getMoneyWithdrawDestinationChainId(
         withdraw({ type: TransactionType.moneyAccountDeposit }),
@@ -174,9 +184,7 @@ describe('getMoneyWithdrawDestinationChainId', () => {
     ).toBeUndefined();
     expect(
       getMoneyWithdrawDestinationChainId(
-        withdraw({
-          metamaskPay: { chainId: CHAIN_IDS.BASE },
-        } as Partial<TransactionMeta>),
+        withdraw({ metamaskPay: {} } as Partial<TransactionMeta>),
       ),
     ).toBeUndefined();
   });
