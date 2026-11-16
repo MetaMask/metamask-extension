@@ -127,6 +127,7 @@ export const SortDropdown = ({
         endArrowDirectionIconProps={{
           'data-testid': 'sort-dropdown-direction-arrow',
         }}
+        textProps={{ className: 'whitespace-nowrap' }}
       />
 
       {/* Sort modal */}

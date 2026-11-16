@@ -42,6 +42,7 @@ export const SortByButton = () => {
         endArrowDirectionIconProps={{
           'data-testid': 'sort-by-direction-arrow',
         }}
+        textProps={{ className: 'whitespace-nowrap' }}
       />
       <Popover {...popoverProps}>
         <SortControl handleClose={close} />
