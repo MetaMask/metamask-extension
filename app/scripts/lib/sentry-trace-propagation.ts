@@ -2,6 +2,7 @@ import {
   getActiveSpan,
   getCurrentScope,
   getIsolationScope,
+  spanToJSON,
 } from '@sentry/browser';
 import type {
   Client,
@@ -299,8 +300,11 @@ export function consensysTracePropagationIntegration({
         }
         try {
           // The SDK attaches trace headers to matched URLs even with no active
-          // span, naming a parent that is never sent: strip them.
-          if (!getActiveSpan()) {
+          // span, or under one that has ended, naming a span that is never
+          // sent: strip them. A span can stay active after it ends because
+          // concurrent async spans pop the scope stack out of order.
+          const activeSpan = getActiveSpan();
+          if (!activeSpan || spanToJSON(activeSpan).timestamp !== undefined) {
             const strippedHeaders = stripTraceHeaders(handlerData.args);
             if (strippedHeaders) {
               handlerData.args[1] = handlerData.args[1] || {};
