@@ -81,7 +81,7 @@ check 'yarn patch and patch-commit' bash -c '
   target=$(node -e "const l=require(\"fs\").readFileSync(\"yarn.lock\",\"utf8\");const m=l.match(/^\"?ms@npm:[^\n]*:\n\s+version: (\S+)/m);console.log(m?\"ms@npm:\"+m[1]:\"\")")
   test -n "$target" || { echo "no ms in lockfile"; exit 1; }
   pout=$(yarn patch "$target" 2>&1); echo "$pout" | head -n 8
-  dir=$(echo "$pout" | grep -oE "/[^ ]+$" | tail -n 1)
+  dir=$(echo "$pout" | grep -oE "edit the following folder: /[^ ]+" | grep -oE "/[^ ]+$")
   test -d "$dir" || { echo "no patch dir"; exit 1; }
   echo "// probe" >> "$dir/index.js"
   yarn patch-commit -s "$dir"
