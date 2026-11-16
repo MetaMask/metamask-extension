@@ -108,6 +108,7 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
 import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
 import { LogType } from '@metamask/logging-controller';
+import { HOME_SHELL_SNAPSHOT_KEY } from '../../shared/constants/home-shell';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import {
   findAtomicBatchSupportForChain,
@@ -850,6 +851,17 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
     );
+
+    // A UI write to the home shell snapshot can land after the wallet locks
+    // (it was already in flight), so check every write against the lock state.
+    browser.storage?.onChanged?.addListener((changes, areaName) => {
+      if (
+        areaName === 'session' &&
+        changes[HOME_SHELL_SNAPSHOT_KEY]?.newValue
+      ) {
+        this.#enforceHomeShellSnapshotPolicy();
+      }
+    });
 
     // Ramps buy-flow terminal-outcome KPIs (completed / failed). Fires in the
     // background (not the UI) so the outcome is captured even when the popup is
@@ -2537,6 +2549,7 @@ export default class MetamaskController extends EventEmitter {
 
   async clearLoginArtifacts() {
     await this.extension.storage.session.remove(['loginToken', 'loginSalt']);
+    this.#enforceHomeShellSnapshotPolicy();
   }
 
   //
@@ -4799,6 +4812,7 @@ export default class MetamaskController extends EventEmitter {
     // KeyringController event. Other controllers subscribe to the 'lock'
     // event of the MetaMaskController itself.
     this.emit('lock');
+    this.#enforceHomeShellSnapshotPolicy();
     // Lock bypasses the close/reopen grace window — the user is done.
     this.#cancelPerpsDisconnectTimer();
     this.#disconnectPerpsIfActive();
@@ -4813,6 +4827,11 @@ export default class MetamaskController extends EventEmitter {
    * @param newState
    */
   _onStateUpdate(newState) {
+    const privacyMode = Boolean(newState.preferences?.privacyMode);
+    if (!newState.isUnlocked || (privacyMode && !this.#homeShellPrivacyMode)) {
+      this.#enforceHomeShellSnapshotPolicy();
+    }
+    this.#homeShellPrivacyMode = privacyMode;
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this._notifyChainChange();
   }
@@ -4833,6 +4852,41 @@ export default class MetamaskController extends EventEmitter {
    */
   isUnlocked() {
     return this.keyringController.state.isUnlocked;
+  }
+
+  #homeShellPrivacyMode = false;
+
+  /**
+   * Keeps the home shell snapshot (read by app/scripts/load/home-shell.js
+   * before the UI loads) within its rules: it must never exist while the
+   * wallet is locked, and must not hold a balance while privacy mode is on.
+   * The UI writes it; this runs on lock, on failed automatic unlock, when
+   * privacy mode turns on, and after every write.
+   */
+  async #enforceHomeShellSnapshotPolicy() {
+    const session = browser.storage?.session;
+    if (!session) {
+      return;
+    }
+    try {
+      if (!this.isUnlocked()) {
+        await session.remove(HOME_SHELL_SNAPSHOT_KEY);
+        return;
+      }
+      if (!this.preferencesController.state.preferences?.privacyMode) {
+        return;
+      }
+      const { [HOME_SHELL_SNAPSHOT_KEY]: snapshot } = await session.get(
+        HOME_SHELL_SNAPSHOT_KEY,
+      );
+      if (snapshot && snapshot.balance !== null) {
+        await session.set({
+          [HOME_SHELL_SNAPSHOT_KEY]: { ...snapshot, balance: null },
+        });
+      }
+    } catch {
+      // Best effort; the shell treats a missing or unreadable snapshot as locked.
+    }
   }
 
   //=============================================================================

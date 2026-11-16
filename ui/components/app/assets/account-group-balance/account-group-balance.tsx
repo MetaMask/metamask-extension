@@ -34,6 +34,7 @@ import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { useHomeShellSnapshot } from '../../../../hooks/useHomeShellSnapshot';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -169,6 +170,11 @@ export const AccountGroupBalance = ({
   ]);
 
   const totalIsUnresolved = isZeroAmount(total) || currency === undefined;
+
+  useHomeShellSnapshot({
+    balance: totalIsUnresolved ? null : (formattedTotal ?? null),
+    privacyMode,
+  });
 
   return (
     <Skeleton
