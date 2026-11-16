@@ -46,4 +46,19 @@ describe('MarketInsightsTweetCard', () => {
 
     expect(getByTestId(MARKET_INSIGHTS_TWEET_CARD_TEST_ID)).toBeDisabled();
   });
+
+  it('renders the handle without a date bullet when the date is missing', () => {
+    const { getByText, queryByText, getByTestId } = renderWithProvider(
+      <MarketInsightsTweetCard
+        tweet={
+          { ...mockTweet, date: undefined } as unknown as MarketInsightsTweet
+        }
+        onPress={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId(MARKET_INSIGHTS_TWEET_CARD_TEST_ID)).toBeInTheDocument();
+    expect(getByText('@ethanalyst')).toBeInTheDocument();
+    expect(queryByText('•')).not.toBeInTheDocument();
+  });
 });

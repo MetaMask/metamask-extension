@@ -43,7 +43,7 @@ import { MarketInsightsTrendItem } from './components/market-insights-trend-item
 import { MarketInsightsTrendSourcesModal } from './components/market-insights-trend-sources-modal';
 import { MarketInsightsTweetCard } from './components/market-insights-tweet-card';
 import { MarketInsightsViewSkeleton } from './components/market-insights-view-skeleton';
-import { isSafeUrl } from './utils/market-insights-formatting';
+import { isSafeUrl, isXSourceUrl } from './utils/market-insights-formatting';
 import { useMarketInsightsViewTracking } from './useMarketInsightsViewTracking';
 
 export const MARKET_INSIGHTS_VIEW_TEST_ID = 'market-insights-view-container';
@@ -60,16 +60,13 @@ export const MARKET_INSIGHTS_WHATS_BEING_SAID_TEST_ID =
 
 const SKELETON_DELAY_MS = 150;
 
+type FeedbackChoice = 'up' | 'down';
 const HERO_IMAGE_BY_THEME = {
   [ThemeType.dark]:
     'images/market-insights/market-insights-background-dark-last-frame.png',
   [ThemeType.light]:
     'images/market-insights/market-insights-background-light-last-frame.png',
 } as const;
-
-type FeedbackChoice = 'up' | 'down';
-
-const feedbackByDigest = new Map<string, FeedbackChoice>();
 
 /**
  * Shows a toast confirming that insight feedback was recorded.
@@ -90,7 +87,7 @@ const showFeedbackSubmittedToast = (title: string) => {
  * @param token - Token resolved from the route and account group, if any.
  * @returns The sticky footer asset, or null when the token is unavailable.
  */
-const getStickyFooterAsset = (
+export const getStickyFooterAsset = (
   token: RouteAssetToken | null | undefined,
 ): Asset | null => {
   if (!token) {
@@ -152,7 +149,9 @@ const MarketInsightsPage = () => {
   const [selectedTrend, setSelectedTrend] =
     useState<MarketInsightsTrend | null>(null);
   const [showLoadingSkeleton, setShowLoadingSkeleton] = useState(false);
-  const [, setFeedbackSubmissionTick] = useState(0);
+  const [feedbackGiven, setFeedbackGiven] = useState<FeedbackChoice | null>(
+    null,
+  );
 
   const { assetId, chainId, decodedAsset } = resolveAssetRouteLookup(
     processAssetParams(params),
@@ -217,18 +216,27 @@ const MarketInsightsPage = () => {
     [trackInteraction],
   );
 
+  const handleTweetPress = useCallback(
+    (url: string) => {
+      if (!isXSourceUrl(url) || !isSafeUrl(url)) {
+        return;
+      }
+      trackInteraction('source_click', { sourceUrl: url });
+      setSelectedTrend(null);
+      globalThis.open(url, '_blank', 'noopener,noreferrer');
+    },
+    [trackInteraction],
+  );
+
   const handleTrendPress = useCallback((trend: MarketInsightsTrend) => {
     setSelectedTrend(trend);
   }, []);
 
   const handleThumbsUpPress = useCallback(() => {
-    if (report?.generatedAt) {
-      feedbackByDigest.set(report.generatedAt, 'up');
-    }
-    setFeedbackSubmissionTick((tick) => tick + 1);
+    setFeedbackGiven('up');
     trackInteraction('thumbs_up');
     showFeedbackSubmittedToast(t('marketInsightsFeedbackSubmitted') as string);
-  }, [report, t, trackInteraction]);
+  }, [t, trackInteraction]);
 
   const handleThumbsDownPress = useCallback(() => {
     setIsFeedbackModalOpen(true);
@@ -236,10 +244,7 @@ const MarketInsightsPage = () => {
 
   const handleFeedbackSubmit = useCallback(
     (payload: MarketInsightsFeedbackSubmitPayload) => {
-      if (report?.generatedAt) {
-        feedbackByDigest.set(report.generatedAt, 'down');
-      }
-      setFeedbackSubmissionTick((tick) => tick + 1);
+      setFeedbackGiven('down');
       trackInteraction('thumbs_down', {
         feedbackReason: payload.reason,
         feedbackText: payload.feedbackText,
@@ -249,12 +254,8 @@ const MarketInsightsPage = () => {
         t('marketInsightsFeedbackSubmitted') as string,
       );
     },
-    [report, t, trackInteraction],
+    [t, trackInteraction],
   );
-
-  const feedbackGiven = report
-    ? feedbackByDigest.get(report.generatedAt)
-    : undefined;
 
   const allTweets = useMemo(
     () => (report?.trends ?? []).flatMap((trend) => trend.tweets ?? []),
@@ -273,13 +274,7 @@ const MarketInsightsPage = () => {
     pageContent = <MarketInsightsViewSkeleton />;
   } else if (isReportReady && report) {
     pageContent = (
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        data-testid={MARKET_INSIGHTS_VIEW_TEST_ID}
-        className="asset__content flex min-h-full flex-col"
-      >
-        <MarketInsightsPageHeader onBackPress={handleBackPress} />
-
+      <>
         <img
           src={HERO_IMAGE_BY_THEME[theme]}
           alt=""
@@ -312,7 +307,11 @@ const MarketInsightsPage = () => {
             <MarketInsightsTrendItem
               key={`trend-${index}`}
               trend={trend}
-              onPress={handleTrendPress}
+              onPress={
+                trend.articles.length > 0 || (trend.tweets?.length ?? 0) > 0
+                  ? handleTrendPress
+                  : undefined
+              }
             />
           ))}
         </Box>
@@ -348,7 +347,7 @@ const MarketInsightsPage = () => {
                 <MarketInsightsTweetCard
                   key={`tweet-${index}`}
                   tweet={tweet}
-                  onPress={handleSourcePress}
+                  onPress={handleTweetPress}
                 />
               ))}
             </Box>
@@ -421,18 +420,18 @@ const MarketInsightsPage = () => {
           isOpen={selectedTrend !== null}
           articles={selectedTrend?.articles ?? []}
           tweets={selectedTrend?.tweets}
-          onSourcePress={handleSourcePress}
+          onArticlePress={handleSourcePress}
+          onTweetPress={handleTweetPress}
           onClose={() => setSelectedTrend(null)}
         />
 
         {isFeedbackModalOpen ? (
           <MarketInsightsFeedbackModal
-            isOpen
             onClose={() => setIsFeedbackModalOpen(false)}
             onSubmit={handleFeedbackSubmit}
           />
         ) : null}
-      </Box>
+      </>
     );
   }
 
@@ -441,7 +440,14 @@ const MarketInsightsPage = () => {
       className="main-container asset__container"
       data-testid="market-insights-page-scroll-container"
     >
-      {pageContent}
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        data-testid={MARKET_INSIGHTS_VIEW_TEST_ID}
+        className="asset__content flex min-h-full flex-col"
+      >
+        <MarketInsightsPageHeader onBackPress={handleBackPress} />
+        {pageContent}
+      </Box>
     </ScrollContainer>
   );
 };

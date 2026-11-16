@@ -41,7 +41,7 @@ export const MarketInsightsTweetCard = ({
   onPress,
 }: MarketInsightsTweetCardProps) => {
   const t = useI18nContext();
-  const timeAgo = formatRelativeTime(tweet.date, t);
+  const timeAgo = tweet.date ? formatRelativeTime(tweet.date, t) : null;
 
   return (
     <button
@@ -76,20 +76,24 @@ export const MarketInsightsTweetCard = ({
           >
             {getNormalizedHandle(tweet.author)}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextAlternative}
-          >
-            {'•'}
-          </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextAlternative}
-          >
-            {timeAgo}
-          </Text>
+          {timeAgo ? (
+            <>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextAlternative}
+              >
+                {'•'}
+              </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextAlternative}
+              >
+                {timeAgo}
+              </Text>
+            </>
+          ) : null}
         </Box>
         <Icon
           name={IconName.X}

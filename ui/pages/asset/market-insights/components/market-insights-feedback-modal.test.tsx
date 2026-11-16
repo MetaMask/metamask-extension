@@ -39,11 +39,7 @@ const renderFeedbackModal = ({
   onClose?: () => void;
 } = {}) =>
   renderWithProvider(
-    <MarketInsightsFeedbackModal
-      isOpen
-      onClose={onClose}
-      onSubmit={onSubmit}
-    />,
+    <MarketInsightsFeedbackModal onClose={onClose} onSubmit={onSubmit} />,
   );
 
 describe('MarketInsightsFeedbackModal', () => {

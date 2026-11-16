@@ -38,13 +38,15 @@ const renderModal = ({
   isOpen = true,
   articles = mockArticles,
   tweets = mockTweets,
-  onSourcePress = jest.fn(),
+  onArticlePress = jest.fn(),
+  onTweetPress = jest.fn(),
   onClose = jest.fn(),
 }: {
   isOpen?: boolean;
   articles?: MarketInsightsArticle[];
   tweets?: MarketInsightsTweet[];
-  onSourcePress?: (url: string) => void;
+  onArticlePress?: (url: string) => void;
+  onTweetPress?: (url: string) => void;
   onClose?: () => void;
 } = {}) =>
   renderWithProvider(
@@ -52,7 +54,8 @@ const renderModal = ({
       isOpen={isOpen}
       articles={articles}
       tweets={tweets}
-      onSourcePress={onSourcePress}
+      onArticlePress={onArticlePress}
+      onTweetPress={onTweetPress}
       onClose={onClose}
     />,
   );
@@ -84,24 +87,24 @@ describe('MarketInsightsTrendSourcesModal', () => {
     expect(getByTestId('market-insights-tweet-row')).toBeInTheDocument();
   });
 
-  it('calls onSourcePress with the article URL when an article is pressed', () => {
-    const onSourcePress = jest.fn();
-    const { getByTestId } = renderModal({ onSourcePress });
+  it('calls onArticlePress with the article URL when an article is pressed', () => {
+    const onArticlePress = jest.fn();
+    const { getByTestId } = renderModal({ onArticlePress });
 
     fireEvent.click(getByTestId('market-insights-article-row'));
 
-    expect(onSourcePress).toHaveBeenCalledWith(
+    expect(onArticlePress).toHaveBeenCalledWith(
       'https://example.com/ethereum-scales',
     );
   });
 
-  it('calls onSourcePress with the tweet URL when a tweet is pressed', () => {
-    const onSourcePress = jest.fn();
-    const { getByTestId } = renderModal({ onSourcePress });
+  it('calls onTweetPress with the tweet URL when a tweet is pressed', () => {
+    const onTweetPress = jest.fn();
+    const { getByTestId } = renderModal({ onTweetPress });
 
     fireEvent.click(getByTestId('market-insights-tweet-row'));
 
-    expect(onSourcePress).toHaveBeenCalledWith(
+    expect(onTweetPress).toHaveBeenCalledWith(
       'https://x.com/ethanalyst/status/1',
     );
   });

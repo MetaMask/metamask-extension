@@ -105,33 +105,33 @@ export const useMarketInsightsViewTracking = ({
       interactionType: MarketInsightsInteractionType,
       options?: TrackMarketInsightsInteractionOptions,
     ) => {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.MarketInsightsInteraction)
-          .addCategory(MetaMetricsEventCategory.MarketInsights)
-          .addProperties({
-            ...buildBaseProperties(),
-            [MARKET_INSIGHTS_EVENT_PROPERTY.INTERACTION_TYPE]: interactionType,
-            ...(options?.sourceUrl
-              ? {
-                  [MARKET_INSIGHTS_EVENT_PROPERTY.SOURCE_URL]:
-                    options.sourceUrl,
-                }
-              : {}),
-            ...(options?.feedbackReason
-              ? {
-                  [MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_REASON]:
-                    options.feedbackReason,
-                }
-              : {}),
-            ...(options?.feedbackText
-              ? {
-                  [MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_TEXT]:
-                    options.feedbackText,
-                }
-              : {}),
-          })
-          .build(),
-      );
+      const builder = createEventBuilder(
+        MetaMetricsEventName.MarketInsightsInteraction,
+      )
+        .addCategory(MetaMetricsEventCategory.MarketInsights)
+        .addProperties({
+          ...buildBaseProperties(),
+          [MARKET_INSIGHTS_EVENT_PROPERTY.INTERACTION_TYPE]: interactionType,
+          ...(options?.sourceUrl
+            ? {
+                [MARKET_INSIGHTS_EVENT_PROPERTY.SOURCE_URL]: options.sourceUrl,
+              }
+            : {}),
+          ...(options?.feedbackReason
+            ? {
+                [MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_REASON]:
+                  options.feedbackReason,
+              }
+            : {}),
+        });
+
+      if (options?.feedbackText) {
+        builder.addSensitiveProperties({
+          [MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_TEXT]: options.feedbackText,
+        });
+      }
+
+      trackEvent(builder.build());
     },
     [trackEvent, createEventBuilder, buildBaseProperties],
   );

@@ -1,6 +1,6 @@
 import type { MarketInsightsSource } from '@metamask/ai-controllers';
 
-const SAFE_URL_SCHEMES = ['http:', 'https:'];
+const SAFE_URL_SCHEMES = ['https:'];
 
 /**
  * Builds a Google favicon service URL for a source domain.

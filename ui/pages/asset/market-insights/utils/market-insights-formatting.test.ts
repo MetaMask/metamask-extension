@@ -65,9 +65,9 @@ describe('market-insights-formatting', () => {
   });
 
   describe('isSafeUrl', () => {
-    it('accepts http and https URLs', () => {
+    it('accepts https URLs and rejects http URLs', () => {
       expect(isSafeUrl('https://example.com')).toBe(true);
-      expect(isSafeUrl('http://example.com')).toBe(true);
+      expect(isSafeUrl('http://example.com')).toBe(false);
     });
 
     it('rejects other schemes and unparseable URLs', () => {

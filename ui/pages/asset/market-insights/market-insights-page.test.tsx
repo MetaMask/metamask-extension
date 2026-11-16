@@ -10,7 +10,9 @@ import {
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
-import MarketInsightsPage from './market-insights-page';
+import MarketInsightsPage, {
+  getStickyFooterAsset,
+} from './market-insights-page';
 
 const mockNavigate = jest.fn();
 const mockUseParams = jest.fn();
@@ -288,7 +290,7 @@ describe('MarketInsightsPage', () => {
       jest.useRealTimers();
     });
 
-    it('renders nothing before the skeleton delay while loading', () => {
+    it('renders the header but no skeleton before the skeleton delay while loading', () => {
       const { queryByTestId } = renderPage({
         report: null,
         isLoading: true,
@@ -296,7 +298,8 @@ describe('MarketInsightsPage', () => {
 
       expect(
         queryByTestId('market-insights-view-container'),
-      ).not.toBeInTheDocument();
+      ).toBeInTheDocument();
+      expect(queryByTestId('market-insights-back-button')).toBeInTheDocument();
       expect(
         queryByTestId('market-insights-view-skeleton'),
       ).not.toBeInTheDocument();
@@ -416,6 +419,54 @@ describe('MarketInsightsPage', () => {
         'noopener,noreferrer',
       );
     });
+
+    it('ignores presses on tweet URLs outside x.com and twitter.com', () => {
+      const report: MarketInsightsReport = {
+        ...mockReport,
+        trends: [
+          {
+            ...mockReport.trends[0],
+            articles: [],
+            tweets: [
+              {
+                contentSummary: 'Fake tweet',
+                url: 'https://example.com/fake-tweet',
+                author: '@someone',
+                date: fiveHoursAgo(),
+              },
+            ],
+          },
+        ],
+      };
+
+      const { getByTestId } = renderPage({ report });
+
+      fireEvent.click(getByTestId('market-insights-tweet-card'));
+
+      expect(mockOpen).not.toHaveBeenCalled();
+      expect(mockTrackInteraction).not.toHaveBeenCalled();
+    });
+
+    it('does not open the sources modal when the trend has no sources', () => {
+      const report: MarketInsightsReport = {
+        ...mockReport,
+        trends: [
+          {
+            ...mockReport.trends[0],
+            articles: [],
+            tweets: [],
+          },
+        ],
+      };
+
+      const { getByTestId, queryByTestId } = renderPage({ report });
+
+      fireEvent.click(getByTestId('market-insights-trend-item'));
+
+      expect(
+        queryByTestId('market-insights-sources-modal'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('feedback', () => {
@@ -489,6 +540,57 @@ describe('MarketInsightsPage', () => {
       fireEvent.click(getByTestId('mock-buy-button'));
 
       expect(mockTrackInteraction).toHaveBeenCalledWith('buy');
+    });
+  });
+
+  describe('getStickyFooterAsset', () => {
+    it('returns null when no token is available', () => {
+      expect(getStickyFooterAsset(null)).toBeNull();
+      expect(getStickyFooterAsset(undefined)).toBeNull();
+    });
+
+    it('maps a native token with a balance to a native sticky asset', () => {
+      const asset = getStickyFooterAsset({
+        ...(mockToken as unknown as object),
+        isNative: true,
+      } as unknown as Parameters<typeof getStickyFooterAsset>[0]);
+
+      expect(asset).toMatchObject({
+        type: 'NATIVE',
+        isOriginalNativeSymbol: true,
+        symbol: 'ETH',
+        balance: { value: '1.5', display: '1.5', fiat: '3000' },
+      });
+    });
+
+    it('maps a token without a balance to a sticky asset without balance', () => {
+      const { balance: _balance, ...tokenWithoutBalance } =
+        mockToken as typeof mockToken & { balance: string };
+
+      const asset = getStickyFooterAsset(
+        tokenWithoutBalance as unknown as Parameters<
+          typeof getStickyFooterAsset
+        >[0],
+      );
+
+      expect(asset).toMatchObject({
+        type: 'TOKEN',
+        address: '0xabc',
+        symbol: 'ETH',
+      });
+      expect(asset).toBeDefined();
+      expect((asset as { balance?: unknown }).balance).toBeUndefined();
+    });
+
+    it('defaults the balance fiat amount to zero when fiat data is missing', () => {
+      const asset = getStickyFooterAsset({
+        ...(mockToken as unknown as object),
+        tokenFiatAmount: undefined,
+      } as unknown as Parameters<typeof getStickyFooterAsset>[0]);
+
+      expect(asset).toMatchObject({
+        balance: { value: '1.5', display: '1.5', fiat: '0' },
+      });
     });
   });
 });

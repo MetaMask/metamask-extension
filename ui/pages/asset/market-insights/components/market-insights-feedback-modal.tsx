@@ -72,8 +72,6 @@ const FEEDBACK_OPTIONS: FeedbackOption[] = [
 ];
 
 type MarketInsightsFeedbackModalProps = {
-  /** Whether the modal is open. */
-  isOpen: boolean;
   /** Called when the modal is dismissed without submitting. */
   onClose: () => void;
   /** Called with the selected reason and optional free-text feedback. */
@@ -82,16 +80,15 @@ type MarketInsightsFeedbackModalProps = {
 
 /**
  * Modal asking why the insights were unhelpful: one of five canned reasons,
- * with free text required when "Something else" is chosen.
+ * with free text required when "Something else" is chosen. Mounting the
+ * component opens the modal; selection state resets on unmount.
  *
  * @param props - Component props.
- * @param props.isOpen - Whether the modal is open.
  * @param props.onClose - Called when the modal is dismissed without submitting.
  * @param props.onSubmit - Called with the selected reason and optional text.
  * @returns The feedback modal.
  */
 export const MarketInsightsFeedbackModal = ({
-  isOpen,
   onClose,
   onSubmit,
 }: MarketInsightsFeedbackModalProps) => {
@@ -138,7 +135,7 @@ export const MarketInsightsFeedbackModal = ({
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       data-testid={MARKET_INSIGHTS_FEEDBACK_MODAL_TEST_ID}
     >

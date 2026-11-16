@@ -38,8 +38,10 @@ type MarketInsightsTrendSourcesModalProps = {
   articles: MarketInsightsArticle[];
   /** Social post rows to render below the articles. */
   tweets?: MarketInsightsTweet[];
-  /** Called with a source URL when a row is pressed. */
-  onSourcePress?: (url: string) => void;
+  /** Called with an article URL when an article row is pressed. */
+  onArticlePress?: (url: string) => void;
+  /** Called with a social post URL when a social post row is pressed. */
+  onTweetPress?: (url: string) => void;
 };
 
 const TweetRow = ({
@@ -140,7 +142,10 @@ const TweetRow = ({
  * @param props.onClose - Called when the modal is dismissed.
  * @param props.articles - Article rows to render.
  * @param props.tweets - Social post rows to render below the articles.
- * @param props.onSourcePress - Called with a source URL when a row is pressed.
+ * @param props.onArticlePress - Called with an article URL when an article row
+ * is pressed.
+ * @param props.onTweetPress - Called with a social post URL when a social post
+ * row is pressed.
  * @returns The sources modal.
  */
 export const MarketInsightsTrendSourcesModal = ({
@@ -148,15 +153,23 @@ export const MarketInsightsTrendSourcesModal = ({
   onClose,
   articles,
   tweets = [],
-  onSourcePress,
+  onArticlePress,
+  onTweetPress,
 }: MarketInsightsTrendSourcesModalProps) => {
   const t = useI18nContext();
 
-  const handleSourcePress = useCallback(
+  const handleArticlePress = useCallback(
     (url: string) => {
-      onSourcePress?.(url);
+      onArticlePress?.(url);
     },
-    [onSourcePress],
+    [onArticlePress],
+  );
+
+  const handleTweetPress = useCallback(
+    (url: string) => {
+      onTweetPress?.(url);
+    },
+    [onTweetPress],
   );
 
   if (!isOpen) {
@@ -186,9 +199,9 @@ export const MarketInsightsTrendSourcesModal = ({
                 index === articles.length - 1 && tweets.length === 0;
               return (
                 <ArticleRow
-                  key={article.url}
+                  key={`${article.url}-${index}`}
                   article={article}
-                  onPress={handleSourcePress}
+                  onPress={handleArticlePress}
                   isLastItem={isLastItem}
                 />
               );
@@ -196,9 +209,9 @@ export const MarketInsightsTrendSourcesModal = ({
 
             {tweets.map((tweet, index) => (
               <TweetRow
-                key={tweet.url}
+                key={`${tweet.url}-${index}`}
                 tweet={tweet}
-                onPress={handleSourcePress}
+                onPress={handleTweetPress}
                 isLastItem={index === tweets.length - 1}
               />
             ))}

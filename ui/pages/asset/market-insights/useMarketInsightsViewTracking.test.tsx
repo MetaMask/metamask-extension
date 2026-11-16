@@ -176,10 +176,11 @@ describe('useMarketInsightsViewTracking', () => {
           ...expectedBaseProperties(),
           [MARKET_INSIGHTS_EVENT_PROPERTY.INTERACTION_TYPE]: 'thumbs_down',
           [MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_REASON]: 'not_accurate',
+        },
+        sensitiveProperties: {
           [MARKET_INSIGHTS_EVENT_PROPERTY.FEEDBACK_TEXT]:
             'The summary missed the latest move.',
         },
-        sensitiveProperties: {},
       });
     });
 
