@@ -253,14 +253,13 @@ function createToolbarController(
 
 describe('applyEarlySidePanelToolbarBehavior', () => {
   it('sets openPanelOnActionClick to true when sidePanel API is available', () => {
-    const { sidePanelApi, setPanelBehavior, setPopup } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
     applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
-    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
   });
 
   it('ignores setPanelBehavior rejection', async () => {

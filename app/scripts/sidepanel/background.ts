@@ -185,7 +185,9 @@ function getUseSidePanelAsDefault(
 }
 
 /**
- * Prefer the side panel on toolbar clicks until the persisted preference is loaded.
+ * Prefer opening the side panel on toolbar click as soon as the service worker starts.
+ * Without this, the first click after a cold start can use manifest `default_popup` until
+ * {@link setupSidePanelToolbarBehavior} runs after initialization.
  *
  * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
  */
@@ -193,9 +195,8 @@ export function applyEarlySidePanelToolbarBehavior(
   sidePanelApi: SidePanelApiWithBehavior,
 ): void {
   sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
-    // Non-fatal: setup applies the persisted preference once it is ready.
+    // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
   });
-  setActionPopup('').catch(() => undefined);
 }
 
 async function setActionPopup(popup: string) {
