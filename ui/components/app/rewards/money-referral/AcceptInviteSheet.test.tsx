@@ -5,7 +5,10 @@ import { Provider } from 'react-redux';
 import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { withResolvers } from '#shared/lib/promise-with-resolvers';
-import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
+import type {
+  ReferralLocalizedText,
+  ReferralMeDto,
+} from '../../../../../shared/types/rewards-money';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AcceptInviteSheet } from './AcceptInviteSheet';
 
@@ -21,6 +24,8 @@ const copy = {
   inviteReferralCode: 'Referral code',
   inviteDecline: 'No thanks',
   inviteAccept: 'Accept invite',
+  inviteTermsLearnMore: 'Learn more',
+  inviteTermsUrl: 'https://link.metamask.io/rewards/terms',
   inviteAcceptedEyebrow: 'You are in',
   inviteAcceptedTitle: 'Activated',
   inviteAcceptedBody: 'Cash back {date}',
@@ -250,6 +255,48 @@ describe('AcceptInviteSheet', () => {
     ).toBeDisabled();
   });
 
+  it('opens the terms link inline after the invite body in a new window', () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    renderSheet();
+
+    const link = document.querySelector(
+      '[data-testid="money-referral-invite-terms-link"]',
+    ) as HTMLElement;
+    expect(link).toHaveTextContent('Learn more');
+    expect(link.parentElement).toHaveTextContent('Invite body Learn more');
+
+    fireEvent.click(link);
+
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://link.metamask.io/rewards/terms',
+      '_blank',
+      'noopener,noreferrer',
+    );
+    openSpy.mockRestore();
+  });
+
+  it.each<[string, Partial<ReferralLocalizedText>]>([
+    ['a blank label', { inviteTermsLearnMore: '   ' }],
+    ['a blank URL', { inviteTermsUrl: '' }],
+    [
+      'a non-https URL',
+      { inviteTermsUrl: 'http://link.metamask.io/rewards/terms' },
+    ],
+  ])('hides the terms link when there is %s', (_, overrides) => {
+    mockReferralState.referralMe = buildReferralMe({
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+      localized_text: { ...copy, ...overrides },
+    });
+    renderSheet();
+
+    expect(document.body).toHaveTextContent('Invite body');
+    expect(
+      document.querySelector(
+        '[data-testid="money-referral-invite-terms-link"]',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   it('keeps the invite mounted when referral me settles without a payload', async () => {
     mockReferralState.referralMe = null;
     mockReferralState.isSettled = true;
@@ -430,10 +477,16 @@ describe('AcceptInviteSheet', () => {
         mockRegister.mockReturnValue(registration.promise);
       }
       const view = renderSheet();
+      const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
 
       await act(async () => {
         fireEvent.click(view.getByTestId('money-referral-accept'));
       });
+      const termsLink = view.getByTestId('money-referral-invite-terms-link');
+      expect(termsLink).toBeDisabled();
+      fireEvent.click(termsLink);
+      expect(openSpy).not.toHaveBeenCalled();
+      openSpy.mockRestore();
       expect(view.getByTestId('money-referral-accept')).toBeDisabled();
       expect(view.getByTestId('money-referral-decline')).toBeDisabled();
       expect(view.getByTestId('money-referral-code-input')).toBeDisabled();
