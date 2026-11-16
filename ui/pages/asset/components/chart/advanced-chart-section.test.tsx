@@ -30,6 +30,7 @@ jest.mock('./advanced-chart-iframe', () => ({
     onError,
     onReady,
     onChartInteracted,
+    onCrosshairMove,
     onTradingViewClicked,
   }: {
     assetId: string;
@@ -37,6 +38,16 @@ jest.mock('./advanced-chart-iframe', () => ({
     onError: (error: string) => void;
     onReady: () => void;
     onChartInteracted: (type: 'zoom' | 'pan' | 'tooltip') => void;
+    onCrosshairMove: (
+      data: {
+        time: number;
+        open: number;
+        high: number;
+        low: number;
+        close: number;
+        volume?: number;
+      } | null,
+    ) => void;
     onTradingViewClicked: () => void;
   }) => (
     <div
@@ -54,6 +65,25 @@ jest.mock('./advanced-chart-iframe', () => ({
         type="button"
         data-testid="simulate-gesture"
         onClick={() => onChartInteracted('zoom')}
+      />
+      <button
+        type="button"
+        data-testid="simulate-crosshair"
+        onClick={() =>
+          onCrosshairMove({
+            time: 1_700_000_000,
+            open: 1.2,
+            high: 2,
+            low: 1,
+            close: 1.5,
+            volume: 100,
+          })
+        }
+      />
+      <button
+        type="button"
+        data-testid="simulate-crosshair-dismiss"
+        onClick={() => onCrosshairMove(null)}
       />
       <button
         type="button"
@@ -551,6 +581,78 @@ describe('AdvancedChartSection', () => {
       render({ caipAssetId: undefined });
 
       expect(screen.queryByTestId('chart-iframe')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('crosshair OHLCV header', () => {
+    beforeEach(() => {
+      setupPreferences(CHART_TYPE_CANDLE);
+    });
+
+    it('swaps the price header for the OHLCV readout while scrubbing a candle', () => {
+      render();
+      expect(
+        screen.queryByTestId('advanced-chart-ohlcv-bar'),
+      ).not.toBeInTheDocument();
+
+      act(() => {
+        screen.getByTestId('simulate-crosshair').click();
+      });
+
+      const bar = screen.getByTestId('advanced-chart-ohlcv-bar');
+      expect(bar).toBeInTheDocument();
+      expect(screen.getByText('Open')).toBeInTheDocument();
+      expect(screen.getByText('High')).toBeInTheDocument();
+      expect(screen.getByText('Low')).toBeInTheDocument();
+      expect(screen.getByText('Close')).toBeInTheDocument();
+    });
+
+    it('anchors the crosshair change to the first bar open, matching the header', () => {
+      // First bar opens at 1, crosshair close is 1.5 → +50%.
+      render();
+
+      act(() => {
+        screen.getByTestId('simulate-crosshair').click();
+      });
+
+      expect(screen.getByText('Change')).toBeInTheDocument();
+      expect(screen.getByText('+50.00%')).toBeInTheDocument();
+    });
+
+    it('restores the price header when the crosshair dismisses', () => {
+      render();
+
+      act(() => {
+        screen.getByTestId('simulate-crosshair').click();
+      });
+      expect(
+        screen.getByTestId('advanced-chart-ohlcv-bar'),
+      ).toBeInTheDocument();
+
+      act(() => {
+        screen.getByTestId('simulate-crosshair-dismiss').click();
+      });
+      expect(
+        screen.queryByTestId('advanced-chart-ohlcv-bar'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('drops a stale crosshair readout when the interval changes', () => {
+      const { rerender } = render();
+
+      act(() => {
+        screen.getByTestId('simulate-crosshair').click();
+      });
+      expect(
+        screen.getByTestId('advanced-chart-ohlcv-bar'),
+      ).toBeInTheDocument();
+
+      setupPreferences(CHART_TYPE_CANDLE, { interval: '1d' });
+      rerender(<AdvancedChartSection {...DEFAULT_PROPS} />);
+
+      expect(
+        screen.queryByTestId('advanced-chart-ohlcv-bar'),
+      ).not.toBeInTheDocument();
     });
   });
 

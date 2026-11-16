@@ -1556,5 +1556,55 @@ describe('AdvancedChartIframe', () => {
       });
       expect(onTradingViewClicked).toHaveBeenCalledTimes(1);
     });
+
+    it('forwards the crosshair OHLC(V) as the user scrubs the candles', () => {
+      const onCrosshairMove = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onCrosshairMove={onCrosshairMove}
+        />,
+      );
+
+      const bar = {
+        time: 1700003600,
+        open: 1.5,
+        high: 3,
+        low: 1,
+        close: 2.5,
+        volume: 200,
+      };
+      dispatch({ type: 'CROSSHAIR_MOVE', payload: { data: bar } });
+
+      expect(onCrosshairMove).toHaveBeenCalledWith(bar);
+    });
+
+    it('forwards a null crosshair payload when the crosshair dismisses', () => {
+      const onCrosshairMove = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onCrosshairMove={onCrosshairMove}
+        />,
+      );
+
+      dispatch({ type: 'CROSSHAIR_MOVE', payload: { data: null } });
+
+      expect(onCrosshairMove).toHaveBeenCalledWith(null);
+    });
+
+    it('treats a crosshair payload with no data field as a dismissal', () => {
+      const onCrosshairMove = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onCrosshairMove={onCrosshairMove}
+        />,
+      );
+
+      dispatch({ type: 'CROSSHAIR_MOVE' });
+
+      expect(onCrosshairMove).toHaveBeenCalledWith(null);
+    });
   });
 });

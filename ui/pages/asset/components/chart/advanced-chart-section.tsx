@@ -5,15 +5,19 @@ import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 import { getIsAdvancedChartsThemingEnabled } from '../../../../selectors/multichain/feature-flags';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { computePercentChange } from '../../../../components/app/assets/util/percentChange';
-import AdvancedChartIframe from './advanced-chart-iframe';
+import AdvancedChartIframe, {
+  type CrosshairData,
+} from './advanced-chart-iframe';
 import IndicatorBar from './advanced-chart-indicator-bar';
 import IntervalBar, {
+  CHART_TYPE_CANDLE,
   LINE_CHART_TIME_RANGES,
   LINE_TIME_RANGE_TO_ISO8601,
 } from './advanced-chart-interval-bar';
 import { AssetChartBody, type HoveredPoint } from './asset-chart-body';
 import ChartErrorState from './chart-error-state';
 import TokenPriceHeader from './token-price-header';
+import { OHLCVBar } from './ohlcv-bar';
 import { useAdvancedChartData } from './useAdvancedChartData';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
 import { useAdvancedChartInteractions } from './useAdvancedChartInteractions';
@@ -111,6 +115,11 @@ export const AdvancedChartSection = ({
   const [chartError, setChartError] = useState<string | null>(null);
   const [chartReady, setChartReady] = useState(false);
   const [hovered, setHovered] = useState<HoveredPoint | null>(null);
+  // OHLC(V) of the candle under the crosshair, or null when it dismisses. Drives
+  // the OHLCV readout that replaces the price header while the user scrubs.
+  const [crosshairData, setCrosshairData] = useState<CrosshairData | null>(
+    null,
+  );
 
   // Mount the iframe only once the user actually asks for candles, then keep
   // it mounted so toggling back and forth does not re-initialise the engine.
@@ -141,7 +150,14 @@ export const AdvancedChartSection = ({
   if (renderedSeriesKey !== seriesKey) {
     setRenderedSeriesKey(seriesKey);
     setChartError(null);
+    // A new token/interval/chart-type re-prices every candle, so a crosshair
+    // readout from the old series would be stale. Drop it alongside the error.
+    setCrosshairData(null);
   }
+
+  const handleCrosshairMove = useCallback((data: CrosshairData | null) => {
+    setCrosshairData(data);
+  }, []);
 
   const handleChartReady = useCallback(() => {
     setChartReady(true);
@@ -220,6 +236,20 @@ export const AdvancedChartSection = ({
   const header = isLineChart ? lineHeader : candleHeader;
   const candleFailed = Boolean(chartError ?? ohlcvError);
 
+  // While scrubbing a candle, the header is replaced by the OHLCV readout. Only
+  // in candle mode: the line chart drives its own hover via `hovered`.
+  const isCrosshairActive =
+    !isLineChart && chartType === CHART_TYPE_CANDLE && Boolean(crosshairData);
+
+  // Crosshair change% shares the header's baseline — the first bar's open — so
+  // the scrubbed percentage and the resting header percentage agree in sign and
+  // reference point. Mirrors `useOHLCVPriceData`'s `comparePrice`.
+  const crosshairBaseline = ohlcvData[0]?.open;
+  const crosshairChangePercent =
+    crosshairData && crosshairBaseline
+      ? ((crosshairData.close - crosshairBaseline) / crosshairBaseline) * 100
+      : undefined;
+
   // A finished fetch that returned no candles is a success, not an error, so it
   // never sets `ohlcvError`. Surface the shared "No data" placeholder instead
   // of leaving an empty chart. `useOHLCVChart` resets to `isLoading` the moment
@@ -274,6 +304,7 @@ export const AdvancedChartSection = ({
         onError={setChartError}
         onReady={handleChartReady}
         onChartInteracted={handleChartInteracted}
+        onCrosshairMove={handleCrosshairMove}
         onTradingViewClicked={handleTradingViewClicked}
         realtimeBar={realtimeBar}
         fetchOlderBars={fetchOlderBars}
@@ -289,13 +320,22 @@ export const AdvancedChartSection = ({
 
   return (
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
-      <TokenPriceHeader
-        price={header.price}
-        percentChange={header.percentChange}
-        currency={header.currency}
-        timestamp={header.timestamp}
-        loading={header.loading}
-      />
+      {isCrosshairActive && crosshairData ? (
+        <OHLCVBar
+          data-testid="advanced-chart-ohlcv-bar"
+          data={crosshairData}
+          currency={resolvedCurrency}
+          changePercent={crosshairChangePercent}
+        />
+      ) : (
+        <TokenPriceHeader
+          price={header.price}
+          percentChange={header.percentChange}
+          currency={header.currency}
+          timestamp={header.timestamp}
+          loading={header.loading}
+        />
+      )}
 
       <IntervalBar
         intervals={isLineChart ? LINE_CHART_TIME_RANGES : undefined}
