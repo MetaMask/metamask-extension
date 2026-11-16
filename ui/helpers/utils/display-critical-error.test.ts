@@ -1,3 +1,5 @@
+import { locks } from 'node:worker_threads';
+import { it } from '@jest/globals';
 import browser from 'webextension-polyfill';
 import { act } from 'react-dom/test-utils';
 import {
@@ -10,6 +12,7 @@ import { MISSING_VAULT_ERROR } from '../../../shared/constants/errors';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';
+import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 import {
   displayCriticalErrorMessage,
@@ -17,6 +20,9 @@ import {
   CriticalErrorTranslationKey,
   extractEnvelopeUrlFromDsn,
 } from './display-critical-error';
+
+// Use native locks with the native abort signals supplied by jest-fixed-jsdom.
+Object.defineProperty(navigator, 'locks', { configurable: true, value: locks });
 
 const MOCK_UUID = '550e8400e29b41d4a716446655440000';
 jest.mock('uuid', () => ({
@@ -26,8 +32,18 @@ jest.mock('uuid', () => ({
 const MOCK_RELEASE_VERSION = '13.0.0';
 jest.mock('webextension-polyfill', () => ({
   runtime: {
+    id: 'a'.repeat(32),
     reload: jest.fn(),
-    getManifest: jest.fn(() => ({ version: MOCK_RELEASE_VERSION })),
+    getManifest: jest.fn(() => ({
+      version: MOCK_RELEASE_VERSION,
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Native manifest field.
+      manifest_version: 3,
+    })),
+  },
+  declarativeNetRequest: {
+    RuleConditionKeys: { TOP_DOMAINS: 'topDomains' },
+    getSessionRules: jest.fn().mockResolvedValue([]),
+    updateSessionRules: jest.fn().mockResolvedValue(undefined),
   },
   storage: {
     local: {
@@ -409,10 +425,34 @@ describe('displayCriticalError', () => {
         EXPECTED_ENVELOPE_URL,
         expect.objectContaining({
           method: 'POST',
+          redirect: 'error',
+          signal: expect.any(AbortSignal),
           headers: {
             'Content-Type': 'application/x-sentry-envelope',
           },
         }),
+      );
+      const updateRules = jest.mocked(
+        browser.declarativeNetRequest.updateSessionRules,
+      );
+      const { addRules } = updateRules.mock.calls[0][0];
+      expect(addRules).toHaveLength(2);
+      expect(addRules?.[0].condition.initiatorDomains).toEqual([
+        'a'.repeat(32),
+      ]);
+      expect(addRules?.[1].condition).toEqual({
+        regexFilter: '^https://sentry\\.io/api/273505/envelope/$',
+        isUrlFilterCaseSensitive: true,
+        topDomains: ['a'.repeat(32)],
+      });
+      expect(updateRules).toHaveBeenLastCalledWith({
+        removeRuleIds: [1000100, 1000101],
+      });
+      expect(updateRules.mock.invocationCallOrder[0]).toBeLessThan(
+        jest.mocked(fetch).mock.invocationCallOrder[0],
+      );
+      expect(updateRules.mock.invocationCallOrder[1]).toBeLessThan(
+        jest.mocked(browser.runtime.reload).mock.invocationCallOrder[0],
       );
 
       // Additional body content assertions
@@ -519,6 +559,9 @@ describe('displayCriticalError', () => {
       });
 
       expect(fetch).not.toHaveBeenCalled();
+      expect(
+        browser.declarativeNetRequest.updateSessionRules,
+      ).not.toHaveBeenCalled();
       expect(browser.runtime.reload).toHaveBeenCalled();
     }
   });
@@ -1077,15 +1120,38 @@ describe('repair button', () => {
     );
   });
 
-  it('starts repair after the Sentry report times out', async () => {
+  const phases = ['lookup', 'installation', 'fetch', 'cleanup'] as const;
+  it.each(phases)('repairs after %s timeout', async (phase) => {
     jest.useFakeTimers();
+    const reportError = jest.spyOn(console, 'error').mockImplementation();
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
     jest.spyOn(window, 'confirm').mockReturnValue(true);
-    jest
-      .mocked(fetch)
-      .mockImplementation(() => new Promise<Response>(() => undefined));
+    const { promise: pending, resolve: finishPending } = withResolvers<void>();
+    if (phase === 'lookup') {
+      jest
+        .mocked(browser.declarativeNetRequest.getSessionRules)
+        .mockReturnValueOnce(pending.then(() => []));
+    } else if (phase === 'installation') {
+      jest
+        .mocked(browser.declarativeNetRequest.updateSessionRules)
+        .mockReturnValueOnce(pending);
+    } else if (phase === 'cleanup') {
+      jest
+        .mocked(browser.declarativeNetRequest.updateSessionRules)
+        .mockResolvedValueOnce(undefined)
+        .mockReturnValueOnce(pending);
+    } else {
+      jest.mocked(fetch).mockImplementation(
+        (_url, options) =>
+          new Promise<Response>((_resolve, reject) => {
+            options?.signal?.addEventListener('abort', () => {
+              reject(new DOMException('Aborted', 'AbortError'));
+            });
+          }),
+      );
+    }
     const error = new Error('Background initialization timeout');
     restoreGetBackupState = mockGetBackupStateWithVault({
       ...MOCK_BACKUP_WITH_VAULT,
@@ -1116,7 +1182,9 @@ describe('repair button', () => {
       await Promise.resolve();
     });
 
-    expect(fetch).toHaveBeenCalled();
+    expect(fetch).toHaveBeenCalledTimes(
+      phase === 'fetch' || phase === 'cleanup' ? 1 : 0,
+    );
     expect(mockPort.postMessage).not.toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
@@ -1129,6 +1197,10 @@ describe('repair button', () => {
       jest.advanceTimersByTime(2_000);
     });
 
+    expect(reportError).toHaveBeenCalledWith(
+      'Error sending report to Sentry:',
+      expect.objectContaining({ name: 'TimeoutError' }),
+    );
     expect(mockPort.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
@@ -1136,6 +1208,21 @@ describe('repair button', () => {
         }),
       }),
     );
+    await act(async () => {
+      finishPending();
+    });
+    expect(fetch).toHaveBeenCalledTimes(
+      phase === 'fetch' || phase === 'cleanup' ? 1 : 0,
+    );
+    if (phase === 'lookup') {
+      expect(
+        browser.declarativeNetRequest.updateSessionRules,
+      ).not.toHaveBeenCalled();
+    } else {
+      expect(
+        browser.declarativeNetRequest.updateSessionRules,
+      ).toHaveBeenLastCalledWith({ removeRuleIds: [1000100, 1000101] });
+    }
   });
 
   it('shows a checked report checkbox when analytics is disabled', async () => {

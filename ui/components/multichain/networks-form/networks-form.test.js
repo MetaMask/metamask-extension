@@ -13,6 +13,7 @@ import {
   getRpcUrl,
 } from '../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
+import { withTemporaryAllowance } from '../../../../shared/lib/network-request-policy';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   addNetwork,
@@ -23,6 +24,10 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworksForm } from './networks-form';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../shared/lib/network-request-policy', () => ({
+  withTemporaryAllowance: jest.fn(async (_url, callback) => await callback()),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -229,6 +234,10 @@ describe('NetworkForm Component', () => {
     expect(queryByText(messages.currencySymbol.message)).toBeInTheDocument();
     expect(queryByText(messages.blockExplorerUrl.message)).toBeInTheDocument();
     expect(queryByText(messages.save.message)).toBeInTheDocument();
+    expect(withTemporaryAllowance).toHaveBeenCalledWith(
+      expect.stringContaining('https://mainnet.infura.io/v3/'),
+      expect.any(Function),
+    );
 
     expect(
       await screen.findByText(
