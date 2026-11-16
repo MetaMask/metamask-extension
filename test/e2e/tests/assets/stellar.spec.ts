@@ -24,17 +24,6 @@ const ACTIVE_USDC_TRUSTLINE = {
   limit: '922337203685.4775807',
 } as const;
 
-async function landOnStellarHome(driver: Driver): Promise<HomePage> {
-  await login(driver, { validateBalance: false });
-  await selectStellarNetwork(driver);
-  // Refresh re-hydrates the UI from background state so asynchronously-fetched
-  // Snap balances appear reliably in the token list.
-  await driver.refresh();
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  return homePage;
-}
-
 describe('Stellar - Assets', function (this: Suite) {
   this.timeout(180_000);
 
@@ -46,7 +35,14 @@ describe('Stellar - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await landOnStellarHome(driver);
+          await login(driver, { validateBalance: false });
+          await selectStellarNetwork(driver);
+          // Refresh re-hydrates the UI from background state so
+          // asynchronously-fetched Snap balances appear reliably in the token
+          // list.
+          await driver.refresh();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList('Stellar', '0 XLM', {
@@ -64,7 +60,11 @@ describe('Stellar - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await landOnStellarHome(driver);
+          await login(driver, { validateBalance: false });
+          await selectStellarNetwork(driver);
+          await driver.refresh();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList(
@@ -152,7 +152,11 @@ describe('Stellar - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await landOnStellarHome(driver);
+          await login(driver, { validateBalance: false });
+          await selectStellarNetwork(driver);
+          await driver.refresh();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenExistsInList('USD Coin', '25 USDC', {
@@ -175,7 +179,11 @@ describe('Stellar - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await landOnStellarHome(driver);
+          await login(driver, { validateBalance: false });
+          await selectStellarNetwork(driver);
+          await driver.refresh();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           // Snap keyring balances omit classic trustlines with limit 0, so an
           // inactive USDC row never appears from Horizon alone. Deep-link the
