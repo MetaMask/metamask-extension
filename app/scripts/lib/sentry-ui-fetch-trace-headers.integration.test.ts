@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getScuttleGlobalThisExceptions } from '../../../development/webpack/utils/plugins/LavamoatPlugin';
 import { shouldCreateSpanForRequest } from './setupSentry';
 import {
