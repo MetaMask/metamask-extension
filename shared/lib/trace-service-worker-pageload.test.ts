@@ -5,6 +5,7 @@ import { trace, trackServiceWorkerPageloadEnd, TraceName } from './trace';
 // and leaves its trace id and sampling decision on the scope, as it does in the
 // service worker.
 describe('trace with no caller after the service-worker pageload ends (real SDK)', () => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const globals = globalThis as { ServiceWorkerGlobalScope?: unknown };
   const NO_CALLER = TraceName.ContactSyncUpdateRemote;
 
