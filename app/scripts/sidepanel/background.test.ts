@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import * as manifestFlags from '../../../shared/lib/manifestFlags';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
@@ -252,13 +253,14 @@ function createToolbarController(
 
 describe('applyEarlySidePanelToolbarBehavior', () => {
   it('sets openPanelOnActionClick to true when sidePanel API is available', () => {
-    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior, setPopup } = createSidePanelMock();
 
     applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
+    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
   });
 
   it('ignores setPanelBehavior rejection', async () => {
@@ -274,23 +276,25 @@ describe('applyEarlySidePanelToolbarBehavior', () => {
 
 describe('applyToolbarSidePanelBehavior', () => {
   it('applies the persisted useSidePanelAsDefault preference', async () => {
-    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior, setPopup } = createSidePanelMock();
 
     await applyToolbarSidePanelBehavior(
       () => createToolbarController(false),
       sidePanelApi,
     );
 
+    expect(setPopup).toHaveBeenCalledWith({ popup: 'popup-init.html' });
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: false,
     });
   });
 
   it('defaults to true when preference is missing', async () => {
-    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior, setPopup } = createSidePanelMock();
 
     await applyToolbarSidePanelBehavior(() => ({}), sidePanelApi);
 
+    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
@@ -298,14 +302,14 @@ describe('applyToolbarSidePanelBehavior', () => {
 });
 
 describe('setupSidePanelToolbarBehavior', () => {
-  let consoleErrorSpy: jest.SpyInstance;
+  let logWarnSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    logWarnSpy = jest.spyOn(log, 'warn').mockImplementation();
   });
 
   afterEach(() => {
-    consoleErrorSpy.mockRestore();
+    logWarnSpy.mockRestore();
   });
 
   it('applies early toolbar behavior before init, then preference and subscription', async () => {
@@ -396,6 +400,8 @@ describe('setupSidePanelToolbarBehavior', () => {
     preferenceChangeHandler?.(false);
 
     await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
     expect(setPopup).toHaveBeenCalledWith({ popup: 'popup-init.html' });
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: false,
@@ -452,7 +458,7 @@ describe('setupSidePanelToolbarBehavior', () => {
       sidePanelApi,
     );
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(logWarnSpy).toHaveBeenCalledWith(
       'Error setting side panel toolbar behavior:',
       expect.any(Error),
     );
@@ -479,13 +485,13 @@ describe('setupSidePanelToolbarBehavior', () => {
       sidePanelApi,
     );
 
-    setPanelBehavior.mockRejectedValueOnce(new Error('update failed'));
+    setPanelBehavior.mockRejectedValue(new Error('update failed'));
     preferenceChangeHandler?.(false);
-    await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
+    await new Promise((resolve) => {
+      setImmediate(resolve);
+    });
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(logWarnSpy).toHaveBeenCalledWith(
       'Error updating panel behavior:',
       expect.any(Error),
     );

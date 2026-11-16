@@ -122,13 +122,9 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
 
-          // Wait for navigation to complete
-          await driver.waitForWindowWithTitleToBePresent(
-            'Mock E2E Phishing Page: Path 1',
+          await driver.wait(
+            until.titleIs('Mock E2E Phishing Page: Path 1'),
             15000,
-          );
-          await driver.switchToWindowWithTitle(
-            'Mock E2E Phishing Page: Path 1',
           );
         },
       );

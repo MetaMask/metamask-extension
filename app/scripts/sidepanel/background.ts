@@ -195,6 +195,19 @@ export function applyEarlySidePanelToolbarBehavior(
   sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
     // Non-fatal: setup applies the persisted preference once it is ready.
   });
+  setActionPopup('').catch(() => undefined);
+}
+
+async function setActionPopup(popup: string) {
+  if (typeof chrome.action?.setPopup !== 'function') {
+    return;
+  }
+
+  try {
+    await chrome.action.setPopup({ popup });
+  } catch (error) {
+    log.warn('Failed to set toolbar popup', error);
+  }
 }
 
 async function applyToolbarSidePanelPreference(
@@ -203,11 +216,11 @@ async function applyToolbarSidePanelPreference(
 ) {
   if (useSidePanelAsDefault) {
     await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true });
-    await chrome.action.setPopup({ popup: '' });
+    await setActionPopup('');
     return;
   }
 
-  await chrome.action.setPopup({ popup: POPUP_INIT_FILE });
+  await setActionPopup(POPUP_INIT_FILE);
   await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: false });
 }
 
@@ -275,7 +288,7 @@ export async function openRoute({
   const opened = action.openPopup();
 
   globalThis.setTimeout(() => {
-    action.setPopup({ popup: POPUP_INIT_FILE }).catch(() => undefined);
+    setActionPopup(POPUP_INIT_FILE).catch(() => undefined);
   }, popupRouteResetDelayMs);
 
   try {
@@ -352,12 +365,12 @@ export async function setupSidePanelToolbarBehavior(
   deps: SidePanelToolbarBehaviorDeps,
   sidePanel: SidePanelBehaviorApi | undefined = chrome.sidePanel,
 ): Promise<void> {
-  registerPendingRouteListeners();
-
   const sidePanelApi = getSidePanelApi(sidePanel);
   if (!sidePanelApi) {
     return;
   }
+
+  registerPendingRouteListeners();
 
   applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
@@ -375,14 +388,12 @@ export async function setupSidePanelToolbarBehavior(
         applyToolbarSidePanelPreference(
           nextUseSidePanelAsDefault,
           sidePanelApi,
-        ).catch((error) =>
-          console.error('Error updating panel behavior:', error),
-        );
+        ).catch((error) => log.warn('Error updating panel behavior:', error));
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,
     );
   } catch (error) {
-    console.error('Error setting side panel toolbar behavior:', error);
+    log.warn('Error setting side panel toolbar behavior:', error);
   }
 }
