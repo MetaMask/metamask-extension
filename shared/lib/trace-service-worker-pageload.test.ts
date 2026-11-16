@@ -115,7 +115,7 @@ describe('trace with no caller after the service-worker pageload ends (real SDK)
     expect(result.traceId).toBe(result.rpcTraceId);
   });
 
-  it('leaves a document pageload trace unchanged', () => {
+  it('does not track a document pageload', () => {
     const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });
 
     const result = noCallerTrace();
