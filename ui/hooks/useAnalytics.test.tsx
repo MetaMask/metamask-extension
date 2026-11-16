@@ -70,7 +70,7 @@ describe('useAnalytics', () => {
   describe('trackErrorAsAnalytics', () => {
     const deletionError = new Error('Deletion failed');
     const errorOptions = {
-      source: 'clear-metametrics-data',
+      source: 'delete-metametrics-modal',
       excludeMetaMetricsId: true,
     };
 

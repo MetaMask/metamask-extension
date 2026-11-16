@@ -80,7 +80,7 @@ export function submitRequestToBackground(
     }
   }
 
-  const traceContext = getSerializedTraceContext();
+  const traceparent = getSerializedTraceContext();
 
   const isMessengerAction = actionOrMethod.includes(':');
   const method = isMessengerAction ? 'messengerCall' : actionOrMethod;
@@ -97,19 +97,24 @@ export function submitRequestToBackground(
     messengerAction = args[0];
   }
 
-  const paramsWithTrace = traceContext
-    ? [
-        ...params,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          _trace: {
-            context: traceContext,
-            ...(messengerAction && { messengerAction }),
-            spanName: `Background RPC: ${messengerAction ?? method}`,
-          } satisfies SerializedTraceMetadata,
-        },
-      ]
-    : params;
+  // A messenger call carries its action even with no active span, so the
+  // background can name its root span after the action, not `messengerCall`.
+  const paramsWithTrace =
+    globalThis.sentry?.startSpan &&
+    !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED &&
+    (traceparent || messengerAction)
+      ? [
+          ...params,
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _trace: {
+              ...(traceparent && { traceparent }),
+              ...(messengerAction && { messengerAction }),
+              spanName: `Background RPC: ${messengerAction ?? method}`,
+            } satisfies SerializedTraceMetadata,
+          },
+        ]
+      : params;
 
   return background[method](...paramsWithTrace);
 }

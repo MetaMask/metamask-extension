@@ -101,7 +101,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
           expectedBalance: '$85,025.00',
-          waitForNonEvmAccounts: false,
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

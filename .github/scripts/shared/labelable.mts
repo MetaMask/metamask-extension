@@ -19,6 +19,8 @@ export type Labelable = {
   createdAt: string;
   body: string;
   author: string;
+  // GraphQL actor type of the author, such as User or Bot.
+  authorType?: string;
   labels: {
     id: string;
     name: string;
