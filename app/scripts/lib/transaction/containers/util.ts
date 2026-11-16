@@ -46,37 +46,19 @@ export async function applyTransactionContainers({
     updateTransaction(finalMetadata);
   }
 
-  const originalGas = finalMetadata.txParams.gas;
-  const estimationParams = cloneDeep(finalMetadata.txParams);
-  delete estimationParams.gas;
-  delete estimationParams.gasLimit;
+  const originalGas = finalMetadata.txParams.gas as Hex | undefined;
 
-  const { gas, simulationFails } = isApproved
-    ? await messenger.call(
-        'TransactionController:estimateGas',
-        estimationParams,
-        finalMetadata.networkClientId,
-      )
-    : await messenger.call(
-        'TransactionController:estimateGas',
-        estimationParams,
-        finalMetadata.networkClientId,
-        {
-          ignoreDelegationSignatures: true,
-        },
-      );
-
-  log('Estimated gas', gas);
-
-  if (simulationFails && hasEnforcedSimulations && !isApproved) {
-    throw new Error(
-      `Failed to estimate gas for transaction containers: ${simulationFails.reason}`,
-    );
-  }
-
-  const newGas = simulationFails
-    ? (originalGas as Hex | undefined)
-    : (gas as Hex);
+  // Without containers the restored parameters are the original transaction,
+  // so keep its gas (dapp-provided or buffered by the controller) instead of
+  // replacing it with an unbuffered re-estimate.
+  const newGas = hasEnforcedSimulations
+    ? await estimateContainerGas({
+        isApproved,
+        messenger,
+        originalGas,
+        transactionMeta: finalMetadata,
+      })
+    : originalGas;
 
   return {
     enforcedSimulationsSlippage,
@@ -108,4 +90,49 @@ export async function applyTransactionContainers({
       }
     },
   };
+}
+
+async function estimateContainerGas({
+  isApproved,
+  messenger,
+  originalGas,
+  transactionMeta,
+}: {
+  isApproved: boolean;
+  messenger: TransactionControllerInitMessenger;
+  originalGas: Hex | undefined;
+  transactionMeta: TransactionMeta;
+}): Promise<Hex | undefined> {
+  const estimationParams = cloneDeep(transactionMeta.txParams);
+  delete estimationParams.gas;
+  delete estimationParams.gasLimit;
+
+  const { gas, simulationFails } = isApproved
+    ? await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        transactionMeta.networkClientId,
+      )
+    : await messenger.call(
+        'TransactionController:estimateGas',
+        estimationParams,
+        transactionMeta.networkClientId,
+        {
+          ignoreDelegationSignatures: true,
+        },
+      );
+
+  log('Estimated gas', gas);
+
+  if (!simulationFails) {
+    return gas as Hex;
+  }
+
+  if (!isApproved) {
+    throw new Error(
+      `Failed to estimate gas for transaction containers: ${simulationFails.reason}`,
+    );
+  }
+
+  return originalGas;
 }

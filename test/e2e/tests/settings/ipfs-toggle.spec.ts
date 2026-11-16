@@ -6,7 +6,7 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../page-objects/pages/asset/nft-details-page';
 import NftsTab from '../../page-objects/pages/home/nfts-tab';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';

@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
@@ -81,6 +82,20 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.getByTestId('perps-balance-actions-add-funds'),
     ).toBeInTheDocument();
+  });
+
+  it.each<['column' | 'row', string]>([
+    ['column', 'w-full'],
+    ['row', 'max-w-sm'],
+  ])('lays the action buttons out in a %s', (layout, className) => {
+    renderWithProvider(
+      <PerpsMarketBalanceActions showActionButtons layout={layout} />,
+      mockStore,
+    );
+
+    const actions = screen.getByTestId('perps-balance-actions-add-funds')
+      .parentElement?.parentElement;
+    expect(actions).toHaveClass(className);
   });
 
   it('shows the Withdraw button and the "available" line once the account has a balance', () => {

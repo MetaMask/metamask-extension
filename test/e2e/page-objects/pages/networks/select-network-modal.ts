@@ -2,18 +2,6 @@ import { type CaipChainId } from '@metamask/utils';
 import { convertCaipToHexChainId } from '../../../../../shared/lib/network.utils';
 import { Driver } from '../../../webdriver/driver';
 
-export enum NetworkId {
-  ETHEREUM = 'eip155:1',
-  LINEA = 'eip155:59144',
-  ARBITRUM = 'eip155:42161',
-  AVALANCHE = 'eip155:43114',
-  BSC = 'eip155:56',
-  BASE = 'eip155:8453',
-  OPTIMISM = 'eip155:10',
-  POLYGON = 'eip155:137',
-  XDC = 'eip155:50',
-}
-
 /**
  * The network filter keys EVM rows by hex chain id and non-EVM rows by CAIP
  * chain id, while tests refer to networks by CAIP chain id throughout.
@@ -52,6 +40,9 @@ class SelectNetworkModal {
     `:is(${selector}.multichain-network-list-item--deselected, ${selector} .multichain-network-list-item--deselected)`;
 
   protected readonly driver: Driver;
+
+  private readonly enabledNetworkListItemByName = (networkName: string) =>
+    `${this.networkListItemClass}:not(${this.networkListItemClass}--disabled) ${this.networkListItemByName(networkName)}`;
 
   private readonly manageNetworksButton =
     '[data-testid="home-network-filter-manage-networks"]';
@@ -188,6 +179,13 @@ class SelectNetworkModal {
 
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
+    // Non-EVM networks stay disabled until the selected account group has an
+    // account for them, e.g. while fixtures with a non-default vault recreate
+    // the non-EVM accounts on unlock. Clicking a disabled row is a no-op.
+    await this.driver.waitForSelector(
+      this.enabledNetworkListItemByName(networkName),
+      { timeout: 45000 },
+    );
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
     );

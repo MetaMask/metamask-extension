@@ -11,14 +11,13 @@ import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
-
+import { NativeTokenScamWarningModal } from './native-token-scam-warning-modal';
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
   TokenCellTitle,
 } from './cells';
-import { NativeTokenScamWarningModal } from './native-token-scam-warning-modal';
 
 export type TokenCellMusdOptions = {
   /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */

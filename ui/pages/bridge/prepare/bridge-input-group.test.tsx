@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FeatureId,
   RequestStatus,
@@ -16,6 +16,10 @@ import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../test/lib/mock-resize-observer';
 import {
   getFromChains,
   getFromToken,
@@ -239,6 +243,168 @@ const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
 };
 
 describe('BridgeInputGroup', () => {
+  it('uses a decimal text input for the amount', () => {
+    renderBridgeInputGroup(
+      {},
+      { amountFieldProps: { testId: 'from-amount', value: '1' } },
+    );
+
+    const input = screen.getByTestId('from-amount');
+    expect(input).toHaveAttribute('type', 'text');
+    expect(input).toHaveAttribute('inputmode', 'decimal');
+  });
+
+  it('starts a short amount at 48px', () => {
+    renderBridgeInputGroup(
+      {},
+      { amountFieldProps: { testId: 'from-amount', value: '1' } },
+    );
+
+    expect(screen.getByTestId('from-amount')).toHaveStyle({
+      fontSize: '48px',
+      lineHeight: '48px',
+    });
+  });
+
+  describe('amount font size', () => {
+    const longAmount = '500000000000000000';
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    it('keeps a long amount at 48px in a wide expanded-view field', () => {
+      renderBridgeInputGroup(
+        {},
+        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
+      );
+
+      act(() => resizeObserver.resize(626));
+
+      expect(screen.getByTestId('from-amount')).toHaveStyle({
+        fontSize: '48px',
+        lineHeight: '48px',
+      });
+    });
+
+    it('shrinks the amount when the field gets narrower', () => {
+      renderBridgeInputGroup(
+        {},
+        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
+      );
+      act(() => resizeObserver.resize(626));
+
+      act(() => resizeObserver.resize(200));
+
+      expect(screen.getByTestId('from-amount')).toHaveStyle({
+        fontSize: '24px',
+      });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      const mockState = createBridgeMockStore();
+      const ControlledInputGroup = () => {
+        const [value, setValue] = useState('');
+        return (
+          <InputGroup
+            mockState={mockState}
+            amountFieldProps={{ testId: 'from-amount', value }}
+            onAmountChange={setValue}
+          />
+        );
+      };
+      renderWithProvider(<ControlledInputGroup />, configureStore(mockState));
+      act(() => resizeObserver.resize(626));
+      const input = screen.getByTestId('from-amount');
+      const observersBeforeTyping =
+        resizeObserver.constructorSpy.mock.calls.length;
+      const observedBeforeTyping = resizeObserver.observe.mock.calls.length;
+
+      for (const value of ['5', '50000', '5000000000', longAmount]) {
+        fireEvent.change(input, { target: { value } });
+      }
+
+      expect(input).toHaveValue(longAmount);
+      expect(input).toHaveStyle({ fontSize: '48px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(
+        observersBeforeTyping,
+      );
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(
+        observedBeforeTyping,
+      );
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
+    });
+  });
+
+  it('sets the prefix and input in Hero at the same size', () => {
+    renderBridgeInputGroup(
+      {},
+      {
+        amountInputPrefix: '$',
+        amountFieldProps: {
+          testId: 'from-amount',
+          value: '123456789012',
+        },
+      },
+    );
+
+    const input = screen.getByTestId('from-amount');
+    const prefix = screen.getByTestId('from-amount-row-prefix');
+
+    for (const element of [prefix, input]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '48px', lineHeight: '48px' });
+    }
+  });
+
+  it('dims the read-only destination until a quote replaces the placeholder', () => {
+    const mockState = createBridgeMockStore();
+    const destinationFieldProps = {
+      testId: 'to-amount',
+      readOnly: true,
+      disabled: true,
+    };
+    const view = renderWithProvider(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '' }}
+      />,
+      configureStore(mockState),
+    );
+
+    const field = view.getByTestId('to-amount');
+    expect(field).toBeDisabled();
+    expect(view.getByTestId('to-amount-row')).toHaveClass('opacity-50');
+
+    view.rerender(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '0' }}
+      />,
+    );
+
+    const placeholder = view.getByTestId('to-amount');
+    expect(placeholder).toHaveValue('0');
+    expect(view.getByTestId('to-amount-row')).toHaveClass('opacity-50');
+
+    view.rerender(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '13.98' }}
+      />,
+    );
+
+    expect(view.getByTestId('to-amount-row')).not.toHaveClass('opacity-50');
+  });
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -306,6 +472,37 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId('security-badge')).toBeInTheDocument();
   });
 
+  it('copies the destination token block explorer link from a native button', async () => {
+    const mockState = createBridgeMockStore();
+    const fromToken = getFromToken(mockState);
+    const token = {
+      ...fromToken,
+      assetId:
+        'eip155:1/erc20:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984' as CaipAssetType,
+      chainId: 'eip155:1' as const,
+    };
+    const onBlockExplorerClick = jest.fn();
+    renderWithProvider(
+      <InputGroup
+        mockState={mockState}
+        token={token}
+        isDestination
+        amountFieldProps={{ testId: 'to-amount', readOnly: true, value: '1' }}
+        onBlockExplorerClick={onBlockExplorerClick}
+      />,
+      configureStore(mockState),
+    );
+
+    const addressButton = screen.getByRole('button', { name: '0x1f...f984' });
+    expect(addressButton).toHaveAttribute('type', 'button');
+
+    await act(async () => {
+      await userEvent.click(addressButton);
+    });
+
+    expect(onBlockExplorerClick).toHaveBeenCalledWith(token);
+  });
+
   it('leaves the selected asset button unchanged without fetched metadata', () => {
     const { queryByTestId } = renderBridgeInputGroup();
 
@@ -361,12 +558,11 @@ describe('BridgeInputGroup', () => {
           value: '0',
           readOnly: true,
           disabled: true,
-          className: 'amount-input',
         },
       },
     );
 
-    expect(getByTestId('to-amount-loading-skeleton')).toBeInTheDocument();
+    expect(getByTestId('to-amount-row-skeleton')).toBeInTheDocument();
     expect(queryByTestId('to-amount')).not.toBeInTheDocument();
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });

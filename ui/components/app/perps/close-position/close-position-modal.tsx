@@ -33,6 +33,7 @@ import {
 import {
   formatPerpsFiat,
   formatPnl,
+  PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import {
@@ -73,6 +74,7 @@ import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
+import { usePerpsPositionAlreadyClosed } from '../hooks/usePerpsPositionAlreadyClosed';
 import {
   CloseAmountSection,
   LimitPriceInput,
@@ -93,10 +95,16 @@ import {
   getIsPerpsCloseLimitOrderEnabled,
   getIsPerpsServiceInterruptionBannerEnabled,
 } from '../../../../selectors/perps/feature-flags';
+import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import {
+  PERPS_CLOSE_UNAVAILABLE_DISPLAY,
+  estimateClosePositionReceive,
   getCloseLimitReferencePrice,
+  getCloseMarginWithPnl,
+  getClosePositionProviderId,
   isCloseLimitPriceOutsideDeviation,
   parsePositivePrice,
+  roundCloseUsd,
 } from './close-position-utils';
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
@@ -115,27 +123,31 @@ type FormatPerpsFiat = (value: number | string) => string;
 
 type FormatPercentWithMinThreshold = (value: number) => string | undefined;
 
-const buildCloseRequestParams = ({
-  symbol,
-  currentPrice,
+/**
+ * The size a close submits, quantized to the market's size step once so the
+ * fee quote, the estimate and the order all describe the same close.
+ *
+ * @param options - Close inputs.
+ * @param options.isPartialClose - Whether the slider is below 100%.
+ * @param options.closeSize - Unrounded close size from the slider.
+ * @param options.positionSize - Absolute position size.
+ * @param options.sizeDecimals - Market size decimals, when known.
+ * @returns The order size for a partial close, or undefined for a full close.
+ */
+export const getExecutablePartialCloseSize = ({
   isPartialClose,
   closeSize,
   positionSize,
   sizeDecimals,
-  orderType,
-  limitPrice,
-  position,
 }: {
-  symbol: string;
-  currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
   positionSize: number;
   sizeDecimals?: number;
-  orderType: OrderType;
-  limitPrice?: string;
-  position: Position;
-}): ClosePositionParams => {
+}): string | undefined => {
+  if (!isPartialClose) {
+    return undefined;
+  }
   // Round-half-up can lift a partial size onto the whole position — closing
   // 99.999% of 2.5 at 4 decimals formats as "2.5000". A partial close must stay
   // strictly under the position, so step the last decimal back when it does.
@@ -144,21 +156,37 @@ const buildCloseRequestParams = ({
       ? closeSize.toString()
       : closeSize.toFixed(sizeDecimals);
   const roundsOntoWholePosition =
-    isPartialClose &&
     sizeDecimals !== undefined &&
     Number.parseFloat(roundedSize) >= positionSize;
-  const flooredSize =
-    sizeDecimals === undefined
-      ? roundedSize
-      : (positionSize - 10 ** -sizeDecimals).toFixed(sizeDecimals);
+  if (!roundsOntoWholePosition) {
+    return roundedSize;
+  }
+  const flooredSize = (positionSize - 10 ** -sizeDecimals).toFixed(
+    sizeDecimals,
+  );
   // On a market whose smallest step is the position itself — a 1-unit position
   // on an integer-size market — stepping back lands on zero, which the venue
   // rejects or treats as a no-op. The trader asked for all but a rounding
   // sliver, so send it as the full close it effectively is.
-  const closesWholePosition =
-    roundsOntoWholePosition && Number.parseFloat(flooredSize) <= 0;
-  const size = roundsOntoWholePosition ? flooredSize : roundedSize;
-  const includeSize = isPartialClose && !closesWholePosition;
+  return Number.parseFloat(flooredSize) <= 0 ? undefined : flooredSize;
+};
+
+const buildCloseRequestParams = ({
+  symbol,
+  currentPrice,
+  size,
+  orderType,
+  limitPrice,
+  position,
+}: {
+  symbol: string;
+  currentPrice: number;
+  size?: string;
+  orderType: OrderType;
+  limitPrice?: string;
+  position: Position;
+}): ClosePositionParams => {
+  const includeSize = size !== undefined;
 
   if (orderType === 'limit') {
     return {
@@ -364,6 +392,30 @@ export const ClosePositionModal = ({
   const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  // ModalContent binds its document mousedown listener once on mount, so this
+  // dismiss handler has to read the ref when the event fires. The support
+  // consent dialog is portaled outside this dialog; a click on it would
+  // otherwise close the flow before the support tab opens.
+  const isSupportConsentOpenRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const handleSupportConsentOpenChange = useCallback(
+    (isConsentOpen: boolean) => {
+      isSupportConsentOpenRef.current = isConsentOpen;
+    },
+    [],
+  );
+
+  const handleModalDismiss = useCallback(() => {
+    if (isSupportConsentOpenRef.current) {
+      return;
+    }
+    onCloseRef.current();
+  }, []);
   const isServiceInterruptionBannerEnabled = useSelector(
     getIsPerpsServiceInterruptionBannerEnabled,
   );
@@ -384,9 +436,19 @@ export const ClosePositionModal = ({
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const notifyPositionAlreadyClosed = usePerpsPositionAlreadyClosed();
   const formatFiat = useCallback(
     (value: number | string) =>
       formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
+    [],
+  );
+  // A figure Core cannot compute yet shows as unavailable, never as $0.
+  // Amounts keep the cents Core rounds them to, as the fee row does.
+  const formatCloseUsd = useCallback(
+    (value: number | undefined) =>
+      value === undefined
+        ? PERPS_CLOSE_UNAVAILABLE_DISPLAY
+        : formatPerpsFiat(value, { ranges: PRICE_RANGES_MINIMAL_VIEW }),
     [],
   );
 
@@ -464,10 +526,20 @@ export const ClosePositionModal = ({
     [position.size],
   );
 
-  const closeSize = useMemo(
-    () => positionSize * closeFraction,
-    [positionSize, closeFraction],
+  const partialCloseSize = useMemo(
+    () =>
+      getExecutablePartialCloseSize({
+        isPartialClose,
+        closeSize: positionSize * closeFraction,
+        positionSize,
+        sizeDecimals,
+      }),
+    [isPartialClose, positionSize, closeFraction, sizeDecimals],
   );
+  const closeSize =
+    partialCloseSize === undefined
+      ? positionSize
+      : Number.parseFloat(partialCloseSize);
 
   const parsedLimitPrice = useMemo(
     () => parsePositivePrice(limitPrice),
@@ -548,57 +620,38 @@ export const ClosePositionModal = ({
     amount: String(closeNotionalUsd),
   });
 
-  const liveUnrealizedPnl = useMemo(
-    () => Number.parseFloat(position.unrealizedPnl) || 0,
-    [position.unrealizedPnl],
+  const activeProvider = useSelector(selectPerpsActiveProvider);
+  const providerId = getClosePositionProviderId(position, activeProvider);
+  // The price the close executes at: the limit price of a limit close, else
+  // the live price. Unknown until entered or streamed.
+  const closePrice =
+    effectiveOrderType === 'limit'
+      ? (parsedLimitPrice ?? undefined)
+      : (validCurrentPrice ?? undefined);
+
+  const closeEstimate = useMemo(
+    () =>
+      estimateClosePositionReceive({
+        position,
+        providerId,
+        closeSize,
+        price: closePrice,
+        feeRate,
+      }),
+    [position, providerId, closeSize, closePrice, feeRate],
   );
 
-  const effectiveTotalPnl = useMemo(() => {
-    if (effectiveOrderType === 'market') {
-      return liveUnrealizedPnl;
-    }
-
-    const entryPrice = parsePositivePrice(position.entryPrice);
-    if (entryPrice === null || parsedLimitPrice === null) {
-      return liveUnrealizedPnl;
-    }
-
-    return isLong
-      ? (parsedLimitPrice - entryPrice) * positionSize
-      : (entryPrice - parsedLimitPrice) * positionSize;
-  }, [
-    effectiveOrderType,
-    liveUnrealizedPnl,
-    position.entryPrice,
-    parsedLimitPrice,
-    isLong,
-    positionSize,
-  ]);
-
-  const effectivePnl = useMemo(
-    () => effectiveTotalPnl * closeFraction,
-    [effectiveTotalPnl, closeFraction],
-  );
-
-  const margin = useMemo(() => {
-    const marginUsed = Number.parseFloat(position.marginUsed) || 0;
-    const effectiveMargin = marginUsed - liveUnrealizedPnl + effectiveTotalPnl;
-    return effectiveMargin * closeFraction;
-  }, [
-    position.marginUsed,
-    liveUnrealizedPnl,
-    effectiveTotalPnl,
-    closeFraction,
-  ]);
-
-  const estimatedFees = useMemo(
-    () => closeNotionalUsd * (feeRate ?? 0),
-    [closeNotionalUsd, feeRate],
-  );
-
-  const originalEstimatedFees = useMemo(
-    () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
-    [closeNotionalUsd, undiscountedFeeRate],
+  // The fee before any MetaMask discount, shown struck through beside it.
+  const originalFee = useMemo(
+    () =>
+      estimateClosePositionReceive({
+        position,
+        providerId,
+        closeSize,
+        price: closePrice,
+        feeRate: undiscountedFeeRate,
+      }).fee,
+    [position, providerId, closeSize, closePrice, undiscountedFeeRate],
   );
 
   const isPartialCloseBelowMinNotional = useMemo(() => {
@@ -609,25 +662,13 @@ export const ClosePositionModal = ({
     return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
-  // Pre-round margin and fees to cents so the same values flow into both
-  // the display rows and the "You'll receive" arithmetic, avoiding any
-  // divergence between Math.round and Intl.NumberFormat rounding modes.
-  const roundedMargin = useMemo(() => Math.round(margin * 100) / 100, [margin]);
-
-  const roundedFees = useMemo(
-    () => Math.round(estimatedFees * 100) / 100,
-    [estimatedFees],
-  );
-
-  const roundedOriginalFees = useMemo(
-    () => Math.round(originalEstimatedFees * 100) / 100,
-    [originalEstimatedFees],
-  );
-
-  const youWillReceive = useMemo(
-    () => roundedMargin - roundedFees,
-    [roundedMargin, roundedFees],
-  );
+  // Rows show Core's figures at the cents Core rounds them to, so margin with
+  // PnL minus the fee adds up to Core's receive.
+  const roundedMarginWithPnl = getCloseMarginWithPnl(closeEstimate);
+  const roundedFees = roundCloseUsd(closeEstimate.fee);
+  const roundedOriginalFees = roundCloseUsd(originalFee);
+  const youWillReceive = closeEstimate.receive;
+  const closePnl = closeEstimate.realizedPnl;
 
   const formError = useMemo(() => {
     if (
@@ -645,7 +686,7 @@ export const ClosePositionModal = ({
     if (isLimitPriceOutsideDeviation) {
       return t('perpsCloseLimitPriceOutsideOracleBand');
     }
-    if (youWillReceive < 0) {
+    if (youWillReceive !== undefined && youWillReceive < 0) {
       return t('perpsInsufficientMargin');
     }
     return null;
@@ -659,17 +700,22 @@ export const ClosePositionModal = ({
     t,
   ]);
 
+  // The close waits for its fee quote: the fee is reported with the close and
+  // is never assumed to be 0.
+  const closeFee = closeEstimate.fee;
   const isSubmitDisabled =
     formError !== null ||
     closePercent <= 0 ||
     isSubmitting ||
     closeSize <= 0 ||
-    isPartialCloseBelowMinNotional;
+    isPartialCloseBelowMinNotional ||
+    closeFee === undefined;
 
   const handleClose = useCallback(async () => {
-    if (isSubmitDisabled) {
+    if (isSubmitDisabled || closeFee === undefined) {
       return;
     }
+    const totalFee = closeFee;
     if (
       effectiveOrderType === 'limit' &&
       (parsedLimitPrice === null ||
@@ -721,10 +767,7 @@ export const ClosePositionModal = ({
         const closeRequestParams = buildCloseRequestParams({
           symbol: position.symbol,
           currentPrice,
-          isPartialClose,
-          closeSize,
-          positionSize,
-          sizeDecimals,
+          size: partialCloseSize,
           orderType: effectiveOrderType,
           limitPrice:
             effectiveOrderType === 'limit'
@@ -733,7 +776,7 @@ export const ClosePositionModal = ({
           position,
         });
         closeRequestParams.trackingData = buildTrackingData({
-          totalFee: estimatedFees,
+          totalFee,
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
@@ -751,6 +794,15 @@ export const ClosePositionModal = ({
           'perpsClosePosition',
           [closeRequestParams],
         );
+        if (
+          !result.success &&
+          isPerpsErrorCode(result, PERPS_ERROR_CODES.POSITION_NOT_FOUND)
+        ) {
+          // The position closed after this modal rendered. Say so and drop it
+          // from the view instead of reporting a failed close.
+          notifyPositionAlreadyClosed();
+          return;
+        }
         if (!result.success) {
           const failure: PerpsErrorInput = {
             error: result.error || 'Failed to close position',
@@ -830,17 +882,17 @@ export const ClosePositionModal = ({
     gate,
     isEligible,
     replacePerpsToastByKey,
+    notifyPositionAlreadyClosed,
     isPartialClose,
     position,
     closeSize,
-    positionSize,
+    partialCloseSize,
     displayName,
     t,
     formatNumber,
     currentPrice,
-    sizeDecimals,
     limitPrice,
-    estimatedFees,
+    closeFee,
     protocolFeeRate,
     buildTrackingData,
     onClose,
@@ -891,12 +943,14 @@ export const ClosePositionModal = ({
     <>
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleModalDismiss}
         data-testid="perps-close-position-modal"
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <PerpsServiceInterruptionBanner />
+          <PerpsServiceInterruptionBanner
+            onSupportConsentOpenChange={handleSupportConsentOpenChange}
+          />
           <OrderEntryHeader
             displayName={displayName}
             displayPrice={headerDisplayPrice}
@@ -985,28 +1039,32 @@ export const ClosePositionModal = ({
                       textAlign={TextAlign.Right}
                       data-testid="perps-close-summary-margin-value"
                     >
-                      {formatFiat(roundedMargin)}
+                      {formatCloseUsd(roundedMarginWithPnl)}
                     </Text>
-                    <Text
-                      variant={TextVariant.BodyXs}
-                      color={TextColor.TextAlternative}
-                      textAlign={TextAlign.Right}
-                    >
-                      {t('perpsIncludesPnl', [
-                        <Text
-                          key="perps-close-margin-pnl"
-                          variant={TextVariant.BodyXs}
-                          color={
-                            effectivePnl >= 0
-                              ? TextColor.SuccessDefault
-                              : TextColor.ErrorDefault
-                          }
-                          asChild
-                        >
-                          <span>{formatPnl(effectivePnl)}</span>
-                        </Text>,
-                      ])}
-                    </Text>
+                    {closePnl === undefined ? null : (
+                      <Text
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                        textAlign={TextAlign.Right}
+                      >
+                        {t('perpsIncludesPnl', [
+                          <Text
+                            key="perps-close-margin-pnl"
+                            variant={TextVariant.BodyXs}
+                            color={
+                              closePnl >= 0
+                                ? TextColor.SuccessDefault
+                                : TextColor.ErrorDefault
+                            }
+                            asChild
+                          >
+                            <span data-testid="perps-close-summary-pnl-value">
+                              {formatPnl(closePnl)}
+                            </span>
+                          </Text>,
+                        ])}
+                      </Text>
+                    )}
                   </Box>
                 </Box>
 
@@ -1030,6 +1088,7 @@ export const ClosePositionModal = ({
                     }
                     originalFee={roundedOriginalFees}
                     fee={roundedFees}
+                    placeholder={PERPS_CLOSE_UNAVAILABLE_DISPLAY}
                     feeTextFontWeight={FontWeight.Medium}
                     feeTextTestId="perps-close-summary-fees-value"
                   />
@@ -1052,7 +1111,7 @@ export const ClosePositionModal = ({
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-close-summary-receive-value"
                   >
-                    {formatFiat(youWillReceive)}
+                    {formatCloseUsd(youWillReceive)}
                   </Text>
                 </Box>
               </Box>

@@ -1,11 +1,14 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HomePage from '../page-objects/pages/home/homepage';
-import PreferencesAndDisplaySettings from '../page-objects/pages/settings/preferences-and-display-settings';
+import PreferencesAndDisplaySettings from '../page-objects/pages/settings/preferences-and-display/preferences-and-display-settings';
 import SnapListPage from '../page-objects/pages/snaps/list-page';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { login } from '../page-objects/flows/login.flow';
-import { closeSettings } from '../page-objects/flows/settings.flow';
+import {
+  changeLanguage,
+  closeSettings,
+} from '../page-objects/flows/settings.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { withFixtures } from '../helpers';
 import { mockLocalizationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -51,7 +54,7 @@ describe('Test Snap Get Locale', function () {
           driver,
         );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
-        await preferencesAndDisplaySettings.changeLanguage('Dansk');
+        await changeLanguage(driver, 'Dansk');
 
         await preferencesAndDisplaySettings.assertLoadingOverlayNotPresent();
         await closeSettings(driver);

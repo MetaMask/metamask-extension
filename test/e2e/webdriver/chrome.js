@@ -31,7 +31,6 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
-    isBenchmark = false,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
@@ -42,10 +41,6 @@ class ChromeDriver {
       '--no-sandbox',
       '--enable-unsafe-extension-debugging', // Allow reloading extensions at runtime without developer mode
     ];
-
-    if (isBenchmark) {
-      args.push('--js-flags=--expose-gc');
-    }
 
     if (process.env.MULTIPROVIDER) {
       args.push(

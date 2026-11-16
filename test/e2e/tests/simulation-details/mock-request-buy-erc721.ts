@@ -16,7 +16,7 @@ export const BUY_ERC721_TRANSACTION_MOCK = {
 
 export const BUY_ERC721_REQUEST_1_MOCK: MockRequestResponse = {
   request: {
-    id: '0',
+    id: '1',
     jsonrpc: '2.0',
     method: 'infura_simulateTransactions',
     params: [
