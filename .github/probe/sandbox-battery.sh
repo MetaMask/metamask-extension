@@ -69,14 +69,12 @@ check 'yarn npm info' bash -c 'yarn npm info react --fields version --json | gre
 check 'yarn npm audit reaches the registry' bash -c '
   yarn npm audit --recursive --environment production --json > audit.json 2> audit.err
   ! grep -qiE "ENOTFOUND|ECONN|EAI_AGAIN|403|blocked|refused|YN0035" audit.json audit.err'
-# Full install first; the later checks need node_modules.
-check 'yarn install --immutable --mode=skip-build' env YARN_NETWORK_CONCURRENCY=8 yarn install --immutable --mode=skip-build
-if grep -q '^FAIL yarn install --immutable' sandbox-results.txt; then
-  check 'yarn install retry' env YARN_NETWORK_CONCURRENCY=8 yarn install --immutable --mode=skip-build
-fi
+# node_modules comes from a trusted pre-agent install and is read-only in the sandbox.
+check_fails 'node_modules is read-only' touch node_modules/sandbox-probe
+check_fails 'a full install cannot run in the sandbox' yarn install --immutable --mode=skip-build
 check 'yarn install --mode=update-lockfile' yarn install --mode=update-lockfile
 restore
-check 'yarn dedupe --check' yarn lint:lockfile:dedupe
+check 'yarn dedupe --check' yarn dedupe --check
 
 # Yarn patch round trip
 check 'yarn patch and patch-commit' bash -c '

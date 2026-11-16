@@ -140,7 +140,6 @@ jobs:
         with:
           is-high-risk-environment: true
           persist-credentials: false
-          skip-install: true
 
       - name: Warm the Corepack cache outside the sandbox
         run: |
