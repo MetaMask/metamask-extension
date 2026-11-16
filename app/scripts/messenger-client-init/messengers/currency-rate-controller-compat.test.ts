@@ -11,6 +11,12 @@ jest.mock('../../../../shared/lib/environment', () => ({
   getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
 }));
 
+// Tempo mainnet (0x1079) has no native asset. Its USD rate is derived from token prices.
+const tempoPathUsdAssetId =
+  'eip155:4217/erc20:0x20c0000000000000000000000000000000000000';
+const tempoBridgedUsdcAssetId =
+  'eip155:4217/erc20:0x20c0000000000000000000000000000000000001';
+
 describe('currency-rate-controller-compat', () => {
   beforeEach(() => {
     jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
@@ -154,6 +160,180 @@ describe('currency-rate-controller-compat', () => {
         },
       },
       currentCurrency: '',
+    });
+  });
+
+  it('derives the Tempo USD rate from token prices when pay state is unavailable', () => {
+    const messenger = getRootMessenger<never, never>();
+    registerAssetsHandlers(messenger, {
+      getStateForTransactionPay: () => undefined,
+      getState: () => ({
+        selectedCurrency: 'eur',
+        assetsInfo: {
+          'eip155:1/slip44:60': { symbol: 'ETH', type: 'native' },
+          [tempoPathUsdAssetId]: { symbol: 'pathUSD', type: 'erc20' },
+          [tempoBridgedUsdcAssetId]: { symbol: 'USDC.e', type: 'erc20' },
+          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+            symbol: 'USDC',
+            type: 'erc20',
+          },
+        },
+        assetsPrice: {
+          'eip155:1/slip44:60': {
+            assetPriceType: 'fungible',
+            lastUpdated: 2000,
+            price: 2500,
+            usdPrice: 2700,
+          },
+          [tempoPathUsdAssetId]: {
+            assetPriceType: 'fungible',
+            lastUpdated: 1700000000000,
+            price: 0.9,
+            usdPrice: 1,
+          },
+          [tempoBridgedUsdcAssetId]: {
+            assetPriceType: 'fungible',
+            lastUpdated: 1700000001000,
+            price: 0.9108,
+            usdPrice: 0.99,
+          },
+          // Later non-Tempo price must not become the USD rate.
+          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+            assetPriceType: 'fungible',
+            lastUpdated: 1800000000000,
+            price: 0.5,
+            usdPrice: 1,
+          },
+        },
+      }),
+    });
+
+    expect(readCompatState(messenger)).toStrictEqual({
+      currentCurrency: 'eur',
+      currencyRates: {
+        ETH: {
+          conversionDate: 2,
+          conversionRate: 2500,
+          usdConversionRate: 2700,
+        },
+        USD: {
+          conversionDate: 1700000001,
+          conversionRate: 0.9108 / 0.99,
+          usdConversionRate: 1,
+        },
+      },
+    });
+  });
+
+  it('derives the Tempo USD rate when pay state omits it', () => {
+    const messenger = getRootMessenger<never, never>();
+    registerAssetsHandlers(messenger, {
+      getStateForTransactionPay: () => ({
+        currentCurrency: 'eur',
+        currencyRates: {
+          ETH: {
+            conversionDate: 2,
+            conversionRate: 2500,
+            usdConversionRate: 2700,
+          },
+        },
+      }),
+      getState: () => ({
+        assetsPrice: {
+          [tempoBridgedUsdcAssetId]: {
+            assetPriceType: 'fungible',
+            lastUpdated: 1700000001000,
+            price: 0.9108,
+            usdPrice: 0.99,
+          },
+        },
+      }),
+    });
+
+    expect(readCompatState(messenger)).toStrictEqual({
+      currentCurrency: 'eur',
+      currencyRates: {
+        ETH: {
+          conversionDate: 2,
+          conversionRate: 2500,
+          usdConversionRate: 2700,
+        },
+        USD: {
+          conversionDate: 1700000001,
+          conversionRate: 0.9108 / 0.99,
+          usdConversionRate: 1,
+        },
+      },
+    });
+  });
+
+  it('keeps derived rates when a price id cannot be parsed for Tempo', () => {
+    const messenger = getRootMessenger<never, never>();
+    registerAssetsHandlers(messenger, {
+      getStateForTransactionPay: () => undefined,
+      getState: () => ({
+        selectedCurrency: 'usd',
+        assetsInfo: {
+          'eip155:1/slip44:60': { symbol: 'ETH', type: 'native' },
+        },
+        assetsPrice: {
+          'eip155:1/slip44:60': {
+            assetPriceType: 'fungible',
+            lastUpdated: 2000,
+            price: 2500,
+            usdPrice: 2500,
+          },
+          'not-a-caip-id': {
+            assetPriceType: 'fungible',
+            lastUpdated: 1700000000000,
+            price: 1,
+            usdPrice: 1,
+          },
+        },
+      }),
+    });
+
+    expect(readCompatState(messenger)).toStrictEqual({
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionDate: 2,
+          conversionRate: 2500,
+          usdConversionRate: 2500,
+        },
+      },
+    });
+  });
+
+  it('keeps a USD rate already present on pay state', () => {
+    const messenger = getRootMessenger<never, never>();
+    registerAssetsHandlers(messenger, {
+      getStateForTransactionPay: () => ({
+        currentCurrency: 'usd',
+        currencyRates: {
+          USD: {
+            conversionDate: 10,
+            conversionRate: 1.1,
+            usdConversionRate: 1,
+          },
+        },
+      }),
+      getState: () => ({
+        assetsPrice: {
+          [tempoPathUsdAssetId]: {
+            assetPriceType: 'fungible',
+            lastUpdated: 1700000000000,
+            price: 0.9,
+            usdPrice: 1,
+          },
+        },
+      }),
+    });
+
+    expect(readCompatState(messenger).currencyRates.USD).toStrictEqual({
+      conversionDate: 10,
+      conversionRate: 1.1,
+      usdConversionRate: 1,
     });
   });
 
