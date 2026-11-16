@@ -158,6 +158,9 @@ describe('MoneyFtueSplash', () => {
       ).toBeInTheDocument();
     });
     expect(
+      screen.getByTestId('money-ftue-splash-benefit-spend'),
+    ).toHaveTextContent(messages.moneyFtueBenefitSpendDescription.message);
+    expect(
       screen.getAllByTestId(/^money-ftue-splash-faq-.+-details$/u),
     ).toHaveLength(10);
     expect(
