@@ -112,6 +112,7 @@ import { MoneyAccountApiDataService } from '@metamask/money-account-api-data-ser
 import { MoneyAccountBalanceService } from '@metamask/money-account-balance-service';
 import { MoneyAccountController } from '@metamask/money-account-controller';
 import { MoneyAccountUpgradeController } from '@metamask/money-account-upgrade-controller';
+import { AiDigestController } from '@metamask/ai-controllers';
 import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -144,6 +145,7 @@ import { SentryTracingService } from '../services/sentry/sentry-tracing-service'
 export type MessengerClient =
   | AccountOrderController
   | AccountTrackerController
+  | AiDigestController
   | AccountsController
   | AddressBookController
   | AlertController
@@ -339,4 +341,5 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &
   AccountTrackerController['state'] &
+  AiDigestController['state'] &
   ProfileMetricsController['state'];
