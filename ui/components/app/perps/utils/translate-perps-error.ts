@@ -121,6 +121,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // Routing failures across the controller's multi-provider layer. The
   // extension exposes no provider picker, so neither is user-actionable.
   [PERPS_ERROR_CODES.PROVIDER_NOT_FOUND]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.PROVIDER_ROUTE_REQUIRED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.PROVIDER_LIFECYCLE_STALE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TOKEN_NOT_SUPPORTED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.BRIDGE_CONTRACT_NOT_FOUND]: 'somethingWentWrong',
@@ -275,6 +276,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // user cannot re-arm them from the error toast, so it shares the generic copy
   // with the update failure above.
   [PERPS_ERROR_CODES.TPSL_PROTECTION_LOST]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.TPSL_LEG_REPLACE_UNSUPPORTED]: 'somethingWentWrong',
 
   // Order execution
   [PERPS_ERROR_CODES.ORDER_REJECTED]: 'perpsOrderRejected',
