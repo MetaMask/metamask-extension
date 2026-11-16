@@ -20,6 +20,7 @@ import type { Hex } from '@metamask/utils';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
+import { MARKET_INSIGHTS_EVENT_VALUE } from '../../../../shared/constants/market-insights-events';
 import { ToastContent, toast } from '../../../components/ui/toast/toast';
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -43,6 +44,7 @@ import { MarketInsightsTrendSourcesModal } from './components/market-insights-tr
 import { MarketInsightsTweetCard } from './components/market-insights-tweet-card';
 import { MarketInsightsViewSkeleton } from './components/market-insights-view-skeleton';
 import { isSafeUrl } from './utils/market-insights-formatting';
+import { useMarketInsightsViewTracking } from './useMarketInsightsViewTracking';
 
 export const MARKET_INSIGHTS_VIEW_TEST_ID = 'market-insights-view-container';
 export const MARKET_INSIGHTS_SOURCES_FOOTER_TEST_ID =
@@ -166,6 +168,12 @@ const MarketInsightsPage = () => {
     Boolean(assetId),
   );
 
+  const { trackInteraction, trackClosed } = useMarketInsightsViewTracking({
+    assetId,
+    report,
+    source: MARKET_INSIGHTS_EVENT_VALUE.SOURCE.TOKEN_DETAILS,
+  });
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShowLoadingSkeleton(true);
@@ -193,16 +201,21 @@ const MarketInsightsPage = () => {
   const stickyFooterAsset = useMemo(() => getStickyFooterAsset(token), [token]);
 
   const handleBackPress = useCallback(() => {
+    trackClosed();
     transitionBack(() => navigate(PREVIOUS_ROUTE));
-  }, [navigate]);
+  }, [navigate, trackClosed]);
 
-  const handleSourcePress = useCallback((url: string) => {
-    if (!isSafeUrl(url)) {
-      return;
-    }
-    setSelectedTrend(null);
-    globalThis.open(url, '_blank', 'noopener,noreferrer');
-  }, []);
+  const handleSourcePress = useCallback(
+    (url: string) => {
+      if (!isSafeUrl(url)) {
+        return;
+      }
+      trackInteraction('source_click', { sourceUrl: url });
+      setSelectedTrend(null);
+      globalThis.open(url, '_blank', 'noopener,noreferrer');
+    },
+    [trackInteraction],
+  );
 
   const handleTrendPress = useCallback((trend: MarketInsightsTrend) => {
     setSelectedTrend(trend);
@@ -213,8 +226,9 @@ const MarketInsightsPage = () => {
       feedbackByDigest.set(report.generatedAt, 'up');
     }
     setFeedbackSubmissionTick((tick) => tick + 1);
+    trackInteraction('thumbs_up');
     showFeedbackSubmittedToast(t('marketInsightsFeedbackSubmitted') as string);
-  }, [report, t]);
+  }, [report, t, trackInteraction]);
 
   const handleThumbsDownPress = useCallback(() => {
     setIsFeedbackModalOpen(true);
@@ -226,12 +240,16 @@ const MarketInsightsPage = () => {
         feedbackByDigest.set(report.generatedAt, 'down');
       }
       setFeedbackSubmissionTick((tick) => tick + 1);
+      trackInteraction('thumbs_down', {
+        feedbackReason: payload.reason,
+        feedbackText: payload.feedbackText,
+      });
       setIsFeedbackModalOpen(false);
       showFeedbackSubmittedToast(
         t('marketInsightsFeedbackSubmitted') as string,
       );
     },
-    [report, t],
+    [report, t, trackInteraction],
   );
 
   const feedbackGiven = report
@@ -391,7 +409,12 @@ const MarketInsightsPage = () => {
         </Box>
 
         {stickyFooterAsset ? (
-          <AssetStickyActions asset={stickyFooterAsset} buyAssetId={assetId} />
+          <AssetStickyActions
+            asset={stickyFooterAsset}
+            buyAssetId={assetId}
+            onSwapPress={() => trackInteraction('swap')}
+            onBuyPress={() => trackInteraction('buy')}
+          />
         ) : null}
 
         <MarketInsightsTrendSourcesModal

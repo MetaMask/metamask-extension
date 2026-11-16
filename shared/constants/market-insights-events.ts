@@ -8,6 +8,10 @@ export const MARKET_INSIGHTS_EVENT_PROPERTY = {
   ASSET_SYMBOL: 'asset_symbol',
   DIGEST_ID: 'digest_id',
   SOURCE: 'source',
+  INTERACTION_TYPE: 'interaction_type',
+  SOURCE_URL: 'source_url',
+  FEEDBACK_REASON: 'feedback_reason',
+  FEEDBACK_TEXT: 'feedback_text',
 } as const;
 
 export const MARKET_INSIGHTS_EVENT_VALUE = {
