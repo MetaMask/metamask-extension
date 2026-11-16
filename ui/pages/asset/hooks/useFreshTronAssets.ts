@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import type { Transaction } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -11,7 +10,6 @@ import {
   submitRequestToBackground,
   subscribeToMessengerEvent,
 } from '../../../store/background-connection';
-import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state';
 
 const MULTICHAIN_TRANSACTION_CONFIRMED_EVENT =
   'MultichainTransactionsController:transactionConfirmed';
@@ -34,9 +32,7 @@ const MULTICHAIN_TRANSACTION_CONFIRMED_EVENT =
  * unstake, etc.) triggers the same uncached fetch so already-visible values
  * are also refreshed.
  *
- * No-ops when the unified AssetsController feature flag is disabled (the
- * legacy MultichainAssetsController path keeps its polling behavior) or when
- * the chain is not Tron.
+ * No-ops when the chain is not Tron.
  *
  * @param account - The internal account to fetch fresh assets for.
  * @param chainId - The CAIP chain ID of the asset page.
@@ -45,14 +41,12 @@ export const useFreshTronAssets = (
   account: InternalAccount | undefined,
   chainId: string,
 ): void => {
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-
   useEffect(() => {
     const isTronChain =
       isCaipChainId(chainId) &&
       parseCaipChainId(chainId).namespace === KnownCaipNamespace.Tron;
 
-    if (!account || !isTronChain || !isAssetsUnifyStateEnabled) {
+    if (!account || !isTronChain) {
       return undefined;
     }
 
@@ -121,5 +115,5 @@ export const useFreshTronAssets = (
       hasUnsubscribed = true;
       unsubscribe?.().catch(() => undefined);
     };
-  }, [account, chainId, isAssetsUnifyStateEnabled]);
+  }, [account, chainId]);
 };

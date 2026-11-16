@@ -475,6 +475,7 @@ describe('usePerpsPreload', () => {
       expect(result.current.positions).toEqual({
         positions: [],
         isInitialLoading: true,
+        isSeeded: false,
       });
       if (earlyDelivery) {
         act(() => publish('new'));
@@ -488,7 +489,11 @@ describe('usePerpsPreload', () => {
         expect(snapshot.fills.fills).not.toEqual([{ orderId: 'old' }]);
         if (!earlyDelivery) {
           expect(snapshot).toEqual({
-            positions: { positions: [], isInitialLoading: true },
+            positions: {
+              positions: [],
+              isInitialLoading: true,
+              isSeeded: false,
+            },
             orders: { orders: [], isInitialLoading: true },
             account: { account: null, isInitialLoading: true },
             fills: { fills: [], isInitialLoading: true },
@@ -497,7 +502,11 @@ describe('usePerpsPreload', () => {
       }
       if (!earlyDelivery) {
         expect(result.current).toEqual({
-          positions: { positions: [], isInitialLoading: true },
+          positions: {
+            positions: [],
+            isInitialLoading: true,
+            isSeeded: false,
+          },
           orders: { orders: [], isInitialLoading: true },
           account: { account: null, isInitialLoading: true },
           fills: { fills: [], isInitialLoading: true },
@@ -507,6 +516,7 @@ describe('usePerpsPreload', () => {
       expect(result.current.positions).toEqual({
         positions: [{ symbol: 'new' }],
         isInitialLoading: false,
+        isSeeded: false,
       });
       expect(result.current.orders).toEqual({
         orders: [{ orderId: 'new' }],

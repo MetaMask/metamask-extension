@@ -4,7 +4,6 @@ import { importCustomAssetsBatch } from '../../../../store/actions';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 
 /**
  * Ensures mUSD is present in the user's imported token list for `chainId` so
@@ -21,10 +20,6 @@ export async function ensureMusdTokenImportedForChain(
 ): Promise<void> {
   const musdAddress = getMusdTokenAddressForChain(chainId);
   if (!musdAddress) {
-    return;
-  }
-
-  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
     return;
   }
 

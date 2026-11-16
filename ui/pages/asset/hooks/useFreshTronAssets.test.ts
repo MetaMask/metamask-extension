@@ -7,22 +7,11 @@ import {
   submitRequestToBackground,
   subscribeToMessengerEvent,
 } from '../../../store/background-connection';
-import * as assetsUnifyStateSelectors from '../../../selectors/assets-unify-state';
 import { useFreshTronAssets } from './useFreshTronAssets';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
   subscribeToMessengerEvent: jest.fn(),
-}));
-
-jest.mock('../../../selectors/assets-unify-state', () => ({
-  ...jest.requireActual('../../../selectors/assets-unify-state'),
-  getIsAssetsUnifyStateEnabled: jest.fn(),
-}));
-
-jest.mock('react-redux', () => ({
-  useSelector: <State, Result>(selector: (state: State) => Result): Result =>
-    selector({} as State),
 }));
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
@@ -72,9 +61,6 @@ describe('useFreshTronAssets', () => {
     jest.clearAllMocks();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     mockSubscribe();
-    (
-      assetsUnifyStateSelectors.getIsAssetsUnifyStateEnabled as unknown as jest.Mock
-    ).mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -190,17 +176,6 @@ describe('useFreshTronAssets', () => {
     unmount();
 
     expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-  });
-
-  it('does not fetch when the assets unify state flag is disabled', () => {
-    (
-      assetsUnifyStateSelectors.getIsAssetsUnifyStateEnabled as unknown as jest.Mock
-    ).mockReturnValue(false);
-
-    renderFreshTronAssetsHook(mockAccount, chainId);
-
-    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-    expect(mockSubscribeToMessengerEvent).not.toHaveBeenCalled();
   });
 
   it('does not fetch for non-Tron chains', () => {

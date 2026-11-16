@@ -9,7 +9,10 @@ import type {
 } from '@metamask/money-account-balance-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import {
+  moneyFormatUsd,
+  moneyFormatUsdSpendable,
+} from '../../helpers/money/format';
 import { projectVmusdValueInMusdToHuman } from '../../helpers/money/withdrawable-balance';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
 import {
@@ -46,7 +49,12 @@ export type UseMoneyAccountBalanceResult = {
   tokenTotal: BigNumber | undefined;
   totalFiatFormatted: string | undefined;
   totalFiatRaw: string | undefined;
+  /**
+   * Withdrawable balance for display, rounded *down* to cents so the label
+   * never advertises more than the user can actually withdraw.
+   */
   withdrawableFiatFormatted: string | undefined;
+  /** Exact withdrawable balance. Drives Max, so it keeps full precision. */
   withdrawableFiatRaw: string | undefined;
   withdrawableMusd: BigNumber | undefined;
   apyDecimal: number | undefined;
@@ -163,9 +171,12 @@ export function useMoneyAccountBalance({
   const totalFiatRaw =
     !isBalanceFetchError && totalFiat ? totalFiat.toString() : undefined;
 
+  // Rounded down to cents: this figure is the "Available balance" the user
+  // types back into a two-decimal amount field, so it must always be
+  // affordable. `withdrawableFiatRaw` below keeps full precision for Max.
   const withdrawableFiatFormatted =
     !isBalanceFetchError && withdrawableFiat
-      ? moneyFormatUsd(withdrawableFiat)
+      ? moneyFormatUsdSpendable(withdrawableFiat)
       : undefined;
 
   const withdrawableFiatRaw =

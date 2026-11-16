@@ -275,7 +275,7 @@ describe('Send ETH - Max Amount', function () {
         await transactionConfirmation.checkGasFeeFiat('$1.46');
 
         // verify initial max amount
-        await transactionConfirmation.checkSendAmount('25 ETH');
+        await transactionConfirmation.checkSendAmount('24.9989');
         await transactionConfirmation.checkSendAmountConversion('$42,498.19');
 
         // confirms the transaction

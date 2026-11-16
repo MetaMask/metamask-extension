@@ -14,9 +14,12 @@ describe('useHomeNetworkFilter', () => {
   });
 
   describe('handleSelectAllDefaultNetworks', () => {
-    it('enables all popular networks and calls onClose', () => {
+    it('enables all popular networks and keeps the current EVM network', () => {
       const setEnabledAllPopularNetworksSpy = jest
         .spyOn(actions, 'setEnabledAllPopularNetworks')
+        .mockReturnValue(() => Promise.resolve());
+      const setActiveNetworkSpy = jest
+        .spyOn(actions, 'setActiveNetwork')
         .mockReturnValue(() => Promise.resolve());
       const onClose = jest.fn();
       const { result } = renderHookWithProvider(
@@ -29,7 +32,30 @@ describe('useHomeNetworkFilter', () => {
       });
 
       expect(setEnabledAllPopularNetworksSpy).toHaveBeenCalledTimes(1);
+      expect(setActiveNetworkSpy).not.toHaveBeenCalled();
       expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('activates an EVM network when the current network is non-EVM', () => {
+      const setEnabledAllPopularNetworksSpy = jest
+        .spyOn(actions, 'setEnabledAllPopularNetworks')
+        .mockReturnValue(() => Promise.resolve());
+      const setActiveNetworkSpy = jest
+        .spyOn(actions, 'setActiveNetwork')
+        .mockReturnValue(() => Promise.resolve());
+      const state = structuredClone(mockState);
+      state.metamask.isEvmSelected = false;
+      const { result } = renderHookWithProvider(
+        () => useHomeNetworkFilter(),
+        state,
+      );
+
+      act(() => {
+        result.current.handleSelectAllDefaultNetworks();
+      });
+
+      expect(setEnabledAllPopularNetworksSpy).toHaveBeenCalledTimes(1);
+      expect(setActiveNetworkSpy).toHaveBeenCalledTimes(1);
     });
   });
 

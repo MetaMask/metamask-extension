@@ -2,6 +2,10 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import type {
   AnalyticsControllerGetEventFragmentByIdAction,
+  AnalyticsControllerGetStateAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerUpsertEventFragmentAction,
   ReadonlyAnalyticsEventFragment,
 } from '@metamask/analytics-controller';
@@ -123,13 +127,17 @@ import {
   GetSignatureState,
   SignatureStateChange,
 } from '@metamask/signature-controller';
-import { AssetsContractControllerGetTokenStandardAndDetailsAction } from '@metamask/assets-controllers';
+import type {
+  AssetsContractControllerGetTokenStandardAndDetailsAction,
+  Token,
+} from '@metamask/assets-controllers';
 import {
   AccountId,
   Asset,
   AssetsControllerAddCustomAssetAction,
   AssetsControllerGetAssetsAction,
   AssetsControllerGetStateAction,
+  AssetsControllerHideAssetAction,
   AssetsControllerSetSelectedCurrencyAction,
   Caip19AssetId,
 } from '@metamask/assets-controller';
@@ -351,6 +359,8 @@ import {
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { updateExtensionUninstallUrl } from '../controllers/analytics/analytics';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import {
   DefiReferralPartner,
   DefiReferralPartnerConfig,
@@ -404,6 +414,8 @@ import {
 import type {
   SentryTracingServiceBufferedEndTraceAction,
   SentryTracingServiceBufferedTraceAction,
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
@@ -474,6 +486,7 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addImportedTokens',
   'addNetwork',
   'addPermittedAccount',
   'addPermittedAccounts',
@@ -522,6 +535,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getTrezorFeatures',
   'handleDefiReferral',
   'handleDefiReferralOnPermittedAccountsAdded',
+  'ignoreTokens',
   'importAccountWithStrategy',
   'importMnemonicToVault',
   'isPublicEndpointUrl',
@@ -552,6 +566,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setEnabledAllPopularNetworks',
   'setEnabledNetworks',
   'setLocked',
+  'setParticipateInMetaMetrics',
   'setPermittedAccounts',
   'setPermittedChains',
   'setSelectedInternalAccount',
@@ -619,6 +634,7 @@ type AllowedActions =
   | AssetsControllerAddCustomAssetAction
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
+  | AssetsControllerHideAssetAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
@@ -643,6 +659,10 @@ type AllowedActions =
   | KeyringControllerWithKeyringV2Action
   | KeyringControllerWithKeyringV2UnsafeAction
   | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerGetStateAction
+  | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptOutAction
+  | AnalyticsControllerResetConsentDecisionAction
   | AnalyticsControllerUpsertEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -652,6 +672,8 @@ type AllowedActions =
   | KeyringControllerWithKeyringAction
   | SentryTracingServiceBufferedTraceAction
   | SentryTracingServiceBufferedEndTraceAction
+  | SentryTracingServiceClearTracesAfterMetricsOptInAction
+  | SentryTracingServiceTrackTracesAfterMetricsOptInAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -774,6 +796,10 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
  */
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
+  appBuildType: string;
+  appEnvironment: string;
+  appVersion: string;
+  setUninstallURL: (url: string) => void;
   infuraProjectId: string;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
@@ -800,6 +826,14 @@ export class LegacyBackgroundApiService {
   name: typeof serviceName = serviceName;
 
   readonly #messenger: LegacyBackgroundApiServiceMessenger;
+
+  readonly #appBuildType: string;
+
+  readonly #appEnvironment: string;
+
+  readonly #appVersion: string;
+
+  readonly #setUninstallURL: (url: string) => void;
 
   readonly #infuraProjectId: string;
 
@@ -833,6 +867,10 @@ export class LegacyBackgroundApiService {
    * Creates a new instance of the LegacyBackgroundApiService.
    * @param options - The options required to initialize the LegacyBackgroundApiService.
    * @param options.messenger - The messenger instance used for communication.
+   * @param options.appBuildType - The extension build type.
+   * @param options.appEnvironment - The extension environment.
+   * @param options.appVersion - The extension version.
+   * @param options.setUninstallURL - Sets the extension uninstall URL.
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
@@ -847,6 +885,10 @@ export class LegacyBackgroundApiService {
    */
   constructor({
     messenger,
+    appBuildType,
+    appEnvironment,
+    appVersion,
+    setUninstallURL,
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
@@ -860,6 +902,10 @@ export class LegacyBackgroundApiService {
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
+    this.#appBuildType = appBuildType;
+    this.#appEnvironment = appEnvironment;
+    this.#appVersion = appVersion;
+    this.#setUninstallURL = setUninstallURL;
 
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
@@ -885,10 +931,15 @@ export class LegacyBackgroundApiService {
   /**
    * Sets the selected currency on the AssetsController.
    *
+   * The controller action is synchronous. This still returns a promise because
+   * the legacy background API invokes it through the messenger, which callers
+   * await.
+   *
    * @param currencyCode - The currency code to set as the current currency.
    */
-  async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
+  setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
+    return Promise.resolve();
   }
 
   /**
@@ -962,6 +1013,85 @@ export class LegacyBackgroundApiService {
         ...(image ? { iconUrl: image } : {}),
       },
     );
+  }
+
+  /**
+   * Imports tokens as custom assets on the AssetsController for the currently
+   * selected account.
+   *
+   * @param tokensToImport - The tokens to import.
+   * @param networkClientId - The ID of the network client the tokens are on.
+   * Defaults to the selected network client.
+   */
+  async addImportedTokens(
+    tokensToImport: Token[],
+    networkClientId?: string | null,
+  ): Promise<void> {
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const chainId = this.#getChainIdForNetworkClient(networkClientId);
+
+    await Promise.all(
+      (tokensToImport ?? []).map(async (token) => {
+        const assetId = toAssetId(token.address, chainId);
+        if (!assetId) {
+          return;
+        }
+        await this.#messenger.call(
+          'AssetsController:addCustomAsset',
+          selectedAccount.id,
+          assetId,
+          {
+            address: token.address,
+            symbol: token.symbol,
+            name: token.name ?? token.symbol,
+            decimals: token.decimals,
+            chainId,
+            ...(token.image ? { iconUrl: token.image } : {}),
+            ...(token.aggregators ? { aggregators: token.aggregators } : {}),
+          },
+        );
+      }),
+    );
+  }
+
+  /**
+   * Hides tokens on the AssetsController.
+   *
+   * @param tokensToIgnore - The token contract addresses to hide.
+   * @param networkClientId - The ID of the network client the tokens are on.
+   * Defaults to the selected network client.
+   */
+  async ignoreTokens(
+    tokensToIgnore: string[],
+    networkClientId?: string | null,
+  ): Promise<void> {
+    const chainId = this.#getChainIdForNetworkClient(networkClientId);
+    const addresses = Array.isArray(tokensToIgnore)
+      ? tokensToIgnore
+      : [tokensToIgnore];
+
+    for (const address of addresses) {
+      const assetId = toAssetId(address, chainId);
+      if (assetId) {
+        this.#messenger.call('AssetsController:hideAsset', assetId);
+      }
+    }
+  }
+
+  #getChainIdForNetworkClient(networkClientId?: string | null): Hex {
+    const resolvedNetworkClientId =
+      networkClientId ??
+      this.#messenger.call('NetworkController:getState')
+        .selectedNetworkClientId;
+    const {
+      configuration: { chainId },
+    } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      resolvedNetworkClientId,
+    );
+    return chainId;
   }
 
   /**
@@ -5404,5 +5534,50 @@ export class LegacyBackgroundApiService {
         PermissionControllerGrantPermissionsAction['handler']
       >[0]['approvedPermissions'],
     });
+  }
+
+  /**
+   * Sets the user's MetaMetrics participation preference.
+   *
+   * The UI calls this through the background API so consent changes can also
+   * update the extension uninstall URL and tracing behavior.
+   *
+   * @param participateInMetaMetrics - Whether the user wants to participate,
+   * or `null` to reset the consent decision.
+   * @returns The current analytics ID.
+   */
+  async setParticipateInMetaMetrics(
+    participateInMetaMetrics: boolean | null,
+  ): Promise<string> {
+    const { analyticsId } = this.#messenger.call(
+      'AnalyticsController:getState',
+    );
+
+    if (participateInMetaMetrics === true) {
+      await this.#messenger.call('AnalyticsController:optIn');
+      this.#messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else if (participateInMetaMetrics === false) {
+      this.#messenger.call('AnalyticsController:optOut');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else {
+      this.#messenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    if (
+      this.#appBuildType === 'main' &&
+      this.#appEnvironment !== ENVIRONMENT.DEVELOPMENT &&
+      participateInMetaMetrics !== null
+    ) {
+      updateExtensionUninstallUrl({
+        participateInMetaMetrics,
+        analyticsId,
+        appVersion: this.#appVersion,
+        appEnvironment: this.#appEnvironment,
+        setUninstallURL: this.#setUninstallURL,
+      });
+    }
+
+    return analyticsId;
   }
 }

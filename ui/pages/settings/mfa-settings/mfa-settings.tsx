@@ -25,6 +25,7 @@ import { getMfaUiKitMethods } from '../../../selectors/identity/mfa-ui-kit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isMfaDevBuild, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
+import type { MfaReason } from '../../../hooks/identity/mfa/engine/types';
 import type { MfaDetailsMethod } from './mfa-method-details';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaQaPresets from './mfa-qa-presets';
@@ -33,7 +34,7 @@ const ROWS: {
   method: MfaDetailsMethod;
   label: string;
   route: string;
-  operation: string;
+  operation: MfaReason['operation'];
   successMessage: string;
   testId: string;
 }[] = [

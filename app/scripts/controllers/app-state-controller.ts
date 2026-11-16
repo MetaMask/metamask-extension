@@ -59,6 +59,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { recordUiInteraction } from '../../../shared/lib/telemetry/last-activity';
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
@@ -151,6 +152,7 @@ export type AppStateControllerState = {
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
   moneyEarnBannerDismissedTokenKeys: string[];
+  moneyFtueSeen: boolean;
   showShieldEntryModalOnce: boolean | null;
   /**
    * The pending redirect route to be applied after the default page is loaded.
@@ -330,6 +332,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
   moneyEarnBannerDismissedTokenKeys: [],
+  moneyFtueSeen: false,
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
   lastVisitedRoute: null,
@@ -639,6 +642,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  moneyFtueSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   showShieldEntryModalOnce: {
     includeInStateLogs: true,
     persist: true,
@@ -750,6 +759,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSignatureSecurityAlertResponse',
   'getThrottledOriginState',
   'getUnlockPromise',
+  'recordUiInteraction',
   'removeDeferredDeepLink',
   'removePollingToken',
   'removeSlide',
@@ -773,6 +783,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
   'setLastVisitedRoute',
+  'setMoneyFtueSeen',
   'setMusdConversionEducationSeen',
   'setNewPrivacyPolicyToastClickedOrClosed',
   'setNewPrivacyPolicyToastShownDate',
@@ -1159,6 +1170,13 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Records a click or keypress inside a MetaMask UI for state-write telemetry.
+   */
+  recordUiInteraction(): void {
+    recordUiInteraction();
+  }
+
+  /**
    * Set the version of the pending extension update, or null when no update is available or after update is applied.
    *
    * @param version - Version string of the available update, or null to clear.
@@ -1380,6 +1398,18 @@ export class AppStateController extends BaseController<
   setPerpsTabBadgeSeen(value: boolean): void {
     this.update((state) => {
       state.perpsTabBadgeSeen = value;
+    });
+  }
+
+  /**
+   * Sets whether the Money account first-time-user-experience (FTUE) splash
+   * has been seen.
+   *
+   * @param value - Whether the Money FTUE splash has been seen
+   */
+  setMoneyFtueSeen(value: boolean): void {
+    this.update((state) => {
+      state.moneyFtueSeen = value;
     });
   }
 

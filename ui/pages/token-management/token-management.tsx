@@ -1451,11 +1451,6 @@ export const TokenManagementPage = () => {
     ],
   );
 
-  const getSearchResultKey = useCallback(
-    (result: TokenSearchResult) => `search-${result.assetId.toLowerCase()}`,
-    [],
-  );
-
   const tokenListResult = useMemo(() => {
     const order = new Map(tokenListOrder);
     let orderChanged = false;
@@ -1670,16 +1665,11 @@ export const TokenManagementPage = () => {
     >
       <Header startAccessory={startAccessory}>{t('manageTokens')}</Header>
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingHorizontal={4}
-        paddingTop={2}
-        paddingBottom={2}
-      >
+      <search className="px-4 py-2">
         <TextFieldSearch
           className="w-full"
           clearButtonOnClick={handleSearchClear}
+          inputAriaLabel={t('enterTokenNameOrAddressManageTokens')}
           inputProps={
             {
               'data-testid': 'token-management-search-input',
@@ -1690,7 +1680,7 @@ export const TokenManagementPage = () => {
           placeholder={t('enterTokenNameOrAddressManageTokens')}
           value={searchQuery}
         />
-      </Box>
+      </search>
 
       <Box
         flexDirection={BoxFlexDirection.Row}

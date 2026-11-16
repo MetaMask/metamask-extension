@@ -13,6 +13,7 @@ import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mo
 import type { MoneyDepositToken } from '../../hooks/money/money-deposit-token-utils';
 import {
   MoneyComponentName,
+  MoneyFtueEntryPoint,
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
@@ -152,6 +153,7 @@ describe('MoneyEarnPage', () => {
     expect(mockUseMoneyAddDepositToken).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyPotentialEarnings,
       tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+      ftueEntryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
     });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyPotentialEarnings,

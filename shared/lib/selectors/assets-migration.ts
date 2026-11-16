@@ -552,8 +552,12 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
 
 export const getCurrencyRateControllerCurrentCurrency = ((state: {
   metamask: AssetsControllerState;
-}) => state.metamask?.selectedCurrency) as unknown as StateSelector<
-  Pick<AssetsControllerState, 'selectedCurrency'>,  CurrencyRateState['currentCurrency']
+}) =>
+  // CurrencyRateController no longer seeds currentCurrency. Callers such as
+  // Settings assume this is a string.
+  state.metamask?.selectedCurrency ?? 'usd') as unknown as StateSelector<
+  Pick<AssetsControllerState, 'selectedCurrency'>,
+  CurrencyRateState['currentCurrency']
 >;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)

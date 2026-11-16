@@ -358,4 +358,74 @@ describe('useConfirmationAlertMetrics', () => {
       expect(properties.alert_triggered_count).toBe(1);
     });
   });
+
+  describe('deposit limit', () => {
+    const DEPOSIT_LIMIT_ALERT_MOCK = {
+      key: AlertsName.DepositLimit,
+      field: 'Amount',
+      severity: Severity.Danger,
+      message: 'Max deposit: $100,000',
+      reason: 'Max deposit: $100,000',
+      isBlocking: true,
+    };
+
+    it('reports an over-cap money account deposit as deposit_limit', () => {
+      renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState([DEPOSIT_LIMIT_ALERT_MOCK], MONEY_ACCOUNT_DEPOSIT_OVERRIDES),
+      );
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      expect(properties.alert_triggered).toStrictEqual(['deposit_limit']);
+      expect(properties.alert_triggered_count).toBe(1);
+    });
+
+    it('is not excluded for money account deposits', () => {
+      renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState(
+          [DEPOSIT_LIMIT_ALERT_MOCK, NON_CONTRACT_ALERT_MOCK],
+          MONEY_ACCOUNT_DEPOSIT_OVERRIDES,
+        ),
+      );
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      // The non-contract alert is excluded for this type; deposit_limit is not.
+      expect(properties.alert_triggered).toStrictEqual(['deposit_limit']);
+    });
+
+    it('records the alert as resolved once confirmed', () => {
+      const state = getMockConfirmStateForTransaction(
+        {
+          ...contractInteraction,
+          ...MONEY_ACCOUNT_DEPOSIT_OVERRIDES,
+          id: OWNER_ID_MOCK,
+        } as TransactionMeta,
+        {
+          metamask: {},
+          confirmAlerts: {
+            alerts: { [OWNER_ID_MOCK]: [DEPOSIT_LIMIT_ALERT_MOCK] },
+            confirmed: {
+              [OWNER_ID_MOCK]: { [AlertsName.DepositLimit]: true },
+            },
+          },
+        },
+      );
+
+      renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        state,
+      );
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      expect(properties.alert_resolved).toStrictEqual(['deposit_limit']);
+      expect(properties.alert_resolved_count).toBe(1);
+    });
+  });
 });

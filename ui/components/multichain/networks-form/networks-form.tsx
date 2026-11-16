@@ -47,7 +47,7 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
+import { getFailoverUrlsForEndpoint } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -299,20 +299,13 @@ export const NetworksForm = ({
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
-  const chainFailoverUrls = networkChainIdHex
-    ? getFailoverUrlsForChainId(networkChainIdHex)
-    : [];
 
-  // Failover only applies to Infura RPC endpoints. NetworkController wires
-  // failover URLs solely for Infura endpoints; applying them to custom RPCs
-  // would leak requests to the failover, so it does not. Only surface failover
-  // in the form for Infura endpoints so the UI matches the actual behaviour.
-  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
-    return endpoint?.url &&
-      new URL(endpoint.url).hostname.endsWith('.infura.io')
-      ? chainFailoverUrls
+  // Failover only applies to Infura RPC endpoints (see
+  // `getFailoverUrlsForEndpoint`), so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) =>
+    networkChainIdHex
+      ? getFailoverUrlsForEndpoint(networkChainIdHex, endpoint?.url)
       : [];
-  };
 
   const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
 
@@ -611,8 +604,8 @@ export const NetworksForm = ({
               const chainIdAsDecimal = hexToNumber(chainIdHex);
 
               const sanitizeRpcUrl = async (url: string) => {
-                const isPublic = await submitRequestToBackground<boolean>(
-                  'isPublicEndpointUrl',
+                const isPublic = await submitRequestToBackground(
+                  'LegacyBackgroundApiService:isPublicEndpointUrl',
                   [url],
                 );
                 return isPublic ? onlyKeepHost(url) : 'custom';

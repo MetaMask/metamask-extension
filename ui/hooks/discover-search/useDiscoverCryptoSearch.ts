@@ -5,7 +5,7 @@ import {
   type TrendingAsset,
 } from '@metamask/assets-controllers';
 import type { CaipChainId } from '@metamask/utils';
-import { byMarketCap } from '#shared/lib/token-search/token-search-api';
+import { TOKEN_SEARCH_SERVICE_PROFILE } from '#shared/lib/token-search/token-search-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getIsStellarSupportEnabled } from '../../selectors/multichain/feature-flags';
 import {
@@ -35,7 +35,6 @@ export type UseDiscoverCryptoSearchResult = {
 type CryptoSearchPage = {
   data: TrendingAsset[];
   totalCount?: number;
-  hasSearchResults: boolean;
   pageInfo?: {
     endCursor: string | null;
     hasNextPage: boolean;
@@ -59,27 +58,6 @@ const mapSearchResultToTrendingAsset = (
   rwaData: item.rwaData,
   securityData: item.securityData,
 });
-
-const matchesSearchQuery = (asset: TrendingAsset, query: string): boolean => {
-  const normalizedQuery = query.toLowerCase();
-
-  return (
-    asset.symbol?.toLowerCase().includes(normalizedQuery) ||
-    asset.name?.toLowerCase().includes(normalizedQuery)
-  );
-};
-
-const dedupeByAssetId = (assets: TrendingAsset[]): TrendingAsset[] => {
-  const assetsById = new Map<string, TrendingAsset>();
-
-  assets.forEach((asset) => {
-    if (!assetsById.has(asset.assetId)) {
-      assetsById.set(asset.assetId, asset);
-    }
-  });
-
-  return Array.from(assetsById.values());
-};
 
 /**
  * Crypto Discover feed: trending when query is empty, market-data search otherwise.
@@ -129,6 +107,7 @@ export const useDiscoverCryptoSearch = ({
         after: pageParam,
         includeMarketData: true,
         includeTokenSecurityData: true,
+        serviceProfile: TOKEN_SEARCH_SERVICE_PROFILE,
       });
 
       if (response.error) {
@@ -143,7 +122,6 @@ export const useDiscoverCryptoSearch = ({
       return {
         data,
         totalCount: response.totalCount ?? data.length,
-        hasSearchResults: searchResults.length > 0,
         pageInfo: response.pageInfo,
       };
     },
@@ -161,18 +139,8 @@ export const useDiscoverCryptoSearch = ({
 
   if (isSearch) {
     const pages = searchQuery.data?.pages ?? [];
-    const [firstPage, ...remainingPages] = pages;
-    const firstPageData = firstPage?.data ?? [];
-    const trendingMatches = (trendingQuery.data ?? []).filter(
-      (asset) => !asset.rwaData && matchesSearchQuery(asset, trimmedQuery),
-    );
-    const sortedFirstPage = firstPage?.hasSearchResults
-      ? dedupeByAssetId([...trendingMatches, ...firstPageData]).toSorted(
-          byMarketCap,
-        )
-      : [];
-    const seenAssetIds = new Set(sortedFirstPage.map((asset) => asset.assetId));
-    const appendedData = remainingPages
+    const seenAssetIds = new Set<string>();
+    const data = pages
       .flatMap((page) => page.data)
       .filter((asset) => {
         if (seenAssetIds.has(asset.assetId)) {
@@ -182,7 +150,6 @@ export const useDiscoverCryptoSearch = ({
         seenAssetIds.add(asset.assetId);
         return true;
       });
-    const data = [...sortedFirstPage, ...appendedData];
     const lastPage = pages.at(-1);
 
     return {
