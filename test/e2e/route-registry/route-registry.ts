@@ -20,6 +20,9 @@
  * own, otherwise `null`.
  */
 
+import ChooseWalletTypePage from '../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
+import ImportAccountPage from '../page-objects/pages/accounts/add-wallet/import-account-page';
+import ImportSrpPage from '../page-objects/pages/accounts/add-wallet/import-srp-page';
 import AccountAddressListPage from '../page-objects/pages/accounts/address-list-page';
 import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
 import AccountListPage from '../page-objects/pages/accounts/list-page';
@@ -36,6 +39,10 @@ import ConnectAccountConfirmation from '../page-objects/pages/confirmations/conn
 import DecryptMessageConfirmation from '../page-objects/pages/confirmations/decrypt-message-confirmation';
 import GetEncryptionKeyConfirmation from '../page-objects/pages/confirmations/get-encryption-key-confirmation';
 import WatchAssetConfirmation from '../page-objects/pages/confirmations/watch-asset-confirmation';
+import AddContactPage from '../page-objects/pages/contacts/add-contact-page';
+import ContactDetailsPage from '../page-objects/pages/contacts/contact-details-page';
+import ContactsListPage from '../page-objects/pages/contacts/contacts-list-page';
+import EditContactPage from '../page-objects/pages/contacts/edit-contact-page';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import ConnectHardwareWalletPage from '../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HardwareWalletSignaturesPage from '../page-objects/pages/hardware-wallet/hardware-wallet-signatures-page';
@@ -76,7 +83,6 @@ import AutoLockSettings from '../page-objects/pages/settings/security-and-passwo
 import BackupAndSyncSettings from '../page-objects/pages/settings/backup-and-sync-settings';
 import BasicFunctionalityOffPage from '../page-objects/pages/settings/basic-functionality-off-page';
 import ChangePasswordPage from '../page-objects/pages/settings/security-and-password/change-password-page';
-import ContactsSettings from '../page-objects/pages/settings/contacts-settings';
 import DebugOptions from '../page-objects/pages/settings/debug-page';
 import DeveloperToolsSettings from '../page-objects/pages/settings/developer-tools-settings';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
@@ -136,7 +142,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/restore-vault': ResetPasswordPage,
   '/seed': RevealSrpPage,
   '/seed/:keyringId': RevealSrpPage,
-  '/import-srp': null,
+  '/import-srp': ImportSrpPage,
   '/discover-search': null,
   '/hardware-wallet-repair': null,
   '/shield-plan': ShieldPlanPage,
@@ -163,8 +169,8 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/account-list': AccountListPage,
   '/multichain-account-details': AccountDetailsPage,
   '/multichain-wallet-details-page': WalletDetailsPage,
-  '/choose-new-wallet-type': null,
-  '/add-wallet-page': null,
+  '/choose-new-wallet-type': ChooseWalletTypePage,
+  '/add-wallet-page': ImportAccountPage,
   '/multichain-smart-account/:address': null,
   '/multichain-account-address-list': AccountAddressListPage,
   '/multichain-account-private-key-list': PrivateKeyModal,
@@ -234,10 +240,10 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
 
   // Networks and contacts
   '/networks': NetworksPage,
-  '/contacts': ContactsSettings,
-  '/contacts/add': null,
-  '/contacts/view/:chainId/:address': null,
-  '/contacts/edit/:chainId/:address': null,
+  '/contacts': ContactsListPage,
+  '/contacts/add': AddContactPage,
+  '/contacts/view/:chainId/:address': ContactDetailsPage,
+  '/contacts/edit/:chainId/:address': EditContactPage,
 
   // Settings
   '/settings': SettingsPage,

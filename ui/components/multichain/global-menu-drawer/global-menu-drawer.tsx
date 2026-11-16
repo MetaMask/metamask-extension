@@ -113,34 +113,38 @@ export const GlobalMenuDrawer = ({
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) {
-      return;
+      return undefined;
     }
 
     if (isOpen) {
-      if (!dialog.open) {
-        if (typeof dialog.showModal === 'function') {
+      let blocker: HTMLDialogElement | null = null;
+      const show = () => {
+        if (!dialog.open) {
+          // Recheck after close: a native dialog may have handed off to another.
+          blocker =
+            dialog.ownerDocument.querySelector<HTMLDialogElement>(
+              'dialog[open]',
+            );
+          if (blocker) {
+            blocker.addEventListener('close', show, { once: true });
+            return;
+          }
           dialog.showModal();
-        } else {
-          // jsdom does not implement HTMLDialogElement.showModal
-          dialog.setAttribute('open', '');
         }
-      }
-      if (scrollRef.current) {
-        scrollRef.current.scrollTop = 0;
-      }
-      return;
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = 0;
+        }
+      };
+      show();
+      return () => blocker?.removeEventListener('close', show);
     }
 
     if (dialog.open) {
-      if (typeof dialog.close === 'function') {
-        dialog.close();
-      } else {
-        dialog.removeAttribute('open');
-        dialog.dispatchEvent(new Event('close'));
-      }
+      dialog.close();
     }
 
     clearDrawerOpen();
+    return undefined;
   }, [isOpen]);
 
   const handleDialogClose = useCallback(() => {
@@ -154,12 +158,7 @@ export const GlobalMenuDrawer = ({
     if (!dialog) {
       return;
     }
-    if (typeof dialog.close === 'function') {
-      dialog.close();
-      return;
-    }
-    dialog.removeAttribute('open');
-    dialog.dispatchEvent(new Event('close'));
+    dialog.close();
   }, []);
 
   const titleId = 'global-menu-drawer-title';
@@ -208,6 +207,7 @@ export const GlobalMenuDrawer = ({
   return (
     <dialog
       ref={dialogRef}
+      data-no-focus-lock
       aria-labelledby={title ? titleId : undefined}
       className={dialogClassName}
       // @ts-expect-error closedby missing in React types

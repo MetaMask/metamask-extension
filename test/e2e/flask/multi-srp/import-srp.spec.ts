@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WALLET_PASSWORD as testPassword } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import { openAddWalletMenu } from '../../page-objects/flows/add-wallet.flow';
 import {
   importAdditionalSecretRecoveryPhrase,
   SECOND_TEST_E2E_SRP,
@@ -12,6 +13,8 @@ import {
 } from '../../page-objects/flows/multi-srp.flow';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import ChooseWalletTypePage from '../../page-objects/pages/accounts/add-wallet/choose-wallet-type-page';
+import ImportSrpPage from '../../page-objects/pages/accounts/add-wallet/import-srp-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
 import RevealSrpPage from '../../page-objects/pages/reveal-srp-page';
@@ -99,17 +102,14 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        await accountListPage.addMultichainWallet();
-        await accountListPage.clickImportWallet();
+        await openAddWalletMenu(driver);
+        await new ChooseWalletTypePage(driver).clickImportWallet();
 
-        await accountListPage.checkImportSrpInputIsDisplayed();
+        const importSrpPage = new ImportSrpPage(driver);
+        await importSrpPage.checkPageIsLoaded();
 
-        await accountListPage.typeIntoImportSrpInput(
-          TEST_SRP_WORDS_FOR_UI_TEST[0],
-        );
-        await accountListPage.checkImportSrpInputValue(
-          TEST_SRP_WORDS_FOR_UI_TEST[0],
-        );
+        await importSrpPage.typeIntoSrpInput(TEST_SRP_WORDS_FOR_UI_TEST[0]);
+        await importSrpPage.checkSrpInputValue(TEST_SRP_WORDS_FOR_UI_TEST[0]);
       },
     );
   });
