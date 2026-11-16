@@ -5,6 +5,7 @@ import { sentryGetActiveSpan, trace } from './trace';
 import { shouldSampleWrappers } from './wrapper-sampling';
 import {
   isReadOnlyAction,
+  isReadOnlyMethod,
   wrapMessengerWithTracing,
 } from './messenger-tracing';
 
@@ -203,4 +204,23 @@ describe('isReadOnlyAction', () => {
       expect(isReadOnlyAction(actionType)).toBe(false);
     },
   );
+});
+
+describe('isReadOnlyMethod', () => {
+  it.each([
+    'getStatePatches',
+    'isRelaySupported',
+    'Geolocation.getGeolocation',
+  ])('returns true for read-only bare or qualified name: %s', (method) => {
+    expect(isReadOnlyMethod(method)).toBe(true);
+  });
+
+  it.each([
+    'setFoo',
+    'addAccount',
+    'Preferences.setUseNativeCurrency',
+    'getter',
+  ])('returns false for: %s', (method) => {
+    expect(isReadOnlyMethod(method)).toBe(false);
+  });
 });

@@ -15,6 +15,7 @@ import {
   admitTraceWrappers,
   isRootWrapperEnabled,
 } from '../../../shared/lib/wrapper-sampling';
+import { isReadOnlyMethod } from '../../../shared/lib/messenger-tracing';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -66,16 +67,19 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
       if (!traceContext) {
         // No UI trace context: the dispatch roots its own trace, so
         // concurrent handlers get independent trace ids.
-        result = isRootWrapperEnabled()
-          ? await trace(
-              { name, op: 'rpc.handler', root: true, data: spanData },
-              () =>
-                admitTraceWrappers(
-                  sentryGetActiveSpan()?.spanContext().traceId,
-                  callHandler,
-                ),
-            )
-          : await callHandler();
+        // A read-only method starts no root: it carries no attribution a
+        // trace needs, and its roots dominate background volume.
+        result =
+          isRootWrapperEnabled() && !isReadOnlyMethod(data.method)
+            ? await trace(
+                { name, op: 'rpc.handler', root: true, data: spanData },
+                () =>
+                  admitTraceWrappers(
+                    sentryGetActiveSpan()?.spanContext().traceId,
+                    callHandler,
+                  ),
+              )
+            : await callHandler();
       } else if (traceContext.parentSampled) {
         // A sampled UI span always gets its `rpc.handler` child: without an
         // active span, fetch starts no `http.client` span and its trace

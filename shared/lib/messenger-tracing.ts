@@ -25,6 +25,11 @@ export function isReadOnlyAction(actionType: string): boolean {
   return READ_ONLY_VERB.test(actionType.slice(colonIndex + 1));
 }
 
+// The same denylist for a bare or `Controller.method` Background RPC name.
+export function isReadOnlyMethod(method: string): boolean {
+  return READ_ONLY_VERB.test(method.slice(method.lastIndexOf('.') + 1));
+}
+
 /**
  * Wrap a messenger's `call` method with Sentry tracing.
  * Each `messenger.call(action, ...args)` invocation creates a child span

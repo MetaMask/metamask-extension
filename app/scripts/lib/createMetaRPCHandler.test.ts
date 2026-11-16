@@ -312,6 +312,75 @@ describe('createMetaRPCHandler', () => {
       );
     });
 
+    it.each([
+      'getStatePatches',
+      'isRelaySupported',
+      'Geolocation.getGeolocation',
+    ])(
+      'starts no root for read-only method %s without UI context',
+      async (method) => {
+        const handlerFn = jest.fn().mockReturnValue('result');
+        const streamTest = createStream();
+        const handler = createMetaRPCHandler(
+          { [method]: handlerFn } as unknown as Api,
+          streamTest,
+        );
+
+        await handler({ jsonrpc: '2.0', id: 1, method, params: [] });
+
+        expect(handlerFn).toHaveBeenCalledTimes(1);
+        expect(trace).not.toHaveBeenCalled();
+      },
+    );
+
+    it('still starts a root for a non-read-only method without UI context', async () => {
+      const setFoo = jest.fn().mockReturnValue('result');
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler(
+        { setFoo } as unknown as Api,
+        streamTest,
+      );
+
+      await handler({ jsonrpc: '2.0', id: 1, method: 'setFoo', params: [] });
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: 'Background RPC: setFoo', root: true }),
+        expect.any(Function),
+      );
+    });
+
+    it('still continues a sampled UI trace for a read-only method', async () => {
+      const getFoo = jest.fn().mockReturnValue('result');
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler(
+        { getFoo } as unknown as Api,
+        streamTest,
+      );
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'getFoo',
+        params: [
+          'bar',
+          {
+            _trace: {
+              traceparent: TRACEPARENT_MOCK,
+              spanName: 'Background RPC: getFoo',
+            },
+          },
+        ],
+      });
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentContext: TRACE_CONTEXT_MOCK,
+          op: 'rpc.handler',
+        }),
+        expect.any(Function),
+      );
+    });
+
     it('emits the rpc.handler span for a sampled UI span even when the wrapper sub-sample rejects', async () => {
       jest.mocked(shouldSampleWrappers).mockReturnValue(false);
       const foo = jest.fn().mockReturnValue('result');
