@@ -1,12 +1,15 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
 import { ONBOARDING_ROUTE, UNLOCK_ROUTE } from '../helpers/constants/routes';
 import { RequireAuthenticated } from './require-authenticated';
 
+const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
+  useDispatch: () => mockDispatch,
 }));
 
 const mockUseLocation = jest.fn();
@@ -30,23 +33,66 @@ describe('RequireAuthenticated', () => {
     jest.clearAllMocks();
   });
 
-  it('redirects to onboarding when onboarding is not completed', () => {
+  it.each([
+    [
+      '/settings/privacy',
+      '?a=v',
+      '#metametrics',
+      '/settings/privacy?a=v#metametrics',
+    ],
+    ['/', '', '', null],
+    ['/', '?a=v', '', '/?a=v'],
+  ])(
+    'retains the intended destination before onboarding: %s',
+    (pathname, search, hash, expected) => {
+      const state = {
+        metamask: {
+          completedOnboarding: false,
+          isUnlocked: false,
+        },
+      };
+
+      mockUseLocation.mockReturnValue({ pathname, search, hash });
+      mockUseSelector.mockImplementation((selector) =>
+        selector(state as never),
+      );
+
+      const { getByTestId } = render(<RequireAuthenticated />);
+
+      expect(getByTestId('navigate')).toHaveAttribute(
+        'data-to',
+        ONBOARDING_ROUTE,
+      );
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'SET_ONBOARDING_REDIRECT',
+        payload: expected,
+      });
+    },
+  );
+
+  it('replaces the pending destination when this UI receives a later route', () => {
     const state = {
-      metamask: {
-        completedOnboarding: false,
-        isUnlocked: false,
-      },
+      metamask: { completedOnboarding: false, isUnlocked: false },
     };
-
-    mockUseLocation.mockReturnValue({ pathname: '/', search: '', hash: '' });
     mockUseSelector.mockImplementation((selector) => selector(state as never));
+    mockUseLocation.mockReturnValue({
+      pathname: '/settings/privacy',
+      search: '',
+      hash: '#metametrics',
+    });
+    const { rerender } = render(<RequireAuthenticated />);
 
-    const { getByTestId } = render(<RequireAuthenticated />);
+    mockUseLocation.mockReturnValue({
+      pathname: '/bridge/prepare',
+      search: '?amount=10',
+      hash: '',
+    });
+    rerender(<RequireAuthenticated />);
 
-    expect(getByTestId('navigate')).toHaveAttribute(
-      'data-to',
-      ONBOARDING_ROUTE,
-    );
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'SET_ONBOARDING_REDIRECT',
+      payload: '/bridge/prepare?amount=10',
+    });
   });
 
   it('redirects to unlock with location state when locked', () => {
@@ -79,6 +125,7 @@ describe('RequireAuthenticated', () => {
       }),
       expect.anything(),
     );
+    expect(mockDispatch).not.toHaveBeenCalled();
   });
 
   it('renders RootLayout when onboarding is completed and unlocked', () => {

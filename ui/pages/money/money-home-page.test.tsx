@@ -361,7 +361,7 @@ describe('MoneyHomePage', () => {
     });
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 
@@ -671,13 +671,16 @@ describe('MoneyHomePage', () => {
       screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
     ).toHaveAttribute(
       'href',
-      'https://metamask.io/price/metamask-usd?utm_source=extension',
+      'https://metamask.com/price/metamask-usd?utm_source=extension',
     );
     expect(
       screen.getByRole('link', {
         name: messages.moneyExploreBenefits.message,
       }),
-    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.com/money?utm_source=extension',
+    );
     expect(
       screen.getByRole('link', {
         name: messages.moneyHowYourMoneyGrows.message,
@@ -806,7 +809,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+      url: 'https://metamask.com/price/metamask-usd?utm_source=extension',
     });
   });
 
@@ -829,7 +832,7 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
-      url: 'https://metamask.io/money?utm_source=extension',
+      url: 'https://metamask.com/money?utm_source=extension',
     });
   });
 

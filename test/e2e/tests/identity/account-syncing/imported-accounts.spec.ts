@@ -11,6 +11,7 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { login } from '../../../page-objects/flows/login.flow';
+import { importAccountWithPrivateKey } from '../../../page-objects/flows/add-wallet.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -108,7 +109,7 @@ describe('Account syncing - Unsupported Account types', function () {
         );
 
         // Import a private key account (this should NOT sync)
-        await accountListPage.addNewImportedAccount(IMPORTED_PRIVATE_KEY);
+        await importAccountWithPrivateKey(driver, IMPORTED_PRIVATE_KEY);
 
         await homePage.checkPageIsLoaded();
       },

@@ -170,9 +170,6 @@ const PERPS_GEO_BLOCKED_FLAG = {
  * without `GeolocationController:getGeolocation` on PerpsControllerMessenger,
  * `refreshEligibility()` would fail and perps-controller would set `isEligible`
  * to true, hiding the geo-block modal. Deferred checks keep `isEligible: false`.
- * Callers must use `login(..., { waitForNonEvmAccounts: false })` because the
- * home flow otherwise waits for non-EVM account icons that do not load when
- * basic functionality is off.
  *
  * Also sets isFirstTimeUser to false so the tutorial modal does not intercept clicks.
  *

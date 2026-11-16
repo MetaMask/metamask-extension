@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics verilerini sil"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Bu işlem, bu cihazdaki kullanımınızla ilişkili geçmiş MetaMetrics verilerini silecektir. Bu veriler silindikten sonra cüzdanınız ve hesaplarınız tam olarak şu anda oldukları gibi kalacaktır. Bu süreç 30 güne kadar sürebilir. $1 bölümümüzü görüntüleyin.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Bu işlem, cüzdanınızla ilişkili geçmiş MetaMetrics verilerini siler. MetaMetrics, anonimleştirilmiş kullanım ve tanı verilerini içerir. Cüzdanınız ve hesaplarınız aynı kalır. Bu işlem 30 güne kadar sürebilir. $1 bölümümüzü görüntüleyin.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Bu istek, bir analitik sistem sunucusu sorunu nedeniyle şu anda tamamlanamıyor. Daha sonra tekrar deneyin."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Şu anda bu verileri silemiyoruz"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Silinemiyor"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Tüm MetaMetrics verilerini kaldırmak üzeresiniz. Emin misiniz?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics verilerini sil?"
@@ -5396,9 +5386,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Bağlantı durumu düğmesi ziyaret ettiğiniz web sitesinin şu anda seçilen hesabınıza bağlı olup olmadığını gösterir."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Hiçbir zaman MetaMetrics'e dahil olmadığınız için burada silinecek veri yok."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 npm'de barındırılmaktadır ve $2 bu Snap'in eşsiz tanımlayıcısıdır.",
