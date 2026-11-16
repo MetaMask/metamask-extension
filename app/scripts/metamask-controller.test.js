@@ -285,16 +285,23 @@ jest.mock('./lib/rpc-method-middleware', () => ({
   },
 }));
 
-jest.mock('../../shared/lib/trace', () => ({
-  ...jest.requireActual('../../shared/lib/trace'),
-  getPerformanceTimestamp: jest.fn(() => 1_000),
-  // Run the callback only for the RPC-dispatch path; other instrumentation
-  // traces stay no-ops, as the rest of the suite assumes.
-  trace: jest.fn((request, fn) =>
-    request?.op === 'rpc.handler' ? fn?.() : undefined,
-  ),
-  endTrace: jest.fn(),
-}));
+jest.mock('../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../shared/lib/trace');
+  return {
+    ...actual,
+    getPerformanceTimestamp: jest.fn(() => 1_000),
+    // Run the callback only for the RPC-dispatch path and the phishing list
+    // refresh, whose caller needs its result; other instrumentation traces
+    // stay no-ops, as the rest of the suite assumes.
+    trace: jest.fn((request, fn) =>
+      request?.op === 'rpc.handler' ||
+      request?.name === actual.TraceName.PhishingListsUpdate
+        ? fn?.()
+        : undefined,
+    ),
+    endTrace: jest.fn(),
+  };
+});
 
 // Records the options the controller wires the bridge with, so the callbacks it
 // passes can be exercised without standing up the Hyperliquid SDK.
@@ -346,6 +353,7 @@ jest.mock('@metamask/core-backend', () => ({
     queryClient: { fetchQuery: jest.fn().mockResolvedValue({}) },
     setCachedData: jest.fn(),
     getCachedData: jest.fn().mockReturnValue({}),
+    accounts: { fetchV2SupportedNetworks: jest.fn().mockResolvedValue({}) },
   }),
 }));
 
@@ -2536,7 +2544,7 @@ describe('MetaMaskController', () => {
       it('checks the sender hostname with the phishing controller', async () => {
         jest
           .spyOn(metamaskController.phishingController, 'maybeUpdateState')
-          .mockReturnValue();
+          .mockResolvedValue();
 
         jest
           .spyOn(metamaskController.phishingController, 'test')

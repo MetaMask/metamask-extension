@@ -43,7 +43,10 @@ function createMockController(
       },
     },
     phishingController: {
-      maybeUpdateState: jest.fn(),
+      maybeUpdateState: jest.fn().mockResolvedValue(undefined),
+      isStalelistOutOfDate: jest.fn().mockReturnValue(true),
+      isHotlistOutOfDate: jest.fn().mockReturnValue(true),
+      isC2DomainBlocklistOutOfDate: jest.fn().mockReturnValue(true),
       test: jest.fn().mockReturnValue({
         result: overrides.testResult ?? false,
         type: PhishingDetectorResultType.Blocklist,

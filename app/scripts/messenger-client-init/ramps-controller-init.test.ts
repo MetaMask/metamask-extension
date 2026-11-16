@@ -7,6 +7,13 @@ import {
 import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
 import { getRootMessenger } from '../lib/messenger';
 import { captureException } from '../../../shared/lib/sentry';
+import { TraceName } from '../../../shared/lib/trace';
+import {
+  readActiveSpan,
+  startServiceWorkerSentry,
+  stopServiceWorkerSentry,
+} from '../../../test/lib/service-worker-sentry';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -217,11 +224,32 @@ describe('RampsControllerInit', () => {
     expect(Object.keys(api ?? {}).sort()).toMatchSnapshot();
   });
 
+  it('initializes the controller under its own root trace (real SDK)', async () => {
+    const ambientTraceId = startServiceWorkerSentry();
+    let seen: ReturnType<typeof readActiveSpan>;
+    mockInit.mockImplementation(async () => {
+      seen = readActiveSpan();
+    });
+
+    try {
+      RampsControllerInit(getInitRequestMock());
+      await flushPromises();
+    } finally {
+      stopServiceWorkerSentry();
+    }
+
+    expect(seen).toStrictEqual({
+      traceId: expect.any(String),
+      rootName: TraceName.RampsInit,
+    });
+    expect(seen?.traceId).not.toBe(ambientTraceId);
+  });
+
   it('starts order polling after init resolves when onboarding is complete', async () => {
     RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).toHaveBeenCalled();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
   });
 
@@ -232,7 +260,7 @@ describe('RampsControllerInit', () => {
         useExternalServices: true,
       }),
     );
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).not.toHaveBeenCalled();
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
@@ -244,7 +272,7 @@ describe('RampsControllerInit', () => {
         useExternalServices: false,
       }),
     );
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).not.toHaveBeenCalled();
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
@@ -275,14 +303,13 @@ describe('RampsControllerInit', () => {
       persistedState: {},
     });
 
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).not.toHaveBeenCalled();
 
     setCompletedOnboarding(true);
     onboardingListeners[0]?.({ completedOnboarding: true });
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).toHaveBeenCalled();
     expect(mockStartOrderPolling).toHaveBeenCalled();
     subscribeSpy.mockRestore();
@@ -344,8 +371,7 @@ describe('RampsControllerInit', () => {
 
   it('stopRampsLifecycle stops polling when network access is allowed', async () => {
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
     api?.stopRampsLifecycle?.();
@@ -356,8 +382,7 @@ describe('RampsControllerInit', () => {
   it('keeps polling on UI close while an order is still pending', async () => {
     mockRampsController.state = { orders: [{ status: 'PENDING' }] };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
     api?.stopRampsLifecycle?.();
@@ -370,8 +395,7 @@ describe('RampsControllerInit', () => {
   async function expectUiCloseStopsPollingFor(status: string): Promise<void> {
     mockRampsController.state = { orders: [{ status }] };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     api?.stopRampsLifecycle?.();
 
@@ -389,8 +413,7 @@ describe('RampsControllerInit', () => {
   it('runs stale-stub cleanup again after a UI close/open cycle', async () => {
     mockRampsController.state = { orders: [{ status: 'PRECREATED' }] };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     const startCallsAfterBoot = mockStartOrderPolling.mock.calls.length;
 
     // Close: the stub must not hold the lifecycle open, otherwise
@@ -400,8 +423,7 @@ describe('RampsControllerInit', () => {
 
     // Reopen: lifecycle restarts, so cleanup gets another chance.
     api?.startRampsLifecycle?.();
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling.mock.calls.length).toBeGreaterThan(
       startCallsAfterBoot,
     );
@@ -412,8 +434,7 @@ describe('RampsControllerInit', () => {
       orders: [{ status: 'COMPLETED' }, { status: 'CANCELLED' }],
     };
     const { api } = RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     api?.stopRampsLifecycle?.();
 
@@ -430,8 +451,7 @@ describe('RampsControllerInit', () => {
       initMessenger,
       persistedState: {},
     });
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     setUseExternalServices(false);
     api?.stopRampsLifecycle?.();
@@ -467,8 +487,7 @@ describe('RampsControllerInit', () => {
       persistedState: {},
     });
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
     setUseExternalServices(false);
@@ -513,7 +532,7 @@ describe('RampsControllerInit', () => {
       persistedState: {},
     });
 
-    await Promise.resolve();
+    await flushPromises();
     expect(mockInit).toHaveBeenCalled();
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
 
@@ -522,7 +541,7 @@ describe('RampsControllerInit', () => {
     expect(mockStopOrderPolling).toHaveBeenCalled();
 
     resolveInit();
-    await Promise.resolve();
+    await flushPromises();
 
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
   });
@@ -534,8 +553,7 @@ describe('RampsControllerInit', () => {
     mockInit.mockRejectedValueOnce(new Error('init failed'));
 
     RampsControllerInit(getInitRequestMock());
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
 
     expect(mockStartOrderPolling).not.toHaveBeenCalled();
     expect(consoleErrorSpy).toHaveBeenCalledWith(
