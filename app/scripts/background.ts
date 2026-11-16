@@ -809,9 +809,7 @@ export function setupController(
   // User Interface setup
   //
   const { updateBadge, clearFailedTxBadge } = createBadgeManager({
-    getController: () =>
-      // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
-      metamaskController as BadgeManagerController,
+    getController: () => metamaskController as BadgeManagerController,
     browser,
     notificationManager,
     triggerUi,

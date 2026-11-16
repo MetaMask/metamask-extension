@@ -158,7 +158,7 @@ beforeEach(() => {
   // Default: geolocation resolves to a known location so the geo-unknown gate
   // passes and later gates are exercised.
   Object.keys(backgroundHandlers).forEach((m) => delete backgroundHandlers[m]);
-  backgroundHandlers.getGeolocation = () => 'US-CA';
+  backgroundHandlers['GeolocationController:getGeolocation'] = () => 'US-CA';
   mockBackground.mockImplementation(async (method: string) =>
     backgroundHandlers[method]?.(),
   );
@@ -911,7 +911,7 @@ describe('useRampsNavigation goToBuy', () => {
 
     expect(opened).toBe('native');
     expect(mockBackground.mock.calls.map(([method]) => method)).toStrictEqual([
-      'getGeolocation',
+      'GeolocationController:getGeolocation',
       'getRampsCountries',
       'setRampsUserRegion',
       'getRampsTokens',

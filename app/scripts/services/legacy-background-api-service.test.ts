@@ -8674,7 +8674,7 @@ describe('LegacyBackgroundApiService', () => {
 
             expect(setUninstallURL).toHaveBeenCalledTimes(1);
             expect(setUninstallURL).toHaveBeenCalledWith(
-              `https://metamask.io/uninstalled?${new URLSearchParams({
+              `https://metamask.com/uninstalled?${new URLSearchParams({
                 av: '13.0.0',
                 mmi: Buffer.from('test-analytics-id').toString('base64'),
                 env: 'production',
@@ -8705,7 +8705,7 @@ describe('LegacyBackgroundApiService', () => {
 
             expect(setUninstallURL).toHaveBeenCalledTimes(1);
             expect(setUninstallURL).toHaveBeenCalledWith(
-              'https://metamask.io/uninstalled?av=13.0.0',
+              'https://metamask.com/uninstalled?av=13.0.0',
             );
           },
         );

@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Ενημερώστε στην πιο πρόσφατη έκδοση του MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Δεν δόθηκε διεύθυνση URL για μετάβαση."
@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Διαγραφή δεδομένων MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Αυτό θα διαγράψει τα ιστορικά δεδομένα από το MetaMetrics που σχετίζονται με τη χρήση σας σε αυτή τη συσκευή. Το πορτοφόλι και οι λογαριασμοί σας θα παραμείνουν ακριβώς όπως είναι τώρα μετά τη διαγραφή αυτών των δεδομένων. Η διαδικασία αυτή μπορεί να διαρκέσει έως και 30 ημέρες. Δείτε την $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Η ενέργεια αυτή θα διαγράψει τα ιστορικά δεδομένα MetaMetrics του πορτοφολιού σας. Τα MetaMetrics περιλαμβάνουν ανώνυμα δεδομένα χρήσης και διαγνωστικά στοιχεία. Το πορτοφόλι και οι λογαριασμοί σας δεν θα επηρεαστούν. Η διαδικασία μπορεί να διαρκέσει έως και 30 ημέρες. Δείτε την $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Δεν είναι δυνατή η ολοκλήρωση του αιτήματος αυτήν τη στιγμή λόγω προβλήματος στον διακομιστή του συστήματος αναλυτικών στοιχείων. Προσπαθήστε ξανά αργότερα."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Δεν μπορούμε να διαγράψουμε αυτά τα δεδομένα προς το παρόν"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Δεν είναι δυνατή η διαγραφή"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Πρόκειται να αφαιρέσουμε όλα τα δεδομένα σας στο MetaMetrics. Είστε σίγουροι;"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Διαγραφή δεδομένων MetaMetrics;"
@@ -5392,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Το κουμπί Κατάστασης Σύνδεσης δείχνει αν ο ιστότοπος που επισκέπτεστε είναι συνδεδεμένος με τον τρέχοντα επιλεγμένο λογαριασμό σας."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Εφόσον δεν έχετε επιλέξει ποτέ το MetaMetrics, δεν υπάρχουν δεδομένα προς διαγραφή εδώ."
   },
   "metadataModalSourceTooltip": {
     "message": "Το $1 φιλοξενείται στο npm και το $2 είναι το μοναδικό αναγνωριστικό αυτού του Snap.",
@@ -11741,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Οι ξαφνικές αλλαγές στην αγορά μπορεί να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με το $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Ενεργοποιήστε τις Έξυπνες Συναλλαγές για πιο αξιόπιστες και ασφαλείς συναλλαγές. $1"
@@ -11885,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Συμβαίνουν αποτυχίες συναλλαγών και είμαστε εδώ για να βοηθήσουμε. Εάν αυτό το πρόβλημα επιμένει, μπορείτε να επικοινωνήσετε με την υποστήριξη πελατών μας στο $1 για περαιτέρω βοήθεια.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Η ανταλλαγή απέτυχε"

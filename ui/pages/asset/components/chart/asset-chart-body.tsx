@@ -80,6 +80,12 @@ export type AssetChartBodyProps = {
   realtimeTimestamp?: number;
   /** Called with the hovered data point, and with null once the pointer leaves. */
   onHoverPrice?: (point: HoveredPoint | null) => void;
+  /**
+   * CSS custom property the line is drawn in, resolved against the canvas.
+   * Defaults to the success (green) token so existing callers are unaffected;
+   * the advanced chart passes the error (red) token when its range is down.
+   */
+  lineColorVar?: string;
   /** Rendered below the chart, inside the box that carries the loading treatment. */
   children?: ReactNode;
 };
@@ -102,6 +108,7 @@ export const AssetChartBody = ({
   realtimePrice,
   realtimeTimestamp,
   onHoverPrice,
+  lineColorVar = '--color-success-default',
   children,
 }: AssetChartBodyProps) => {
   const prevIsPlaceholderData = usePrevious(isPlaceholderData);
@@ -162,9 +169,7 @@ export const AssetChartBody = ({
   const options = {
     ...initialChartOptions,
     borderColor: ({ chart }) =>
-      getComputedStyle(chart.canvas)
-        .getPropertyValue('--color-success-default')
-        .trim(),
+      getComputedStyle(chart.canvas).getPropertyValue(lineColorVar).trim(),
     transitions: {
       active: { animation },
       default: { animation },

@@ -3573,6 +3573,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyEnableHistoricalVaultShareValuations: {
+    inProd: false,
+    name: 'moneyEnableHistoricalVaultShareValuations',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyEnableMoneyAccount: {
     inProd: true,
     name: 'moneyEnableMoneyAccount',

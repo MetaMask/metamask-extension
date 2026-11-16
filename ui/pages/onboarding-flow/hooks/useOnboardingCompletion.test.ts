@@ -983,10 +983,10 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: '/swap',
-        signature: MISSING,
+        signature: VALID,
       });
 
-      const { result } = renderHookWithProvider(
+      const { result, store } = renderHookWithProvider(
         () => useOnboardingCompletion(),
         {
           ...mockState,
@@ -995,7 +995,7 @@ describe('useOnboardingCompletion', () => {
             completedOnboarding: true,
             deferredDeepLink: {
               createdAt: Date.now(),
-              referringLink: 'https://link.metamask.io/swap',
+              referringLink: 'https://link.metamask.io/swap?ref=abc123',
             },
           },
         },
@@ -1009,6 +1009,10 @@ describe('useOnboardingCompletion', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       });
+      expect(store.getState().rewardsMoney.pendingReferralCode).toBe('ABC123');
+      const [event] = mockTrackEvent.mock.calls[0];
+      expect(event.name).toBe('Deep Link Used');
+      expect(event.properties.referral_code).toBe('ABC123');
       expect(mockUseNavigate).not.toHaveBeenCalled();
 
       await act(async () => {

@@ -212,7 +212,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: mockOHLCVData },
+            payload: {
+              data: mockOHLCVData,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -763,7 +766,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: sameLengthOtherValues },
+            payload: {
+              data: sameLengthOtherValues,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -785,7 +791,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: sameLengthOtherValues },
+            payload: {
+              data: sameLengthOtherValues,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -844,7 +853,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: sameLengthOtherValues },
+            payload: {
+              data: sameLengthOtherValues,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -872,7 +884,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: sameLengthOtherValues },
+            payload: {
+              data: sameLengthOtherValues,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -1010,7 +1025,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: mockOHLCVData },
+            payload: {
+              data: mockOHLCVData,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -1060,7 +1078,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: newData },
+            payload: {
+              data: newData,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -1215,7 +1236,10 @@ describe('AdvancedChartIframe', () => {
         expect(postMessageSpy).toHaveBeenCalledWith(
           JSON.stringify({
             type: 'SET_OHLCV_DATA',
-            payload: { data: mockOHLCVData },
+            payload: {
+              data: mockOHLCVData,
+              rnBackedPagination: { enabled: true },
+            },
           }),
           CHART_ORIGIN,
         );
@@ -1256,6 +1280,220 @@ describe('AdvancedChartIframe', () => {
       });
 
       expect(mockOnError).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Host-backed pagination', () => {
+    const loadAndReady = (props = {}) => {
+      const result = render(
+        <AdvancedChartIframe {...defaultProps} {...props} />,
+      );
+      act(() => {
+        result.container
+          .querySelector('iframe')
+          ?.dispatchEvent(new Event('load'));
+      });
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify({ type: 'CHART_READY' }),
+          }),
+        );
+      });
+      postMessageSpy.mockClear();
+      return result;
+    };
+
+    const requestOlderBars = (requestId: string, seriesGeneration: number) => {
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify({
+              type: 'FETCH_OLDER_BARS_REQUEST',
+              payload: { requestId, seriesGeneration },
+            }),
+          }),
+        );
+      });
+    };
+
+    it('turns host-backed pagination on in the SET_OHLCV_DATA payload', async () => {
+      const { container } = render(<AdvancedChartIframe {...defaultProps} />);
+      act(() => {
+        container.querySelector('iframe')?.dispatchEvent(new Event('load'));
+      });
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'SET_OHLCV_DATA',
+            payload: {
+              data: mockOHLCVData,
+              rnBackedPagination: { enabled: true },
+            },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+    });
+
+    it('answers a request with the fetched page, echoing requestId and seriesGeneration', async () => {
+      const olderBars = [
+        { time: 1699900000, open: 1, high: 1, low: 1, close: 1, volume: 1 },
+      ];
+      const fetchOlderBars = jest
+        .fn()
+        .mockResolvedValue({ bars: olderBars, noData: false });
+
+      loadAndReady({ fetchOlderBars });
+      requestOlderBars('obr-7', 4);
+
+      await waitFor(() => {
+        expect(fetchOlderBars).toHaveBeenCalledTimes(1);
+      });
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'FETCH_OLDER_BARS_RESPONSE',
+            payload: {
+              requestId: 'obr-7',
+              seriesGeneration: 4,
+              bars: olderBars,
+              noData: false,
+            },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+    });
+
+    it('replies noData when the older-bars fetch rejects', async () => {
+      const fetchOlderBars = jest
+        .fn()
+        .mockRejectedValue(new Error('network down'));
+
+      loadAndReady({ fetchOlderBars });
+      requestOlderBars('obr-8', 5);
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'FETCH_OLDER_BARS_RESPONSE',
+            payload: {
+              requestId: 'obr-8',
+              seriesGeneration: 5,
+              bars: [],
+              noData: true,
+              error: 'network down',
+            },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+    });
+
+    it('replies noData when no pagination callback is wired', async () => {
+      loadAndReady();
+      requestOlderBars('obr-9', 6);
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'FETCH_OLDER_BARS_RESPONSE',
+            payload: {
+              requestId: 'obr-9',
+              seriesGeneration: 6,
+              bars: [],
+              noData: true,
+            },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+    });
+  });
+
+  describe('interaction forwarding', () => {
+    let openTabSpy: jest.Mock;
+    let originalPlatform: typeof global.platform;
+
+    beforeEach(() => {
+      openTabSpy = jest.fn();
+      originalPlatform = global.platform;
+      global.platform = {
+        ...global.platform,
+        openTab: openTabSpy,
+      } as unknown as typeof global.platform;
+    });
+
+    afterEach(() => {
+      global.platform = originalPlatform;
+    });
+
+    const dispatch = (data: Record<string, unknown>) =>
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify(data),
+          }),
+        );
+      });
+
+    it('forwards gesture interactions reported by the chart engine', () => {
+      const onChartInteracted = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onChartInteracted={onChartInteracted}
+        />,
+      );
+
+      dispatch({
+        type: 'CHART_INTERACTED',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- engine payload key
+        payload: { interaction_type: 'pan' },
+      });
+
+      expect(onChartInteracted).toHaveBeenCalledWith('pan');
+    });
+
+    it('opens a TradingView attribution click and reports it', () => {
+      const onTradingViewClicked = jest.fn();
+      const url = 'https://www.tradingview.com/symbols/ETHUSD/';
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onTradingViewClicked={onTradingViewClicked}
+        />,
+      );
+
+      dispatch({ type: 'CHART_TRADINGVIEW_CLICKED', payload: { url } });
+
+      expect(openTabSpy).toHaveBeenCalledWith({ url });
+      expect(onTradingViewClicked).toHaveBeenCalledTimes(1);
+    });
+
+    it('sanitises a non-TradingView url to the TradingView homepage but still reports the click', () => {
+      const onTradingViewClicked = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onTradingViewClicked={onTradingViewClicked}
+        />,
+      );
+
+      dispatch({
+        type: 'CHART_TRADINGVIEW_CLICKED',
+        payload: { url: 'https://evil.example.com/phish' },
+      });
+
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: 'https://www.tradingview.com',
+      });
+      expect(onTradingViewClicked).toHaveBeenCalledTimes(1);
     });
   });
 });
