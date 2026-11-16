@@ -111,7 +111,8 @@ export const SortDropdown = ({
         variant={SelectButtonVariant.Secondary}
         onClick={handleOpen}
         data-testid="sort-dropdown-button"
-        placeholder={currentFieldOption ? t(currentFieldOption.labelKey) : ''}
+        value={currentFieldOption ? t(currentFieldOption.labelKey) : undefined}
+        placeholder=""
         startAccessory={
           <Icon
             name={IconName.SwapVertical}
