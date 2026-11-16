@@ -4194,10 +4194,13 @@ export class LegacyBackgroundApiService {
 
       // Only emit a span when discovery actually created accounts.
       if (result.length > 0) {
+        // Discovery runs after onboarding or an SRP import, often detached from
+        // the request that triggered it, and no caller context reaches here.
         trace({
           name: TraceName.DiscoverAccounts,
           op: TraceOperation.AccountDiscover,
           startTime,
+          root: true,
         });
         endTrace({
           name: TraceName.DiscoverAccounts,
