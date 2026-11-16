@@ -242,31 +242,27 @@ export async function openRoute({
       ?.useSidePanelAsDefault ?? true;
   const hash = `#${path}${search ?? ''}`;
 
-  if (useSidePanelAsDefault && chrome.sidePanel?.open) {
-    if (typeof windowId !== 'number') {
-      await openRouteInTab(hash);
-      return;
-    }
-
+  if (
+    useSidePanelAsDefault &&
+    chrome.sidePanel?.open &&
+    typeof windowId === 'number'
+  ) {
     const pendingRoute = { path, search };
     pendingRoutes.set(windowId, pendingRoute);
     try {
       await chrome.sidePanel.open({ windowId });
+      await browser.runtime
+        .sendMessage({
+          type: EXTENSION_MESSAGES.OPEN_ROUTE,
+          body: { windowId },
+        })
+        .catch(() => undefined);
+      return;
     } catch {
       if (pendingRoutes.get(windowId) === pendingRoute) {
         pendingRoutes.delete(windowId);
       }
-      await openRouteInTab(hash);
-      return;
     }
-
-    await browser.runtime
-      .sendMessage({
-        type: EXTENSION_MESSAGES.OPEN_ROUTE,
-        body: { windowId },
-      })
-      .catch(() => undefined);
-    return;
   }
 
   const { action } = chrome;
