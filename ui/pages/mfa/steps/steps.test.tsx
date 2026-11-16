@@ -632,6 +632,9 @@ describe('CodeStep', () => {
     expect(
       screen.getByText(messages.mfaOtpSendIn.message.replace('$1', '2')),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(/^We'll send a 6-digit code to /u),
+    ).toBeInTheDocument();
     act(() => {
       jest.advanceTimersByTime(2_000);
     });

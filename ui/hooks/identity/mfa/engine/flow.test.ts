@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention -- Segment properties are snake_case */
+import { it } from '@jest/globals';
 import {
   MfaError,
   getMfaErrorCode,
   type EnrolledCredential,
   type EnrollmentChallenge,
+  type MfaErrorCode,
   type VerificationToken,
 } from '@metamask/profile-sync-controller/sdk';
 import { MfaFlowError } from './errors';
@@ -16,6 +18,12 @@ import type {
   MfaMethod,
   PasskeyAdapter,
 } from './types';
+
+const DEAD_EMAIL_CODE_ERRORS: MfaErrorCode[] = [
+  'flow_expired',
+  'invalid_flow',
+  'too_many_attempts',
+];
 
 const NOW = 1_800_000_000_000;
 
@@ -547,7 +555,7 @@ describe('createMfaFlow', () => {
       });
     });
 
-    it.each(['flow_expired', 'invalid_flow', 'too_many_attempts'] as const)(
+    it.each(DEAD_EMAIL_CODE_ERRORS)(
       'shows a %s email code and sends a new one only when the user asks',
       async (code) => {
         const fake = createFakeController([activeEmail]);

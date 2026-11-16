@@ -58,7 +58,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const secondsLeft = useSecondsUntil(state.resendAvailableAt);
-  const { busy, error, codeResent, resendAvailableAt } = state;
+  const { busy, error, codeResent } = state;
   const { codeSent } = step;
   // Authenticator app codes are on the user's app, so nothing is sent or
   // resent.
@@ -140,6 +140,12 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   const getDescription = () => {
     if (isTotp) {
       return t('mfaOtpDescriptionTotp');
+    }
+    // A first code that hit the resend limit isn't sent until the user asks.
+    if (!codeSent) {
+      return step.email
+        ? t('mfaOtpDescriptionUnsentWithEmail', [maskEmail(step.email)])
+        : t('mfaOtpDescriptionUnsent');
     }
     return step.email
       ? t('mfaOtpDescriptionWithEmail', [maskEmail(step.email)])
