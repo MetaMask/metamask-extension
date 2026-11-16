@@ -76,12 +76,13 @@ describe('trace with no caller in a UI document (real SDK)', () => {
     expect(result.recording).toBe(false);
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
     ['unsampled', 0],
     ['sampled', 1],
   ])(
     'starts a new trace drawn at its own rate after a %s pageload ends',
-    (_label, routeRate) => {
+    (_label: string, routeRate: number) => {
       const noCallerRate = 1 - routeRate;
       const pageload = startDocument({
         route: routeRate,
