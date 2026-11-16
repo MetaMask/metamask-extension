@@ -98,7 +98,6 @@ describe('useMarketInsightsTracking', () => {
       expect(latestIntersectionThreshold).toBe(
         MARKET_INSIGHTS_CARD_VISIBILITY_THRESHOLD,
       );
-      expect(MARKET_INSIGHTS_CARD_VISIBILITY_THRESHOLD).toBe(1);
     });
   });
 
@@ -132,6 +131,28 @@ describe('useMarketInsightsTracking', () => {
       renderTrackingHook({ isCardVisible: true, report: null });
 
       expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('tracks the event when the report arrives while the card is already visible', () => {
+      const { rerender } = renderTrackingHook({
+        isCardVisible: true,
+        report: null,
+      });
+
+      rerender({ report: mockReport, assetId });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.MarketInsightsCardScrolledToView,
+        properties: {
+          category: MetaMetricsEventCategory.MarketInsights,
+          [MARKET_INSIGHTS_EVENT_PROPERTY.CAIP19]: assetId,
+          [MARKET_INSIGHTS_EVENT_PROPERTY.ASSET_SYMBOL]: 'eth',
+          [MARKET_INSIGHTS_EVENT_PROPERTY.SOURCE]: 'token_details',
+          [MARKET_INSIGHTS_EVENT_PROPERTY.DIGEST_ID]: 'digest-1',
+        },
+        sensitiveProperties: {},
+      });
     });
 
     it('does not track the event without an asset ID', () => {

@@ -13,7 +13,7 @@ import {
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useIntersectionObserver } from '../../../../hooks/useIntersectionObserver';
 
-export const MARKET_INSIGHTS_CARD_VISIBILITY_THRESHOLD = 1;
+export const MARKET_INSIGHTS_CARD_VISIBILITY_THRESHOLD = 0.99;
 
 export type UseMarketInsightsTrackingOptions = {
   /** CAIP-19 asset ID of the asset the card is shown for. */
@@ -52,13 +52,6 @@ export const useMarketInsightsTracking = ({
   const hasFiredRef = useRef(false);
   const previousAssetIdRef = useRef(assetId);
 
-  useEffect(() => {
-    if (previousAssetIdRef.current !== assetId) {
-      previousAssetIdRef.current = assetId;
-      hasFiredRef.current = false;
-    }
-  }, [assetId]);
-
   const buildEvent = useCallback(
     (eventName: MetaMetricsEventName, properties: Record<string, string>) =>
       createEventBuilder(eventName)
@@ -73,6 +66,10 @@ export const useMarketInsightsTracking = ({
   });
 
   useEffect(() => {
+    if (previousAssetIdRef.current !== assetId) {
+      previousAssetIdRef.current = assetId;
+      hasFiredRef.current = false;
+    }
     if (!isCardVisible || hasFiredRef.current || !assetId || !report) {
       return;
     }
