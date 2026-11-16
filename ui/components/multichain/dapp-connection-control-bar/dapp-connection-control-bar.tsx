@@ -44,16 +44,19 @@ import {
   getDappActiveNetwork,
   getIsEip1193CompatibleConnection,
 } from '../../../selectors/dapp';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
 import {
   addPermittedAccounts,
   removePermissionsFor,
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip25-permissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
+import { HyperliquidDappBarDepositSheet } from '../../app/hyperliquid-dapp-bar-deposit-sheet';
 import { useDispatch } from '../../../store/hooks';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
@@ -77,6 +80,7 @@ export const DappConnectionControlBar = memo(() => {
     useState<HTMLButtonElement | null>(null);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const subjects = useSelector(getPermissionSubjects) as Record<
@@ -207,184 +211,202 @@ export const DappConnectionControlBar = memo(() => {
     dispatch(addPermittedAccounts(activeTabOrigin, addressesToPermit));
   }, [dispatch, activeTabOrigin, addressesToPermit]);
 
+  const isHyperliquidOrigin = activeTabOrigin === HYPERLIQUID_ORIGIN;
+
   if (!isConnected || !activeTabOrigin) {
     return null;
   }
 
   const showNotConnectedState = !isActiveAccountConnected;
   const canConnect = showNotConnectedState && addressesToPermit.length > 0;
+  const showHyperliquidDepositSheet =
+    isHyperliquidOrigin && isPerpsExperienceAvailable && !showNotConnectedState;
 
-  return (
-    <>
+  const connectionBar = (
+    <Box
+      className="dapp-connection-control-bar w-full"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.End}
+      padding={3}
+      paddingLeft={4}
+      paddingRight={4}
+      gap={2}
+      data-testid="dapp-connection-control-bar"
+    >
+      {/* Left side: Favicon with green dot + Identity */}
       <Box
-        className="dapp-connection-control-bar w-full"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.End}
-        padding={3}
-        paddingLeft={4}
-        paddingRight={4}
         gap={2}
-        data-testid="dapp-connection-control-bar"
+        className="dapp-connection-control-bar__left-group"
       >
-        {/* Left side: Favicon with green dot + Identity */}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.End}
-          gap={2}
-          className="dapp-connection-control-bar__left-group"
-        >
-          {/* Favicon with connection dot overlay */}
-          <Box className="dapp-connection-control-bar__favicon-wrapper">
-            <AvatarFavicon
-              name={connectedSubjectsMetadata?.name}
-              size={AvatarFaviconSize.Md}
-              src={connectedSubjectsMetadata?.iconUrl}
-              data-testid="dapp-connection-control-bar__favicon"
-            />
-            <Box
-              className={
-                showNotConnectedState
-                  ? 'dapp-connection-control-bar__connection-dot dapp-connection-control-bar__connection-dot--not-connected'
-                  : 'dapp-connection-control-bar__connection-dot'
-              }
-              data-testid="dapp-connection-control-bar__connection-dot"
-            />
-          </Box>
-
-          {/* Origin + Account stacked */}
+        {/* Favicon with connection dot overlay */}
+        <Box className="dapp-connection-control-bar__favicon-wrapper">
+          <AvatarFavicon
+            name={connectedSubjectsMetadata?.name}
+            size={AvatarFaviconSize.Md}
+            src={connectedSubjectsMetadata?.iconUrl}
+            data-testid="dapp-connection-control-bar__favicon"
+          />
           <Box
-            flexDirection={BoxFlexDirection.Column}
-            className="dapp-connection-control-bar__identity"
-          >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
-              ellipsis
-            >
-              {siteName}
-            </Text>
-            {selectedAccountName && (
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={1}
-                className="dapp-connection-control-bar__account-row"
-              >
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                  ellipsis
-                  data-testid="dapp-connection-control-bar__account-name"
-                >
-                  {selectedAccountName}
-                </Text>
-                {showNotConnectedState && (
-                  <Tag
-                    className="dapp-connection-control-bar__not-connected-tag"
-                    data-testid="dapp-connection-control-bar__not-connected-tag"
-                  >
-                    {t('statusNotConnected')}
-                  </Tag>
-                )}
-              </Box>
-            )}
-          </Box>
+            className={
+              showNotConnectedState
+                ? 'dapp-connection-control-bar__connection-dot dapp-connection-control-bar__connection-dot--not-connected'
+                : 'dapp-connection-control-bar__connection-dot'
+            }
+            data-testid="dapp-connection-control-bar__connection-dot"
+          />
         </Box>
 
-        {/* Right side: swap between Connect CTA (not-connected) and action icons */}
+        {/* Origin + Account stacked */}
         <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.End}
-          gap={2}
-          className="ml-auto"
+          flexDirection={BoxFlexDirection.Column}
+          className="dapp-connection-control-bar__identity"
         >
-          {showNotConnectedState ? (
-            canConnect && (
-              <Button
-                variant={ButtonVariant.Primary}
-                size={ButtonSize.Md}
-                onClick={handleConnectClick}
-                data-testid="dapp-connection-control-bar__connect-button"
-                className="dapp-connection-control-bar__connect-button"
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
+            ellipsis
+          >
+            {siteName}
+          </Text>
+          {selectedAccountName && (
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+              className="dapp-connection-control-bar__account-row"
+            >
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+                ellipsis
+                data-testid="dapp-connection-control-bar__account-name"
               >
-                {t('connect')}
-              </Button>
-            )
-          ) : (
-            <>
-              {/* Network selector — only for EIP-1193-compatible (EVM) connections */}
-              {dappActiveNetwork && isEip1193Compatible && (
-                <button
-                  ref={setNetworkButtonElement}
-                  className="dapp-connection-control-bar__network-button flex items-center gap-1"
-                  onClick={handleNetworkClick}
-                  data-testid="dapp-connection-control-bar__network-button"
-                  aria-haspopup="dialog"
-                  aria-expanded={isNetworkPopoverOpen}
-                  type="button"
+                {selectedAccountName}
+              </Text>
+              {showNotConnectedState && (
+                <Tag
+                  className="dapp-connection-control-bar__not-connected-tag"
+                  data-testid="dapp-connection-control-bar__not-connected-tag"
                 >
-                  <AvatarNetwork
-                    className="dapp-connection-control-bar__network-icon"
-                    size={AvatarNetworkSize.Xs}
-                    name={
-                      (dappActiveNetwork as { name?: string })?.name ??
-                      (dappActiveNetwork as { nickname?: string })?.nickname ??
-                      ''
-                    }
-                    src={networkImageSrc}
-                  />
-                  <Icon
-                    name={IconName.ArrowDown}
-                    size={IconSize.Xs}
-                    color={IconColor.IconAlternative}
-                  />
-                </button>
+                  {t('statusNotConnected')}
+                </Tag>
               )}
-
-              {/* Combined settings + disconnect container */}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.End}
-                className="dapp-connection-control-bar__combined-actions"
-              >
-                {/* Permissions button */}
-                <button
-                  className="dapp-connection-control-bar__action-button flex items-center"
-                  onClick={handlePermissionsClick}
-                  data-testid="dapp-connection-control-bar__permissions-button"
-                  aria-label={t('managePermissions')}
-                  type="button"
-                >
-                  <Icon
-                    name={IconName.Setting}
-                    size={IconSize.Sm}
-                    color={IconColor.IconAlternative}
-                  />
-                </button>
-
-                {/* Vertical divider */}
-                <Box className="dapp-connection-control-bar__divider" />
-
-                {/* Disconnect button */}
-                <button
-                  className="dapp-connection-control-bar__action-button flex items-center"
-                  onClick={handleDisconnectClick}
-                  data-testid="dapp-connection-control-bar__disconnect-button"
-                  aria-label={t('disconnect')}
-                  type="button"
-                >
-                  <Icon
-                    name={IconName.Logout}
-                    size={IconSize.Sm}
-                    color={IconColor.ErrorDefault}
-                  />
-                </button>
-              </Box>
-            </>
+            </Box>
           )}
         </Box>
       </Box>
+
+      {/* Right side: swap between Connect CTA (not-connected) and action icons */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.End}
+        gap={2}
+        className="ml-auto"
+      >
+        {showNotConnectedState ? (
+          canConnect && (
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Md}
+              onClick={handleConnectClick}
+              data-testid="dapp-connection-control-bar__connect-button"
+              className="dapp-connection-control-bar__connect-button"
+            >
+              {t('connect')}
+            </Button>
+          )
+        ) : (
+          <>
+            {/* Network selector — only for EIP-1193-compatible (EVM) connections */}
+            {dappActiveNetwork && isEip1193Compatible && (
+              <button
+                ref={setNetworkButtonElement}
+                className="dapp-connection-control-bar__network-button flex items-center gap-1"
+                onClick={handleNetworkClick}
+                data-testid="dapp-connection-control-bar__network-button"
+                aria-haspopup="dialog"
+                aria-expanded={isNetworkPopoverOpen}
+                type="button"
+              >
+                <AvatarNetwork
+                  className="dapp-connection-control-bar__network-icon"
+                  size={AvatarNetworkSize.Xs}
+                  name={
+                    (dappActiveNetwork as { name?: string })?.name ??
+                    (dappActiveNetwork as { nickname?: string })?.nickname ??
+                    ''
+                  }
+                  src={networkImageSrc}
+                />
+                <Icon
+                  name={IconName.ArrowDown}
+                  size={IconSize.Xs}
+                  color={IconColor.IconAlternative}
+                />
+              </button>
+            )}
+
+            {/* Combined settings + disconnect container */}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.End}
+              className="dapp-connection-control-bar__combined-actions"
+            >
+              {/* Permissions button */}
+              <button
+                className="dapp-connection-control-bar__action-button flex items-center"
+                onClick={handlePermissionsClick}
+                data-testid="dapp-connection-control-bar__permissions-button"
+                aria-label={t('managePermissions')}
+                type="button"
+              >
+                <Icon
+                  name={IconName.Setting}
+                  size={IconSize.Sm}
+                  color={IconColor.IconAlternative}
+                />
+              </button>
+
+              {/* Vertical divider */}
+              <Box className="dapp-connection-control-bar__divider" />
+
+              {/* Disconnect button */}
+              <button
+                className="dapp-connection-control-bar__action-button flex items-center"
+                onClick={handleDisconnectClick}
+                data-testid="dapp-connection-control-bar__disconnect-button"
+                aria-label={t('disconnect')}
+                type="button"
+              >
+                <Icon
+                  name={IconName.Logout}
+                  size={IconSize.Sm}
+                  color={IconColor.ErrorDefault}
+                />
+              </button>
+            </Box>
+          </>
+        )}
+      </Box>
+    </Box>
+  );
+
+  return (
+    <>
+      {showHyperliquidDepositSheet ? (
+        // Sheet and bar share this box so the sheet can be clipped below the
+        // bar while it slides up behind it. Modals stay outside so they are
+        // not clipped.
+        <div className="hyperliquid-dapp-bar-sheet-stack">
+          <HyperliquidDappBarDepositSheet />
+          {connectionBar}
+        </div>
+      ) : (
+        connectionBar
+      )}
 
       {/* Disconnect confirmation modal */}
       {showDisconnectModal && (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { it } from '@jest/globals';
 import { screen, fireEvent } from '@testing-library/react';
+import { ButtonSize } from '@metamask/design-system-react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -82,6 +83,91 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.getByTestId('perps-balance-actions-add-funds'),
     ).toBeInTheDocument();
+  });
+
+  it('uses large Withdraw and Add funds buttons unless a smaller size is passed', () => {
+    const { unmount } = renderWithProvider(
+      <PerpsMarketBalanceActions showActionButtons />,
+      mockStore,
+    );
+
+    expect(screen.getByTestId('perps-balance-actions-add-funds')).toHaveClass(
+      'h-12',
+    );
+    expect(screen.getByTestId('perps-balance-actions-withdraw')).toHaveClass(
+      'h-12',
+    );
+    unmount();
+
+    renderWithProvider(
+      <PerpsMarketBalanceActions
+        showActionButtons
+        actionButtonSize={ButtonSize.Sm}
+      />,
+      mockStore,
+    );
+
+    expect(screen.getByTestId('perps-balance-actions-add-funds')).toHaveClass(
+      'h-8',
+    );
+    expect(screen.getByTestId('perps-balance-actions-withdraw')).toHaveClass(
+      'h-8',
+    );
+  });
+
+  it('keeps Add funds full width under the balance unless the sheet placement is used', () => {
+    const { unmount } = renderWithProvider(
+      <PerpsMarketBalanceActions showActionButtons />,
+      mockStore,
+    );
+
+    expect(screen.getByTestId('perps-balance-actions-add-funds')).toHaveClass(
+      'w-full',
+    );
+    expect(
+      screen.getByTestId('perps-balance-actions-add-funds'),
+    ).toHaveTextContent('Add funds');
+    expect(
+      screen.queryByTestId('perps-balance-actions-buttons'),
+    ).not.toBeInTheDocument();
+    unmount();
+
+    renderWithProvider(
+      <PerpsMarketBalanceActions
+        showActionButtons
+        actionsPlacement="beside"
+        addFundsLabel="Fund"
+        actionButtonSize={ButtonSize.Sm}
+      />,
+      mockStore,
+    );
+
+    const summary = screen.getByTestId('perps-balance-actions-summary');
+    const buttonRow = screen.getByTestId('perps-balance-actions-buttons');
+    const withdraw = screen.getByTestId('perps-balance-actions-withdraw');
+    const fund = screen.getByTestId('perps-balance-actions-add-funds');
+
+    expect(summary).toContainElement(
+      screen.getByTestId('perps-balance-actions-total'),
+    );
+    expect(summary).toContainElement(
+      screen.getByTestId('perps-balance-actions-available'),
+    );
+    expect(summary).not.toContainElement(fund);
+    expect(buttonRow).toContainElement(withdraw);
+    expect(buttonRow).toContainElement(fund);
+    expect(screen.getByTestId('perps-balance-actions')).toHaveClass(
+      'justify-between',
+    );
+    expect(buttonRow).toHaveClass('ml-auto');
+    expect(buttonRow).toHaveClass('w-fit');
+    expect(withdraw).toHaveClass('w-fit');
+    expect(withdraw).not.toHaveClass('w-full');
+    expect(fund).toHaveClass('w-fit');
+    expect(fund).not.toHaveClass('w-full');
+    expect(fund).toHaveTextContent('Fund');
+    expect(withdraw).toHaveTextContent('Withdraw');
+    expect(fund).toHaveClass('h-8');
   });
 
   it.each<['column' | 'row', string]>([
@@ -304,6 +390,36 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.queryByTestId('perps-balance-actions-add-funds'),
     ).not.toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId('perps-balance-actions-skeleton')
+        .querySelector('.h-14'),
+    ).not.toBeNull();
+  });
+
+  it('uses a beside-row skeleton that matches the sheet layout', () => {
+    mockUsePerpsLiveAccount.mockReturnValueOnce({
+      account: null,
+      isInitialLoading: true,
+    });
+
+    renderWithProvider(
+      <PerpsMarketBalanceActions
+        showActionButtons
+        actionsPlacement="beside"
+        actionButtonSize={ButtonSize.Sm}
+      />,
+      mockStore,
+    );
+
+    const skeleton = screen.getByTestId('perps-balance-actions-skeleton');
+    expect(skeleton).toHaveClass('justify-between');
+    expect(skeleton.querySelector('.h-7.w-24')).not.toBeNull();
+    expect(skeleton.querySelector('.h-4.w-20')).not.toBeNull();
+    expect(skeleton.querySelector('.ml-auto')).not.toBeNull();
+    expect(skeleton.querySelectorAll('.h-8.rounded-full')).toHaveLength(2);
+    expect(skeleton.querySelector('.h-14')).toBeNull();
+    expect(skeleton.querySelector('.h-12')).toBeNull();
   });
 
   it('calls onAddFunds when eligible', () => {
