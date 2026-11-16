@@ -104,6 +104,7 @@ import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
+  getAccountAddressRelationship,
   TransactionContainerType,
   TransactionControllerAddTransactionAction,
   TransactionControllerAddTransactionBatchAction,
@@ -503,6 +504,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'changePassword',
   'changePasswordWithPasskeyVerification',
   'checkDelegationDisabled',
+  'checkFirstTimeInteraction',
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
@@ -5513,5 +5515,32 @@ export class LegacyBackgroundApiService {
     }
 
     return analyticsId;
+  }
+
+  /**
+   * Determines whether the sender has no prior interaction with an address.
+   *
+   * Missing relationship data and request failures remain unknown so callers
+   * can distinguish them from a confirmed first interaction.
+   *
+   * @param request - The chain, sender, and recipient to check.
+   * @param request.chainId - The numeric chain ID.
+   * @param request.from - The sender address.
+   * @param request.to - The recipient address.
+   * @returns Whether this is the first interaction, or undefined if unknown.
+   */
+  // TODO: Move this to `transaction-controller` and expose as a messenger
+  // action.
+  async checkFirstTimeInteraction(request: {
+    chainId: number;
+    from: string;
+    to: string;
+  }): Promise<boolean | undefined> {
+    try {
+      const result = await getAccountAddressRelationship(request);
+      return result.count === undefined ? undefined : result.count === 0;
+    } catch {
+      return undefined;
+    }
   }
 }

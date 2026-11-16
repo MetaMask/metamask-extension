@@ -27,20 +27,23 @@ async function mockSurveys(mockServer: MockttpServer) {
       };
     });
 
-  await mockServer.forGet(surveyUrl).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        userId: '0x123',
-        surveys: {
-          url: 'https://example.com',
-          description: 'Test survey 2',
-          cta: 'Take survey',
-          id: 2,
+  await mockServer
+    .forGet(surveyUrl)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          userId: '0x123',
+          surveys: {
+            url: 'https://example.com',
+            description: 'Test survey 2',
+            cta: 'Take survey',
+            id: 2,
+          },
         },
-      },
-    };
-  });
+      };
+    });
 }
 
 describe('Test Survey', function () {
