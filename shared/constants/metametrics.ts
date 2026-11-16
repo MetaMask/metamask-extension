@@ -1092,6 +1092,8 @@ export enum MetaMetricsEventName {
   PerpsSearchQuery = 'Perp Search Query',
   PerpsSearchResultTapped = 'Perp Search Result Tapped',
   PerpsSearchAbandoned = 'Perp Search Abandoned',
+  MarketInsightsCardScrolledToView = 'Market Insights Card Scrolled to View',
+  MarketInsightsOpened = 'Market Insights Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
@@ -1323,6 +1325,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Perps = 'Perps',
+  MarketInsights = 'Market Insights',
   Phishing = 'Phishing',
   Ramps = 'Ramps',
   Referrals = 'Referrals',
