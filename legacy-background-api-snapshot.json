@@ -17,6 +17,7 @@
     "changePassword",
     "changePasswordWithPasskeyVerification",
     "checkDelegationDisabled",
+    "checkFirstTimeInteraction",
     "checkHardwareStatus",
     "checkIsSeedlessPasswordOutdated",
     "closeNotificationPopup",

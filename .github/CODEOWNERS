@@ -228,6 +228,10 @@ ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.ts                   
 ui/pages/confirmations/hooks/alerts/transactions/ShieldCoverageAlertMessage.tsx     @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.ts          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts     @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.ts        @MetaMask/confirmations @MetaMask/networks
+ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.test.ts   @MetaMask/confirmations @MetaMask/networks
+ui/pages/confirmations/hooks/send/useMaxAmount.ts                                   @MetaMask/confirmations @MetaMask/networks
+ui/pages/confirmations/hooks/send/useMaxAmount.test.ts                              @MetaMask/confirmations @MetaMask/networks
 
 # Assets team
 app/**/assets/**                     @MetaMask/metamask-assets
@@ -239,6 +243,12 @@ app/scripts/lib/smart-transaction                 @MetaMask/transactions
 
 # Networks Team
 shared/lib/multichain/addresses/* @MetaMask/networks @MetaMask/emerging-opportunities
+shared/constants/network.ts                        @MetaMask/networks
+shared/constants/multichain/networks.ts            @MetaMask/networks
+ui/pages/asset                                     @MetaMask/networks
+ui/selectors/multichain/networks.ts                @MetaMask/networks
+ui/selectors/multichain/networks.test.ts           @MetaMask/networks
+ui/selectors/config-registry/                      @MetaMask/networks
 
 # QA Team - E2E Framework
 test/e2e/page-objects/                                                @MetaMask/qa
