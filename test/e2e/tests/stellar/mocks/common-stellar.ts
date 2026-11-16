@@ -89,10 +89,9 @@ export type StellarHorizonBalanceOptions = {
   /** Native XLM balance as Horizon decimal string. */
   xlmBalance?: string;
   /**
-   * Optional classic USDC trustline. Only `limit > 0` rows are visible in the
-   * snap keyring balances (limit `0` is a tombstone and is omitted from the
-   * token list). Inactive / activate UX is covered by navigating to a USDC
-   * asset that has no active trustline metadata.
+   * Optional classic USDC trustline. When set, the account response includes
+   * that balance row and increments `subentry_count`. Omit for inactive /
+   * no-trustline accounts (do not pass `limit: '0'` as a tombstone here).
    */
   usdc?: {
     balance: string;
