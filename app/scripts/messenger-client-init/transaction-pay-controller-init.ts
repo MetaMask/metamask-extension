@@ -11,7 +11,7 @@ import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../shared/lib/money/money-account-flow';
-import { getEvmAsset } from '../../../shared/lib/transaction/pay-token';
+import { decodeEvmAssetId } from '../../../shared/lib/transaction/pay-token';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -366,7 +366,7 @@ function getWithdrawPaymentToken(
     | undefined,
 ): WithdrawPaymentToken | undefined {
   const paymentToken = transactionData?.paymentToken;
-  return paymentToken && getEvmAsset(paymentToken.assetId);
+  return paymentToken && decodeEvmAssetId(paymentToken.assetId);
 }
 
 async function syncWithdrawTransfer(

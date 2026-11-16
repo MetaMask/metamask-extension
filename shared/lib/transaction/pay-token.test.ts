@@ -7,10 +7,11 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
 } from '../../../test/data/mock-accounts';
 import {
+  decodeEvmAssetId,
+  decodePaymentTokenAssetId,
+  encodeEvmAssetId,
   getEvmAccountOverride,
-  getEvmAsset,
-  getEvmAssetId,
-  getEvmPaymentToken,
+  isSameAssetId,
 } from './pay-token';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -31,59 +32,66 @@ function createPaymentToken(assetId: CaipAssetType): TransactionPaymentToken {
 }
 
 describe('pay-token', () => {
-  describe('getEvmAsset', () => {
+  describe('decodeEvmAssetId', () => {
     it('derives the chain and address of an ERC-20 asset', () => {
-      expect(getEvmAsset(`eip155:1/erc20:${USDC_ADDRESS}`)).toStrictEqual({
+      expect(decodeEvmAssetId(`eip155:1/erc20:${USDC_ADDRESS}`)).toStrictEqual({
         address: USDC_ADDRESS,
         chainId: '0x1',
       });
     });
 
     it('maps a slip44 native asset to the chain native token address', () => {
-      expect(getEvmAsset('eip155:8453/slip44:60')).toStrictEqual({
+      expect(decodeEvmAssetId('eip155:8453/slip44:60')).toStrictEqual({
         address: ZERO_ADDRESS,
         chainId: '0x2105',
       });
-      expect(getEvmAsset('eip155:137/slip44:966')).toStrictEqual({
+      expect(decodeEvmAssetId('eip155:137/slip44:966')).toStrictEqual({
         address: POLYGON_NATIVE_TOKEN_ADDRESS,
         chainId: '0x89',
       });
     });
 
     it('returns undefined for a non-EVM asset', () => {
-      expect(getEvmAsset(BTC_ASSET_ID)).toBeUndefined();
+      expect(decodeEvmAssetId(BTC_ASSET_ID)).toBeUndefined();
     });
   });
 
-  describe('getEvmAssetId', () => {
+  describe('encodeEvmAssetId', () => {
     it('builds a checksummed ERC-20 asset ID', () => {
-      expect(getEvmAssetId(USDC_ADDRESS.toLowerCase() as Hex, '0x1')).toBe(
-        `eip155:1/erc20:${USDC_ADDRESS}`,
-      );
+      expect(
+        encodeEvmAssetId({
+          address: USDC_ADDRESS.toLowerCase() as Hex,
+          chainId: '0x1',
+        }),
+      ).toBe(`eip155:1/erc20:${USDC_ADDRESS}`);
     });
 
     it('builds the slip44 native asset ID for the native token address', () => {
-      expect(getEvmAssetId(ZERO_ADDRESS, CHAIN_IDS.MAINNET)).toBe(
-        'eip155:1/slip44:60',
-      );
       expect(
-        getEvmAssetId(POLYGON_NATIVE_TOKEN_ADDRESS, CHAIN_IDS.POLYGON),
+        encodeEvmAssetId({ address: ZERO_ADDRESS, chainId: CHAIN_IDS.MAINNET }),
+      ).toBe('eip155:1/slip44:60');
+      expect(
+        encodeEvmAssetId({
+          address: POLYGON_NATIVE_TOKEN_ADDRESS,
+          chainId: CHAIN_IDS.POLYGON,
+        }),
       ).toBe('eip155:137/slip44:966');
     });
 
     it('treats the zero address as native POL on Polygon', () => {
-      expect(getEvmAssetId(ZERO_ADDRESS, CHAIN_IDS.POLYGON)).toBe(
-        'eip155:137/slip44:966',
-      );
+      expect(
+        encodeEvmAssetId({ address: ZERO_ADDRESS, chainId: CHAIN_IDS.POLYGON }),
+      ).toBe('eip155:137/slip44:966');
     });
   });
 
-  describe('getEvmPaymentToken', () => {
-    it('adds the derived chain and address to an EVM payment token', () => {
-      const paymentToken = createPaymentToken(`eip155:1/erc20:${USDC_ADDRESS}`);
-
-      expect(getEvmPaymentToken(paymentToken)).toStrictEqual({
-        ...paymentToken,
+  describe('decodePaymentTokenAssetId', () => {
+    it('derives the chain and address of an EVM payment token', () => {
+      expect(
+        decodePaymentTokenAssetId(
+          createPaymentToken(`eip155:1/erc20:${USDC_ADDRESS}`),
+        ),
+      ).toStrictEqual({
         address: USDC_ADDRESS,
         chainId: '0x1',
       });
@@ -91,9 +99,28 @@ describe('pay-token', () => {
 
     it('returns undefined for a non-EVM or missing payment token', () => {
       expect(
-        getEvmPaymentToken(createPaymentToken(BTC_ASSET_ID)),
+        decodePaymentTokenAssetId(createPaymentToken(BTC_ASSET_ID)),
       ).toBeUndefined();
-      expect(getEvmPaymentToken(undefined)).toBeUndefined();
+      expect(decodePaymentTokenAssetId(undefined)).toBeUndefined();
+    });
+  });
+
+  describe('isSameAssetId', () => {
+    it('matches asset IDs case-insensitively', () => {
+      expect(
+        isSameAssetId(
+          `eip155:1/erc20:${USDC_ADDRESS}`,
+          `eip155:1/erc20:${USDC_ADDRESS.toLowerCase()}`,
+        ),
+      ).toBe(true);
+    });
+
+    it('does not match different or missing asset IDs', () => {
+      expect(
+        isSameAssetId(`eip155:1/erc20:${USDC_ADDRESS}`, BTC_ASSET_ID),
+      ).toBe(false);
+      expect(isSameAssetId(BTC_ASSET_ID, undefined)).toBe(false);
+      expect(isSameAssetId(undefined, undefined)).toBe(false);
     });
   });
 

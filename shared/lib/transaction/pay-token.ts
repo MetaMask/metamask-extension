@@ -18,11 +18,8 @@ import {
 import { getNativeAssetId } from '../asset-utils';
 import { toChecksumHexAddress } from '../hexstring-utils';
 
-/**
- * MetaMask Pay payment token on an EVM chain, with the Hex chain ID and token
- * address derived from its CAIP-19 asset ID.
- */
-export type EvmPaymentToken = TransactionPaymentToken & {
+/** EVM token identified by its Hex chain ID and token address. */
+export type EvmTokenReference = {
   address: Hex;
   chainId: Hex;
 };
@@ -48,9 +45,9 @@ function getPayNativeTokenAddress(chainId: Hex): Hex {
  * @returns The Hex chain ID and token address, or `undefined` for an asset
  * that is not on an EVM chain.
  */
-export function getEvmAsset(
+export function decodeEvmAssetId(
   assetId: CaipAssetType,
-): { address: Hex; chainId: Hex } | undefined {
+): EvmTokenReference | undefined {
   const { chain, assetNamespace, assetReference } = parseCaipAssetType(assetId);
 
   if (chain.namespace !== KnownCaipNamespace.Eip155) {
@@ -71,11 +68,15 @@ export function getEvmAsset(
  * state: the chain's `slip44` native asset for the native token address, and a
  * checksummed `erc20` asset otherwise.
  *
- * @param address - Token address, or the chain's native token address.
- * @param chainId - Hex chain ID.
+ * @param token - EVM token.
+ * @param token.address - Token address, or the chain's native token address.
+ * @param token.chainId - Hex chain ID.
  * @returns The CAIP-19 asset ID.
  */
-export function getEvmAssetId(address: Hex, chainId: Hex): CaipAssetType {
+export function encodeEvmAssetId({
+  address,
+  chainId,
+}: EvmTokenReference): CaipAssetType {
   // On Polygon, token lists use the zero address for native POL while Pay uses
   // `0x…1010`; both are the native asset.
   const isNative = [
@@ -98,19 +99,36 @@ export function getEvmAssetId(address: Hex, chainId: Hex): CaipAssetType {
 }
 
 /**
- * Add the Hex chain ID and token address derived from its asset ID to an EVM
- * payment token. Hex address and chain lookups (market data, gas, no-fee
- * routes) only apply to EVM payment tokens.
+ * Derive the Hex chain ID and token address of a payment token, for the EVM
+ * lookups (market data, gas, no-fee routes) that are keyed by them.
  *
  * @param paymentToken - Payment token, if any.
- * @returns The EVM payment token, or `undefined` for none or a non-EVM token.
+ * @returns The Hex chain ID and token address, or `undefined` for none or a
+ * non-EVM token.
  */
-export function getEvmPaymentToken(
-  paymentToken: TransactionPaymentToken | undefined,
-): EvmPaymentToken | undefined {
-  const evmAsset = paymentToken && getEvmAsset(paymentToken.assetId);
+export function decodePaymentTokenAssetId(
+  paymentToken: Pick<TransactionPaymentToken, 'assetId'> | undefined,
+): EvmTokenReference | undefined {
+  return paymentToken && decodeEvmAssetId(paymentToken.assetId);
+}
 
-  return evmAsset && { ...paymentToken, ...evmAsset };
+/**
+ * Whether two CAIP-19 asset IDs identify the same asset. EVM addresses are
+ * case-insensitive, so asset IDs may differ in case only.
+ *
+ * @param assetId - CAIP-19 asset ID, if any.
+ * @param otherAssetId - CAIP-19 asset ID to compare with, if any.
+ * @returns Whether both are defined and identify the same asset.
+ */
+export function isSameAssetId(
+  assetId: string | undefined,
+  otherAssetId: string | undefined,
+): boolean {
+  return Boolean(
+    assetId &&
+      otherAssetId &&
+      assetId.toLowerCase() === otherAssetId.toLowerCase(),
+  );
 }
 
 /**

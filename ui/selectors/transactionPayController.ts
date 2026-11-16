@@ -3,7 +3,7 @@ import type { TransactionPayControllerState } from '@metamask/transaction-pay-co
 import type { AccountsState } from '../../shared/lib/selectors/accounts';
 import {
   getEvmAccountOverride,
-  getEvmPaymentToken,
+  decodePaymentTokenAssetId,
 } from '../../shared/lib/transaction/pay-token';
 
 export type TransactionPayState = {
@@ -52,12 +52,12 @@ export const selectTransactionPaymentTokenByTransactionId = createSelector(
 );
 
 /**
- * The selected payment token when it is an EVM token, with the Hex chain ID
- * and token address derived from its asset ID.
+ * Hex chain ID and token address of the selected payment token, decoded from
+ * its asset ID, when it is an EVM token.
  */
-export const selectEvmPaymentTokenByTransactionId = createSelector(
+export const selectPaymentTokenEvmAssetByTransactionId = createSelector(
   selectTransactionPaymentTokenByTransactionId,
-  (paymentToken) => getEvmPaymentToken(paymentToken),
+  (paymentToken) => decodePaymentTokenAssetId(paymentToken),
 );
 
 export const selectTransactionPaySourceAmountsByTransactionId = createSelector(

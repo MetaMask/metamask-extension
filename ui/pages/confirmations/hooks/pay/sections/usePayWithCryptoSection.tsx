@@ -23,7 +23,7 @@ import type {
 } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
-import { getEvmPaymentToken } from '../../../../../../shared/lib/transaction/pay-token';
+import { decodePaymentTokenAssetId } from '../../../../../../shared/lib/transaction/pay-token';
 
 export const PAY_WITH_CRYPTO_SECTION_TEST_ID = 'pay-with-section-crypto';
 export const PAY_WITH_CRYPTO_SELECTED_TOKEN_ROW_TEST_ID =
@@ -45,7 +45,6 @@ export function usePayWithCryptoSection({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
   const { payToken, setPayToken } = useTransactionPayToken();
-  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const clearOverride = useClearPaymentOverride();
 
   const paymentOverride = useSelector((state: TransactionPayState) =>
@@ -55,7 +54,7 @@ export function usePayWithCryptoSection({
     paymentOverride === PaymentOverride.MoneyAccount;
 
   const handleSelectedTokenPress = useCallback(() => {
-    if (!evmPayToken) {
+    if (!payToken) {
       return;
     }
     if (!isMoneyAccountSelected) {
@@ -63,20 +62,11 @@ export function usePayWithCryptoSection({
       return;
     }
     clearOverride();
-    setPayToken({
-      address: evmPayToken.address,
-      chainId: evmPayToken.chainId,
-    }).catch((error) => {
+    setPayToken({ assetId: payToken.assetId }).catch((error) => {
       console.error('Failed to set the pay token', error);
     });
     onClose();
-  }, [
-    clearOverride,
-    evmPayToken,
-    isMoneyAccountSelected,
-    onClose,
-    setPayToken,
-  ]);
+  }, [clearOverride, isMoneyAccountSelected, payToken, onClose, setPayToken]);
 
   const handleOtherAssetsPress = useCallback(() => {
     onOtherAssetsPress();
@@ -90,18 +80,20 @@ export function usePayWithCryptoSection({
   return useMemo((): PayWithSectionConfig => {
     const rows: PayWithRowConfig[] = [];
 
-    if (evmPayToken) {
+    const payTokenAsset = decodePaymentTokenAssetId(payToken);
+
+    if (payToken && payTokenAsset) {
       rows.push({
         id: 'crypto-selected-token',
         icon: (
           <TokenIcon
-            chainId={evmPayToken.chainId}
-            tokenAddress={evmPayToken.address}
-            symbol={evmPayToken.symbol}
+            chainId={payTokenAsset.chainId}
+            tokenAddress={payTokenAsset.address}
+            symbol={payToken.symbol}
             size="sm"
           />
         ),
-        title: evmPayToken.symbol,
+        title: payToken.symbol,
         subtitle: `${selectedTokenBalance} ${t('available')}`,
         isSelected: !isMoneyAccountSelected,
         trailingElement: isMoneyAccountSelected ? 'none' : 'checkmark',
@@ -133,10 +125,10 @@ export function usePayWithCryptoSection({
       rows,
     };
   }, [
-    evmPayToken,
     handleOtherAssetsPress,
     handleSelectedTokenPress,
     isMoneyAccountSelected,
+    payToken,
     selectedTokenBalance,
     t,
   ]);

@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
-import type { Hex } from '@metamask/utils';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import * as controllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import { ConfirmContext } from '../../context/confirm';
@@ -17,7 +16,6 @@ jest.mock(
 
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
 const TOKEN_ADDRESS_MOCK = '0x1234567890AbcdEF1234567890aBcdef12345678';
-const CHAIN_ID_MOCK = '0x1';
 
 const PAY_TOKEN_MOCK: TransactionPaymentToken = {
   assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
@@ -99,31 +97,16 @@ describe('useTransactionPayToken', () => {
     expect(result.current.isNative).toBe(false);
   });
 
-  it('selects an EVM token by its checksummed ERC-20 asset ID', () => {
+  it('selects a payment token by its asset ID', () => {
     const { result } = renderHookWithProvider();
 
     result.current.setPayToken({
-      address: TOKEN_ADDRESS_MOCK.toLowerCase() as Hex,
-      chainId: CHAIN_ID_MOCK,
+      assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
     });
 
     expect(updatePaymentTokenMock).toHaveBeenCalledWith({
       transactionId: TRANSACTION_ID_MOCK,
       assetId: `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
-    });
-  });
-
-  it('selects an EVM native token by its slip44 asset ID', () => {
-    const { result } = renderHookWithProvider();
-
-    result.current.setPayToken({
-      address: '0x0000000000000000000000000000000000001010',
-      chainId: '0x89',
-    });
-
-    expect(updatePaymentTokenMock).toHaveBeenCalledWith({
-      transactionId: TRANSACTION_ID_MOCK,
-      assetId: 'eip155:137/slip44:966',
     });
   });
 

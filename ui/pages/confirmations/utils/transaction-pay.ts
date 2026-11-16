@@ -15,7 +15,10 @@ import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
-import { getEvmPaymentToken } from '../../../../shared/lib/transaction/pay-token';
+import {
+  encodeEvmAssetId,
+  isSameAssetId,
+} from '../../../../shared/lib/transaction/pay-token';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
@@ -165,7 +168,15 @@ export function getAvailableTokens({
   tokens: Asset[];
   blockedTokens?: BlockedPayTokensListConfig;
 }): Asset[] {
-  const evmPayToken = getEvmPaymentToken(payToken);
+  const isSelectedPayToken = (token: Asset) =>
+    Boolean(token.address && token.chainId) &&
+    isSameAssetId(
+      payToken?.assetId,
+      encodeEvmAssetId({
+        address: token.address as Hex,
+        chainId: token.chainId as Hex,
+      }),
+    );
 
   return tokens
     .filter((token) => {
@@ -184,11 +195,7 @@ export function getAvailableTokens({
         return false;
       }
 
-      const isSelected =
-        evmPayToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        evmPayToken?.chainId === token.chainId;
-
-      if (isSelected) {
+      if (isSelectedPayToken(token)) {
         return true;
       }
 
@@ -207,9 +214,7 @@ export function getAvailableTokens({
     })
     .map((token) => {
       const blocked = isTokenBlocked(token, blockedTokens);
-      const isSelected =
-        evmPayToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        evmPayToken?.chainId === token.chainId;
+      const isSelected = isSelectedPayToken(token);
 
       return {
         ...token,
