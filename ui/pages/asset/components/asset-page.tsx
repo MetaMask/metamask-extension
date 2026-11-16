@@ -108,6 +108,7 @@ import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetMarketInsightsSection } from './market-insights';
 import { AssetPageHeader } from './asset-page-header';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
@@ -770,6 +771,7 @@ const AssetPage = ({
               address={address}
               fallbackMarketData={marketData}
             />
+            <AssetMarketInsightsSection assetId={caipAssetId} />
             <Box className="asset-page__divider" />
             <Box marginBottom={4}>
               <Text
