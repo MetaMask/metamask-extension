@@ -93,6 +93,12 @@ async function measurePagePowerUser(
 
         if (i < pageLoads - 1) {
           await collectGarbageBetweenIterations(driver);
+          // TEMPORARY (1/1): settle-delay A/B. Remove with BENCH_SETTLE_MS in .github/workflows/pilot-flags.yml.
+          const settleMs = Number(process.env.BENCH_SETTLE_MS ?? 0);
+          const settleAll = process.env.BENCH_SETTLE_MODE === 'all';
+          if (settleMs > 0 && (settleAll || i === 0)) {
+            await driver.delay(settleMs);
+          }
         }
       }
     },
