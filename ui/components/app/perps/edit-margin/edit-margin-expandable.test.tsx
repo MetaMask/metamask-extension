@@ -294,7 +294,7 @@ describe('EditMarginExpandable', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastMarginAdjustmentFailed',
-          description: 'Insufficient balance',
+          description: messages.perpsInsufficientBalance.message,
         });
       });
 

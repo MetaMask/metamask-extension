@@ -73,7 +73,10 @@ import {
   getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
-import { isPerpsErrorCode } from '../utils/translate-perps-error';
+import {
+  isPerpsErrorCode,
+  translatePerpsError,
+} from '../utils/translate-perps-error';
 import { usePerpsPositionAlreadyClosed } from '../hooks/usePerpsPositionAlreadyClosed';
 import {
   applyDefaultStopLossSign,
@@ -500,10 +503,17 @@ export const UpdateTPSLModalContent = ({
           return;
         }
         if (!result.success) {
-          const failMessage = result.error || 'Failed to update TP/SL';
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
-            description: failMessage,
+            description:
+              translatePerpsError(
+                {
+                  error: result.error ?? '',
+                  errorCode: result.errorCode,
+                  errorDetails: result.errorDetails,
+                },
+                t as (key: string, substitutions?: string[]) => string,
+              ) ?? t('perpsTpslUpdateFailed'),
           });
           // Error is DISPLAYED — emit the error screen view.
           trackPerpsErrorScreenViewed(
@@ -571,7 +581,11 @@ export const UpdateTPSLModalContent = ({
         );
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_FAILED,
-          description: errorMessage,
+          description:
+            translatePerpsError(
+              error,
+              t as (key: string, substitutions?: string[]) => string,
+            ) ?? t('perpsTpslUpdateFailed'),
         });
       } finally {
         if (isMountedRef.current) {
@@ -588,6 +602,7 @@ export const UpdateTPSLModalContent = ({
     position,
     replacePerpsToastByKey,
     notifyPositionAlreadyClosed,
+    t,
     track,
     buildTpslTrackingData,
   ]);

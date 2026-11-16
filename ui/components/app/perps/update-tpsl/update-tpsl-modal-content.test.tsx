@@ -1245,10 +1245,34 @@ describe('UpdateTPSLModalContent', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastUpdateFailed',
-          description: 'Server error',
+          description: messages.perpsTpslUpdateFailed.message,
         });
       });
       expect(screen.queryByText('Server error')).not.toBeInTheDocument();
+    });
+
+    it('shows the translated root cause instead of the controller code', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'REDUCE_ONLY_VIOLATION',
+            errorCode: 'REDUCE_ONLY_VIOLATION',
+          });
+        }
+        return Promise.resolve(mockPositions);
+      });
+
+      renderTpslModalContent();
+
+      fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: messages.perpsReduceOnlyViolation.message,
+        });
+      });
     });
 
     it('shows generic toast error when an exception is thrown', async () => {
@@ -1263,7 +1287,7 @@ describe('UpdateTPSLModalContent', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastUpdateFailed',
-          description: 'Network failure',
+          description: messages.perpsTpslUpdateFailed.message,
         });
       });
       expect(screen.queryByText('Network failure')).not.toBeInTheDocument();
@@ -1284,7 +1308,7 @@ describe('UpdateTPSLModalContent', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastUpdateFailed',
-          description: 'Failed to update TP/SL',
+          description: messages.perpsTpslUpdateFailed.message,
         });
       });
     });
@@ -1299,7 +1323,7 @@ describe('UpdateTPSLModalContent', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastUpdateFailed',
-          description: 'An unknown error occurred',
+          description: messages.perpsTpslUpdateFailed.message,
         });
       });
     });
@@ -1323,7 +1347,7 @@ describe('UpdateTPSLModalContent', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastUpdateFailed',
-          description: 'fail',
+          description: messages.perpsTpslUpdateFailed.message,
         });
       });
       expect(onClose).not.toHaveBeenCalled();

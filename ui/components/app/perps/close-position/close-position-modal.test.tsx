@@ -1378,7 +1378,7 @@ describe('ClosePositionModal', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastCloseFailed',
-          description: 'Amount exceeds your available Perps balance.',
+          description: tEn('perpsInsufficientBalance'),
         });
       });
     });
