@@ -95,41 +95,6 @@ export const STELLAR_REMOTE_FEATURE_FLAGS = {
   },
 } as const;
 
-/**
- * Console noise from EVM RPC while on Stellar (no Anvil / Infura). Same idea as
- * Tron derivation's `includeAnvil: false` + `ignoredConsoleErrors`.
- */
-export const STELLAR_IGNORED_CONSOLE_ERRORS = [
-  'Failed to get nonce',
-  'JsonRpcError: Failed to fetch',
-];
-
-/**
- * Shared `withFixtures` options for Stellar E2E (no local EVM node).
- *
- * @param options - Per-test withFixtures fields.
- */
-export function stellarFixtureOptions<
-  T extends {
-    ignoredConsoleErrors?: string[];
-  },
->(
-  options: T,
-): Omit<T, 'ignoredConsoleErrors' | 'localNodeOptions'> & {
-  localNodeOptions: 'none';
-  ignoredConsoleErrors: string[];
-} {
-  const { ignoredConsoleErrors, ...rest } = options;
-  return {
-    ...rest,
-    localNodeOptions: 'none',
-    ignoredConsoleErrors: [
-      ...STELLAR_IGNORED_CONSOLE_ERRORS,
-      ...(ignoredConsoleErrors ?? []),
-    ],
-  };
-}
-
 export type StellarHorizonBalanceOptions = {
   /** When true, Horizon returns 404 (unfunded / zero balance). */
   unfunded?: boolean;
