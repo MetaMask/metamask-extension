@@ -122,12 +122,13 @@ export const SideNavAccounts = () => {
         </div>
       </div>
       {isSearchOpen && (
-        <div className="px-4 pb-2">
+        <search className="px-4 pb-2">
           <TextFieldSearch
             autoFocus
             className="w-full"
             clearButtonOnClick={clearSearch}
             onChange={onSearchBarChange}
+            inputAriaLabel={t('searchYourAccounts')}
             placeholder={t('searchYourAccounts')}
             value={searchPattern}
             inputProps={
@@ -137,7 +138,7 @@ export const SideNavAccounts = () => {
               } as React.ComponentPropsWithoutRef<'input'>
             }
           />
-        </div>
+        </search>
       )}
       <ScrollContainer className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {hasFilteredWallets ? (

@@ -1,23 +1,17 @@
 import type { Page } from '@playwright/test';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  ONBOARDING_METAMETRICS,
-  PREPARE_SWAP_ROUTE,
-  SETTINGS_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-  UNLOCK_ROUTE,
-} from '../../../../../ui/helpers/constants/routes';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
+import { ROUTE_PAGE_OBJECT_REGISTRY } from '../../../route-registry';
 import type { Driver } from '../../../webdriver/driver';
 import { getE2EDriver } from '../e2e-driver';
 import {
   LAUNCH_SCREEN_CHECKS,
+  SCREEN_CHECKS,
   detectCurrentScreen,
   detectScreenFromUrl,
   detectUnlockState,
   getBaseExtensionState,
+  getScreenName,
   waitForAnyScreen,
 } from './state-inspector';
 
@@ -33,7 +27,7 @@ const mockWelcomeLoaded = jest.fn();
 const mockHomeLoaded = jest.fn();
 const mockGetBalance = jest.fn();
 const mockHeaderLoaded = jest.fn();
-const mockOtherLoaded = jest.fn();
+const mockCompleteLoaded = jest.fn();
 
 function mockPageObject(methods: () => Record<string, jest.Mock>) {
   return {
@@ -58,27 +52,9 @@ jest.mock('../../../page-objects/pages/home/homepage', () =>
 jest.mock('../../../page-objects/pages/home/header-navbar', () =>
   mockPageObject(() => ({ checkPageIsLoaded: mockHeaderLoaded })),
 );
-jest.mock('../../../page-objects/pages/onboarding/onboarding-srp-page', () =>
-  mockPageObject(() => ({ checkPageIsLoaded: mockOtherLoaded })),
-);
-jest.mock(
-  '../../../page-objects/pages/onboarding/onboarding-password-page',
-  () => mockPageObject(() => ({ checkPageIsLoaded: mockOtherLoaded })),
-);
 jest.mock(
   '../../../page-objects/pages/onboarding/onboarding-complete-page',
-  () => mockPageObject(() => ({ checkPageIsLoaded: mockOtherLoaded })),
-);
-jest.mock(
-  '../../../page-objects/pages/onboarding/onboarding-metrics-page',
-  () => mockPageObject(() => ({ checkPageIsLoaded: mockOtherLoaded })),
-);
-jest.mock(
-  '../../../page-objects/pages/onboarding/onboarding-privacy-settings-page',
-  () => mockPageObject(() => ({ checkPageIsLoaded: mockOtherLoaded })),
-);
-jest.mock('../../../page-objects/pages/settings/settings-page', () =>
-  mockPageObject(() => ({ checkPageIsLoaded: mockOtherLoaded })),
+  () => mockPageObject(() => ({ checkPageIsLoaded: mockCompleteLoaded })),
 );
 
 const notShown = () => Promise.reject(new Error('not shown'));
@@ -132,7 +108,7 @@ describe('state-inspector', () => {
       mockWelcomeLoaded,
       mockHomeLoaded,
       mockHeaderLoaded,
-      mockOtherLoaded,
+      mockCompleteLoaded,
     ]) {
       check.mockImplementation(notShown);
     }
@@ -156,137 +132,89 @@ describe('state-inspector', () => {
     });
   });
 
+  describe('getScreenName', () => {
+    it('names a screen after its route path without dynamic segments', () => {
+      expect(getScreenName('/')).toBe('home');
+      expect(getScreenName('')).toBe('home');
+      expect(getScreenName('/activity')).toBe('activity');
+      expect(getScreenName('/send/:page?')).toBe('send');
+      expect(getScreenName('/settings/privacy')).toBe('settings-privacy');
+      expect(getScreenName('/confirm-transaction/:id/signature-request')).toBe(
+        'confirm-transaction-signature-request',
+      );
+    });
+  });
+
   describe('detectScreenFromUrl', () => {
-    it('detects send, swap, settings and unlock from hash routes', () => {
-      expect(detectScreenFromUrl('chrome-extension://id/home.html#/send')).toBe(
-        'send',
-      );
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}`,
-        ),
-      ).toBe('swap');
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${SETTINGS_ROUTE}`,
-        ),
-      ).toBe('settings');
-      expect(
-        detectScreenFromUrl(`chrome-extension://id/home.html#${UNLOCK_ROUTE}`),
-      ).toBe('unlock');
+    const atHash = (hash: string) =>
+      detectScreenFromUrl(`chrome-extension://id/home.html#${hash}`);
+
+    it('detects main routes from the route registry', () => {
+      expect(atHash('/activity')).toBe('activity');
+      expect(atHash('/account-list')).toBe('account-list');
+      expect(atHash('/send')).toBe('send');
+      expect(atHash('/settings')).toBe('settings');
+      expect(atHash('/unlock')).toBe('unlock');
     });
 
-    it('detects confirm and signature requests from canonical routes', () => {
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${CONFIRM_TRANSACTION_ROUTE}/123`,
-        ),
-      ).toBe('confirm-transaction');
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${CONFIRM_TRANSACTION_ROUTE}/123${SIGNATURE_REQUEST_PATH}`,
-        ),
-      ).toBe('confirm-signature');
-    });
-
-    it('detects notification and unknown routes', () => {
-      expect(
-        detectScreenFromUrl('chrome-extension://id/notification.html'),
-      ).toBe('notification');
-      expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/random'),
-      ).toBe('unknown');
-    });
-
-    it('detects all onboarding sub-routes', () => {
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/welcome',
-        ),
-      ).toBe('onboarding-welcome');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/create-password',
-        ),
-      ).toBe('onboarding-password');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/import-with-recovery-phrase',
-        ),
-      ).toBe('onboarding-import');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/reveal-recovery-phrase',
-        ),
-      ).toBe('onboarding-srp');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/review-recovery-phrase',
-        ),
-      ).toBe('onboarding-srp');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/confirm-recovery-phrase',
-        ),
-      ).toBe('onboarding-srp');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/completion',
-        ),
-      ).toBe('onboarding-complete');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/help-us-improve',
-        ),
-      ).toBe('onboarding-metametrics');
-      expect(
-        detectScreenFromUrl(
-          `chrome-extension://id/home.html#${ONBOARDING_METAMETRICS}`,
-        ),
-      ).toBe('onboarding-metametrics');
-      expect(
-        detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/privacy-settings',
-        ),
-      ).toBe('onboarding-privacy');
-    });
-
-    it('detects onboarding base route as onboarding-welcome', () => {
-      expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/onboarding'),
-      ).toBe('onboarding-welcome');
-    });
-
-    it('detects home route from hash /', () => {
-      expect(detectScreenFromUrl('chrome-extension://id/home.html#/')).toBe(
-        'home',
+    it('detects routes with dynamic segments', () => {
+      expect(atHash('/send/amount')).toBe('send');
+      expect(atHash('/tx/eip155:1/0xabc')).toBe('tx');
+      expect(atHash('/confirm-transaction/123')).toBe('confirm-transaction');
+      expect(atHash('/confirm-transaction/123/signature-request')).toBe(
+        'confirm-transaction-signature-request',
       );
     });
 
-    it('detects home route from empty hash', () => {
+    it('ignores the query string', () => {
+      expect(atHash('/activity?tab=nfts')).toBe('activity');
+    });
+
+    it('detects sub-routes missing from ROUTES as their closest parent route', () => {
+      expect(atHash('/settings/not-a-route')).toBe('settings');
+      expect(atHash('/confirm-transaction/123/not-a-route')).toBe(
+        'confirm-transaction',
+      );
+    });
+
+    it('detects onboarding routes', () => {
+      expect(atHash('/onboarding')).toBe('onboarding');
+      expect(atHash('/onboarding/welcome')).toBe('onboarding-welcome');
+      expect(atHash('/onboarding/create-password')).toBe(
+        'onboarding-create-password',
+      );
+      expect(atHash('/onboarding/completion')).toBe('onboarding-completion');
+      expect(atHash('/onboarding/unlock')).toBe('onboarding-unlock');
+    });
+
+    it('detects home from "#/" and from an empty hash', () => {
+      expect(atHash('/')).toBe('home');
       expect(detectScreenFromUrl('chrome-extension://id/home.html')).toBe(
         'home',
       );
     });
 
-    it('does not false-positive home for /send, /settings, /onboarding', () => {
-      expect(detectScreenFromUrl('chrome-extension://id/home.html#/send')).toBe(
-        'send',
-      );
+    it('detects the notification window when it shows no route', () => {
       expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/settings'),
-      ).toBe('settings');
-      expect(
-        detectScreenFromUrl('chrome-extension://id/home.html#/onboarding'),
-      ).toBe('onboarding-welcome');
-    });
-
-    it('detects onboarding/unlock as unlock not onboarding', () => {
+        detectScreenFromUrl('chrome-extension://id/notification.html'),
+      ).toBe('notification');
       expect(
         detectScreenFromUrl(
-          'chrome-extension://id/home.html#/onboarding/unlock',
+          'chrome-extension://id/notification.html#/confirm-transaction/1',
         ),
-      ).toBe('unlock');
+      ).toBe('confirm-transaction');
+    });
+
+    it('returns unknown for paths that are not routes', () => {
+      expect(atHash('/random')).toBe('unknown');
+      expect(atHash('/random/nested')).toBe('unknown');
+    });
+
+    it('names each DOM screen check as its registry route', () => {
+      for (const { route, screen } of SCREEN_CHECKS) {
+        expect(Object.hasOwn(ROUTE_PAGE_OBJECT_REGISTRY, route)).toBe(true);
+        expect(atHash(route)).toBe(screen);
+      }
     });
   });
 
@@ -298,6 +226,20 @@ describe('state-inspector', () => {
     it('prefers URL detection when route is known', async () => {
       const page = buildPage('chrome-extension://id/home.html#/send');
       await expect(detectCurrentScreen(page)).resolves.toBe('send');
+      expect(getE2EDriver).not.toHaveBeenCalled();
+    });
+
+    it('detects activity and account list without probing page objects', async () => {
+      await expect(
+        detectCurrentScreen(
+          buildPage('chrome-extension://id/home.html#/activity'),
+        ),
+      ).resolves.toBe('activity');
+      await expect(
+        detectCurrentScreen(
+          buildPage('chrome-extension://id/home.html#/account-list'),
+        ),
+      ).resolves.toBe('account-list');
       expect(getE2EDriver).not.toHaveBeenCalled();
     });
 
@@ -340,29 +282,33 @@ describe('state-inspector', () => {
     it('returns true for unlocked screens without DOM check', async () => {
       const page = buildPage('chrome-extension://id/home.html#/');
 
-      await expect(detectUnlockState(page, 'home')).resolves.toBe(true);
-      await expect(detectUnlockState(page, 'send')).resolves.toBe(true);
-      await expect(detectUnlockState(page, 'settings')).resolves.toBe(true);
-      await expect(detectUnlockState(page, 'swap')).resolves.toBe(true);
-      await expect(
-        detectUnlockState(page, 'confirm-transaction'),
-      ).resolves.toBe(true);
+      for (const screen of [
+        'home',
+        'activity',
+        'account-list',
+        'send',
+        'settings-privacy',
+        'confirm-transaction',
+        'notification',
+      ]) {
+        await expect(detectUnlockState(page, screen)).resolves.toBe(true);
+      }
       expect(HeaderNavbar).not.toHaveBeenCalled();
     });
 
     it('returns false for locked/onboarding screens without DOM check', async () => {
       const page = buildPage('chrome-extension://id/home.html');
 
-      await expect(detectUnlockState(page, 'unlock')).resolves.toBe(false);
-      await expect(detectUnlockState(page, 'onboarding-welcome')).resolves.toBe(
-        false,
-      );
-      await expect(
-        detectUnlockState(page, 'onboarding-password'),
-      ).resolves.toBe(false);
-      await expect(detectUnlockState(page, 'onboarding-privacy')).resolves.toBe(
-        false,
-      );
+      for (const screen of [
+        'unlock',
+        'lock',
+        'restore-vault',
+        'onboarding-welcome',
+        'onboarding-create-password',
+        'onboarding-unlock',
+      ]) {
+        await expect(detectUnlockState(page, screen)).resolves.toBe(false);
+      }
       expect(HeaderNavbar).not.toHaveBeenCalled();
     });
 
@@ -372,6 +318,14 @@ describe('state-inspector', () => {
 
       await expect(detectUnlockState(page, 'unknown')).resolves.toBe(true);
       expect(jest.mocked(HeaderNavbar).mock.calls[0][0].timeout).toBe(2_000);
+    });
+
+    it('falls back to the e2e header navbar for routes shown while locked or unlocked', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/link');
+      mockHeaderLoaded.mockResolvedValue(undefined);
+
+      await expect(detectUnlockState(page, 'link')).resolves.toBe(true);
+      expect(HeaderNavbar).toHaveBeenCalledTimes(1);
     });
 
     it('returns false when the header navbar is not shown', async () => {

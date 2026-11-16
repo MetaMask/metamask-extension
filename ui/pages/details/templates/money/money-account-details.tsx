@@ -16,6 +16,7 @@ import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { useLocalTransactionMeta } from '../../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { MoneyFtueEntryPoint } from '../../../../helpers/money/money-ftue-entry-point';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
@@ -68,7 +69,11 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
             variant={ButtonVariant.Primary}
             isLoading={isDepositLoading}
             onClick={() => {
-              initiateDeposit();
+              initiateDeposit({
+                ftueOrigin: {
+                  entryPoint: MoneyFtueEntryPoint.MoneyActivityDetails,
+                },
+              });
             }}
           >
             {t('addFunds')}

@@ -211,10 +211,6 @@
   "fast": {
     "message": "Hurtig"
   },
-  "fileImportFail": {
-    "message": "Virker filimportering ikke? Klik her!",
-    "description": "Helps user import their account from a JSON file"
-  },
   "forgetDevice": {
     "message": "Glem denne enhed"
   },
@@ -379,10 +375,6 @@
   },
   "passwordsDontMatch": {
     "message": "Adgangskoder stemmer ikke ovenens"
-  },
-  "pastePrivateKey": {
-    "message": "Indsæt din private nøglestreng her:",
-    "description": "For importing an account from a private key"
   },
   "pending": {
     "message": "afventer"
@@ -559,9 +551,6 @@
   },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
-  },
-  "usedByClients": {
-    "message": "Brugt af forskellige kunder"
   },
   "visitWebSite": {
     "message": "Besøg vores webside"

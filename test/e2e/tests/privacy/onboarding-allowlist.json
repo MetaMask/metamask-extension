@@ -13,6 +13,7 @@
     "accounts.google.com",
     "android.clients.google.com",
     "chainid.network",
+    "content-signature-2.cdn.mozilla.net",
     "firefox.settings.services.mozilla.com",
     "metamask.github.io",
     "sentry.io"

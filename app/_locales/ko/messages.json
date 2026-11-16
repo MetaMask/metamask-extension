@@ -1144,9 +1144,6 @@
   "addAUrl": {
     "message": "URL 추가"
   },
-  "addAWallet": {
-    "message": "지갑 추가"
-  },
   "addAccount": {
     "message": "계정 추가"
   },
@@ -3130,9 +3127,6 @@
   "contractInteraction": {
     "message": "계약 인터렉션"
   },
-  "convertAgain": {
-    "message": "다시 전환"
-  },
   "convertTokenToNFTDescription": {
     "message": "이 자산은 NFT입니다. Metamask는 이제 NFT의 본래 기능에 따라 완전히 지원합니다. 이를 토큰 목록에서 제거하고 NFT로 추가하시겠습니까?"
   },
@@ -3432,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMask 최신 버전으로 업데이트하세요",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "이동할 URL이 제공되지 않았습니다."
@@ -3570,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "MetaMetrics 데이터 삭제"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "이렇게 하면 이 기기에서 사용한 과거 MetaMetrics 데이터가 삭제됩니다. 이 데이터를 삭제해도 지갑과 계정에는 아무런 영향이 없습니다. 삭제는 최대 30일 정도 소요됩니다. 다음을 참고하세요: $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "이렇게 하면 지갑과 연결된 과거 MetaMetrics 데이터가 삭제됩니다. MetaMetrics에는 익명화된 사용 데이터와 진단 데이터가 포함됩니다. 지갑과 계정은 그대로 유지됩니다. 이 절차는 최대 30일 정도 소요됩니다. 다음을 참고하세요: $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3581,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "분석 시스템 서버 문제로 지금 요청을 처리할 수 없습니다. 나중에 다시 시도해 주세요."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "지금은 데이터를 삭제할 수 없습니다"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "삭제할 수 없음"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "모든 MetaMetrics 데이터를 삭제하려고 합니다. 확실합니까?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetrics 데이터를 삭제할까요?"
@@ -4154,10 +4138,6 @@
   },
   "fieldRequired": {
     "message": "$1은(는) 필수입니다"
-  },
-  "fileImportFail": {
-    "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
-    "description": "Helps user import their account from a JSON file"
   },
   "fileUploaderDescription": {
     "message": "클릭하여 업로드하거나 끌어다 놓으세요"
@@ -5407,9 +5387,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "방문 중인 웹사이트가 현재 선택한 계정에 연결되어 있다면 연결 상태 버튼이 표시됩니다."
   },
-  "metaMetricsIdNotAvailableError": {
-    "message": "MetaMetrics에 가입한 적이 없으므로 여기에는 삭제할 데이터가 없습니다"
-  },
   "metadataModalSourceTooltip": {
     "message": "$1 스냅은 npm이 호스팅합니다. 이 Snap의 고유 식별자는 $2 입니다.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
@@ -6346,19 +6323,6 @@
   "musdConversionTitle": {
     "message": "mUSD로 전환 완료",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "mUSD 전환 실패"
-  },
-  "musdConversionToastInProgress": {
-    "message": "$1 → mUSD 전환 중",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "mUSD 환전 성공"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "보너스는 하루 이내에 청구할 수 있습니다."
   },
   "musdConvert": {
     "message": "전환"
@@ -7405,10 +7369,6 @@
   "paste": {
     "message": "붙여넣기"
   },
-  "pastePrivateKey": {
-    "message": "여기에 비공개 키 문자열을 붙여넣으세요.",
-    "description": "For importing an account from a private key"
-  },
   "payWith": {
     "message": "결제 수단:",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
@@ -8451,7 +8411,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "지원팀에 연락하여",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "일부 서비스를 일시적으로 이용할 수 없습니다. $1 또는 $2.",
@@ -8459,7 +8419,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "FAQ에서 이용 가능한 옵션을 확인하세요",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "서비스 장애가 발생했습니다",
@@ -8890,7 +8850,7 @@
     "message": "출금 제출 완료"
   },
   "perpsWithdrawTooltip": {
-    "message": "MetaMask가 원하는 토큰으로 스왑해 드립니다. mUSD로 스왑할 때 MetaMask 수수료는 적용되지 않습니다.",
+    "message": "MetaMask가 원하는 토큰으로 스왑해 드립니다.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsWithdrawalEmptyTitle": {
@@ -8991,10 +8951,6 @@
   "privateKeyHidden": {
     "message": "개인 키 입력이 표시되지 않습니다",
     "description": "Explains that the private key input is hidden"
-  },
-  "privateKeyShow": {
-    "message": "개인 키 입력 표시/숨기기",
-    "description": "Describes a toggle that is used to show or hide the private key input"
   },
   "privateKeyShown": {
     "message": "이 개인 키 입력은 표시됩니다",
@@ -11780,7 +11736,7 @@
   },
   "stxFailureDescription": {
     "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 $1(으)로 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "더욱 안정적이고 안전하게 트랜잭션을 진행하려면 스마트 트랜잭션을 활성화하세요. $1"
@@ -11924,7 +11880,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "트랜잭션이 실패할 경우 언제든 문의하세요. 오류가 해결되지 않는다면 고객 지원 $1에 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "스왑 실패"
@@ -11953,9 +11909,6 @@
   "swapGasFeesExplanationLinkText": {
     "message": "확인하세요",
     "description": "Text for link in swapGasFeesExplanation"
-  },
-  "swapGasFeesIncluded": {
-    "message": " 포함됨"
   },
   "swapGasFeesSplit": {
     "message": "이전 화면에 표시된 네트워크 수수료는 이 두 건의 트랜잭션에 나뉘어 적용됩니다."
@@ -12703,9 +12656,6 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "계정으로 전송된 토큰이 자동으로 표시되도록 하려면 타사 서버와의 통신을 통해 토큰 이미지를 불러와야 합니다. 이를 위해 타사 서버는 사용자의 IP 주소에 액세스하게 됩니다."
-  },
-  "usedByClients": {
-    "message": "다양한 클라이언트에서 사용합니다."
   },
   "userOpContractDeployError": {
     "message": "스마트 계약 계정에서 계약 배포는 지원되지 않습니다."

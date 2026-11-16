@@ -31,6 +31,7 @@ import { getChainIdFromAssetId } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
+  ACTIVITY_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -188,39 +189,13 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, options: { replace?: boolean } = {}) => {
+    (to: To = { pathname, search }, options: { replace?: boolean } = {}) => {
       navigate(to, {
         state: clearedBridgeState(state),
         ...options,
       });
     },
-    [navigate, state, pathname],
-  );
-
-  /**
-   * Clears the search params for the given parameters.
-   * @param paramsToRemove - The parameters to clear.
-   */
-  const resetSearchParams = useCallback(
-    (paramsToRemove: BridgeQueryParams[]) => {
-      const updatedSearchParams = new URLSearchParams(search);
-      paramsToRemove.forEach((param) => {
-        if (updatedSearchParams.get(param)) {
-          updatedSearchParams.delete(param);
-        }
-      });
-      navigate(
-        {
-          pathname,
-          search: updatedSearchParams.toString(),
-        },
-        {
-          replace: true,
-          state,
-        },
-      );
-    },
-    [navigate, search, pathname, state],
+    [navigate, state, pathname, search],
   );
 
   /**
@@ -348,27 +323,36 @@ export const useBridgeNavigation = () => {
   const navigateToHwSigningPage = useCallback(
     (nextState: Partial<BridgeNavigationOptions['state']> = {}) => {
       const hasSendBundleState = Object.hasOwn(nextState, 'sendBundle');
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
-        // For the sendBundle (send) flow, the signing page replaces the
-        // /confirm-transaction entry so that cancelling returns the user
-        // cleanly to the send flow (and back-button -> home) instead of
-        // leaving a stale confirmation entry in the history stack.
-        ...(hasSendBundleState ? { replace: true } : {}),
-        state: {
-          ...state,
-          ...clearSendBundleIfPresent(state),
-          ...nextState,
+      // Carried over so post-signing navigation can return to Transaction Shield.
+      const shieldSearch = new URLSearchParams(search).get(
+        BridgeQueryParams.IsFromTransactionShield,
+      )
+        ? `?${BridgeQueryParams.IsFromTransactionShield}=true`
+        : '';
+      navigate(
+        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}${shieldSearch}`,
+        {
+          // For the sendBundle (send) flow, the signing page replaces the
+          // /confirm-transaction entry so that cancelling returns the user
+          // cleanly to the send flow (and back-button -> home) instead of
+          // leaving a stale confirmation entry in the history stack.
+          ...(hasSendBundleState ? { replace: true } : {}),
+          state: {
+            ...state,
+            ...clearSendBundleIfPresent(state),
+            ...nextState,
+          },
         },
-      });
+      );
     },
-    [navigate, state],
+    [navigate, search, state],
   );
 
   /**
    * Navigates to the activity page and clears the navigation state.
    */
   const navigateToActivityPage = useCallback(() => {
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+    navigate(ACTIVITY_ROUTE, {
       state: clearedBridgeState(state),
       replace: true,
     });
@@ -406,7 +390,6 @@ export const useBridgeNavigation = () => {
     swapViewPrefilledAmount: state.swapViewPrefilledAmount,
     search,
     resetLocationState,
-    resetSearchParams,
     navigateToAssetPage,
     navigateToBridgePage,
     navigateToBridgeAssetPickerPage,

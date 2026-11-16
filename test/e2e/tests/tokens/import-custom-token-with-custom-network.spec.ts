@@ -421,7 +421,6 @@ describe('Import custom token on a custom network', function () {
         await reloadExtension(driver);
         await login(driver, {
           validateBalance: false,
-          waitForNonEvmAccounts: false,
         });
 
         await homePage.checkPageIsLoaded();

@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import { getCleanAppState } from '../../helpers';
 import ExtensionUpdateTakeover from '../pages/dialog/extension-update-takeover';
 import HeaderNavbar from '../pages/home/header-navbar';
-import PrivacySettings from '../pages/settings/privacy-settings';
+import PrivacySettings from '../pages/settings/privacy/privacy-settings';
 import SettingsPage from '../pages/settings/settings-page';
 
 /**

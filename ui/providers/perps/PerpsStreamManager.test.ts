@@ -517,6 +517,119 @@ describe('PerpsStreamManager', () => {
       }
     });
 
+    it('replaces a seeded snapshot via REST after the WS grace period', async () => {
+      const ADDR = '0xABCDEF0000000000000000000000000000000001';
+      const livePositions = [makePosition('ETH')];
+      mockSubmitRequestToBackground.mockImplementation((method: string) =>
+        Promise.resolve(
+          method === 'perpsGetPositions' ? livePositions : undefined,
+        ),
+      );
+      manager.hydrateFromControllerCache(
+        { positions: [makePosition('BTC')], address: ADDR },
+        ADDR,
+      );
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
+      expect(cb).toHaveBeenLastCalledWith(livePositions);
+      expect(manager.positions.isSeeded()).toBe(false);
+    });
+
+    it('drops a seeded REST response that arrives after the caches were cleared', async () => {
+      const ADDR = '0xABCDEF0000000000000000000000000000000001';
+      const stalePositions = [makePosition('ETH')];
+      let resolvePositions: (value: Position[]) => void = () => undefined;
+      mockSubmitRequestToBackground.mockImplementation((method: string) =>
+        method === 'perpsGetPositions'
+          ? new Promise<Position[]>((resolve) => {
+              resolvePositions = resolve;
+            })
+          : Promise.resolve(undefined),
+      );
+      manager.hydrateFromControllerCache(
+        { positions: [makePosition('BTC')], address: ADDR },
+        ADDR,
+      );
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      await jest.advanceTimersByTimeAsync(3_000);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
+
+      manager.clearAllCaches();
+      cb.mockClear();
+      resolvePositions(stalePositions);
+      await jest.advanceTimersByTimeAsync(0);
+
+      expect(cb).not.toHaveBeenCalledWith(stalePositions);
+    });
+
+    it.each([null, undefined])(
+      'preserves a seeded snapshot when REST returns %s',
+      async (data) => {
+        const address = '0xABCDEF0000000000000000000000000000000001';
+        const positions = [makePosition('BTC'), makePosition('xyz:GOLD')];
+        mockSubmitRequestToBackground.mockResolvedValue(data);
+        manager.hydrateFromControllerCache({ positions, address }, address);
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+        cb.mockClear();
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(manager.positions.getCachedData()).toBe(positions);
+        expect(manager.positions.isSeeded()).toBe(true);
+        expect(cb).not.toHaveBeenCalled();
+
+        manager.positions.pushData([]);
+
+        expect(manager.positions.getCachedData()).toEqual([]);
+        expect(manager.positions.isSeeded()).toBe(false);
+        expect(cb).toHaveBeenCalledWith([]);
+      },
+    );
+
+    it('replaces a seeded snapshot when REST confirms no positions remain', async () => {
+      const address = '0xABCDEF0000000000000000000000000000000001';
+      mockSubmitRequestToBackground.mockResolvedValue([]);
+      manager.hydrateFromControllerCache(
+        { positions: [makePosition('BTC')], address },
+        address,
+      );
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(manager.positions.getCachedData()).toEqual([]);
+      expect(manager.positions.isSeeded()).toBe(false);
+      expect(cb).toHaveBeenLastCalledWith([]);
+    });
+
+    it.each([null, undefined])(
+      'notifies subscribers with empty positions when REST returns %s without a seed',
+      async (data) => {
+        mockSubmitRequestToBackground.mockResolvedValue(data);
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(manager.positions.isSeeded()).toBe(false);
+      },
+    );
+
     it('notifies subscribers with empty positions when REST fallback fails', async () => {
       jest.useFakeTimers();
       const consoleErrorSpy = jest
@@ -1591,7 +1704,7 @@ describe('PerpsStreamManager', () => {
       expect(delivered[0].stopLossPrice).toBe('80');
     });
 
-    it('blocks WebSocket pushes during WEBSOCKET_BLOCK_MS window', () => {
+    it('holds WebSocket pushes during WEBSOCKET_BLOCK_MS window', () => {
       const cb = jest.fn();
       manager.positions.subscribe(cb);
 
@@ -1603,6 +1716,65 @@ describe('PerpsStreamManager', () => {
       });
 
       expect(cb).not.toHaveBeenCalled();
+    });
+
+    it('applies the latest held WebSocket push when the block window ends', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+      jest.advanceTimersByTime(1000);
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      jest.advanceTimersByTime(1999);
+      expect(cb).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(1);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(cb).toHaveBeenLastCalledWith([]);
+    });
+
+    it('keeps holding a WebSocket push while a newer optimistic update extends the block window', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      jest.advanceTimersByTime(2000);
+      manager.setOptimisticTPSL('BTC', '130', '80');
+      jest.advanceTimersByTime(1000);
+      expect(cb).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(2000);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(cb).toHaveBeenLastCalledWith([]);
+    });
+
+    it('drops a held WebSocket push when a REST snapshot is pushed after it', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      manager.pushPositionsWithOverrides([makePosition('BTC')]);
+      jest.advanceTimersByTime(3000);
+
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect((cb.mock.calls[0][0] as Position[])[0].symbol).toBe('BTC');
+    });
+
+    it('drops a held WebSocket push when the manager resets', () => {
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      manager.reset();
+      jest.advanceTimersByTime(3000);
+
+      expect(manager.positions.hasCachedData()).toBe(false);
     });
 
     it('allows WebSocket pushes after WEBSOCKET_BLOCK_MS', () => {
@@ -1804,6 +1976,65 @@ describe('PerpsStreamManager', () => {
       expect(second[0].takeProfitPrice).toBeUndefined();
       // ETH override is still active
       expect(second[1].takeProfitPrice).toBe('4000');
+    });
+  });
+
+  describe('refreshPositions', () => {
+    it('refetches positions without the WS cache and pushes them', async () => {
+      const freshPositions = [makePosition('xyz:GOLD')];
+      mockSubmitRequestToBackground.mockResolvedValue(freshPositions);
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      await manager.refreshPositions();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
+      expect(cb).toHaveBeenLastCalledWith(freshPositions);
+    });
+
+    it.each([null, undefined])(
+      'leaves a seeded snapshot unconfirmed when the refresh returns %s',
+      async (data) => {
+        const address = '0xABCDEF0000000000000000000000000000000001';
+        const positions = [makePosition('BTC')];
+        manager.hydrateFromControllerCache({ positions, address }, address);
+        mockSubmitRequestToBackground.mockResolvedValue(data);
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+        cb.mockClear();
+
+        await manager.refreshPositions();
+
+        expect(manager.positions.getCachedData()).toBe(positions);
+        expect(manager.positions.isSeeded()).toBe(true);
+        expect(cb).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each([
+      ['the account switches', (m: PerpsStreamManager) => m.init('0xaccountB')],
+      ['the network changes', (m: PerpsStreamManager) => m.clearAllCaches()],
+      ['the manager resets', (m: PerpsStreamManager) => m.reset()],
+    ])('drops a response that resolves after %s', async (_, transition) => {
+      manager.init('0xaccountA');
+      let resolveStale: (positions: Position[]) => void = () => undefined;
+      mockSubmitRequestToBackground.mockReturnValueOnce(
+        new Promise<Position[]>((resolve) => {
+          resolveStale = resolve;
+        }),
+      );
+      const refresh = manager.refreshPositions();
+      transition(manager);
+      const currentPositions = [makePosition('ETH')];
+      manager.positions.pushData(currentPositions);
+
+      resolveStale([makePosition('BTC')]);
+      await refresh;
+
+      expect(manager.positions.getCachedData()).toBe(currentPositions);
     });
   });
 
@@ -2234,6 +2465,7 @@ describe('PerpsStreamManager', () => {
 
       expect(manager.positions.hasCachedData()).toBe(true);
       expect(manager.positions.getCachedData()).toEqual(positions);
+      expect(manager.positions.isSeeded()).toBe(true);
     });
 
     it('refuses to hydrate user-scoped channels when the cache address does not match', () => {

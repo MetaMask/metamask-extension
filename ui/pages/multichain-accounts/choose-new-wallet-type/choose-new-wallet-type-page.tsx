@@ -2,9 +2,11 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
@@ -270,10 +272,10 @@ export const ChooseNewWalletTypePage = () => {
           />
         }
       >
-        {t('addAWallet')}
+        {t('addWallet')}
       </Header>
-      <Content paddingLeft={4} paddingRight={4}>
-        <Box flexDirection={BoxFlexDirection.Column} gap={3}>
+      <Content padding={0}>
+        <Box flexDirection={BoxFlexDirection.Column}>
           {walletOptions.map((option) => (
             <Box
               key={option.id}
@@ -290,23 +292,18 @@ export const ChooseNewWalletTypePage = () => {
               paddingTop={3}
               paddingBottom={3}
               gap={4}
-              backgroundColor={BoxBackgroundColor.BackgroundMuted}
               flexDirection={BoxFlexDirection.Row}
-              className="rounded-xl cursor-pointer"
+              className="min-h-[56px] cursor-pointer hover:bg-hover active:bg-pressed"
+              role="button"
               tabIndex={0}
               data-testid={`choose-wallet-type-${option.id}`}
             >
-              <Box
-                alignItems={BoxAlignItems.Center}
-                backgroundColor={BoxBackgroundColor.BackgroundMuted}
-                className="flex items-center justify-center w-10 h-10 shrink-0 rounded-xl"
-              >
-                <Icon
-                  name={option.iconName}
-                  size={IconSize.Md}
-                  color={IconColor.IconAlternative}
-                />
-              </Box>
+              <AvatarIcon
+                iconName={option.iconName}
+                size={AvatarIconSize.Lg}
+                severity={AvatarIconSeverity.Neutral}
+                className="shrink-0"
+              />
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 className="flex-1 min-w-0"
@@ -321,13 +318,18 @@ export const ChooseNewWalletTypePage = () => {
                 {option.descriptionKey && (
                   <Text
                     variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
                     color={TextColor.TextAlternative}
                   >
                     {t(option.descriptionKey)}
                   </Text>
                 )}
               </Box>
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Md}
+                color={IconColor.IconAlternative}
+                className="shrink-0"
+              />
             </Box>
           ))}
         </Box>
