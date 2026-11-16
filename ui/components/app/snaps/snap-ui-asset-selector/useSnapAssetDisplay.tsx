@@ -20,11 +20,11 @@ import {
   getImageForChainId,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../../shared/constants/bridge';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 /**
  * An asset for the SnapUIAssetSelector.
@@ -76,7 +76,7 @@ export const useSnapAssetSelectorData = ({
     getInternalAccountByAddress(state, parsedAccounts[0].address),
   );
   const networks = useSelector(getMultichainNetworkConfigurationsByChainId);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const assets = useSelector((state) => getMultiChainAssets(state, account));
 

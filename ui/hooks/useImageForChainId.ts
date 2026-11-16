@@ -1,6 +1,5 @@
-import { useSelector } from 'react-redux';
 import { getImageForChainId } from '../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../selectors/config-registry/config-registry';
+import { useConfigRegistryNetworks } from './useConfigRegistryNetworks';
 
 /**
  * Resolves the network or native asset image URL for a chain ID (hex or
@@ -12,6 +11,6 @@ import { getChainIdToNetworkImageUrlMap } from '../selectors/config-registry/con
 export function useImageForChainId(
   chainId: string | undefined,
 ): string | undefined {
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   return chainId ? getImageForChainId(chainId, networkImageUrls) : undefined;
 }

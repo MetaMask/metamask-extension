@@ -8,7 +8,6 @@ import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-mod
 import { getIpfsGateway } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { isWebUrl } from '../../../../../../shared/lib/url-utils';
@@ -16,6 +15,7 @@ import {
   VirtualizedList,
   noAdjustmentsScroll,
 } from '../../../../ui/virtualized-list/virtualized-list';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -35,7 +35,7 @@ const NFTGridItem = (props: {
     ipfsGateway,
   );
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const isImageHosted =
     (image && isWebUrl(image)) ||

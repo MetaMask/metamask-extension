@@ -19,7 +19,6 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
-  getChainIdToNetworkImageUrlMap,
   type FeaturedNetwork,
 } from '../../../../../selectors/config-registry/config-registry';
 import {
@@ -66,6 +65,7 @@ import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../sel
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
 import { useDispatch } from '../../../../../store/hooks';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 
 const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
@@ -127,7 +127,7 @@ const DefaultNetworks = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );

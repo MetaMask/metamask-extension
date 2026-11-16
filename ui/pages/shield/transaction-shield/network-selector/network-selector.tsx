@@ -27,9 +27,9 @@ import {
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { NetworkListItem } from '../../../../components/multichain/network-list-item';
 import { getImageForChainId } from '../../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
 import { getSupportedNetworksForClaim } from '../../../../selectors/shield/claims';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 const NetworkSelector = ({
   label,
@@ -48,7 +48,7 @@ const NetworkSelector = ({
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const claimsSupportedNetworks = useSelector(getSupportedNetworksForClaim);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const networksList = useMemo(
     () =>

@@ -29,7 +29,7 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   type MultichainProviderConfig,
 } from '../../../shared/constants/multichain/networks';
-import { getChainIdToNetworkImageUrlMap } from '../config-registry/config-registry';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
@@ -561,8 +561,6 @@ export const getMultichainNetwork = createSelector(
       getMultichainNetworkProviders(state),
     (state: MultichainNetworkConfigState & AccountsState) =>
       state.metamask.selectedMultichainNetworkChainId,
-    (state: MultichainNetworkConfigState & AccountsState) =>
-      getChainIdToNetworkImageUrlMap(state),
   ],
   (
     isEvm,
@@ -572,16 +570,17 @@ export const getMultichainNetwork = createSelector(
     selectedAccount,
     nonEvmNetworks,
     selectedChainId,
-    networkImageUrls,
   ): MultichainNetwork => {
     if (isEvm) {
       const evmNetwork = {
         ...evmProviderConfig,
       } as ProviderConfigWithImageUrlAndExplorerUrl;
+      const evmChainIdKey =
+        evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
 
       evmNetwork.rpcPrefs = {
         ...evmNetwork.rpcPrefs,
-        imageUrl: networkImageUrls[evmChainId],
+        imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
       };
 
       return {

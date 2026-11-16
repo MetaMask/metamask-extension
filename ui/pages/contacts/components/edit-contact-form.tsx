@@ -28,7 +28,6 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   addToAddressBook,
@@ -49,6 +48,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 export function EditContactForm({
   address,
@@ -63,7 +63,7 @@ export function EditContactForm({
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);

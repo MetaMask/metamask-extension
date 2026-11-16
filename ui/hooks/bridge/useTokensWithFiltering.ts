@@ -49,7 +49,7 @@ import {
   toAssetId,
 } from '../../../shared/lib/asset-utils';
 import { getNetworkImageUrl } from '../../../shared/lib/network.utils';
-import { getChainIdToNativeTokenImageUrlMap } from '../../selectors/config-registry/config-registry';
+import { useConfigRegistryNetworks } from '../useConfigRegistryNetworks';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -143,9 +143,7 @@ export const useTokensWithFiltering = (
   const cachedTokens = useSelector(
     (state: BridgeAppState) => state.metamask.tokensChainsCache,
   );
-  const nativeTokenImageUrls = useSelector((state: BridgeAppState) =>
-    getChainIdToNativeTokenImageUrlMap(state),
-  );
+  const { nativeTokenImageUrls } = useConfigRegistryNetworks();
 
   const cachedTokenList = useMemo(() => {
     if (!chainId) {

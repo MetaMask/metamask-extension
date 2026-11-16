@@ -4,7 +4,6 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -29,6 +28,7 @@ import {
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import { BadgeWrapperPosition } from '../../../../components/component-library';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -57,7 +57,7 @@ export const components: NotificationComponent<ETHNotification> = {
   guardFn: isETHNotification,
   // eslint-disable-next-line func-name-matching, @typescript-eslint/naming-convention
   item: function Item({ notification, onClick }) {
-    const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+    const { networkImageUrls } = useConfigRegistryNetworks();
     const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
       notification.payload.chain_id,
       networkImageUrls,
@@ -130,7 +130,7 @@ export const components: NotificationComponent<ETHNotification> = {
         />
       ),
       Asset: ({ notification }) => {
-        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+        const { networkImageUrls } = useConfigRegistryNetworks();
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
           networkImageUrls,
@@ -165,7 +165,7 @@ export const components: NotificationComponent<ETHNotification> = {
         );
       },
       Network: ({ notification }) => {
-        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+        const { networkImageUrls } = useConfigRegistryNetworks();
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
           networkImageUrls,

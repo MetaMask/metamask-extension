@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 /**
  * Returns a map of chain IDs to their network name and image.
@@ -14,7 +14,7 @@ export const useChainNetworkNameAndImageMap = () => {
   const allNetworkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const chainNetworkNAmeAndImageMap = useMemo(() => {
     const map = new Map<

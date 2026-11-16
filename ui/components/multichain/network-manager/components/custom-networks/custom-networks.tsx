@@ -31,7 +31,6 @@ import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
@@ -40,13 +39,14 @@ import {
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
   const [, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );

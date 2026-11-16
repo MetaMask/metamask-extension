@@ -24,7 +24,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { getNetworkIcon } from '../../../../../../shared/lib/network.utils';
-import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import {
   Modal,
@@ -37,6 +36,7 @@ import { transitionForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
 import Tooltip from '../../../../ui/tooltip';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 import {
   getSelectableChainId,
   useHomeNetworkFilter,
@@ -328,7 +328,7 @@ const HomeNetworkFilterModalContent = ({
     showTestnets,
     testNetworks,
   } = useHomeNetworkFilter({ onClose, onPendingChange });
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const handleClose = useCallback(() => {
     if (isPending) {

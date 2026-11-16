@@ -22,7 +22,6 @@ import {
   ModalHeader,
   ModalBody,
 } from '@metamask/design-system-react';
-import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   Display,
   FlexDirection,
@@ -44,6 +43,7 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { getShouldShowTestNetworks } from '../../../../selectors';
 import { getNetworkSections } from '../../../../helpers/utils/network-sections';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 // TODO use MultichainNetworkConfiguration type
 type NetworkOption =
@@ -100,7 +100,7 @@ export const AssetPickerModalNetwork = ({
   const { balanceByChainId } = useMultichainBalances();
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const showTestnets = useSelector(getShouldShowTestNetworks);
   const currency = useSelector(getCurrentCurrency);
   // Use the networks prop if it is provided, otherwise use all available networks

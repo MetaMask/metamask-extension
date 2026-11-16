@@ -10,12 +10,12 @@ import {
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
 import { useImageForChainId } from '../../../../../hooks/useImageForChainId';
-import { getChainIdToNativeTokenImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
   getAssetImageUrl,
   isEvmChainId,
 } from '../../../../../../shared/lib/asset-utils';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
@@ -73,9 +73,7 @@ export const AssetCellBadge = React.memo(
     networkBadgeTestId,
   }: AssetCellBadgeProps) => {
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-    const nativeTokenImageUrls = useSelector(
-      getChainIdToNativeTokenImageUrlMap,
-    );
+    const { nativeTokenImageUrls } = useConfigRegistryNetworks();
 
     const avatarTokenSrc = getAvatarTokenSrc({
       chainId,

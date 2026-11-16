@@ -1,4 +1,5 @@
 import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, screen, render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BtcAccountType } from '@metamask/keyring-api';
@@ -45,11 +46,17 @@ const propsWithQrCode = {
   },
 };
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 const renderComponent = (props = {}) => {
   return render(
-    <Provider store={configureStore(mockState)}>
-      <MultichainAddressRow {...defaultProps} {...props} />
-    </Provider>,
+    <QueryClientProvider client={queryClient}>
+      <Provider store={configureStore(mockState)}>
+        <MultichainAddressRow {...defaultProps} {...props} />
+      </Provider>
+    </QueryClientProvider>,
   );
 };
 

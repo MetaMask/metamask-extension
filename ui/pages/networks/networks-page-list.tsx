@@ -38,7 +38,6 @@ import {
 } from '../../selectors';
 import {
   getFeaturedEvmNetworks,
-  getChainIdToNetworkImageUrlMap,
   type FeaturedNetwork,
 } from '../../selectors/config-registry/config-registry';
 import {
@@ -61,6 +60,7 @@ import {
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import { useDispatch } from '../../store/hooks';
+import { useConfigRegistryNetworks } from '../../hooks/useConfigRegistryNetworks';
 import { NoSearchResult } from './no-search-result';
 
 const filterNetworks = <
@@ -178,7 +178,7 @@ export const NetworksPageList = ({
   const showTestnets = useSelector(getShouldShowTestNetworks);
   const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );

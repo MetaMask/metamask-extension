@@ -42,7 +42,6 @@ import {
   formatDecimalShiftedValue,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import {
@@ -51,6 +50,7 @@ import {
 } from '../../../../../hooks/useGetDisplayName';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import NicknamePopovers from '../../../../app/modals/nickname-popovers';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 import {
   GatorPermissionDetailRow,
   gatorPermissionDetailRowStyle,
@@ -181,7 +181,7 @@ const ReviewNetworkRow = ({
   networkName: string;
 }) => {
   const t = useI18nContext() as I18nFunction;
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   return (
     <Box

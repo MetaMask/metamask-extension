@@ -54,14 +54,11 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
-import {
-  getChainIdToNetworkImageUrlMap,
-  getChainIdToNativeTokenImageUrlMap,
-} from '../../../../selectors/config-registry/config-registry';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { isTronSpecialAsset } from '../../../../../shared/lib/asset-utils';
 
 import { isExcludedAsset } from '../../../app/assets/enablement/networks-customization';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type { ERC20Asset, NativeAsset, AssetWithDisplayData } from './types';
 import AssetList from './AssetList';
@@ -183,8 +180,8 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
-  const nativeTokenImageUrls = useSelector(getChainIdToNativeTokenImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
+  const { nativeTokenImageUrls } = useConfigRegistryNetworks();
 
   // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(

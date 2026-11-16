@@ -4,7 +4,6 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -31,6 +30,7 @@ import {
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { BadgeWrapperPosition } from '../../../../components/component-library';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -123,7 +123,7 @@ export const components: NotificationComponent<ERC20Notification> = {
         />
       ),
       Asset: ({ notification }) => {
-        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+        const { networkImageUrls } = useConfigRegistryNetworks();
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
           networkImageUrls,
@@ -155,7 +155,7 @@ export const components: NotificationComponent<ERC20Notification> = {
         );
       },
       Network: ({ notification }) => {
-        const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+        const { networkImageUrls } = useConfigRegistryNetworks();
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
           networkImageUrls,

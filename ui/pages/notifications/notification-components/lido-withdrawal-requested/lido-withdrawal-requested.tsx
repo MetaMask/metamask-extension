@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -29,6 +28,7 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -109,7 +109,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           />
         ),
         Asset: ({ notification }) => {
-          const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+          const { networkImageUrls } = useConfigRegistryNetworks();
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
             networkImageUrls,
@@ -139,7 +139,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           );
         },
         AssetReceived: ({ notification }) => {
-          const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+          const { networkImageUrls } = useConfigRegistryNetworks();
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
             networkImageUrls,

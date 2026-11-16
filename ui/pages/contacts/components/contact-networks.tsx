@@ -5,12 +5,12 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getNetworkSections } from '../../../helpers/utils/network-sections';
 import {
   NetworkSelectionModal,
   type NetworkSelectionSection,
 } from '../../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 export const ContactNetworks = ({
   isOpen,
@@ -26,7 +26,7 @@ export const ContactNetworks = ({
   const t = useI18nContext();
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const networkSections = useMemo(
     () =>
       getNetworkSections(

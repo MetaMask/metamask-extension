@@ -19,8 +19,8 @@ import { NetworkListItem } from '../../components/multichain/network-list-item';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../selectors/config-registry/config-registry';
 import { getNetworkSections } from '../../helpers/utils/network-sections';
+import { useConfigRegistryNetworks } from '../../hooks/useConfigRegistryNetworks';
 
 export type CustomTokenImportNetworkOption = {
   chainId: string;
@@ -45,7 +45,7 @@ export const CustomTokenImportNetworkSelector = ({
   onSelectNetwork,
 }: CustomTokenImportNetworkSelectorProps) => {
   const t = useI18nContext();
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const networkSections = getNetworkSections(networks);
 
   return (

@@ -28,7 +28,6 @@ import {
   getMultichainNativeCurrency,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   type SafeChain,
@@ -36,6 +35,7 @@ import {
 } from '../../networks-form/use-safe-chains';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
 import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -92,7 +92,7 @@ export default function AssetList({
     getMultichainSelectedAccountCachedBalance,
   );
   const currentCurrency = useSelector(getMultichainCurrentCurrency);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,

@@ -80,12 +80,10 @@ import {
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
-import {
-  getFeaturedEvmNetworks,
-  getChainIdToNetworkImageUrlMap,
-} from '../../../selectors/config-registry/config-registry';
+import { getFeaturedEvmNetworks } from '../../../selectors/config-registry/config-registry';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -239,7 +237,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
   const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const canSelectNetwork: boolean = useMemo(
     () =>
       Boolean(selectedTabOrigin) &&

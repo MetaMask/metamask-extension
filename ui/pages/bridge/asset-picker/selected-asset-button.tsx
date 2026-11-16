@@ -28,9 +28,9 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
 import { useAssetSecurityData } from '../hooks/useAssetSecurityData';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { AssetSecurityBadge } from './asset-security-badge';
 
 export const SelectedAssetButton = ({
@@ -40,7 +40,7 @@ export const SelectedAssetButton = ({
   asset: BridgeToken;
 } & SelectButtonProps<'div'>) => {
   const caipChainId = formatChainIdToCaip(asset.chainId);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const { assetIsVerified } = useAssetSecurityData(asset);
 
   return (

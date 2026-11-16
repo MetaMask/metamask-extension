@@ -1,4 +1,5 @@
 import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
@@ -16,23 +17,29 @@ const PRIVATE_KEY = 'private-key-mock';
 const mockOnCopy = jest.fn().mockResolvedValue(true);
 const mockOnClearClipboard = jest.fn();
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 const renderComponent = ({
   sensitiveClipboardState = 'idle',
 }: {
   sensitiveClipboardState?: 'idle' | 'ready' | 'cleared' | 'error';
 } = {}) =>
   render(
-    <Provider store={configureStore(mockState)}>
-      <MultichainPrivateKeyRow
-        address="0x1234567890abcdef1234567890abcdef12345678"
-        chainId={CHAIN_ID}
-        networkName={messages.ethereumAndEvms.message}
-        onCopy={mockOnCopy}
-        onClearClipboard={mockOnClearClipboard}
-        privateKey={PRIVATE_KEY}
-        sensitiveClipboardState={sensitiveClipboardState}
-      />
-    </Provider>,
+    <QueryClientProvider client={queryClient}>
+      <Provider store={configureStore(mockState)}>
+        <MultichainPrivateKeyRow
+          address="0x1234567890abcdef1234567890abcdef12345678"
+          chainId={CHAIN_ID}
+          networkName={messages.ethereumAndEvms.message}
+          onCopy={mockOnCopy}
+          onClearClipboard={mockOnClearClipboard}
+          privateKey={PRIVATE_KEY}
+          sensitiveClipboardState={sensitiveClipboardState}
+        />
+      </Provider>
+    </QueryClientProvider>,
   );
 
 describe('MultichainPrivateKeyRow', () => {

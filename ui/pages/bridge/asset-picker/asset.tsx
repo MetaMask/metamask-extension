@@ -24,7 +24,6 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
 import {
   AlignItems,
@@ -37,6 +36,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Column, Row } from '../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useRWAToken } from '../hooks/useRWAToken';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { AssetSecurityBadge } from './asset-security-badge';
 
 export const BridgeAsset = React.forwardRef(
@@ -56,7 +56,7 @@ export const BridgeAsset = React.forwardRef(
     ref?: PolymorphicRef<Element>,
   ) => {
     const currency = useSelector(getCurrentCurrency);
-    const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+    const { networkImageUrls } = useConfigRegistryNetworks();
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
     const { navigateToAssetPage } = useBridgeNavigation();

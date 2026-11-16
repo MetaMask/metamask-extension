@@ -1,4 +1,5 @@
 import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -67,14 +68,20 @@ function buildToken(
   } as TokenWithFiatAmount;
 }
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 const renderWithProviders = (component: React.ReactElement) =>
   render(
-    <Provider store={store}>
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <I18nContext.Provider value={tEn as any}>
-        {component}
-      </I18nContext.Provider>
-    </Provider>,
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <I18nContext.Provider value={tEn as any}>
+          {component}
+        </I18nContext.Provider>
+      </Provider>
+    </QueryClientProvider>,
   );
 
 describe('MusdConvertSection', () => {

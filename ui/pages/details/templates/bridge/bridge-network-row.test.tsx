@@ -27,6 +27,18 @@ jest.mock('../../../../../shared/lib/selectors/networks', () => ({
 jest.mock('../../../../selectors/multichain', () => ({
   getImageForChainId: jest.fn(),
 }));
+jest.mock('../../../../hooks/useConfigRegistryNetworks', () => {
+  const actual = jest.requireActual(
+    '../../../../hooks/useConfigRegistryNetworks',
+  );
+  return {
+    ...actual,
+    useConfigRegistryNetworks: () => ({
+      networkImageUrls: actual.buildNetworkImageUrls(undefined, false),
+      nativeTokenImageUrls: actual.buildNativeTokenImageUrls(undefined, false),
+    }),
+  };
+});
 
 const mockGetAllNetworkConfigurationsByCaipChainId =
   getAllNetworkConfigurationsByCaipChainId as unknown as jest.Mock;

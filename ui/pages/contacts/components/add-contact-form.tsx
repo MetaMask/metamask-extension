@@ -37,7 +37,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
@@ -73,6 +72,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { ContactNetworks } from './contact-networks';
 
 export function AddContactForm({ onSuccess }: AddContactFormProps) {
@@ -83,7 +83,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
   const domainError = useSelector(getDomainError);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const domainResolutions = useSelector(getDomainResolutions);
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationsByChainId);

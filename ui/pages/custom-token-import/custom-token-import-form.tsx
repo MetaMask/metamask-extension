@@ -31,8 +31,8 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../selectors/config-registry/config-registry';
 import { Content } from '../../components/multichain/pages/page';
+import { useConfigRegistryNetworks } from '../../hooks/useConfigRegistryNetworks';
 import {
   CustomTokenImportNetworkSelector,
   type CustomTokenImportNetworkOption,
@@ -111,7 +111,7 @@ const NetworkPickerField = ({
   onClick: () => void;
 }) => {
   const t = useI18nContext();
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   return (
     <Box>

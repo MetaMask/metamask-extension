@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AvatarNetworkSize } from '@metamask/design-system-react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -13,8 +14,16 @@ jest.mock('../../../selectors/multichain', () => ({
   getImageForChainId: (chainId: string) => mockGetImage(chainId),
 }));
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 const renderWithProvider = (ui: React.ReactElement) =>
-  render(<Provider store={configureStore(mockState)}>{ui}</Provider>);
+  render(
+    <QueryClientProvider client={queryClient}>
+      <Provider store={configureStore(mockState)}>{ui}</Provider>
+    </QueryClientProvider>,
+  );
 
 describe('ChainBadge', () => {
   beforeEach(() => {

@@ -47,7 +47,6 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import {
   convertCaipToHexChainId,
   getNetworkIcon,
@@ -61,6 +60,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 type DappBarNetworkSelectorPopoverProps = {
   referenceElement: HTMLElement | null;
@@ -90,7 +90,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShouldShowTestNetworks);

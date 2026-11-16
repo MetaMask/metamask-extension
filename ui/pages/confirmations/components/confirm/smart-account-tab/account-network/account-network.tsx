@@ -23,9 +23,9 @@ import {
 import { getAvatarNetworkColor } from '../../../../../../helpers/utils/accounts';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { EIP7702NetworkConfiguration } from '../../../../hooks/useEIP7702Networks';
-import { getChainIdToNetworkImageUrlMap } from '../../../../../../selectors/config-registry/config-registry';
 import { useBatchAuthorizationRequests } from '../../../../hooks/useBatchAuthorizationRequests';
 import { useEIP7702Account } from '../../../../hooks/useEIP7702Account';
+import { useConfigRegistryNetworks } from '../../../../../../hooks/useConfigRegistryNetworks';
 
 export const AccountNetwork = ({
   address,
@@ -42,7 +42,7 @@ export const AccountNetwork = ({
   });
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const networkIcon = getNetworkIcon(networkConfiguration, networkImageUrls);
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(

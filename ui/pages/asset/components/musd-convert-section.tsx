@@ -39,7 +39,6 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
 } from '../../../selectors/multichain';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
@@ -49,6 +48,7 @@ import {
 } from '../../../hooks/musd';
 import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { useMusdGeoBlocking } from '../../../hooks/musd/useMusdGeoBlocking';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 /** Figma node 10049:41315 — Secondary list row Convert control */
 const MUSD_CONVERT_LIST_BUTTON_MIN_WIDTH_PX = 92;
@@ -121,7 +121,7 @@ export function MusdConvertSection() {
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const stablecoins = useMemo(
     () =>

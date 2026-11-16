@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { type CaipChainId } from '@metamask/utils';
 import { IconName } from '@metamask/design-system-react';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../shared/constants/bridge';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
 import {
   NetworkSelectionModal,
@@ -18,6 +17,7 @@ import {
 } from '../../../../shared/lib/ab-testing/configs/chain-value-order';
 import { useABTest } from '../../../hooks/useABTest';
 import { useChainValueOrder } from '../hooks/useChainValueOrder';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 type NetworkPickerProps = {
   chains: { chainId: CaipChainId; name: string }[];
@@ -39,7 +39,7 @@ const NetworkPickerContent = ({
   testId,
 }: NetworkPickerProps) => {
   const t = useI18nContext();
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const networkSections = useMemo(() => getNetworkSections(chains), [chains]);
 

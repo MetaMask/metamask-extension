@@ -23,13 +23,13 @@ import {
 import { useSelector } from 'react-redux';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectableChainId,
   useHomeNetworkFilter,
 } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { getHiddenPillCount } from './get-hidden-pill-count';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
@@ -137,7 +137,7 @@ export const NetworkPillSelector = () => {
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
   const { privacyMode } = useSelector(getPreferences);
-  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const {
     defaultNetworks,
     handleSelectAllDefaultNetworks,
