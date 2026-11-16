@@ -136,13 +136,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v6
+      - uses: MetaMask/action-checkout-and-setup@v3
         with:
+          is-high-risk-environment: true
           persist-credentials: false
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
+          skip-install: true
 
       - name: Warm the Corepack cache outside the sandbox
         run: |

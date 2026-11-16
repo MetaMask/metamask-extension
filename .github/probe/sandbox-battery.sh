@@ -46,6 +46,8 @@ export YARN_HTTPS_PROXY="${HTTPS_PROXY:-${https_proxy:-}}"
   echo '--- sandbox parent'
   tr '\0' ' ' < "/proc/$PPID/cmdline" 2> /dev/null | cut -c1-1500; echo
   grep -E 'NoNewPrivs|Seccomp' /proc/self/status
+  echo '--- mounts under the repo'
+  grep -E 'node_modules|/\.git| \.bin' /proc/self/mountinfo | cut -c1-220 | head -n 12
 } >> sandbox-detail.txt
 
 # Isolation
@@ -68,9 +70,9 @@ check 'yarn npm audit reaches the registry' bash -c '
   yarn npm audit --recursive --environment production --json > audit.json 2> audit.err
   ! grep -qiE "ENOTFOUND|ECONN|EAI_AGAIN|403|blocked|refused|YN0035" audit.json audit.err'
 # Full install first; the later checks need node_modules.
-check 'yarn install --immutable --mode=skip-build' yarn install --immutable --mode=skip-build
+check 'yarn install --immutable --mode=skip-build' env YARN_NETWORK_CONCURRENCY=8 yarn install --immutable --mode=skip-build
 if grep -q '^FAIL yarn install --immutable' sandbox-results.txt; then
-  check 'yarn install retry, network concurrency 8' env YARN_NETWORK_CONCURRENCY=8 yarn install --immutable --mode=skip-build
+  check 'yarn install retry' env YARN_NETWORK_CONCURRENCY=8 yarn install --immutable --mode=skip-build
 fi
 check 'yarn install --mode=update-lockfile' yarn install --mode=update-lockfile
 restore
