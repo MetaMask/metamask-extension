@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import {
   SmartTransactionStatuses,
-  SmartTransactionMinedTx,
+  SentinelMinedTxStatus,
 } from '@metamask/smart-transactions-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
@@ -165,7 +165,7 @@ describe('Transaction Selectors', () => {
       const smartTransaction = createSmartTransaction({
         minedHash:
           '0x55ad39634ee10d417b6e190cfd3736098957e958879cffe78f1f00f4fd2654d6',
-        minedTx: SmartTransactionMinedTx.SUCCESS,
+        minedTx: SentinelMinedTxStatus.Success,
         confirmed: true,
       });
       const state = createState(smartTransaction);
@@ -178,7 +178,7 @@ describe('Transaction Selectors', () => {
 
     it('does not return a confirmed transaction with status "reverted"', () => {
       const smartTransaction = createSmartTransaction({
-        minedTx: SmartTransactionMinedTx.REVERTED,
+        minedTx: SentinelMinedTxStatus.Reverted,
         confirmed: true,
       });
       const state = createState(smartTransaction);
