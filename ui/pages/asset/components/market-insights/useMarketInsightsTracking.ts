@@ -7,7 +7,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import {
   MARKET_INSIGHTS_EVENT_PROPERTY,
-  MARKET_INSIGHTS_EVENT_VALUE,
   type MarketInsightsEventSource,
 } from '../../../../../shared/constants/market-insights-events';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
