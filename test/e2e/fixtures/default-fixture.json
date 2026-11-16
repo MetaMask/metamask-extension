@@ -81,21 +81,72 @@
     "AccountsController": {
       "internalAccounts": {
         "accounts": {
+          "de270db7-4c97-4101-84eb-d44aa1ae52d4": {
+            "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
+            "id": "de270db7-4c97-4101-84eb-d44aa1ae52d4",
+            "metadata": {
+              "importTime": 1793717662258,
+              "keyring": { "type": "snap" },
+              "lastSelected": 0,
+              "name": "",
+              "snap": { "id": "npm:@metamask/bitcoin-wallet-snap" }
+            },
+            "methods": [
+              "signPsbt",
+              "computeFee",
+              "fillPsbt",
+              "broadcastPsbt",
+              "sendTransfer",
+              "getUtxo",
+              "listUtxos",
+              "publicDescriptor",
+              "signMessage"
+            ],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/84'/0'/0'",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "entropySource": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+              "exportable": true
+            },
+            "scopes": ["bip122:000000000019d6689c085ae165831e93"],
+            "type": "bip122:p2wpkh"
+          },
+          "7fbb503f-68e5-40d8-a91e-97d75f482fc2": {
+            "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
+            "id": "7fbb503f-68e5-40d8-a91e-97d75f482fc2",
+            "metadata": {
+              "importTime": 1793717662299,
+              "keyring": { "type": "snap" },
+              "lastSelected": 0,
+              "name": "",
+              "snap": { "id": "npm:@metamask/tron-wallet-snap" }
+            },
+            "methods": ["signMessage", "signTransaction"],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/44'/195'/0'/0/0",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "exportable": true
+            },
+            "scopes": ["tron:728126428"],
+            "type": "tron:eoa"
+          },
           "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
             "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
             "id": "688e01b8-3134-4ef4-80e6-8772bab38ef7",
             "metadata": {
               "importTime": 1770282512702,
-              "keyring": {
-                "type": "Snap Keyring"
-              },
+              "keyring": { "type": "snap" },
               "lastSelected": 0,
               "name": "",
-              "snap": {
-                "enabled": true,
-                "id": "npm:@metamask/solana-wallet-snap",
-                "name": "Solana"
-              }
+              "snap": { "id": "npm:@metamask/solana-wallet-snap" }
             },
             "methods": [
               "signAndSendTransaction",
@@ -121,14 +172,35 @@
             ],
             "type": "solana:data-account"
           },
+          "ee913f81-d818-4191-9e73-8557dd1167e0": {
+            "address": "GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
+            "id": "ee913f81-d818-4191-9e73-8557dd1167e0",
+            "metadata": {
+              "importTime": 1793717662335,
+              "keyring": { "type": "snap" },
+              "lastSelected": 0,
+              "name": "",
+              "snap": { "id": "npm:@metamask/stellar-wallet-snap" }
+            },
+            "methods": ["signMessage", "signTransaction", "signAuthEntry"],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/44'/148'/0'",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "exportable": true
+            },
+            "scopes": ["stellar:pubnet"],
+            "type": "stellar:account"
+          },
           "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "id": "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
             "metadata": {
               "importTime": 1770282498132,
-              "keyring": {
-                "type": "HD Key Tree"
-              },
+              "keyring": { "type": "HD Key Tree" },
               "lastSelected": 1770282498132,
               "name": ""
             },
@@ -436,7 +508,7 @@
       "lastSyncedTimestamp": -1
     },
     "KeyringController": {
-      "vault": "{\"data\":\"NExj9MOjXXpo3+Vu6YkTqT8gTqlu8OAAUKJQpdWeYXEwDSSRf0itJhwDxECqgm3rE+DEstjsEzsCTH3g1gKp6uzDU4XcE07+XzekuLatveN3R8d95RFh4ECoLDdfbcVfMyOjr3EUrM0dDq1eBJjWQZxbbeCUHh3VnYap0g9uHiIdCmU7PKDL4h8PPmsLS3c2LQ2Boa6q/johhNBxCmiySWgkTv1Pi0iTxhhCO+qwkJxeLf1u8b5TmcpgKGOg+n0phCf3/zrQ7brpEeCA8R3zoFmqMM7xr5xZke3YY4ef6JKoZEU+3lkMCs9IHnvWAUnDaSJmAIzTrfhOe8AmDzXwbooXd24NBXZUyG1G/gZWDlW1Ku4it4GqYj7lF0GH3vXVPHwK+FR3LdjqOtrcPfyJCPdTKyEVzMSttnTyjpIJiWAwY21AQrvKBHMfCfZd2/LzfN0TsxBKDAi/rPsA/On+Ng+ZDcmMlstvALF3LKSWv15OqH7e/xn/IffURGeI2OU73jTjNCbGzW2hqV2VK+6UaQSv93ZH653fmT+1komK3Xitt15+yMYbbSRVubqs5gSwvKs0tiKYn381mmRLHy1dCmj0fjTlM4UDjSCTS9Ce3ioJlKRRw66/FQRxYYA6mQF0vzrbIvVh2x2PHrq8ZgJ4PyWaYdaMUA0bZyzol2hFBNFXcOmfQEzdYul1vGpEHRhwbW2oor2glEh3CAgn9kG3JUHsnHIhyjc7J+jpFd0UBgwS2d8UCABSU0g/YSTwcHHOL+iTRQnr4ytvLBTeJG6lzH2fyhnrBu2/vPWLCQ8XD72fVmhrBz/XGfQtk8trspaTeCM5B8zegUS7sl1IKIw7H5Z7E3eQXH/AwiqmkSt5h9lAo4q5IKJF7uB4q6CFwqfJXoT4lCoqj1uO7bPUwpO7bWUnbbPlUOlU/kpMxHjU1UDMmvN9lG2Qd0KQHKGeFMigjL0t5JYj56r1sEj6bWdjWMrq62edaLGrhzQyXp2UiISwCELlIqy3cz0tollOTPOupkTFK5sHyTKH5PbPJtFYOiAMir4JY39LXYgcorim4hLQwG5ZB1Ew8n9sDA2KfcfI0Bs+tiZOoSGCcycrpfO5J6xP2TsXpAHr8EzRpVCE7OoltaLgP1IZC1zmdfkRXUww9+Gw0Pgwy3cxYljwv5Kg2FCfkb0pKARUck1eNC/4dFIAw0UIC9VzYPNt/t2vJoe+lC4I8UpctCyjYTTq0jfrLVoqFUcHnKAH3ynDmMPhsk+66He966O4OfqhKXJYm3e6weIGZTCGfe8BKmhPNiL5VJ52tsMIwKbXgN+ll8Oi9/a2fzs3wtESKogCJiR7M/nevekDnq/dEL6U6OaArkCK9NiLLevHt5FfDr/Qt3J6lfwdAkzjAhk5oTTWqGhR/4KK4+e0lqgaBPMGVcFs9BAyRlnIPeH24CvvZJ6KAsjMt/FcfnwHqO2mz8N5byAg5bcvc0Zj7w==\",\"iv\":\"dljVsphzXsTe/YGaUn3hGg==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"/zucSs8SpE/7JyE2eklkZ8HvklEWtSGmhBo67Vx5Jfo=\"}"
+      "vault": "{\"data\":\"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\",\"iv\":\"QqlAHGqQH+vNq6M/UJiMQA==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"/zucSs8SpE/7JyE2eklkZ8HvklEWtSGmhBo67Vx5Jfo=\"}"
     },
     "LoggingController": {
       "logs": {}
@@ -576,7 +648,10 @@
     },
     "MultichainTransactionsController": {
       "nonEvmTransactions": {
-        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {}
+        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {},
+        "de270db7-4c97-4101-84eb-d44aa1ae52d4": {},
+        "7fbb503f-68e5-40d8-a91e-97d75f482fc2": {},
+        "ee913f81-d818-4191-9e73-8557dd1167e0": {}
       }
     },
     "NameController": {
@@ -842,6 +917,7 @@
           "0x2105": false,
           "0x279f": false,
           "0x38": false,
+          "0x531": false,
           "0x539": true,
           "0x89": false,
           "0x8f": false,
@@ -1025,6 +1101,9 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "tdpChartIndicators": [],
+        "tdpChartInterval": "15m",
+        "tdpChartType": 2,
         "tokenNetworkFilter": {
           "0x539": true
         },
@@ -1084,10 +1163,13 @@
       }
     },
     "RampsController": {
+      "autorampTransactionRecords": {},
       "autoramps": [],
+      "moneyAccountWalletRegistrations": [],
       "orders": [],
       "providerAutoSelected": false,
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
@@ -1225,8 +1307,14 @@
       "orderedTransactionHistory": []
     },
     "SnapController": {
+      "snapStates": {
+        "npm:@metamask/bitcoin-wallet-snap": "{\"data\":\"Iu8ziW9Cps8OVgV5yIWeumrhgf3XBWu8IO0rjbO4UeP8JCYssvw8aa9uLBNvIYonWfNuXxnBgimFKtEoHND5YOEaLfW8BN0jYc6DtQVW5bF9t3z/KYji0Su4kRR8J8OauizyVu3UfxxKNhUSZ4uNHajcaV+b+vNjcZWSD/e1H2gnfTBwEURSpPQVCQcxZQugXwVksw+RuYmuUNqQ2xJfVRqK9xHwXGowh4RzDg8TTQc5a0bxEGT2sfDJ7bmlgPieee8qaziKxjNYSJe4g0ldQtD1l1Gf8Rb4AdkciNPwQO0aq+5VTTCbGOH/rr97uAX14+HKthWjyD2XALhUyh21O59Hv1OydF1NfwPEWrCRzkySFAfJV95W+CYYc2VTsyATnFoc3CUjZpIT43F2wmEIKuIyBV1Uq41dBtMgMTaYEchQ38+dHFSmo/ud5EazGLGCHpbGs/RegKWWPZuvp8c5Cz5g4Au7fGN2ASQ0sCvNdtj/nXPSdYYWiL6Jj4VpxNyOL2PY6Oz0ZauH+WFzdOxpq9aIVKgC/y0ig7xZlDA2nSF8tISBrf5zBvAsduB2rQMrJKCMHOwzUABOqfYKv4WFGmsYdNFDfudVSsYKTA9r0JJEAthW83j3PGEZ3Q42oAUqxT58KLwVXJAeDFHxpqxMbZEZdEK/GL5d/gHVBfn4aZk15d+NsqmzClhSgtoUa416iR+aRM5bZWMyKRRBTegiZpN0GCW0jPcDTtXqIPByqsNxGBfWD8XaneITf7tnsGBqVMVP4s5cCI3KvzacEhXezAOwhyZz4WPvj37y/iz6Aq+F5AAn9BMt0cnqFdoydfrUqn52Y40rCAMKaJKEK7+Wev8Hz16JDHzUbRyGC0OJA7NILjhKNCtXqSMH3vFDxfey4L+MA+dGiupIX0VBfsVG8S8NedlS1g+8lNZ+Kt/JjEjqXNFeMI1PO0FSXVmPOSGrWp4K70XOaPULI3ou5mcCAdNfLBWdgfIo6dTjjNkudBGlFwo2Hsdjn1PRhPfHxiiDezqBIWdhGWA7PKUgpnw9gYYnfHVctLaZSLaeBbsXlFEVJB7vovL5jH74PKQGbqSnuuTSxnfbUHokds8TqfCIWBcnqd19jya0WnsF1CAuU6W99FAjs/VvktC2KOlb0ks4UCHWu+VndITaOPaD4XMzXiwWT7mqNQ4yozcWJEsbL6DmFf8mcwN4th0gzyIWZR91qiQYxQrokSKk7oWQpxFBHUO0U5UNmZ5pphxHPlUacYTYEAUBvunMIbP4xonRHKjWRHyPcD0h5sIr5ow/X/2A4UERtfkEVY9x/esZSYF6cBFmhJnuKX8QF+Ef9mVzuaca2IPAPjg4cbqIqtnT/vjuiZ63uuxl95uJIelDGGgHEfuZL1m0TxiPmPljTGkBo1qmqQueb8JYuH8tc26Gtut1J2/KvACzt61payxmKBq9S3QJ7c5gP7z4IWOx0dhpCU4k2uxt5iL61HgHzivFLOTTMW4P5tJmkP7rTDGXE4i2dAJmP+GIohuETXzyY4F7gWzSnwlvi2bG\",\"iv\":\"8/1LQNLz4MEYUw9TzwJw3A==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"h/M/bTW+RiR3wKoHeLrtc0MYJGKc9DME1uKbNjnKsAw=\"}"
+      },
       "unencryptedSnapStates": {
-        "npm:@metamask/solana-wallet-snap": "{\"keyringAccounts\":{\"688e01b8-3134-4ef4-80e6-8772bab38ef7\":{\"id\":\"688e01b8-3134-4ef4-80e6-8772bab38ef7\",\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0,\"type\":\"solana:data-account\",\"address\":\"4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer\",\"scopes\":[\"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp\",\"solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z\",\"solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1\"],\"options\":{\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0},\"methods\":[\"signAndSendTransaction\",\"signTransaction\",\"signMessage\",\"signIn\"]}},\"mapInterfaceNameToId\":{},\"transactions\":{},\"signatures\":{},\"assetEntities\":{},\"tokenPrices\":{},\"subscriptions\":{},\"webSocketConnections\":{\"closeWebSocketConnectionsBackgroundEventId\":null}}"
+        "npm:@metamask/bitcoin-wallet-snap": "{\"rescanV1\":{\"pending\":[]},\"derivationPaths\":{\"01KGPGYE2JJGMXDJPEVXKPJ1JG/84'/0'/0'\":\"de270db7-4c97-4101-84eb-d44aa1ae52d4\"}}",
+        "npm:@metamask/solana-wallet-snap": "{\"keyringAccounts\":{\"688e01b8-3134-4ef4-80e6-8772bab38ef7\":{\"id\":\"688e01b8-3134-4ef4-80e6-8772bab38ef7\",\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0,\"type\":\"solana:data-account\",\"address\":\"4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer\",\"scopes\":[\"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp\",\"solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z\",\"solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1\"],\"options\":{\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0},\"methods\":[\"signAndSendTransaction\",\"signTransaction\",\"signMessage\",\"signIn\"]}},\"mapInterfaceNameToId\":{},\"transactions\":{},\"signatures\":{},\"assetEntities\":{},\"tokenPrices\":{},\"subscriptions\":{},\"webSocketConnections\":{\"closeWebSocketConnectionsBackgroundEventId\":null}}",
+        "npm:@metamask/stellar-wallet-snap": "{\"keyringAccounts\":{\"ee913f81-d818-4191-9e73-8557dd1167e0\":{\"id\":\"ee913f81-d818-4191-9e73-8557dd1167e0\",\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/148'/0'\",\"index\":0,\"type\":\"stellar:account\",\"address\":\"GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K\",\"scopes\":[\"stellar:pubnet\"],\"options\":{\"entropy\":{\"type\":\"mnemonic\",\"id\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/148'/0'\",\"groupIndex\":0},\"exportable\":true},\"methods\":[\"signMessage\",\"signTransaction\",\"signAuthEntry\"]}},\"assets\":{},\"transactions\":{},\"lastScanTokens\":{},\"onChainAccounts\":{}}",
+        "npm:@metamask/tron-wallet-snap": "{\"keyringAccounts\":{\"7fbb503f-68e5-40d8-a91e-97d75f482fc2\":{\"id\":\"7fbb503f-68e5-40d8-a91e-97d75f482fc2\",\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/195'/0'/0/0\",\"index\":0,\"type\":\"tron:eoa\",\"address\":\"TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3\",\"scopes\":[\"tron:728126428\"],\"options\":{\"entropy\":{\"type\":\"mnemonic\",\"id\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/195'/0'/0/0\",\"groupIndex\":0},\"exportable\":true},\"methods\":[\"signMessage\",\"signTransaction\"]}},\"assets\":{},\"transactions\":{},\"mapInterfaceNameToId\":{}}"
       }
     },
     "SnapInterfaceController": {

@@ -48,6 +48,11 @@ type UseHistoricalPricesParams = {
   address: string;
   currency: string;
   timeRange: string;
+  /**
+   * Set false to keep the query idle, for callers that render this data only
+   * some of the time and should not pay for it otherwise.
+   */
+  enabled?: boolean;
 };
 
 /**
@@ -149,6 +154,7 @@ function getV3HistoricalPricesCaipParams(
  * @param param0.address - The address of the asset.
  * @param param0.currency - The currency of the asset.
  * @param param0.timeRange - The chart time range, as an ISO 8601 duration string ("P1D", "P1M", "P1Y", "P3YT45S", ...)
+ * @param param0.enabled - Set false to keep the query idle.
  * @returns The historical prices for the given asset and time range.
  */
 export const useHistoricalPrices = ({
@@ -156,6 +162,7 @@ export const useHistoricalPrices = ({
   address,
   currency,
   timeRange,
+  enabled = true,
 }: UseHistoricalPricesParams) => {
   const flatlinePlaceholder: { prices: [number, number][] } = {
     prices: [
@@ -202,7 +209,7 @@ export const useHistoricalPrices = ({
     queryFn: queryOptions?.queryFn ?? (() => ({ prices: [] })),
     staleTime: queryOptions?.staleTime,
     gcTime: queryOptions?.gcTime,
-    enabled: Boolean(queryOptions),
+    enabled: enabled && Boolean(queryOptions),
     placeholderData: (previousData) => previousData ?? flatlinePlaceholder,
     retry: false,
     select: transformPricesToPoints,

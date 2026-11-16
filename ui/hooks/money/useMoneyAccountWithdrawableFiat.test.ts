@@ -100,6 +100,7 @@ describe('useMoneyAccountWithdrawableFiat', () => {
     const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(true));
 
     expect(result.current).toStrictEqual({
+      isLoading: true,
       withdrawableFiatFormatted: undefined,
       withdrawableFiatRaw: undefined,
     });
@@ -111,6 +112,7 @@ describe('useMoneyAccountWithdrawableFiat', () => {
     const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(true));
 
     expect(result.current).toStrictEqual({
+      isLoading: false,
       withdrawableFiatFormatted: undefined,
       withdrawableFiatRaw: undefined,
     });
@@ -120,6 +122,7 @@ describe('useMoneyAccountWithdrawableFiat', () => {
     const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(false));
 
     expect(result.current).toStrictEqual({
+      isLoading: false,
       withdrawableFiatFormatted: undefined,
       withdrawableFiatRaw: undefined,
     });

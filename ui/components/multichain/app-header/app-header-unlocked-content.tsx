@@ -16,6 +16,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
+import { selectShowTermsOfUse } from '#ui/selectors/home-modals';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -29,6 +30,7 @@ import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
+  DEFAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DISCOVER_SEARCH_ROUTE,
@@ -63,6 +65,7 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const showTermsOfUse = useSelector(selectShowTermsOfUse);
   const disableAccountPicker = Boolean(
     matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
     matchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname),
@@ -250,7 +253,10 @@ export const AppHeaderUnlockedContent = ({
       </BadgeWrapper>
 
       <GlobalMenuDrawerWithList
-        isOpen={accountOptionsMenuOpen}
+        isOpen={
+          accountOptionsMenuOpen &&
+          !(pathname === DEFAULT_ROUTE && showTermsOfUse)
+        }
         onClose={closeAccountOptionsMenu}
       />
       <VisitSupportDataConsentModal

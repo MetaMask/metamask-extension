@@ -19,7 +19,12 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
-import { optOutOfMarketing, optInToMarketing } from '../../../store/actions';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
+import {
+  optOutOfMarketing,
+  optInToMarketing,
+  setMarketingConsent,
+} from '../../../store/actions';
 import { METAMETRICS_SETTINGS_LINK } from '../../../helpers/constants/common';
 import { useDispatch } from '../../../store/hooks';
 
@@ -29,9 +34,24 @@ export function MetaMetricsConsentContainer() {
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
+
+  // Social-login wallets also store the choice server-side so the auth
+  // service can create the HubSpot contact for email marketing and learn
+  // of opt-outs. A failed sync keeps the local decision; reads that would
+  // overwrite the local choice stay removed.
+  const syncMarketingConsentToServer = useCallback(
+    (consent: boolean) => {
+      if (socialLoginEnabled) {
+        dispatch(setMarketingConsent(consent));
+      }
+    },
+    [dispatch, socialLoginEnabled],
+  );
 
   const handleClose = useCallback(() => {
     dispatch(optOutOfMarketing());
+    syncMarketingConsentToServer(false);
     trackEvent(
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Home)
@@ -41,11 +61,12 @@ export function MetaMetricsConsentContainer() {
         })
         .build(),
     );
-  }, [createEventBuilder, dispatch, trackEvent]);
+  }, [createEventBuilder, dispatch, syncMarketingConsentToServer, trackEvent]);
 
   const handleConsent = useCallback(
     (consent: boolean) => {
       dispatch(consent ? optInToMarketing() : optOutOfMarketing());
+      syncMarketingConsentToServer(consent);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
           .addCategory(MetaMetricsEventCategory.Home)
@@ -56,7 +77,7 @@ export function MetaMetricsConsentContainer() {
           .build(),
       );
     },
-    [createEventBuilder, dispatch, trackEvent],
+    [createEventBuilder, dispatch, syncMarketingConsentToServer, trackEvent],
   );
 
   if (dataCollectionForMarketing !== null) {

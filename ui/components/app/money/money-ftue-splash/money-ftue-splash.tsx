@@ -28,6 +28,7 @@ import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import {
   closeMoneyFtue,
   selectIsMoneyFtueOpen,
+  selectMoneyFtueOrigin,
   selectMoneyFtuePendingDeposit,
   selectMoneyFtueSource,
 } from '../../../../ducks/money-ftue';
@@ -98,12 +99,15 @@ const MoneyFtueSplashContent = () => {
   const location = useLocation();
   const titleId = useId();
   const source = useSelector(selectMoneyFtueSource);
+  const origin = useSelector(selectMoneyFtueOrigin);
   const pendingDeposit = useSelector(selectMoneyFtuePendingDeposit);
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: true });
   const { initiateDeposit } = useMoneyAccountDeposit();
   const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyFtue,
     componentName: MoneyComponentName.FtueSplash,
+    entryPoint: origin?.entryPoint,
+    originatingComponentName: origin?.componentName,
   });
 
   useTrackOnce(true, trackScreenViewed);
