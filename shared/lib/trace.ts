@@ -362,11 +362,11 @@ export type TraceRequest = {
    * connection, a sync, or a background RPC with no UI context. Leave it unset
    * for work done on behalf of a caller, which belongs in the caller's trace.
    *
-   * In the service worker, once its pageload has ended, a trace with no
-   * `parentContext` that starts outside any active span also starts a new
-   * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
-   * and sampling decision on the scope for the worker's whole life, so such
-   * work would otherwise join that trace and be kept or dropped with it.
+   * In the service worker, a trace with no `parentContext` that starts outside
+   * any active span also starts a new trace, as if `root` were set. The scope
+   * keeps one trace id for the worker's whole life, so such work would
+   * otherwise share it with all other no-caller work, each span drawn at its
+   * own sampling rate.
    *
    * In a UI document, so does one on the current route's trace: the SDK keeps a
    * route's trace id on the scope until the next navigation.
@@ -587,40 +587,34 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
       : trace({ ...req, name: req.name as TraceName }),
   ) as Promise<Result>;
 
-// The service worker's pageload, once ended. Unset outside the service worker.
-let endedServiceWorkerPageloadTraceId: string | undefined;
+// The service worker's ambient trace id. The service worker emits no
+// pageload, so its scope keeps the id it was created with for the worker's
+// life. Unset outside the service worker.
+let serviceWorkerAmbientTraceId: string | undefined;
 
 /**
- * In the service worker, record the pageload's trace id when the pageload
- * ends, so a trace with no caller started on that stale scope gets its own
- * trace (see {@link TraceRequest.root}). Does nothing in other contexts, where
- * the pageload trace belongs to a document.
- *
- * @param client - The Sentry client that emits the pageload's `spanEnd`.
+ * In the service worker, record the scope's ambient trace id, so a trace with
+ * no caller started on that scope gets its own trace (see
+ * {@link TraceRequest.root}). Does nothing in other contexts. Call right after
+ * `Sentry.init`.
  */
-export function trackServiceWorkerPageloadEnd(client?: Client): void {
-  if (!isServiceWorker()) {
-    return;
+export function trackServiceWorkerAmbientTrace(): void {
+  if (isServiceWorker()) {
+    serviceWorkerAmbientTraceId = getScopeTraceId();
   }
-
-  client?.on('spanEnd', (span) => {
-    if (spanToJSON(span).op === 'pageload') {
-      endedServiceWorkerPageloadTraceId = span.spanContext().traceId;
-    }
-  });
 }
 
 /**
- * Whether new work would join the ended service-worker pageload's trace: no
- * active span, and the scope still carries that pageload's trace id.
+ * Whether new work would join the service worker's ambient trace: no active
+ * span, and the scope still carries that trace id.
  *
  * @returns True when such work should start its own trace.
  */
-function isOnEndedServiceWorkerPageload(): boolean {
-  if (!endedServiceWorkerPageloadTraceId || sentryGetActiveSpan()) {
+function isOnServiceWorkerAmbientTrace(): boolean {
+  if (!serviceWorkerAmbientTraceId || sentryGetActiveSpan()) {
     return false;
   }
-  return getScopeTraceId() === endedServiceWorkerPageloadTraceId;
+  return getScopeTraceId() === serviceWorkerAmbientTraceId;
 }
 
 // The trace id of the UI document's latest pageload or navigation, which the
@@ -665,7 +659,7 @@ function isOnDocumentRouteTrace(): boolean {
   );
 }
 
-function isServiceWorker(): boolean {
+export function isServiceWorker(): boolean {
   const { ServiceWorkerGlobalScope } = globalThis as {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     ServiceWorkerGlobalScope?: abstract new () => unknown;
@@ -1229,7 +1223,7 @@ function startSpan<T>(
   const root =
     request.root ||
     (!parentDeclared &&
-      (isOnEndedServiceWorkerPageload() || isOnDocumentRouteTrace()));
+      (isOnServiceWorkerAmbientTrace() || isOnDocumentRouteTrace()));
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.

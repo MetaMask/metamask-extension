@@ -16,8 +16,9 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import { applySentryRemoteRates } from '../../../shared/lib/sentry-remote-rates';
 import {
+  isServiceWorker,
   trackDocumentRouteTrace,
-  trackServiceWorkerPageloadEnd,
+  trackServiceWorkerAmbientTrace,
 } from '../../../shared/lib/trace';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
@@ -204,6 +205,9 @@ function getClientOptions(): SentryClientOptions {
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
+        // A worker never paints, so its pageload measures worker lifetime
+        // and costs one transaction per cold start.
+        instrumentPageLoad: !isServiceWorker(),
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
@@ -366,7 +370,7 @@ function setSentryClient(): true {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
-  trackServiceWorkerPageloadEnd(Sentry.getClient());
+  trackServiceWorkerAmbientTrace();
   trackDocumentRouteTrace(Sentry.getClient());
 
   // Apply remote-flag sample-rate overrides once, post-init; compile-time
