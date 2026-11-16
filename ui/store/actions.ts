@@ -23,6 +23,7 @@ import {
   AssetsContractController,
   BalanceMap,
   Nft,
+  Source,
   Token,
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -528,7 +529,7 @@ export function subscriptionsStartPolling(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const pollingToken = await submitRequestToBackground(
-        'subscriptionsStartPolling',
+        'SubscriptionController:startPolling',
         // We need to provide the polling input when start polling
         // Otherwise, stop polling won't work with `undefined` input.
         [SUBSCRIPTIONS_POLLING_INPUT],
@@ -3233,10 +3234,11 @@ export function addNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNft', [
+      await submitRequestToBackground('NftController:addNft', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -3267,10 +3269,11 @@ export function addNftVerifyOwnership(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNftVerifyOwnership', [
+      await submitRequestToBackground('NftController:addNftVerifyOwnership', [
         address,
         tokenID,
         networkClientId,
+        { source: Source.Custom },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -3308,7 +3311,7 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [
+      await submitRequestToBackground('NftController:removeAndIgnoreNft', [
         address,
         tokenID,
         networkClientId,
@@ -3353,7 +3356,7 @@ export function removeNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeNft', [
+      await submitRequestToBackground('NftController:removeNft', [
         address,
         tokenID,
         networkClientId,
@@ -3370,9 +3373,10 @@ export function removeNft(
 export async function checkAndUpdateAllNftsOwnershipStatus(
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus', [
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateAllNftsOwnershipStatus',
+    [networkClientId],
+  );
 }
 
 export async function isNftOwner(
@@ -3381,7 +3385,7 @@ export async function isNftOwner(
   nftId: string,
   networkClientId: NetworkClientId,
 ): Promise<boolean> {
-  return await submitRequestToBackground('isNftOwner', [
+  return await submitRequestToBackground('NftController:isNftOwner', [
     ownerAddress,
     nftAddress,
     nftId,
@@ -3393,10 +3397,10 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
   nft: Nft,
   networkClientId: NetworkClientId,
 ) {
-  await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
-    nft,
-    networkClientId,
-  ]);
+  await submitRequestToBackground(
+    'NftController:checkAndUpdateSingleNftOwnershipStatus',
+    [nft, networkClientId],
+  );
 }
 
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
@@ -3710,7 +3714,10 @@ export function removeNetwork(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('removeNetwork', [chainId]);
+      await submitRequestToBackground(
+        'MultichainNetworkController:removeNetwork',
+        [chainId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4760,7 +4767,9 @@ export function detectNfts(
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts', [chainIds]);
+      await submitRequestToBackground('NftDetectionController:detectNfts', [
+        chainIds,
+      ]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }
@@ -6159,7 +6168,7 @@ export async function staticAssetsStartPolling(params: {
   selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'staticAssetsStartPolling',
+    'StaticAssetsController:startPolling',
     [params],
   );
   await addPollingTokenToAppState(pollingToken);
@@ -6169,9 +6178,10 @@ export async function staticAssetsStartPolling(params: {
 export async function staticAssetsStopPollingByPollingToken(
   pollingToken: string,
 ) {
-  await submitRequestToBackground('staticAssetsStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'StaticAssetsController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6198,9 +6208,10 @@ export async function accountTrackerStopPollingByPollingToken(
 export async function gasFeeStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  const pollingToken = await submitRequestToBackground('gasFeeStartPolling', [
-    { networkClientId },
-  ]);
+  const pollingToken = await submitRequestToBackground(
+    'GasFeeController:startPolling',
+    [{ networkClientId }],
+  );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
 }
@@ -6213,9 +6224,10 @@ export async function gasFeeStartPollingByNetworkClientId(
  * @param pollingToken - Poll token received from calling gasFeeStartPolling
  */
 export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
-  await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
-    pollingToken,
-  ]);
+  await submitRequestToBackground(
+    'GasFeeController:stopPollingByPollingToken',
+    [pollingToken],
+  );
   await removePollingTokenFromAppState(pollingToken);
 }
 
@@ -6361,13 +6373,13 @@ export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
 }
 
 export function resetViewedNotifications() {
-  return submitRequestToBackground('resetViewedNotifications');
+  return submitRequestToBackground('AnnouncementController:resetViewed');
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap: {
   [notificationId: string]: boolean;
 }) {
-  return submitRequestToBackground('updateViewedNotifications', [
+  return submitRequestToBackground('AnnouncementController:updateViewed', [
     notificationIdViewedStatusMap,
   ]);
 }
@@ -7154,7 +7166,9 @@ export function requestProfilePairing(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('requestProfilePairing');
+      await submitRequestToBackground(
+        'AuthenticationController:requestProfilePairing',
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7227,7 +7241,7 @@ export async function getUserProfileLineage(): Promise<
 > {
   try {
     const userProfileLineage = await submitRequestToBackground(
-      'getUserProfileLineage',
+      'AuthenticationController:getUserProfileLineage',
     );
     return userProfileLineage;
   } catch (error) {
