@@ -131,9 +131,6 @@ export const AssetControlsActions = ({
   children,
 }: AssetControlsActionsProps) => (
   <Box
-    // `min-w-0` lets the group shrink in the narrow popup so the labels
-    // truncate instead of the network filter collapsing to its chevron.
-    className="min-w-0"
     flexDirection={BoxFlexDirection.Row}
     alignItems={BoxAlignItems.Center}
     justifyContent={BoxJustifyContent.End}
