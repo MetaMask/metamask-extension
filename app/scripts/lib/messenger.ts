@@ -1,3 +1,4 @@
+import type { AccountTrackerControllerGetStateAction } from '@metamask/assets-controllers';
 import {
   ActionConstraint,
   EventConstraint,
@@ -20,7 +21,9 @@ type ChildMessengers = ReturnType<
 // RootMessenger like we can with other kinds of messengers.
 export type RootMessengerActions =
   | MessengerActions<ChildMessengers>
-  | DefaultActions;
+  | DefaultActions
+  // Registered by `registerAccountTrackerGetStateCompat`, not by a child messenger.
+  | AccountTrackerControllerGetStateAction;
 
 // We export this separately from RootMessenger because we can't get it from
 // RootMessenger like we can with other kinds of messengers.
