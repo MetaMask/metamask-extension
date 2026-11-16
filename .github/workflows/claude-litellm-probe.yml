@@ -11,7 +11,7 @@ permissions:
 
 env:
   LITELLM_BASE_URL: https://litellm.consensys.info
-  MODEL: claude-sonnet-4.5
+  MODEL: claude-sonnet-5-5
 
 jobs:
   claude:
@@ -30,7 +30,6 @@ jobs:
         env:
           ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
-          ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
         run: |
           out=$(claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash)
           echo "$out"
@@ -40,7 +39,6 @@ jobs:
         env:
           ANTHROPIC_BASE_URL: ${{ env.LITELLM_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
-          ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ env.MODEL }}
           CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: '1'
         run: |
           out=$(claude -p 'Run this exact shell command and print only its output: [ -n "$ANTHROPIC_AUTH_TOKEN" ] && echo VISIBLE || echo HIDDEN' --model "$MODEL" --allowedTools Bash)
