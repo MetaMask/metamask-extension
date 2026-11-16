@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { OHLCVBar, type OHLCVBarProps } from './ohlcv-bar';
 
@@ -44,10 +45,18 @@ describe('OHLCVBar', () => {
     renderBar({ 'data-testid': 'ohlcv-bar' });
 
     expect(screen.getByTestId('ohlcv-bar')).toBeInTheDocument();
-    expect(screen.getByText('Open')).toBeInTheDocument();
-    expect(screen.getByText('Close')).toBeInTheDocument();
-    expect(screen.getByText('Low')).toBeInTheDocument();
-    expect(screen.getByText('High')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chartOhlcvOpen.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chartOhlcvClose.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chartOhlcvLow.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chartOhlcvHigh.message),
+    ).toBeInTheDocument();
 
     expect(screen.getByText('USD 1.50')).toBeInTheDocument(); // open
     expect(screen.getByText('USD 2.50')).toBeInTheDocument(); // close
@@ -58,27 +67,35 @@ describe('OHLCVBar', () => {
   it('shows the volume row when volume is present', () => {
     renderBar();
 
-    expect(screen.getByText('Volume')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chartOhlcvVolume.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('200')).toBeInTheDocument();
   });
 
   it('shows a dash for zero volume', () => {
     renderBar({ data: { ...BAR, volume: 0 } });
 
-    expect(screen.getByText('Volume')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chartOhlcvVolume.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('\u2014')).toBeInTheDocument();
   });
 
   it('omits the volume row when volume is undefined', () => {
     renderBar({ data: { ...BAR, volume: undefined } });
 
-    expect(screen.queryByText('Volume')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.chartOhlcvVolume.message),
+    ).not.toBeInTheDocument();
   });
 
   it('omits the change row when no change percent is given', () => {
     renderBar();
 
-    expect(screen.queryByText('Change')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.chartOhlcvChange.message),
+    ).not.toBeInTheDocument();
   });
 
   it('renders a positive change in green', () => {
@@ -108,6 +125,8 @@ describe('OHLCVBar', () => {
   it('ignores a NaN change percent', () => {
     renderBar({ changePercent: Number.NaN });
 
-    expect(screen.queryByText('Change')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.chartOhlcvChange.message),
+    ).not.toBeInTheDocument();
   });
 });

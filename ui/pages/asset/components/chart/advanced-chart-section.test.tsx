@@ -601,10 +601,18 @@ describe('AdvancedChartSection', () => {
 
       const bar = screen.getByTestId('advanced-chart-ohlcv-bar');
       expect(bar).toBeInTheDocument();
-      expect(screen.getByText('Open')).toBeInTheDocument();
-      expect(screen.getByText('High')).toBeInTheDocument();
-      expect(screen.getByText('Low')).toBeInTheDocument();
-      expect(screen.getByText('Close')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.chartOhlcvOpen.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.chartOhlcvHigh.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.chartOhlcvLow.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.chartOhlcvClose.message),
+      ).toBeInTheDocument();
     });
 
     it('anchors the crosshair change to the first bar open, matching the header', () => {
@@ -615,7 +623,9 @@ describe('AdvancedChartSection', () => {
         screen.getByTestId('simulate-crosshair').click();
       });
 
-      expect(screen.getByText('Change')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.chartOhlcvChange.message),
+      ).toBeInTheDocument();
       expect(screen.getByText('+50.00%')).toBeInTheDocument();
     });
 
