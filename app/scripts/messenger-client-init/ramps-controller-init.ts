@@ -12,7 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
-import { trace } from '../../../shared/lib/trace';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import { captureException } from '../../../shared/lib/sentry';
 import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitFunction } from './types';
@@ -70,8 +70,11 @@ function createRampsLifecycleManager(
     lifecycleStarted = true;
     const runId = lifecycleRunId;
 
-    messengerClient
-      .init()
+    // Starts at worker start and on connection, with no caller; its own trace
+    // lets its countries and geolocation requests join the backend's spans.
+    trace({ name: TraceName.RampsInit, root: true }, () =>
+      messengerClient.init(),
+    )
       .then(() => {
         if (runId !== lifecycleRunId || !isPollingAllowed()) {
           return;

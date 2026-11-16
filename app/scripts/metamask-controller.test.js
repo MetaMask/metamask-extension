@@ -2536,7 +2536,7 @@ describe('MetaMaskController', () => {
       it('checks the sender hostname with the phishing controller', async () => {
         jest
           .spyOn(metamaskController.phishingController, 'maybeUpdateState')
-          .mockReturnValue();
+          .mockResolvedValue();
 
         jest
           .spyOn(metamaskController.phishingController, 'test')
