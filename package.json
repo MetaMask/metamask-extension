@@ -176,7 +176,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/design-system-react": "0.51.1",
+    "@metamask/design-system-react": "npm:@metamask-previews/design-system-react@0.52.0-preview-473aecb",
     "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
@@ -441,8 +441,8 @@
     "@metamask/delegation-controller": "^4.0.0",
     "@metamask/delegation-core": "^2.0.0",
     "@metamask/delegation-deployments": "^2.1.0",
-    "@metamask/design-system-react": "^0.51.1",
-    "@metamask/design-system-tailwind-preset": "^0.16.0",
+    "@metamask/design-system-react": "npm:@metamask-previews/design-system-react@0.52.0-preview-473aecb",
+    "@metamask/design-system-tailwind-preset": "npm:@metamask-previews/design-system-tailwind-preset@0.16.0-preview-473aecb",
     "@metamask/design-tokens": "^13.0.0",
     "@metamask/dummy-package": "workspace:*",
     "@metamask/eip-5792-middleware": "4.1.0",
@@ -658,7 +658,7 @@
     "@metamask/bitcoin-regtest-up": "^2.0.0",
     "@metamask/browser-playground": "0.8.1",
     "@metamask/client-mcp-core": "0.14.0",
-    "@metamask/design-system-shared": "^0.45.0",
+    "@metamask/design-system-shared": "npm:@metamask-previews/design-system-shared@0.45.1-preview-473aecb",
     "@metamask/eslint-config": "^14.1.1",
     "@metamask/eslint-config-jest": "^14.1.1",
     "@metamask/eslint-config-mocha": "^14.0.1",

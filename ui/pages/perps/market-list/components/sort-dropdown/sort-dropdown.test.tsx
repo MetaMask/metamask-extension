@@ -30,6 +30,29 @@ describe('SortDropdown', () => {
       expect(screen.getByTestId('sort-dropdown-button')).toBeInTheDocument();
     });
 
+    it('points the trigger arrow down for a descending sort and up for ascending', () => {
+      // The SelectButton's trailing arrow reflects the direction in force
+      // instead of a static dropdown chevron.
+      const ARROW_PATH_PREFIX = {
+        up: 'M20.03 15.53',
+        down: 'm20.03 9.53',
+      };
+      const getArrowPath = () =>
+        screen
+          .getByTestId('sort-dropdown-direction-arrow')
+          .querySelector('path')
+          ?.getAttribute('d');
+
+      const { rerender } = renderWithProvider(
+        <SortDropdown {...defaultProps} />,
+        mockStore,
+      );
+      expect(getArrowPath()).toContain(ARROW_PATH_PREFIX.down);
+
+      rerender(<SortDropdown {...defaultProps} direction="asc" />);
+      expect(getArrowPath()).toContain(ARROW_PATH_PREFIX.up);
+    });
+
     it('displays current field label on trigger button', () => {
       renderWithProvider(<SortDropdown {...defaultProps} />, mockStore);
 

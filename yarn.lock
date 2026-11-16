@@ -7179,6 +7179,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/design-system-shared@npm:0.45.1-preview-473aecb, @metamask/design-system-shared@npm:@metamask-previews/design-system-shared@0.45.1-preview-473aecb":
+  version: 0.45.1-preview-473aecb
+  resolution: "@metamask-previews/design-system-shared@npm:0.45.1-preview-473aecb"
+  dependencies:
+    "@metamask/utils": "npm:^11.12.1"
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/deadcf9f74ecb312aea9d93770a89c819a688b0da3ee3fc04117c9f60008e2800b012505b331719f1b36d25ee53d71b0f1a4b32af244ad1ca443ea4cc7b0d1ce
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/7715-permission-types@npm:1.0.0"
@@ -7997,12 +8008,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:0.51.1":
-  version: 0.51.1
-  resolution: "@metamask/design-system-react@npm:0.51.1"
+"@metamask/design-system-react@npm:@metamask-previews/design-system-react@0.52.0-preview-473aecb":
+  version: 0.52.0-preview-473aecb
+  resolution: "@metamask-previews/design-system-react@npm:0.52.0-preview-473aecb"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask/design-system-shared": "npm:^0.45.0"
+    "@metamask-previews/design-system-shared": "npm:0.45.1-preview-473aecb"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -8014,28 +8025,17 @@ __metadata:
     "@metamask/utils": ^11.12.1
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/021c554c1ce7a44d454400d729e9b90e4df5efc044385c06a98441f04d7aea13cd452c8fc9ad2779b5e5be4dfc08f06493a6f9791efb9234f808c6d1a1f01bab
+  checksum: 10/ba5cf0662f1405357c4fad66d82f4cdb16c3a45de893511b84f17855b8b5d43cb4842aa89bfd03c77bbec115322b4e4a4fdc261e5fdea7e2d9d2abddf73890c8
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.45.0":
-  version: 0.45.0
-  resolution: "@metamask/design-system-shared@npm:0.45.0"
-  dependencies:
-    "@metamask/utils": "npm:^11.12.1"
-  peerDependencies:
-    react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/522922b87353a5b0b16adc5157bcfbea153741d6818a60516280d5aa5a2eeb0ae55e22240eba37febe4198f9e553fc2ef9aa7f277ea9ad4d7de7db2e412a6243
-  languageName: node
-  linkType: hard
-
-"@metamask/design-system-tailwind-preset@npm:^0.16.0":
-  version: 0.16.0
-  resolution: "@metamask/design-system-tailwind-preset@npm:0.16.0"
+"@metamask/design-system-tailwind-preset@npm:@metamask-previews/design-system-tailwind-preset@0.16.0-preview-473aecb":
+  version: 0.16.0-preview-473aecb
+  resolution: "@metamask-previews/design-system-tailwind-preset@npm:0.16.0-preview-473aecb"
   peerDependencies:
     "@metamask/design-tokens": ^13.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/2cbc9aef29d36c2382d05c4b430068ca3fa9052d76fa6cec3100932816fb772b70119537e08c0951e786d69474b3a63d159d59e67c27894926946140019c0edd
+  checksum: 10/375e4c7b741ab471a38cfd2d2930fea28664a670032d4b89c51f37776725a23e320ae50cf732552ad2074d0b4ada10fe6a800167b6202696ab906e22ed84a531
   languageName: node
   linkType: hard
 
@@ -35347,9 +35347,9 @@ __metadata:
     "@metamask/delegation-controller": "npm:^4.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.1.0"
-    "@metamask/design-system-react": "npm:^0.51.1"
-    "@metamask/design-system-shared": "npm:^0.45.0"
-    "@metamask/design-system-tailwind-preset": "npm:^0.16.0"
+    "@metamask/design-system-react": "npm:@metamask-previews/design-system-react@0.52.0-preview-473aecb"
+    "@metamask/design-system-shared": "npm:@metamask-previews/design-system-shared@0.45.1-preview-473aecb"
+    "@metamask/design-system-tailwind-preset": "npm:@metamask-previews/design-system-tailwind-preset@0.16.0-preview-473aecb"
     "@metamask/design-tokens": "npm:^13.0.0"
     "@metamask/dummy-package": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:4.1.0"
