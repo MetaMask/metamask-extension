@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import type { MarketInsightsReport } from '@metamask/ai-controllers';
 import type { CaipAssetType } from '@metamask/utils';
+import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -15,7 +16,7 @@ import {
   type MarketInsightsInteractionType,
 } from './useMarketInsightsViewTracking';
 
-const mockTrackEvent = jest.fn();
+const mockTrackEvent = jest.fn((_built: AnalyticsEvent) => Promise.resolve());
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(

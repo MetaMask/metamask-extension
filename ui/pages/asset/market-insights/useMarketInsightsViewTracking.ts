@@ -98,7 +98,7 @@ export const useMarketInsightsViewTracking = ({
         .addCategory(MetaMetricsEventCategory.MarketInsights)
         .addProperties(buildBaseProperties())
         .build(),
-    );
+    ).catch(() => undefined);
   }, [report, trackEvent, createEventBuilder, buildBaseProperties]);
 
   const trackInteraction = useCallback(
@@ -132,7 +132,7 @@ export const useMarketInsightsViewTracking = ({
         });
       }
 
-      trackEvent(builder.build());
+      trackEvent(builder.build()).catch(() => undefined);
     },
     [trackEvent, createEventBuilder, buildBaseProperties],
   );
@@ -143,7 +143,7 @@ export const useMarketInsightsViewTracking = ({
         .addCategory(MetaMetricsEventCategory.MarketInsights)
         .addProperties(buildBaseProperties())
         .build(),
-    );
+    ).catch(() => undefined);
   }, [trackEvent, createEventBuilder, buildBaseProperties]);
 
   return { trackInteraction, trackClosed };
