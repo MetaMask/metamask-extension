@@ -2,10 +2,17 @@ import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { apiClient } from '../../helpers/api-client';
-import { selectMoneyActivityMockDataEnabled } from '../../selectors/money/money-account-feature-flags';
+import {
+  selectMoneyAccountPremiumVaultConfig,
+  selectMoneyAccountVaultConfig,
+  selectMoneyActivityMockDataEnabled,
+  selectMoneyEnableHistoricalVaultShareValuations,
+} from '../../selectors/money/money-account-feature-flags';
 import { parseAccountsApiActivity } from '../../pages/money/utils/accounts-api';
 import type { AccountsApiActivity } from '../../pages/money/types/money-activity';
+import { useTrace } from '../useTrace';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
+import { useMoneyActivityValuations } from './use-money-activity-valuations';
 import { useMoneyAccountApiActivity } from './use-money-account-api-activity';
 
 jest.mock('react-redux', () => ({
@@ -22,10 +29,21 @@ jest.mock('../../helpers/api-client', () => ({
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   selectMoneyActivityMockDataEnabled: jest.fn(),
+  selectMoneyAccountPremiumVaultConfig: jest.fn(),
+  selectMoneyAccountVaultConfig: jest.fn(),
+  selectMoneyEnableHistoricalVaultShareValuations: jest.fn(),
 }));
 
 jest.mock('./useMoneyAccountInfo', () => ({
   useMoneyAccountInfo: jest.fn(),
+}));
+
+jest.mock('./use-money-activity-valuations', () => ({
+  useMoneyActivityValuations: jest.fn(),
+}));
+
+jest.mock('../useTrace', () => ({
+  useTrace: jest.fn(),
 }));
 
 jest.mock('../../pages/money/utils/accounts-api', () => ({
@@ -41,6 +59,14 @@ const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockSelectMoneyActivityMockDataEnabled = jest.mocked(
   selectMoneyActivityMockDataEnabled,
 );
+const mockSelectHistorical = jest.mocked(
+  selectMoneyEnableHistoricalVaultShareValuations,
+);
+const mockSelectStandardVault = jest.mocked(selectMoneyAccountVaultConfig);
+const mockSelectPremiumVault = jest.mocked(
+  selectMoneyAccountPremiumVaultConfig,
+);
+const mockUseValuations = jest.mocked(useMoneyActivityValuations);
 
 const ADDR_A = '0xbF4bC559f929cE3994Ba12D71d564737357bC8C2';
 const QUERY_KEY = [
@@ -86,6 +112,13 @@ describe('useMoneyAccountApiActivity first-page fetch', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectMoneyActivityMockDataEnabled.mockReturnValue(false);
+    mockSelectHistorical.mockReturnValue(false);
+    mockSelectStandardVault.mockReturnValue(undefined);
+    mockSelectPremiumVault.mockReturnValue(undefined);
+    mockUseValuations.mockReturnValue({
+      getDisplayAmount: jest.fn(),
+      isSettling: false,
+    });
     mockUseMoneyAccountInfo.mockReturnValue({
       isMoneyAccountFeatureEnabled: true,
       hasMoneyAccount: true,
