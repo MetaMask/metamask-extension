@@ -420,7 +420,7 @@
     "@metamask/approval-controller": "^10.0.0",
     "@metamask/assets-controller": "20.4.0",
     "@metamask/assets-controllers": "^113.3.1",
-    "@metamask/authenticated-user-storage": "^4.1.0",
+    "@metamask/authenticated-user-storage": "^4.2.0",
     "@metamask/base-controller": "^10.1.0",
     "@metamask/base-data-service": "^2.1.0",
     "@metamask/bitcoin-wallet-snap": "^3.3.0",
@@ -949,11 +949,5 @@
       }
     },
     "version": "v0.3.0"
-  },
-  "previewBuilds": {
-    "@metamask/authenticated-user-storage": {
-      "type": "non-breaking",
-      "previewVersion": "4.1.0-preview-8e636eabf"
-    }
   }
 }
