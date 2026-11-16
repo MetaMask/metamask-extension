@@ -1,47 +1,38 @@
 import React from 'react';
-import { twMerge } from '@metamask/design-system-react';
 
-export type ResizeBarProps = {
-  widthVariable: string;
-  ariaLabel: string;
-  minWidthPx?: number;
-  maxWidthPx?: number;
-  valueNow?: number;
-  className?: string;
-  'data-testid'?: string;
+type Props = {
+  property: string;
+  ariaLabel?: string;
+  value: number;
+  minValue: number;
+  maxValue: number;
 };
 
-const defaultHandleClassName =
+const className =
   'absolute -right-1 top-0 z-10 h-full w-2 cursor-col-resize touch-none focus-visible:outline-none before:absolute before:inset-y-0 before:left-[3px] before:w-px before:bg-border-muted hover:before:bg-primary-default focus-visible:before:bg-primary-default';
 
 export const ResizeBar = ({
-  widthVariable,
-  ariaLabel,
-  minWidthPx = 240,
-  maxWidthPx = 480,
-  valueNow,
-  className,
-  'data-testid': dataTestId,
-}: ResizeBarProps) => {
-  const resolvedValueNow =
-    valueNow ?? Math.round((minWidthPx + maxWidthPx) / 2);
+  property,
+  ariaLabel = 'Resize',
+  minValue,
+  maxValue,
+  value,
+}: Props) => {
+  const resolvedValueNow = value ?? Math.round((minValue + maxValue) / 2);
 
   const getResizeTarget = (handle: HTMLDivElement) => handle.parentElement;
 
   const clampWidth = (width: number) =>
-    Math.min(maxWidthPx, Math.max(minWidthPx, Math.round(width)));
+    Math.min(maxValue, Math.max(minValue, Math.round(width)));
 
   const setWidth = (target: HTMLElement, width: number) => {
     const nextWidth = clampWidth(width);
-    target.style.setProperty(widthVariable, `${nextWidth}px`);
+    target.style.setProperty(property, `${nextWidth}px`);
     return nextWidth;
   };
 
   const readCurrentWidth = (target: HTMLElement) => {
-    const parsed = Number.parseInt(
-      target.style.getPropertyValue(widthVariable),
-      10,
-    );
+    const parsed = Number.parseInt(target.style.getPropertyValue(property), 10);
     return Number.isFinite(parsed) ? parsed : resolvedValueNow;
   };
 
@@ -72,8 +63,8 @@ export const ResizeBar = ({
     const widthsByKey: Record<string, number> = {
       ArrowLeft: currentWidth - 16,
       ArrowRight: currentWidth + 16,
-      Home: minWidthPx,
-      End: maxWidthPx,
+      Home: minValue,
+      End: maxValue,
     };
     const nextWidth = widthsByKey[event.key];
 
@@ -91,12 +82,11 @@ export const ResizeBar = ({
       role="separator"
       aria-label={ariaLabel}
       aria-orientation="vertical"
-      aria-valuemin={minWidthPx}
-      aria-valuemax={maxWidthPx}
+      aria-valuemin={minValue}
+      aria-valuemax={maxValue}
       aria-valuenow={resolvedValueNow}
       tabIndex={0}
-      className={twMerge(defaultHandleClassName, className)}
-      data-testid={dataTestId}
+      className={className}
       onPointerDown={(event) => {
         event.currentTarget.dataset.resizing = 'true';
         event.currentTarget.setPointerCapture?.(event.pointerId);

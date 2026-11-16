@@ -38,10 +38,10 @@ export const SideNav = () => {
       </nav>
       <SideNavAccounts />
       <ResizeBar
-        widthVariable={sideNavWidthVariable}
-        ariaLabel="Resize sidebar"
-        valueNow={320}
-        data-testid="side-nav-resize-handle"
+        property={sideNavWidthVariable}
+        value={320}
+        minValue={240}
+        maxValue={480}
       />
     </div>
   );
