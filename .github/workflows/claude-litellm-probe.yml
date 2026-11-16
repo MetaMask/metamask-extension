@@ -151,7 +151,9 @@ jobs:
 
       - name: Control, update-lockfile without any sandbox
         run: |
-          yarn install --mode=update-lockfile > control.log 2>&1; echo "control exit=$?"
+          code=0
+          yarn install --mode=update-lockfile > control.log 2>&1 || code=$?
+          echo "control exit=$code"
           tail -n 6 control.log | cut -c1-200
           git checkout -q -- package.json yarn.lock
           git status --short
