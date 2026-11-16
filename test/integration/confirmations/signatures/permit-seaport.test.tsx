@@ -88,7 +88,9 @@ describe('Permit Seaport Tests', () => {
     expect(requestDetailsSection).toHaveTextContent('Request from');
     expect(requestDetailsSection).toHaveTextContent('metamask.github.io');
     expect(requestDetailsSection).toHaveTextContent('Interacting with');
-    expect(requestDetailsSection).toHaveTextContent('0x00000...78BA3');
+    expect(requestDetailsSection).toHaveTextContent(
+      '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+    );
   });
 
   it('renders message details section', async () => {

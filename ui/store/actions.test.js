@@ -14,6 +14,7 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import * as Sentry from '@sentry/browser';
+import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -25,7 +26,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
-  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../shared/lib/trace';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
@@ -167,6 +167,283 @@ describe('Actions', () => {
     sinon.restore();
   });
 
+  describe('announcement messenger actions', () => {
+    it('resets viewed announcements through the messenger', async () => {
+      setBackgroundConnection(background);
+
+      await actions.resetViewedNotifications();
+
+      expect(
+        background.messengerCall.calledOnceWithExactly(
+          'AnnouncementController:resetViewed',
+          [],
+        ),
+      ).toBe(true);
+    });
+
+    it('updates viewed announcements through the messenger', async () => {
+      const notificationIdViewedStatusMap = { 1: true, 2: false };
+      setBackgroundConnection(background);
+
+      await actions.updateViewedNotifications(notificationIdViewedStatusMap);
+
+      expect(
+        background.messengerCall.calledOnceWithExactly(
+          'AnnouncementController:updateViewed',
+          [notificationIdViewedStatusMap],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('NFT messenger actions', () => {
+    it.each([
+      [
+        actions.addNft,
+        'NftController:addNft',
+        ['0x123', '1', 'mainnet', { source: 'custom' }],
+      ],
+      [
+        actions.addNftVerifyOwnership,
+        'NftController:addNftVerifyOwnership',
+        ['0x123', '1', 'mainnet', { source: 'custom' }],
+      ],
+      [
+        actions.removeAndIgnoreNft,
+        'NftController:removeAndIgnoreNft',
+        ['0x123', '1', 'mainnet'],
+      ],
+      [actions.removeNft, 'NftController:removeNft', ['0x123', '1', 'mainnet']],
+    ])(
+      'routes %s through the messenger',
+      async (method, action, parameters) => {
+        setBackgroundConnection(background);
+        const store = mockStore();
+
+        await store.dispatch(method('0x123', '1', 'mainnet', true));
+
+        expect(
+          background.messengerCall.calledWithExactly(action, parameters),
+        ).toBe(true);
+      },
+    );
+
+    it('checks all NFT ownership through the messenger', async () => {
+      setBackgroundConnection(background);
+
+      await actions.checkAndUpdateAllNftsOwnershipStatus('mainnet');
+
+      expect(
+        background.messengerCall.calledWithExactly(
+          'NftController:checkAndUpdateAllNftsOwnershipStatus',
+          ['mainnet'],
+        ),
+      ).toBe(true);
+    });
+
+    it('checks a single NFT ownership through the messenger', async () => {
+      const nft = { address: '0x123', tokenId: '1' };
+      setBackgroundConnection(background);
+
+      await actions.checkAndUpdateSingleNftOwnershipStatus(nft, 'mainnet');
+
+      expect(
+        background.messengerCall.calledWithExactly(
+          'NftController:checkAndUpdateSingleNftOwnershipStatus',
+          [nft, 'mainnet'],
+        ),
+      ).toBe(true);
+    });
+
+    it('returns NFT ownership from the messenger', async () => {
+      background.messengerCall.resolves(true);
+      setBackgroundConnection(background);
+
+      const isOwner = await actions.isNftOwner(
+        '0x456',
+        '0x123',
+        '1',
+        'mainnet',
+      );
+
+      expect(isOwner).toBe(true);
+      expect(
+        background.messengerCall.calledOnceWithExactly(
+          'NftController:isNftOwner',
+          ['0x456', '0x123', '1', 'mainnet'],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('NFT detection messenger action', () => {
+    it('detects NFTs through the NFT detection controller', async () => {
+      setBackgroundConnection(background);
+      const store = mockStore();
+
+      await store.dispatch(actions.detectNfts(['0x1']));
+
+      expect(
+        background.messengerCall.calledWithExactly(
+          'NftDetectionController:detectNfts',
+          [['0x1']],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('gas fee polling messenger actions', () => {
+    it('starts polling through the gas fee controller', async () => {
+      background.messengerCall.resolves('gas-fee-token');
+      setBackgroundConnection(background);
+
+      const pollingToken =
+        await actions.gasFeeStartPollingByNetworkClientId('mainnet');
+
+      expect(pollingToken).toBe('gas-fee-token');
+      expect(
+        background.messengerCall.calledWithExactly(
+          'GasFeeController:startPolling',
+          [{ networkClientId: 'mainnet' }],
+        ),
+      ).toBe(true);
+    });
+
+    it('stops polling through the gas fee controller', async () => {
+      setBackgroundConnection(background);
+
+      await actions.gasFeeStopPollingByPollingToken('gas-fee-token');
+
+      expect(
+        background.messengerCall.calledWithExactly(
+          'GasFeeController:stopPollingByPollingToken',
+          ['gas-fee-token'],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('static assets polling messenger actions', () => {
+    it('starts polling through the static assets controller', async () => {
+      const params = {
+        chainIds: ['0x1'],
+        selectedAccountAddress: '0x123',
+        selectedAccountId: 'account-id',
+      };
+      background.messengerCall.resolves('static-assets-token');
+      setBackgroundConnection(background);
+
+      const pollingToken = await actions.staticAssetsStartPolling(params);
+
+      expect(pollingToken).toBe('static-assets-token');
+      expect(
+        background.messengerCall.calledWithExactly(
+          'StaticAssetsController:startPolling',
+          [params],
+        ),
+      ).toBe(true);
+    });
+
+    it('stops polling through the static assets controller', async () => {
+      setBackgroundConnection(background);
+
+      await actions.staticAssetsStopPollingByPollingToken(
+        'static-assets-token',
+      );
+
+      expect(
+        background.messengerCall.calledWithExactly(
+          'StaticAssetsController:stopPollingByPollingToken',
+          ['static-assets-token'],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('token detection polling messenger actions', () => {
+    it('starts polling through the token detection controller', async () => {
+      background.messengerCall.resolves('token-detection-token');
+      setBackgroundConnection(background);
+
+      const pollingToken = await actions.tokenDetectionStartPolling(['0x1']);
+
+      expect(pollingToken).toBe('token-detection-token');
+      expect(
+        background.messengerCall.calledWithExactly(
+          'TokenDetectionController:startPolling',
+          [{ chainIds: ['0x1'] }],
+        ),
+      ).toBe(true);
+    });
+
+    it('stops polling through the token detection controller', async () => {
+      setBackgroundConnection(background);
+
+      await actions.tokenDetectionStopPollingByPollingToken(
+        'token-detection-token',
+      );
+
+      expect(
+        background.messengerCall.calledWithExactly(
+          'TokenDetectionController:stopPollingByPollingToken',
+          ['token-detection-token'],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('currency rate polling messenger actions', () => {
+    it('starts polling through the currency rate controller', async () => {
+      background.messengerCall.resolves('currency-rate-token');
+      setBackgroundConnection(background);
+
+      const pollingToken = await actions.currencyRateStartPolling(['ETH']);
+
+      expect(pollingToken).toBe('currency-rate-token');
+      expect(
+        background.messengerCall.calledWithExactly(
+          'CurrencyRateController:startPolling',
+          [{ nativeCurrencies: ['ETH'] }],
+        ),
+      ).toBe(true);
+    });
+
+    it('stops polling through the currency rate controller', async () => {
+      setBackgroundConnection(background);
+
+      await actions.currencyRateStopPollingByPollingToken(
+        'currency-rate-token',
+      );
+
+      expect(
+        background.messengerCall.calledWithExactly(
+          'CurrencyRateController:stopPollingByPollingToken',
+          ['currency-rate-token'],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('subscription polling messenger actions', () => {
+    it('starts polling through the subscription controller from the Redux action', async () => {
+      background.messengerCall.resolves('subscription-token');
+      setBackgroundConnection(background);
+      const store = mockStore();
+
+      const pollingToken = await store.dispatch(
+        actions.subscriptionsStartPolling(),
+      );
+
+      expect(pollingToken).toBe('subscription-token');
+      expect(
+        background.messengerCall.calledWithExactly(
+          'SubscriptionController:startPolling',
+          [SUBSCRIPTIONS_POLLING_INPUT],
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe('createAndBackupSeedPhrase', () => {
     afterEach(() => {
       sinon.restore();
@@ -218,7 +495,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('returns the seed phrase and syncs marketing consent', async () => {
+    it('returns the seed phrase without reading marketing consent from OAuth', async () => {
       const store = mockStore();
       const mnemonic = 'seed phrase';
       const messengerCallStub = sinon.stub();
@@ -228,9 +505,6 @@ describe('Actions', () => {
           ['password'],
         )
         .resolves(mnemonic);
-      messengerCallStub
-        .withArgs('OAuthService:getMarketingConsent', [])
-        .resolves(true);
       setBackgroundConnection({
         ...background,
         getStatePatches: background.getStatePatches,
@@ -249,73 +523,16 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(
-        messengerCallStub.calledWithExactly(
-          'OAuthService:getMarketingConsent',
-          [],
-        ),
-      ).toBe(true);
+        messengerCallStub.calledWith('OAuthService:getMarketingConsent'),
+      ).toBe(false);
       expect(
-        messengerCallStub.calledWithExactly(
-          'AnalyticsController:optInToMarketing',
-          [],
-        ),
-      ).toBe(true);
+        messengerCallStub.calledWith('AnalyticsController:optInToMarketing'),
+      ).toBe(false);
+      expect(
+        messengerCallStub.calledWith('AnalyticsController:optOutOfMarketing'),
+      ).toBe(false);
       expect(background.getStatePatches.calledOnce).toStrictEqual(true);
-      expect(store.getActions()).toStrictEqual([
-        {
-          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-          value: true,
-        },
-      ]);
-    });
-
-    it('tracks the onboarding analytics preference event when a tracking function is provided', async () => {
-      const store = mockStore();
-      const trackEventStub = sinon.stub().resolves();
-      const messengerCallStub = sinon.stub();
-      messengerCallStub
-        .withArgs(
-          'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-          ['password'],
-        )
-        .resolves('seed phrase');
-      messengerCallStub
-        .withArgs('OAuthService:getMarketingConsent', [])
-        .resolves(false);
-
-      setBackgroundConnection({
-        ...background,
-        getStatePatches: background.getStatePatches,
-        messengerCall: messengerCallStub,
-      });
-
-      await store.dispatch(
-        actions.restoreSocialBackupAndGetSeedPhrase('password', trackEventStub),
-      );
-
-      expect(
-        messengerCallStub.calledWithExactly(
-          'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-          ['password'],
-        ),
-      ).toBe(true);
-      expect(
-        messengerCallStub.calledWithExactly(
-          'OAuthService:getMarketingConsent',
-          [],
-        ),
-      ).toBe(true);
-      expect(
-        trackEventStub.calledOnceWith({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
-            location: 'onboarding_social_login_rehydration',
-          },
-        }),
-      ).toStrictEqual(true);
+      expect(store.getActions()).toStrictEqual([]);
     });
 
     it('throws an error when restoring the social backup fails', async () => {
@@ -3004,12 +3221,15 @@ describe('Actions', () => {
     it('calls removeNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
       const removeNetworkStub = sinon.stub().resolves();
-      setBackgroundConnection({ removeNetwork: removeNetworkStub });
+      setBackgroundConnection({ messengerCall: removeNetworkStub });
 
       await store.dispatch(actions.removeNetwork('testNetworkConfigurationId'));
 
       expect(
-        removeNetworkStub.calledOnceWithExactly('testNetworkConfigurationId'),
+        removeNetworkStub.calledOnceWithExactly(
+          'MultichainNetworkController:removeNetwork',
+          ['testNetworkConfigurationId'],
+        ),
       ).toBe(true);
     });
   });
@@ -3950,7 +4170,9 @@ describe('Actions', () => {
     it('should throw when removeAndIgnoreNft throws an error', async () => {
       const store = mockStore();
       const error = new Error('remove nft fake error');
-      background.removeAndIgnoreNft = sinon.stub().throws(error);
+      background.messengerCall
+        .withArgs('NftController:removeAndIgnoreNft', sinon.match.array)
+        .rejects(error);
 
       setBackgroundConnection(background);
 
@@ -4207,12 +4429,17 @@ describe('Actions', () => {
       const requestProfilePairingStub = sinon.stub().resolves();
 
       Object.assign(background, {
-        requestProfilePairing: requestProfilePairingStub,
+        messengerCall: requestProfilePairingStub,
       });
       setBackgroundConnection(background);
 
       await store.dispatch(actions.requestProfilePairing());
-      expect(requestProfilePairingStub.calledOnceWith()).toBe(true);
+      expect(
+        requestProfilePairingStub.calledOnceWithExactly(
+          'AuthenticationController:requestProfilePairing',
+          [],
+        ),
+      ).toBe(true);
     });
 
     it('rethrows when requestProfilePairing fails in the background', async () => {
@@ -4221,7 +4448,7 @@ describe('Actions', () => {
       const requestProfilePairingStub = sinon.stub().rejects(new Error('boom'));
 
       Object.assign(background, {
-        requestProfilePairing: requestProfilePairingStub,
+        messengerCall: requestProfilePairingStub,
       });
       setBackgroundConnection(background);
 
@@ -4267,12 +4494,17 @@ describe('Actions', () => {
       const getUserProfileLineageStub = sinon.stub().resolves();
 
       Object.assign(background, {
-        getUserProfileLineage: getUserProfileLineageStub,
+        messengerCall: getUserProfileLineageStub,
       });
       setBackgroundConnection(background);
 
       await actions.getUserProfileLineage();
-      expect(getUserProfileLineageStub.calledOnceWith()).toBe(true);
+      expect(
+        getUserProfileLineageStub.calledOnceWithExactly(
+          'AuthenticationController:getUserProfileLineage',
+          [],
+        ),
+      ).toBe(true);
     });
   });
 
@@ -6711,10 +6943,18 @@ describe('Actions', () => {
           store.dispatch(actions.recordUiInteraction()),
         );
 
+        // The action still names the background span; no `traceparent` rides along.
         expect(
           messengerCallStub.calledOnceWithExactly(
             'AppStateController:recordUiInteraction',
             [],
+            {
+              _trace: {
+                messengerAction: 'AppStateController:recordUiInteraction',
+                spanName:
+                  'Background RPC: AppStateController:recordUiInteraction',
+              },
+            },
           ),
         ).toBe(true);
       });

@@ -1,8 +1,9 @@
 import React from 'react';
+import { ModalBody, ModalFooter } from '@metamask/design-system-react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
-import { Footer, Section } from '../components/shared';
+import { Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 import { SwapAgainButton } from './bridge/swap-again-button';
@@ -27,8 +28,8 @@ export function SwapDetails({
   const t = useI18nContext();
 
   return (
-    <div className="flex grow flex-col">
-      <div className="divide-y divide-border-muted">
+    <>
+      <ModalBody className="flex-1 divide-y divide-border-muted">
         <TokensSection
           tokens={[
             { label: t('youSent'), token: item.data.sourceToken },
@@ -40,14 +41,14 @@ export function SwapDetails({
           <FeesRows item={item} />
           <TotalAmountRow token={item.data.sourceToken} />
         </Section>
-      </div>
-      <Footer>
+      </ModalBody>
+      <ModalFooter className="grid gap-4">
         <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
         <SwapAgainButton
           sourceToken={item.data.sourceToken}
           destinationToken={item.data.destinationToken}
         />
-      </Footer>
-    </div>
+      </ModalFooter>
+    </>
   );
 }

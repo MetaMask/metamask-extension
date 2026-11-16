@@ -6,7 +6,7 @@ CLI-based tooling for LLM agents to build, launch, and interact with the MetaMas
 
 This README covers architecture, quick start, and available commands for the LLM workflow.
 
-- For the full agent-facing command reference (targeting, scoping, batching, error recovery), see `.claude/skills/metamask-visual-testing/SKILL.md`.
+- For the full agent-facing command reference (targeting, scoping, batching, error recovery), see the `mms-visual-testing` skill: source `domains/testing/skills/visual-testing/skill.md` in [MetaMask/skills](https://github.com/MetaMask/skills), installed by `yarn skills` at `.claude/skills/mms-visual-testing/SKILL.md` and `.agents/skills/mms-visual-testing/SKILL.md`.
 - For the core package API and capability interfaces, see the `@metamask/client-mcp-core` README.
 
 ## Architecture
@@ -45,11 +45,13 @@ The system uses a **decoupled, daemon-based architecture**:
                                   │ Playwright
                                   ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    Headed Chrome Browser                                │
+│                    Chrome Browser (headed by default)                   │
 │                    + MetaMask Extension                                 │
 │                    + Anvil (local blockchain)                           │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
+
+The browser is headed by default. Set `MM_HEADLESS=true` before `mm launch` to run it headless; `PLAYWRIGHT_HEADLESS`/`HEADLESS` and `CI` also enable headless when `MM_HEADLESS` is unset (`metamask-provider.ts`).
 
 ### Key Components
 
@@ -96,7 +98,30 @@ mm cleanup
 - **Auto-start**: `mm launch` starts the daemon if it's not running.
 - **Worktree Isolation**: Each worktree has its own daemon, tracked in `.mm-server`.
 - **Idle Timeout**: Daemon shuts down after 30 minutes of inactivity.
-- **Logs**: Activity is logged to `.mm-daemon.log`.
+- **Logs**: Activity is logged to `.mm-daemon.log`. Each request line has the outcome, for example `POST /tool/click 200 ok=false code=MM_CLICK_TIMEOUT 2038ms`.
+- **Artifacts**: Screenshots go to `test-artifacts/screenshots/` and session metadata to `test-artifacts/<sessionId>/session.json`. Set `MM_ARTIFACTS_DIR` before `mm launch` to write them to another directory.
+
+### 3. Output and Errors
+
+Every command except `mm stop` prints JSON on stdout; `mm stop` prints a plain-text line. A failed command prints one JSON line on stdout (not `Error: ...` on stderr) and exits with a non-zero code:
+
+```json
+{"ok":false,"error":{"code":"MM_CLICK_TIMEOUT","message":"Click timed out after 3000ms; state unknown (last Playwright step: element is not enabled). ...","hint":"...","retryable":false},"meta":{...}}
+```
+
+| Exit code | Meaning                                          |
+| --------- | ------------------------------------------------ |
+| 0         | Success (the response has no `ok` field)         |
+| 1         | Other error                                      |
+| 2         | Usage or validation error                        |
+| 3         | No session, or the daemon is not running or lost |
+| 4         | Target not found or not actionable               |
+| 5         | Timeout                                          |
+| 6         | Platform or device not available                 |
+
+Read `error.code`, `error.hint` and `error.retryable` to decide what to do next.
+
+`mm click` without `--timeout` fails after 2 seconds with `MM_TARGET_NOT_FOUND` (exit code 4) when no element matches the target, for example `Selector [data-testid="x"] (testId:x) matched 0 elements after 2000ms`. Check the target with `mm describe-screen`. With `--timeout <ms>`, the click waits that long for the target to appear. A `MM_CLICK_TIMEOUT` message ends with the last Playwright step, which tells why the click failed: for example `element is not enabled`, or `<div class="mm-modal" ...> subtree intercepts pointer events` (close the modal first).
 
 ---
 
@@ -114,13 +139,18 @@ mm cleanup
 - `mm type <ref> <text>`: Types text into an element.
 - `mm describe-screen`: Captures the current screen state and element references.
 - `mm screenshot`: Takes a screenshot of the current page.
-- `mm wait-for <ref>`: Waits for an element to appear.
+- `mm wait-for <ref>`: Waits for an element to appear. Use it instead of `sleep`.
+- `mm scroll-to-element <ref>`: Scrolls an element into view.
+- `mm inspect <ref>`: Shows the attributes, disabled and read-only flags, and computed styles of an element.
+- `mm hover <ref>` / `mm unhover`: Moves the pointer over an element / off the page.
+- `mm set-viewport <width> <height>` / `mm reset-viewport`: Resizes the page / restores its size.
 
 ### Navigation
 
 - `mm navigate <url>`: Navigates to a specific URL.
 - `mm navigate-home`: Navigates to the extension home.
 - `mm navigate-settings`: Navigates to the extension settings.
+- `mm reload`: Reloads the active page.
 
 ---
 
@@ -162,10 +192,12 @@ mm launch --state onboarding --self-onboarding < phrase.txt
 
 ### Custom Fixture
 
-Use a preset fixture or provide custom wallet state.
+`mm launch --state custom` needs a wallet fixture, and `mm launch` has no flag to pass one. The `launch` tool accepts `fixturePreset` (a preset name) or `fixture` (a fixture object), but `--preset` is not a launch flag in `@metamask/client-mcp-core` 0.14.0: `mm launch --state custom --preset <name>` warns `unknown launch flag '--preset'` and then fails with `MM_LAUNCH_FAILED` (`stateMode 'custom' requires either 'fixturePreset' or 'fixture'`).
 
-```bash
-mm launch --state custom --preset withMultipleAccounts
+The presets are defined by `createFixturePresets` in `fixture-helper.ts`: `default`, `onboarding`, `withMultipleAccounts`, `withERC20Tokens`, `withConnectedDapp`, `withMainnet`, `withNFTs`, `withFiatDisabled` and `withHSTToken`. Pass one as `fixturePreset` to the `launch` tool directly, for example in a `POST /launch` body (the daemon port is in `.mm-server`). From the CLI, only `--state default` and `--state onboarding` are usable, because they need no fixture.
+
+```json
+{ "stateMode": "custom", "fixturePreset": "withMultipleAccounts" }
 ```
 
 ---
@@ -178,6 +210,6 @@ mm launch --state custom --preset withMultipleAccounts
 
 ## See Also
 
-- **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Concise command reference for agents.
+- **Agent Skill**: `mms-visual-testing` - Concise command reference for agents. Source: `domains/testing/skills/visual-testing/skill.md` in [MetaMask/skills](https://github.com/MetaMask/skills). `yarn skills` installs it (gitignored) at `.claude/skills/mms-visual-testing/SKILL.md` and `.agents/skills/mms-visual-testing/SKILL.md`; if `.skills.local` restricts `SKILLS_DOMAINS`, include `testing`.
 - **Core Package**: `@metamask/client-mcp-core` - Generic daemon infrastructure.
 - **Migrating from MCP?** If you previously configured an MCP server for MetaMask, see [mcp-cli-migration.md](./mcp-cli-migration.md).

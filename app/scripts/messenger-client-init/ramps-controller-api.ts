@@ -35,6 +35,7 @@ export function getRampsControllerApi(
       rampsController.setSelectedProvider.bind(rampsController),
     setRampsSelectedPaymentMethod:
       rampsController.setSelectedPaymentMethod.bind(rampsController),
+    getRampsCountries: rampsController.getCountries.bind(rampsController),
     getRampsTokens: rampsController.getTokens.bind(rampsController),
     getRampsProviders: rampsController.getProviders.bind(rampsController),
     getRampsPaymentMethods:

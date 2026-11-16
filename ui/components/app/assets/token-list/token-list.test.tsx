@@ -89,6 +89,7 @@ jest.mock('../token-cell', () => {
 
 jest.mock('../util/sortAssetsWithPriority', () => ({
   sortAssetsWithPriority: jest.fn((assets) => assets),
+  sortTokenAssets: jest.fn((assets) => assets),
 }));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
