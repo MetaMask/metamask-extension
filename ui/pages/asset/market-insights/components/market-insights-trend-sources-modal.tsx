@@ -22,8 +22,8 @@ import type {
   MarketInsightsTweet,
 } from '@metamask/ai-controllers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatRelativeTime } from '../../hooks/useMarketInsights';
 import {
+  formatRelativeTime,
   getNormalizedHandle,
   getOpenableSourceUrl,
 } from '../utils/market-insights-formatting';

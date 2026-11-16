@@ -1,4 +1,5 @@
 import type { MarketInsightsSource } from '@metamask/ai-controllers';
+import type { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const SAFE_URL_SCHEMES = ['https:'];
 
@@ -149,4 +150,38 @@ export const getUniqueSourcesByFavicon = (
     seenFaviconUrls.add(faviconUrl);
     return true;
   });
+};
+
+/**
+ * Formats a timestamp as a localized relative-time label.
+ *
+ * Returns an empty string for unparseable dates.
+ *
+ * @param dateString - ISO timestamp to format.
+ * @param t - Translation function.
+ * @returns Localized relative-time label.
+ */
+export const formatRelativeTime = (
+  dateString: string,
+  t: ReturnType<typeof useI18nContext>,
+): string => {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+  const diffMs = Date.now() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 1) {
+    return t('marketInsightsTimeAgoNow');
+  }
+  if (diffMins < 60) {
+    return t('marketInsightsTimeAgoMinutes', [String(diffMins)]);
+  }
+  if (diffHours < 24) {
+    return t('marketInsightsTimeAgoHours', [String(diffHours)]);
+  }
+  return t('marketInsightsTimeAgoDays', [String(diffDays)]);
 };

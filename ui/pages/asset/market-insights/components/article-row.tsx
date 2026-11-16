@@ -14,8 +14,10 @@ import {
 } from '@metamask/design-system-react';
 import type { MarketInsightsArticle } from '@metamask/ai-controllers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatRelativeTime } from '../../hooks/useMarketInsights';
-import { getFaviconUrl } from '../utils/market-insights-formatting';
+import {
+  formatRelativeTime,
+  getFaviconUrl,
+} from '../utils/market-insights-formatting';
 
 export const MARKET_INSIGHTS_ARTICLE_ROW_TEST_ID =
   'market-insights-article-row';

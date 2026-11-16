@@ -15,8 +15,10 @@ import {
 } from '@metamask/design-system-react';
 import type { MarketInsightsTweet } from '@metamask/ai-controllers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatRelativeTime } from '../../hooks/useMarketInsights';
-import { getNormalizedHandle } from '../utils/market-insights-formatting';
+import {
+  formatRelativeTime,
+  getNormalizedHandle,
+} from '../utils/market-insights-formatting';
 
 export const MARKET_INSIGHTS_TWEET_CARD_TEST_ID = 'market-insights-tweet-card';
 

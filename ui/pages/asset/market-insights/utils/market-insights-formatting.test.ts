@@ -1,5 +1,6 @@
 import type { MarketInsightsSource } from '@metamask/ai-controllers';
 import {
+  formatRelativeTime,
   getFaviconUrl,
   getNormalizedHandle,
   getOpenableSourceUrl,
@@ -140,6 +141,53 @@ describe('market-insights-formatting', () => {
 
     it('returns an empty array for no sources', () => {
       expect(getUniqueSourcesByFavicon([])).toEqual([]);
+    });
+  });
+
+  describe('formatRelativeTime', () => {
+    const FIXED_NOW = new Date('2025-01-15T12:00:00Z').getTime();
+    const t = jest.fn((key: string, substitutions?: string[]) =>
+      substitutions ? `${key}:${substitutions.join(',')}` : key,
+    );
+
+    beforeEach(() => {
+      jest.spyOn(Date, 'now').mockReturnValue(FIXED_NOW);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('returns an empty string for an unparseable date', () => {
+      expect(formatRelativeTime('not-a-date', t)).toBe('');
+    });
+
+    it('labels timestamps under a minute old as now', () => {
+      const timestamp = new Date(FIXED_NOW - 30 * 1000).toISOString();
+      expect(formatRelativeTime(timestamp, t)).toBe('marketInsightsTimeAgoNow');
+    });
+
+    it('labels minute-old timestamps with the minute count', () => {
+      const timestamp = new Date(FIXED_NOW - 5 * 60 * 1000).toISOString();
+      expect(formatRelativeTime(timestamp, t)).toBe(
+        'marketInsightsTimeAgoMinutes:5',
+      );
+    });
+
+    it('labels hour-old timestamps with the hour count', () => {
+      const timestamp = new Date(FIXED_NOW - 3 * 60 * 60 * 1000).toISOString();
+      expect(formatRelativeTime(timestamp, t)).toBe(
+        'marketInsightsTimeAgoHours:3',
+      );
+    });
+
+    it('labels day-old timestamps with the day count', () => {
+      const timestamp = new Date(
+        FIXED_NOW - 2 * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      expect(formatRelativeTime(timestamp, t)).toBe(
+        'marketInsightsTimeAgoDays:2',
+      );
     });
   });
 });
