@@ -13,7 +13,10 @@ import {
   IconSize,
   IconColor,
   ButtonBase,
-  ButtonBaseSize,
+  SelectButton,
+  SelectButtonEndArrow,
+  SelectButtonSize,
+  SelectButtonVariant,
   Button,
   ButtonVariant,
   ButtonSize,
@@ -103,21 +106,28 @@ export const SortDropdown = ({
   return (
     <>
       {/* Trigger button */}
-      <ButtonBase
-        size={ButtonBaseSize.Sm}
-        className="flex items-center justify-start gap-1 rounded-lg bg-background-muted px-3 py-2 hover:bg-hover active:opacity-70"
+      <SelectButton
+        size={SelectButtonSize.Sm}
+        variant={SelectButtonVariant.Secondary}
         onClick={handleOpen}
         data-testid="sort-dropdown-button"
-      >
-        <Icon
-          name={IconName.SwapVertical}
-          size={IconSize.Xs}
-          color={IconColor.IconAlternative}
-        />
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-          {currentFieldOption ? t(currentFieldOption.labelKey) : ''}
-        </Text>
-      </ButtonBase>
+        placeholder={currentFieldOption ? t(currentFieldOption.labelKey) : ''}
+        startAccessory={
+          <Icon
+            name={IconName.SwapVertical}
+            size={IconSize.Xs}
+            color={IconColor.IconAlternative}
+          />
+        }
+        endArrowDirection={
+          direction === 'asc'
+            ? SelectButtonEndArrow.Up
+            : SelectButtonEndArrow.Down
+        }
+        endArrowDirectionIconProps={{
+          'data-testid': 'sort-dropdown-direction-arrow',
+        }}
+      />
 
       {/* Sort modal */}
       <Modal

@@ -1,46 +1,48 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
   Popover,
+  SelectButton,
+  SelectButtonEndArrow,
+  SelectButtonSize,
+  SelectButtonVariant,
   twMerge,
 } from '@metamask/design-system-react';
+import { getTokenSortConfig } from '../../../../../selectors';
 import SortControl from '../sort-control/sort-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import Tooltip from '../../../../ui/tooltip';
-import { assetControlIconButtonClassName } from './asset-controls';
 import { useControlPopover } from './use-control-popover';
 
 /**
  * Sort button and the sort popover. Writes the shared `tokenSortConfig`.
+ * The trailing arrow reflects the order in force instead of a dropdown
+ * chevron, matching the MMDS SelectButton sort pattern.
  */
 export const SortByButton = () => {
   const t = useI18nContext();
+  const tokenSortConfig = useSelector(getTokenSortConfig);
   const { buttonRef, isOpen, toggle, close, popoverProps } =
     useControlPopover('250px');
 
   return (
     <>
-      <Tooltip
-        title={t('sortBy')}
-        position="bottom"
-        distance={20}
-        disabled={isOpen}
-      >
-        <ButtonIcon
-          ref={buttonRef}
-          data-testid="sort-by-popover-toggle"
-          className={twMerge(
-            assetControlIconButtonClassName,
-            isOpen && 'bg-pressed',
-          )}
-          onClick={toggle}
-          size={ButtonIconSize.Sm}
-          iconName={IconName.ListArrow}
-          ariaLabel={t('sortBy')}
-        />
-      </Tooltip>
+      <SelectButton
+        ref={buttonRef}
+        data-testid="sort-by-popover-toggle"
+        className={twMerge(isOpen && 'bg-pressed')}
+        onClick={toggle}
+        size={SelectButtonSize.Sm}
+        variant={SelectButtonVariant.Secondary}
+        placeholder={t('sortBy')}
+        endArrowDirection={
+          tokenSortConfig?.order === 'asc'
+            ? SelectButtonEndArrow.Up
+            : SelectButtonEndArrow.Down
+        }
+        endArrowDirectionIconProps={{
+          'data-testid': 'sort-by-direction-arrow',
+        }}
+      />
       <Popover {...popoverProps}>
         <SortControl handleClose={close} />
       </Popover>
