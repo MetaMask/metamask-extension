@@ -154,6 +154,7 @@ describe('useMoneyActivityItems', () => {
       isLoading: false,
       error: false,
       refetch,
+      isSettling: false,
     });
   });
 
@@ -218,6 +219,7 @@ describe('useMoneyActivityItems', () => {
       isLoading: false,
       error: false,
       refetch,
+      isSettling: false,
     });
 
     renderHook(() =>
@@ -247,6 +249,7 @@ describe('useMoneyActivityItems', () => {
       isLoading: false,
       error: false,
       refetch,
+      isSettling: false,
     });
 
     renderHook(() =>
@@ -269,6 +272,7 @@ describe('useMoneyActivityItems', () => {
       isLoading: false,
       error: false,
       refetch,
+      isSettling: false,
     });
 
     renderHook(() =>

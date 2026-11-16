@@ -20,6 +20,7 @@ import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboa
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
 import {
   handleSidepanelPostOnboarding,
+  revealAndConfirmSrp,
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
@@ -219,7 +220,7 @@ describe('Incremental Security', function (this: Suite) {
           await homePage.goToBackupSRPPage();
 
           // reveal and confirm the Secret Recovery Phrase on backup SRP page
-          await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
+          await revealAndConfirmSrp(driver, WALLET_PASSWORD);
 
           // complete backup
           await onboardingCompletePage.checkPageIsLoadedBackup();
