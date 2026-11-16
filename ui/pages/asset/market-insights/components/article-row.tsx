@@ -24,7 +24,7 @@ type ArticleRowProps = {
   /** The article to render. */
   article: MarketInsightsArticle;
   /** Opens the article URL when pressed. */
-  onPress: (url: string) => void;
+  onPress?: (url: string) => void;
   /** Hides the bottom divider on the last row. */
   isLastItem?: boolean;
 };
@@ -47,7 +47,7 @@ export const ArticleRow = ({
   const t = useI18nContext();
 
   const handlePress = useCallback(() => {
-    onPress(article.url);
+    onPress?.(article.url);
   }, [onPress, article.url]);
 
   const timeAgo = article.date ? formatRelativeTime(article.date, t) : null;
@@ -59,6 +59,7 @@ export const ArticleRow = ({
         isLastItem ? '' : 'border-b border-muted'
       }`}
       onClick={handlePress}
+      disabled={!onPress}
       data-testid={MARKET_INSIGHTS_ARTICLE_ROW_TEST_ID}
     >
       <Box className="flex-1">

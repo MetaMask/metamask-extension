@@ -23,7 +23,10 @@ import type {
 } from '@metamask/ai-controllers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatRelativeTime } from '../../hooks/useMarketInsights';
-import { getNormalizedHandle } from '../utils/market-insights-formatting';
+import {
+  getNormalizedHandle,
+  getOpenableSourceUrl,
+} from '../utils/market-insights-formatting';
 import { ArticleRow } from './article-row';
 
 export const MARKET_INSIGHTS_SOURCES_MODAL_TEST_ID =
@@ -50,7 +53,7 @@ const TweetRow = ({
   isLastItem,
 }: {
   tweet: MarketInsightsTweet;
-  onPress: (url: string) => void;
+  onPress?: (url: string) => void;
   isLastItem: boolean;
 }) => {
   const t = useI18nContext();
@@ -62,7 +65,8 @@ const TweetRow = ({
       className={`w-full cursor-pointer py-3 text-left ${
         isLastItem ? '' : 'border-b border-muted'
       }`}
-      onClick={() => onPress(tweet.url)}
+      onClick={() => onPress?.(tweet.url)}
+      disabled={!onPress}
       data-testid="market-insights-tweet-row"
     >
       <Box className="flex-1">
@@ -201,7 +205,11 @@ export const MarketInsightsTrendSourcesModal = ({
                 <ArticleRow
                   key={`${article.url}-${index}`}
                   article={article}
-                  onPress={handleArticlePress}
+                  onPress={
+                    getOpenableSourceUrl(article.url, 'article')
+                      ? handleArticlePress
+                      : undefined
+                  }
                   isLastItem={isLastItem}
                 />
               );
@@ -211,7 +219,11 @@ export const MarketInsightsTrendSourcesModal = ({
               <TweetRow
                 key={`${tweet.url}-${index}`}
                 tweet={tweet}
-                onPress={handleTweetPress}
+                onPress={
+                  getOpenableSourceUrl(tweet.url, 'tweet')
+                    ? handleTweetPress
+                    : undefined
+                }
                 isLastItem={index === tweets.length - 1}
               />
             ))}

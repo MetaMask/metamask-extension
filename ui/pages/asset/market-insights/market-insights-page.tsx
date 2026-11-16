@@ -43,7 +43,7 @@ import { MarketInsightsTrendItem } from './components/market-insights-trend-item
 import { MarketInsightsTrendSourcesModal } from './components/market-insights-trend-sources-modal';
 import { MarketInsightsTweetCard } from './components/market-insights-tweet-card';
 import { MarketInsightsViewSkeleton } from './components/market-insights-view-skeleton';
-import { isSafeUrl, isXSourceUrl } from './utils/market-insights-formatting';
+import { getOpenableSourceUrl } from './utils/market-insights-formatting';
 import { useMarketInsightsViewTracking } from './useMarketInsightsViewTracking';
 
 export const MARKET_INSIGHTS_VIEW_TEST_ID = 'market-insights-view-container';
@@ -206,7 +206,7 @@ const MarketInsightsPage = () => {
 
   const handleSourcePress = useCallback(
     (url: string) => {
-      if (!isSafeUrl(url)) {
+      if (!getOpenableSourceUrl(url, 'article')) {
         return;
       }
       trackInteraction('source_click', { sourceUrl: url });
@@ -218,7 +218,7 @@ const MarketInsightsPage = () => {
 
   const handleTweetPress = useCallback(
     (url: string) => {
-      if (isXSourceUrl(url)) {
+      if (getOpenableSourceUrl(url, 'tweet')) {
         handleSourcePress(url);
       }
     },
@@ -345,7 +345,7 @@ const MarketInsightsPage = () => {
                   key={`tweet-${index}`}
                   tweet={tweet}
                   onPress={
-                    isXSourceUrl(tweet.url) && isSafeUrl(tweet.url)
+                    getOpenableSourceUrl(tweet.url, 'tweet')
                       ? handleTweetPress
                       : undefined
                   }

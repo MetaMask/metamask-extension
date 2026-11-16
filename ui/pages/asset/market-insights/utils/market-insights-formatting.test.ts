@@ -2,8 +2,10 @@ import type { MarketInsightsSource } from '@metamask/ai-controllers';
 import {
   getFaviconUrl,
   getNormalizedHandle,
+  getOpenableSourceUrl,
   getUniqueSourcesByFavicon,
   isSafeUrl,
+  isXHostUrl,
   isXSourceUrl,
 } from './market-insights-formatting';
 
@@ -74,6 +76,51 @@ describe('market-insights-formatting', () => {
       expect(isSafeUrl(['java', 'script:alert(1)'].join(''))).toBe(false);
       expect(isSafeUrl('chrome-extension://abc')).toBe(false);
       expect(isSafeUrl('not a url')).toBe(false);
+    });
+  });
+
+  describe('isXHostUrl', () => {
+    it('accepts https x.com and twitter.com URLs including subdomains', () => {
+      expect(isXHostUrl('https://x.com/user/status/1')).toBe(true);
+      expect(isXHostUrl('https://www.twitter.com/user/status/1')).toBe(true);
+      expect(isXHostUrl('https://mobile.x.com/user/status/1')).toBe(true);
+    });
+
+    it('rejects bare source names, other hosts, and non-https URLs', () => {
+      expect(isXHostUrl('x')).toBe(false);
+      expect(isXHostUrl('twitter')).toBe(false);
+      expect(isXHostUrl('https://example.com/tweet')).toBe(false);
+      expect(isXHostUrl('http://x.com/user/status/1')).toBe(false);
+      expect(isXHostUrl('not a url')).toBe(false);
+    });
+  });
+
+  describe('getOpenableSourceUrl', () => {
+    it('returns https article URLs as-is', () => {
+      expect(getOpenableSourceUrl('https://example.com/a', 'article')).toBe(
+        'https://example.com/a',
+      );
+    });
+
+    it('returns only x.com and twitter.com URLs for tweets', () => {
+      expect(getOpenableSourceUrl('https://x.com/user/status/1', 'tweet')).toBe(
+        'https://x.com/user/status/1',
+      );
+      expect(
+        getOpenableSourceUrl('https://twitter.com/user/status/1', 'tweet'),
+      ).toBe('https://twitter.com/user/status/1');
+      expect(getOpenableSourceUrl('https://example.com/tweet', 'tweet')).toBe(
+        null,
+      );
+      expect(getOpenableSourceUrl('x', 'tweet')).toBe(null);
+    });
+
+    it('returns null for unsafe URLs of either kind', () => {
+      const unsafeUrl = ['java', 'script:alert(1)'].join('');
+      expect(getOpenableSourceUrl(unsafeUrl, 'article')).toBe(null);
+      expect(getOpenableSourceUrl('http://example.com/a', 'article')).toBe(
+        null,
+      );
     });
   });
 

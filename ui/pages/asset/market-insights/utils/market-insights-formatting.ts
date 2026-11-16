@@ -41,7 +41,8 @@ export const getNormalizedHandle = (author: string): string =>
 
 /**
  * Whether a source is an X (Twitter) URL or the literal source names `x` or
- * `twitter`.
+ * `twitter`. Intended for source-name classification such as logo display; use
+ * isXHostUrl to gate link opening.
  *
  * @param source - Source name or URL.
  * @returns True when the source resolves to x.com or twitter.com.
@@ -86,6 +87,47 @@ export const isSafeUrl = (url: string): boolean => {
   } catch {
     return false;
   }
+};
+
+/**
+ * Whether a parseable https URL points at x.com or twitter.com. Unlike
+ * isXSourceUrl this never accepts bare source names, so it is safe to use as
+ * a navigation gate for social post links.
+ *
+ * @param url - URL to validate.
+ * @returns True when the URL is an https x.com or twitter.com URL.
+ */
+export const isXHostUrl = (url: string): boolean => {
+  if (!isSafeUrl(url)) {
+    return false;
+  }
+  const hostname = new URL(url).hostname.replace(/^www\./u, '').toLowerCase();
+  return (
+    hostname === 'x.com' ||
+    hostname.endsWith('.x.com') ||
+    hostname === 'twitter.com' ||
+    hostname.endsWith('.twitter.com')
+  );
+};
+
+/**
+ * The single URL-open policy for insights sources: articles may open any https
+ * URL, while social posts must additionally resolve to x.com or twitter.com.
+ * Use the result both to decide whether a row renders as pressable and inside
+ * press handlers, so the enabled state can never disagree with the policy.
+ *
+ * @param url - Source URL from the digest report.
+ * @param kind - Whether the URL belongs to an article or a social post.
+ * @returns The URL when it may be opened, otherwise null.
+ */
+export const getOpenableSourceUrl = (
+  url: string,
+  kind: 'article' | 'tweet',
+): string | null => {
+  if (!isSafeUrl(url)) {
+    return null;
+  }
+  return kind === 'tweet' && !isXHostUrl(url) ? null : url;
 };
 
 /**
