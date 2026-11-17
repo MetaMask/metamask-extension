@@ -9513,9 +9513,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreUserData": {
-    "message": "Restaurar dados do usuário"
-  },
   "restoreWalletDescription": {
     "message": "Insira sua $1. Ao importar a carteira, você apagará os dados da sua carteira atual neste dispositivo. Esta ação não pode ser desfeita.",
     "description": "$1 is the Secret Recovery Phrase"

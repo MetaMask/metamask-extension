@@ -46,10 +46,12 @@
     "applyTransactionContainersExisting",
     "approveHardwareWalletTransaction",
     "attemptLedgerTransportCreation",
+    "backupUserData",
     "captureTestError",
     "changePassword",
     "changePasswordWithPasskeyVerification",
     "checkDelegationDisabled",
+    "checkFirstTimeInteraction",
     "checkHardwareStatus",
     "checkIsSeedlessPasswordOutdated",
     "closeNotificationPopup",
@@ -130,6 +132,7 @@
     "unlockWithPasskey",
     "upsertTransactionUIMetricsFragment"
   ],
+<<<<<<< HEAD
   "messengerClientApiMethods": [
     "addRampsOrder",
     "addRampsPrecreatedOrder",
@@ -194,5 +197,11 @@
     "updateMoneyAccountWithdrawAmount",
     "watchRampsCheckoutTab",
     "watchRampsProviderOrderTab"
+=======
+  "MetamaskController.getApi": [
+    "setArcUsageNoticeShown",
+    "trackAnalyticsEvent",
+    "trackMetaMetricsPage"
+>>>>>>> main
   ]
 }
