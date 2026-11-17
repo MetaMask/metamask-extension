@@ -13,7 +13,10 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';
+import {
+  getErrorHandling,
+  isCooldownCountdown,
+} from '../../../hooks/identity/mfa/engine/errors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { MfaFlowTestIds } from '../test-ids';
@@ -36,8 +39,6 @@ const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
 const getCodeDigits = (text: string) =>
   text.replace(/\D/gu, '').slice(0, CODE_LENGTH);
 
-const COOLDOWN_CODES = new Set(['otp_resend_cooldown', 'rate_limited']);
-
 // The clock is state, as the React Compiler caches what render computes:
 // `Date.now()` read during render would never move. Being up to a second
 // behind never reads 0 for a cooldown that just started, so the auto-send
@@ -57,7 +58,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const secondsLeft = useSecondsUntil(state.resendAvailableAt);
-  const { busy, error, codeResent, resendAvailableAt } = state;
+  const { busy, error, codeResent } = state;
   const { codeSent } = step;
   // Authenticator app codes are on the user's app, so nothing is sent or
   // resent.
@@ -80,19 +81,6 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
       inputRef.current?.focus();
     }
   }, [error, codeResent]);
-
-  // The first email code of a flow can hit the cooldown left by the previous
-  // one.
-  useEffect(() => {
-    if (
-      !isTotp &&
-      !codeSent &&
-      resendAvailableAt !== undefined &&
-      secondsLeft === 0
-    ) {
-      onAction({ type: 'resend' });
-    }
-  }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
 
   useEffect(() => {
     if (codeSent) {
@@ -117,9 +105,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
 
   // An email cooldown with a wait time shows as the countdown on the resend
   // button, also once it ended. Authenticator app errors always show.
-  const showError =
-    error !== undefined &&
-    (isTotp || !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error)));
+  const showError = error !== undefined && !isCooldownCountdown(state);
   // The code on screen can no longer be used: the main action is a new one.
   const needsNewCode =
     showError && error !== undefined && getErrorHandling(error) === 'restart';
@@ -136,17 +122,30 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
 
   const getResendLabel = () => {
     if (isCoolingDown) {
+      if (needsNewCode) {
+        return t('mfaOtpGetNewCodeIn', [String(secondsLeft)]);
+      }
       return t(codeSent ? 'mfaOtpResendIn' : 'mfaOtpSendIn', [
         String(secondsLeft),
       ]);
     }
-    return t(busy && !codeSent ? 'mfaOtpSending' : 'mfaOtpResend');
+    if (busy && !codeSent) {
+      return t('mfaOtpSending');
+    }
+    // A first code that hit the resend limit is sent when the user asks.
+    return t(codeSent ? 'mfaOtpResend' : 'mfaOtpSend');
   };
   const canResend = !isCoolingDown && !busy;
 
   const getDescription = () => {
     if (isTotp) {
       return t('mfaOtpDescriptionTotp');
+    }
+    // A first code that hit the resend limit isn't sent until the user asks.
+    if (!codeSent) {
+      return step.email
+        ? t('mfaOtpDescriptionUnsentWithEmail', [maskEmail(step.email)])
+        : t('mfaOtpDescriptionUnsent');
     }
     return step.email
       ? t('mfaOtpDescriptionWithEmail', [maskEmail(step.email)])
@@ -161,7 +160,10 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         size={ButtonSize.Lg}
         isFullWidth
         isDisabled={isCoolingDown}
-        onClick={() => onAction({ type: 'resend' })}
+        onClick={() => {
+          onAction({ type: 'errorCtaClicked', cta: 'try_again' });
+          onAction({ type: 'resend' });
+        }}
         data-testid={MfaFlowTestIds.RESEND_BUTTON}
       >
         {isCoolingDown
@@ -172,6 +174,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
 
   return (
     <StepLayout
+      onAction={onAction}
       title={t('mfaOtpTitle')}
       description={getDescription()}
       footer={
@@ -190,7 +193,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             onClick={() => onAction({ type: 'resend' })}
             data-testid={MfaFlowTestIds.RESEND_BUTTON}
           >
-            {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}
+            {needsNewCode && !isCoolingDown
+              ? t('mfaOtpGetNewCode')
+              : getResendLabel()}
           </Button>
         )
       }
@@ -250,7 +255,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
           </Box>
         ) : null}
         {showErrorState && error ? (
-          <StepError code={error} method={step.method} />
+          <StepError code={error} method={step.method} onAction={onAction} />
         ) : null}
         {codeResent && !error ? (
           <StepMessage>{t('mfaOtpResent')}</StepMessage>

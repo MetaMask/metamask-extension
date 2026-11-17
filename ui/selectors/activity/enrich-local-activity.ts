@@ -18,7 +18,7 @@ import {
 import { hasTransactionType } from '../../../shared/lib/transactions.utils';
 import { getMoneyAccountDepositAmount } from '../../helpers/money/money-account-amounts';
 import { getMoneyAccountWithdrawTransferDetails } from '../../pages/confirmations/utils/money-account-withdraw';
-import { enrichLocalMusdClaimActivity } from './enrich-local-musd-claim';
+import { enrichLocalMusdClaimActivity } from './musd/enrich-local-musd-claim';
 
 const TOKEN_TRANSFER_TYPES = new Set<TransactionType>([
   TransactionType.tokenMethodTransfer,

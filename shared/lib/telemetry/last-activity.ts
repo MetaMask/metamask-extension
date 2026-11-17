@@ -32,7 +32,12 @@ type PersistedLastActivity = {
   lastWriteAt?: number;
   lastUiOpenAt?: number;
   lastUiClosedAt?: number;
+  lastUiInteractionAt?: number;
   lastWindowEventAt?: number;
+  lastDappRpcAt?: number;
+  lastConnectedDappRpcAt?: number;
+  lastSnapRpcAt?: number;
+  lastExternalExtensionRpcAt?: number;
   serviceWorkerReloadCount?: number;
 };
 
@@ -41,7 +46,12 @@ export type LastActivityContext = {
   msSinceLastWrite?: number;
   msSinceLastUiOpen?: number;
   msSinceLastUiClosed?: number;
+  msSinceLastUiInteraction?: number;
   msSinceLastWindowEvent?: number;
+  msSinceLastDappRpc?: number;
+  msSinceLastConnectedDappRpc?: number;
+  msSinceLastSnapRpc?: number;
+  msSinceLastExternalExtensionRpc?: number;
   msSinceLastServiceWorkerReload?: number;
   serviceWorkerReloadCount?: number;
 };
@@ -58,8 +68,16 @@ let appStartedAt = serviceWorkerStartedAt;
 let lastWriteAt: number | undefined;
 let lastUiOpenAt: number | undefined;
 let lastUiClosedAt: number | undefined;
+let lastUiInteractionAt: number | undefined;
 let lastWindowEventAt: number | undefined;
+let lastDappRpcAt: number | undefined;
+let lastConnectedDappRpcAt: number | undefined;
+let lastSnapRpcAt: number | undefined;
+let lastExternalExtensionRpcAt: number | undefined;
 let serviceWorkerReloadCount: number | undefined;
+
+/** Minimum gap between updates of one RPC signal. Each signal throttles on its own. */
+const RPC_THROTTLE_MS = 1_000;
 
 /**
  * Whether any MetaMask UI is currently open. Updated by
@@ -149,8 +167,23 @@ async function setSessionLastActivity(): Promise<void> {
   if (lastUiClosedAt !== undefined) {
     value.lastUiClosedAt = lastUiClosedAt;
   }
+  if (lastUiInteractionAt !== undefined) {
+    value.lastUiInteractionAt = lastUiInteractionAt;
+  }
   if (lastWindowEventAt !== undefined) {
     value.lastWindowEventAt = lastWindowEventAt;
+  }
+  if (lastDappRpcAt !== undefined) {
+    value.lastDappRpcAt = lastDappRpcAt;
+  }
+  if (lastConnectedDappRpcAt !== undefined) {
+    value.lastConnectedDappRpcAt = lastConnectedDappRpcAt;
+  }
+  if (lastSnapRpcAt !== undefined) {
+    value.lastSnapRpcAt = lastSnapRpcAt;
+  }
+  if (lastExternalExtensionRpcAt !== undefined) {
+    value.lastExternalExtensionRpcAt = lastExternalExtensionRpcAt;
   }
   if (serviceWorkerReloadCount !== undefined) {
     value.serviceWorkerReloadCount = serviceWorkerReloadCount;
@@ -192,9 +225,29 @@ async function hydrateFromSession(): Promise<void> {
         lastUiClosedAt,
         readNumber(record, 'lastUiClosedAt'),
       );
+      lastUiInteractionAt = keepNewer(
+        lastUiInteractionAt,
+        readNumber(record, 'lastUiInteractionAt'),
+      );
       lastWindowEventAt = keepNewer(
         lastWindowEventAt,
         readNumber(record, 'lastWindowEventAt'),
+      );
+      lastDappRpcAt = keepNewer(
+        lastDappRpcAt,
+        readNumber(record, 'lastDappRpcAt'),
+      );
+      lastConnectedDappRpcAt = keepNewer(
+        lastConnectedDappRpcAt,
+        readNumber(record, 'lastConnectedDappRpcAt'),
+      );
+      lastSnapRpcAt = keepNewer(
+        lastSnapRpcAt,
+        readNumber(record, 'lastSnapRpcAt'),
+      );
+      lastExternalExtensionRpcAt = keepNewer(
+        lastExternalExtensionRpcAt,
+        readNumber(record, 'lastExternalExtensionRpcAt'),
       );
       const previousCount = readNumber(record, 'serviceWorkerReloadCount');
       serviceWorkerReloadCount = (previousCount ?? 0) + 1;
@@ -263,10 +316,73 @@ export function recordWindowEvent(): void {
 }
 
 /**
+ * Marks a click or keypress inside a MetaMask UI.
+ *
+ * The elapsed time stays reportable after every UI has closed.
+ */
+export function recordUiInteraction(): void {
+  lastUiInteractionAt = Date.now();
+  setSessionLastActivity().catch(() => undefined);
+}
+
+/**
+ * Updates one RPC timestamp at most once per {@link RPC_THROTTLE_MS}.
+ *
+ * @param lastAt - The current timestamp for this signal, if any.
+ * @param assign - Stores the new timestamp for this signal.
+ */
+function recordThrottledRpc(
+  lastAt: number | undefined,
+  assign: (now: number) => void,
+): void {
+  const now = Date.now();
+  if (lastAt !== undefined && now - lastAt < RPC_THROTTLE_MS) {
+    return;
+  }
+  assign(now);
+  setSessionLastActivity().catch(() => undefined);
+}
+
+/** Marks a JSON-RPC request from a website (`SubjectType.Website`). */
+export function recordDappRpc(): void {
+  recordThrottledRpc(lastDappRpcAt, (now) => {
+    lastDappRpcAt = now;
+  });
+}
+
+/**
+ * Marks a JSON-RPC request from a website that already has account access.
+ * Unpermissioned provider probes do not update this signal.
+ */
+export function recordConnectedDappRpc(): void {
+  recordThrottledRpc(lastConnectedDappRpcAt, (now) => {
+    lastConnectedDappRpcAt = now;
+  });
+}
+
+/** Marks a JSON-RPC request from a Snap (`SubjectType.Snap`). */
+export function recordSnapRpc(): void {
+  recordThrottledRpc(lastSnapRpcAt, (now) => {
+    lastSnapRpcAt = now;
+  });
+}
+
+/** Marks a JSON-RPC request from another extension (`SubjectType.Extension`). */
+export function recordExternalExtensionRpc(): void {
+  recordThrottledRpc(lastExternalExtensionRpcAt, (now) => {
+    lastExternalExtensionRpcAt = now;
+  });
+}
+
+/**
  * Current elapsed-time snapshot. Unset signals are omitted.
  *
  * `msSinceLastUiOpen` is only set while at least one UI is open.
  * `msSinceLastUiClosed` is only set while every UI is closed.
+ * `msSinceLastUiInteraction` stays set after the UI closes.
+ * `msSinceLastDappRpc`, `msSinceLastConnectedDappRpc`, `msSinceLastSnapRpc`,
+ * and `msSinceLastExternalExtensionRpc` stay set once recorded. Each is
+ * updated at most once per second.
  * `msSinceLastServiceWorkerReload` is only set after at least one reload
  * (`serviceWorkerReloadCount > 0`).
  *
@@ -300,6 +416,34 @@ export function getLastActivityContext(
   const msSinceLastWindowEvent = msSince(lastWindowEventAt, now);
   if (msSinceLastWindowEvent !== undefined) {
     context.msSinceLastWindowEvent = msSinceLastWindowEvent;
+  }
+
+  const msSinceLastUiInteraction = msSince(lastUiInteractionAt, now);
+  if (msSinceLastUiInteraction !== undefined) {
+    context.msSinceLastUiInteraction = msSinceLastUiInteraction;
+  }
+
+  const msSinceLastDappRpc = msSince(lastDappRpcAt, now);
+  if (msSinceLastDappRpc !== undefined) {
+    context.msSinceLastDappRpc = msSinceLastDappRpc;
+  }
+
+  const msSinceLastConnectedDappRpc = msSince(lastConnectedDappRpcAt, now);
+  if (msSinceLastConnectedDappRpc !== undefined) {
+    context.msSinceLastConnectedDappRpc = msSinceLastConnectedDappRpc;
+  }
+
+  const msSinceLastSnapRpc = msSince(lastSnapRpcAt, now);
+  if (msSinceLastSnapRpc !== undefined) {
+    context.msSinceLastSnapRpc = msSinceLastSnapRpc;
+  }
+
+  const msSinceLastExternalExtensionRpc = msSince(
+    lastExternalExtensionRpcAt,
+    now,
+  );
+  if (msSinceLastExternalExtensionRpc !== undefined) {
+    context.msSinceLastExternalExtensionRpc = msSinceLastExternalExtensionRpc;
   }
 
   if (serviceWorkerReloadCount !== undefined) {

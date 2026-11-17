@@ -1,88 +1,101 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigate, type Path } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import browser from 'webextension-polyfill';
 import { isObject } from '@metamask/utils';
 
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '#shared/constants/app';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import { getEnvironmentType } from '#shared/lib/environment-type';
 
-import { useDispatch } from '../store/hooks';
-import { setShowXWidgetDeeplinkToast } from '../components/app/toast-master/utils';
+async function consumePendingRoute(windowId: number) {
+  try {
+    const response = await browser.runtime.sendMessage({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { windowId },
+    });
 
-const fromXWidgetSearchParam = 'fromXWidget';
-
-function routeFromMessage(
-  message: unknown,
-): (Pick<Path, 'pathname' | 'search'> & { fromXWidget?: boolean }) | null {
-  if (
-    !isObject(message) ||
-    message.type !== EXTENSION_MESSAGES.OPEN_ROUTE ||
-    !isObject(message.body)
-  ) {
+    if (
+      isObject(response) &&
+      response.type === EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE &&
+      isObject(response.body)
+    ) {
+      const { path, search } = response.body;
+      if (typeof path === 'string' && path.startsWith('/')) {
+        return {
+          pathname: path,
+          search: typeof search === 'string' ? search : '',
+        };
+      }
+    }
+    return null;
+  } catch {
     return null;
   }
-
-  const pathname = message.body.path;
-  if (typeof pathname !== 'string' || !pathname.startsWith('/')) {
-    return null;
-  }
-  const search = message.body?.search;
-  const fromXWidget = message.body?.fromXWidget === true;
-  return {
-    pathname,
-    search: typeof search === 'string' ? search : '',
-    fromXWidget,
-  };
-}
-
-function pathWithoutXWidgetFlag(route: Pick<Path, 'pathname' | 'search'>) {
-  const params = new URLSearchParams(route.search);
-  if (!params.has(fromXWidgetSearchParam)) {
-    return route;
-  }
-  params.delete(fromXWidgetSearchParam);
-  const search = params.toString();
-  return {
-    pathname: route.pathname,
-    search: search ? `?${search}` : '',
-  };
 }
 
 /**
- * Navigates on `OPEN_ROUTE` runtime messages. Defers until unlock if locked.
+ * In the side panel, consumes pending routes on mount and when receiving
+ * `OPEN_ROUTE` nudges for this panel's window. Both mount and nudge push
+ * to history, giving the user one Back click to return home.
  */
 export function useNavigateRouteListener(): void {
   const navigate = useNavigate();
-  const location = useLocation();
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.get(fromXWidgetSearchParam) !== '1') {
-      return;
-    }
-    dispatch(setShowXWidgetDeeplinkToast(true));
-    navigate(pathWithoutXWidgetFlag(location), { replace: true });
-  }, [location, navigate, dispatch]);
+    const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
-  useEffect(() => {
-    const onMessage = (message: unknown) => {
-      const route = routeFromMessage(message);
-      if (!route) {
-        return undefined;
-      }
-
-      const { fromXWidget, ...path } = route;
-      if (fromXWidget) {
-        dispatch(setShowXWidgetDeeplinkToast(true));
-      }
-
-      navigate(path);
+    if (!isSidePanel) {
       return undefined;
+    }
+
+    let cancelled = false;
+    let currentWindowId: number | null = null;
+
+    const navigateToPendingRoute = async (windowId: number) => {
+      try {
+        const route = await consumePendingRoute(windowId);
+        if (!cancelled && route) {
+          navigate(route);
+        }
+      } catch {
+        // Navigation failures are non-fatal; the panel stays on its current page.
+      }
     };
 
-    browser.runtime.onMessage.addListener(onMessage);
+    const onMessage = (message: unknown) => {
+      if (
+        isObject(message) &&
+        message.type === EXTENSION_MESSAGES.OPEN_ROUTE &&
+        isObject(message.body) &&
+        typeof message.body.windowId === 'number' &&
+        message.body.windowId === currentWindowId
+      ) {
+        navigateToPendingRoute(message.body.windowId).catch(() => undefined);
+      }
+    };
+
+    const init = async () => {
+      const currentWindow = await browser.windows.getCurrent();
+      if (cancelled) {
+        return;
+      }
+      const windowId = currentWindow.id;
+      if (typeof windowId !== 'number') {
+        return;
+      }
+
+      currentWindowId = windowId;
+
+      browser.runtime.onMessage.addListener(onMessage);
+
+      await navigateToPendingRoute(windowId);
+    };
+
+    init().catch(() => undefined);
+
     return () => {
+      cancelled = true;
       browser.runtime.onMessage.removeListener(onMessage);
     };
-  }, [navigate, dispatch]);
+  }, [navigate]);
 }

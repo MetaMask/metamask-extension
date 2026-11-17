@@ -5,10 +5,7 @@ import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
   appState: Partial<
-    Pick<
-      MetaMaskReduxState['appState'],
-      'showInfuraSwitchToast' | 'showXWidgetDeeplinkToast'
-    >
+    Pick<MetaMaskReduxState['appState'], 'showInfuraSwitchToast'>
   >;
   metamask: Partial<
     Pick<
@@ -81,18 +78,6 @@ export function selectShowInfuraSwitchToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showInfuraSwitchToast);
-}
-
-/**
- * Retrieves whether to show the X widget deeplink toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectShowXWidgetDeeplinkToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showXWidgetDeeplinkToast);
 }
 
 /**

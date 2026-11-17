@@ -32,6 +32,7 @@ import type {
   SentryTracingServiceClearTracesAfterMetricsOptInAction,
   SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from '../../services/sentry/sentry-tracing-service-method-action-types';
+import { LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction } from '../../services/legacy-background-api-service-method-action-types';
 
 export type AnalyticsControllerInitMessengerActions =
   | ConfigRegistryControllerGetStateAction
@@ -56,7 +57,8 @@ export type AnalyticsControllerInitMessengerActions =
   | AnalyticsControllerGetEventFragmentByIdAction
   | AnalyticsControllerFinalizeEventFragmentAction
   | SentryTracingServiceTrackTracesAfterMetricsOptInAction
-  | SentryTracingServiceClearTracesAfterMetricsOptInAction;
+  | SentryTracingServiceClearTracesAfterMetricsOptInAction
+  | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction;
 
 export type AnalyticsControllerInitMessengerEvents =
   ConfigRegistryControllerStateChangedEvent;
@@ -116,6 +118,7 @@ export function getAnalyticsControllerInitMessenger(
       'SentryTracingService:trackTracesAfterMetricsOptIn',
       'SentryTracingService:clearTracesAfterMetricsOptIn',
       'ConfigRegistryController:getState',
+      'LegacyBackgroundApiService:setParticipateInMetaMetrics',
     ],
     events: ['ConfigRegistryController:stateChanged'],
   });

@@ -63,6 +63,7 @@
     "newTokensImportedError": "string",
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
+    "onboardingRedirect": "null",
     "openMetaMaskTabs": {},
     "pendingTokens": {},
     "qrCodeData": "null",
@@ -71,13 +72,10 @@
     "sendInputCurrencySwitched": "boolean",
     "showBasicFunctionalityModal": "boolean",
     "showClaimSubmitToast": "null",
-    "showDataDeletionErrorModal": "boolean",
-    "showDeleteMetaMetricsDataModal": "boolean",
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
     "showSupportDataConsentModal": "boolean",
-    "showXWidgetDeeplinkToast": "boolean",
     "singleExceptions": {
       "testKey": "null"
     },
@@ -248,10 +246,17 @@
     "approvalFlows": [],
     "assetExchangeRates": {},
     "assetPreferences": {},
+    "assetsBackgroundLoadingStatus": {
+      "*": "string"
+    },
     "assetsBalance": {
       "*": {
         "*": {
-          "amount": "string"
+          "amount": "string",
+          "metadata": {
+            "minimumReserveBalance": "string",
+            "spendableBalance": "string"
+          }
         }
       }
     },
@@ -305,6 +310,7 @@
         "lastUpdated": "number"
       }
     },
+    "autorampTransactionRecords": {},
     "autoramps": [],
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
@@ -347,13 +353,10 @@
     "cryptocurrencies": ["string"],
     "currencyRates": {
       "*": {
-        "conversionDate": "null",
-        "conversionRate": "number",
-        "usdConversionRate": "null"
+        "conversionRate": "null"
       }
     },
     "currentAppVersion": "string",
-    "currentCurrency": "string",
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": {},
     "currentLocale": "string",
@@ -395,6 +398,7 @@
         "0x2105": "boolean",
         "0xa4b1": "boolean",
         "0x38": "boolean",
+        "0x531": "boolean",
         "0xa": "boolean",
         "0x89": "boolean"
       },
@@ -760,6 +764,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccountWalletRegistrations": [],
     "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
@@ -844,6 +849,7 @@
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
     "moneyEarnBannerDismissedTokenKeys": [],
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -970,6 +976,9 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
+      "tdpChartType": "number",
+      "tdpChartInterval": "string",
+      "tdpChartIndicators": "array",
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },
@@ -1302,6 +1311,8 @@
     "usePhishDetect": "boolean",
     "userOperations": {},
     "userRegion": "null",
+    "vbaAutorampListFetchedAt": "null",
+    "vbaCustomerAbilities": "null",
     "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
@@ -1326,6 +1337,13 @@
   },
   "moneyBalance": {
     "lastKnownBalance": "null"
+  },
+  "moneyFtue": {
+    "acknowledged": "boolean",
+    "isOpen": "boolean",
+    "origin": "null",
+    "pendingDeposit": "null",
+    "source": "null"
   },
   "perpsTutorial": {
     "tutorialModalOpen": "boolean",
@@ -1358,6 +1376,7 @@
     }
   },
   "rewardsMoney": {
+    "pendingReferralCode": "null",
     "referralMe": "null",
     "referralMeSettled": "boolean"
   },

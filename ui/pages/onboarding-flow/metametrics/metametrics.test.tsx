@@ -6,7 +6,8 @@ import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
+  optInToMarketing,
+  optOutOfMarketing,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -42,12 +43,19 @@ jest.mock('../../../store/actions.ts', () => {
       dispatch({ type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS, value });
       return Promise.resolve([value]);
     }),
-    setDataCollectionForMarketing: jest.fn((value) => (dispatch: Dispatch) => {
+    optInToMarketing: jest.fn(() => (dispatch: Dispatch) => {
       dispatch({
         type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-        value,
+        value: true,
       });
-      return Promise.resolve([value]);
+      return Promise.resolve();
+    }),
+    optOutOfMarketing: jest.fn(() => (dispatch: Dispatch) => {
+      dispatch({
+        type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+        value: false,
+      });
+      return Promise.resolve();
     }),
     setPna25Acknowledged: jest.fn(() => () => Promise.resolve()),
   };
@@ -184,7 +192,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('when both checkboxes are unchecked, setDataCollectionForMarketing should be called with false', async () => {
+  it('opts out of marketing when both checkboxes are unchecked', async () => {
     const { queryByText, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -210,7 +218,7 @@ describe('Onboarding Metametrics Component', () => {
     await clickElement(continueButton);
 
     await waitFor(() => {
-      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(optOutOfMarketing).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_COMPLETION_ROUTE,
         { replace: true },
@@ -273,7 +281,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
+      expect(optInToMarketing).toHaveBeenCalled();
     });
   });
 

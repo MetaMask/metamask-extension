@@ -1022,11 +1022,10 @@ When the user explicitly asks for visual verification of UI behavior (e.g., "ver
 **Workflow:**
 
 0. Build if needed (`yarn build:test`), then `mm launch` (this auto-starts the daemon)
-1. **Query prior knowledge:** Run `mm knowledge-search "<flow>"` and `mm knowledge-sessions` to reuse previously discovered flows and avoid wasting tokens rediscovering known sequences.
-2. Always call `mm describe-screen` before acting to discover targets
-3. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
-4. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output
-5. Always end with `mm cleanup` (even on failure)
+1. Always call `mm describe-screen` before acting to discover targets
+2. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
+3. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output
+4. Always end with `mm cleanup` (even on failure)
 
 **If CLI is unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
 
@@ -1714,18 +1713,18 @@ Performance Checks (React Components):
 
 - **MetaMask Contributor Docs:** https://github.com/MetaMask/contributor-docs
 - **MetaMask Developer Docs:** https://docs.metamask.io/
-- **Community Forum:** https://community.metamask.io/
-- **User Support:** https://support.metamask.io/
+- **Community Forum:** https://community.metamask.com/
+- **User Support:** https://support.metamask.com/
 
 ---
 
 ## Cursor Cloud specific instructions
 
-This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
+This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `npm install -g corepack && corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
 
 ### Node version gotcha (important)
 
-- The repo requires Node `>=24.22.1` (`.nvmrc` → `v24.22.1`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.22.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+- The repo requires Node `>=26.13.1`, but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 26 automatically**. If a command runs an older Node version (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v26.13.1/bin:$PATH"` before the command. `npm install -g corepack && corepack enable` must run under Node 26 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
 
 ### Running / building the extension
 

@@ -167,85 +167,40 @@ function isTickerWidgetEnabled(controller: Controller | undefined) {
   return isTickerWidgetFeatureEnabled(controller) && preferenceEnabled;
 }
 
-function broadcastOpenRoute(
+async function openSidePanel(
+  sender: { tab?: { windowId?: number } },
   path: string,
   search?: `?${string}`,
-  fromXWidget?: boolean,
 ) {
-  return browser.runtime
-    .sendMessage({
-      type: EXTENSION_MESSAGES.OPEN_ROUTE,
-      body: {
-        path,
-        ...(search ? { search } : {}),
-        ...(fromXWidget ? { fromXWidget } : {}),
-      },
-    })
-    .catch(() => undefined);
-}
-
-function delay(ms: number) {
-  return new Promise((resolve) => {
-    globalThis.setTimeout(resolve, ms);
-  });
-}
-
-async function broadcastOpenRouteWithRetries(
-  path: string,
-  search?: `?${string}`,
-  fromXWidget?: boolean,
-) {
-  for (const delayMs of openRouteRetryDelaysMs) {
-    if (delayMs > 0) {
-      await delay(delayMs);
-    }
-    await broadcastOpenRoute(path, search, fromXWidget);
-  }
-}
-
-function resetSidePanelPath(tabId?: number) {
   const sidePanel = globalThis.chrome?.sidePanel;
-  if (!sidePanel?.setOptions) {
-    return Promise.resolve();
-  }
-
-  // Tab-scoped options override the global default, so reset both to ensure
-  // the panel opens at SIDEPANEL_FILE rather than a path set by a prior open.
-  const updates = [
-    sidePanel.setOptions({ path: SIDEPANEL_FILE, enabled: true }),
-  ];
-  if (typeof tabId === 'number') {
-    updates.push(
-      sidePanel.setOptions({ tabId, path: SIDEPANEL_FILE, enabled: true }),
-    );
-  }
-  return Promise.all(updates);
-}
-
-function openSidePanel(sender: { tab?: { windowId?: number; id?: number } }) {
-  const sidePanel = globalThis.chrome?.sidePanel;
-  if (!sidePanel?.open || !sidePanel?.setOptions) {
+  if (!sidePanel?.open) {
     throw new Error('sidepanel-unavailable');
   }
 
-  const tabId = sender?.tab?.id;
   const windowId = sender?.tab?.windowId;
 
-  let openOptions: { windowId: number } | { tabId: number } | null = null;
-  if (typeof windowId === 'number') {
-    openOptions = { windowId };
-  } else if (typeof tabId === 'number') {
-    openOptions = { tabId };
-  }
-  if (!openOptions) {
-    throw new Error('sidepanel-no-window');
+  if (typeof windowId !== 'number') {
+    throw new TypeError('sidepanel-no-window');
   }
 
-  // Chrome only honours open() while the click that produced this message is
-  // still the current user gesture, so issue it before awaiting the reset.
-  const pathReset = resetSidePanelPath(tabId);
-  const opened = sidePanel.open(openOptions);
-  return Promise.all([pathReset, opened]);
+  const entry = { path, search };
+  pendingRoutes.set(windowId, entry);
+
+  try {
+    await sidePanel.open({ windowId });
+  } catch (error: unknown) {
+    if (pendingRoutes.get(windowId) === entry) {
+      pendingRoutes.delete(windowId);
+    }
+    throw error;
+  }
+
+  await browser.runtime
+    .sendMessage({
+      type: EXTENSION_MESSAGES.OPEN_ROUTE,
+      body: { windowId },
+    })
+    .catch(() => undefined);
 }
 
 function openPopupWithRoute(hash: string) {
@@ -280,16 +235,14 @@ async function openExtensionSurface({
   search,
 }: {
   controller: Controller | undefined;
-  sender: { tab?: { windowId?: number; id?: number } };
+  sender: { tab?: { windowId?: number } };
   hash: string;
   path: string;
   search?: `?${string}`;
 }) {
   if (shouldUseSidePanel(controller)) {
     try {
-      // Sidepanel: default path only + OPEN_ROUTE (retries cover cold mount).
-      await openSidePanel(sender);
-      await broadcastOpenRouteWithRetries(path, search, true);
+      await openSidePanel(sender, path, search);
       return;
     } catch {
       // Fall through to the popup, then a tab.
@@ -304,10 +257,6 @@ async function openExtensionSurface({
     // once the user gesture is gone, so open a tab, which needs no gesture.
     await openFullscreenTab(hash);
   }
-
-  // Hash navigation does not set the toast flag. Retry the message so a cold
-  // popup or fullscreen document can still receive it after mount.
-  await broadcastOpenRouteWithRetries(path, search, true);
 }
 
 async function openExtensionPage({
@@ -318,14 +267,20 @@ async function openExtensionPage({
   caipAssetId,
 }: {
   controller: Controller | undefined;
-  sender: { tab?: { windowId?: number; id?: number } };
+  sender: { tab?: { windowId?: number } };
   path: string;
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
   const hash = routeHash(path, search);
 
-  await openExtensionSurface({ controller, sender, hash, path, search });
+  await openExtensionSurface({
+    controller,
+    sender,
+    hash,
+    path,
+    search,
+  });
 
   return {
     type: EXTENSION_MESSAGES.OPEN_EXTENSION,

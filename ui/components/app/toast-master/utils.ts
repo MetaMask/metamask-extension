@@ -1,8 +1,4 @@
-import {
-  SET_SHOW_INFURA_SWITCH_TOAST,
-  SET_SHOW_X_WIDGET_DEEPLINK_TOAST,
-} from '../../../store/actionConstants';
-
+import { SET_SHOW_INFURA_SWITCH_TOAST } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
 
 /**
@@ -63,13 +59,6 @@ export function setShowInfuraSwitchToast(value: boolean) {
   };
 }
 
-export function setShowXWidgetDeeplinkToast(value: boolean) {
-  return {
-    type: SET_SHOW_X_WIDGET_DEEPLINK_TOAST,
-    payload: value,
-  };
-}
-
 export function setShieldPausedToastLastClickedOrClosed(time: number) {
   submitRequestToBackgroundAndCatch(
     'AppStateController:setShieldPausedToastLastClickedOrClosed',
@@ -91,5 +80,7 @@ export function setPna25Acknowledged(acknowledged: boolean) {
 }
 
 export function dismissSidePanelMigrationToast() {
-  submitRequestToBackgroundAndCatch('dismissSidePanelMigrationToast');
+  submitRequestToBackgroundAndCatch(
+    'PreferencesController:dismissSidePanelMigrationToast',
+  );
 }

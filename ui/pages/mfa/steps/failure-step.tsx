@@ -29,7 +29,14 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
   const supportLink = new URL(SUPPORT_LINK as string);
   supportLink.searchParams.set('mfa_error', step.code);
   const dismiss = () => onAction({ type: 'dismiss' });
-  const retry = () => onAction({ type: 'retry' });
+  const retry = () => {
+    onAction({ type: 'errorCtaClicked', cta: 'try_again' });
+    onAction({ type: 'retry' });
+  };
+  const contactSupport = () => {
+    onAction({ type: 'errorCtaClicked', cta: 'contact_support' });
+    setIsSupportOpen(true);
+  };
 
   const renderFooter = () => {
     if (getErrorHandling(step.code) === 'support') {
@@ -39,7 +46,7 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             isFullWidth
-            onClick={() => setIsSupportOpen(true)}
+            onClick={contactSupport}
             data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
           >
             {t('mfaFailureContactSupport')}
@@ -84,6 +91,7 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
   return (
     <>
       <StepLayout
+        onAction={onAction}
         isVerticallyCentered
         top={
           <img

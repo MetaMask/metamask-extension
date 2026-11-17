@@ -313,15 +313,35 @@ export function getAccountsApiActivityDisplayInfo(
   t: MoneyActivityTranslate,
 ): MoneyTransactionDisplayInfo {
   const isIncoming = activity.kind === 'cashback' || activity.kind === 'refund';
-  const usdValue = new BigNumber(activity.amount).dividedBy(
-    new BigNumber(10).pow(activity.token.decimals),
-  );
+  const { displayAmount } = activity;
+  const isAmountPending = displayAmount?.type === 'pending';
+  const amountUnavailable =
+    displayAmount?.type === 'unavailable'
+      ? t('moneyActivityAmountUnavailable')
+      : undefined;
+  const usdValue =
+    displayAmount &&
+    (displayAmount.type === 'historical' ||
+      displayAmount.type === 'approximate')
+      ? new BigNumber(displayAmount.value).dividedBy(
+          new BigNumber(10).pow(displayAmount.decimals),
+        )
+      : new BigNumber(activity.amount).dividedBy(
+          new BigNumber(10).pow(activity.token.decimals),
+        );
+  const approximatePrefix = displayAmount?.type === 'approximate' ? '≈' : '';
 
   return {
     label: t(ACCOUNTS_API_LABEL_KEY[activity.kind]),
     description: t('moneyActivityCard'),
-    primaryAmount: formatMusdAmount(usdValue, isIncoming),
-    fiatAmount: formatFiatAmount(usdValue, isIncoming),
+    primaryAmount: isAmountPending
+      ? '—'
+      : (amountUnavailable ??
+        `${approximatePrefix}${formatMusdAmount(usdValue, isIncoming)}`),
+    fiatAmount:
+      isAmountPending || amountUnavailable
+        ? ''
+        : `${approximatePrefix}${formatFiatAmount(usdValue, isIncoming)}`,
     isIncoming,
     icon: IconName.Card,
     status: 'confirmed',
