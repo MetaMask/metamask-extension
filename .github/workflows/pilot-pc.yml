@@ -8,6 +8,11 @@ name: Pilot positive control
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - trigger-ci-pilot-b
+    paths:
+      - .github/workflows/pilot-pc.yml
 
 permissions:
   contents: read
