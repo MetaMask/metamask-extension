@@ -6200,10 +6200,10 @@
     "message": "Trade from the same balance"
   },
   "moneyFtueBenefitWithdrawDescription": {
-    "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
+    "message": "There are no notice periods or penalties to swap or send your funds."
   },
   "moneyFtueBenefitWithdrawTitle": {
-    "message": "Withdraw anytime"
+    "message": "No lockups"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",
