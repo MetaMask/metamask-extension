@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMask 최신 버전으로 업데이트하세요",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "이동할 URL이 제공되지 않았습니다."
@@ -9521,9 +9521,6 @@
   "restore": {
     "message": "복구"
   },
-  "restoreUserData": {
-    "message": "사용자 데이터 복구"
-  },
   "restoreWalletDescription": {
     "message": "$1을(를) 입력하세요. 지갑을 가져오면 이 기기에서 현재 지갑 데이터가 삭제됩니다. 이 작업은 취소할 수 없습니다.",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11736,7 +11733,7 @@
   },
   "stxFailureDescription": {
     "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 $1(으)로 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "더욱 안정적이고 안전하게 트랜잭션을 진행하려면 스마트 트랜잭션을 활성화하세요. $1"
@@ -11880,7 +11877,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "트랜잭션이 실패할 경우 언제든 문의하세요. 오류가 해결되지 않는다면 고객 지원 $1에 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "스왑 실패"

@@ -243,7 +243,6 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
-    isBenchmark = false,
     testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
 
@@ -575,7 +574,6 @@ async function withFixtures(options, testSuite) {
       const wd = await buildWebDriver({
         ...driverOptions,
         disableServerMochaToBackground,
-        isBenchmark,
       });
 
       driver = wd.driver;
