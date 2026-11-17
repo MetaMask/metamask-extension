@@ -148,7 +148,6 @@ class AssetDetailsPage {
    * Asserts the Stellar trustline activation card is not present.
    */
   async checkActivateCardIsAbsent(): Promise<void> {
-    console.log('Verify the asset activate card is absent');
     await this.driver.assertElementNotPresent(this.assetActivateCard);
   }
 
@@ -156,7 +155,6 @@ class AssetDetailsPage {
    * Asserts the Stellar trustline activation card is visible on the asset page.
    */
   async checkActivateCardIsDisplayed(): Promise<void> {
-    console.log('Verify the asset activate card is displayed');
     await this.driver.waitForSelector(this.assetActivateCard);
     await this.driver.waitForSelector(this.assetActivateButton);
   }
@@ -202,7 +200,6 @@ class AssetDetailsPage {
    * Asserts the Inactive trustline badge is not present.
    */
   async checkInactiveBadgeIsAbsent(): Promise<void> {
-    console.log('Verify the asset inactive badge is absent');
     await this.driver.assertElementNotPresent(this.assetInactiveBadge);
   }
 
@@ -210,7 +207,6 @@ class AssetDetailsPage {
    * Asserts the Inactive trustline badge is visible on the asset page header.
    */
   async checkInactiveBadgeIsDisplayed(): Promise<void> {
-    console.log('Verify the asset inactive badge is displayed');
     await this.driver.waitForSelector(this.assetInactiveBadge);
   }
 
