@@ -934,15 +934,10 @@ export class LegacyBackgroundApiService {
   /**
    * Sets the selected currency on the AssetsController.
    *
-   * The controller action is synchronous. This still returns a promise because
-   * the legacy background API invokes it through the messenger, which callers
-   * await.
-   *
    * @param currencyCode - The currency code to set as the current currency.
    */
-  setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
+  async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
-    return Promise.resolve();
   }
 
   /**
