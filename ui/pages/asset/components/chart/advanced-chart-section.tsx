@@ -16,6 +16,7 @@ import { AssetChartBody, type HoveredPoint } from './asset-chart-body';
 import ChartErrorState from './chart-error-state';
 import TokenPriceHeader from './token-price-header';
 import { useAdvancedChartData } from './useAdvancedChartData';
+import { useCandle24hChange } from './useCandle24hChange';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
 import { useAdvancedChartInteractions } from './useAdvancedChartInteractions';
 
@@ -167,13 +168,10 @@ export const AdvancedChartSection = ({
     needsHistory: !isLineChart,
   });
 
-  // Candle mode always sources its 24H % from the P1D historical series rather
-  // than from the candle data. Candles are interval-bucketed, so a candle-
-  // derived 24H baseline drifts as the interval changes and collapses entirely
-  // on coarse intervals like 1w (no bar sits inside the trailing 24h window).
-  // The P1D series is interval-independent, so the percentage is a true 24H
-  // figure that stays identical across candle intervals and is still available
-  // when the OHLCV API fails. Line mode keeps using the range it is showing.
+  // Line mode's header and legacy chart body both read this series, so it uses
+  // the range the chart is showing. In candle mode the body is hidden and the
+  // candle header's 24H change comes from `useCandle24hChange` instead, so the
+  // range is pinned to P1D only to keep the hidden body warm for a fast toggle.
   const historical = useHistoricalPrices({
     chainId,
     address,
@@ -225,34 +223,23 @@ export const AdvancedChartSection = ({
   const candlePrice =
     ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined);
 
-  // The 24H % must be a ratio of two prices in the *same* currency. The P1D
-  // baseline is quoted in `currency`, but the candle/live price is quoted in
-  // `resolvedCurrency`, which falls back to USD when the OHLCV API cannot quote
-  // `currency`. Only use the candle price as the current value when the two
-  // currencies match; otherwise use a `currency`-denominated current price
-  // (the wallet's current price, or the latest P1D point) so the percentage is
-  // never a cross-fiat ratio. The displayed price and its label stay in
-  // `resolvedCurrency` — only the percentage needs the currencies aligned.
-  const historicalBaseline = historical.isPlaceholderData
-    ? undefined
-    : historical.data.prices?.[0]?.y;
-  const candleCurrentInCurrency =
-    resolvedCurrency === currency.toLowerCase()
-      ? candlePrice
-      : (currentPrice ??
-        (historical.isPlaceholderData
-          ? undefined
-          : historical.data.prices?.at(-1)?.y));
+  // The 24H change is owned by a dedicated hook so its source can change (e.g.
+  // a future `percentChange1D` WebSocket stream) without touching this
+  // component. Today it is derived from the interval-independent P1D series,
+  // which keeps the figure identical across candle intervals and a true 24H
+  // change, and keeps it available when the OHLCV API fails.
+  const candle24hChange = useCandle24hChange({
+    chainId,
+    address,
+    currency,
+    candlePrice,
+    candleCurrency: resolvedCurrency,
+    currentPrice,
+    enabled: !isLineChart,
+  });
   const candleHeader = {
     price: candlePrice,
-    // Always the last-24H change, derived from the interval-independent P1D
-    // historical series (see the historical hook above). This keeps the figure
-    // identical across candle intervals and a true 24H change, and behaves the
-    // same whether or not the OHLCV API succeeded.
-    percentChange: computePercentChange(
-      candleCurrentInCurrency,
-      historicalBaseline,
-    ),
+    percentChange: candle24hChange.percentChange,
     // Candle mode shows the last-24H change, labelled "Today" to match mobile,
     // instead of the latest bar's date.
     timestamp: undefined as number | undefined,
