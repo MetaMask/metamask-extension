@@ -4,18 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import {
   AvatarAccount,
   AvatarAccountVariant,
+  AvatarAccountSize,
   Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  FontWeight,
+  ContentVariant,
   Icon,
   IconName,
   IconSize,
   IconColor,
-  Text,
-  TextVariant,
-  AvatarAccountSize,
+  ListItem,
 } from '@metamask/design-system-react';
 import { setAvatarType } from '../../../store/actions';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -45,41 +41,35 @@ const AccountIdenticonSubPage = () => {
       {AVATAR_OPTIONS.map(({ value, labelKey }) => {
         const isSelected = value === currentVariant;
         return (
-          <Box
+          <ListItem
             key={value}
-            data-testid={`account-identicon-option-${value}`}
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-            className={`w-full cursor-pointer border-0 p-4 ${
+            variant={ContentVariant.OneLine}
+            isInteractive
+            onClick={() => handleSelect(value)}
+            className={
               isSelected
                 ? 'bg-muted hover:bg-muted-hover'
                 : 'bg-background-default hover:bg-background-default-hover'
-            }`}
-            onClick={() => handleSelect(value)}
-          >
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={3}
-            >
+            }
+            data-testid={`account-identicon-option-${value}`}
+            avatar={
               <AvatarAccount
                 address={selectedAccount?.address}
                 variant={value}
                 size={AvatarAccountSize.Md}
               />
-              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-                {t(labelKey)}
-              </Text>
-            </Box>
-            {isSelected && (
-              <Icon
-                name={IconName.Check}
-                size={IconSize.Md}
-                color={IconColor.IconDefault}
-              />
-            )}
-          </Box>
+            }
+            title={t(labelKey)}
+            endAccessory={
+              isSelected ? (
+                <Icon
+                  name={IconName.Check}
+                  size={IconSize.Md}
+                  color={IconColor.IconDefault}
+                />
+              ) : undefined
+            }
+          />
         );
       })}
     </Box>

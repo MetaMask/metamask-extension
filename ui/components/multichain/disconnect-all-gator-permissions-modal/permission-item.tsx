@@ -2,16 +2,11 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hexToNumber, KnownCaipNamespace, CaipChainId } from '@metamask/utils';
 import {
-  TextColor,
-  TextVariant,
-  Text,
-  Box,
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarBaseShape,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
+  ContentVariant,
+  ListItem,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
@@ -133,30 +128,18 @@ export const PermissionItem = ({ permission }: PermissionItemProps) => {
   ]);
 
   return (
-    <Box
-      alignItems={BoxAlignItems.Center}
-      backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      flexDirection={BoxFlexDirection.Row}
-      gap={4}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingTop={4}
-      paddingBottom={4}
-    >
-      <AvatarNetwork
-        size={AvatarNetworkSize.Md}
-        src={networkIcon}
-        name={networkName}
-        shape={AvatarBaseShape.Circle}
-      />
-      <Box flexDirection={BoxFlexDirection.Column}>
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-          {displayName}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {formattedDescription}
-        </Text>
-      </Box>
-    </Box>
+    <ListItem
+      variant={ContentVariant.TwoLines}
+      avatar={
+        <AvatarNetwork
+          size={AvatarNetworkSize.Md}
+          src={networkIcon}
+          name={networkName}
+          shape={AvatarBaseShape.Circle}
+        />
+      }
+      title={displayName}
+      description={formattedDescription}
+    />
   );
 };

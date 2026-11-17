@@ -3,14 +3,12 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  FontWeight,
+  ContentVariant,
   Icon,
   IconName,
   IconSize,
   IconColor,
+  ListItem,
   Text,
   TextColor,
   TextVariant,
@@ -58,30 +56,28 @@ const LanguageSubPage = () => {
     entries.map(({ code: value, name: label }) => {
       const isSelected = value === currentLocale;
       return (
-        <Box
+        <ListItem
           key={value}
-          data-testid={`locale-option-${value}`}
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
-          className={`w-full cursor-pointer border-0 p-4 ${
+          variant={ContentVariant.OneLine}
+          isInteractive
+          onClick={() => handleSelect(value)}
+          className={
             isSelected
               ? 'bg-muted hover:bg-muted-hover'
               : 'bg-background-default hover:bg-background-default-hover'
-          }`}
-          onClick={() => handleSelect(value)}
-        >
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {label}
-          </Text>
-          {isSelected && (
-            <Icon
-              name={IconName.Check}
-              size={IconSize.Md}
-              color={IconColor.IconDefault}
-            />
-          )}
-        </Box>
+          }
+          data-testid={`locale-option-${value}`}
+          title={label}
+          endAccessory={
+            isSelected ? (
+              <Icon
+                name={IconName.Check}
+                size={IconSize.Md}
+                color={IconColor.IconDefault}
+              />
+            ) : undefined
+          }
+        />
       );
     });
 

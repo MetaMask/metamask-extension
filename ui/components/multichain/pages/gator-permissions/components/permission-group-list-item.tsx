@@ -2,20 +2,15 @@ import React from 'react';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
-  Button,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  IconColor,
-  BoxJustifyContent,
-  TextColor,
-  Box,
-  BoxFlexDirection,
   AvatarNetwork,
   AvatarNetworkSize,
+  BoxBackgroundColor,
+  ContentVariant,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-  Text,
+  ListItem,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -63,57 +58,31 @@ export const PermissionGroupListItem = ({
   };
 
   return (
-    <Box
-      data-testid="permission-group-list-item"
+    <ListItem
+      variant={ContentVariant.TwoLines}
+      isInteractive
+      onClick={onClick}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      alignItems={BoxAlignItems.Baseline}
-      padding={4}
-      gap={4}
-    >
-      <Button
-        onClick={onClick}
-        style={{
-          width: '100%',
-          backgroundColor: 'transparent',
-          border: 'none',
-          padding: 0,
-        }}
-      >
-        <Box alignItems={BoxAlignItems.Start} marginRight={2}>
-          <AvatarNetwork
-            data-testid="permission-group-list-item__avatar-network"
-            src={networkImageUrl}
-            name={chainId}
-            size={AvatarNetworkSize.Lg}
-            style={{ borderRadius: '50%' }}
-          />
-        </Box>
-
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Start}
-          justifyContent={BoxJustifyContent.Start}
-          style={{ flexGrow: '1' }}
-        >
-          <Text variant={TextVariant.BodyMd}>{getNetworkNameForChainId()}</Text>
-
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
-            {text}
-          </Text>
-        </Box>
-
-        <Box
-          justifyContent={BoxJustifyContent.End}
-          alignItems={BoxAlignItems.End}
-          gap={2}
-        >
-          <Icon
-            name={IconName.ArrowRight}
-            color={IconColor.IconDefault}
-            size={IconSize.Sm}
-          />
-        </Box>
-      </Button>
-    </Box>
+      data-testid="permission-group-list-item"
+      avatar={
+        <AvatarNetwork
+          data-testid="permission-group-list-item__avatar-network"
+          src={networkImageUrl}
+          name={chainId}
+          size={AvatarNetworkSize.Lg}
+          style={{ borderRadius: '50%' }}
+        />
+      }
+      title={getNetworkNameForChainId()}
+      description={text}
+      descriptionProps={{ variant: TextVariant.BodyMd }}
+      endAccessory={
+        <Icon
+          name={IconName.ArrowRight}
+          color={IconColor.IconDefault}
+          size={IconSize.Sm}
+        />
+      }
+    />
   );
 };

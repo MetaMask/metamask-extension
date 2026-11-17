@@ -7,16 +7,53 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
   >
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Estimate balance changes
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Estimate balance changes
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <div
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  >
+                    <span>
+                       
+                      Estimates balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
+                      <a
+                        class="font-medium text-primary-default"
+                        href="https://support.metamask.com/transactions-and-gas/transactions/simulations/?utm_source=extension"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Learn more
+                      </a>
+                       
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--off"
@@ -52,37 +89,57 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <div
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          <span>
-             
-            Estimates balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
-            <a
-              class="font-medium text-primary-default"
-              href="https://support.metamask.com/transactions-and-gas/transactions/simulations/?utm_source=extension"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Learn more
-            </a>
-             
-          </span>
-        </div>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Security alerts
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Security alerts
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <div
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  >
+                    <span>
+                       
+                      This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
+                      <a
+                        class="font-medium text-primary-default"
+                        href="https://support.metamask.com/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Learn more
+                      </a>
+                       
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="securityAlert"
           >
@@ -120,37 +177,57 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <div
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          <span>
-             
-            This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
-            <a
-              class="font-medium text-primary-default"
-              href="https://support.metamask.com/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Learn more
-            </a>
-             
-          </span>
-        </div>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Smart Transactions
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Smart Transactions
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <div
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  >
+                    <span>
+                       
+                      Turn on Smart Transactions for more reliable and secure transactions. 
+                      <a
+                        class="font-medium text-primary-default"
+                        href="https://support.metamask.com/transactions-and-gas/transactions/smart-transactions/?utm_source=extension"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Learn more
+                      </a>
+                       
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--on"
@@ -186,37 +263,45 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <div
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          <span>
-             
-            Turn on Smart Transactions for more reliable and secure transactions. 
-            <a
-              class="font-medium text-primary-default"
-              href="https://support.metamask.com/transactions-and-gas/transactions/smart-transactions/?utm_source=extension"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Learn more
-            </a>
-             
-          </span>
-        </div>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Smart account requests from dapps
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Smart account requests from dapps
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--on"
@@ -252,25 +337,45 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account.
-        </p>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Proposed nicknames
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Proposed nicknames
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--off"
@@ -306,11 +411,6 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol.
-        </p>
       </div>
     </div>
     <div
@@ -318,16 +418,41 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
     />
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Show hex data
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Show hex data
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Select this to show the hex data field on the send screen
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="transactions-settings-hex-data-toggle"
           >
@@ -365,11 +490,6 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Select this to show the hex data field on the send screen
-        </p>
       </div>
     </div>
   </div>
