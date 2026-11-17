@@ -57,12 +57,14 @@ describe('BridgeAsset', () => {
 
 describe('BridgeAsset network logo fallback', () => {
   it('should render a native asset whose chain is not in the network image maps', () => {
+    // toBridgeToken derives chainId from assetId, so the unknown chain has
+    // to be set on assetId for the network logo lookups to miss.
     const unknownChainNativeAsset = {
       ...getNativeAssetForChainId('0x1'),
-      chainId: 9999,
+      assetId: 'eip155:9999/slip44:60',
     };
 
-    const { getByTestId } = renderWithProvider(
+    const { container } = renderWithProvider(
       <BridgeAsset
         asset={toBridgeToken(unknownChainNativeAsset)}
         selected={false}
@@ -70,6 +72,6 @@ describe('BridgeAsset network logo fallback', () => {
       configureStore(createBridgeMockStore({})),
     );
 
-    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
+    expect(container.innerHTML).not.toContain('eth_logo.svg');
   });
 });
