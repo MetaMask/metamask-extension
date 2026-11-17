@@ -239,17 +239,22 @@ describe('Notification details body renderers (on-chain subtypes)', () => {
         throw new Error('Expected on-chain notification details body');
       }
 
-      const renderers = [
-        body.Image,
-        body.From,
-        body.To,
-        body.Account,
-        body.Asset,
-        body.AssetReceived,
-        body.Status,
-        body.Network,
-        body.Rate,
-      ].filter(Boolean);
+      type BodyRenderer = (props: {
+        notification: INotification;
+      }) => React.ReactElement;
+      const renderers = (
+        [
+          body.Image,
+          body.From,
+          body.To,
+          body.Account,
+          body.Asset,
+          body.AssetReceived,
+          body.Status,
+          body.Network,
+          body.Rate,
+        ] as (BodyRenderer | undefined)[]
+      ).filter((r): r is BodyRenderer => Boolean(r));
 
       const { container } = renderWithProvider(
         <>
