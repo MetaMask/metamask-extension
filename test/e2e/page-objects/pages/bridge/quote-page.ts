@@ -346,18 +346,6 @@ class BridgeQuotePage {
     console.log('The message "More ETH needed for gas" is displayed');
   }
 
-  async checkNoTradeRouteMessageIsDisplayed(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.noOptionAvailable);
-    } catch (e) {
-      console.log(
-        `Expected message that "no trade route is available" is not present`,
-      );
-      throw e;
-    }
-    console.log('The message "no trade route is available" is displayed');
-  }
-
   /**
    * Checks the slippage warning banner shown in the transaction settings
    * modal.
@@ -374,6 +362,18 @@ class BridgeQuotePage {
     // longer render the legacy `.mm-banner-base` class, so match the
     // description text directly instead of scoping to that class.
     await this.driver.waitForSelector({ text });
+  }
+
+  async checkNoTradeRouteMessageIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.noOptionAvailable);
+    } catch (e) {
+      console.log(
+        `Expected message that "no trade route is available" is not present`,
+      );
+      throw e;
+    }
+    console.log('The message "no trade route is available" is displayed');
   }
 
   /**
@@ -935,20 +935,6 @@ class BridgeQuotePage {
     await this.driver.assertElementNotPresent(this.assetPrickerSearchInput);
   }
 
-  async selectDestToken(token: string): Promise<void> {
-    await this.driver.waitForSelector(this.destinationAssetPickerButton);
-    await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.driver.waitForSelector(this.assetPrickerSearchInput);
-    const tokenIsVisible = await this.driver.isElementPresentAndVisible(
-      this.tokenButtonByText(token),
-      1000,
-    );
-    if (!tokenIsVisible) {
-      await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    }
-    await this.selectAssetFromPicker(token);
-  }
-
   /**
    * Searches the destination picker by contract address and selects the
    * token, importing it first when it is not listed.
@@ -982,6 +968,20 @@ class BridgeQuotePage {
       await this.driver.waitForSelector(this.tokenButton);
     }
     await this.driver.clickElement(this.tokenButton);
+  }
+
+  async selectDestToken(token: string): Promise<void> {
+    await this.driver.waitForSelector(this.destinationAssetPickerButton);
+    await this.driver.clickElement(this.destinationAssetPickerButton);
+    await this.driver.waitForSelector(this.assetPrickerSearchInput);
+    const tokenIsVisible = await this.driver.isElementPresentAndVisible(
+      this.tokenButtonByText(token),
+      1000,
+    );
+    if (!tokenIsVisible) {
+      await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
+    }
+    await this.selectAssetFromPicker(token);
   }
 
   async selectNetwork(network: string): Promise<void> {

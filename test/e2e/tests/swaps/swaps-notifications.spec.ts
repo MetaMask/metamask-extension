@@ -13,6 +13,7 @@ import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from '../bridge/constants';
+
 const MUSD_MALICIOUS_SECURITY_DATA = {
   type: 'Malicious',
   metadata: {
