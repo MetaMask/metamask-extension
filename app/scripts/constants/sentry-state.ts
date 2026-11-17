@@ -30,9 +30,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
       selectedAccount: false,
     },
   },
-  AccountTracker: {
-    accountsByChainId: false,
-  },
   AddressBookController: {
     addressBook: false,
   },
