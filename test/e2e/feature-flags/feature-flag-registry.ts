@@ -3658,11 +3658,32 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'networkAssetsSnapsMigrationTron',
     productionDefault: {
       versions: {
-        '13.41.0': {
-          featureVersion: '1',
-          minimumSnapVersion: '1.20.0',
-          stage: 0,
-        },
+        '13.56.0': [
+          {
+            name: 's1',
+            scope: {
+              type: 'threshold',
+              value: 1,
+            },
+            value: {
+              featureVersion: '1',
+              minimumSnapVersion: '4.3.0',
+              stage: 1,
+            },
+          },
+          {
+            name: 'off',
+            scope: {
+              type: 'threshold',
+              value: 0,
+            },
+            value: {
+              featureVersion: '1',
+              minimumSnapVersion: '4.3.0',
+              stage: 0,
+            },
+          },
+        ],
       },
     },
     status: FeatureFlagStatus.Active,

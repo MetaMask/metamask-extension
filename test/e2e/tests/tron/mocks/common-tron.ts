@@ -1586,10 +1586,10 @@ export async function mockTronGetContract(
 }
 
 /**
- * Mocks the accounts API v2 supportedNetworks (**EVM only**).
+ * Mocks the accounts API v2 supportedNetworks (EVM chains plus Tron).
  *
- * Tron balances in these E2E flows come from mocked Tron RPC
- * (`mockTronGetAccount` and related mocks in this file), not Accounts API v5.
+ * Tron is listed so the core AssetsController accounts data source requests
+ * Tron balances, which the Tron snap reads once its migration stage is on.
  *
  * @param mockServer
  */
@@ -1610,6 +1610,7 @@ export async function mockAccountsApiV2WithTron(
         'eip155:42161',
         'eip155:534352',
         'eip155:1337',
+        TRON_CHAIN_ID,
       ],
       partialSupport: ['eip155:42220', 'eip155:43114'],
     });

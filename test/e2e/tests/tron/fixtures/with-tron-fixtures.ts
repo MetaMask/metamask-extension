@@ -2,6 +2,7 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import type { ManifestFlags } from '../../../../../shared/lib/manifestFlags';
 import { withFixtures } from '../../../helpers';
+import { shapeV6AccountsApiBalances } from '../../../helpers/accounts-api-v6-balances';
 import {
   TronLocalNodeOptions,
   TronTrc10Symbol,
@@ -257,6 +258,7 @@ async function mockTronFixtureApis(
     ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockAccountsApiV2WithTron(mockServer),
     await mockTronFixtureAccountsApiV5(mockServer, accounts, tronNode),
+    await mockTronFixtureAccountsApiV6(mockServer, accounts, tronNode),
     await mockTronFeatureFlags(mockServer),
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
@@ -437,6 +439,42 @@ function buildFixtureTokenMetadata(
   return [...assetsById.values()];
 }
 
+type TronFixtureAccountsApiBalanceRow = {
+  accountId: string;
+  assetId: string;
+  balance: string;
+};
+
+function buildTronFixtureAccountsApiBalances(
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode | undefined,
+): TronFixtureAccountsApiBalanceRow[] {
+  return accounts.flatMap((account) =>
+    (account.assets ?? []).map((asset) => ({
+      accountId: `${TRON_CHAIN_ID}:${account.address}`,
+      assetId: getAssetId(asset, tronNode),
+      balance: formatFixtureBalanceForAccountsApi(asset),
+    })),
+  );
+}
+
+function filterTronFixtureBalancesByAccountIds(
+  requestUrl: string,
+  balances: TronFixtureAccountsApiBalanceRow[],
+): TronFixtureAccountsApiBalanceRow[] {
+  // Honor the requested `accountIds` (multi-value, comma-split) so each
+  // account only receives its own balances.
+  const requestedAccountIds = new Set(
+    new URL(requestUrl).searchParams
+      .getAll('accountIds')
+      .flatMap((accountIds) => accountIds.split(',')),
+  );
+  return balances.filter(
+    ({ accountId }) =>
+      requestedAccountIds.size === 0 || requestedAccountIds.has(accountId),
+  );
+}
+
 async function mockTronFixtureAccountsApiV5(
   mockServer: Mockttp,
   accounts: TronFixtureAccount[],
@@ -446,15 +484,7 @@ async function mockTronFixtureAccountsApiV5(
   // endpoint registered before the Tron defaults wins exactly one request and
   // then falls through to this default. Custom overrides of these endpoints
   // must use `.always()`.
-  const balances = accounts.flatMap((account) => {
-    const assetBalances = (account.assets ?? []).map((asset) => ({
-      accountId: `${TRON_CHAIN_ID}:${account.address}`,
-      assetId: getAssetId(asset, tronNode),
-      balance: formatFixtureBalanceForAccountsApi(asset),
-    }));
-
-    return assetBalances;
-  });
+  const balances = buildTronFixtureAccountsApiBalances(accounts, tronNode);
 
   return mockServer
     .forGet(
@@ -462,16 +492,9 @@ async function mockTronFixtureAccountsApiV5(
     )
     .always()
     .thenCallback((request) => {
-      // Honor the requested `accountIds` (multi-value, comma-split) so each
-      // account only receives its own balances.
-      const requestedAccountIds = new Set(
-        new URL(request.url).searchParams
-          .getAll('accountIds')
-          .flatMap((accountIds) => accountIds.split(',')),
-      );
-      const requestedBalances = balances.filter(
-        ({ accountId }) =>
-          requestedAccountIds.size === 0 || requestedAccountIds.has(accountId),
+      const requestedBalances = filterTronFixtureBalancesByAccountIds(
+        request.url,
+        balances,
       );
       return {
         statusCode: 200,
@@ -479,6 +502,35 @@ async function mockTronFixtureAccountsApiV5(
           count: requestedBalances.length,
           unprocessedNetworks: [],
           balances: requestedBalances,
+        },
+      };
+    });
+}
+
+async function mockTronFixtureAccountsApiV6(
+  mockServer: Mockttp,
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode | undefined,
+): Promise<MockedEndpoint> {
+  const balances = buildTronFixtureAccountsApiBalances(accounts, tronNode);
+
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v6\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const shapedBalances = shapeV6AccountsApiBalances(
+        request.url,
+        filterTronFixtureBalancesByAccountIds(request.url, balances),
+      );
+      return {
+        statusCode: 200,
+        json: {
+          count: shapedBalances.length,
+          unprocessedNetworks: [],
+          unprocessedIncludeAssetIds: [],
+          balances: shapedBalances,
         },
       };
     });
