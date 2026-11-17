@@ -136,4 +136,19 @@ describe('MoneyDepositDeeplinkPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
   });
+
+  it('goes to Money Home when the account is read-only', async () => {
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: true,
+      isLifecycleLoading: false,
+    });
+    mockInitiateDeposit.mockResolvedValue(false);
+
+    await renderPage();
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+    });
+  });
 });

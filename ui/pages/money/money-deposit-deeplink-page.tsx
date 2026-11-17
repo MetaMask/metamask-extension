@@ -18,11 +18,14 @@ import { MoneyFtueEntryPoint } from './constants/money-events';
  * available the deposit starts and the confirmation replaces this page, with
  * closing it returning to the Money home. Ineligible users, and deposits that
  * fail to set up (already reported with a toast), go to the wallet home.
+ * Read-only accounts go to the Money home, where the banner explains why the
+ * deposit was not started.
  */
 export function MoneyDepositDeeplinkPage() {
   const navigate = useNavigate();
   const { availability, isLoading } = useMoneyAccountAvailability();
-  const { initiateDeposit, isLifecycleLoading } = useMoneyAccountDeposit();
+  const { initiateDeposit, isDisabled, isLifecycleLoading } =
+    useMoneyAccountDeposit();
   const hasHandledRequest = useRef(false);
 
   useEffect(() => {
@@ -43,12 +46,15 @@ export function MoneyDepositDeeplinkPage() {
       ftueOrigin: { entryPoint: MoneyFtueEntryPoint.MoneyDepositDeeplink },
     }).then((isStarted) => {
       if (!isStarted) {
-        navigate(DEFAULT_ROUTE, { replace: true });
+        navigate(isDisabled ? MONEY_HOME_ROUTE : DEFAULT_ROUTE, {
+          replace: true,
+        });
       }
     });
   }, [
     availability.isAvailable,
     initiateDeposit,
+    isDisabled,
     isLifecycleLoading,
     isLoading,
     navigate,
