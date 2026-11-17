@@ -20,7 +20,9 @@ export type BrazeBannerCardProps = {
   onDismiss: () => void;
 };
 
-const CARD_CLASSES = 'flex w-full items-start gap-3 rounded-xl p-3 text-left';
+// `pr-3` matches the close button's `right-3` inset.
+const CARD_CLASSES =
+  'flex w-full items-center gap-4 rounded-xl bg-muted py-3 pl-4 pr-3 text-left';
 
 /**
  * Campaign card with separate, keyboard-accessible action and close targets.
@@ -51,7 +53,7 @@ export function BrazeBannerCard({
           src={imageUrl}
           alt=""
           referrerPolicy="no-referrer"
-          className="h-16 w-16 shrink-0 self-center rounded-xl object-contain"
+          className="h-16 w-16 shrink-0 rounded-lg object-contain"
         />
       )}
       <Box className="flow-root min-w-0 flex-1">
@@ -59,7 +61,7 @@ export function BrazeBannerCard({
             Text beside it wraps; lines below it use the full column width. */}
         <span
           aria-hidden="true"
-          className="pointer-events-none float-right h-4 w-8"
+          className="pointer-events-none float-right h-5 w-8"
           data-testid="braze-banner-dismiss-spacer"
         />
         {title && (
@@ -68,14 +70,14 @@ export function BrazeBannerCard({
           </Text>
         )}
         <Text
-          variant={TextVariant.BodyXs}
+          variant={TextVariant.BodySm}
           color={title ? TextColor.TextAlternative : TextColor.TextDefault}
         >
           {body}
         </Text>
         {!title && ctaLabel && onClick && (
           <Text
-            variant={TextVariant.BodyXs}
+            variant={TextVariant.BodySm}
             color={TextColor.PrimaryDefault}
             fontWeight={FontWeight.Medium}
           >
@@ -90,7 +92,7 @@ export function BrazeBannerCard({
     <Box
       // Centered and capped at 458px, matching the Money account balance
       // and wallet overview action buttons.
-      className="relative flex w-full max-w-[458px] items-center self-center rounded-xl bg-background-muted"
+      className="relative flex w-full max-w-[458px] self-center wide-layout:max-w-none"
       data-testid="braze-banner"
     >
       {onClick ? (
@@ -98,7 +100,7 @@ export function BrazeBannerCard({
           <button
             type="button"
             onClick={onClick}
-            className={`${CARD_CLASSES} cursor-pointer`}
+            className={`${CARD_CLASSES} cursor-pointer hover:bg-muted-hover active:bg-muted-pressed`}
             data-testid="braze-banner-action"
           >
             {cardContent}
@@ -117,7 +119,7 @@ export function BrazeBannerCard({
         size={ButtonIconSize.Sm}
         ariaLabel={t('close')}
         onClick={onDismiss}
-        className="absolute right-2 top-2"
+        className="absolute right-3 top-3"
         data-testid="braze-banner-dismiss"
       />
     </Box>
