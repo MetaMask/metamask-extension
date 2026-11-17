@@ -175,6 +175,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/eth-json-rpc-middleware": {
+      "type": "non-breaking",
+      "previewVersion": "26.0.1-preview-493f7fa1c"
+    }
+  },
   "resolutions": {
     "@metamask/design-system-react": "0.51.1",
     "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
