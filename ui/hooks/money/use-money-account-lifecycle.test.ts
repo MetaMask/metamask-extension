@@ -156,9 +156,7 @@ describe('useMoneyAccountLifecycle', () => {
       });
     });
 
-    const { result } = renderHookWithProvider(() =>
-      useMoneyAccountLifecycle(),
-    );
+    const { result } = renderHookWithProvider(() => useMoneyAccountLifecycle());
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
