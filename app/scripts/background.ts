@@ -78,6 +78,7 @@ import {
 } from '../../shared/lib/telemetry/last-activity';
 
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
+import { BatchingPortStream } from './lib/batching-port-stream';
 import { getPlatform, initInstallType } from './lib/util';
 import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
 import { createDappMetrics } from './lib/metrics/dapp-metrics';
@@ -830,6 +831,9 @@ export function setupController(
 
     if (isMetaMaskUIPort) {
       const portStream = new ExtensionPortStream(remotePort);
+      // Messages written in the same task share one `postMessage`. Layered
+      // above `portStream` so its chunking applies to an oversized batch.
+      const batchedPortStream = new BatchingPortStream(portStream);
 
       /**
        * send event to sentry with details about the event
@@ -868,7 +872,7 @@ export function setupController(
       }
       metamaskController
         .setupTrustedCommunication(
-          portStream,
+          batchedPortStream,
           remotePort.sender as SetupTrustedCommunicationSender,
         )
         .finally(() => {
