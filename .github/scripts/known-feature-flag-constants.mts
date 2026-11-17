@@ -69,6 +69,11 @@ const FILE_SOURCES: {
     exportName: 'EXTENSION_UPDATE_PROMPT_DEPRECATED_VERSION_FLAG',
   },
   {
+    key: 'EXTENSION_UPDATE_PROMPT_ON_ANY_ROUTE_FLAG',
+    file: 'ui/selectors/extension-update-prompt.ts',
+    exportName: 'EXTENSION_UPDATE_PROMPT_ON_ANY_ROUTE_FLAG',
+  },
+  {
     key: 'EXTENSION_UPDATE_PROMPT_ON_NOTIFICATION_FLAG',
     file: 'ui/selectors/extension-update-prompt.ts',
     exportName: 'EXTENSION_UPDATE_PROMPT_ON_NOTIFICATION_FLAG',

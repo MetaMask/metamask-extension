@@ -2,6 +2,7 @@ import type { MetaMaskReduxState } from '../store/store';
 import {
   EXTENSION_UPDATE_PROMPT_COOLDOWN_MS,
   getExtensionUpdatePromptType,
+  getIsExtensionUpdatePromptOnAnyRouteEnabled,
   getIsExtensionUpdatePromptOnNotificationEnabled,
   getShowUpdateModal,
   resolveExtensionUpdatePromptType,
@@ -16,6 +17,7 @@ type PromptStateInput = {
   lastUpdatedAt?: number | null;
   minimumVersion?: unknown;
   notificationFlag?: unknown;
+  onAnyRoute?: unknown;
   pendingExtensionVersion?: string | null;
   updateModalLastDismissedAt?: number | null;
 };
@@ -26,6 +28,7 @@ function buildState(input: PromptStateInput = {}): MetaMaskReduxState {
     deprecatedVersion,
     lastUpdatedAt = null,
     notificationFlag,
+    onAnyRoute,
     pendingExtensionVersion = '12.0.0',
     updateModalLastDismissedAt = null,
   } = input;
@@ -51,6 +54,9 @@ function buildState(input: PromptStateInput = {}): MetaMaskReduxState {
         }),
         ...(notificationFlag !== undefined && {
           extensionUpdatePromptOnNotification: notificationFlag,
+        }),
+        ...(onAnyRoute !== undefined && {
+          extensionUpdatePromptOnAnyRoute: onAnyRoute,
         }),
       },
       updateModalLastDismissedAt,
@@ -310,5 +316,27 @@ describe('resolveExtensionUpdatePromptType', () => {
         installedVersion: undefined,
       }),
     ).toBe('none');
+  });
+});
+
+describe('getIsExtensionUpdatePromptOnAnyRouteEnabled', () => {
+  afterEach(() => {
+    global.platform = originalPlatform;
+  });
+
+  it('is enabled only when the flag is exactly true', () => {
+    expect(
+      getIsExtensionUpdatePromptOnAnyRouteEnabled(
+        buildState({ onAnyRoute: true }),
+      ),
+    ).toBe(true);
+    expect(
+      getIsExtensionUpdatePromptOnAnyRouteEnabled(
+        buildState({ onAnyRoute: false }),
+      ),
+    ).toBe(false);
+    expect(getIsExtensionUpdatePromptOnAnyRouteEnabled(buildState())).toBe(
+      false,
+    );
   });
 });
