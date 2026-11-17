@@ -345,6 +345,11 @@ describe('EthOverview', () => {
       );
 
       expect(balanceSkeleton).toBeInTheDocument();
+      expect(balanceSkeleton).toHaveClass(
+        'self-start',
+        'min-[491px]:self-center',
+        'wide-layout:self-start',
+      );
       expect(balanceSkeletonLines).toHaveClass(
         'items-start',
         'min-[491px]:items-center',

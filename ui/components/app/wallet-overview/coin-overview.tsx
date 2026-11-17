@@ -82,7 +82,7 @@ const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
 const BalanceOverviewSkeleton = () => (
   <Box
-    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center self-center wide-layout:self-start"
+    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center self-start min-[491px]:self-center wide-layout:self-start"
     data-testid="coin-overview-balance-skeleton"
   >
     <Box className="wallet-overview__balance-skeleton-lines flex w-full flex-col items-start min-[491px]:items-center wide-layout:items-start">
