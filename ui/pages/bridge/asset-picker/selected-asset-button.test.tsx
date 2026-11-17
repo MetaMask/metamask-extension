@@ -98,3 +98,19 @@ describe('SelectedAssetButton', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('SelectedAssetButton network logo fallback', () => {
+  it('renders a native asset whose chain is not in the network image maps', () => {
+    const unknownChainNativeAsset = {
+      ...getNativeAssetForChainId('0x1'),
+      chainId: 9999,
+    };
+
+    const { getByText, container } = renderButton(
+      toBridgeToken(unknownChainNativeAsset),
+    );
+
+    expect(getByText('ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+});
