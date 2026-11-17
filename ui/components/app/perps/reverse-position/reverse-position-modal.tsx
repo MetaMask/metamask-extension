@@ -43,6 +43,7 @@ import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsFeesDisplay } from '../perps-fees-display';
+import { PerpsRebateBanner } from '../perps-rebate-banner';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import type { Position } from '../types';
@@ -374,6 +375,11 @@ export const ReversePositionModal = ({
                   </Text>
                 </Box>
               )}
+              <PerpsRebateBanner
+                coin={position.symbol}
+                direction={direction === 'long' ? 'short' : 'long'}
+                notionalUsd={flipNotionalUsd?.toString()}
+              />
             </Box>
           </ModalBody>
           <ModalFooter

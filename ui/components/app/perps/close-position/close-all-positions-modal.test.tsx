@@ -18,6 +18,14 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+const mockPerpsRebateBanner = jest.fn(
+  (_props: Record<string, unknown>) => null,
+);
+jest.mock('../perps-rebate-banner', () => ({
+  PerpsRebateBanner: (props: Record<string, unknown>) =>
+    mockPerpsRebateBanner(props),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -71,6 +79,18 @@ describe('CloseAllPositionsModal', () => {
     expect(
       screen.getByTestId('perps-close-all-positions-modal'),
     ).toBeInTheDocument();
+  });
+
+  it('renders the rebate banner after the fees row without trade metadata', async () => {
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(mockPerpsRebateBanner).toHaveBeenCalled();
+    });
+
+    expect(mockPerpsRebateBanner).toHaveBeenLastCalledWith({
+      className: 'mb-1',
+    });
   });
 
   it('displays the description text', async () => {

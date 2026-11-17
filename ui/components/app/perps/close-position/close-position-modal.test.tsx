@@ -194,6 +194,14 @@ jest.mock('../../rewards/RewardsVipBadge', () => ({
   RewardsVipBadge: () => null,
 }));
 
+const mockPerpsRebateBanner = jest.fn(
+  (_props: Record<string, unknown>) => null,
+);
+jest.mock('../perps-rebate-banner', () => ({
+  PerpsRebateBanner: (props: Record<string, unknown>) =>
+    mockPerpsRebateBanner(props),
+}));
+
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
@@ -355,6 +363,53 @@ describe('ClosePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-close-position-back-button'));
 
       expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('rebate banner', () => {
+    it('renders below the summary with the flipped trade of the position', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      expect(mockPerpsRebateBanner).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          coin: 'ETH',
+          direction: 'short',
+          notionalUsd: '7250',
+        }),
+      );
+    });
+
+    it('renders below the summary with a partial close flipped trade', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+      const slider = within(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).getByRole('slider');
+
+      fireEvent.change(slider, { target: { value: '50' } });
+
+      expect(mockPerpsRebateBanner).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          coin: 'ETH',
+          direction: 'short',
+          notionalUsd: '3625',
+        }),
+      );
     });
   });
 

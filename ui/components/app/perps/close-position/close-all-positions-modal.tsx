@@ -47,6 +47,7 @@ import {
 } from '../../../../hooks/perps/perps-fee-utils';
 import type { Position } from '../types';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
+import { PerpsRebateBanner } from '../perps-rebate-banner';
 import {
   PERPS_CLOSE_UNAVAILABLE_DISPLAY,
   estimateClosePositionReceive,
@@ -389,6 +390,8 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                     : `-${formatFiat(totalFees)}`}
                 </Text>
               </Box>
+
+              <PerpsRebateBanner className="mb-1" />
 
               {/* You'll receive */}
               <Box
