@@ -5818,6 +5818,9 @@
   "mfaSettingsNotice": {
     "message": "These methods add protection to Money account transactions. They can’t recover your wallet."
   },
+  "mfaSettingsNoticeSocialLogin": {
+    "message": "These methods add protection to Money account transactions and to recovering your wallet."
+  },
   "mfaSettingsRemoveElsewhereDescription": {
     "message": "Your other methods only work in the MetaMask mobile app. Remove your email from there."
   },
@@ -5856,6 +5859,9 @@
   },
   "mfaSettingsUsedForMoney": {
     "message": "Verifying Money transactions"
+  },
+  "mfaSettingsUsedForWalletRecovery": {
+    "message": "Wallet recovery"
   },
   "mfaTotpSetupContinue": {
     "message": "Continue"
@@ -9802,9 +9808,6 @@
   },
   "restore": {
     "message": "Restore"
-  },
-  "restoreUserData": {
-    "message": "Restore user data"
   },
   "restoreWalletDescription": {
     "message": "Enter your $1. By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.",
