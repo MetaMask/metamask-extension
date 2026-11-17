@@ -53,34 +53,51 @@ jobs:
       proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
       plan: ${{ steps.plan.outputs.plan }}
     steps:
-      # Needs only gh and jq, so an unchanged commit finishes before any checkout.
+      # Needs no checkout, so an unchanged commit finishes before any setup.
       # Canary and aa runs skip it and take the full path below.
       - name: Quick exit when the build inputs are unchanged
         id: quick
+        uses: actions/github-script@v8
         env:
-          GH_TOKEN: ${{ github.token }}
           HEAD_INPUT: ${{ inputs.head_sha }}
           MODE: ${{ inputs.mode }}
-        run: |
-          set -euo pipefail
-          [[ "$MODE" == aa ]] && exit 0
-          read -r head parent < <(
-            gh api "repos/$GITHUB_REPOSITORY/commits/${HEAD_INPUT:-main}" \
-              --jq '[.sha, .parents[0].sha] | @tsv'
-          )
-          if (( 16#${head:0:8} % 10 == 0 )); then exit 0; fi
-          hash_of() {
-            gh api "repos/$GITHUB_REPOSITORY/commits/$1/status?per_page=100" \
-              --jq '[.statuses[] | select(.context == "build-source-hash") | .description] | first // ""'
-          }
-          a=$(hash_of "$head")
-          b=$(hash_of "$parent")
-          if [[ -n "$a" && "$a" == "$b" ]]; then
-            printf '## Main performance detector\n\nHead `%s` has the same build-source hash as its parent `%s`: **no change**, no jobs run.\n' "${head:0:10}" "${parent:0:10}" >> "$GITHUB_STEP_SUMMARY"
-            printf '{"headSha":"%s","label":"no change (identical builds)"}\n' "$head" > skip.json
-            echo "proceed=false" >> "$GITHUB_OUTPUT"
-            echo "done=true" >> "$GITHUB_OUTPUT"
-          fi
+        with:
+          script: |
+            if (process.env.MODE === 'aa') return;
+            const { owner, repo } = context.repo;
+            const { data: commit } = await github.rest.repos.getCommit({
+              owner,
+              repo,
+              ref: process.env.HEAD_INPUT || 'main',
+            });
+            const head = commit.sha;
+            const parent = commit.parents[0]?.sha;
+            if (!parent || parseInt(head.slice(0, 8), 16) % 10 === 0) return;
+
+            const hashOf = async (ref) => {
+              const { data } = await github.rest.repos.getCombinedStatusForRef({
+                owner,
+                repo,
+                ref,
+                per_page: 100,
+              });
+              const status = data.statuses.find((s) => s.context === 'build-source-hash');
+              return status?.description ?? '';
+            };
+            const [headHash, parentHash] = await Promise.all([hashOf(head), hashOf(parent)]);
+            if (!headHash || headHash !== parentHash) return;
+
+            require('fs').writeFileSync(
+              'skip.json',
+              JSON.stringify({ headSha: head, label: 'no change (identical builds)' }),
+            );
+            await core.summary
+              .addRaw(
+                `## Main performance detector\n\nHead \`${head.slice(0, 10)}\` has the same build-source hash as its parent \`${parent.slice(0, 10)}\`: **no change**, no jobs run.\n`,
+              )
+              .write();
+            core.setOutput('proceed', 'false');
+            core.setOutput('done', 'true');
 
       - name: Checkout and setup environment
         if: ${{ steps.quick.outputs.done != 'true' }}
