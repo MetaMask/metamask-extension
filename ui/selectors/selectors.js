@@ -322,14 +322,6 @@ export function getBackupAndSyncOnboardingToggleState(state) {
   return state.appState.backupAndSyncOnboardingToggleState;
 }
 
-export function getShowDeleteMetaMetricsDataModal(state) {
-  return state.appState.showDeleteMetaMetricsDataModal;
-}
-
-export function getShowDataDeletionErrorModal(state) {
-  return state.appState.showDataDeletionErrorModal;
-}
-
 export function getKeyringSnapRemovalResult(state) {
   return state.appState.keyringRemovalSnapModal;
 }

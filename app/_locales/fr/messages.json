@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "Mettez à jour MetaMask vers la dernière version",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Aucune URL de redirection n’a été fournie."
@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Cela supprimera les données historiques de MetaMetrics associées à votre utilisation de cet appareil. Aucun changement ne sera apporté à votre portefeuille et à vos comptes après la suppression de ces données. Ce processus peut prendre jusqu’à 30 jours. Veuillez consulter notre $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Cette action supprimera l’historique des données MetaMetrics associées à votre portefeuille. MetaMetrics comprend des données d’utilisation et de diagnostic anonymisées. Votre portefeuille et vos comptes resteront inchangés. Ce processus peut prendre jusqu’à 30 jours. Consultez notre $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Impossible de traiter cette demande pour le moment en raison d’un problème avec le serveur du système d’analyse. Veuillez réessayer plus tard."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Il nous est impossible de supprimer ces données pour le moment"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Impossible de supprimer"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Nous sommes sur le point de supprimer toutes vos données MetaMetrics. Êtes-vous sûr(e) de vouloir continuer ?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Voulez-vous supprimer les données MetaMetrics ?"
@@ -5392,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Le bouton d’état de connexion indique si le site Web que vous visitez est connecté à votre compte actuellement sélectionné."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Comme vous n’avez jamais adhéré à MetaMetrics, il n’y a pas de données à supprimer ici."
   },
   "metadataModalSourceTooltip": {
     "message": "$1 est hébergé sur npm et $2 est l’identifiant unique de ce Snap.",
@@ -11741,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Les changements soudains du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "Activez les transactions intelligentes pour profiter de transactions plus fiables et plus sécurisées. $1"
@@ -11885,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Sachez que les transactions peuvent échouer et que nous sommes là pour vous aider. Si ce problème persiste, vous pouvez contacter notre service clientèle au $1 pour plus d’assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Échec du swap"

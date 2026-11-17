@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "I-update ang pinakabagong bersyon ng MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "Walang ibinigay na url para sa pag-navigate."
@@ -3564,10 +3564,6 @@
   "deleteMetaMetricsData": {
     "message": "Tanggalin ang data ng MetaMetrics"
   },
-  "deleteMetaMetricsDataDescription": {
-    "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa paggamit mo sa device na ito. Hindi magbabago ang wallet at mga account mo sa kung ano ito ngayon pagkatapos mabura ang data na ito. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang aming $1.",
-    "description": "$1 will have text saying Privacy Policy "
-  },
   "deleteMetaMetricsDataDescriptionV2": {
     "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa iyong wallet. Kabilang sa MetaMetrics ang walang pagkakakilanlan na paggamit at diagnostic data. Hindi magbabago ang wallet at mga account mo. Ang proseso na ito ay maaaring tumagal ng 30 araw. Tingnan ang aming $1.",
     "description": "$1 will have text saying Privacy Policy "
@@ -3575,14 +3571,8 @@
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system. Subukan muli mamaya."
   },
-  "deleteMetaMetricsDataErrorTitle": {
-    "message": "Hindi namin matanggal ang data na ito sa ngayon"
-  },
   "deleteMetaMetricsDataErrorToast": {
     "message": "Hindi matanggal"
-  },
-  "deleteMetaMetricsDataModalDesc": {
-    "message": "Aalisin na namin ang lahat ng iyong data ng MetaMetrics. Sigurado ka ba?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
@@ -5392,9 +5382,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Makikita sa button ng katayuan ng koneksyon kung nakakonekta ang website na binibisita mo sa kasalukuyan mong napiling account."
-  },
-  "metaMetricsIdNotAvailableError": {
-    "message": "Dahil hindi mo kailanman sinubukan ang MetaMetrics, walang data na tatanggalin dito."
   },
   "metadataModalSourceTooltip": {
     "message": "Ang $1 ay naka-host sa npm at $2 ang natatanging pagkakailanlan ng Snap.",
@@ -11741,7 +11728,7 @@
   },
   "stxFailureDescription": {
     "message": "Ang biglaang pagbabago sa merkado ay maaaring maging sanhi ng pagkabigo. Kung magpatuloy ang problema, makipag-ugnyan sa $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "I-on ang mga Smart Transaction para sa mas maaasahan at ligtas na mga transaksyon. $1"
@@ -11885,7 +11872,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Nangyayari ang mga pagkabigo sa transaksyon at narito kami upang tumulong. Kung magpapatuloy ang isyung ito, maaari kapag makipag-ugnay sa aming suporta sa customer sa $1 para sa karagdagang tulong.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "Nabigo ang pag-swap"

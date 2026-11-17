@@ -4,8 +4,16 @@
  * basic-functionality-off-known-violations.json.
  *
  */
-import { Mockttp } from 'mockttp';
-import { withFixtures, veryLargeDelayMs } from '../../helpers';
+import { MockedEndpoint, Mockttp } from 'mockttp';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
+import { STELLAR_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/stellar-wallet-snap';
+import { TRON_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/tron-wallet-snap';
+import {
+  getCleanAppState,
+  withFixtures,
+  veryLargeDelayMs,
+} from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
@@ -20,6 +28,16 @@ import {
   assertNoNewNonRpcRequests,
   recordNonRpcRequests,
 } from './helpers';
+
+const MONEY_POSITIONS_URL =
+  /^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\//u;
+
+const ACCOUNT_SNAP_IDS = [
+  BITCOIN_WALLET_SNAP_ID,
+  SOLANA_WALLET_SNAP_ID,
+  STELLAR_WALLET_SNAP_ID,
+  TRON_WALLET_SNAP_ID,
+];
 
 describe('Onboarded wallet with basic functionality off', function () {
   it('only makes RPC requests after unlocking', async function () {
@@ -37,7 +55,7 @@ describe('Onboarded wallet with basic functionality off', function () {
         },
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -60,9 +78,32 @@ describe('Onboarded wallet with basic functionality off', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (server: Mockttp) => [
+          await server.forGet(MONEY_POSITIONS_URL).thenReply(200),
+        ],
       },
-      async ({ driver, mockServer }) => {
+      async ({ driver, mockServer, mockedEndpoint }) => {
         await login(driver);
+
+        // The account Snaps start one by one after unlock, and starting one
+        // loads its execution environment, which is not an RPC request.
+        await driver.waitUntil(
+          async () => {
+            const { metamask } = await getCleanAppState(driver);
+            return ACCOUNT_SNAP_IDS.every(
+              (snapId) => metamask.snaps?.[snapId]?.status === 'running',
+            );
+          },
+          { timeout: driver.timeout, interval: 500 },
+        );
+
+        // The Money balance is fetched after the availability check resolves,
+        // which can land after the toggle if the test reaches settings first.
+        const [moneyPositionsEndpoint] = mockedEndpoint as MockedEndpoint[];
+        await driver.wait(
+          async () => (await moneyPositionsEndpoint.isPending()) === false,
+          driver.timeout,
+        );
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();

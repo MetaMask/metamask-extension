@@ -25,7 +25,6 @@ describe('Ledger Swap', function (this: Suite) {
 
         await login(driver, {
           expectedBalance: LEDGER_SWAP_EXPECTED_FIAT_BALANCE,
-          waitForNonEvmAccounts: false,
         });
 
         const homePage = new HomePage(driver);
