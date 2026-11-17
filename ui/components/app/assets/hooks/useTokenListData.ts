@@ -39,7 +39,7 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
-  selectIsAssetsLoadingForSelectedAccountGroup,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -130,8 +130,8 @@ export function useTokenListData({
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const isAssetsLoading = useSelector(
-    selectIsAssetsLoadingForSelectedAccountGroup,
+  const assetsHaveLoaded = useSelector(
+    selectAssetsHaveLoadedForSelectedAccountGroup,
   );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
@@ -215,11 +215,11 @@ export function useTokenListData({
     });
   }, [filteredAssets, sortOverride, tokenSortConfig]);
 
-  // Skeletons stand in for the native gas token and mUSD that render before
-  // the rest of the account's tokens. Tokens already in state stay visible,
-  // including when a token-list request fails and the load never settles.
+  // The fast pipeline can populate gas tokens and mUSD before the background
+  // pipeline finishes the remaining tokens. Hide those placeholders, but keep
+  // an already-populated token list visible during subsequent refreshes.
   const showLoadingSkeleton =
-    isAssetsLoading &&
+    !assetsHaveLoaded &&
     sortedFilteredTokens.every(
       (token) => token.isNative || isMusdToken(token.address),
     );

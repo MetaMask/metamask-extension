@@ -56,8 +56,8 @@ import { BalanceEmptyState } from '../balance-empty-state';
 import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
   selectBalanceBySelectedAccountGroup,
-  selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -85,7 +85,7 @@ const BalanceOverviewSkeleton = () => (
     className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center self-center wide-layout:self-start"
     data-testid="coin-overview-balance-skeleton"
   >
-    <Box className="wallet-overview__balance-skeleton-lines flex w-full flex-col items-start">
+    <Box className="wallet-overview__balance-skeleton-lines flex w-full flex-col items-start min-[491px]:items-center wide-layout:items-start">
       <Box className="flex h-14 items-center md:h-[75px]">
         <Skeleton className="h-14 w-[7rem] rounded-lg md:h-[75px]" />
       </Box>
@@ -232,8 +232,8 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
-  const isAssetsLoading = useSelector(
-    selectIsAssetsLoadingForSelectedAccountGroup,
+  const assetsHaveLoaded = useSelector(
+    selectAssetsHaveLoadedForSelectedAccountGroup,
   );
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
@@ -317,7 +317,7 @@ export const CoinOverview = ({
           !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
-          (balanceIsLoading || !balanceIsLoaded || isAssetsLoading))),
+          (balanceIsLoading || !balanceIsLoaded || !assetsHaveLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
@@ -327,7 +327,7 @@ export const CoinOverview = ({
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
-      isAssetsLoading,
+      assetsHaveLoaded,
     ],
   );
 

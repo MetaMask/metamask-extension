@@ -15,7 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
-  selectIsAssetsLoadingForSelectedAccountGroup,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
@@ -62,8 +62,8 @@ export const AccountGroupBalance = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
-  const isAssetsLoading = useSelector(
-    selectIsAssetsLoadingForSelectedAccountGroup,
+  const assetsHaveLoaded = useSelector(
+    selectAssetsHaveLoadedForSelectedAccountGroup,
   );
 
   const caipChainId = useMemo(
@@ -174,7 +174,7 @@ export const AccountGroupBalance = ({
     <Skeleton
       hideChildren={
         totalIsUnresolved &&
-        ((isEvm && !anyEnabledNetworksAreAvailable) || isAssetsLoading)
+        ((isEvm && !anyEnabledNetworksAreAvailable) || !assetsHaveLoaded)
       }
       className="mb-1"
       data-testid="account-group-balance-skeleton"
