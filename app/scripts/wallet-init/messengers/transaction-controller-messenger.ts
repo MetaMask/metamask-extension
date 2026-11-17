@@ -3,10 +3,7 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
-import {
-  AccountTrackerControllerGetStateAction,
-  CurrencyRateControllerGetStateAction,
-} from '@metamask/assets-controllers';
+import { AccountTrackerControllerGetStateAction } from '@metamask/assets-controllers';
 import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
@@ -79,9 +76,6 @@ export type TransactionControllerInitMessengerActions =
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
-  // Compat shim only exposes getState. The rest of CurrencyRateControllerActions
-  // (polling, setCurrentCurrency, updateExchangeRate) are not on the root messenger.
-  | CurrencyRateControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
@@ -170,9 +164,6 @@ export function getTransactionControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
-      // Compat shim registered by transaction-pay / bridge messengers:
-      // derives currentCurrency from AssetsController.
-      'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
