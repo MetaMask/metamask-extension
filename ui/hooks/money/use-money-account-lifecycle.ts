@@ -11,7 +11,7 @@ export type UseMoneyAccountLifecycleResult = {
   isLoading: boolean;
 };
 
-const REFRESH_ACTION = 'MoneyAccountLifecycleController:refresh';
+const REFRESH_ACTION = MoneyAccountLifecycleControllerQueryKeys.Refresh;
 
 /**
  * Reads the primary Money Account's lifecycle and reports whether it can still
@@ -58,7 +58,7 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
         await refetch().catch(() => undefined);
       }
     };
-    refresh().catch(() => undefined);
+    refresh();
 
     return () => {
       cancelled = true;

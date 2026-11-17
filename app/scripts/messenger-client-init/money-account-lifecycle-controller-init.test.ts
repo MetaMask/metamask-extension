@@ -9,10 +9,6 @@ import {
   type MoneyAccountLifecycleControllerHooks,
   type MoneyAccountLifecycleControllerMessenger,
 } from '@metamask/money-account-lifecycle-controller';
-import type {
-  RemoteFeatureFlagControllerGetStateAction,
-  RemoteFeatureFlagControllerState,
-} from '@metamask/remote-feature-flag-controller';
 import { MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME } from '../../../shared/lib/money/feature-flags';
 import type {
   OnboardingControllerGetStateAction,
@@ -38,8 +34,7 @@ type BaseMessenger = Messenger<
   MockAnyNamespace,
   | ActionConstraint
   | OnboardingControllerGetStateAction
-  | PreferencesControllerGetStateAction
-  | RemoteFeatureFlagControllerGetStateAction,
+  | PreferencesControllerGetStateAction,
   OnboardingControllerStateChangeEvent | PreferencesControllerStateChangeEvent
 >;
 
@@ -51,19 +46,16 @@ type BaseMessenger = Messenger<
  * @param options - Options.
  * @param options.completedOnboarding - Whether onboarding has completed.
  * @param options.useExternalServices - Whether basic functionality is on.
- * @param options.isEnabled - Whether the Money Account feature flag is on.
  * @returns The base messenger and its mutable config.
  */
 function buildBaseMessenger({
   completedOnboarding = true,
   useExternalServices = true,
-  isEnabled = true,
 }: {
   completedOnboarding?: boolean;
   useExternalServices?: boolean;
-  isEnabled?: boolean;
 } = {}) {
-  const config = { completedOnboarding, useExternalServices, isEnabled };
+  const config = { completedOnboarding, useExternalServices };
   const messenger: BaseMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
   });
@@ -82,19 +74,6 @@ function buildBaseMessenger({
         useExternalServices: config.useExternalServices,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }) as any,
-  );
-  messenger.registerActionHandler(
-    'RemoteFeatureFlagController:getState',
-    () =>
-      ({
-        remoteFeatureFlags: {
-          [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
-            enabled: config.isEnabled,
-            minimumVersion: '0.0.1',
-          },
-        },
-        cacheTimestamp: Date.now(),
-      }) as unknown as RemoteFeatureFlagControllerState,
   );
 
   return { messenger, config };

@@ -4,4 +4,5 @@ export const MoneyAccountAvailabilityServiceQueryKeys = {
 
 export const MoneyAccountLifecycleControllerQueryKeys = {
   GetState: 'MoneyAccountLifecycleController:getState',
+  Refresh: 'MoneyAccountLifecycleController:refresh',
 } as const;

@@ -4,7 +4,6 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import type { MoneyAccountLifecycleControllerMessenger } from '@metamask/money-account-lifecycle-controller';
-import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
@@ -17,9 +16,6 @@ import type { RootMessenger } from '../../lib/messenger';
 
 /**
  * Create a messenger for the MoneyAccountLifecycleController.
- *
- * The controller reads CHOMP identities, the primary Money Account, the
- * feature flags and the keyring, and records each Money Account's lifecycle.
  *
  * @param messenger - The root messenger.
  * @returns The MoneyAccountLifecycleController messenger.
@@ -68,8 +64,7 @@ export function getMoneyAccountLifecycleControllerMessenger(
 
 type AllowedInitializationActions =
   | OnboardingControllerGetStateAction
-  | PreferencesControllerGetStateAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | PreferencesControllerGetStateAction;
 
 type AllowedInitializationEvents =
   | OnboardingControllerStateChangeEvent
@@ -111,7 +106,6 @@ export function getMoneyAccountLifecycleControllerInitMessenger(
     actions: [
       'OnboardingController:getState',
       'PreferencesController:getState',
-      'RemoteFeatureFlagController:getState',
     ],
     events: [
       'OnboardingController:stateChange',

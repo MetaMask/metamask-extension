@@ -70,7 +70,6 @@ describe('getMoneyAccountLifecycleControllerInitMessenger', () => {
         actions: [
           'OnboardingController:getState',
           'PreferencesController:getState',
-          'RemoteFeatureFlagController:getState',
         ],
         events: [
           'OnboardingController:stateChange',
