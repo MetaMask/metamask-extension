@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
@@ -356,6 +356,39 @@ describe('useAutomaticTransactionPayToken', () => {
         chainId: CHAIN_IDS.MONAD,
       }),
     });
+  });
+
+  it('logs an error when re-selecting the Money Account pay token fails', async () => {
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const error = new Error('Update failed');
+    setPayTokenMock.mockRejectedValue(error);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      },
+    ] as Asset[]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        assetId: `eip155:2/erc20:${TOKEN_ADDRESS_2_MOCK}`,
+      } as never,
+      setPayToken: setPayTokenMock,
+    });
+
+    renderHookWithProvider({
+      paymentOverride: PaymentOverride.MoneyAccount,
+    });
+
+    await waitFor(() =>
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to set automatic pay token',
+        error,
+      ),
+    );
+
+    consoleSpy.mockRestore();
   });
 
   it('selects preferred payment token when provided with available tokens', () => {

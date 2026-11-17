@@ -379,7 +379,11 @@ export function useAutomaticTransactionPayToken({
     }
 
     if (automaticToken) {
-      setPayToken({ assetId: encodeEvmAssetId(automaticToken) });
+      setPayToken({ assetId: encodeEvmAssetId(automaticToken) }).catch(
+        (error) => {
+          console.error('Failed to set automatic pay token', error);
+        },
+      );
     }
   }, [automaticToken, disable, from, isMoneyPaymentOverride, setPayToken]);
 }

@@ -160,7 +160,9 @@ export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
       }
 
       // Same chain - just update the payment token
-      setPayToken({ assetId: encodeEvmAssetId(token) });
+      setPayToken({ assetId: encodeEvmAssetId(token) }).catch((error) => {
+        console.error('Failed to update the mUSD payment token', error);
+      });
     },
     [currentConfirmation, setPayToken, navigate, location.search, callbacks],
   );

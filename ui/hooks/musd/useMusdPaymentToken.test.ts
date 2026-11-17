@@ -90,6 +90,7 @@ describe('useMusdPaymentToken', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    mockSetPayToken.mockResolvedValue(undefined);
     mockUseAppDispatch.mockReturnValue(mockDispatch);
 
     mockUseConfirmContext.mockReturnValue({
@@ -281,6 +282,30 @@ describe('useMusdPaymentToken', () => {
   });
 
   describe('error handling', () => {
+    it('logs an error when setting a same-chain payment token fails', async () => {
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const error = new Error('Update failed');
+      mockSetPayToken.mockRejectedValue(error);
+
+      const { result } = renderHook(() => useMusdPaymentToken());
+
+      await act(async () => {
+        await result.current.onPaymentTokenChange({
+          address: '0xnewtoken' as Hex,
+          chainId: '0x1' as Hex,
+        });
+      });
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to update the mUSD payment token',
+        error,
+      );
+
+      consoleSpy.mockRestore();
+    });
+
     it('logs error and does not navigate when replacement fails', async () => {
       const consoleSpy = jest
         .spyOn(console, 'error')
