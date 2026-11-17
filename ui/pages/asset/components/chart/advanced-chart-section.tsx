@@ -224,6 +224,25 @@ export const AdvancedChartSection = ({
   // live/spot price rather than render a blank header.
   const candlePrice =
     ohlcvPrice ?? (ohlcvError ? candleFallbackPrice : undefined);
+
+  // The 24H % must be a ratio of two prices in the *same* currency. The P1D
+  // baseline is quoted in `currency`, but the candle/live price is quoted in
+  // `resolvedCurrency`, which falls back to USD when the OHLCV API cannot quote
+  // `currency`. Only use the candle price as the current value when the two
+  // currencies match; otherwise use a `currency`-denominated current price
+  // (the wallet's current price, or the latest P1D point) so the percentage is
+  // never a cross-fiat ratio. The displayed price and its label stay in
+  // `resolvedCurrency` — only the percentage needs the currencies aligned.
+  const historicalBaseline = historical.isPlaceholderData
+    ? undefined
+    : historical.data.prices?.[0]?.y;
+  const candleCurrentInCurrency =
+    resolvedCurrency === currency.toLowerCase()
+      ? candlePrice
+      : (currentPrice ??
+        (historical.isPlaceholderData
+          ? undefined
+          : historical.data.prices?.at(-1)?.y));
   const candleHeader = {
     price: candlePrice,
     // Always the last-24H change, derived from the interval-independent P1D
@@ -231,8 +250,8 @@ export const AdvancedChartSection = ({
     // identical across candle intervals and a true 24H change, and behaves the
     // same whether or not the OHLCV API succeeded.
     percentChange: computePercentChange(
-      candlePrice,
-      historical.isPlaceholderData ? undefined : historical.data.prices?.[0]?.y,
+      candleCurrentInCurrency,
+      historicalBaseline,
     ),
     // Candle mode shows the last-24H change, labelled "Today" to match mobile,
     // instead of the latest bar's date.

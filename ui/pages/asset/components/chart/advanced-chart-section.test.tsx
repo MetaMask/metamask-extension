@@ -562,14 +562,31 @@ describe('AdvancedChartSection', () => {
 
     it('labels the 24H change with "Today" rather than a date', () => {
       // 24H change is derived from the P1D historical series (opens at 100, see
-      // PRICES), not from the candle data: (150 - 100) / 100 = +50%.
-      setupData({ price: 150, resolvedCurrency: 'usd' });
+      // PRICES), not from the candle data: (150 - 100) / 100 = +50%. The candle
+      // resolved in the requested currency (EUR), so the live candle price is
+      // used as the current value.
+      setupData({ price: 150 });
       render();
 
       expect(
         screen.getByTestId('asset-price-percent-change'),
       ).toHaveTextContent('+50.00%');
       expect(screen.getByText(messages.today.message)).toBeInTheDocument();
+    });
+
+    it('does not mix currencies in the 24H change when the candle data resolved to a different fiat', () => {
+      // The candle resolved to USD while the user currency is EUR, so the USD
+      // candle price must NOT be compared against the EUR P1D baseline. The
+      // percentage uses a EUR-denominated current price (the wallet current
+      // price, 200) against the EUR P1D open (100): (200 - 100) / 100 = +100%.
+      // The displayed price still shows the USD figure the data came back in.
+      setupData({ price: 150, resolvedCurrency: 'usd' });
+      render({ currency: 'EUR', currentPrice: 200 });
+
+      expect(
+        screen.getByTestId('asset-price-percent-change'),
+      ).toHaveTextContent('+100.00%');
+      expect(screen.getByText(/\$150/u)).toBeInTheDocument();
     });
 
     it('keeps the 24H change identical across candle intervals', () => {

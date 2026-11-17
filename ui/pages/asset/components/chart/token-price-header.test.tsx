@@ -1,6 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../app/_locales/en/messages.json';
 import TokenPriceHeader from './token-price-header';
+
+const TODAY_LABEL = messages.today.message;
 
 // Mock useFormatters hook
 jest.mock('../../../../hooks/useFormatters', () => ({
@@ -169,12 +173,12 @@ describe('TokenPriceHeader', () => {
           price={100}
           percentChange={5}
           timestamp={timestamp}
-          periodLabel="Today"
+          periodLabel={TODAY_LABEL}
         />,
       );
 
       // periodLabel wins over the timestamp-derived date.
-      expect(screen.getByText('Today')).toBeInTheDocument();
+      expect(screen.getByText(TODAY_LABEL)).toBeInTheDocument();
       expect(screen.queryByText('6/15')).not.toBeInTheDocument();
     });
 
@@ -182,10 +186,14 @@ describe('TokenPriceHeader', () => {
       // On an OHLCV failure the percentage is undefined and the label must
       // disappear with it rather than render on its own.
       render(
-        <TokenPriceHeader {...defaultProps} price={100} periodLabel="Today" />,
+        <TokenPriceHeader
+          {...defaultProps}
+          price={100}
+          periodLabel={TODAY_LABEL}
+        />,
       );
 
-      expect(screen.queryByText('Today')).not.toBeInTheDocument();
+      expect(screen.queryByText(TODAY_LABEL)).not.toBeInTheDocument();
       expect(
         screen.queryByTestId('asset-price-percent-change'),
       ).not.toBeInTheDocument();
