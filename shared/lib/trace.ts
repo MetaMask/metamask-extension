@@ -23,6 +23,8 @@ import type {
   SwapTraceRequest,
   SwapRelatedTraceName,
 } from '@metamask/bridge-controller';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../constants/app';
+import { getEnvironmentType } from './environment-type';
 import { sentryLogger } from './sentry';
 
 /**
@@ -367,10 +369,11 @@ export type TraceRequest = {
    * connection, a sync, or a background RPC with no UI context. Leave it unset
    * for work done on behalf of a caller, which belongs in the caller's trace.
    *
-   * In the service worker, once its pageload has ended, a trace with no
+   * In the background (service worker or persistent background page), once
+   * its pageload has ended, a trace with no
    * `parentContext` that starts outside any active span also starts a new
    * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
-   * and sampling decision on the scope for the worker's whole life, so such
+   * and sampling decision on the scope for the background's whole life, so such
    * work would otherwise join that trace and be kept or dropped with it.
    *
    * In a UI document, so does one on the current route's trace: the SDK keeps a
@@ -592,44 +595,46 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
       : trace({ ...req, name: req.name as TraceName }),
   ) as Promise<Result>;
 
-// The service worker's pageload, once ended. Unset outside the service worker.
-let endedServiceWorkerPageloadTraceId: string | undefined;
+// The background's pageload, once ended. Unset outside the background.
+let endedBackgroundPageloadTraceId: string | undefined;
 
 /**
- * In the service worker, record the pageload's trace id when the pageload
- * ends, so a trace with no caller started on that stale scope gets its own
- * trace (see {@link TraceRequest.root}). Does nothing in other contexts, where
- * the pageload trace belongs to a document.
+ * In the background (the service worker, or Firefox's persistent background
+ * page), record the pageload's trace id when the pageload ends, so a trace with
+ * no caller started on that stale scope gets its own trace (see
+ * {@link TraceRequest.root}). Neither context navigates again, so the ended
+ * pageload's trace would otherwise absorb all later work. Does nothing in a UI
+ * document, where the pageload trace belongs to the document.
  *
  * @param client - The Sentry client that emits the pageload's `spanEnd`.
  */
-export function trackServiceWorkerPageloadEnd(client?: Client): void {
-  if (!isServiceWorker()) {
+export function trackBackgroundPageloadEnd(client?: Client): void {
+  if (!isBackground()) {
     return;
   }
 
   client?.on('spanEnd', (span) => {
     if (spanToJSON(span).op === 'pageload') {
-      endedServiceWorkerPageloadTraceId = span.spanContext().traceId;
+      endedBackgroundPageloadTraceId = span.spanContext().traceId;
     }
   });
 }
 
 /**
- * Whether new work would join the ended service-worker pageload's trace: no
+ * Whether new work would join the ended background pageload's trace: no
  * active span, and the scope still carries that pageload's trace id.
  *
  * @returns True when such work should start its own trace.
  */
-function isOnEndedServiceWorkerPageload(): boolean {
-  if (!endedServiceWorkerPageloadTraceId || sentryGetActiveSpan()) {
+function isOnEndedBackgroundPageload(): boolean {
+  if (!endedBackgroundPageloadTraceId || sentryGetActiveSpan()) {
     return false;
   }
-  return getScopeTraceId() === endedServiceWorkerPageloadTraceId;
+  return getScopeTraceId() === endedBackgroundPageloadTraceId;
 }
 
 // The trace id of the UI document's latest pageload or navigation, which the
-// SDK keeps on the scope until the next navigation. Unset in the service worker.
+// SDK keeps on the scope until the next navigation. Unset in the background.
 let documentRouteTraceId: string | undefined;
 
 const ROUTE_OPS = new Set(['pageload', 'navigation']);
@@ -640,7 +645,7 @@ const ROUTE_OPS = new Set(['pageload', 'navigation']);
  * @param client - The Sentry client that emits each navigation's `spanStart`.
  */
 export function trackDocumentRouteTrace(client?: Client): void {
-  if (!client || isServiceWorker()) {
+  if (!client || isBackground()) {
     return;
   }
 
@@ -670,13 +675,9 @@ function isOnDocumentRouteTrace(): boolean {
   );
 }
 
-function isServiceWorker(): boolean {
-  const { ServiceWorkerGlobalScope } = globalThis as {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ServiceWorkerGlobalScope?: abstract new () => unknown;
-  };
-  return Boolean(
-    ServiceWorkerGlobalScope && globalThis instanceof ServiceWorkerGlobalScope,
+function isBackground(): boolean {
+  return (
+    getEnvironmentType(globalThis.location.href) === ENVIRONMENT_TYPE_BACKGROUND
   );
 }
 
@@ -1123,7 +1124,7 @@ function startSpan<T>(
   const root =
     request.root ||
     (!parentDeclared &&
-      (isOnEndedServiceWorkerPageload() || isOnDocumentRouteTrace()));
+      (isOnEndedBackgroundPageload() || isOnDocumentRouteTrace()));
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
