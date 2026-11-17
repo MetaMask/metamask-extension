@@ -194,6 +194,7 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
 
   return {
     isVisible: isEligible,
+    isCtaDisabled: isDepositDisabled,
     apyPercentFormatted:
       apyPercent !== undefined && apyPercent > 0
         ? apyPercentFormatted

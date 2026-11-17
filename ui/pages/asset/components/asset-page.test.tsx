@@ -453,6 +453,7 @@ describe('AssetPage', () => {
 
     mockUseMoneyEarnBanner.mockReturnValue({
       isVisible: false,
+      isCtaDisabled: false,
       apyPercentFormatted: undefined,
       onBannerClick: jest.fn(),
       onCtaClick: jest.fn(),
@@ -971,6 +972,7 @@ describe('AssetPage', () => {
     it('renders the earn banner when eligible', () => {
       mockUseMoneyEarnBanner.mockReturnValue({
         isVisible: true,
+        isCtaDisabled: false,
         apyPercentFormatted: '6%',
         onBannerClick: jest.fn(),
         onCtaClick: jest.fn(),
@@ -996,6 +998,7 @@ describe('AssetPage', () => {
       } as const;
       mockUseMoneyEarnBanner.mockReturnValue({
         isVisible: true,
+        isCtaDisabled: false,
         apyPercentFormatted: '6%',
         onBannerClick: jest.fn(),
         onCtaClick: jest.fn(),

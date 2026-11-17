@@ -69,6 +69,7 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
   const [isDismissed, setIsDismissed] = useState(false);
   const {
     isVisible,
+    isCtaDisabled,
     apyPercentFormatted,
     onBannerClick,
     onCtaClick,
@@ -161,6 +162,7 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
         </Text>
         <TextButton
           size={TextButtonSize.BodySm}
+          isDisabled={isCtaDisabled}
           onClick={handleCtaClick}
           className="self-start"
           data-testid={`${MONEY_EARN_BANNER_TEST_ID}-cta`}
