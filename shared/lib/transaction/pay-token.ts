@@ -144,8 +144,8 @@ export function isSameAssetId(
 ): boolean {
   return Boolean(
     assetId &&
-      otherAssetId &&
-      assetId.toLowerCase() === otherAssetId.toLowerCase(),
+    otherAssetId &&
+    assetId.toLowerCase() === otherAssetId.toLowerCase(),
   );
 }
 

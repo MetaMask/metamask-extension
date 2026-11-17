@@ -197,8 +197,8 @@ export const HyperliquidDepositPrompt: React.FC<
 
   const isSignerMismatch = Boolean(
     selectedAddress &&
-      currentAccount?.address &&
-      selectedAddress.toLowerCase() !== currentAccount.address.toLowerCase(),
+    currentAccount?.address &&
+    selectedAddress.toLowerCase() !== currentAccount.address.toLowerCase(),
   );
 
   const trackPromptInteracted = useCallback(

@@ -134,7 +134,7 @@ export function useTransactionCustomAmount({
   const { isNoFeeToken } = usePayWithNoFeeToken();
   const isNoFeePayToken = Boolean(
     payTokenAsset &&
-      isNoFeeToken(payTokenAsset.address, String(payTokenAsset.chainId)),
+    isNoFeeToken(payTokenAsset.address, String(payTokenAsset.chainId)),
   );
 
   const { updateTokenAmount: updateTokenAmountCallback } =

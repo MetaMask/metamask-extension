@@ -193,11 +193,11 @@ export function useMoneyAccountWithdrawConfirm() {
           hasStoreTransaction: Boolean(fromStore),
           hasStoreNestedCalls: Boolean(
             fromStore?.nestedTransactions?.[0] &&
-              fromStore?.nestedTransactions[1],
+            fromStore?.nestedTransactions[1],
           ),
           hasConfirmationNestedCalls: Boolean(
             transactionMeta.nestedTransactions?.[0] &&
-              transactionMeta.nestedTransactions[1],
+            transactionMeta.nestedTransactions[1],
           ),
         },
       );

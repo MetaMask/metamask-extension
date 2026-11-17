@@ -45,8 +45,8 @@ export function useSponsoredNetworkFeeFlags(): SponsoredNetworkFeeFlags {
 
   const isSameChainPayRoute = Boolean(
     isGasSponsored &&
-      transactionMeta?.chainId &&
-      decodePaymentTokenAssetId(payToken)?.chainId === transactionMeta.chainId,
+    transactionMeta?.chainId &&
+    decodePaymentTokenAssetId(payToken)?.chainId === transactionMeta.chainId,
   );
 
   return {

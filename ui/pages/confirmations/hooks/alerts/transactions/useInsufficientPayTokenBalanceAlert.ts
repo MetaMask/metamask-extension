@@ -123,9 +123,9 @@ export function useInsufficientPayTokenBalanceAlert({
     !isPostQuote &&
     Boolean(
       payTokenAsset &&
-        payTokenAsset.address.toLowerCase() ===
-          nativeTokenAddress.toLowerCase() &&
-        payTokenAsset.chainId === sourceChainId,
+      payTokenAsset.address.toLowerCase() ===
+        nativeTokenAddress.toLowerCase() &&
+      payTokenAsset.chainId === sourceChainId,
     );
 
   // Live funding-account balance (USD already reconciles snapshot vs live
