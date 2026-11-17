@@ -131,9 +131,8 @@ export function useFormatters() {
 
   return useMemo(() => {
     const { locale, narrowUsdSymbol } = buildFormattingLocale(selectedLanguage);
-    // Temporary: pass the flag through a local shim. Replace with
-    // createFormatters({ locale, narrowSymbol: narrowUsdSymbol }) once
-    // @metamask/client-utils supports it.
+    // Temporary until createFormatters accepts currencyDisplay. Replace with
+    // createFormatters({ locale, currencyDisplay: narrowUsdSymbol ? 'narrowSymbol' : undefined }).
     const formatters = createFormatters({ locale });
 
     return {
