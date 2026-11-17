@@ -198,3 +198,54 @@ describe('NotificationsListItem details title (other on-chain subtypes)', () => 
     },
   );
 });
+
+describe('NotificationsListItem full render (all on-chain subtypes)', () => {
+  type MockNotificationCreator = () => ReturnType<
+    typeof createMockNotificationEthSent
+  >;
+
+  const allOnChainNotificationMocks: [string, MockNotificationCreator][] = [
+    ['eth_sent', createMockNotificationEthSent],
+    ['erc20_sent', createMockNotificationERC20Sent],
+    ['erc721_sent', createMockNotificationERC721Sent],
+    ['erc1155_sent', createMockNotificationERC1155Sent],
+    ['metamask_swap_completed', createMockNotificationMetaMaskSwapsCompleted],
+    [
+      'rocketpool_stake_completed',
+      createMockNotificationRocketPoolStakeCompleted,
+    ],
+    [
+      'lido_withdrawal_requested',
+      createMockNotificationLidoWithdrawalRequested,
+    ],
+    [
+      'lido_stake_ready_to_be_withdrawn',
+      createMockNotificationLidoReadyToBeWithdrawn,
+    ],
+  ];
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each(allOnChainNotificationMocks)(
+    'renders the %s notification item with its network logo',
+    (_subtype: string, createMock: MockNotificationCreator) => {
+      const subtypeNotification = {
+        ...processNotification(createMock()),
+        template: apiTemplate,
+        isRead: false,
+      } as INotification;
+
+      if (!hasNotificationComponents(subtypeNotification.type)) {
+        throw new Error('Expected notification components');
+      }
+
+      renderWithProvider(
+        <NotificationsListItem notification={subtypeNotification} />,
+        configureStore(mockState),
+      );
+
+      expect(
+        screen.getByTestId(`notification-list-item-${subtypeNotification.id}`),
+      ).toBeInTheDocument();
+    },
+  );
+});
