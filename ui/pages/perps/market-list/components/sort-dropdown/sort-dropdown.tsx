@@ -115,7 +115,6 @@ export const SortDropdown = ({
         onClick={handleOpen}
         data-testid="sort-dropdown-button"
         value={currentFieldLabel}
-        placeholder=""
         aria-label={
           currentFieldLabel
             ? `${t('perpsSortByTitle')}, ${currentFieldLabel}, ${
@@ -133,7 +132,6 @@ export const SortDropdown = ({
         endArrowDirectionIconProps={{
           'data-testid': 'sort-dropdown-direction-arrow',
         }}
-        textProps={{ className: 'min-w-0 truncate' }}
       />
 
       {/* Sort modal */}
