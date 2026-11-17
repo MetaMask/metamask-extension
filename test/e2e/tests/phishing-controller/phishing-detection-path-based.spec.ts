@@ -122,9 +122,13 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
 
-          await driver.wait(
-            until.titleIs('Mock E2E Phishing Page: Path 1'),
+          // Wait for navigation to complete
+          await driver.waitForWindowWithTitleToBePresent(
+            'Mock E2E Phishing Page: Path 1',
             15000,
+          );
+          await driver.switchToWindowWithTitle(
+            'Mock E2E Phishing Page: Path 1',
           );
         },
       );
@@ -166,9 +170,12 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
-          await driver.wait(
-            until.titleIs('Mock E2E Phishing Page: Path 2'),
+          await driver.waitForWindowWithTitleToBePresent(
+            'Mock E2E Phishing Page: Path 2',
             15000,
+          );
+          await driver.switchToWindowWithTitle(
+            'Mock E2E Phishing Page: Path 2',
           );
 
           await driver.openNewPage('http://127.0.0.1:8080/path1');

@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-import log from 'loglevel';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import * as manifestFlags from '../../../shared/lib/manifestFlags';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
@@ -300,14 +299,14 @@ describe('applyToolbarSidePanelBehavior', () => {
 });
 
 describe('setupSidePanelToolbarBehavior', () => {
-  let logWarnSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    logWarnSpy = jest.spyOn(log, 'warn').mockImplementation();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
   });
 
   afterEach(() => {
-    logWarnSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   it('applies early toolbar behavior before init, then preference and subscription', async () => {
@@ -455,7 +454,7 @@ describe('setupSidePanelToolbarBehavior', () => {
       sidePanelApi,
     );
 
-    expect(logWarnSpy).toHaveBeenCalledWith(
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Error setting side panel toolbar behavior:',
       expect.any(Error),
     );
@@ -488,7 +487,7 @@ describe('setupSidePanelToolbarBehavior', () => {
       setImmediate(resolve);
     });
 
-    expect(logWarnSpy).toHaveBeenCalledWith(
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Error updating panel behavior:',
       expect.any(Error),
     );

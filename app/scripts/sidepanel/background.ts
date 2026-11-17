@@ -357,8 +357,6 @@ export async function setupSidePanelToolbarBehavior(
     return;
   }
 
-  registerPendingRouteListeners();
-
   applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
   try {
@@ -373,12 +371,14 @@ export async function setupSidePanelToolbarBehavior(
           .setPanelBehavior({
             openPanelOnActionClick: useSidePanelAsDefault,
           })
-          .catch((error) => log.warn('Error updating panel behavior:', error));
+          .catch((error) =>
+            console.error('Error updating panel behavior:', error),
+          );
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,
     );
   } catch (error) {
-    log.warn('Error setting side panel toolbar behavior:', error);
+    console.error('Error setting side panel toolbar behavior:', error);
   }
 }
