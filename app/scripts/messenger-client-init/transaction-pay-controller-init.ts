@@ -38,6 +38,7 @@ import {
   type WithdrawPaymentToken,
 } from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
+import { trackSolanaPayLifecycle } from '../lib/money/pay/solana-pay-metrics';
 import {
   getPayEvmAccountOverride,
   type MoneyPayMessenger,
@@ -97,6 +98,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     controllerMessenger,
     messengerClient,
     initMessenger as MoneyPayMessenger,
+  );
+
+  controllerMessenger.subscribe(
+    'TransactionPayController:solanaPayLifecycle',
+    trackSolanaPayLifecycle,
   );
 
   messengerClient.recoverSolanaPayStatus().catch((error) => {
