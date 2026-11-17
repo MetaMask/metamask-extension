@@ -211,27 +211,14 @@ async function setActionPopup(popup: string) {
   }
 }
 
-async function applyToolbarSidePanelPreference(
-  useSidePanelAsDefault: boolean,
-  sidePanelApi: SidePanelApiWithBehavior,
-) {
-  await sidePanelApi.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
-  });
-
-  if (!useSidePanelAsDefault) {
-    await setActionPopup(POPUP_INIT_FILE);
-  }
-}
-
 export async function applyToolbarSidePanelBehavior(
   getController: SidePanelToolbarBehaviorDeps['getController'],
   sidePanelApi: SidePanelApiWithBehavior,
 ): Promise<void> {
-  await applyToolbarSidePanelPreference(
-    getUseSidePanelAsDefault(getController()),
-    sidePanelApi,
-  );
+  const useSidePanelAsDefault = getUseSidePanelAsDefault(getController());
+  await sidePanelApi.setPanelBehavior({
+    openPanelOnActionClick: useSidePanelAsDefault,
+  });
 }
 
 export async function openRoute({
@@ -370,25 +357,21 @@ export async function setupSidePanelToolbarBehavior(
     return;
   }
 
-  registerPendingRouteListeners();
-
   applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
   try {
     await deps.waitUntilInitialized();
-    const useSidePanelAsDefault =
-      deps.getController()?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? true;
-    await applyToolbarSidePanelPreference(useSidePanelAsDefault, sidePanelApi);
+    await applyToolbarSidePanelBehavior(deps.getController, sidePanelApi);
 
     const controller = deps.getController();
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (nextUseSidePanelAsDefault) => {
-        applyToolbarSidePanelPreference(
-          nextUseSidePanelAsDefault,
-          sidePanelApi,
-        ).catch((error) => log.warn('Error updating panel behavior:', error));
+      (useSidePanelAsDefault) => {
+        sidePanelApi
+          .setPanelBehavior({
+            openPanelOnActionClick: useSidePanelAsDefault,
+          })
+          .catch((error) => log.warn('Error updating panel behavior:', error));
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,

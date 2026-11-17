@@ -275,14 +275,13 @@ describe('applyEarlySidePanelToolbarBehavior', () => {
 
 describe('applyToolbarSidePanelBehavior', () => {
   it('applies the persisted useSidePanelAsDefault preference', async () => {
-    const { sidePanelApi, setPanelBehavior, setPopup } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
     await applyToolbarSidePanelBehavior(
       () => createToolbarController(false),
       sidePanelApi,
     );
 
-    expect(setPopup).toHaveBeenCalledWith({ popup: 'popup-init.html' });
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: false,
     });
@@ -374,7 +373,7 @@ describe('setupSidePanelToolbarBehavior', () => {
   });
 
   it('updates panel behavior when preference subscription fires', async () => {
-    const { sidePanelApi, setPanelBehavior, setPopup } = createSidePanelMock();
+    const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
     let preferenceChangeHandler:
       | ((useSidePanelAsDefault: boolean) => void)
       | undefined;
@@ -401,7 +400,6 @@ describe('setupSidePanelToolbarBehavior', () => {
     await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
-    expect(setPopup).toHaveBeenCalledWith({ popup: 'popup-init.html' });
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: false,
     });
