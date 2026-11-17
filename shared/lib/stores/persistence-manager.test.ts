@@ -998,15 +998,16 @@ describe('PersistenceManager', () => {
           }),
         }),
       );
-      expect(
-        mockedCaptureException.mock.calls[0]?.[1]?.extra,
-      ).not.toHaveProperty('persistence.read_readable_keys');
-      expect(
-        mockedCaptureException.mock.calls[0]?.[1]?.extra,
-      ).not.toHaveProperty('persistence.read_missing_keys');
-      expect(
-        mockedCaptureException.mock.calls[0]?.[1]?.extra,
-      ).not.toHaveProperty('persistence.read_failed_keys');
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          extra: expect.not.objectContaining({
+            'persistence.read_readable_keys': expect.anything(),
+            'persistence.read_missing_keys': expect.anything(),
+            'persistence.read_failed_keys': expect.anything(),
+          }),
+        }),
+      );
     });
 
     it('still reports the read error when the diagnostic probe throws', async () => {
@@ -1019,9 +1020,14 @@ describe('PersistenceManager', () => {
       );
 
       expectPersistenceErrorReport(error, 'get-failed');
-      expect(
-        mockedCaptureException.mock.calls[0]?.[1]?.extra,
-      ).not.toHaveProperty('persistence.read_manifest_status');
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          extra: expect.not.objectContaining({
+            'persistence.read_manifest_status': expect.anything(),
+          }),
+        }),
+      );
     });
 
     it('does not probe key outcomes for a missing vault after a successful read', async () => {
@@ -1055,9 +1061,14 @@ describe('PersistenceManager', () => {
 
       expect(mockStoreGetReadDiagnostics).not.toHaveBeenCalled();
       expectPersistenceErrorReport(shutdownError, 'get-failed');
-      expect(
-        mockedCaptureException.mock.calls[0]?.[1]?.extra,
-      ).not.toHaveProperty('persistence.read_manifest_status');
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        shutdownError,
+        expect.objectContaining({
+          extra: expect.not.objectContaining({
+            'persistence.read_manifest_status': expect.anything(),
+          }),
+        }),
+      );
     });
 
     it('attaches key outcomes when a split-state write fails', async () => {
