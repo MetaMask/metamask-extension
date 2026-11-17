@@ -341,7 +341,6 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
-    // Provider label should not be shown when there's no quote
     expect(
       screen.queryByTestId('ramps-build-quote-provider-label'),
     ).not.toBeInTheDocument();
@@ -360,7 +359,6 @@ describe('RampsBuildQuoteScreen', () => {
       '/ramps/build-quote',
     );
 
-    // Provider label should be shown while loading to prevent flicker
     expect(
       screen.getByTestId('ramps-build-quote-provider-label'),
     ).toHaveTextContent(
@@ -369,7 +367,6 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('does not show provider label when selected provider has no quote', () => {
-    // Scenario: Banxa is auto-selected but returns no quote, while other providers do
     useRampsController.mockReturnValue({
       ...mockControllerState(),
       selectedProvider: { id: 'banxa', name: 'Banxa' },
@@ -408,9 +405,7 @@ describe('RampsBuildQuoteScreen', () => {
       '/ramps/build-quote',
     );
 
-    // Continue should be disabled because selected provider has no quote
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
-    // Provider label should not be shown when selected provider has no quote
     expect(
       screen.queryByTestId('ramps-build-quote-provider-label'),
     ).not.toBeInTheDocument();
