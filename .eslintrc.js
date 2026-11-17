@@ -145,7 +145,7 @@ module.exports = defineConfig([
    * TypeScript files
    */
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{cts,mts,ts,tsx}'],
     ignores: [
       // Stories currently excluded from tsconfig due to type errors.
       // Ignore TypeScript lint rules for these until types are fixed.
@@ -333,6 +333,7 @@ module.exports = defineConfig([
       ],
       'jsdoc/check-tag-names': 'off',
       'jsdoc/require-jsdoc': 'off',
+      'jsdoc/require-param': 'off',
       'jsdoc/require-param-description': 'off',
       'jsdoc/require-returns': 'off',
       'jsdoc/require-returns-description': 'off',
@@ -359,6 +360,17 @@ module.exports = defineConfig([
    * The sections from here on out may overlap with each other in various
    * ways depending on their function.
    */
+
+  /**
+   * .mts files
+   */
+  {
+    files: ['**/*.mts'],
+    rules: {
+      // Extensions are required by Node.js for `.mts` files
+      'import-x/extensions': 'off',
+    },
+  },
 
   /**
    * React-specific code
@@ -870,7 +882,27 @@ module.exports = defineConfig([
    * Webpack
    */
   {
-    files: ['./development/webpack/**/*.ts'],
+    files: [
+      './development/webpack/**/*.ts',
+      './development/lib/**/*.ts',
+      './development/build/set-environment-variables.ts',
+    ],
+    rules: {
+      // Build tooling dependencies belong to the root project.
+      'import-x/no-extraneous-dependencies': [
+        'error',
+        { packageDir: __dirname, devDependencies: true, includeTypes: true },
+      ],
+      'import-x/extensions': 'off',
+      // Native Node requires the explicit index filename in directory imports.
+      'import-x/no-useless-path-segments': ['error', { noUselessIndex: false }],
+    },
+  },
+  {
+    files: [
+      './development/webpack/**/*.ts',
+      './development/lib/build-paths.test.ts',
+    ],
     rules: {
       '@typescript-eslint/no-shadow': [
         'error',

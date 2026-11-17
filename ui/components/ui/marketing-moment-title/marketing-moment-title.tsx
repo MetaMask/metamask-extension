@@ -18,7 +18,7 @@ import {
  * @param props.children
  */
 export const MarketingMomentTitle = ({
-  variant = TextVariant.DisplayLg,
+  variant = TextVariant.DisplayXl,
   className,
   children,
   ...props
@@ -29,8 +29,10 @@ export const MarketingMomentTitle = ({
     fontFamily={FontFamily.Hero}
     // 80% line height and -2% tracking. The md: classes keep those metrics
     // when the variant switches to its large-screen leading and tracking.
+    // from-font keeps fallback metrics aligned with Grotzec while it loads.
+    // TODO: @MetaMask/design-system-engineers !important for now will review why these overrides are not working as expected
     className={twMerge(
-      'text-balance leading-[0.8] tracking-[-0.02em] md:leading-[0.8] md:tracking-[-0.02em]',
+      'text-balance [font-size-adjust:from-font] !leading-[0.8] !tracking-[-0.02em] md:!leading-[0.8] md:!tracking-[-0.02em]',
       className,
     )}
   >

@@ -4,6 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import TestDappIndividualRequest from '../pages/test-dapp-individual-request';
 import SendPage from '../pages/send/send-page';
+import SnapSimpleKeyringPage from '../pages/snaps/simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 
 export const createInternalTransaction = async ({
@@ -89,4 +90,76 @@ export const createDappTransaction = async (
       ...override,
     },
   ]);
+};
+
+/**
+ * This function initiates the steps required to send a transaction from the homepage to final confirmation.
+ *
+ * @param params - An object containing the parameters.
+ * @param params.driver - The webdriver instance.
+ * @param params.recipientAddress - The recipient address. Provide this or `recipientName`.
+ * @param params.recipientName - The recipient account name. Provide this or `recipientAddress`.
+ * @param params.amount - The amount of the asset to be sent in the transaction.
+ */
+export const sendTransaction = async ({
+  driver,
+  recipientAddress,
+  recipientName,
+  amount,
+}: {
+  driver: Driver;
+  amount: string;
+} & (
+  | { recipientAddress: string; recipientName?: never }
+  | { recipientName: string; recipientAddress?: never }
+)): Promise<void> => {
+  console.log(
+    `Start flow to send amount ${amount} to recipient ${recipientAddress ?? recipientName} on home screen`,
+  );
+
+  await createInternalTransaction({
+    driver,
+    recipientAddress,
+    recipientName,
+    amount,
+  });
+
+  // confirm transaction when user lands on confirm transaction screen
+  const transactionConfirmation = new TransactionConfirmation(driver);
+  await transactionConfirmation.clickFooterButton({ button: 'confirm' });
+};
+
+/**
+ * This function initiates the steps required to send a transaction from snap account on homepage to final confirmation.
+ *
+ * @param params - An object containing the parameters.
+ * @param params.driver - The webdriver instance.
+ * @param params.recipientAddress - The recipient address.
+ * @param params.amount - The amount of the asset to be sent in the transaction.
+ * @param params.isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
+ * @param params.approveTransaction - Indicates whether the transaction should be approved. Defaults to true.
+ */
+export const sendTransactionWithSnapAccount = async ({
+  driver,
+  recipientAddress,
+  amount,
+  isSyncFlow = true,
+  approveTransaction = true,
+}: {
+  driver: Driver;
+  recipientAddress: string;
+  amount: string;
+  isSyncFlow?: boolean;
+  approveTransaction?: boolean;
+}): Promise<void> => {
+  await sendTransaction({
+    driver,
+    recipientAddress,
+    amount,
+  });
+  if (!isSyncFlow) {
+    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+      approveTransaction,
+    );
+  }
 };

@@ -7,7 +7,6 @@ import type {
   TokenBalancesControllerState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
   MultichainBalancesControllerState,
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
@@ -85,6 +84,7 @@ export type ControllerStatePropertiesEnumerated = {
   assetPreferences: AssetsControllerState['assetPreferences'];
   selectedCurrency: AssetsControllerState['selectedCurrency'];
   assetsLoadingStatus?: AssetsControllerState['assetsLoadingStatus'];
+  assetsBackgroundLoadingStatus?: AssetsControllerState['assetsBackgroundLoadingStatus'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -144,6 +144,7 @@ export type ControllerStatePropertiesEnumerated = {
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   moneyEarnBannerDismissedTokenKeys: AppStateControllerState['moneyEarnBannerDismissedTokenKeys'];
+  moneyFtueSeen: AppStateControllerState['moneyFtueSeen'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
@@ -318,7 +319,6 @@ export type ControllerStatePropertiesEnumerated = {
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
-  marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
@@ -364,7 +364,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   BridgeStatusControllerState &
   ClaimsControllerState &
   CronjobControllerState &
-  CurrencyRateState &
+  Pick<CurrencyRateState, 'currentCurrency' | 'currencyRates'> &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
   DeFiPositionsControllerV2State &
@@ -406,7 +406,6 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   Pick<TokenBalancesControllerState, 'tokenBalances'> &
   TokensControllerState &
   TokenListState &
-  TokenRatesControllerState &
   TransactionControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &

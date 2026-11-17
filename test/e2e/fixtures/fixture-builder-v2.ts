@@ -6,12 +6,11 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type {
   AccountTrackerControllerState,
-  CurrencyRateState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -279,17 +278,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  /**
-   * @deprecated Assets-unify reads fiat from `AssetsController`. Set a displayed
-   * rate with {@link FixtureBuilderV2.withAssetsController} `assetsPrice`, and
-   * the selected currency with `selectedCurrency`.
-   * @param data - Legacy CurrencyController state to merge.
-   */
-  withCurrencyController(data: Partial<CurrencyRateState>): this {
-    merge(this.fixture.data.CurrencyController, data);
-    return this;
-  }
-
   withKeyringController(data: Partial<KeyringControllerState>): this {
     merge(this.fixture.data.KeyringController, data);
     return this;
@@ -339,6 +327,17 @@ class FixtureBuilderV2 {
 
   withMultichainRatesController(data: Partial<RatesControllerState>): this {
     merge(this.fixture.data.MultichainRatesController, data);
+    return this;
+  }
+
+  withMultichainTransactionsController(
+    data: Partial<MultichainTransactionsControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>)
+        .MultichainTransactionsController,
+      data,
+    );
     return this;
   }
 
@@ -435,11 +434,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
-    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
@@ -703,14 +697,6 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
-    });
-  }
-
-  withCurrencyRates(
-    currencyRates: CurrencyRateState['currencyRates'] = {},
-  ): this {
-    return this.withCurrencyController({
-      currencyRates: { ...currencyRates },
     });
   }
 

@@ -59,6 +59,7 @@ const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
 
   return (
     <StepLayout
+      onAction={onAction}
       title={t('mfaIntroTitle')}
       description={reason.enrollDescription ?? t('mfaIntroDescription')}
       error={state.error}

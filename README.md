@@ -1,8 +1,8 @@
 # MetaMask Browser Extension
 
-You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://support.metamask.io/).
+You can find the latest version of MetaMask on [our official website](https://metamask.com/). For help using MetaMask, visit our [User Support Site](https://support.metamask.com/).
 
-For [general questions](https://community.metamask.io/c/learn/26), [feature requests](https://community.metamask.io/c/feature-requests-ideas/13), or [developer questions](https://community.metamask.io/c/developer-questions/11), visit our [Community Forum](https://community.metamask.io/).
+For [general questions](https://community.metamask.com/c/learn/26), [feature requests](https://community.metamask.com/c/feature-requests-ideas/13), or [developer questions](https://community.metamask.com/c/developer-questions/11), visit our [Community Forum](https://community.metamask.com/).
 
 MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recommend using the latest available browser version.
 
@@ -47,9 +47,11 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 ## Building on your local machine
 
-- Install [Node.js](https://nodejs.org) version 24
+- Install [Node.js](https://nodejs.org) version 26
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
-- Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
+- Install and Enable Corepack
+  - Install by running `npm install -g corepack`, then enable by running `corepack enable` within the metamask-extension project.
+  - Corepack manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
 - Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
     - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
@@ -133,11 +135,9 @@ You can start a development build with a preloaded wallet state, by adding `TEST
 
 `yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test`.
 
-#### React and Redux DevTools
+#### Redux DevTools
 
-To use React or Redux DevTools you'll first need to set `METAMASK_REACT_REDUX_DEVTOOLS` to `true` in `.metamaskrc`.
-
-To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
+To use Redux DevTools you'll first need to set `METAMASK_REACT_REDUX_DEVTOOLS` to `true` in `.metamaskrc`.
 
 To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
 
@@ -146,8 +146,6 @@ To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtool
 - Open the Redux DevTools extension and check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked).
 
 Then run the command `yarn devtools:redux` with a development build installed in a browser. This will enable you to use the Redux DevTools extension to inspect MetaMask.
-
-To create a development build and run both of these tools simultaneously, run `yarn start:dev`.
 
 #### Test Dapp
 

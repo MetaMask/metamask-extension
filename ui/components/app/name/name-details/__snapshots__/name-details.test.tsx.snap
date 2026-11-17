@@ -126,7 +126,7 @@ exports[`NameDetails renders proposed names 1`] = `
               You've added a nickname for this address before. You can edit or view other suggested nicknames.
             </p>
             <div
-              class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box mm-form-text-field name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
                 class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
@@ -135,14 +135,14 @@ exports[`NameDetails renders proposed names 1`] = `
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
-                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                  disabled=""
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   focused="false"
                   id="address"
+                  readonly=""
                   type="text"
                   value="0xC0ffee254729296a45A3885639aC7E10f9d54977"
                 />
@@ -381,7 +381,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
               If you know this address, give it a nickname to recognize it in the future.
             </p>
             <div
-              class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box mm-form-text-field name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
                 class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
@@ -390,14 +390,14 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
-                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                  disabled=""
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   focused="false"
                   id="address"
+                  readonly=""
                   type="text"
                   value=""
                 />
@@ -603,7 +603,7 @@ exports[`NameDetails renders with no saved name 1`] = `
               If you know this address, give it a nickname to recognize it in the future.
             </p>
             <div
-              class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box mm-form-text-field name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
                 class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
@@ -612,14 +612,14 @@ exports[`NameDetails renders with no saved name 1`] = `
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
-                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                  disabled=""
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   focused="false"
                   id="address"
+                  readonly=""
                   type="text"
                   value="0xc0ffee254729296a45a3885639AC7E10F9d54979"
                 />
@@ -825,7 +825,7 @@ exports[`NameDetails renders with recognized name 1`] = `
               This address has a default nickname, but you can edit it or explore other suggestions.
             </p>
             <div
-              class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box mm-form-text-field name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
                 class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
@@ -834,14 +834,14 @@ exports[`NameDetails renders with recognized name 1`] = `
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
-                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                  disabled=""
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   focused="false"
                   id="address"
+                  readonly=""
                   type="text"
                   value="0x0A3BB08b3a15A19b4De82F8AcFc862606FB69A2D"
                 />
@@ -1047,7 +1047,7 @@ exports[`NameDetails renders with saved name 1`] = `
               You've added a nickname for this address before. You can edit or view other suggested nicknames.
             </p>
             <div
-              class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box mm-form-text-field name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
                 class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
@@ -1056,14 +1056,14 @@ exports[`NameDetails renders with saved name 1`] = `
                 Address
               </label>
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
               >
                 <input
                   autocomplete="off"
-                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                  disabled=""
+                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   focused="false"
                   id="address"
+                  readonly=""
                   type="text"
                   value="0xC0ffee254729296a45A3885639aC7E10f9d54977"
                 />

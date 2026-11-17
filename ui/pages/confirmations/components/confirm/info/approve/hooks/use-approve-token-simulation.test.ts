@@ -145,7 +145,7 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedSpendingCap": "1.235",
+        "formattedSpendingCap": "1.23456",
         "isUnlimitedSpendingCap": false,
         "pending": undefined,
         "spendingCap": "1.23456",

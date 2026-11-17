@@ -56,11 +56,11 @@ import { createDeepEqualSelector } from './selector-creators';
 // tokenBalances: DONE (via AssetsController when unify enabled; controller removed)
 //
 // CurrencyRateController
-// currencyRates: DONE
-// currentCurrency: DONE
+// currencyRates: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
+// currentCurrency: DONE (via AssetsController.selectedCurrency when unify enabled; controller removed)
 //
 // TokenRatesController
-// marketData: DONE
+// marketData: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -689,11 +689,13 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
       state.metamask?.selectedCurrency,
   ],
   (isAssetsUnifyStateEnabled, currentCurrency, selectedCurrency) => {
-    if (!isAssetsUnifyStateEnabled) {
-      return currentCurrency;
-    }
+    // CurrencyRateController no longer seeds currentCurrency. Callers such as
+    // Settings assume this is a string.
+    const currency = isAssetsUnifyStateEnabled
+      ? selectedCurrency
+      : currentCurrency;
 
-    return selectedCurrency;
+    return currency ?? 'usd';
   },
 ) as unknown as MigratingControllerStateSelector<
   CurrencyRateState['currentCurrency']
@@ -847,9 +849,8 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenRatesControllerState,
-  'marketData'
+) as unknown as MigratingControllerStateSelector<
+  TokenRatesControllerState['marketData']
 >;
 
 export const getMultichainAssetsRatesControllerConversionRates =

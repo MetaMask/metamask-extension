@@ -144,7 +144,7 @@ const EVENT_NAME_MAP = {
     REQUESTED: MetaMetricsEventName.Wallet5792Called,
   },
   // `wallet_pay` reports every outcome on the completed event, through the
-  // `outcome` property, rather than splitting approved and rejected.
+  // `status` property, rather than splitting approved and rejected.
   [MESSAGE_TYPE.WALLET_PAY]: {
     APPROVED: MetaMetricsEventName.WalletPayCompleted,
     REJECTED: MetaMetricsEventName.WalletPayCompleted,
@@ -153,10 +153,10 @@ const EVENT_NAME_MAP = {
 };
 
 /**
- * How a `wallet_pay` request ended, reported as `outcome` on the completed
+ * How a `wallet_pay` request ended, reported as `status` on the completed
  * event.
  */
-const WALLET_PAY_OUTCOME = {
+const WALLET_PAY_STATUS = {
   CONFIRMED: 'confirmed',
   REJECTED: 'rejected',
   FAILED: 'failed',
@@ -619,7 +619,7 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
 
 /**
  * Adds the transaction type and whether an amount was passed to every
- * `wallet_pay` event, and the outcome to the completed event.
+ * `wallet_pay` event, and the status to the completed event.
  *
  * @param {object} req - The JSON-RPC request.
  * @param {object} [res] - The JSON-RPC response, once the request has ended.
@@ -636,34 +636,34 @@ function getWalletPayProperties(req, res, stage, eventProperties) {
   eventProperties.has_amount = request?.amount !== undefined;
 
   if (stage !== STAGE.REQUESTED) {
-    eventProperties.outcome = getWalletPayOutcome(res?.error);
+    eventProperties.status = getWalletPayStatus(res?.error);
   }
 }
 
 /**
- * Maps a `wallet_pay` response error to an outcome.
+ * Maps a `wallet_pay` response error to a status.
  *
  * @param {object} [error] - The JSON-RPC error, if the request failed.
- * @returns {string} The outcome.
+ * @returns {string} The status.
  */
-function getWalletPayOutcome(error) {
+function getWalletPayStatus(error) {
   if (!error) {
-    return WALLET_PAY_OUTCOME.CONFIRMED;
+    return WALLET_PAY_STATUS.CONFIRMED;
   }
 
   switch (error.code) {
     case errorCodes.provider.userRejectedRequest:
-      return WALLET_PAY_OUTCOME.REJECTED;
+      return WALLET_PAY_STATUS.REJECTED;
     case errorCodes.rpc.methodNotFound:
-      return WALLET_PAY_OUTCOME.BLOCKED_BY_FLAGS;
+      return WALLET_PAY_STATUS.BLOCKED_BY_FLAGS;
     case errorCodes.rpc.invalidParams:
-      return WALLET_PAY_OUTCOME.INVALID;
+      return WALLET_PAY_STATUS.INVALID;
     case errorCodes.provider.unauthorized:
-      return WALLET_PAY_OUTCOME.UNAUTHORIZED;
+      return WALLET_PAY_STATUS.UNAUTHORIZED;
     case errorCodes.rpc.methodNotSupported:
-      return WALLET_PAY_OUTCOME.INELIGIBLE;
+      return WALLET_PAY_STATUS.INELIGIBLE;
     default:
-      return WALLET_PAY_OUTCOME.FAILED;
+      return WALLET_PAY_STATUS.FAILED;
   }
 }
 

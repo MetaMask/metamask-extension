@@ -35,9 +35,10 @@ jobs:
 
       - name: Update Release Changelog
         uses: MetaMask/github-tools/.github/actions/update-release-changelog@v1
+        env:
+          AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
         with:
           release-branch: ${{ github.ref_name }}
           repository-url: ${{ github.server_url }}/${{ github.repository }}
           platform: extension
-          previous-version-ref: 'null'
           github-token: ${{ steps.token.outputs.token }}

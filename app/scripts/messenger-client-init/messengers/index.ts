@@ -26,6 +26,7 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
+  getOHLCVServiceMessenger,
 } from './core-backend';
 import {
   getMultichainTransactionsControllerMessenger,
@@ -41,15 +42,11 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
-  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
-  getTokenRatesControllerInitMessenger,
-  getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
-  getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets';
@@ -93,10 +90,6 @@ import {
   getStaticAssetsControllerMessenger,
 } from './static-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
-import {
-  getCurrencyRateControllerInitMessenger,
-  getCurrencyRateControllerMessenger,
-} from './currency-rate-controller-messenger';
 import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
@@ -202,11 +195,6 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-export type { CurrencyRateControllerInitMessenger } from './currency-rate-controller-messenger';
-export {
-  getCurrencyRateControllerMessenger,
-  getCurrencyRateControllerInitMessenger,
-} from './currency-rate-controller-messenger';
 export {
   getDecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
@@ -369,10 +357,6 @@ export const MESSENGER_FACTORIES = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
-  },
-  CurrencyRateController: {
-    getMessenger: getCurrencyRateControllerMessenger,
-    getInitMessenger: getCurrencyRateControllerInitMessenger,
   },
   DataDeletionService: {
     getMessenger: getDataDeletionServiceMessenger,
@@ -602,10 +586,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getUserStorageControllerMessenger,
     getInitMessenger: getUserStorageControllerInitMessenger,
   },
-  TokenRatesController: {
-    getMessenger: getTokenRatesControllerMessenger,
-    getInitMessenger: getTokenRatesControllerInitMessenger,
-  },
   NftController: {
     getMessenger: getNftControllerMessenger,
     getInitMessenger: getNftControllerInitMessenger,
@@ -634,6 +614,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAccountActivityServiceMessenger,
     getInitMessenger: noop,
   },
+  OHLCVService: {
+    getMessenger: getOHLCVServiceMessenger,
+    getInitMessenger: noop,
+  },
   SmartTransactionsController: {
     getMessenger: getSmartTransactionsControllerMessenger,
     getInitMessenger: getSmartTransactionsControllerInitMessenger,
@@ -645,10 +629,6 @@ export const MESSENGER_FACTORIES = {
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  NetworkEnablementController: {
-    getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,

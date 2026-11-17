@@ -65,6 +65,7 @@
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
     "moneyEarnBannerDismissedTokenKeys": "object",
+    "moneyFtueSeen": "boolean",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -146,10 +147,6 @@
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
-  "CurrencyController": {
-    "currencyRates": {},
-    "currentCurrency": "usd"
-  },
   "DeFiPositionsController": "object",
   "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {
@@ -184,6 +181,7 @@
     "metaMetricsDataDeletionTimestamp": 0
   },
   "MoneyAccountController": {
+    "defaultMoneyAccountId": null,
     "moneyAccounts": "object"
   },
   "MoneyAccountUpgradeController": {
@@ -303,6 +301,9 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
+      "tdpChartIndicators": "object",
+      "tdpChartInterval": "string",
+      "tdpChartType": "number",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
@@ -337,8 +338,10 @@
   },
   "QrSyncController": "object",
   "RampsController": {
+    "autorampTransactionRecords": "object",
     "autoramps": "object",
     "countries": "object",
+    "moneyAccountWalletRegistrations": "object",
     "nativeProviders": "object",
     "orders": "object",
     "paymentMethods": "object",
@@ -346,7 +349,9 @@
     "providers": "object",
     "requests": "object",
     "tokens": "object",
-    "userRegion": null
+    "userRegion": null,
+    "vbaAutorampListFetchedAt": null,
+    "vbaCustomerAbilities": null
   },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
@@ -410,7 +415,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},
     "allIgnoredTokens": {},

@@ -1,14 +1,11 @@
-import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
+import { type SponsoredNetworkFeeFlags } from './sponsored-network-fees';
 import {
-  getUserPaidNetworkFeeUsd,
-  type SponsoredNetworkFeeFlags,
-} from './sponsored-network-fees';
-import {
-  useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayFiatPayment,
   useTransactionPayQuotes,
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
@@ -19,7 +16,11 @@ export {
   type SponsoredNetworkFeeFlags,
 } from './sponsored-network-fees';
 
-const SUPPORTED_TYPES: TransactionType[] = [
+/**
+ * Types whose network gas can be MetaMask-sponsored via `isGasFeeSponsored`.
+ * Perps is excluded: its label comes from a zero-fee quote, not gas sponsorship.
+ */
+const GAS_SPONSORED_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
   TransactionType.moneyAccountDeposit,
   TransactionType.moneyAccountWithdraw,
@@ -37,7 +38,7 @@ export function useSponsoredNetworkFeeFlags(): SponsoredNetworkFeeFlags {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const { payToken } = useTransactionPayToken();
 
-  const isSupported = hasTransactionType(transactionMeta, SUPPORTED_TYPES);
+  const isSupported = hasTransactionType(transactionMeta, GAS_SPONSORED_TYPES);
   const isGasSponsored =
     isSupported && Boolean(transactionMeta?.isGasFeeSponsored);
 
@@ -70,82 +71,41 @@ export function useIsNetworkFeePaidByMetaMask(): boolean {
 /**
  * Whether the confirmation should present fees as paid by MetaMask.
  *
- * For gas-sponsored transactions (`isGasFeeSponsored`), target-network gas
- * estimates may still be non-zero after quoting even though the user does not
- * pay them. Same-chain source gas is also sponsored (and zeroed by the pay
- * controller); cross-chain source gas is user-paid and must remain in the
- * check. Only provider and MetaMask fee components must be zero for the full
- * "Paid by MetaMask" treatment, plus any user-paid source gas.
+ * Matches mobile: any transaction type qualifies. A selected fiat payment
+ * method never does. Before source amounts exist, `isGasFeeSponsored` is
+ * enough. After that, provider, MetaMask, and both network fees must be zero.
  *
- * Pre-quote (no `sourceAmounts` yet): returns `true` from gas sponsorship
- * alone, before provider/MetaMask fees are known. Callers such as `TotalRow`
- * that strip all fee components when this is true should treat that as
- * "sponsorship claimed for display" rather than proof that every fee line
- * has been quoted as zero.
- *
- * Money-account deposits on Monad are gas-sponsored, and fixed-spread /
- * same-token (Monad mUSD) routes have $0 provider fee, so they show as paid
- * by MetaMask the same way mUSD conversion does. Same-token Money Account
- * withdraws store a Pay no-op quote whose totals still include estimated
- * network gas; that gas is also sponsored on Monad.
+ * @returns Whether the fee row should show "Paid by MetaMask".
  */
 export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
+  const fiatPayment = useTransactionPayFiatPayment();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
   const sourceAmounts = useTransactionPaySourceAmounts();
-  const hasPositiveRequiredAmount =
-    useTransactionPayHasPositiveRequiredAmount();
-  const { isSourceNetworkSponsored, isTargetNetworkSponsored } =
-    useSponsoredNetworkFeeFlags();
 
-  if (!hasTransactionType(transactionMeta, SUPPORTED_TYPES)) {
+  if (fiatPayment?.selectedPaymentMethodId) {
     return false;
   }
 
-  const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
-    TransactionType.moneyAccountWithdraw,
-  ]);
-
-  // Pre-quote / same-token no-op: sponsorship is known from the transaction
-  // flag before conversion quotes exist.
-  if (isTargetNetworkSponsored && !sourceAmounts?.length) {
+  // Mirror the fee row's sponsored $0 display (pre-quote, gasless).
+  if (transactionMeta?.isGasFeeSponsored && !sourceAmounts?.length) {
     return true;
   }
 
-  // Every fee is zero before an amount is entered, which is indistinguishable
-  // from genuine sponsorship. Requiring a positive amount stops the empty
-  // deposit state from claiming "Paid by MetaMask". Withdrawals have no
-  // `requiredAssets`, so that gate would never pass.
-  if (
-    !quotes?.length ||
-    !totals?.fees ||
-    (!isMoneyAccountWithdraw && !hasPositiveRequiredAmount)
-  ) {
+  if (!quotes?.length || !totals?.fees) {
     return false;
-  }
-
-  const provider = new BigNumber(totals.fees.provider?.usd ?? 0);
-  const metaMask = new BigNumber(totals.fees.metaMask?.usd ?? 0);
-
-  if (isTargetNetworkSponsored) {
-    // Target gas (and same-chain source gas) can be non-zero while sponsored.
-    // Cross-chain source gas is user-paid and blocks the full sponsorship label.
-    const userPaidNetwork = getUserPaidNetworkFeeUsd(totals.fees, {
-      isSourceNetworkSponsored,
-      isTargetNetworkSponsored,
-    });
-    return provider.isZero() && metaMask.isZero() && userPaidNetwork.isZero();
   }
 
   const sourceNetwork = new BigNumber(
     totals.fees.sourceNetwork?.estimate?.usd ?? 0,
   );
   const targetNetwork = new BigNumber(totals.fees.targetNetwork?.usd ?? 0);
+  const provider = new BigNumber(totals.fees.provider?.usd ?? 0);
+  const metaMask = new BigNumber(totals.fees.metaMask?.usd ?? 0);
 
   return (
-    sourceNetwork.isZero() &&
-    targetNetwork.isZero() &&
+    sourceNetwork.plus(targetNetwork).isZero() &&
     provider.isZero() &&
     metaMask.isZero()
   );

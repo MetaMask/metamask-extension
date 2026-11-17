@@ -228,6 +228,27 @@ messenger.registerActionHandler('RemoteFeatureFlagController:getState', () => ({
   remoteFeatureFlags: {},
 }));
 
+// This is a straight copy of the actual implementation of this action.
+messenger.registerActionHandler(
+  'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+  async (participateInMetaMetrics) => {
+    const { analyticsId } = messenger.call('AnalyticsController:getState');
+
+    if (participateInMetaMetrics === true) {
+      await messenger.call('AnalyticsController:optIn');
+      messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
+      messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else if (participateInMetaMetrics === false) {
+      messenger.call('AnalyticsController:optOut');
+      messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else {
+      messenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    return analyticsId;
+  },
+);
+
 configureAnalytics({
   messenger: getAnalyticsControllerInitMessenger(messenger),
 });
@@ -1295,7 +1316,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           },
           referrer: { url: 'some.dapp' },
         });
-        expect(getTrackedEventCall(0).properties.outcome).toBeUndefined();
+        expect(getTrackedEventCall(0).properties.status).toBeUndefined();
       });
 
       it('reports a request without an amount', async () => {
@@ -1318,7 +1339,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         ['ineligible', { code: errorCodes.rpc.methodNotSupported }],
         ['failed', { code: errorCodes.rpc.internal }],
         ['failed', { code: -32000 }],
-      ])('tracks a %s outcome', async (outcome, error) => {
+      ])('tracks a %s status', async (status, error) => {
         await runWalletPay({ error });
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
@@ -1328,7 +1349,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             method: MESSAGE_TYPE.WALLET_PAY,
             transaction_type: 'perpsDeposit',
             has_amount: true,
-            outcome,
+            status,
           },
           referrer: { url: 'some.dapp' },
         });
@@ -1342,7 +1363,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         expect(getTrackedEventCall(1).properties).toMatchObject({
           has_amount: false,
-          outcome: 'invalid',
+          status: 'invalid',
         });
         expect(
           getTrackedEventCall(1).properties.transaction_type,

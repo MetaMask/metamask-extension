@@ -96,6 +96,18 @@ describe('MarketingMoment', () => {
     expect(onSecondaryClick).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps the actions outside the scrolling content', () => {
+    renderMoment();
+
+    const root = screen.getByTestId('marketing-moment');
+    const scroller = root.querySelector('.overflow-y-auto');
+    const primary = screen.getAllByRole('button')[0];
+
+    expect(root).toHaveClass('overflow-hidden');
+    expect(scroller).not.toBeNull();
+    expect(scroller).not.toContainElement(primary);
+  });
+
   it('omits every slot that is not provided', () => {
     renderMoment({
       title: undefined,

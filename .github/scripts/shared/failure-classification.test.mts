@@ -17,8 +17,12 @@ describe('partitionRetryableBlockerCascadeJobs', () => {
     const result = partitionRetryableBlockerCascadeJobs({
       jobs,
       getCategory: (jobName) => {
-        if (jobName.startsWith('e2e-')) return 'alwaysRetryable';
-        if (jobName.startsWith('ci-status-gate')) return 'optional';
+        if (jobName.startsWith('e2e-')) {
+          return 'alwaysRetryable';
+        }
+        if (jobName.startsWith('ci-status-gate')) {
+          return 'optional';
+        }
         return 'retryableOnTransientError';
       },
     });

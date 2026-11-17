@@ -15,7 +15,7 @@ jest.mock('./approval-details', () => ({
 jest.mock('./send-details', () => ({
   SendDetails: () => <div data-testid="send-details" />,
 }));
-jest.mock('./bridge-details/bridge-details', () => ({
+jest.mock('./bridge/bridge-details', () => ({
   BridgeDetails: () => <div data-testid="bridge-details" />,
 }));
 jest.mock('./swap-details', () => ({
@@ -24,13 +24,13 @@ jest.mock('./swap-details', () => ({
 jest.mock('./nft-details', () => ({
   NftDetails: () => <div data-testid="nft-details" />,
 }));
-jest.mock('./money-account-details', () => ({
+jest.mock('./money/money-account-details', () => ({
   MoneyAccountDetails: () => <div data-testid="money-account-details" />,
 }));
-jest.mock('./perps-deposit-details', () => ({
+jest.mock('./perps/perps-deposit-details', () => ({
   PerpsDepositDetails: () => <div data-testid="perps-deposit-details" />,
 }));
-jest.mock('./perps-details', () => ({
+jest.mock('./perps/perps-details', () => ({
   PerpsDetails: () => <div data-testid="perps-details" />,
 }));
 jest.mock('./ramps/ramp-order-details', () => ({
