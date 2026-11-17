@@ -54,3 +54,22 @@ describe('BridgeAsset', () => {
     expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 });
+
+describe('BridgeAsset network logo fallback', () => {
+  it('should render a native asset whose chain is not in the network image maps', () => {
+    const unknownChainNativeAsset = {
+      ...getNativeAssetForChainId('0x1'),
+      chainId: 9999,
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <BridgeAsset
+        asset={toBridgeToken(unknownChainNativeAsset)}
+        selected={false}
+      />,
+      configureStore(createBridgeMockStore({})),
+    );
+
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
+  });
+});

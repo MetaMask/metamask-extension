@@ -31,6 +31,7 @@ import {
   getFilteredFeaturedNetworks,
   getAllEnabledNetworkClientIds,
   getNetworkImageUrl,
+  getNetworkIcon,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -602,5 +603,33 @@ describe('getNetworkImageUrl', () => {
   it('returns undefined for unknown chain IDs', () => {
     expect(getNetworkImageUrl('eip155:9999', {})).toBeUndefined();
     expect(getNetworkImageUrl('solana:unknown', {})).toBeUndefined();
+  });
+});
+
+describe('getNetworkIcon', () => {
+  it('resolves EVM network icons from the map by hex chain ID', () => {
+    const evmNetwork = {
+      isEvm: true,
+      chainId: 'eip155:1',
+      name: 'Ethereum',
+    } as never;
+
+    expect(getNetworkIcon(evmNetwork, { '0x1': './images/eth_logo.svg' })).toBe(
+      './images/eth_logo.svg',
+    );
+  });
+
+  it('resolves non-EVM network icons from the map by CAIP chain ID', () => {
+    const nonEvmNetwork = {
+      isEvm: false,
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      name: 'Solana',
+    } as never;
+
+    expect(
+      getNetworkIcon(nonEvmNetwork, {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': './images/solana.svg',
+      }),
+    ).toBe('./images/solana.svg');
   });
 });
