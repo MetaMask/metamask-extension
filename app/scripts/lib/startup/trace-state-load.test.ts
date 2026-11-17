@@ -81,6 +81,11 @@ describe('readPersistedStateWithTrace', () => {
     });
   });
 
+  // Drain the deferred size-measurement macrotask so it cannot leak into later tests.
+  afterEach(async () => {
+    await flushPromises();
+  });
+
   it('starts a root State Load span', async () => {
     await readPersistedStateWithTrace(async () => SPLIT_STATE);
 
@@ -95,6 +100,18 @@ describe('readPersistedStateWithTrace', () => {
     const result = await readPersistedStateWithTrace(async () => SPLIT_STATE);
 
     expect(result).toBe(SPLIT_STATE);
+  });
+
+  it('defers size measurement until after the read helper returns', async () => {
+    await readPersistedStateWithTrace(async () => SPLIT_STATE);
+
+    expect(mockGetStoredBytes).not.toHaveBeenCalled();
+    expect(mockEndTrace).not.toHaveBeenCalled();
+
+    await flushPromises();
+
+    expect(mockGetStoredBytes).toHaveBeenCalledTimes(1);
+    expect(mockEndTrace).toHaveBeenCalledTimes(1);
   });
 
   it('ends the span at the read end time with size and counts', async () => {

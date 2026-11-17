@@ -111,8 +111,9 @@ function getStorageEntries(result: MetaMaskStorageStructure): {
 /**
  * Reads persisted state inside a `State Load` span.
  *
- * The span ends when the read resolves. Size is measured afterwards, only for
- * sampled spans, and boot does not wait for it.
+ * The span is backdated to the read end time. Size is measured afterwards on a
+ * macrotask, only for sampled spans, so boot can continue before any
+ * `JSON.stringify` fallback (e.g. Firefox without `getBytesInUse`).
  *
  * @param read - Reads persisted state from storage.
  * @returns The result of `read`.
@@ -150,36 +151,39 @@ export async function readPersistedStateWithTrace(
     'state.asset_count': stateData ? countAssets(stateData) : 0,
   };
 
-  // Only measure size for sampled spans so unsampled boots skip getBytesInUse.
-  (async () => {
-    try {
-      if (
-        result?.data &&
-        (
-          context as { isRecording?: () => boolean } | undefined
-        )?.isRecording?.()
-      ) {
-        try {
-          const { keys, valuesByKey } = getStorageEntries(result);
-          const measurement = await persistenceManager.getStoredBytes(
-            keys,
-            valuesByKey,
-          );
-          if (measurement) {
-            data['state.raw_size_bytes'] = measurement.bytes;
-            data['state.size_measurement_source'] = measurement.source;
+  // Macrotask (not a floating microtask): boot resumes before getStoredBytes,
+  // including its sync JSON estimate when getBytesInUse is unavailable.
+  setTimeout(() => {
+    (async () => {
+      try {
+        if (
+          result?.data &&
+          (
+            context as { isRecording?: () => boolean } | undefined
+          )?.isRecording?.()
+        ) {
+          try {
+            const { keys, valuesByKey } = getStorageEntries(result);
+            const measurement = await persistenceManager.getStoredBytes(
+              keys,
+              valuesByKey,
+            );
+            if (measurement) {
+              data['state.raw_size_bytes'] = measurement.bytes;
+              data['state.size_measurement_source'] = measurement.source;
+            }
+          } catch {
+            // Size measurement must not prevent ending the span.
           }
-        } catch {
-          // Size measurement must not prevent ending the span.
         }
+      } finally {
+        endTrace({ name: TraceName.StateLoad, timestamp: readEnd, data });
       }
-    } finally {
-      endTrace({ name: TraceName.StateLoad, timestamp: readEnd, data });
-    }
-  })().catch((error) => {
-    // Measurement errors are handled above. This catches endTrace failures.
-    console.error('[State Load] failed to end trace', error);
-  });
+    })().catch((error) => {
+      // Measurement errors are handled above. This catches endTrace failures.
+      console.error('[State Load] failed to end trace', error);
+    });
+  }, 0);
 
   return result;
 }
