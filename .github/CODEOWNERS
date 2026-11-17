@@ -249,6 +249,7 @@ ui/pages/asset                                     @MetaMask/networks
 ui/selectors/multichain/networks.ts                @MetaMask/networks
 ui/selectors/multichain/networks.test.ts           @MetaMask/networks
 ui/selectors/config-registry/                      @MetaMask/networks
+ui/components/app/assets/enablement/               @MetaMask/networks
 
 # QA Team - E2E Framework
 test/e2e/page-objects/                                                @MetaMask/qa

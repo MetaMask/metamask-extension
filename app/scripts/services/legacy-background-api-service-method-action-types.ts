@@ -6,7 +6,7 @@
 import type { LegacyBackgroundApiService } from './legacy-background-api-service';
 
 /**
- * Sets the current currency for the CurrencyRateController and AssetsController.
+ * Sets the selected currency on the AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
  */
@@ -1173,6 +1173,17 @@ export type LegacyBackgroundApiServiceCheckFirstTimeInteractionAction = {
 };
 
 /**
+ * Creates a JSON backup of the user's preferences, accounts, address book,
+ * and network configurations for download from the UI.
+ *
+ * @returns The backup filename and serialized data.
+ */
+export type LegacyBackgroundApiServiceBackupUserDataAction = {
+  type: `LegacyBackgroundApiService:backupUserData`;
+  handler: LegacyBackgroundApiService['backupUserData'];
+};
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
@@ -1270,4 +1281,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetPermittedChainsAction
   | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction
   | LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction
-  | LegacyBackgroundApiServiceCheckFirstTimeInteractionAction;
+  | LegacyBackgroundApiServiceCheckFirstTimeInteractionAction
+  | LegacyBackgroundApiServiceBackupUserDataAction;
