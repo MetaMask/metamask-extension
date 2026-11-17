@@ -208,6 +208,7 @@ function getClientOptions(): SentryClientOptions {
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
         shouldCreateSpanForRequest,
+        beforeStartSpan: nameRouteSpanAfterDocument,
       }),
       metaMetricsIntegration({
         getAnalyticsState,
@@ -419,6 +420,22 @@ export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
     }
     return breadcrumb;
   };
+}
+
+/**
+ * Names a pageload or navigation span after the document path (`/home.html`),
+ * not the hash route. With `URL` reachable, the SDK resolves a hash router's
+ * `pushState('#/route')` against `location.origin`, which drops the document
+ * path, so every navigation would be named `/`.
+ *
+ * @param options - The route span's start options.
+ * @returns The options, named after the document path.
+ */
+export function nameRouteSpanAfterDocument(
+  options: Sentry.StartSpanOptions,
+): Sentry.StartSpanOptions {
+  const { pathname } = globalThis.location ?? {};
+  return pathname ? { ...options, name: pathname } : options;
 }
 
 /**
