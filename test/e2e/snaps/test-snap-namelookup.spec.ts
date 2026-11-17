@@ -81,6 +81,7 @@ describe('Name lookup', function () {
           await mockLookupSnap(mockServer),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
+              id: 'ethereum',
               price: 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

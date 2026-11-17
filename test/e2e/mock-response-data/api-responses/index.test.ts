@@ -81,7 +81,7 @@ describe('api-responses', () => {
         { symbol: 'USDC' },
       ]);
       // @ts-expect-error: misspelled field.
-      buildSpotPrice({ id: USDC_ASSET_ID, prce: 1 });
+      buildSpotPrice({ id: 'usd-coin', prce: 1 });
       // @ts-expect-error: misspelled field.
       buildGasPrices({ SafeGasPrise: '1' });
 
@@ -141,10 +141,10 @@ describe('api-responses', () => {
 
   describe('buildSpotPrice', () => {
     it('does not copy the fixture asset onto another asset', () => {
-      const spot = buildSpotPrice({ id: USDC_ASSET_ID, price: 0.9999 });
+      const spot = buildSpotPrice({ id: 'usd-coin', price: 0.9999 });
       const fixtureEntry = API_RESPONSES['price-v3-spot']['eip155:1/slip44:60'];
 
-      expect(spot.id).toBe(USDC_ASSET_ID);
+      expect(spot.id).toBe('usd-coin');
       expect(spot.price).toBe(0.9999);
       expect(spot.totalVolume).toBe(0);
       expect(spot.dilutedMarketCap).toBe(0);

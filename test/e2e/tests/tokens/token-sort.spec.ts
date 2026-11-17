@@ -46,11 +46,13 @@ describe('Token List Sorting', function () {
       ])),
       await mockSpotPrices(mockServer, {
         'eip155:1/slip44:60': {
+          id: 'ethereum',
           price: 1700,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
         [customTokenAssetId]: {
+          id: 'ethereum',
           price: 0,
           marketCap: 0,
           pricePercentChange1d: 0,

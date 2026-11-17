@@ -84,11 +84,13 @@ describe('Token List', function () {
   });
   it('shows percentage increase for an ERC20 token with prices available', async function () {
     const marketData = {
+      id: 'ethereum',
       price: 0.123,
       marketCap: 12,
       pricePercentChange1d: 0.05,
     };
     const marketDataNative = {
+      id: 'ethereum',
       price: 0.123,
       marketCap: 12,
       pricePercentChange1d: 0.02,

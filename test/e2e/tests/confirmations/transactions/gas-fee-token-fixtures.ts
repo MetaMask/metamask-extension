@@ -11,12 +11,23 @@ export const GAS_FEE_ETH_CONVERSION_RATE_USD = 1700;
 
 export const GAS_FEE_SPOT_PRICES = {
   'eip155:1/slip44:60': {
+    id: 'ethereum',
     price: GAS_FEE_ETH_CONVERSION_RATE_USD,
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   },
-  [GAS_FEE_DAI_ASSET_ID]: { price: 1, marketCap: 0, pricePercentChange1d: 0 },
-  [GAS_FEE_USDC_ASSET_ID]: { price: 1, marketCap: 0, pricePercentChange1d: 0 },
+  [GAS_FEE_DAI_ASSET_ID]: {
+    id: 'dai',
+    price: 1,
+    marketCap: 0,
+    pricePercentChange1d: 0,
+  },
+  [GAS_FEE_USDC_ASSET_ID]: {
+    id: 'usd-coin',
+    price: 1,
+    marketCap: 0,
+    pricePercentChange1d: 0,
+  },
 };
 
 export const GAS_FEE_TOKEN_ASSETS_INFO = {

@@ -30,11 +30,13 @@ async function mockSetup(mockServer: Mockttp) {
   return [
     await mockSpotPrices(mockServer, {
       'eip155:1/slip44:60': {
+        id: 'ethereum',
         price: 1,
         marketCap: 0,
         pricePercentChange1d: 0,
       },
       'eip155:137/slip44:60': {
+        id: 'polygon',
         price: 1,
         marketCap: 0,
         pricePercentChange1d: 0,

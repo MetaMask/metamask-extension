@@ -37,6 +37,7 @@ const BALANCE_CHECKER_1_ETH_RESULT =
 async function mockIncrementalSecurityEndpoints(mockServer: Mockttp) {
   await mockSpotPrices(mockServer, {
     'eip155:1/slip44:60': {
+      id: 'ethereum',
       price: 1700,
       marketCap: 382623505141,
       pricePercentChange1d: 0,

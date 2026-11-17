@@ -219,24 +219,42 @@ export const mockEmptyHistoricalPrices = async (
     }));
 };
 
+/**
+ * One v3 spot-price entry. `id` is the Price API slug (`ethereum`, `usd-coin`),
+ * never the CAIP asset id used as the map key.
+ */
+export type MockSpotPrice = {
+  id: string;
+  price: number;
+  pricePercentChange1d?: number;
+  marketCap: number;
+};
+
+/**
+ * Builds the v3 spot-prices body. The map key stays the CAIP asset id; `id`
+ * on each entry is the slug the caller passed.
+ *
+ * @param prices - Spot entries keyed by CAIP asset id.
+ * @returns The JSON body the Price API returns.
+ */
+export const toSpotPriceResponse = (prices: Record<string, MockSpotPrice>) =>
+  Object.fromEntries(
+    Object.entries(prices).map(([assetId, price]) => [
+      assetId,
+      buildSpotPrice(price),
+    ]),
+  );
+
 export const mockSpotPrices = async (
   mockServer: Mockttp,
-  prices: Record<
-    string,
-    { price: number; pricePercentChange1d?: number; marketCap: number }
-  >,
+  prices: Record<string, MockSpotPrice>,
 ) => {
   return mockServer
     .forGet(`${PRICE_API_URL}/v3/spot-prices`)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: Object.fromEntries(
-        Object.entries(prices).map(([assetId, price]) => [
-          assetId,
-          buildSpotPrice({ id: assetId, ...price }),
-        ]),
-      ),
+      json: toSpotPriceResponse(prices),
     }));
 };
 
@@ -295,13 +313,11 @@ export async function mockEthPrices(
   ethPrice: number,
   chainIds: `0x${string}`[] = ['0x1', '0x539'],
 ) {
-  const spotEntries: Record<
-    string,
-    { price: number; marketCap: number; pricePercentChange1d: number }
-  > = {};
+  const spotEntries: Record<string, MockSpotPrice> = {};
   for (const cid of chainIds) {
     const dec = Number.parseInt(cid, 16);
     spotEntries[`eip155:${dec}/slip44:60`] = {
+      id: 'ethereum',
       price: ethPrice,
       marketCap: 382623505141,
       pricePercentChange1d: 0,
