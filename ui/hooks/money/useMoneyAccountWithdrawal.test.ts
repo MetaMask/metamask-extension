@@ -233,6 +233,27 @@ describe('useMoneyAccountWithdrawal', () => {
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
   });
 
+  it('does not start a withdrawal while the lifecycle read is pending', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountWithdrawal(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateWithdrawal();
+    });
+
+    expect(result.current.isDisabled).toBe(true);
+    expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
   it('passes the originating route as goBackTo so the confirmation returns there', async () => {
     const { result } = renderHookWithProvider(
       () => useMoneyAccountWithdrawal(),

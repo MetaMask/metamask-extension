@@ -63,7 +63,9 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
       }
 
       await refetch().catch(() => undefined);
-      setRefreshedAddress(address);
+      if (!cancelled) {
+        setRefreshedAddress(address);
+      }
     };
     refresh();
 

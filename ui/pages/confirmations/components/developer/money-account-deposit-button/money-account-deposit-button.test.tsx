@@ -34,6 +34,7 @@ describe('MoneyAccountDepositButton', () => {
     useMoneyAccountDepositMock.mockReturnValue({
       initiateDeposit: initiateDepositMock,
       isDisabled: false,
+      isLifecycleLoading: false,
       isLoading: false,
     });
     useMoneyAccountInfoMock.mockReturnValue({
@@ -71,6 +72,7 @@ describe('MoneyAccountDepositButton', () => {
     useMoneyAccountDepositMock.mockReturnValue({
       initiateDeposit: initiateDepositMock,
       isDisabled: false,
+      isLifecycleLoading: false,
       isLoading: true,
     });
 

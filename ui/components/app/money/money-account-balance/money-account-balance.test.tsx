@@ -115,6 +115,7 @@ const arrange = ({
   mockUseMoneyAccountDeposit.mockReturnValue({
     initiateDeposit: mockInitiateDeposit,
     isDisabled: isDepositDisabled,
+    isLifecycleLoading: false,
     isLoading: isDepositLoading,
   });
 

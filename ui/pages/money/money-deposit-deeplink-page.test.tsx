@@ -9,6 +9,7 @@ import { MoneyDepositDeeplinkPage } from './money-deposit-deeplink-page';
 
 const mockNavigate = jest.fn();
 const mockUseMoneyAccountAvailability = jest.fn();
+const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -22,7 +23,7 @@ jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
 }));
 jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
-  useMoneyAccountDeposit: () => ({ initiateDeposit: mockInitiateDeposit }),
+  useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
 }));
 
 const AVAILABLE = {
@@ -43,6 +44,11 @@ describe('MoneyDepositDeeplinkPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseMoneyAccountAvailability.mockReturnValue(AVAILABLE);
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
+      isLifecycleLoading: false,
+    });
     mockInitiateDeposit.mockResolvedValue(true);
   });
 
@@ -79,6 +85,29 @@ describe('MoneyDepositDeeplinkPage', () => {
     expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
 
     mockUseMoneyAccountAvailability.mockReturnValue(AVAILABLE);
+    rerender(<MoneyDepositDeeplinkPage />);
+    await act(async () => undefined);
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+  });
+
+  it('waits for the lifecycle read before starting the deposit', async () => {
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
+      isLifecycleLoading: true,
+    });
+
+    const { rerender } = await renderPage();
+
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
+      isLifecycleLoading: false,
+    });
     rerender(<MoneyDepositDeeplinkPage />);
     await act(async () => undefined);
 

@@ -123,6 +123,7 @@ describe('MoneyFtueSplash', () => {
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
       isDisabled: false,
+      isLifecycleLoading: false,
       isLoading: false,
     });
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);

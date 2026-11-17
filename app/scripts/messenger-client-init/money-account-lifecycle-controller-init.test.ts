@@ -17,6 +17,7 @@ import type {
 } from '../controllers/onboarding';
 import type {
   PreferencesControllerGetStateAction,
+  PreferencesControllerState,
   PreferencesControllerStateChangeEvent,
 } from '../controllers/preferences-controller';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -72,8 +73,7 @@ function buildBaseMessenger({
     () =>
       ({
         useExternalServices: config.useExternalServices,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as any,
+      }) as PreferencesControllerState,
   );
 
   return { messenger, config };
@@ -165,8 +165,7 @@ describe('MoneyAccountLifecycleControllerInit', () => {
 
     messenger.publish(
       'PreferencesController:stateChange',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {} as any,
+      {} as PreferencesControllerState,
       [],
     );
     expect(refresh).toHaveBeenCalledTimes(2);

@@ -249,6 +249,30 @@ describe('useMoneyAccountDeposit', () => {
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
   });
 
+  it('does not start a deposit while the lifecycle read is pending', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      lifecycle: undefined,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(result.current.isLifecycleLoading).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
   it('opens the FTUE splash instead of creating the batch when unseen', async () => {
     selectHasSeenMoneyFtueMock.mockReturnValue(false);
     const preferredPaymentToken = {

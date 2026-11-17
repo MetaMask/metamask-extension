@@ -142,6 +142,7 @@ describe('MoneyAccountDetails', () => {
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
       isDisabled: false,
+      isLifecycleLoading: false,
       isLoading: false,
     });
     mockUseMoneyAccountInfo.mockReturnValue({
@@ -294,6 +295,7 @@ describe('MoneyAccountDetails', () => {
       mockUseMoneyAccountDeposit.mockReturnValue({
         initiateDeposit: mockInitiateDeposit,
         isDisabled: true,
+        isLifecycleLoading: false,
         isLoading: false,
       });
       mockUseLocalTransactionMeta.mockReturnValue(buildTransactionMeta());

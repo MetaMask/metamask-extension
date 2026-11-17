@@ -22,11 +22,16 @@ import { MoneyFtueEntryPoint } from './constants/money-events';
 export function MoneyDepositDeeplinkPage() {
   const navigate = useNavigate();
   const { availability, isLoading } = useMoneyAccountAvailability();
-  const { initiateDeposit } = useMoneyAccountDeposit();
+  const { initiateDeposit, isLifecycleLoading } = useMoneyAccountDeposit();
   const hasHandledRequest = useRef(false);
 
   useEffect(() => {
-    if (hasHandledRequest.current || isLoading || !availability.isAvailable) {
+    if (
+      hasHandledRequest.current ||
+      isLoading ||
+      isLifecycleLoading ||
+      !availability.isAvailable
+    ) {
       return;
     }
 
@@ -41,7 +46,13 @@ export function MoneyDepositDeeplinkPage() {
         navigate(DEFAULT_ROUTE, { replace: true });
       }
     });
-  }, [availability.isAvailable, initiateDeposit, isLoading, navigate]);
+  }, [
+    availability.isAvailable,
+    initiateDeposit,
+    isLifecycleLoading,
+    isLoading,
+    navigate,
+  ]);
 
   if (!isLoading && !availability.isAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;

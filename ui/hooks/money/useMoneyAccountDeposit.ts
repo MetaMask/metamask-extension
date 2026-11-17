@@ -228,5 +228,5 @@ export function useMoneyAccountDeposit() {
     ],
   );
 
-  return { initiateDeposit, isDisabled, isLoading };
+  return { initiateDeposit, isDisabled, isLifecycleLoading, isLoading };
 }
