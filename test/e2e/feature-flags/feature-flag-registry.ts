@@ -76,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-11-10
+ * Production defaults last synced: 2026-11-17
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -710,7 +710,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'cashtagInjection',
     productionDefault: {
       enabled: true,
-      minimumVersion: '13.55.0',
+      minimumVersion: '13.56.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3318,6 +3318,31 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         'safe.global',
         'lighter.xyz',
         'revoke.cash',
+        'finance.yahoo.com',
+        'tradingview.com',
+        'finviz.com',
+        'seekingalpha.com',
+        'investing.com',
+        'nasdaq.com',
+        'cnbc.com',
+        'marketwatch.com',
+        'benzinga.com',
+        'barchart.com',
+        'tipranks.com',
+        'stockanalysis.com',
+        'zacks.com',
+        'morningstar.com',
+        'simplywall.st',
+        'macrotrends.net',
+        'fool.com',
+        'barrons.com',
+        'bloomberg.com',
+        'koyfin.com',
+        'unusualwhales.com',
+        'coinmarketcap.com',
+        'coingecko.com',
+        'defillama.com',
+        'reddit.com',
       ],
     },
     status: FeatureFlagStatus.Active,
@@ -3499,8 +3524,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'mfaUiKit',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.0',
+      enabled: true,
+      methods: ['email_otp'],
+      minimumVersion: '13.55.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3574,7 +3600,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   },
 
   moneyEnableHistoricalVaultShareValuations: {
-    inProd: false,
+    inProd: true,
     name: 'moneyEnableHistoricalVaultShareValuations',
     productionDefault: {
       enabled: false,
@@ -3658,11 +3684,32 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'networkAssetsSnapsMigrationTron',
     productionDefault: {
       versions: {
-        '13.41.0': {
-          featureVersion: '1',
-          minimumSnapVersion: '1.20.0',
-          stage: 0,
-        },
+        '13.56.0': [
+          {
+            name: 's1',
+            scope: {
+              type: 'threshold',
+              value: 1,
+            },
+            value: {
+              featureVersion: '1',
+              minimumSnapVersion: '4.3.0',
+              stage: 1,
+            },
+          },
+          {
+            name: 'off',
+            scope: {
+              type: 'threshold',
+              value: 0,
+            },
+            value: {
+              featureVersion: '1',
+              minimumSnapVersion: '4.3.0',
+              stage: 0,
+            },
+          },
+        ],
       },
     },
     status: FeatureFlagStatus.Active,
@@ -3717,6 +3764,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       'https://matcha.xyz',
       'https://app.trysweep.finance',
       'https://app.ens.domains',
+      'https://app.mibboverse.io',
     ],
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -4351,7 +4399,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'tokenDetailsAdvancedCharts',
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.49.0',
+      minimumVersion: '13.58.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -4362,7 +4410,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'tokenDetailsAdvancedChartsTheming',
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.49.0',
+      minimumVersion: '13.58.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -4386,6 +4434,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       enabled: true,
       minimumVersion: '13.36.0',
     },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  walletFrameworkRpcFailoverEnabled: {
+    inProd: true,
+    name: 'walletFrameworkRpcFailoverEnabled',
+    productionDefault: true,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },

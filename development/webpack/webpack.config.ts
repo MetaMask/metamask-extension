@@ -105,6 +105,37 @@ async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
 }
 
 // #region cache
+// Invalidates the build cache when the listed files change.
+// `webpackFile` tracks this config in both the native and compiled trees
+// as `buildDependencies`.
+// Modules loaded with `await import()` are not recorded as
+// `require` children, so `getPlugins` appends the optional
+// plugins it loads to keep their own dependencies tracked.
+const cacheBuildDependencies: string[] = args.cache
+  ? [
+      webpackFile('webpack.config'),
+      ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+        existsSync,
+      ),
+      join(root, 'builds.yml'),
+      browsersListPath,
+    ]
+  : [];
+/**
+ * Tracks a lazily imported module as a cache build dependency, as a `require`
+ * of the same module would have done.
+ *
+ * @param id - The module specifier passed to `import()`.
+ */
+function trackBuildDependency(id: string) {
+  if (!args.cache) {
+    return;
+  }
+  const path = resolvePackage(id);
+  if (!cacheBuildDependencies.includes(path)) {
+    cacheBuildDependencies.push(path);
+  }
+}
 const cache = args.cache
   ? ({
       type: 'filesystem',
@@ -119,16 +150,7 @@ const cache = args.cache
       allowCollectingMemory: false,
       buildDependencies: {
         defaultConfig: [webpackFile('webpack.config')],
-        // Invalidates the build cache when the listed files change.
-        // Track this config and the dependencies loaded by it.
-        config: [
-          webpackFile('webpack.config'),
-          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
-            existsSync,
-          ),
-          join(root, 'builds.yml'),
-          browsersListPath,
-        ],
+        config: cacheBuildDependencies,
       },
     } as const satisfies FileCacheOptions)
   : ({ type: 'memory' } as const satisfies MemoryCacheOptions);
@@ -296,11 +318,13 @@ async function getPlugins() {
   if (MANIFEST_VERSION === 2) {
     const { SelfInjectPlugin } =
       await import('./utils/plugins/SelfInjectPlugin/index.ts');
+    trackBuildDependency(webpackFile('utils/plugins/SelfInjectPlugin/index'));
     plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
   }
   if (args.lavamoat) {
     const { lavamoatPlugin, lavamoatUnsafeLayerPlugin } =
       await import('./utils/plugins/LavamoatPlugin/index.ts');
+    trackBuildDependency(webpackFile('utils/plugins/LavamoatPlugin/index'));
     plugins.push(
       lavamoatPlugin(args, manifestPlugin),
       lavamoatUnsafeLayerPlugin,
@@ -312,6 +336,9 @@ async function getPlugins() {
   if (args.reactCompilerVerbose) {
     const { ReactCompilerPlugin } =
       await import('./utils/plugins/ReactCompilerPlugin/index.ts');
+    trackBuildDependency(
+      webpackFile('utils/plugins/ReactCompilerPlugin/index'),
+    );
     plugins.push(new ReactCompilerPlugin());
   }
 
@@ -431,21 +458,22 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    // Keep optional developer-tool grants in generated policies for builds that
+    // enable them; normal builds exclude the installed packages by alias.
+    alias: {
+      // #region conditionally remove developer tooling
+      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
+      'remote-redux-devtools':
+        args.generatePolicy || variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
+          ? resolvePackage('remote-redux-devtools')
+          : false,
+      // #endregion conditionally remove developer tooling
+    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
     // it fails it will load the fallback.
     fallback: {
-      // #region conditionally remove developer tooling
-      // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? resolvePackage('react-devtools-core')
-        : false,
-      // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'remote-redux-devtools': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? resolvePackage('remote-redux-devtools')
-        : false,
-      // #endregion conditionally remove developer tooling
       // #region node polyfills
       crypto: resolvePackage('crypto-browserify'),
       fs: false,

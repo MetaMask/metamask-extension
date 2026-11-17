@@ -15,6 +15,7 @@ import type {
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
+import { resolvePackage, webpackFile } from '../../lib/build-paths.ts';
 import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers.ts';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin/index.ts';
 import { getLatestCommit } from '../utils/git.ts';
@@ -144,18 +145,22 @@ describe('webpack.config.test.ts', () => {
     // first two args are always ignored.
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
-    mock.method(fs, 'readFileSync', (path: string, options?: null) => {
-      if (path === resolve(import.meta.dirname, '../../../.metamaskrc')) {
-        // mock `.metamaskrc`, as users might have customized it which may
-        // break our tests
-        return `
+    mock.method(
+      fs,
+      'readFileSync',
+      (path: string, options: Parameters<typeof fs.readFileSync>[1]) => {
+        if (path === resolve(import.meta.dirname, '../../../.metamaskrc')) {
+          // mock `.metamaskrc`, as users might have customized it which may
+          // break our tests
+          return `
 ${Object.entries(env)
   .map(([key, value]) => `${key}=${value}`)
   .join('\n')}
 `;
-      }
-      return originalReadFileSync.call(fs, path, options);
-    });
+        }
+        return originalReadFileSync.call(fs, path, options);
+      },
+    );
     syncBuiltinESMExports();
     return (
       (await import(
@@ -220,6 +225,52 @@ ${Object.entries(env)
     );
   }
 
+  for (const enabled of [false, true]) {
+    it(`resolves installed developer tools only when enabled: ${enabled}`, async () => {
+      mockOptionalRcFiles();
+      const config = await getWebpackConfig(['--no-cache'], {
+        METAMASK_REACT_REDUX_DEVTOOLS: enabled ? 'true' : '',
+      });
+      const compiler = webpack(config);
+      const resolver = compiler.resolverFactory.get('normal');
+      for (const request of ['remote-redux-devtools']) {
+        const resolved = await new Promise<string | false | undefined>(
+          (resolveModule, reject) => {
+            resolver.resolve(
+              {},
+              resolve(import.meta.dirname, '../../..'),
+              request,
+              {},
+              (error, result) => {
+                if (error) reject(error);
+                else resolveModule(result);
+              },
+            );
+          },
+        );
+        assert.strictEqual(resolved, enabled ? resolvePackage(request) : false);
+      }
+      await new Promise<void>((resolveClose, reject) =>
+        compiler.close((error) => {
+          if (error) reject(error);
+          else resolveClose();
+        }),
+      );
+    });
+  }
+
+  it('includes optional developer tools while generating LavaMoat policies', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig(['--no-cache', '--generatePolicy'], {
+      METAMASK_REACT_REDUX_DEVTOOLS: '',
+    });
+    const aliases = config.resolve?.alias as Record<string, string>;
+    assert.strictEqual(
+      aliases['remote-redux-devtools'],
+      resolvePackage('remote-redux-devtools'),
+    );
+  });
+
   it('should have the correct defaults', async () => {
     mockOptionalRcFiles();
 
@@ -233,9 +284,8 @@ ${Object.entries(env)
     assert.strictEqual(options.devtool, 'source-map');
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
-    const fallback = options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
+    const aliases = options.resolve.alias as Record<string, false>;
+    assert.strictEqual(typeof aliases['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
     assert.strictEqual(options.optimization.providedExports, false);
@@ -457,6 +507,26 @@ ${Object.entries(env)
     assert(getPluginNames(config).includes('ReactCompilerPlugin'));
   });
 
+  function getPluginBuildDependencies(config: Configuration) {
+    return ((config.cache as FileCacheOptions).buildDependencies?.config ?? [])
+      .map(buildDependencyPath)
+      .filter((path) => path.includes(join('utils', 'plugins')));
+  }
+
+  it('does not track optional plugins as cache build dependencies by default', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig();
+    assert.deepStrictEqual(getPluginBuildDependencies(config), []);
+  });
+
+  it('tracks a loaded optional plugin as a cache build dependency', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig(['--reactCompilerVerbose']);
+    assert.deepStrictEqual(getPluginBuildDependencies(config), [
+      webpackFile('utils/plugins/ReactCompilerPlugin/index'),
+    ]);
+  });
+
   it('enables React Refresh for development watch builds', async () => {
     mockOptionalRcFiles();
 
@@ -560,9 +630,8 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.devtool, 'hidden-source-map');
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
-    const fallback = instance.options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
+    const aliases = instance.options.resolve.alias as Record<string, string>;
+    assert.strictEqual(typeof aliases['remote-redux-devtools'], 'string');
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
     assert.strictEqual(instance.options.optimization.providedExports, true);
