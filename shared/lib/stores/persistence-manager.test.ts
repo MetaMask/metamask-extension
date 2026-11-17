@@ -21,7 +21,10 @@ import {
 } from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
-import { MetaMaskStateType } from './base-store';
+import type {
+  MetaMaskStateType,
+  SplitStateReadDiagnostics,
+} from './base-store';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 const WRITE_RETRY_DELAY_MS =
@@ -34,6 +37,7 @@ const mockStoreSet = jest.fn();
 const mockStoreSetKeyValues = jest.fn();
 const mockStoreGetBytesInUseByKey = jest.fn();
 const mockStoreGet = jest.fn();
+const mockStoreGetReadDiagnostics = jest.fn();
 const mockStoreReset = jest.fn();
 
 jest.mock('../telemetry/last-activity', () => ({
@@ -48,6 +52,7 @@ jest.mock('./extension-store', () => {
       set: mockStoreSet,
       setKeyValues: mockStoreSetKeyValues,
       getBytesInUseByKey: mockStoreGetBytesInUseByKey,
+      getSplitStateReadDiagnostics: mockStoreGetReadDiagnostics,
       get: mockStoreGet,
       reset: mockStoreReset,
     };
@@ -146,6 +151,7 @@ describe('PersistenceManager', () => {
     mockStoreSet.mockReset();
     mockStoreSetKeyValues.mockReset();
     mockStoreGet.mockReset();
+    mockStoreGetReadDiagnostics.mockReset();
     mockStoreReset.mockReset();
     mockGetLastActivityContext.mockReturnValue({});
     mockHydrateLastActivity.mockResolvedValue(undefined);
@@ -927,6 +933,159 @@ describe('PersistenceManager', () => {
           corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
         });
       });
+    });
+  });
+
+  describe('split-state read diagnostics', () => {
+    const readDiagnostics: SplitStateReadDiagnostics = {
+      manifestStatus: 'readable',
+      manifestKeyCount: 3,
+      readableKeys: ['AccountsController'],
+      missingKeys: ['KeyringController'],
+      failedKeys: [{ key: 'FooController', errorName: 'QuotaExceededError' }],
+    };
+    const readDiagnosticsExtra = {
+      'persistence.read_manifest_status': 'readable',
+      'persistence.read_manifest_key_count': 3,
+      'persistence.read_readable_keys': 'AccountsController',
+      'persistence.read_missing_keys': 'KeyringController',
+      'persistence.read_failed_keys': 'FooController:QuotaExceededError',
+    };
+
+    it('attaches key outcomes when a split-state read fails', async () => {
+      mockStoreGetReadDiagnostics.mockResolvedValue(readDiagnostics);
+      const error = new Error('store.get error');
+      mockStoreGet.mockRejectedValueOnce(error);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        error,
+      );
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          tags: expect.objectContaining({
+            'persistence.error': 'get-failed',
+          }),
+          extra: expect.objectContaining(readDiagnosticsExtra),
+          fingerprint: ['persistence-error', 'get-failed'],
+        }),
+      );
+      expect(JSON.stringify(mockedCaptureException.mock.calls)).not.toContain(
+        'secret-vault',
+      );
+    });
+
+    it('reports a missing manifest for legacy storage without key lists', async () => {
+      mockStoreGetReadDiagnostics.mockResolvedValue({
+        manifestStatus: 'missing',
+        readableKeys: [],
+        missingKeys: [],
+        failedKeys: [],
+      });
+      const error = new Error('store.get error');
+      mockStoreGet.mockRejectedValueOnce(error);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        error,
+      );
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          extra: expect.objectContaining({
+            'persistence.read_manifest_status': 'missing',
+          }),
+        }),
+      );
+      expect(
+        mockedCaptureException.mock.calls[0]?.[1]?.extra,
+      ).not.toHaveProperty('persistence.read_readable_keys');
+      expect(
+        mockedCaptureException.mock.calls[0]?.[1]?.extra,
+      ).not.toHaveProperty('persistence.read_missing_keys');
+      expect(
+        mockedCaptureException.mock.calls[0]?.[1]?.extra,
+      ).not.toHaveProperty('persistence.read_failed_keys');
+    });
+
+    it('still reports the read error when the diagnostic probe throws', async () => {
+      mockStoreGetReadDiagnostics.mockRejectedValue(new Error('probe failed'));
+      const error = new Error('store.get error');
+      mockStoreGet.mockRejectedValueOnce(error);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        error,
+      );
+
+      expectPersistenceErrorReport(error, 'get-failed');
+      expect(
+        mockedCaptureException.mock.calls[0]?.[1]?.extra,
+      ).not.toHaveProperty('persistence.read_manifest_status');
+    });
+
+    it('does not probe key outcomes for a missing vault after a successful read', async () => {
+      mockStoreGetReadDiagnostics.mockResolvedValue(readDiagnostics);
+      mockStoreGet.mockResolvedValueOnce({
+        data: { KeyringController: { vault: undefined } },
+      });
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: { vault: 'backup-vault' },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: MISSING_VAULT_ERROR,
+      });
+
+      expect(mockStoreGetReadDiagnostics).not.toHaveBeenCalled();
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+    });
+
+    it('does not read key outcomes when the browser is shutting down', async () => {
+      mockStoreGetReadDiagnostics.mockResolvedValue(readDiagnostics);
+      const shutdownError = new Error(BROWSER_SHUTTING_DOWN_ERROR);
+      mockStoreGet.mockRejectedValueOnce(shutdownError);
+      jest.spyOn(manager, 'getBackup').mockResolvedValue({
+        KeyringController: { vault: 'backup-vault' },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        shutdownError,
+      );
+
+      expect(mockStoreGetReadDiagnostics).not.toHaveBeenCalled();
+      expectPersistenceErrorReport(shutdownError, 'get-failed');
+      expect(
+        mockedCaptureException.mock.calls[0]?.[1]?.extra,
+      ).not.toHaveProperty('persistence.read_manifest_status');
+    });
+
+    it('attaches key outcomes when a split-state write fails', async () => {
+      mockStoreGetReadDiagnostics.mockResolvedValue(readDiagnostics);
+      prepareForWriteRetry();
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'secret-value' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValue(error);
+
+      const persistPromise = manager.persist();
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      await persistPromise;
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          tags: expect.objectContaining({
+            'persistence.error': 'persist-failed',
+          }),
+          extra: expect.objectContaining(readDiagnosticsExtra),
+          fingerprint: ['persistence-error', 'persist-failed'],
+        }),
+      );
+      expect(JSON.stringify(mockedCaptureException.mock.calls)).not.toContain(
+        'secret-value',
+      );
     });
   });
 
