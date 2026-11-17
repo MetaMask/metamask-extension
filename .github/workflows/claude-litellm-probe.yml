@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - trigger-ci-copilot-probe
+    paths:
+      - .github/workflows/claude-litellm-probe.yml
+      - .github/probe/sandbox-battery.sh
   workflow_dispatch:
 
 permissions:
@@ -136,6 +139,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
+      # TEMPORARY (1/1): false is faster while developing; flip to true before opening the PR.
       - uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
