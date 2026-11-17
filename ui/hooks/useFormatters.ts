@@ -65,12 +65,12 @@ function withNarrowUsdSymbol(formatters: Formatters): Formatters {
 }
 
 export function useFormatters() {
-  const locale = useSelector(getCurrentLocale);
+  const selectedLanguage = useSelector(getCurrentLocale);
 
   return useMemo(() => {
-    const formattingLocale = buildFormattingLocale(locale);
-    const base = createFormatters({ locale: formattingLocale });
-    const formatters = usesNarrowUsdSymbol(regionOf(formattingLocale))
+    const locale = buildFormattingLocale(selectedLanguage);
+    const base = createFormatters({ locale });
+    const formatters = usesNarrowUsdSymbol(regionOf(locale))
       ? withNarrowUsdSymbol(base)
       : base;
     return {
@@ -78,7 +78,7 @@ export function useFormatters() {
       /**
        * Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
        */
-      formatMediumDate: formatMediumDate.bind(null, formattingLocale),
+      formatMediumDate: formatMediumDate.bind(null, locale),
     };
-  }, [locale]);
+  }, [selectedLanguage]);
 }
