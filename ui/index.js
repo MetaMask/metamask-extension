@@ -3,7 +3,6 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import 'interestfor';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
@@ -58,6 +57,7 @@ import {
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
+import { loadInterestForPolyfill } from './helpers/utils/load-interestfor-polyfill';
 import { getPerpsStreamManager } from './providers/perps';
 import {
   primePerpsLifecycleContext,
@@ -237,6 +237,7 @@ export async function setupInitialStore(metamaskState, activeTab) {
 
 async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
+  const interestForPolyfill = loadInterestForPolyfill();
 
   // Initialize Core Web Vitals (INP, LCP, CLS) measurement
   initWebVitals();
@@ -267,6 +268,8 @@ async function startApp(metamaskState, opts) {
     { name: TraceName.InitialActions, parentContext: traceContext },
     () => runInitialActions(store),
   );
+
+  await interestForPolyfill;
 
   // UI messenger is created here in preparation for completely replacing
   // `submitRequestToBackground` with it.
