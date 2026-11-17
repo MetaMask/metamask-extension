@@ -48,7 +48,7 @@ env:
 
 jobs:
   plan:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     outputs:
       proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
       plan: ${{ steps.plan.outputs.plan }}
@@ -57,7 +57,7 @@ jobs:
       # Canary and aa runs skip it and take the full path below.
       - name: Quick exit when the build inputs are unchanged
         id: quick
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           HEAD_INPUT: ${{ inputs.head_sha }}
           MODE: ${{ inputs.mode }}
@@ -168,7 +168,7 @@ jobs:
 
       - name: Upload the skip verdict
         if: ${{ always() && hashFiles('skip.json') != '' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: detector-skip
           path: skip.json
@@ -187,7 +187,7 @@ jobs:
   score-first:
     needs: [plan, measure-first]
     if: ${{ always() && needs.plan.outputs.proceed == 'true' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     outputs:
       needs_confirm: ${{ steps.score.outputs.needs_confirm }}
     steps:
@@ -198,7 +198,7 @@ jobs:
           skip-allow-scripts: true
 
       - name: Download batch 1
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: detector-b1-*
           path: artifacts
@@ -226,7 +226,7 @@ jobs:
   report:
     needs: [plan, score-first, measure-confirm]
     if: ${{ always() && needs.plan.outputs.proceed == 'true' && needs.score-first.result == 'success' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -235,7 +235,7 @@ jobs:
           skip-allow-scripts: true
 
       - name: Download the batches
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: detector-b*
           path: artifacts
@@ -250,7 +250,7 @@ jobs:
             --summary "$GITHUB_STEP_SUMMARY" > /dev/null
 
       - name: Upload the result
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: detector-result
           path: result.json
