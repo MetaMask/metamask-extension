@@ -418,11 +418,6 @@ const config = {
     // enable them; normal builds exclude the installed packages by alias.
     alias: {
       // #region conditionally remove developer tooling
-      // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'react-devtools-core':
-        args.generatePolicy || variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-          ? require.resolve('react-devtools-core')
-          : false,
       // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
       'remote-redux-devtools':
         args.generatePolicy || variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
