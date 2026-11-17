@@ -2,15 +2,12 @@ import React, { useCallback } from 'react';
 import {
   Box,
   BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  Text,
-  TextVariant,
-  FontWeight,
+  ContentVariant,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-  IconColor,
+  ListItem,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
@@ -31,9 +28,6 @@ import { setTutorialModalOpen } from '../../../../ducks/perps';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { useDispatch } from '../../../../store/hooks';
 
-const LIST_ITEM_BASE =
-  'flex items-center gap-3 px-4 py-3 bg-background-muted cursor-pointer hover:bg-hover active:bg-pressed';
-
 type SupportListItemProps = {
   label: string;
   onClick: () => void;
@@ -47,31 +41,21 @@ const SupportListItem = ({
   className,
   'data-testid': testId,
 }: SupportListItemProps) => (
-  <Box
-    className={`${LIST_ITEM_BASE} ${className ?? ''}`}
-    role="button"
-    tabIndex={0}
+  <ListItem
+    variant={ContentVariant.OneLine}
+    isInteractive
     onClick={onClick}
+    className={`bg-background-muted hover:bg-hover ${className ?? ''}`}
     data-testid={testId}
-    onKeyDown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onClick();
-      }
-    }}
-    flexDirection={BoxFlexDirection.Row}
-    justifyContent={BoxJustifyContent.Between}
-    alignItems={BoxAlignItems.Center}
-  >
-    <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-      {label}
-    </Text>
-    <Icon
-      name={IconName.ArrowRight}
-      size={IconSize.Sm}
-      color={IconColor.IconAlternative}
-    />
-  </Box>
+    title={label}
+    endAccessory={
+      <Icon
+        name={IconName.ArrowRight}
+        size={IconSize.Sm}
+        color={IconColor.IconAlternative}
+      />
+    }
+  />
 );
 
 export const PerpsSupportLearn = () => {

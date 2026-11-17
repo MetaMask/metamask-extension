@@ -1,16 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  twMerge,
-  Box,
-  BoxFlexDirection,
-  BoxAlignItems,
-  ButtonBase,
-  Text,
-  TextVariant,
-  TextColor,
-  FontWeight,
   AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  ContentVariant,
+  ListItem,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import {
@@ -47,15 +46,6 @@ export type MarketRowProps = {
    */
   'data-testid'?: string;
 };
-
-// `min-h-[72px]` is a deliberate safety net (matching the pattern used by
-// PositionCard/OrderCard's `h-auto min-h-[Npx]`), not just a `h-auto`
-// override of ButtonBase's default `h-12`: this row's two stacked text lines
-// plus `py-3` padding need ~72px, and ButtonBase's `overflow-hidden` would
-// otherwise silently clip/overlap adjacent rows if the height override were
-// ever the losing side of a class conflict.
-const ROW_STYLES =
-  'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
 
 /**
  * Get the metric value to display based on the sort field
@@ -151,55 +141,41 @@ export const MarketRow = ({
     testIdOverride ?? `market-row-${market.symbol.replace(/:/gu, '-')}`;
 
   return (
-    <ButtonBase
-      className={twMerge(ROW_STYLES)}
-      isFullWidth
-      data-testid={testId}
+    <ListItem
+      variant={ContentVariant.TwoLines}
+      isInteractive
       onClick={handleClick}
-    >
-      {/* Token Logo */}
-      <PerpsTokenLogo
-        symbol={market.symbol}
-        size={AvatarTokenSize.Lg}
-        className="shrink-0"
-      />
-      {/* Left side: Symbol, leverage, and metric */}
-      <Box
-        className="min-w-0 flex-1 overflow-hidden"
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Start}
-        gap={0}
-      >
-        <Box
-          className="min-w-0 max-w-full"
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Text
-            fontWeight={FontWeight.Medium}
-            className="block max-w-full truncate"
-          >
-            {displaySymbol}
-          </Text>
-          {market.maxLeverage && (
-            <span className="shrink-0 rounded-md bg-background-muted px-1.5">
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-              >
-                {market.maxLeverage}
-              </Text>
-            </span>
-          )}
-        </Box>
+      className="rounded-none bg-default text-left hover:bg-hover"
+      data-testid={testId}
+      avatar={
+        <PerpsTokenLogo
+          symbol={market.symbol}
+          size={AvatarTokenSize.Lg}
+          className="shrink-0"
+        />
+      }
+      title={displaySymbol}
+      titleProps={{ className: 'block max-w-full truncate' }}
+      titleEndAccessory={
+        market.maxLeverage ? (
+          <span className="shrink-0 rounded-md bg-background-muted px-1.5">
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              {market.maxLeverage}
+            </Text>
+          </span>
+        ) : undefined
+      }
+      description={
         <Box
           className="min-w-0 max-w-full"
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           gap={1}
         >
-          {showTickerSuffix && (
+          {showTickerSuffix ? (
             <>
               <Text
                 variant={TextVariant.BodySm}
@@ -216,7 +192,7 @@ export const MarketRow = ({
                 {'\u00B7'}
               </Text>
             </>
-          )}
+          ) : null}
           <Text
             variant={TextVariant.BodySm}
             color={TextColor.TextAlternative}
@@ -225,30 +201,19 @@ export const MarketRow = ({
             {metricValue}
           </Text>
         </Box>
-      </Box>
-      {/* Right side: Price and 24h change */}
-      <Box
-        className="w-24 shrink-0 overflow-hidden"
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.End}
-        gap={1}
-      >
-        <Text
-          variant={TextVariant.BodySm}
-          fontWeight={FontWeight.Medium}
-          className="block max-w-full truncate text-right"
-        >
-          {market.price}
-        </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={changeColor}
-          className="block max-w-full truncate text-right"
-        >
-          {formatSignedChangePercent(market.change24hPercent)}
-        </Text>
-      </Box>
-    </ButtonBase>
+      }
+      value={market.price}
+      valueProps={{
+        variant: TextVariant.BodySm,
+        className: 'block max-w-full truncate text-right',
+      }}
+      subvalue={formatSignedChangePercent(market.change24hPercent)}
+      subvalueProps={{
+        variant: TextVariant.BodySm,
+        color: changeColor,
+        className: 'block max-w-full truncate text-right',
+      }}
+    />
   );
 };
 
