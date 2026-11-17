@@ -3,11 +3,8 @@ import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
   AvatarAccountSize,
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  Text,
+  ContentVariant,
+  ListItem,
   TextVariant,
 } from '@metamask/design-system-react';
 import { PreferredAvatar } from '../../../app/preferred-avatar';
@@ -29,31 +26,27 @@ export const SrpListItem = ({
   );
 
   return (
-    <Box
+    <ListItem
       key={accountId}
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      justifyContent={BoxJustifyContent.Between}
-    >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={2}
-      >
+      variant={ContentVariant.OneLine}
+      // The SRP card owns the row padding; ListItem's default padded row
+      // chrome is stripped so the compact card rows keep their spacing.
+      className="px-0 py-0 min-h-0"
+      avatar={
         <PreferredAvatar
           address={seedAddress}
           size={AvatarAccountSize.Xs}
           data-testid="avatar"
         />
-        <Text
-          className="srp-list__account-name"
-          variant={TextVariant.BodySm}
-          ellipsis
-        >
-          {accountName}
-        </Text>
-      </Box>
-      <Text variant={TextVariant.BodySm}>{balance}</Text>
-    </Box>
+      }
+      title={accountName}
+      titleProps={{
+        variant: TextVariant.BodySm,
+        ellipsis: true,
+        className: 'srp-list__account-name',
+      }}
+      value={balance}
+      valueProps={{ variant: TextVariant.BodySm }}
+    />
   );
 };
