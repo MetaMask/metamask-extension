@@ -78,9 +78,18 @@ describe('pay-token', () => {
       ).toBe('eip155:137/slip44:966');
     });
 
-    it('falls back to the slip44 asset ID for the native token of an unknown chain', () => {
+    it('builds the registered native asset ID on BSC and Monad', () => {
+      expect(
+        encodeEvmAssetId({ address: ZERO_ADDRESS, chainId: CHAIN_IDS.BSC }),
+      ).toBe('eip155:56/slip44:714');
+      expect(
+        encodeEvmAssetId({ address: ZERO_ADDRESS, chainId: CHAIN_IDS.MONAD }),
+      ).toBe('eip155:143/slip44:268435779');
+    });
+
+    it('falls back to the zero-address ERC-20 asset ID for the native token of an unregistered chain', () => {
       expect(encodeEvmAssetId({ address: ZERO_ADDRESS, chainId: '0x64' })).toBe(
-        'eip155:100/slip44:60',
+        `eip155:100/erc20:${ZERO_ADDRESS}`,
       );
     });
 
