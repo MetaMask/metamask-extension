@@ -191,6 +191,7 @@ describe('useMoneyAccountDeposit', () => {
     selectHasSeenMoneyFtueMock.mockReturnValue(true);
     mockUseMoneyAccountLifecycle.mockReturnValue({
       lifecycle: undefined,
+      isLifecycleUnavailable: false,
       isReadOnly: false,
       isLoading: false,
     });
@@ -247,6 +248,28 @@ describe('useMoneyAccountDeposit', () => {
     expect(result.current.isDisabled).toBe(true);
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a deposit when the lifecycle is unavailable', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    let started: boolean | undefined;
+    await act(async () => {
+      started = await result.current.initiateDeposit();
+    });
+
+    expect(started).toBe(false);
+    expect(result.current.isDisabled).toBe(true);
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
   });
 
   it('does not start a deposit while the lifecycle read is pending', async () => {

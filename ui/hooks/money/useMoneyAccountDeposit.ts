@@ -146,9 +146,12 @@ export function useMoneyAccountDeposit() {
   );
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
-  const { isReadOnly, isLoading: isLifecycleLoading } =
-    useMoneyAccountLifecycle();
-  const isDisabled = isReadOnly || isLifecycleLoading;
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
+  const isDisabled = isReadOnly || isLifecycleUnavailable || isLifecycleLoading;
 
   const initiateDeposit = useCallback(
     async (options?: InitiateDepositOptions): Promise<boolean> => {

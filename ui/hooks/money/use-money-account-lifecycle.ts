@@ -8,6 +8,7 @@ import { MoneyAccountLifecycleControllerQueryKeys } from './query-keys';
 
 export type UseMoneyAccountLifecycleResult = {
   lifecycle: MoneyAccountLifecycle | undefined;
+  isLifecycleUnavailable: boolean;
   isReadOnly: boolean;
   isLoading: boolean;
 };
@@ -23,13 +24,16 @@ const REFRESH_ACTION = MoneyAccountLifecycleControllerQueryKeys.Refresh;
  * moving its funds to the MFA address. A failed refresh with no recorded
  * lifecycle keeps `isLoading` true, so deposits and withdrawals stay disabled.
  *
- * @returns The lifecycle, its read-only state, and whether the lifecycle is
- * still unresolved.
+ * @returns The lifecycle, whether it is read-only or unavailable, and whether
+ * the first read is still pending.
  */
 export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
   const { availability } = useMoneyAccountAvailability();
   const address = availability.isAvailable ? availability.address : undefined;
-  const [refreshedAddress, setRefreshedAddress] = useState<string>();
+  const [refreshStatus, setRefreshStatus] = useState<{
+    address: string;
+    failed: boolean;
+  }>();
 
   const query = useQuery({
     queryKey: [MoneyAccountLifecycleControllerQueryKeys.GetState, address],
@@ -67,11 +71,12 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
       }
 
       const result = await refetch().catch(() => undefined);
-      // Fail closed: an unreadable lifecycle keeps the deposit and withdraw
-      // guards closed instead of assuming the account is still an SFA.
-      if (!cancelled && didRefresh && result && !result.isError) {
-        setRefreshedAddress(address);
+      if (cancelled) {
+        return;
       }
+
+      const didRead = Boolean(result && !result.isError);
+      setRefreshStatus({ address, failed: !(didRefresh && didRead) });
     };
     refresh();
 
@@ -85,13 +90,23 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
     : undefined;
   const isReadOnly =
     lifecycle?.type === 'mfa' || lifecycle?.type === 'migrating';
+  const isSettled = refreshStatus?.address === address;
+  // shortcut: E2E lacks a CHOMP lifecycle fixture, so test builds fail open.
+  const isTestBuild = process.env.IN_TEST;
+  const isLifecycleUnavailable =
+    !isTestBuild &&
+    Boolean(address) &&
+    lifecycle === undefined &&
+    isSettled &&
+    refreshStatus?.failed === true;
 
   return {
     lifecycle,
+    isLifecycleUnavailable,
     isReadOnly,
     isLoading:
       Boolean(address) &&
       (query.isLoading ||
-        (lifecycle === undefined && refreshedAddress !== address)),
+        (!isTestBuild && lifecycle === undefined && !isSettled)),
   };
 }

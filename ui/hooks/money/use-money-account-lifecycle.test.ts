@@ -37,9 +37,20 @@ const mockGetState = (lifecycle: { type: string }) => {
 };
 
 describe('useMoneyAccountLifecycle', () => {
+  const originalInTest = process.env.IN_TEST;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    delete process.env.IN_TEST;
     mockUseMoneyAccountAvailability.mockReturnValue(availableMock);
+  });
+
+  afterEach(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
   });
 
   it.each(['mfa', 'migrating'])('is read-only for %s', async (type) => {
@@ -145,7 +156,7 @@ describe('useMoneyAccountLifecycle', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
   });
 
-  it('keeps the controls disabled when the refresh fails and no lifecycle is recorded', async () => {
+  it('marks the account unavailable when the refresh fails and no lifecycle is recorded', async () => {
     let rejectRefresh: (error: Error) => void = () => undefined;
     mockSubmitRequestToBackground.mockImplementation((action: string) => {
       if (action === MoneyAccountLifecycleControllerQueryKeys.GetState) {
@@ -168,8 +179,9 @@ describe('useMoneyAccountLifecycle', () => {
       rejectRefresh(new Error('CHOMP unavailable'));
     });
 
-    expect(result.current.isLoading).toBe(true);
+    expect(result.current.isLoading).toBe(false);
     expect(result.current.isReadOnly).toBe(false);
+    expect(result.current.isLifecycleUnavailable).toBe(true);
   });
 
   it('refreshes the recorded lifecycle once after the first read', async () => {

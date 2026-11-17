@@ -187,6 +187,7 @@ describe('MoneyHomePage', () => {
     });
     mockUseMoneyAccountLifecycle.mockReturnValue({
       lifecycle: undefined,
+      isLifecycleUnavailable: false,
       isReadOnly: false,
       isLoading: false,
     });
@@ -1566,6 +1567,29 @@ describe('MoneyHomePage', () => {
       renderWithLocalization(<MoneyHomePage />);
 
       expect(screen.getByTestId('money-home-loading')).toBeInTheDocument();
+    });
+
+    it('shows the unavailable banner and disables the actions when the lifecycle is unavailable', () => {
+      mockUseMoneyAccountLifecycle.mockReturnValue({
+        lifecycle: undefined,
+        isLifecycleUnavailable: true,
+        isReadOnly: false,
+        isLoading: false,
+      });
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(
+        screen.getByTestId('money-lifecycle-unavailable-banner'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('money-mfa-read-only-banner'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('money-add-button')).toBeDisabled();
+      expect(screen.getByTestId('money-send-button')).toBeDisabled();
+      expect(
+        screen.getByRole('button', { name: messages.addFunds.message }),
+      ).toBeDisabled();
     });
 
     it('shows the balance-error banner alongside the read-only banner', () => {

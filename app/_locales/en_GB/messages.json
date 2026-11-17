@@ -6317,6 +6317,12 @@
   "moneyLearnMore": {
     "message": "Learn more"
   },
+  "moneyLifecycleUnavailableBannerDescription": {
+    "message": "We couldn't confirm your Money account status. Deposits and withdrawals are disabled until it can be confirmed."
+  },
+  "moneyLifecycleUnavailableBannerTitle": {
+    "message": "Money account status unavailable"
+  },
   "moneyLifetime": {
     "message": "Lifetime"
   },

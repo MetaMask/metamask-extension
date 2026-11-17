@@ -45,9 +45,12 @@ export function useMoneyAccountWithdrawal() {
   const recipientAccount = useSelector(selectMoneyWithdrawalRecipient);
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
-  const { isReadOnly, isLoading: isLifecycleLoading } =
-    useMoneyAccountLifecycle();
-  const isDisabled = isReadOnly || isLifecycleLoading;
+  const {
+    isLifecycleUnavailable,
+    isReadOnly,
+    isLoading: isLifecycleLoading,
+  } = useMoneyAccountLifecycle();
+  const isDisabled = isReadOnly || isLifecycleUnavailable || isLifecycleLoading;
 
   const initiateWithdrawal = useCallback(async () => {
     if (isDisabled) {

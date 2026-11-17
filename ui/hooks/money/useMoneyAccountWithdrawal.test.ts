@@ -177,6 +177,7 @@ describe('useMoneyAccountWithdrawal', () => {
     jest.clearAllMocks();
     mockUseMoneyAccountLifecycle.mockReturnValue({
       lifecycle: undefined,
+      isLifecycleUnavailable: false,
       isReadOnly: false,
       isLoading: false,
     });
@@ -231,6 +232,26 @@ describe('useMoneyAccountWithdrawal', () => {
     expect(result.current.isDisabled).toBe(true);
     expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('does not start a withdrawal when the lifecycle is unavailable', async () => {
+    mockUseMoneyAccountLifecycle.mockReturnValue({
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountWithdrawal(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateWithdrawal();
+    });
+
+    expect(result.current.isDisabled).toBe(true);
+    expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
   });
 
   it('does not start a withdrawal while the lifecycle read is pending', async () => {
