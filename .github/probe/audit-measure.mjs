@@ -50,6 +50,8 @@ for (const header of lockBefore.keys()) {
 }
 
 const log = readFileSync(upLog, 'utf8');
+// Without node_modules, `yarn up` exits 1 after a successful lockfile update; not a failure.
+const stateFileOnly = /node_modules state file/u.test(log) && !/YN0(001|016|027|035)/u.test(log);
 let status = 'unchanged';
 if (targetBefore.length > 0 && targetAfter.length === 0) {
   status = 'fixed';
@@ -58,7 +60,7 @@ if (targetBefore.length > 0 && targetAfter.length === 0) {
 }
 if (status !== 'fixed' && /YN0016/u.test(log)) {
   status = 'quarantined';
-} else if (status === 'unchanged' && changed.size === 0 && upExit !== '0') {
+} else if (status === 'unchanged' && changed.size === 0 && upExit !== '0' && !stateFileOnly) {
   status = 'error';
 }
 
