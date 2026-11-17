@@ -2299,7 +2299,7 @@ const emptyPreparedAssetListState = {
   tokenBalances: {},
   marketData: {},
   currencyRates: {},
-  currentCurrency: undefined,
+  currentCurrency: 'usd',
   networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
   accountsByChainId: {},
   accountsAssets: {},
