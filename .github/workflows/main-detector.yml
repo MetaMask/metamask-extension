@@ -37,6 +37,8 @@ on:
     paths:
       - .github/workflows/main-detector.yml
 
+run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.sha, inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+
 permissions:
   contents: read
   actions: read
@@ -74,6 +76,7 @@ jobs:
           status=$(jq -r .status resolve.json)
           if [[ "$status" != measure ]]; then
             summary "Head \`${head:0:10}\`: **could not measure** ($status). No build for the head, or none for any of its recent ancestors."
+            printf '{"headSha":"%s","label":"could not measure (%s)"}\n' "$head" "$status" > skip.json
             echo "proceed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -111,6 +114,7 @@ jobs:
               canary=true
             else
               summary "Head \`${head:0:10}\` builds the same as base \`${base:0:10}\`: **no change**, no jobs run."
+              printf '{"headSha":"%s","label":"no change (identical builds)"}\n' "$head" > skip.json
               echo "proceed=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
@@ -129,6 +133,14 @@ jobs:
           }' resolve.json)
           echo "proceed=true" >> "$GITHUB_OUTPUT"
           echo "plan=$plan" >> "$GITHUB_OUTPUT"
+
+      - name: Upload the skip verdict
+        if: ${{ always() && hashFiles('skip.json') != '' }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: detector-skip
+          path: skip.json
+          retention-days: 30
 
   measure-first:
     needs: plan
