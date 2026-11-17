@@ -189,7 +189,7 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByTestId('money-estimated-balance-dialog-subtitle'),
     ).toHaveTextContent(
-      'Estimated balance after one year in your MetaMask Money account at 6.2% APY.',
+      'Estimated balance after one year in MetaMask Money at 6.2% APY.',
     );
 
     fireEvent.click(

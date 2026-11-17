@@ -98,7 +98,7 @@ describe('MoneyEstimatedBalanceDialog', () => {
     expect(
       screen.getByTestId('money-estimated-balance-dialog-subtitle'),
     ).toHaveTextContent(
-      'Estimated balance after one year in your MetaMask Money account at 6.2% APY.',
+      'Estimated balance after one year in MetaMask Money at 6.2% APY.',
     );
     expect(
       screen.getByText(
@@ -171,11 +171,7 @@ describe('MoneyApyDialog', () => {
         messages.moneyAccountDepositApyDialogHowItWorksBody.message,
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        messages.moneyAccountDepositApyDialogWhyChangesTitle.message,
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Why it changes')).toBeInTheDocument();
     expect(
       screen.getByText(
         messages.moneyAccountDepositApyDialogWhyChangesBody.message,

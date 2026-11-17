@@ -51,6 +51,7 @@ jest.mock('./useIsMoneyAccountFlagDefault', () => ({
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
     const messages: Record<string, string> = {
+      convert: 'Convert',
       payWith: 'Pay with',
       withdrawTo: 'Withdraw to',
       payWithMoneyAccount: 'Money account',
@@ -158,9 +159,47 @@ describe('usePayWithToken', () => {
       symbol: 'USDC',
     });
     expect(result.current.balanceUsdFormatted).toBe('$25.00');
-    expect(result.current.label).toBe('Pay with');
+    expect(result.current.label).toBe('Convert');
     expect(result.current.isMoneyAccountSelected).toBe(false);
   });
+
+  for (const transactionType of [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.perpsDeposit,
+  ]) {
+    it(`uses the Convert label for ${transactionType}`, () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'tx-1',
+          type: transactionType,
+          txParams: { from: FROM_ADDRESS },
+        } as TransactionMeta,
+      } as ReturnType<typeof useConfirmContext>);
+
+      const { result } = renderHook(() => usePayWithToken());
+
+      expect(result.current.label).toBe('Convert');
+    });
+  }
+
+  for (const transactionType of [
+    TransactionType.musdConversion,
+    TransactionType.contractInteraction,
+  ]) {
+    it(`keeps the Pay with label for ${transactionType}`, () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'tx-1',
+          type: transactionType,
+          txParams: { from: FROM_ADDRESS },
+        } as TransactionMeta,
+      } as ReturnType<typeof useConfirmContext>);
+
+      const { result } = renderHook(() => usePayWithToken());
+
+      expect(result.current.label).toBe('Pay with');
+    });
+  }
 
   it('uses the live account balance when the payment token snapshot is stale', () => {
     useTransactionPayTokenMock.mockReturnValue({

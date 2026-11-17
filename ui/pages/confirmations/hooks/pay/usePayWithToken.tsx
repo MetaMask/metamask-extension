@@ -32,6 +32,11 @@ export type PayWithDisplayToken = {
   balanceUsd: string;
 };
 
+const CONVERT_ROW_LABEL_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.perpsDeposit,
+];
+
 type PayWithToken = {
   displayToken: PayWithDisplayToken | undefined;
   balanceUsdFormatted: string;
@@ -78,6 +83,10 @@ export function usePayWithToken(): PayWithToken {
 
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
+  const isConvertDeposit = hasTransactionType(
+    currentConfirmation,
+    CONVERT_ROW_LABEL_TRANSACTION_TYPES,
+  );
   // Avoid flashing the destination/required token (e.g. mUSD on Monad) while
   // payToken is cleared during account switches or initial auto-select.
   // Also wait when Money Account is the flag default so deposits do not flash
@@ -142,10 +151,17 @@ export function usePayWithToken(): PayWithToken {
     };
   }
 
+  let label = t('payWith');
+  if (isPostQuoteWithdraw) {
+    label = t('withdrawTo');
+  } else if (isConvertDeposit) {
+    label = t('convert');
+  }
+
   return {
     displayToken,
     balanceUsdFormatted,
-    label: isPostQuoteWithdraw ? t('withdrawTo') : t('payWith'),
+    label,
     from,
     ownerId: currentConfirmation?.id ?? '',
     isPostQuoteWithdraw,

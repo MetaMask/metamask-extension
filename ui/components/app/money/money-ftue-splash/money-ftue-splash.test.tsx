@@ -158,6 +158,9 @@ describe('MoneyFtueSplash', () => {
       ).toBeInTheDocument();
     });
     expect(
+      screen.getByTestId('money-ftue-splash-benefit-withdraw'),
+    ).toHaveTextContent('No lockups');
+    expect(
       screen.getAllByTestId(/^money-ftue-splash-faq-.+-details$/u),
     ).toHaveLength(10);
     expect(

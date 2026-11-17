@@ -1,6 +1,8 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import {
@@ -20,6 +22,10 @@ import {
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../../selectors/transactionPayController';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 
@@ -37,6 +43,11 @@ const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
   [TransactionType.perpsWithdraw]: 'perpsWithdraw',
 };
 
+const CONVERT_BUTTON_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.perpsDeposit,
+];
+
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
   const { currentConfirmation, isAmountPending } =
@@ -46,8 +57,19 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
     TransactionType.moneyAccountDeposit,
   ]);
+  const isConvertDeposit = hasTransactionType(
+    currentConfirmation,
+    CONVERT_BUTTON_TRANSACTION_TYPES,
+  );
   const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
   const { payToken } = useTransactionPayToken();
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionId),
+  );
+  const payTokenSymbol =
+    paymentOverride === PaymentOverride.MoneyAccount
+      ? undefined
+      : payToken?.symbol;
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
@@ -71,9 +93,9 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
   return useMemo(() => {
     const defaultButtonText = getSingleActionButtonLabel({
-      isMoneyAccountDeposit,
+      isConvertDeposit,
       isMoneyAccountPerpsDeposit,
-      payTokenSymbol: payToken?.symbol,
+      payTokenSymbol,
       t,
       transactionType,
     });
@@ -122,10 +144,10 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     isMoneyAccountWithdraw,
     isPayReady,
     isPayLoading,
-    isMoneyAccountDeposit,
+    isConvertDeposit,
     isMoneyAccountPerpsDeposit,
     lastWithdrawAmount,
-    payToken?.symbol,
+    payTokenSymbol,
     primaryRequiredToken,
     totals,
     transactionType,
@@ -135,11 +157,11 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
 /**
  * Label for the single confirm button.
- * Money deposits name the pay token ("Convert USDC") once Pay has selected
+ * Deposit flows name the pay token ("Convert USDC") once Pay has selected
  * one. Until then the generic add-funds label stays, matching mobile.
  *
  * @param options - Transaction type and the selected pay token symbol.
- * @param options.isMoneyAccountDeposit - Whether this confirmation deposits to MetaMask Money.
+ * @param options.isConvertDeposit - Whether this confirmation is a Money or Perps deposit.
  * @param options.isMoneyAccountPerpsDeposit - Whether this is a Perps deposit paid from the Money account.
  * @param options.payTokenSymbol - Symbol of the selected pay token, if Pay has one.
  * @param options.t - i18n function.
@@ -147,13 +169,13 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
  * @returns The confirm button label.
  */
 function getSingleActionButtonLabel({
-  isMoneyAccountDeposit,
+  isConvertDeposit,
   isMoneyAccountPerpsDeposit,
   payTokenSymbol,
   t,
   transactionType,
 }: {
-  isMoneyAccountDeposit: boolean;
+  isConvertDeposit: boolean;
   isMoneyAccountPerpsDeposit: boolean;
   payTokenSymbol: string | undefined;
   t: ReturnType<typeof useI18nContext>;
@@ -163,7 +185,7 @@ function getSingleActionButtonLabel({
     return t('send');
   }
 
-  if (isMoneyAccountDeposit && payTokenSymbol) {
+  if (isConvertDeposit && payTokenSymbol) {
     return t('moneyAccountDepositConvert', [payTokenSymbol]);
   }
 

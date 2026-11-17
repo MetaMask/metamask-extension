@@ -3224,6 +3224,10 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
+  "convert": {
+    "message": "Convert",
+    "description": "Label for the source token row in deposit confirmations"
+  },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
@@ -5959,7 +5963,7 @@
     "message": "APY is variable and isn't guaranteed. It moves up and down with borrowing demand."
   },
   "moneyAccountDepositApyDialogWhyChangesTitle": {
-    "message": "Why is changes"
+    "message": "Why it changes"
   },
   "moneyAccountDepositConvert": {
     "message": "Convert $1",
@@ -5976,7 +5980,7 @@
     "description": "$1 is the APY percentage including the percent sign, e.g. \"6.2%\""
   },
   "moneyAccountDepositEstBalanceDialogSubtitle": {
-    "message": "Estimated balance after one year in your MetaMask Money account at $1",
+    "message": "Estimated balance after one year in MetaMask Money at $1",
     "description": "$1 is the styled APY run ending in a period, e.g. \"6.2% APY.\""
   },
   "moneyAccountDepositEstBalanceDialogSubtitleApy": {
@@ -6265,7 +6269,7 @@
     "message": "No lockups, notice periods, or penalties. Your money is always yours to take out."
   },
   "moneyFtueBenefitWithdrawTitle": {
-    "message": "Withdraw anytime"
+    "message": "No lockups"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money is a stablecoin account that earns up to $1 APY - with trading, sending, and spending built in.",

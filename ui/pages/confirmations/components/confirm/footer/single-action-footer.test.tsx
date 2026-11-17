@@ -1,7 +1,10 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
+import {
+  PaymentOverride,
+  type TransactionPaymentToken,
+} from '@metamask/transaction-pay-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -92,6 +95,7 @@ function render({
   isMoneyAccountPayEnabled = false,
   quotes,
   isAmountPending = false,
+  paymentOverride,
 }: {
   isGaslessLoading?: boolean;
   confirmation?:
@@ -111,6 +115,7 @@ function render({
   pathname?: string;
   isMoneyAccountPayEnabled?: boolean;
   isAmountPending?: boolean;
+  paymentOverride?: PaymentOverride;
   quotes?: {
     strategy: string;
     request?: {
@@ -135,10 +140,13 @@ function render({
           },
         },
       },
-      ...(quotes
+      ...(quotes || paymentOverride
         ? {
             transactionData: {
-              [confirmation.id]: { quotes },
+              [confirmation.id]: {
+                ...(quotes ? { quotes } : {}),
+                ...(paymentOverride ? { paymentOverride } : {}),
+              },
             },
           }
         : {}),
@@ -435,6 +443,35 @@ describe('<SingleActionFooter />', () => {
 
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       tEn('moneyAccountDepositConvert', ['USDC']),
+    );
+  });
+
+  it('shows Convert [symbol] for perpsDeposit when a pay token is selected', () => {
+    jest.mocked(useTransactionPayToken).mockReturnValue({
+      payToken: { symbol: 'USDC' } as TransactionPaymentToken,
+      setPayToken: jest.fn(),
+    });
+
+    const { getByTestId } = render({ confirmation: genPerpsDeposit() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      tEn('moneyAccountDepositConvert', ['USDC']),
+    );
+  });
+
+  it('keeps Add funds for perpsDeposit when Money Account override is active', () => {
+    jest.mocked(useTransactionPayToken).mockReturnValue({
+      payToken: { symbol: 'USDC' } as TransactionPaymentToken,
+      setPayToken: jest.fn(),
+    });
+
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      paymentOverride: PaymentOverride.MoneyAccount,
+    });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
     );
   });
 
