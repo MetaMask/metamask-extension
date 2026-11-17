@@ -58,11 +58,11 @@ import {
 import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 import { ConnectedStatusPopoverContainer } from './connected-status-popover-container';
-import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
+import { DeepLinkQrCodeModalContainer } from './deep-link-qr-code-modal-container';
 import { ShieldCohortContainer } from './shield-cohort-container';
 import { HomeNotificationsContainer } from './home-notifications-container';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
-import { HomeDeepLinkActions } from './HomeDeepLinkActions';
+import { HomeDeepLinkActions } from './home-deep-link-actions';
 import {
   useLastVisitedPerpsRoute,
   usePendingRedirectRoute,
@@ -273,7 +273,7 @@ export default function Home() {
         <TermsOfUsePopupContainer />
         <ShieldEntryModalContainer />
         <RewardsModalContainer />
-        <DeeplinkQrCodeModalContainer />
+        <DeepLinkQrCodeModalContainer />
         <Pna25ModalContainer />
         <ConnectedStatusPopoverContainer />
         <div className="home__main-view">

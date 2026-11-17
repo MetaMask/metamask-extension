@@ -9,10 +9,10 @@ const SEARCH_SCREEN = 'search';
 const SEARCH_QUERY_PARAM = 'q';
 
 /**
- * Deeplink for trending content and Explore Search.
+ * Deep link for trending content and Explore Search.
  *
- * Signed `/trending` deeplinks with `screen=search` open Explore Search,
- * optionally pre-populated from `q`. Other `/trending` deeplinks retain the
+ * Signed `/trending` deep links with `screen=search` open Explore Search,
+ * optionally pre-populated from `q`. Other `/trending` deep links retain the
  * mobile QR-code flow.
  */
 export const trending = new Route({
@@ -30,12 +30,12 @@ export const trending = new Route({
       return { path: DISCOVER_SEARCH_ROUTE, query: searchParams };
     }
 
-    const deeplinkUrl = new URL('/trending', DEEP_LINK_ORIGIN);
-    params.forEach((value, key) => deeplinkUrl.searchParams.append(key, value));
+    const deepLinkUrl = new URL('/trending', DEEP_LINK_ORIGIN);
+    params.forEach((value, key) => deepLinkUrl.searchParams.append(key, value));
 
     return createHomeQrCodeDestination(
-      HomeQueryParams.TrendingDeeplinkUrl,
-      deeplinkUrl.toString(),
+      HomeQueryParams.TrendingDeepLinkUrl,
+      deepLinkUrl.toString(),
     );
   },
 });

@@ -53,8 +53,8 @@ export const selectRewardsAccountLinkedTimestamp = (
   state: MetaMaskReduxState,
 ) => state.rewards?.accountLinkedTimestamp ?? null;
 
-export const selectRewardsDeeplinkUrl = (state: MetaMaskReduxState) =>
-  state.rewards.rewardsDeeplinkUrl ?? null;
+export const selectRewardsDeepLinkUrl = (state: MetaMaskReduxState) =>
+  state.rewards.rewardsDeepLinkUrl ?? null;
 
 /**
  * Whether the VIP program (fee discounts + VIP badge) is enabled.

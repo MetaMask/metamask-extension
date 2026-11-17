@@ -72,11 +72,11 @@ describe('Pna25ModalContainer', () => {
     expect(queryByTestId('pna25-modal')).toBeNull();
   });
 
-  it('renders nothing when a deeplink QR code modal is active', () => {
+  it('renders nothing when a deep link QR code modal is active', () => {
     const { queryByTestId } = renderContainer({
       showPna25Modal: true,
       homeDeepLinkQrCode: {
-        deeplinkUrl: 'metamask://predict?token=ETH',
+        deepLinkUrl: 'metamask://predict?token=ETH',
         titleKey: 'deepLinkQrPredictTitle',
         descriptionKey: 'deepLinkQrPredictDescription',
       },

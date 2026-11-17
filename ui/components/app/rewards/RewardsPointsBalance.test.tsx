@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import {
   selectCandidateSubscriptionId,
   selectRewardsBadgeHidden,
-  selectRewardsDeeplinkUrl,
+  selectRewardsDeepLinkUrl,
   selectRewardsEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
@@ -135,7 +135,7 @@ describe('RewardsPointsBalance', () => {
     seasonStatus = mockSeasonStatus,
     seasonStatusError = null,
     rewardsActiveAccountSubscriptionId = 'active-subscription-id',
-    rewardsDeeplinkUrl = null,
+    rewardsDeepLinkUrl = null,
   }: {
     locale?: string;
     rewardsEnabled?: boolean;
@@ -144,7 +144,7 @@ describe('RewardsPointsBalance', () => {
     seasonStatus?: typeof mockSeasonStatus | null;
     seasonStatusError?: string | null;
     rewardsActiveAccountSubscriptionId?: string | null;
-    rewardsDeeplinkUrl?: string | null;
+    rewardsDeepLinkUrl?: string | null;
   }) => {
     mockUseSelector.mockImplementation((selector: unknown) => {
       if (selector === getIntlLocale) {
@@ -165,8 +165,8 @@ describe('RewardsPointsBalance', () => {
       if (selector === selectSeasonStatusError) {
         return seasonStatusError;
       }
-      if (selector === selectRewardsDeeplinkUrl) {
-        return rewardsDeeplinkUrl;
+      if (selector === selectRewardsDeepLinkUrl) {
+        return rewardsDeepLinkUrl;
       }
       if (selector === selectSeasonStatusError) {
         return seasonStatusError;
@@ -677,13 +677,13 @@ describe('RewardsPointsBalance', () => {
     expect(mockOptin).toHaveBeenCalledTimes(1);
   });
 
-  it('does not open onboarding modal without a rewards deeplink', () => {
+  it('does not open onboarding modal without a rewards deep link', () => {
     const dispatchMock = jest.fn();
     mockUseAppDispatch.mockReturnValue(dispatchMock);
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: null,
-      rewardsDeeplinkUrl: null,
+      rewardsDeepLinkUrl: null,
     });
 
     render(<RewardsPointsBalance />);
@@ -691,14 +691,14 @@ describe('RewardsPointsBalance', () => {
     expect(dispatchMock).not.toHaveBeenCalledWith(setRewardsModalOpen(true));
   });
 
-  it('opens onboarding modal from a rewards deeplink when there is no subscription', async () => {
+  it('opens onboarding modal from a rewards deep link when there is no subscription', async () => {
     const dispatchMock = jest.fn();
     mockUseAppDispatch.mockReturnValue(dispatchMock);
     delete process.env.IN_TEST;
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: null,
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeepLinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
     });
 
     render(<RewardsPointsBalance />);
@@ -708,14 +708,14 @@ describe('RewardsPointsBalance', () => {
     });
   });
 
-  it('opens onboarding modal from a rewards deeplink in test environment', async () => {
+  it('opens onboarding modal from a rewards deep link in test environment', async () => {
     const dispatchMock = jest.fn();
     mockUseAppDispatch.mockReturnValue(dispatchMock);
     process.env.IN_TEST = 'true';
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: null,
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeepLinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
     });
 
     render(<RewardsPointsBalance />);
@@ -725,14 +725,14 @@ describe('RewardsPointsBalance', () => {
     });
   });
 
-  it('opens onboarding modal from a rewards deeplink even when a candidate subscription exists', async () => {
+  it('opens onboarding modal from a rewards deep link even when a candidate subscription exists', async () => {
     const dispatchMock = jest.fn();
     mockUseAppDispatch.mockReturnValue(dispatchMock);
     delete process.env.IN_TEST;
     setSelectorValues({
       candidateSubscriptionId: 'candidate-subscription-id',
       rewardsActiveAccountSubscriptionId: null,
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeepLinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
     });
 
     render(<RewardsPointsBalance />);
@@ -742,14 +742,14 @@ describe('RewardsPointsBalance', () => {
     });
   });
 
-  it('opens onboarding modal from a rewards deeplink even when the active account has a subscription', async () => {
+  it('opens onboarding modal from a rewards deep link even when the active account has a subscription', async () => {
     const dispatchMock = jest.fn();
     mockUseAppDispatch.mockReturnValue(dispatchMock);
     delete process.env.IN_TEST;
     setSelectorValues({
       candidateSubscriptionId: null,
       rewardsActiveAccountSubscriptionId: 'active-subscription-id',
-      rewardsDeeplinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
+      rewardsDeepLinkUrl: 'https://link.metamask.io/rewards?referral=ABC123',
     });
 
     render(<RewardsPointsBalance />);

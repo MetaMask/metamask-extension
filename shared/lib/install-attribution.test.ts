@@ -184,7 +184,7 @@ describe('install attribution', () => {
   });
 
   describe('getInstallAttributionFromCookies', () => {
-    it('continues parsing _ga traits when deferred deeplink cookie JSON is malformed', () => {
+    it('continues parsing _ga traits when deferred deep link cookie JSON is malformed', () => {
       const gaCookieValue = 'GA1.1.54321.98765';
 
       const result = getInstallAttributionFromCookies([

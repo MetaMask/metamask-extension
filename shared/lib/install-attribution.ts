@@ -8,7 +8,7 @@ import type { DeferredDeepLink } from './deep-links/types';
 
 const METAMASK_IO_URL = 'https://metamask.io/';
 const METAMASK_COM_URL = 'https://metamask.com/';
-const DEFERRED_DEEPLINK_COOKIE_NAME = 'deferred_deeplink';
+const DEFERRED_DEEP_LINK_COOKIE_NAME = 'deferred_deeplink';
 const GOOGLE_ANALYTICS_COOKIE_NAME = '_ga';
 
 type InstallAttributionCookie = {
@@ -43,7 +43,7 @@ export function getInstallAttributionFromCookies(
   for (const cookie of cookies) {
     if (
       deferredDeepLink === null &&
-      cookie.name === DEFERRED_DEEPLINK_COOKIE_NAME
+      cookie.name === DEFERRED_DEEP_LINK_COOKIE_NAME
     ) {
       deferredDeepLink = parseDeferredDeepLinkCookieValue(cookie.value);
     } else if (

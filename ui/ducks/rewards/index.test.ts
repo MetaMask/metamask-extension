@@ -14,7 +14,7 @@ import rewardsReducer, {
   setSeasonStatusError,
   setErrorToast,
   setRewardsBadgeHidden,
-  setRewardsDeeplinkUrl,
+  setRewardsDeepLinkUrl,
 } from '.';
 
 describe('Ducks - Rewards', () => {
@@ -202,21 +202,21 @@ describe('Ducks - Rewards', () => {
       expect(newState.rewardsBadgeHidden).toBe(false);
     });
 
-    it('setRewardsDeeplinkUrl stores the deeplink URL', () => {
+    it('setRewardsDeepLinkUrl stores the deep link URL', () => {
       const url = 'https://link.metamask.io/rewards?referral=ABC123';
-      store.dispatch(setRewardsDeeplinkUrl(url));
+      store.dispatch(setRewardsDeepLinkUrl(url));
       const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setRewardsDeeplinkUrl');
+      expect(actions[0].type).toBe('rewards/setRewardsDeepLinkUrl');
       const newState = rewardsReducer(initialState, actions[0]);
-      expect(newState.rewardsDeeplinkUrl).toBe(url);
+      expect(newState.rewardsDeepLinkUrl).toBe(url);
     });
 
-    it('setRewardsDeeplinkUrl clears the deeplink URL when passed null', () => {
-      store.dispatch(setRewardsDeeplinkUrl(null));
+    it('setRewardsDeepLinkUrl clears the deep link URL when passed null', () => {
+      store.dispatch(setRewardsDeepLinkUrl(null));
       const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setRewardsDeeplinkUrl');
+      expect(actions[0].type).toBe('rewards/setRewardsDeepLinkUrl');
       const newState = rewardsReducer(initialState, actions[0]);
-      expect(newState.rewardsDeeplinkUrl).toBeNull();
+      expect(newState.rewardsDeepLinkUrl).toBeNull();
     });
   });
 });

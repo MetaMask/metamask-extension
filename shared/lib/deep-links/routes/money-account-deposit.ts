@@ -1,7 +1,7 @@
 import { MONEY_DEPOSIT_ROUTE, Route } from './route';
 
 /**
- * Deeplink that starts a Money Account deposit.
+ * Deep link that starts a Money Account deposit.
  *
  * It navigates to the Money deposit bridge, which checks the Money account is
  * available and replaces itself with the deposit confirmation. Users who are

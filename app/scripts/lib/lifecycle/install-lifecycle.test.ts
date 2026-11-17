@@ -136,7 +136,7 @@ describe('install-lifecycle', () => {
         );
       });
 
-      it('persists deferred deeplink attribution on AppInstalled', async () => {
+      it('persists deferred deep link attribution on AppInstalled', async () => {
         const deps = createDeps();
         const deferredDeepLink = {
           createdAt: 1,

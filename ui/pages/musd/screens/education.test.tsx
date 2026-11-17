@@ -70,7 +70,7 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-// Mock navigate and search params (isDeeplink)
+// Mock navigate and the `isDeeplink` query parameter
 const mockNavigate = jest.fn();
 const mockSearchParamsGet = jest.fn().mockReturnValue(null);
 jest.mock('react-router-dom', () => ({
@@ -268,7 +268,7 @@ describe('MusdEducationScreen', () => {
     );
   });
 
-  it('shows "Continue" when geo-blocked (non-deeplink) and navigates home on click', () => {
+  it('shows "Continue" when geo-blocked (non-deep-link) and navigates home on click', () => {
     mockUseMusdGeoBlocking.mockReturnValue({
       isBlocked: true,
       userCountry: 'GB',
@@ -287,10 +287,10 @@ describe('MusdEducationScreen', () => {
   });
 
   // -------------------------------------------------------------------
-  // Deeplink with no eligible conversion tokens
+  // Deep link with no eligible conversion tokens
   // -------------------------------------------------------------------
 
-  describe('deeplink with no eligible conversion tokens', () => {
+  describe('deep link with no eligible conversion tokens', () => {
     beforeEach(() => {
       mockSearchParamsGet.mockReturnValue('true');
       mockUseMusdConversionTokens.mockReturnValue({
@@ -312,7 +312,7 @@ describe('MusdEducationScreen', () => {
       fireEvent.click(button);
 
       expect(mockDispatch).toHaveBeenCalled();
-      // Deeplink buy branch pins the fallback chain to mainnet.
+      // Deep link buy branch pins the fallback chain to mainnet.
       expect(mockGoToBuy).toHaveBeenCalledWith({
         assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
         chainId: '0x1',
@@ -388,10 +388,10 @@ describe('MusdEducationScreen', () => {
   });
 
   // -------------------------------------------------------------------
-  // Deeplink with eligible conversion tokens
+  // Deep link with eligible conversion tokens
   // -------------------------------------------------------------------
 
-  describe('deeplink with eligible conversion tokens', () => {
+  describe('deep link with eligible conversion tokens', () => {
     beforeEach(() => {
       mockSearchParamsGet.mockReturnValue('true');
       mockUseMusdConversionTokens.mockReturnValue({

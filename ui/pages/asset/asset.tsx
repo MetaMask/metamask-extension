@@ -58,7 +58,7 @@ const Asset = () => {
   }
 
   // Null when the selected account group has no account for this chain
-  // (e.g. Solana asset deeplink while an EVM-only account is selected).
+  // (e.g. Solana asset deep link while an EVM-only account is selected).
   const selectedAccountForAsset = useSelector((state) =>
     caipChainId
       ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)

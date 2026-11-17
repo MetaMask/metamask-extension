@@ -135,7 +135,7 @@ describe('PerpsAttributionContext', () => {
     );
   });
 
-  it('maps known source params and sets deeplink entry point', async () => {
+  it('maps known source params and sets deep link entry point', async () => {
     const { result } = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper(),
     });
@@ -196,12 +196,12 @@ describe('PerpsAttributionContext', () => {
     });
   });
 
-  it('includes non-deeplink source in screenViewedAttribution', () => {
+  it('includes non-deep-link source in screenViewedAttribution', () => {
     const { result } = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper('?source=hyperliquid_deposit_prompt'),
     });
 
-    // Non-deeplink sources pass through as-is to override default screen source.
+    // Non-deep-link sources pass through as-is to override default screen source.
     expect(result.current.screenViewedAttribution).toStrictEqual({
       source: 'hyperliquid_deposit_prompt',
     });
@@ -218,7 +218,7 @@ describe('PerpsAttributionContext', () => {
     });
 
     // Normal in-app navigation overwrites the mutable flow entry point (e.g.
-    // market list -> order entry). The deeplink screen-view attribution is
+    // market list -> order entry). The deep link screen-view attribution is
     // session-scoped and must survive that churn.
     act(() => {
       result.current.setFlowAttribution({
@@ -274,7 +274,7 @@ describe('PerpsAttributionContext', () => {
   });
 
   it('clears stale controller attribution when a fresh un-attributed session starts', async () => {
-    // The controller singleton outlives the UI: a campaign deeplink in a
+    // The controller singleton outlives the UI: a campaign deep link in a
     // PREVIOUS popup session leaves its UTM on the background. Reopening the
     // popup normally must not let that campaign stamp this session's trades,
     // since the client-side screen views (session-scoped) no longer carry it.
@@ -293,7 +293,7 @@ describe('PerpsAttributionContext', () => {
   });
 
   it('does not clear controller attribution for a later provider in an attributed session', async () => {
-    // Provider A — the deeplink entry that seeds the campaign.
+    // Provider A — the deep link entry that seeds the campaign.
     const entry = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper('?utm_source=ads'),
     });

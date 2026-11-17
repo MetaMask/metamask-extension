@@ -46,7 +46,7 @@ export type InstallLifecycleDependencies = {
  * consent already exists.
  *
  * @param installAttributionPromise - Promise resolving to install attribution data.
- * @param controller - Controller APIs used for install attribution, deeplink, and consent state.
+ * @param controller - Controller APIs used for install attribution, deep link, and consent state.
  */
 async function addAppInstalledEvent(
   installAttributionPromise: Promise<InstallAttribution>,

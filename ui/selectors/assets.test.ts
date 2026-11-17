@@ -901,7 +901,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
   });
 
   describe('when account is undefined and selectedAccountGroup is null', () => {
-    it('returns null without crashing (deeplink guard)', () => {
+    it('returns null without crashing (deep link guard)', () => {
       const mockStateNoGroup = cloneDeep(mockState);
       mockStateNoGroup.metamask.selectedAccountGroup =
         null as unknown as string;

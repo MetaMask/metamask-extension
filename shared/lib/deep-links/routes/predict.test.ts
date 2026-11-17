@@ -3,7 +3,7 @@ import { HomeQueryParams } from './home';
 import { DEFAULT_ROUTE } from './route';
 
 describe('predict deep link route', () => {
-  it('opens the default route with QR modal params and includes query parameters in the encoded deeplink', () => {
+  it('opens the default route with QR modal params and includes query parameters in the encoded deep link', () => {
     const params = new URLSearchParams('marketId=30615');
 
     const destination = predict.handler(params);
@@ -12,7 +12,7 @@ describe('predict deep link route', () => {
     expect((destination as { path: string }).path).toBe(DEFAULT_ROUTE);
     expect(
       (destination as { query: URLSearchParams }).query.get(
-        HomeQueryParams.PredictDeeplinkUrl,
+        HomeQueryParams.PredictDeepLinkUrl,
       ),
     ).toBe('https://link.metamask.io/predict?marketId=30615');
   });

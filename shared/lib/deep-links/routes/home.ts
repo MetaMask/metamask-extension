@@ -5,24 +5,24 @@ import type { Destination } from './route';
 export const DEEP_LINK_ORIGIN = `https://${CANONICAL_DEEP_LINK_HOST}`;
 
 export enum HomeQueryParams {
-  BatchSellDeeplinkUrl = 'batchSellDeeplinkUrl',
-  LimitOrderDeeplinkUrl = 'limitOrderDeeplinkUrl',
+  BatchSellDeepLinkUrl = 'batchSellDeeplinkUrl',
+  LimitOrderDeepLinkUrl = 'limitOrderDeeplinkUrl',
   OpenNetworkSelector = 'openNetworkSelector',
-  PredictDeeplinkUrl = 'predictDeeplinkUrl',
-  TrendingDeeplinkUrl = 'trendingDeeplinkUrl',
+  PredictDeepLinkUrl = 'predictDeeplinkUrl',
+  TrendingDeepLinkUrl = 'trendingDeeplinkUrl',
 }
 
 export function createHomeQrCodeDestination(
   queryParam:
-    | HomeQueryParams.BatchSellDeeplinkUrl
-    | HomeQueryParams.LimitOrderDeeplinkUrl
-    | HomeQueryParams.PredictDeeplinkUrl
-    | HomeQueryParams.TrendingDeeplinkUrl,
-  deeplinkUrl: string,
+    | HomeQueryParams.BatchSellDeepLinkUrl
+    | HomeQueryParams.LimitOrderDeepLinkUrl
+    | HomeQueryParams.PredictDeepLinkUrl
+    | HomeQueryParams.TrendingDeepLinkUrl,
+  deepLinkUrl: string,
 ): Destination {
   return {
     path: DEFAULT_ROUTE,
-    query: new URLSearchParams({ [queryParam]: deeplinkUrl }),
+    query: new URLSearchParams({ [queryParam]: deepLinkUrl }),
   };
 }
 

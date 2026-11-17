@@ -52,11 +52,11 @@ export function usePerpsEventTracking(
 
   const buildPerpsEvent = useCallback(
     (eventName: MetaMetricsEventName, properties?: Record<string, Json>) => {
-      // Merge stored UTM/deeplink attribution into PERPS_SCREEN_VIEWED at emit
+      // Merge stored UTM/deep link attribution into PERPS_SCREEN_VIEWED at emit
       // time — that event is emitted from the client, so it never passes
       // through the controller's attribution merge.
       // Attribution wins over the call-site: UTM keys are never set by call
-      // sites (always safe to add), and a deeplink entry is the authoritative
+      // sites (always safe to add), and a deep link entry is the authoritative
       // `source`, overriding the screen's default source value.
       // `readScreenViewedHashAttribution` reads the CURRENT hash query at emit
       // time and wins over the provider store. This is the authoritative UTM

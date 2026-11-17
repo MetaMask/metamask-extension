@@ -13,7 +13,7 @@ import Pna25Modal from './pna25-modal';
  * Reads all priority guard selectors from Redux so that Home no longer needs
  * to receive or track PNA25-related props.
  *
- * Priority order: deeplink QR > rewards (modal open) > PNA25.
+ * Priority order: deep link QR > rewards (modal open) > PNA25.
  */
 export function Pna25ModalContainer() {
   const canShow = useSelector(selectCanShowLowPriorityModal);
