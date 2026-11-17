@@ -157,7 +157,7 @@ export async function readPersistedStateWithTrace(
     (async () => {
       try {
         if (
-          result?.data &&
+          result &&
           (
             context as { isRecording?: () => boolean } | undefined
           )?.isRecording?.()

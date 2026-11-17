@@ -245,6 +245,41 @@ describe('readPersistedStateWithTrace', () => {
     );
   });
 
+  it('measures size when data is an empty object', async () => {
+    const emptyDataState: MetaMaskStorageStructure = {
+      data: {},
+      meta: { version: 200, storageKind: 'split' },
+    };
+
+    await readPersistedStateWithTrace(async () => emptyDataState);
+    await flushPromises();
+
+    expect(mockGetStoredBytes).toHaveBeenCalledWith(['meta'], {
+      meta: emptyDataState.meta,
+    });
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          'state.is_empty': false,
+          'state.raw_size_bytes': 4096,
+        }),
+      }),
+    );
+  });
+
+  it('measures size when data is missing but meta exists', async () => {
+    const metaOnlyState = {
+      meta: { version: 200, storageKind: 'split' as const },
+    } as MetaMaskStorageStructure;
+
+    await readPersistedStateWithTrace(async () => metaOnlyState);
+    await flushPromises();
+
+    expect(mockGetStoredBytes).toHaveBeenCalledWith(['meta'], {
+      meta: metaOnlyState.meta,
+    });
+  });
+
   it('counts zero for malformed controller state', async () => {
     await readPersistedStateWithTrace(async () => ({
       data: {
