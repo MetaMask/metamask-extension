@@ -221,7 +221,7 @@ ${Object.entries(env)
       });
       const compiler = webpack(config);
       const resolver = compiler.resolverFactory.get('normal');
-      for (const request of ['react-devtools-core', 'remote-redux-devtools']) {
+      for (const request of ['remote-redux-devtools']) {
         const resolved = await new Promise<string | false | undefined>(
           (resolveModule, reject) => {
             resolver.resolve(
@@ -257,10 +257,6 @@ ${Object.entries(env)
     });
     const aliases = config.resolve?.alias as Record<string, string>;
     assert.strictEqual(
-      aliases['react-devtools-core'],
-      require.resolve('react-devtools-core'),
-    );
-    assert.strictEqual(
       aliases['remote-redux-devtools'],
       require.resolve('remote-redux-devtools'),
     );
@@ -280,7 +276,6 @@ ${Object.entries(env)
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
     const aliases = options.resolve.alias as Record<string, false>;
-    assert.strictEqual(typeof aliases['react-devtools-core'], 'boolean');
     assert.strictEqual(typeof aliases['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
@@ -624,7 +619,6 @@ ${Object.entries(env)
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
     const aliases = instance.options.resolve.alias as Record<string, string>;
-    assert.strictEqual(typeof aliases['react-devtools-core'], 'string');
     assert.strictEqual(typeof aliases['remote-redux-devtools'], 'string');
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
