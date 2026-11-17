@@ -98,7 +98,7 @@ const AssetList = ({
         <AssetControls data-testid="parent-selector-tokens-tab">
           <NetworkFilter />
           <AssetControlsActions>
-            <SortByButton />
+            {variant === 'table' ? null : <SortByButton />}
             <TokenOptionsMenu />
           </AssetControlsActions>
         </AssetControls>

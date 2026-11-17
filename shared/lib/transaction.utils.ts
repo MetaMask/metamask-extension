@@ -317,7 +317,11 @@ export async function determineTransactionAssetType(
     try {
       // We don't need a balance check, so the second parameter to
       // getTokenStandardAndDetails is omitted.
-      const details = await getTokenStandardAndDetails(txMeta.txParams.to);
+      const details = await getTokenStandardAndDetails(
+        inferrableType === TransactionType.tokenMethodApprove
+          ? resolveApprovalTokenContractAddress(txMeta)
+          : txMeta.txParams.to,
+      );
       if (details.standard) {
         return {
           assetType:

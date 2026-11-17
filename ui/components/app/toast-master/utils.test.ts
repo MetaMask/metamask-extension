@@ -1,5 +1,6 @@
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
+  dismissSidePanelMigrationToast,
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setPna25Acknowledged,
@@ -14,6 +15,15 @@ jest.mock('../../../store/background-connection', () => ({
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 
 describe('toast utilities', () => {
+  it('dismisses the side panel migration toast through the messenger', () => {
+    dismissSidePanelMigrationToast();
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'PreferencesController:dismissSidePanelMigrationToast',
+      undefined,
+    );
+  });
+
   it('updates the privacy policy toast shown date through the messenger', () => {
     setNewPrivacyPolicyToastShownDate(123);
 
