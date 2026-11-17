@@ -12,6 +12,8 @@ import type { SignatureStatus } from './verify';
 export type Properties = {
   route: string;
   signature: SignatureStatus;
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+  was_app_installed: boolean;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   attribution_id?: string;
@@ -22,6 +24,7 @@ export type Properties = {
 export type EventDetails = {
   url: URL;
   signature: SignatureStatus;
+  wasAppInstalled: boolean;
 };
 
 /**
@@ -49,11 +52,19 @@ export function shouldTrackDeepLinkNavigation({
  * @param route.url - The original full URL of the deep link.
  * @param route.signature - Whether the deep link has a signature, and if it is
  * valid.
+ * @param route.wasAppInstalled - Whether MetaMask was installed before the
+ * link was opened.
  */
-export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
+export function createEvent({
+  signature,
+  url,
+  wasAppInstalled,
+}: EventDetails): AnalyticsEvent {
   const properties: Properties = {
     route: url.pathname,
     signature,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+    was_app_installed: wasAppInstalled,
     // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
     referral_code: getReferralCode(url.searchParams) ?? undefined,
   };

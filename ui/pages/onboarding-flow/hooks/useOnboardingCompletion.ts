@@ -123,6 +123,7 @@ export function useOnboardingCompletion() {
           createEvent({
             signature: deferredDeepLinkResult.signature,
             url,
+            wasAppInstalled: false,
           }),
         );
       }

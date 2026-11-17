@@ -685,7 +685,13 @@ async function initialize(backup: Backup | null) {
     .on('navigate', async ({ url, parsed }) => {
       // Don't track deep links that are immediately redirected.
       if (shouldTrackDeepLinkNavigation(parsed)) {
-        trackEvent(createEvent({ signature: parsed.signature, url }));
+        trackEvent(
+          createEvent({
+            signature: parsed.signature,
+            url,
+            wasAppInstalled: true,
+          }),
+        );
       }
     })
     .on('error', (error) => sentry?.captureException(error))

@@ -1,3 +1,4 @@
+import { it as jestIt } from '@jest/globals';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -33,17 +34,31 @@ describe('createEvent', () => {
     const result = createEvent({
       signature: MISSING,
       url: new URL('https://link.metamask.io/money?ref=ABC&ref=DEF'),
+      wasAppInstalled: true,
     });
 
     expect(result.properties).not.toHaveProperty('referral_code');
     expect(result.sensitiveProperties).not.toHaveProperty('ref');
   });
+  jestIt.each([true, false])(
+    'reports was_app_installed as %s',
+    (wasAppInstalled) => {
+      const result = createEvent({
+        signature: VALID,
+        url: new URL('https://link.metamask.io/home'),
+        wasAppInstalled,
+      });
+
+      expect(result.properties.was_app_installed).toBe(wasAppInstalled);
+    },
+  );
+
   describe('basic functionality', () => {
     it('should create event with minimal required properties', () => {
       const url = new URL('https://example.com/test-route');
       const signature = MISSING;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result).toStrictEqual({
         name: MetaMetricsEventName.DeepLinkUsed,
@@ -51,6 +66,8 @@ describe('createEvent', () => {
           category: MetaMetricsEventCategory.DeepLink,
           route: '/test-route',
           signature: MISSING,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          was_app_installed: true,
         },
         sensitiveProperties: {},
       });
@@ -60,7 +77,7 @@ describe('createEvent', () => {
       const url = new URL('https://example.com');
       const signature = VALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.route).toBe('/');
       expect(result.properties.signature).toBe(VALID);
@@ -70,7 +87,7 @@ describe('createEvent', () => {
       const url = new URL('https://example.com/deep/nested/route');
       const signature = INVALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.route).toBe('/deep/nested/route');
       expect(result.properties.signature).toBe(INVALID);
@@ -81,17 +98,29 @@ describe('createEvent', () => {
     const url = new URL('https://example.com/test');
 
     it('should handle MISSING signature status', () => {
-      const result = createEvent({ signature: MISSING, url });
+      const result = createEvent({
+        signature: MISSING,
+        url,
+        wasAppInstalled: true,
+      });
       expect(result.properties.signature).toBe(MISSING);
     });
 
     it('should handle VALID signature status', () => {
-      const result = createEvent({ signature: VALID, url });
+      const result = createEvent({
+        signature: VALID,
+        url,
+        wasAppInstalled: true,
+      });
       expect(result.properties.signature).toBe(VALID);
     });
 
     it('should handle INVALID signature status', () => {
-      const result = createEvent({ signature: INVALID, url });
+      const result = createEvent({
+        signature: INVALID,
+        url,
+        wasAppInstalled: true,
+      });
       expect(result.properties.signature).toBe(INVALID);
     });
   });
@@ -101,7 +130,7 @@ describe('createEvent', () => {
       const url = new URL('https://example.com/test?sig=some-signature-value');
       const signature = VALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties).not.toHaveProperty('sig');
       expect(result.sensitiveProperties).not.toHaveProperty('sig');
@@ -111,7 +140,7 @@ describe('createEvent', () => {
       const url = new URL('https://example.com/test?attributionId=attr-123');
       const signature = MISSING;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.attribution_id).toBe('attr-123');
     });
@@ -127,7 +156,7 @@ describe('createEvent', () => {
       );
       const signature = VALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.utm_campaign).toBe('summer-sale');
       expect(result.properties.utm_content).toBe('banner');
@@ -142,7 +171,7 @@ describe('createEvent', () => {
       );
       const signature = MISSING;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.referral_code).toBe('DEF456');
       expect(result.sensitiveProperties).toStrictEqual({
@@ -159,7 +188,7 @@ describe('createEvent', () => {
       );
       const signature = MISSING;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.sensitiveProperties).toStrictEqual({
         customParam: 'secret-value',
@@ -181,12 +210,14 @@ describe('createEvent', () => {
       );
       const signature = VALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties).toStrictEqual({
         category: MetaMetricsEventCategory.DeepLink,
         route: '/deep-link',
         signature: VALID,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+        was_app_installed: true,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         attribution_id: 'attr-456',
@@ -215,7 +246,7 @@ describe('createEvent', () => {
       );
       const signature = MISSING;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.utm_campaign).toBe('');
       expect(result.properties.attribution_id).toBe('');
@@ -225,12 +256,14 @@ describe('createEvent', () => {
       const url = new URL('https://example.com/test');
       const signature = VALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties).toStrictEqual({
         category: MetaMetricsEventCategory.DeepLink,
         route: '/test',
         signature: VALID,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+        was_app_installed: true,
       });
       expect(result.sensitiveProperties).toStrictEqual({});
     });
@@ -241,7 +274,7 @@ describe('createEvent', () => {
       );
       const signature = INVALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.utm_campaign).toBe('hello world');
       expect(result.sensitiveProperties.customParam).toBe('test&value');
@@ -253,7 +286,7 @@ describe('createEvent', () => {
       );
       const signature = MISSING;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties.utm_campaign).toBe('second');
     });
@@ -264,7 +297,7 @@ describe('createEvent', () => {
       const url = new URL('https://example.com/test');
       const signature = VALID;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result).toHaveProperty('name');
       expect(result).toHaveProperty('properties');
@@ -282,7 +315,7 @@ describe('createEvent', () => {
       const url = new URL('https://example.com/any-route');
       const signature = MISSING;
 
-      const result = createEvent({ signature, url });
+      const result = createEvent({ signature, url, wasAppInstalled: true });
 
       expect(result.properties).toHaveProperty('route');
       expect(result.properties).toHaveProperty('signature');
