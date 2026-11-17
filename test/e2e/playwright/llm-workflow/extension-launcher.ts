@@ -266,6 +266,17 @@ export class MetaMaskExtensionLauncher {
         'clipboard-write',
       ]);
 
+      if (this.options.headless) {
+        // Playwright sizes the headless window to the viewport, but the tab
+        // strip and toolbar still take 87 px. Chrome resizes a tab to that
+        // shorter area when it is brought to the front again, so set the
+        // contents size of every page to the viewport as well.
+        const fitWindow = (page: Page) =>
+          this.fitWindowToViewport(page).catch(() => undefined);
+        this.context.on('page', fitWindow);
+        await Promise.all(this.context.pages().map(fitWindow));
+      }
+
       await this.waitForExtensionReady();
 
       this.ensureExtensionInitialized();
@@ -309,6 +320,20 @@ export class MetaMaskExtensionLauncher {
       console.error('Launch failed, cleaning up services...');
       await this.cleanup();
       throw error;
+    }
+  }
+
+  private async fitWindowToViewport(page: Page): Promise<void> {
+    const session = await this.getContext().newCDPSession(page);
+    try {
+      const { windowId } = await session.send('Browser.getWindowForTarget');
+      await session.send('Browser.setContentsSize', {
+        windowId,
+        width: this.options.viewportWidth,
+        height: this.options.viewportHeight,
+      });
+    } finally {
+      await session.detach().catch(() => undefined);
     }
   }
 
