@@ -328,14 +328,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     ? networksByCaipChainId[selectedToken.chainId]?.name
     : undefined;
 
-  // Only show "Buying via X" when the selected provider has a quote.
-  // When the controller switches providers after an auto-selected provider
-  // returns no quote, this ensures the footer updates to show the new provider.
+  const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
+
+  // Only show "Buying via X" when the selected provider has a quote or quotes
+  // are actively loading. Hide it only when quotes have settled with no match
+  // for the selected provider. This prevents flickering on every quote refresh
+  // and avoids showing an unavailable provider name after quotes settle.
   const providerLabel =
-    selectedProvider?.name && selectedQuote !== null
+    selectedProvider?.name && (selectedQuote || isQuoteLoading)
       ? t('rampsBuyingViaProvider', [selectedProvider.name])
       : '';
-  const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
 
   return {
     kind: 'ready',

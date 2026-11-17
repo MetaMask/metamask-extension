@@ -1461,6 +1461,12 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
       <div
         class="flex flex-col gap-3 items-center pb-4"
       >
+        <p
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          data-testid="ramps-build-quote-provider-label"
+        >
+          Buying via Transak.
+        </p>
         <button
           aria-busy="true"
           aria-disabled="true"

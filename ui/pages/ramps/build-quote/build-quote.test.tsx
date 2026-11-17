@@ -154,7 +154,17 @@ describe('RampsBuildQuoteScreen', () => {
     useRampsController.mockReturnValue(mockControllerState());
     useRampsQuotes.mockReturnValue({
       data: {
-        success: [{ provider: 'transak', id: 'quote-1' }],
+        success: [
+          {
+            provider: 'transak',
+            id: 'quote-1',
+            quote: {
+              amountIn: 100,
+              amountOut: 0.001,
+              paymentMethod: 'debit-credit-card',
+            },
+          },
+        ],
         error: [],
       },
       loading: false,
@@ -337,6 +347,27 @@ describe('RampsBuildQuoteScreen', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('shows provider label while quotes are loading', () => {
+    useRampsQuotes.mockReturnValue({
+      data: null,
+      loading: true,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    // Provider label should be shown while loading to prevent flicker
+    expect(
+      screen.getByTestId('ramps-build-quote-provider-label'),
+    ).toHaveTextContent(
+      messages.rampsBuyingViaProvider.message.replace('$1', 'Transak'),
+    );
+  });
+
   it('does not show provider label when selected provider has no quote', () => {
     // Scenario: Banxa is auto-selected but returns no quote, while other providers do
     useRampsController.mockReturnValue({
@@ -346,8 +377,24 @@ describe('RampsBuildQuoteScreen', () => {
     useRampsQuotes.mockReturnValue({
       data: {
         success: [
-          { provider: 'moonpay', id: 'quote-1' },
-          { provider: 'coinbase', id: 'quote-2' },
+          {
+            provider: 'moonpay',
+            id: 'quote-1',
+            quote: {
+              amountIn: 100,
+              amountOut: 0.001,
+              paymentMethod: 'debit-credit-card',
+            },
+          },
+          {
+            provider: 'coinbase',
+            id: 'quote-2',
+            quote: {
+              amountIn: 100,
+              amountOut: 0.0009,
+              paymentMethod: 'debit-credit-card',
+            },
+          },
         ],
         error: [],
       },
