@@ -9527,9 +9527,6 @@
   "restore": {
     "message": "Geri Yükle"
   },
-  "restoreUserData": {
-    "message": "Kullanıcı verilerini geri yükle"
-  },
   "restoreWalletDescription": {
     "message": "$1 girin. Cüzdanı içe aktardığınızda mevcut cüzdan verileriniz bu cihazdan silinir. Bu işlem geri alınamaz.",
     "description": "$1 is the Secret Recovery Phrase"

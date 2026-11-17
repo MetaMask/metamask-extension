@@ -235,7 +235,6 @@ import {
   trackEvent,
   trackPage,
 } from './controllers/analytics';
-import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -795,12 +794,6 @@ export default class MetamaskController extends EventEmitter {
     this.configRegistryController = this.wallet.getInstance(
       'ConfigRegistryController',
     );
-    this.backup = new Backup({
-      preferencesController: this.preferencesController,
-      addressBookController: this.addressBookController,
-      accountsController: this.accountsController,
-      networkController: this.networkController,
-    });
     this.geolocationController = this.wallet.getInstance(
       'GeolocationController',
     );
@@ -2409,7 +2402,7 @@ export default class MetamaskController extends EventEmitter {
    * New methods should be defined in controllers and exposed via the messenger, rather than being added to this API object.
    */
   getApi() {
-    const { appStateController, backup } = this;
+    const { appStateController } = this;
 
     return {
       // AppStateController
@@ -2434,11 +2427,6 @@ export default class MetamaskController extends EventEmitter {
 
       trackAnalyticsEvent: trackEvent,
       trackMetaMetricsPage: trackPage,
-
-      // Backup
-
-      backupUserData: backup.backupUserData.bind(backup),
-      restoreUserData: backup.restoreUserData.bind(backup),
     };
   }
 
