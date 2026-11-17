@@ -521,12 +521,10 @@
       "MetaMask: Background connection not initialized": 8
     },
     "ui/pages/confirmations/components/confirm/info/approve/approve-details/approve-details.test.tsx": {
-      "MetaMask: Background connection not initialized": 3,
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/confirmations/components/confirm/info/approve/approve.test.tsx": {
-      "MetaMask: Background connection not initialized": 21,
-      "React: Act warnings (component updates not wrapped)": 2,
+      "MetaMask: Background connection not initialized": 2,
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/base-transaction-info/base-transaction-info.test.tsx": {
@@ -636,9 +634,6 @@
     },
     "ui/pages/confirmations/components/confirm/row/typed-sign-data/typedSignData.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 12
-    },
-    "ui/pages/confirmations/components/confirm/title/hooks/useCurrentSpendingCap.test.ts": {
-      "MetaMask: Background connection not initialized": 2
     },
     "ui/pages/confirmations/components/gas-timing/gas-timing.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 1

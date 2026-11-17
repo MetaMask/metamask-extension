@@ -6980,13 +6980,6 @@
   "onboardedMetametricsKey3": {
     "message": "Andere relevante Werbematerialien"
   },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
-  "onboardedMetametricsParagraph1": {
-    "message": "Zusätzlich zu $1 möchten wir Daten verwenden, um zu verstehen, wie Sie mit Marketingkommunikation umgehen.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
-  },
   "onboardedMetametricsParagraph2": {
     "message": "Dies hilft uns, das, was wir mit Ihnen teilen, zu personalisieren, wie z. B.:"
   },
@@ -9512,9 +9505,6 @@
   },
   "restore": {
     "message": "Wiederherstellen"
-  },
-  "restoreUserData": {
-    "message": "Benutzerdaten wiederherstellen"
   },
   "restoreWalletDescription": {
     "message": "Geben Sie Ihre $1 ein. Durch das Importieren der Wallet werden Ihre aktuellen Wallet-Daten von diesem Gerät gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
