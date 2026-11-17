@@ -251,6 +251,40 @@ describe('readPersistedStateWithTrace', () => {
     );
   });
 
+  it('counts the union of balance and custom-only assets per account', async () => {
+    await readPersistedStateWithTrace(async () => ({
+      data: {
+        AssetsController: {
+          assetsBalance: {
+            'account-1': {
+              'eip155:1/slip44:60': { amount: '1' },
+              'eip155:1/erc20:0xdai': { amount: '2' },
+            },
+          },
+          customAssets: {
+            'account-1': [
+              'eip155:1/erc20:0xdai',
+              'eip155:1/erc20:0xcustom-only',
+            ],
+            'account-2': ['eip155:1/erc20:0xother-custom'],
+          },
+        },
+      },
+      meta: { version: 200, storageKind: 'split' },
+    }));
+    await flushPromises();
+
+    // account-1: slip44 + dai + custom-only (dai deduped) = 3
+    // account-2: other-custom = 1
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          'state.asset_count': 4,
+        }),
+      }),
+    );
+  });
+
   it('contains no state values', async () => {
     await readPersistedStateWithTrace(async () => SPLIT_STATE);
     await flushPromises();

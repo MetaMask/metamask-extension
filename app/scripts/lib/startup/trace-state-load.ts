@@ -38,33 +38,42 @@ function countAssets(data: Record<string, unknown>): number {
     return 0;
   }
 
-  // Prefer balances: they include detected and custom assets per account.
-  if (isObject(assetsController.assetsBalance)) {
-    let count = 0;
-    for (const balancesByAsset of Object.values(
-      assetsController.assetsBalance,
-    )) {
-      if (isObject(balancesByAsset)) {
-        count += Object.keys(balancesByAsset).length;
+  const assetsBalance = isObject(assetsController.assetsBalance)
+    ? assetsController.assetsBalance
+    : {};
+  const customAssets = isObject(assetsController.customAssets)
+    ? assetsController.customAssets
+    : {};
+
+  const accountIds = new Set([
+    ...Object.keys(assetsBalance),
+    ...Object.keys(customAssets),
+  ]);
+
+  let count = 0;
+  for (const accountId of accountIds) {
+    const assetIds = new Set<string>();
+
+    const balancesByAsset = assetsBalance[accountId];
+    if (isObject(balancesByAsset)) {
+      for (const assetId of Object.keys(balancesByAsset)) {
+        assetIds.add(assetId);
       }
     }
-    if (count > 0) {
-      return count;
-    }
-  }
 
-  // Fresh or partially hydrated state may only have user-imported assets.
-  if (isObject(assetsController.customAssets)) {
-    let count = 0;
-    for (const assets of Object.values(assetsController.customAssets)) {
-      if (Array.isArray(assets)) {
-        count += assets.length;
+    const custom = customAssets[accountId];
+    if (Array.isArray(custom)) {
+      for (const assetId of custom) {
+        if (typeof assetId === 'string') {
+          assetIds.add(assetId);
+        }
       }
     }
-    return count;
+
+    count += assetIds.size;
   }
 
-  return 0;
+  return count;
 }
 
 /**
