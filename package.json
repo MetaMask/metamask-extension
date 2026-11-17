@@ -175,6 +175,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/multichain-network-controller": {
+      "type": "non-breaking",
+      "previewVersion": "4.1.1-preview-197d3fef0"
+    }
+  },
   "resolutions": {
     "@metamask/design-system-react": "0.51.1",
     "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
