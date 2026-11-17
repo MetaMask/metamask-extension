@@ -559,10 +559,10 @@ export const getMultichainNetwork = createSelector(
     ) => account ?? getSelectedInternalAccount(state),
     (state: MultichainNetworkConfigState & AccountsState) =>
       getMultichainNetworkProviders(state),
-    (state: MultichainNetworkConfigState & AccountsState) =>
-      state.metamask.selectedMultichainNetworkChainId,
-    (state: MultichainNetworkConfigState & AccountsState) =>
-      getChainIdToNetworkImageUrlMap(state),
+    (state: MultichainNetworkConfigState & AccountsState) => ({
+      selectedChainId: state.metamask.selectedMultichainNetworkChainId,
+      networkImageUrls: getChainIdToNetworkImageUrlMap(state),
+    }),
   ],
   (
     isEvm,
@@ -571,8 +571,7 @@ export const getMultichainNetwork = createSelector(
     networkConfigurations,
     selectedAccount,
     nonEvmNetworks,
-    selectedChainId,
-    networkImageUrls,
+    { selectedChainId, networkImageUrls },
   ): MultichainNetwork => {
     if (isEvm) {
       const evmNetwork = {
