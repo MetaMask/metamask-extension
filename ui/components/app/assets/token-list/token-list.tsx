@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { type CaipAssetType } from '@metamask/utils';
 import { useHomeReady } from '../../../../pages/home/home-performance';
@@ -14,7 +14,8 @@ import {
   type TokenListDisplayItem,
   useTokenListData,
 } from '../hooks/useTokenListData';
-import { LowValueAssetsToggle } from './low-value-assets-toggle';
+import { DustRedeemModal } from '../dust-redeem/dust-redeem-modal';
+import { LowValueAssetsSection } from '../dust-redeem/low-value-assets-section';
 import { TokenListLoadingSkeleton } from './token-list-loading-skeleton';
 
 type TokenListProps = {
@@ -38,7 +39,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
+    lowValueTokens,
+    accountTokens,
   } = useTokenListData({ onTokenClick });
+  const [isDustRedeemOpen, setIsDustRedeemOpen] = useState(false);
+  const openDustRedeem = useCallback(() => setIsDustRedeemOpen(true), []);
+  const closeDustRedeem = useCallback(() => setIsDustRedeemOpen(false), []);
 
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   useHomeReady(Boolean(selectedAccountGroup) && !showLoadingSkeleton);
@@ -50,10 +56,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       const { item } = info;
       if (item.type === 'low-value-toggle') {
         return (
-          <LowValueAssetsToggle
+          <LowValueAssetsSection
             count={item.count}
             isExpanded={isLowValueAssetsExpanded}
-            onClick={handleLowValueAssetsToggle}
+            onToggle={handleLowValueAssetsToggle}
+            tokens={lowValueTokens}
+            privacyMode={privacyMode}
+            onRedeemClick={openDustRedeem}
           />
         );
       }
@@ -75,30 +84,28 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       getTokenClickHandler,
       handleLowValueAssetsToggle,
       isLowValueAssetsExpanded,
+      lowValueTokens,
       moneyTokenListCta,
+      openDustRedeem,
       privacyMode,
       safeChains,
     ],
+  );
+
+  const dustRedeemModal = (
+    <DustRedeemModal
+      isOpen={isDustRedeemOpen}
+      tokens={accountTokens}
+      privacyMode={privacyMode}
+      onClose={closeDustRedeem}
+    />
   );
 
   if (showLoadingSkeleton) {
     return <TokenListLoadingSkeleton />;
   }
 
-  // Disable virtualization when empty balance state is shown
-  if (!hasBalance) {
-    return (
-      <div className="token-list-non-virtualized">
-        {tokenListItems.map((item, index) => (
-          <div key={getTokenListItemKey(item, index)}>
-            {renderTokenListItem({ item })}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  return (
+  const list = hasBalance ? (
     <VirtualizedList
       data={tokenListItems}
       estimatedItemSize={ASSET_CELL_HEIGHT}
@@ -106,6 +113,22 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       keyExtractor={getTokenListItemKey}
       renderItem={renderTokenListItem}
     />
+  ) : (
+    // Disable virtualization when empty balance state is shown
+    <div className="token-list-non-virtualized">
+      {tokenListItems.map((item, index) => (
+        <div key={getTokenListItemKey(item, index)}>
+          {renderTokenListItem({ item })}
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <>
+      {list}
+      {dustRedeemModal}
+    </>
   );
 }
 

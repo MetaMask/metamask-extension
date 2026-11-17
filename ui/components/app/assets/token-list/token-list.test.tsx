@@ -130,6 +130,14 @@ jest.mock('../../../../selectors/multichain/feature-flags', () => ({
   getIsSecurityTrustTdpEnabled: jest.fn(),
 }));
 
+jest.mock('../../../../selectors/multichain', () => ({
+  getImageForChainId: jest.fn(() => undefined),
+}));
+
+jest.mock('../../../../../shared/lib/selectors/networks', () => ({
+  getNetworkConfigurationsByChainId: jest.fn(() => ({})),
+}));
+
 jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
   getSelectedAccountGroup: jest.fn(() => 'group-a'),
 }));

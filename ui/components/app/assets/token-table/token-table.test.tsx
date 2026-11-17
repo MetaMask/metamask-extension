@@ -98,6 +98,8 @@ const mockTokenListData = (
     isLowValueAssetsExpanded: false,
     handleLowValueAssetsToggle: jest.fn(),
     getTokenClickHandler: () => undefined,
+    lowValueTokens: [],
+    accountTokens: [],
     ...overrides,
   });
 };
@@ -416,6 +418,8 @@ describe('TokenTable', () => {
         isLowValueAssetsExpanded: false,
         handleLowValueAssetsToggle: jest.fn(),
         getTokenClickHandler: () => undefined,
+        lowValueTokens: [],
+        accountTokens: [],
       };
     });
 

@@ -401,5 +401,7 @@ export function useTokenListData({
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
+    lowValueTokens,
+    accountTokens: sortedFilteredTokens,
   };
 }
