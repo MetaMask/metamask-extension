@@ -78,7 +78,9 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
       const didRead = Boolean(result && !result.isError);
       setRefreshStatus({ address, failed: !(didRefresh && didRead) });
     };
-    refresh().catch(() => undefined);
+    refresh().catch((error) => {
+      log.debug('[Money Account] Lifecycle refresh task failed', error);
+    });
 
     return () => {
       cancelled = true;
