@@ -310,6 +310,14 @@ async function handleConsumePendingRoute(message: {
   };
 }
 
+/**
+ * Registers handlers for pending side-panel routes once (idempotent). Invoked
+ * from the cashtag background bridge at startup, matching pre-refactor wiring.
+ */
+export function ensurePendingRouteListenersRegistered(): void {
+  registerPendingRouteListeners();
+}
+
 function registerPendingRouteListeners() {
   if (pendingRouteListenersRegistered) {
     return;
@@ -371,14 +379,12 @@ export async function setupSidePanelToolbarBehavior(
           .setPanelBehavior({
             openPanelOnActionClick: useSidePanelAsDefault,
           })
-          .catch((error) =>
-            console.error('Error updating panel behavior:', error),
-          );
+          .catch((error) => log.warn('Error updating panel behavior:', error));
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,
     );
   } catch (error) {
-    console.error('Error setting side panel toolbar behavior:', error);
+    log.warn('Error setting side panel toolbar behavior:', error);
   }
 }
