@@ -123,6 +123,28 @@ describe('useMoneyAccountLifecycle', () => {
     await waitFor(() => expect(result.current.isReadOnly).toBe(true));
   });
 
+  it('stays loading while the first refresh is pending and no lifecycle is recorded', async () => {
+    let resolveRefresh: () => void = () => undefined;
+    mockSubmitRequestToBackground.mockImplementation((action: string) => {
+      if (action === MoneyAccountLifecycleControllerQueryKeys.GetState) {
+        return Promise.resolve({ moneyAccounts: {}, addressRegistrations: {} });
+      }
+      return new Promise<void>((resolve) => {
+        resolveRefresh = resolve;
+      });
+    });
+
+    const { result } = renderHookWithProvider(() => useMoneyAccountLifecycle());
+
+    await waitFor(() => expect(result.current.isLoading).toBe(true));
+
+    await act(async () => {
+      resolveRefresh();
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+  });
+
   it('refreshes the recorded lifecycle once after the first read', async () => {
     mockGetState({ type: 'sfa' });
 

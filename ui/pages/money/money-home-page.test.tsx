@@ -1537,15 +1537,24 @@ describe('MoneyHomePage', () => {
       },
     );
 
-    it('hides the banner and keeps the actions enabled for an SFA account', () => {
-      renderWithLocalization(<MoneyHomePage />);
+    it.each(['sfa', 'notInIdentity'] as const)(
+      'hides the banner and keeps the actions enabled for %s',
+      (type) => {
+        mockUseMoneyAccountLifecycle.mockReturnValue({
+          lifecycle: { type },
+          isReadOnly: false,
+          isLoading: false,
+        });
 
-      expect(
-        screen.queryByTestId('money-mfa-read-only-banner'),
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId('money-add-button')).toBeEnabled();
-      expect(screen.getByTestId('money-send-button')).toBeEnabled();
-    });
+        renderWithLocalization(<MoneyHomePage />);
+
+        expect(
+          screen.queryByTestId('money-mfa-read-only-banner'),
+        ).not.toBeInTheDocument();
+        expect(screen.getByTestId('money-add-button')).toBeEnabled();
+        expect(screen.getByTestId('money-send-button')).toBeEnabled();
+      },
+    );
 
     it('keeps the page loading until the lifecycle read settles', () => {
       mockUseMoneyAccountLifecycle.mockReturnValue({
@@ -1557,6 +1566,31 @@ describe('MoneyHomePage', () => {
       renderWithLocalization(<MoneyHomePage />);
 
       expect(screen.getByTestId('money-home-loading')).toBeInTheDocument();
+    });
+
+    it('shows the balance-error banner alongside the read-only banner', () => {
+      mockUseMoneyAccountLifecycle.mockReturnValue({
+        lifecycle: { type: 'mfa' },
+        isReadOnly: true,
+        isLoading: false,
+      });
+      mockUseMoneyAccountBalance.mockReturnValue({
+        isBalanceFetchError: true,
+        isBalanceLoading: false,
+        refetchBalance: jest.fn().mockResolvedValue(undefined),
+        tokenTotal: undefined,
+        totalFiatFormatted: undefined,
+        vaultApyQuery: { isLoading: false },
+      });
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      expect(
+        screen.getByTestId('money-mfa-read-only-banner'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('money-balance-unavailable-banner'),
+      ).toBeInTheDocument();
     });
   });
 });

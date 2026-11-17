@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import log from 'loglevel';
 import type { MoneyAccountLifecycle } from '@metamask/money-account-lifecycle-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { useMoneyAccountAvailability } from './use-money-account-availability';
@@ -26,6 +27,7 @@ const REFRESH_ACTION = MoneyAccountLifecycleControllerQueryKeys.Refresh;
 export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
   const { availability } = useMoneyAccountAvailability();
   const address = availability.isAvailable ? availability.address : undefined;
+  const [refreshedAddress, setRefreshedAddress] = useState<string>();
 
   const query = useQuery({
     queryKey: [MoneyAccountLifecycleControllerQueryKeys.GetState, address],
@@ -40,23 +42,28 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
   const { refetch } = query;
 
   // Read the recorded state first, then refresh it so a migration performed on
-  // another device is picked up without blocking the first paint.
+  // another device is picked up without blocking surfaces that already know
+  // their lifecycle.
   useEffect(() => {
     if (!address) {
       return undefined;
     }
 
     let cancelled = false;
+
     const refresh = async () => {
       try {
         await submitRequestToBackground(REFRESH_ACTION);
-      } catch {
+      } catch (error) {
+        log.debug('[Money Account] Lifecycle refresh failed', error);
+      }
+
+      if (cancelled) {
         return;
       }
 
-      if (!cancelled) {
-        await refetch().catch(() => undefined);
-      }
+      await refetch().catch(() => undefined);
+      setRefreshedAddress(address);
     };
     refresh();
 
@@ -74,6 +81,9 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
   return {
     lifecycle,
     isReadOnly,
-    isLoading: Boolean(address) && query.isLoading,
+    isLoading:
+      Boolean(address) &&
+      (query.isLoading ||
+        (lifecycle === undefined && refreshedAddress !== address)),
   };
 }
