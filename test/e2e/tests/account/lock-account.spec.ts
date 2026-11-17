@@ -6,6 +6,8 @@ import {
   lockAndWaitForLoginPage,
   login,
 } from '../../page-objects/flows/login.flow';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 describe('Lock and unlock', function (this: Suite) {
   it('successfully unlocks after lock', async function () {
@@ -18,7 +20,10 @@ describe('Lock and unlock', function (this: Suite) {
         await login(driver);
 
         await lockAndWaitForLoginPage(driver);
-        await login(driver);
+        const loginPage = new LoginPage(driver);
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
       },
     );
   });

@@ -357,6 +357,8 @@ export async function setupSidePanelToolbarBehavior(
     return;
   }
 
+  registerPendingRouteListeners();
+
   applyEarlySidePanelToolbarBehavior(sidePanelApi);
 
   try {
