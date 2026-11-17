@@ -3095,6 +3095,18 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/money-account-lifecycle-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/chomp-api-service": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/subscription-controller": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
     "@metamask/money-account-upgrade-controller": {
       "globals": {
         "crypto.getRandomValues": true
