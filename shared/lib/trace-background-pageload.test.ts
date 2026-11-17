@@ -1,10 +1,16 @@
 import * as Sentry from '@sentry/browser';
-import { trace, trackServiceWorkerPageloadEnd, TraceName } from './trace';
+import { getEnvironmentType } from './environment-type';
+import { trace, trackBackgroundPageloadEnd, TraceName } from './trace';
+
+jest.mock('./environment-type', () => ({
+  ...jest.requireActual('./environment-type'),
+  getEnvironmentType: jest.fn(),
+}));
 
 // Real SDK, not mocks: `browserTracingIntegration` starts and ends the pageload
 // and leaves its trace id and sampling decision on the scope, as it does in the
-// service worker.
-describe('trace with no caller after the service-worker pageload ends (real SDK)', () => {
+// background.
+describe('trace with no caller after the background pageload ends (real SDK)', () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const globals = globalThis as { ServiceWorkerGlobalScope?: unknown };
   const NO_CALLER = TraceName.ContactSyncUpdateRemote;
@@ -22,12 +28,21 @@ describe('trace with no caller after the service-worker pageload ends (real SDK)
     delete globals.ServiceWorkerGlobalScope;
   });
 
-  function asServiceWorker() {
-    globals.ServiceWorkerGlobalScope = class {
-      static [Symbol.hasInstance](instance: unknown) {
-        return instance === globalThis;
-      }
-    };
+  // The service worker (`/service-worker.js`) and Firefox's persistent
+  // background page (`/background.html`) both resolve to the background.
+  function inContext(pathname: string) {
+    if (pathname === '/service-worker.js') {
+      globals.ServiceWorkerGlobalScope = class {
+        static [Symbol.hasInstance](instance: unknown) {
+          return instance === globalThis;
+        }
+      };
+    }
+    const { getEnvironmentType: actual } =
+      jest.requireActual('./environment-type');
+    jest
+      .mocked(getEnvironmentType)
+      .mockImplementation(() => actual(`chrome-extension://id${pathname}`));
   }
 
   /**
@@ -62,7 +77,7 @@ describe('trace with no caller after the service-worker pageload ends (real SDK)
     });
     Sentry.getCurrentScope().setClient(client);
     client.init();
-    trackServiceWorkerPageloadEnd(client);
+    trackBackgroundPageloadEnd(client);
 
     const pageload = Sentry.getActiveSpan() as Sentry.Span;
     expect(Sentry.spanToJSON(pageload).op).toBe('pageload');
@@ -80,12 +95,14 @@ describe('trace with no caller after the service-worker pageload ends (real SDK)
 
   // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
-    ['unsampled', 0],
-    ['sampled', 1],
+    ['service worker, unsampled', '/service-worker.js', 0],
+    ['service worker, sampled', '/service-worker.js', 1],
+    ['Firefox background page, unsampled', '/background.html', 0],
+    ['Firefox background page, sampled', '/background.html', 1],
   ])(
-    'starts a new trace drawn at its own rate after a %s pageload',
-    (_label: string, pageloadRate: number) => {
-      asServiceWorker();
+    'starts a new trace drawn at its own rate after the pageload (%s)',
+    (_label: string, pathname: string, pageloadRate: number) => {
+      inContext(pathname);
       const noCallerRate = 1 - pageloadRate;
       const pageloadTraceId = endPageload({
         pageload: pageloadRate,
@@ -103,7 +120,7 @@ describe('trace with no caller after the service-worker pageload ends (real SDK)
   );
 
   it('keeps the trace id of a running rooted span', () => {
-    asServiceWorker();
+    inContext('/service-worker.js');
     endPageload({ pageload: 0, noCaller: 1 });
 
     const result = trace(
@@ -118,6 +135,7 @@ describe('trace with no caller after the service-worker pageload ends (real SDK)
   });
 
   it('does not track a document pageload', () => {
+    inContext('/home.html');
     const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });
 
     const result = noCallerTrace();
