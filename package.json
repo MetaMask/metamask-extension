@@ -454,7 +454,7 @@
     "@metamask/eth-money-keyring": "^5.0.0",
     "@metamask/eth-money-mpc-keyring": "^0.3.1",
     "@metamask/eth-qr-keyring": "^3.0.2",
-    "@metamask/eth-sig-util": "^10.0.0",
+    "@metamask/eth-sig-util": "^10.0.1",
     "@metamask/eth-snap-keyring": "^24.1.2",
     "@metamask/eth-token-tracker": "^10.0.2",
     "@metamask/eth-trezor-keyring": "^11.0.2",

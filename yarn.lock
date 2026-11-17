@@ -8412,9 +8412,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eth-sig-util@npm:10.0.0"
+"@metamask/eth-sig-util@npm:^10.0.0, @metamask/eth-sig-util@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@metamask/eth-sig-util@npm:10.0.1"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/util": "npm:^9.1.0"
@@ -8423,7 +8423,7 @@ __metadata:
     "@metamask/utils": "npm:^12.0.2"
     "@noble/ciphers": "npm:^1.3.0"
     ethereum-cryptography: "npm:^3.2.0"
-  checksum: 10/95a8fcee07297eed497246b16b81374f16f38c405be0c541cced9a3844df7895e5cede020fcb924b1843f12ccd7f7658477439e04900c3ce85aadd5f622e1bb2
+  checksum: 10/0f3b3dff80e507f89ecba47150b17c9639f8de70dd535615db43a3e13f2f80e9c1c70bd26a4aa3e691f9ce04fa7572e4b4022bf5bdd2e4176477c5d6ded4aa3e
   languageName: node
   linkType: hard
 
@@ -35369,7 +35369,7 @@ __metadata:
     "@metamask/eth-money-keyring": "npm:^5.0.0"
     "@metamask/eth-money-mpc-keyring": "npm:^0.3.1"
     "@metamask/eth-qr-keyring": "npm:^3.0.2"
-    "@metamask/eth-sig-util": "npm:^10.0.0"
+    "@metamask/eth-sig-util": "npm:^10.0.1"
     "@metamask/eth-snap-keyring": "npm:^24.1.2"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^11.0.2"
