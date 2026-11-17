@@ -1,15 +1,35 @@
-import React from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PopoverPosition } from '../../component-library';
+import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Tooltip } from '../../../pages/bridge/layout';
+
+/**
+ * Whether the current browser supports Interest Invokers (`interestfor`,
+ * Chromium 141+), which power the native tooltip. Exposed as a mutable object
+ * so tests can exercise both the native and fallback code paths.
+ */
+export const rebateTooltipInterestSupport = {
+  detected:
+    typeof HTMLButtonElement !== 'undefined' &&
+    'interestFor' in HTMLButtonElement.prototype,
+};
+
+/**
+ * Grace period before the fallback tooltip closes, so the pointer can move
+ * onto the tooltip text (WCAG 1.4.13 Hoverable).
+ */
+const FALLBACK_TOOLTIP_CLOSE_DELAY_MS = 300;
 
 type RebateBannerProps = {
   /**
@@ -28,6 +48,12 @@ type RebateBannerProps = {
  *
  * Product-specific wrappers own eligibility and data fetching. This component
  * only renders the common copy and educational tooltip.
+ *
+ * The tooltip opens on hover, focus and (on Chromium 141+) touch via native
+ * Interest Invokers, and its `popover="hint"` panel renders in the top layer,
+ * so it stays readable above modal overlays. Browsers without Interest
+ * Invokers fall back to a hover/focus-triggered `Popover` whose z-index sits
+ * above the modal layer (1050).
  */
 export const RebateBanner = ({
   rebatePercent,
@@ -35,10 +61,97 @@ export const RebateBanner = ({
   className,
 }: RebateBannerProps) => {
   const t = useI18nContext();
+  const nativePopoverId = useId();
+  const fallbackPopoverId = useId();
+  const [triggerElement, setTriggerElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [isFallbackTooltipOpen, setIsFallbackTooltipOpen] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Mirrors of hover/focus state, read by the close scheduler so that one
+  // trigger going away (e.g. blur) does not close the tooltip while the
+  // other (e.g. pointer over the tooltip) is still active.
+  const isPointerOverRef = useRef(false);
+  const isTriggerFocusedRef = useRef(false);
+
+  const openFallbackTooltip = useCallback(() => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setIsFallbackTooltipOpen(true);
+  }, []);
+
+  const scheduleFallbackClose = useCallback(() => {
+    if (isPointerOverRef.current || isTriggerFocusedRef.current) {
+      return;
+    }
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      closeTimeoutRef.current = null;
+      setIsFallbackTooltipOpen(false);
+    }, FALLBACK_TOOLTIP_CLOSE_DELAY_MS);
+  }, []);
+
+  const handlePointerEnter = useCallback(() => {
+    isPointerOverRef.current = true;
+    openFallbackTooltip();
+  }, [openFallbackTooltip]);
+
+  const handlePointerLeave = useCallback(() => {
+    isPointerOverRef.current = false;
+    scheduleFallbackClose();
+  }, [scheduleFallbackClose]);
+
+  const handleTriggerFocus = useCallback(() => {
+    isTriggerFocusedRef.current = true;
+    openFallbackTooltip();
+  }, [openFallbackTooltip]);
+
+  const handleTriggerBlur = useCallback(() => {
+    isTriggerFocusedRef.current = false;
+    scheduleFallbackClose();
+  }, [scheduleFallbackClose]);
+
+  // Escape unmounts the tooltip without a mouseleave, so the mirrored
+  // interaction refs must be reset here or they go stale and block later
+  // close scheduling.
+  const dismissFallbackTooltip = useCallback(() => {
+    isPointerOverRef.current = false;
+    isTriggerFocusedRef.current = false;
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setIsFallbackTooltipOpen(false);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   if (rebatePercent <= 0) {
     return null;
   }
+
+  const isNativeTooltip = rebateTooltipInterestSupport.detected;
+
+  const tooltipContent = (
+    <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+      <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
+        {t('rebateTooltipTitle')}
+      </Text>
+      <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+        {t('rebateTooltipContent', [rebatePercent])}
+      </Text>
+    </Box>
+  );
 
   return (
     <Box
@@ -51,6 +164,12 @@ export const RebateBanner = ({
           : 'w-full rounded-lg bg-muted px-3 py-2'
       }
       data-testid={testId}
+      {...(isNativeTooltip
+        ? {}
+        : {
+            onMouseEnter: handlePointerEnter,
+            onMouseLeave: handlePointerLeave,
+          })}
     >
       <img src="./images/money.png" width={16} height={16} alt="" />
       <Text
@@ -60,15 +179,61 @@ export const RebateBanner = ({
       >
         {t('rebateBanner', [rebatePercent])}
       </Text>
-      <Tooltip
-        title={t('rebateTooltipTitle')}
-        position={PopoverPosition.TopEnd}
-        offset={[16, 16]}
-        // Must paint above the sticky CTA footer (z-10).
-        style={{ zIndex: 20 }}
+      <button
+        type="button"
+        ref={setTriggerElement}
+        className="border-0 bg-transparent p-0"
+        onClick={(event) => event.stopPropagation()}
+        onFocus={isNativeTooltip ? undefined : handleTriggerFocus}
+        onBlur={isNativeTooltip ? undefined : handleTriggerBlur}
+        aria-label={t('rebateTooltipTitle')}
+        aria-describedby={
+          !isNativeTooltip && isFallbackTooltipOpen
+            ? fallbackPopoverId
+            : undefined
+        }
+        // @ts-expect-error React types do not include interestfor yet.
+        interestfor={isNativeTooltip ? nativePopoverId : undefined} // eslint-disable-line react/no-unknown-property
+        data-testid={`${testId}-tooltip-trigger`}
       >
-        {t('rebateTooltipContent', [rebatePercent])}
-      </Tooltip>
+        <Icon
+          name={IconName.Info}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+        />
+      </button>
+      {isNativeTooltip ? (
+        <div
+          id={nativePopoverId}
+          // @ts-expect-error React types do not include popover yet.
+          popover="hint"
+          onClick={(event) => event.stopPropagation()}
+          onKeyDown={(event) => event.stopPropagation()}
+          data-testid={`${testId}-tooltip`}
+          className="m-0 max-w-[264px] rounded-lg border border-border-muted bg-background-default p-4 text-start text-text-default shadow-md [position-area:bottom]"
+        >
+          {tooltipContent}
+        </div>
+      ) : (
+        <Popover
+          id={fallbackPopoverId}
+          isOpen={isFallbackTooltipOpen}
+          referenceElement={triggerElement}
+          position={PopoverPosition.TopEnd}
+          offset={[16, 16]}
+          hasArrow
+          isPortal
+          preventOverflow
+          flip
+          onPressEscKey={dismissFallbackTooltip}
+          onMouseEnter={handlePointerEnter}
+          onMouseLeave={handlePointerLeave}
+          style={{ maxWidth: '264px', zIndex: 1051 }}
+          data-testid={`${testId}-tooltip`}
+        >
+          {tooltipContent}
+        </Popover>
+      )}
     </Box>
   );
 };
