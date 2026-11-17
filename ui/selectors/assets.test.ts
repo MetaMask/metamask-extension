@@ -1820,6 +1820,19 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
     });
 
+    it('returns false while the account tree is syncing after an SRP import', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.isAccountTreeSyncingInProgress = true;
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+      };
+      state.metamask.assetsBackgroundLoadingStatus = {
+        account1: 'loaded',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
     it('returns false while the first asset load is in progress', () => {
       const state = createMockStateWithEVMNetworks();
       state.metamask.assetsLoadingStatus = {

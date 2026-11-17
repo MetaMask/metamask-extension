@@ -1388,8 +1388,10 @@ export const selectIsAssetsLoadingForSelectedAccountGroup = createSelector(
  *
  * An absent status means the first load has not started yet. Treating that as
  * loaded briefly exposes placeholder zero balances before the controller marks
- * the accounts as loading. The background phase must also settle because it
- * supplies the remaining RPC/Snap assets, metadata, prices, and warnings.
+ * the accounts as loading. The account tree and background phase must also
+ * settle because SRP import discovers accounts asynchronously and the
+ * background phase supplies the remaining RPC/Snap assets, metadata, prices,
+ * and warnings.
  *
  * @param state - Redux state containing the account tree and AssetsController state.
  * @returns True once the initial and background loads have settled.
@@ -1406,7 +1408,7 @@ export const selectAssetsHaveLoadedForSelectedAccountGroup = createSelector(
     accountTreeState,
   ): boolean => {
     const selectedGroupId = accountTreeState.selectedAccountGroup;
-    if (!selectedGroupId) {
+    if (!selectedGroupId || accountTreeState.isAccountTreeSyncingInProgress) {
       return false;
     }
 
