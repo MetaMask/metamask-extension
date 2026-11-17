@@ -1,15 +1,11 @@
 import React, { useCallback } from 'react';
 import {
   twMerge,
-  Box,
-  BoxFlexDirection,
-  BoxAlignItems,
-  ButtonBase,
-  Text,
-  TextVariant,
-  TextColor,
-  FontWeight,
   AvatarTokenSize,
+  Box,
+  ContentVariant,
+  ListItem,
+  TextColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
@@ -170,114 +166,49 @@ export const TransactionCard = ({
   const hasInteractiveBadge =
     transaction.fill?.fillType === FillType.AutoDeleveraging;
 
-  const content = (
-    <>
-      <PerpsTokenLogo
-        symbol={transaction.symbol}
-        size={AvatarTokenSize.Md}
-        className="shrink-0"
-      />
-
-      <Box
-        className="min-w-0 flex-1"
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Start}
-        gap={1}
-      >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Text
-            fontWeight={FontWeight.Medium}
-            className="text-s-body-md @compact:text-s-body-sm"
-          >
-            {getTitleDisplay()}
-          </Text>
-          {!(isClickable && hasInteractiveBadge) && (
-            <PerpsFillTag transaction={transaction} screenName={screenName} />
-          )}
-        </Box>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {getSubtitleDisplay()}
-        </Text>
-      </Box>
-
-      <Box
-        className="shrink-0"
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.End}
-        gap={1}
-      >
-        <Text
-          fontWeight={FontWeight.Medium}
-          color={amountDisplay.color}
-          className="text-s-body-md @compact:text-s-body-sm"
-        >
-          {amountDisplay.text}
-        </Text>
-      </Box>
-    </>
-  );
-
-  const sharedClassName = twMerge(
-    'gap-4 px-4 py-3',
-    '[container-name:list-item] [container-type:inline-size]',
-    variantStyles,
-    showTopBorder && 'border-t border-background-default',
-  );
-
-  if (isClickable && hasInteractiveBadge) {
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        className={twMerge(
-          '[container-name:list-item] [container-type:inline-size]',
-          variantStyles,
-          showTopBorder && 'border-t border-background-default',
-        )}
-        data-testid={`transaction-card-${transaction.id}`}
-      >
-        <ButtonBase
-          className="flex-1 justify-start rounded-none min-w-0 h-auto text-left cursor-pointer gap-4 px-4 py-3 bg-transparent"
-          onClick={handleClick}
-        >
-          {content}
-        </ButtonBase>
-        <Box className="pr-4 shrink-0">
-          <PerpsFillTag transaction={transaction} screenName={screenName} />
-        </Box>
-      </Box>
-    );
-  }
-
-  if (isClickable) {
-    return (
-      <ButtonBase
-        className={twMerge(
-          'justify-start rounded-none min-w-0 h-auto text-left cursor-pointer',
-          sharedClassName,
-        )}
-        isFullWidth
-        onClick={handleClick}
-        data-testid={`transaction-card-${transaction.id}`}
-      >
-        {content}
-      </ButtonBase>
-    );
-  }
-
   return (
-    <Box
-      className={sharedClassName}
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
+    <ListItem
+      variant={ContentVariant.TwoLines}
+      isInteractive={isClickable}
+      onClick={isClickable ? handleClick : undefined}
+      className={twMerge(
+        '[container-name:list-item] [container-type:inline-size]',
+        variantStyles,
+        showTopBorder && 'border-t border-background-default',
+      )}
       data-testid={`transaction-card-${transaction.id}`}
-    >
-      {content}
-    </Box>
+      avatar={
+        <PerpsTokenLogo
+          symbol={transaction.symbol}
+          size={AvatarTokenSize.Md}
+          className="shrink-0"
+        />
+      }
+      title={getTitleDisplay()}
+      titleProps={{ className: 'text-s-body-md @compact:text-s-body-sm' }}
+      titleEndAccessory={
+        isClickable && hasInteractiveBadge ? undefined : (
+          <PerpsFillTag transaction={transaction} screenName={screenName} />
+        )
+      }
+      description={getSubtitleDisplay()}
+      value={amountDisplay.text}
+      valueProps={{
+        color: amountDisplay.color,
+        className: 'text-s-body-md @compact:text-s-body-sm text-right',
+      }}
+      endAccessory={
+        isClickable && hasInteractiveBadge ? (
+          <Box
+            className="shrink-0"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <PerpsFillTag transaction={transaction} screenName={screenName} />
+          </Box>
+        ) : undefined
+      }
+      accessoryGap={isClickable && hasInteractiveBadge ? 4 : undefined}
+    />
   );
 };
 
