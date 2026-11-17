@@ -7940,6 +7940,14 @@
         "string.prototype.matchall>es-abstract>is-regex": true
       }
     },
+    "@metamask/eth-json-rpc-middleware>safe-stable-stringify": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
     "remote-redux-devtools>socketcluster-client>sc-channel": {
       "packages": {
         "remote-redux-devtools>socketcluster-client>component-emitter": true
