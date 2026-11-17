@@ -55,6 +55,20 @@ async function main(): Promise<void> {
   const resolved = JSON.parse(fs.readFileSync(argv.resolve, 'utf8'));
 
   const result: Record<string, unknown> = { identical: false };
+  const baseRef = resolved.base;
+  const headRef = resolved.head;
+  // Equal source hashes, or the same donor run, are what main.yml trusts to
+  // reuse one build for both commits, so no zip needs reading.
+  if (
+    baseRef.run === headRef.run ||
+    (baseRef.sourceHash && baseRef.sourceHash === headRef.sourceHash)
+  ) {
+    result.identical = true;
+    result.via = baseRef.run === headRef.run ? 'same-run' : 'source-hash';
+    fs.writeFileSync(argv.out, JSON.stringify(result, null, 2));
+    console.log(JSON.stringify(result));
+    return;
+  }
   try {
     const same: boolean[] = [];
     for (const browser of ['chrome', 'firefox']) {

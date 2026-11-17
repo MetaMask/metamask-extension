@@ -10,6 +10,9 @@ export type BuildRef = {
   run: string;
   // Extension version in package.json at that commit, which names the zips.
   version: string;
+  // main.yml's `build-source-hash` status for the commit: equal hashes mean
+  // the same build inputs, which main.yml itself treats as reusable builds.
+  sourceHash?: string;
 };
 
 export type ResolveResult =

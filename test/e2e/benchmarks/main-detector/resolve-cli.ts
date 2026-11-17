@@ -47,21 +47,44 @@ async function exists(url: string): Promise<boolean> {
   return false;
 }
 
+// main.yml posts these two statuses on every commit it builds. builds-from-run
+// names the run that holds the zips, which is a donor run when builds were reused.
+function statusesOf(sha: string): Record<string, string> {
+  const text = run('gh', [
+    'api',
+    `repos/${REPOSITORY}/commits/${sha}/status?per_page=100`,
+    '--jq',
+    '[.statuses[] | select(.context == "build-source-hash" or .context == "builds-from-run") | {(.context): .description}] | add // {}',
+  ]);
+  return JSON.parse(text || '{}');
+}
+
 async function lookup(sha: string): Promise<BuildRef | undefined> {
   const version = versionOf(sha);
-  const runs = run('gh', [
-    'api',
-    `repos/${REPOSITORY}/actions/workflows/main.yml/runs?head_sha=${sha}&event=push&per_page=20`,
-    '--jq',
-    '.workflow_runs | sort_by(.created_at) | reverse | .[].id',
-  ])
-    .split('\n')
-    .filter(Boolean);
-  for (const id of runs) {
+  const statuses = statusesOf(sha);
+  const sourceHash = statuses['build-source-hash'];
+  const reuse = statuses['builds-from-run'];
+  // Without the status (best-effort on main.yml's side), fall back to the
+  // commit's own push runs.
+  const candidates = reuse
+    ? [reuse]
+    : run('gh', [
+        'api',
+        `repos/${REPOSITORY}/actions/workflows/main.yml/runs?head_sha=${sha}&event=push&per_page=20`,
+        '--jq',
+        '.workflow_runs | sort_by(.created_at) | reverse | .[].id',
+      ])
+        .split('\n')
+        .filter(Boolean);
+  for (const id of candidates) {
     const chrome = `${HOST}/${id}/build-test-webpack/builds/metamask-chrome-${version}.zip`;
     const firefox = `${HOST}/${id}/build-test-mv2-webpack/builds/metamask-firefox-${version}.zip`;
-    if ((await exists(chrome)) && (await exists(firefox))) {
-      return { sha, run: id, version };
+    const [hasChrome, hasFirefox] = await Promise.all([
+      exists(chrome),
+      exists(firefox),
+    ]);
+    if (hasChrome && hasFirefox) {
+      return { sha, run: id, version, sourceHash };
     }
   }
   return undefined;
