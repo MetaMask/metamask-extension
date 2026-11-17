@@ -18,6 +18,13 @@ import {
 import { getNativeAssetId } from '../asset-utils';
 import { toChecksumHexAddress } from '../hexstring-utils';
 
+/** SLIP-44 coin type of a native token, by chain, where it is not 60 (ETH). */
+const SLIP44_COIN_TYPE_BY_CHAIN: Partial<Record<Hex, number>> = {
+  [CHAIN_IDS.POLYGON]: 966,
+};
+
+const DEFAULT_SLIP44_COIN_TYPE = 60;
+
 /** EVM token identified by its Hex chain ID and token address. */
 export type EvmTokenReference = {
   address: Hex;
@@ -85,16 +92,27 @@ export function encodeEvmAssetId({
   ].some(
     (nativeAddress) => address.toLowerCase() === nativeAddress.toLowerCase(),
   );
-  const nativeAssetId = isNative ? getNativeAssetId(chainId) : undefined;
+  const chainReference = hexToBigInt(chainId).toString();
 
-  return (
-    nativeAssetId ??
-    toCaipAssetType(
-      KnownCaipNamespace.Eip155,
-      hexToBigInt(chainId).toString(),
-      'erc20',
-      toChecksumHexAddress(address),
-    )
+  if (isNative) {
+    // Chains without a known native asset, such as custom networks, fall back
+    // to the SLIP-44 asset ID that `TransactionPayController` uses.
+    return (
+      getNativeAssetId(chainId) ??
+      toCaipAssetType(
+        KnownCaipNamespace.Eip155,
+        chainReference,
+        'slip44',
+        String(SLIP44_COIN_TYPE_BY_CHAIN[chainId] ?? DEFAULT_SLIP44_COIN_TYPE),
+      )
+    );
+  }
+
+  return toCaipAssetType(
+    KnownCaipNamespace.Eip155,
+    chainReference,
+    'erc20',
+    toChecksumHexAddress(address),
   );
 }
 

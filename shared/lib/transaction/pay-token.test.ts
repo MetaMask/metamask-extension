@@ -78,6 +78,12 @@ describe('pay-token', () => {
       ).toBe('eip155:137/slip44:966');
     });
 
+    it('falls back to the slip44 asset ID for the native token of an unknown chain', () => {
+      expect(encodeEvmAssetId({ address: ZERO_ADDRESS, chainId: '0x64' })).toBe(
+        'eip155:100/slip44:60',
+      );
+    });
+
     it('treats the zero address as native POL on Polygon', () => {
       expect(
         encodeEvmAssetId({ address: ZERO_ADDRESS, chainId: CHAIN_IDS.POLYGON }),
