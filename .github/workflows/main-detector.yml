@@ -82,28 +82,11 @@ jobs:
           fi
 
           base=$(jq -r .base.sha resolve.json)
-          identical=true
-          for browser in chrome firefox; do
-            for side in base head; do
-              run=$(jq -r ".$side.run" resolve.json)
-              version=$(jq -r ".$side.version" resolve.json)
-              if [[ "$browser" == firefox ]]; then
-                path="build-test-mv2-webpack/builds/metamask-firefox-$version.zip"
-              else
-                path="build-test-webpack/builds/metamask-chrome-$version.zip"
-              fi
-              curl --fail --silent --show-error --retry 5 --retry-all-errors \
-                --output "$side-$browser.zip" "$DETECTOR_HOST/$run/$path"
-              mkdir -p "pair/$browser/$side"
-              unzip -q "$side-$browser.zip" -d "pair/$browser/$side"
-            done
-            yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts --browser "$browser" \
-              --base-source "pair/$browser/base" --head-source "pair/$browser/head" \
-              --out "pair-$browser.json" > /dev/null
-            a=$(jq -r .builds.A.contentHash "pair-$browser.json")
-            b=$(jq -r .builds.B.contentHash "pair-$browser.json")
-            [[ "$a" == "$b" ]] || identical=false
-          done
+          # Compares each zip's file list (names, sizes, CRCs) from its central
+          # directory with range requests, so identical builds exit without downloads.
+          yarn tsx test/e2e/benchmarks/main-detector/compare-builds-cli.ts \
+            --resolve resolve.json --out compare.json > /dev/null
+          identical=$(jq -r .identical compare.json)
 
           # Identical builds need no jobs; 1 in 10 of them run as a false-alarm canary.
           canary=false
