@@ -1,7 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import type { TokensControllerState } from '@metamask/assets-controllers';
 import type { RootMessenger } from '../../lib/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 
 export type TokensCompatState = {
   allTokens: TokensControllerState['allTokens'];
@@ -41,10 +40,6 @@ const registeredRoots = new WeakSet<object>();
 export function getTokensCompatState(
   messenger: CompatRootMessenger,
 ): TokensCompatState {
-  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-    return EMPTY_TOKENS_STATE;
-  }
-
   try {
     const transactionPayState = messenger.call(
       'AssetsController:getStateForTransactionPay',

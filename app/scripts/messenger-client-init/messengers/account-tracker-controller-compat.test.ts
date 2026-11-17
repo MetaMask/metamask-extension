@@ -1,21 +1,11 @@
 import { Messenger } from '@metamask/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   getAccountTrackerCompatState,
   registerAccountTrackerGetStateCompat,
 } from './account-tracker-controller-compat';
 
-jest.mock('../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
-}));
-
 describe('account-tracker-controller-compat', () => {
-  beforeEach(() => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
-  });
-
   it('provides AccountTrackerController state backed by AssetsController pay state', () => {
     const messenger = getRootMessenger<never, never>();
     const assetsControllerMessenger = new Messenger({
@@ -59,20 +49,6 @@ describe('account-tracker-controller-compat', () => {
           call: (actionType: string, ...args: unknown[]) => unknown;
         },
       ),
-    ).toStrictEqual({
-      accountsByChainId: {},
-    });
-  });
-
-  it('provides empty AccountTrackerController state when assets are excluded', () => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
-    const messenger = getRootMessenger<never, never>();
-
-    registerAccountTrackerGetStateCompat(messenger);
-
-    expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (messenger as any).call('AccountTrackerController:getState'),
     ).toStrictEqual({
       accountsByChainId: {},
     });

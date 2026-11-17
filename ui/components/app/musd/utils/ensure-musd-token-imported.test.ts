@@ -18,11 +18,6 @@ jest.mock('../../../../../shared/lib/selectors/accounts', () => ({
   })),
 }));
 
-jest.mock('../../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../../shared/lib/environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
-}));
-
 describe('ensureMusdTokenImportedForChain', () => {
   const mockDispatch = jest.fn();
 

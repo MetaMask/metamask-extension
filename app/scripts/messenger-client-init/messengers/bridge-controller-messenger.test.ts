@@ -1,21 +1,11 @@
 import { Messenger } from '@metamask/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
 
-jest.mock('../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
-}));
-
 describe('getBridgeControllerMessenger', () => {
-  beforeEach(() => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
-  });
-
   it('returns a restricted messenger', () => {
     const messenger = getRootMessenger<never, never>();
     const BridgeControllerMessenger = getBridgeControllerMessenger(messenger);

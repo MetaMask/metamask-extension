@@ -1,6 +1,5 @@
 import { Messenger } from '@metamask/messenger';
 import type { RootMessenger } from '../../lib/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 
 export type AccountTrackerCompatState = {
   accountsByChainId: Record<
@@ -39,10 +38,6 @@ const registeredRoots = new WeakSet<object>();
 export function getAccountTrackerCompatState(
   messenger: CompatRootMessenger,
 ): AccountTrackerCompatState {
-  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-    return EMPTY_ACCOUNT_TRACKER_STATE;
-  }
-
   try {
     const transactionPayState = messenger.call(
       'AssetsController:getStateForTransactionPay',

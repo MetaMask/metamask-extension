@@ -21,18 +21,6 @@ import { AssetType } from '../../../shared/constants/transaction';
 import { useTokenAssetSecurityResults } from '../../hooks/token-asset/useTokenAssetSecurityResults';
 import { TokenManagementPage } from './token-management';
 
-/**
- * This suite seeds AssetsController fields (`customAssets`, `assetsInfo`,
- * `assetPreferences`). Override the global jest setup mock so migration
- * selectors resolve those fields instead of legacy TokensController slices.
- */
-jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
-  ...jest.requireActual(
-    '../../../shared/lib/assets-unify-state/remote-feature-flag',
-  ),
-  isAssetsUnifyStateFeatureEnabled: () => true,
-}));
-
 jest.mock('../../hooks/token-asset/useTokenAssetSecurityResults', () => ({
   useTokenAssetSecurityResults: jest.fn(() => ({})),
 }));

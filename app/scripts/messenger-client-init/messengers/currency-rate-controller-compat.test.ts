@@ -1,15 +1,9 @@
 import { Messenger } from '@metamask/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   getCurrencyRateCompatState,
   registerCurrencyRateGetStateCompat,
 } from './currency-rate-controller-compat';
-
-jest.mock('../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
-}));
 
 // Tempo mainnet (0x1079) has no native asset. Its USD rate is derived from token prices.
 const tempoPathUsdAssetId =
@@ -18,10 +12,6 @@ const tempoBridgedUsdcAssetId =
   'eip155:4217/erc20:0x20c0000000000000000000000000000000000001';
 
 describe('currency-rate-controller-compat', () => {
-  beforeEach(() => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
-  });
-
   it('provides CurrencyRateController state backed by AssetsController pay state', () => {
     const messenger = getRootMessenger<never, never>();
     const assetsControllerMessenger = new Messenger({
@@ -102,21 +92,6 @@ describe('currency-rate-controller-compat', () => {
           usdConversionRate: 2500,
         },
       },
-    });
-  });
-
-  it('provides empty CurrencyRateController state when assets are excluded', () => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
-    const messenger = getRootMessenger<never, never>();
-
-    registerCurrencyRateGetStateCompat(messenger);
-
-    expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (messenger as any).call('CurrencyRateController:getState'),
-    ).toStrictEqual({
-      currencyRates: {},
-      currentCurrency: '',
     });
   });
 

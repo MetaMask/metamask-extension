@@ -3,11 +3,6 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { FungibleAssetPrice } from '@metamask/assets-controller';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import {
-  ASSETS_UNIFY_STATE_FLAG,
-  ASSETS_UNIFY_STATE_VERSION_1,
-} from '../assets-unify-state/remote-feature-flag';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
-import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
   getTokensControllerAllIgnoredTokens,
@@ -23,31 +18,6 @@ import {
   getRatesControllerRates,
   getRatesControllerFiatCurrency,
 } from './assets-migration';
-
-// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// and provide the pure flag-evaluation logic without the IN_TEST bypass
-// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
-// so using jest.requireActual here would make the function always return true,
-// breaking all "when disabled" test cases).
-jest.mock('../assets-unify-state/remote-feature-flag', () => ({
-  ...jest.requireActual('../assets-unify-state/remote-feature-flag'),
-  isAssetsUnifyStateFeatureEnabled: jest.fn(
-    (
-      featureFlag:
-        | { enabled: boolean; featureVersion: string }
-        | undefined
-        | null,
-      featureVersion: string,
-    ) =>
-      Boolean(featureFlag?.enabled) &&
-      featureFlag?.featureVersion === featureVersion,
-  ),
-}));
-
-jest.mock('../environment', () => ({
-  ...jest.requireActual('../environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
-}));
 
 const mockAccountId = 'mock-account-id-1';
 const mockAccountId2 = 'mock-account-id-2';
@@ -86,14 +56,6 @@ const bitcoinNativeAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 const mockAccountId3 = 'mock-account-id-3';
 const mockAccountAddressLowercase2: Hex =
   '0x1234567890abcdef1234567890abcdef12345678';
-const enabledFlags = {
-  remoteFeatureFlags: {
-    [ASSETS_UNIFY_STATE_FLAG]: {
-      enabled: true,
-      featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-    },
-  },
-};
 
 type MakeMockPriceOverrides = {
   // Allow `null` so edge-case fixtures can exercise non-finite market data.
@@ -136,7 +98,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
   it('derives accountsByChainId from new state structure', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         accountsByChainId: {},
         assetsInfo: {
           [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -178,7 +139,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     it('handles multiple chains for the same EVM account', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -212,7 +172,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
       const zeroDecNativeId = 'eip155:42/slip44:60';
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [zeroDecNativeId]: { type: 'native', decimals: 0 },
@@ -245,7 +204,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -275,7 +233,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     it('skips non-native assets (ERC-20) from accountsByChainId', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -308,7 +265,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     it('truncates fractional digits exceeding decimals in parseBalanceWithDecimals', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 2 },
@@ -338,7 +294,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     it('does not crash when amount is in scientific notation (e.g. "1e-18")', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -371,7 +326,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     it('does not crash when amount has absurd scientific notation exponent (e.g. "1e-18000000000000000000")', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -404,7 +358,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     it('correctly parses positive scientific notation (e.g. "1.5e2" with 2 decimals)', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 2 },
@@ -439,7 +392,6 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     it('skips a non-EVM native asset stored under an EVM account', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -482,7 +434,6 @@ describe('getTokensControllerAllTokens', () => {
   it('derives allTokens from new state structure', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         allTokens: {},
         allIgnoredTokens: {},
         assetsInfo: {
@@ -537,7 +488,6 @@ describe('getTokensControllerAllTokens', () => {
     it('includes tokens from customAssets not present in assetsBalance', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
           assetsInfo: {
@@ -580,7 +530,6 @@ describe('getTokensControllerAllTokens', () => {
     it('deduplicates tokens present in both assetsBalance and customAssets', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
           assetsInfo: {
@@ -620,7 +569,6 @@ describe('getTokensControllerAllTokens', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef' as CaipAssetType;
       const state = {
         metamask: {
-          ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
           assetsInfo: {},
@@ -649,7 +597,6 @@ describe('getTokensControllerAllTokens', () => {
     it('skips native assets from allTokens (only ERC-20s)', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
           assetsInfo: {
@@ -685,7 +632,6 @@ describe('getTokensControllerAllTokens', () => {
     it('skips a non-EVM token stored under an EVM account', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
           assetsInfo: {
@@ -744,7 +690,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
   it('derives allIgnoredTokens from new state structure', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         allIgnoredTokens: {},
         allTokens: {},
         assetPreferences: {
@@ -779,7 +724,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
     it('skips preferences with hidden set to false', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
 
@@ -805,7 +749,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
     it('applies hidden tokens to all EVM accounts', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
           assetPreferences: {
@@ -861,7 +804,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
   it('derives tokenBalances from new state structure', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         tokenBalances: {},
         assetsInfo: {
           [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -900,7 +842,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
 
     const state = {
       metamask: {
-        ...enabledFlags,
         tokenBalances: {},
         assetsInfo: {
           [customTokenAssetId]: {
@@ -931,7 +872,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
   it('does not overwrite real balance with zero placeholder', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         tokenBalances: {},
         assetsInfo: {
           [erc20AssetId]: { type: 'erc20', decimals: 6 },
@@ -957,7 +897,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
   it('skips custom non-EVM tokens', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         tokenBalances: {},
         assetsInfo: {
           [solanaTokenAssetId]: {
@@ -984,7 +923,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const state = {
         metamask: {
-          ...enabledFlags,
           tokenBalances: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -1017,7 +955,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
     it('skips a non-EVM asset stored under an EVM account', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           tokenBalances: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -1058,7 +995,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
     it('handles multiple EVM accounts', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           tokenBalances: {},
           assetsInfo: {
             [erc20AssetId]: { type: 'erc20', decimals: 6 },
@@ -1107,7 +1043,6 @@ describe('getTokenBalancesControllerTokenBalances', () => {
       const zeroAddress: Hex = '0x0000000000000000000000000000000000000000';
       const state = {
         metamask: {
-          ...enabledFlags,
           tokenBalances: {},
           assetsInfo: {
             [nativePolygonAssetId]: { type: 'native', decimals: 18 },
@@ -1134,7 +1069,6 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
   it('derives accountsAssets from new state structure for non-EVM accounts only', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         accountsAssets: {},
         assetsBalance: {
           [mockAccountId]: {
@@ -1174,7 +1108,6 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112' as CaipAssetType;
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsAssets: {},
           assetsBalance: {
             [mockAccountId2]: {
@@ -1207,7 +1140,6 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     it('filters out EIP155 assets for non-EVM accounts', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsAssets: {},
           assetsBalance: {
             [mockAccountId2]: {
@@ -1234,7 +1166,6 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     it('returns empty array when non-EVM account has only EIP155 assets', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsAssets: {},
           assetsBalance: {
             [mockAccountId2]: {
@@ -1263,7 +1194,6 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
   it('derives assetsMetadata from assetsInfo for non-EIP155 assets only', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         assetsMetadata: {},
         assetsInfo: {
           [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -1306,7 +1236,6 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
     it('defaults iconUrl to empty string when image is undefined', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsMetadata: {},
           assetsInfo: {
             [solanaTokenAssetId]: {
@@ -1326,7 +1255,6 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
     it('excludes EIP155 assets from multichain metadata', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsMetadata: {},
           assetsInfo: {
             [nativeEthAssetId]: {
@@ -1355,7 +1283,6 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
   it('derives allIgnoredAssets from assetPreferences for non-EVM accounts only', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         allIgnoredAssets: {},
         assetPreferences: {
           [erc20AssetId]: { hidden: true },
@@ -1387,7 +1314,6 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     it('skips preferences with hidden set to false', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredAssets: {},
           assetPreferences: {
             [solanaTokenAssetId]: { hidden: false },
@@ -1410,7 +1336,6 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     it('skips EIP155 assets from ignored assets list', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredAssets: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
@@ -1433,7 +1358,6 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     it('skips EVM accounts entirely', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredAssets: {},
           assetPreferences: {
             [solanaTokenAssetId]: { hidden: true },
@@ -1460,7 +1384,6 @@ describe('getMultiChainBalancesControllerBalances', () => {
   it('derives balances from new state structure for non-EVM accounts only', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         balances: {},
         assetsInfo: {
           [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -1509,7 +1432,6 @@ describe('getCurrencyRateControllerCurrentCurrency', () => {
   it('returns selectedCurrency from new state', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         currentCurrency: 'eur',
         selectedCurrency: 'usd' as const,
       },
@@ -1519,29 +1441,13 @@ describe('getCurrencyRateControllerCurrentCurrency', () => {
     expect(result).toBe('usd');
   });
 
-  it('returns currentCurrency when unify state is disabled', () => {
-    const state = {
-      metamask: {
-        currentCurrency: 'eur',
-      },
-    };
-
-    expect(getCurrencyRateControllerCurrentCurrency(state)).toBe('eur');
-  });
-
   it('falls back to usd when no currency is stored', () => {
     expect(
       getCurrencyRateControllerCurrentCurrency({
         metamask: {},
-      }),
-    ).toBe('usd');
-
-    expect(
-      getCurrencyRateControllerCurrentCurrency({
-        metamask: {
-          ...enabledFlags,
-        },
-      }),
+      } as unknown as Parameters<
+        typeof getCurrencyRateControllerCurrentCurrency
+      >[0]),
     ).toBe('usd');
   });
 });
@@ -1552,7 +1458,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
     const mockNonFungibleAssetId = 'eip155:137/slip44:987654321';
     const state = {
       metamask: {
-        ...enabledFlags,
         currentCurrency: 'eur',
         selectedCurrency: 'eur',
         currencyRates: {},
@@ -1616,7 +1521,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
   it('derives the USD rate from the most recently updated price on a USD-native chain', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         currencyRates: {},
         assetsInfo: {
           [tempoPathUsdAssetId]: {
@@ -1665,7 +1569,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
     ({ price, usdPrice }: { price: number; usdPrice: number }) => {
       const state = {
         metamask: {
-          ...enabledFlags,
           currencyRates: {},
           assetsInfo: {
             [tempoPathUsdAssetId]: {
@@ -1693,7 +1596,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
   it('does not derive a USD rate from a price outside Tempo', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         currencyRates: {},
         assetsInfo: {
           [erc20AssetId]: {
@@ -1725,7 +1627,6 @@ describe('getTokenRatesControllerMarketData', () => {
     const usdcPriceInUsd = 1;
     const state = {
       metamask: {
-        ...enabledFlags,
         marketData: {},
         currentCurrency: 'usd',
         selectedCurrency: 'usd',
@@ -1805,7 +1706,6 @@ describe('getTokenRatesControllerMarketData', () => {
   it('prices tokens on a USD-native chain with no native asset in USD', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         marketData: {},
         currentCurrency: 'eur',
         selectedCurrency: 'eur',
@@ -1862,7 +1762,6 @@ describe('getTokenRatesControllerMarketData', () => {
     it('skips non-EIP155 assets from marketData', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1904,7 +1803,6 @@ describe('getTokenRatesControllerMarketData', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1939,7 +1837,6 @@ describe('getTokenRatesControllerMarketData', () => {
     it('skips assets when native currency conversion rate is unavailable', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1968,7 +1865,6 @@ describe('getTokenRatesControllerMarketData', () => {
       const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -2001,7 +1897,6 @@ describe('getTokenRatesControllerMarketData', () => {
       const ethPrice = 2500;
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -2060,7 +1955,6 @@ describe('getTokenRatesControllerMarketData', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -2102,7 +1996,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     const lastUpdated = 1700000000000;
     const state = {
       metamask: {
-        ...enabledFlags,
         assetsPrice: {
           [nativeEthAssetId]: {
             assetPriceType: 'fungible' as const,
@@ -2186,7 +2079,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('returns empty result when only EVM assets exist in assetsPrice', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsPrice: {
             [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
             [erc20AssetId]: makeMockPrice({ id: 'usdc', price: 1 }),
@@ -2202,7 +2094,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       const lastUpdated = 1700000000000;
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsPrice: {
             [solanaTokenAssetId]: makeMockPrice({
               id: 'sol-usdc',
@@ -2233,7 +2124,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('omits non-finite market data fields instead of stringifying them', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsPrice: {
             [solanaTokenAssetId]: {
               ...makeMockPrice({
@@ -2262,7 +2152,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('handles empty assetsPrice', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsPrice: {},
         },
       };
@@ -2281,7 +2170,6 @@ describe('getRatesControllerRates', () => {
     const lastUpdated = 1700000000000;
     const state = {
       metamask: {
-        ...enabledFlags,
         rates: {},
         assetsInfo: {
           [nativeEthAssetId]: {
@@ -2343,7 +2231,6 @@ describe('getRatesControllerRates', () => {
     const lastUpdated = 1700000000000;
     const state = {
       metamask: {
-        ...enabledFlags,
         rates: {},
         assetsInfo: {
           [solanaSplMissingSymbolAssetId]: {
@@ -2382,7 +2269,6 @@ describe('getRatesControllerFiatCurrency', () => {
   it('returns selectedCurrency from new state', () => {
     const state = {
       metamask: {
-        ...enabledFlags,
         fiatCurrency: 'eur',
         selectedCurrency: 'usd' as const,
       },
