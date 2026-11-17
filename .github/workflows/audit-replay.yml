@@ -1,0 +1,133 @@
+name: audit-replay
+
+# Measures how often the cheap deterministic path (no LLM) fixes each vulnerable package.
+on:
+  push:
+    branches:
+      - trigger-ci-copilot-probe
+    paths:
+      - .github/workflows/audit-replay.yml
+      - .github/probe/audit-*.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.pkgs.outputs.packages }}
+    steps:
+      # TEMPORARY (1/1): false is faster while developing; flip to true before opening the PR.
+      - uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          persist-credentials: false
+          skip-install: true
+
+      - run: corepack enable
+
+      - id: pkgs
+        run: |
+          yarn npm audit --recursive --json > audit.ndjson || true
+          echo "packages=$(node .github/probe/audit-packages.mjs audit.ndjson)" >> "$GITHUB_OUTPUT"
+
+  replay:
+    needs: list
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg: ${{ fromJSON(needs.list.outputs.packages) }}
+    steps:
+      # TEMPORARY (1/1): false is faster while developing; flip to true before opening the PR.
+      - uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          persist-credentials: false
+          skip-install: true
+
+      - run: corepack enable
+
+      - name: Try the cheap path on one package
+        env:
+          PKG: ${{ matrix.pkg }}
+        run: |
+          yarn npm audit --recursive --json > before.ndjson || true
+          cp yarn.lock before.lock
+          up=0
+          yarn up -R "$PKG" --mode=update-lockfile > up.log 2>&1 || up=$?
+          yarn dedupe --mode=update-lockfile >> up.log 2>&1 || true
+          yarn npm audit --recursive --json > after.ndjson || true
+          node .github/probe/audit-measure.mjs "$PKG" "$PKG" before.ndjson after.ndjson before.lock yarn.lock "$up" up.log > result.json
+          cat result.json
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: result-${{ strategy.job-index }}
+          path: result.json
+
+  combined:
+    needs: list
+    runs-on: ubuntu-latest
+    steps:
+      # TEMPORARY (1/1): false is faster while developing; flip to true before opening the PR.
+      - uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          persist-credentials: false
+          skip-install: true
+
+      - run: corepack enable
+
+      - name: Try the cheap path on all packages at once
+        env:
+          PACKAGES: ${{ needs.list.outputs.packages }}
+        run: |
+          yarn npm audit --recursive --json > before.ndjson || true
+          cp yarn.lock before.lock
+          up=0
+          mapfile -t pkgs < <(node -e 'JSON.parse(process.env.PACKAGES).forEach(function (p) { console.log(p); })')
+          yarn up -R "${pkgs[@]}" --mode=update-lockfile > up.log 2>&1 || up=$?
+          yarn dedupe --mode=update-lockfile >> up.log 2>&1 || true
+          yarn npm audit --recursive --json > after.ndjson || true
+          node .github/probe/audit-measure.mjs all '*' before.ndjson after.ndjson before.lock yarn.lock "$up" up.log > result.json
+          cat result.json
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: result-combined
+          path: result.json
+
+  report:
+    needs: [replay, combined]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: result-*
+          merge-multiple: false
+          path: results
+
+      - name: Summarize
+        run: |
+          node -e '
+            const fs = require("fs");
+            const rows = fs.readdirSync("results").map(function (d) {
+              return JSON.parse(fs.readFileSync("results/" + d + "/result.json", "utf8"));
+            });
+            const single = rows.filter(function (r) { return r.label !== "all"; });
+            const counts = {};
+            single.forEach(function (r) { counts[r.status] = (counts[r.status] || 0) + 1; });
+            console.log("per package:", JSON.stringify(counts), "of", single.length);
+            single.sort(function (a, b) { return a.status.localeCompare(b.status) || a.label.localeCompare(b.label); });
+            single.forEach(function (r) {
+              console.log([r.status, r.label, r.targetBefore + "->" + r.targetAfter, "otherFixed=" + r.otherFixed, "new=" + r.newAdvisories, "churn=" + r.lockEntriesChanged, r.firstError].join(" | "));
+            });
+            const all = rows.find(function (r) { return r.label === "all"; });
+            console.log("combined:", JSON.stringify(all));
+          ' | tee "$GITHUB_STEP_SUMMARY"
