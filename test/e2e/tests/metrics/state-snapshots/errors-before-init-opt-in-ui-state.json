@@ -113,7 +113,6 @@
       "lastFetched": null,
       "version": "0"
     },
-    "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},

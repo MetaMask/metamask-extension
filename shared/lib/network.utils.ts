@@ -152,20 +152,22 @@ export const sortNetworks = (
     return adjustedIndexA - adjustedIndexB;
   });
 
+export const DEFAULT_NETWORK_IMAGE_URLS: Record<string, string> = {
+  ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  ...MULTICHAIN_TOKEN_IMAGE_MAP,
+};
+
 /**
  * Get the network icon for the given chain ID.
  *
  * @param networkConfiguration - The network configuration to get the icon for.
- * @param networkImageUrls - Chain ID (hex) to image URL map; defaults to the
- * static map, pass the config-registry-aware map to honor registry logos.
+ * @param networkImageUrls - Chain ID to image URL map; defaults to the static
+ * maps, pass the config-registry-aware map to honor registry logos.
  * @returns The URL of the network icon.
  */
 export const getNetworkIcon = (
   networkConfiguration: MultichainNetworkConfiguration,
-  networkImageUrls: Record<string, string> = {
-    ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-    ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  },
+  networkImageUrls: Record<string, string> = DEFAULT_NETWORK_IMAGE_URLS,
 ) => {
   return networkConfiguration.isEvm
     ? networkImageUrls[convertCaipToHexChainId(networkConfiguration.chainId)]
