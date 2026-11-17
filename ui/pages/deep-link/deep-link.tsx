@@ -31,6 +31,7 @@ import { PageNotFound } from '../../components/app/page-not-found/page-not-found
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
 import { getMobileShareUrl } from '../../../shared/lib/deep-links/mobile-share';
 import { DeepLinkMobileShare } from './deep-link-mobile-share';
+import type { DeepLinkNoticeResolver, DeepLinkProps } from './types';
 
 type TranslateFunction = (
   key: string,
@@ -58,6 +59,7 @@ const { getExtensionURL } = globalThis.platform;
  * @param t - The translation function.
  * @param abortController
  * @param setPageNotFoundError - The function to call when the destination is missing.
+ * @param getNotice - Optional feature copy for unsigned links that open inside MetaMask.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -70,6 +72,7 @@ async function updateStateFromUrl(
   t: TranslateFunction,
   abortController: AbortController,
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
+  getNotice: DeepLinkNoticeResolver | undefined,
 ) {
   try {
     const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
@@ -96,15 +99,21 @@ async function updateStateFromUrl(
 
       const signed = parsed.signature === VALID;
       const continueMessage = t('deepLink_ContinueDescription', [t(title)]);
-      const description = signed
-        ? continueMessage
-        : t('deepLink_ThirdPartyDescription', [continueMessage]);
-      setDescription(description);
+      const notice =
+        signed || 'redirectTo' in destination ? null : getNotice?.(url);
+
+      if (signed) {
+        setTitle(t('deepLink_RedirectingToMetaMask'));
+        setDescription(continueMessage);
+      } else if (notice) {
+        setTitle(t(notice.title));
+        setDescription(t(notice.description, [continueMessage]));
+      } else {
+        setTitle(t('deepLink_Caution'));
+        setDescription(t('deepLink_ThirdPartyDescription', [continueMessage]));
+      }
       setExtraDescription(null);
       setRoute({ href, signed });
-      setTitle(
-        signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
-      );
       setCta(t('deepLink_Continue', [t(title)]));
       setPageNotFoundError(false);
     } else {
@@ -140,7 +149,7 @@ async function updateStateFromUrl(
   }
 }
 
-const DeepLinkInterstitial = () => {
+const DeepLinkInterstitial = ({ getNotice }: DeepLinkProps) => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
@@ -240,6 +249,7 @@ const DeepLinkInterstitial = () => {
         t,
         abortController,
         setPageNotFoundError,
+        getNotice,
       );
     };
 
@@ -247,7 +257,7 @@ const DeepLinkInterstitial = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError]);
+  }, [location.search, t, setPageNotFoundError, getNotice]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);
@@ -356,8 +366,13 @@ const DeepLinkInterstitial = () => {
   );
 };
 
-/** Displays the mobile QR fallback or the usual deep-link interstitial. */
-export const DeepLink = () => {
+/**
+ * Displays the mobile QR fallback or the usual deep-link interstitial.
+ *
+ * @param props - The component props.
+ * @param props.getNotice - Optional feature copy, see {@link DeepLinkNoticeResolver}.
+ */
+export const DeepLink = ({ getNotice }: DeepLinkProps) => {
   const location = useLocation();
   const urlPathAndQuery = new URLSearchParams(location.search).get(
     'mobileShare',
@@ -369,7 +384,7 @@ export const DeepLink = () => {
     : null;
 
   if (!mobileShareUrl) {
-    return <DeepLinkInterstitial />;
+    return <DeepLinkInterstitial getNotice={getNotice} />;
   }
 
   return <DeepLinkMobileShare url={mobileShareUrl} />;

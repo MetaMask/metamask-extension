@@ -3,13 +3,15 @@ import { it as jestIt } from '@jest/globals';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   parse,
   type ParsedDeepLink,
 } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
+import type { SignatureStatus } from '../../../shared/lib/deep-links/verify';
+import type { DeepLinkProps } from './types';
 
 let DeepLink: typeof import('./deep-link').DeepLink;
 
@@ -25,11 +27,22 @@ jest.mock('../../components/app/deeplink-qr-code', () => ({
 
 const parseMock = jest.mocked(parse);
 
-function renderDeepLink(search: string) {
+function renderDeepLink(search: string, props: DeepLinkProps = {}) {
   const store = configureMockStore([thunk])({
     metamask: { preferences: {} },
   });
-  return renderWithProvider(<DeepLink />, store, `/link?${search}`);
+  return renderWithProvider(<DeepLink {...props} />, store, `/link?${search}`);
+}
+
+function mockParsedLink(
+  destination: { path: string; query: URLSearchParams } | { redirectTo: URL },
+  signature: SignatureStatus = 'missing',
+) {
+  parseMock.mockResolvedValue({
+    signature,
+    destination,
+    route: { getTitle: () => 'deepLink_theHomePage' },
+  } as unknown as ParsedDeepLink);
 }
 
 describe('DeepLink', () => {
@@ -160,5 +173,99 @@ describe('DeepLink', () => {
         expect(anchor.tagName).toBe('A');
       },
     );
+  });
+
+  describe('feature notice', () => {
+    const homeDestination = { path: '/', query: new URLSearchParams() };
+    const continueDescription = tEn('deepLink_ContinueDescription', [
+      tEn('deepLink_theHomePage'),
+    ]);
+    const cautionDescription = tEn('deepLink_ThirdPartyDescription', [
+      continueDescription,
+    ]);
+    const notice = {
+      title: 'rewardsMoneyReferralLinkTitle',
+      description: 'rewardsMoneyReferralLinkDescription',
+    };
+
+    async function expectCopy(
+      { findByRole, findByTestId }: ReturnType<typeof renderDeepLink>,
+      title: string,
+      description: string,
+    ) {
+      expect(await findByRole('heading', { name: title })).toBeInTheDocument();
+      expect(await findByTestId('deep-link-description')).toHaveTextContent(
+        description,
+      );
+    }
+
+    jestIt.each<SignatureStatus>(['missing', 'invalid'])(
+      'replaces the caution copy for a %s signature and keeps the destination',
+      async (signature) => {
+        mockParsedLink(homeDestination, signature);
+        const getNotice = jest.fn().mockReturnValue(notice);
+        const result = renderDeepLink(
+          new URLSearchParams({ u: '/home?ref=ABCD12' }).toString(),
+          { getNotice },
+        );
+
+        await expectCopy(
+          result,
+          tEn(notice.title),
+          tEn(notice.description, [continueDescription]),
+        );
+        expect(getNotice).toHaveBeenCalledWith(
+          new URL(`https://${CANONICAL_DEEP_LINK_HOST}/home?ref=ABCD12`),
+        );
+        expect(
+          await result.findByTestId('deep-link-continue-button'),
+        ).toHaveTextContent(messages.deepLink_Continue.message);
+        expect(result.queryByTestId('deep-link-checkbox')).toBeNull();
+      },
+    );
+
+    it('keeps the caution copy when the resolver returns null', async () => {
+      mockParsedLink(homeDestination);
+
+      await expectCopy(
+        renderDeepLink(new URLSearchParams({ u: '/home' }).toString(), {
+          getNotice: () => null,
+        }),
+        messages.deepLink_Caution.message,
+        cautionDescription,
+      );
+    });
+
+    it('does not consult the resolver for a link that redirects to a website', async () => {
+      mockParsedLink({
+        redirectTo: new URL('https://metamask.io/news/top-traders'),
+      });
+      const getNotice = jest.fn().mockReturnValue(notice);
+
+      await expectCopy(
+        renderDeepLink(
+          new URLSearchParams({ u: '/top-traders?ref=ABCD12' }).toString(),
+          { getNotice },
+        ),
+        messages.deepLink_Caution.message,
+        cautionDescription,
+      );
+      expect(getNotice).not.toHaveBeenCalled();
+    });
+
+    it('does not consult the resolver for a signed link', async () => {
+      mockParsedLink(homeDestination, 'valid');
+      const getNotice = jest.fn().mockReturnValue(notice);
+
+      await expectCopy(
+        renderDeepLink(
+          new URLSearchParams({ u: '/home?ref=ABCD12' }).toString(),
+          { getNotice },
+        ),
+        messages.deepLink_RedirectingToMetaMask.message,
+        continueDescription,
+      );
+      expect(getNotice).not.toHaveBeenCalled();
+    });
   });
 });

@@ -1,3 +1,8 @@
+import { getRemoteFeatureFlags } from '#shared/lib/selectors/remote-feature-flags';
+import {
+  validatedVersionGatedFeatureFlag,
+  type VersionGatedFeatureFlag,
+} from '#shared/lib/feature-flags/version-gating';
 import type { MetaMaskReduxState } from '../../store/store';
 import type { ReferralMeDto } from '../../../shared/types/rewards-money';
 
@@ -7,6 +12,29 @@ export const selectReferralMe = (
 
 export const selectReferralMeSettled = (state: MetaMaskReduxState): boolean =>
   state.rewardsMoney.referralMeSettled;
+
+/**
+ * Local gates that let a pending Money referral invite open: Basic
+ * Functionality and the version-gated `rewardsMoneyControllerEnabled` flag.
+ * Account eligibility (existing referrer or referee, excluded region) needs a
+ * server read and is not part of this check.
+ *
+ * The deep-link interstitial reads the same gates, so its referral copy is
+ * never shown when this client cannot open the invite at all.
+ *
+ * @param state - The Redux state.
+ * @returns Whether the local gates allow the invite.
+ */
+export function selectIsMoneyReferralInviteEnabled(
+  state: MetaMaskReduxState,
+): boolean {
+  const enabled = validatedVersionGatedFeatureFlag(
+    getRemoteFeatureFlags(state).rewardsMoneyControllerEnabled as
+      | VersionGatedFeatureFlag
+      | undefined,
+  );
+  return Boolean(state.metamask.useExternalServices) && enabled === true;
+}
 
 /**
  * A plain user and a cashback-experiment member can still accept an invite.

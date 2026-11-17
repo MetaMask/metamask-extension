@@ -9939,6 +9939,13 @@
   "rewardsMoneyReferralCodeUnknownError": {
     "message": "Referral code couldn’t be validated."
   },
+  "rewardsMoneyReferralLinkDescription": {
+    "message": "This link includes a referral code shared by someone outside MetaMask. Nothing changes unless you accept an invite, so continue only if you trust who shared it. $1",
+    "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
+  "rewardsMoneyReferralLinkTitle": {
+    "message": "You're opening a referral link"
+  },
   "rewardsMoneyReferralOwnCode": {
     "message": "You cannot use your own referral code."
   },
