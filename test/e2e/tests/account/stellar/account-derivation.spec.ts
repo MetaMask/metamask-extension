@@ -101,8 +101,7 @@ describe('Stellar account derivation', function (this: Suite) {
 
         // Refresh re-hydrates UI after Snap account alignment / Horizon sync.
         // Fresh onboarding defaults the homepage primary balance to fiat.
-        await driver.refresh();
-        await homepage.checkPageIsLoaded();
+        await homepage.refreshPage();
         await homepage.checkExpectedBalanceIsDisplayed({
           expectedBalance: XLM_FIAT_DISPLAY,
           timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,

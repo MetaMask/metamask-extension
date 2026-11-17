@@ -1,3 +1,5 @@
+import type { CaipAssetType } from '@metamask/utils';
+import { buildAssetRoutePath } from '../../../../../shared/lib/asset-route';
 import { Driver } from '../../../webdriver/driver';
 import { readResolvedAssetActionsLayout } from './asset-actions-layout';
 
@@ -274,6 +276,21 @@ class AssetDetailsPage {
     await this.driver.waitForSelector(this.tokenSwapButton);
     await this.driver.assertElementNotPresent(this.nativeOverflowReceiveInMenu);
     await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
+  }
+
+  /**
+   * Opens an asset details route by full hash navigation so createHashRouter
+   * mounts on the target path (needed when the asset is absent from the list).
+   *
+   * @param assetId - CAIP-19 asset id for the details route.
+   */
+  async navigateToAsset(assetId: CaipAssetType): Promise<void> {
+    const assetPath = buildAssetRoutePath(assetId);
+    const currentUrl = await this.driver.getCurrentUrl();
+    const baseUrl = currentUrl.replace(/#.*$/u, '');
+    await this.driver.driver.get(`${baseUrl}#${assetPath}`);
+    await this.driver.waitForControllersLoaded();
+    await this.checkPageIsLoaded();
   }
 }
 

@@ -1,6 +1,9 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
-import { openActivityTransactionDetails } from '../../../page-objects/flows/activity.flow';
+import {
+  closeActivityTransactionDetails,
+  openActivityTransactionDetails,
+} from '../../../page-objects/flows/activity.flow';
 import { login } from '../../../page-objects/flows/login.flow';
 import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
@@ -13,25 +16,6 @@ import {
 } from '../../stellar/mocks/stellar-tx-fixtures';
 
 const BASE_TIMESTAMP = Date.now();
-
-/**
- * Closes transaction details without relying on history.back() clearing `/tx/`
- * (Stellar CAIP chain ids in the hash make that wait flaky). Re-open Activity.
- *
- * @param driver - WebDriver instance.
- * @param activityTab - Activity tab page object.
- */
-async function closeDetailsAndReturnToActivity(
-  driver: Driver,
-  activityTab: ActivityTab,
-): Promise<void> {
-  await driver.clickElementSafe(
-    { testId: 'transaction-details-back-button' },
-    1_000,
-  );
-  await driver.clickElement({ testId: 'bottom-nav-activity' });
-  await activityTab.checkPageIsLoaded();
-}
 
 describe('Stellar - Activity status', function (this: Suite) {
   this.timeout(180_000);
@@ -79,7 +63,7 @@ describe('Stellar - Activity status', function (this: Suite) {
         await failedDetails.checkAmount('-3 XLM');
         await failedDetails.checkHashLinkPresent();
         await failedDetails.checkViewDetailsLink();
-        await closeDetailsAndReturnToActivity(driver, activityTab);
+        await closeActivityTransactionDetails({ driver, activityTab });
       },
     );
   });
