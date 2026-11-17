@@ -110,6 +110,8 @@ development/build/set-environment-variables.d.ts
 # Emitted by `tsc -p development/lib/tsconfig.lib.json` (see webpack:tsc)
 development/lib/build-type.js
 development/lib/build-type.d.ts
+development/lib/child-process-shutdown.js
+development/lib/child-process-shutdown.d.ts
 development/lib/get-manifest-flag.js
 development/lib/get-manifest-flag.d.ts
 development/lib/get-version.js
