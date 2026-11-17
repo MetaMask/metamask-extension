@@ -6,7 +6,6 @@ import { Hex, isCaipChainId } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeCurrencyForChain } from '../../../selectors';
-import { getChainIdToNativeTokenImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getProviderConfig,
@@ -28,9 +27,7 @@ import AssetPage from './asset-page';
 
 const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const { symbol } = token;
-  const nativeTokenImageUrls = useSelector(getChainIdToNativeTokenImageUrlMap);
-  const image =
-    nativeTokenImageUrls[chainId] ?? getNativeCurrencyForChain(chainId);
+  const image = getNativeCurrencyForChain(chainId);
   const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const networkConfig = useSelector(

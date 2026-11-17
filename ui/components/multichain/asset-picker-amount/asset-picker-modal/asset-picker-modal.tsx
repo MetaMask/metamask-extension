@@ -54,10 +54,7 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
-import {
-  getChainIdToNetworkImageUrlMap,
-  getChainIdToNativeTokenImageUrlMap,
-} from '../../../../selectors/config-registry/config-registry';
+import { getChainIdToNetworkImageUrlMap } from '../../../../selectors/config-registry/config-registry';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { isTronSpecialAsset } from '../../../../../shared/lib/asset-utils';
 
@@ -184,7 +181,6 @@ export function AssetPickerModal({
     getAllTokens,
   );
   const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
-  const nativeTokenImageUrls = useSelector(getChainIdToNativeTokenImageUrlMap);
 
   // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(
@@ -244,10 +240,10 @@ export function AssetPickerModal({
           yield token.isNative
             ? {
                 ...token,
-                image: (nativeTokenImageUrls[token.chainId] ??
+                image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ]) as AssetWithDisplayData<NativeAsset>['image'],
+                  ],
                 type: AssetType.native,
                 // Add human-readable name for native tokens (e.g., Ether, Binance Coin)
                 name: getNativeTokenName(token.chainId),
@@ -302,7 +298,6 @@ export function AssetPickerModal({
       selectedNetwork?.chainId,
       multichainTokensWithBalance,
       allDetectedTokens,
-      nativeTokenImageUrls,
     ],
   );
 

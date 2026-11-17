@@ -49,13 +49,13 @@ import {
   toAssetId,
 } from '../../../shared/lib/asset-utils';
 import { getNetworkImageUrl } from '../../../shared/lib/network.utils';
-import { getChainIdToNativeTokenImageUrlMap } from '../../selectors/config-registry/config-registry';
+import { getChainIdToNetworkImageUrlMap } from '../../selectors/config-registry/config-registry';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
   chainId: ChainId | Hex | CaipChainId,
   token?: BridgeAsset | TokenListToken,
-  nativeTokenImageUrls: Record<string, string> = {
+  networkImageUrls: Record<string, string> = {
     ...CHAIN_ID_TOKEN_IMAGE_MAP,
     ...MULTICHAIN_TOKEN_IMAGE_MAP,
   },
@@ -77,10 +77,7 @@ const buildTokenData = (
   };
 
   if (isNativeAddress(token.address)) {
-    const image = getNetworkImageUrl(
-      sharedFields.chainId,
-      nativeTokenImageUrls,
-    );
+    const image = getNetworkImageUrl(sharedFields.chainId, networkImageUrls);
 
     return {
       ...sharedFields,
@@ -143,8 +140,8 @@ export const useTokensWithFiltering = (
   const cachedTokens = useSelector(
     (state: BridgeAppState) => state.metamask.tokensChainsCache,
   );
-  const nativeTokenImageUrls = useSelector((state: BridgeAppState) =>
-    getChainIdToNativeTokenImageUrlMap(state),
+  const networkImageUrls = useSelector((state: BridgeAppState) =>
+    getChainIdToNetworkImageUrlMap(state),
   );
 
   const cachedTokenList = useMemo(() => {
@@ -300,10 +297,7 @@ export const useTokensWithFiltering = (
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
-                image: (getNetworkImageUrl(
-                  token.chainId,
-                  nativeTokenImageUrls,
-                ) ??
+                image: (getNetworkImageUrl(token.chainId, networkImageUrls) ??
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ] ??
@@ -347,11 +341,7 @@ export const useTokensWithFiltering = (
           const matchedToken =
             tokenList?.[token_.address] ??
             tokenList?.[token_.address.toLowerCase()];
-          const token = buildTokenData(
-            chainId,
-            matchedToken,
-            nativeTokenImageUrls,
-          );
+          const token = buildTokenData(chainId, matchedToken, networkImageUrls);
           // Filter out Tron special assets (resources, staking state, etc.)
           if (
             token &&
@@ -366,7 +356,7 @@ export const useTokensWithFiltering = (
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of Object.values(tokenList)) {
-          const token = buildTokenData(chainId, token_, nativeTokenImageUrls);
+          const token = buildTokenData(chainId, token_, networkImageUrls);
           // Filter out Tron special assets (resources, staking state, etc.)
           if (
             token &&
@@ -384,7 +374,7 @@ export const useTokensWithFiltering = (
       chainId,
       tokenList,
       tokenToExclude,
-      nativeTokenImageUrls,
+      networkImageUrls,
     ],
   );
   return {

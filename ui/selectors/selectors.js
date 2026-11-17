@@ -190,7 +190,6 @@ import {
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
 import { UTM_PARAMETERS } from '../../shared/types/metametrics';
-import { getChainIdToNativeTokenImageUrlMap } from './config-registry/config-registry';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
   getUnapprovedTransactions,
@@ -905,14 +904,12 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
     (_state, accountAddress) => accountAddress,
-    getChainIdToNativeTokenImageUrlMap,
   ],
   (
     allTokens,
     networkConfigurationsByChainId,
     nativeTokenBalancesByChainId,
     selectedAddress,
-    nativeTokenImageUrls,
   ) => {
     const tokensByChain = {};
 
@@ -945,8 +942,7 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
           balance: nativeBalance,
           chainId,
           isNative: true,
-          image:
-            nativeTokenImageUrls[chainId] ?? getNativeCurrencyForChain(chainId),
+          image: getNativeCurrencyForChain(chainId),
         });
       }
     });
