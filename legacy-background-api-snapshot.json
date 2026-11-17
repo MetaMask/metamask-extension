@@ -1,6 +1,5 @@
 {
   "adhocControllerConnectionMethods": [
-    "checkFirstTimeInteraction",
     "getStatePatches",
     "messengerCall",
     "messengerSubscribe",
@@ -22,12 +21,9 @@
     "perpsStartPreload",
     "perpsStopPreload",
     "perpsViewActive",
-    "startSendingPatches",
-    "updateBatchTransactions"
+    "startSendingPatches"
   ],
   "getApiMethods": [
-    "backupUserData",
-    "restoreUserData",
     "setArcUsageNoticeShown",
     "trackAnalyticsEvent",
     "trackMetaMetricsPage"
@@ -132,7 +128,6 @@
     "unlockWithPasskey",
     "upsertTransactionUIMetricsFragment"
   ],
-<<<<<<< HEAD
   "messengerClientApiMethods": [
     "addRampsOrder",
     "addRampsPrecreatedOrder",
@@ -197,11 +192,5 @@
     "updateMoneyAccountWithdrawAmount",
     "watchRampsCheckoutTab",
     "watchRampsProviderOrderTab"
-=======
-  "MetamaskController.getApi": [
-    "setArcUsageNoticeShown",
-    "trackAnalyticsEvent",
-    "trackMetaMetricsPage"
->>>>>>> main
   ]
 }
