@@ -5656,7 +5656,7 @@
     "message": "Sign in to continue."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Too many incorrect codes. Get a new code when it's available."
+    "message": "Too many incorrect codes. Get a new code."
   },
   "mfaErrorTotpExpired": {
     "message": "That took too long. Enter the current code from your app."
@@ -5730,6 +5730,13 @@
   "mfaOtpDescriptionTotp": {
     "message": "Open your authenticator app and enter the 6-digit code."
   },
+  "mfaOtpDescriptionUnsent": {
+    "message": "We'll send a 6-digit code to your email. Enter it below to verify your email."
+  },
+  "mfaOtpDescriptionUnsentWithEmail": {
+    "message": "We'll send a 6-digit code to $1. Enter it below to verify your email.",
+    "description": "$1 is the user's masked email address"
+  },
   "mfaOtpDescriptionWithEmail": {
     "message": "We sent a 6-digit code to $1. Enter it below to verify your email.",
     "description": "$1 is the email address the code was sent to"
@@ -5757,8 +5764,11 @@
   "mfaOtpRetryIn": {
     "message": "Try again in $1s"
   },
+  "mfaOtpSend": {
+    "message": "Send code"
+  },
   "mfaOtpSendIn": {
-    "message": "Sending a new code in $1s",
+    "message": "Send code in $1s",
     "description": "$1 is a number of seconds"
   },
   "mfaOtpSending": {
