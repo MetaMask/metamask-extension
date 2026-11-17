@@ -39,6 +39,34 @@ describe('getAvatarTokenSrc', () => {
     ).toBe(mockMainnetImage);
   });
 
+  it('prefers the registry native token image map over the static map', () => {
+    expect(
+      getAvatarTokenSrc({
+        chainId: CHAIN_IDS.MAINNET,
+        isNative: true,
+        tokenImage: 'https://example.com/custom-eth.png',
+        assetId: 'eip155:1/slip44:60',
+        nativeTokenImageUrls: {
+          [CHAIN_IDS.MAINNET]: 'https://example.com/registry-eth.png',
+        },
+      }),
+    ).toBe('https://example.com/registry-eth.png');
+  });
+
+  it('resolves registry-only chains absent from the static map', () => {
+    expect(
+      getAvatarTokenSrc({
+        chainId: '0x1863d',
+        isNative: true,
+        tokenImage: '',
+        assetId: 'eip155:99901/slip44:2457',
+        nativeTokenImageUrls: {
+          '0x1863d': 'https://example.com/native.png',
+        },
+      }),
+    ).toBe('https://example.com/native.png');
+  });
+
   it('falls back to the static CDN icon for native non-EVM tokens without an image', () => {
     expect(
       getAvatarTokenSrc({
