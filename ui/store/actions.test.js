@@ -2677,9 +2677,9 @@ describe('Actions', () => {
 
       const messengerCallStub = sinon
         .stub()
-        .withArgs('TokensController:ignoreTokens', [
-          { tokensToIgnore: '0x0000001' },
-          undefined,
+        .withArgs('LegacyBackgroundApiService:ignoreTokens', [
+          ['0x0000001'],
+          null,
         ])
         .resolves();
       setBackgroundConnection({
@@ -2690,7 +2690,12 @@ describe('Actions', () => {
       await store.dispatch(
         actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
       );
-      expect(messengerCallStub.calledOnce).toBe(true);
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:ignoreTokens',
+          [['0x0000001'], null],
+        ),
+      ).toBe(true);
     });
 
     it('hides loading indicator when ignoreTokens in background fails', async () => {
@@ -2698,7 +2703,7 @@ describe('Actions', () => {
 
       const messengerCallStub = sinon
         .stub()
-        .withArgs('TokensController:ignoreTokens', sinon.match.array)
+        .withArgs('LegacyBackgroundApiService:ignoreTokens', sinon.match.array)
         .rejects(new Error('error'));
       setBackgroundConnection({
         messengerCall: messengerCallStub,
@@ -6740,10 +6745,10 @@ describe('Actions', () => {
       );
 
       expect(
-        messengerCallStub.calledOnceWithExactly('TokensController:addTokens', [
-          [{ address: '0x123' }],
-          'mainnet',
-        ]),
+        messengerCallStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:addImportedTokens',
+          [[{ address: '0x123' }], 'mainnet'],
+        ),
       ).toBe(true);
     });
   });

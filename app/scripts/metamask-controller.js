@@ -340,7 +340,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
@@ -586,7 +585,6 @@ export default class MetamaskController extends EventEmitter {
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
       RatesController: RatesControllerInit,
-      TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
       MultichainNetworkController: MultichainNetworkControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
@@ -734,7 +732,6 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
-    this.tokensController = messengerClientsByName.TokensController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
     this.multichainRatesController = messengerClientsByName.RatesController;
@@ -1395,7 +1392,6 @@ export default class MetamaskController extends EventEmitter {
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
       GatorPermissionsController: this.gatorPermissionsController,
-      TokensController: this.tokensController,
       StaticAssetsController: this.staticAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
@@ -1455,7 +1451,6 @@ export default class MetamaskController extends EventEmitter {
         NetworkEnablementController: this.networkEnablementController,
         AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
-        TokensController: this.tokensController,
         StaticAssetsController: this.staticAssetsController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,

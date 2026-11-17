@@ -305,6 +305,143 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('addImportedTokens', () => {
+    const tokens = [
+      {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        symbol: 'DAI',
+        name: 'Dai Stablecoin',
+        decimals: 18,
+        image: 'https://example.com/dai.png',
+        aggregators: ['CoinGecko'],
+      },
+      {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 6,
+      },
+    ];
+
+    it('adds each token as a custom asset via the AssetsController', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ id: 'account-1' }),
+        );
+        const getNetworkClientById = jest
+          .fn()
+          .mockReturnValue({ configuration: { chainId: '0x1' } });
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          getNetworkClientById,
+        );
+        const addCustomAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:addCustomAsset',
+          addCustomAssetHandler,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:addImportedTokens',
+          tokens,
+          'mainnet',
+        );
+
+        expect(getNetworkClientById).toHaveBeenCalledWith('mainnet');
+        expect(addCustomAssetHandler).toHaveBeenCalledTimes(2);
+        expect(addCustomAssetHandler).toHaveBeenCalledWith(
+          'account-1',
+          toAssetId(tokens[0].address, '0x1'),
+          {
+            address: tokens[0].address,
+            symbol: 'DAI',
+            name: 'Dai Stablecoin',
+            decimals: 18,
+            chainId: '0x1',
+            iconUrl: tokens[0].image,
+            aggregators: ['CoinGecko'],
+          },
+        );
+        expect(addCustomAssetHandler).toHaveBeenCalledWith(
+          'account-1',
+          toAssetId(tokens[1].address, '0x1'),
+          {
+            address: tokens[1].address,
+            symbol: 'USDC',
+            name: 'USDC',
+            decimals: 6,
+            chainId: '0x1',
+          },
+        );
+      });
+    });
+
+    it('uses the selected network client when none is provided', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ id: 'account-1' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'linea' }),
+        );
+        const getNetworkClientById = jest
+          .fn()
+          .mockReturnValue({ configuration: { chainId: '0xe708' } });
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          getNetworkClientById,
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:addCustomAsset',
+          jest.fn(),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:addImportedTokens',
+          [tokens[1]],
+        );
+
+        expect(getNetworkClientById).toHaveBeenCalledWith('linea');
+      });
+    });
+  });
+
+  describe('ignoreTokens', () => {
+    it('hides each token via the AssetsController', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x1' } }),
+        );
+        const hideAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:hideAsset',
+          hideAssetHandler,
+        );
+        const addresses = [
+          '0x6b175474e89094c44da98b954eedeac495271d0f',
+          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        ];
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:ignoreTokens',
+          addresses,
+          'mainnet',
+        );
+
+        expect(hideAssetHandler).toHaveBeenCalledTimes(2);
+        expect(hideAssetHandler).toHaveBeenCalledWith(
+          toAssetId(addresses[0], '0x1'),
+        );
+        expect(hideAssetHandler).toHaveBeenCalledWith(
+          toAssetId(addresses[1], '0x1'),
+        );
+      });
+    });
+  });
+
   describe('getTokenStandardAndDetails', () => {
     it('gets imported token data and a balance retrieved via the global provider', async () => {
       const providerResultStub = {
@@ -344,8 +481,6 @@ describe('LegacyBackgroundApiService', () => {
             },
           }),
         );
-        // Unify mode reads imported tokens from AssetsController, not
-        // TokensController.allTokens.
         rootMessenger.registerActionHandler(
           'AssetsController:getState',
           jest.fn().mockReturnValue({
@@ -355,6 +490,7 @@ describe('LegacyBackgroundApiService', () => {
                 symbol: 'DAI',
                 name: 'Dai Stablecoin',
                 decimals: 18,
+                image: '',
               },
             },
             assetsBalance: {
@@ -365,6 +501,7 @@ describe('LegacyBackgroundApiService', () => {
             customAssets: {
               [accountId]: [tokenAssetId],
             },
+            assetPreferences: {},
           }),
         );
         rootMessenger.registerActionHandler(
@@ -376,10 +513,6 @@ describe('LegacyBackgroundApiService', () => {
           jest
             .fn()
             .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokensController:getState',
-          jest.fn().mockReturnValue({ allTokens: {} }),
         );
 
         const result = await rootMessenger.call(
@@ -420,10 +553,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'NetworkController:getNetworkClientById',
           jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokensController:getState',
-          jest.fn().mockReturnValue({ allTokens: {} }),
         );
         const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
           standard: 'ERC20',
@@ -474,10 +603,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'NetworkController:getNetworkClientById',
           jest.fn().mockReturnValue({ configuration: { chainId: '0x89' } }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokensController:getState',
-          jest.fn().mockReturnValue({ allTokens: {} }),
         );
         const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
           standard: 'ERC20',
@@ -550,10 +675,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ address: '0xabc' }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokensController:getState',
-          jest.fn().mockReturnValue({ allTokens: {} }),
         );
         rootMessenger.registerActionHandler(
           'AssetsContractController:getTokenStandardAndDetails',
@@ -8926,9 +9047,8 @@ function getMessenger(
       'AssetsController:addCustomAsset',
       'AssetsController:getAssets',
       'AssetsController:getState',
+      'AssetsController:hideAsset',
       'AssetsController:setSelectedCurrency',
-      'TokensController:addToken',
-      'TokensController:getState',
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',
       'AccountsController:getSelectedAccount',

@@ -243,20 +243,6 @@ const expectEvmApiResultImport = async ({
   symbol: string;
 }) => {
   await waitFor(() =>
-    expect(actions.addImportedTokens).toHaveBeenCalledWith(
-      [
-        expect.objectContaining({
-          address,
-          symbol,
-          decimals,
-          isERC721: false,
-          name,
-        }),
-      ],
-      'mainnet',
-    ),
-  );
-  await waitFor(() =>
     expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
       accountId,
       [{ assetId, isHidden: false }],
@@ -270,6 +256,7 @@ const expectEvmApiResultImport = async ({
       },
     ),
   );
+  expect(actions.addImportedTokens).not.toHaveBeenCalled();
 };
 
 const expectNonEvmApiResultImport = async ({
@@ -1552,13 +1539,6 @@ describe('TokenManagementPage', () => {
     unmount();
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
-    );
-    await waitFor(() =>
       expect(actions.hideAsset).toHaveBeenCalledWith(
         `eip155:1/erc20:${mainnetToken.address}`,
       ),
@@ -1574,18 +1554,16 @@ describe('TokenManagementPage', () => {
       `token-management-cell-0x1:${mainnetToken.address}-toggle`,
     ) as HTMLInputElement;
     fireEvent.click(toggle);
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
 
     fireEvent.change(screen.getByTestId('token-management-search-input'), {
       target: { value: 'usdc' },
     });
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
@@ -1621,11 +1599,9 @@ describe('TokenManagementPage', () => {
     expect(searchResultToggle.value).toBe('false');
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
@@ -1659,11 +1635,9 @@ describe('TokenManagementPage', () => {
     fireEvent.change(searchInput, { target: { value: '' } });
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
 
     fireEvent.change(searchInput, {
@@ -1704,11 +1678,9 @@ describe('TokenManagementPage', () => {
     fireEvent.click(screen.getByTestId('token-management-header-back-button'));
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
@@ -1721,18 +1693,16 @@ describe('TokenManagementPage', () => {
       `token-management-cell-0x1:${mainnetToken.address}-toggle`,
     ) as HTMLInputElement;
     fireEvent.click(toggle);
-    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
 
     fireEvent.click(
       screen.getByTestId('token-management-add-custom-token-button'),
     );
 
     await waitFor(() =>
-      expect(actions.ignoreTokens).toHaveBeenCalledWith({
-        tokensToIgnore: [mainnetToken.address],
-        dontShowLoadingIndicator: true,
-        networkClientId: 'mainnet',
-      }),
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 

@@ -10,7 +10,6 @@ import type { MultichainTransactionsControllerState } from '@metamask/multichain
 import type {
   NftControllerState,
   RatesControllerState,
-  TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
@@ -424,11 +423,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokensController(data: Partial<TokensControllerState>): this {
-    merge(this.fixture.data.TokensController, data);
     return this;
   }
 

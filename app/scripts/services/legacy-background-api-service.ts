@@ -128,10 +128,9 @@ import {
   GetSignatureState,
   SignatureStateChange,
 } from '@metamask/signature-controller';
-import {
+import type {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  TokensControllerAddTokenAction,
-  TokensControllerGetStateAction,
+  Token,
 } from '@metamask/assets-controllers';
 import {
   AccountId,
@@ -139,6 +138,7 @@ import {
   AssetsControllerAddCustomAssetAction,
   AssetsControllerGetAssetsAction,
   AssetsControllerGetStateAction,
+  AssetsControllerHideAssetAction,
   AssetsControllerSetSelectedCurrencyAction,
   Caip19AssetId,
 } from '@metamask/assets-controller';
@@ -491,6 +491,7 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addImportedTokens',
   'addNetwork',
   'addPermittedAccount',
   'addPermittedAccounts',
@@ -541,6 +542,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getTrezorFeatures',
   'handleDefiReferral',
   'handleDefiReferralOnPermittedAccountsAdded',
+  'ignoreTokens',
   'importAccountWithStrategy',
   'importMnemonicToVault',
   'isPublicEndpointUrl',
@@ -640,6 +642,7 @@ type AllowedActions =
   | AssetsControllerAddCustomAssetAction
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
+  | AssetsControllerHideAssetAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
@@ -762,8 +765,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokensControllerAddTokenAction
-  | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
@@ -1015,6 +1016,85 @@ export class LegacyBackgroundApiService {
         ...(image ? { iconUrl: image } : {}),
       },
     );
+  }
+
+  /**
+   * Imports tokens as custom assets on the AssetsController for the currently
+   * selected account.
+   *
+   * @param tokensToImport - The tokens to import.
+   * @param networkClientId - The ID of the network client the tokens are on.
+   * Defaults to the selected network client.
+   */
+  async addImportedTokens(
+    tokensToImport: Token[],
+    networkClientId?: string | null,
+  ): Promise<void> {
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const chainId = this.#getChainIdForNetworkClient(networkClientId);
+
+    await Promise.all(
+      (tokensToImport ?? []).map(async (token) => {
+        const assetId = toAssetId(token.address, chainId);
+        if (!assetId) {
+          return;
+        }
+        await this.#messenger.call(
+          'AssetsController:addCustomAsset',
+          selectedAccount.id,
+          assetId,
+          {
+            address: token.address,
+            symbol: token.symbol,
+            name: token.name ?? token.symbol,
+            decimals: token.decimals,
+            chainId,
+            ...(token.image ? { iconUrl: token.image } : {}),
+            ...(token.aggregators ? { aggregators: token.aggregators } : {}),
+          },
+        );
+      }),
+    );
+  }
+
+  /**
+   * Hides tokens on the AssetsController.
+   *
+   * @param tokensToIgnore - The token contract addresses to hide.
+   * @param networkClientId - The ID of the network client the tokens are on.
+   * Defaults to the selected network client.
+   */
+  async ignoreTokens(
+    tokensToIgnore: string[],
+    networkClientId?: string | null,
+  ): Promise<void> {
+    const chainId = this.#getChainIdForNetworkClient(networkClientId);
+    const addresses = Array.isArray(tokensToIgnore)
+      ? tokensToIgnore
+      : [tokensToIgnore];
+
+    for (const address of addresses) {
+      const assetId = toAssetId(address, chainId);
+      if (assetId) {
+        this.#messenger.call('AssetsController:hideAsset', assetId);
+      }
+    }
+  }
+
+  #getChainIdForNetworkClient(networkClientId?: string | null): Hex {
+    const resolvedNetworkClientId =
+      networkClientId ??
+      this.#messenger.call('NetworkController:getState')
+        .selectedNetworkClientId;
+    const {
+      configuration: { chainId },
+    } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      resolvedNetworkClientId,
+    );
+    return chainId;
   }
 
   /**
@@ -1609,8 +1689,6 @@ export class LegacyBackgroundApiService {
    * @returns The `ChainId -> AccountAddress -> Token[]` map.
    */
   #getAllTokens(): ReturnType<typeof getTokensControllerAllTokens> {
-    const { allTokens } = this.#messenger.call('TokensController:getState');
-
     const { internalAccounts } = this.#messenger.call(
       'AccountsController:getState',
     );
@@ -1622,7 +1700,7 @@ export class LegacyBackgroundApiService {
     );
 
     const metamask = {
-      allTokens,
+      allTokens: {},
       internalAccounts,
       remoteFeatureFlags,
       assetsInfo,
