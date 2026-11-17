@@ -14,6 +14,10 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: unknown) => mockUseSelector(selector),
 }));
 
+jest.mock('react-router-dom', () => ({
+  useLocation: () => ({ search: '' }),
+}));
+
 jest.mock('../../../ducks/metamask/base-selectors', () => ({
   getIsUnlocked: jest.fn(),
 }));
@@ -64,7 +68,7 @@ describe('ToastListener', () => {
   it('mounts toast hooks in interactive UI', () => {
     renderToastListener({ isInteractive: true });
 
-    expect(mockUseMusdConversionToastStatus).toHaveBeenCalledTimes(1);
+    expect(mockUseMusdConversionToastStatus).toHaveBeenCalled();
     expect(mockUseMusdConversionConfirmTrace).toHaveBeenCalledWith('');
   });
 

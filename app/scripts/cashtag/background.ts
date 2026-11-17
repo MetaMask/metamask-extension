@@ -20,11 +20,15 @@ const xHosts = new Set(['x.com', 'www.x.com']);
 const widgetFramePath = 'cashtag-widget.html';
 const fullscreenFile = 'home.html';
 const popupResetDelayMs = 1000;
-// Retry delays for broadcasting OPEN_ROUTE after a cold open,
-// since the panel document may not have mounted
-const openRouteRetryDelaysMs = [0, 150, 400];
 
 let registered = false;
+// Routes saved before panel open, consumed on mount. Cleaned up when consumed,
+// when the window closes (windows.onRemoved), or when open() fails (identity
+// check). Not cleaned up on panel close to avoid races with late close events.
+const pendingRoutes = new Map<
+  number,
+  { path: string; search?: `?${string}` }
+>();
 
 function parsedUrl(value: string | undefined) {
   if (!value) {
@@ -83,6 +87,17 @@ export function isAllowedCashtagSender(
     messageType === EXTENSION_MESSAGES.TRACK_EVENT
   ) {
     return isWidgetFrameSender(sender);
+  }
+  if (messageType === EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE) {
+    if (sender.id !== chrome.runtime.id || sender.tab) {
+      return false;
+    }
+    const url = parsedUrl(sender.url);
+    if (!url) {
+      return false;
+    }
+    const extensionOrigin = chrome.runtime.getURL('');
+    return url.href.startsWith(extensionOrigin);
   }
   return false;
 }
@@ -537,6 +552,25 @@ function handleOpenExtension(
   return Promise.resolve(openExtensionFailure('invalid-page'));
 }
 
+function handleConsumePendingRoute(message: CashtagMessage) {
+  const windowId = message.body?.windowId;
+  const entry =
+    typeof windowId === 'number' ? pendingRoutes.get(windowId) : undefined;
+
+  if (typeof windowId === 'number') {
+    pendingRoutes.delete(windowId);
+  }
+
+  const body = entry
+    ? { path: entry.path, search: entry.search ?? null }
+    : { path: null, search: null };
+
+  return Promise.resolve({
+    type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+    body,
+  });
+}
+
 export function createCashtagResponse(
   message: CashtagMessage,
   sender: chrome.runtime.MessageSender,
@@ -551,6 +585,8 @@ export function createCashtagResponse(
       return handleGetData(message, getController);
     case EXTENSION_MESSAGES.OPEN_EXTENSION:
       return handleOpenExtension(message, sender, getController);
+    case EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE:
+      return handleConsumePendingRoute(message);
     case EXTENSION_MESSAGES.TRACK_EVENT:
       return handleTrackEvent(message);
     default:
@@ -591,6 +627,10 @@ export function registerCashtagBackgroundBridge({
   registered = true;
 
   bindTickerWidgetEnabledBroadcasts(getController);
+
+  chrome.windows.onRemoved.addListener((windowId) => {
+    pendingRoutes.delete(windowId);
+  });
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!isAllowedCashtagSender(message?.type, sender)) {
