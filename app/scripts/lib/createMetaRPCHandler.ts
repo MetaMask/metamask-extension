@@ -15,7 +15,10 @@ import {
   admitTraceWrappers,
   isRootWrapperEnabled,
 } from '../../../shared/lib/wrapper-sampling';
-import { isReadOnlyMethod } from '../../../shared/lib/messenger-tracing';
+import {
+  isReadOnlyAction,
+  isReadOnlyMethod,
+} from '../../../shared/lib/messenger-tracing';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -67,10 +70,15 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
       if (!traceContext) {
         // No UI trace context: the dispatch roots its own trace, so
         // concurrent handlers get independent trace ids.
-        // A read-only method starts no root: it carries no attribution a
-        // trace needs, and its roots dominate background volume.
+        // A read-only method or messenger action starts no root: it carries
+        // no attribution a trace needs, and its roots dominate background
+        // volume. A messenger call's method is always `messengerCall`, so its
+        // action is what decides.
+        const readOnly = traceMetadata?.messengerAction
+          ? isReadOnlyAction(traceMetadata.messengerAction)
+          : isReadOnlyMethod(data.method);
         result =
-          isRootWrapperEnabled() && !isReadOnlyMethod(data.method)
+          isRootWrapperEnabled() && !readOnly
             ? await trace(
                 { name, op: 'rpc.handler', root: true, data: spanData },
                 () =>

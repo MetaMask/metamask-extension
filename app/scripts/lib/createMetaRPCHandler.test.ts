@@ -486,12 +486,12 @@ describe('createMetaRPCHandler', () => {
         id: 1,
         method: 'messengerCall',
         params: [
-          'NetworkController:getState',
+          'NetworkController:setActiveNetwork',
           [],
           {
             _trace: {
-              messengerAction: 'NetworkController:getState',
-              spanName: 'Background RPC: NetworkController:getState',
+              messengerAction: 'NetworkController:setActiveNetwork',
+              spanName: 'Background RPC: NetworkController:setActiveNetwork',
             },
           },
         ],
@@ -499,19 +499,50 @@ describe('createMetaRPCHandler', () => {
 
       expect(trace).toHaveBeenCalledWith(
         {
-          name: 'Background RPC: NetworkController:getState',
+          name: 'Background RPC: NetworkController:setActiveNetwork',
           op: 'rpc.handler',
           root: true,
           data: {
             method: 'messengerCall',
-            action: 'NetworkController:getState',
+            action: 'NetworkController:setActiveNetwork',
           },
         },
         expect.any(Function),
       );
       expect(continueTraceContext).not.toHaveBeenCalled();
       expect(messengerCall).toHaveBeenCalledWith(
-        'NetworkController:getState',
+        'NetworkController:setActiveNetwork',
+        [],
+      );
+    });
+
+    it('starts no root for a read-only messenger action sent without a traceparent', async () => {
+      const messengerCall = jest.fn().mockReturnValue('result');
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler(
+        { messengerCall } as unknown as Api,
+        streamTest,
+      );
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'messengerCall',
+        params: [
+          'GeolocationController:getGeolocation',
+          [],
+          {
+            _trace: {
+              messengerAction: 'GeolocationController:getGeolocation',
+              spanName: 'Background RPC: GeolocationController:getGeolocation',
+            },
+          },
+        ],
+      });
+
+      expect(trace).not.toHaveBeenCalled();
+      expect(messengerCall).toHaveBeenCalledWith(
+        'GeolocationController:getGeolocation',
         [],
       );
     });
