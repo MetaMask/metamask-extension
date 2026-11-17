@@ -1,0 +1,213 @@
+name: Main performance detector
+
+# TEMPORARY (1/3): prototype of the main-commit performance detector (Phase C of
+# the runner-calibration plan). For one commit on main it finds the nearest
+# first-parent ancestor with a build, skips identical builds, runs a batch of 5
+# paired base/head jobs per browser, and runs a second independent batch when
+# the first looks suspicious. Results are a job summary and an artifact; there
+# is no Slack message and nothing blocks. Runs only on trigger-ci-pilot-b, which
+# main.yml ignores. Remove this file, main-detector-measure.yml and the
+# main-detector folder under test/e2e/benchmarks when the detector moves to main.
+#
+# The push trigger only registers the workflow so it can be dispatched; it checks
+# the latest main commit.
+
+on:
+  workflow_dispatch:
+    inputs:
+      head_sha:
+        description: Commit on main to check (default is the latest main commit)
+        required: false
+        type: string
+      mode:
+        description: auto, or aa to run the head against itself as a false-alarm canary
+        required: false
+        type: choice
+        options:
+          - auto
+          - aa
+        default: auto
+      inject_head_ms:
+        description: Dry run only, milliseconds of busy-wait added to the head build
+        required: false
+        type: string
+  push:
+    branches:
+      - trigger-ci-pilot-b
+    paths:
+      - .github/workflows/main-detector.yml
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  DETECTOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      proceed: ${{ steps.plan.outputs.proceed }}
+      plan: ${{ steps.plan.outputs.plan }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Resolve the builds and compare them
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_INPUT: ${{ inputs.head_sha }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=400 origin main
+          head=$(git rev-parse "${HEAD_INPUT:-FETCH_HEAD}")
+          summary() { printf '## Main performance detector\n\n%s\n' "$1" >> "$GITHUB_STEP_SUMMARY"; }
+
+          yarn tsx test/e2e/benchmarks/main-detector/resolve-cli.ts \
+            --head "$head" --out resolve.json > /dev/null
+          status=$(jq -r .status resolve.json)
+          if [[ "$status" != measure ]]; then
+            summary "Head \`${head:0:10}\`: **could not measure** ($status). No build for the head, or none for any of its recent ancestors."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          base=$(jq -r .base.sha resolve.json)
+          identical=true
+          for browser in chrome firefox; do
+            for side in base head; do
+              run=$(jq -r ".$side.run" resolve.json)
+              version=$(jq -r ".$side.version" resolve.json)
+              if [[ "$browser" == firefox ]]; then
+                path="build-test-mv2-webpack/builds/metamask-firefox-$version.zip"
+              else
+                path="build-test-webpack/builds/metamask-chrome-$version.zip"
+              fi
+              curl --fail --silent --show-error --retry 5 --retry-all-errors \
+                --output "$side-$browser.zip" "$DETECTOR_HOST/$run/$path"
+              mkdir -p "pair/$browser/$side"
+              unzip -q "$side-$browser.zip" -d "pair/$browser/$side"
+            done
+            yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts --browser "$browser" \
+              --base-source "pair/$browser/base" --head-source "pair/$browser/head" \
+              --out "pair-$browser.json" > /dev/null
+            a=$(jq -r .builds.A.contentHash "pair-$browser.json")
+            b=$(jq -r .builds.B.contentHash "pair-$browser.json")
+            [[ "$a" == "$b" ]] || identical=false
+          done
+
+          # Identical builds need no jobs; 1 in 10 of them run as a false-alarm canary.
+          canary=false
+          if [[ "$MODE" == aa ]]; then
+            canary=true
+          elif [[ "$identical" == true ]]; then
+            if (( 16#${head:0:8} % 10 == 0 )); then
+              canary=true
+            else
+              summary "Head \`${head:0:10}\` builds the same as base \`${base:0:10}\`: **no change**, no jobs run."
+              echo "proceed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          plan=$(jq -c --argjson canary "$canary" '{
+            headSha: .head.sha,
+            headSubject: .subjects[.head.sha],
+            baseSha: (if $canary then .head.sha else .base.sha end),
+            canary: $canary,
+            rangeSize: (.range | length),
+            headRun: .head.run,
+            headVersion: .head.version,
+            baseRun: (if $canary then .head.run else .base.run end),
+            baseVersion: (if $canary then .head.version else .base.version end)
+          }' resolve.json)
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+          echo "plan=$plan" >> "$GITHUB_OUTPUT"
+
+  measure-first:
+    needs: plan
+    if: ${{ needs.plan.outputs.proceed == 'true' }}
+    uses: ./.github/workflows/main-detector-measure.yml
+    secrets: inherit
+    with:
+      plan: ${{ needs.plan.outputs.plan }}
+      batch: 1
+      inject_head_ms: ${{ inputs.inject_head_ms }}
+
+  score-first:
+    needs: [plan, measure-first]
+    if: ${{ always() && needs.plan.outputs.proceed == 'true' }}
+    runs-on: ubuntu-24.04
+    outputs:
+      needs_confirm: ${{ steps.score.outputs.needs_confirm }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download batch 1
+        uses: actions/download-artifact@v7
+        with:
+          pattern: detector-b1-*
+          path: artifacts
+
+      - name: Score batch 1
+        id: score
+        env:
+          PLAN: ${{ needs.plan.outputs.plan }}
+        run: |
+          echo "$PLAN" > plan.json
+          yarn tsx test/e2e/benchmarks/main-detector/score-cli.ts --stage first \
+            --dir artifacts --plan plan.json --out first.json \
+            --github-output "$GITHUB_OUTPUT"
+
+  measure-confirm:
+    needs: [plan, score-first]
+    if: ${{ needs.score-first.outputs.needs_confirm == 'true' }}
+    uses: ./.github/workflows/main-detector-measure.yml
+    secrets: inherit
+    with:
+      plan: ${{ needs.plan.outputs.plan }}
+      batch: 2
+      inject_head_ms: ${{ inputs.inject_head_ms }}
+
+  report:
+    needs: [plan, score-first, measure-confirm]
+    if: ${{ always() && needs.plan.outputs.proceed == 'true' && needs.score-first.result == 'success' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download the batches
+        uses: actions/download-artifact@v7
+        with:
+          pattern: detector-b*
+          path: artifacts
+
+      - name: Score and report
+        env:
+          PLAN: ${{ needs.plan.outputs.plan }}
+        run: |
+          echo "$PLAN" > plan.json
+          yarn tsx test/e2e/benchmarks/main-detector/score-cli.ts --stage final \
+            --dir artifacts --plan plan.json --out result.json \
+            --summary "$GITHUB_STEP_SUMMARY" > /dev/null
+
+      - name: Upload the result
+        uses: actions/upload-artifact@v6
+        with:
+          name: detector-result
+          path: result.json
+          retention-days: 30

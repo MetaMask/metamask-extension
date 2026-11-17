@@ -122,11 +122,17 @@ class RootErrorBoundary extends Component<
   }
 }
 
+const renderRootError = (error: Error) => (
+  <HashRouter>
+    <ErrorPage error={error} />
+  </HashRouter>
+);
+
 export default function Index({
   store,
   uiMessenger,
   onFirstCommit,
-}: IndexProps) {
+}: Readonly<IndexProps>) {
   // Runs in the commit phase of the first render, as the legacy synchronous
   // `ReactDOM.render` did before `createRoot` made rendering asynchronous.
   useLayoutEffect(() => {
@@ -137,13 +143,7 @@ export default function Index({
 
   return (
     <Provider store={store}>
-      <RootErrorBoundary
-        fallback={(error) => (
-          <HashRouter>
-            <ErrorPage error={error} />
-          </HashRouter>
-        )}
-      >
+      <RootErrorBoundary fallback={renderRootError}>
         <UIMessengerProvider value={uiMessenger}>
           {withStrictMode(<RouterProvider router={router} />)}
         </UIMessengerProvider>

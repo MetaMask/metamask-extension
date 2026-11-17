@@ -5,7 +5,7 @@ import type { MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
-  selectIsAssetsLoadingForSelectedAccountGroup,
+  selectAssetsHaveLoadedForSelectedAccountGroup,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
 } from '../../../selectors/assets';
 import { useAccountGroupBalanceDisplay } from '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -29,13 +29,13 @@ const mockState = ({
   getBalance,
   hasBalance = false,
   isLoaded = true,
-  isAssetsLoading = false,
+  assetsHaveLoaded = true,
   isNetworkLoading = false,
 }: {
   getBalance: (map: Record<string, unknown>) => unknown;
   hasBalance?: boolean;
   isLoaded?: boolean;
-  isAssetsLoading?: boolean;
+  assetsHaveLoaded?: boolean;
   isNetworkLoading?: boolean;
 }) => {
   jest.mocked(useAccountGroupBalanceDisplay).mockReturnValue({
@@ -46,7 +46,7 @@ const mockState = ({
       [selectUnifiedBalanceGetterBySelectedAccountGroup, getBalance],
       [selectAccountGroupBalanceForEmptyState, hasBalance],
       [selectAccountGroupBalanceIsLoadedForEmptyState, isLoaded],
-      [selectIsAssetsLoadingForSelectedAccountGroup, isAssetsLoading],
+      [selectAssetsHaveLoadedForSelectedAccountGroup, assetsHaveLoaded],
     ]);
     return values.get(selector);
   });
@@ -95,7 +95,7 @@ describe('useNetworkPillBalances', () => {
 
   it.each([
     ['the balance data has not loaded', { isLoaded: false }],
-    ['the assets are still loading', { isAssetsLoading: true }],
+    ['the first asset load has not settled', { assetsHaveLoaded: false }],
     ['the networks are not available yet', { isNetworkLoading: true }],
   ])('returns no balances while %s', (_, state) => {
     mockState({

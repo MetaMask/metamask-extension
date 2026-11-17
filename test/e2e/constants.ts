@@ -1,4 +1,7 @@
+import { parseCaipChainId } from '@metamask/utils';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import defaultFixtureJson from './fixtures/default-fixture.json';
+import { NetworkId } from './helpers/network-constants';
 
 /** Persisted versioned-data version for fixtures. */
 export const FIXTURE_STATE_METADATA_VERSION = defaultFixtureJson.meta.version;
@@ -268,34 +271,36 @@ export const DEFAULT_FIXTURE_SOLANA_ACCOUNT =
   '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 
 /* Solana Mainnet chain ID (genesis hash) */
-export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+export const SOLANA_MAINNET_CHAIN_ID = parseCaipChainId(
+  NetworkId.SOLANA,
+).reference;
 
 /* Solana Mainnet scope in CAIP-2 format */
-export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
+export const SOLANA_MAINNET_SCOPE = NetworkId.SOLANA;
 
 /* CAIP-2 EVM chain scopes used in MM Connect Multichain tests.
  * On localhost the playground pre-checks eip155:1337, so we use that
  * instead of eip155:1 to avoid unchecking it (which triggers a React
  * stale-closure race in handleCheckboxChange). */
 export const MM_CONNECT_EVM_CHAINS = {
-  LOCALHOST: 'eip155:1337',
-  POLYGON: 'eip155:137',
-  LINEA: 'eip155:59144',
+  LOCALHOST: NetworkId.LOCALHOST,
+  POLYGON: NetworkId.POLYGON,
+  LINEA: NetworkId.LINEA,
 } as const;
 
 /* All featured CAIP-2 chain IDs available in the MM Connect playground */
 export const MM_CONNECT_FEATURED_CHAIN_IDS = [
-  'eip155:1337', // Localhost 8545 (pre-checked on page load in local E2E env)
-  'eip155:1', // Ethereum Mainnet
-  'eip155:59144', // Linea Mainnet
-  'eip155:42161', // Arbitrum One
-  'eip155:43114', // Avalanche C-Chain
-  'eip155:56', // BNB Chain
-  'eip155:10', // OP Mainnet
-  'eip155:137', // Polygon Mainnet
-  'eip155:324', // zkSync Era
-  'eip155:8453', // Base Mainnet
-  `solana:${SOLANA_MAINNET_CHAIN_ID}`, // Solana Mainnet
+  NetworkId.LOCALHOST, // Localhost 8545 (pre-checked on page load in local E2E env)
+  NetworkId.ETHEREUM, // Ethereum Mainnet
+  NetworkId.LINEA, // Linea Mainnet
+  NetworkId.ARBITRUM, // Arbitrum One
+  NetworkId.AVALANCHE, // Avalanche C-Chain
+  NetworkId.BSC, // BNB Chain
+  NetworkId.OPTIMISM, // OP Mainnet
+  NetworkId.POLYGON, // Polygon Mainnet
+  NetworkId.ZKSYNC_ERA, // zkSync Era
+  NetworkId.BASE, // Base Mainnet
+  NetworkId.SOLANA, // Solana Mainnet
 ] as const;
 
 /* Default (mocked) SOLANA balance used by the Solana RPC provider */
@@ -379,11 +384,11 @@ export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
   locale: 'en',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  chain_id: '0x539',
+  chain_id: CHAIN_IDS.LOCALHOST,
   ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
 } as const;
 
-/* Processed remote feature flags for `MOCK_ANALYTICS_ID` (RFFC threshold group C). */
+/* Processed remote feature flags for `MOCK_CANONICAL_PROFILE_ID` (RFFC threshold group C). */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,

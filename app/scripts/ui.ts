@@ -308,6 +308,9 @@ async function initializeUiWithTab(
     const { metamask: { completedOnboarding } = {} } = state;
 
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
+      // The window may close before React commits, so end the traces here.
+      endTrace({ name: TraceName.FirstRender });
+      endTrace({ name: TraceName.UIStartup });
       globalThis.platform.openExtensionInBrowser();
     }
   } catch (error) {

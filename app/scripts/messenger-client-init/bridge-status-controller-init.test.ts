@@ -7,6 +7,7 @@ import {
 import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { captureException } from '../../../shared/lib/sentry';
+import { traceBackgroundPoll } from '../../../shared/lib/trace';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest, MessengerClientName } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -18,6 +19,13 @@ jest.mock('@metamask/bridge-status-controller', () => ({
   BridgeStatusController: jest.fn(),
 }));
 jest.mock('../../../shared/lib/sentry');
+
+jest.mock('../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../shared/lib/trace'),
+  traceBackgroundPoll: jest.fn((_controllerName: string, fn: () => unknown) =>
+    fn(),
+  ),
+}));
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<BridgeStatusControllerMessenger>
@@ -35,7 +43,7 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('BridgeStatusControllerInit', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('initializes the controller', () => {
@@ -63,6 +71,30 @@ describe('BridgeStatusControllerInit', () => {
       onQuoteStatusManagerError: expect.any(Function),
       isQuoteStatusManagerEnabled: expect.any(Function),
     });
+  });
+
+  it('roots bridge status polling cycles in their own traces', async () => {
+    const executePoll = jest.fn().mockResolvedValue(undefined);
+    jest.mocked(BridgeStatusController).mockImplementationOnce(
+      () =>
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- _executePoll is BridgeStatusController's private polling method
+        ({ _executePoll: executePoll }) as unknown as BridgeStatusController,
+    );
+
+    const { messengerClient } =
+      BridgeStatusControllerInit(getInitRequestMock());
+
+    await (
+      messengerClient as unknown as {
+        _executePoll: (input: unknown) => Promise<void>;
+      }
+    )._executePoll({ bridgeTxMetaId: '0x1' });
+
+    expect(traceBackgroundPoll).toHaveBeenCalledWith(
+      'BridgeStatusController',
+      expect.any(Function),
+    );
+    expect(executePoll).toHaveBeenCalledWith({ bridgeTxMetaId: '0x1' });
   });
 
   describe('addTransactionBatchFn wrapper', () => {

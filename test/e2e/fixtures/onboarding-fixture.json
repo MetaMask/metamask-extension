@@ -140,16 +140,6 @@
       "lastFetched": null,
       "version": null
     },
-    "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": 0,
-          "conversionRate": 0,
-          "usdConversionRate": null
-        }
-      },
-      "currentCurrency": "usd"
-    },
     "DeFiPositionsControllerV2": {
       "allDeFiPositionsV2": {}
     },
@@ -498,6 +488,7 @@
           "0x2105": true,
           "0x279f": false,
           "0x38": true,
+          "0x531": false,
           "0x89": true,
           "0x8f": true,
           "0xa": true,
@@ -2005,6 +1996,9 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "tdpChartIndicators": [],
+        "tdpChartInterval": "15m",
+        "tdpChartType": 2,
         "tokenNetworkFilter": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
@@ -2046,10 +2040,13 @@
       "syncQueue": {}
     },
     "RampsController": {
+      "autorampTransactionRecords": {},
       "autoramps": [],
+      "moneyAccountWalletRegistrations": [],
       "orders": [],
       "providerAutoSelected": false,
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,

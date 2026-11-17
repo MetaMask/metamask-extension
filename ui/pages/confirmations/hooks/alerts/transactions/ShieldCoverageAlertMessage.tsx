@@ -13,7 +13,7 @@ import {
 } from '../../../../../../shared/constants/subscriptions';
 
 const SHIELD_LEARN_HOW_COVERAGE_WORKS_URL =
-  'https://metamask.io/transaction-shield';
+  'https://metamask.com/transaction-shield';
 
 const COVERAGE_AMOUNT = '$10,000';
 
