@@ -13,6 +13,7 @@
     "applyTransactionContainersExisting",
     "approveHardwareWalletTransaction",
     "attemptLedgerTransportCreation",
+    "backupUserData",
     "captureTestError",
     "changePassword",
     "changePasswordWithPasskeyVerification",
@@ -99,8 +100,6 @@
     "upsertTransactionUIMetricsFragment"
   ],
   "MetamaskController.getApi": [
-    "backupUserData",
-    "restoreUserData",
     "setArcUsageNoticeShown",
     "trackAnalyticsEvent",
     "trackMetaMetricsPage"
