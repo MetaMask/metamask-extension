@@ -52,13 +52,18 @@ import { getNetworkImageUrl } from '../../../shared/lib/network.utils';
 import { getChainIdToNativeTokenImageUrlMap } from '../../selectors/config-registry/config-registry';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
+const DEFAULT_NATIVE_TOKEN_IMAGE_URLS: Record<string, string> = {
+  ...CHAIN_ID_TOKEN_IMAGE_MAP,
+  ...MULTICHAIN_TOKEN_IMAGE_MAP,
+};
+
 const buildTokenData = (
   chainId: ChainId | Hex | CaipChainId,
   token?: BridgeAsset | TokenListToken,
-  nativeTokenImageUrls: Record<string, string> = {
-    ...CHAIN_ID_TOKEN_IMAGE_MAP,
-    ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  },
+  nativeTokenImageUrls: Record<
+    string,
+    string
+  > = DEFAULT_NATIVE_TOKEN_IMAGE_URLS,
 ):
   | (AssetWithDisplayData<NativeAsset> & { assetId: CaipAssetType | string })
   | (AssetWithDisplayData<ERC20Asset> & { assetId: CaipAssetType | string })
