@@ -3,6 +3,7 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
+import type { ConfigRegistryControllerGetNetworkConfigByCaip2ChainIdAction } from '@metamask/config-registry-controller';
 import {
   AccountTrackerControllerGetStateAction,
   CurrencyRateControllerActions,
@@ -29,6 +30,7 @@ import {
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
   SmartTransactionsControllerGetFeesAction,
   SmartTransactionsControllerSmartTransactionEvent,
@@ -79,6 +81,7 @@ export type TransactionControllerInitMessengerActions =
   | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
+  | ConfigRegistryControllerGetNetworkConfigByCaip2ChainIdAction
   | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
   | GasFeeControllerFetchGasFeeEstimatesAction
@@ -97,6 +100,7 @@ export type TransactionControllerInitMessengerActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SmartTransactionsControllerGetFeesAction
   | SmartTransactionsControllerSubmitSignedTransactionsAction
+  | SnapControllerHandleRequestAction
   | SubscriptionControllerActions
   | ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | TransactionControllerAddTransactionAction
@@ -168,6 +172,7 @@ export function getTransactionControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
+      'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
       'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
@@ -184,6 +189,7 @@ export function getTransactionControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'SmartTransactionsController:getFees',
       'SmartTransactionsController:submitSignedTransactions',
+      'SnapController:handleRequest',
       'SubscriptionController:getSubscriptionByProduct',
       'ShieldSubscriptionService:submitSubscriptionSponsorshipIntent',
       'TransactionController:addTransaction',
@@ -194,10 +200,12 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
       'TransactionPayController:getDelegationTransaction',
+      'TransactionPayController:getInfuraProjectId',
       'TransactionPayController:getPaymentOverrideData',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
       'TransactionPayController:getAmountData',
+      'TransactionPayController:reconcileSolanaPay',
     ],
   });
 

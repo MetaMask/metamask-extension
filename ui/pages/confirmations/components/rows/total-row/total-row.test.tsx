@@ -92,6 +92,21 @@ describe('TotalRow', () => {
     expect(totalValue).toHaveTextContent('$123.46');
   });
 
+  it('renders a Solana quote total from totals', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      total: { usd: '25.51' },
+      fees: {
+        provider: { usd: '0.50' },
+        sourceNetwork: { estimate: { usd: '0.01' } },
+        targetNetwork: { usd: '0' },
+      },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('total-value')).toHaveTextContent('$25.51');
+  });
+
   it('renders total value with Text component for Small variant', () => {
     const { getByTestId } = render({
       variant: ConfirmInfoRowSize.Small,
