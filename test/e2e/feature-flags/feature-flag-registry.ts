@@ -3289,6 +3289,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  extensionUpdatePromptOnAnyRoute: {
+    inProd: true,
+    name: 'extensionUpdatePromptOnAnyRoute',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   extensionUpdatePromptOnNotification: {
     inProd: true,
     name: 'extensionUpdatePromptOnNotification',
