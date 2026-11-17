@@ -1,10 +1,11 @@
-import React, { useCallback, useId } from 'react';
+import React, { useCallback, useId, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonIconVariant,
   ButtonSize,
   ButtonVariant,
   FontWeight,
@@ -50,6 +51,7 @@ import {
 } from '../../../../pages/money/constants/money-events';
 import { PopoverPosition } from '../../../component-library';
 import { transitionForward } from '../../../ui/transition';
+import { DottedTrigger, MoneyApyDialog } from '../money-deposit-dialogs';
 import { TooltipText } from '../tooltip-text';
 
 export const MONEY_FTUE_SPLASH_TEST_ID = 'money-ftue-splash';
@@ -114,13 +116,25 @@ const MoneyFtueSplashContent = () => {
 
   const apyDisplay = apyPercentFormatted ?? APY_FALLBACK;
   const isDeposit = source === 'deposit';
-  const redirectTarget = isDeposit
-    ? MoneyScreenName.MoneyDeposit
-    : MoneyScreenName.MoneyHome;
+  const isDepositInfo = source === 'depositInfo';
+  const [isApyDialogOpen, setIsApyDialogOpen] = useState(false);
+
+  const openApyDialog = useCallback(() => setIsApyDialogOpen(true), []);
+  const closeApyDialog = useCallback(() => setIsApyDialogOpen(false), []);
+
+  let redirectTarget = MoneyScreenName.MoneyHome;
+  if (isDeposit || isDepositInfo) {
+    redirectTarget = MoneyScreenName.MoneyDeposit;
+  }
+
   // Dismissing a deposit splash cancels the deposit, so the user stays on wallet home.
-  const dismissRedirectTarget = isDeposit
-    ? MoneyScreenName.WalletHome
-    : MoneyScreenName.MoneyHome;
+  // Dismissing the deposit-confirmation info dialog returns to the deposit confirmation.
+  let dismissRedirectTarget = MoneyScreenName.MoneyHome;
+  if (isDeposit) {
+    dismissRedirectTarget = MoneyScreenName.WalletHome;
+  } else if (isDepositInfo) {
+    dismissRedirectTarget = MoneyScreenName.MoneyDeposit;
+  }
 
   const acknowledgeSplash = useCallback(() => {
     dispatch(setMoneyFtueSeen(true));
@@ -181,13 +195,17 @@ const MoneyFtueSplashContent = () => {
   ]);
 
   const environmentType = getEnvironmentType();
-  const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP;
+  const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP && !isDepositInfo;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   let contentClassName: string | undefined;
   let dialogClassName: string;
 
-  if (isPopup) {
+  if (isDepositInfo) {
+    contentClassName = 'items-center p-4';
+    dialogClassName =
+      'max-h-[min(75vh,675px)] min-h-0 max-w-[368px] rounded-3xl py-0';
+  } else if (isPopup) {
     contentClassName = 'p-0';
     dialogClassName = 'h-full min-h-0 max-w-none rounded-none border-0';
   } else if (isSidepanel) {
@@ -199,183 +217,215 @@ const MoneyFtueSplashContent = () => {
   }
 
   return (
-    <Modal
-      isOpen
-      onClose={handleClose}
-      isClosedOnOutsideClick={false}
-      restoreFocus
-    >
-      {isPopup ? null : (
-        <ModalOverlay
-          className="bg-black/30"
-          data-testid="money-ftue-splash-overlay"
-        />
-      )}
-      <ModalContent
-        size={ModalContentSize.Sm}
-        className={contentClassName}
-        modalDialogProps={{
-          'aria-labelledby': titleId,
-          className: dialogClassName,
-          'data-testid': MONEY_FTUE_SPLASH_TEST_ID,
-        }}
+    <>
+      <Modal
+        isOpen
+        onClose={handleClose}
+        isClosedOnOutsideClick={isDepositInfo}
+        restoreFocus
       >
-        <div className="flex min-h-0 flex-1 flex-col">
-          <header className="flex items-center justify-between gap-2 py-4 pl-6 pr-4">
-            <h2
-              id={titleId}
-              className="text-default text-s-heading-md leading-s-heading-md font-medium"
-              data-testid="money-ftue-splash-title"
-            >
-              {t('moneyFtueTitle')}
-            </h2>
-            <ButtonIcon
-              iconName={IconName.Close}
-              size={ButtonIconSize.Md}
-              ariaLabel={t('close')}
-              onClick={handleClose}
-              data-testid={MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID}
-            />
-          </header>
-
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-            <div className="px-4 pt-1">
-              <div
-                className="relative aspect-[16/9] w-full"
-                data-testid="money-ftue-splash-artwork"
+        {isPopup ? null : (
+          <ModalOverlay
+            className="bg-black/30"
+            data-testid="money-ftue-splash-overlay"
+          />
+        )}
+        <ModalContent
+          size={ModalContentSize.Sm}
+          className={contentClassName}
+          modalDialogProps={{
+            'aria-labelledby': titleId,
+            className: dialogClassName,
+            'data-testid': MONEY_FTUE_SPLASH_TEST_ID,
+          }}
+        >
+          <div className="flex min-h-0 flex-1 flex-col">
+            <header className="flex items-center justify-between gap-2 py-4 pl-6 pr-4">
+              <h2
+                id={titleId}
+                className="text-default text-s-heading-md leading-s-heading-md font-medium"
+                data-testid="money-ftue-splash-title"
               >
-                <img
-                  src={
+                {t('moneyFtueTitle')}
+              </h2>
+              <ButtonIcon
+                iconName={IconName.Close}
+                size={ButtonIconSize.Md}
+                variant={
+                  isDepositInfo
+                    ? ButtonIconVariant.Filled
+                    : ButtonIconVariant.Default
+                }
+                ariaLabel={t('close')}
+                onClick={handleClose}
+                className={isDepositInfo ? 'h-9 w-9 bg-section' : undefined}
+                data-testid={MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID}
+              />
+            </header>
+
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+              <div className={isDepositInfo ? 'px-4 pb-6 pt-1' : 'px-4 pt-1'}>
+                <div
+                  className="relative aspect-[16/9] w-full"
+                  data-testid="money-ftue-splash-artwork"
+                >
+                  <img
+                    src={
+                      isPopup
+                        ? MONEY_FTUE_HERO_BACKGROUND
+                        : MONEY_FTUE_HERO_BACKGROUND_CARD
+                    }
+                    alt=""
+                    className="absolute inset-0 h-full w-full"
+                  />
+                  <img
+                    src={MONEY_FTUE_HERO_COINS}
+                    alt=""
+                    className="absolute left-1/2 top-1/2 w-[59%] -translate-x-1/2 -translate-y-1/2"
+                  />
+                </div>
+
+                <h2
+                  className={
                     isPopup
-                      ? MONEY_FTUE_HERO_BACKGROUND
-                      : MONEY_FTUE_HERO_BACKGROUND_CARD
+                      ? 'mt-6 text-default text-s-display-md leading-s-display-md font-bold'
+                      : 'mt-6 text-default text-s-heading-lg leading-s-heading-lg font-bold'
                   }
-                  alt=""
-                  className="absolute inset-0 h-full w-full"
-                />
-                <img
-                  src={MONEY_FTUE_HERO_COINS}
-                  alt=""
-                  className="absolute left-1/2 top-1/2 w-[59%] -translate-x-1/2 -translate-y-1/2"
-                />
+                  data-testid="money-ftue-splash-headline"
+                >
+                  {t('moneyFtueHeadline')}
+                </h2>
+
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                  className="mt-4"
+                  data-testid="money-ftue-splash-description"
+                >
+                  {isDepositInfo
+                    ? t('moneyFtueDescriptionDeposit', [
+                        <DottedTrigger
+                          key="apy"
+                          text={t('moneyApy', [apyDisplay])}
+                          variant={TextVariant.BodyMd}
+                          color={TextColor.SuccessDefault}
+                          onClick={openApyDialog}
+                          data-testid="money-ftue-splash-apy-trigger"
+                        />,
+                      ])
+                    : t('moneyFtueDescription', [
+                        <TooltipText
+                          key="apy"
+                          text={apyDisplay}
+                          variant={TextVariant.BodyMd}
+                          className="text-success-default"
+                          position={PopoverPosition.Auto}
+                          popoverStyle={{ maxWidth: 315 }}
+                          data-testid="money-ftue-splash-apy"
+                        >
+                          <div className="flex flex-col gap-4">
+                            <Text variant={TextVariant.BodyMd}>
+                              {t('moneyHomeApyTooltipEarning', [apyDisplay])}
+                            </Text>
+                            <Text variant={TextVariant.BodyMd}>
+                              {t('moneyHomeApyTooltip')}
+                            </Text>
+                            <Text variant={TextVariant.BodyMd}>
+                              {t('moneyHomeApyTooltipPoweredBy')}
+                            </Text>
+                          </div>
+                        </TooltipText>,
+                      ])}
+                </Text>
+
+                <ul className="mt-5 flex flex-col gap-4">
+                  {BENEFITS.map((benefit) => (
+                    <li
+                      key={benefit.id}
+                      className="flex items-start gap-3"
+                      data-testid={`money-ftue-splash-benefit-${benefit.id}`}
+                    >
+                      <Icon
+                        name={IconName.Check}
+                        size={IconSize.Md}
+                        color={IconColor.SuccessDefault}
+                        className="mt-0.5 shrink-0"
+                      />
+                      <div>
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={
+                            isDepositInfo ? FontWeight.Medium : FontWeight.Bold
+                          }
+                        >
+                          {t(benefit.titleKey)}
+                        </Text>
+                        <Text
+                          variant={TextVariant.BodySm}
+                          color={TextColor.TextAlternative}
+                          className="mt-1"
+                        >
+                          {t(benefit.descriptionKey)}
+                        </Text>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              <h2
-                className={
-                  isPopup
-                    ? 'mt-6 text-default text-s-display-md leading-s-display-md font-bold'
-                    : 'mt-6 text-default text-s-heading-lg leading-s-heading-lg font-bold'
-                }
-                data-testid="money-ftue-splash-headline"
-              >
-                {t('moneyFtueHeadline')}
-              </h2>
-
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-                className="mt-4"
-                data-testid="money-ftue-splash-description"
-              >
-                {t('moneyFtueDescription', [
-                  <TooltipText
-                    key="apy"
-                    text={apyDisplay}
-                    variant={TextVariant.BodyMd}
-                    className="text-success-default"
-                    position={PopoverPosition.Auto}
-                    popoverStyle={{ maxWidth: 315 }}
-                    data-testid="money-ftue-splash-apy"
+              {isDepositInfo ? null : (
+                <section className="mt-8">
+                  <Text
+                    variant={TextVariant.HeadingMd}
+                    fontWeight={FontWeight.Bold}
+                    className="px-4 pb-2"
+                    data-testid="money-ftue-splash-faq-title"
                   >
-                    <div className="flex flex-col gap-4">
-                      <Text variant={TextVariant.BodyMd}>
-                        {t('moneyHomeApyTooltipEarning', [apyDisplay])}
-                      </Text>
-                      <Text variant={TextVariant.BodyMd}>
-                        {t('moneyHomeApyTooltip')}
-                      </Text>
-                      <Text variant={TextVariant.BodyMd}>
-                        {t('moneyHomeApyTooltipPoweredBy')}
-                      </Text>
-                    </div>
-                  </TooltipText>,
-                ])}
-              </Text>
+                    {t('moneyHowItWorksFaqTitle')}
+                  </Text>
+                  {MONEY_FAQ_ITEMS.map((item) => {
+                    const answer = t(
+                      item.answerKey,
+                      item.usesApy ? [apyDisplay] : item.substitutions,
+                    );
 
-              <ul className="mt-5 flex flex-col gap-4">
-                {BENEFITS.map((benefit) => (
-                  <li
-                    key={benefit.id}
-                    className="flex items-start gap-3"
-                    data-testid={`money-ftue-splash-benefit-${benefit.id}`}
-                  >
-                    <Icon
-                      name={IconName.Check}
-                      size={IconSize.Md}
-                      color={IconColor.SuccessDefault}
-                      className="mt-0.5 shrink-0"
-                    />
-                    <div>
-                      <Text
-                        variant={TextVariant.BodyMd}
-                        fontWeight={FontWeight.Bold}
-                      >
-                        {t(benefit.titleKey)}
-                      </Text>
-                      <Text
-                        variant={TextVariant.BodySm}
-                        color={TextColor.TextAlternative}
-                        className="mt-1"
-                      >
-                        {t(benefit.descriptionKey)}
-                      </Text>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    return (
+                      <MoneyFaqItem
+                        key={item.id}
+                        question={t(item.questionKey)}
+                        answer={answer}
+                        testId={`money-ftue-splash-faq-${item.id}`}
+                      />
+                    );
+                  })}
+                </section>
+              )}
             </div>
 
-            <section className="mt-8">
-              <Text
-                variant={TextVariant.HeadingMd}
-                fontWeight={FontWeight.Bold}
-                className="px-4 pb-2"
-                data-testid="money-ftue-splash-faq-title"
-              >
-                {t('moneyHowItWorksFaqTitle')}
-              </Text>
-              {MONEY_FAQ_ITEMS.map((item) => {
-                const answer = t(
-                  item.answerKey,
-                  item.usesApy ? [apyDisplay] : item.substitutions,
-                );
-
-                return (
-                  <MoneyFaqItem
-                    key={item.id}
-                    question={t(item.questionKey)}
-                    answer={answer}
-                    testId={`money-ftue-splash-faq-${item.id}`}
-                  />
-                );
-              })}
-            </section>
+            {isDepositInfo ? null : (
+              <footer className="p-4">
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  isFullWidth
+                  onClick={handleStartEarning}
+                  data-testid={MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID}
+                >
+                  {t('moneyFtueStartEarning')}
+                </Button>
+              </footer>
+            )}
           </div>
-
-          <footer className="p-4">
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              onClick={handleStartEarning}
-              data-testid={MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID}
-            >
-              {t('moneyFtueStartEarning')}
-            </Button>
-          </footer>
-        </div>
-      </ModalContent>
-    </Modal>
+        </ModalContent>
+      </Modal>
+      {isDepositInfo ? (
+        <MoneyApyDialog
+          isOpen={isApyDialogOpen}
+          onClose={closeApyDialog}
+          apyPercentFormatted={apyDisplay}
+        />
+      ) : null}
+    </>
   );
 };
 

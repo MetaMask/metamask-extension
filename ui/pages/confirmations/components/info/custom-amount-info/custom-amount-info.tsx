@@ -1,5 +1,8 @@
 import React, { ReactNode, useCallback } from 'react';
-import { type TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -25,12 +28,16 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import { MoneyAccountToRow } from '../../../../../components/app/money/money-account-to-row';
 import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
 } from '../../percentage-buttons';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
@@ -408,6 +415,9 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
   // Withdrawals show Receive only when post-quote token selection is enabled;
   // otherwise the direct transfer keeps its regular Total. Input-based quotes
   // show Receive according to the controller-owned totals semantics.
@@ -428,21 +438,35 @@ function BottomContainer({
       {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
+          {isMoneyAccountDeposit && <MoneyAccountToRow />}
           {disablePay !== true && (
             <>
-              <BridgeFeeRow
-                variant={ConfirmInfoRowSize.Small}
-                tooltipDescription={
-                  isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
-                }
-              />
-              <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+              {isMoneyAccountDeposit ? (
+                <>
+                  <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+                  <BridgeFeeRow
+                    variant={ConfirmInfoRowSize.Small}
+                    useDottedValueTooltip
+                  />
+                </>
+              ) : (
+                <>
+                  <BridgeFeeRow
+                    variant={ConfirmInfoRowSize.Small}
+                    tooltipDescription={
+                      isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
+                    }
+                  />
+                  <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+                </>
+              )}
             </>
           )}
           {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}
+              enableMoneyUsdDialog={isMoneyAccountDeposit}
             />
           ) : (
             <TotalRow variant={ConfirmInfoRowSize.Small} />

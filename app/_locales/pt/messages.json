@@ -5730,9 +5730,6 @@
     "message": "Ganhe $1",
     "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
-  "moneyAccountApyTooltip": {
-    "message": "A taxa apresentada é uma estimativa da Taxa Anual Efetiva (APY) com base nas condições atuais do mercado. A APY é variável e não é garantida."
-  },
   "moneyAccountAvailableBalance": {
     "message": "Saldo disponível: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"

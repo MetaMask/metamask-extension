@@ -389,4 +389,48 @@ describe('MoneyFtueSplash', () => {
     fireEvent.click(question);
     expect(details).toHaveAttribute('open');
   });
+
+  it('renders a scrollable card without FAQs or Start earning button in depositInfo mode, and opens the APY dialog from the APY trigger', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    const store = configureStore({
+      metamask: { moneyFtueSeen: true },
+      moneyFtue: {
+        isOpen: true,
+        source: 'depositInfo',
+        origin: {
+          entryPoint: MoneyFtueEntryPoint.MoneyDepositConfirmation,
+        },
+        pendingDeposit: null,
+        acknowledged: true,
+      },
+    });
+    renderWithProvider(<MoneyFtueSplash />, store);
+
+    const splash = screen.getByTestId(MONEY_FTUE_SPLASH_TEST_ID);
+    expect(splash.className).toContain('max-w-[368px]');
+    expect(splash.className).toContain('rounded-3xl');
+    expect(
+      screen.getByTestId('money-ftue-splash-description'),
+    ).toHaveTextContent(
+      'MetaMask Money is a stablecoin account that earns up to 6.2% APY—with trading, sending, and spending built in.',
+    );
+    expect(
+      screen.queryByTestId('money-ftue-splash-faq-title'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('money-ftue-splash-apy-trigger'));
+    expect(screen.getByTestId('money-apy-dialog')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('money-apy-dialog-close-button'));
+    expect(screen.queryByTestId('money-apy-dialog')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId(MONEY_FTUE_SPLASH_CLOSE_BUTTON_TEST_ID));
+    expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
 });

@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
+  FontWeight,
   Skeleton,
   Text,
   TextColor,
@@ -22,7 +23,11 @@ import {
 import { moneyFormatUsd } from '../../../../helpers/money/format';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../messenger';
-import { TooltipText } from '../tooltip-text';
+import {
+  DottedTrigger,
+  MoneyApyDialog,
+  MoneyEstimatedBalanceDialog,
+} from '../money-deposit-dialogs';
 
 const PROJECTED_YEARS = 1;
 
@@ -43,12 +48,10 @@ function isPositiveNumberOrZero(value: number | undefined): value is number {
 
 /**
  * Amount-screen subtitle for a Money Account deposit: the APY pitch at $0,
- * or a compounded projected balance once the user types an amount.
+ * or a compounded estimated balance once the user types an amount.
  *
- * Ported from mobile `BalanceProjection`. Info icons open a popover rather
- * than a full-screen sheet — the extension has no Money modal stack yet.
- * The projection is always a one-year compound so the copy, tooltip, and
- * accessible label stay consistent.
+ * Activating the dotted underline opens the corresponding info dialog
+ * (APY or Estimated balance).
  *
  * @param props - Component props.
  * @param props.amountFiat - Fiat amount currently in the custom-amount input.
@@ -56,10 +59,14 @@ function isPositiveNumberOrZero(value: number | undefined): value is number {
  */
 const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
   const t = useI18nContext();
-  const { apyDecimal, apyPercent, vaultApyQuery } = useMoneyAccountBalance();
+  const { apyDecimal, apyPercent, apyPercentFormatted, vaultApyQuery } =
+    useMoneyAccountBalance();
   const { trackTooltipClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyDeposit,
   });
+  const [isEstBalanceDialogOpen, setIsEstBalanceDialogOpen] = useState(false);
+  const [isApyDialogOpen, setIsApyDialogOpen] = useState(false);
+
   const hasUsableApy =
     isPositiveNumberOrZero(apyDecimal) && isPositiveNumberOrZero(apyPercent);
 
@@ -86,6 +93,31 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
     );
   }, [amount, apyDecimal]);
 
+  const handleOpenEstBalanceDialog = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.BalanceProjection,
+    });
+    setIsEstBalanceDialogOpen(true);
+  }, [trackTooltipClicked]);
+
+  const handleCloseEstBalanceDialog = useCallback(() => {
+    setIsEstBalanceDialogOpen(false);
+  }, []);
+
+  const handleOpenApyDialog = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.Apy,
+      tooltipType: MoneyTooltipType.Info,
+    });
+    setIsApyDialogOpen(true);
+  }, [trackTooltipClicked]);
+
+  const handleCloseApyDialog = useCallback(() => {
+    setIsApyDialogOpen(false);
+  }, []);
+
   if (vaultApyQuery.isLoading && !hasUsableApy) {
     return (
       <Box data-testid="balance-projection-skeleton">
@@ -98,64 +130,70 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
     return null;
   }
 
+  const apyFormatted = apyPercentFormatted ?? `${apyPercent}%`;
+
   if (amount.gt(0) && projected !== null) {
+    const projectedFormatted = moneyFormatUsd(projected);
+
     return (
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-        gap={1}
-        data-testid="balance-projection"
-      >
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('moneyAccountProjectedBalance')}
-        </Text>
-        <TooltipText
-          text={moneyFormatUsd(projected)}
-          variant={TextVariant.BodyMd}
-          color={TextColor.SuccessDefault}
-          data-testid="balance-projection-info"
-          onOpen={() =>
-            trackTooltipClicked({
-              tooltipName: MoneyTooltipName.EarnOnYourCrypto,
-              tooltipType: MoneyTooltipType.Info,
-              componentName: MoneyComponentName.BalanceProjection,
-            })
-          }
+      <>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          gap={1}
+          data-testid="balance-projection"
         >
-          {t('moneyAccountProjectedBalanceTooltip', [String(apyPercent)])}
-        </TooltipText>
-      </Box>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('moneyAccountProjectedBalance')}
+          </Text>
+          <DottedTrigger
+            text={projectedFormatted}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.SuccessDefault}
+            data-testid="balance-projection-info-trigger"
+            onClick={handleOpenEstBalanceDialog}
+          />
+        </Box>
+        <MoneyEstimatedBalanceDialog
+          isOpen={isEstBalanceDialogOpen}
+          onClose={handleCloseEstBalanceDialog}
+          depositAmount={amount}
+          projectedBalanceFormatted={projectedFormatted}
+          apyPercentFormatted={apyFormatted}
+        />
+      </>
     );
   }
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      justifyContent={BoxJustifyContent.Center}
-      data-testid="balance-projection-apy-pitch"
-    >
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {t('moneyAccountApyPitchEarn', [
-          <TooltipText
-            key="apy"
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            data-testid="balance-projection-apy-pitch-info"
-            text={t('moneyAccountApyPitchApy', [String(apyPercent)])}
-            onOpen={() =>
-              trackTooltipClicked({
-                tooltipName: MoneyTooltipName.Apy,
-                tooltipType: MoneyTooltipType.Info,
-              })
-            }
-          >
-            {t('moneyAccountApyTooltip')}
-          </TooltipText>,
-        ])}
-      </Text>
-    </Box>
+    <>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        data-testid="balance-projection-apy-pitch"
+      >
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+          {t('moneyAccountApyPitchEarn', [
+            <DottedTrigger
+              key="apy"
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              data-testid="balance-projection-apy-pitch-info-trigger"
+              text={t('moneyAccountApyPitchApy', [String(apyPercent)])}
+              onClick={handleOpenApyDialog}
+            />,
+          ])}
+        </Text>
+      </Box>
+      <MoneyApyDialog
+        isOpen={isApyDialogOpen}
+        onClose={handleCloseApyDialog}
+        apyPercentFormatted={apyFormatted}
+      />
+    </>
   );
 };
 

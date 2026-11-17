@@ -97,7 +97,7 @@ function formatSeconds(
   }
 
   if (seconds <= 30) {
-    return `< 1 ${t('minute')}`;
+    return t('lessThanOneMinute');
   }
 
   if (seconds <= 60) {

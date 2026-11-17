@@ -5734,9 +5734,6 @@
     "message": "Dapatkan $1",
     "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
-  "moneyAccountApyTooltip": {
-    "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin."
-  },
   "moneyAccountAvailableBalance": {
     "message": "Saldo tersedia: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"

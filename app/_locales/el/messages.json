@@ -5730,9 +5730,6 @@
     "message": "Κερδίστε $1",
     "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
-  "moneyAccountApyTooltip": {
-    "message": "Το επιτόκιο που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Ποσοστιαία Απόδοση (APY) με βάση τις τρέχουσες συνθήκες της αγοράς. Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
-  },
   "moneyAccountAvailableBalance": {
     "message": "Διαθέσιμο υπόλοιπο: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"

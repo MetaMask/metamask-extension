@@ -6,7 +6,7 @@ import type {
   MoneyFtueEntryPoint,
 } from '../../pages/money/constants/money-events';
 
-export type MoneyFtueSource = 'moneyHome' | 'deposit';
+export type MoneyFtueSource = 'moneyHome' | 'deposit' | 'depositInfo';
 
 export type MoneyFtueOrigin = {
   entryPoint: MoneyFtueEntryPoint;

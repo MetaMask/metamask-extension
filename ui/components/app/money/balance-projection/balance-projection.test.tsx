@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -14,6 +14,10 @@ import {
   MoneyTooltipName,
   MoneyTooltipType,
 } from '../../../../pages/money/constants/money-events';
+import {
+  MONEY_APY_DIALOG_TEST_ID,
+  MONEY_ESTIMATED_BALANCE_DIALOG_TEST_ID,
+} from '../money-deposit-dialogs';
 import { BalanceProjection } from './balance-projection';
 
 jest.mock('../../../../hooks/money/useMoneyAccountBalance', () => ({
@@ -36,15 +40,20 @@ const useMoneyAccountBalanceMock = jest.mocked(useMoneyAccountBalance);
 function mockBalance({
   apyDecimal,
   apyPercent,
+  apyPercentFormatted,
   isLoading = false,
 }: {
   apyDecimal: number | undefined;
   apyPercent: number | undefined;
+  apyPercentFormatted?: string;
   isLoading?: boolean;
 }) {
   useMoneyAccountBalanceMock.mockReturnValue({
     apyDecimal,
     apyPercent,
+    apyPercentFormatted:
+      apyPercentFormatted ??
+      (apyPercent === undefined ? undefined : `${apyPercent}%`),
     vaultApyQuery: { isLoading },
   } as UseMoneyAccountBalanceResult);
 }
@@ -62,7 +71,7 @@ describe('BalanceProjection', () => {
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
   });
 
-  it('renders the projected balance for $1,000 at 4% APY over 1 year', () => {
+  it('renders the estimated 1-year balance for $1,000 at 4% APY over 1 year', () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('1000');
@@ -71,6 +80,7 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByText(messages.moneyAccountProjectedBalance.message),
     ).toBeInTheDocument();
+    expect(screen.getByText('Est. 1-year balance:')).toBeInTheDocument();
     expect(screen.getByText('$1,040.00')).toBeInTheDocument();
   });
 
@@ -100,34 +110,43 @@ describe('BalanceProjection', () => {
     ).toHaveTextContent('Earn 4% APY');
   });
 
-  it('shows the APY tooltip when the pitch is hovered', async () => {
-    mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
+  it('opens the APY dialog when the $0 pitch APY trigger is clicked and closes via X', () => {
+    mockBalance({ apyDecimal: 0.062, apyPercent: 6.2 });
 
     renderProjection('0');
 
     const trigger = screen.getByTestId(
       'balance-projection-apy-pitch-info-trigger',
     );
-    expect(trigger).toHaveTextContent('4% APY');
+    expect(trigger).toHaveTextContent('6.2% APY');
 
-    await act(async () => {
-      fireEvent.mouseEnter(trigger);
-    });
+    fireEvent.click(trigger);
 
+    expect(screen.getByTestId(MONEY_APY_DIALOG_TEST_ID)).toBeInTheDocument();
+    expect(screen.getByTestId('money-apy-dialog-title')).toHaveTextContent(
+      '6.2% APY',
+    );
     expect(
-      screen.getByText(messages.moneyAccountApyTooltip.message),
+      screen.getByText(
+        messages.moneyAccountDepositApyDialogWhyChangesTitle.message,
+      ),
     ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByTestId(`${MONEY_APY_DIALOG_TEST_ID}-close-button`),
+    );
+    expect(
+      screen.queryByTestId(MONEY_APY_DIALOG_TEST_ID),
+    ).not.toBeInTheDocument();
   });
 
-  it('tracks the APY tooltip when the pitch APY text is hovered', async () => {
+  it('tracks the APY tooltip when the pitch APY text is clicked', () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('0');
-    await act(async () => {
-      fireEvent.mouseEnter(
-        screen.getByTestId('balance-projection-apy-pitch-info-trigger'),
-      );
-    });
+    fireEvent.click(
+      screen.getByTestId('balance-projection-apy-pitch-info-trigger'),
+    );
 
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
       screenName: MoneyScreenName.MoneyDeposit,
@@ -138,15 +157,11 @@ describe('BalanceProjection', () => {
     });
   });
 
-  it('tracks the earn-on-crypto tooltip when the projected balance is hovered', async () => {
+  it('tracks the earn-on-crypto tooltip when the estimated balance is clicked', () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('1000');
-    await act(async () => {
-      fireEvent.mouseEnter(
-        screen.getByTestId('balance-projection-info-trigger'),
-      );
-    });
+    fireEvent.click(screen.getByTestId('balance-projection-info-trigger'));
 
     expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
       tooltipName: MoneyTooltipName.EarnOnYourCrypto,
@@ -155,23 +170,36 @@ describe('BalanceProjection', () => {
     });
   });
 
-  it('shows the projection tooltip when the projected balance is hovered', async () => {
-    mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
+  it('opens the Estimated balance dialog when the projected balance is clicked', () => {
+    mockBalance({ apyDecimal: 0.062, apyPercent: 6.2 });
 
-    renderProjection('1000');
+    renderProjection('100');
 
     const trigger = screen.getByTestId('balance-projection-info-trigger');
-    expect(trigger).toHaveTextContent('$1,040.00');
+    expect(trigger).toHaveTextContent('$106.20');
 
-    await act(async () => {
-      fireEvent.mouseEnter(trigger);
-    });
+    fireEvent.click(trigger);
 
     expect(
-      screen.getByText(
-        messages.moneyAccountProjectedBalanceTooltip.message.replace('$1', '4'),
-      ),
+      screen.getByTestId(MONEY_ESTIMATED_BALANCE_DIALOG_TEST_ID),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-estimated-balance-dialog-title'),
+    ).toHaveTextContent('Your $100 could grow to $106.20');
+    expect(
+      screen.getByTestId('money-estimated-balance-dialog-subtitle'),
+    ).toHaveTextContent(
+      'Estimated balance after one year in your MetaMask Money account at 6.2% APY.',
+    );
+
+    fireEvent.click(
+      screen.getByTestId(
+        `${MONEY_ESTIMATED_BALANCE_DIALOG_TEST_ID}-close-button`,
+      ),
+    );
+    expect(
+      screen.queryByTestId(MONEY_ESTIMATED_BALANCE_DIALOG_TEST_ID),
+    ).not.toBeInTheDocument();
   });
 
   it('reserves space with a skeleton while APY is loading', () => {

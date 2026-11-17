@@ -1,5 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { BigNumber } from 'bignumber.js';
+import {
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextColor,
@@ -12,11 +16,17 @@ import {
 } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
+  DottedTrigger,
+  formatCompactUsd,
+  MoneyUsdDialog,
+} from '../../../../../components/app/money/money-deposit-dialogs';
+import {
   useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 
@@ -24,6 +34,11 @@ export type ReceiveRowProps = {
   /** The user's input amount in USD / fiat */
   inputAmountUsd: string;
   variant?: ConfirmInfoRowSize;
+  /**
+   * When true, renders the receive amount with a dotted underline that opens
+   * the MetaMask USD (mUSD) info dialog.
+   */
+  enableMoneyUsdDialog?: boolean;
 };
 
 /**
@@ -37,10 +52,12 @@ export type ReceiveRowProps = {
  * @param options0
  * @param options0.inputAmountUsd
  * @param options0.variant
+ * @param options0.enableMoneyUsdDialog
  */
 export function ReceiveRow({
   inputAmountUsd,
   variant = ConfirmInfoRowSize.Default,
+  enableMoneyUsdDialog = false,
 }: ReceiveRowProps) {
   const t = useI18nContext();
   // The fee values from `TransactionPayController` (`provider.usd`,
@@ -54,30 +71,40 @@ export function ReceiveRow({
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
   const isPaidByMetaMask = useIsPaidByMetaMask();
+  const { apyPercentFormatted } = useMoneyVaultApy({
+    enabled: enableMoneyUsdDialog,
+  });
+  const [isUsdDialogOpen, setIsUsdDialogOpen] = useState(false);
 
   const hasQuotes = Boolean(quotes?.length);
 
-  const receiveUsd = useMemo(() => {
+  const { receiveNumeric, receiveUsd } = useMemo(() => {
     if (
       !totals ||
       inputAmountUsd === null ||
       inputAmountUsd === undefined ||
       !hasQuotes
     ) {
-      return '';
+      return { receiveNumeric: null, receiveUsd: '' };
     }
 
     if (totals.isInputBased === true) {
-      return formatFiat(new BigNumber(totals.targetAmount.usd).toNumber());
+      const target = new BigNumber(totals.targetAmount.usd);
+      return {
+        receiveNumeric: target,
+        receiveUsd: formatFiat(target.toNumber()),
+      };
     }
 
     const inputUsd = new BigNumber(inputAmountUsd || '0');
     // Same-token Money Account withdraws quote estimated network gas that
     // Monad sponsors. Subtracting it would show $0 received on a tiny send.
     if (isPaidByMetaMask) {
-      return formatFiat(
-        (inputUsd.gte(0) ? inputUsd : new BigNumber(0)).toNumber(),
-      );
+      const clamped = inputUsd.gte(0) ? inputUsd : new BigNumber(0);
+      return {
+        receiveNumeric: clamped,
+        receiveUsd: formatFiat(clamped.toNumber()),
+      };
     }
 
     const providerFee = new BigNumber(totals.fees?.provider?.usd ?? 0);
@@ -94,11 +121,16 @@ export function ReceiveRow({
       .plus(targetNetworkFee)
       .plus(metaMaskFee);
     const youReceive = inputUsd.minus(totalFees);
+    const clamped = youReceive.gte(0) ? youReceive : new BigNumber(0);
 
-    return formatFiat(
-      (youReceive.gte(0) ? youReceive : new BigNumber(0)).toNumber(),
-    );
+    return {
+      receiveNumeric: clamped,
+      receiveUsd: formatFiat(clamped.toNumber()),
+    };
   }, [formatFiat, hasQuotes, inputAmountUsd, isPaidByMetaMask, totals]);
+
+  const openUsdDialog = useCallback(() => setIsUsdDialogOpen(true), []);
+  const closeUsdDialog = useCallback(() => setIsUsdDialogOpen(false), []);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
@@ -114,21 +146,50 @@ export function ReceiveRow({
     );
   }
 
+  let valueNode: React.ReactNode;
+  if (enableMoneyUsdDialog && receiveUsd) {
+    valueNode = (
+      <DottedTrigger
+        text={receiveUsd}
+        variant={DsTextVariant.BodyMd}
+        color={isSmall ? DsTextColor.TextAlternative : DsTextColor.TextDefault}
+        onClick={openUsdDialog}
+        data-testid="receive-value"
+      />
+    );
+  } else if (isSmall) {
+    valueNode = (
+      <Text
+        variant={textVariant}
+        color={TextColor.textAlternative}
+        data-testid="receive-value"
+      >
+        {receiveUsd}
+      </Text>
+    );
+  } else {
+    valueNode = (
+      <ConfirmInfoRowText text={receiveUsd} data-testid="receive-value" />
+    );
+  }
+
+  const dialogReceiveFormatted = receiveNumeric
+    ? formatCompactUsd(receiveNumeric)
+    : receiveUsd;
+
   return (
     <Box data-testid="receive-row">
       <ConfirmInfoRow label={t('youllReceive')} rowVariant={variant}>
-        {isSmall ? (
-          <Text
-            variant={textVariant}
-            color={TextColor.textAlternative}
-            data-testid="receive-value"
-          >
-            {receiveUsd}
-          </Text>
-        ) : (
-          <ConfirmInfoRowText text={receiveUsd} data-testid="receive-value" />
-        )}
+        {valueNode}
       </ConfirmInfoRow>
+      {enableMoneyUsdDialog && receiveUsd ? (
+        <MoneyUsdDialog
+          isOpen={isUsdDialogOpen}
+          onClose={closeUsdDialog}
+          receiveAmountFormatted={dialogReceiveFormatted}
+          apyPercentFormatted={apyPercentFormatted}
+        />
+      ) : null}
     </Box>
   );
 }

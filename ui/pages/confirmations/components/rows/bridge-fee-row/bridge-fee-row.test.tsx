@@ -475,4 +475,31 @@ describe('BridgeFeeRow', () => {
       expect(getByTestId('transaction-fee-value')).toHaveTextContent('$0.05');
     });
   });
+
+  describe('useDottedValueTooltip', () => {
+    it('hides the question icon and shows the fee tooltip on hovering the dotted fee value', async () => {
+      const { getByTestId, queryByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+        useDottedValueTooltip: true,
+      });
+
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover-button'),
+      ).not.toBeInTheDocument();
+
+      const trigger = getByTestId('bridge-fee-tooltip-popover-trigger');
+      expect(trigger).toHaveTextContent('$1.23');
+      expect(trigger).toHaveClass('underline', 'decoration-dotted');
+
+      await act(async () => {
+        fireEvent.mouseEnter(trigger);
+      });
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(`${messages.bridgeFee.message}:`);
+      expect(tooltip.textContent).toContain(`${messages.metamaskFee.message}:`);
+    });
+  });
 });

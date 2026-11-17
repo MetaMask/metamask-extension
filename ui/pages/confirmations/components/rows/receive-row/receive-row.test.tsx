@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import type {
   TransactionPayQuote,
@@ -13,12 +14,16 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow, ReceiveRowProps } from './receive-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
+jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
+  useMoneyVaultApy: jest.fn(),
+}));
 
 const mockStore = configureMockStore([]);
 
@@ -39,11 +44,15 @@ describe('ReceiveRow', () => {
     useIsTransactionPayQuotePending,
   );
   const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
+  const useMoneyVaultApyMock = jest.mocked(useMoneyVaultApy);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     useIsPaidByMetaMaskMock.mockReturnValue(false);
+    useMoneyVaultApyMock.mockReturnValue({
+      apyPercentFormatted: '6.2%',
+    } as ReturnType<typeof useMoneyVaultApy>);
 
     useTransactionPayTotalsMock.mockReturnValue({
       isInputBased: false,
@@ -153,5 +162,35 @@ describe('ReceiveRow', () => {
     const value = getByTestId('receive-value');
     expect(value).toBeInTheDocument();
     expect(value).toHaveTextContent('$8.50');
+  });
+
+  it('opens the MetaMask USD dialog when enableMoneyUsdDialog is true and the dotted receive value is clicked', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      isInputBased: true,
+      targetAmount: { fiat: '100', usd: '100' },
+    } as TransactionPayTotals);
+
+    render({
+      inputAmountUsd: '100',
+      variant: ConfirmInfoRowSize.Small,
+      enableMoneyUsdDialog: true,
+    });
+
+    const trigger = screen.getByTestId('receive-value');
+    expect(trigger).toHaveTextContent('$100.00');
+    expect(trigger).toHaveClass('underline', 'decoration-dotted');
+
+    fireEvent.click(trigger);
+
+    expect(screen.getByTestId('money-usd-dialog')).toBeInTheDocument();
+    expect(screen.getByTestId('money-usd-dialog-title')).toHaveTextContent(
+      "You'll receive $100 of MetaMask USD",
+    );
+    expect(
+      screen.getByTestId('money-usd-dialog-earns-title'),
+    ).toHaveTextContent('Earns up to 6.2% APY');
+
+    fireEvent.click(screen.getByTestId('money-usd-dialog-close-button'));
+    expect(screen.queryByTestId('money-usd-dialog')).not.toBeInTheDocument();
   });
 });

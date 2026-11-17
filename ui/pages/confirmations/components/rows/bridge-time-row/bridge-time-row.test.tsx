@@ -66,13 +66,16 @@ describe('BridgeTimeRow', () => {
     });
   });
 
-  it('renders less than 1 min for durations under 30 seconds', () => {
+  it('renders Less than 1 min for durations under 30 seconds', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       estimatedDuration: 29,
     } as TransactionPayTotals);
 
-    const { getByTestId } = render();
-    expect(getByTestId('bridge-time-value')).toHaveTextContent('< 1 min');
+    const { getByTestId, getByText } = render();
+    expect(getByText('Est. time')).toBeInTheDocument();
+    expect(getByTestId('bridge-time-value')).toHaveTextContent(
+      'Less than 1 min',
+    );
   });
 
   it('renders 1 min for durations between 30 and 60 seconds', () => {

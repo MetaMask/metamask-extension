@@ -74,8 +74,23 @@ jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
 jest.mock('../../rows/perps-account-picker-row', () => ({
   PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
 }));
+jest.mock('../../../../../components/app/money/money-account-to-row', () => ({
+  MoneyAccountToRow: () => <div data-testid="money-account-to-row" />,
+}));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
-  BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
+  BridgeFeeRow: ({
+    useDottedValueTooltip,
+  }: {
+    useDottedValueTooltip?: boolean;
+  }) => (
+    <div
+      data-testid="bridge-fee-row"
+      data-dotted-tooltip={String(Boolean(useDottedValueTooltip))}
+    />
+  ),
+}));
+jest.mock('../../../../../hooks/money/useMoneyVaultApy', () => ({
+  useMoneyVaultApy: () => ({ apyPercentFormatted: '6.2%' }),
 }));
 jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
   BridgeTimeRow: () => <div data-testid="bridge-time-row" />,
@@ -97,6 +112,15 @@ const MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META = {
   nestedTransactions: [
     { type: TransactionType.moneyAccountWithdraw },
     { type: TransactionType.tokenMethodTransfer },
+  ],
+} as TransactionMeta;
+
+const MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META = {
+  ...MOCK_TRANSACTION_META,
+  type: TransactionType.batch,
+  nestedTransactions: [
+    { type: TransactionType.tokenMethodApprove },
+    { type: TransactionType.moneyAccountDeposit },
   ],
 } as TransactionMeta;
 
@@ -971,6 +995,32 @@ describe('CustomAmountInfo', () => {
 
       expect(getByTestId('total-row')).toBeInTheDocument();
       expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('renders MoneyAccountToRow before BridgeTimeRow and BridgeFeeRow with dotted fee tooltip and mUSD receive dialog for money-account deposits', () => {
+      const { getByTestId } = render({
+        hasQuotes: true,
+        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+        totals: {
+          isInputBased: true,
+          targetAmount: { fiat: '100', usd: '100' },
+        } as TransactionPayTotals,
+      });
+
+      const toRow = getByTestId('money-account-to-row');
+      const timeRow = getByTestId('bridge-time-row');
+      const feeRow = getByTestId('bridge-fee-row');
+      const receiveValue = getByTestId('receive-value');
+
+      expect(toRow).toBeInTheDocument();
+      expect(feeRow).toHaveAttribute('data-dotted-tooltip', 'true');
+      expect(receiveValue.tagName).toBe('BUTTON');
+      expect(toRow.compareDocumentPosition(timeRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(timeRow.compareDocumentPosition(feeRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
     });
   });
 

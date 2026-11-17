@@ -36,6 +36,7 @@ import {
   useSponsoredNetworkFeeFlags,
   type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { TooltipText } from '../../../../../components/app/money/tooltip-text';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
 export type BridgeFeeRowProps = {
@@ -45,11 +46,17 @@ export type BridgeFeeRowProps = {
    * (e.g. mUSD conversion copy from the parent).
    */
   tooltipDescription?: string;
+  /**
+   * When true, omits the label question icon and renders the fee value with a
+   * dotted underline that reveals the fee breakdown tooltip.
+   */
+  useDottedValueTooltip?: boolean;
 };
 
 export function BridgeFeeRow({
   variant = ConfirmInfoRowSize.Default,
   tooltipDescription,
+  useDottedValueTooltip = false,
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
@@ -127,13 +134,24 @@ export function BridgeFeeRow({
     );
   }
 
+  const tooltipContent = tooltipLines ? (
+    <Text variant={TextVariant.BodyMd}>
+      {tooltipLines.map((line, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && <br />}
+          {line}
+        </React.Fragment>
+      ))}
+    </Text>
+  ) : undefined;
+
   return (
     <ConfirmInfoRow
       data-testid="bridge-fee-row"
       label={feeLabel}
       rowVariant={variant}
       labelChildren={
-        tooltipLines ? (
+        tooltipContent && !useDottedValueTooltip ? (
           <InfoPopoverTooltip
             position={PopoverPosition.Top}
             offset={[0, 16]}
@@ -144,14 +162,7 @@ export function BridgeFeeRow({
             ariaLabel={feeLabel}
             data-testid="bridge-fee-tooltip-popover"
           >
-            <Text variant={TextVariant.BodyMd}>
-              {tooltipLines.map((line, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && <br />}
-                  {line}
-                </React.Fragment>
-              ))}
-            </Text>
+            {tooltipContent}
           </InfoPopoverTooltip>
         ) : undefined
       }
@@ -160,6 +171,9 @@ export function BridgeFeeRow({
         isPaidByMetaMask={isPaidByMetaMask}
         isSmall={isSmall}
         feeTotalUsd={feeTotalUsd}
+        dottedTooltipContent={
+          useDottedValueTooltip ? tooltipContent : undefined
+        }
       />
     </ConfirmInfoRow>
   );
@@ -170,10 +184,12 @@ function FeeValue({
   isPaidByMetaMask,
   isSmall,
   feeTotalUsd,
+  dottedTooltipContent,
 }: {
   isPaidByMetaMask: boolean;
   isSmall: boolean;
   feeTotalUsd: string;
+  dottedTooltipContent?: React.ReactNode;
 }) {
   const t = useI18nContext();
 
@@ -194,6 +210,22 @@ function FeeValue({
           {t('paidByMetaMask')}
         </Text>
       </Box>
+    );
+  }
+
+  if (dottedTooltipContent) {
+    return (
+      <span data-testid="transaction-fee-value">
+        <TooltipText
+          text={feeTotalUsd}
+          variant={TextVariant.BodyMd}
+          color={isSmall ? TextColor.TextAlternative : TextColor.TextDefault}
+          position={PopoverPosition.Top}
+          data-testid="bridge-fee-tooltip-popover"
+        >
+          {dottedTooltipContent}
+        </TooltipText>
+      </span>
     );
   }
 
