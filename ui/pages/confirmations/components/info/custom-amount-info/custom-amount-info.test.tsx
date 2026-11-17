@@ -71,6 +71,14 @@ jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
 }));
+jest.mock('../../rows/from-account-row', () => ({
+  FromAccountRow: ({ showDivider }: { showDivider?: boolean }) => (
+    <div
+      data-testid="from-account-row"
+      data-show-divider={String(Boolean(showDivider))}
+    />
+  ),
+}));
 jest.mock('../../rows/perps-account-picker-row', () => ({
   PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
 }));
@@ -178,6 +186,7 @@ function render(
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
     disablePercentageButtons?: boolean;
+    displayAccountRow?: boolean;
     displayPercentageButtons?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
@@ -204,6 +213,7 @@ function render(
     disableAutomaticToken,
     disablePay = false,
     disablePercentageButtons,
+    displayAccountRow = false,
     displayPercentageButtons = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
@@ -333,6 +343,7 @@ function render(
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
       disablePercentageButtons={disablePercentageButtons}
+      displayAccountRow={displayAccountRow}
       displayPercentageButtons={displayPercentageButtons}
       hasMax={hasMax}
       hidePayTokenAmount={hidePayTokenAmount}
@@ -1020,6 +1031,31 @@ describe('CustomAmountInfo', () => {
       );
       expect(timeRow.compareDocumentPosition(feeRow)).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it('hides the FromAccountRow divider on money-account deposits while keeping it on withdraws', () => {
+      const { getByTestId: getDepositTestId, unmount } = render({
+        displayAccountRow: true,
+        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+      });
+
+      expect(getDepositTestId('from-account-row')).toHaveAttribute(
+        'data-show-divider',
+        'false',
+      );
+
+      unmount();
+
+      const { getByTestId: getWithdrawTestId } = render({
+        displayAccountRow: true,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
+      });
+
+      expect(getWithdrawTestId('from-account-row')).toHaveAttribute(
+        'data-show-divider',
+        'true',
       );
     });
   });

@@ -193,4 +193,29 @@ describe('ReceiveRow', () => {
     fireEvent.click(screen.getByTestId('money-usd-dialog-close-button'));
     expect(screen.queryByTestId('money-usd-dialog')).not.toBeInTheDocument();
   });
+
+  it('formats receive amounts with "$" and en-US separators even when currentLocale is non-US', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      isInputBased: true,
+      targetAmount: { fiat: '1234.5', usd: '1234.5' },
+    } as TransactionPayTotals);
+
+    const state = getMockPersonalSignConfirmState({
+      metamask: {},
+      localeMessages: { currentLocale: 'en_GB' },
+    });
+
+    render(
+      {
+        inputAmountUsd: '1234.5',
+        variant: ConfirmInfoRowSize.Small,
+        enableMoneyUsdDialog: true,
+      },
+      state,
+    );
+
+    const trigger = screen.getByTestId('receive-value');
+    expect(trigger).toHaveTextContent('$1,234.50');
+    expect(trigger).not.toHaveTextContent('US$');
+  });
 });

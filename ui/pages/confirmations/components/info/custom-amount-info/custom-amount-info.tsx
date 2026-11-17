@@ -431,7 +431,9 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
-      {displayAccountRow && <FromAccountRow showDivider />}
+      {displayAccountRow && (
+        <FromAccountRow showDivider={!isMoneyAccountDeposit} />
+      )}
       <PerpsAccountPickerRow />
       {/* Keep mounted while funding tokens load after account override so the
           selector does not unmount for the reselect wait, then remount. */}
