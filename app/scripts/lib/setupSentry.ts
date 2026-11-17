@@ -6,7 +6,7 @@ import type {
   Event as SentryEvent,
   TransactionEvent,
 } from '@sentry/types';
-import { debug as sentrySdkLogger } from '@sentry/core';
+import { debug as sentrySdkLogger, type StartSpanOptions } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
 import { BROWSER_SHUTTING_DOWN_ERROR } from '../../../shared/constants/errors';
@@ -432,8 +432,8 @@ export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
  * @returns The options, named after the document path.
  */
 export function nameRouteSpanAfterDocument(
-  options: Sentry.StartSpanOptions,
-): Sentry.StartSpanOptions {
+  options: StartSpanOptions,
+): StartSpanOptions {
   const { pathname } = globalThis.location ?? {};
   return pathname ? { ...options, name: pathname } : options;
 }
