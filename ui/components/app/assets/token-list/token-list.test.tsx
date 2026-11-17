@@ -330,9 +330,8 @@ describe('TokenList', () => {
       createAccountGroupAssets([
         createAsset({ symbol: 'POL', isNative: true, fiatBalance: 0.08 }),
         createAsset({
-          symbol: 'ETH',
+          symbol: 'SOL',
           isNative: true,
-          fiatBalance: 0,
           balance: '0',
         }),
       ]),
@@ -342,7 +341,7 @@ describe('TokenList', () => {
 
     expect(useHomeReady).toHaveBeenLastCalledWith(true);
     expect(screen.getByTestId('token-cell-POL')).toBeInTheDocument();
-    expect(screen.getByTestId('token-cell-ETH')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-SOL')).toBeInTheDocument();
     expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
   });
 
