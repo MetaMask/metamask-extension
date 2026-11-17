@@ -6176,7 +6176,7 @@
     "message": "Explore your benefits"
   },
   "moneyFtueBenefitConvertDescription": {
-    "message": "Funds you add convert 1:1 to MetaMask USD, with no fees."
+    "message": "Funds you add convert 1:1 to MetaMask USD, a dollar-backed stablecoin."
   },
   "moneyFtueBenefitConvertTitle": {
     "message": "Converts to MetaMask USD, 1:1"
@@ -6188,7 +6188,7 @@
     "message": "Earn automatically"
   },
   "moneyFtueBenefitSpendDescription": {
-    "message": "Send to any wallet or bank, or spend with MetaMask Card for up to 3% back."
+    "message": "Send to any wallet or bank, or spend globally with MetaMask Card."
   },
   "moneyFtueBenefitSpendTitle": {
     "message": "Send or spend anywhere"
