@@ -86,6 +86,22 @@ jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
 }));
 
+const networkPickerNetwork = {
+  nativeCurrency: 'ETH',
+  chainId: '0x1',
+  defaultBlockExplorerUrlIndex: 0,
+  blockExplorerUrls: ['https://explorerurl'],
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: 'test1',
+      url: 'https://rpcurl',
+      type: RpcEndpointType.Custom,
+    },
+  ],
+  name: 'Network name',
+} as unknown as NetworkConfiguration;
+
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
@@ -280,21 +296,7 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal
         {...defaultProps}
         header="selectNetworkHeader"
-        network={{
-          nativeCurrency: 'ETH',
-          chainId: '0x1',
-          defaultBlockExplorerUrlIndex: 0,
-          blockExplorerUrls: ['https://explorerurl'],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'test1',
-              url: 'https://rpcurl',
-              type: RpcEndpointType.Custom,
-            },
-          ],
-          name: 'Network name',
-        }}
+network={networkPickerNetwork}
       />,
       store,
     );
@@ -312,21 +314,7 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal
         {...defaultProps}
         header="selectNetworkHeader"
-        network={{
-          nativeCurrency: 'ETH',
-          chainId: '0x1',
-          defaultBlockExplorerUrlIndex: 0,
-          blockExplorerUrls: ['https://explorerurl'],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'test1',
-              url: 'https://rpcurl',
-              type: RpcEndpointType.Custom,
-            },
-          ],
-          name: 'Network name',
-        }}
+network={networkPickerNetwork}
         isMultiselectEnabled
         selectedChainIds={['0x1', '0xa']}
         networks={
@@ -348,21 +336,7 @@ describe('AssetPickerModal', () => {
         {...defaultProps}
         onNetworkPickerClick={undefined}
         header="selectNetworkHeader"
-        network={{
-          nativeCurrency: 'ETH',
-          chainId: '0x1',
-          defaultBlockExplorerUrlIndex: 0,
-          blockExplorerUrls: ['https://explorerurl'],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'test1',
-              url: 'https://rpcurl',
-              type: RpcEndpointType.Custom,
-            },
-          ],
-          name: 'Network name',
-        }}
+network={networkPickerNetwork}
       />,
       store,
     );

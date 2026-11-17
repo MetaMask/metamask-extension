@@ -15,6 +15,16 @@ import {
 } from './config-registry';
 
 /** State shape that satisfies both config-registry and remote feature flag selectors. */
+const buildRegistryState = (
+  networks: Record<string, RegistryNetworkConfig | never>,
+  enabled = true,
+) => ({
+  metamask: {
+    remoteFeatureFlags: { configRegistryApiEnabled: enabled },
+    configs: { networks },
+  },
+});
+
 describe('config-registry selectors', () => {
   describe('getRegistryConfigs', () => {
     it('returns registry config from state', () => {
@@ -472,21 +482,9 @@ describe('config-registry selectors', () => {
   });
 
   describe('getChainIdToNetworkImageUrlMap', () => {
-    const buildState = (
-      networks: Record<string, RegistryNetworkConfig | never>,
-      enabled = true,
-    ) => ({
-      metamask: {
-        remoteFeatureFlags: { configRegistryApiEnabled: enabled },
-        configs: { networks },
-        lastFetched: null,
-        etag: null,
-        version: '1.0',
-      },
-    });
 
     it('returns the static maps when the feature flag is off', () => {
-      const state = buildState(
+      const state = buildRegistryState(
         { 'eip155:1329': { imageUrl: 'https://x.png' } as never },
         false,
       );
@@ -496,33 +494,26 @@ describe('config-registry selectors', () => {
       expect(result['0x531']).toBe(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x531']);
     });
 
-    it('layers registry image URLs over the static map keyed by hex chain ID', () => {
-      const state = buildState({
+    it('layers registry image URLs over the static map by hex and CAIP key', () => {
+      const state = buildRegistryState({
         'eip155:1329': {
           chainId: 'eip155:1329',
           imageUrl: 'https://example.com/sei.png',
         } as never,
-      });
-      const result = getChainIdToNetworkImageUrlMap(state);
-      expect(result['0x531']).toBe('https://example.com/sei.png');
-      // static entries are preserved
-      expect(result['0x1']).toBe(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP['0x1']);
-    });
-
-    it('overrides a static entry when the registry provides an imageUrl', () => {
-      const state = buildState({
         'eip155:1': {
           chainId: 'eip155:1',
           imageUrl: 'https://example.com/eth.png',
         } as never,
       });
-      expect(getChainIdToNetworkImageUrlMap(state)['0x1']).toBe(
-        'https://example.com/eth.png',
-      );
+      const result = getChainIdToNetworkImageUrlMap(state);
+      expect(result['0x531']).toBe('https://example.com/sei.png');
+      expect(result['eip155:1329']).toBe('https://example.com/sei.png');
+      // registry wins over static entries
+      expect(result['0x1']).toBe('https://example.com/eth.png');
     });
 
     it('skips non-https image URLs and includes non-EVM chains under CAIP keys', () => {
-      const state = buildState({
+      const state = buildRegistryState({
         'eip155:9999': {
           chainId: 'eip155:9999',
           imageUrl: 'http://insecure.example.com/sei.png',
@@ -538,18 +529,6 @@ describe('config-registry selectors', () => {
       expect(result['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']).toBe(
         'https://example.com/sol.png',
       );
-    });
-
-    it('keys EVM registry entries by both hex and CAIP chain ID', () => {
-      const state = buildState({
-        'eip155:1329': {
-          chainId: 'eip155:1329',
-          imageUrl: 'https://example.com/sei.png',
-        } as never,
-      });
-      const result = getChainIdToNetworkImageUrlMap(state);
-      expect(result['0x531']).toBe('https://example.com/sei.png');
-      expect(result['eip155:1329']).toBe('https://example.com/sei.png');
     });
   });
 });
