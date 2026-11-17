@@ -11,7 +11,7 @@ import type { MockedEndpoint } from '../../../mock-e2e';
 import { login } from '../../../page-objects/flows/login.flow';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import SwapPage from '../../../page-objects/pages/swap/swap-page';
+import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
@@ -95,15 +95,15 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
             driver,
             'openSwapPageFromHome',
             async () => {
-              const swapPage = new SwapPage(driver);
-              await swapPage.checkPageIsLoaded();
+              const bridgePage = new BridgeQuotePage(driver);
+              await bridgePage.checkPageIsLoaded();
             },
           ),
         );
 
         // Measure: Fetch quotes
-        const swapPage = new SwapPage(driver);
-        await swapPage.createSwap({
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.createSwap({
           amount: 0.01,
           swapTo: 'USDC',
           swapToContractAddress: SOLANA_USDC_CONTRACT_ADDRESS,
@@ -116,7 +116,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
             driver,
             'fetchAndDisplaySwapQuotes',
             async () => {
-              await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
+              await bridgePage.checkQuoteIsDisplayed({ timeout: 60000 });
             },
           ),
         );

@@ -13,8 +13,6 @@ import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from '../bridge/constants';
-import SwapPage from '../../page-objects/pages/swap/swap-page';
-
 const MUSD_MALICIOUS_SECURITY_DATA = {
   type: 'Malicious',
   metadata: {
@@ -169,8 +167,7 @@ describe('Swaps - notifications', function () {
 
         await bridgeQuotePage.setCustomSlippage('0.1');
 
-        const swapPage = new SwapPage(driver);
-        await swapPage.checkNotificationBanner(
+        await bridgeQuotePage.checkNotificationBanner(
           'Low slippage',
           'A value this low (0.1%) may result in a failed swap',
         );

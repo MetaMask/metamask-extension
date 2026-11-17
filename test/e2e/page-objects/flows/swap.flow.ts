@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import SwapPage from '../pages/swap/swap-page';
+import BridgeQuotePage from '../pages/bridge/quote-page';
 import HomePage from '../pages/home/homepage';
 
 type SwapOptions = {
@@ -11,34 +11,23 @@ type SwapOptions = {
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   const homePage = new HomePage(driver);
-  const swapPage = new SwapPage(driver);
+  const bridgePage = new BridgeQuotePage(driver);
 
   await homePage.startSwapFlow();
-  await swapPage.fillSwapAmount(options.amount.toString());
+  await bridgePage.enterSwapAmount(options.amount.toString());
 
   if (options.swapTo && options.mainnet) {
-    await swapPage.checkQuoteIsDisplayed();
+    await bridgePage.checkQuoteIsDisplayed();
   }
 
   if (options.swapTo) {
-    await swapPage.selectDestinationToken(options.swapTo);
+    await bridgePage.selectDestToken(options.swapTo);
     return;
   }
 
   if (options.swapToContractAddress) {
-    await swapPage.selectDestinationTokenByContract(
+    await bridgePage.selectDestinationTokenByContract(
       options.swapToContractAddress,
     );
   }
-};
-
-export const waitForTransactionToComplete = async (
-  driver: Driver,
-  options: { tokenName: string },
-) => {
-  const swapPage = new SwapPage(driver);
-  const homePage = new HomePage(driver);
-
-  await swapPage.waitForTransactionCompleteWithToken(options.tokenName);
-  await homePage.checkPageIsLoaded();
 };

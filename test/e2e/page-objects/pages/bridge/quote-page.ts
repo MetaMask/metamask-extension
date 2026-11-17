@@ -21,21 +21,46 @@ export type BridgeQuote = {
   unapproved?: boolean;
 };
 
+export type SwapOptions = {
+  amount: number;
+  swapFrom: string;
+  swapTo: string;
+  network: string;
+  swapToContractAddress?: string;
+};
+
+export type SwapReviewOptions = {
+  exchangeRate?: string;
+  swapFrom: string;
+  swapTo: string;
+  swapToAmount: string;
+  swapFromAmount: string;
+  skipCounter?: boolean;
+};
+
+export type SwapQuote = {
+  totalCost: string;
+  receivedAmount: string;
+  receivedAmountInCurrency?: string;
+  provider?: string;
+};
+
 /**
- * Unified SwapBridge prepare/quote UI: source/destination assets, amount, and
- * submit.
+ * Unified SwapBridge prepare/quote UI for bridges and same-chain swaps:
+ * source/destination assets, amount, quotes and submit.
  *
  * Screen: `#/cross-chain/swaps/prepare-bridge-page` (and the nested assets
  * picker at `#/cross-chain/swaps/prepare-bridge-page/assets`).
  * Owns: source/destination asset pickers and search, network selection in the
- * picker, amount entry (including Max), quote fetch/ready checks, fee and
- * price-impact messaging, insufficient-funds / geo-block states, slippage
- * controls, and the bridge CTA / snap confirm footer used after submit.
+ * picker, amount entry (including Max), building a same-chain swap
+ * (`createSwap`), quote fetch/ready checks, quote review, the Select quote
+ * dialog, fee and price-impact messaging, insufficient-funds / no-quotes /
+ * geo-block states, slippage controls and their warning banner, and the
+ * bridge CTA / snap confirm footer used after submit.
  * Boundaries: the prepare and quote surface. Post-submit redesigned
- * confirmations and activity belong elsewhere; same-chain swap helpers that
- * wrap this page live on `SwapPage`.
- * Related: `SwapPage` (swap-oriented wrapper that delegates picker steps
- * here); `flows/bridge.flow.ts` for end-to-end bridge journeys.
+ * confirmations and activity belong elsewhere.
+ * Related: `flows/bridge.flow.ts` for end-to-end bridge journeys,
+ * `flows/swap.flow.ts` for building a swap quote from the home page.
  *
  * @see ui/pages/bridge/index.tsx
  * @see ui/pages/bridge/prepare/prepare-bridge-page.tsx
@@ -61,11 +86,15 @@ class BridgeQuotePage {
 
   private closeButton = '[aria-label="Close"]';
 
+  private closeQuotesButton = 'header button';
+
   private confirmButton =
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
 
   private destinationAmount = (amount: string) =>
     `[data-testid="to-amount"][value="${amount}"]`;
+
+  private destinationAmountInput = '[data-testid="to-amount"]';
 
   public destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
@@ -81,12 +110,16 @@ class BridgeQuotePage {
 
   private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
 
+  private importTokensButton = '[data-testid="import-tokens-import-button"]';
+
   private insufficientFundsButton = {
     text: 'Insufficient funds',
     css: '[data-testid="bridge-cta-button"]',
   };
 
   private maxButton = { text: 'Max' };
+
+  private minimumReceived = '[data-testid="minimum-received"]';
 
   private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
 
@@ -124,6 +157,11 @@ class BridgeQuotePage {
   private quoteTotalCost = (position: number) =>
     `${this.quotesModal} ${this.quoteOption}:nth-child(${position}) [data-testid="bridge-quote-total-cost"]`;
 
+  private rateMessage = {
+    text: 'Includes 0.875% MetaMask fee',
+    tag: 'p',
+  };
+
   private rwaGeoRestrictedMessage = {
     css: '[data-testid="bridge-no-quotes"]',
     text: "This swap isn't available in your region.",
@@ -145,6 +183,13 @@ class BridgeQuotePage {
   public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
 
   private submitButton = '[data-testid="bridge-cta-button"]';
+
+  private swapButton = {
+    css: this.submitButton,
+    text: 'Swap',
+  };
+
+  private swapsBannerTitle = '[data-testid="swaps-banner-title"]';
 
   private switchTokensButton = '[data-testid="switch-tokens"]';
 
@@ -240,6 +285,13 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.destinationAmount(amount));
   }
 
+  async checkDestinationToken(token: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.destinationAssetPickerButton,
+      text: token,
+    });
+  }
+
   async checkExpectedNetworkFeeIsDisplayed(): Promise<void> {
     // The fee element renders empty until the quote's native exchange rate
     // lands, so wait for the formatted amount rather than for the element.
@@ -307,15 +359,38 @@ class BridgeQuotePage {
   }
 
   /**
+   * Checks the slippage warning banner shown in the transaction settings
+   * modal.
+   *
+   * @param title - Banner title, such as `Low slippage`.
+   * @param text - Banner description text.
+   */
+  async checkNotificationBanner(title: string, text: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.swapsBannerTitle,
+      text: title,
+    });
+    // Banners built on `@metamask/design-system-react`'s `BannerAlert` no
+    // longer render the legacy `.mm-banner-base` class, so match the
+    // description text directly instead of scoping to that class.
+    await this.driver.waitForSelector({ text });
+  }
+
+  /**
    * Checks that the bridge quote page is loaded.
    *
    * @param timeout - Optional timeout in milliseconds. Defaults to 10000.
    */
   async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.bridgeQuotePage, {
-        timeout,
-      });
+      await this.driver.waitForMultipleSelectors(
+        [
+          this.bridgeQuotePage,
+          this.sourceAmount,
+          this.destinationAssetPickerButton,
+        ],
+        { timeout },
+      );
     } catch (e) {
       console.log(
         'Timeout while waiting for bridge quote page to be loaded',
@@ -333,6 +408,45 @@ class BridgeQuotePage {
       this.warningModalCancelButton,
     );
   };
+
+  async checkQuote(quote: SwapQuote): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Total cost: ${quote.totalCost}`,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: `${quote.receivedAmount}`,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: quote.receivedAmountInCurrency,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: quote.provider,
+      tag: 'p',
+    });
+  }
+
+  async checkQuoteIsDisplayed(options?: { timeout?: number }): Promise<void> {
+    await this.driver.waitForMultipleSelectors(
+      [this.networkFees, this.slippageEditButton, this.minimumReceived],
+      options,
+    );
+  }
+
+  async checkQuoteIsDisplayedWithoutNetworkFee(options?: {
+    timeout?: number;
+  }): Promise<void> {
+    await this.driver.waitForMultipleSelectors(
+      [
+        this.slippageEditButton,
+        this.minimumReceived,
+        this.destinationAmountInput,
+      ],
+      options,
+    );
+  }
 
   /**
    * Opens the Select quote dialog from More quotes and asserts the Total cost
@@ -396,6 +510,25 @@ class BridgeQuotePage {
     });
   }
 
+  async checkSourceToken(token: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.sourceAssetPickerButton,
+      text: token,
+    });
+  }
+
+  /**
+   * Waits for the from/to amount fields to be populated. Throws if the
+   * amounts are still empty once the wait times out.
+   */
+  async checkSwapAmountsArePopulated(): Promise<void> {
+    await this.driver.wait(async () => {
+      const fromAmount = await this.getFromAmountValue();
+      const toAmount = await this.getToAmountValue();
+      return fromAmount !== '' && toAmount !== '';
+    }, this.driver.timeout);
+  }
+
   async checkTokenIsDisabled() {
     const [tkn] = await this.driver.findElements(this.tokenButton);
 
@@ -437,13 +570,69 @@ class BridgeQuotePage {
     console.log('Clicked Max button');
   }
 
+  async clickOnMoreQuotes(): Promise<void> {
+    await this.driver.clickElement(this.moreQuotesButton);
+  }
+
   closeModal = async () => {
     await this.driver.clickElement(this.closeButton);
   };
 
+  async closeQuotes(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.closeQuotesButton);
+  }
+
   confirmBridgeTransaction = async () => {
     await this.driver.clickElement(this.confirmButton);
   };
+
+  /**
+   * Builds a same-chain swap: picks the source and destination tokens on the
+   * given network, then enters the amount.
+   *
+   * @param options - The swap to build.
+   */
+  async createSwap(options: SwapOptions): Promise<void> {
+    await this.driver.clickElement(this.sourceAssetPickerButton);
+    await this.selectNetwork(options.network);
+    await this.driver.waitForSelector(this.assetPrickerSearchInput, {
+      timeout: 30000,
+    });
+    await this.driver.fill(this.assetPrickerSearchInput, options.swapFrom);
+    await this.driver.waitForSelector(
+      this.tokenButtonByText(options.swapFrom),
+      {
+        timeout: 30000,
+      },
+    );
+    await this.driver.clickElement(this.tokenButtonByText(options.swapFrom));
+
+    await this.driver.clickElement(this.destinationAssetPickerButton);
+    await this.selectNetwork(options.network);
+    if (options.swapToContractAddress) {
+      await this.selectDestinationTokenByContract(
+        options.swapToContractAddress,
+        {
+          pickerAlreadyOpen: true,
+        },
+      );
+    } else {
+      await this.driver.waitForSelector(this.assetPrickerSearchInput, {
+        timeout: 30000,
+      });
+      await this.driver.fill(this.assetPrickerSearchInput, options.swapTo);
+      await this.driver.waitForSelector(
+        this.tokenButtonByText(options.swapTo),
+        {
+          timeout: 30000,
+        },
+      );
+      await this.driver.clickElement(this.tokenButtonByText(options.swapTo));
+    }
+
+    await this.driver.waitForSelector(this.sourceAmount);
+    await this.driver.fill(this.sourceAmount, options.amount.toString());
+  }
 
   dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
     await this.closeModal();
@@ -534,6 +723,17 @@ class BridgeQuotePage {
     });
   };
 
+  async enterSwapAmount(amount: string): Promise<void> {
+    console.log('Entering swap amount');
+    await this.driver.waitForSelector(this.sourceAmount);
+    await this.driver.fill(this.sourceAmount, amount);
+  }
+
+  private async getFromAmountValue(): Promise<string> {
+    const element = await this.driver.waitForSelector(this.sourceAmount);
+    return element.getAttribute('value');
+  }
+
   /**
    * Waits until the source amount input holds a stable non-empty value.
    * Use this after Max, which writes the balance asynchronously.
@@ -567,6 +767,13 @@ class BridgeQuotePage {
     return stableValue;
   }
 
+  private async getToAmountValue(): Promise<string> {
+    const element = await this.driver.waitForSelector(
+      this.destinationAmountInput,
+    );
+    return element.getAttribute('value');
+  }
+
   goBack = async () => {
     await this.driver.waitForSelector(this.backButton);
     await this.driver.clickElement(this.backButton);
@@ -598,6 +805,32 @@ class BridgeQuotePage {
   rejectModal = async () => {
     await this.driver.clickElement(this.warningModalCancelButton);
   };
+
+  /**
+   * Checks the from/to amounts, the exchange rate, the MetaMask fee and More
+   * quotes, then submits the swap.
+   *
+   * @param options - The expected swap review values.
+   */
+  async reviewQuote(options: SwapReviewOptions): Promise<void> {
+    await this.driver.waitForSelector(this.submitButton);
+    const fromAmount = await this.driver.findElement(this.sourceAmount);
+    const fromAmountText = await fromAmount.getAttribute('value');
+    assert.equal(fromAmountText, options.swapFromAmount);
+    const toAmount = await this.driver.findElement(this.destinationAmountInput);
+    const toAmountText = await toAmount.getAttribute('value');
+    assert.equal(toAmountText, options.swapToAmount);
+    await this.driver.waitForSelector({
+      text: `1 ${options.swapFrom} = ${
+        options.exchangeRate ?? options.swapToAmount
+      } ${options.swapTo}`,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector(this.rateMessage);
+    await this.driver.waitForSelector(this.moreQuotesButton);
+
+    await this.driver.clickElementAndWaitToDisappear(this.submitButton);
+  }
 
   /**
    * Opens an asset picker if needed, optionally filters to a network, searches
@@ -716,6 +949,41 @@ class BridgeQuotePage {
     await this.selectAssetFromPicker(token);
   }
 
+  /**
+   * Searches the destination picker by contract address and selects the
+   * token, importing it first when it is not listed.
+   *
+   * @param contractAddress - The token contract address.
+   * @param options - Options.
+   * @param options.pickerAlreadyOpen - Skips opening the destination picker.
+   */
+  async selectDestinationTokenByContract(
+    contractAddress: string,
+    options: { pickerAlreadyOpen?: boolean } = {},
+  ): Promise<void> {
+    const { pickerAlreadyOpen = false } = options;
+    if (!pickerAlreadyOpen) {
+      await this.driver.clickElement(this.destinationAssetPickerButton);
+    }
+    await this.driver.waitForSelector(this.assetPrickerSearchInput);
+    await this.driver.fill(this.assetPrickerSearchInput, contractAddress);
+
+    const result = await Promise.any([
+      this.driver
+        .waitForSelector(this.importTokensButton)
+        .then(() => 'import' as const),
+      this.driver
+        .waitForSelector(this.tokenButton)
+        .then(() => 'asset' as const),
+    ]);
+
+    if (result === 'import') {
+      await this.driver.clickElement(this.importTokensButton);
+      await this.driver.waitForSelector(this.tokenButton);
+    }
+    await this.driver.clickElement(this.tokenButton);
+  }
+
   async selectNetwork(network: string): Promise<void> {
     await this.driver.clickElement(this.networkSelector);
     await this.driver.clickElement(this.networkNameSelector(network));
@@ -783,8 +1051,43 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.slippageSubmitButton);
   }
 
+  async submitSwap(): Promise<void> {
+    console.log('Submit Swap');
+    await this.driver.clickElementAndWaitToDisappear(this.swapButton);
+  }
+
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
+  }
+
+  /**
+   * Checks that a quote is shown for the expected tokens and amount, with a
+   * destination amount above zero.
+   *
+   * @param options - The expected swap.
+   * @param options.swapFrom - Source token symbol.
+   * @param options.swapTo - Destination token symbol.
+   * @param options.amount - Source amount.
+   */
+  async verifyQuote(options: {
+    swapFrom: string;
+    swapTo: string;
+    amount: number;
+  }): Promise<void> {
+    await this.checkQuoteIsDisplayed();
+    await this.checkSourceToken(options.swapFrom);
+    await this.checkDestinationToken(options.swapTo);
+
+    const swapFromAmount = await this.getFromAmountValue();
+    assert.equal(swapFromAmount, options.amount.toString());
+
+    const swapToAmount = await this.getToAmountValue();
+    const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
+    assert.equal(
+      normalizedSwapToAmount > 0,
+      true,
+      `Expected destination amount to be > 0 but got ${swapToAmount}`,
+    );
   }
 
   /**
@@ -809,6 +1112,18 @@ class BridgeQuotePage {
   waitForQuote = async () => {
     await this.driver.waitForSelector(this.submitButton);
   };
+
+  /**
+   * Waits for a same-chain swap quote: the Swap button is shown and stays
+   * visible. Stricter than `waitForQuote`, which only waits for the CTA.
+   */
+  async waitForSwapQuote(): Promise<void> {
+    console.log('Wait for swap quote to be displayed');
+    await this.driver.waitUntil(
+      async () => this.driver.isElementPresentAndVisible(this.swapButton, 500),
+      { timeout: 10000, interval: 200, stableFor: 500 },
+    );
+  }
 }
 
 export default BridgeQuotePage;
