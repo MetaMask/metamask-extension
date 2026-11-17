@@ -714,10 +714,13 @@ export const createMfaFlow = ({
           // Clear the previous notice so each new code changes it again: the
           // code screen empties the boxes when it changes.
           setState({ codeResent: undefined });
-          await run(beginCodeChallenge);
-          if (isResend && !state.error) {
-            setState({ codeResent: true });
-          }
+          await run(async () => {
+            await beginCodeChallenge();
+            // Only once sent: a failed send may recover onto another step.
+            if (isResend) {
+              setState({ codeResent: true });
+            }
+          });
         }
         return;
       case 'retry':
@@ -748,6 +751,10 @@ export const createMfaFlow = ({
           step.method === 'email_otp' &&
           current?.email
         ) {
+          // A dead code can't be entered again: continuing sends a new one.
+          if (state.error && getErrorHandling(state.error) === 'restart') {
+            current = { ...current, flowId: undefined };
+          }
           show({ name: 'emailEntry', prefillEmail: current.email });
         }
         return;

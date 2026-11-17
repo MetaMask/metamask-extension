@@ -863,6 +863,55 @@ describe('createMfaFlow', () => {
     });
   });
 
+  it('announces a new code only once it was sent, not after recovering onto another method', async () => {
+    const fake = createFakeController([activeEmail, authenticatorApp]);
+    const { flow } = await startFlow(
+      {
+        kind: 'verifyOrEnroll',
+        methods: ['email_otp', 'totp'],
+        verifyWith: ['email_otp', 'totp'],
+        verifyOnly: true,
+      },
+      fake.controller,
+    );
+    await act(flow, { type: 'choose', method: 'email_otp' });
+    fake.controller.beginCredentialVerification.mockImplementationOnce(
+      async () => {
+        fake.setCredentials([authenticatorApp]);
+        throw new MfaError('credential_not_enrolled', 'stale');
+      },
+    );
+
+    await act(flow, { type: 'resend' });
+
+    expect(flow.getState().step).toMatchObject({
+      name: 'otp',
+      method: 'totp',
+    });
+    expect(flow.getState().codeResent).toBeUndefined();
+  });
+
+  it('sends a new setup code when the user returns to the same email after the code died', async () => {
+    const fake = createFakeController([]);
+    fake.controller.completeCredentialEnrollment.mockRejectedValueOnce(
+      new MfaError('flow_expired', 'expired'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+    await act(flow, { type: 'continue' });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+    await act(flow, { type: 'submitCode', code: '111111' });
+    expect(flow.getState().error).toBe('flow_expired');
+
+    await act(flow, { type: 'back' });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+
+    expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(2);
+    expect(flow.getState()).toMatchObject({
+      step: { name: 'otp', method: 'email_otp', codeSent: true },
+      error: undefined,
+    });
+  });
+
   it('ignores actions while a call is in flight', async () => {
     const fake = createFakeController([activeEmail]);
     const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
