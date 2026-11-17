@@ -28,12 +28,9 @@ const CashtagWidgetToastListener = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('fromXWidget') === '1') {
-      toast.success(
-        <ToastContent title={t('cashtagWidgetOpenedToast')} />,
-        {
-          id: 'cashtag-widget-opened-toast',
-        },
-      );
+      toast.success(<ToastContent title={t('cashtagWidgetOpenedToast')} />, {
+        id: 'cashtag-widget-opened-toast',
+      });
     }
   }, [location, t]);
 

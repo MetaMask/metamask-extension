@@ -1,7 +1,7 @@
 import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import type { BridgeControllerMetricsLocation } from '@metamask/bridge-controller';
 import browser from 'webextension-polyfill';
-import { POPUP_FILE, SIDEPANEL_FILE } from '#shared/constants/app';
+import { POPUP_FILE } from '#shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -140,9 +140,7 @@ function assetRoutePath(caipAssetId: string) {
 }
 
 function routeHash(path: string, search?: `?${string}`) {
-  const params = new URLSearchParams(search ? search.slice(1) : '');
-  params.set('fromXWidget', '1');
-  return `#${path}?${params.toString()}`;
+  return `#${path}${search ?? ''}`;
 }
 
 function shouldUseSidePanel(controller: Controller | undefined) {
@@ -287,14 +285,18 @@ async function openExtensionPage({
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
-  const hash = routeHash(path, search);
+  const params = new URLSearchParams(search ? search.slice(1) : '');
+  params.set('fromXWidget', '1');
+  const flaggedSearch: `?${string}` = `?${params.toString()}`;
+
+  const hash = routeHash(path, flaggedSearch);
 
   await openExtensionSurface({
     controller,
     sender,
     hash,
     path,
-    search,
+    search: flaggedSearch,
   });
 
   return {

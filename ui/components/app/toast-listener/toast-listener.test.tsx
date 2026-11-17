@@ -68,7 +68,7 @@ describe('ToastListener', () => {
   it('mounts toast hooks in interactive UI', () => {
     renderToastListener({ isInteractive: true });
 
-    expect(mockUseMusdConversionToastStatus).toHaveBeenCalled();
+    expect(mockUseMusdConversionToastStatus).toHaveBeenCalledTimes(1);
     expect(mockUseMusdConversionConfirmTrace).toHaveBeenCalledWith('');
   });
 

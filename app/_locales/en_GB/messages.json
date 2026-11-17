@@ -2689,6 +2689,10 @@
     "message": "You're all caught up!",
     "description": "Message shown in carousel when all promotional slides have been dismissed"
   },
+  "cashtagWidgetOpenedToast": {
+    "message": "You got here from the MetaMask widget on X",
+    "description": "Toast message shown when the user opens the extension from the MetaMask cashtag widget on X"
+  },
   "chainId": {
     "message": "Chain ID"
   },
@@ -13141,10 +13145,6 @@
   "wrongPassword": {
     "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
-  },
-  "cashtagWidgetOpenedToast": {
-    "message": "You got here from the MetaMask widget on X",
-    "description": "Toast message shown when the user opens the extension from the MetaMask cashtag widget on X"
   },
   "year": {
     "message": "year"
