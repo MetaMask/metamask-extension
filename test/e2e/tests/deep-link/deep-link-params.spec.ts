@@ -5,7 +5,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import type { Anvil } from '../../seeder/anvil';
 import {
@@ -81,7 +81,7 @@ describe('Deep Link - Parameter Handling & Security', function () {
         await deepLink.checkPageIsLoaded();
 
         await deepLink.clickContinueButton();
-        await new BridgeQuotePage(driver).checkPageIsLoaded();
+        await new SwapPage(driver).checkPageIsLoaded();
 
         const currentUrl = await driver.getCurrentUrl();
 

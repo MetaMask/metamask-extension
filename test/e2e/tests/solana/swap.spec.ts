@@ -5,7 +5,7 @@ import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -559,43 +559,43 @@ describe('Swap on Solana', function () {
         await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
           network: 'Solana',
         });
 
-        await bridgePage.waitForSwapQuote();
+        await swapPage.waitForSwapQuote();
 
         // Check quotes
-        await bridgePage.clickOnMoreQuotes();
+        await swapPage.clickOnMoreQuotes();
 
-        await bridgePage.checkQuote({
+        await swapPage.checkQuote({
           totalCost: '$32.00',
           receivedAmount: '136.9 USDC',
           receivedAmountInCurrency: '$136.88',
           provider: 'Dflow Via Li Fi',
         });
-        await bridgePage.checkQuote({
+        await swapPage.checkQuote({
           totalCost: '$32.00',
           receivedAmount: '136.9 USDC',
           provider: 'Humidi Fi',
           receivedAmountInCurrency: '$136.88',
         });
-        await bridgePage.closeQuotes();
+        await swapPage.closeQuotes();
 
         // Review and submit
-        await bridgePage.reviewQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '136.9',
           swapFrom: 'SOL',
           swapTo: 'USDC',
           swapFromAmount: '1',
         });
 
-        await bridgePage.goBackAfterSubmit();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
@@ -628,9 +628,9 @@ describe('Swap on Solana', function () {
         await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap USDC → SOL
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'SOL',
           swapFrom: 'USDC',
@@ -638,14 +638,14 @@ describe('Swap on Solana', function () {
         });
 
         // Review and submit
-        await bridgePage.reviewQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '0.00589',
           swapFrom: 'USDC',
           swapTo: 'SOL',
           swapFromAmount: '1',
         });
 
-        await bridgePage.goBackAfterSubmit();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkWaitForTransactionStatus('confirmed');
@@ -678,16 +678,16 @@ describe('Swap on Solana', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
 
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 0.00005,
           swapTo: 'SOL',
           swapFrom: 'USDC',
           network: 'Solana',
         });
 
-        await bridgePage.reviewQuote({
+        await swapPage.reviewQuote({
           exchangeRate: '0.0058',
           swapToAmount: '<0.000001',
           swapFrom: 'USDC',
@@ -695,7 +695,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '0.00005',
         });
 
-        await bridgePage.goBackAfterSubmit();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkWaitForTransactionStatus('confirmed');
@@ -730,16 +730,16 @@ describe('Swap on Solana', function () {
         await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap and verify no quotes message
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
           network: 'Solana',
         });
 
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -770,26 +770,26 @@ describe('Swap on Solana', function () {
         await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap SOL → USDC
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
           network: 'Solana',
         });
 
-        await bridgePage.waitForSwapQuote();
+        await swapPage.waitForSwapQuote();
 
         // Submit the swap (will fail)
-        await bridgePage.reviewQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '136.9',
           swapFrom: 'SOL',
           swapTo: 'USDC',
           swapFromAmount: '1',
         });
 
-        await bridgePage.goBackAfterSubmit();
+        await swapPage.goBackAfterSubmit();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkFailedTxNumberDisplayedInActivity(1);

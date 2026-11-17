@@ -46,8 +46,8 @@ export type SwapQuote = {
 };
 
 /**
- * Unified SwapBridge prepare/quote UI for bridges and same-chain swaps:
- * source/destination assets, amount, quotes and submit.
+ * The Swap screen, where users swap on the same chain or across chains
+ * (bridge): source/destination assets, amount, quotes and submit.
  *
  * Screen: `#/cross-chain/swaps/prepare-bridge-page` (and the nested assets
  * picker at `#/cross-chain/swaps/prepare-bridge-page/assets`).
@@ -66,7 +66,7 @@ export type SwapQuote = {
  * @see ui/pages/bridge/prepare/prepare-bridge-page.tsx
  * @see test/e2e/page-objects/flows/bridge.flow.ts
  */
-class BridgeQuotePage {
+class SwapPage {
   public assetInfoIcon = (assetId: string) => ({
     tag: 'button' as const,
     testId: `bridge-asset-info-icon-${assetId}`,
@@ -79,10 +79,6 @@ class BridgeQuotePage {
     '[data-testid="bridge-asset-picker-search-input"]';
 
   private backButton = '[aria-label="Back"]';
-
-  private readonly bridgeQuotePage = {
-    testId: 'parent-selector-bridge-quote',
-  };
 
   private closeButton = '[aria-label="Close"]';
 
@@ -138,6 +134,10 @@ class BridgeQuotePage {
   private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
   private noOptionAvailable = '[data-testid="bridge-no-quotes"]';
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-bridge-quote',
+  };
 
   private priceImpactQuoteCardButton =
     '[data-testid="price-impact-warning-button"]';
@@ -377,7 +377,7 @@ class BridgeQuotePage {
   }
 
   /**
-   * Checks that the bridge quote page is loaded.
+   * Checks that the swap page is loaded.
    *
    * @param timeout - Optional timeout in milliseconds. Defaults to 10000.
    */
@@ -385,20 +385,17 @@ class BridgeQuotePage {
     try {
       await this.driver.waitForMultipleSelectors(
         [
-          this.bridgeQuotePage,
+          this.parentSelector,
           this.sourceAmount,
           this.destinationAssetPickerButton,
         ],
         { timeout },
       );
     } catch (e) {
-      console.log(
-        'Timeout while waiting for bridge quote page to be loaded',
-        e,
-      );
+      console.log('Timeout while waiting for swap page to be loaded', e);
       throw e;
     }
-    console.log('Bridge quote page is loaded');
+    console.log('Swap page is loaded');
   }
 
   checkPriceImpactModalIsDisplayed = async () => {
@@ -1126,4 +1123,4 @@ class BridgeQuotePage {
   }
 }
 
-export default BridgeQuotePage;
+export default SwapPage;

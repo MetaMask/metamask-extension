@@ -11,7 +11,7 @@ import LoginPage from '../pages/onboarding/login-page';
  * @param deepLinkUrl - The prepared deep link URL to navigate to.
  * @param locked - Whether the wallet is 'locked' or 'unlocked'.
  * @param shouldShowCheckbox - Whether the checkbox should be rendered (based on signing status).
- * @param targetPageClass - The page object class to verify after navigation (e.g., HomePage, BridgeQuotePage).
+ * @param targetPageClass - The page object class to verify after navigation (e.g., HomePage, SwapPage).
  * @param password - Optional password to use if wallet is locked.
  */
 export const navigateDeepLinkToDestination = async (

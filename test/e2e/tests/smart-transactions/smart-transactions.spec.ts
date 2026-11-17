@@ -12,7 +12,7 @@ import {
   createDappTransaction,
   createInternalTransaction,
 } from '../../page-objects/flows/transaction.flow';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -153,13 +153,13 @@ describe('Smart Transactions', function () {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
-        await bridgePage.enterSwapAmount('2');
-        await bridgePage.selectDestToken('DAI');
-        await bridgePage.checkGasIncludedIsDisplayed();
-        await bridgePage.submitSwap();
-        await bridgePage.goBackAfterSubmit();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
+        await swapPage.enterSwapAmount('2');
+        await swapPage.selectDestToken('DAI');
+        await swapPage.checkGasIncludedIsDisplayed();
+        await swapPage.submitSwap();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
@@ -184,13 +184,13 @@ describe('Smart Transactions', function () {
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkPageIsLoaded();
-        await bridgePage.enterSwapAmount('20');
-        await bridgePage.waitForSwapQuote();
-        await bridgePage.checkGasIncludedIsDisplayed();
-        await bridgePage.submitSwap();
-        await bridgePage.goBackAfterSubmit();
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkPageIsLoaded();
+        await swapPage.enterSwapAmount('20');
+        await swapPage.waitForSwapQuote();
+        await swapPage.checkGasIncludedIsDisplayed();
+        await swapPage.submitSwap();
+        await swapPage.goBackAfterSubmit();
 
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();

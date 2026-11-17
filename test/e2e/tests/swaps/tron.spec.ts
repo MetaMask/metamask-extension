@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { TRON_CHECK_BALANCE_ACCOUNT } from '../tron/fixtures/environments';
 import { withTronFixtures } from '../tron/fixtures/with-tron-fixtures';
 import {
@@ -31,9 +31,9 @@ describe('Swap on Tron', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -41,7 +41,7 @@ describe('Swap on Tron', function (this: Suite) {
         });
 
         // Review quote - mock returns ~0.295 USDT for 1 TRX
-        await bridgePage.reviewQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '0.295',
           swapFrom: 'TRX',
           swapTo: 'USDT',
@@ -67,17 +67,17 @@ describe('Swap on Tron', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
           network: 'Tron',
         });
 
-        await bridgePage.checkQuoteIsDisplayedWithoutNetworkFee();
-        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
+        await swapPage.checkQuoteIsDisplayedWithoutNetworkFee();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
       },
     );
   });
@@ -97,9 +97,9 @@ describe('Swap on Tron', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -107,7 +107,7 @@ describe('Swap on Tron', function (this: Suite) {
         });
 
         // Verify no quotes available message
-        await bridgePage.checkNoTradeRouteMessageIsDisplayed();
+        await swapPage.checkNoTradeRouteMessageIsDisplayed();
       },
     );
   });
@@ -127,20 +127,20 @@ describe('Swap on Tron', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 1,
           swapTo: 'TRX',
           swapFrom: 'USDT',
           network: 'Tron',
         });
 
-        await bridgePage.waitForSwapQuote();
-        await bridgePage.checkQuoteIsDisplayed();
-        await bridgePage.checkSourceToken('USDT');
-        await bridgePage.checkDestinationToken('TRX');
-        await bridgePage.checkSwapAmountsArePopulated();
+        await swapPage.waitForSwapQuote();
+        await swapPage.checkQuoteIsDisplayed();
+        await swapPage.checkSourceToken('USDT');
+        await swapPage.checkDestinationToken('TRX');
+        await swapPage.checkSwapAmountsArePopulated();
       },
     );
   });
@@ -160,16 +160,16 @@ describe('Swap on Tron', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 999999,
           swapTo: 'USDT',
           swapFrom: 'TRX',
           network: 'Tron',
         });
 
-        await bridgePage.checkInsufficientFundsButtonIsDisplayed();
+        await swapPage.checkInsufficientFundsButtonIsDisplayed();
       },
     );
   });
@@ -189,23 +189,23 @@ describe('Swap on Tron', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.createSwap({
+        await swapPage.createSwap({
           amount: 10,
           swapTo: 'USDT',
           swapFrom: 'TRX',
           network: 'Tron',
         });
 
-        await bridgePage.waitForSwapQuote();
-        await bridgePage.checkQuoteIsDisplayed();
+        await swapPage.waitForSwapQuote();
+        await swapPage.checkQuoteIsDisplayed();
 
-        await bridgePage.selectDestToken('USDC');
-        await bridgePage.waitForSwapQuote();
-        await bridgePage.checkQuoteIsDisplayed();
-        await bridgePage.checkDestinationToken('USDC');
-        await bridgePage.checkSourceToken('TRX');
+        await swapPage.selectDestToken('USDC');
+        await swapPage.waitForSwapQuote();
+        await swapPage.checkQuoteIsDisplayed();
+        await swapPage.checkDestinationToken('USDC');
+        await swapPage.checkSourceToken('TRX');
       },
     );
   });
@@ -226,9 +226,9 @@ describe('Swap on Tron', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('106.072');
-        const bridgePage = new BridgeQuotePage(driver);
+        const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await bridgePage.checkSourceToken('TRX');
+        await swapPage.checkSourceToken('TRX');
       },
     );
   });

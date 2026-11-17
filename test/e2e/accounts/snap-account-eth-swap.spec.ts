@@ -3,7 +3,7 @@ import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { buildQuote } from '../page-objects/flows/swap.flow';
-import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
+import SwapPage from '../page-objects/pages/swap/swap-page';
 import ActivityTab from '../page-objects/pages/home/activity-tab';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
@@ -56,14 +56,14 @@ describe('Snap Account - Swap', function () {
           amount: 2,
           swapTo: DAI,
         });
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.verifyQuote({
+        const swapPage = new SwapPage(driver);
+        await swapPage.verifyQuote({
           amount: 2,
           swapFrom: TEST_ETH,
           swapTo: DAI,
         });
-        await bridgePage.submitSwap();
-        await bridgePage.goBackAfterSubmit();
+        await swapPage.submitSwap();
+        await swapPage.goBackAfterSubmit();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkSwapActivityTransaction({
           amount: '2',

@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage from '../pages/bridge/quote-page';
+import SwapPage from '../pages/swap/swap-page';
 import HomePage from '../pages/home/homepage';
 
 type SwapOptions = {
@@ -11,22 +11,22 @@ type SwapOptions = {
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   const homePage = new HomePage(driver);
-  const bridgePage = new BridgeQuotePage(driver);
+  const swapPage = new SwapPage(driver);
 
   await homePage.startSwapFlow();
-  await bridgePage.enterSwapAmount(options.amount.toString());
+  await swapPage.enterSwapAmount(options.amount.toString());
 
   if (options.swapTo && options.mainnet) {
-    await bridgePage.checkQuoteIsDisplayed();
+    await swapPage.checkQuoteIsDisplayed();
   }
 
   if (options.swapTo) {
-    await bridgePage.selectDestToken(options.swapTo);
+    await swapPage.selectDestToken(options.swapTo);
     return;
   }
 
   if (options.swapToContractAddress) {
-    await bridgePage.selectDestinationTokenByContract(
+    await swapPage.selectDestinationTokenByContract(
       options.swapToContractAddress,
     );
   }

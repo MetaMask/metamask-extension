@@ -9,7 +9,7 @@ import { readResolvedAssetActionsLayout } from './asset-actions-layout';
  * on the token overview.
  * Boundaries: the asset overview only. Send/swap destinations and confirmation
  * flows belong to their page objects after leaving this screen.
- * Related: `TokensTab` (entry), `SendPage`, `BridgeQuotePage`.
+ * Related: `TokensTab` (entry), `SendPage`, `SwapPage`.
  *
  * @see ui/pages/asset/components/asset-page.tsx
  */
