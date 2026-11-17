@@ -104,19 +104,17 @@ export function convertCaipToHexChainId(id: CaipChainId): Hex {
 }
 
 /**
- * Resolves a network image URL from a hex-chain-ID-keyed map for a hex or
- * CAIP-2 chain ID. Returns undefined for non-EVM chain IDs.
+/**
+ * Gets the network image URL for a hex or CAIP-2 chain ID.
  *
- * @param chainId - The chain ID to look up (hex or CAIP-2).
- * @param networkImageUrls - Chain ID (hex) to image URL map.
- * @returns The image URL, or undefined when the chain ID is not in the map.
+ * @param chainId - The chain ID to look up.
+ * @param networkImageUrls - Chain ID to image URL map.
+ * @returns The image URL, or undefined when not found.
  */
 export function getNetworkImageUrl(
   chainId: string,
   networkImageUrls: Record<string, string>,
 ): string | undefined {
-  // Direct hit covers hex keys and non-EVM CAIP-2 keys alike; only EVM
-  // CAIP-2 IDs additionally need conversion to their hex key.
   const directMatch = networkImageUrls[chainId];
   if (directMatch) {
     return directMatch;
