@@ -580,23 +580,16 @@ describe('network utils', () => {
 });
 
 describe('getNetworkImageUrl', () => {
-  it('resolves hex keys directly', () => {
-    expect(getNetworkImageUrl('0x1', { '0x1': 'https://x.png' })).toBe(
-      'https://x.png',
-    );
-  });
+  it('resolves hex keys, EVM CAIP-2 IDs via their hex key, and non-EVM CAIP-2 keys directly', () => {
+    const map = {
+      '0x1': 'https://eth.png',
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://sol.png',
+    };
 
-  it('converts EVM CAIP-2 IDs to their hex key', () => {
-    expect(getNetworkImageUrl('eip155:1', { '0x1': 'https://x.png' })).toBe(
-      'https://x.png',
-    );
-  });
-
-  it('resolves non-EVM CAIP-2 keys directly', () => {
+    expect(getNetworkImageUrl('0x1', map)).toBe('https://eth.png');
+    expect(getNetworkImageUrl('eip155:1', map)).toBe('https://eth.png');
     expect(
-      getNetworkImageUrl('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://sol.png',
-      }),
+      getNetworkImageUrl('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', map),
     ).toBe('https://sol.png');
   });
 
