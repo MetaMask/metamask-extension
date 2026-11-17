@@ -45,6 +45,11 @@ async function measurePagePowerUser(
         testing: {
           infuraProjectId: process.env.INFURA_PROJECT_ID,
         },
+        // Live flags are fetched from the dev environment, which turns on the
+        // wide layout; its header has no `account-menu-icon`. Pin prod's value.
+        remoteFeatureFlags: {
+          extensionUxFullscreenRedesign: false,
+        },
       },
       useMockingPassThrough: true,
       disableServerMochaToBackground: true,
