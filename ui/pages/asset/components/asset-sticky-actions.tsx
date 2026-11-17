@@ -43,6 +43,19 @@ const STICKY_SECONDARY_BUTTON_CLASS_NAME =
   'flex-1 border border-success-default bg-transparent text-success-default hover:bg-success-muted-hover active:bg-success-muted-pressed';
 
 /**
+ * Red (error-token) variants of the sticky CTA styles, applied when the asset's
+ * price change is negative and directional theming is enabled. Mirror the
+ * success classes above exactly, swapping the `success` family for `error` so
+ * the footer matches the red the line chart already uses for a down range. No
+ * new colours are introduced — these reuse the existing design-system tokens.
+ */
+const STICKY_PRIMARY_BUTTON_CLASS_NAME_NEGATIVE =
+  'flex-1 bg-error-default text-error-inverse hover:bg-error-default-hover active:bg-error-default-pressed';
+
+const STICKY_SECONDARY_BUTTON_CLASS_NAME_NEGATIVE =
+  'flex-1 border border-error-default bg-transparent text-error-default hover:bg-error-muted-hover active:bg-error-muted-pressed';
+
+/**
  * Whether the Token Detail Page fiat balance is high enough that Swap should
  * be the primary (filled) sticky CTA.
  *
@@ -72,6 +85,14 @@ type AssetStickyActionsProps = {
   isMarketClosed?: boolean;
   /** Native assets cannot swap from accounts that cannot sign */
   isSigningEnabled?: boolean;
+  /**
+   * Themes the sticky Swap/Buy buttons red (error tokens) instead of green
+   * (success tokens) to mirror the line chart's down-range colour. The caller
+   * is responsible for gating this behind the advanced-charts theming flag and
+   * only setting it true when the price-change direction is known to be
+   * negative; when false the buttons keep the existing green styling.
+   */
+  isPriceChangeNegative?: boolean;
 };
 
 /**
@@ -83,12 +104,15 @@ type AssetStickyActionsProps = {
  * @param props.buyAssetId - CAIP-19 asset to pre-select when buying a native asset.
  * @param props.isMarketClosed - Whether the asset's stock market is closed.
  * @param props.isSigningEnabled - Whether the selected account can sign.
+ * @param props.isPriceChangeNegative - Whether to theme the buttons red for a
+ * negative price change (already gated behind the theming flag by the caller).
  */
 export const AssetStickyActions = ({
   asset,
   buyAssetId,
   isMarketClosed = false,
   isSigningEnabled = true,
+  isPriceChangeNegative = false,
 }: AssetStickyActionsProps) => {
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -258,6 +282,15 @@ export const AssetStickyActions = ({
 
   const preferSwapAsPrimary = shouldPreferStickySwapCta(asset.balance?.fiat);
 
+  // Only the colour family (success vs error) changes with price direction; the
+  // primary/secondary split still follows `preferSwapAsPrimary`.
+  const primaryButtonClassName = isPriceChangeNegative
+    ? STICKY_PRIMARY_BUTTON_CLASS_NAME_NEGATIVE
+    : STICKY_PRIMARY_BUTTON_CLASS_NAME;
+  const secondaryButtonClassName = isPriceChangeNegative
+    ? STICKY_SECONDARY_BUTTON_CLASS_NAME_NEGATIVE
+    : STICKY_SECONDARY_BUTTON_CLASS_NAME;
+
   return (
     <Box
       // Sticky CTA footer: pinned to the bottom of the asset page scroll
@@ -276,8 +309,8 @@ export const AssetStickyActions = ({
         startIconName={IconName.SwapVertical}
         className={
           preferSwapAsPrimary
-            ? STICKY_PRIMARY_BUTTON_CLASS_NAME
-            : STICKY_SECONDARY_BUTTON_CLASS_NAME
+            ? primaryButtonClassName
+            : secondaryButtonClassName
         }
         onClick={handleSwapClick}
         disabled={isSwapDisabled}
@@ -293,8 +326,8 @@ export const AssetStickyActions = ({
         startIconName={IconName.Bank}
         className={
           preferSwapAsPrimary
-            ? STICKY_SECONDARY_BUTTON_CLASS_NAME
-            : STICKY_PRIMARY_BUTTON_CLASS_NAME
+            ? secondaryButtonClassName
+            : primaryButtonClassName
         }
         onClick={handleBuyClick}
         disabled={Boolean(asset.isERC721) || !isCtaGateReady}

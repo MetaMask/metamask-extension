@@ -227,6 +227,82 @@ describe('AssetStickyActions', () => {
     expect(getByTestId('asset-sticky-swap')).toHaveClass('bg-success-default');
     expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-transparent');
   });
+
+  describe('price-change direction theming', () => {
+    it('keeps green styling by default (unknown direction / theming off)', () => {
+      const { getByTestId } = renderWithProvider(
+        <AssetStickyActions asset={token} />,
+        store,
+      );
+
+      // Low balance → Buy is the filled primary, Swap is the outlined secondary.
+      expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-success-default');
+      expect(getByTestId('asset-sticky-buy')).toHaveClass(
+        'text-success-inverse',
+      );
+      expect(getByTestId('asset-sticky-swap')).toHaveClass(
+        'border-success-default',
+      );
+      expect(getByTestId('asset-sticky-swap')).toHaveClass(
+        'text-success-default',
+      );
+      expect(getByTestId('asset-sticky-buy')).not.toHaveClass(
+        'bg-error-default',
+      );
+    });
+
+    it('keeps green styling when the price change is explicitly non-negative', () => {
+      const { getByTestId } = renderWithProvider(
+        <AssetStickyActions asset={token} isPriceChangeNegative={false} />,
+        store,
+      );
+
+      expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-success-default');
+      expect(getByTestId('asset-sticky-swap')).toHaveClass(
+        'border-success-default',
+      );
+    });
+
+    it('themes both buttons red when the price change is negative', () => {
+      const { getByTestId } = renderWithProvider(
+        <AssetStickyActions asset={token} isPriceChangeNegative />,
+        store,
+      );
+
+      // Primary (filled) Buy turns error-red; secondary (outlined) Swap too.
+      expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-error-default');
+      expect(getByTestId('asset-sticky-buy')).toHaveClass('text-error-inverse');
+      expect(getByTestId('asset-sticky-buy')).not.toHaveClass(
+        'bg-success-default',
+      );
+      expect(getByTestId('asset-sticky-swap')).toHaveClass(
+        'border-error-default',
+      );
+      expect(getByTestId('asset-sticky-swap')).toHaveClass(
+        'text-error-default',
+      );
+      expect(getByTestId('asset-sticky-swap')).toHaveClass('bg-transparent');
+    });
+
+    it('keeps the primary/secondary split following balance when red', () => {
+      const highBalanceToken = {
+        ...token,
+        balance: { value: '200', display: '200', fiat: '100.01' },
+      } as Asset & { type: AssetType.token };
+
+      const { getByTestId } = renderWithProvider(
+        <AssetStickyActions asset={highBalanceToken} isPriceChangeNegative />,
+        store,
+      );
+
+      // High balance → Swap is the filled primary, Buy is the outlined secondary.
+      expect(getByTestId('asset-sticky-swap')).toHaveClass('bg-error-default');
+      expect(getByTestId('asset-sticky-buy')).toHaveClass(
+        'border-error-default',
+      );
+      expect(getByTestId('asset-sticky-buy')).toHaveClass('bg-transparent');
+    });
+  });
 });
 
 describe('shouldPreferStickySwapCta', () => {
