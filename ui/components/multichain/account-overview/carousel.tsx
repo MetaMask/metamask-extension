@@ -20,9 +20,7 @@ export const Carousel = () => {
   const useExternalServices = useSelector(getUseExternalServices);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const isCarouselEnabled = Boolean(
-    useExternalServices &&
-    remoteFeatureFlags &&
-    remoteFeatureFlags.carouselBanners,
+    useExternalServices && remoteFeatureFlags?.carouselBanners,
   );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const displayedSlideIds = useRef<Set<string>>(new Set());
