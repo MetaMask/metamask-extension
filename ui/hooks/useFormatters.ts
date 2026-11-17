@@ -49,12 +49,12 @@ function formatMediumDate(
 }
 
 /**
- * Temporary shim until `@metamask/client-utils` accepts `narrowSymbol` on
- * `createFormatters`. Re-routes the currency helpers through a wrapped
- * `formatCurrency` so they all pick up `currencyDisplay: 'narrowSymbol'`.
+ * Temporary stand-in for `createFormatters({ currencyDisplay: 'narrowSymbol' })`.
+ * The published package cannot take that field yet, and its compact, threshold,
+ * and token-price helpers do not accept a per-call `currencyDisplay`.
  *
  * @param formatters - Formatters from `createFormatters`.
- * @returns Formatters with narrow currency symbols enabled.
+ * @returns The same formatters with `currencyDisplay: 'narrowSymbol'` applied.
  */
 function withNarrowSymbol(formatters: Formatters): Formatters {
   const formatCurrency: Formatters['formatCurrency'] = (

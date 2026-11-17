@@ -45,6 +45,16 @@ describe('useFormatters', () => {
       expect(result.current.formatCurrency(1, 'USD')).toBe(
         formatUsd(`en-${region}`, 'symbol'),
       );
+      expect(result.current.formatCurrencyCompact(1_000_000, 'USD')).toBe(
+        new OriginalNumberFormat(`en-${region}`, {
+          style: 'currency',
+          currency: 'USD',
+          currencyDisplay: 'symbol',
+          notation: 'compact',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(1_000_000),
+      );
       jest.restoreAllMocks();
     }
   });
@@ -57,6 +67,23 @@ describe('useFormatters', () => {
 
     expect(result.current.formatCurrency(1, 'USD')).toBe(
       formatUsd('es', 'narrowSymbol'),
+    );
+    expect(result.current.formatCurrencyCompact(1_000_000, 'USD')).toBe(
+      new OriginalNumberFormat('es', {
+        style: 'currency',
+        currency: 'USD',
+        currencyDisplay: 'narrowSymbol',
+        notation: 'compact',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(1_000_000),
+    );
+    expect(result.current.formatCurrencyWithMinThreshold(0.001, 'USD')).toBe(
+      `<${new OriginalNumberFormat('es', {
+        style: 'currency',
+        currency: 'USD',
+        currencyDisplay: 'narrowSymbol',
+      }).format(0.01)}`,
     );
   });
 });
