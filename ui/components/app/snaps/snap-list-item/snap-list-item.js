@@ -1,17 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  Color,
-  AlignItems,
-  JustifyContent,
-  Display,
-  BlockSize,
-  TextVariant,
-  BorderRadius,
-  BackgroundColor,
-} from '../../../../helpers/constants/design-system';
-import { Text, Box } from '../../../component-library';
+import { Box, ContentVariant, ListItem } from '@metamask/design-system-react';
 import { SnapIcon } from '../snap-icon';
 
 const SnapListItem = ({
@@ -22,59 +12,23 @@ const SnapListItem = ({
   showUpdateDot,
 }) => {
   return (
-    <Box
+    <ListItem
+      variant={ContentVariant.TwoLines}
+      isInteractive
+      onClick={onClick}
       className="snap-list-item"
       data-testid={snapId}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
-      width={BlockSize.Full}
-      padding={4}
-      onClick={onClick}
-    >
-      <Box
-        className="snap-list-item__inner-wrapper"
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
-        width={BlockSize.Full}
-      >
-        <Box>
-          <SnapIcon snapId={snapId} />
-        </Box>
-        <Box
-          paddingLeft={4}
-          paddingRight={4}
-          width={BlockSize.Full}
-          style={{ overflow: 'hidden' }}
-        >
-          <Text
-            className="snap-list-item__title"
-            color={Color.textDefault}
-            variant={TextVariant.bodyMd}
-            ellipsis
-          >
-            {name}
-          </Text>
-          <Text
-            className="snap-list-item__url"
-            color={Color.textAlternative}
-            variant={TextVariant.bodySm}
-            ellipsis
-          >
-            {packageName}
-          </Text>
-        </Box>
-      </Box>
-      {showUpdateDot && (
-        <Box
-          display={Display.Flex}
-          style={{ width: '10px', height: '10px', content: '' }}
-          borderRadius={BorderRadius.full}
-          backgroundColor={BackgroundColor.primaryDefault}
-        />
-      )}
-    </Box>
+      avatar={<SnapIcon snapId={snapId} />}
+      title={name}
+      titleProps={{ ellipsis: true }}
+      description={packageName}
+      descriptionProps={{ ellipsis: true }}
+      endAccessory={
+        showUpdateDot ? (
+          <Box className="size-2.5 rounded-full bg-primary-default" />
+        ) : undefined
+      }
+    />
   );
 };
 
