@@ -50,10 +50,40 @@ jobs:
   plan:
     runs-on: ubuntu-24.04
     outputs:
-      proceed: ${{ steps.plan.outputs.proceed }}
+      proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
       plan: ${{ steps.plan.outputs.plan }}
     steps:
+      # Needs only gh and jq, so an unchanged commit finishes before any checkout.
+      # Canary and aa runs skip it and take the full path below.
+      - name: Quick exit when the build inputs are unchanged
+        id: quick
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_INPUT: ${{ inputs.head_sha }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          [[ "$MODE" == aa ]] && exit 0
+          read -r head parent < <(
+            gh api "repos/$GITHUB_REPOSITORY/commits/${HEAD_INPUT:-main}" \
+              --jq '[.sha, .parents[0].sha] | @tsv'
+          )
+          if (( 16#${head:0:8} % 10 == 0 )); then exit 0; fi
+          hash_of() {
+            gh api "repos/$GITHUB_REPOSITORY/commits/$1/status?per_page=100" \
+              --jq '[.statuses[] | select(.context == "build-source-hash") | .description] | first // ""'
+          }
+          a=$(hash_of "$head")
+          b=$(hash_of "$parent")
+          if [[ -n "$a" && "$a" == "$b" ]]; then
+            printf '## Main performance detector\n\nHead `%s` has the same build-source hash as its parent `%s`: **no change**, no jobs run.\n' "${head:0:10}" "${parent:0:10}" >> "$GITHUB_STEP_SUMMARY"
+            printf '{"headSha":"%s","label":"no change (identical builds)"}\n' "$head" > skip.json
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            echo "done=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout and setup environment
+        if: ${{ steps.quick.outputs.done != 'true' }}
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
@@ -61,6 +91,7 @@ jobs:
 
       - name: Resolve the builds and compare them
         id: plan
+        if: ${{ steps.quick.outputs.done != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_INPUT: ${{ inputs.head_sha }}
