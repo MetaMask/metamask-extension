@@ -101,9 +101,11 @@ describe('SelectedAssetButton', () => {
 
 describe('SelectedAssetButton network logo fallback', () => {
   it('renders a native asset whose chain is not in the network image maps', () => {
+    // toBridgeToken derives chainId from assetId, so the unknown chain has
+    // to be set on assetId for the network logo lookups to miss.
     const unknownChainNativeAsset = {
       ...getNativeAssetForChainId('0x1'),
-      chainId: 9999,
+      assetId: 'eip155:9999/slip44:60',
     };
 
     const { getByText, container } = renderButton(
@@ -111,6 +113,6 @@ describe('SelectedAssetButton network logo fallback', () => {
     );
 
     expect(getByText('ETH')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).not.toContain('eth_logo.svg');
   });
 });
