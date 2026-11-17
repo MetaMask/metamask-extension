@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { createFormatters } from '@metamask/client-utils';
-import { getIntlLocale } from '../ducks/locale/locale';
+import type { Formatters } from '@metamask/client-utils';
+import {
+  buildFormattingLocale,
+  usesNarrowUsdSymbol,
+} from '#shared/constants/locales';
+import { getCurrentLocale } from '#ui/ducks/locale/locale';
 
 const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
 
@@ -31,17 +36,49 @@ function formatMediumDate(
   }).format(new Date(timestamp));
 }
 
+function regionOf(locale: string) {
+  try {
+    return new Intl.Locale(locale).region;
+  } catch {
+    return undefined;
+  }
+}
+
+function withNarrowUsdSymbol(formatters: Formatters): Formatters {
+  const formatCurrency: Formatters['formatCurrency'] = (
+    value,
+    currency,
+    options,
+  ) =>
+    formatters.formatCurrency(
+      value,
+      currency,
+      currency?.toUpperCase() === 'USD'
+        ? { currencyDisplay: 'narrowSymbol', ...options }
+        : options,
+    );
+
+  return {
+    ...formatters,
+    formatCurrency,
+  };
+}
+
 export function useFormatters() {
-  const locale = useSelector(getIntlLocale);
+  const locale = useSelector(getCurrentLocale);
 
   return useMemo(() => {
-    const base = createFormatters({ locale });
+    const formattingLocale = buildFormattingLocale(locale);
+    const base = createFormatters({ locale: formattingLocale });
+    const formatters = usesNarrowUsdSymbol(regionOf(formattingLocale))
+      ? withNarrowUsdSymbol(base)
+      : base;
     return {
-      ...base,
+      ...formatters,
       /**
        * Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
        */
-      formatMediumDate: formatMediumDate.bind(null, locale),
+      formatMediumDate: formatMediumDate.bind(null, formattingLocale),
     };
   }, [locale]);
 }
