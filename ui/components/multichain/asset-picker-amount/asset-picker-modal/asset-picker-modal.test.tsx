@@ -296,7 +296,7 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal
         {...defaultProps}
         header="selectNetworkHeader"
-network={networkPickerNetwork}
+        network={networkPickerNetwork}
       />,
       store,
     );
@@ -314,7 +314,7 @@ network={networkPickerNetwork}
       <AssetPickerModal
         {...defaultProps}
         header="selectNetworkHeader"
-network={networkPickerNetwork}
+        network={networkPickerNetwork}
         isMultiselectEnabled
         selectedChainIds={['0x1', '0xa']}
         networks={
@@ -336,7 +336,7 @@ network={networkPickerNetwork}
         {...defaultProps}
         onNetworkPickerClick={undefined}
         header="selectNetworkHeader"
-network={networkPickerNetwork}
+        network={networkPickerNetwork}
       />,
       store,
     );

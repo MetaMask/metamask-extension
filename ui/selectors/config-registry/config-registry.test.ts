@@ -486,7 +486,6 @@ describe('config-registry selectors', () => {
   });
 
   describe('getChainIdToNetworkImageUrlMap', () => {
-
     it('returns the static maps when the feature flag is off', () => {
       const state = buildRegistryState(
         { 'eip155:1329': { imageUrl: 'https://x.png' } as never },
