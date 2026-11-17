@@ -96,7 +96,7 @@ describe('MoneyActivityList', () => {
     );
 
     const row = screen.getByTestId(`money-activity-row-${apiItem.id}`);
-    expect(row.tagName).toBe('BUTTON');
+    expect(row).toHaveAttribute('role', 'button');
     fireEvent.click(row);
     expect(onItemClick).toHaveBeenCalledWith(apiItem);
   });
