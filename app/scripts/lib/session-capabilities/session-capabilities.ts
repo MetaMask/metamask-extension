@@ -19,25 +19,23 @@ type CreateSessionCapabilitiesOptions = {
   ) => Promise<SessionCapabilities>;
   /** How long a cached value is served before it is refreshed. */
   freshMs?: number;
-  /** How long a caller waits for a value that is not cached yet. */
-  timeoutMs?: number;
   now?: () => number;
 };
 
 export const SESSION_CAPABILITIES_FRESH_MS = 5 * 60 * 1000;
-export const SESSION_CAPABILITIES_TIMEOUT_MS = 2000;
 
 /**
  * Builds a provider for the capabilities that hydrate
  * `sessionProperties.eip155Capabilities`.
  *
  * Computing capabilities fans out one RPC call per chain, which is too slow
- * for the short session restore timeouts of Multichain API clients. Results
- * are cached with stale while revalidate semantics and in flight
- * deduplication, so only the caller that starts the first computation for an
- * account and chain set waits, and that wait is bounded by `timeoutMs`.
- * Concurrent callers are rejected right away, and a computation that outlives
- * the timeout keeps running and warms the cache for later calls.
+ * to wait for during a session handshake: a delayed session response lets
+ * dapps act on a session they already know about before the handshake
+ * finishes, and Multichain API clients use short session restore timeouts.
+ * Results are therefore cached with stale while revalidate semantics and in
+ * flight deduplication, and callers never wait. A cold cache starts the
+ * computation in the background and the account is left out of that response,
+ * so later session responses include the capabilities.
  *
  * Cached values can lag behind wallet state (preferences, network
  * configuration, account delegation) by up to `freshMs`. That is acceptable
@@ -48,14 +46,12 @@ export const SESSION_CAPABILITIES_TIMEOUT_MS = 2000;
  * @param options.computeCapabilities - Computes uncached capabilities.
  * @param options.freshMs - How long a cached value is served before it is
  * refreshed in the background.
- * @param options.timeoutMs - How long a caller waits for an uncached value.
  * @param options.now - Returns the current time in milliseconds.
  * @returns An object with `getSessionCapabilities` and `clear`.
  */
 export function createSessionCapabilities({
   computeCapabilities,
   freshMs = SESSION_CAPABILITIES_FRESH_MS,
-  timeoutMs = SESSION_CAPABILITIES_TIMEOUT_MS,
   now = Date.now,
 }: CreateSessionCapabilitiesOptions) {
   const cache = new Map<string, CacheEntry>();
@@ -91,26 +87,6 @@ export function createSessionCapabilities({
     }
   };
 
-  const withTimeout = (
-    promise: Promise<SessionCapabilities>,
-  ): Promise<SessionCapabilities> =>
-    new Promise((resolve, reject) => {
-      const timer = setTimeout(
-        () => reject(new Error('Timed out computing session capabilities')),
-        timeoutMs,
-      );
-      promise.then(
-        (value) => {
-          clearTimeout(timer);
-          resolve(value);
-        },
-        (error) => {
-          clearTimeout(timer);
-          reject(error);
-        },
-      );
-    });
-
   /**
    * Gets the capabilities for the given address.
    *
@@ -139,17 +115,16 @@ export function createSessionCapabilities({
       return Promise.resolve(entry.value);
     }
 
-    // Only the caller that starts the first computation waits for it, so
-    // concurrent calls do not each add the timeout to their latency.
-    if (entry?.pending) {
-      return Promise.reject(
-        new Error('Session capabilities are still being computed'),
-      );
+    // Never wait for a computation: a delayed session response lets dapps act
+    // on a session they already know about before its handshake finishes. A
+    // cold cache starts the computation in the background and the account is
+    // left out of this response.
+    if (!entry?.pending) {
+      const pending = computeAndCache(key, address, chainIds);
+      pending.catch(() => undefined);
+      cache.set(key, { timestamp: 0, pending });
     }
-
-    const pending = computeAndCache(key, address, chainIds);
-    cache.set(key, { timestamp: 0, pending });
-    return withTimeout(pending);
+    return Promise.reject(new Error('Session capabilities are not ready yet'));
   };
 
   return {

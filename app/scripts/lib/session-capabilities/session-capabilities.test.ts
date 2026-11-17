@@ -19,15 +19,20 @@ const deferred = <Type>() => {
   return { promise, resolve, reject };
 };
 
+// A cold cache rejects and computes in the background, so warm it and let the
+// computation settle.
+const warm = async (
+  getSessionCapabilities: (
+    address: string,
+    chainIds?: Hex[],
+  ) => Promise<SessionCapabilities>,
+  chainIds: Hex[],
+) => {
+  await getSessionCapabilities(ADDRESS, chainIds).catch(() => undefined);
+  await Promise.resolve();
+};
+
 describe('createSessionCapabilities', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
   describe('getSessionCapabilities', () => {
     it('resolves to no capabilities without computing when the chain set is empty', async () => {
       const computeCapabilities = jest.fn();
@@ -39,7 +44,7 @@ describe('createSessionCapabilities', () => {
       expect(computeCapabilities).not.toHaveBeenCalled();
     });
 
-    it('computes capabilities for the given address and chains', async () => {
+    it('rejects without waiting on a cold cache and computes in the background', async () => {
       const computeCapabilities = jest
         .fn()
         .mockResolvedValue(CAPABILITIES_MOCK);
@@ -47,10 +52,14 @@ describe('createSessionCapabilities', () => {
         computeCapabilities,
       });
 
-      const result = await getSessionCapabilities(ADDRESS, ['0x1']);
+      await expect(getSessionCapabilities(ADDRESS, ['0x1'])).rejects.toThrow(
+        'Session capabilities are not ready yet',
+      );
 
-      expect(result).toStrictEqual(CAPABILITIES_MOCK);
       expect(computeCapabilities).toHaveBeenCalledWith(ADDRESS, ['0x1']);
+      expect(await getSessionCapabilities(ADDRESS, ['0x1'])).toStrictEqual(
+        CAPABILITIES_MOCK,
+      );
     });
 
     it('serves a fresh cached value without computing again', async () => {
@@ -61,7 +70,7 @@ describe('createSessionCapabilities', () => {
         computeCapabilities,
       });
 
-      await getSessionCapabilities(ADDRESS, ['0x1']);
+      await warm(getSessionCapabilities, ['0x1']);
       const result = await getSessionCapabilities(ADDRESS, ['0x1']);
 
       expect(result).toStrictEqual(CAPABILITIES_MOCK);
@@ -76,7 +85,7 @@ describe('createSessionCapabilities', () => {
         computeCapabilities,
       });
 
-      await getSessionCapabilities(ADDRESS, ['0x1', '0xA' as Hex]);
+      await warm(getSessionCapabilities, ['0x1', '0xA' as Hex]);
       await getSessionCapabilities(ADDRESS.toUpperCase(), [
         '0xa' as Hex,
         '0x1',
@@ -85,21 +94,26 @@ describe('createSessionCapabilities', () => {
       expect(computeCapabilities).toHaveBeenCalledTimes(1);
     });
 
-    it('rejects concurrent calls instead of computing again while the first is in flight', async () => {
+    it('does not compute again while the first computation is in flight', async () => {
       const pending = deferred<SessionCapabilities>();
       const computeCapabilities = jest.fn().mockReturnValue(pending.promise);
       const { getSessionCapabilities } = createSessionCapabilities({
         computeCapabilities,
       });
 
-      const first = getSessionCapabilities(ADDRESS, ['0x1']);
       await expect(getSessionCapabilities(ADDRESS, ['0x1'])).rejects.toThrow(
-        'Session capabilities are still being computed',
+        'not ready yet',
+      );
+      await expect(getSessionCapabilities(ADDRESS, ['0x1'])).rejects.toThrow(
+        'not ready yet',
       );
       pending.resolve(CAPABILITIES_MOCK);
+      await Promise.resolve();
 
-      expect(await first).toStrictEqual(CAPABILITIES_MOCK);
       expect(computeCapabilities).toHaveBeenCalledTimes(1);
+      expect(await getSessionCapabilities(ADDRESS, ['0x1'])).toStrictEqual(
+        CAPABILITIES_MOCK,
+      );
     });
 
     it('serves a stale value immediately and refreshes it in the background', async () => {
@@ -115,7 +129,7 @@ describe('createSessionCapabilities', () => {
         now: () => currentTime,
       });
 
-      await getSessionCapabilities(ADDRESS, ['0x1']);
+      await warm(getSessionCapabilities, ['0x1']);
       currentTime = 2000;
       const stale = await getSessionCapabilities(ADDRESS, ['0x1']);
       await Promise.resolve();
@@ -138,7 +152,7 @@ describe('createSessionCapabilities', () => {
         now: () => currentTime,
       });
 
-      await getSessionCapabilities(ADDRESS, ['0x1']);
+      await warm(getSessionCapabilities, ['0x1']);
       currentTime = 2000;
       await getSessionCapabilities(ADDRESS, ['0x1']);
       await Promise.resolve();
@@ -147,7 +161,7 @@ describe('createSessionCapabilities', () => {
       expect(result).toStrictEqual(CAPABILITIES_MOCK);
     });
 
-    it('rejects and does not cache a failed first computation', async () => {
+    it('does not cache a failed first computation and retries on the next call', async () => {
       const computeCapabilities = jest
         .fn()
         .mockRejectedValueOnce(new Error('rpc failed'))
@@ -156,35 +170,12 @@ describe('createSessionCapabilities', () => {
         computeCapabilities,
       });
 
-      await expect(getSessionCapabilities(ADDRESS, ['0x1'])).rejects.toThrow(
-        'rpc failed',
-      );
+      await warm(getSessionCapabilities, ['0x1']);
+      await warm(getSessionCapabilities, ['0x1']);
       const result = await getSessionCapabilities(ADDRESS, ['0x1']);
 
       expect(result).toStrictEqual(CAPABILITIES_MOCK);
-    });
-
-    it('rejects after the timeout and still warms the cache for later calls', async () => {
-      const pending = deferred<SessionCapabilities>();
-      const computeCapabilities = jest.fn().mockReturnValue(pending.promise);
-      const { getSessionCapabilities } = createSessionCapabilities({
-        computeCapabilities,
-        timeoutMs: 1000,
-      });
-
-      const first = getSessionCapabilities(ADDRESS, ['0x1']);
-      const firstRejection = expect(first).rejects.toThrow(
-        'Timed out computing session capabilities',
-      );
-      jest.advanceTimersByTime(1000);
-      await firstRejection;
-
-      pending.resolve(CAPABILITIES_MOCK);
-      await Promise.resolve();
-      const result = await getSessionCapabilities(ADDRESS, ['0x1']);
-
-      expect(result).toStrictEqual(CAPABILITIES_MOCK);
-      expect(computeCapabilities).toHaveBeenCalledTimes(1);
+      expect(computeCapabilities).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -197,9 +188,9 @@ describe('createSessionCapabilities', () => {
         computeCapabilities,
       });
 
-      await getSessionCapabilities(ADDRESS, ['0x1']);
+      await warm(getSessionCapabilities, ['0x1']);
       clear();
-      await getSessionCapabilities(ADDRESS, ['0x1']);
+      await warm(getSessionCapabilities, ['0x1']);
 
       expect(computeCapabilities).toHaveBeenCalledTimes(2);
     });
