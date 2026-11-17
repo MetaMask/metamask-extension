@@ -9,16 +9,12 @@ const runtimeManifest =
 /**
  * A boolean indicating whether the manifest of the current extension is set to manifest version 3.
  *
- * Extension pages use the runtime manifest. When `getManifest` is unavailable,
- * this reads `process.env.ENABLE_MV3`. The build system inlines that as a
- * boolean; in Node it can be a string. An unset value is treated as Manifest V3.
+ * If this function is running in the Extension, it will use the runtime manifest.
+ * In Node-side E2E tests, it derives the manifest version from the selected browser.
  */
 const isManifestV3: boolean = runtimeManifest
   ? runtimeManifest.manifest_version === 3
-  : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it can be a string
-    (process.env.ENABLE_MV3 as boolean | string | undefined) === true ||
-    process.env.ENABLE_MV3 === 'true' ||
-    process.env.ENABLE_MV3 === undefined;
+  : process.env.SELENIUM_BROWSER !== 'firefox';
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.

@@ -27,8 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      # Build parameter
-      ENABLE_MV3: ${{ !contains(inputs.build-name, 'mv2') }}
       IS_FLASK_BUILD: ${{ contains(inputs.build-name, 'flask') }}
       IS_BETA_BUILD: ${{ contains(inputs.build-name, 'beta') }}
       IS_EXPERIMENTAL_BUILD: ${{ contains(inputs.build-name, 'experimental') }}
