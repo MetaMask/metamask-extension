@@ -1,4 +1,9 @@
-import React, { type CSSProperties, useCallback, useState } from 'react';
+import React, {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
@@ -73,6 +78,13 @@ export type AdvancedChartSectionProps = {
   caipAssetId?: string;
   currency: string;
   currentPrice?: number;
+  /**
+   * Reports the directional price change the chart is showing (the stable
+   * range direction that colours the line, or the 24H candle change) so the
+   * page can theme the sticky footer to match. `undefined` when the direction
+   * is unknown (loading / flat / missing data).
+   */
+  onPriceChangeDirection?: (percentChange: number | undefined) => void;
 };
 
 /**
@@ -95,6 +107,7 @@ export const AdvancedChartSection = ({
   caipAssetId,
   currency,
   currentPrice,
+  onPriceChangeDirection,
 }: AdvancedChartSectionProps) => {
   const {
     chartType,
@@ -218,6 +231,18 @@ export const AdvancedChartSection = ({
   };
 
   const header = isLineChart ? lineHeader : candleHeader;
+
+  // Report the direction the chart is showing up to the page so the sticky
+  // footer can match it. Line mode uses the stable range direction that
+  // colours the line (not the hover-sensitive header value), and candle mode
+  // uses the 24H candle change — the same figures the chart itself is themed
+  // by, so the footer and chart can never disagree.
+  const priceChangeDirection = isLineChart
+    ? lineRangeChange
+    : candleHeader.percentChange;
+  useEffect(() => {
+    onPriceChangeDirection?.(priceChangeDirection);
+  }, [onPriceChangeDirection, priceChangeDirection]);
   const candleFailed = Boolean(chartError ?? ohlcvError);
 
   // A finished fetch that returned no candles is a success, not an error, so it

@@ -88,8 +88,6 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { useHistoricalPrices } from '../hooks/useHistoricalPrices';
-import { computePercentChange } from '../../../components/app/assets/util/percentChange';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
 import { useAssetPerpsMarket } from '../hooks/useAssetPerpsMarket';
 import { usePerpsPositionForAsset } from '../../../hooks/perps/usePerpsPositionForAsset';
@@ -449,38 +447,24 @@ const AssetPage = ({
 
   const handleBack = useInAppBack(DEFAULT_ROUTE, transitionBack);
 
-  // Theme the sticky Swap/Buy footer by the same 24H range direction the
-  // advanced line chart uses, so a token that is down shows red CTAs instead of
-  // the default green. Only the advanced-charts path has this directional
-  // colouring; the legacy `AssetChart` keeps green. The exact `realtimePrice`
-  // and user-selected range live inside `AdvancedChartSection`, and lifting
-  // them out would be invasive, so this recomputes the direction from the
-  // shared `useHistoricalPrices` cache (same query key for the default 24H
-  // range) against `currentPrice` — a modest, read-only duplicate that reuses
-  // the cached data rather than issuing an extra fetch. Kept idle unless both
-  // the advanced charts and the theming flag are on.
+  // Theme the sticky Swap/Buy footer by the same price-change direction the
+  // advanced chart already shows under its price header, so a token that is
+  // down shows red CTAs instead of the default green. Rather than recompute the
+  // change, `AdvancedChartSection` reports the value it already derives (the
+  // stable range direction that colours the line, or the 24H candle change) up
+  // to here. Only the advanced-charts path reports a direction; the legacy
+  // `AssetChart` leaves it undefined, so those pages keep green.
   const isAdvancedChartsThemingEnabled = useSelector(
     getIsAdvancedChartsThemingEnabled,
   );
-  const isStickyThemingActive =
-    isAdvancedChartsEnabled && isAdvancedChartsThemingEnabled;
-  const stickyHistoricalPrices = useHistoricalPrices({
-    chainId,
-    address,
-    currency,
-    timeRange: 'P1D',
-    enabled: isStickyThemingActive,
-  });
-  const stickyRangeChange = computePercentChange(
-    currentPrice,
-    stickyHistoricalPrices.isPlaceholderData
-      ? undefined
-      : stickyHistoricalPrices.data.prices?.[0]?.y,
-  );
+  const [chartPercentChange, setChartPercentChange] = useState<
+    number | undefined
+  >(undefined);
   const isStickyPriceChangeNegative =
-    isStickyThemingActive &&
-    typeof stickyRangeChange === 'number' &&
-    stickyRangeChange < 0;
+    isAdvancedChartsEnabled &&
+    isAdvancedChartsThemingEnabled &&
+    typeof chartPercentChange === 'number' &&
+    chartPercentChange < 0;
 
   return (
     <AssetPageSecurityTrustProvider
@@ -516,6 +500,7 @@ const AssetPage = ({
             caipAssetId={caipAssetId}
             currentPrice={currentPrice}
             currency={currency}
+            onPriceChangeDirection={setChartPercentChange}
           />
         ) : (
           <AssetChart
