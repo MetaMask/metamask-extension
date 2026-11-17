@@ -15,7 +15,6 @@ import {
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
-  selectAssetsHaveLoadedForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
@@ -34,6 +33,7 @@ import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { useAssetsHaveLoaded } from '../hooks/useAssetsHaveLoaded';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -62,9 +62,7 @@ export const AccountGroupBalance = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
-  const assetsHaveLoaded = useSelector(
-    selectAssetsHaveLoadedForSelectedAccountGroup,
-  );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
 
   const caipChainId = useMemo(
     () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),

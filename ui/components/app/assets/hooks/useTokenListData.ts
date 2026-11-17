@@ -39,7 +39,6 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
-  selectAssetsHaveLoadedForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -54,6 +53,7 @@ import { isMusdToken } from '../../musd/constants';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
+import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 export type TokenListDisplayItem =
   | {
@@ -131,9 +131,7 @@ export function useTokenListData({
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const assetsHaveLoaded = useSelector(
-    selectAssetsHaveLoadedForSelectedAccountGroup,
-  );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
     useBoolean(lowValueAssetsExpandedSessionValue);

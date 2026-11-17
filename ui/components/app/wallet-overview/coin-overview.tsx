@@ -56,13 +56,13 @@ import { BalanceEmptyState } from '../balance-empty-state';
 import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
-  selectAssetsHaveLoadedForSelectedAccountGroup,
   selectBalanceBySelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
 import { useAppLayout } from '../../../contexts/app-layout';
+import { useAssetsHaveLoaded } from '../assets/hooks/useAssetsHaveLoaded';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -232,9 +232,7 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
-  const assetsHaveLoaded = useSelector(
-    selectAssetsHaveLoadedForSelectedAccountGroup,
-  );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
   const isEvm = isEvmChainId(chainId);
