@@ -32,8 +32,11 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { hasMoneyAccount } = useMoneyAccountInfo();
-  const { initiateDeposit, isLoading: isDepositLoading } =
-    useMoneyAccountDeposit();
+  const {
+    initiateDeposit,
+    isDisabled: isDepositDisabled,
+    isLoading: isDepositLoading,
+  } = useMoneyAccountDeposit();
   const transactionMeta = useLocalTransactionMeta(item.hash);
   const explorerChainId =
     transactionMeta && isMoneyWithdrawTx(transactionMeta)
@@ -76,6 +79,7 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
             isLoading={isDepositLoading}
+            isDisabled={isDepositDisabled || isDepositLoading}
             onClick={() => {
               initiateDeposit({
                 ftueOrigin: {

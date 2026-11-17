@@ -33,6 +33,7 @@ import { useAppLayout } from '../../contexts/app-layout';
 import { useScrollContainerGutterWidth } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useMoneyAccountLifecycle } from '../../hooks/money/use-money-account-lifecycle';
 import { useOpenMoneyFtueOnFirstVisit } from '../../hooks/money/use-open-money-ftue-on-first-visit';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
@@ -169,6 +170,8 @@ export function MoneyHomePage() {
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
+  const { isReadOnly, isLoading: isLifecycleLoading } =
+    useMoneyAccountLifecycle();
   useOpenMoneyFtueOnFirstVisit({
     isAvailable: availability.isAvailable,
     isLoading: isAvailabilityLoading,
@@ -257,7 +260,9 @@ export function MoneyHomePage() {
     componentName: MoneyComponentName.OnboardingCard,
   });
   const isPageLoading =
-    isAvailabilityLoading || (availability.isAvailable && isBalanceLoading);
+    isAvailabilityLoading ||
+    isLifecycleLoading ||
+    (availability.isAvailable && isBalanceLoading);
 
   useTrackOnce(!isPageLoading && availability.isAvailable, trackScreenViewed);
 
@@ -314,6 +319,10 @@ export function MoneyHomePage() {
     });
   }, [trackTooltipClicked]);
   const handleAddFundsFromActionRow = useCallback(() => {
+    if (isReadOnly) {
+      return;
+    }
+
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -329,8 +338,12 @@ export function MoneyHomePage() {
         componentName: MoneyComponentName.ActionButtonRow,
       },
     });
-  }, [initiateDeposit, trackButtonClicked]);
+  }, [initiateDeposit, isReadOnly, trackButtonClicked]);
   const handleAddFundsFromFundCard = useCallback(() => {
+    if (isReadOnly) {
+      return;
+    }
+
     trackOnboardingEvent({
       step: 1,
       stepTitleKey: 'moneyOnboardingFundTitle',
@@ -344,7 +357,7 @@ export function MoneyHomePage() {
         componentName: MoneyComponentName.OnboardingCard,
       },
     });
-  }, [initiateDeposit, trackOnboardingEvent]);
+  }, [initiateDeposit, isReadOnly, trackOnboardingEvent]);
   const handleLearnMore = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -356,6 +369,10 @@ export function MoneyHomePage() {
     global.platform.openTab({ url: MONEY_URLS.MONEY_LANDING });
   }, [trackButtonClicked]);
   const handleSend = useCallback(() => {
+    if (isReadOnly) {
+      return;
+    }
+
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.TransferMoney,
@@ -376,7 +393,7 @@ export function MoneyHomePage() {
     initiateWithdrawal().catch((error: unknown) => {
       console.error('[MoneyHomePage] Withdrawal initiation failed', error);
     });
-  }, [initiateWithdrawal, trackButtonClicked]);
+  }, [initiateWithdrawal, isReadOnly, trackButtonClicked]);
   const handleCloseTransferSheet = useCallback(() => {
     setIsTransferSheetOpen(false);
   }, []);
@@ -432,7 +449,7 @@ export function MoneyHomePage() {
           onAddToken={handleAddToken}
           onViewAll={handleViewAllEarnTokens}
           onProjectionTooltipOpen={handleProjectionTooltipOpen}
-          isAddDisabled={isDepositLoading}
+          isAddDisabled={isReadOnly || isDepositLoading}
         />
         <MoneySectionDivider />
       </>
@@ -456,6 +473,17 @@ export function MoneyHomePage() {
     <>
       <div className="min-h-full pb-5" data-testid="money-home-page">
         {header}
+
+        {isReadOnly ? (
+          <div className="px-4 pt-2">
+            <BannerAlert
+              severity={BannerAlertSeverity.Info}
+              title={t('moneyMfaReadOnlyBannerTitle')}
+              description={t('moneyMfaReadOnlyBannerDescription')}
+              data-testid="money-mfa-read-only-banner"
+            />
+          </div>
+        ) : null}
 
         {isBalanceFetchError ? (
           <div className="px-4 pt-2">
@@ -541,7 +569,7 @@ export function MoneyHomePage() {
               icon={IconName.Add}
               label={t('moneyAdd')}
               onClick={handleAddFundsFromActionRow}
-              disabled={isDepositLoading}
+              disabled={isReadOnly || isDepositLoading}
               testId="money-add-button"
               isWideLayout={isWideLayout}
             />
@@ -549,7 +577,10 @@ export function MoneyHomePage() {
               icon={IconName.Arrow2UpRight}
               label={t('moneySend')}
               onClick={handleSend}
-              disabled={!IS_MONEY_TRANSFER_SHEET_ENABLED && isWithdrawLoading}
+              disabled={
+                isReadOnly ||
+                (!IS_MONEY_TRANSFER_SHEET_ENABLED && isWithdrawLoading)
+              }
               testId="money-send-button"
               isWideLayout={isWideLayout}
             />
@@ -585,6 +616,7 @@ export function MoneyHomePage() {
                 <Button
                   className="w-full wide-layout:w-auto"
                   isLoading={isDepositLoading}
+                  isDisabled={isReadOnly || isDepositLoading}
                   onClick={handleAddFundsFromFundCard}
                 >
                   {t('addFunds')}

@@ -122,6 +122,7 @@ describe('MoneyFtueSplash', () => {
     } as unknown as ReturnType<typeof useMoneyVaultApy>);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
       isLoading: false,
     });
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);

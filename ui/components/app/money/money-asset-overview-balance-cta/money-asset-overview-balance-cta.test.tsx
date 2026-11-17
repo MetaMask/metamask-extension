@@ -97,6 +97,24 @@ describe('MoneyAssetOverviewBalanceCta', () => {
     expect(button).toHaveTextContent(messages.moneyStartEarning.message);
     expect(onStartEarning).toHaveBeenCalledTimes(1);
   });
+
+  it('disables the button when the Money Account is read-only', () => {
+    const onStartEarning = jest.fn();
+    const { getByTestId } = render(
+      <MoneyAssetOverviewBalanceCta
+        isDisabled
+        onStartEarning={onStartEarning}
+      />,
+    );
+
+    const button = getByTestId(
+      `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-start-earning`,
+    );
+    fireEvent.click(button);
+
+    expect(button).toBeDisabled();
+    expect(onStartEarning).not.toHaveBeenCalled();
+  });
 });
 
 describe('loading skeletons', () => {

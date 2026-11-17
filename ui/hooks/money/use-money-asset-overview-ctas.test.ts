@@ -131,6 +131,7 @@ const EXPECTED_TOKEN_PROPERTIES = {
 const mockDepositLoading = () =>
   mockUseMoneyAccountDeposit.mockReturnValue({
     initiateDeposit: mockInitiateDeposit,
+    isDisabled: false,
     isLoading: true,
   } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
 
@@ -151,6 +152,7 @@ describe('use-money-asset-overview-ctas', () => {
     mockUseMoneyAnalytics.mockReturnValue(moneyAnalytics);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
       isLoading: false,
     } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
     mockUseMoneyAccountInfo.mockReturnValue({
@@ -318,6 +320,22 @@ describe('use-money-asset-overview-ctas', () => {
 
     it('ignores banner and CTA clicks while a deposit is starting', () => {
       mockDepositLoading();
+
+      const banner = renderBanner();
+      banner.onBannerClick();
+      banner.onCtaClick();
+
+      expect(moneyAnalytics.trackTokenSurfaceClicked).not.toHaveBeenCalled();
+      expect(moneyAnalytics.trackTokenButtonClicked).not.toHaveBeenCalled();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    });
+
+    it('ignores banner and CTA clicks when the Money Account is read-only', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isDisabled: true,
+        isLoading: false,
+      } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
 
       const banner = renderBanner();
       banner.onBannerClick();
@@ -542,6 +560,20 @@ describe('use-money-asset-overview-ctas', () => {
       renderBalanceCta();
 
       expect(moneyAnalytics.trackComponentViewed).not.toHaveBeenCalled();
+    });
+
+    it('reports the start-earning CTA as disabled when the Money Account is read-only', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isDisabled: true,
+        isLoading: false,
+      } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
+
+      const balanceCta = renderBalanceCta();
+
+      expect(balanceCta.isStartEarningDisabled).toBe(true);
+      balanceCta.onStartEarning();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
     });
 
     it('tracks the component view when shown', () => {

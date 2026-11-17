@@ -39,8 +39,11 @@ export function useMoneyAddDepositToken({
   tokenRowComponentName,
   ftueEntryPoint,
 }: UseMoneyAddDepositTokenOptions) {
-  const { initiateDeposit, isLoading: isDepositLoading } =
-    useMoneyAccountDeposit();
+  const {
+    initiateDeposit,
+    isDisabled: isDepositDisabled,
+    isLoading: isDepositLoading,
+  } = useMoneyAccountDeposit();
   const { trackTokenButtonClicked } = useMoneyAnalytics({ screenName });
 
   const handleAddToken = useCallback(
@@ -81,5 +84,10 @@ export function useMoneyAddDepositToken({
     ],
   );
 
-  return { handleAddToken, initiateDeposit, isDepositLoading };
+  return {
+    handleAddToken,
+    initiateDeposit,
+    isDepositDisabled,
+    isDepositLoading,
+  };
 }

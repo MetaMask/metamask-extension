@@ -159,6 +159,7 @@ describe('TokenTable', () => {
     const onRowClick = jest.fn();
     jest.mocked(useMoneyTokenListCta).mockReturnValue({
       label: 'Get 5% APY',
+      isDisabled: false,
       isLoading: false,
       shouldShow: (token) => token.symbol === eligible.symbol,
       onClick: onCtaClick,

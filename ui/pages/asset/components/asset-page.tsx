@@ -628,6 +628,7 @@ const AssetPage = ({
               )}
               {moneyBalanceDisplay ? (
                 <MoneyAssetOverviewBalanceCta
+                  isDisabled={moneyBalanceCta.isStartEarningDisabled}
                   onStartEarning={moneyBalanceCta.onStartEarning}
                 />
               ) : null}

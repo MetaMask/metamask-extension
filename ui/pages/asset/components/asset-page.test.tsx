@@ -460,6 +460,7 @@ describe('AssetPage', () => {
     });
     mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
       display: undefined,
+      isStartEarningDisabled: false,
       isLoading: false,
       onStartEarning: mockOnStartEarning,
       onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
@@ -1033,6 +1034,7 @@ describe('AssetPage', () => {
     it('renders placeholders while the APY loads', () => {
       mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
         display: undefined,
+        isStartEarningDisabled: false,
         isLoading: true,
         onStartEarning: mockOnStartEarning,
         onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
@@ -1064,6 +1066,7 @@ describe('AssetPage', () => {
           apyPercentFormatted: '6.2%',
           projectedEarningsFormatted: '+$74.34',
         },
+        isStartEarningDisabled: false,
         isLoading: false,
         onStartEarning: mockOnStartEarning,
         onProjectionTooltipOpen: mockOnProjectionTooltipOpen,

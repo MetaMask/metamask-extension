@@ -19,6 +19,7 @@ describe('MoneyTokenListCta', () => {
       <MoneyTokenListCta
         cta={{
           label: 'Get 6% APY',
+          isDisabled: false,
           isLoading: false,
           shouldShow: jest.fn(),
           onClick: jest.fn(),
@@ -38,6 +39,7 @@ describe('MoneyTokenListCta', () => {
         <MoneyTokenListCta
           cta={{
             label: 'Get 6% APY',
+            isDisabled: false,
             isLoading: false,
             shouldShow: jest.fn(),
             onClick,
@@ -63,7 +65,32 @@ describe('MoneyTokenListCta', () => {
       <MoneyTokenListCta
         cta={{
           label: 'Get 6% APY',
+          isDisabled: false,
           isLoading: true,
+          shouldShow: jest.fn(),
+          onClick,
+        }}
+        token={token}
+      />,
+    );
+    const button = getByTestId(
+      `${MONEY_TOKEN_LIST_CTA_TEST_ID}-${token.chainId}-${token.address}`,
+    );
+
+    fireEvent.click(button);
+
+    expect(button).toBeDisabled();
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('disables the CTA when the Money Account is read-only', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = render(
+      <MoneyTokenListCta
+        cta={{
+          label: 'Get 6% APY',
+          isDisabled: true,
+          isLoading: false,
           shouldShow: jest.fn(),
           onClick,
         }}

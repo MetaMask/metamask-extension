@@ -6326,6 +6326,12 @@
   "moneyMeetMusd": {
     "message": "Meet mUSD"
   },
+  "moneyMfaReadOnlyBannerDescription": {
+    "message": "Your funds now live in the MFA account you manage on MetaMask Mobile. Deposits and withdrawals are disabled in the extension."
+  },
+  "moneyMfaReadOnlyBannerTitle": {
+    "message": "Money account moved to MetaMask Mobile"
+  },
   "moneyMonthlyTooltip": {
     "message": "The total you've earned on your Money account balance in the last 30 days."
   },

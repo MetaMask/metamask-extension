@@ -33,6 +33,7 @@ describe('MoneyAccountDepositButton', () => {
     initiateDepositMock.mockResolvedValue(undefined);
     useMoneyAccountDepositMock.mockReturnValue({
       initiateDeposit: initiateDepositMock,
+      isDisabled: false,
       isLoading: false,
     });
     useMoneyAccountInfoMock.mockReturnValue({
@@ -69,6 +70,7 @@ describe('MoneyAccountDepositButton', () => {
   it('disables the button while initiating', () => {
     useMoneyAccountDepositMock.mockReturnValue({
       initiateDeposit: initiateDepositMock,
+      isDisabled: false,
       isLoading: true,
     });
 

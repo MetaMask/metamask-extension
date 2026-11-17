@@ -141,6 +141,7 @@ describe('MoneyAccountDetails', () => {
     mockUseLocalTransactionMeta.mockReturnValue(undefined);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
       isLoading: false,
     });
     mockUseMoneyAccountInfo.mockReturnValue({
@@ -287,6 +288,19 @@ describe('MoneyAccountDetails', () => {
           entryPoint: MoneyFtueEntryPoint.MoneyActivityDetails,
         },
       });
+    });
+
+    it('disables the Add funds button when the Money Account is read-only', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isDisabled: true,
+        isLoading: false,
+      });
+      mockUseLocalTransactionMeta.mockReturnValue(buildTransactionMeta());
+
+      render(<MoneyAccountDetails item={buildItem()} />);
+
+      expect(screen.getByRole('button', { name: 'addFunds' })).toBeDisabled();
     });
 
     it('falls back to the block explorer for a withdrawal', () => {
