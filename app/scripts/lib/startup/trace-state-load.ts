@@ -132,11 +132,15 @@ export async function readPersistedStateWithTrace(
   try {
     result = await read();
   } catch (error) {
-    endTrace({
-      name: TraceName.StateLoad,
-      status: 'error',
-      data: { 'state.load_failed': true },
-    });
+    try {
+      endTrace({
+        name: TraceName.StateLoad,
+        status: 'error',
+        data: { 'state.load_failed': true },
+      });
+    } catch (traceError) {
+      console.error('[State Load] failed to end trace', traceError);
+    }
     throw error;
   }
 

@@ -389,4 +389,26 @@ describe('readPersistedStateWithTrace', () => {
     });
     expect(mockGetStoredBytes).not.toHaveBeenCalled();
   });
+
+  it('rethrows the read error when endTrace throws', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const error = new Error('storage.local is broken');
+    mockEndTrace.mockImplementationOnce(() => {
+      throw new Error('endTrace failed');
+    });
+
+    await expect(
+      readPersistedStateWithTrace(async () => {
+        throw error;
+      }),
+    ).rejects.toBe(error);
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      '[State Load] failed to end trace',
+      expect.any(Error),
+    );
+    consoleErrorSpy.mockRestore();
+  });
 });
