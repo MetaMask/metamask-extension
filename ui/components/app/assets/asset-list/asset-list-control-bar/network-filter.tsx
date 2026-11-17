@@ -192,11 +192,7 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
         onClick={toggle}
         size={SelectButtonSize.Sm}
         value={networkButtonText}
-        placeholder=""
         isLoading={isNetworkSwitchPending}
-        textProps={{
-          className: 'min-w-0 truncate',
-        }}
       />
 
       <HomeNetworkFilterModal
