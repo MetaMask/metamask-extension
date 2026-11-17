@@ -301,7 +301,7 @@ export const WalletSelectionList = ({
                   className="h-5"
                 >
                   <Tag data-testid={`qr-sync-imported-tag-${item.groupId}`}>
-                    {t('imported')}
+                    {t('qrSyncAlreadyImported')}
                   </Tag>
                 </Box>
               ) : undefined

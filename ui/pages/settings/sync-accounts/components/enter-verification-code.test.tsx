@@ -124,14 +124,14 @@ describe('EnterVerificationCode', () => {
       jest.advanceTimersByTime(1199);
     });
     expect(
-      screen.queryByText('Still connecting, keep MetaMask open.'),
+      screen.queryByText('Still connecting. Don’t close MetaMask mobile.'),
     ).not.toBeInTheDocument();
 
     act(() => {
       jest.advanceTimersByTime(1);
     });
     expect(
-      screen.getByText('Still connecting, keep MetaMask open.'),
+      screen.getByText('Still connecting. Don’t close MetaMask mobile.'),
     ).toBeInTheDocument();
     expect(screen.getByTestId('qr-sync-otp-verifying')).toHaveClass('w-full');
   });

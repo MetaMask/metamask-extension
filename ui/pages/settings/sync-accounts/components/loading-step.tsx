@@ -79,7 +79,7 @@ const LoadingStep = ({
         className="text-center"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
-        gap={4}
+        gap={10}
       >
         <Box
           flexDirection={BoxFlexDirection.Column}

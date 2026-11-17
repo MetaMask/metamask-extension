@@ -1322,34 +1322,34 @@
     "message": "We couldn't keep a secure connection with your other device. Check your internet connection and try again."
   },
   "add_device_error_expired": {
-    "message": "This sync session expired. Start again to generate a new QR code."
+    "message": "This session expired. Start with a new QR code."
   },
   "add_device_error_generic": {
-    "message": "Something went wrong while syncing your accounts. Try again."
+    "message": "This session expired. Start with a new QR code."
   },
   "add_device_error_invalid_code": {
-    "message": "The verification code was incorrect. Start again to try syncing."
+    "message": "That code is incorrect. Try again."
   },
   "add_device_error_rejected": {
-    "message": "The sync was canceled on your other device. Start again to try syncing."
+    "message": "The import was canceled in MetaMask mobile. Start with a new QR code."
   },
   "add_device_error_sync_failed": {
-    "message": "We couldn't finish syncing your accounts to your other device. Try again."
+    "message": "We couldn't import your accounts to MetaMask mobile. Start with a new QR code."
   },
   "add_device_error_title": {
-    "message": "Sync couldn't be completed"
+    "message": "Couldn't add to mobile"
   },
   "add_device_success_title": {
-    "message": "Continue on your other device"
+    "message": "Continue in MetaMask mobile"
   },
   "add_device_syncing_desc": {
-    "message": "Sending your selected accounts to your other device."
+    "message": "Sending your selected accounts to MetaMask mobile."
   },
   "add_device_syncing_title": {
     "message": "Importing accounts"
   },
   "add_device_try_again": {
-    "message": "Try again"
+    "message": "Get new code"
   },
   "add_device_validating_desc": {
     "message": "Establishing a secure, encrypted connection with your other device."
@@ -4021,13 +4021,13 @@
     "message": "Enter verification code"
   },
   "enter_verification_code_desc": {
-    "message": "For security, enter the code shown in the MetaMask app on your device."
+    "message": "For your security, enter the code shown in MetaMask mobile."
   },
   "enter_verification_code_error": {
-    "message": "That code isn’t right. Check it and try again."
+    "message": "That code is incorrect. Try again."
   },
   "enter_verification_code_expired": {
-    "message": "Verification code expired"
+    "message": "This code expired. Get a new QR code to try again."
   },
   "enter_verification_code_expires_in": {
     "message": "Expires in $1s",
@@ -4040,7 +4040,7 @@
     "message": "Enter your password"
   },
   "enter_your_password_desc": {
-    "message": "For account security, enter your password to view the QR code."
+    "message": "For your security, enter your password to choose accounts to import."
   },
   "enteredMalicious": {
     "message": "The Address You Entered"
@@ -9307,12 +9307,16 @@
     "description": "$1 is the number of accounts in a wallet"
   },
   "qrSyncAccountImportedDescription": {
-    "message": "$1 account imported to your other device.",
+    "message": "$1 account imported to MetaMask mobile",
     "description": "$1 is the number of imported accounts"
   },
   "qrSyncAccountsImportedDescription": {
-    "message": "$1 accounts imported to your other device.",
+    "message": "$1 accounts imported to MetaMask mobile",
     "description": "$1 is the number of imported accounts"
+  },
+  "qrSyncAlreadyImported": {
+    "message": "Already imported",
+    "description": "Tag shown for an account that is already available in MetaMask mobile"
   },
   "qrSyncImportAccountsCta": {
     "message": "Import accounts",
@@ -10118,7 +10122,7 @@
     "message": "Scan QR code"
   },
   "scan_qr_code_desc": {
-    "message": "Scan this with the MetaMask app on the device you want to add."
+    "message": "Scan this QR code with MetaMask mobile."
   },
   "scrollDown": {
     "message": "Scroll down"
@@ -12399,7 +12403,7 @@
     "message": "Symbol must be 11 characters or fewer."
   },
   "syncAccounts": {
-    "message": "Sync with mobile"
+    "message": "Add to mobile"
   },
   "syncing": {
     "message": "Syncing..."

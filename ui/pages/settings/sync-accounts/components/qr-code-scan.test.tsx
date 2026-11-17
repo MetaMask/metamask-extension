@@ -62,7 +62,7 @@ describe('QrCodeScan', () => {
     const mockStore = createMockStore();
     renderQrCodeScan(mockStore);
 
-    expect(screen.getByText(messages.scanQrCode.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.syncAccounts.message)).toBeInTheDocument();
     expect(
       screen.getByText(messages.scan_qr_code_desc.message),
     ).toBeInTheDocument();

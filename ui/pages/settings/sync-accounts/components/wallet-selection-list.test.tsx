@@ -223,7 +223,7 @@ describe('WalletSelectionList', () => {
 
     expect(importedCheckbox).toBeChecked();
     expect(importedCheckbox).toBeDisabled();
-    expect(screen.getByText('Imported')).toBeInTheDocument();
+    expect(screen.getByText('Already imported')).toBeInTheDocument();
     expect(importedAccount).toHaveAttribute('data-hover-disabled', 'true');
     expect(screen.getByTestId(`qr-sync-account-row-${groupOneId}`)).toHaveStyle(
       { opacity: 0.5 },

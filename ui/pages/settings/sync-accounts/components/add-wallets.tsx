@@ -211,7 +211,6 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      gap={4}
       className="-mx-4 flex-1 min-h-0"
     >
       <Box
@@ -230,7 +229,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           {t('add_wallets_desc')}
         </Text>
       </Box>
-      <ScrollContainer className="flex flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ScrollContainer className="mt-4 flex flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <WalletSelectionList
           wallets={sortedWallets}
           importedAccountGroups={importedAccountGroupIds}
@@ -245,6 +244,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
         paddingBottom={4}
         flexDirection={BoxFlexDirection.Column}
         gap={3}
+        data-testid="qr-sync-selection-footer"
       >
         <Text
           variant={TextVariant.BodySm}

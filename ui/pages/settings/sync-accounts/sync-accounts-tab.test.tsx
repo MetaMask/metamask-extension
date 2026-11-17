@@ -51,6 +51,9 @@ describe('SyncAccountsTab', () => {
     renderTab();
 
     expect(screen.getByTestId('sync-accounts-back-button')).toBeInTheDocument();
+    expect(screen.getByTestId('sync-accounts-header')).toHaveClass(
+      'mm-box--justify-content-flex-start',
+    );
   });
 
   it('hides the back button after the sync completes', () => {

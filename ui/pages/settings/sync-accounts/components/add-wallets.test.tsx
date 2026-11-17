@@ -93,6 +93,10 @@ describe('AddWallets', () => {
     expect(screen.getByTestId('qr-sync-selection-summary')).toHaveTextContent(
       '2 wallets · 18 accounts selected',
     );
+    expect(screen.getByTestId('qr-sync-selection-footer')).toHaveClass(
+      'pt-3',
+      'gap-3',
+    );
     expect(screen.queryByText('Deselect all')).not.toBeInTheDocument();
     expect(screen.queryByText('Select all')).not.toBeInTheDocument();
     expect(screen.getByText('Import accounts')).toBeInTheDocument();

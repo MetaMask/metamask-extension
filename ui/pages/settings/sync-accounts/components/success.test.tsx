@@ -5,8 +5,12 @@ import { renderWithLocalization } from '../../../../../test/lib/render-helpers-n
 import messages from '../../../../../app/_locales/en/messages.json';
 import Success from './success';
 
+jest.mock('./success-check-animation', () => () => (
+  <div data-testid="qr-sync-success-check-animation">Animated check</div>
+));
+
 describe('Success', () => {
-  it('renders the title, imported account count, and compact check illustration', () => {
+  it('renders the title, imported account count, and animated check', () => {
     renderWithLocalization(
       <Success onDone={jest.fn()} walletCount={2} importedAccountCount={18} />,
     );
@@ -15,18 +19,11 @@ describe('Success', () => {
       screen.getByText(messages.add_device_success_title.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText('18 accounts imported to your other device.'),
+      screen.getByText('18 accounts imported to MetaMask mobile'),
     ).toBeInTheDocument();
-    const illustration = screen.getByTestId('qr-sync-success-illustration');
-    expect(illustration).toHaveClass('h-[72px]', 'w-[72px]', 'rounded-full');
-    expect(screen.getByTestId('qr-sync-success-check')).toHaveAttribute(
-      'src',
-      './images/qr-sync-success-check.svg',
-    );
-    expect(screen.getByTestId('qr-sync-success-check')).toHaveAttribute(
-      'width',
-      '32',
-    );
+    expect(
+      screen.getByTestId('qr-sync-success-check-animation'),
+    ).toBeInTheDocument();
   });
 
   it('renders singular copy for one imported account', () => {
@@ -35,7 +32,7 @@ describe('Success', () => {
     );
 
     expect(
-      screen.getByText('1 account imported to your other device.'),
+      screen.getByText('1 account imported to MetaMask mobile'),
     ).toBeInTheDocument();
   });
 

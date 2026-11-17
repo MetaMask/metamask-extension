@@ -27,7 +27,7 @@ import { selectQrSyncError } from '../../../../selectors/qr-sync/qr-sync';
 const CODE_LENGTH = 6;
 const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
 const CONNECTING_HELPER_DELAY_MS = 1200;
-const CONNECTING_HELPER_TEXT = 'Still connecting, keep MetaMask open.';
+const CONNECTING_HELPER_TEXT = 'Still connecting. Don’t close MetaMask mobile.';
 // TODO: source this from the controller
 
 const getCodeDigits = (text: string) =>
@@ -216,9 +216,13 @@ const EnterVerificationCode = ({
                 aria-hidden
               />
               <Text
-                variant={TextVariant.BodySm}
+                variant={
+                  showConnectingHelper ? TextVariant.BodyXs : TextVariant.BodySm
+                }
                 textAlign={TextAlign.Center}
-                className="max-w-[280px]"
+                className={
+                  showConnectingHelper ? 'whitespace-nowrap' : 'max-w-[280px]'
+                }
               >
                 {showConnectingHelper
                   ? CONNECTING_HELPER_TEXT

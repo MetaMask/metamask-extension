@@ -11,6 +11,7 @@ import {
   BoxAlignItems,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import SuccessCheckAnimation from './success-check-animation';
 
 type SuccessProps = {
   onDone: () => void;
@@ -48,31 +49,9 @@ const Success = ({
         className="text-center"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
-        gap={4}
+        gap={10}
       >
-        <Box
-          alignItems={BoxAlignItems.Center}
-          className="relative h-[72px] w-[72px] rounded-full"
-          data-testid="qr-sync-success-illustration"
-          style={{
-            backgroundImage:
-              'linear-gradient(224.8765292996717deg, rgb(185, 243, 2) 24.273%, rgb(115, 166, 255) 91.804%), linear-gradient(144.01240046898857deg, rgb(115, 166, 255) 4.293%, rgb(185, 243, 2) 98.577%), linear-gradient(90deg, rgb(115, 166, 255) 0%, rgb(115, 166, 255) 100%)',
-          }}
-        >
-          <img
-            src="./images/qr-sync-success-check.svg"
-            alt=""
-            width={32}
-            height={24}
-            data-testid="qr-sync-success-check"
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: 'calc(50% + 2px)',
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        </Box>
+        <SuccessCheckAnimation />
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}

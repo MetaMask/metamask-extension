@@ -6,6 +6,7 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { JustifyContent } from '../../../helpers/constants/design-system';
 import {
   Content,
   Header,
@@ -39,6 +40,8 @@ const SyncAccountsTab = () => {
       className="max-w-[600px]"
     >
       <Header
+        data-testid="sync-accounts-header"
+        justifyContent={JustifyContent.flexStart}
         startAccessory={
           hasSubmittedImport ? undefined : (
             <ButtonIcon
