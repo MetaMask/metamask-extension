@@ -269,11 +269,17 @@ describe('TokenList', () => {
       .mockReturnValue(false);
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
-        createAsset({ symbol: 'ETH', isNative: true, fiatBalance: 10 }),
+        createAsset({
+          symbol: 'ETH',
+          isNative: true,
+          fiatBalance: 0,
+          balance: '0',
+        }),
         createAsset({
           symbol: 'mUSD',
           address: MUSD_TOKEN_ADDRESS,
-          fiatBalance: 5,
+          fiatBalance: 0,
+          balance: '0',
         }),
       ]),
     );
@@ -314,6 +320,30 @@ describe('TokenList', () => {
 
     expect(screen.getAllByTestId('token-list-loading-row')).toHaveLength(5);
     expect(screen.queryByTestId('token-cell-ETH')).not.toBeInTheDocument();
+  });
+
+  it('shows a non-zero native token before background loading settles', () => {
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({ symbol: 'POL', isNative: true, fiatBalance: 0.08 }),
+        createAsset({
+          symbol: 'ETH',
+          isNative: true,
+          fiatBalance: 0,
+          balance: '0',
+        }),
+      ]),
+    );
+
+    render();
+
+    expect(useHomeReady).toHaveBeenLastCalledWith(true);
+    expect(screen.getByTestId('token-cell-POL')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-ETH')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
   });
 
   it('keeps a populated token list visible during background refreshes', () => {
