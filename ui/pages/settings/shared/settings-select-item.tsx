@@ -1,16 +1,11 @@
 import React, { type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Box,
-  Text,
-  TextVariant,
-  FontWeight,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  IconName,
+  ContentVariant,
   Icon,
+  IconName,
   IconSize,
+  ListItem,
   TextColor,
 } from '@metamask/design-system-react';
 import { transitionForward } from '../../../components/ui/transition';
@@ -46,53 +41,25 @@ export const SettingsSelectItem = ({
         transitionForward(() => navigate(to));
       }}
     >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingVertical={3}
-        paddingHorizontal={4}
-      >
-        {startAccessory ? (
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={4}
-            className="min-w-0"
-          >
-            {startAccessory}
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {label}
-            </Text>
-          </Box>
-        ) : (
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {label}
-          </Text>
-        )}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-        >
-          {typeof value === 'string' ? (
-            <Text
-              color={TextColor.TextAlternative}
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-            >
-              {value}
-            </Text>
-          ) : (
-            value
-          )}
+      <ListItem
+        variant={ContentVariant.OneLine}
+        accessoryGap={4}
+        startAccessory={startAccessory}
+        title={label}
+        value={value}
+        valueProps={
+          typeof value === 'string'
+            ? { color: TextColor.TextAlternative }
+            : undefined
+        }
+        valueEndAccessory={
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
             className="text-icon-alternative"
           />
-        </Box>
-      </Box>
+        }
+      />
     </Link>
   );
 };

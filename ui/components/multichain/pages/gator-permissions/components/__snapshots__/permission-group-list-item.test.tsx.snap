@@ -3,16 +3,16 @@
 exports[`Permission List Item render renders correctly 1`] = `
 <div>
   <div
-    class="gap-4 items-baseline p-4 bg-default"
+    class="bg-default flex w-full px-4 py-3 min-h-[72px] justify-center cursor-pointer active:bg-pressed"
     data-testid="permission-group-list-item"
+    role="button"
+    tabindex="0"
   >
-    <button
-      class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
-      role="button"
-      style="width: 100%; background-color: transparent; padding: 0px;"
+    <div
+      class="flex flex-row gap-0 items-center w-full min-w-0"
     >
       <div
-        class="items-start mr-2"
+        class="flex flex-row gap-4 items-center min-w-0 flex-1"
       >
         <div
           class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-[10px] h-10 w-10"
@@ -25,37 +25,44 @@ exports[`Permission List Item render renders correctly 1`] = `
             0
           </span>
         </div>
+        <div
+          class="flex flex-col min-w-0 flex-1"
+        >
+          <div
+            class="flex flex-row gap-1 items-center min-w-0 w-full"
+          >
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Goerli
+            </p>
+          </div>
+          <div
+            class="flex flex-row gap-1 items-center min-w-0 w-full"
+          >
+            <div
+              class="min-w-0"
+            >
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                2 token permissions
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div
-        class="flex flex-col items-start justify-start"
-        style="flex-grow: 1;"
+      <svg
+        class="inline-block w-4 h-4 text-icon-default"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Goerli
-        </p>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          2 token permissions
-        </p>
-      </div>
-      <div
-        class="gap-2 items-end justify-end"
-      >
-        <svg
-          class="inline-block w-4 h-4 text-icon-default"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
-          />
-        </svg>
-      </div>
-    </button>
+        <path
+          d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
+        />
+      </svg>
+    </div>
   </div>
 </div>
 `;

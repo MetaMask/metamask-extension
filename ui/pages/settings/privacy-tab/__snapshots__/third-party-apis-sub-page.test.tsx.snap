@@ -12,16 +12,49 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
     </p>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Network details check
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Network details check
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <div
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  >
+                    <span>
+                       
+                      Reduces your chances of connecting to a malicious or incorrect network. MetaMask uses 
+                      <b>
+                        chainid.network
+                      </b>
+                       to show accurate and standardized network details.
+                       
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="useSafeChainsListValidation"
           >
@@ -59,33 +92,56 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <div
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          <span>
-             
-            Reduces your chances of connecting to a malicious or incorrect network. MetaMask uses 
-            <b>
-              chainid.network
-            </b>
-             to show accurate and standardized network details.
-             
-          </span>
-        </div>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Show ENS domains in address bar
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Show ENS domains in address bar
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <div
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  >
+                    MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:
+                    <ul
+                      class="list-disc pl-6 my-1"
+                    >
+                      <li>
+                        MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
+                      </li>
+                      <li>
+                        If the code links to IPFS, you can see the content associated with it (usually a website).
+                      </li>
+                    </ul>
+                    Keep in mind that using this feature exposes your IP address to IPFS third-party services.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="ipfs-gateway-resolution-container"
           >
@@ -123,36 +179,45 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <div
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          MetaMask lets you see ENS domains right in your browser's address bar. Here's how it works:
-          <ul
-            class="list-disc pl-6 my-1"
-          >
-            <li>
-              MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
-            </li>
-            <li>
-              If the code links to IPFS, you can see the content associated with it (usually a website).
-            </li>
-          </ul>
-          Keep in mind that using this feature exposes your IP address to IPFS third-party services.
-        </div>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Make smart contracts easier to read
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Make smart contracts easier to read
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    MetaMask uses 4byte.directory and Sourcify to translate this information.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--on"
@@ -188,11 +253,6 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          MetaMask uses 4byte.directory and Sourcify to translate this information.
-        </p>
       </div>
     </div>
     <div
@@ -200,16 +260,41 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
     />
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Display NFT media
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Display NFT media
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    NFT autodetection relies on this feature.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--on"
@@ -245,25 +330,45 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          NFT autodetection relies on this feature.
-        </p>
       </div>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Autodetect NFTs
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Autodetect NFTs
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Displays all NFTs, including fake ones airdropped by scammers.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             data-testid="use-nft-detection"
           >
@@ -301,11 +406,6 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Displays all NFTs, including fake ones airdropped by scammers.
-        </p>
       </div>
     </div>
     <div
@@ -313,16 +413,41 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
     />
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Proposed nicknames
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Proposed nicknames
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <p
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--off"
@@ -358,11 +483,6 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          Fetches proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens protocol.
-        </p>
       </div>
     </div>
   </div>

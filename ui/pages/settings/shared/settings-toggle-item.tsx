@@ -1,13 +1,10 @@
 import React from 'react';
 import {
-  Box,
+  ContentVariant,
+  ListItem,
   Text,
   TextColor,
   TextVariant,
-  FontWeight,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
 } from '@metamask/design-system-react';
 import ToggleButton from '../../../components/ui/toggle-button';
 
@@ -29,44 +26,46 @@ export const SettingsToggleItem = ({
   containerDataTestId,
   dataTestId,
   disabled,
-}: SettingsToggleItemProps) => (
-  <Box
-    flexDirection={BoxFlexDirection.Column}
-    gap={1}
-    paddingVertical={3}
-    paddingHorizontal={4}
-  >
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.Between}
-      alignItems={BoxAlignItems.Center}
-    >
-      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {title}
+}: SettingsToggleItemProps) => {
+  const renderDescription = () => {
+    if (!description) {
+      return undefined;
+    }
+    if (typeof description === 'string') {
+      return description;
+    }
+    return (
+      <Text
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+        asChild
+      >
+        <div>{description}</div>
       </Text>
-      <div data-testid={containerDataTestId}>
-        <ToggleButton
-          value={value}
-          onToggle={onToggle}
-          dataTestId={dataTestId}
-          containerStyle={{ width: '40px' }}
-          disabled={disabled}
-        />
-      </div>
-    </Box>
-    {description &&
-      (typeof description === 'string' ? (
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {description}
-        </Text>
-      ) : (
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          asChild
-        >
-          <div>{description}</div>
-        </Text>
-      ))}
-  </Box>
-);
+    );
+  };
+
+  return (
+    <ListItem
+      variant={description ? ContentVariant.MultiLine : ContentVariant.OneLine}
+      title={title}
+      description={renderDescription()}
+      descriptionProps={
+        typeof description === 'string'
+          ? { variant: TextVariant.BodyMd }
+          : undefined
+      }
+      endAccessory={
+        <div data-testid={containerDataTestId}>
+          <ToggleButton
+            value={value}
+            onToggle={onToggle}
+            dataTestId={dataTestId}
+            containerStyle={{ width: '40px' }}
+            disabled={disabled}
+          />
+        </div>
+      }
+    />
+  );
+};

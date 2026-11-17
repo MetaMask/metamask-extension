@@ -7,16 +7,53 @@ exports[`DeveloperToolsTab snapshot matches snapshot 1`] = `
   >
     <div>
       <div
-        class="flex flex-col gap-1 px-4 py-3"
+        class="flex w-full px-4 py-3 min-h-[88px] justify-start"
       >
         <div
-          class="flex flex-row items-center justify-between"
+          class="flex flex-row gap-0 items-start w-full min-w-0"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          <div
+            class="flex flex-row gap-4 items-start min-w-0 flex-1"
           >
-            Show conversion on test networks
-          </p>
+            <div
+              class="flex flex-col min-w-0 flex-1"
+            >
+              <div
+                class="flex flex-row gap-1 items-center min-w-0 w-full"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Show conversion on test networks
+                </p>
+              </div>
+              <div
+                class="flex flex-row gap-1 items-start min-w-0 w-full"
+              >
+                <div
+                  class="min-w-0"
+                >
+                  <div
+                    class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                  >
+                    <span>
+                       
+                      Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. 
+                      <a
+                        class="font-medium text-primary-default"
+                        href="https://support.metamask.com/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Learn more
+                      </a>
+                       
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div>
             <label
               class="toggle-button toggle-button--off"
@@ -51,23 +88,6 @@ exports[`DeveloperToolsTab snapshot matches snapshot 1`] = `
               </div>
             </label>
           </div>
-        </div>
-        <div
-          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          <span>
-             
-            Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. 
-            <a
-              class="font-medium text-primary-default"
-              href="https://support.metamask.com/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Learn more
-            </a>
-             
-          </span>
         </div>
       </div>
     </div>

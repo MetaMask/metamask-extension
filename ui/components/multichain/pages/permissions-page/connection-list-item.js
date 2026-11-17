@@ -2,27 +2,17 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import { shallowEqual, useSelector } from 'react-redux';
-import { AvatarFavicon } from '@metamask/design-system-react';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Box,
+  AvatarFavicon,
+  ContentVariant,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-  Text,
-} from '../../../component-library';
+  ListItem,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
 import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
@@ -60,26 +50,26 @@ export const ConnectionListItem = ({ connection, onClick }) => {
     return count;
   }, [accountAddressSet, connection.addresses]);
 
+  const accountsLabel =
+    accountsToShow === 0 && permittedChains.length === 0
+      ? `${connection.advancedPermissionsCount} ${
+          connection.advancedPermissionsCount === 1
+            ? t('advancedPermissionSmallCase')
+            : t('advancedPermissionsSmallCase')
+        }`
+      : `${accountsToShow} ${
+          accountsToShow === 1 ? t('accountSmallCase') : t('accountsSmallCase')
+        }`;
+
   return (
-    <Box
-      data-testid="connection-list-item"
-      as="button"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.baseline}
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundDefault}
+    <ListItem
+      variant={ContentVariant.TwoLines}
+      isInteractive
       onClick={onClick}
-      padding={4}
-      gap={4}
-      className="multichain-connection-list-item"
-    >
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        style={{ alignSelf: 'center' }}
-      >
-        {isSnap ? (
+      className="multichain-connection-list-item bg-default"
+      data-testid="connection-list-item"
+      avatar={
+        isSnap ? (
           <SnapIcon
             className="connection-list-item__snap-avatar"
             snapId={connection.id}
@@ -90,66 +80,20 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             data-testid="connection-list-item__avatar-favicon"
             src={connection.iconUrl}
           />
-        )}
-      </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        width={BlockSize.FiveTwelfths}
-        style={{ alignSelf: 'center', flexGrow: '1' }}
-      >
-        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
-          {isSnap ? connection.packageName : getURLHost(connection.origin)}
-        </Text>
-        {isSnap ? null : (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            gap={1}
-          >
-            <Text
-              as="span"
-              width={BlockSize.Max}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-            >
-              {accountsToShow === 0 && permittedChains.length === 0 ? (
-                <>
-                  {connection.advancedPermissionsCount}{' '}
-                  {connection.advancedPermissionsCount === 1
-                    ? t('advancedPermissionSmallCase')
-                    : t('advancedPermissionsSmallCase')}
-                </>
-              ) : (
-                <>
-                  {accountsToShow}{' '}
-                  {accountsToShow === 1
-                    ? t('accountSmallCase')
-                    : t('accountsSmallCase')}
-                </>
-              )}
-            </Text>
-          </Box>
-        )}
-      </Box>
-
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexEnd}
-        alignItems={AlignItems.center}
-        style={{ flex: '1', alignSelf: 'center' }}
-        gap={2}
-      >
+        )
+      }
+      title={isSnap ? connection.packageName : getURLHost(connection.origin)}
+      titleProps={{ ellipsis: true }}
+      description={isSnap ? undefined : accountsLabel}
+      descriptionProps={{ variant: TextVariant.BodyMd }}
+      endAccessory={
         <Icon
-          display={Display.Flex}
           name={IconName.ArrowRight}
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           size={IconSize.Sm}
-          backgroundColor={BackgroundColor.backgroundDefault}
         />
-      </Box>
-    </Box>
+      }
+    />
   );
 };
 
