@@ -481,6 +481,28 @@ export async function createStatefulTronAccountMock(
   return [broadcastEndpoint, accountEndpoint];
 }
 
+export const TRON_ACCOUNT_RESOURCE_RESPONSE = {
+  freeNetLimit: 600,
+  assetNetUsed: [
+    {
+      key: '1005074',
+      value: 0,
+    },
+  ],
+  assetNetLimit: [
+    {
+      key: '1005074',
+      value: 0,
+    },
+  ],
+  TotalNetLimit: 43200000000,
+  TotalNetWeight: 26681367161,
+  tronPowerLimit: 20,
+  EnergyLimit: 189,
+  TotalEnergyLimit: 180000000000,
+  TotalEnergyWeight: 19018684711,
+};
+
 export async function mockTronGetAccountResource(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
@@ -493,27 +515,7 @@ export async function mockTronGetAccountResource(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        freeNetLimit: 600,
-        assetNetUsed: [
-          {
-            key: '1005074',
-            value: 0,
-          },
-        ],
-        assetNetLimit: [
-          {
-            key: '1005074',
-            value: 0,
-          },
-        ],
-        TotalNetLimit: 43200000000,
-        TotalNetWeight: 26681367161,
-        tronPowerLimit: 20,
-        EnergyLimit: 189,
-        TotalEnergyLimit: 180000000000,
-        TotalEnergyWeight: 19018684711,
-      },
+      json: TRON_ACCOUNT_RESOURCE_RESPONSE,
     }));
 }
 

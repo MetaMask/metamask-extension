@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../../shared/constants/multichain/assets';
 import type { ManifestFlags } from '../../../../../shared/lib/manifestFlags';
 import { withFixtures } from '../../../helpers';
 import { shapeV6AccountsApiBalances } from '../../../helpers/accounts-api-v6-balances';
@@ -15,6 +16,7 @@ import { TronSeeder } from '../../../seeder/tron/tron-seeder';
 import { mockTokensV2SupportedNetworks } from '../../btc/mocks/tokens-api';
 import {
   TRON_ACCOUNT_ADDRESS,
+  TRON_ACCOUNT_RESOURCE_RESPONSE,
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
   SUN_PER_TRX,
@@ -414,6 +416,29 @@ function formatFixtureBalanceForAccountsApi(asset: TronFixtureAsset): string {
   return String(Number(asset.balance) / 10 ** asset.decimals);
 }
 
+const TRON_RESOURCE_ASSETS = [
+  {
+    caipType: TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY,
+    name: 'Energy',
+    symbol: 'ENERGY',
+  },
+  {
+    caipType: TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY,
+    name: 'Max Energy',
+    symbol: 'MAX-ENERGY',
+  },
+  {
+    caipType: TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH,
+    name: 'Bandwidth',
+    symbol: 'BANDWIDTH',
+  },
+  {
+    caipType: TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH,
+    name: 'Max Bandwidth',
+    symbol: 'MAX-BANDWIDTH',
+  },
+];
+
 function buildFixtureTokenMetadata(
   accounts: TronFixtureAccount[],
   tronNode: TronNode | undefined,
@@ -432,12 +457,33 @@ function buildFixtureTokenMetadata(
     symbol: asset.symbol,
   }));
 
+  const resourceAssets = TRON_RESOURCE_ASSETS.map(
+    ({ caipType, name, symbol }) => ({
+      assetId: `${TRON_CHAIN_ID}/${caipType}`,
+      decimals: 0,
+      name,
+      symbol,
+    }),
+  );
+
   const assetsById = new Map(
-    [nativeTrx, ...fixtureAssets].map((asset) => [asset.assetId, asset]),
+    [nativeTrx, ...fixtureAssets, ...resourceAssets].map((asset) => [
+      asset.assetId,
+      asset,
+    ]),
   );
 
   return [...assetsById.values()];
 }
+
+type TronAccountResource = {
+  freeNetLimit?: number;
+  freeNetUsed?: number;
+  NetLimit?: number;
+  NetUsed?: number;
+  EnergyLimit?: number;
+  EnergyUsed?: number;
+};
 
 type TronFixtureAccountsApiBalanceRow = {
   accountId: string;
@@ -458,10 +504,60 @@ function buildTronFixtureAccountsApiBalances(
   );
 }
 
-function filterTronFixtureBalancesByAccountIds(
+async function getTronAccountResource(
+  address: string,
+  tronNode: TronNode | undefined,
+): Promise<TronAccountResource> {
+  if (!tronNode) {
+    return TRON_ACCOUNT_RESOURCE_RESPONSE;
+  }
+
+  return (await tronNode.fetchJson('/wallet/getaccountresource', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ address, visible: true }),
+  })) as TronAccountResource;
+}
+
+async function buildTronFixtureResourceBalances(
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode | undefined,
+): Promise<TronFixtureAccountsApiBalanceRow[]> {
+  const rowsPerAccount = await Promise.all(
+    accounts.map(async ({ address }) => {
+      const resource = await getTronAccountResource(address, tronNode);
+      const maximumBandwidth =
+        (resource.freeNetLimit ?? 0) + (resource.NetLimit ?? 0);
+      const bandwidth = Math.max(
+        0,
+        maximumBandwidth -
+          (resource.freeNetUsed ?? 0) -
+          (resource.NetUsed ?? 0),
+      );
+      const maximumEnergy = resource.EnergyLimit ?? 0;
+      const energy = Math.max(0, maximumEnergy - (resource.EnergyUsed ?? 0));
+      const valueByCaipType: Record<string, number> = {
+        [TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY]: energy,
+        [TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY]: maximumEnergy,
+        [TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH]: bandwidth,
+        [TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH]: maximumBandwidth,
+      };
+
+      return TRON_RESOURCE_ASSETS.map(({ caipType }) => ({
+        accountId: `${TRON_CHAIN_ID}:${address}`,
+        assetId: `${TRON_CHAIN_ID}/${caipType}`,
+        balance: String(valueByCaipType[caipType]),
+      }));
+    }),
+  );
+
+  return rowsPerAccount.flat();
+}
+
+function filterTronFixtureAccountsByAccountIds(
   requestUrl: string,
-  balances: TronFixtureAccountsApiBalanceRow[],
-): TronFixtureAccountsApiBalanceRow[] {
+  accounts: TronFixtureAccount[],
+): TronFixtureAccount[] {
   // Honor the requested `accountIds` (multi-value, comma-split) so each
   // account only receives its own balances.
   const requestedAccountIds = new Set(
@@ -469,10 +565,26 @@ function filterTronFixtureBalancesByAccountIds(
       .getAll('accountIds')
       .flatMap((accountIds) => accountIds.split(',')),
   );
-  return balances.filter(
-    ({ accountId }) =>
-      requestedAccountIds.size === 0 || requestedAccountIds.has(accountId),
+  return accounts.filter(
+    ({ address }) =>
+      requestedAccountIds.size === 0 ||
+      requestedAccountIds.has(`${TRON_CHAIN_ID}:${address}`),
   );
+}
+
+async function getRequestedTronFixtureBalances(
+  requestUrl: string,
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode | undefined,
+): Promise<TronFixtureAccountsApiBalanceRow[]> {
+  const requestedAccounts = filterTronFixtureAccountsByAccountIds(
+    requestUrl,
+    accounts,
+  );
+  return [
+    ...buildTronFixtureAccountsApiBalances(requestedAccounts, tronNode),
+    ...(await buildTronFixtureResourceBalances(requestedAccounts, tronNode)),
+  ];
 }
 
 async function mockTronFixtureAccountsApiV5(
@@ -484,17 +596,16 @@ async function mockTronFixtureAccountsApiV5(
   // endpoint registered before the Tron defaults wins exactly one request and
   // then falls through to this default. Custom overrides of these endpoints
   // must use `.always()`.
-  const balances = buildTronFixtureAccountsApiBalances(accounts, tronNode);
-
   return mockServer
     .forGet(
       /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
     )
     .always()
-    .thenCallback((request) => {
-      const requestedBalances = filterTronFixtureBalancesByAccountIds(
+    .thenCallback(async (request) => {
+      const requestedBalances = await getRequestedTronFixtureBalances(
         request.url,
-        balances,
+        accounts,
+        tronNode,
       );
       return {
         statusCode: 200,
@@ -512,17 +623,15 @@ async function mockTronFixtureAccountsApiV6(
   accounts: TronFixtureAccount[],
   tronNode: TronNode | undefined,
 ): Promise<MockedEndpoint> {
-  const balances = buildTronFixtureAccountsApiBalances(accounts, tronNode);
-
   return mockServer
     .forGet(
       /https:\/\/accounts\.api\.cx\.metamask\.io\/v6\/multiaccount\/balances/u,
     )
     .always()
-    .thenCallback((request) => {
+    .thenCallback(async (request) => {
       const shapedBalances = shapeV6AccountsApiBalances(
         request.url,
-        filterTronFixtureBalancesByAccountIds(request.url, balances),
+        await getRequestedTronFixtureBalances(request.url, accounts, tronNode),
       );
       return {
         statusCode: 200,
