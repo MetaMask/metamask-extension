@@ -145,6 +145,35 @@ describe('useMoneyAccountLifecycle', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
   });
 
+  it('keeps the controls disabled when the refresh fails and no lifecycle is recorded', async () => {
+    let rejectRefresh: (error: Error) => void = () => undefined;
+    mockSubmitRequestToBackground.mockImplementation((action: string) => {
+      if (action === MoneyAccountLifecycleControllerQueryKeys.GetState) {
+        return Promise.resolve({ moneyAccounts: {}, addressRegistrations: {} });
+      }
+      return new Promise<void>((_, reject) => {
+        rejectRefresh = reject;
+      });
+    });
+
+    const { result } = renderHookWithProvider(() =>
+      useMoneyAccountLifecycle(),
+    );
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'MoneyAccountLifecycleController:refresh',
+      );
+    });
+
+    await act(async () => {
+      rejectRefresh(new Error('CHOMP unavailable'));
+    });
+
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.isReadOnly).toBe(false);
+  });
+
   it('refreshes the recorded lifecycle once after the first read', async () => {
     mockGetState({ type: 'sfa' });
 

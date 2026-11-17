@@ -20,9 +20,11 @@ const REFRESH_ACTION = MoneyAccountLifecycleControllerQueryKeys.Refresh;
  *
  * A Money Account that is an identity's previous address (`mfa`) or whose
  * migration is in flight (`migrating`) is read-only: CHOMP has moved or is
- * moving its funds to the MFA address.
+ * moving its funds to the MFA address. A failed refresh with no recorded
+ * lifecycle keeps `isLoading` true, so deposits and withdrawals stay disabled.
  *
- * @returns The lifecycle, its read-only state, and the first-read loading flag.
+ * @returns The lifecycle, its read-only state, and whether the lifecycle is
+ * still unresolved.
  */
 export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
   const { availability } = useMoneyAccountAvailability();
@@ -52,8 +54,10 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
     let cancelled = false;
 
     const refresh = async () => {
+      let didRefresh = false;
       try {
         await submitRequestToBackground(REFRESH_ACTION);
+        didRefresh = true;
       } catch (error) {
         log.debug('[Money Account] Lifecycle refresh failed', error);
       }
@@ -62,8 +66,10 @@ export function useMoneyAccountLifecycle(): UseMoneyAccountLifecycleResult {
         return;
       }
 
-      await refetch().catch(() => undefined);
-      if (!cancelled) {
+      const result = await refetch().catch(() => undefined);
+      // Fail closed: an unreadable lifecycle keeps the deposit and withdraw
+      // guards closed instead of assuming the account is still an SFA.
+      if (!cancelled && didRefresh && result && !result.isError) {
         setRefreshedAddress(address);
       }
     };
