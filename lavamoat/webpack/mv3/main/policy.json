@@ -7526,7 +7526,6 @@
         "react": true
       }
     },
-
     "react-dom": {
       "globals": {
         "MSApp": true,
