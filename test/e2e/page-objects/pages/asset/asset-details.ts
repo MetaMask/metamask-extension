@@ -148,13 +148,16 @@ class AssetDetailsPage {
    * Asserts the Stellar trustline activation card is not present.
    */
   async checkActivateCardIsAbsent(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.assetActivateCard);
+    await this.driver.assertElementNotPresent(this.assetActivateCard, {
+      findElementGuard: this.page,
+    });
   }
 
   /**
    * Asserts the Stellar trustline activation card is visible on the asset page.
    */
   async checkActivateCardIsDisplayed(): Promise<void> {
+    await this.checkPageIsLoaded();
     await this.driver.waitForSelector(this.assetActivateCard);
     await this.driver.waitForSelector(this.assetActivateButton);
   }
@@ -200,13 +203,16 @@ class AssetDetailsPage {
    * Asserts the Inactive trustline badge is not present.
    */
   async checkInactiveBadgeIsAbsent(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.assetInactiveBadge);
+    await this.driver.assertElementNotPresent(this.assetInactiveBadge, {
+      findElementGuard: this.page,
+    });
   }
 
   /**
    * Asserts the Inactive trustline badge is visible on the asset page header.
    */
   async checkInactiveBadgeIsDisplayed(): Promise<void> {
+    await this.checkPageIsLoaded();
     await this.driver.waitForSelector(this.assetInactiveBadge);
   }
 
@@ -281,10 +287,9 @@ class AssetDetailsPage {
    * @param assetId - CAIP-19 asset id for the details route.
    */
   async navigateToAsset(assetId: CaipAssetType): Promise<void> {
-    const assetPath = buildAssetRoutePath(assetId);
-    const currentUrl = await this.driver.getCurrentUrl();
-    const baseUrl = currentUrl.replace(/#.*$/u, '');
-    await this.driver.driver.get(`${baseUrl}#${assetPath}`);
+    await this.driver.openNewURL(
+      `${this.driver.extensionUrl}/home.html#${buildAssetRoutePath(assetId)}`,
+    );
     await this.driver.waitForControllersLoaded();
     await this.checkPageIsLoaded();
   }

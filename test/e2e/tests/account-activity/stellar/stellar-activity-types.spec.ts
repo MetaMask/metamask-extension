@@ -9,12 +9,11 @@ import {
   selectAllNetworksFromNetworkSelect,
   switchToNetworkFromNetworkSelect,
 } from '../../../page-objects/flows/network.flow';
-import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
+import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
 import {
-  STELLAR_ACCOUNT_ADDRESS,
   STELLAR_NETWORK_NAME,
   buildStellarFixture,
 } from '../../stellar/mocks/common-stellar';
@@ -68,7 +67,7 @@ describe('Stellar - Activity types', function (this: Suite) {
       {
         accounts: [
           {
-            address: STELLAR_ACCOUNT_ADDRESS,
+            address: DEFAULT_STELLAR_ADDRESS,
             horizonTransactions: [sendTx, receiveTx, swapTx, bridgeTx],
           },
         ],
@@ -81,7 +80,7 @@ describe('Stellar - Activity types', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -100,7 +99,7 @@ describe('Stellar - Activity types', function (this: Suite) {
         await sendDetails.checkTitle('Sent XLM');
         await sendDetails.checkAmount('-1 XLM');
         await sendDetails.checkAddressInLog(STELLAR_RECIPIENT_ADDRESS);
-        await sendDetails.checkAddressInLog(STELLAR_ACCOUNT_ADDRESS);
+        await sendDetails.checkAddressInLog(DEFAULT_STELLAR_ADDRESS);
         await closeActivityTransactionDetails({ driver, activityTab });
 
         // Received
@@ -148,7 +147,7 @@ describe('Stellar - Activity types', function (this: Suite) {
       {
         accounts: [
           {
-            address: STELLAR_ACCOUNT_ADDRESS,
+            address: DEFAULT_STELLAR_ADDRESS,
             horizonTransactions: [sendTx],
           },
         ],
@@ -158,7 +157,7 @@ describe('Stellar - Activity types', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

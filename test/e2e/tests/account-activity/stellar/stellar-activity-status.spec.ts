@@ -5,11 +5,12 @@ import {
   openActivityTransactionDetails,
 } from '../../../page-objects/flows/activity.flow';
 import { login } from '../../../page-objects/flows/login.flow';
-import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { withStellarFixtures } from '../../stellar/fixtures/with-stellar-fixtures';
-import { STELLAR_ACCOUNT_ADDRESS } from '../../stellar/mocks/common-stellar';
+import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
+import { STELLAR_NETWORK_NAME } from '../../stellar/mocks/common-stellar';
 import {
   STELLAR_RECIPIENT_ADDRESS,
   xlmSendTx,
@@ -34,7 +35,7 @@ describe('Stellar - Activity status', function (this: Suite) {
       {
         accounts: [
           {
-            address: STELLAR_ACCOUNT_ADDRESS,
+            address: DEFAULT_STELLAR_ADDRESS,
             horizonTransactions: [failedSend],
           },
         ],
@@ -42,7 +43,7 @@ describe('Stellar - Activity status', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
