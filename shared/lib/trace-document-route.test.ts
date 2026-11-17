@@ -1,5 +1,11 @@
 import * as Sentry from '@sentry/browser';
+import { getEnvironmentType } from './environment-type';
 import { trace, trackDocumentRouteTrace, TraceName } from './trace';
+
+jest.mock('./environment-type', () => ({
+  ...jest.requireActual('./environment-type'),
+  getEnvironmentType: jest.fn(),
+}));
 
 // Real SDK, not mocks: `browserTracingIntegration` starts the pageload, starts
 // a navigation on `history.pushState`, and keeps each route's trace id and
@@ -15,6 +21,15 @@ describe('trace with no caller in a UI document (real SDK)', () => {
     perf.getEntriesByType ??= () => [];
     perf.getEntries ??= () => [];
     (globalThis as { sentry?: unknown }).sentry = Sentry;
+  });
+
+  // jsdom's default URL resolves to the background, so name a UI document.
+  beforeEach(() => {
+    const { getEnvironmentType: actual } =
+      jest.requireActual('./environment-type');
+    jest
+      .mocked(getEnvironmentType)
+      .mockImplementation(() => actual('chrome-extension://id/home.html'));
   });
 
   // Starts a client drawing route spans and the no-caller trace at these rates.
