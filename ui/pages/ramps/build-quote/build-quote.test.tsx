@@ -331,11 +331,42 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
+    // Provider label should not be shown when there's no quote
     expect(
-      screen.getByTestId('ramps-build-quote-provider-label'),
-    ).toHaveTextContent(
-      messages.rampsBuyingViaProvider.message.replace('$1', 'Transak'),
+      screen.queryByTestId('ramps-build-quote-provider-label'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not show provider label when selected provider has no quote', () => {
+    // Scenario: Banxa is auto-selected but returns no quote, while other providers do
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectedProvider: { id: 'banxa', name: 'Banxa' },
+    });
+    useRampsQuotes.mockReturnValue({
+      data: {
+        success: [
+          { provider: 'moonpay', id: 'quote-1' },
+          { provider: 'coinbase', id: 'quote-2' },
+        ],
+        error: [],
+      },
+      loading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
     );
+
+    // Continue should be disabled because selected provider has no quote
+    expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
+    // Provider label should not be shown when selected provider has no quote
+    expect(
+      screen.queryByTestId('ramps-build-quote-provider-label'),
+    ).not.toBeInTheDocument();
   });
 
   it('shows a quote error with a change-provider action when no provider returns a quote', () => {

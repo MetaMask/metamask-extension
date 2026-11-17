@@ -328,9 +328,13 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     ? networksByCaipChainId[selectedToken.chainId]?.name
     : undefined;
 
-  const providerLabel = selectedProvider?.name
-    ? t('rampsBuyingViaProvider', [selectedProvider.name])
-    : '';
+  // Only show "Buying via X" when the selected provider has a quote.
+  // When the controller switches providers after an auto-selected provider
+  // returns no quote, this ensures the footer updates to show the new provider.
+  const providerLabel =
+    selectedProvider?.name && selectedQuote !== null
+      ? t('rampsBuyingViaProvider', [selectedProvider.name])
+      : '';
   const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
 
   return {
