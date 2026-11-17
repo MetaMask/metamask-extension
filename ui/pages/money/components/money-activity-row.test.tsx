@@ -24,19 +24,19 @@ describe('MoneyActivityRow', () => {
     expect(row).toHaveTextContent(messages.moneyActivityDeposited.message);
   });
 
-  it('renders a button that invokes onItemClick', () => {
+  it('renders an interactive row with button semantics that invokes onItemClick', () => {
     const onItemClick = jest.fn();
     renderWithLocalization(
       <MoneyActivityRow item={deposited} onItemClick={onItemClick} />,
     );
 
     const row = screen.getByTestId(`money-activity-row-${deposited.id}`);
-    expect(row.tagName).toBe('BUTTON');
+    expect(row).toHaveAttribute('role', 'button');
     fireEvent.click(row);
     expect(onItemClick).toHaveBeenCalledWith(deposited);
   });
 
-  it('renders a button that invokes onItemClick for Accounts API rows', () => {
+  it('renders an interactive row with button semantics for Accounts API rows', () => {
     const onItemClick = jest.fn();
     const apiItem = accountsApiItem({
       kind: 'card',
@@ -57,7 +57,7 @@ describe('MoneyActivityRow', () => {
     );
 
     const row = screen.getByTestId(`money-activity-row-${apiItem.id}`);
-    expect(row.tagName).toBe('BUTTON');
+    expect(row).toHaveAttribute('role', 'button');
     fireEvent.click(row);
     expect(onItemClick).toHaveBeenCalledWith(apiItem);
   });
