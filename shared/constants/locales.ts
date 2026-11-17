@@ -45,7 +45,7 @@ export const getNormalizedLocale = (locale: string | undefined): string =>
   )[0];
 
 /**
- * Device regions where the local "$" is kept, so USD does not use narrowSymbol.
+ * Device regions added to the formatting locale so the local currency symbol is kept.
  */
 export const narrowSymbolExempt: ReadonlySet<string> = new Set([
   'AU',
@@ -53,6 +53,12 @@ export const narrowSymbolExempt: ReadonlySet<string> = new Set([
   'NZ',
   'US',
 ]);
+
+/**
+ * Device regions that use the short currency symbol.
+ * Add a region here to roll that symbol out.
+ */
+export const narrowSymbolRegions: ReadonlySet<string> = new Set();
 
 function regionOf(locale: string) {
   try {
@@ -72,14 +78,18 @@ function keepsRegion(locale: string, region: string) {
 }
 
 /**
- * USD uses narrowSymbol unless the device region is in
- * {@link narrowSymbolExempt}.
+ * The short currency symbol is off unless the device region is selected in
+ * {@link narrowSymbolRegions}.
  *
  * @param region - A device region code.
- * @returns Whether USD should use `currencyDisplay: 'narrowSymbol'`.
+ * @returns Whether formatting should use `currencyDisplay: 'narrowSymbol'`.
  */
 export function usesNarrowUsdSymbol(region: string | undefined): boolean {
-  return !region || !narrowSymbolExempt.has(region);
+  return Boolean(
+    region &&
+    narrowSymbolRegions.has(region) &&
+    !narrowSymbolExempt.has(region),
+  );
 }
 
 export type FormattingLocale = {
@@ -91,8 +101,9 @@ export type FormattingLocale = {
  * Builds the locale used for numbers, currency, and dates.
  *
  * The stored language is kept. The device region is added only when that
- * region is exempt and Intl keeps the language-region pair. `narrowUsdSymbol`
- * is true when the resulting locale is not exempt.
+ * region keeps the local currency symbol and Intl keeps the language-region
+ * pair. `narrowUsdSymbol` is true only when the device region is selected for
+ * the short symbol.
  *
  * @param appLocale - The stored locale code, such as `'en'`.
  * @param deviceLocale - The device locale. Defaults to the runtime locale.
@@ -107,19 +118,17 @@ export function buildFormattingLocale(
     deviceLocale ?? new Intl.NumberFormat().resolvedOptions().locale,
   );
   const [language] = stored.split('-');
-  const candidate =
-    deviceRegion && !usesNarrowUsdSymbol(deviceRegion)
-      ? `${language}-${deviceRegion}`
-      : stored;
+  const attachRegion = Boolean(
+    deviceRegion && narrowSymbolExempt.has(deviceRegion),
+  );
+  const candidate = attachRegion ? `${language}-${deviceRegion}` : stored;
   const locale =
-    candidate === stored ||
-    !deviceRegion ||
-    !keepsRegion(candidate, deviceRegion)
+    !attachRegion || !deviceRegion || !keepsRegion(candidate, deviceRegion)
       ? stored
       : candidate;
 
   return {
     locale,
-    narrowUsdSymbol: usesNarrowUsdSymbol(regionOf(locale)),
+    narrowUsdSymbol: usesNarrowUsdSymbol(deviceRegion),
   };
 }

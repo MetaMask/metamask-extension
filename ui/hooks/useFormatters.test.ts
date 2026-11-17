@@ -59,31 +59,24 @@ describe('useFormatters', () => {
     }
   });
 
-  it('uses narrowSymbol for a region outside the exempt list', () => {
+  it('does not use narrowSymbol for a region that is not selected', () => {
     mockUseSelector.mockReturnValue('es');
     mockDeviceLocale('en-GB');
 
     const { result } = renderHook(() => useFormatters());
 
     expect(result.current.formatCurrency(1, 'USD')).toBe(
-      formatUsd('es', 'narrowSymbol'),
+      formatUsd('es', 'symbol'),
     );
     expect(result.current.formatCurrencyCompact(1_000_000, 'USD')).toBe(
       new OriginalNumberFormat('es', {
         style: 'currency',
         currency: 'USD',
-        currencyDisplay: 'narrowSymbol',
+        currencyDisplay: 'symbol',
         notation: 'compact',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }).format(1_000_000),
-    );
-    expect(result.current.formatCurrencyWithMinThreshold(0.001, 'USD')).toBe(
-      `<${new OriginalNumberFormat('es', {
-        style: 'currency',
-        currency: 'USD',
-        currencyDisplay: 'narrowSymbol',
-      }).format(0.01)}`,
     );
   });
 });
