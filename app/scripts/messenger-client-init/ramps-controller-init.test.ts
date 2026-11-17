@@ -1,8 +1,10 @@
 import {
   RampsController,
+  RampsEnvironment,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
+import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
 import { getRootMessenger } from '../lib/messenger';
 import { captureException } from '../../../shared/lib/sentry';
 import { trackEvent } from '../controllers/analytics';
@@ -14,8 +16,6 @@ import {
   type RampsControllerInitMessenger,
 } from './messengers';
 import { RampsControllerInit } from './ramps-controller-init';
-
-import { RAMPS_NETWORK_ACCESS_DENIED_MESSAGE } from './ramps-network-gate';
 
 const mockRampsController = {
   state: { orders: [] as { status: string }[] },
@@ -44,10 +44,16 @@ let mockInit: jest.Mock;
 let mockStartOrderPolling: jest.Mock;
 let mockStopOrderPolling: jest.Mock;
 
-const mockGetQuotesParams = {
-  amount: 0,
-  walletAddress: '0x0',
-};
+/**
+ * Reads the `isNetworkAccessAllowed` check the controller was constructed with.
+ *
+ * @returns The network access check passed to the `RampsController` constructor.
+ */
+function getNetworkAccessAllowedCheck(): () => boolean {
+  const [options] = jest.mocked(RampsController).mock.lastCall ?? [];
+  return (options as unknown as { isNetworkAccessAllowed: () => boolean })
+    .isNetworkAccessAllowed;
+}
 
 jest.mock('@metamask/ramps-controller', () => {
   const actual = jest.requireActual('@metamask/ramps-controller');
@@ -64,6 +70,10 @@ jest.mock('../../../shared/lib/sentry', () => ({
 
 jest.mock('../controllers/analytics', () => ({
   trackEvent: jest.fn(),
+}));
+
+jest.mock('../../../shared/lib/ramps/environment', () => ({
+  getRampsEnvironment: jest.fn(),
 }));
 
 type InitRequestMock = jest.Mocked<
@@ -157,6 +167,7 @@ function resetMockRampsController(): void {
 describe('RampsControllerInit', () => {
   beforeEach(() => {
     resetMockRampsController();
+    jest.mocked(getRampsEnvironment).mockReturnValue(RampsEnvironment.Staging);
   });
 
   it('initializes the controller with default state', () => {
@@ -165,9 +176,23 @@ describe('RampsControllerInit', () => {
     expect(RampsController).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: getDefaultRampsControllerState(),
+      requestCacheTTL: 60_000,
+      isNetworkAccessAllowed: expect.any(Function),
       trace: expect.any(Function),
       onOrderSyncErroneousSituation: expect.any(Function),
     });
+  });
+
+  it('keeps the controller default cache TTL in production', () => {
+    jest
+      .mocked(getRampsEnvironment)
+      .mockReturnValue(RampsEnvironment.Production);
+
+    RampsControllerInit(getInitRequestMock());
+
+    expect(RampsController).toHaveBeenCalledWith(
+      expect.objectContaining({ requestCacheTTL: undefined }),
+    );
   });
 
   it('reports order sync erroneous situations to sentry and analytics', () => {
@@ -274,17 +299,47 @@ describe('RampsControllerInit', () => {
     expect(api?.stopRampsLifecycle).toEqual(expect.any(Function));
   });
 
-  it('blocks network methods before onboarding completes', () => {
-    const { messengerClient } = RampsControllerInit(
+  it('passes a network access check to the controller', () => {
+    RampsControllerInit(
       getInitRequestMock({
         completedOnboarding: false,
         useExternalServices: true,
       }),
     );
 
-    expect(() => messengerClient.getQuotes(mockGetQuotesParams)).toThrow(
-      RAMPS_NETWORK_ACCESS_DENIED_MESSAGE,
-    );
+    expect(getNetworkAccessAllowedCheck()()).toBe(false);
+  });
+
+  it('allows network access once onboarding is complete and basic functionality is on', () => {
+    RampsControllerInit(getInitRequestMock());
+
+    expect(getNetworkAccessAllowedCheck()()).toBe(true);
+  });
+
+  it('re-reads onboarding and basic functionality state on every check', () => {
+    const baseMessenger = getRootMessenger<never, never>();
+    const { initMessenger, setCompletedOnboarding, setUseExternalServices } =
+      createInitMessenger({
+        completedOnboarding: false,
+        useExternalServices: true,
+      });
+
+    RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+
+    const isNetworkAccessAllowed = getNetworkAccessAllowedCheck();
+
+    expect(isNetworkAccessAllowed()).toBe(false);
+
+    setCompletedOnboarding(true);
+    expect(isNetworkAccessAllowed()).toBe(true);
+
+    setUseExternalServices(false);
+    expect(isNetworkAccessAllowed()).toBe(false);
   });
 
   it('stopRampsLifecycle stops polling when network access is allowed', async () => {
