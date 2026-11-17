@@ -2,10 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { createFormatters } from '@metamask/client-utils';
 import type { Formatters } from '@metamask/client-utils';
-import {
-  buildFormattingLocale,
-  usesNarrowUsdSymbol,
-} from '#shared/constants/locales';
+import { buildFormattingLocale } from '#shared/constants/locales';
 import { getCurrentLocale } from '#ui/ducks/locale/locale';
 
 const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
@@ -36,45 +33,32 @@ function formatMediumDate(
   }).format(new Date(timestamp));
 }
 
-function regionOf(locale: string) {
-  try {
-    return new Intl.Locale(locale).region;
-  } catch {
-    return undefined;
-  }
-}
-
-function withNarrowUsdSymbol(formatters: Formatters): Formatters {
-  const formatCurrency: Formatters['formatCurrency'] = (
-    value,
-    currency,
-    options,
-  ) =>
-    formatters.formatCurrency(
+// Only USD is shortened. Other currencies keep their own symbol.
+function shortenUsd(
+  formatCurrency: Formatters['formatCurrency'],
+): Formatters['formatCurrency'] {
+  return (value, currency, options) =>
+    formatCurrency(
       value,
       currency,
       currency?.toUpperCase() === 'USD'
         ? { currencyDisplay: 'narrowSymbol', ...options }
         : options,
     );
-
-  return {
-    ...formatters,
-    formatCurrency,
-  };
 }
 
 export function useFormatters() {
   const selectedLanguage = useSelector(getCurrentLocale);
 
   return useMemo(() => {
-    const locale = buildFormattingLocale(selectedLanguage);
-    const base = createFormatters({ locale });
-    const formatters = usesNarrowUsdSymbol(regionOf(locale))
-      ? withNarrowUsdSymbol(base)
-      : base;
+    const { locale, narrowUsdSymbol } = buildFormattingLocale(selectedLanguage);
+    const formatters = createFormatters({ locale });
+
     return {
       ...formatters,
+      formatCurrency: narrowUsdSymbol
+        ? shortenUsd(formatters.formatCurrency)
+        : formatters.formatCurrency,
       /**
        * Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
        */

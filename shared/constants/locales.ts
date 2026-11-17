@@ -82,29 +82,44 @@ export function usesNarrowUsdSymbol(region: string | undefined): boolean {
   return !region || !narrowSymbolExempt.has(region);
 }
 
+export type FormattingLocale = {
+  locale: string;
+  narrowUsdSymbol: boolean;
+};
+
 /**
  * Builds the locale used for numbers, currency, and dates.
  *
- * The stored language is kept. The device region is added only when USD does
- * not use narrowSymbol for that region and Intl keeps the language-region pair.
+ * The stored language is kept. The device region is added only when that
+ * region is exempt and Intl keeps the language-region pair. `narrowUsdSymbol`
+ * is true when the resulting locale is not exempt.
  *
  * @param appLocale - The stored locale code, such as `'en'`.
  * @param deviceLocale - The device locale. Defaults to the runtime locale.
- * @returns A BCP 47 locale for number and date formatting.
+ * @returns The formatting locale and whether USD uses the short symbol.
  */
 export function buildFormattingLocale(
   appLocale: string | undefined,
   deviceLocale?: string,
-) {
+): FormattingLocale {
   const stored = (appLocale || FALLBACK_LOCALE).replace(/_/gu, '-');
   const deviceRegion = regionOf(
     deviceLocale ?? new Intl.NumberFormat().resolvedOptions().locale,
   );
-  if (!deviceRegion || usesNarrowUsdSymbol(deviceRegion)) {
-    return stored;
-  }
-
   const [language] = stored.split('-');
-  const candidate = `${language}-${deviceRegion}`;
-  return keepsRegion(candidate, deviceRegion) ? candidate : stored;
+  const candidate =
+    deviceRegion && !usesNarrowUsdSymbol(deviceRegion)
+      ? `${language}-${deviceRegion}`
+      : stored;
+  const locale =
+    candidate === stored ||
+    !deviceRegion ||
+    !keepsRegion(candidate, deviceRegion)
+      ? stored
+      : candidate;
+
+  return {
+    locale,
+    narrowUsdSymbol: usesNarrowUsdSymbol(regionOf(locale)),
+  };
 }
