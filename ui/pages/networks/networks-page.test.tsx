@@ -378,42 +378,27 @@ describe('NetworksPage', () => {
   });
 
   it('uses the config registry logo for a featured network not yet enabled', () => {
-    const registryNetwork: RegistryNetworkConfig = {
+    // Only the fields consumed by the featured-network conversion and the
+    // logo lookups are populated.
+    const registryNetwork = {
       chainId: 'eip155:1329',
       name: 'Sei Network',
       imageUrl: 'https://example.com/sei.png',
-      coingeckoPlatformId: 'sei-network',
-      assets: {
-        native: {
-          assetId: 'eip155:1329',
-          imageUrl: '',
-          name: 'Sei',
-          symbol: 'SEI',
-          decimals: 18,
-        },
-      },
+      assets: { native: { symbol: 'SEI' } },
       rpcProviders: {
         default: {
           url: 'https://evm-rpc.sei.network',
           type: 'custom',
           networkClientId: 'evm-sei-1329',
         },
-        fallbacks: [],
       },
-      blockExplorerUrls: {
-        default: 'https://seitrace.com',
-        fallbacks: [],
-      },
+      blockExplorerUrls: { default: 'https://seitrace.com' },
       config: {
         isActive: true,
         isTestnet: false,
-        isDefault: false,
         isFeatured: true,
-        isDeprecated: false,
-        isDeletable: false,
-        priority: 0,
       },
-    };
+    } as unknown as RegistryNetworkConfig;
 
     renderNetworksPage({
       remoteFeatureFlags: { configRegistryApiEnabled: true },

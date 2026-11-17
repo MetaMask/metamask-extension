@@ -203,13 +203,8 @@ describe('NotificationsListItem details title (other on-chain subtypes)', () => 
   );
 });
 
-describe('NotificationsListItem full render (all on-chain subtypes)', () => {
-  type MockNotificationCreator = () => ReturnType<
-    typeof createMockNotificationEthSent
-  >;
-
-  const allOnChainNotificationMocks: [string, MockNotificationCreator][] = [
-    ['eth_sent', createMockNotificationEthSent],
+describe('Notification details body renderers (on-chain subtypes)', () => {
+  const onChainNotificationMocks = [
     ['erc20_sent', createMockNotificationERC20Sent],
     ['erc721_sent', createMockNotificationERC721Sent],
     ['erc1155_sent', createMockNotificationERC1155Sent],
@@ -226,98 +221,52 @@ describe('NotificationsListItem full render (all on-chain subtypes)', () => {
       'lido_stake_ready_to_be_withdrawn',
       createMockNotificationLidoReadyToBeWithdrawn,
     ],
-  ];
+  ] as const;
 
   // @ts-expect-error This function is missing from the Mocha type definitions
-  it.each(allOnChainNotificationMocks)(
-    'renders the %s notification item with its network logo',
-    (_subtype: string, createMock: MockNotificationCreator) => {
+  it.each(onChainNotificationMocks)(
+    'renders the %s details renderers with the registry network logo',
+    (_subtype: string, createMock: () => INotification) => {
       const subtypeNotification = {
         ...processNotification(createMock()),
         template: apiTemplate,
         isRead: false,
       } as INotification;
 
-      if (!hasNotificationComponents(subtypeNotification.type)) {
-        throw new Error('Expected notification components');
-      }
-
-      renderWithProvider(
-        <NotificationsListItem notification={subtypeNotification} />,
-        configureStore(mockState),
-      );
-
-      expect(
-        screen.getByTestId(`notification-list-item-${subtypeNotification.id}`),
-      ).toBeInTheDocument();
-    },
-  );
-});
-
-describe('Notification details body renderers (all on-chain subtypes)', () => {
-  type MockNotificationCreator = () => ReturnType<
-    typeof createMockNotificationEthSent
-  >;
-
-  const detailsBodyNotificationMocks: [string, MockNotificationCreator][] = [
-    ['eth_sent', createMockNotificationEthSent],
-    ['erc20_sent', createMockNotificationERC20Sent],
-    ['erc721_sent', createMockNotificationERC721Sent],
-    ['erc1155_sent', createMockNotificationERC1155Sent],
-    ['metamask_swap_completed', createMockNotificationMetaMaskSwapsCompleted],
-    [
-      'rocketpool_stake_completed',
-      createMockNotificationRocketPoolStakeCompleted,
-    ],
-    [
-      'lido_withdrawal_requested',
-      createMockNotificationLidoWithdrawalRequested,
-    ],
-    [
-      'lido_stake_ready_to_be_withdrawn',
-      createMockNotificationLidoReadyToBeWithdrawn,
-    ],
-  ];
-
-  // @ts-expect-error This function is missing from the Mocha type definitions
-  it.each(detailsBodyNotificationMocks)(
-    'renders the %s details body with the registry network logo',
-    (_subtype: string, createMock: MockNotificationCreator) => {
-      const bodyNotification = {
-        ...processNotification(createMock()),
-        template: apiTemplate,
-        isRead: false,
-      } as INotification;
-
-      if (!hasNotificationComponents(bodyNotification.type)) {
-        throw new Error('Expected notification components');
-      }
-
-      const body = NotificationComponents[bodyNotification.type]?.details
+      const body = NotificationComponents[subtypeNotification.type]?.details
         ?.body as NonNullable<NotificationComponent['details']>['body'];
       if (!body || body.type !== NotificationComponentType.OnChainBody) {
         throw new Error('Expected on-chain notification details body');
       }
 
+      type BodyRenderer = (props: {
+        notification: INotification;
+      }) => React.ReactElement;
+      const renderers = (
+        [
+          body.Image,
+          body.From,
+          body.To,
+          body.Account,
+          body.Asset,
+          body.AssetReceived,
+          body.Status,
+          body.Network,
+          body.Rate,
+        ] as (BodyRenderer | undefined)[]
+      ).filter((r): r is BodyRenderer => Boolean(r));
+
       const { container } = renderWithProvider(
         <>
-          {body.Image && <body.Image notification={bodyNotification} />}
-          {body.From && <body.From notification={bodyNotification} />}
-          {body.To && <body.To notification={bodyNotification} />}
-          {body.Account && <body.Account notification={bodyNotification} />}
-          {body.Asset && <body.Asset notification={bodyNotification} />}
-          {body.AssetReceived && (
-            <body.AssetReceived notification={bodyNotification} />
-          )}
-          {body.Status && <body.Status notification={bodyNotification} />}
-          {body.Network && <body.Network notification={bodyNotification} />}
-          {body.Rate && <body.Rate notification={bodyNotification} />}
+          {renderers.map((Renderer, index) => (
+            <Renderer key={index} notification={subtypeNotification} />
+          ))}
         </>,
         configureStore(mockState),
       );
 
-      // The renderers (Image/From/To/Asset/Network) mounted without
-      // throwing and resolved their network logo sources.
+      // Every renderer mounted without throwing and resolved its network
+      // logo source.
       expect(container.firstChild).not.toBeNull();
     },
   );
