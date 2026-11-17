@@ -67,12 +67,11 @@ jobs:
           MODE: ${{ inputs.mode }}
         run: |
           set -euo pipefail
-          echo "step: fetch"
-          git fetch --no-tags --depth=400 origin main
+          # Commits only: trees and blobs are fetched on demand, since the deep fetch took about a minute.
+          git fetch --no-tags --depth=150 --filter=tree:0 origin main
           head=$(git rev-parse "${HEAD_INPUT:-FETCH_HEAD}")
           summary() { printf '## Main performance detector\n\n%s\n' "$1" >> "$GITHUB_STEP_SUMMARY"; }
 
-          echo "step: resolve"
           node node_modules/tsx/dist/cli.mjs test/e2e/benchmarks/main-detector/resolve-cli.ts \
             --head "$head" --out resolve.json > /dev/null
           status=$(jq -r .status resolve.json)
@@ -86,10 +85,8 @@ jobs:
           base=$(jq -r .base.sha resolve.json)
           # Compares each zip's file list (names, sizes, CRCs) from its central
           # directory with range requests, so identical builds exit without downloads.
-          echo "step: compare"
           node node_modules/tsx/dist/cli.mjs test/e2e/benchmarks/main-detector/compare-builds-cli.ts \
             --resolve resolve.json --out compare.json > /dev/null
-          echo "step: compared"
           identical=$(jq -r .identical compare.json)
 
           # Identical builds need no jobs; 1 in 10 of them run as a false-alarm canary.
