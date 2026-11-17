@@ -310,14 +310,6 @@ async function handleConsumePendingRoute(message: {
   };
 }
 
-/**
- * Registers handlers for pending side-panel routes once (idempotent). Invoked
- * from the cashtag background bridge at startup, matching pre-refactor wiring.
- */
-export function ensurePendingRouteListenersRegistered(): void {
-  registerPendingRouteListeners();
-}
-
 function registerPendingRouteListeners() {
   if (pendingRouteListenersRegistered) {
     return;

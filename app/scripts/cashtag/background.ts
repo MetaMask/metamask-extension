@@ -9,10 +9,7 @@ import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { buildAssetRoutePath } from '#shared/lib/asset-route';
 import type { ManifestFlags } from '#shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
-import {
-  ensurePendingRouteListenersRegistered,
-  openRoute,
-} from '../sidepanel/background';
+import { openRoute } from '../sidepanel/background';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { fetchPriceHistory, resolveTicker } from './lib/data';
 import type { Controller } from './lib/types';
@@ -481,7 +478,6 @@ export function registerCashtagBackgroundBridge({
   registered = true;
 
   bindTickerWidgetEnabledBroadcasts(getController);
-  ensurePendingRouteListenersRegistered();
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!isAllowedCashtagSender(message?.type, sender)) {
