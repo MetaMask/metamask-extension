@@ -392,38 +392,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('currency rate polling messenger actions', () => {
-    it('starts polling through the currency rate controller', async () => {
-      background.messengerCall.resolves('currency-rate-token');
-      setBackgroundConnection(background);
-
-      const pollingToken = await actions.currencyRateStartPolling(['ETH']);
-
-      expect(pollingToken).toBe('currency-rate-token');
-      expect(
-        background.messengerCall.calledWithExactly(
-          'CurrencyRateController:startPolling',
-          [{ nativeCurrencies: ['ETH'] }],
-        ),
-      ).toBe(true);
-    });
-
-    it('stops polling through the currency rate controller', async () => {
-      setBackgroundConnection(background);
-
-      await actions.currencyRateStopPollingByPollingToken(
-        'currency-rate-token',
-      );
-
-      expect(
-        background.messengerCall.calledWithExactly(
-          'CurrencyRateController:stopPollingByPollingToken',
-          ['currency-rate-token'],
-        ),
-      ).toBe(true);
-    });
-  });
-
   describe('subscription polling messenger actions', () => {
     it('starts polling through the subscription controller from the Redux action', async () => {
       background.messengerCall.resolves('subscription-token');

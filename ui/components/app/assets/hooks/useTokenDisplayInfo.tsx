@@ -23,6 +23,7 @@ import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getIsAssetRequireActivate } from '../../../../selectors/stellar-assets';
+import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -65,6 +66,7 @@ export const useTokenDisplayInfo = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
 
   // isTestnet value is tied to the value of state.metamask.selectedNetworkClientId;
   // In some cases; the user has "all popular networks" selected or a specific popular network selected, while being on a dapp that is connected to a testnet,
@@ -91,7 +93,7 @@ export const useTokenDisplayInfo = ({
   const isFiatLoading =
     shouldAttemptFiat &&
     (token.tokenFiatAmount === null || token.tokenFiatAmount === undefined) &&
-    !anyEnabledNetworksAreAvailable;
+    (!anyEnabledNetworksAreAvailable || !assetsHaveLoaded);
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
