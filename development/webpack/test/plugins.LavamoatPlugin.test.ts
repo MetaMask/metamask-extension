@@ -1,5 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { createContext, runInContext } from 'node:vm';
 import type { Chunk } from 'webpack';
 import type { Args } from '../utils/cli';
 import {
@@ -22,6 +25,94 @@ const mockChunk = (name: string | undefined): Chunk =>
   ({ name }) as unknown as Chunk;
 
 describe('LavamoatPlugin', () => {
+  describe('SES legacy encoding constructor compatibility', () => {
+    const sources = [
+      require.resolve('ses'),
+      resolve(
+        dirname(require.resolve('ses/package.json')),
+        'dist/lockdown.umd.js',
+      ),
+      resolve(
+        dirname(require.resolve('lavamoat-core')),
+        '../lib/lockdown.umd.js',
+      ),
+    ];
+
+    for (const sourcePath of sources) {
+      describe(sourcePath, () => {
+        const source = readFileSync(sourcePath, 'utf8');
+
+        it('repairs encoding constructors with immutable null legacy properties', () => {
+          const context = createContext();
+          runInContext(
+            `globalThis.TextEncoder = function TextEncoder() {};
+             globalThis.TextDecoder = function TextDecoder() {};`,
+            context,
+          );
+          runInContext(source, context);
+          runInContext('lockdown()', context);
+
+          assert.strictEqual(
+            runInContext(
+              `Object.isFrozen(TextEncoder) && Object.isFrozen(TextDecoder) &&
+               ['arguments', 'caller'].every(property =>
+                 [TextEncoder, TextDecoder].every(constructor => {
+                   const descriptor = Object.getOwnPropertyDescriptor(constructor, property);
+                   return descriptor.value === null && descriptor.writable === false &&
+                     descriptor.configurable === false;
+                 }))`,
+              context,
+            ),
+            true,
+          );
+        });
+
+        for (const descriptor of [
+          '{ value: 42, writable: false }',
+          '{ value: null, writable: true }',
+          '{ get() { throw new Error("Legacy getter called"); } }',
+        ]) {
+          it(`rejects non-configurable legacy properties with ${descriptor}`, () => {
+            const context = createContext();
+            runInContext(
+              `globalThis.TextEncoder = class TextEncoder {};
+               Object.defineProperty(TextEncoder, 'arguments', {
+                 configurable: false, enumerable: false, ...${descriptor}
+               });`,
+              context,
+            );
+            runInContext(source, context);
+
+            assert.throws(() => runInContext('lockdown()', context));
+          });
+        }
+
+        it('rejects unrelated immutable null properties on encoding constructors', () => {
+          const context = createContext();
+          runInContext(
+            `globalThis.TextEncoder = class TextEncoder {};
+             Object.defineProperty(TextEncoder, 'unexpected', { value: null });`,
+            context,
+          );
+          runInContext(source, context);
+
+          assert.throws(() => runInContext('lockdown()', context));
+        });
+
+        it('rejects immutable null legacy properties on other constructors', () => {
+          const context = createContext();
+          runInContext(
+            `Object.defineProperty(Array, 'arguments', { value: null });`,
+            context,
+          );
+          runInContext(source, context);
+
+          assert.throws(() => runInContext('lockdown()', context));
+        });
+      });
+    }
+  });
+
   describe('lavamoatUnsafeLayerRule', () => {
     it('excludes background entry from the unsafe LavaMoat exclude-loader', () => {
       const { exclude } = lavamoatUnsafeLayerRule;

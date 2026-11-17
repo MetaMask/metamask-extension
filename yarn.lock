@@ -33816,7 +33816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^19.0.2":
+"lavamoat-core@npm:19.0.2":
   version: 19.0.2
   resolution: "lavamoat-core@npm:19.0.2"
   dependencies:
@@ -33828,6 +33828,21 @@ __metadata:
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
   checksum: 10/3309ac2794b1f929ca174e7bebb12afa621e9049c3ae49eeaf4475dab462b2f09b2e85088fdf88b008ead988bc5595d9ec824d9c8b23f9fd33417ab41108ea88
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@patch:lavamoat-core@npm%3A19.0.2#~/.yarn/patches/lavamoat-core-npm-19.0.2-cfe333ffff.patch":
+  version: 19.0.2
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A19.0.2#~/.yarn/patches/lavamoat-core-npm-19.0.2-cfe333ffff.patch::version=19.0.2&hash=5097a8"
+  dependencies:
+    "@babel/types": "npm:7.29.7"
+    "@lavamoat/types": "npm:^2.0.1"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-tofu: "npm:^9.1.1"
+    ses: "npm:2.3.0"
+  bin:
+    lavamoat-sort-policy: src/policy-sort-cli.js
+  checksum: 10/a3c2e80d53058e4a99d7e9f1f753adb477ca974a8b7dea3b985ecb4b823fe6c3eae06e4e4afcc78a74bbba80c1ef0151a02604763932e7ee459c1b5245ab9ed6
   languageName: node
   linkType: hard
 
@@ -43499,6 +43514,17 @@ __metadata:
     "@endo/env-options": "npm:^1.1.11"
     "@endo/immutable-arraybuffer": "npm:^2.0.0"
   checksum: 10/67fd3dcf5171ea64edd83e66b9f2eb4904ba56177f5f3c6beea32762cf46ea1db188a42691b1a6f747bef21b63ba30916b117feaa2f12e1e9d56636c04926297
+  languageName: node
+  linkType: hard
+
+"ses@patch:ses@npm%3A2.3.0#~/.yarn/patches/ses-npm-2.3.0-dc6afde707.patch":
+  version: 2.3.0
+  resolution: "ses@patch:ses@npm%3A2.3.0#~/.yarn/patches/ses-npm-2.3.0-dc6afde707.patch::version=2.3.0&hash=7ae390"
+  dependencies:
+    "@endo/cache-map": "npm:^1.1.0"
+    "@endo/env-options": "npm:^1.1.11"
+    "@endo/immutable-arraybuffer": "npm:^2.0.0"
+  checksum: 10/8efe1d2e23bb5d36965b3192a4df06b0a355fdf3bd7d79fd32fb0f77a0ec172acc0f0f36742ca5c1474854e08ced84366d04513788f547745164eeae30e0820a
   languageName: node
   linkType: hard
 

@@ -1,0 +1,40 @@
+diff --git a/lib/lockdown.umd.js b/lib/lockdown.umd.js
+index c10f41b6a6a1bfb63032ebe523063dade9048409..46070ee149b06d5078055dec0fa3df98b9128ea7 100644
+--- a/lib/lockdown.umd.js
++++ b/lib/lockdown.umd.js
+@@ -7103,6 +7103,25 @@ function sampleGlobals(globalObject, newPropertyNames) {
+     );
+   }
+ 
++  function isLegacyEncodingProperty(obj, prop) {
++    if (
++      typeof obj !== 'function' ||
++      (obj !== intrinsics.TextEncoder && obj !== intrinsics.TextDecoder) ||
++      (prop !== 'arguments' && prop !== 'caller')
++    ) {
++      return false;
++    }
++    const desc = getOwnPropertyDescriptor(obj, prop);
++    return (
++      desc !== undefined &&
++      hasOwn(desc, 'value') &&
++      desc.value === null &&
++      desc.writable === false &&
++      desc.enumerable === false &&
++      desc.configurable === false
++    );
++  }
++
+   /*
+    * getSubPermit()
+    */
+@@ -7142,6 +7161,9 @@ function sampleGlobals(globalObject, newPropertyNames) {
+       const subPath = `${path}.${propString}`;
+       const subPermit = getSubPermit(obj, permit, propString);
+ 
++      if (isLegacyEncodingProperty(obj, prop)) {
++        continue;
++      }
+       if (!subPermit || !isAllowedProperty(subPath, obj, prop, subPermit)) {
+         cauterizeProperty(obj, prop, subPermit === false, subPath, reporter);
+       }
