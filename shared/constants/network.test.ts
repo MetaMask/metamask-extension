@@ -8,6 +8,15 @@ import {
 } from './network';
 
 describe('NetworkConstants', () => {
+  it('uses the bundled CitizenChain image for chain 2027', () => {
+    const chainId = '0x7eb';
+
+    const image = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+
+    expect(image).toBe('./images/citizenchain.png');
+    expect(existsSync(join('app', image))).toBe(true);
+  });
+
   it('has images files that exist for defined networks', () => {
     Object.values(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP).forEach((image) =>
       expect(existsSync(join('app', image))).toBe(true),
