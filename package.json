@@ -430,7 +430,7 @@
     "@metamask/chomp-api-service": "^4.0.2",
     "@metamask/claims-controller": "^1.1.0",
     "@metamask/client-controller": "^2.0.0",
-    "@metamask/client-utils": "^3.3.0",
+    "@metamask/client-utils": "^3.4.0",
     "@metamask/compliance-controller": "^3.0.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/connectivity-controller": "^1.0.0",
