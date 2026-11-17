@@ -532,6 +532,21 @@ export function getMultichainIsEvm(
   );
 }
 
+// Memoized so the merged object keeps a stable reference between calls;
+// an inline object literal here would defeat the outer selector's
+// reference-equality memoization.
+const selectSelectedChainIdAndNetworkImageUrls = createSelector(
+  [
+    (state: MultichainNetworkConfigState) =>
+      state.metamask.selectedMultichainNetworkChainId,
+    getChainIdToNetworkImageUrlMap,
+  ],
+  (selectedChainId, networkImageUrls) => ({
+    selectedChainId,
+    networkImageUrls,
+  }),
+);
+
 export const getMultichainNetwork = createSelector(
   [
     (
@@ -559,10 +574,7 @@ export const getMultichainNetwork = createSelector(
     ) => account ?? getSelectedInternalAccount(state),
     (state: MultichainNetworkConfigState & AccountsState) =>
       getMultichainNetworkProviders(state),
-    (state: MultichainNetworkConfigState & AccountsState) => ({
-      selectedChainId: state.metamask.selectedMultichainNetworkChainId,
-      networkImageUrls: getChainIdToNetworkImageUrlMap(state),
-    }),
+    selectSelectedChainIdAndNetworkImageUrls,
   ],
   (
     isEvm,
