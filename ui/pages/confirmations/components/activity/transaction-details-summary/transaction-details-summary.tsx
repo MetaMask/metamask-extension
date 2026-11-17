@@ -30,6 +30,7 @@ import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { isMoneyWithdrawTx } from '../../../../../helpers/money/money-transaction-guards';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
+import { resolveApprovalTokenContractAddress } from '../../../../../../shared/lib/transaction.utils';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 const RELAY_DEPOSIT_TYPES = [
@@ -197,9 +198,11 @@ function ApprovalSummaryLine({
   isLast: boolean;
 }) {
   const t = useI18nContext() as TranslateFunction;
-  const { chainId, txParams } = transactionMeta;
+  const { chainId } = transactionMeta;
 
-  const tokenAddress = txParams?.to as Hex | undefined;
+  const tokenAddress = transactionMeta.txParams
+    ? (resolveApprovalTokenContractAddress(transactionMeta) as Hex | undefined)
+    : undefined;
 
   const token = useTokenWithBalance((tokenAddress ?? '0x0') as Hex, chainId);
 
