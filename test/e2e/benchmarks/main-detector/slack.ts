@@ -1,6 +1,7 @@
 import type { AnyBlock } from '@slack/types';
 import {
   BREAKDOWN_METRICS,
+  DEFAULT_CONFIG,
   type BatchScores,
   type Browser,
   type Decision,
@@ -12,7 +13,7 @@ import type { PlanInfo } from './report';
 export type SlackPayload = {
   // Fallback for notifications and clients without block support.
   text: string;
-  attachments: { color: string; blocks: AnyBlock[] }[];
+  blocks: AnyBlock[];
 };
 
 export type SlackInput = {
@@ -25,11 +26,7 @@ export type SlackInput = {
   author: string;
 };
 
-const LOUD_COLOR = 'danger';
-const QUIET_COLOR = 'warning';
-
-const pct = (value: number, digits = 1) =>
-  `${value >= 0 ? '+' : ''}${value.toFixed(digits)}%`;
+const pct = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
 
 const toPercent = (logRatio: number) => (Math.exp(logRatio) - 1) * 100;
 
@@ -43,20 +40,22 @@ function linkPullRequest(subject: string, repository: string): string {
   );
 }
 
-function findingLines(finding: Finding, scores: BatchScores[]): string[] {
-  const speed = finding.direction === 'slower' ? 'slower' : 'faster';
+function formatFinding(finding: Finding, scores: BatchScores[]): string {
   const size = Math.abs(finding.pooled.shiftPct).toFixed(1);
   const jobs = scores
     .flatMap((batch) => batch[finding.browser].logRatios[finding.metric] ?? [])
-    .map((ratio) => pct(toPercent(ratio)).replace('%', ''));
-  return [
-    `*${browserName(finding.browser)} ${finding.metric}: ${size}% ${speed}* (${finding.level})`,
-    `Pooled ${pct(finding.pooled.shiftPct)} [${pct(finding.pooled.lowerPct)}, ${pct(finding.pooled.upperPct)}], batch 1 ${pct(finding.first.shiftPct)}, batch 2 ${pct(finding.second.shiftPct)}`,
-    `Per job (${jobs.length}): ${jobs.join(', ')} %`,
-  ];
+    .map((ratio) => pct(toPercent(ratio)).replace('%', ''))
+    .join(', ');
+  const { pooled, first, second } = finding;
+  return (
+    `• *${browserName(finding.browser)} ${finding.metric}* (${size}% ${finding.direction})` +
+    ` — pooled ${pct(pooled.shiftPct)} [${pct(pooled.lowerPct)}, ${pct(pooled.upperPct)}],` +
+    ` batch 1 ${pct(first.shiftPct)}, batch 2 ${pct(second.shiftPct)}\n` +
+    `  per job: ${jobs} %`
+  );
 }
 
-function breakdownLine(browser: Browser, scores: BatchScores[]): string {
+function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
   const parts = BREAKDOWN_METRICS.flatMap((metric) => {
     const ratios = scores.flatMap(
       (batch) => batch[browser].logRatios[metric] ?? [],
@@ -64,107 +63,125 @@ function breakdownLine(browser: Browser, scores: BatchScores[]): string {
     const summary = summarizeShifts(ratios);
     return summary ? [`${metric} ${pct(summary.shiftPct)}`] : [];
   });
-  return `${browserName(browser)} breakdown (pooled): ${parts.join(', ')}`;
+  return `• *${browserName(browser)}* — ${parts.join(', ')}`;
+}
+
+function policyText(plan: PlanInfo, loud: boolean): string {
+  if (plan.canary) {
+    return 'Head and base are the same build, so this is noise, not a change. Nothing needs fixing in the commit.';
+  }
+  const { floorPct, loudPct } = DEFAULT_CONFIG;
+  const size = loud
+    ? `At least one metric moved by ${loudPct}% or more`
+    : `At least one metric moved by more than the noise (${floorPct.chrome}% in Chrome, ${floorPct.firefox}% in Firefox)`;
+  return `${size}, and a second batch of runs agreed. PRs and releases are not blocked, but the commit below is worth a look.`;
 }
 
 /**
- * Builds the Slack message for a commit that raised a ping.
+ * Builds the Slack message for a commit that raised a ping, in the style of
+ * the yarn audit notification: a headline section, one section per level,
+ * then a context line with links.
  *
  * @param input - The detector result and where it ran.
- * @returns A Slack payload; quiet and loud pings differ in header and color.
  */
 export function buildSlackMessage(input: SlackInput): SlackPayload {
   const { plan, first, second, decision, repository, runUrl, author } = input;
   const loud = decision.ping === 'loud';
-  let title = loud
-    ? 'Large performance change on main'
-    : 'Performance change on main';
-  if (plan.canary) {
-    title = 'Detector false alarm: the A/A canary fired';
-  }
   const scores = second ? [first, second] : [first];
   const short = plan.headSha.slice(0, 7);
   const commitUrl = `https://github.com/${repository}/commit/${plan.headSha}`;
+  const baseUrl = `https://github.com/${repository}/commit/${plan.baseSha}`;
   const subject = linkPullRequest(plan.headSubject, repository);
 
+  let headline = 'a performance change';
+  if (plan.canary) {
+    headline = 'a false alarm on the A/A canary';
+  } else if (loud) {
+    headline = 'a large performance change';
+  }
+
+  const section = (text: string): AnyBlock => ({
+    type: 'section',
+    text: { type: 'mrkdwn', text },
+  });
+
   const blocks: AnyBlock[] = [
-    {
-      type: 'header',
-      text: {
-        type: 'plain_text',
-        text: title,
-      },
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `<${commitUrl}|${short}> ${subject}\nby ${author}`,
-      },
-    },
+    section(
+      `:warning: *Performance detector: ${headline}* just hit branch \`main\` on \`${repository}\`\n\n${policyText(plan, loud)}`,
+    ),
+    section(
+      `:mag: *Commit*\n• <${commitUrl}|${short}> ${subject} — by ${author}`,
+    ),
   ];
 
-  for (const finding of decision.findings) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: findingLines(finding, scores).join('\n'),
-      },
-    });
+  const large = decision.findings.filter((f) => f.level === 'loud');
+  const small = decision.findings.filter((f) => f.level === 'quiet');
+  if (large.length > 0) {
+    blocks.push(
+      section(
+        `:red_circle: *Large change* (${DEFAULT_CONFIG.loudPct}% or more)\n${large
+          .map((f) => formatFinding(f, scores))
+          .join('\n')}`,
+      ),
+    );
+  }
+  if (small.length > 0) {
+    blocks.push(
+      section(
+        `:large_yellow_circle: *Change* (above the noise)\n${small
+          .map((f) => formatFinding(f, scores))
+          .join('\n')}`,
+      ),
+    );
   }
 
   const browsers = [...new Set(decision.findings.map((f) => f.browser))];
-  blocks.push({
-    type: 'context',
-    elements: browsers.map((browser) => ({
-      type: 'mrkdwn' as const,
-      text: breakdownLine(browser, scores),
-    })),
-  });
-
-  if (decision.findings.some((finding) => finding.direction === 'faster')) {
-    blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: '_A speed-up can also mean the metric stopped timing what it should. Check that the metric still measures the same thing._',
-      },
-    });
-  }
+  blocks.push(
+    section(
+      `:large_blue_circle: *Breakdown* (pooled, for context)\n${browsers
+        .map((browser) => formatBreakdown(browser, scores))
+        .join('\n')}`,
+    ),
+  );
 
   const notes: string[] = [];
-  if (plan.canary) {
+  if (decision.findings.some((finding) => finding.direction === 'faster')) {
     notes.push(
-      'Head and base are the same build, so this is noise, not a change.',
+      '_A speed-up can also mean the metric stopped timing what it should. Check that the metric still measures the same thing._',
     );
   }
   if (plan.rangeSize > 1) {
     notes.push(
-      `The nearest earlier build is ${plan.rangeSize} commits back, so any of them could be the cause.`,
+      `_The nearest earlier build is ${plan.rangeSize} commits back, so any of them could be the cause._`,
     );
   }
   if (decision.unmeasured.length > 0) {
     notes.push(
-      `Could not measure: ${decision.unmeasured.map(browserName).join(', ')}.`,
+      `_Could not measure: ${decision.unmeasured.map(browserName).join(', ')}._`,
     );
   }
-  notes.push(
-    `<${runUrl}|Detector run> | base <https://github.com/${repository}/commit/${plan.baseSha}|${plan.baseSha.slice(0, 7)}> | not a merge gate`,
-  );
+  if (notes.length > 0) {
+    blocks.push(section(notes.join('\n')));
+  }
+
   blocks.push({
     type: 'context',
-    elements: notes.map((text) => ({ type: 'mrkdwn' as const, text })),
+    elements: [
+      {
+        type: 'mrkdwn',
+        text: `<${runUrl}|View CI Run> · <${baseUrl}|Base commit ${plan.baseSha.slice(0, 7)}>`,
+      },
+    ],
   });
 
-  const headline = decision.findings
+  const summary = decision.findings
     .map(
       (finding) =>
         `${browserName(finding.browser)} ${finding.metric} ${pct(finding.pooled.shiftPct)}`,
     )
     .join(', ');
   return {
-    text: `${title} at ${short}: ${headline}`,
-    attachments: [{ color: loud ? LOUD_COLOR : QUIET_COLOR, blocks }],
+    text: `Performance detector: ${headline} at ${short}: ${summary}`,
+    blocks,
   };
 }

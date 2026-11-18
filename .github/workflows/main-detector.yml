@@ -78,9 +78,10 @@ jobs:
         env:
           HEAD_INPUT: ${{ inputs.head_sha || github.event.workflow_run.head_sha }}
           MODE: ${{ inputs.mode }}
+          INJECT: ${{ inputs.inject_head_ms }}
         with:
           script: |
-            if (process.env.MODE === 'aa') return;
+            if (process.env.MODE === 'aa' || process.env.INJECT) return;
             const { owner, repo } = context.repo;
             const { data: commit } = await github.rest.repos.getCommit({
               owner,

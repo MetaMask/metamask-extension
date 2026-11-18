@@ -49,7 +49,7 @@ const build = (decision: Decision, rangeSize = 1, subject = 'feat: x (#42)') =>
   });
 
 const render = (payload: ReturnType<typeof build>) =>
-  JSON.stringify(payload.attachments[0].blocks);
+  JSON.stringify(payload.blocks);
 
 describe('buildSlackMessage', () => {
   it('links the commit and pull request and names the author', () => {
@@ -65,7 +65,7 @@ describe('buildSlackMessage', () => {
     expect(render(payload)).toContain('by someone');
   });
 
-  it('colors and titles quiet and loud pings differently', () => {
+  it('words quiet and loud pings differently', () => {
     const quiet = build({
       ping: 'quiet',
       findings: [finding()],
@@ -77,9 +77,10 @@ describe('buildSlackMessage', () => {
       unmeasured: [],
     });
 
-    expect(quiet.attachments[0].color).not.toBe(loud.attachments[0].color);
-    expect(quiet.text).toContain('Performance change');
-    expect(loud.text).toContain('Large performance change');
+    expect(quiet.text).toContain('a performance change');
+    expect(render(quiet)).toContain('large_yellow_circle');
+    expect(loud.text).toContain('a large performance change');
+    expect(render(loud)).toContain('red_circle');
   });
 
   it('reports pooled shift, per-job values and the breakdown', () => {
@@ -87,8 +88,8 @@ describe('buildSlackMessage', () => {
       build({ ping: 'quiet', findings: [finding()], unmeasured: [] }),
     );
 
-    expect(text).toContain('Chrome uiStartup: 2.5% slower');
-    expect(text).toContain('Per job (3)');
+    expect(text).toContain('Chrome uiStartup* (2.5% slower)');
+    expect(text).toContain('per job: +2.0, +3.0, +3.0 %');
     expect(text).toContain('loadScripts');
   });
 
@@ -131,7 +132,7 @@ describe('buildSlackMessage', () => {
       author: 'someone',
     });
 
-    expect(payload.text).toContain('Detector false alarm');
+    expect(payload.text).toContain('false alarm on the A/A canary');
     expect(render(payload)).toContain('same build, so this is noise');
   });
 
