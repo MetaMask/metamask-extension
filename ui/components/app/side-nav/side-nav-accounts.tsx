@@ -26,6 +26,7 @@ import {
   getAccountTree,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { SideNavAccountCell } from './side-nav-account-cell';
 
 // The "Accounts" section of the side navigation: a header with search/manage/add
 // actions above the account list, which scrolls independently of the page.
@@ -149,6 +150,7 @@ export const SideNavAccounts = () => {
             displayWalletHeader={hasMultipleWallets}
             showDefaultAddress={showDefaultAddress}
             shouldNavigateOnSelect={false}
+            accountCellComponent={SideNavAccountCell}
           />
         ) : (
           <Text

@@ -173,6 +173,7 @@ describe('MultichainAccountMenu', () => {
     const menuIcon = document.querySelector(menuIconSelector);
 
     expect(menuIcon).toBeInTheDocument();
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
     expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
   });
 
@@ -184,7 +185,10 @@ describe('MultichainAccountMenu', () => {
       onToggle: jest.fn(),
     });
 
-    expect(document.querySelector(menuButtonSelector)).toBeInTheDocument();
+    expect(document.querySelector(menuButtonSelector)).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
     expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
   });
 
@@ -196,7 +200,10 @@ describe('MultichainAccountMenu', () => {
       onToggle: jest.fn(),
     });
 
-    expect(document.querySelector(menuButtonSelector)).toBeInTheDocument();
+    expect(document.querySelector(menuButtonSelector)).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
     expect(document.querySelector(popoverOpenSelector)).toBeInTheDocument();
   });
 

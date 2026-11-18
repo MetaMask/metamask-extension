@@ -30,7 +30,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MultichainAccountCell } from '../multichain-account-cell';
+import {
+  MultichainAccountCell,
+  type MultichainAccountCellProps,
+} from '../multichain-account-cell';
 import {
   AccountTreeWallets,
   MultichainAccountsState,
@@ -110,6 +113,12 @@ export type MultichainAccountListProps = {
    * @default true
    */
   shouldNavigateOnSelect?: boolean;
+  /**
+   * Cell rendered for each account. Defaults to {@link MultichainAccountCell}.
+   * A surface can pass its own component to change the row without adding
+   * variant branches to the shared cell. The replacement receives the same props.
+   */
+  accountCellComponent?: React.ComponentType<MultichainAccountCellProps>;
 };
 
 type WalletData = AccountTreeWallets[AccountWalletId];
@@ -212,6 +221,7 @@ export const MultichainAccountList = ({
   showDefaultAddress = false,
   isEditMode = false,
   shouldNavigateOnSelect = true,
+  accountCellComponent: AccountCell = MultichainAccountCell,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox && !isEditMode;
 
@@ -550,7 +560,7 @@ export const MultichainAccountList = ({
 
       return (
         <Box className="multichain-account-menu-popover__list--menu-item">
-          <MultichainAccountCell
+          <AccountCell
             accountId={groupId as AccountGroupId}
             accountName={groupData.metadata.name}
             accountNameString={groupData.metadata.name}
@@ -643,6 +653,7 @@ export const MultichainAccountList = ({
       internalAccountsById,
       visibilityOverrides,
       handleVisibilityToggle,
+      AccountCell,
     ],
   );
 
