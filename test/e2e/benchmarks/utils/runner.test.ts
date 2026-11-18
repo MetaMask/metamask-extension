@@ -1,5 +1,11 @@
 import type { TimerStatistics } from '../../../../shared/constants/benchmarks';
-import { convertTimerStatisticsToBenchmarkResults } from './runner';
+import { WARMUP_RUNS } from './constants';
+import {
+  convertTimerStatisticsToBenchmarkResults,
+  runBenchmarkWithIterations,
+  runPageLoadBenchmark,
+} from './runner';
+import type { BenchmarkRunResult, Metrics } from './types';
 
 function createTimerStats(
   id: string,
@@ -67,5 +73,89 @@ describe('convertTimerStatisticsToBenchmarkResults', () => {
     );
 
     expect(Object.keys(results.values ?? {})).toStrictEqual(['uiStartup']);
+  });
+});
+
+describe('runBenchmarkWithIterations', () => {
+  it('numbers retained values by iteration, leaving a gap after a failed first iteration', async () => {
+    // `retry` logs the failed iteration.
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const outcomes: BenchmarkRunResult[] = [
+      { timers: [], success: false, error: 'first iteration failed' },
+      { timers: [{ id: 'uiStartup', value: 100 }], success: true },
+      { timers: [{ id: 'uiStartup', value: 120 }], success: true },
+    ];
+    const benchmarkFn = jest
+      .fn<Promise<BenchmarkRunResult>, []>()
+      .mockImplementation(async () => outcomes.shift() as BenchmarkRunResult);
+
+    const summary = await runBenchmarkWithIterations(
+      'runner-test',
+      benchmarkFn,
+      3,
+      0,
+      {},
+    );
+
+    const expected = [
+      { iteration: 1, value: 100 },
+      { iteration: 2, value: 120 },
+    ];
+    expect(summary.failedRuns).toBe(1);
+    expect(
+      summary.timers.find((timer) => timer.id === 'uiStartup')?.values,
+    ).toStrictEqual(expected);
+    expect(
+      summary.timers.find((timer) => timer.id === 'total')?.values,
+    ).toStrictEqual(expected);
+  });
+});
+
+function createMetrics(uiStartup: number): Metrics {
+  return {
+    navigation: [
+      {
+        load: 500,
+        domContentLoaded: 400,
+        domInteractive: 300,
+        type: 'navigate',
+      },
+    ],
+    paint: { 'first-paint': 200 },
+    'UI Startup': uiStartup,
+    'Background Connect': 10,
+    'First Render': 20,
+    'Initial Actions': 30,
+    'Load Scripts': 40,
+    'Setup Store': 50,
+    numNetworkReqs: 5,
+  };
+}
+
+describe('runPageLoadBenchmark', () => {
+  it('numbers retained values after the warm-up sessions', async () => {
+    const pageLoads = 2;
+    const sessions = [
+      [createMetrics(900), createMetrics(910)],
+      [createMetrics(100), createMetrics(120)],
+    ];
+    const measurePageFn = jest.fn().mockImplementation(async () => ({
+      metrics: sessions.shift(),
+      title: 'home',
+      persona: 'standard',
+    }));
+
+    const results = await runPageLoadBenchmark(measurePageFn, {
+      browserLoads: WARMUP_RUNS + 1,
+      pageLoads,
+    });
+
+    // With a plain counter these would be 0 and 1.
+    const warmupSize = WARMUP_RUNS * pageLoads;
+    expect(WARMUP_RUNS).toBeGreaterThan(0);
+    expect(results.values?.uiStartup).toStrictEqual([
+      { iteration: warmupSize, value: 100 },
+      { iteration: warmupSize + 1, value: 120 },
+    ]);
   });
 });
