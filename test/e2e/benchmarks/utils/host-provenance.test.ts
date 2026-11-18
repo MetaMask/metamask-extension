@@ -12,11 +12,11 @@ describe('timeCpuProbe', () => {
   });
 
   it('scales with the work it is given', () => {
-    // Ten times the rounds should cost materially more. Loose bound: CI boxes
-    // are noisy and the point is that the loop is not elided, not the ratio.
-    const small = timeCpuProbe(50);
-    const large = timeCpuProbe(500);
-    expect(large).toBeGreaterThan(small);
+    // The fastest of five runs drops a preempted sample, so a busy CI box
+    // cannot flip the order; the point is that the loop is not elided.
+    const fastest = (rounds: number) =>
+      Math.min(...Array.from({ length: 5 }, () => timeCpuProbe(rounds)));
+    expect(fastest(5000)).toBeGreaterThan(fastest(50));
   });
 });
 
