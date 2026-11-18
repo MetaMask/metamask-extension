@@ -25,7 +25,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import Tooltip from '../../../components/ui/tooltip';
 import type { ContactListItemProps } from '../contacts.types';
 
@@ -43,7 +43,7 @@ export function ContactListItem({
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const network = allNetworks?.[chainId as Hex];
   const networkName = network?.name ?? t('networkTabCustom');
-  const networkImage = getImageForChainId(chainId);
+  const networkImage = useImageForChainId(chainId);
 
   const onCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
