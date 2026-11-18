@@ -346,7 +346,7 @@ const BENCHMARK_THRESHOLDS = {
  * Dotted-key namespace derived from `BENCHMARK_THRESHOLDS`.
  *
  * Each leaf is a `<benchmarkName>.<metricId>` string literal — used by
- * `GATED_METRICS` to assemble its allowlist via dot-namespace access
+ * `ADMITTED_SERIES` to name a series via dot-namespace access
  * (`METRIC.startupStandardHome.uiStartup`). Renaming a threshold key
  * surfaces as a missing-property error at every call site; adding an
  * entry for an unknown benchmark/metric is a compile-time error.
@@ -379,17 +379,6 @@ export const METRIC: MetricNamespace = ((): MetricNamespace => {
   }
   return namespace as MetricNamespace;
 })();
-
-/**
- * Union of every valid dotted `<benchmarkName>.<metricId>` key derived from
- * `METRIC`. Used as an element-type constraint where a value must correspond
- * to a threshold-backed metric — e.g. `GATED_METRIC_VALUES` in
- * `gated-metrics.ts` uses it to reject raw strings, stale `METRIC.*` paths,
- * and typos at compile time.
- */
-export type MetricKey = {
-  [B in keyof typeof METRIC]: (typeof METRIC)[B][keyof (typeof METRIC)[B]];
-}[keyof typeof METRIC];
 
 /**
  * Registry of threshold configurations keyed by benchmark name (camelCase).

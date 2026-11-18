@@ -118,7 +118,7 @@ For startup benchmarks, use the `startup` prefix: `standard-home.ts` → `startu
 
 **Quality Gate enforcement:**
 
-`test/e2e/benchmarks/utils/gated-metrics.ts` lists which metrics block PRs on regression. Metrics in that file fail the `quality-gate` CI job when their threshold is breached; metrics not listed surface as warnings in the PR comment but do not fail the gate. Edit that file to graduate or demote a metric — its module JSDoc covers the mechanics. Both that file and `thresholds.ts` are co-owned by `@MetaMask/qa` and `@MetaMask/extension-platform`; either team can approve.
+`test/e2e/benchmarks/utils/admitted-series.ts` lists the series that block PRs, each with its `δ_block`, the smallest effect the admission record found worth blocking. A paired job runs a flow's base and head builds in turn, and `quality-gate` blocks when the lower bound of the head-minus-base shift exceeds that series' `δ_block` (ADR 0072's decision rule, `paired-decision.ts`). Everything else, including every `thresholds.ts` limit, surfaces as a warning in the PR comment and never fails the gate. The file is co-owned by `@MetaMask/qa` and `@MetaMask/extension-platform`; either team can approve.
 
 ### 3. Add to a preset (optional)
 

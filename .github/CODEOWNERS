@@ -257,7 +257,7 @@ test/e2e/fixtures/onboarding-fixture.json                             @MetaMask/
 test/e2e/fixtures/fixture-validation.ts                               @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-export.spec.ts                           @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-validation.spec.ts                       @MetaMask/qa @MetaMask/extension-platform
-test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/qa @MetaMask/extension-platform
+test/e2e/benchmarks/utils/admitted-series.ts                          @MetaMask/qa @MetaMask/extension-platform
 test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform
 
 # Wallet Integrations

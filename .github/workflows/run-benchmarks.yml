@@ -153,9 +153,12 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-      - name: Gate this benchmark leg
+      # One job's two differences per series are too few to decide, so this
+      # step checks that its results carry values and `quality-gate` decides
+      # over every job of the flow.
+      - name: Check this benchmark leg's results
         if: ${{ steps.run-benchmark.outcome == 'success' }}
-        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/ --leg
         shell: bash
 
   benchmarks-page-load:
@@ -248,7 +251,9 @@ jobs:
         run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
         shell: bash
 
-  # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
+  # Blocks on the series admitted under ADR 0072, by the paired decision rule
+  # (test/e2e/benchmarks/utils/paired-decision.ts); every other series, and the
+  # constant thresholds (THRESHOLD_REGISTRY), are reported and never block.
   # Rollout across 4 phases:
   # - Phase 2: continue-on-error: true (non-blocking, informational).
   # - Phase 3: continue-on-error: false (red X in checks, not required).
@@ -275,7 +280,8 @@ jobs:
             tsconfig.json
             development/metamaskbot-build-announce
             shared/constants/benchmarks.ts
-            test/e2e/benchmarks/utils/gated-metrics.ts
+            test/e2e/benchmarks/utils/admitted-series.ts
+            test/e2e/benchmarks/utils/paired-decision.ts
             test/e2e/benchmarks/utils/thresholds.ts
             test/e2e/benchmarks/utils/statistics.ts
           sparse-checkout-cone-mode: false
@@ -339,7 +345,7 @@ jobs:
             steps.download-benchmarks.outcome == 'success' &&
             steps.skip-check.outputs.skip != 'true'
           }}
-        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
+        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/${{ inputs.base-builds-from-run != '' && ' --paired' || '' }}
         shell: bash
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
