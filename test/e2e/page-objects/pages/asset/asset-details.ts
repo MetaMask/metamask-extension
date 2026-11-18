@@ -37,6 +37,14 @@ class AssetDetailsPage {
 
   private readonly assetName = '[data-testid="asset-name"]';
 
+  /**
+   * Present when a Stellar classic trustline is active (`canDeactivate`).
+   * Stronger readiness signal than the page shell for absence checks of the
+   * activate card / inactive badge.
+   */
+  private readonly tokenDeactivateButton =
+    '[data-testid="token-overview-deactivate-asset"]';
+
   private driver: Driver;
 
   private readonly nativeBuyButton = '[data-testid="coin-overview-buy"]';
@@ -149,7 +157,7 @@ class AssetDetailsPage {
    */
   async checkActivateCardIsAbsent(): Promise<void> {
     await this.driver.assertElementNotPresent(this.assetActivateCard, {
-      findElementGuard: this.page,
+      findElementGuard: this.tokenDeactivateButton,
     });
   }
 
@@ -204,7 +212,7 @@ class AssetDetailsPage {
    */
   async checkInactiveBadgeIsAbsent(): Promise<void> {
     await this.driver.assertElementNotPresent(this.assetInactiveBadge, {
-      findElementGuard: this.page,
+      findElementGuard: this.tokenDeactivateButton,
     });
   }
 

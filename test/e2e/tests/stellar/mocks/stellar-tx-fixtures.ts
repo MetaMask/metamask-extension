@@ -16,10 +16,7 @@ import {
   TransactionBuilder,
   type Horizon,
 } from '@stellar/stellar-sdk';
-import {
-  DEFAULT_STELLAR_ADDRESS,
-  EXPECTED_STELLAR_ADDRESSES_BY_INDEX,
-} from '../../../constants';
+import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
   STELLAR_CHAIN_ID,
@@ -30,9 +27,12 @@ import {
 const ETH_MAINNET_USDC_ASSET_ID =
   'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as const;
 
-export const STELLAR_RECIPIENT_ADDRESS = EXPECTED_STELLAR_ADDRESSES_BY_INDEX[1];
+/** Counterparty address for outbound activity / send fixture txs (not HD Account 2). */
+export const STELLAR_RECIPIENT_ADDRESS =
+  'GBIIXG2ZPGFMANK4XIF6MMWJXMX4F4BQHIIAJ5GOAB5DXBDQPJ6IRVJK';
+/** External sender for inbound activity fixture txs (not HD Account 3). */
 export const STELLAR_EXTERNAL_SENDER_ADDRESS =
-  EXPECTED_STELLAR_ADDRESSES_BY_INDEX[2];
+  'GBDJSQAXWNQF55G6QY6AF4GWKOINELOND7A7RHZPBXBPEV3YSY5M7LVU';
 
 export type StellarHorizonTxStatus = 'confirmed' | 'failed';
 
