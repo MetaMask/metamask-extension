@@ -318,10 +318,10 @@ jobs:
       # added after the failure.
       # Remove when graduating to Phase 4 (required check) — at that point,
       # use admin bypass or update thresholds instead.
+      # Runs when the download failed too, so the label also covers the last step.
       - name: Check for skip label
         id: skip-check
         continue-on-error: true
-        if: ${{ steps.download-benchmarks.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
@@ -353,6 +353,18 @@ jobs:
             steps.skip-check.outputs.skip != 'true'
           }}
         run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/${{ inputs.base-builds-from-run != '' && ' --paired' || '' }}
+        shell: bash
+
+      - name: Fail when the benchmark artifacts did not download
+        if: >-
+          ${{
+            github.event_name == 'pull_request' &&
+            steps.download-benchmarks.outcome != 'success' &&
+            steps.skip-check.outputs.skip != 'true'
+          }}
+        run: |
+          echo '::error::The benchmark artifacts did not download, so the quality gate did not run'
+          exit 1
         shell: bash
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
