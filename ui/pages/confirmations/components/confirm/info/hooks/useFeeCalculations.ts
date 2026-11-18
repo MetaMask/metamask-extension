@@ -29,6 +29,7 @@ import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import {
   // eslint-disable-next-line no-restricted-syntax
   getUSDConversionRateByChainId,
+  getUseCurrencyRateCheck,
   selectConversionRateByChainId,
 } from '../../../../../../selectors';
 import { useTransactionGasLimit } from '../../../../hooks/gas/useTransactionGasLimit';
@@ -114,16 +115,19 @@ export function useFeeCalculations(
   const chainUsdConversionRate = useSelector((state) =>
     getUSDConversionRateByChainId(chainId)(state),
   );
+  const shouldShowFiat = useSelector(getUseCurrencyRateCheck);
   const currencyRates = useSelector(getCurrencyRates);
   const fallbackCurrencyRate = shouldUseEthConversionRateFallback(chainId)
     ? currencyRates?.[CURRENCY_SYMBOLS.ETH]
     : undefined;
-  const conversionRate =
-    getValidConversionRate(chainConversionRate) ??
-    getValidConversionRate(fallbackCurrencyRate?.conversionRate);
-  const usdConversionRate =
-    getValidConversionRate(chainUsdConversionRate) ??
-    getValidConversionRate(fallbackCurrencyRate?.usdConversionRate);
+  const conversionRate = shouldShowFiat
+    ? (getValidConversionRate(chainConversionRate) ??
+      getValidConversionRate(fallbackCurrencyRate?.conversionRate))
+    : undefined;
+  const usdConversionRate = shouldShowFiat
+    ? (getValidConversionRate(chainUsdConversionRate) ??
+      getValidConversionRate(fallbackCurrencyRate?.usdConversionRate))
+    : undefined;
   const hasValidConversionRate = conversionRate !== undefined;
 
   const { gasLimit: optimizedGasLimit, quotedGasLimit } =
