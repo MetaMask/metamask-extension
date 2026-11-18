@@ -44,7 +44,7 @@ describe('useIsNFT', () => {
     );
 
     await waitFor(() => {
-      expect(result.current.isNFT).toMatchInlineSnapshot(`true`);
+      expect(result.current.isNFT).toBe(true);
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
         transactionMeta.txParams.to,
         transactionMeta.txParams.from,
@@ -74,6 +74,71 @@ describe('useIsNFT', () => {
       expect(result.current.isNFT).toBe(false);
     });
     expect(result.current.isNFT).toMatchInlineSnapshot(`false`);
+  });
+
+  it('treats an unknown token standard as fungible', async () => {
+    mockGetTokenStandardAndDetailsByChain.mockImplementation(() =>
+      Promise.resolve({}),
+    );
+
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    const { result } = renderHookWithProvider(
+      () => useIsNFT(transactionMeta),
+      mockState,
+    );
+
+    expect(result.current.isNFT).toBe(false);
+
+    await waitFor(() => {
+      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
+    });
+    expect(result.current.isNFT).toBe(false);
+  });
+
+  it('treats a failed token lookup as fungible', async () => {
+    mockGetTokenStandardAndDetailsByChain.mockImplementation(() =>
+      Promise.reject(new Error('Token not found')),
+    );
+
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    const { result } = renderHookWithProvider(
+      () => useIsNFT(transactionMeta),
+      mockState,
+    );
+
+    expect(result.current.isNFT).toBe(false);
+
+    await waitFor(() => {
+      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
+    });
+    expect(result.current.isNFT).toBe(false);
+  });
+
+  it('identifies ERC-1155 tokens as NFTs', async () => {
+    mockGetTokenStandardAndDetailsByChain.mockImplementation(() =>
+      Promise.resolve({
+        standard: TokenStandard.ERC1155,
+      }),
+    );
+
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    const { result } = renderHookWithProvider(
+      () => useIsNFT(transactionMeta),
+      mockState,
+    );
+
+    await waitFor(() => {
+      expect(result.current.isNFT).toBe(true);
+    });
   });
 
   it('looks up the token from the calldata for Permit2 approvals', async () => {

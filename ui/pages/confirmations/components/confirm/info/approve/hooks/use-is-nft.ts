@@ -20,7 +20,10 @@ export const useIsNFT = (
     );
   }, [tokenAddress]);
 
-  const isNFT = value?.standard !== TokenStandard.ERC20;
+  const isNFT = Boolean(
+    value?.standard &&
+    [TokenStandard.ERC721, TokenStandard.ERC1155].includes(value.standard),
+  );
 
   return { pending, isNFT };
 };
