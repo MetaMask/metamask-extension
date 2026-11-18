@@ -248,13 +248,15 @@ const POWER_USER_HOME = {
   ...CLS_THRESHOLDS,
 } satisfies ThresholdConfig;
 
-// Threshold keys must match timer IDs emitted by the benchmark flows (snake_case).
+// Threshold keys must match timer IDs emitted by the benchmark flows: the
+// snake_case step id, plus `Legacy` for the step's harness-clock timer in the
+// flows that also report an in-page timer.
 /* eslint-disable @typescript-eslint/naming-convention */
 // Interaction benchmarks: no CLS thresholds. Short single-action measurements
 // capture layout shifts from the benchmark harness (INP probe, navigation),
 // not from application rendering behavior. CLS applies to startup + journey only.
 const LOAD_NEW_ACCOUNT = {
-  load_new_account: {
+  load_new_accountLegacy: {
     p75: { warn: 800, fail: 1200 },
     p95: { warn: 1200, fail: 1800 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
