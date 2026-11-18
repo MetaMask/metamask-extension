@@ -523,6 +523,12 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
+          enabledNetworkMap: {
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.POLYGON]: true,
+            },
+          },
           assetsBackgroundLoadingStatus: {
             [mockEvmAccount1.id]: 'loading',
           },
@@ -541,6 +547,31 @@ describe('EthOverview', () => {
       expect(
         queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY),
       ).not.toBeInTheDocument();
+    });
+
+    it('should show a funded balance once every enabled network has assets', async () => {
+      const mockedStoreWithCompleteBalances = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBackgroundLoadingStatus: {
+            [mockEvmAccount1.id]: 'loading',
+          },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithCompleteBalances,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY)).toBeInTheDocument();
     });
 
     it('should show the cached primary balance', async () => {

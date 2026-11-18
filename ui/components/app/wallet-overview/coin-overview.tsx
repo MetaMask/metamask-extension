@@ -57,6 +57,7 @@ import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectBalanceBySelectedAccountGroup,
+  selectEnabledNetworksHaveAssetsForSelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -233,6 +234,9 @@ export const CoinOverview = ({
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
   const assetsHaveLoaded = useAssetsHaveLoaded();
+  const enabledNetworksHaveAssets = useSelector(
+    selectEnabledNetworksHaveAssetsForSelectedAccountGroup,
+  );
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
   const isEvm = isEvmChainId(chainId);
@@ -254,6 +258,8 @@ export const CoinOverview = ({
     !showNativeTokenAsMain &&
     hasBalance &&
     aggregateFiatBalanceIsZero;
+  const balanceAssetsAreReady =
+    assetsHaveLoaded || (hasBalance && enabledNetworksHaveAssets);
 
   const enabledNetworksDelayKey = useMemo(
     () =>
@@ -314,7 +320,7 @@ export const CoinOverview = ({
         (!isZeroFiatBalanceDelayStateCurrent ||
           !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
-          (!assetsHaveLoaded ||
+          (!balanceAssetsAreReady ||
             (!hasBalance && (balanceIsLoading || !balanceIsLoaded))))),
     [
       isEvm,
@@ -325,7 +331,7 @@ export const CoinOverview = ({
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
-      assetsHaveLoaded,
+      balanceAssetsAreReady,
     ],
   );
 
