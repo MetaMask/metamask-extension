@@ -1,5 +1,9 @@
-import { readFileSync } from 'node:fs';
 import ts from 'typescript';
+import { getPublicMethodNamesOfLegacyBackgroundApiService } from './legacy-apis/legacy-background-api-service';
+import {
+  getOrLoadSourceFile,
+  ResolutionContext,
+} from './legacy-apis/module-resolution';
 
 /**
  * The name of a tracked legacy background API, which is also the key of its
@@ -24,17 +28,11 @@ export type LegacyApi = {
   /**
    * Extracts the names of the API's members from the parsed file.
    */
-  getMemberNames: (sourceFile: ts.SourceFile) => Set<string>;
+  getMemberNames: (
+    sourceFile: ts.SourceFile,
+    context: ResolutionContext,
+  ) => Set<string>;
 };
-
-/**
- * A class member that exposes something callable under a name: a method, a
- * getter, or a property whose value is a function.
- */
-type CallableMember =
-  | ts.MethodDeclaration
-  | ts.GetAccessorDeclaration
-  | ts.PropertyDeclaration;
 
 /**
  * The APIs tracked by the legacy background API snapshot, keyed by name.
@@ -59,17 +57,12 @@ export const LEGACY_APIS = {
  * @returns The names of the members currently exposed by the API.
  */
 export function readApiMemberNames(legacyApi: LegacyApi): Set<string> {
-  const source = readFileSync(legacyApi.filePath, 'utf8');
-  // This only parses the file (no type-checking), so compiler options from
-  // `tsconfig.json` do not apply. TypeScript uses the extension of the file to
-  // determine whether it is TypeScript or JavaScript.
-  const sourceFile = ts.createSourceFile(
-    legacyApi.filePath,
-    source,
-    ts.ScriptTarget.Latest,
-  );
+  const context = {
+    sourceFilesByPath: new Map<string, ts.SourceFile>(),
+  } satisfies ResolutionContext;
+  const sourceFile = getOrLoadSourceFile(context, legacyApi.filePath);
 
-  return legacyApi.getMemberNames(sourceFile);
+  return legacyApi.getMemberNames(sourceFile, context);
 }
 
 /**
@@ -154,108 +147,4 @@ function getPropertyNamesOfGetApi(sourceFile: ts.SourceFile): Set<string> {
   }
 
   return names;
-}
-
-/**
- * Extracts the names of the public methods of `LegacyBackgroundApiService`.
- *
- * @param sourceFile - The parsed file that defines
- * `LegacyBackgroundApiService`.
- * @returns The names of the public methods.
- */
-function getPublicMethodNamesOfLegacyBackgroundApiService(
-  sourceFile: ts.SourceFile,
-): Set<string> {
-  // EXAMPLE:
-  // class LegacyBackgroundApiService { ... }
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  const service = sourceFile.statements.find(
-    (statement): statement is ts.ClassDeclaration =>
-      ts.isClassDeclaration(statement) &&
-      statement.name?.text === 'LegacyBackgroundApiService',
-  );
-  if (!service) {
-    throw new Error('LegacyBackgroundApiService was not found');
-  }
-
-  const names = new Set<string>();
-  // EXAMPLE (each member of the class):
-  // export class LegacyBackgroundApiService {
-  //   readonly #messenger: LegacyBackgroundApiServiceMessenger;
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //   async addToken(options) { ... }
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //   #getGlobalProvider() { ... }
-  //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // }
-  for (const member of service.members) {
-    // EXAMPLES:
-    // isAssetsUnifyStateEnabled() { ... }
-    // get mode() { ... }
-    // addToken = async (options) => { ... }
-    //
-    // ANTI-EXAMPLES:
-    // readonly messenger: LegacyBackgroundApiServiceMessenger;
-    // #getGlobalProvider() { ... }
-    // private helper() { ... }
-    // protected helper() { ... }
-    if (!isPublicCallableMember(member)) {
-      continue;
-    }
-
-    // EXAMPLE:
-    // async addToken(options) { ... }
-    //       ^^^^^^^^ (member.name)
-    names.add(member.name.getText(sourceFile));
-  }
-
-  return names;
-}
-
-/**
- * Determines whether a class member is callable through the public API.
- *
- * A member counts when it is a method, a getter, or a property initialized to a
- * function (e.g. an arrow function), and it is not hidden behind a `#`, a
- * `private`, or a `protected`.
- *
- * @param member - The class member to inspect.
- * @returns True when the member is part of the public API.
- */
-function isPublicCallableMember(
-  member: ts.ClassElement,
-): member is CallableMember {
-  // EXAMPLES:
-  // addToken(options) { ... }
-  // get mode() { ... }
-  const isMethodOrGetter =
-    ts.isMethodDeclaration(member) || ts.isGetAccessorDeclaration(member);
-
-  // EXAMPLE:
-  // addToken = async (options) => { ... }
-  //            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ (an arrow function or function
-  //                                        expression, as opposed to a plain
-  //                                        data field)
-  const isFunctionProperty =
-    ts.isPropertyDeclaration(member) &&
-    member.initializer !== undefined &&
-    (ts.isArrowFunction(member.initializer) ||
-      ts.isFunctionExpression(member.initializer));
-
-  if (!isMethodOrGetter && !isFunctionProperty) {
-    return false;
-  }
-
-  // ANTI-EXAMPLES:
-  // #getGlobalProvider() { ... }
-  // private helper() { ... }
-  // protected helper() { ... }
-  if (ts.isPrivateIdentifier(member.name)) {
-    return false;
-  }
-  return !member.modifiers?.some(
-    (modifier) =>
-      modifier.kind === ts.SyntaxKind.PrivateKeyword ||
-      modifier.kind === ts.SyntaxKind.ProtectedKeyword,
-  );
 }

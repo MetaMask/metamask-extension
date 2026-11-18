@@ -66,7 +66,9 @@ describe('Switch network - ', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
-          remoteFeatureFlags: { extensionUxFullscreenRedesign: true },
+          remoteFeatureFlags: {
+            coreCEUX1492AbtestWideScreenRedesign: { name: 'treatment' },
+          },
         },
       },
       async ({ driver }: { driver: Driver }) => {
