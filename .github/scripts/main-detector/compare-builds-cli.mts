@@ -10,9 +10,14 @@ import { BUILD_HOST, buildZipUrl } from './build-source.mts';
 import { BROWSERS } from './score.mts';
 import {
   fingerprint,
+  inflateEntry,
+  LOCAL_HEADER_SIZE,
+  localDataOffset,
   locateCentralDirectory,
+  normalizeManifest,
   parseCentralDirectory,
   TAIL_BYTES,
+  type ZipEntry,
 } from './zip-fingerprint.mts';
 
 async function range(url: string, spec: string): Promise<Buffer> {
@@ -21,6 +26,20 @@ async function range(url: string, spec: string): Promise<Buffer> {
     throw new Error(`${url}: expected 206, got ${response.status}`);
   }
   return Buffer.from(await response.arrayBuffer());
+}
+
+async function manifestOf(url: string, entries: ZipEntry[]): Promise<string> {
+  const entry = entries.find((e) => e.name === 'manifest.json');
+  if (!entry) {
+    throw new Error(`${url}: no manifest.json`);
+  }
+  const header = await range(
+    url,
+    `${entry.offset}-${entry.offset + LOCAL_HEADER_SIZE - 1}`,
+  );
+  const start = entry.offset + localDataOffset(header);
+  const data = await range(url, `${start}-${start + entry.compressedSize - 1}`);
+  return normalizeManifest(inflateEntry(data, entry.method).toString('utf8'));
 }
 
 async function zipFingerprint(url: string): Promise<string> {
@@ -33,7 +52,8 @@ async function zipFingerprint(url: string): Promise<string> {
     url,
     `${location.offset}-${location.offset + location.size - 1}`,
   );
-  return fingerprint(parseCentralDirectory(directory, location.entries));
+  const entries = parseCentralDirectory(directory, location.entries);
+  return fingerprint(entries, await manifestOf(url, entries));
 }
 
 async function main(): Promise<void> {

@@ -11,9 +11,10 @@ import { ghApi } from '../shared/gh-api.mts';
 import {
   assessHealth,
   buildHeartbeatMessage,
+  latestSlot,
   type RunInfo,
 } from './heartbeat.mts';
-import { postOrPrint } from './post-webhook.mts';
+import { postOrPrint, requireWebhookInCi } from './post-webhook.mts';
 
 const REPOSITORY =
   process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
@@ -51,8 +52,8 @@ async function main(): Promise<void> {
       'settle-hours': { type: 'string', default: '3' },
     },
   });
-  const now = Date.now();
-  const to = now - Number(values['settle-hours']) * HOUR_MS;
+  requireWebhookInCi(process.env.SLACK_WEBHOOK_MAIN_DETECTOR);
+  const to = latestSlot(Date.now()) - Number(values['settle-hours']) * HOUR_MS;
   const from = to - Number(values['window-hours']) * HOUR_MS;
 
   // Main runs can start long before they finish, so look back further.

@@ -1,67 +1,17 @@
 /**
- * Usage: node .github/scripts/main-detector/score-cli.mts --stage first|final --dir ARTIFACTS --plan plan.json --out result.json [--summary FILE] [--github-output FILE] [--shards 5]
+ * Usage: node .github/scripts/main-detector/score-cli.mts --stage first|final --dir ARTIFACTS --plan plan.json --out result.json [--summary FILE] [--github-output FILE] --shards N
  * Reads the artifacts of batch 1 (and 2) from detector-b<batch>-<browser>-s<shard> folders and scores them.
  */
 import fs from 'node:fs';
-import path from 'node:path';
 import { parseArgs } from 'node:util';
+import { loadBatch } from './load.mts';
 import { renderSummary, resultLabel, type PlanInfo } from './report.mts';
 import {
-  BROWSERS,
   DEFAULT_CONFIG,
   decide,
   needsConfirmation,
-  scoreBatch,
   type BatchScores,
-  type JobResult,
 } from './score.mts';
-
-function readJob(directory: string): JobResult {
-  const unusable: JobResult = { sessions: [], samples: {} };
-  if (!fs.existsSync(directory)) {
-    return unusable;
-  }
-  const file = fs
-    .readdirSync(directory)
-    .find((name) => /^benchmark-.*\.json$/u.test(name));
-  if (!file) {
-    return unusable;
-  }
-  const parsed = JSON.parse(
-    fs.readFileSync(path.join(directory, file), 'utf8'),
-  );
-  const entry = Object.values(parsed)[0] as {
-    abPilot?: { sessions: JobResult['sessions'] };
-    samples?: JobResult['samples'];
-  };
-  return entry?.abPilot && entry.samples
-    ? { sessions: entry.abPilot.sessions, samples: entry.samples }
-    : unusable;
-}
-
-function loadBatch(
-  root: string,
-  batch: number,
-  shards: number,
-  optional = false,
-): BatchScores | undefined {
-  const folders = fs.existsSync(root) ? fs.readdirSync(root) : [];
-  // A missing optional batch was not run; a missing required one scores as unusable jobs.
-  if (
-    optional &&
-    !folders.some((name) => name.startsWith(`detector-b${batch}-`))
-  ) {
-    return undefined;
-  }
-  const scores = {} as BatchScores;
-  for (const browser of BROWSERS) {
-    const jobs = Array.from({ length: shards }, (_, shard) =>
-      readJob(path.join(root, `detector-b${batch}-${browser}-s${shard + 1}`)),
-    );
-    scores[browser] = scoreBatch(browser, jobs, DEFAULT_CONFIG);
-  }
-  return scores;
-}
 
 function setOutputs(file: string | undefined, values: Record<string, string>) {
   if (file) {
@@ -81,16 +31,23 @@ async function main(): Promise<void> {
       out: { type: 'string' },
       summary: { type: 'string' },
       'github-output': { type: 'string' },
-      shards: { type: 'string', default: '5' },
+      shards: { type: 'string' },
     },
   });
   const { stage, dir, plan: planFile, out } = values;
-  if ((stage !== 'first' && stage !== 'final') || !dir || !planFile || !out) {
+  const shards = Number(values.shards);
+  if (
+    (stage !== 'first' && stage !== 'final') ||
+    !dir ||
+    !planFile ||
+    !out ||
+    !Number.isInteger(shards) ||
+    shards < 1
+  ) {
     throw new Error(
-      '--stage first|final, --dir, --plan and --out are required',
+      '--stage first|final, --dir, --plan, --out and --shards are required',
     );
   }
-  const shards = Number(values.shards);
 
   const plan: PlanInfo = JSON.parse(fs.readFileSync(planFile, 'utf8'));
   const first = loadBatch(dir, 1, shards) as BatchScores;

@@ -51,6 +51,10 @@ const METRIC_MEANINGS: Record<string, string> = {
 
 const metricLabel = (metric: string) => METRIC_LABELS[metric] ?? metric;
 
+// Slack mrkdwn reads these three characters as markup, so commit text must not carry them raw.
+const escapeSlack = (text: string) =>
+  text.replace(/&/gu, '&amp;').replace(/</gu, '&lt;').replace(/>/gu, '&gt;');
+
 function linkPullRequest(subject: string, repository: string): string {
   return subject.replace(
     /\(#(\d+)\)\s*$/u,
@@ -97,6 +101,9 @@ function formatBreakdown(browser: Browser, scores: BatchScores[]): string {
 }
 
 function policyText(plan: PlanInfo, loud: boolean): string {
+  if (plan.injectMs != null) {
+    return `The head build was slowed by ${plan.injectMs} ms on purpose to test the detector. This is not a real change.`;
+  }
   if (plan.canary) {
     return 'Head and base are the same build, so this is noise, not a change. Nothing needs fixing in the commit.';
   }
@@ -121,10 +128,12 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
   const short = plan.headSha.slice(0, 7);
   const commitUrl = `https://github.com/${repository}/commit/${plan.headSha}`;
   const baseUrl = `https://github.com/${repository}/commit/${plan.baseSha}`;
-  const subject = linkPullRequest(plan.headSubject, repository);
+  const subject = linkPullRequest(escapeSlack(plan.headSubject), repository);
 
   let headline = 'a performance change';
-  if (plan.canary) {
+  if (plan.injectMs != null) {
+    headline = 'a dry-run change injected into the head build';
+  } else if (plan.canary) {
     headline = 'a false alarm on the A/A canary';
   } else if (loud) {
     headline = 'a large performance change';
@@ -140,7 +149,7 @@ export function buildSlackMessage(input: SlackInput): SlackPayload {
       `:warning: *Performance detector: ${headline}* just hit branch \`main\` on \`${repository}\`\n\n${policyText(plan, loud)}`,
     ),
     section(
-      `:mag: *Commit*\n• <${commitUrl}|${short}> ${subject} — by ${author}`,
+      `:mag: *Commit*\n• <${commitUrl}|${short}> ${subject} — by ${escapeSlack(author)}`,
     ),
   ];
 

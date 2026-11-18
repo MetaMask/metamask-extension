@@ -8,7 +8,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
 import { REPOSITORY } from './build-source.mts';
-import { postOrPrint } from './post-webhook.mts';
+import { postOrPrint, requireWebhookInCi } from './post-webhook.mts';
 import { buildSlackMessage } from './slack.mts';
 
 function authorOf(sha: string): string {
@@ -39,6 +39,7 @@ async function main(): Promise<void> {
   if (!values.result) {
     throw new Error('--result is required');
   }
+  requireWebhookInCi(process.env.SLACK_WEBHOOK_MAIN_DETECTOR);
 
   const result = JSON.parse(fs.readFileSync(values.result, 'utf8'));
   if (result.decision.ping === 'none') {

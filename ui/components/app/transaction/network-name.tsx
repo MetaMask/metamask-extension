@@ -10,13 +10,13 @@ import {
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { useImageForChainId } from '../../../hooks/useImageForChainId';
 
 export function NetworkName({ chainId }: { chainId: string }) {
   const config = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const network = config[chainId as CaipChainId];
   const networkName = network?.name ?? chainId;
-  const networkImage = getImageForChainId(
+  const networkImage = useImageForChainId(
     isNonEvmChainId(chainId) ? chainId : formatChainIdToHex(chainId),
   );
 

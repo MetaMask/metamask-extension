@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { inflateRawSync } from 'node:zlib';
 
 const END_SIGNATURE = 0x06054b50;
 const ENTRY_SIGNATURE = 0x02014b50;
@@ -8,7 +9,19 @@ const MAX_COMMENT = 0xffff;
 // A suffix range this long always contains the end-of-central-directory record.
 export const TAIL_BYTES = END_RECORD_SIZE + MAX_COMMENT;
 
-export type ZipEntry = { name: string; crc: number; size: number };
+export type ZipEntry = {
+  name: string;
+  crc: number;
+  size: number;
+  // Compression method: 0 stored, 8 deflate.
+  method: number;
+  compressedSize: number;
+  // Where the entry's local header starts in the file.
+  offset: number;
+};
+
+// Fixed part of a local file header; the name and extra field follow it.
+export const LOCAL_HEADER_SIZE = 30;
 
 export type CentralDirectoryLocation = {
   offset: number;
@@ -68,6 +81,9 @@ export function parseCentralDirectory(
       ),
       crc: directory.readUInt32LE(position + 16),
       size: directory.readUInt32LE(position + 24),
+      method: directory.readUInt16LE(position + 10),
+      compressedSize: directory.readUInt32LE(position + 20),
+      offset: directory.readUInt32LE(position + 42),
     });
     position += 46 + nameLength + extraLength + commentLength;
   }
@@ -75,17 +91,54 @@ export function parseCentralDirectory(
 }
 
 /**
- * Fingerprint of the files in a build zip, ignoring `manifest.json` (it gets a
- * per-arm marker later) and directories. Two zips with the same fingerprint
- * hold the same file names, sizes and CRC-32s, regardless of compression or
- * timestamps.
+ * Where an entry's data starts, relative to its local header.
+ *
+ * @param header - The first `LOCAL_HEADER_SIZE` bytes of the local header.
+ */
+export function localDataOffset(header: Buffer): number {
+  return LOCAL_HEADER_SIZE + header.readUInt16LE(26) + header.readUInt16LE(28);
+}
+
+/**
+ * @param data - The entry's data as stored in the zip.
+ * @param method - Compression method from the central directory.
+ */
+export function inflateEntry(data: Buffer, method: number): Buffer {
+  if (method === 0) {
+    return data;
+  }
+  if (method === 8) {
+    return inflateRawSync(data);
+  }
+  throw new Error(`Unsupported compression method ${method}`);
+}
+
+/**
+ * The manifest without `build_id`, which differs between builds even when
+ * their code is identical.
+ *
+ * @param text - Contents of `manifest.json`.
+ */
+export function normalizeManifest(text: string): string {
+  const manifest = JSON.parse(text);
+  delete manifest.build_id;
+  return JSON.stringify(manifest);
+}
+
+/**
+ * Fingerprint of the files in a build zip, ignoring directories. Two zips with
+ * the same fingerprint hold the same file names, sizes and CRC-32s, regardless
+ * of compression or timestamps, and the same manifest. The manifest is
+ * compared by content because a commit that only edits it must not look
+ * unchanged.
  *
  * @param entries - Entries from {@link parseCentralDirectory}.
+ * @param manifest - The zip's manifest from {@link normalizeManifest}.
  */
-export function fingerprint(entries: ZipEntry[]): string {
+export function fingerprint(entries: ZipEntry[], manifest: string): string {
   const lines = entries
     .filter((e) => !e.name.endsWith('/') && e.name !== 'manifest.json')
-    .map((e) => `${e.name}\0${e.crc}\0${e.size}`)
-    .sort();
-  return createHash('sha256').update(lines.join('\n')).digest('hex');
+    .map((e) => `${e.name}\0${e.crc}\0${e.size}`);
+  lines.push(`manifest.json\0${manifest}`);
+  return createHash('sha256').update(lines.sort().join('\n')).digest('hex');
 }

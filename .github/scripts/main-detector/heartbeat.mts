@@ -14,7 +14,7 @@ export type Health = {
   expected: number;
   // Commits with no detector run at all.
   missing: RunInfo[];
-  // Commits whose detector runs all failed.
+  // Commits whose detector runs all ended without success.
   failed: RunInfo[];
 };
 
@@ -48,7 +48,11 @@ export function assessHealth(
     const runs = bySha.get(sha);
     if (!runs) {
       missing.push(mainRun);
-    } else if (runs.every((run) => run.conclusion === 'failure')) {
+    } else if (
+      runs.every(
+        (run) => run.conclusion !== null && run.conclusion !== 'success',
+      )
+    ) {
       failed.push(runs[0]);
     }
   }
@@ -60,6 +64,29 @@ export function assessHealth(
     status = 'problem';
   }
   return { status, expected: expected.size, missing, failed };
+}
+
+// Keep in step with the cron in main-detector-heartbeat.yml.
+const SLOT_HOUR_UTC = 14;
+const SLOT_MINUTE_UTC = 17;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * The latest scheduled heartbeat time at or before now. Anchoring the window
+ * to it keeps consecutive days contiguous however late a run starts.
+ *
+ * @param now - Milliseconds since the epoch.
+ */
+export function latestSlot(now: number): number {
+  const date = new Date(now);
+  const slot = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    SLOT_HOUR_UTC,
+    SLOT_MINUTE_UTC,
+  );
+  return slot <= now ? slot : slot - DAY_MS;
 }
 
 const list = (runs: RunInfo[], repository: string) =>
@@ -101,7 +128,9 @@ export function buildHeartbeatMessage(
   }
   if (health.failed.length > 0) {
     blocks.push(
-      section(`:x: *Detector run failed*\n${list(health.failed, repository)}`),
+      section(
+        `:x: *Detector run failed or never finished*\n${list(health.failed, repository)}`,
+      ),
     );
   }
   blocks.push({

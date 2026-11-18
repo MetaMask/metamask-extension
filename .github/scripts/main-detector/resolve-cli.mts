@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
 import { REPOSITORY, buildZipUrl } from './build-source.mts';
-import { resolveBuilds, type BuildRef } from './resolve.mts';
+import { parseStatusLines, resolveBuilds, type BuildRef } from './resolve.mts';
 
 const run = (command: string, args: string[]) =>
   execFileSync(command, args, {
@@ -24,6 +24,7 @@ function versionOf(sha: string): string {
 }
 
 async function exists(url: string): Promise<boolean> {
+  let lastError = '';
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const response = await fetch(url, { method: 'HEAD' });
@@ -33,12 +34,14 @@ async function exists(url: string): Promise<boolean> {
       if (response.status === 403 || response.status === 404) {
         return false;
       }
-    } catch {
-      // Retry below.
+      lastError = `${url} returned ${response.status}`;
+    } catch (error) {
+      lastError = String(error);
     }
     await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
   }
-  return false;
+  // A transient failure must not read as "no build", which would move the base back.
+  throw new Error(`Could not check ${url}: ${lastError}`);
 }
 
 // main.yml posts these two statuses on every commit it builds. builds-from-run
@@ -46,11 +49,12 @@ async function exists(url: string): Promise<boolean> {
 function statusesOf(sha: string): Record<string, string> {
   const text = run('gh', [
     'api',
-    `repos/${REPOSITORY}/commits/${sha}/status?per_page=100`,
+    '--paginate',
+    `repos/${REPOSITORY}/commits/${sha}/statuses?per_page=100`,
     '--jq',
-    '[.statuses[] | select(.context == "build-source-hash" or .context == "builds-from-run") | {(.context): .description}] | add // {}',
+    '.[] | select(.context == "build-source-hash" or .context == "builds-from-run") | [.context, .description] | @tsv',
   ]);
-  return JSON.parse(text || '{}');
+  return parseStatusLines(text);
 }
 
 async function lookup(sha: string): Promise<BuildRef | undefined> {
@@ -58,6 +62,9 @@ async function lookup(sha: string): Promise<BuildRef | undefined> {
   const statuses = statusesOf(sha);
   const sourceHash = statuses['build-source-hash'];
   const reuse = statuses['builds-from-run'];
+  if (reuse !== undefined && !/^\d+$/u.test(reuse)) {
+    throw new Error(`Invalid builds-from-run status on ${sha}: ${reuse}`);
+  }
   // Without the status (best-effort on main.yml's side), fall back to the
   // commit's own push runs.
   const candidates = reuse

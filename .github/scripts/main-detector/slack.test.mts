@@ -147,6 +147,55 @@ describe('buildSlackMessage', () => {
     expect(render(slower)).not.toContain('still measures the same thing');
   });
 
+  it('escapes commit text so it cannot ping a channel or fake a link', () => {
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'fix: <!channel> a < b <https://evil.test|click> (#7)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        rangeSize: 1,
+      },
+      first: batch({ uiStartup: [0.02] }),
+      second: batch({ uiStartup: [0.03] }),
+      decision: { ping: 'quiet', findings: [finding()], unmeasured: [] },
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: '<@U123> & co',
+    });
+    const text = render(payload);
+
+    expect(text).not.toContain('<!channel>');
+    expect(text).not.toContain('<https://evil.test');
+    expect(text).toContain(
+      '&lt;!channel&gt; a &lt; b &lt;https://evil.test|click&gt;',
+    );
+    expect(text).toContain('by &lt;@U123&gt; &amp; co');
+    expect(text).toContain('pull/7|#7');
+  });
+
+  it('labels an injected dry run so it is not mistaken for a real change', () => {
+    const payload = buildSlackMessage({
+      plan: {
+        headSha: 'a'.repeat(40),
+        headSubject: 'feat: x (#42)',
+        baseSha: 'b'.repeat(40),
+        canary: false,
+        injectMs: 40,
+        rangeSize: 1,
+      },
+      first: batch({ uiStartup: [0.02] }),
+      second: batch({ uiStartup: [0.03] }),
+      decision: { ping: 'quiet', findings: [finding()], unmeasured: [] },
+      repository: 'MetaMask/metamask-extension',
+      runUrl: 'https://github.com/MetaMask/metamask-extension/actions/runs/1',
+      author: 'someone',
+    });
+
+    expect(payload.text).toContain('dry-run change injected');
+    expect(render(payload)).toContain('slowed by 40 ms on purpose');
+  });
+
   it('calls a canary ping a detector false alarm', () => {
     const payload = buildSlackMessage({
       plan: {

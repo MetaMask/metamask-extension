@@ -54,3 +54,18 @@ export async function resolveBuilds(
   }
   return { status: 'no-base', head, checked: ancestors.length };
 }
+
+/**
+ * Latest value per context from `context<TAB>description` lines, newest first
+ * as the commit statuses API lists them.
+ *
+ * @param text - Lines printed by `gh api --paginate` with a `@tsv` jq filter.
+ */
+export function parseStatusLines(text: string): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const line of text.split('\n').filter(Boolean)) {
+    const [context, description = ''] = line.split('\t');
+    result[context] ??= description;
+  }
+  return result;
+}

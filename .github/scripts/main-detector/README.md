@@ -9,9 +9,11 @@ When the `Main` workflow finishes for a push to `main`, `main-detector.yml`:
 
 1. Finds the head commit's build and the nearest earlier first-parent commit
    with a build (the base), from the `builds-from-run` commit statuses.
-2. Stops with "no change" if both have the same `build-source-hash`. These runs
-   take about 12 seconds and start no jobs. One in ten of them runs anyway as an
-   A/A canary: base and head are the same build, so any ping is a false alarm.
+2. Stops with "no change" if both builds are the same: equal `build-source-hash`
+   statuses, the same donor run, or zips with the same file names, sizes, CRCs
+   and manifest (ignoring `build_id`). Only the `plan` job runs, in seconds. One
+   in ten identical pairs runs anyway as an A/A canary: base and head are the
+   same build, so any ping is a false alarm.
 3. Otherwise runs 5 jobs per browser. Each job runs the base and head build
    alternately in one session on one runner, so runner and browser differences
    cancel out.
@@ -30,6 +32,10 @@ with its 95% bounds, the per-job shifts, and a breakdown (`loadScripts`,
 | ---------- | -------------------------- | ------------------- |
 | Quiet ping | shift of 1.5% or more      | shift of 2% or more |
 | Loud ping  | 5% or more (both browsers) |                     |
+
+The one-sided 95% bound applies to each test on its own. A commit has up to
+eight first-stage tests (2 browsers, 2 metrics, 2 directions), so the second
+batch is what keeps false pings rare, and the canary pings measure the rate.
 
 Faster is reported too. A large speed-up can mean the metric stopped timing
 what it should, so check that first. A breakdown metric that moves by more than
@@ -50,10 +56,16 @@ what it should, so check that first. A breakdown metric that moves by more than
 ## Operating it
 
 - Secret: `SLACK_WEBHOOK_MAIN_DETECTOR` (an incoming webhook for the channel).
-  Without it, `slack-cli.mts` prints the message instead of posting it.
+  Without it, `slack-cli.mts` prints the message instead of posting it, except
+  on `workflow_run` and `schedule` runs, where it fails.
 - Manual runs: `workflow_dispatch` with `head_sha`, `mode=aa` for a canary, and
   `post_slack` to post. `inject_head_ms` adds a busy-wait to the head build for
   a positive control.
+- Failures: the run fails, and the heartbeat reports it, when a batch could not
+  be measured, when a successful `Main` run left no build, or when the secret
+  is missing on a `workflow_run` or `schedule` run. A `Main` re-run is ignored
+  for a commit that an earlier detector run already checked. `head_sha` must be
+  a full 40-character SHA.
 - Stop it: disable the workflow in the Actions tab. Nothing else depends on it.
 - Local checks: `slack-cli.mts --result result.json` prints the message
   (a dry run); `resolve-cli.mts`, `compare-builds-cli.mts` and `score-cli.mts` are
@@ -62,10 +74,12 @@ what it should, so check that first. A breakdown metric that moves by more than
 ## Heartbeat
 
 `main-detector-heartbeat.yml` runs daily at 14:17 UTC. It takes the Main runs
-on `main` that finished between 27 and 3 hours ago (the 3 hours let the detector
-finish), drops cancelled ones, and checks that each commit has a detector run.
-It posts to the same channel only when a commit has no detector run or all its
-runs failed. A day with no Main runs (weekends, holidays) says nothing. Without
+on `main` that finished in the 24 hours that end 3 hours before the scheduled
+time (the 3 hours let the detector finish; the window is anchored to 14:17 UTC,
+however late the run starts), drops cancelled ones, and checks that each commit
+has a detector run. It posts to the same channel only when a commit has no
+detector run or none of its runs succeeded (failed, cancelled, timed out). It
+fails when the secret is missing, instead of printing a dry run. A day with no Main runs (weekends, holidays) says nothing. Without
 the secret it prints the message instead. It cannot notice its own death:
 scheduled workflows are disabled after 60 days without repository activity, and
 GitHub emails the last person to edit the schedule when one fails.
@@ -74,5 +88,9 @@ GitHub emails the last person to edit the schedule when one fails.
 
 - It uses the harness on the default branch, not the head commit's harness.
 - Firefox hides work in early scripts, so some Firefox changes are not visible.
-- Commits with no build anywhere in the lookback are skipped, and nothing is
-  posted for them.
+- A `Main` run that failed before building leaves no build; the detector skips
+  it without failing. After a successful `Main` run, a missing build fails the
+  run.
+- A job's score is the ratio of the mean session times, so one slow session
+  moves its job. The thresholds were calibrated with this statistic; changing
+  it needs a new calibration.

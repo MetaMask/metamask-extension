@@ -15,6 +15,8 @@ export type PlanInfo = {
   baseSha: string;
   // True when base and head are the same build, run as a false-alarm canary.
   canary: boolean;
+  // Dry run only: milliseconds of busy-wait added to the head build.
+  injectMs?: number | null;
   // Number of commits between the base (exclusive) and the head (inclusive).
   rangeSize: number;
 };
@@ -77,6 +79,9 @@ export function renderSummary(options: {
     plan.canary
       ? 'This is an A/A canary: base and head are the same build, so any finding is a false alarm.'
       : '',
+    plan.injectMs == null
+      ? ''
+      : `Dry run: the head build was slowed by ${plan.injectMs} ms on purpose.`,
     '',
     `**Result: ${resultLabel(decision, plan)}**`,
     '',

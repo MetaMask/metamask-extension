@@ -1,6 +1,7 @@
 import {
   assessHealth,
   buildHeartbeatMessage,
+  latestSlot,
   type RunInfo,
 } from './heartbeat.mts';
 
@@ -51,12 +52,40 @@ describe('assessHealth', () => {
     expect(health.status).toBe('ok');
   });
 
-  it('does not count a cancelled or running detector run as a failure', () => {
-    const health = assessHealth(
-      [run('a'), run('b')],
-      [run('a', 'cancelled'), run('b', null)],
-    );
+  it('does not count a running detector run as a failure', () => {
+    const health = assessHealth([run('a')], [run('a', null)]);
     expect(health.status).toBe('ok');
+  });
+
+  for (const conclusion of [
+    'cancelled',
+    'timed_out',
+    'startup_failure',
+    'skipped',
+  ]) {
+    it(`reports a commit whose only detector run is ${conclusion}`, () => {
+      const health = assessHealth([run('a')], [run('a', conclusion)]);
+      expect(health.failed.map((item) => item.sha)).toStrictEqual(['a']);
+    });
+  }
+});
+
+describe('latestSlot', () => {
+  const at = (iso: string) => Date.parse(iso);
+
+  it('is today at 14:17 UTC once that time has passed, however late the run starts', () => {
+    expect(latestSlot(at('2026-11-18T14:17:00Z'))).toBe(
+      at('2026-11-18T14:17:00Z'),
+    );
+    expect(latestSlot(at('2026-11-18T15:00:00Z'))).toBe(
+      at('2026-11-18T14:17:00Z'),
+    );
+  });
+
+  it('is yesterday at 14:17 UTC before that time', () => {
+    expect(latestSlot(at('2026-11-18T09:00:00Z'))).toBe(
+      at('2026-11-17T14:17:00Z'),
+    );
   });
 });
 

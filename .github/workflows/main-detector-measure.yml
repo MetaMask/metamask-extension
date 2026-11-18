@@ -5,6 +5,9 @@ name: Main detector measure
 
 on:
   workflow_call:
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
     inputs:
       plan:
         description: Plan JSON from the plan job of main-detector.yml
@@ -27,7 +30,8 @@ env:
   # Pair mode: the harness alternates the base (A) and head (B) build per session.
   BENCHMARK_AB_PILOT: '1'
   BENCHMARK_AB_SEQUENCE: ABBABAABAB
-  DETECTOR_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+  # Same default as BUILD_HOST in .github/scripts/main-detector/build-source.mts.
+  DETECTOR_BUILD_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
 
 jobs:
   measure:
@@ -37,6 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chrome, firefox]
+        # DETECTOR_SHARDS in main-detector.yml must equal the number of shards.
         shard: [1, 2, 3, 4, 5]
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -44,7 +49,6 @@ jobs:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       SELENIUM_HEADLESS: true
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       BRANCH: ${{ github.ref_name }}
       HEAD_COMMIT_HASH: ${{ github.sha }}
       GITHUB_REF_NAME: ${{ github.ref_name }}
@@ -79,7 +83,7 @@ jobs:
               path="build-test-webpack/builds/metamask-chrome-$version.zip"
             fi
             curl --fail --silent --show-error --retry 5 --retry-all-errors \
-              --output "$side.zip" "$DETECTOR_HOST/$run/$path"
+              --output "$side.zip" "$DETECTOR_BUILD_HOST/$run/$path"
             mkdir -p "pair/$side"
             unzip -q "$side.zip" -d "pair/$side"
           done
@@ -127,5 +131,7 @@ jobs:
         with:
           name: detector-b${{ inputs.batch }}-${{ matrix.browser }}-s${{ matrix.shard }}
           path: test-artifacts/benchmarks/*.json
+          # A re-run of failed jobs uploads the same names again.
+          overwrite: true
           retention-days: 7
           if-no-files-found: ignore

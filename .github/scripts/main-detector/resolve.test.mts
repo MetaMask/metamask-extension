@@ -1,4 +1,9 @@
-import { resolveBuilds, type BuildLookup, type BuildRef } from './resolve.mts';
+import {
+  parseStatusLines,
+  resolveBuilds,
+  type BuildLookup,
+  type BuildRef,
+} from './resolve.mts';
 
 const build = (sha: string): BuildRef => ({
   sha,
@@ -53,5 +58,20 @@ describe('resolveBuilds', () => {
         checked: 2,
       },
     );
+  });
+});
+
+describe('parseStatusLines', () => {
+  it('keeps the newest status of each context', () => {
+    const text =
+      'builds-from-run\t222\nbuild-source-hash\tabc\nbuilds-from-run\t111\n';
+    expect(parseStatusLines(text)).toStrictEqual({
+      'builds-from-run': '222',
+      'build-source-hash': 'abc',
+    });
+  });
+
+  it('returns nothing for no statuses', () => {
+    expect(parseStatusLines('')).toStrictEqual({});
   });
 });

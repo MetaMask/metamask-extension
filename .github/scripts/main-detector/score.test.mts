@@ -73,6 +73,13 @@ describe('jobLogRatios', () => {
     expect(jobLogRatios(job, ['uiStartup'], 2)).toBeUndefined();
   });
 
+  it('ignores a missing sample instead of counting it as zero', () => {
+    const job = makeJob(1.03);
+    (job.samples.uiStartup as (number | null)[])[6] = null;
+    const ratios = jobLogRatios(job, ['uiStartup'], 2);
+    expect(ratios?.uiStartup).toBeCloseTo(Math.log(1.03), 10);
+  });
+
   it('skips metrics a build does not record', () => {
     expect(jobLogRatios(makeJob(1), ['firstReactRender'], 2)).toStrictEqual({});
   });
@@ -186,6 +193,13 @@ describe('detector decisions', () => {
     const decision = decide(first, undefined, DEFAULT_CONFIG);
     expect(decision.unmeasured).toStrictEqual(['chrome']);
     expect(decision.ping).toBe('none');
+  });
+
+  it('does not confirm a result that points the other way from the first batch', () => {
+    const first = scores(makeJobs([1.02, 1.021, 1.019, 1.02, 1.0205]));
+    const second = scores(makeJobs([0.9, 0.901, 0.899, 0.9, 0.9005]));
+    expect(needsConfirmation(first)).toBe(true);
+    expect(decide(first, second, DEFAULT_CONFIG).ping).toBe('none');
   });
 
   it('confirms a speed-up in the same way', () => {

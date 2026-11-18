@@ -78,7 +78,10 @@ export function jobLogRatios(
     const head: number[] = [];
     let position = 0;
     for (const session of sessions) {
-      const loads = values.slice(position, position + (session.pageLoads ?? 0));
+      // A missing sample is null in the JSON and must not count as 0.
+      const loads = values
+        .slice(position, position + (session.pageLoads ?? 0))
+        .filter((value) => Number.isFinite(value));
       position += session.pageLoads ?? 0;
       if (session.index >= skipSessions && loads.length > 0) {
         (session.build === 'A' ? base : head).push(mean(loads));
@@ -209,7 +212,8 @@ export type Decision = {
 
 /**
  * A finding is confirmed when the pooled jobs of both batches pass the rule
- * and the second batch alone passes it too, in the same direction.
+ * and the first batch and the second batch each pass it alone, in the same
+ * direction as the pooled result.
  *
  * @param first - Scores of the first batch.
  * @param second - Scores of the confirmation batch, absent when none was run.
@@ -248,8 +252,10 @@ export function decide(
       const floor = config.floorPct[browser];
       const verdict = classify(pooled, floor, config.loudPct);
       const sameWay =
+        first[browser].metrics[metric].verdict.direction ===
+          verdict.direction &&
         classify(secondSummary, floor, config.loudPct).direction ===
-        verdict.direction;
+          verdict.direction;
       if (verdict.level !== 'none' && verdict.direction && sameWay) {
         findings.push({
           browser,

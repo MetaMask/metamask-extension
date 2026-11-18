@@ -8,7 +8,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../hooks/useImageForChainId';
 
 export const NetworkSelectorCustomImport = ({
   title,
@@ -23,7 +23,7 @@ export const NetworkSelectorCustomImport = ({
   chainId: string;
   onSelectNetwork: () => void;
 }) => {
-  const networkImageUrl = chainId ? getImageForChainId(chainId) : undefined;
+  const networkImageUrl = useImageForChainId(chainId);
 
   return (
     <ButtonBase

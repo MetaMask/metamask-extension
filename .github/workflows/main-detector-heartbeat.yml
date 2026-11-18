@@ -6,10 +6,6 @@ name: Main detector heartbeat
 # See .github/scripts/main-detector/README.md.
 
 on:
-  # TEMPORARY (1/2): lets the first push register the workflow on the trigger ref. Remove with the trigger ref.
-  push:
-    branches: [trigger-ci-pilot-b]
-    paths: ['.github/workflows/main-detector-heartbeat.yml']
   schedule:
     - cron: '17 14 * * *'
   workflow_dispatch:
@@ -40,6 +36,6 @@ jobs:
       - name: Check the detector ran for recent Main commits
         env:
           GH_TOKEN: ${{ github.token }}
-          # TEMPORARY (2/2): no webhook, so the run only prints what it would post.
+          SLACK_WEBHOOK_MAIN_DETECTOR: ${{ secrets.SLACK_WEBHOOK_MAIN_DETECTOR }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: node ./.github/scripts/main-detector/heartbeat-cli.mts

@@ -10,28 +10,6 @@ import {
   // eslint-disable-next-line import-x/extensions
 } from './ab-pilot.ts';
 
-// 'first', 'middle', 'last', or a zero-based index into home.html's scripts.
-export type InjectionSite = string;
-
-export type AbInjection = {
-  file: string;
-  site: InjectionSite;
-  targetMs: number;
-  hashes: Record<AbBuild, string>;
-};
-
-export type AbBuildsSummary = {
-  browser: string;
-  sourceDirectory: string;
-  directories: Record<AbBuild, string>;
-  fileCount: number;
-  // Hash of every file except manifest.json and the injected file; equal for A and B.
-  contentHash: string;
-  manifestHashes: Record<AbBuild, string>;
-  markerKey: string;
-  injection?: AbInjection;
-};
-
 export const INJECTION_MARK = 'abInjected';
 
 /**
@@ -51,34 +29,18 @@ export function getInjectionSnippet(targetMs: number): string {
 }
 
 /**
- * A script home.html loads. The last one is the UI entry point, so work there
- * runs once every script has loaded; work in the first script overlaps
- * Firefox's loading of the later ones.
+ * The last script home.html loads. It is the UI entry point, so work there
+ * runs once every other script has loaded.
  *
  * @param directory - Unpacked build.
- * @param site - Which script: first, middle, last or a zero-based index.
  */
-export function getHomeScript(
-  directory: string,
-  site: InjectionSite = 'last',
-): string {
+export function getLastHomeScript(directory: string): string {
   const html = fs.readFileSync(path.join(directory, 'home.html'), 'utf8');
   const sources = [...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/gu)];
   if (sources.length === 0) {
     throw new Error('No script found in home.html');
   }
-  const named: Record<string, number> = {
-    first: 0,
-    middle: Math.floor((sources.length - 1) / 2),
-    last: sources.length - 1,
-  };
-  const index = /^\d+$/u.test(site) ? Number(site) : named[site];
-  if (index === undefined || index >= sources.length) {
-    throw new Error(
-      `Invalid injection site ${site} for ${sources.length} scripts`,
-    );
-  }
-  return sources[index][1];
+  return sources[sources.length - 1][1];
 }
 
 function listFiles(root: string, dir = ''): string[] {
@@ -163,104 +125,6 @@ function copyAndStamp({
     target,
     version: manifest.version as string,
     manifestHash: createHash('sha256').update(text).digest('hex'),
-  };
-}
-
-/**
- * Copies the donor build twice and stamps each copy with its own manifest
- * marker, then proves that nothing else differs. Throws on any other
- * difference so a pilot job never compares two builds that are not equivalent.
- *
- * @param options - Browser and the unpacked donor directory.
- * @param options.browser - `chrome` or `firefox`.
- * @param options.sourceDirectory - Unpacked donor build, for example `dist/chrome`.
- * @param options.baseDirectory - Working directory the output paths are under.
- * @param options.injectMs - When set, B's home.html script at `injectSite`
- * gets a busy-wait of this many milliseconds, and that file may also differ.
- * @param options.injectSite - Which script gets the busy-wait; default last.
- */
-export function prepareAbBuilds({
-  browser,
-  sourceDirectory,
-  baseDirectory = process.cwd(),
-  injectMs,
-  injectSite = 'last',
-}: {
-  browser: string;
-  sourceDirectory: string;
-  baseDirectory?: string;
-  injectMs?: number;
-  injectSite?: InjectionSite;
-}): AbBuildsSummary {
-  if (injectMs !== undefined && !(Number.isFinite(injectMs) && injectMs >= 0)) {
-    throw new Error(`Invalid injection milliseconds ${injectMs}`);
-  }
-  const markerKey = getMarkerKey(browser);
-  const source = path.resolve(baseDirectory, sourceDirectory);
-  const directories = {} as Record<AbBuild, string>;
-  const manifestHashes = {} as Record<AbBuild, string>;
-
-  for (const build of ['A', 'B'] as AbBuild[]) {
-    const copy = copyAndStamp({ browser, source, baseDirectory, build });
-    directories[build] = copy.relative;
-    manifestHashes[build] = copy.manifestHash;
-  }
-
-  const exclude = ['manifest.json'];
-  let injection: AbInjection | undefined;
-  if (injectMs !== undefined) {
-    const file = getHomeScript(source, injectSite);
-    const targetB = path.resolve(baseDirectory, directories.B, file);
-    const original = fs.readFileSync(targetB, 'utf8');
-    fs.writeFileSync(targetB, getInjectionSnippet(injectMs) + original);
-    exclude.push(file);
-    injection = {
-      file,
-      site: injectSite,
-      targetMs: injectMs,
-      hashes: {
-        A: hashFile(path.resolve(baseDirectory, directories.A, file)),
-        B: hashFile(targetB),
-      },
-    };
-  }
-
-  const treeA = hashTree(path.resolve(baseDirectory, directories.A));
-  const treeB = hashTree(path.resolve(baseDirectory, directories.B));
-  const contentHash = digestOf(treeA, exclude);
-  if (
-    contentHash !== digestOf(treeB, exclude) ||
-    [...treeA.keys()].join('\n') !== [...treeB.keys()].join('\n')
-  ) {
-    throw new Error(`A/B builds differ outside ${exclude.join(', ')}`);
-  }
-  const manifestA = JSON.parse(
-    fs.readFileSync(
-      path.resolve(baseDirectory, directories.A, 'manifest.json'),
-      'utf8',
-    ),
-  );
-  const manifestB = JSON.parse(
-    fs.readFileSync(
-      path.resolve(baseDirectory, directories.B, 'manifest.json'),
-      'utf8',
-    ),
-  );
-  delete manifestA[markerKey];
-  delete manifestB[markerKey];
-  if (JSON.stringify(manifestA) !== JSON.stringify(manifestB)) {
-    throw new Error(`A/B manifests differ beyond ${markerKey}`);
-  }
-
-  return {
-    browser,
-    sourceDirectory,
-    directories,
-    fileCount: treeA.size,
-    contentHash,
-    manifestHashes,
-    markerKey,
-    ...(injection && { injection }),
   };
 }
 
