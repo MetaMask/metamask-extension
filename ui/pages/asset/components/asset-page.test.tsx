@@ -99,11 +99,6 @@ jest.mock('../hooks/useAssetPerpsMarket', () => ({
     mockUseAssetPerpsMarket(symbol, options),
 }));
 
-jest.mock('../../../selectors/perps', () => ({
-  ...jest.requireActual('../../../selectors/perps'),
-  getIsPerpsExperienceAvailable: () => true,
-}));
-
 type MockTokenAssetQueryResult = {
   data?: { rwaData?: { ticker: string } } | null;
 };

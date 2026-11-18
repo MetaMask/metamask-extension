@@ -110,18 +110,18 @@ function fetchAssetPerpsMarket(
     return Promise.resolve(entry.market);
   }
   if (!entry.inflight) {
-    const needle = symbol.toLowerCase();
     const lookup = isRwa
       ? {
           params: { standalone: true, useTerminalApi },
           findMarketPredicate: (market: MarketInfo) =>
             market.name.includes(':') &&
-            getDisplaySymbol(market.name).toLowerCase() === needle,
+            getDisplaySymbol(market.name).toLowerCase() ===
+              symbol.toLowerCase(),
         }
       : {
           params: { symbols: [symbol], standalone: true, useTerminalApi },
           findMarketPredicate: (market: MarketInfo) =>
-            market.name.toLowerCase() === needle,
+            market.name.toLowerCase() === symbol.toLowerCase(),
         };
     entry.inflight = getMatchedMarket(lookup)
       .then((market) => {

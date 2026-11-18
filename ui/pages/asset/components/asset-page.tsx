@@ -70,7 +70,6 @@ import {
   getShowFiatInTestnets,
   getUseExternalServices,
 } from '../../../selectors';
-import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
 import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
@@ -328,16 +327,15 @@ const AssetPage = ({
   const bip44Asset = useSelector(selectBip44Asset);
   const stateRwaData =
     assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
-  const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-  const shouldFetchRwaData =
-    isPerpsAvailable && isExternalServicesEnabled && type !== AssetType.native;
-  const rwaDataQuery = useTokenAssetQuery({
+  const shouldFetchTokenAsset =
+    isExternalServicesEnabled && type !== AssetType.native;
+  const tokenAssetQuery = useTokenAssetQuery({
     assetId: caipAssetId,
-    fetchOnMiss: shouldFetchRwaData,
-    enabled: shouldFetchRwaData,
+    fetchOnMiss: shouldFetchTokenAsset,
+    enabled: shouldFetchTokenAsset,
   });
-  const rwaData = stateRwaData ?? rwaDataQuery.data?.rwaData;
+  const rwaData = stateRwaData ?? tokenAssetQuery.data?.rwaData;
   const updatedAsset: Asset = {
     ...asset,
     rwaData,
@@ -426,10 +424,9 @@ const AssetPage = ({
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
   // Perps-eligible assets show Long / Short / Send / More instead of the
   // regular action buttons (mobile Token Details parity).
+  const perpSymbol = rwaData?.ticker || symbol;
   const { market: perpsMarket, isLoading: isPerpsMarketLoading } =
-    useAssetPerpsMarket(rwaData?.ticker || symbol, {
-      isRwa: Boolean(rwaData),
-    });
+    useAssetPerpsMarket(perpSymbol, { isRwa: Boolean(rwaData) });
   const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
     perpsMarket?.name ?? '',
   );
