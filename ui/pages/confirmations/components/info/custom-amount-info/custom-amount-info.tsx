@@ -30,6 +30,7 @@ import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/r
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
 import { MoneyAccountToRow } from '../../rows/money-account-to-row';
 import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
+import { PerpsToRow } from '../../rows/perps-to-row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
@@ -418,6 +419,9 @@ function BottomContainer({
   const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
     TransactionType.moneyAccountDeposit,
   ]);
+  const isPerpsDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.perpsDeposit,
+  ]);
   // Withdrawals show Receive only when post-quote token selection is enabled;
   // otherwise the direct transfer keeps its regular Total. Input-based quotes
   // show Receive according to the controller-owned totals semantics.
@@ -441,6 +445,7 @@ function BottomContainer({
       {isResultReady && !hideResults && (
         <>
           {isMoneyAccountDeposit && <MoneyAccountToRow />}
+          {isPerpsDeposit && <PerpsToRow />}
           {disablePay !== true && (
             <>
               {isMoneyAccountDeposit ? (

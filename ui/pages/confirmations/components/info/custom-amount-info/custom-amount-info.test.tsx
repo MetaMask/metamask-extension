@@ -82,6 +82,9 @@ jest.mock('../../rows/from-account-row', () => ({
 jest.mock('../../rows/perps-account-picker-row', () => ({
   PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
 }));
+jest.mock('../../rows/perps-to-row', () => ({
+  PerpsToRow: () => <div data-testid="perps-to-row" />,
+}));
 jest.mock('../../rows/money-account-to-row', () => ({
   MoneyAccountToRow: () => <div data-testid="money-account-to-row" />,
 }));
@@ -1042,6 +1045,39 @@ describe('CustomAmountInfo', () => {
       expect(timeRow.compareDocumentPosition(feeRow)).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
       );
+    });
+
+    it('renders PerpsToRow directly below PayWithRow and before BridgeFeeRow for perpsDeposit', () => {
+      const perpsDepositMeta = {
+        ...MOCK_TRANSACTION_META,
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      const { getByTestId } = render({
+        hasQuotes: true,
+        transactionMeta: perpsDepositMeta,
+      });
+
+      const payWithRow = getByTestId('pay-with-row');
+      const perpsToRow = getByTestId('perps-to-row');
+      const feeRow = getByTestId('bridge-fee-row');
+
+      expect(perpsToRow).toBeInTheDocument();
+      expect(payWithRow.compareDocumentPosition(perpsToRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(perpsToRow.compareDocumentPosition(feeRow)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it('does not render PerpsToRow for non-perpsDeposit transactions', () => {
+      const { queryByTestId } = render({
+        hasQuotes: true,
+        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+      });
+
+      expect(queryByTestId('perps-to-row')).not.toBeInTheDocument();
     });
 
     it('hides the FromAccountRow divider on money-account deposits while keeping it on withdraws', () => {
