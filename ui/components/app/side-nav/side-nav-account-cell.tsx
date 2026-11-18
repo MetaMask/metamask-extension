@@ -131,7 +131,6 @@ export const SideNavAccountCell = ({
         <div
           className="relative z-10 flex shrink-0 items-center justify-end opacity-0 pointer-events-none group-hover/account-cell:pointer-events-auto group-hover/account-cell:opacity-100 has-[[aria-expanded=true]]:pointer-events-auto has-[[aria-expanded=true]]:opacity-100"
           data-testid="side-nav-account-cell-menu"
-          aria-label={`${ariaLabelName} options`}
         >
           {endAccessory}
         </div>
