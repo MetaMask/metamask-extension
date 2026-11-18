@@ -24,7 +24,7 @@ export const WIDE_SCREEN_REDESIGN_AB_TEST_VARIANTS: Record<
 export const WIDE_SCREEN_REDESIGN_AB_TEST_EXPOSURE_METADATA = {
   experimentName: 'Wide Screen Redesign',
   variationNames: {
-    [ABTestVariant.Control]: 'Bottom nav',
-    [ABTestVariant.Treatment]: 'Side nav',
+    [ABTestVariant.Control]: 'Current layout',
+    [ABTestVariant.Treatment]: 'Wide screen redesign',
   } satisfies Record<ABTestVariantName, string>,
 } as const;
