@@ -364,9 +364,9 @@ export type TraceRequest = {
    * `parentContext` that resolves still takes precedence.
    *
    * In the background (service worker or persistent background page), once
-   * its pageload has ended, a trace with no
-   * `parentContext` that starts outside any active span also starts a new
-   * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
+   * its pageload has ended, a trace whose parent is undeclared or does not
+   * resolve, started outside any active span, also starts a new trace, as if
+   * `root` were set. The SDK keeps the ended pageload's trace id
    * and sampling decision on the scope for the background's whole life, so such
    * work would otherwise join that trace and be kept or dropped with it.
    *
