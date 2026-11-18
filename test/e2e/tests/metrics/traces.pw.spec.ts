@@ -8,12 +8,13 @@ import {
   expectNoMockRequest,
 } from '../../helpers/mock-server';
 import { login } from '../../page-objects/flows/login.flow';
+import { carriesSegmentSpan } from './sentry-span-envelopes';
 
 async function mockSentryCustomTrace(mockServer: MockttpServer) {
   return [
     await mockServer
       .forPost(/sentry/u)
-      .withBodyIncluding('"transaction":"UI Startup"')
+      .matching(carriesSegmentSpan('UI Startup'))
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -27,7 +28,7 @@ async function mockSentryAutomatedTrace(mockServer: MockttpServer) {
   return [
     await mockServer
       .forPost(/sentry/u)
-      .withBodyIncluding('"transaction":"/home.html"')
+      .matching(carriesSegmentSpan('/home.html'))
       .thenCallback(() => {
         return {
           statusCode: 200,
