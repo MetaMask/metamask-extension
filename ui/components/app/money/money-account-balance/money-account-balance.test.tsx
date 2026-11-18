@@ -248,9 +248,12 @@ describe('MoneyAccountBalance', () => {
     const { getByTestId, queryByTestId } = render();
 
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID)).toBeInTheDocument();
-    expect(
-      getByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID),
-    ).toBeInTheDocument();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID)).toHaveStyle({
+      height: '24px',
+    });
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      PRIMARY_BUTTON_CLASS,
+    );
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });

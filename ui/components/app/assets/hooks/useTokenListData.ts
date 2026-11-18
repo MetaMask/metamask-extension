@@ -49,10 +49,8 @@ import {
   sortTokenAssets,
   type TokenTableSort,
 } from '../util/sortAssetsWithPriority';
-import { isMusdToken } from '../../musd/constants';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
-import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 export type TokenListDisplayItem =
@@ -214,17 +212,9 @@ export function useTokenListData({
     });
   }, [filteredAssets, sortOverride, tokenSortConfig]);
 
-  // The fast pipeline can populate zero-value gas tokens and mUSD before the
-  // background pipeline finishes the remaining tokens. Hide those placeholders,
-  // but keep real balances visible during subsequent refreshes.
-  const showLoadingSkeleton =
-    !assetsHaveLoaded &&
-    sortedFilteredTokens.every(
-      (token) =>
-        (token.isNative || isMusdToken(token.address)) &&
-        isZeroAmount(token.balance) &&
-        isZeroAmount(token.tokenFiatAmount),
-    );
+  // Wait for the complete initial load so a partial list cannot appear before
+  // slower networks settle. The provider keeps this true during later refreshes.
+  const showLoadingSkeleton = !assetsHaveLoaded;
 
   useCoordinatedTrace({
     name: TraceName.HomepageSectionTimeToContent,
