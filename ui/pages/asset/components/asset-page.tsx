@@ -331,20 +331,13 @@ const AssetPage = ({
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const shouldFetchRwaData =
-    isPerpsAvailable &&
-    isExternalServicesEnabled &&
-    type !== AssetType.native &&
-    !stateRwaData;
+    isPerpsAvailable && isExternalServicesEnabled && type !== AssetType.native;
   const rwaDataQuery = useTokenAssetQuery({
     assetId: caipAssetId,
     fetchOnMiss: shouldFetchRwaData,
     enabled: shouldFetchRwaData,
   });
   const rwaData = stateRwaData ?? rwaDataQuery.data?.rwaData;
-  const isRwaDataPending =
-    shouldFetchRwaData &&
-    rwaDataQuery.isLoading &&
-    rwaDataQuery.failureCount === 0;
   const updatedAsset: Asset = {
     ...asset,
     rwaData,
@@ -434,7 +427,7 @@ const AssetPage = ({
   // Perps-eligible assets show Long / Short / Send / More instead of the
   // regular action buttons (mobile Token Details parity).
   const { market: perpsMarket, isLoading: isPerpsMarketLoading } =
-    useAssetPerpsMarket(isRwaDataPending ? '' : rwaData?.ticker || symbol, {
+    useAssetPerpsMarket(rwaData?.ticker || symbol, {
       isRwa: Boolean(rwaData),
     });
   const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
@@ -444,9 +437,7 @@ const AssetPage = ({
   // Long/Short flash). Stream-init failure is a settled "no position" state,
   // so Send / Buy / Swap are not gated on an unbounded wait.
   const isPerpsActionsLoading =
-    isRwaDataPending ||
-    isPerpsMarketLoading ||
-    Boolean(perpsMarket && isPerpsPositionLoading);
+    isPerpsMarketLoading || Boolean(perpsMarket && isPerpsPositionLoading);
   const isMusdAssetPage = useMemo(
     () =>
       type === AssetType.token &&

@@ -36,7 +36,8 @@ function buildAssetPerpsMarketCacheKey(
   isRwa: boolean,
   useTerminalApi: boolean,
 ): string {
-  return `${symbol.toLowerCase()}|${isRwa ? 'rwa' : 'exact'}|${
+  const postfixKey = isRwa ? 'rwa' : 'exact';
+  return `${symbol.toLowerCase()}|${postfixKey}|${
     useTerminalApi ? 'terminal' : 'direct'
   }`;
 }
@@ -74,18 +75,18 @@ export function clearAssetPerpsMarketCache(): void {
   marketCacheByKey.clear();
 }
 
-function findMatchingMarket(
-  infos: MarketInfo[],
-  symbol: string,
-  isRwa: boolean,
-): MarketInfo | undefined {
-  const needle = symbol.toLowerCase();
-  return infos.find((candidate) =>
-    isRwa
-      ? candidate.name.includes(':') &&
-        getDisplaySymbol(candidate.name).toLowerCase() === needle
-      : candidate.name.toLowerCase() === needle,
+async function getMatchedMarket({
+  params,
+  findMarketPredicate,
+}: {
+  params: { symbols?: string[]; standalone: boolean; useTerminalApi: boolean };
+  findMarketPredicate: (market: MarketInfo) => boolean;
+}): Promise<MarketInfo | undefined> {
+  const markets = await submitRequestToBackground<MarketInfo[]>(
+    'perpsGetMarkets',
+    [params],
   );
+  return (Array.isArray(markets) ? markets : []).find(findMarketPredicate);
 }
 
 /**
@@ -109,22 +110,21 @@ function fetchAssetPerpsMarket(
     return Promise.resolve(entry.market);
   }
   if (!entry.inflight) {
-    entry.inflight = submitRequestToBackground<MarketInfo[]>(
-      'perpsGetMarkets',
-      [
-        {
-          ...(!isRwa && { symbols: [symbol] }),
-          standalone: true,
-          useTerminalApi,
-        },
-      ],
-    )
-      .then((infos) => {
-        const market = findMatchingMarket(
-          Array.isArray(infos) ? infos : [],
-          symbol,
-          isRwa,
-        );
+    const needle = symbol.toLowerCase();
+    const lookup = isRwa
+      ? {
+          params: { standalone: true, useTerminalApi },
+          findMarketPredicate: (market: MarketInfo) =>
+            market.name.includes(':') &&
+            getDisplaySymbol(market.name).toLowerCase() === needle,
+        }
+      : {
+          params: { symbols: [symbol], standalone: true, useTerminalApi },
+          findMarketPredicate: (market: MarketInfo) =>
+            market.name.toLowerCase() === needle,
+        };
+    entry.inflight = getMatchedMarket(lookup)
+      .then((market) => {
         entry.market = market;
         entry.resolved = true;
         entry.resolvedAt = Date.now();

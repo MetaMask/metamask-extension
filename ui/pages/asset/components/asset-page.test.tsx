@@ -106,8 +106,6 @@ jest.mock('../../../selectors/perps', () => ({
 
 type MockTokenAssetQueryResult = {
   data?: { rwaData?: { ticker: string } } | null;
-  isLoading?: boolean;
-  failureCount?: number;
 };
 const mockUseTokenAssetQuery = jest.fn(
   (_props: { enabled?: boolean }): MockTokenAssetQueryResult => ({
@@ -876,7 +874,6 @@ describe('AssetPage', () => {
     it('looks the market up by the token API rwaData ticker', () => {
       mockUseTokenAssetQuery.mockReturnValue({
         data: { rwaData: { ticker: 'MSFT' } },
-        isLoading: false,
       });
       mockUseAssetPerpsMarket.mockReturnValue({
         market: { name: 'xyz:MSFT' },
@@ -895,33 +892,6 @@ describe('AssetPage', () => {
         'data-market',
         'xyz:MSFT',
       );
-    });
-
-    it('holds the actions only until the rwaData query first settles', () => {
-      mockUseTokenAssetQuery.mockReturnValue({
-        isLoading: true,
-        failureCount: 0,
-      });
-      const { queryByTestId, rerender } = renderWithProvider(
-        <AssetPage asset={msft} optionsButton={null} />,
-        store,
-      );
-
-      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
-      expect(mockUseAssetPerpsMarket).toHaveBeenLastCalledWith('', {
-        isRwa: false,
-      });
-
-      mockUseTokenAssetQuery.mockReturnValue({
-        isLoading: true,
-        failureCount: 1,
-      });
-      rerender(<AssetPage asset={msft} optionsButton={null} />);
-
-      expect(
-        queryByTestId('asset-perps-actions-skeleton'),
-      ).not.toBeInTheDocument();
-      expect(queryByTestId('token-overview-buy')).toBeInTheDocument();
     });
 
     it('does not fetch rwaData when external services are off', () => {
