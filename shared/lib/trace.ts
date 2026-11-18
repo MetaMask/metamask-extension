@@ -243,6 +243,17 @@ if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
 }
 
+/**
+ * Trace state that one copy of this module writes and another reads.
+ */
+export type SharedTraceState = {
+  /**
+   * The background's pageload trace id, once the pageload ended. Unset outside
+   * the background.
+   */
+  endedBackgroundPageloadTraceId?: string;
+};
+
 type PendingTrace = {
   end: (timestamp?: number) => void;
   request: TraceRequest;
@@ -580,8 +591,23 @@ export const traceAsControllerCallback: ControllerTraceCallback = <Result>(
       : trace({ ...req, name: req.name as TraceName }),
   ) as Promise<Result>;
 
-// The background's pageload, once ended. Unset outside the background.
-let endedBackgroundPageloadTraceId: string | undefined;
+// The build bundles this module into the self-contained `service-worker.js`
+// entry (through `setupSentry`) and into the chunk the rest of the background
+// loads from, and each copy has its own module-level variables. State written
+// by one copy and read by another therefore lives on `globalThis.stateHooks`,
+// which every copy sees and LavaMoat scuttling excepts, as in
+// `sentry-remote-rates.ts`. State a single copy both writes and reads stays at
+// module level.
+const localSharedState: SharedTraceState = {};
+
+function getSharedState(): SharedTraceState {
+  const hooks = globalThis.stateHooks;
+  if (!hooks) {
+    return localSharedState;
+  }
+  hooks.traceSharedState ??= {};
+  return hooks.traceSharedState;
+}
 
 /**
  * In the background (the service worker, or Firefox's persistent background
@@ -602,7 +628,8 @@ export function trackBackgroundPageloadEnd(client?: Client): void {
 
   client?.on('spanEnd', (span) => {
     if (spanToJSON(span).op === 'pageload') {
-      endedBackgroundPageloadTraceId = span.spanContext().traceId;
+      getSharedState().endedBackgroundPageloadTraceId =
+        span.spanContext().traceId;
     }
   });
 }
@@ -615,6 +642,7 @@ export function trackBackgroundPageloadEnd(client?: Client): void {
  * @returns True when such work should start its own trace.
  */
 function isOnEndedBackgroundPageload(): boolean {
+  const { endedBackgroundPageloadTraceId } = getSharedState();
   if (!endedBackgroundPageloadTraceId) {
     return false;
   }
