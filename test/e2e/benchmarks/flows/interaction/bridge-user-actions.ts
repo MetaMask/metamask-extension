@@ -19,6 +19,7 @@ import {
   KNOWN_ANSWER_TOKEN_SEARCH_DELAY,
   withKnownAnswerDelay,
 } from '../../mocks/known-answer';
+import { WARMUP_RUNS } from '../../utils/constants';
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
@@ -46,6 +47,26 @@ async function mockTokensEthereum(mockServer: Mockttp) {
       },
     })),
   );
+}
+
+/**
+ * Run this flow at {@link BRIDGE_SCORED_ITERATIONS} scored iterations after the
+ * warm-up instead of `--iterations`. Off unless set to `1`.
+ */
+export const BRIDGE_17_ITERATIONS = 'BENCHMARK_BRIDGE_17_ITERATIONS';
+
+/** The iterations scored when {@link BRIDGE_17_ITERATIONS} is on. */
+export const BRIDGE_SCORED_ITERATIONS = 16;
+
+/**
+ * This flow's iteration count, read by `run-benchmark.ts`.
+ * @returns 17 (scored iterations plus the warm-up) when
+ * `BENCHMARK_BRIDGE_17_ITERATIONS=1`, else `undefined`.
+ */
+export function iterations(): number | undefined {
+  return process.env[BRIDGE_17_ITERATIONS] === '1'
+    ? BRIDGE_SCORED_ITERATIONS + WARMUP_RUNS
+    : undefined;
 }
 
 export async function run(): Promise<BenchmarkRunResult> {
