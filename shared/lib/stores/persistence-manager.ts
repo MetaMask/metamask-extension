@@ -32,6 +32,7 @@ import type {
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
+  SplitStateReadDiagnostics,
 } from './base-store';
 import { runTrackedTask } from './utils/run-tracked-task';
 
@@ -497,6 +498,24 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return { currentActivity, environmentType, idleStatus, lastActivity };
   }
 
+  /**
+   * Reads split-state key outcomes for a failure report.
+   *
+   * A missing diagnostic method or a probe failure returns `undefined` so the
+   * original error is still reported without a snapshot.
+   *
+   * @returns The snapshot, or `undefined` when it should be omitted.
+   */
+  async #readSplitStateDiagnostics(): Promise<
+    SplitStateReadDiagnostics | undefined
+  > {
+    try {
+      return await this.#localStore.getSplitStateReadDiagnostics?.();
+    } catch {
+      return undefined;
+    }
+  }
+
   async #capturePersistenceException(
     error: unknown,
     failure: string,
@@ -527,6 +546,35 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         if (writeDetails.coalescedUpdates !== undefined) {
           extra['persistence.coalesced_updates'] =
             writeDetails.coalescedUpdates;
+        }
+      }
+
+      if (!isBrowserShuttingDownError(error)) {
+        const readDiagnostics = await this.#readSplitStateDiagnostics();
+        if (readDiagnostics) {
+          extra['persistence.read_manifest_status'] =
+            readDiagnostics.manifestStatus;
+          if (readDiagnostics.manifestKeyCount !== undefined) {
+            extra['persistence.read_manifest_key_count'] =
+              readDiagnostics.manifestKeyCount;
+          }
+          if (readDiagnostics.manifestErrorName) {
+            extra['persistence.read_manifest_error_name'] =
+              readDiagnostics.manifestErrorName;
+          }
+          if (readDiagnostics.readableKeys.length > 0) {
+            extra['persistence.read_readable_keys'] =
+              readDiagnostics.readableKeys.join(',');
+          }
+          if (readDiagnostics.missingKeys.length > 0) {
+            extra['persistence.read_missing_keys'] =
+              readDiagnostics.missingKeys.join(',');
+          }
+          if (readDiagnostics.failedKeys.length > 0) {
+            extra['persistence.read_failed_keys'] = readDiagnostics.failedKeys
+              .map((keyFailure) => `${keyFailure.key}:${keyFailure.errorName}`)
+              .join(',');
+          }
         }
       }
 
