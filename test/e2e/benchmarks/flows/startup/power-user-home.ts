@@ -20,7 +20,12 @@ import {
   WITH_STATE_POWER_USER,
   POWER_USER_NUM_BROWSER_LOADS,
 } from '../../utils/constants';
-import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
+import {
+  runPageLoadBenchmark,
+  collectWebVitals,
+  applyStartupPageSignals,
+  readStartupPageSignals,
+} from '../../utils';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,
@@ -81,7 +86,9 @@ async function measurePagePowerUser(
 
         await driver.delay(1000);
 
-        const metricsThisLoad = await driver.collectMetrics();
+        const collected = await driver.collectMetrics();
+        const signals = await readStartupPageSignals(driver);
+        const metricsThisLoad = applyStartupPageSignals(collected, signals);
         metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
         metrics.push(metricsThisLoad);
 
