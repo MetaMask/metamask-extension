@@ -175,6 +175,7 @@
   },
   "resolutions": {
     "@metamask/design-system-react": "0.51.1",
+    "@metamask/config-registry-controller": "^6.0.0",
     "@metamask/network-controller": "^38.0.1",
     "@metamask/transaction-controller": "^74.2.0",
     "reselect@npm:^5.1.1": "5.1.1",
