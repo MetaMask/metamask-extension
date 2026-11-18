@@ -13,6 +13,8 @@ const SEAPORT_DATA = `{"types":{"OrderComponents":[{"name":"offerer","type":"add
 
 const TRADE_ORDER_DATA = `{"types":{"ERC721Order":[{"type":"uint8","name":"direction"},{"type":"address","name":"maker"},{"type":"address","name":"taker"},{"type":"uint256","name":"expiry"},{"type":"uint256","name":"nonce"},{"type":"address","name":"erc20Token"},{"type":"uint256","name":"erc20TokenAmount"},{"type":"Fee[]","name":"fees"},{"type":"address","name":"erc721Token"},{"type":"uint256","name":"erc721TokenId"},{"type":"Property[]","name":"erc721TokenProperties"}],"Fee":[{"type":"address","name":"recipient"},{"type":"uint256","name":"amount"},{"type":"bytes","name":"feeData"}],"Property":[{"type":"address","name":"propertyValidator"},{"type":"bytes","name":"propertyData"}],"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}]},"domain":{"name":"ZeroEx","version":"1.0.0","chainId":"0x1","verifyingContract":"0xdef1c0ded9bec7f1a1670819833240f027b25eff"},"primaryType":"ERC721Order","message":{"direction":"0","maker":"0x8eeee1781fd885ff5ddef7789486676961873d12","taker":"0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826","expiry":"2524604400","nonce":"100131415900000000000000000000000000000083840314483690155566137712510085002484","erc20Token":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","erc20TokenAmount":"42000000000000","fees":[],"erc721Token":"0x8a90CAb2b38dba80c64b7734e58Ee1dB38B8992e","erc721TokenId":"2516","erc721TokenProperties":[]}}`;
 
+const TRANSFER_WITH_AUTHORIZATION_DATA = `{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"{primaryType}":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"validAfter","type":"uint256"},{"name":"validBefore","type":"uint256"},{"name":"nonce","type":"bytes32"}]},"primaryType":"{primaryType}","domain":{"name":"USD Coin","version":"2","chainId":1,"verifyingContract":"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"},"message":{"from":"{ownerAddress}","to":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":"1000000000","validAfter":"1700000000","validBefore":"1800000000","nonce":"0x8f3c5a1b2e4d6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8"}}`;
+
 const pendingPermitId = '48a75190-45ca-11ef-9001-f3886ec2397c';
 
 const getPermitData = (permitType: string, accountAddress: string) => {
@@ -48,6 +50,12 @@ const getPermitData = (permitType: string, accountAddress: string) => {
       return SEAPORT_DATA;
     case 'TradeOrder':
       return TRADE_ORDER_DATA;
+    case 'TransferWithAuthorization':
+    case 'ReceiveWithAuthorization':
+      return TRANSFER_WITH_AUTHORIZATION_DATA.replaceAll(
+        '{primaryType}',
+        permitType,
+      ).replace('{ownerAddress}', accountAddress);
     default:
       throw new Error(`Unknown permit type: ${permitType}`);
   }
@@ -69,7 +77,9 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
     | 'PermitUnsignedFields'
     | 'PermitSingle'
     | 'PermitSeaport'
-    | 'TradeOrder',
+    | 'TradeOrder'
+    | 'TransferWithAuthorization'
+    | 'ReceiveWithAuthorization',
 ) => {
   const data = getPermitData(permitType, accountAddress);
   const pendingPermitTime = new Date().getTime();
