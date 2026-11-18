@@ -8696,10 +8696,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/institutional-wallet-snap@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/institutional-wallet-snap@npm:2.0.0"
-  checksum: 10/39f2828d9cb29d44e4fabe846313d52ccecba79aae6c40fd6854110ce861fff7b50a182ef579b29e0552af6a6f1ca4da9703077f357c4160fcacb98f2306ea49
+"@metamask/institutional-wallet-snap@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/institutional-wallet-snap@npm:2.1.0"
+  checksum: 10/3f01ed4656d2987abbdd48513b203028c107a2655c198d712017341b50428ac507765c82d27794033e46a31c5c9b5cf1d5b247a4f128e2d5c72b90c96c8bd9cf
   languageName: node
   linkType: hard
 
@@ -34907,7 +34907,7 @@ __metadata:
     "@metamask/gator-permissions-snap": "npm:^2.5.0"
     "@metamask/geolocation-controller": "npm:^2.0.0"
     "@metamask/hw-wallet-sdk": "npm:^1.0.0"
-    "@metamask/institutional-wallet-snap": "npm:2.0.0"
+    "@metamask/institutional-wallet-snap": "npm:2.1.0"
     "@metamask/java-tron-up": "npm:^2.0.0"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^11.0.0"
