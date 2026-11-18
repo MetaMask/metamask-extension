@@ -176,7 +176,6 @@
   "resolutions": {
     "@metamask/design-system-react": "0.51.1",
     "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
-    "@metamask/config-registry-controller": "^6.0.0",
     "@metamask/network-controller": "^38.0.1",
     "@metamask/ramps-controller@^29.0.0": "^30.0.0",
     "@metamask/transaction-controller": "^74.2.0",
