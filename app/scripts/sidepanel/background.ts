@@ -187,6 +187,7 @@ function getUseSidePanelAsDefault(
 
 /**
  * Prefer opening the side panel on toolbar click as soon as the service worker starts.
+ * The MV3 manifest has no `default_popup`, so clear the toolbar popup here too.
  *
  * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
  */
@@ -196,6 +197,7 @@ export function applyEarlySidePanelToolbarBehavior(
   sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
     // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
   });
+  setActionPopup('').catch(() => undefined);
 }
 
 async function applyToolbarSidePanelPreference(

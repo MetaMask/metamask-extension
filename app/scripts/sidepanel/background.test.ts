@@ -249,6 +249,21 @@ function createToolbarController(
 }
 
 describe('applyEarlySidePanelToolbarBehavior', () => {
+  const setPopup = jest.fn().mockResolvedValue(undefined);
+  let originalChrome: typeof chrome;
+
+  beforeEach(() => {
+    setPopup.mockClear();
+    originalChrome = globalThis.chrome;
+    globalThis.chrome = {
+      action: { setPopup },
+    } as unknown as typeof chrome;
+  });
+
+  afterEach(() => {
+    globalThis.chrome = originalChrome;
+  });
+
   it('sets openPanelOnActionClick to true when sidePanel API is available', () => {
     const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
@@ -257,6 +272,7 @@ describe('applyEarlySidePanelToolbarBehavior', () => {
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
+    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
   });
 
   it('ignores setPanelBehavior rejection', async () => {
@@ -315,9 +331,21 @@ describe('applyToolbarSidePanelBehavior', () => {
 
 describe('setupSidePanelToolbarBehavior', () => {
   let consoleErrorSpy: jest.SpyInstance;
+  const setPopup = jest.fn().mockResolvedValue(undefined);
+  let originalChrome: typeof chrome;
 
   beforeEach(() => {
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    setPopup.mockClear();
+    originalChrome = globalThis.chrome;
+    globalThis.chrome = {
+      ...(globalThis.chrome ?? ({} as typeof chrome)),
+      action: { setPopup },
+    } as unknown as typeof chrome;
+  });
+
+  afterEach(() => {
+    globalThis.chrome = originalChrome;
   });
 
   afterEach(() => {
@@ -495,11 +523,11 @@ describe('setupSidePanelToolbarBehavior', () => {
       sidePanelApi,
     );
 
-    setPanelBehavior.mockRejectedValueOnce(new Error('update failed'));
+    setPanelBehavior.mockRejectedValue(new Error('update failed'));
     preferenceChangeHandler?.(false);
-    await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
+    await new Promise<void>((resolve) => {
+      setImmediate(resolve);
+    });
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Error updating panel behavior:',
