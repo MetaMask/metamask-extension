@@ -89,8 +89,13 @@ function buildsByPosition(
       builds[run.position] = run.build;
     }
   }
-  const positions = Object.keys(builds).map(Number).sort().join();
-  const sorted = Object.values(builds).sort().join();
+  const positions = Object.keys(builds)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .join();
+  const sorted = Object.values(builds)
+    .sort((a, b) => a.localeCompare(b))
+    .join();
   return runs.length === 4 &&
     positions === '0,1,2,3' &&
     sorted === 'base,base,head,head'
