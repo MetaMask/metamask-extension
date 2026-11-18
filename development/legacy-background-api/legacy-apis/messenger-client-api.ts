@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { FunctionWithBody, getPropertyNameText } from './ast-utils';
+import { FunctionWithBody } from './ast-utils';
 import { UnresolvableExpressionError } from './errors';
 import { ResolutionContext } from './module-resolution';
 import {
