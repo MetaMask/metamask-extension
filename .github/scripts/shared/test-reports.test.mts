@@ -1,4 +1,21 @@
-import { getTestSuiteTime, type TestCase } from './test-reports.mts';
+import {
+  getTestFilesSortedByTime,
+  getTestSuiteTime,
+  type TestCase,
+  type TestFile,
+} from './test-reports.mts';
+
+function buildTestFile(path: string, time: number, tests: number): TestFile {
+  return {
+    path,
+    time,
+    tests,
+    passed: tests,
+    failed: 0,
+    skipped: 0,
+    testSuites: [],
+  };
+}
 
 const testCases: TestCase[] = [
   { name: 'first', time: 300, status: 'passed' },
@@ -16,5 +33,24 @@ describe('getTestSuiteTime', () => {
 
   it('returns the reported suite time when there are no test cases', () => {
     expect(getTestSuiteTime(50, [])).toBe(50);
+  });
+});
+
+describe('getTestFilesSortedByTime', () => {
+  it('sorts files by recorded time regardless of how many tests they have', () => {
+    const sorted = getTestFilesSortedByTime({
+      name: 'test-e2e-chrome-webpack',
+      testFiles: [
+        buildTestFile('few-long-tests.spec.ts', 60_000, 2),
+        buildTestFile('many-short-tests.spec.ts', 50_000, 30),
+        buildTestFile('slowest.spec.ts', 90_000, 5),
+      ],
+    });
+
+    expect(sorted.map(({ path }) => path)).toStrictEqual([
+      'slowest.spec.ts',
+      'few-long-tests.spec.ts',
+      'many-short-tests.spec.ts',
+    ]);
   });
 });

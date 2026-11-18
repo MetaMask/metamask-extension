@@ -70,7 +70,7 @@ function splitTests(
       const shortestChunk = chunks.reduce((a, b) => (a.time < b.time ? a : b));
       shortestChunk.paths.push(testFile.path);
 
-      shortestChunk.time += testFile.timePlusSetup ?? 0;
+      shortestChunk.time += testFile.time ?? 0;
     }
   });
 
