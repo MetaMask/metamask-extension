@@ -175,7 +175,7 @@ function getSidePanelApi(
   return sidePanel as SidePanelApiWithBehavior;
 }
 
-function getSidePanelPreference(
+function getUseSidePanelAsDefault(
   controller: SidePanelToolbarBehaviorController | null | undefined,
 ): boolean {
   return (
@@ -215,7 +215,7 @@ export async function applyToolbarSidePanelBehavior(
   getController: SidePanelToolbarBehaviorDeps['getController'],
   sidePanelApi: SidePanelApiWithBehavior,
 ): Promise<void> {
-  const preferSidePanel = getSidePanelPreference(getController());
+  const preferSidePanel = getUseSidePanelAsDefault(getController());
   await sidePanelApi.setPanelBehavior({
     openPanelOnActionClick: preferSidePanel,
   });
@@ -366,10 +366,10 @@ export async function setupSidePanelToolbarBehavior(
     const controller = deps.getController();
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
-      (preferSidePanel) => {
+      (useSidePanelAsDefault) => {
         sidePanelApi
           .setPanelBehavior({
-            openPanelOnActionClick: preferSidePanel,
+            openPanelOnActionClick: useSidePanelAsDefault,
           })
           .catch((error) =>
             console.error('Error updating panel behavior:', error),
