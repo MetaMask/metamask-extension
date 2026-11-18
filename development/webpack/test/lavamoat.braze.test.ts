@@ -17,6 +17,7 @@ const VARIANTS = ['main', 'beta', 'flask', 'experimental'] as const;
  * (see "LavaMoat policy" and "Security" in `app/braze/braze.md`).
  */
 const DENIED_GLOBALS = [
+  // Push, real-time messaging and Braze-rendered content
   'EventSource',
   'Notification',
   'ServiceWorkerRegistration',
@@ -24,11 +25,54 @@ const DENIED_GLOBALS = [
   'btoa',
   'innerHeight',
   'innerWidth',
-  'localStorage',
   'open',
   'orientation',
   'safari',
+  // Network egress other than XMLHttpRequest
+  'fetch',
+  'Request',
+  'Headers',
+  'Image',
+  'WebSocket',
+  // Dynamic code, workers and other realms
+  'WebAssembly',
+  'Worker',
+  'SharedWorker',
+  'importScripts',
+  // Storage
+  'localStorage',
+  'sessionStorage',
+  'indexedDB',
+  // Other frames and documents
+  'postMessage',
+  'parent',
+  'top',
+  'opener',
+  'frameElement',
+  'history',
+  // Extension APIs
+  'chrome',
+  'browser',
+  // App hooks left on the real window for Sentry
+  '__SENTRY__',
+  'appState',
+  'logEncryptedVault',
+  'sentry',
+  'sentryHooks',
+  'stateHooks',
+  // High-resolution timing
+  'performance',
 ];
+
+/**
+ * Globals granted only in part. The whole object must stay denied so a
+ * regenerated policy cannot widen it back.
+ */
+const NARROWED_GLOBALS: Record<string, string> = {
+  crypto: 'crypto.getRandomValues',
+  Intl: 'Intl.DateTimeFormat',
+  location: 'location.href',
+};
 
 const readGlobals = (
   manifest: (typeof MANIFESTS)[number],
@@ -82,6 +126,30 @@ describe('Braze LavaMoat policy', () => {
             globals[name] === true || globals[name] === 'write',
             false,
             `${manifest}/${variant} grants ${name}; see app/braze/braze.md`,
+          );
+        }
+      }
+    }
+  });
+
+  it('keeps narrowed globals to their single granted member', () => {
+    for (const manifest of MANIFESTS) {
+      for (const variant of VARIANTS) {
+        const globals = mergedGlobals(manifest, variant);
+
+        for (const [parent, child] of Object.entries(NARROWED_GLOBALS)) {
+          assert.equal(
+            globals[parent],
+            false,
+            `${manifest}/${variant} grants all of ${parent}; see app/braze/braze.md`,
+          );
+          assert.equal(globals[child], true);
+          // lavamoat-core keeps only one re-allowed child under a denied parent.
+          assert.deepEqual(
+            Object.keys(globals).filter((name) =>
+              name.startsWith(`${parent}.`),
+            ),
+            [child],
           );
         }
       }

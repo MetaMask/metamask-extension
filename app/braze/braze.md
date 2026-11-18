@@ -138,7 +138,36 @@ not read.
 `window.location` to `location.href`, so `_openUri` (Braze-hosted link clicks)
 cannot navigate.
 
-`document` and `navigator` stay whole. `initialize` needs
+The overrides also deny, explicitly, globals the SDK does not use today. Most
+are on the `scuttleGlobalThis` exception list, which is a global override and
+says nothing about what a package needs, so it is not a reason to leave them
+reachable from the policy. Denying them in `policy-override.json` also means a
+future SDK version that starts using one fails in testing instead of being
+granted silently by `lavamoat:auto`:
+
+- other network egress: `fetch`, `Request`, `Headers`, `Image`, `WebSocket`
+- dynamic code and other realms: `WebAssembly`, `Worker`, `SharedWorker`,
+  `importScripts`
+- storage: `sessionStorage`, `indexedDB` (with `localStorage` above)
+- other frames and documents: `postMessage`, `parent`, `top`, `opener`,
+  `frameElement`, `history`
+- extension APIs: `chrome`, `browser`
+- app hooks kept on the real window for Sentry: `stateHooks`, `sentryHooks`,
+  `sentry`, `__SENTRY__`, `appState`, `logEncryptedVault`
+- `performance`
+
+The window-level `addEventListener`/`removeEventListener` and the interval
+timers stay granted. They are only used once Braze's server config enables
+real-time messaging (`dust`), but that is a dashboard setting: with them denied,
+the session start throws and `wipeData` fails during sign-out.
+
+`document` and `navigator` stay whole. `lavamoat-core` (19.0.1, unchanged in
+19.0.2) keeps only the last re-allowed child under a denied parent, so
+`"navigator": false` with several `navigator.*` entries grants a single member,
+and there is no deny-list form (`"navigator": true` with `"navigator.hid": false`
+still grants all of it). The SDK reads `navigator.userAgent`, `userAgentData`,
+`platform`, `language`, `maxTouchPoints` and `cookieEnabled`; narrowing to those
+needs a LavaMoat fix. `initialize` needs
 `document.createElement` and `document.location.hostname`, the opt-out probe
 needs `document.cookie`, every flush reads `document.hidden`, and `changeUser`
 calls `document.querySelectorAll`/`getElementById`/`getElementsByClassName` to
@@ -154,10 +183,23 @@ These grants describe what the SDK does; they are not what contains it. The
 containment story is in "Security" below.
 
 `development/webpack/test/lavamoat.braze.test.ts` asserts that the eight build
-variants share one policy and that the capabilities denied above stay denied, so
-a variant that drifts fails the test instead of landing silently. It
-deliberately does not restate the granted set: a new grant is a question for the
-`policy.json` review, not a test assertion.
+variants share one policy, that the capabilities denied above stay denied, and
+that `crypto`, `Intl` and `location` keep a single granted member, so a variant
+that drifts fails the test instead of landing silently. It deliberately does not
+restate the granted set: a new grant is a question for the `policy.json` review,
+not a test assertion.
+
+## Changes that need two reviewers
+
+A pull request that does any of the following needs two approvals, one of them
+from `@MetaMask/policy-reviewers`:
+
+- adds or upgrades `@braze/web-sdk`. The version is pinned exactly
+  (`braze-sdk.test.ts` checks it), so an upgrade is always an explicit change.
+  Re-run the shipped-chunk grep in "Security" and regenerate the policy.
+- changes the `@braze/web-sdk` entries in `lavamoat/webpack/*/*/policy*.json`
+- changes the SDK functions imported in `braze-sdk.ts`
+- changes where the host runs (the offscreen document, the MV2 background page)
 
 ## Security
 
