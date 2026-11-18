@@ -59,7 +59,38 @@ async function safeGetBearerToken(
 }
 
 /**
+ * Preference fields that should refresh AssetsController subscriptions.
+ * `useExternalServices` is extension-only. `useTokenDetection` lives on the
+ * core preferences state and is read again on each detection pass.
+ */
+type AssetsSubscriptionPreferences = PreferencesState & {
+  useExternalServices?: boolean;
+  useTokenDetection?: boolean;
+};
+
+/**
+ * Selector key for `PreferencesController:stateChange`.
+ *
+ * Messenger notifies a selector subscriber only when the selected value
+ * changes by reference (`!==`). A primitive changes when either preference
+ * that affects asset subscriptions flips, and stays stable for unrelated
+ * preference updates.
+ *
+ * @param state - The published preferences state.
+ * @returns A primitive key of the two subscription-relevant preferences.
+ */
+function getAssetsSubscriptionPreferenceKey(state: PreferencesState): string {
+  const preferencesState = state as AssetsSubscriptionPreferences;
+  const useExternalServices = preferencesState.useExternalServices ?? true;
+  const useTokenDetection = preferencesState.useTokenDetection ?? true;
+  return `${useExternalServices}:${useTokenDetection}`;
+}
+
+/**
  * Safely retrieves the token detection preference.
+ *
+ * Called on each detection poll and whenever subscriptions restart, so it
+ * must read the current preference rather than a value captured at init.
  *
  * @param initMessenger - The initialization messenger.
  * @returns Whether token detection is enabled (defaults to true on error).
@@ -249,14 +280,13 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   // Basic functionality: when true (useExternalServices), token/price APIs are used; when false, RPC only.
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
-  // Extension: subscribe to PreferencesController:stateChange and notify the controller when
-  // useExternalServices or useTokenDetection changes. RpcDataSource calls tokenDetectionEnabled()
-  // on each detection cycle, but only starts the detection poller when that getter is true at
-  // subscribe time, so a later toggle has to refresh subscriptions.
-  // Messenger keeps one subscriber per handler and compares selector results with !==, so both
-  // preferences share one string selector. That also refreshes once when basic functionality
-  // writes both fields in the same update.
-  // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
+  // Extension: subscribe to PreferencesController:stateChange and refresh
+  // subscriptions when useExternalServices or useTokenDetection changes.
+  // Detection polling starts only inside subscribe, so a live getter is not
+  // enough to pick up a runtime toggle. The removed TokenDetectionController
+  // restarted detection when this preference changed.
+  // Also subscribe to OnboardingController:stateChange so that when onboarding
+  // completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,
@@ -266,15 +296,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       () => {
         onChange(isBasicFunctionality());
       },
-      (state: PreferencesState) => {
-        const preferences = state as PreferencesState & {
-          useExternalServices?: boolean;
-          useTokenDetection?: boolean;
-        };
-        const useExternalServices = preferences.useExternalServices ?? true;
-        const useTokenDetection = preferences.useTokenDetection ?? true;
-        return `${useExternalServices}:${useTokenDetection}`;
-      },
+      getAssetsSubscriptionPreferenceKey,
     );
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
@@ -300,8 +322,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
-      // Read on each detection cycle. RpcDataSource stores the function and invokes it
-      // when subscribing and on every poll, so a later useTokenDetection change is visible.
       tokenDetectionEnabled: () => safeGetTokenDetectionEnabled(initMessenger),
       balanceInterval: 30_000,
       detectionInterval: 180_000,

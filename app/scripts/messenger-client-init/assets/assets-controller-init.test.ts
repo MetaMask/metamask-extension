@@ -212,15 +212,17 @@ describe('AssetsControllerInit', () => {
     expect(tokenDetectionEnabledGetter()).toBe(false);
   });
 
-  it('reads useTokenDetection again each time tokenDetectionEnabled is called', () => {
-    let useTokenDetection = false;
+  it('reads tokenDetectionEnabled live when useTokenDetection changes', () => {
+    const preferences: { useTokenDetection?: boolean } = {
+      useTokenDetection: false,
+    };
     const requestMock = getInitRequestMock();
     requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
       if (action === 'OnboardingController:getState') {
         return { completedOnboarding: true };
       }
       if (action === 'PreferencesController:getState') {
-        return { useTokenDetection };
+        return preferences;
       }
       if (action === 'AuthenticationController:getBearerToken') {
         return Promise.resolve('mock-bearer-token');
@@ -241,9 +243,11 @@ describe('AssetsControllerInit', () => {
 
     expect(config.tokenDetectionEnabled()).toBe(false);
 
-    useTokenDetection = true;
-
+    preferences.useTokenDetection = true;
     expect(config.tokenDetectionEnabled()).toBe(true);
+
+    preferences.useTokenDetection = false;
+    expect(config.tokenDetectionEnabled()).toBe(false);
   });
 
   it('defaults tokenDetectionEnabled to true when useTokenDetection is absent from preferences state', () => {
@@ -774,58 +778,32 @@ describe('AssetsControllerInit', () => {
   });
 
   describe('subscribeToBasicFunctionalityChange function', () => {
-    type CapturedSubscription = {
-      listener: (selectedValue: unknown) => void;
-      selector?: (state: unknown) => unknown;
-    };
-
     /**
      * Replaces the real `subscribe` on both messengers with jest mocks so tests
      * can capture the registered listener functions and invoke them directly,
      * bypassing the messenger's namespace-prefixed publish restriction.
      *
      * @param requestMock - The init request mock whose messenger subscribe methods will be replaced.
-     * @returns A map from event name to the captured subscriptions, in registration order.
+     * @returns A map from event name to the captured listener function.
      */
     function captureSubscribeListeners(
       requestMock: ReturnType<typeof buildSubscribeTestSetup>['requestMock'],
     ) {
-      const listeners: Record<string, CapturedSubscription[]> = {};
-
-      const capture = (
-        event: string,
-        listener: (selectedValue: unknown) => void,
-        selector?: (state: unknown) => unknown,
-      ) => {
-        listeners[event] ??= [];
-        listeners[event].push({ listener, selector });
-      };
+      const listeners: Record<string, (selectedValue: unknown) => void> = {};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (requestMock.controllerMessenger as any).subscribe = jest
         .fn()
-        .mockImplementation(
-          (
-            event: string,
-            listener: (selectedValue: unknown) => void,
-            selector?: (state: unknown) => unknown,
-          ) => {
-            capture(event, listener, selector);
-          },
-        );
+        .mockImplementation((event: string, listener: (v: unknown) => void) => {
+          listeners[event] = listener;
+        });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (requestMock.initMessenger as any).subscribe = jest
         .fn()
-        .mockImplementation(
-          (
-            event: string,
-            listener: (selectedValue: unknown) => void,
-            selector?: (state: unknown) => unknown,
-          ) => {
-            capture(event, listener, selector);
-          },
-        );
+        .mockImplementation((event: string, listener: (v: unknown) => void) => {
+          listeners[event] = listener;
+        });
 
       return listeners;
     }
@@ -851,12 +829,7 @@ describe('AssetsControllerInit', () => {
       // Invoke the captured listener with the selector's output value.
       // The listener ignores the argument and calls isBasicFunctionality(),
       // which (via the mock) returns true (onboarded + useExternalServices=true).
-      const preferencesListeners =
-        listeners['PreferencesController:stateChange'];
-      if (!preferencesListeners?.[0]) {
-        throw new Error('Expected PreferencesController:stateChange listener');
-      }
-      preferencesListeners[0].listener(false);
+      listeners['PreferencesController:stateChange'](false);
 
       expect(onChange).toHaveBeenCalledWith(true);
     });
@@ -881,11 +854,7 @@ describe('AssetsControllerInit', () => {
 
       // Invoke the OnboardingController listener with completedOnboarding=true;
       // the if-guard is satisfied so onChange receives isBasicFunctionality()=true.
-      const onboardingListeners = listeners['OnboardingController:stateChange'];
-      if (!onboardingListeners?.[0]) {
-        throw new Error('Expected OnboardingController:stateChange listener');
-      }
-      onboardingListeners[0].listener(true);
+      listeners['OnboardingController:stateChange'](true);
 
       expect(onChange).toHaveBeenCalledWith(true);
     });
@@ -909,21 +878,43 @@ describe('AssetsControllerInit', () => {
       subscribeToBasicFunctionalityChange(onChange);
 
       // The if (completedOnboarding) guard prevents onChange from being called.
-      const onboardingListeners = listeners['OnboardingController:stateChange'];
-      if (!onboardingListeners?.[0]) {
-        throw new Error('Expected OnboardingController:stateChange listener');
-      }
-      onboardingListeners[0].listener(false);
+      listeners['OnboardingController:stateChange'](false);
 
       expect(onChange).not.toHaveBeenCalled();
     });
 
-    it('refreshes subscriptions when useTokenDetection changes', () => {
+    it('refreshes subscriptions when useTokenDetection changes and ignores unrelated preference changes', () => {
       const { requestMock } = buildSubscribeTestSetup({
         completedOnboarding: true,
         useExternalServices: true,
       });
-      const listeners = captureSubscribeListeners(requestMock);
+
+      const subscriptions: {
+        event: string;
+        listener: (selectedValue: unknown) => void;
+        selector?: (state: {
+          useExternalServices?: boolean;
+          useTokenDetection?: boolean;
+          theme?: string;
+        }) => unknown;
+      }[] = [];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (requestMock.controllerMessenger as any).subscribe = jest
+        .fn()
+        .mockImplementation(
+          (
+            event: string,
+            listener: (selectedValue: unknown) => void,
+            selector?: (state: {
+              useExternalServices?: boolean;
+              useTokenDetection?: boolean;
+              theme?: string;
+            }) => unknown,
+          ) => {
+            subscriptions.push({ event, listener, selector });
+          },
+        );
 
       AssetsControllerInit(requestMock);
 
@@ -936,42 +927,34 @@ describe('AssetsControllerInit', () => {
       const onChange = jest.fn();
       subscribeToBasicFunctionalityChange(onChange);
 
-      const preferencesSubscription =
-        listeners['PreferencesController:stateChange']?.[0];
+      const preferencesSubscription = subscriptions.find(
+        (subscription) =>
+          subscription.event === 'PreferencesController:stateChange',
+      );
       if (!preferencesSubscription?.selector) {
-        throw new Error('Expected PreferencesController:stateChange selector');
+        throw new Error(
+          'Expected a PreferencesController:stateChange selector',
+        );
       }
-      const { selector } = preferencesSubscription;
 
-      expect(
-        selector({
-          useExternalServices: true,
-          useTokenDetection: true,
-        }),
-      ).toBe('true:true');
-      expect(
-        selector({
-          useExternalServices: true,
-          useTokenDetection: false,
-        }),
-      ).toBe('true:false');
-      expect(
-        selector({
-          useExternalServices: false,
-          useTokenDetection: false,
-        }),
-      ).toBe('false:false');
-      expect(
-        selector({
-          useExternalServices: true,
-          useTokenDetection: true,
-          theme: 'dark',
-        }),
-      ).toBe('true:true');
-      expect(selector({})).toBe('true:true');
+      const enabled = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: true,
+      });
+      const detectionDisabled = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: false,
+      });
+      const unrelatedPreference = preferencesSubscription.selector({
+        useExternalServices: true,
+        useTokenDetection: true,
+        theme: 'dark',
+      });
 
-      preferencesSubscription.listener('true:false');
+      expect(detectionDisabled).not.toBe(enabled);
+      expect(unrelatedPreference).toBe(enabled);
 
+      preferencesSubscription.listener(detectionDisabled);
       expect(onChange).toHaveBeenCalledWith(true);
     });
   });
