@@ -246,13 +246,16 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 }) => {
   const clientController = () => getMessengerClient('ClientController');
 
-  // Get token detection preference
-  const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
-
   // Basic functionality: when true (useExternalServices), token/price APIs are used; when false, RPC only.
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
-  // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
+  // Extension: subscribe to PreferencesController:stateChange and notify the controller when
+  // useExternalServices or useTokenDetection changes. RpcDataSource calls tokenDetectionEnabled()
+  // on each detection cycle, but only starts the detection poller when that getter is true at
+  // subscribe time, so a later toggle has to refresh subscriptions.
+  // Messenger keeps one subscriber per handler and compares selector results with !==, so both
+  // preferences share one string selector. That also refreshes once when basic functionality
+  // writes both fields in the same update.
   // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
@@ -260,12 +263,18 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   ): void => {
     controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      (_useExternalServices: boolean) => {
+      () => {
         onChange(isBasicFunctionality());
       },
-      (state: PreferencesState) =>
-        (state as PreferencesState & { useExternalServices?: boolean })
-          .useExternalServices ?? true,
+      (state: PreferencesState) => {
+        const preferences = state as PreferencesState & {
+          useExternalServices?: boolean;
+          useTokenDetection?: boolean;
+        };
+        const useExternalServices = preferences.useExternalServices ?? true;
+        const useTokenDetection = preferences.useTokenDetection ?? true;
+        return `${useExternalServices}:${useTokenDetection}`;
+      },
     );
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
@@ -291,7 +300,9 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
-      tokenDetectionEnabled: () => tokenDetectionEnabled,
+      // Read on each detection cycle. RpcDataSource stores the function and invokes it
+      // when subscribing and on every poll, so a later useTokenDetection change is visible.
+      tokenDetectionEnabled: () => safeGetTokenDetectionEnabled(initMessenger),
       balanceInterval: 30_000,
       detectionInterval: 180_000,
     },
