@@ -62,7 +62,10 @@ describe('resolveTicker', () => {
       expect.stringMatching(/query=QQQ.*includeRwaData=true/u),
       expect.objectContaining({
         method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
+        headers: {
+          'X-Client-Id': 'extension',
+          'x-mm-service-profile': 'assets--cashtag-widget',
+        },
       }),
     );
   });
@@ -142,6 +145,57 @@ describe('resolveTicker', () => {
     });
   });
 
+  it('returns null when every match has no market cap', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [
+          {
+            assetId: 'eip155:1/erc20:0xnone',
+            symbol: 'QQQ',
+            name: 'No cap',
+            marketCap: null,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xzero',
+            symbol: 'QQQ',
+            name: 'Zero cap',
+            marketCap: 0,
+          },
+        ],
+      }),
+    } as Response);
+
+    await expect(resolveTicker('QQQ')).resolves.toBeNull();
+  });
+
+  it('keeps a match when another resource has no market cap', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [
+          {
+            assetId: 'eip155:1/erc20:0xzero',
+            symbol: 'QQQ',
+            name: 'Zero cap',
+            marketCap: 0,
+          },
+          {
+            assetId: 'eip155:1/erc20:0xpriced',
+            symbol: 'QQQ',
+            name: 'Priced',
+            marketCap: 5,
+          },
+        ],
+      }),
+    } as Response);
+
+    await expect(resolveTicker('QQQ')).resolves.toMatchObject({
+      primary: { name: 'Priced', marketCap: 5 },
+      similar: [expect.objectContaining({ name: 'Zero cap', marketCap: 0 })],
+    });
+  });
+
   it('returns null for an empty ticker or an unsuccessful search', async () => {
     await expect(resolveTicker('   ')).resolves.toBeNull();
     expect(fetchMock).not.toHaveBeenCalled();
@@ -175,7 +229,10 @@ describe('fetchPriceHistory', () => {
       ),
       expect.objectContaining({
         method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
+        headers: {
+          'X-Client-Id': 'extension',
+          'x-mm-service-profile': 'assets--cashtag-widget',
+        },
       }),
     );
   });

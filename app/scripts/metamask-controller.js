@@ -165,7 +165,12 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  endTrace,
+  serializeTraceContext,
+  trace,
+  TraceName,
+} from '../../shared/lib/trace';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -228,7 +233,6 @@ import {
   trackEvent,
   trackPage,
 } from './controllers/analytics';
-import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -340,7 +344,6 @@ import { TokenDetectionControllerInit } from './messenger-client-init/token-dete
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
-import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
@@ -388,7 +391,6 @@ import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money
 import { initializeWallet } from './wallet-init/initialization';
 import { setupNetworkEnablementController } from './wallet-init/network-enablement-controller';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
-import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -586,7 +588,6 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
-      CurrencyRateController: CurrencyRateControllerInit,
       RatesController: RatesControllerInit,
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
@@ -742,7 +743,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
-    this.currencyRateController = messengerClientsByName.CurrencyRateController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
     this.multichainRatesController = messengerClientsByName.RatesController;
@@ -789,12 +789,6 @@ export default class MetamaskController extends EventEmitter {
     this.configRegistryController = this.wallet.getInstance(
       'ConfigRegistryController',
     );
-    this.backup = new Backup({
-      preferencesController: this.preferencesController,
-      addressBookController: this.addressBookController,
-      accountsController: this.accountsController,
-      networkController: this.networkController,
-    });
     this.geolocationController = this.wallet.getInstance(
       'GeolocationController',
     );
@@ -1389,7 +1383,6 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: this.geolocationController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyRateController,
       MultichainNetworkController: this.multichainNetworkController,
       NetworkController: this.networkController,
       AlertController: this.alertController,
@@ -1452,7 +1445,6 @@ export default class MetamaskController extends EventEmitter {
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
-        CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         PasskeyController: this.passkeyController,
@@ -2395,66 +2387,9 @@ export default class MetamaskController extends EventEmitter {
    * New methods should be defined in controllers and exposed via the messenger, rather than being added to this API object.
    */
   getApi() {
-    const {
-      appStateController,
-      nftController,
-      nftDetectionController,
-      currencyRateController,
-      tokenDetectionController,
-      gasFeeController,
-      announcementController,
-      preferencesController,
-      backup,
-      authenticationController,
-      deFiPositionsController,
-      staticAssetsController,
-    } = this;
+    const { appStateController } = this;
 
     return {
-      // subscription
-
-      subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
-        this.subscriptionController,
-      ),
-      subscriptionsStopPolling:
-        this.subscriptionController.stopPollingByPollingToken.bind(
-          this.subscriptionController,
-        ),
-
-      // MultichainNetworkController
-
-      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
-        this.multichainNetworkController,
-      ),
-
-      // PreferencesController
-
-      dismissSidePanelMigrationToast:
-        preferencesController.dismissSidePanelMigrationToast.bind(
-          preferencesController,
-        ),
-
-      // NftController
-
-      // These are only called from the UI import flow, i.e. a manual import.
-      addNft: (address, tokenId, networkClientId) =>
-        nftController.addNft(address, tokenId, networkClientId, {
-          source: Source.Custom,
-        }),
-      addNftVerifyOwnership: (address, tokenId, networkClientId) =>
-        nftController.addNftVerifyOwnership(address, tokenId, networkClientId, {
-          source: Source.Custom,
-        }),
-      removeAndIgnoreNft: nftController.removeAndIgnoreNft.bind(nftController),
-      removeNft: nftController.removeNft.bind(nftController),
-      checkAndUpdateAllNftsOwnershipStatus:
-        nftController.checkAndUpdateAllNftsOwnershipStatus.bind(nftController),
-      checkAndUpdateSingleNftOwnershipStatus:
-        nftController.checkAndUpdateSingleNftOwnershipStatus.bind(
-          nftController,
-        ),
-      isNftOwner: nftController.isNftOwner.bind(nftController),
-
       // AppStateController
 
       setArcUsageNoticeShown: () => {
@@ -2473,87 +2408,10 @@ export default class MetamaskController extends EventEmitter {
         );
       },
 
-      // GeolocationController
-
-      getGeolocation: this.geolocationController.getGeolocation.bind(
-        this.geolocationController,
-      ),
-
       // MetaMetrics
 
       trackAnalyticsEvent: trackEvent,
       trackMetaMetricsPage: trackPage,
-
-      // Notifications
-
-      resetViewedNotifications: announcementController.resetViewed.bind(
-        announcementController,
-      ),
-      updateViewedNotifications: announcementController.updateViewed.bind(
-        announcementController,
-      ),
-
-      // CurrencyRateController
-
-      currencyRateStartPolling: currencyRateController.startPolling.bind(
-        currencyRateController,
-      ),
-      currencyRateStopPollingByPollingToken:
-        currencyRateController.stopPollingByPollingToken.bind(
-          currencyRateController,
-        ),
-
-      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
-        tokenDetectionController,
-      ),
-      tokenDetectionStopPollingByPollingToken:
-        tokenDetectionController.stopPollingByPollingToken.bind(
-          tokenDetectionController,
-        ),
-
-      staticAssetsStartPolling: staticAssetsController.startPolling.bind(
-        staticAssetsController,
-      ),
-      staticAssetsStopPollingByPollingToken:
-        staticAssetsController.stopPollingByPollingToken.bind(
-          staticAssetsController,
-        ),
-
-      // DeFiPositionsController
-
-      deFiStartPolling: deFiPositionsController.startPolling.bind(
-        deFiPositionsController,
-      ),
-      deFiStopPolling: deFiPositionsController.stopPollingByPollingToken.bind(
-        deFiPositionsController,
-      ),
-
-      // GasFeeController
-
-      gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
-      gasFeeStopPollingByPollingToken:
-        gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
-
-      // Backup
-
-      backupUserData: backup.backupUserData.bind(backup),
-      restoreUserData: backup.restoreUserData.bind(backup),
-
-      // NftDetectionController
-      detectNfts: nftDetectionController.detectNfts.bind(
-        nftDetectionController,
-      ),
-
-      // Authentication Controller
-
-      getUserProfileLineage:
-        authenticationController.getUserProfileLineage.bind(
-          authenticationController,
-        ),
-      requestProfilePairing:
-        authenticationController.requestProfilePairing.bind(
-          authenticationController,
-        ),
     };
   }
 
@@ -3590,7 +3448,6 @@ export default class MetamaskController extends EventEmitter {
     const api = {
       ...this.getApi(),
       ...this.messengerClientApi,
-      ...getTransactionControllerApi(this.txController),
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         onStartSendingPatchesOrStreamClosed();
@@ -4395,10 +4252,10 @@ export default class MetamaskController extends EventEmitter {
             // response's JSON validation, and only the `SerializedTraceContext`
             // shape round-trips into a later `startTrace` `parentContext`.
             const span = trace(options);
-            const spanContext = span?.spanContext?.();
-            return spanContext
-              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
-              : {};
+            return serializeTraceContext(span, {
+              name: options.name,
+              id: options.id,
+            });
           },
           endTrace,
           getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
@@ -5236,7 +5093,6 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopAllPolling();
-      this.currencyRateController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
@@ -5263,7 +5119,6 @@ export default class MetamaskController extends EventEmitter {
       // We don't know which controller the token is associated with, so try them all.
       // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
-      this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);

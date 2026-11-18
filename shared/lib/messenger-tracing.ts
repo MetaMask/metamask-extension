@@ -73,6 +73,7 @@ export function wrapMessengerWithTracing<
         name: `Messenger Call: ${actionType}`,
         op: 'messenger.call',
         data: { action: actionType },
+        allowActiveSpanFallback: true,
       },
       () => originalCall(actionType, ...args),
     );

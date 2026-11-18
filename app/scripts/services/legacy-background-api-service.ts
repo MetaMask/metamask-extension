@@ -104,6 +104,7 @@ import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
+  getAccountAddressRelationship,
   TransactionContainerType,
   TransactionControllerAddTransactionAction,
   TransactionControllerAddTransactionBatchAction,
@@ -129,7 +130,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  CurrencyRateControllerSetCurrentCurrencyAction,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
@@ -276,7 +276,10 @@ import {
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
 import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
-import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
+import {
+  AddressBookControllerClearAction,
+  AddressBookControllerGetStateAction,
+} from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -414,6 +417,7 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import { prependZero } from '../../../shared/lib/string-utils';
 import type {
   SentryTracingServiceBufferedEndTraceAction,
   SentryTracingServiceBufferedTraceAction,
@@ -499,10 +503,12 @@ const MESSENGER_EXPOSED_METHODS = [
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
+  'backupUserData',
   'captureTestError',
   'changePassword',
   'changePasswordWithPasskeyVerification',
   'checkDelegationDisabled',
+  'checkFirstTimeInteraction',
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
@@ -617,6 +623,7 @@ type AllowedActions =
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
   | AddressBookControllerClearAction
+  | AddressBookControllerGetStateAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
   | ApprovalControllerAddAndShowApprovalRequestAction
@@ -642,7 +649,6 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | ClaimsControllerClearStateAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
   | GasFeeControllerEnableNonRPCGasFeeApisAction
@@ -934,16 +940,11 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the current currency for the CurrencyRateController and AssetsController.
+   * Sets the selected currency on the AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
   async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
-    await this.#messenger.call(
-      'CurrencyRateController:setCurrentCurrency',
-      currencyCode,
-    );
-
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 
@@ -5513,5 +5514,67 @@ export class LegacyBackgroundApiService {
     }
 
     return analyticsId;
+  }
+
+  /**
+   * Determines whether the sender has no prior interaction with an address.
+   *
+   * Missing relationship data and request failures remain unknown so callers
+   * can distinguish them from a confirmed first interaction.
+   *
+   * @param request - The chain, sender, and recipient to check.
+   * @param request.chainId - The numeric chain ID.
+   * @param request.from - The sender address.
+   * @param request.to - The recipient address.
+   * @returns Whether this is the first interaction, or undefined if unknown.
+   */
+  // TODO: Move this to `transaction-controller` and expose as a messenger
+  // action.
+  async checkFirstTimeInteraction(request: {
+    chainId: number;
+    from: string;
+    to: string;
+  }): Promise<boolean | undefined> {
+    try {
+      const result = await getAccountAddressRelationship(request);
+      return result.count === undefined ? undefined : result.count === 0;
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Creates a JSON backup of the user's preferences, accounts, address book,
+   * and network configurations for download from the UI.
+   *
+   * @returns The backup filename and serialized data.
+   */
+  backupUserData(): { fileName: string; data: string } {
+    const preferences = this.#messenger.call('PreferencesController:getState');
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const addressBook = this.#messenger.call('AddressBookController:getState');
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const data = JSON.stringify({
+      preferences: { ...preferences },
+      internalAccounts: { internalAccounts },
+      addressBook: { ...addressBook },
+      network: { networkConfigurationsByChainId },
+    });
+
+    const date = new Date();
+    const prefixZero = (num: number): string => prependZero(num, 2);
+
+    const userDataFileName = `MetaMaskUserData.${date.getFullYear()}_${prefixZero(
+      date.getMonth() + 1,
+    )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+      date.getMinutes(),
+    )}_${prefixZero(date.getDay())}.json`;
+
+    return { fileName: userDataFileName, data };
   }
 }

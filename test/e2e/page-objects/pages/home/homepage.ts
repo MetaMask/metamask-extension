@@ -17,11 +17,6 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
-
 /**
  * Wallet home / account overview: balance, primary CTAs, and tab navigation.
  *
@@ -56,11 +51,6 @@ class HomePage {
   // (`coin-overview__primary-currency`) balance containers.
   protected readonly balance: string =
     '[data-testid$="overview__primary-currency"]';
-
-  // The wide layout's network pills show these logos before the non-EVM
-  // accounts exist, so they don't count as a sign the accounts are loaded.
-  private readonly bitcoinAccountIcon =
-    'img[src="./images/bitcoin-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -140,10 +130,6 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
-
-  // See `bitcoinAccountIcon` for why the network pills are excluded.
-  private readonly solanaAccountIcon =
-    'img[src="./images/solana-logo.svg"]:not([data-testid="network-pill-selector"] img)';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
@@ -755,18 +741,6 @@ class HomePage {
       },
       { timeout: 15000, interval: 500, stableFor: 5000 },
     );
-  }
-
-  async waitForNonEvmAccountsLoaded(): Promise<void> {
-    console.log('Waiting for Non EVM account icons to be visible');
-    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
-    // as soon as the icons render.
-    await this.driver.waitForSelector(this.solanaAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
-    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
   }
 }
 
