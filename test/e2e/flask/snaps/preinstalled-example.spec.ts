@@ -12,6 +12,7 @@ import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import { getStreamedSpans } from '../../tests/metrics/sentry-span-envelopes';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
@@ -273,13 +274,15 @@ describe('Preinstalled example Snap', function () {
         const requests = await mockedEndpoint.getSeenRequests();
         assert.equal(requests.length, 1, 'Expected one request to Sentry.');
 
-        const request = requests[0];
-        const [, , data] = (await request.body.getText()).split('\n');
-        const json = JSON.parse(data);
+        // Streamed spans: the trace is a segment span item, not a transaction.
+        const spans = await getStreamedSpans(requests);
+        const segment = spans.find(
+          (span) => span.isSegment && span.name === 'Test Snap Trace',
+        );
 
-        assert.equal(json.contexts.trace.op, 'custom');
-        assert.equal(json.contexts.trace.origin, 'manual');
-        assert.equal(json.transaction, 'Test Snap Trace');
+        assert.ok(segment, 'Expected a segment span named Test Snap Trace.');
+        assert.equal(segment.op, 'custom');
+        assert.equal(segment.attributes['sentry.origin'], 'manual');
       },
     );
   });
