@@ -36,6 +36,12 @@ export type LongTaskMetrics = {
   tbt: number;
   /** Individual task entries (capped at 50) */
   tasks: LongTaskEntry[];
+  /**
+   * Whether the `longtask` observer attached. False, as in browsers without the
+   * `longtask` entry type (Firefox), means the counts are initial zeros and say
+   * nothing about the main thread.
+   */
+  observed: boolean;
 };
 
 /**
@@ -58,7 +64,10 @@ const TBT_GOOD_THRESHOLD_MS = 200;
 /** TBT threshold for "needs improvement" rating in milliseconds */
 const TBT_NEEDS_IMPROVEMENT_THRESHOLD_MS = 600;
 
-let longTaskMetrics: LongTaskMetrics = {
+/** The accumulator, which counts; `observed` is a property of the observer. */
+type LongTaskCounters = Omit<LongTaskMetrics, 'observed'>;
+
+let longTaskMetrics: LongTaskCounters = {
   count: 0,
   totalDuration: 0,
   maxDuration: 0,
@@ -67,6 +76,13 @@ let longTaskMetrics: LongTaskMetrics = {
 };
 
 let observer: PerformanceObserver | null = null;
+
+/**
+ * Whether `observer.observe({ type: 'longtask' })` succeeded. Separate from
+ * `observer` being non-null, because construction succeeds everywhere and only
+ * `observe` rejects an unsupported entry type.
+ */
+let observerAttached = false;
 
 /**
  * Set up Long Task observer for main thread blocking detection.
@@ -123,10 +139,23 @@ export function setupLongTaskObserver(sampleRate: number = 0.1): () => void {
       }
     });
 
+    // `observe({ type })` with an unsupported type is a silent no-op, not a
+    // throw. Without this check `observed` reads true where `longtask` is
+    // unsupported (Firefox), over counters that never move.
+    if (!PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+      observer = null;
+      observerAttached = false;
+      return () => {
+        // Nothing attached, so nothing to disconnect
+      };
+    }
+
     observer.observe({ type: 'longtask', buffered: true });
+    observerAttached = true;
   } catch (error) {
     // Reset observer to allow future retry attempts
     observer = null;
+    observerAttached = false;
     console.warn('[Performance] Failed to setup Long Task observer:', error);
   }
 
@@ -143,6 +172,7 @@ export function disconnectLongTaskObserver(): void {
     observer.disconnect();
     observer = null;
   }
+  observerAttached = false;
 }
 
 /**
@@ -152,7 +182,11 @@ export function disconnectLongTaskObserver(): void {
  * @returns Current long task metrics
  */
 export function getLongTaskMetrics(reset: boolean = false): LongTaskMetrics {
-  const result = { ...longTaskMetrics, tasks: [...longTaskMetrics.tasks] };
+  const result = {
+    ...longTaskMetrics,
+    tasks: [...longTaskMetrics.tasks],
+    observed: observerAttached,
+  };
 
   if (reset) {
     resetLongTaskMetrics();
@@ -165,6 +199,8 @@ export function getLongTaskMetrics(reset: boolean = false): LongTaskMetrics {
  * Reset Long Task metrics to initial state.
  */
 export function resetLongTaskMetrics(): void {
+  // `observed` is deliberately not reset: it describes whether the observer is
+  // attached, which a counter reset does not change.
   longTaskMetrics = {
     count: 0,
     totalDuration: 0,
