@@ -186,8 +186,7 @@ function getUseSidePanelAsDefault(
 
 /**
  * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- * Without this, the first click after a cold start can use manifest `default_popup` until
- * {@link setupSidePanelToolbarBehavior} runs after initialization.
+ * The MV3 manifest has no `default_popup`, so the icon does nothing until this runs.
  *
  * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
  */
@@ -199,13 +198,38 @@ export function applyEarlySidePanelToolbarBehavior(
   });
 }
 
+/**
+ * Points the toolbar icon at the side panel or the popup.
+ *
+ * Chrome opens `action.default_popup` instead of the side panel when a popup is set.
+ * The MV3 manifest leaves that empty. Side panel preference keeps it empty. Popup
+ * preference sets `popup-init.html`.
+ *
+ * @param useSidePanelAsDefault - Whether the toolbar click should open the side panel.
+ * @param sidePanelApi - Side panel API with `setPanelBehavior`.
+ */
+async function applyToolbarSidePanelPreference(
+  useSidePanelAsDefault: boolean,
+  sidePanelApi: SidePanelApiWithBehavior,
+) {
+  if (useSidePanelAsDefault) {
+    await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true });
+    await setActionPopup('');
+    return;
+  }
+
+  await setActionPopup(POPUP_INIT_FILE);
+  await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: false });
+}
+
 async function setActionPopup(popup: string) {
-  if (typeof chrome.action?.setPopup !== 'function') {
+  const setPopup = globalThis.chrome?.action?.setPopup;
+  if (typeof setPopup !== 'function') {
     return;
   }
 
   try {
-    await chrome.action.setPopup({ popup });
+    await setPopup({ popup });
   } catch (error) {
     log.warn('Failed to set toolbar popup', error);
   }
@@ -215,10 +239,10 @@ export async function applyToolbarSidePanelBehavior(
   getController: SidePanelToolbarBehaviorDeps['getController'],
   sidePanelApi: SidePanelApiWithBehavior,
 ): Promise<void> {
-  const useSidePanelAsDefault = getUseSidePanelAsDefault(getController());
-  await sidePanelApi.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
-  });
+  await applyToolbarSidePanelPreference(
+    getUseSidePanelAsDefault(getController()),
+    sidePanelApi,
+  );
 }
 
 export async function openRoute({
@@ -367,13 +391,12 @@ export async function setupSidePanelToolbarBehavior(
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
       (useSidePanelAsDefault) => {
-        sidePanelApi
-          .setPanelBehavior({
-            openPanelOnActionClick: useSidePanelAsDefault,
-          })
-          .catch((error) =>
-            console.error('Error updating panel behavior:', error),
-          );
+        applyToolbarSidePanelPreference(
+          useSidePanelAsDefault,
+          sidePanelApi,
+        ).catch((error) =>
+          console.error('Error updating panel behavior:', error),
+        );
       },
       (preferencesControllerState: PreferencesControllerState) =>
         preferencesControllerState.preferences?.useSidePanelAsDefault ?? true,

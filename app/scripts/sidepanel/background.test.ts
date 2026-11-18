@@ -270,6 +270,22 @@ describe('applyEarlySidePanelToolbarBehavior', () => {
 });
 
 describe('applyToolbarSidePanelBehavior', () => {
+  const setPopup = jest.fn().mockResolvedValue(undefined);
+  let originalChrome: typeof chrome;
+
+  beforeEach(() => {
+    setPopup.mockClear();
+    originalChrome = globalThis.chrome;
+    globalThis.chrome = {
+      ...(globalThis.chrome ?? ({} as typeof chrome)),
+      action: { setPopup },
+    } as typeof chrome;
+  });
+
+  afterEach(() => {
+    globalThis.chrome = originalChrome;
+  });
+
   it('applies the persisted useSidePanelAsDefault preference', async () => {
     const { sidePanelApi, setPanelBehavior } = createSidePanelMock();
 
@@ -278,6 +294,7 @@ describe('applyToolbarSidePanelBehavior', () => {
       sidePanelApi,
     );
 
+    expect(setPopup).toHaveBeenCalledWith({ popup: 'popup-init.html' });
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: false,
     });
@@ -291,6 +308,7 @@ describe('applyToolbarSidePanelBehavior', () => {
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: true,
     });
+    expect(setPopup).toHaveBeenCalledWith({ popup: '' });
   });
 });
 
@@ -393,6 +411,7 @@ describe('setupSidePanelToolbarBehavior', () => {
     preferenceChangeHandler?.(false);
 
     await Promise.resolve();
+    await Promise.resolve();
     expect(setPanelBehavior).toHaveBeenCalledWith({
       openPanelOnActionClick: false,
     });
@@ -477,6 +496,8 @@ describe('setupSidePanelToolbarBehavior', () => {
 
     setPanelBehavior.mockRejectedValueOnce(new Error('update failed'));
     preferenceChangeHandler?.(false);
+    await Promise.resolve();
+    await Promise.resolve();
     await Promise.resolve();
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
