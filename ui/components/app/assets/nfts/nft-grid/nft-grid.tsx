@@ -8,6 +8,7 @@ import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-mod
 import { getIpfsGateway } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import { getChainIdToNetworkImageUrlMap } from '../../../../../selectors/config-registry/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { isWebUrl } from '../../../../../../shared/lib/url-utils';
@@ -34,6 +35,7 @@ const NFTGridItem = (props: {
     ipfsGateway,
   );
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   const isImageHosted =
     (image && isWebUrl(image)) ||
@@ -51,7 +53,10 @@ const NFTGridItem = (props: {
       alt={nftImageAlt}
       src={nftItemSrc}
       networkName={allNetworks?.[toHex(nft?.chainId ?? '')]?.name}
-      networkSrc={getImageForChainId(toHex(nft?.chainId ?? '')) || undefined}
+      networkSrc={getImageForChainId(
+        toHex(nft?.chainId ?? ''),
+        networkImageUrls,
+      )}
       onClick={onClick}
       isIpfsURL={isIpfsURL}
       privacyMode={privacyMode}

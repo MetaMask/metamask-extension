@@ -176,7 +176,7 @@
   "resolutions": {
     "@metamask/design-system-react": "0.51.1",
     "@metamask/core-backend@npm:^12.3.0": "npm:14.0.0",
-    "@metamask/config-registry-controller": "^5.0.0",
+    "@metamask/config-registry-controller": "^6.0.0",
     "@metamask/network-controller": "^38.0.0",
     "@metamask/ramps-controller@^29.0.0": "^30.0.0",
     "@metamask/transaction-controller": "^74.0.0",
@@ -431,7 +431,7 @@
     "@metamask/client-controller": "^2.0.0",
     "@metamask/client-utils": "^3.4.0",
     "@metamask/compliance-controller": "^3.0.0",
-    "@metamask/config-registry-controller": "^5.0.0",
+    "@metamask/config-registry-controller": "^6.0.0",
     "@metamask/connectivity-controller": "^1.0.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^12.3.0",

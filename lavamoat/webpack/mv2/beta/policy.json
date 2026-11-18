@@ -1253,11 +1253,12 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/base-data-service": true,
         "@metamask/config-registry-controller>@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "reselect": true
+        "@metamask/config-registry-controller>reselect": true
       }
     },
     "@metamask/connectivity-controller": {
@@ -1545,7 +1546,6 @@
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -7770,6 +7770,12 @@
       }
     },
     "@metamask/bridge-controller>reselect": {
+      "globals": {
+        "WeakRef": true,
+        "console.warn": true
+      }
+    },
+    "@metamask/config-registry-controller>reselect": {
       "globals": {
         "WeakRef": true,
         "console.warn": true
