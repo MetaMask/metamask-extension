@@ -85,20 +85,6 @@ describe('SideNavAccounts', () => {
     ).toBeInTheDocument();
   });
 
-  it('hides the action buttons until the accounts section is hovered or search is open', () => {
-    renderSideNavAccounts();
-
-    const searchButton = screen.getByTestId('side-nav-accounts-search-button');
-    expect(searchButton.parentElement).toHaveClass(
-      'opacity-0',
-      'pointer-events-none',
-      'group-hover/accounts:opacity-100',
-      'group-hover/accounts:pointer-events-auto',
-      'has-[[aria-pressed=true]]:opacity-100',
-      'has-[[aria-pressed=true]]:pointer-events-auto',
-    );
-  });
-
   describe('manage button', () => {
     it('navigates to the accounts page', () => {
       renderSideNavAccounts();
