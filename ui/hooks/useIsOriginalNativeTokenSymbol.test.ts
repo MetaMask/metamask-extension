@@ -67,6 +67,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
   it('should return the correct value when the native symbol matches the ticker', async () => {
     const { hook, mocks } = arrangeActHook();
 
+    expect(hook.result.current).toBeUndefined();
+
     await waitFor(() => {
       expect(mocks.mockIsOriginalNativeTokenSymbol).toHaveBeenCalled();
       expect(hook.result.current).toBe(true);

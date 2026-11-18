@@ -52,7 +52,10 @@ export const TokenCellSecondaryDisplay = React.memo(
       rpcUrl,
     );
 
-    const showScamWarning = token.isNative && !isOriginalNativeToken && isEvm;
+    const nativeSymbolValidationIsLoading =
+      token.isNative && isEvm && isOriginalNativeToken === undefined;
+    const showScamWarning =
+      token.isNative && isEvm && isOriginalNativeToken === false;
 
     const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
@@ -87,6 +90,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     return (
       <Skeleton
         hideChildren={
+          nativeSymbolValidationIsLoading ||
           token.isFiatLoading ||
           (!anyEnabledNetworksAreAvailable &&
             isZeroAmount(secondaryDisplayText) &&

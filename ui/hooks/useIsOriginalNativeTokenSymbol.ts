@@ -14,16 +14,33 @@ export function useIsOriginalNativeTokenSymbol(
   type: string,
   rpcUrl = '',
 ) {
-  const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
+  const [validation, setValidation] = useState<{
+    key: string;
+    value: boolean;
+  }>();
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
 
   const isEvm = isEvmChainId(chainId);
   const providerConfig = useSelector(getMultichainCurrentNetwork);
+  const validationKey = [
+    chainId,
+    ticker,
+    type,
+    rpcUrl,
+    useSafeChainsListValidation,
+    providerConfig?.ticker,
+  ].join(':');
 
   useEffect(() => {
     let isMounted = true;
+
+    const setIsOriginalNativeSymbol = (value: boolean) => {
+      if (isMounted) {
+        setValidation({ key: validationKey, value });
+      }
+    };
 
     const isLocalhost = (urlString: string) => {
       const url = getValidUrl(urlString);
@@ -53,13 +70,9 @@ export function useIsOriginalNativeTokenSymbol(
           useAPICall: useSafeChainsListValidation,
         });
 
-        if (isMounted) {
-          setIsOriginalNativeSymbol(isOriginalNativeToken);
-        }
+        setIsOriginalNativeSymbol(isOriginalNativeToken);
       } catch (err) {
-        if (isMounted) {
-          setIsOriginalNativeSymbol(false);
-        }
+        setIsOriginalNativeSymbol(false);
       }
     }
 
@@ -69,7 +82,6 @@ export function useIsOriginalNativeTokenSymbol(
       isMounted = false;
     };
   }, [
-    isOriginalNativeSymbol,
     chainId,
     ticker,
     type,
@@ -77,7 +89,8 @@ export function useIsOriginalNativeTokenSymbol(
     useSafeChainsListValidation,
     isEvm,
     providerConfig?.ticker,
+    validationKey,
   ]);
 
-  return isOriginalNativeSymbol;
+  return validation?.key === validationKey ? validation.value : undefined;
 }
