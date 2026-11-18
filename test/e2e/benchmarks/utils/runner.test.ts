@@ -234,6 +234,23 @@ describe('runPageLoadBenchmark heroPainted', () => {
     expect(results.min.heroPainted).toBe(800);
     expect(results.max.heroPainted).toBe(840);
   });
+
+  it('keeps a metric other than heroPainted that failed to read as NaN', async () => {
+    const unreadable = {
+      ...pageLoadMetrics(1000),
+      'Load Scripts': Number.NaN,
+    };
+    const results = await runPageLoadBenchmark(
+      async () => ({
+        metrics: [pageLoadMetrics(1000), unreadable, pageLoadMetrics(1000)],
+        title: 'measurePageStandard',
+        persona: BENCHMARK_PERSONA.STANDARD,
+      }),
+      { browserLoads: 2, pageLoads: 3 },
+    );
+
+    expect(results.mean.loadScripts).toBeNaN();
+  });
 });
 
 describe('runBenchmarkWithIterations', () => {
