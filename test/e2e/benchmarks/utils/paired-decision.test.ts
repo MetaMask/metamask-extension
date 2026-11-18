@@ -113,18 +113,17 @@ describe('decidePaired parity with the admission scorer', () => {
     ]);
   });
 
-  it.each(parityRows)(
-    '$series $arm $leg #$index matches the scorer',
-    ({ differences, deltaBlock, expected, exact }) => {
-      const decision = decidePaired(differences, Number(deltaBlock));
-      expect(format(decision.shift)).toBe(expected.shift);
-      expect(format(decision.lower)).toBe(expected.lower);
-      expect(decision.k).toBe(expected.k);
+  for (const row of parityRows) {
+    it(`${row.series} ${row.arm} ${row.leg} #${row.index} matches the scorer`, () => {
+      const decision = decidePaired(row.differences, Number(row.deltaBlock));
+      expect(format(decision.shift)).toBe(row.expected.shift);
+      expect(format(decision.lower)).toBe(row.expected.lower);
+      expect(decision.k).toBe(row.expected.k);
       expect(decision.verdict).toBe(
-        expectedVerdict[expected.result as keyof typeof expectedVerdict],
+        expectedVerdict[row.expected.result as keyof typeof expectedVerdict],
       );
-      expect(decision.shift).toBe(exact.shift);
-      expect(decision.lower).toBe(exact.lower);
-    },
-  );
+      expect(decision.shift).toBe(row.exact.shift);
+      expect(decision.lower).toBe(row.exact.lower);
+    });
+  }
 });
