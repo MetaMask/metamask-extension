@@ -1,7 +1,18 @@
 import { act } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../shared/constants/app';
 import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import { useFullScreenDesign } from './useFullScreenDesign';
+
+jest.mock('../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(),
+}));
+
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 /**
  * Mocks `window.matchMedia` with a controllable `min-width` media query.
@@ -49,6 +60,10 @@ function renderUseFullScreenDesign(
 }
 
 describe('useFullScreenDesign', () => {
+  beforeEach(() => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -61,6 +76,13 @@ describe('useFullScreenDesign', () => {
 
   it('returns false when the flag is enabled but the viewport is narrower than the minimum width', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
+    const { result } = renderUseFullScreenDesign();
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false in the popup even when the flag is enabled and the viewport is wide', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    mockViewportWidth(1280);
     const { result } = renderUseFullScreenDesign();
     expect(result.current).toBe(false);
   });
