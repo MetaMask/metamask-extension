@@ -60,7 +60,7 @@ type SmartTransactionTxType = SmartTransactionSentinelMeta['txType'];
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
-  signedTransactionInHex?: Hex;
+  signedTransactionInHex?: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
@@ -86,7 +86,7 @@ class SmartTransactionHook {
 
   #transactionMeta: TransactionMeta;
 
-  #signedTransactionInHex?: Hex;
+  #signedTransactionInHex?: string;
 
   #transactions?: PublishBatchHookTransaction[];
 
@@ -131,14 +131,14 @@ class SmartTransactionHook {
   }
 
   async submit(): Promise<{ transactionHash?: string; getFeesError?: string }> {
-    const isUnsupportedTransactionTypeForSmartTransaction = this
-      .#transactionMeta.type
-      ? [
-          TransactionType.swapAndSend,
-          TransactionType.swapApproval,
-          TransactionType.bridgeApproval,
-        ].includes(this.#transactionMeta.type)
-      : false;
+    const isUnsupportedTransactionTypeForSmartTransaction =
+      this.#transactionMeta.type
+        ? [
+            TransactionType.swapAndSend,
+            TransactionType.swapApproval,
+            TransactionType.bridgeApproval,
+          ].includes(this.#transactionMeta.type)
+        : false;
 
     // Will cause TransactionController to publish to the RPC provider as normal.
     const useRegularTransactionSubmit = { transactionHash: undefined };
@@ -228,7 +228,7 @@ class SmartTransactionHook {
       if (submitTransactionResponse?.txHashes) {
         submitBatchResponse = {
           results: submitTransactionResponse.txHashes.map((txHash: string) => ({
-            transactionHash: txHash as Hex,
+            transactionHash: txHash,
           })),
         };
       } else {
@@ -340,10 +340,10 @@ class SmartTransactionHook {
     }
     signedTransactions = signedTransactionsWithMetadata.map((tx) => tx.tx);
 
-    const txParams = this
-      .#txParams as SmartTransactionSubmitSignedTransactionsRequest['txParams'];
-    const transactionMeta = this
-      .#transactionMeta as SmartTransactionSubmitSignedTransactionsRequest['transactionMeta'];
+    const txParams =
+      this.#txParams as SmartTransactionSubmitSignedTransactionsRequest['txParams'];
+    const transactionMeta =
+      this.#transactionMeta as SmartTransactionSubmitSignedTransactionsRequest['transactionMeta'];
 
     const submitRequest: SmartTransactionSubmitSignedTransactionsRequest = {
       signedTransactions,
@@ -370,7 +370,7 @@ class SmartTransactionHook {
     } as TransactionParams;
   }
 
-  async #createSignedTransactions(fees: Fee[]): Promise<Hex[]> {
+  async #createSignedTransactions(fees: Fee[]): Promise<string[]> {
     if (!this.#txParams || !this.#chainId) {
       throw new Error('Transaction params and chainId are required');
     }
@@ -387,7 +387,7 @@ class SmartTransactionHook {
     return (await this.#transactionController.approveTransactionsWithSameNonce(
       transactionsWithChainId as (TransactionParams & { chainId: Hex })[],
       { hasNonce: true },
-    )) as Hex[];
+    )) as string[];
   }
 }
 
