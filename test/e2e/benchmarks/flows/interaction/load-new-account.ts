@@ -119,6 +119,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         ...buildLongTaskTimerResults(steps),
         ...inPageTimers,
       ],
+      expectedTimers: ['load_new_account'],
       webVitals,
     };
   }, BENCHMARK_TYPE.USER_ACTION);

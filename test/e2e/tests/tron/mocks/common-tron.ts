@@ -481,6 +481,28 @@ export async function createStatefulTronAccountMock(
   return [broadcastEndpoint, accountEndpoint];
 }
 
+export const TRON_ACCOUNT_RESOURCE_RESPONSE = {
+  freeNetLimit: 600,
+  assetNetUsed: [
+    {
+      key: '1005074',
+      value: 0,
+    },
+  ],
+  assetNetLimit: [
+    {
+      key: '1005074',
+      value: 0,
+    },
+  ],
+  TotalNetLimit: 43200000000,
+  TotalNetWeight: 26681367161,
+  tronPowerLimit: 20,
+  EnergyLimit: 189,
+  TotalEnergyLimit: 180000000000,
+  TotalEnergyWeight: 19018684711,
+};
+
 export async function mockTronGetAccountResource(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
@@ -493,27 +515,7 @@ export async function mockTronGetAccountResource(
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        freeNetLimit: 600,
-        assetNetUsed: [
-          {
-            key: '1005074',
-            value: 0,
-          },
-        ],
-        assetNetLimit: [
-          {
-            key: '1005074',
-            value: 0,
-          },
-        ],
-        TotalNetLimit: 43200000000,
-        TotalNetWeight: 26681367161,
-        tronPowerLimit: 20,
-        EnergyLimit: 189,
-        TotalEnergyLimit: 180000000000,
-        TotalEnergyWeight: 19018684711,
-      },
+      json: TRON_ACCOUNT_RESOURCE_RESPONSE,
     }));
 }
 
@@ -1586,10 +1588,10 @@ export async function mockTronGetContract(
 }
 
 /**
- * Mocks the accounts API v2 supportedNetworks (**EVM only**).
+ * Mocks the accounts API v2 supportedNetworks (EVM chains plus Tron).
  *
- * Tron balances in these E2E flows come from mocked Tron RPC
- * (`mockTronGetAccount` and related mocks in this file), not Accounts API v5.
+ * Tron is listed so the core AssetsController accounts data source requests
+ * Tron balances, which the Tron snap reads once its migration stage is on.
  *
  * @param mockServer
  */
@@ -1610,6 +1612,7 @@ export async function mockAccountsApiV2WithTron(
         'eip155:42161',
         'eip155:534352',
         'eip155:1337',
+        TRON_CHAIN_ID,
       ],
       partialSupport: ['eip155:42220', 'eip155:43114'],
     });

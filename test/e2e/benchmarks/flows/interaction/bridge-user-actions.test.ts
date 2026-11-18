@@ -226,6 +226,21 @@ describe('bridge user actions', () => {
     return rules;
   }
 
+  it('expects the three in-page timers, and the mocked run reports each', async () => {
+    const result = await run();
+
+    expect(result.expectedTimers).toStrictEqual([
+      'bridge_load_page',
+      'bridge_load_asset_picker',
+      'bridge_search_token',
+    ]);
+    expect(
+      result.expectedTimers?.every((id) =>
+        result.timers.some((timer) => timer.id === id),
+      ),
+    ).toBe(true);
+  });
+
   it('waits for the page to go idle once, after the asset-picker button is clickable and before its probe and click', async () => {
     process.env[PAGE_IDLE_BEFORE_STEP] = '1';
     await run();

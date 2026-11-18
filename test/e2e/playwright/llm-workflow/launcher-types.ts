@@ -47,6 +47,12 @@ export type LaunchOptions = {
    * Defaults to the e2e password. Cleared after use.
    */
   password?: string;
+  /**
+   * Directory that receives an opt-in screen recording of every page.
+   * Recording starts after onboarding, so no secrets are captured. When
+   * unset, `MM_SCREENCAST_DIR` is used as a fallback.
+   */
+  screencastDir?: string;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;

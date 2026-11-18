@@ -306,6 +306,11 @@ export async function run(): Promise<BenchmarkRunResult> {
         ...buildLongTaskTimerResults(steps),
         ...inPageTimers,
       ],
+      expectedTimers: [
+        'bridge_load_page',
+        'bridge_load_asset_picker',
+        ...(FXS_ADDRESS === undefined ? [] : ['bridge_search_token']),
+      ],
       webVitals,
     };
   }, BENCHMARK_TYPE.USER_ACTION);

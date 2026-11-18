@@ -1,3 +1,4 @@
+import { it as jestIt } from '@jest/globals';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,6 +39,22 @@ describe('createEvent', () => {
     expect(result.properties).not.toHaveProperty('referral_code');
     expect(result.sensitiveProperties).not.toHaveProperty('ref');
   });
+
+  jestIt.each([VALID, INVALID])(
+    'omits signature-excluded referrals from analytics when the signature is %s',
+    (signature) => {
+      const result = createEvent({
+        signature,
+        url: new URL(
+          'https://link.metamask.io/money?ref=ABC123&sig=signature&sig_params=',
+        ),
+      });
+
+      expect(result.properties).not.toHaveProperty('referral_code');
+      expect(result.sensitiveProperties).not.toHaveProperty('ref');
+    },
+  );
+
   describe('basic functionality', () => {
     it('should create event with minimal required properties', () => {
       const url = new URL('https://example.com/test-route');
@@ -136,20 +153,18 @@ describe('createEvent', () => {
       expect(result.properties.utm_term).toBe('crypto-wallet');
     });
 
-    it('handles referral codes as standard attribution properties', () => {
+    it('reports Money ref as referral_code', () => {
       const url = new URL(
-        'https://example.com/test?referral=ABC123&ref=%20def456%20&customParam=secret-value',
+        'https://example.com/test?ref=%20def456%20&customParam=secret-value',
       );
       const signature = MISSING;
 
       const result = createEvent({ signature, url });
 
-      expect(result.properties.referral).toBe('ABC123');
       expect(result.properties.referral_code).toBe('DEF456');
       expect(result.sensitiveProperties).toStrictEqual({
         customParam: 'secret-value',
       });
-      expect(result.sensitiveProperties).not.toHaveProperty('referral');
     });
 
     it('should handle non-UTM parameters as sensitive', () => {

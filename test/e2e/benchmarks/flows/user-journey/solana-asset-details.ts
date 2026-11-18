@@ -152,6 +152,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         ...traceTimers,
         ...inPageTimers,
       ],
+      expectedTimers: ['assetClickToPriceChart'],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,

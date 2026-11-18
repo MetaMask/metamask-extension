@@ -96,7 +96,10 @@ export default function DeleteMetametricsModal({
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('deleteMetaMetricsDataDescriptionV2', [
-              <PrivacyPolicyLink key="delete-metametrics-modal-privacy-link" />,
+              <PrivacyPolicyLink
+                key="delete-metametrics-modal-privacy-link"
+                messageKey="deleteMetaMetricsDataPrivacyNotice"
+              />,
             ])}
           </Text>
         </Box>
