@@ -43,6 +43,19 @@ describe('getManifestFlags', () => {
     expect(getManifestFlags()).toStrictEqual({});
   });
 
+  it('loads without the `webextension-polyfill` mock or an extension global', () => {
+    // `test/jest/setup.js` mocks the polyfill for every test, which hides a
+    // top-level import that throws outside an extension.
+    delete globals.browser;
+    delete globals.chrome;
+
+    jest.isolateModules(() => {
+      jest.unmock('webextension-polyfill');
+
+      expect(() => jest.requireActual('./manifestFlags')).not.toThrow();
+    });
+  });
+
   it('reads `_flags` off `chrome.runtime` when only `chrome` is present', () => {
     delete globals.browser;
     globals.chrome = extensionGlobal({ sentry: { tracesSampleRate: 1 } });

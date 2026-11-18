@@ -6935,13 +6935,6 @@
   "onboardedMetametricsKey3": {
     "message": "その他関連プロモーション資料"
   },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
-  "onboardedMetametricsParagraph1": {
-    "message": "$1に加え、マーケティングコミュニケーションとのインタラクションについて把握するためにもデータを使用します。",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
-  },
   "onboardedMetametricsParagraph2": {
     "message": "これは、次のようなお伝えする情報のカスタマイズに役立ちます:"
   },
@@ -9463,9 +9456,6 @@
   },
   "restore": {
     "message": "復元"
-  },
-  "restoreUserData": {
-    "message": "ユーザーデータの復元"
   },
   "restoreWalletDescription": {
     "message": "$1を入力してください。ウォレットをインポートすると、現在のウォレットデータがこのデバイスから消去されます。この操作は元に戻せません。",

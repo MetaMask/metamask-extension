@@ -152,10 +152,15 @@ describe('performance-observers', () => {
       // stays at zero -- which consumers then treat as a quiet main thread.
       Math.random = () => 0;
       const mockObserve = jest.fn();
+      const mockConstructor = jest.fn();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
         static supportedEntryTypes = ['paint', 'navigation'];
+
+        constructor() {
+          mockConstructor();
+        }
 
         observe = mockObserve;
 
@@ -163,6 +168,7 @@ describe('performance-observers', () => {
       };
 
       setupLongTaskObserver(1);
+      expect(mockConstructor).not.toHaveBeenCalled();
       expect(mockObserve).not.toHaveBeenCalled();
       expect(getLongTaskMetrics().observed).toBe(false);
     });

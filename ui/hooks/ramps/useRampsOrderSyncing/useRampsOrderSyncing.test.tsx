@@ -2,7 +2,6 @@ import log from 'loglevel';
 import { waitFor } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
 import * as rampsControllerActions from '../../../store/controller-actions/ramps-controller';
-import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import {
   useRampsOrderSyncing,
   useShouldDispatchRampsOrderSyncing,
@@ -38,8 +37,6 @@ describe('useShouldDispatchRampsOrderSyncing()', () => {
     const hook = renderHookWithProviderTyped(
       () => useShouldDispatchRampsOrderSyncing(),
       state,
-      undefined,
-      MetamaskIdentityProvider,
     );
     expect(hook.result.current).toBe(true);
   });
@@ -53,8 +50,6 @@ describe('useShouldDispatchRampsOrderSyncing()', () => {
       const hook = renderHookWithProviderTyped(
         () => useShouldDispatchRampsOrderSyncing(),
         state,
-        undefined,
-        MetamaskIdentityProvider,
       );
       expect(hook.result.current).toBe(false);
     },
@@ -70,8 +65,6 @@ describe('useRampsOrderSyncing', () => {
     const { result } = renderHookWithProviderTyped(
       () => useRampsOrderSyncing(),
       state,
-      undefined,
-      MetamaskIdentityProvider,
     );
     return { mockSync, ...result.current };
   };
