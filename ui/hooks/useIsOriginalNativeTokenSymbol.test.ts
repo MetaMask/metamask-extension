@@ -37,6 +37,7 @@ const arrangeParams = () => ({
   ticker: 'ETH',
   type: 'mainnet',
   rpcUrl: '',
+  enabled: true,
 });
 
 type Mocks = ReturnType<typeof arrangeMocks>;
@@ -53,11 +54,12 @@ const arrangeActHook = (overrides?: (mocks: Mocks, params: Params) => void) => {
         params.ticker,
         params.type,
         params.rpcUrl,
+        params.enabled,
       ),
     {},
   );
 
-  return { hook, mocks };
+  return { hook, mocks, params };
 };
 
 describe('useIsOriginalNativeTokenSymbol', () => {
@@ -126,5 +128,30 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       expect(mocks.mockIsOriginalNativeTokenSymbol).not.toHaveBeenCalled();
       expect(hook.result.current).toBe(true);
     });
+  });
+
+  it('keeps an EVM validation result when the selected network changes', async () => {
+    const { hook, mocks } = arrangeActHook();
+
+    await waitFor(() => {
+      expect(hook.result.current).toBe(true);
+    });
+
+    mocks.mockGetMultichainCurrentNetwork.mockReturnValue({
+      ...mocks.createMockProviderConfig(),
+      ticker: 'POL',
+    });
+    hook.rerender();
+
+    expect(hook.result.current).toBe(true);
+  });
+
+  it('skips validation when disabled', () => {
+    const { hook, mocks } = arrangeActHook((_mocks, params) => {
+      params.enabled = false;
+    });
+
+    expect(hook.result.current).toBe(true);
+    expect(mocks.mockIsOriginalNativeTokenSymbol).not.toHaveBeenCalled();
   });
 });

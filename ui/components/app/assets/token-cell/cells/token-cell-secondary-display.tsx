@@ -50,6 +50,7 @@ export const TokenCellSecondaryDisplay = React.memo(
       token.symbol,
       type,
       rpcUrl,
+      Boolean(token.isNative && isEvm),
     );
 
     const nativeSymbolValidationIsLoading =
