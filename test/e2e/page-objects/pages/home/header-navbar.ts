@@ -82,6 +82,8 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
+  private readonly sideNavAccounts = '[data-testid="side-nav-accounts"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -269,6 +271,18 @@ class HeaderNavbar {
   }
 
   async openAccountMenu(): Promise<void> {
+    // Wide layout: the side nav hides its account actions (including this
+    // button) until the section is hovered, so hover it first. The side nav
+    // doesn't exist in the narrow layout, where the button is always visible.
+    const hasSideNavAccounts = await this.driver.executeScript(
+      'return Boolean(document.querySelector(arguments[0]))',
+      this.sideNavAccounts,
+    );
+    if (hasSideNavAccounts) {
+      await this.driver.hoverElement(
+        await this.driver.findElement(this.sideNavAccounts),
+      );
+    }
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.waitForSelector(this.accountListPage);
   }
