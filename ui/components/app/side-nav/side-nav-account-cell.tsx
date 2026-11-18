@@ -68,9 +68,7 @@ export const SideNavAccountCell = ({
   }
 
   const subtitle = showDefaultAddress ? (
-    <div className="relative z-10 min-w-0">
-      <SideNavAccountAddress groupId={accountId} />
-    </div>
+    <SideNavAccountAddress groupId={accountId} />
   ) : (
     walletName && (
       <Text

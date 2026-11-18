@@ -67,7 +67,7 @@ export const SideNavAccountAddress = ({
   return (
     <button
       type="button"
-      className="flex min-w-0 items-center gap-1 bg-transparent p-0"
+      className="relative z-10 flex min-w-0 items-center gap-1 bg-transparent p-0"
       onClick={handleClick}
       data-testid="side-nav-account-cell-address"
     >

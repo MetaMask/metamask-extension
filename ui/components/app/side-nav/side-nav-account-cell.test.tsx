@@ -94,6 +94,16 @@ describe('SideNavAccountCell', () => {
     );
   });
 
+  it('keeps the no-address fallback under the select button so clicks select the account', () => {
+    renderCell({
+      accountId: 'entropy:missing/0' as AccountGroupId,
+      showDefaultAddress: true,
+    });
+
+    const fallback = screen.getByTestId('side-nav-account-cell-address');
+    expect(fallback.closest('.z-10')).toBeNull();
+  });
+
   it('masks the balance in privacy mode', () => {
     renderCell({ showDefaultAddress: true, privacyMode: true });
 
