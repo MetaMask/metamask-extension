@@ -46,9 +46,10 @@ async function measurePageStandard(
         await driver.delay(1000);
 
         const collected = await driver.collectMetrics();
+        const { numNetworkReqs } = getNetworkReport();
         const signals = await readStartupPageSignals(driver);
         const metricsThisLoad = applyStartupPageSignals(collected, signals);
-        metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
+        metricsThisLoad.numNetworkReqs = numNetworkReqs;
         metrics.push(metricsThisLoad);
 
         try {
