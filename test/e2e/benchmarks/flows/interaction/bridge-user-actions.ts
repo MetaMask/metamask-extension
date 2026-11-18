@@ -16,6 +16,10 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import {
+  KNOWN_ANSWER_TOKEN_SEARCH_DELAY,
+  withKnownAnswerDelay,
+} from '../../mocks/known-answer';
+import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
 } from '../../../../../shared/constants/benchmarks';
@@ -26,8 +30,8 @@ export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
 
 async function mockTokensEthereum(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
-    return {
+  return await mockServer.forPost(/getTokens\/search/u).thenCallback(
+    withKnownAnswerDelay(KNOWN_ANSWER_TOKEN_SEARCH_DELAY, () => ({
       statusCode: 200,
       json: {
         data: MOCK_TOKENS_ETHEREUM.map((token) => ({
@@ -40,8 +44,8 @@ async function mockTokensEthereum(mockServer: Mockttp) {
           endCursor: null,
         },
       },
-    };
-  });
+    })),
+  );
 }
 
 export async function run(): Promise<BenchmarkRunResult> {
