@@ -286,4 +286,26 @@ describe('evaluatePairedGate', () => {
     expect(outcomes).toHaveLength(BRIDGE_SERIES.length * 2);
     expect(outcomes.every(({ decision }) => decision?.n === 8)).toBe(true);
   });
+  describe('runs that do not alternate', () => {
+    it.each(['base-base-head-head', 'head-head-base-base'])(
+      'fails a job that ran %s, for the order and not for a missing value',
+      (order) => {
+        const outcomes = evaluatePairedGate(
+          fourJobs((_order) =>
+            makeShiftedFlowResults(order as PairedOrder, BRIDGE_IDS, 0),
+          ),
+        );
+
+        expect(outcomes).toHaveLength(BRIDGE_SERIES.length);
+        for (const outcome of outcomes) {
+          expect(outcome).toMatchObject({
+            verdict: 'incomplete',
+            failed: true,
+          });
+          expect(outcome.problems.join()).toContain('runs do not alternate');
+          expect(outcome.problems.join()).not.toContain('retained value');
+        }
+      },
+    );
+  });
 });
