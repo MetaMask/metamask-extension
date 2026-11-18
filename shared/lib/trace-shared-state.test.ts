@@ -21,7 +21,7 @@ describe('trace state shared across module instances', () => {
   function loadInstance(): TraceModule {
     let instance: TraceModule | undefined;
     jest.isolateModules(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       instance = require('./trace');
     });
     return instance as TraceModule;
