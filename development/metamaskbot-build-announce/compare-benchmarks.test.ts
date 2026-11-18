@@ -1,6 +1,9 @@
 import { promises as fs } from 'fs';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
+import { ADMITTED_SERIES } from '../../test/e2e/benchmarks/utils/gated-metrics';
+import { makeShiftedFlowResults } from '../../test/e2e/benchmarks/utils/fixtures/paired-results';
+import type { PairedOrder } from '../../test/e2e/benchmarks/utils/paired';
 import {
   runComparison,
   buildMetricLines,
@@ -88,29 +91,37 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons[0].source).toBe('chrome-webpack');
     });
 
-    it('fails when an allowlisted metric exceeds its fail threshold', () => {
-      // startupStandardHome.uiStartup IS in GATED_METRICS — fail breach blocks.
-      const benchmarks = [
-        {
-          name: 'benchmark-chrome-webpack-startupStandardHome',
-          data: {
-            startupStandardHome: makeBenchmarkResults('uiStartup', {
-              p75: { uiStartup: 99999 },
-              p95: { uiStartup: 99999 },
-              mean: { uiStartup: 99999 },
-            }),
+    for (const [benchmarkName, metricId] of [
+      ['startupStandardHome', 'uiStartup'],
+      ['onboardingImportWallet', 'total'],
+    ]) {
+      it(`reports a breach of the fixed limit on ${benchmarkName}.${metricId} and does not block`, () => {
+        const benchmarks = [
+          {
+            name: `benchmark-chrome-webpack-${benchmarkName}`,
+            data: {
+              [benchmarkName]: makeBenchmarkResults(metricId, {
+                p75: { [metricId]: 99999 },
+                p95: { [metricId]: 99999 },
+                mean: { [metricId]: 99999 },
+              }),
+            },
           },
-        },
-      ];
+        ];
 
-      const result = runComparison(benchmarks, {});
-      expect(result.anyFailed).toBe(true);
-      expect(result.comparisons[0].absoluteFailed).toBe(true);
-    });
+        const result = runComparison(benchmarks, {});
+        expect(result.anyFailed).toBe(false);
+        expect(result.paired).toStrictEqual([]);
+        expect(result.comparisons[0].hasWarning).toBe(true);
+        expect(
+          result.comparisons[0].absoluteViolations.every(
+            (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+          ),
+        ).toBe(true);
+      });
+    }
 
-    it('does not fail when a non-allowlisted metric exceeds its fail threshold', () => {
-      // onboardingImportWallet.importWalletToSocialScreen is NOT in GATED_METRICS —
-      // fail breach is downgraded to warn and does not affect anyFailed.
+    it('does not fail when an unadmitted metric exceeds its fail threshold', () => {
       const benchmarks = [
         {
           name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
@@ -129,7 +140,6 @@ describe('compare-benchmarks', () => {
 
       const result = runComparison(benchmarks, {});
       expect(result.anyFailed).toBe(false);
-      expect(result.comparisons[0].absoluteFailed).toBe(false);
       expect(
         result.comparisons[0].absoluteViolations.every(
           (v) => v.severity === THRESHOLD_SEVERITY.Warn,
@@ -165,7 +175,7 @@ describe('compare-benchmarks', () => {
       benchmarkName,
       metricId,
     } of DEMOTED_BIMODAL_METRICS) {
-      it(`does not fail on the bimodal metric ${benchmarkName}.${metricId} (demoted, restore condition #45266)`, () => {
+      it(`reports a breach of the bimodal metric ${benchmarkName}.${metricId} and does not block`, () => {
         const benchmarks = [
           {
             name: artifactName,
@@ -181,7 +191,6 @@ describe('compare-benchmarks', () => {
 
         const result = runComparison(benchmarks, {});
         expect(result.anyFailed).toBe(false);
-        expect(result.comparisons[0].absoluteFailed).toBe(false);
         expect(
           result.comparisons[0].absoluteViolations.every(
             (v) => v.severity === THRESHOLD_SEVERITY.Warn,
@@ -190,27 +199,6 @@ describe('compare-benchmarks', () => {
         expect(result.comparisons[0].hasWarning).toBe(true);
       });
     }
-
-    it('still fails on onboardingImportWallet.total, which is unimodal and stays gated', () => {
-      // The control for the three cases above: the same flow's total absorbs
-      // the slow step into a following one, so it keeps its gate.
-      const benchmarks = [
-        {
-          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
-          data: {
-            onboardingImportWallet: makeBenchmarkResults('total', {
-              p75: { total: 99999 },
-              p95: { total: 99999 },
-              mean: { total: 99999 },
-            }),
-          },
-        },
-      ];
-
-      const result = runComparison(benchmarks, {});
-      expect(result.anyFailed).toBe(true);
-      expect(result.comparisons[0].absoluteFailed).toBe(true);
-    });
 
     it('includes relative metrics when baseline is available', () => {
       const benchmarks = [
@@ -385,7 +373,7 @@ describe('compare-benchmarks', () => {
         const allCalls = consoleSpy.mock.calls.flat().join('\n');
         expect(allCalls).toContain('WARN  onboardingImportWallet');
         expect(allCalls).not.toMatch(/FAIL\s+onboardingImportWallet/u);
-        expect(allCalls).toContain('PASS — all benchmarks within constant');
+        expect(allCalls).toContain('PASS — no admitted series blocked');
       } finally {
         consoleSpy.mockRestore();
       }
@@ -465,6 +453,114 @@ describe('loadCurrentBenchmarks', () => {
   });
 });
 
+describe('the gate on admitted series', () => {
+  const bridgeIds = ADMITTED_SERIES.filter(({ series }) =>
+    series.startsWith('bridgeUserActions.'),
+  ).map(({ series }) => series.slice('bridgeUserActions.'.length));
+  const orders: PairedOrder[] = [
+    'base-head-head-base',
+    'head-base-base-head',
+    'base-head-head-base',
+    'head-base-base-head',
+  ];
+
+  /** The four jobs a comparison of eight differences needs, as artifacts. */
+  const bridgeJobs = (
+    shift: number,
+    unadmitted: Record<string, number> = {},
+    jobs = orders,
+  ) =>
+    jobs.map((order, index) => ({
+      name: `benchmark-chrome-webpack-bridgeUserActions-r${Math.floor(index / 2) + 1}-${order}`,
+      data: {
+        bridgeUserActions: makeShiftedFlowResults(
+          order,
+          bridgeIds,
+          shift,
+        ) as unknown as BenchmarkResults,
+        ...Object.fromEntries(
+          Object.entries(unadmitted).map(([flow, flowShift]) => [
+            flow,
+            makeShiftedFlowResults(
+              order,
+              ['step'],
+              flowShift,
+            ) as unknown as BenchmarkResults,
+          ]),
+        ),
+      },
+    }));
+
+  beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('blocks on a paired result whose lower bound exceeds δ_block', () => {
+    const result = runComparison(bridgeJobs(100), {});
+
+    expect(result.anyFailed).toBe(true);
+    expect(result.paired.map(({ verdict }) => verdict)).toStrictEqual(
+      bridgeIds.map(() => 'block'),
+    );
+  });
+
+  it('passes a paired result within δ_block', () => {
+    const result = runComparison(bridgeJobs(10), {});
+
+    expect(result.anyFailed).toBe(false);
+    expect(result.paired.map(({ verdict }) => verdict)).toStrictEqual(
+      bridgeIds.map(() => 'no-block'),
+    );
+  });
+
+  it('fails an inconclusive result: two jobs give four differences, too few for a bound', () => {
+    const result = runComparison(bridgeJobs(0, {}, orders.slice(0, 2)), {});
+
+    expect(result.anyFailed).toBe(true);
+    expect(result.paired.map(({ verdict }) => verdict)).toStrictEqual(
+      bridgeIds.map(() => 'unable'),
+    );
+  });
+
+  it('fails a leg that only carries an error', () => {
+    const result = runComparison(
+      [
+        {
+          name: 'benchmark-chrome-webpack-bridgeUserActions-base-head-head-base',
+          data: {
+            bridgeUserActions: {
+              error: 'Error: no iteration gave a value',
+            } as unknown as BenchmarkResults,
+          },
+        },
+      ],
+      {},
+    );
+
+    expect(result.anyFailed).toBe(true);
+    expect(result.comparisons).toHaveLength(0);
+    expect(result.paired.every(({ verdict }) => verdict === 'incomplete')).toBe(
+      true,
+    );
+  });
+
+  it('does not block on an unadmitted series that shifts by 5 s', () => {
+    const result = runComparison(bridgeJobs(0, { confirmTx: 5000 }), {});
+
+    expect(result.anyFailed).toBe(false);
+  });
+
+  it('checks one leg for values without deciding it', () => {
+    const result = runComparison(bridgeJobs(500).slice(0, 1), {}, false);
+
+    expect(result.anyFailed).toBe(false);
+  });
+});
+
 const makeComparison = (
   overrides: Partial<BenchmarkEntryComparison> = {},
 ): BenchmarkEntryComparison => ({
@@ -473,7 +569,6 @@ const makeComparison = (
   absoluteViolations: [],
   hasRegression: false,
   hasWarning: false,
-  absoluteFailed: false,
   ...overrides,
 });
 
@@ -488,28 +583,43 @@ describe('printReport', () => {
     consoleSpy.mockRestore();
   });
 
-  it('prints PASS result when no comparison failed', () => {
-    printReport({ comparisons: [], anyFailed: false });
+  const blockedSeries = {
+    source: 'chrome-webpack',
+    series: 'bridgeUserActions.bridge_load_page',
+    deltaBlockMs: 33,
+    verdict: 'block' as const,
+    failed: true,
+    problems: [],
+    decision: {
+      n: 8,
+      shift: 120,
+      lower: 90,
+      k: 6,
+      attainedLevel: 0.0391,
+      verdict: 'block' as const,
+    },
+  };
+
+  it('prints PASS result when no admitted series failed', () => {
+    printReport({ comparisons: [], paired: [], anyFailed: false });
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('PASS — all benchmarks within constant limits'),
+      expect.stringContaining('PASS — no admitted series blocked'),
     );
   });
 
-  it('prints FAIL result when anyFailed is true', () => {
+  it('prints FAIL result and the series when an admitted series blocked', () => {
     printReport({
-      comparisons: [
-        makeComparison({
-          benchmarkName: 'standardHome',
-          absoluteFailed: true,
-        }),
-      ],
+      comparisons: [],
+      paired: [blockedSeries],
       anyFailed: true,
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('FAIL — at least one benchmark');
-    expect(allCalls).toContain('FAIL  standardHome');
+    expect(allCalls).toContain('FAIL — an admitted series blocked');
+    expect(allCalls).toContain(
+      'FAIL  bridgeUserActions.bridge_load_page [chrome-webpack]: block, 8 differences, shift 120.0ms, lower bound 90.0ms against δ_block 33.0ms',
+    );
   });
 
   it('shows passing comparison in grouped PASS section', () => {
@@ -518,9 +628,9 @@ describe('printReport', () => {
         makeComparison({
           benchmarkName: 'loadNewAccount',
           source: 'chrome-webpack',
-          absoluteFailed: false,
         }),
       ],
+      paired: [],
       anyFailed: false,
     });
 
@@ -530,27 +640,12 @@ describe('printReport', () => {
     expect(allCalls).toContain('chrome-webpack');
   });
 
-  it('shows failing comparison with source label and FAIL prefix', () => {
-    printReport({
-      comparisons: [
-        makeComparison({
-          benchmarkName: 'loadNewAccount',
-          source: 'firefox-webpack',
-          absoluteFailed: true,
-        }),
-      ],
-      anyFailed: true,
-    });
-
-    const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('FAIL  loadNewAccount [firefox-webpack]');
-  });
-
   it('groups passing entries without baseline into PASS section', () => {
     printReport({
       comparisons: [
         makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
       ],
+      paired: [],
       anyFailed: false,
     });
 
@@ -581,6 +676,7 @@ describe('printReport', () => {
           ],
         }),
       ],
+      paired: [],
       anyFailed: false,
     });
 
@@ -590,10 +686,7 @@ describe('printReport', () => {
     expect(allCalls).not.toContain('[Show logs]');
   });
 
-  it('prints issue metric lines for comparisons with violations', () => {
-    const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
-      './comparison-utils',
-    ) as typeof import('./comparison-utils');
+  it('prints a breach of a fixed limit as a warning', () => {
     const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
@@ -602,37 +695,37 @@ describe('printReport', () => {
         makeComparison({
           benchmarkName: 'standardHome',
           source: 'chrome-webpack',
-          absoluteFailed: true,
+          hasWarning: true,
           absoluteViolations: [
             {
               metricId: 'uiStartup',
               percentile: 'p95',
               value: 6000,
               threshold: 4800,
-              severity: TS.Fail,
+              severity: TS.Warn,
             },
           ],
         }),
       ],
-      anyFailed: true,
+      paired: [],
+      anyFailed: false,
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('FAIL  standardHome [chrome-webpack]');
+    expect(allCalls).toContain('WARN  standardHome [chrome-webpack]');
     expect(allCalls).toContain('uiStartup');
-    expect(allCalls).toContain(SEV.Regression.icon);
+    expect(allCalls).not.toContain('FAIL  standardHome');
   });
 
-  it('reports correct total counts for failed and warned comparisons', () => {
+  it('reports counts of failed admitted series, other benchmarks and warnings', () => {
     const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
     printReport({
       comparisons: [
-        makeComparison({ benchmarkName: 'A', absoluteFailed: true }),
+        makeComparison({ benchmarkName: 'A' }),
         makeComparison({
           benchmarkName: 'B',
-          absoluteFailed: false,
           absoluteViolations: [
             {
               metricId: 'uiStartup',
@@ -643,14 +736,16 @@ describe('printReport', () => {
             },
           ],
         }),
-        makeComparison({ benchmarkName: 'C', absoluteFailed: false }),
+        makeComparison({ benchmarkName: 'C' }),
       ],
+      paired: [blockedSeries],
       anyFailed: true,
     });
 
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
-    expect(allCalls).toContain('3 benchmarks');
+    expect(allCalls).toContain('1 admitted series');
     expect(allCalls).toContain('1 failed');
+    expect(allCalls).toContain('3 other benchmarks');
     expect(allCalls).toContain('1 warnings');
   });
 
@@ -666,6 +761,7 @@ describe('printReport', () => {
           source: 'firefox-webpack',
         }),
       ],
+      paired: [],
       anyFailed: false,
     });
 

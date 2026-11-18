@@ -1,7 +1,6 @@
 import type {
   BenchmarkResults,
   ThresholdConfig,
-  ThresholdViolation,
 } from '../../shared/constants/benchmarks';
 import {
   BENCHMARK_PERSONA,
@@ -11,14 +10,11 @@ import {
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 
 import {
-  applyGatingPolicy,
-  applyNoiseTolerance,
   compareMetric,
   compareBenchmarkEntries,
   formatDeltaPercent,
   scaleThresholdsForBrowser,
   COMPARISON_SEVERITY,
-  type BenchmarkEntryComparison,
 } from './comparison-utils';
 
 describe('benchmark-comparison', () => {
@@ -138,11 +134,10 @@ describe('benchmark-comparison', () => {
         thresholdConfig,
       );
 
-      expect(comparison.absoluteFailed).toBe(false);
       expect(comparison.absoluteViolations).toHaveLength(0);
     });
 
-    it('fails when p75 exceeds fail threshold', () => {
+    it('reports p75 beyond the fail threshold as a warning, never a failure', () => {
       const results = {
         testTitle: 'test',
         persona: BENCHMARK_PERSONA.STANDARD,
@@ -160,11 +155,16 @@ describe('benchmark-comparison', () => {
         thresholdConfig,
       );
 
-      expect(comparison.absoluteFailed).toBe(true);
       expect(comparison.absoluteViolations.length).toBeGreaterThan(0);
+      expect(
+        comparison.absoluteViolations.every(
+          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+        ),
+      ).toBe(true);
+      expect(comparison.hasWarning).toBe(true);
     });
 
-    it('warns but does not fail when p75 exceeds warn but not fail', () => {
+    it('warns when p75 exceeds warn but not fail', () => {
       const results = {
         testTitle: 'test',
         persona: BENCHMARK_PERSONA.STANDARD,
@@ -182,7 +182,6 @@ describe('benchmark-comparison', () => {
         thresholdConfig,
       );
 
-      expect(comparison.absoluteFailed).toBe(false);
       expect(comparison.absoluteViolations.length).toBeGreaterThan(0);
       expect(comparison.absoluteViolations[0].severity).toBe(
         COMPARISON_SEVERITY.Warn.value,
@@ -352,152 +351,6 @@ describe('benchmark-comparison', () => {
     });
   });
 
-  describe('applyGatingPolicy', () => {
-    const violation = (
-      metricId: string,
-      severity: ThresholdViolation['severity'],
-    ): ThresholdViolation => ({
-      metricId,
-      percentile: 'p75',
-      value: 1000,
-      threshold: 800,
-      severity,
-    });
-
-    const baseComparison = (
-      benchmarkName: string,
-      violations: ThresholdViolation[],
-    ): BenchmarkEntryComparison => ({
-      benchmarkName,
-      relativeMetrics: [],
-      absoluteViolations: violations,
-      hasRegression: false,
-      hasWarning: violations.some(
-        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
-      ),
-      absoluteFailed: violations.some(
-        (v) => v.severity === THRESHOLD_SEVERITY.Fail,
-      ),
-    });
-
-    it('preserves Fail severity when metric is allowlisted', () => {
-      const input = baseComparison('startupStandardHome', [
-        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
-      ]);
-      const allow = new Set(['startupStandardHome.uiStartup']);
-
-      const result = applyGatingPolicy(input, allow);
-
-      expect(result.absoluteViolations[0].severity).toBe(
-        THRESHOLD_SEVERITY.Fail,
-      );
-      expect(result.absoluteFailed).toBe(true);
-    });
-
-    it('downgrades Fail to Warn when metric is not allowlisted', () => {
-      const input = baseComparison('startupPowerUserHome', [
-        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
-      ]);
-      const allow = new Set(['startupStandardHome.uiStartup']);
-
-      const result = applyGatingPolicy(input, allow);
-
-      expect(result.absoluteViolations[0].severity).toBe(
-        THRESHOLD_SEVERITY.Warn,
-      );
-      expect(result.absoluteFailed).toBe(false);
-      expect(result.hasWarning).toBe(true);
-    });
-
-    it('downgrades only non-allowlisted entries in mixed input', () => {
-      const input = baseComparison('startupStandardHome', [
-        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
-        violation('domContentLoaded', THRESHOLD_SEVERITY.Fail),
-      ]);
-      const allow = new Set(['startupStandardHome.uiStartup']);
-
-      const result = applyGatingPolicy(input, allow);
-
-      const byMetric = Object.fromEntries(
-        result.absoluteViolations.map((v) => [v.metricId, v.severity]),
-      );
-      expect(byMetric.uiStartup).toBe(THRESHOLD_SEVERITY.Fail);
-      expect(byMetric.domContentLoaded).toBe(THRESHOLD_SEVERITY.Warn);
-      expect(result.absoluteFailed).toBe(true);
-    });
-
-    it('never modifies Warn-severity violations', () => {
-      const input = baseComparison('startupPowerUserHome', [
-        violation('uiStartup', THRESHOLD_SEVERITY.Warn),
-      ]);
-      const allow = new Set<string>();
-
-      const result = applyGatingPolicy(input, allow);
-
-      expect(result.absoluteViolations[0].severity).toBe(
-        THRESHOLD_SEVERITY.Warn,
-      );
-      expect(result.absoluteFailed).toBe(false);
-    });
-
-    it('downgrades all fails when allowlist is empty', () => {
-      const input = baseComparison('startupStandardHome', [
-        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
-        violation('load', THRESHOLD_SEVERITY.Fail),
-      ]);
-
-      const result = applyGatingPolicy(input, new Set());
-
-      expect(
-        result.absoluteViolations.every(
-          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
-        ),
-      ).toBe(true);
-      expect(result.absoluteFailed).toBe(false);
-      expect(result.hasWarning).toBe(true);
-    });
-
-    it('does not mutate the input comparison', () => {
-      const input = baseComparison('startupPowerUserHome', [
-        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
-      ]);
-      const inputViolationsBefore = input.absoluteViolations.slice();
-      const inputSeverityBefore = input.absoluteViolations[0].severity;
-
-      applyGatingPolicy(input, new Set());
-
-      expect(input.absoluteViolations).toStrictEqual(inputViolationsBefore);
-      expect(input.absoluteViolations[0].severity).toBe(inputSeverityBefore);
-      expect(input.absoluteFailed).toBe(true);
-    });
-
-    it('preserves hasWarning derived from relativeMetrics', () => {
-      const input: BenchmarkEntryComparison = {
-        benchmarkName: 'startupStandardHome',
-        relativeMetrics: [
-          {
-            metric: 'uiStartup',
-            percentile: 'p75',
-            current: 1100,
-            baseline: 1000,
-            delta: 100,
-            deltaPercent: 0.1,
-            severity: COMPARISON_SEVERITY.Warn.value,
-            indication: COMPARISON_SEVERITY.Warn.icon,
-          },
-        ],
-        absoluteViolations: [],
-        hasRegression: false,
-        hasWarning: true,
-        absoluteFailed: false,
-      };
-
-      const result = applyGatingPolicy(input, new Set());
-
-      expect(result.hasWarning).toBe(true);
-    });
-  });
-
   describe('formatDeltaPercent', () => {
     it('formats a positive delta as +X%', () => {
       expect(formatDeltaPercent(0.15)).toBe('+15%');
@@ -574,76 +427,5 @@ describe('THRESHOLD_REGISTRY', () => {
     expect(
       THRESHOLD_REGISTRY['firefox-webpack-startupPowerUserHome'],
     ).toBeUndefined();
-  });
-
-  describe('applyNoiseTolerance', () => {
-    const makeComparison = (
-      severity: ThresholdViolation['severity'],
-      value: number,
-      threshold: number,
-    ): BenchmarkEntryComparison => ({
-      benchmarkName: 'onboardingImportWallet',
-      relativeMetrics: [],
-      absoluteViolations: [
-        { metricId: 'total', percentile: 'p75', value, threshold, severity },
-      ],
-      hasRegression: false,
-      hasWarning: severity === THRESHOLD_SEVERITY.Warn,
-      absoluteFailed: severity === THRESHOLD_SEVERITY.Fail,
-    });
-
-    const makeResults = (stdDev?: number): BenchmarkResults =>
-      ({
-        mean: { total: 11000 },
-        stdDev: stdDev === undefined ? {} : { total: stdDev },
-        p75: { total: 11291 },
-        p95: { total: 11689 },
-      }) as unknown as BenchmarkResults;
-
-    // Observed on a live benchmark run (onboardingImportWallet,
-    // chrome-webpack): p75 11291 vs limit 11050, breach 241ms < stdDev 303ms
-    // — a coin-flip on which samples landed.
-    it('downgrades a Fail to Warn when the breach is within one stdDev', () => {
-      const result = applyNoiseTolerance(
-        makeComparison(THRESHOLD_SEVERITY.Fail, 11291, 11050),
-        makeResults(303),
-      );
-      expect(result.absoluteViolations[0].severity).toBe(
-        THRESHOLD_SEVERITY.Warn,
-      );
-      expect(result.absoluteFailed).toBe(false);
-      expect(result.hasWarning).toBe(true);
-    });
-
-    it('keeps a Fail when the breach exceeds one stdDev', () => {
-      const result = applyNoiseTolerance(
-        makeComparison(THRESHOLD_SEVERITY.Fail, 12000, 11050),
-        makeResults(303),
-      );
-      expect(result.absoluteViolations[0].severity).toBe(
-        THRESHOLD_SEVERITY.Fail,
-      );
-      expect(result.absoluteFailed).toBe(true);
-    });
-
-    it('leaves the violation unchanged when stdDev is unavailable', () => {
-      const result = applyNoiseTolerance(
-        makeComparison(THRESHOLD_SEVERITY.Fail, 11291, 11050),
-        makeResults(undefined),
-      );
-      expect(result.absoluteViolations[0].severity).toBe(
-        THRESHOLD_SEVERITY.Fail,
-      );
-    });
-
-    it('does not touch Warn-severity violations', () => {
-      const result = applyNoiseTolerance(
-        makeComparison(THRESHOLD_SEVERITY.Warn, 11291, 11050),
-        makeResults(1),
-      );
-      expect(result.absoluteViolations[0].severity).toBe(
-        THRESHOLD_SEVERITY.Warn,
-      );
-    });
   });
 });
