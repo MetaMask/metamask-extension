@@ -97,8 +97,10 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
           ...(await measureStepInPage(driver, 'assetClickToPriceChart', {
             endSelector: PRICE_CHART_DATA,
             startWithin: '[data-testid="multichain-token-list-button"]',
+            // Long tasks the click causes count: the window opens at the click.
+            resetLongTasksAtStart: true,
             trigger: () => tokensTab.clickOnAsset('Solana'),
-            settle: async () => {
+            settle: async ({ installed }) => {
               steps.push(
                 await measureStepWithLongTasks(
                   driver,
@@ -107,7 +109,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
                     await tokensTab.checkPriceChartIsShown();
                     await driver.waitForSelector(PRICE_CHART_DATA);
                   },
-                  { legacyTimerId: true },
+                  { legacyTimerId: true, windowOpenedAtTrigger: installed },
                 ),
               );
             },

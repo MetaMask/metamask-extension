@@ -113,6 +113,200 @@ describe('long-task-helper', () => {
       });
     });
 
+    it('resets before the action by default', async () => {
+      const order: string[] = [];
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(async () => {
+          order.push('reset');
+        }),
+        executeScript: jest.fn(),
+        collectLongTaskMetrics: jest.fn(async () => {
+          order.push('collect');
+          return null;
+        }),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      await measureStepWithLongTasks(mockDriver, 'step', async () => {
+        order.push('action');
+      });
+
+      expect(order).toStrictEqual(['reset', 'action', 'collect']);
+      expect(mockDriver.executeScript).not.toHaveBeenCalled();
+    });
+
+    it('when the window opened at the trigger, reads without resetting where the reset was, and logs what it read', async () => {
+      const log = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+      const order: string[] = [];
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        executeScript: jest.fn(async () => {
+          order.push('read');
+          return { count: 1, totalDuration: 70 };
+        }),
+        collectLongTaskMetrics: jest.fn(async () => {
+          order.push('collect');
+          return {
+            count: 3,
+            totalDuration: 250,
+            maxDuration: 120,
+            tbt: 100,
+            observed: true,
+            tbtRating: 'good',
+          };
+        }),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'step',
+        async () => {
+          order.push('action');
+        },
+        { legacyTimerId: true, windowOpenedAtTrigger: true },
+      );
+
+      expect(mockDriver.resetLongTaskMetrics).not.toHaveBeenCalled();
+      expect(order).toStrictEqual(['read', 'action', 'collect']);
+      // The collected window, which runs from the trigger, is the result.
+      expect(result).toMatchObject({ longTaskCount: 3, tbt: 100 });
+      expect(log).toHaveBeenCalledWith(
+        "[benchmark] stepLegacy: 1 long task(s), 70 ms, between the trigger and the step timer's start",
+      );
+      log.mockRestore();
+    });
+
+    describe('against an app that records a long task at the click', () => {
+      type Host = {
+        stateHooks?: {
+          getLongTaskMetricsWithTBT?: (reset?: boolean) => unknown;
+        };
+      };
+      const host = window as unknown as Host;
+
+      /**
+       * A driver over a fake long-task store shaped like the app's hooks: the
+       * `reset` argument of `getLongTaskMetricsWithTBT` and the reset hook
+       * clear it, a read without `reset` does not.
+       */
+      function driverOverStore() {
+        let count = 0;
+        let totalDuration = 0;
+        const read = (reset = false) => {
+          const metrics = {
+            count,
+            totalDuration,
+            maxDuration: totalDuration,
+            tbt: 0,
+            observed: true,
+            tbtRating: 'good',
+          };
+          if (reset) {
+            count = 0;
+            totalDuration = 0;
+          }
+          return metrics;
+        };
+        host.stateHooks = { getLongTaskMetricsWithTBT: read };
+        const driver = {
+          resetLongTaskMetrics: jest.fn(async () => {
+            count = 0;
+            totalDuration = 0;
+          }),
+          executeScript: jest.fn(async (script: () => unknown) => script()),
+          collectLongTaskMetrics: jest.fn(async () => read(true)),
+        } as unknown as import('../../webdriver/driver').Driver;
+        const recordLongTask = (duration: number) => {
+          count += 1;
+          totalDuration += duration;
+        };
+        return { driver, recordLongTask };
+      }
+
+      afterEach(() => {
+        delete host.stateHooks;
+      });
+
+      it('loses the long task when the step resets after the click', async () => {
+        const log = jest
+          .spyOn(console, 'log')
+          .mockImplementation(() => undefined);
+        const { driver, recordLongTask } = driverOverStore();
+
+        // The click has returned and left a 66 ms long task behind.
+        recordLongTask(66);
+        const result = await measureStepWithLongTasks(
+          driver,
+          'step',
+          async () => undefined,
+        );
+
+        expect(result).toMatchObject({
+          longTaskCount: 0,
+          longTaskTotalDuration: 0,
+        });
+        log.mockRestore();
+      });
+
+      it('keeps the long task when the window opened at the trigger', async () => {
+        const log = jest
+          .spyOn(console, 'log')
+          .mockImplementation(() => undefined);
+        const { driver, recordLongTask } = driverOverStore();
+
+        recordLongTask(66);
+        const result = await measureStepWithLongTasks(
+          driver,
+          'step',
+          async () => {
+            recordLongTask(30);
+          },
+          { windowOpenedAtTrigger: true },
+        );
+
+        expect(result).toMatchObject({
+          longTaskCount: 2,
+          longTaskTotalDuration: 96,
+        });
+        expect(log).toHaveBeenCalledWith(
+          "[benchmark] step: 1 long task(s), 66 ms, between the trigger and the step timer's start",
+        );
+        log.mockRestore();
+      });
+
+      it("reads the app's metrics in the page without resetting them", async () => {
+        const log = jest
+          .spyOn(console, 'log')
+          .mockImplementation(() => undefined);
+        const getLongTaskMetricsWithTBT = jest.fn(() => ({
+          count: 2,
+          totalDuration: 90,
+        }));
+        host.stateHooks = { getLongTaskMetricsWithTBT };
+        let pageFunction: (() => unknown) | undefined;
+        const mockDriver = {
+          executeScript: jest.fn(async (script: () => unknown) => {
+            pageFunction = script;
+            return script();
+          }),
+          collectLongTaskMetrics: jest.fn(async () => null),
+        } as unknown as import('../../webdriver/driver').Driver;
+
+        await measureStepWithLongTasks(
+          mockDriver,
+          'step',
+          async () => undefined,
+          { windowOpenedAtTrigger: true },
+        );
+
+        expect(getLongTaskMetricsWithTBT).toHaveBeenCalledWith(false);
+        delete host.stateHooks;
+        expect(pageFunction?.()).toBeNull();
+        log.mockRestore();
+      });
+    });
+
     it('defaults to zeros when collectLongTaskMetrics returns null', async () => {
       const mockDriver = {
         resetLongTaskMetrics: jest.fn(),
