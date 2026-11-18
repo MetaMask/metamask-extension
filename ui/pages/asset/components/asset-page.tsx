@@ -57,6 +57,7 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useInAppBack } from '../../../hooks/useInAppBack';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useTokenAssetQuery } from '../../../hooks/token-asset/useTokenAssetQuery';
 import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
@@ -67,7 +68,9 @@ import {
   getOptedIn,
   getPrivacyMode,
   getShowFiatInTestnets,
+  getUseExternalServices,
 } from '../../../selectors';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
 import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
@@ -323,8 +326,25 @@ const AssetPage = ({
     [address, chainId],
   );
   const bip44Asset = useSelector(selectBip44Asset);
-  const rwaData =
+  const stateRwaData =
     assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
+  const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const shouldFetchRwaData =
+    isPerpsAvailable &&
+    isExternalServicesEnabled &&
+    type !== AssetType.native &&
+    !stateRwaData;
+  const rwaDataQuery = useTokenAssetQuery({
+    assetId: caipAssetId,
+    fetchOnMiss: shouldFetchRwaData,
+    enabled: shouldFetchRwaData,
+  });
+  const rwaData = stateRwaData ?? rwaDataQuery.data?.rwaData;
+  const isRwaDataPending =
+    shouldFetchRwaData &&
+    rwaDataQuery.isLoading &&
+    rwaDataQuery.failureCount === 0;
   const updatedAsset: Asset = {
     ...asset,
     rwaData,
@@ -414,7 +434,9 @@ const AssetPage = ({
   // Perps-eligible assets show Long / Short / Send / More instead of the
   // regular action buttons (mobile Token Details parity).
   const { market: perpsMarket, isLoading: isPerpsMarketLoading } =
-    useAssetPerpsMarket(symbol);
+    useAssetPerpsMarket(isRwaDataPending ? '' : rwaData?.ticker || symbol, {
+      isRwa: Boolean(rwaData),
+    });
   const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
     perpsMarket?.name ?? '',
   );
@@ -422,7 +444,9 @@ const AssetPage = ({
   // Long/Short flash). Stream-init failure is a settled "no position" state,
   // so Send / Buy / Swap are not gated on an unbounded wait.
   const isPerpsActionsLoading =
-    isPerpsMarketLoading || Boolean(perpsMarket && isPerpsPositionLoading);
+    isRwaDataPending ||
+    isPerpsMarketLoading ||
+    Boolean(perpsMarket && isPerpsPositionLoading);
   const isMusdAssetPage = useMemo(
     () =>
       type === AssetType.token &&

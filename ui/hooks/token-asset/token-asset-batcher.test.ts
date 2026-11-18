@@ -58,7 +58,7 @@ describe('token-asset-batcher', () => {
     expect(mockFetchTokenAssets).toHaveBeenCalledTimes(1);
     expect(mockFetchTokenAssets).toHaveBeenCalledWith(
       expect.arrayContaining([usdcAssetId, wethAssetId]),
-      { includeTokenSecurityData: true },
+      { includeRwaData: true, includeTokenSecurityData: true },
     );
     expect(usdc?.assetId).toBe(usdcAssetId);
     expect(weth?.assetId).toBe(wethAssetId);
@@ -85,6 +85,7 @@ describe('token-asset-batcher', () => {
 
     expect(mockFetchTokenAssets).toHaveBeenCalledTimes(1);
     expect(mockFetchTokenAssets).toHaveBeenCalledWith([usdcAssetId], {
+      includeRwaData: true,
       includeTokenSecurityData: true,
     });
     expect(usdc?.assetId).toBe(usdcAssetId);

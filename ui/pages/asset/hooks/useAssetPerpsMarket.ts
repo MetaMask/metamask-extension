@@ -33,16 +33,20 @@ const marketCacheByKey = new Map<string, AssetPerpsMarketCacheEntry>();
 
 function buildAssetPerpsMarketCacheKey(
   symbol: string,
+  isRwa: boolean,
   useTerminalApi: boolean,
 ): string {
-  return `${symbol.toLowerCase()}|${useTerminalApi ? 'terminal' : 'direct'}`;
+  return `${symbol.toLowerCase()}|${isRwa ? 'rwa' : 'exact'}|${
+    useTerminalApi ? 'terminal' : 'direct'
+  }`;
 }
 
 function getAssetPerpsMarketCacheEntry(
   symbol: string,
+  isRwa: boolean,
   useTerminalApi: boolean,
 ): AssetPerpsMarketCacheEntry {
-  const key = buildAssetPerpsMarketCacheKey(symbol, useTerminalApi);
+  const key = buildAssetPerpsMarketCacheKey(symbol, isRwa, useTerminalApi);
   let entry = marketCacheByKey.get(key);
   if (!entry) {
     entry = {
@@ -70,33 +74,17 @@ export function clearAssetPerpsMarketCache(): void {
   marketCacheByKey.clear();
 }
 
-/**
- * Matches a wallet ticker against a market name, tolerating the HIP-3 DEX
- * prefix: the wallet asset is `TSLA` while the provider names the market
- * `xyz:TSLA`. The provider name is what the rest of the app keys off, so only
- * the comparison strips the prefix.
- *
- * @param marketName - Provider market name (e.g. 'ETH', 'xyz:TSLA')
- * @param needle - Lower-cased wallet asset symbol
- * @returns Whether the market belongs to the wallet asset
- */
-function marketNameMatchesSymbol(marketName: string, needle: string): boolean {
-  return (
-    marketName.toLowerCase() === needle ||
-    getDisplaySymbol(marketName).toLowerCase() === needle
-  );
-}
-
 function findMatchingMarket(
   infos: MarketInfo[],
   symbol: string,
+  isRwa: boolean,
 ): MarketInfo | undefined {
   const needle = symbol.toLowerCase();
-  // An exact provider-name match wins so a plain `TSLA` market is never
-  // shadowed by a HIP-3 `xyz:TSLA` listed earlier in the response.
-  return (
-    infos.find((candidate) => candidate.name.toLowerCase() === needle) ??
-    infos.find((candidate) => marketNameMatchesSymbol(candidate.name, needle))
+  return infos.find((candidate) =>
+    isRwa
+      ? candidate.name.includes(':') &&
+        getDisplaySymbol(candidate.name).toLowerCase() === needle
+      : candidate.name.toLowerCase() === needle,
   );
 }
 
@@ -114,8 +102,9 @@ function findMatchingMarket(
 function fetchAssetPerpsMarket(
   symbol: string,
   useTerminalApi: boolean,
+  { isRwa }: { isRwa: boolean },
 ): Promise<MarketInfo | undefined> {
-  const entry = getAssetPerpsMarketCacheEntry(symbol, useTerminalApi);
+  const entry = getAssetPerpsMarketCacheEntry(symbol, isRwa, useTerminalApi);
   if (entry.resolved) {
     return Promise.resolve(entry.market);
   }
@@ -124,7 +113,7 @@ function fetchAssetPerpsMarket(
       'perpsGetMarkets',
       [
         {
-          symbols: [symbol],
+          ...(!isRwa && { symbols: [symbol] }),
           standalone: true,
           useTerminalApi,
         },
@@ -134,6 +123,7 @@ function fetchAssetPerpsMarket(
         const market = findMatchingMarket(
           Array.isArray(infos) ? infos : [],
           symbol,
+          isRwa,
         );
         entry.market = market;
         entry.resolved = true;
@@ -163,9 +153,10 @@ async function fetchAssetPerpsMarketWithRetry(
   symbol: string,
   useTerminalApi: boolean,
   shouldRetry: () => boolean,
+  { isRwa }: { isRwa: boolean },
 ): Promise<MarketInfo | undefined> {
   try {
-    return await fetchAssetPerpsMarket(symbol, useTerminalApi);
+    return await fetchAssetPerpsMarket(symbol, useTerminalApi, { isRwa });
   } catch {
     if (!shouldRetry()) {
       return undefined;
@@ -173,7 +164,7 @@ async function fetchAssetPerpsMarketWithRetry(
   }
 
   try {
-    return await fetchAssetPerpsMarket(symbol, useTerminalApi);
+    return await fetchAssetPerpsMarket(symbol, useTerminalApi, { isRwa });
   } catch {
     return undefined;
   }
@@ -192,24 +183,28 @@ async function fetchAssetPerpsMarketWithRetry(
  * @param symbol - The wallet asset's symbol (e.g. 'ETH', 'DAI')
  * @returns The matching market and whether the lookup is still in flight
  */
-export function useAssetPerpsMarket(symbol: string): UseAssetPerpsMarketReturn {
+export function useAssetPerpsMarket(
+  symbol: string,
+  { isRwa = false }: { isRwa?: boolean } = {},
+): UseAssetPerpsMarketReturn {
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
 
-  const lookupKey = `${isPerpsAvailable}|${symbol}|${useTerminalApi}`;
+  const lookupKey = `${isPerpsAvailable}|${symbol}|${isRwa}|${useTerminalApi}`;
   const [prevLookupKey, setPrevLookupKey] = useState(lookupKey);
   const [market, setMarket] = useState<MarketInfo | undefined>(() => {
     if (!isPerpsAvailable) {
       return undefined;
     }
-    const entry = getAssetPerpsMarketCacheEntry(symbol, useTerminalApi);
+    const entry = getAssetPerpsMarketCacheEntry(symbol, isRwa, useTerminalApi);
     return entry.resolved ? entry.market : undefined;
   });
   const [isLoading, setIsLoading] = useState(() => {
     if (!isPerpsAvailable || !symbol) {
       return false;
     }
-    return !getAssetPerpsMarketCacheEntry(symbol, useTerminalApi).resolved;
+    return !getAssetPerpsMarketCacheEntry(symbol, isRwa, useTerminalApi)
+      .resolved;
   });
 
   if (lookupKey !== prevLookupKey) {
@@ -218,7 +213,11 @@ export function useAssetPerpsMarket(symbol: string): UseAssetPerpsMarketReturn {
       setMarket(undefined);
       setIsLoading(false);
     } else {
-      const cached = getAssetPerpsMarketCacheEntry(symbol, useTerminalApi);
+      const cached = getAssetPerpsMarketCacheEntry(
+        symbol,
+        isRwa,
+        useTerminalApi,
+      );
       setMarket(cached.resolved ? cached.market : undefined);
       setIsLoading(!cached.resolved);
     }
@@ -229,7 +228,7 @@ export function useAssetPerpsMarket(symbol: string): UseAssetPerpsMarketReturn {
       return undefined;
     }
 
-    const cached = getAssetPerpsMarketCacheEntry(symbol, useTerminalApi);
+    const cached = getAssetPerpsMarketCacheEntry(symbol, isRwa, useTerminalApi);
     if (cached.resolved) {
       return undefined;
     }
@@ -243,16 +242,14 @@ export function useAssetPerpsMarket(symbol: string): UseAssetPerpsMarketReturn {
       }
     };
 
-    fetchAssetPerpsMarketWithRetry(
-      symbol,
-      useTerminalApi,
-      () => !cancelled,
-    ).then(settle);
+    fetchAssetPerpsMarketWithRetry(symbol, useTerminalApi, () => !cancelled, {
+      isRwa,
+    }).then(settle);
 
     return () => {
       cancelled = true;
     };
-  }, [isPerpsAvailable, symbol, useTerminalApi]);
+  }, [isPerpsAvailable, symbol, isRwa, useTerminalApi]);
 
   if (!isPerpsAvailable) {
     return { market: undefined, isLoading: false };

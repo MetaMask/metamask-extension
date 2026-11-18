@@ -86,13 +86,37 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/controller-actions/transaction-controller');
 
 const mockUseAssetPerpsMarket = jest.fn(
-  (): { market: { name: string } | undefined; isLoading: boolean } => ({
+  (
+    _symbol?: string,
+    _options?: { isRwa?: boolean },
+  ): { market: { name: string } | undefined; isLoading: boolean } => ({
     market: undefined,
     isLoading: false,
   }),
 );
 jest.mock('../hooks/useAssetPerpsMarket', () => ({
-  useAssetPerpsMarket: () => mockUseAssetPerpsMarket(),
+  useAssetPerpsMarket: (symbol: string, options?: { isRwa?: boolean }) =>
+    mockUseAssetPerpsMarket(symbol, options),
+}));
+
+jest.mock('../../../selectors/perps', () => ({
+  ...jest.requireActual('../../../selectors/perps'),
+  getIsPerpsExperienceAvailable: () => true,
+}));
+
+type MockTokenAssetQueryResult = {
+  data?: { rwaData?: { ticker: string } } | null;
+  isLoading?: boolean;
+  failureCount?: number;
+};
+const mockUseTokenAssetQuery = jest.fn(
+  (_props: { enabled?: boolean }): MockTokenAssetQueryResult => ({
+    data: null,
+  }),
+);
+jest.mock('../../../hooks/token-asset/useTokenAssetQuery', () => ({
+  useTokenAssetQuery: (props: { enabled?: boolean }) =>
+    mockUseTokenAssetQuery(props),
 }));
 
 const mockUsePerpsPositionForAsset = jest.fn(() => ({
@@ -473,6 +497,7 @@ describe('AssetPage', () => {
       position: undefined,
       isLoading: false,
     });
+    mockUseTokenAssetQuery.mockReturnValue({ data: null });
 
     // Return a stable (same-reference) default so Reselect's input stability
     // check does not trigger a warning when getAsset calls this selector twice.
@@ -838,6 +863,79 @@ describe('AssetPage', () => {
         queryByTestId('asset-perps-position-section'),
       ).not.toBeInTheDocument();
       expect(queryByTestId('coin-overview-buy')).toBeInTheDocument();
+    });
+  });
+
+  describe('Perps actions on an RWA token asset page', () => {
+    const msft = {
+      ...token,
+      address: '0xe93237c50d904957cf27e7b1133b510c669c2e74',
+      symbol: 'MSFT',
+    };
+
+    it('looks the market up by the token API rwaData ticker', () => {
+      mockUseTokenAssetQuery.mockReturnValue({
+        data: { rwaData: { ticker: 'MSFT' } },
+        isLoading: false,
+      });
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'xyz:MSFT' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <AssetPage asset={msft} optionsButton={null} />,
+        store,
+      );
+
+      expect(mockUseAssetPerpsMarket).toHaveBeenCalledWith('MSFT', {
+        isRwa: true,
+      });
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'xyz:MSFT',
+      );
+    });
+
+    it('holds the actions only until the rwaData query first settles', () => {
+      mockUseTokenAssetQuery.mockReturnValue({
+        isLoading: true,
+        failureCount: 0,
+      });
+      const { queryByTestId, rerender } = renderWithProvider(
+        <AssetPage asset={msft} optionsButton={null} />,
+        store,
+      );
+
+      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
+      expect(mockUseAssetPerpsMarket).toHaveBeenLastCalledWith('', {
+        isRwa: false,
+      });
+
+      mockUseTokenAssetQuery.mockReturnValue({
+        isLoading: true,
+        failureCount: 1,
+      });
+      rerender(<AssetPage asset={msft} optionsButton={null} />);
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('token-overview-buy')).toBeInTheDocument();
+    });
+
+    it('does not fetch rwaData when external services are off', () => {
+      renderWithProvider(
+        <AssetPage asset={msft} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: { ...mockStore.metamask, useExternalServices: false },
+        }),
+      );
+
+      expect(mockUseTokenAssetQuery).toHaveBeenCalledWith(
+        expect.objectContaining({ enabled: false }),
+      );
     });
   });
 

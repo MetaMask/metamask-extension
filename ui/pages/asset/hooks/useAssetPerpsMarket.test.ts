@@ -92,31 +92,37 @@ describe('useAssetPerpsMarket', () => {
     });
   });
 
-  it('matches a HIP-3 market whose provider name carries a DEX prefix', async () => {
+  it('matches an RWA ticker to its HIP-3 market from the unfiltered list', async () => {
+    mockPerpsAvailability({ isAvailable: true });
+    mockSubmitRequestToBackground.mockResolvedValue([
+      { name: 'MSFT' },
+      { name: 'xyz:MSFT' },
+    ]);
+
+    const { result } = renderHook(() =>
+      useAssetPerpsMarket('MSFT', { isRwa: true }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.market).toStrictEqual({ name: 'xyz:MSFT' });
+    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetMarkets',
+      [{ standalone: true, useTerminalApi: false }],
+    );
+  });
+
+  it('does not match a HIP-3 market for an asset without rwaData', async () => {
     mockPerpsAvailability({ isAvailable: true });
     mockSubmitRequestToBackground.mockResolvedValue([{ name: 'xyz:TSLA' }]);
 
     const { result } = renderHook(() => useAssetPerpsMarket('TSLA'));
 
     await waitFor(() => {
-      // The provider name is kept intact: it is what order entry, the position
-      // lookup and the market details route key off.
-      expect(result.current.market).toStrictEqual({ name: 'xyz:TSLA' });
-      expect(result.current.isLoading).toBe(false);
-    });
-  });
-
-  it('prefers an exact provider-name match over a prefixed one', async () => {
-    mockPerpsAvailability({ isAvailable: true });
-    mockSubmitRequestToBackground.mockResolvedValue([
-      { name: 'xyz:TSLA' },
-      { name: 'TSLA' },
-    ]);
-
-    const { result } = renderHook(() => useAssetPerpsMarket('TSLA'));
-
-    await waitFor(() => {
-      expect(result.current.market).toStrictEqual({ name: 'TSLA' });
+      expect(result.current).toStrictEqual({
+        market: undefined,
+        isLoading: false,
+      });
     });
   });
 
