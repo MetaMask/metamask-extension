@@ -307,25 +307,28 @@ function getTracesSampleRate(sentryTarget: string | undefined): number {
 
 /**
  * Get CI tags passed from the test environment, through manifest.json,
- * and give them to the Sentry client.
+ * and give them to the Sentry client: as tags for error events and as scope
+ * attributes, which every streamed span carries.
  */
 function setCITags(): void {
   const { ci } = getManifestFlags();
 
-  if (ci?.enabled) {
-    Sentry.setTag('ci.enabled', ci.enabled);
-    Sentry.setTag('ci.branch', ci.branch);
-    Sentry.setTag('ci.commitHash', ci.commitHash);
-    Sentry.setTag('ci.job', ci.job);
-    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
-    Sentry.setTag('ci.prNumber', ci.prNumber);
-    if (ci.persona) {
-      Sentry.setTag('ci.persona', ci.persona);
-    }
-    if (ci.testTitle) {
-      Sentry.setTag('ci.testTitle', ci.testTitle);
-    }
+  if (!ci?.enabled) {
+    return;
   }
+
+  const tags = {
+    'ci.enabled': ci.enabled,
+    'ci.branch': ci.branch,
+    'ci.commitHash': ci.commitHash,
+    'ci.job': ci.job,
+    'ci.matrixIndex': ci.matrixIndex,
+    'ci.prNumber': ci.prNumber,
+    ...(ci.persona ? { 'ci.persona': ci.persona } : {}),
+    ...(ci.testTitle ? { 'ci.testTitle': ci.testTitle } : {}),
+  };
+  Sentry.setTags(tags);
+  Sentry.setAttributes(tags);
 }
 
 function getSentryEnvironment(): string | undefined {

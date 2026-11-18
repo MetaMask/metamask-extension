@@ -13,6 +13,11 @@
  * @see https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time
  */
 
+import {
+  setMeasurement,
+  setRootSpanAttribute,
+} from '../../../shared/lib/trace';
+
 /**
  * Entry from PerformanceObserver for longtask entries.
  */
@@ -233,25 +238,25 @@ export function reportLongTaskMetricsToSentry(
   }
 
   // Set measurements for Sentry traces
-  sentry.setMeasurement?.('long_task_count', metricsToReport.count, 'none');
-  sentry.setMeasurement?.(
+  setMeasurement('long_task_count', metricsToReport.count, 'none');
+  setMeasurement(
     'long_task_total_ms',
     metricsToReport.totalDuration,
     'millisecond',
   );
-  sentry.setMeasurement?.(
+  setMeasurement(
     'long_task_max_ms',
     metricsToReport.maxDuration,
     'millisecond',
   );
-  sentry.setMeasurement?.('tbt', metricsToReport.tbt, 'millisecond');
+  setMeasurement('tbt', metricsToReport.tbt, 'millisecond');
 
   // Set tags for filtering in Sentry
+  const countBucket = bucketizeCount(metricsToReport.count);
   sentry.setTag?.('tbt.rating', metricsToReport.tbtRating);
-  sentry.setTag?.(
-    'long_task.count_bucket',
-    bucketizeCount(metricsToReport.count),
-  );
+  sentry.setTag?.('long_task.count_bucket', countBucket);
+  setRootSpanAttribute('tbt.rating', metricsToReport.tbtRating);
+  setRootSpanAttribute('long_task.count_bucket', countBucket);
 
   // Add breadcrumb for debugging
   sentry.addBreadcrumb?.({

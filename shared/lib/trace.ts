@@ -791,10 +791,6 @@ function traceCallback<ResultType>(
     const start = Date.now();
     let error: unknown;
 
-    if (span) {
-      initSpan(span, request);
-    }
-
     return tryCatchMaybePromise<ResultType>(
       () => fn(span),
       (currentError) => {
@@ -826,10 +822,6 @@ function startTrace(request: TraceRequest): TraceContext {
     const end = (timestamp?: number) => {
       span?.end(timestamp);
     };
-
-    if (span) {
-      initSpan(span, request);
-    }
 
     const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
@@ -992,9 +984,10 @@ function startSpan<T>(
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
   const {
-    data: attributes,
+    data,
     name,
     parentContext,
+    tags,
     startTime,
     op,
     allowActiveSpanFallback,
@@ -1017,8 +1010,9 @@ function startSpan<T>(
     }
   }
 
+  // Streamed spans carry no tags, so a request's tags travel as attributes.
   const spanOptions: StartSpanOptions = {
-    attributes,
+    attributes: { ...tags, ...data },
     name,
     op: op ?? OP_DEFAULT,
     parentSpan,
@@ -1107,8 +1101,8 @@ export function getPerformanceTimestamp(): number {
 }
 
 /**
- * Initialise the isolated Sentry scope created for each trace.
- * Includes setting all non-numeric tags.
+ * Initialise the forked Sentry scope created for each trace, so error events
+ * captured inside the trace carry its non-numeric tags.
  *
  * @param scope - The Sentry scope to initialise.
  * @param request - The trace request.
@@ -1119,23 +1113,6 @@ function initScope(scope: Sentry.Scope, request: TraceRequest) {
   for (const [key, value] of Object.entries(tags)) {
     if (typeof value !== 'number') {
       scope.setTag(key, value);
-    }
-  }
-}
-
-/**
- * Initialise the Sentry span created for each trace.
- * Includes setting all numeric tags as measurements so they can be queried numerically in Sentry.
- *
- * @param _span - The Sentry span to initialise.
- * @param request - The trace request.
- */
-function initSpan(_span: Sentry.Span, request: TraceRequest) {
-  const tags = request.tags ?? {};
-
-  for (const [key, value] of Object.entries(tags)) {
-    if (typeof value === 'number') {
-      sentrySetMeasurement(key, value, 'none');
     }
   }
 }
@@ -1253,18 +1230,38 @@ function sentryWithScope<T>(callback: (scope: Sentry.Scope) => T): T {
   return actual(callback);
 }
 
-function sentrySetMeasurement(
+function getActiveRootSpan(): Sentry.Span | undefined {
+  const sentry = globalThis.sentry;
+  const activeSpan = sentry?.getActiveSpan?.();
+  return activeSpan ? sentry?.getRootSpan?.(activeSpan) : undefined;
+}
+
+/**
+ * Records a measurement on the root span of the active trace, as an attribute
+ * carrying its unit. `Sentry.setMeasurement` adds a span event, which streamed
+ * spans do not serialize.
+ *
+ * @param key - The measurement name.
+ * @param value - The measurement value.
+ * @param unit - The measurement unit.
+ */
+export function setMeasurement(
   key: string,
   value: number,
   unit: MeasurementUnit,
 ) {
-  const actual = globalThis.sentry?.setMeasurement;
+  getActiveRootSpan()?.setAttribute(key, { value, unit });
+}
 
-  if (!actual) {
-    return;
-  }
-
-  actual(key, value, unit);
+/**
+ * Records a tag-like value on the root span of the active trace. Scope tags
+ * reach error events only; streamed spans carry no tags.
+ *
+ * @param key - The attribute name.
+ * @param value - The attribute value.
+ */
+export function setRootSpanAttribute(key: string, value: TraceValue) {
+  getActiveRootSpan()?.setAttribute(key, value);
 }
 
 /**

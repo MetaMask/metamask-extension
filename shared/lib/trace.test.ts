@@ -11,6 +11,8 @@ import {
   withoutTraceContext,
   ONBOARDING_MACHINE_TIME_ATTRIBUTE,
   serializeTraceContext,
+  setMeasurement,
+  setRootSpanAttribute,
   trace,
   traceBackgroundPoll,
   TraceName,
@@ -27,13 +29,13 @@ jest.replaceProperty(global, 'sentry', {
   withScope: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
-  setMeasurement: jest.fn(),
+  getRootSpan: jest.fn(),
   getActiveSpan: jest.fn(),
   continueTrace: jest.fn(),
 });
 
 const {
-  setMeasurement,
+  getRootSpan,
   startSpan,
   startSpanManual,
   withIsolationScope,
@@ -67,7 +69,7 @@ describe('Trace', () => {
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
   const startNewTraceMock = jest.mocked(startNewTrace);
   const withScopeMock = jest.mocked(withScope);
-  const setMeasurementMock = jest.mocked(setMeasurement);
+  const getRootSpanMock = jest.mocked(getRootSpan);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
   const continueTraceMock = jest.mocked(continueTrace);
   const setTagMock = jest.fn();
@@ -81,7 +83,7 @@ describe('Trace', () => {
       withIsolationScope: withIsolationScopeMock,
       startNewTrace: startNewTraceMock,
       withScope: withScopeMock,
-      setMeasurement: setMeasurementMock,
+      getRootSpan: getRootSpanMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
     };
@@ -181,7 +183,7 @@ describe('Trace', () => {
         {
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
-          attributes: DATA_MOCK,
+          attributes: { ...TAGS_MOCK, ...DATA_MOCK },
           op: 'custom',
         },
         expect.any(Function),
@@ -190,9 +192,6 @@ describe('Trace', () => {
       expect(setTagMock).toHaveBeenCalledTimes(2);
       expect(setTagMock).toHaveBeenCalledWith('tag1', 'value1');
       expect(setTagMock).toHaveBeenCalledWith('tag2', true);
-
-      expect(setMeasurementMock).toHaveBeenCalledTimes(1);
-      expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
     });
 
     it('invokes Sentry if no callback provided', () => {
@@ -211,7 +210,7 @@ describe('Trace', () => {
         expect.objectContaining({
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
-          attributes: DATA_MOCK,
+          attributes: { ...TAGS_MOCK, ...DATA_MOCK },
           op: 'custom',
         }),
         expect.any(Function),
@@ -220,9 +219,6 @@ describe('Trace', () => {
       expect(setTagMock).toHaveBeenCalledTimes(2);
       expect(setTagMock).toHaveBeenCalledWith('tag1', 'value1');
       expect(setTagMock).toHaveBeenCalledWith('tag2', true);
-
-      expect(setMeasurementMock).toHaveBeenCalledTimes(1);
-      expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
     });
 
     it('invokes Sentry if no callback provided with custom start time', () => {
@@ -242,7 +238,7 @@ describe('Trace', () => {
         {
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
-          attributes: DATA_MOCK,
+          attributes: { ...TAGS_MOCK, ...DATA_MOCK },
           op: 'custom',
           startTime: 123,
         },
@@ -252,9 +248,6 @@ describe('Trace', () => {
       expect(setTagMock).toHaveBeenCalledTimes(2);
       expect(setTagMock).toHaveBeenCalledWith('tag1', 'value1');
       expect(setTagMock).toHaveBeenCalledWith('tag2', true);
-
-      expect(setMeasurementMock).toHaveBeenCalledTimes(1);
-      expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
     });
 
     it('uses the performance timestamp for a default manual start time', () => {
@@ -374,6 +367,44 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+    });
+  });
+
+  describe('setMeasurement', () => {
+    it('sets the value and unit as an attribute on the active trace root span', () => {
+      const setAttribute = jest.fn();
+      getActiveSpanMock.mockReturnValue({} as Sentry.Span);
+      getRootSpanMock.mockReturnValue({
+        setAttribute,
+      } as unknown as Sentry.Span);
+
+      setMeasurement('tbt', 150, 'millisecond');
+
+      expect(setAttribute).toHaveBeenCalledWith('tbt', {
+        value: 150,
+        unit: 'millisecond',
+      });
+    });
+
+    it('does nothing without an active span', () => {
+      getActiveSpanMock.mockReturnValue(undefined);
+
+      expect(() => setMeasurement('tbt', 150, 'millisecond')).not.toThrow();
+      expect(getRootSpanMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setRootSpanAttribute', () => {
+    it('sets the attribute on the active trace root span', () => {
+      const setAttribute = jest.fn();
+      getActiveSpanMock.mockReturnValue({} as Sentry.Span);
+      getRootSpanMock.mockReturnValue({
+        setAttribute,
+      } as unknown as Sentry.Span);
+
+      setRootSpanAttribute('tbt.rating', 'good');
+
+      expect(setAttribute).toHaveBeenCalledWith('tbt.rating', 'good');
     });
   });
 

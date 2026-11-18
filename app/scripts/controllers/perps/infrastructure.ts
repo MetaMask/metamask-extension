@@ -36,7 +36,12 @@ import { captureException } from '../../../../shared/lib/sentry';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { isBeta } from '../../../../shared/lib/build-types';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
-import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
+import {
+  trace,
+  endTrace,
+  setMeasurement,
+  TraceName,
+} from '../../../../shared/lib/trace';
 import { isBenignDisconnectError } from './perps-error-utils';
 
 const TERMINAL_API_URLS = {
@@ -314,7 +319,7 @@ function createTracer(): PerpsTracer {
       }
     },
     setMeasurement: (name: string, value: number, unit: string) => {
-      globalThis.sentry?.setMeasurement?.(name, value, unit);
+      setMeasurement(name, value, unit);
     },
     addBreadcrumb: (breadcrumb: {
       category: string;

@@ -757,9 +757,13 @@ describe('createPerpsInfrastructure', () => {
     });
 
     it('keeps measurement and breadcrumb forwarding', () => {
-      const setMeasurement = jest.fn();
+      const setAttribute = jest.fn();
       const addBreadcrumb = jest.fn();
-      globalThis.sentry = { setMeasurement, addBreadcrumb };
+      globalThis.sentry = {
+        getActiveSpan: () => ({}),
+        getRootSpan: () => ({ setAttribute }),
+        addBreadcrumb,
+      } as unknown as typeof globalThis.sentry;
       const { tracer } = createPerpsInfrastructure(getDeps());
       const breadcrumb = {
         category: 'perps',
@@ -770,11 +774,10 @@ describe('createPerpsInfrastructure', () => {
       tracer.setMeasurement('perps.latency', 42, 'millisecond');
       tracer.addBreadcrumb(breadcrumb);
 
-      expect(setMeasurement).toHaveBeenCalledWith(
-        'perps.latency',
-        42,
-        'millisecond',
-      );
+      expect(setAttribute).toHaveBeenCalledWith('perps.latency', {
+        value: 42,
+        unit: 'millisecond',
+      });
       expect(addBreadcrumb).toHaveBeenCalledWith(breadcrumb);
     });
 

@@ -1,8 +1,22 @@
 import * as Sentry from '@sentry/browser';
 import type { Integration } from '@sentry/core';
+import {
+  setMeasurement,
+  setRootSpanAttribute,
+  trace,
+  TraceName,
+} from '../../../shared/lib/trace';
 import { getClientOptions } from './setupSentry';
 
-type SpanItemPayload = { items: { name: string }[] };
+// Sentry span-payload keys, not ours.
+/* eslint-disable @typescript-eslint/naming-convention */
+type SentSpan = {
+  name: string;
+  is_segment: boolean;
+  attributes: Record<string, { value: unknown; type: string; unit?: string }>;
+};
+/* eslint-enable @typescript-eslint/naming-convention */
+type SpanItemPayload = { items: SentSpan[] };
 type TransactionPayload = {
   transaction?: string;
   spans?: { description?: string }[];
@@ -15,6 +29,12 @@ type SentEnvelope = [unknown, [{ type: string }, unknown][]];
 // to send it was to write the SDK's private `_isStandaloneSpan` on it.
 describe('span streaming (integration with the shipped Sentry options)', () => {
   let envelopes: SentEnvelope[];
+
+  const sentSpans = (): SentSpan[] =>
+    envelopes
+      .flatMap(([, items]) => items)
+      .filter(([header]) => header.type === 'span')
+      .flatMap(([, payload]) => (payload as SpanItemPayload).items);
 
   // Names of every span that reached the transport, whether it travelled as a
   // streamed span item or inside a transaction event.
@@ -41,6 +61,8 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
     // reads it at init.
     performance.getEntriesByType ??= () => [];
 
+    (globalThis as { sentry?: unknown }).sentry = Sentry;
+
     const options = getClientOptions();
 
     Sentry.init({
@@ -66,6 +88,7 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
   });
 
   afterEach(async () => {
+    delete (globalThis as { sentry?: unknown }).sentry;
     await Sentry.close();
   });
 
@@ -89,5 +112,45 @@ describe('span streaming (integration with the shipped Sentry options)', () => {
       expect.arrayContaining(['Root', 'Child']),
     );
     expect(Reflect.get(child, '_isStandaloneSpan')).toBeFalsy();
+  });
+
+  // Streamed spans carry no tags or measurements, so the values dashboards
+  // read as `tags[...]` and `measurements.*` must be attributes.
+  it("sends a trace request's tags and a measurement as attributes on the spans", async () => {
+    trace(
+      {
+        name: TraceName.Transaction,
+        tags: {
+          'wallet.token_count': 7,
+          'wallet.unlocked': true,
+          'wallet.ui_type': 'popup',
+        },
+        data: { extra: 'x' },
+      },
+      () => {
+        setMeasurement('tbt', 150, 'millisecond');
+        setRootSpanAttribute('tbt.rating', 'good');
+      },
+    );
+    await Sentry.flush();
+
+    const segment = sentSpans().find((span) => span.is_segment);
+    expect(segment?.name).toBe(TraceName.Transaction);
+    expect(segment?.attributes).toMatchObject({
+      'wallet.token_count': { value: 7, type: 'integer' },
+      'wallet.unlocked': { value: true, type: 'boolean' },
+      'wallet.ui_type': { value: 'popup', type: 'string' },
+      extra: { value: 'x', type: 'string' },
+      tbt: { value: 150, type: 'integer', unit: 'millisecond' },
+      'tbt.rating': { value: 'good', type: 'string' },
+    });
+  });
+
+  it('puts the trace id on the segment span as `otelTraceId`', async () => {
+    trace({ name: TraceName.Transaction }, () => undefined);
+    await Sentry.flush();
+
+    const segment = sentSpans().find((span) => span.is_segment);
+    expect(segment?.attributes.otelTraceId.value).toMatch(/^[0-9a-f]{32}$/u);
   });
 });

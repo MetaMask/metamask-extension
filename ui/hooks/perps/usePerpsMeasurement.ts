@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { setMeasurement } from '../../../shared/lib/trace';
 
 /**
  * Measures the time from component mount to when data becomes ready
@@ -22,11 +23,7 @@ export function usePerpsMeasurement(
     if (isReady && !hasReportedRef.current) {
       hasReportedRef.current = true;
       const duration = performance.now() - mountTimeRef.current;
-      globalThis.sentry?.setMeasurement?.(
-        measurementName,
-        duration,
-        'millisecond',
-      );
+      setMeasurement(measurementName, duration, 'millisecond');
     }
   }, [isReady, measurementName]);
 }
