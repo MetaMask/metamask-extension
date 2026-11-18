@@ -49,12 +49,17 @@ async function handleSignature(
   const actionId = id?.toString();
   endTrace({ name: TraceName.Middleware, id: actionId });
 
+  const options = { traceContext: requestContext.get('traceContext') };
+
+  // The options bag is the 3rd parameter of `newUnsignedPersonalMessage` and
+  // the 5th of `newUnsignedTypedMessage`, after the version and signing options.
+  const args =
+    functionName === 'newUnsignedTypedMessage'
+      ? [messageParams, originalRequest, version, undefined, options]
+      : [messageParams, originalRequest, options];
+
   // @ts-expect-error - Bludgeoning the types to make a polymorphic call
-  const signature = await signatureController[functionName](
-    messageParams,
-    originalRequest,
-    version,
-  );
+  const signature = await signatureController[functionName](...args);
 
   endTrace({ name: TraceName.Signature, id: actionId });
 
