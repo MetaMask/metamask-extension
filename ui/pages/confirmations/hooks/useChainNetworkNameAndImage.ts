@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 /**
  * Returns a map of chain IDs to their network name and image.
@@ -13,6 +14,7 @@ export const useChainNetworkNameAndImageMap = () => {
   const allNetworkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const chainNetworkNAmeAndImageMap = useMemo(() => {
     const map = new Map<
@@ -22,7 +24,7 @@ export const useChainNetworkNameAndImageMap = () => {
 
     Object.values(allNetworkConfigurationsByCaipChainId).forEach((network) => {
       const chainId = network.chainId as Hex;
-      const chainNetworkImage = getImageForChainId(chainId);
+      const chainNetworkImage = getImageForChainId(chainId, networkImageUrls);
       const chainNetworkName = network?.name;
 
       map.set(chainId, {
@@ -32,7 +34,7 @@ export const useChainNetworkNameAndImageMap = () => {
     });
 
     return map;
-  }, [allNetworkConfigurationsByCaipChainId]);
+  }, [allNetworkConfigurationsByCaipChainId, networkImageUrls]);
 
   return chainNetworkNAmeAndImageMap;
 };

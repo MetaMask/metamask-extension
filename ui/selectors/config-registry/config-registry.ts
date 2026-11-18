@@ -5,14 +5,19 @@ import {
   InfuraRpcEndpoint,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
-import { CaipChainIdStruct } from '@metamask/utils';
+import { CaipChainIdStruct, KnownCaipNamespace } from '@metamask/utils';
 import type {
   ConfigRegistryControllerState,
   RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
 import { isInfuraNetworkType } from '@metamask/controller-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  FEATURED_RPCS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+} from '../../../shared/constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
@@ -22,9 +27,10 @@ import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
  *
  * @param state - The MetaMask state object
  * @param state.metamask - The MetaMask state slice
+ * @param state.metamask.configs - The registry configs
  */
 export const getRegistryConfigs = (state: {
-  metamask: ConfigRegistryControllerState;
+  metamask: { configs?: ConfigRegistryControllerState['configs'] };
 }) => state.metamask.configs;
 
 /**
@@ -53,7 +59,7 @@ function isAllowedRpcUrl(url: unknown): url is `https://${string}` {
  * Returns true if url is a non-empty string and uses https (for image URLs).
  * @param url
  */
-function isAllowedImageUrl(url: unknown): url is `https://${string}` {
+export function isAllowedImageUrl(url: unknown): url is `https://${string}` {
   return isAllowedRpcUrl(url);
 }
 

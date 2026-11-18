@@ -6,6 +6,7 @@ import {
   AvatarToken,
   BadgeWrapper,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   SelectButtonProps,
   SelectButtonSize,
@@ -27,7 +28,9 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
+import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
 import { useAssetSecurityData } from '../hooks/useAssetSecurityData';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { AssetSecurityBadge } from './asset-security-badge';
 
 export const SelectedAssetButton = ({
@@ -37,6 +40,7 @@ export const SelectedAssetButton = ({
   asset: BridgeToken;
 } & SelectButtonProps<'div'>) => {
   const caipChainId = formatChainIdToCaip(asset.chainId);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const { assetIsVerified } = useAssetSecurityData(asset);
 
   return (
@@ -63,7 +67,10 @@ export const SelectedAssetButton = ({
             badge={
               <AvatarNetwork
                 name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[caipChainId]}
-                src={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[caipChainId]}
+                src={
+                  getNetworkImageUrl(asset.chainId, networkImageUrls) ??
+                  BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[caipChainId]
+                }
                 size={AvatarNetworkSize.Xs}
                 style={{ borderWidth: 1, borderRadius: 6 }}
                 hasBorder

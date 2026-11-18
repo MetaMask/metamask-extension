@@ -15,6 +15,7 @@ import {
   VirtualizedList,
   noAdjustmentsScroll,
 } from '../../../../ui/virtualized-list/virtualized-list';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -34,6 +35,7 @@ const NFTGridItem = (props: {
     ipfsGateway,
   );
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const isImageHosted =
     (image && isWebUrl(image)) ||
@@ -51,7 +53,10 @@ const NFTGridItem = (props: {
       alt={nftImageAlt}
       src={nftItemSrc}
       networkName={allNetworks?.[toHex(nft?.chainId ?? '')]?.name}
-      networkSrc={getImageForChainId(toHex(nft?.chainId ?? '')) || undefined}
+      networkSrc={getImageForChainId(
+        toHex(nft?.chainId ?? ''),
+        networkImageUrls,
+      )}
       onClick={onClick}
       isIpfsURL={isIpfsURL}
       privacyMode={privacyMode}

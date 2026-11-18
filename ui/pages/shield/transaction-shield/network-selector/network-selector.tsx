@@ -29,6 +29,7 @@ import { NetworkListItem } from '../../../../components/multichain/network-list-
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
 import { getSupportedNetworksForClaim } from '../../../../selectors/shield/claims';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 const NetworkSelector = ({
   label,
@@ -47,6 +48,7 @@ const NetworkSelector = ({
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const claimsSupportedNetworks = useSelector(getSupportedNetworksForClaim);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const networksList = useMemo(
     () =>
@@ -82,7 +84,10 @@ const NetworkSelector = ({
           {selectedNetworkInfo ? (
             <>
               <AvatarNetwork
-                src={getImageForChainId(selectedNetworkInfo.chainId)}
+                src={getImageForChainId(
+                  selectedNetworkInfo.chainId,
+                  networkImageUrls,
+                )}
                 alt={selectedNetworkInfo.name}
                 size={AvatarNetworkSize.Sm}
               />
@@ -127,7 +132,7 @@ const NetworkSelector = ({
                       onNetworkSelect(chainId);
                       setShowNetworkListMenu(false);
                     }}
-                    iconSrc={getImageForChainId(chainId)}
+                    iconSrc={getImageForChainId(chainId, networkImageUrls)}
                     iconSize={LegacyIconSize.Sm}
                     focus={false}
                     chainId={chainId}

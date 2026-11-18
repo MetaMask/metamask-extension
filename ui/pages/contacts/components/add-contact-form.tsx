@@ -72,6 +72,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { ContactNetworks } from './contact-networks';
 
 export function AddContactForm({ onSuccess }: AddContactFormProps) {
@@ -82,6 +83,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
   const domainError = useSelector(getDomainError);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const domainResolutions = useSelector(getDomainResolutions);
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationsByChainId);
@@ -375,7 +377,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
                 className="rounded-md"
                 src={
                   typeof selectedChainId === 'string'
-                    ? getImageForChainId(selectedChainId) || undefined
+                    ? getImageForChainId(selectedChainId, networkImageUrls)
                     : undefined
                 }
                 name={String(selectedNetworkName)}

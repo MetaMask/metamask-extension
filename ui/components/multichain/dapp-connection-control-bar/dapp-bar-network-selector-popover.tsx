@@ -60,6 +60,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 type DappBarNetworkSelectorPopoverProps = {
   referenceElement: HTMLElement | null;
@@ -89,6 +90,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShouldShowTestNetworks);
@@ -311,7 +313,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
                 key={network.chainId}
                 chainId={network.chainId}
                 name={network.name}
-                iconSrc={getNetworkIcon(network)}
+                iconSrc={getNetworkIcon(network, networkImageUrls)}
                 iconSize={AvatarNetworkSize.Sm}
                 selected={isSelected}
                 focus={false}

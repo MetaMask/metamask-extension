@@ -58,6 +58,7 @@ import { Numeric } from '../../../../../shared/lib/Numeric';
 import { isTronSpecialAsset } from '../../../../../shared/lib/asset-utils';
 
 import { isExcludedAsset } from '../../../app/assets/enablement/networks-customization';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type { ERC20Asset, NativeAsset, AssetWithDisplayData } from './types';
 import AssetList from './AssetList';
@@ -179,6 +180,8 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
+  const { networkImageUrls } = useConfigRegistryNetworks();
+  const { nativeTokenImageUrls } = useConfigRegistryNetworks();
 
   // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(
@@ -238,10 +241,10 @@ export function AssetPickerModal({
           yield token.isNative
             ? {
                 ...token,
-                image:
+                image: (nativeTokenImageUrls[token.chainId] ??
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ],
+                  ]) as AssetWithDisplayData<NativeAsset>['image'],
                 type: AssetType.native,
                 // Add human-readable name for native tokens (e.g., Ether, Binance Coin)
                 name: getNativeTokenName(token.chainId),
@@ -296,6 +299,7 @@ export function AssetPickerModal({
       selectedNetwork?.chainId,
       multichainTokensWithBalance,
       allDetectedTokens,
+      nativeTokenImageUrls,
     ],
   );
 
@@ -500,7 +504,10 @@ export function AssetPickerModal({
               label={networkPickerLabel}
               src={
                 selectedNetwork?.chainId
-                  ? getImageForChainId(selectedNetwork.chainId)
+                  ? getImageForChainId(
+                      selectedNetwork.chainId,
+                      networkImageUrls,
+                    )
                   : undefined
               }
               avatarGroupProps={
@@ -508,7 +515,8 @@ export function AssetPickerModal({
                   ? {
                       limit: 2,
                       members: selectedChainIds.map((c) => ({
-                        avatarValue: getImageForChainId(c) ?? '',
+                        avatarValue:
+                          getImageForChainId(c, networkImageUrls) ?? '',
                         symbol:
                           NETWORK_TO_SHORT_NETWORK_NAME_MAP[
                             c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP

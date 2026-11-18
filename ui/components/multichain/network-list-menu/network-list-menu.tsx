@@ -80,6 +80,7 @@ import {
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
 import { getFeaturedEvmNetworks } from '../../../selectors/config-registry/config-registry';
@@ -236,6 +237,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
   const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const canSelectNetwork: boolean = useMemo(
     () =>
       Boolean(selectedTabOrigin) &&
@@ -735,7 +737,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDiscoverClick,
         onRpcSelect,
       } = getItemCallbacks(network);
-      const iconSrc = getNetworkIcon(network);
+      const iconSrc = getNetworkIcon(network, networkImageUrls);
 
       return (
         <NetworkListItem
@@ -776,6 +778,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       evmNetworks,
       handleNetworkChange,
       isNetworkEnabled,
+      networkImageUrls,
     ],
   );
 

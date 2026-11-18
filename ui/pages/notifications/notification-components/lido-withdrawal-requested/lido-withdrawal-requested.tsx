@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
@@ -27,6 +28,7 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -107,8 +109,10 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           />
         ),
         Asset: ({ notification }) => {
+          const { networkImageUrls } = useConfigRegistryNetworks();
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
+            networkImageUrls,
           );
           return (
             <NotificationDetailAsset
@@ -135,8 +139,10 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           );
         },
         AssetReceived: ({ notification }) => {
+          const { networkImageUrls } = useConfigRegistryNetworks();
           const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
             notification.payload.chain_id,
+            networkImageUrls,
           );
           return (
             <NotificationDetailAsset

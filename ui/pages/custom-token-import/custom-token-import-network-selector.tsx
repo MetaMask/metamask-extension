@@ -14,11 +14,13 @@ import {
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 
+import { useSelector } from 'react-redux';
 import { NetworkListItem } from '../../components/multichain/network-list-item';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
 import { getNetworkSections } from '../../helpers/utils/network-sections';
+import { useConfigRegistryNetworks } from '../../hooks/useConfigRegistryNetworks';
 
 export type CustomTokenImportNetworkOption = {
   chainId: string;
@@ -43,6 +45,7 @@ export const CustomTokenImportNetworkSelector = ({
   onSelectNetwork,
 }: CustomTokenImportNetworkSelectorProps) => {
   const t = useI18nContext();
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const networkSections = getNetworkSections(networks);
 
   return (
@@ -89,7 +92,10 @@ export const CustomTokenImportNetworkSelector = ({
                     key={network.chainId}
                     chainId={network.chainId}
                     name={network.name}
-                    iconSrc={getImageForChainId(network.chainId)}
+                    iconSrc={getImageForChainId(
+                      network.chainId,
+                      networkImageUrls,
+                    )}
                     selected={isSelected}
                     onClick={() => onSelectNetwork(network)}
                     focus={false}

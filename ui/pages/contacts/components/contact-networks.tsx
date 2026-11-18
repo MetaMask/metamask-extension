@@ -10,6 +10,7 @@ import {
   NetworkSelectionModal,
   type NetworkSelectionSection,
 } from '../../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 export const ContactNetworks = ({
   isOpen,
@@ -25,6 +26,7 @@ export const ContactNetworks = ({
   const t = useI18nContext();
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const networkSections = useMemo(
     () =>
       getNetworkSections(
@@ -48,7 +50,7 @@ export const ContactNetworks = ({
             key: chainId,
             chainId,
             name: displayName,
-            iconSrc: getImageForChainId(chainId),
+            iconSrc: getImageForChainId(chainId, networkImageUrls),
             selected: selectedChainId === chainId,
             onClick: () => {
               onSelect?.(chainId);
@@ -58,7 +60,7 @@ export const ContactNetworks = ({
           };
         }),
       })),
-    [networkSections, onClose, onSelect, selectedChainId, t],
+    [networkSections, networkImageUrls, onClose, onSelect, selectedChainId, t],
   );
 
   return (

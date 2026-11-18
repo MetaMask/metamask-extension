@@ -39,12 +39,14 @@ import {
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
   const [, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -111,7 +113,7 @@ export const CustomNetworks = React.memo(() => {
           key={network.chainId}
           chainId={network.chainId}
           name={network.name}
-          iconSrc={getNetworkIcon(network)}
+          iconSrc={getNetworkIcon(network, networkImageUrls)}
           iconSize={AvatarNetworkSize.Md}
           focus={false}
           rpcEndpoint={rpcEndpoint}
@@ -134,6 +136,7 @@ export const CustomNetworks = React.memo(() => {
       isNetworkEnabled,
       handleNetworkClick,
       isPending,
+      networkImageUrls,
     ],
   );
 

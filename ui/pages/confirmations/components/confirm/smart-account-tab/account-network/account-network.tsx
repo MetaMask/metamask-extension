@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Hex } from '@metamask/utils';
 
+import { useSelector } from 'react-redux';
 import { getNetworkIcon } from '../../../../../../../shared/lib/network.utils';
 import Preloader from '../../../../../../components/ui/icon/preloader';
 import {
@@ -24,6 +25,7 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { EIP7702NetworkConfiguration } from '../../../../hooks/useEIP7702Networks';
 import { useBatchAuthorizationRequests } from '../../../../hooks/useBatchAuthorizationRequests';
 import { useEIP7702Account } from '../../../../hooks/useEIP7702Account';
+import { useConfigRegistryNetworks } from '../../../../../../hooks/useConfigRegistryNetworks';
 
 export const AccountNetwork = ({
   address,
@@ -40,7 +42,8 @@ export const AccountNetwork = ({
   });
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
-  const networkIcon = getNetworkIcon(networkConfiguration);
+  const { networkImageUrls } = useConfigRegistryNetworks();
+  const networkIcon = getNetworkIcon(networkConfiguration, networkImageUrls);
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
     address,

@@ -29,6 +29,7 @@ import {
   getSelectableChainId,
   useHomeNetworkFilter,
 } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import { getHiddenPillCount } from './get-hidden-pill-count';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
@@ -136,6 +137,7 @@ export const NetworkPillSelector = () => {
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
   const { privacyMode } = useSelector(getPreferences);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const {
     defaultNetworks,
     handleSelectAllDefaultNetworks,
@@ -263,7 +265,7 @@ export const NetworkPillSelector = () => {
             icon={
               <AvatarNetwork
                 name={network.name}
-                src={getNetworkIcon(network)}
+                src={getNetworkIcon(network, networkImageUrls)}
                 size={AvatarNetworkSize.Sm}
                 className="rounded-full"
               />

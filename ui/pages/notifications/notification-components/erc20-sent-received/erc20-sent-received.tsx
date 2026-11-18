@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { t } from '../../../../../shared/lib/translate';
@@ -29,6 +30,7 @@ import {
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { BadgeWrapperPosition } from '../../../../components/component-library';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
+import { useConfigRegistryNetworks } from '../../../../hooks/useConfigRegistryNetworks';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -121,8 +123,10 @@ export const components: NotificationComponent<ERC20Notification> = {
         />
       ),
       Asset: ({ notification }) => {
+        const { networkImageUrls } = useConfigRegistryNetworks();
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
+          networkImageUrls,
         );
         return (
           <NotificationDetailAsset
@@ -151,8 +155,10 @@ export const components: NotificationComponent<ERC20Notification> = {
         );
       },
       Network: ({ notification }) => {
+        const { networkImageUrls } = useConfigRegistryNetworks();
         const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
           notification.payload.chain_id,
+          networkImageUrls,
         );
         const { networkName } = getNetworkDetailsFromNotifPayload(
           notification.payload.network,

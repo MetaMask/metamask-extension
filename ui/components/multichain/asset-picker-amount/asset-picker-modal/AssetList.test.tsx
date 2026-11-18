@@ -58,6 +58,18 @@ const mockUseSafeChains = jest.fn().mockReturnValue({
 jest.mock('../../networks-form/use-safe-chains', () => ({
   useSafeChains: () => mockUseSafeChains(),
 }));
+jest.mock('../../../../hooks/useConfigRegistryNetworks', () => {
+  const actual = jest.requireActual(
+    '../../../../hooks/useConfigRegistryNetworks',
+  );
+  return {
+    ...actual,
+    useConfigRegistryNetworks: () => ({
+      networkImageUrls: actual.buildNetworkImageUrls(undefined, false),
+      nativeTokenImageUrls: actual.buildNativeTokenImageUrls(undefined, false),
+    }),
+  };
+});
 
 const mockAsset = jest.fn((..._args) => <div>AssetComponent</div>);
 jest.mock('./Asset', () => jest.fn((...args) => mockAsset(...args)));

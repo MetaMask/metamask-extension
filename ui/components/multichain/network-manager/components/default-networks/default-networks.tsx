@@ -65,6 +65,7 @@ import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../sel
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
 import { useDispatch } from '../../../../../store/hooks';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 
 const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
@@ -126,6 +127,7 @@ const DefaultNetworks = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  const { networkImageUrls } = useConfigRegistryNetworks();
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -335,7 +337,7 @@ const DefaultNetworks = memo(() => {
         onDiscoverClick,
         onRpcSelect,
       } = getItemCallbacks(network);
-      const iconSrc = getNetworkIcon(network);
+      const iconSrc = getNetworkIcon(network, networkImageUrls);
       const isSelected = isSingleNetworkSelected(hexChainId as Hex);
 
       const singleRemainingNetwork = enabledChainIds.length === 1;
@@ -393,6 +395,7 @@ const DefaultNetworks = memo(() => {
     useExternalServices,
     selectedNonEvmChainId,
     isPending,
+    networkImageUrls,
   ]);
 
   // Memoize the additional network list items

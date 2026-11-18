@@ -48,6 +48,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 export function EditContactForm({
   address,
@@ -62,6 +63,7 @@ export function EditContactForm({
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);
@@ -271,7 +273,7 @@ export function EditContactForm({
                   className="rounded-md"
                   src={
                     contactChainId
-                      ? getImageForChainId(contactChainId) || undefined
+                      ? getImageForChainId(contactChainId, networkImageUrls)
                       : undefined
                   }
                   name={selectedNetworkName}

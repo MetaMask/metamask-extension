@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { type CaipChainId } from '@metamask/utils';
 import {
@@ -22,7 +23,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import { getNetworkIcon } from '../../../../../../shared/lib/network.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import {
@@ -36,6 +36,7 @@ import { transitionForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
 import Tooltip from '../../../../ui/tooltip';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 import {
   getSelectableChainId,
   useHomeNetworkFilter,
@@ -327,6 +328,7 @@ const HomeNetworkFilterModalContent = ({
     showTestnets,
     testNetworks,
   } = useHomeNetworkFilter({ onClose, onPendingChange });
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const handleClose = useCallback(() => {
     if (isPending) {
@@ -351,7 +353,7 @@ const HomeNetworkFilterModalContent = ({
           disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
-          iconSrc: getNetworkIcon(network),
+          iconSrc: getNetworkIcon(network, networkImageUrls),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
           disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
@@ -369,7 +371,7 @@ const HomeNetworkFilterModalContent = ({
           disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
-          iconSrc: getNetworkIcon(network),
+          iconSrc: getNetworkIcon(network, networkImageUrls),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
           disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
@@ -387,7 +389,7 @@ const HomeNetworkFilterModalContent = ({
           disabled: isPending || isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
-          iconSrc: getNetworkIcon(network),
+          iconSrc: getNetworkIcon(network, networkImageUrls),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
           disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
@@ -410,10 +412,7 @@ const HomeNetworkFilterModalContent = ({
           return {
             key: network.chainId,
             name: network.name,
-            iconSrc:
-              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-              ],
+            iconSrc: network.imageUrl ?? networkImageUrls[network.chainId],
             chainId: network.chainId,
             disabled,
             disabledTooltip: getDisabledTooltip(disabled),
@@ -438,6 +437,7 @@ const HomeNetworkFilterModalContent = ({
     isNetworkDisabled,
     isNetworkSelected,
     isPending,
+    networkImageUrls,
     showTestnets,
     t,
     testNetworks,

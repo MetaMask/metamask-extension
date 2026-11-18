@@ -3,7 +3,7 @@ import type {
   RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { FEATURED_RPCS, CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getRegistryConfigs,
   getIsConfigRegistryApiEnabled,

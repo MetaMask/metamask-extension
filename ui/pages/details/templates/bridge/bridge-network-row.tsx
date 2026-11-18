@@ -10,7 +10,7 @@ import {
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { useImageForChainId } from '../../../../hooks/useImageForChainId';
 
 export const BridgeNetworkRow = ({
   fromChainId,
@@ -27,12 +27,12 @@ export const BridgeNetworkRow = ({
   const fromName = fromNetwork?.name ?? fromChainId;
   const toName = toNetwork?.name ?? toChainId;
 
-  const fromSrc = getImageForChainId(
+  const fromSrc = useImageForChainId(
     isNonEvmChainId(fromChainId)
       ? fromChainId
       : formatChainIdToHex(fromChainId),
   );
-  const toSrc = getImageForChainId(
+  const toSrc = useImageForChainId(
     isNonEvmChainId(toChainId) ? toChainId : formatChainIdToHex(toChainId),
   );
 

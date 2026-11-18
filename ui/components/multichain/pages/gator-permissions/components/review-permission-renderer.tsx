@@ -23,6 +23,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   isPermissionDataWithTotalExposure,
   computeTotalExposureForPermission,
@@ -49,6 +50,7 @@ import {
 } from '../../../../../hooks/useGetDisplayName';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import NicknamePopovers from '../../../../app/modals/nickname-popovers';
+import { useConfigRegistryNetworks } from '../../../../../hooks/useConfigRegistryNetworks';
 import {
   GatorPermissionDetailRow,
   gatorPermissionDetailRowStyle,
@@ -179,6 +181,7 @@ const ReviewNetworkRow = ({
   networkName: string;
 }) => {
   const t = useI18nContext() as I18nFunction;
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   return (
     <Box
@@ -203,7 +206,7 @@ const ReviewNetworkRow = ({
         gap={2}
       >
         <AvatarNetwork
-          src={getImageForChainId(chainId)}
+          src={getImageForChainId(chainId, networkImageUrls)}
           name={chainId}
           size={AvatarNetworkSize.Xs}
         />

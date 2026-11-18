@@ -48,6 +48,7 @@ import {
 } from '../../../hooks/musd';
 import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { useMusdGeoBlocking } from '../../../hooks/musd/useMusdGeoBlocking';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 
 /** Figma node 10049:41315 — Secondary list row Convert control */
 const MUSD_CONVERT_LIST_BUTTON_MIN_WIDTH_PX = 92;
@@ -120,6 +121,7 @@ export function MusdConvertSection() {
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   const stablecoins = useMemo(
     () =>
@@ -275,7 +277,10 @@ export function MusdConvertSection() {
             const networkName =
               networkConfigurationsByChainId[chainIdHex.toLowerCase() as Hex]
                 ?.name ?? '';
-            const networkIcon = getImageForChainId(chainIdHex);
+            const networkIcon = getImageForChainId(
+              chainIdHex,
+              networkImageUrls,
+            );
             const fiat = token.tokenFiatAmount ?? null;
             const fiatLabel =
               fiat !== null && Number.isFinite(fiat) ? formatFiat(fiat) : '—';

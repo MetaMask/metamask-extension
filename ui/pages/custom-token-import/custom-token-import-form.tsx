@@ -12,6 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -31,6 +32,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
 import { Content } from '../../components/multichain/pages/page';
+import { useConfigRegistryNetworks } from '../../hooks/useConfigRegistryNetworks';
 import {
   CustomTokenImportNetworkSelector,
   type CustomTokenImportNetworkOption,
@@ -109,6 +111,7 @@ const NetworkPickerField = ({
   onClick: () => void;
 }) => {
   const t = useI18nContext();
+  const { networkImageUrls } = useConfigRegistryNetworks();
 
   return (
     <Box>
@@ -128,7 +131,7 @@ const NetworkPickerField = ({
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
             className="rounded-md"
-            src={getImageForChainId(selectedNetwork) || undefined}
+            src={getImageForChainId(selectedNetwork, networkImageUrls)}
             name={networkName}
           />
         }

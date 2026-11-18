@@ -18,6 +18,18 @@ jest.mock('../../../../hooks/useTokenFiatAmount', () => ({
 jest.mock('../../token-list-item', () => ({
   TokenListItem: jest.fn(() => <div>TokenListItem</div>),
 }));
+jest.mock('../../../../hooks/useConfigRegistryNetworks', () => {
+  const actual = jest.requireActual(
+    '../../../../hooks/useConfigRegistryNetworks',
+  );
+  return {
+    ...actual,
+    useConfigRegistryNetworks: () => ({
+      networkImageUrls: actual.buildNetworkImageUrls(undefined, false),
+      nativeTokenImageUrls: actual.buildNativeTokenImageUrls(undefined, false),
+    }),
+  };
+});
 
 describe('Asset', () => {
   (useTokenFiatAmount as jest.Mock).mockReturnValue('$10.10');

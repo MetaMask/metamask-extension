@@ -371,19 +371,20 @@ function getNonEvmCachedBalance(
   return balanceOfAsset?.amount ?? 0;
 }
 
-export function getImageForChainId(chainId: string): string | undefined {
-  const imageMap: Record<string, string> = {
+export function getImageForChainId(
+  chainId: string,
+  networkImageUrls: Record<string, string> = {
     ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
     ...MULTICHAIN_TOKEN_IMAGE_MAP,
-  };
-
-  const directMatch = imageMap[chainId];
+  },
+): string | undefined {
+  const directMatch = networkImageUrls[chainId];
   if (directMatch) {
     return directMatch;
   }
 
   if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
-    return imageMap[convertCaipToHexChainId(chainId)];
+    return networkImageUrls[convertCaipToHexChainId(chainId)];
   }
 
   return undefined;

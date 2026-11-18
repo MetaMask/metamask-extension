@@ -22,12 +22,15 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { useConfigRegistryNetworks } from '../../../hooks/useConfigRegistryNetworks';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
 const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const { symbol } = token;
-  const image = getNativeCurrencyForChain(chainId);
+  const { nativeTokenImageUrls } = useConfigRegistryNetworks();
+  const image =
+    nativeTokenImageUrls[chainId] ?? getNativeCurrencyForChain(chainId);
   const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const networkConfig = useSelector(
