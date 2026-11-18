@@ -35,11 +35,14 @@ describe('SuccessCheckAnimation', () => {
     expect(screen.getByTestId('qr-sync-success-check-animation')).toHaveClass(
       'h-[104px]',
       'w-[104px]',
-      '-translate-x-[15px]',
+      'left-1/2',
+      'top-1/2',
+      '-translate-x-1/2',
+      '-translate-y-1/2',
     );
     expect(screen.getByTestId('qr-sync-success-illustration')).toHaveClass(
-      'h-[72px]',
-      'w-[72px]',
+      'h-[144px]',
+      'w-[144px]',
     );
   });
 });

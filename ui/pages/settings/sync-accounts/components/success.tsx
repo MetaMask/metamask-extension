@@ -37,25 +37,23 @@ const Success = ({
     <Box
       alignItems={BoxAlignItems.Center}
       flexDirection={BoxFlexDirection.Column}
-      gap={8}
-      paddingTop={8}
-      paddingBottom={4}
-      className="flex-1"
+      className="relative flex-1"
       data-testid="qr-sync-success"
       data-synced-wallet-count={walletCount}
       data-synced-account-count={importedAccountCount}
     >
       <Box
-        className="text-center"
+        className="text-center flex-1 justify-center"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
-        gap={10}
+        gap={0}
       >
         <SuccessCheckAnimation />
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           gap={2}
+          className="min-h-[88px]"
         >
           <Text
             variant={TextVariant.HeadingMd}
@@ -76,7 +74,7 @@ const Success = ({
         </Box>
       </Box>
       <Button
-        className="w-full mt-auto"
+        className="absolute bottom-4 left-0 w-full"
         onClick={onDone}
         data-testid="qr-sync-done-button"
       >

@@ -8,14 +8,11 @@ import {
   TextColor,
   FontWeight,
   TextAlign,
-  BoxJustifyContent,
   BoxAlignItems,
   BoxFlexDirection,
-  Icon,
-  IconName,
-  IconSize,
 } from '@metamask/design-system-react';
 import { subscribeToMessengerEvent } from '../../../../store/background-connection';
+import LoadingFoxAnimation from './loading-fox-animation';
 
 const DEFAULT_DELAY_MS = 2000;
 
@@ -70,36 +67,21 @@ const LoadingStep = ({
     <Box
       alignItems={BoxAlignItems.Center}
       flexDirection={BoxFlexDirection.Column}
-      gap={8}
-      paddingTop={8}
       className="flex-1"
       data-testid="qr-sync-loading"
     >
       <Box
-        className="text-center"
+        className="text-center flex-1 justify-center"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
-        gap={10}
+        gap={0}
       >
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          className="h-[72px] w-[72px]"
-          data-testid="qr-sync-loading-indicator"
-        >
-          <Icon
-            name={IconName.Loading}
-            size={IconSize.Lg}
-            className="animate-spin translate-y-[15px]"
-            aria-hidden
-            data-testid="qr-sync-loading-spinner"
-          />
-        </Box>
+        <LoadingFoxAnimation />
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           gap={2}
+          className="min-h-[88px]"
         >
           <Text
             variant={TextVariant.HeadingMd}

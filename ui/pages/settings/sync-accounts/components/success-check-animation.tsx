@@ -24,12 +24,12 @@ const SuccessCheckAnimation = () => {
   return (
     <Box
       alignItems={BoxAlignItems.Center}
-      className="relative h-[72px] w-[72px] justify-center"
+      className="relative h-[144px] w-[144px] justify-center"
       data-testid="qr-sync-success-illustration"
     >
       {status === 'success' ? (
         <RiveComponent
-          className="absolute h-[104px] w-[104px] max-w-none -translate-x-[15px]"
+          className="absolute left-1/2 top-1/2 h-[104px] w-[104px] max-w-none -translate-x-1/2 -translate-y-1/2"
           data-testid="qr-sync-success-check-animation"
         />
       ) : null}

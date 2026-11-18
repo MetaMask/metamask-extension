@@ -24,6 +24,13 @@ describe('Success', () => {
     expect(
       screen.getByTestId('qr-sync-success-check-animation'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.add_device_success_title.message).parentElement,
+    ).toHaveClass('min-h-[88px]');
+    expect(
+      screen.getByText(messages.add_device_success_title.message).parentElement
+        ?.parentElement,
+    ).toHaveClass('flex-1', 'justify-center', 'gap-0');
   });
 
   it('renders singular copy for one imported account', () => {
@@ -41,7 +48,7 @@ describe('Success', () => {
 
     expect(
       screen.getByRole('button', { name: messages.done.message }),
-    ).toHaveClass('mt-auto');
+    ).toHaveClass('absolute', 'bottom-4');
   });
 
   it('calls onDone when the done button is clicked', () => {
