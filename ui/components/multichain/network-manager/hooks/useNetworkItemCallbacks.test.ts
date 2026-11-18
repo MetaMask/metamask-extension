@@ -7,6 +7,19 @@ import { removeNetwork, showModal } from '../../../../store/actions';
 import { getSelectedMultichainNetworkChainId } from '../../../../selectors';
 import { useNetworkItemCallbacks } from './useNetworkItemCallbacks';
 
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder,
+      trackEvent: jest.fn(),
+    }),
+  };
+});
+
 const mockDispatch = jest.fn();
 
 jest.mock('react-redux', () => ({
@@ -127,6 +140,7 @@ describe('useNetworkItemCallbacks', () => {
       showModal({
         name: 'CONFIRM_DELETE_NETWORK',
         target: '0xabc',
+        metricsEntryPoint: 'settings_networks',
         onConfirm: expect.any(Function),
         onHide: expect.any(Function),
       }),

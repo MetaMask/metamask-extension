@@ -59,6 +59,12 @@ const mapSearchResultToTrendingAsset = (
   securityData: item.securityData,
 });
 
+const filterRiskyTokens = (tokens: TrendingAsset[]): TrendingAsset[] =>
+  tokens.filter(({ securityData }) => {
+    const { resultType } = securityData ?? {};
+    return !resultType || resultType === 'Verified' || resultType === 'Benign';
+  });
+
 /**
  * Crypto Discover feed: trending when query is empty, market-data search otherwise.
  * @param options0
@@ -81,13 +87,15 @@ export const useDiscoverCryptoSearch = ({
       chainIds,
     ] as const,
     queryFn: async (): Promise<TrendingAsset[]> =>
-      getTrendingTokens({
-        chainIds,
-        sort: 'h24_trending',
-        minLiquidity: 200_000,
-        minVolume24hUsd: 1_000_000,
-        includeTokenSecurityData: true,
-      }),
+      filterRiskyTokens(
+        await getTrendingTokens({
+          chainIds,
+          sort: 'h24_trending',
+          minLiquidity: 200_000,
+          minVolume24hUsd: 1_000_000,
+          includeTokenSecurityData: true,
+        }),
+      ),
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
     gcTime: DISCOVER_SEARCH_GC_TIME_MS,
@@ -115,9 +123,11 @@ export const useDiscoverCryptoSearch = ({
       }
 
       const searchResults = response.data as TokenSearchMarketResult[];
-      const data = searchResults
-        .filter((item) => !item.rwaData)
-        .map(mapSearchResultToTrendingAsset);
+      const data = filterRiskyTokens(
+        searchResults
+          .filter((item) => !item.rwaData)
+          .map(mapSearchResultToTrendingAsset),
+      );
 
       return {
         data,
