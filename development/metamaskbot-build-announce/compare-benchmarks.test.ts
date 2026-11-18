@@ -508,6 +508,13 @@ describe('the gate on admitted series', () => {
     );
   });
 
+  it('reports what each job ran on beside the verdicts', () => {
+    const result = runComparison(bridgeJobs(10), {});
+
+    expect(result.provenance).toHaveLength(4);
+    expect(result.provenance[0]).toMatch(/: no provenance recorded$/u);
+  });
+
   it('passes a paired result within δ_block', () => {
     const result = runComparison(bridgeJobs(10), {});
 
@@ -601,17 +608,36 @@ describe('printReport', () => {
   };
 
   it('prints PASS result when no admitted series failed', () => {
-    printReport({ comparisons: [], paired: [], anyFailed: false });
+    printReport({
+      comparisons: [],
+      paired: [],
+      provenance: [],
+      anyFailed: false,
+    });
 
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('PASS — no admitted series blocked'),
     );
   });
 
+  it('prints what each job ran on', () => {
+    printReport({
+      comparisons: [],
+      paired: [],
+      provenance: ['benchmark-chrome-webpack-x: cpu "AMD" x4'],
+      anyFailed: false,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('Runner provenance');
+    expect(allCalls).toContain('benchmark-chrome-webpack-x: cpu "AMD" x4');
+  });
+
   it('prints FAIL result and the series when an admitted series blocked', () => {
     printReport({
       comparisons: [],
       paired: [blockedSeries],
+      provenance: [],
       anyFailed: true,
     });
 
@@ -631,6 +657,7 @@ describe('printReport', () => {
         }),
       ],
       paired: [],
+      provenance: [],
       anyFailed: false,
     });
 
@@ -646,6 +673,7 @@ describe('printReport', () => {
         makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
       ],
       paired: [],
+      provenance: [],
       anyFailed: false,
     });
 
@@ -677,6 +705,7 @@ describe('printReport', () => {
         }),
       ],
       paired: [],
+      provenance: [],
       anyFailed: false,
     });
 
@@ -708,6 +737,7 @@ describe('printReport', () => {
         }),
       ],
       paired: [],
+      provenance: [],
       anyFailed: false,
     });
 
@@ -739,6 +769,7 @@ describe('printReport', () => {
         makeComparison({ benchmarkName: 'C' }),
       ],
       paired: [blockedSeries],
+      provenance: [],
       anyFailed: true,
     });
 
@@ -762,6 +793,7 @@ describe('printReport', () => {
         }),
       ],
       paired: [],
+      provenance: [],
       anyFailed: false,
     });
 

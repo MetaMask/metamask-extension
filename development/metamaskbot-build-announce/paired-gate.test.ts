@@ -7,6 +7,7 @@ import type { PairedOrder } from '../../test/e2e/benchmarks/utils/paired';
 import type { StableRunnerSpec } from '../../test/e2e/benchmarks/utils/stable-runner-spec';
 import {
   evaluatePairedGate,
+  formatJobProvenance,
   formatPairedOutcome,
   PAIRED_DIFFERENCES,
 } from './paired-gate';
@@ -396,5 +397,37 @@ describe('evaluatePairedGate against a stable-runner spec', () => {
     expect(outcomes.every(({ verdict }) => verdict === 'incomplete')).toBe(
       true,
     );
+  });
+});
+
+describe('formatJobProvenance', () => {
+  it('reports what each job with an admitted flow ran on, null where unrecorded', () => {
+    const [recorded, bare, other] = [
+      {
+        name: 'benchmark-chrome-webpack-bridgeUserActions-r1',
+        data: {
+          bridgeUserActions: {
+            host: {
+              cpuModel: 'AMD EPYC 7763',
+              cpuCount: 4,
+              imageOs: 'ubuntu24',
+              imageVersion: null,
+              browserName: 'chrome',
+              browserVersion: '131.0.6778.85',
+            },
+          },
+        },
+      },
+      {
+        name: 'benchmark-chrome-webpack-bridgeUserActions-r2',
+        data: { bridgeUserActions: {} },
+      },
+      { name: 'benchmark-chrome-webpack-pageLoad', data: { pageLoad: {} } },
+    ];
+
+    expect(formatJobProvenance([recorded, bare, other])).toStrictEqual([
+      'benchmark-chrome-webpack-bridgeUserActions-r1: cpu "AMD EPYC 7763" x4, image "ubuntu24" null, runner null null, browser "chrome" "131.0.6778.85", driver null, commit null',
+      'benchmark-chrome-webpack-bridgeUserActions-r2: no provenance recorded',
+    ]);
   });
 });

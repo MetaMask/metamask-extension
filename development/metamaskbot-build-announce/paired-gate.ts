@@ -322,3 +322,31 @@ export function formatPairedOutcome(outcome: PairedGateOutcome): string {
       return `${prefix}: ${outcome.verdict}, ${decision?.n} differences, shift ${ms(decision?.shift)}, lower bound ${ms(decision?.lower)} against δ_block ${ms(outcome.deltaBlockMs)}`;
   }
 }
+
+// One line per result file holding an admitted series' flow: what the job ran
+// on, `null` for what it did not record.
+export function formatJobProvenance(
+  benchmarks: readonly PairedGateInput[],
+): string[] {
+  const admittedFlows = new Set(
+    ADMITTED_SERIES.map(({ series }) => splitSeries(series).flow),
+  );
+  return benchmarks.flatMap(({ name, data }) => {
+    const carried = Object.entries(data).filter(([flow]) =>
+      admittedFlows.has(flow),
+    );
+    if (carried.length === 0) {
+      return [];
+    }
+    const host = carried
+      .map(([, results]) => (isPlainObject(results) ? results.host : undefined))
+      .find(isPlainObject);
+    if (!host) {
+      return [`${name}: no provenance recorded`];
+    }
+    const field = (key: string): string => JSON.stringify(host[key] ?? null);
+    return [
+      `${name}: cpu ${field('cpuModel')} x${field('cpuCount')}, image ${field('imageOs')} ${field('imageVersion')}, runner ${field('runnerEnvironment')} ${field('name')}, browser ${field('browserName')} ${field('browserVersion')}, driver ${field('driverVersion')}, commit ${field('commitHash')}`,
+    ];
+  });
+}
