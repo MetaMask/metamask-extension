@@ -1,0 +1,310 @@
+name: Benchmark drift
+
+# Drift on main (ADR 0072): the current main build against a pinned reference
+# build, decided by the paired rule on fresh jobs every day. A series that
+# blocks in two consecutive scheduled runs opens an issue and a Slack post; a
+# drift blocks no pull request or release. Off while the reference is unset.
+
+on:
+  schedule:
+    # After main.yml's overnight runs (2:00 to 6:59 UTC).
+    - cron: '30 7 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # The reference build: the one main's push run for that commit uploaded as
+  # `build-test-webpack`, else `build-base-test-webpack` builds it here.
+  find-reference-build:
+    name: Find the reference commit's test build
+    if: ${{ vars.BENCHMARK_DRIFT_REFERENCE_SHA != '' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      reference-sha: ${{ steps.find.outputs.reference-sha }}
+      run-id: ${{ steps.find.outputs.run-id }}
+    steps:
+      - name: Find the run that built the reference commit
+        id: find
+        uses: actions/github-script@v8
+        env:
+          REFERENCE_SHA: ${{ vars.BENCHMARK_DRIFT_REFERENCE_SHA }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const referenceSha = process.env.REFERENCE_SHA.trim();
+            const artifactName = 'build-test-webpack';
+            if (!/^[0-9a-f]{40}$/u.test(referenceSha)) {
+              core.setFailed(`BENCHMARK_DRIFT_REFERENCE_SHA is not a full commit sha: ${referenceSha}`);
+              return;
+            }
+            core.setOutput('reference-sha', referenceSha);
+
+            const { data: { workflow_runs: runs } } =
+              await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: 'main.yml',
+                head_sha: referenceSha,
+                event: 'push',
+                branch: 'main',
+                per_page: 20,
+              });
+            for (const run of runs) {
+              if (!['completed', 'in_progress'].includes(run.status)) continue;
+              const artifacts = await github.paginate(
+                github.rest.actions.listWorkflowRunArtifacts,
+                { owner, repo, run_id: run.id, name: artifactName, per_page: 100 },
+              );
+              if (artifacts.some((artifact) => !artifact.expired)) {
+                core.info(`Run ${run.id} holds an unexpired ${artifactName}`);
+                core.setOutput('run-id', String(run.id));
+                return;
+              }
+              core.info(`Run ${run.id} holds no unexpired ${artifactName}`);
+            }
+            core.info(`No push run of ${referenceSha} holds ${artifactName}; building it`);
+
+  build-test-webpack:
+    needs:
+      - find-reference-build
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-webpack
+      build-command: yarn build:test --zip
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-base-test-webpack:
+    needs:
+      - find-reference-build
+    if: ${{ needs.find-reference-build.outputs.run-id == '' }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/build-base-test.yml
+    with:
+      ref: ${{ needs.find-reference-build.outputs.reference-sha }}
+    secrets: inherit
+
+  run-benchmarks:
+    needs:
+      - find-reference-build
+      - build-test-webpack
+      - build-base-test-webpack
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.find-reference-build.result == 'success' &&
+        needs.build-test-webpack.result == 'success' &&
+        (needs.find-reference-build.outputs.run-id != '' || needs.build-base-test-webpack.result == 'success')
+      }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
+    uses: ./.github/workflows/run-benchmarks.yml
+    with:
+      builds-from-run: ${{ github.run_id }}
+      base-builds-from-run: ${{ needs.find-reference-build.outputs.run-id || github.run_id }}
+      base-build-artifact-name: ${{ needs.find-reference-build.outputs.run-id && 'build-test-webpack' || 'base-build-test-webpack' }}
+      paired-only: true
+    secrets: inherit
+
+  # Runs whatever the benchmarks did: a run with no results records every
+  # series as incomplete, which breaks a run of blocks.
+  decide-drift:
+    name: Decide drift
+    needs:
+      - find-reference-build
+      - run-benchmarks
+    if: ${{ !cancelled() && needs.find-reference-build.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout drift sources
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .nvmrc
+            tsconfig.json
+            development/metamaskbot-build-announce
+            shared/constants/benchmarks.ts
+            test/e2e/benchmarks/utils/admitted-series.ts
+            test/e2e/benchmarks/utils/paired-decision.ts
+            test/e2e/benchmarks/utils/thresholds.ts
+            test/e2e/benchmarks/utils/statistics.ts
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install tsx and runtime deps
+        run: npm install --no-save tsx @metamask/utils
+        shell: bash
+
+      - name: Download all benchmark artifacts
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      # The previous scheduled run, whatever its conclusion, so two blocks
+      # count only when no scheduled run came between them.
+      - name: Find the previous scheduled run's drift state
+        id: previous
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const artifactName = 'benchmark-drift-state';
+            const { data: current } = await github.rest.actions.getWorkflowRun({
+              owner,
+              repo,
+              run_id: context.runId,
+            });
+            const { data: { workflow_runs: runs } } =
+              await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: 'benchmark-drift.yml',
+                event: 'schedule',
+                branch: 'main',
+                per_page: 20,
+              });
+            const previous = runs.find(
+              (run) =>
+                run.id !== context.runId &&
+                run.status === 'completed' &&
+                run.created_at < current.created_at,
+            );
+            if (!previous) {
+              core.info('No previous scheduled run');
+              return;
+            }
+            const artifacts = await github.paginate(
+              github.rest.actions.listWorkflowRunArtifacts,
+              { owner, repo, run_id: previous.id, name: artifactName, per_page: 100 },
+            );
+            if (artifacts.some((artifact) => !artifact.expired)) {
+              core.info(`Run ${previous.id} holds ${artifactName}`);
+              core.setOutput('run-id', String(previous.id));
+            } else {
+              core.info(`Run ${previous.id} holds no ${artifactName}: nothing blocked`);
+            }
+
+      - name: Download the previous drift state
+        if: ${{ steps.previous.outputs.run-id != '' }}
+        uses: actions/download-artifact@v7
+        with:
+          name: benchmark-drift-state
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.previous.outputs.run-id }}
+          path: previous-state/
+
+      - name: Decide drift
+        env:
+          REFERENCE_SHA: ${{ needs.find-reference-build.outputs.reference-sha }}
+          HEAD_SHA: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ISSUES_URL: ${{ github.server_url }}/${{ github.repository }}/issues?q=is%3Aissue+is%3Aopen+in%3Atitle+%22Benchmark+drift%22
+        run: |
+          mkdir -p benchmark-results
+          ./node_modules/.bin/tsx development/metamaskbot-build-announce/benchmark-drift.ts \
+            --current benchmark-results \
+            --previous previous-state/benchmark-drift-state.json \
+            --out drift-output \
+            --reference-sha "$REFERENCE_SHA" \
+            --head-sha "$HEAD_SHA" \
+            --run-url "$RUN_URL" \
+            --issues-url "$ISSUES_URL" | tee drift-report.txt
+          {
+            echo '```'
+            cat drift-report.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+        shell: bash
+
+      - name: Upload this run's drift state
+        uses: actions/upload-artifact@v6
+        with:
+          name: benchmark-drift-state
+          path: drift-output/benchmark-drift-state.json
+          retention-days: 14
+          if-no-files-found: error
+
+      # Manual runs report what they find and notify no one, since a drift is
+      # two consecutive scheduled runs.
+      - name: Open or update an issue per drifted series
+        if: ${{ github.event_name == 'schedule' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+            const drifts = JSON.parse(fs.readFileSync('drift-output/drifts.json', 'utf8'));
+            if (drifts.length === 0) {
+              return;
+            }
+            const open = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+            for (const { title, body } of drifts) {
+              const existing = open.find(
+                (issue) => !issue.pull_request && issue.title === title,
+              );
+              if (existing) {
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: existing.number,
+                  body,
+                });
+                core.info(`Updated #${existing.number}: ${title}`);
+              } else {
+                const { data: issue } = await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title,
+                  body,
+                });
+                core.info(`Opened #${issue.number}: ${title}`);
+              }
+            }
+
+      - name: Post the drifts to Slack
+        if: ${{ github.event_name == 'schedule' && hashFiles('drift-output/slack.json') != '' }}
+        env:
+          SLACK_WEBHOOK: ${{ secrets.METAMASK_PERFORMANCE_SLACK_WEBHOOK }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK" ]; then
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST \
+            -H 'Content-Type: application/json' \
+            --data @drift-output/slack.json \
+            "$SLACK_WEBHOOK"
+        shell: bash
