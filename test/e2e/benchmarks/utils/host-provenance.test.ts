@@ -1,4 +1,10 @@
-import { captureHostProvenance, timeCpuProbe } from './host-provenance';
+import {
+  captureHostProvenance,
+  readBrowserSession,
+  recordBrowserSession,
+  resetBrowserSession,
+  timeCpuProbe,
+} from './host-provenance';
 
 describe('timeCpuProbe', () => {
   it('returns a positive duration', () => {
@@ -72,5 +78,110 @@ describe('captureHostProvenance', () => {
       expect(stealPercent).toBeGreaterThanOrEqual(0);
       expect(stealPercent).toBeLessThanOrEqual(100);
     }
+  });
+});
+
+describe('runner image and environment', () => {
+  const { env } = process;
+
+  afterEach(() => {
+    process.env = env;
+  });
+
+  it('reads the image and environment GitHub sets', () => {
+    process.env = {
+      ...env,
+      ImageOS: 'ubuntu24',
+      ImageVersion: '20260101.1.0',
+      RUNNER_ENVIRONMENT: 'github-hosted',
+      HEAD_COMMIT_HASH: 'abc123',
+    };
+    expect(captureHostProvenance()).toMatchObject({
+      imageOs: 'ubuntu24',
+      imageVersion: '20260101.1.0',
+      runnerEnvironment: 'github-hosted',
+      commitHash: 'abc123',
+    });
+  });
+
+  it('records null for what the environment does not set', () => {
+    const {
+      ImageOS,
+      ImageVersion,
+      RUNNER_ENVIRONMENT,
+      HEAD_COMMIT_HASH,
+      ...rest
+    } = env;
+    process.env = rest;
+    expect(captureHostProvenance()).toMatchObject({
+      imageOs: null,
+      imageVersion: null,
+      runnerEnvironment: null,
+      commitHash: null,
+    });
+  });
+});
+
+describe('browser session', () => {
+  const capabilities = (values: Record<string, unknown>) => ({
+    get: (key: string) => values[key],
+  });
+
+  afterEach(() => {
+    resetBrowserSession();
+  });
+
+  it('reads Chrome and chromedriver versions, dropping the revision', () => {
+    expect(
+      readBrowserSession(
+        capabilities({
+          browserName: 'chrome',
+          browserVersion: '131.0.6778.85',
+          chrome: { chromedriverVersion: '131.0.6778.85 (abcdef-refs/x)' },
+        }),
+      ),
+    ).toStrictEqual({
+      browserName: 'chrome',
+      browserVersion: '131.0.6778.85',
+      driverVersion: '131.0.6778.85',
+    });
+  });
+
+  it('reads Firefox and geckodriver versions', () => {
+    expect(
+      readBrowserSession(
+        capabilities({
+          browserName: 'firefox',
+          browserVersion: '126.0',
+          'moz:geckodriverVersion': '0.36.0',
+        }),
+      ),
+    ).toStrictEqual({
+      browserName: 'firefox',
+      browserVersion: '126.0',
+      driverVersion: '0.36.0',
+    });
+  });
+
+  it('returns null for capabilities the session does not report', () => {
+    expect(readBrowserSession(capabilities({}))).toStrictEqual({
+      browserName: null,
+      browserVersion: null,
+      driverVersion: null,
+    });
+  });
+
+  it('puts the recorded session into the host record', () => {
+    expect(captureHostProvenance().browserVersion).toBeNull();
+    recordBrowserSession({
+      browserName: 'chrome',
+      browserVersion: '131.0.6778.85',
+      driverVersion: '131.0.6778.85',
+    });
+    expect(captureHostProvenance()).toMatchObject({
+      browserName: 'chrome',
+      browserVersion: '131.0.6778.85',
+      driverVersion: '131.0.6778.85',
+    });
   });
 });

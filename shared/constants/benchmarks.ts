@@ -83,6 +83,19 @@ export type HostProvenance = {
   stealPercent?: number;
   /** Fixed-work CPU probe, ms, timed in the Node process. Not the in-page probe. */
   cpuProbeMs?: number;
+  /** GitHub's `ImageOS` (e.g. `ubuntu24`). Null off GitHub-hosted images. */
+  imageOs: string | null;
+  /** GitHub's `ImageVersion`. Null off GitHub-hosted images. */
+  imageVersion: string | null;
+  /** `RUNNER_ENVIRONMENT`: `github-hosted` or `self-hosted`. */
+  runnerEnvironment: string | null;
+  /** Browser the session ran, from the live session's capabilities. */
+  browserName: string | null;
+  browserVersion: string | null;
+  /** chromedriver or geckodriver, as the session reports it. Null under Playwright. */
+  driverVersion: string | null;
+  /** The commit the job measured, from `HEAD_COMMIT_HASH`. */
+  commitHash: string | null;
 };
 
 /** Per-metric statistics (mean, percentiles, etc.) */

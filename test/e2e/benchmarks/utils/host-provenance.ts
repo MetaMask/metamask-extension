@@ -89,6 +89,53 @@ export function readStealPercent(): number | undefined {
   }
 }
 
+type BrowserSession = Pick<
+  HostProvenance,
+  'browserName' | 'browserVersion' | 'driverVersion'
+>;
+
+const NO_BROWSER_SESSION: BrowserSession = {
+  browserName: null,
+  browserVersion: null,
+  driverVersion: null,
+};
+
+let browserSession: BrowserSession = NO_BROWSER_SESSION;
+
+const asString = (value: unknown): string | null =>
+  typeof value === 'string' && value.length > 0 ? value : null;
+
+// The versions a session's capabilities report, null for any it does not.
+// chromedriver reports `"<version> (<revision>)"`; only the version is kept so
+// two jobs on one driver compare equal.
+export function readBrowserSession(capabilities: {
+  get: (key: string) => unknown;
+}): BrowserSession {
+  const chrome = capabilities.get('chrome') as
+    | { chromedriverVersion?: unknown }
+    | undefined;
+  const chromedriver = asString(chrome?.chromedriverVersion)?.split(' ')[0];
+  return {
+    browserName: asString(capabilities.get('browserName')),
+    browserVersion:
+      asString(capabilities.get('browserVersion')) ??
+      asString(capabilities.get('version')),
+    driverVersion:
+      chromedriver ?? asString(capabilities.get('moz:geckodriverVersion')),
+  };
+}
+
+// Result assembly has no driver in scope, so the session about to be measured
+// leaves its versions here.
+export function recordBrowserSession(session: BrowserSession): void {
+  browserSession = session;
+}
+
+// Forget the recorded session.
+export function resetBrowserSession(): void {
+  browserSession = NO_BROWSER_SESSION;
+}
+
 /**
  * Describe the machine this benchmark ran on.
  *
@@ -123,5 +170,10 @@ export function captureHostProvenance(): HostProvenance {
     totalMemMb: Math.round(os.totalmem() / 1024 / 1024),
     stealPercent: readStealPercent(),
     cpuProbeMs: timeCpuProbe(),
+    imageOs: process.env.ImageOS ?? null,
+    imageVersion: process.env.ImageVersion ?? null,
+    runnerEnvironment: process.env.RUNNER_ENVIRONMENT ?? null,
+    ...browserSession,
+    commitHash: process.env.HEAD_COMMIT_HASH ?? null,
   };
 }
