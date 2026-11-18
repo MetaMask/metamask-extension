@@ -37,14 +37,6 @@ class AssetDetailsPage {
 
   private readonly assetName = '[data-testid="asset-name"]';
 
-  /**
-   * Present when a Stellar classic trustline is active (`canDeactivate`).
-   * Stronger readiness signal than the page shell for absence checks of the
-   * activate card / inactive badge.
-   */
-  private readonly tokenDeactivateButton =
-    '[data-testid="token-overview-deactivate-asset"]';
-
   private driver: Driver;
 
   private readonly nativeBuyButton = '[data-testid="coin-overview-buy"]';
@@ -86,6 +78,14 @@ class AssetDetailsPage {
   private readonly priceHeader = '[data-testid="asset-hovered-price"]';
 
   private readonly tokenBuyButton = '[data-testid="token-overview-buy"]';
+
+  /**
+   * Present when a Stellar classic trustline is active (`canDeactivate`).
+   * Stronger readiness signal than the page shell for absence checks of the
+   * activate card / inactive badge.
+   */
+  private readonly tokenDeactivateButton =
+    '[data-testid="token-overview-deactivate-asset"]';
 
   private readonly tokenSendButton = '[data-testid="eth-overview-send"]';
 
