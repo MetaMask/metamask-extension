@@ -19,7 +19,7 @@ export function AssetActivationDetails({
 }) {
   return (
     <>
-      <ModalBody className="flex-1 divide-y divide-border-muted">
+      <ModalBody tabIndex={0} className="flex-1 divide-y divide-border-muted">
         <TokenHeader token={item.data.token} />
         <MetadataSection item={item} />
         <Section>

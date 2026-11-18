@@ -51,7 +51,7 @@ export function ConnectedStatusPopoverContainer() {
         >
           {t('whatsThis')}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody tabIndex={0}>
           <div className="home__connect-status-text">
             <div>{t('metaMaskConnectStatusParagraphOne')}</div>
             <div>{t('metaMaskConnectStatusParagraphTwo')}</div>

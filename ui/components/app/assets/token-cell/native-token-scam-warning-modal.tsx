@@ -57,7 +57,7 @@ export const NativeTokenScamWarningModal = ({
         >
           {t('nativeTokenScamWarningTitle')}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody tabIndex={0}>
           {t('nativeTokenScamWarningDescription', [
             token.symbol,
             nativeCurrencySymbol ||

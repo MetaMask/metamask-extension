@@ -73,7 +73,7 @@ export function MmPayDetailsLayout({
 
   return (
     <>
-      <ModalBody className="flex-1 divide-y divide-border-muted">
+      <ModalBody tabIndex={0} className="flex-1 divide-y divide-border-muted">
         <div
           className="flex items-center gap-2 pb-4"
           data-testid="transaction-details-hero"

@@ -40,7 +40,7 @@ export const DisconnectAllGatorPermissionsModal = ({
         >
           {t('otherPermissionsOnSiteTitle')}
         </ModalHeader>
-        <ModalBody className="px-0">
+        <ModalBody tabIndex={0} className="px-0">
           <Box padding={4}>
             <Text>{t('otherPermissionsOnSiteDescription')}</Text>
           </Box>

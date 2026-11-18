@@ -80,7 +80,7 @@ export const AccountDeleteConfirmModal = ({
             </Text>
           </Box>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody tabIndex={0}>
           <Text variant={TextVariant.BodyMd}>
             {t('removeAccountConfirmDescription')}
           </Text>
