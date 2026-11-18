@@ -177,4 +177,92 @@ describe('trace with no caller in a UI document (real SDK)', () => {
     expect(result.childJson.parent_span_id).toBe(result.opSpanId);
     expectNested(result.childJson as SpanWindow, result.opJson as SpanWindow);
   });
+
+  describe('with a declared parentContext', () => {
+    // Earlier cases leave a running span on the scope, which would parent this
+    // case's pageload and keep it from being the route trace.
+    beforeEach(() => {
+      Sentry.getCurrentScope().clear();
+    });
+
+    // The shape `serializeTraceContext` writes, which crosses process
+    // boundaries; the underscore names are that contract.
+    function serialized(name: string, id?: string, traceparent?: string) {
+      return {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: name,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        ...(id && { _id: id }),
+        ...(traceparent && { traceparent }),
+      };
+    }
+
+    function childTrace(parentContext: unknown) {
+      return trace(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: NO_CALLER, parentContext: parentContext as any },
+        (span) => (span as Sentry.Span).spanContext().traceId,
+      );
+    }
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      ['null', null],
+      ['an ended serialized context', serialized('Ended Trace', 'gone')],
+    ])(
+      'starts a new trace when the parent does not resolve (%s)',
+      (_label: string, parentContext: unknown) => {
+        const pageload = startDocument({ route: 0, noCaller: 1 });
+        pageload.end();
+        expect(scopeTraceId()).toBe(pageload.spanContext().traceId);
+
+        expect(childTrace(parentContext)).not.toBe(
+          pageload.spanContext().traceId,
+        );
+      },
+    );
+
+    it('nests under the running route when the parent does not resolve', () => {
+      const pageload = startDocument({ route: 1, noCaller: 1 });
+
+      const result = trace(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: NO_CALLER, parentContext: null as any },
+        (span) => ({
+          traceId: (span as Sentry.Span).spanContext().traceId,
+          parentSpanId: Sentry.spanToJSON(span as Sentry.Span).parent_span_id,
+        }),
+      );
+
+      expect(result.traceId).toBe(pageload.spanContext().traceId);
+      expect(result.parentSpanId).toBe(pageload.spanContext().spanId);
+    });
+
+    it('nests under a parent that resolves', () => {
+      const pageload = startDocument({ route: 0, noCaller: 1 });
+      pageload.end();
+      const parent = trace({ name: TraceName.Middleware, root: true });
+
+      const childTraceId = childTrace(serialized(TraceName.Middleware));
+
+      expect(childTraceId).toBe((parent as Sentry.Span).spanContext().traceId);
+      expect(childTraceId).not.toBe(pageload.spanContext().traceId);
+    });
+
+    it('continues the trace of an unresolved context that keeps its traceparent', () => {
+      const pageload = startDocument({ route: 0, noCaller: 1 });
+      pageload.end();
+      const traceId = 'a'.repeat(32);
+
+      expect(
+        childTrace(
+          serialized(
+            'Ended Trace',
+            undefined,
+            `00-${traceId}-${'b'.repeat(16)}-01`,
+          ),
+        ),
+      ).toBe(traceId);
+    });
+  });
 });

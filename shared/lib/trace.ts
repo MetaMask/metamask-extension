@@ -1121,13 +1121,16 @@ function startSpan<T>(
   // has no span. `resolveParentSpan` returns `null` for both, so read the input.
   const parentDeclared = parentContext !== undefined;
 
-  // A parent that did not resolve leaves the scope's ambient trace id, which
-  // after the background pageload ended is that pageload's. `traceparent` data
-  // and an active span are handled below and are not roots.
+  // Work without a resolved parent leaves the scope's ambient trace id, which
+  // is the ended background pageload's, or the UI document's latest route's. In
+  // either case it starts its own trace, declared parent or not. `traceparent`
+  // data is handled below and is not a root.
   const root =
     request.root ||
     (!parentSpan && isOnEndedBackgroundPageload()) ||
-    (!parentDeclared && isOnDocumentRouteTrace());
+    (!parentSpan &&
+      isOnDocumentRouteTrace() &&
+      (!parentDeclared || !sentryGetActiveSpan()));
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
