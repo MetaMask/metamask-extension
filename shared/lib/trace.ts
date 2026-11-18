@@ -370,8 +370,9 @@ export type TraceRequest = {
    * and sampling decision on the scope for the background's whole life, so such
    * work would otherwise join that trace and be kept or dropped with it.
    *
-   * In a UI document, so does one on the current route's trace: the SDK keeps a
-   * route's trace id on the scope until the next navigation.
+   * In a UI document, so does a trace started on the current route's trace id,
+   * which the SDK keeps on the scope until the next navigation. While a span is
+   * active, a declared parent that does not resolve nests under it instead.
    */
   root?: boolean;
 };
