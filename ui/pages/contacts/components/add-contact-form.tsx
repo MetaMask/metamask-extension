@@ -58,11 +58,8 @@ import {
   getCompleteAddressBook,
   getInternalAccounts,
 } from '../../../selectors';
-import { isDuplicateContact } from '../utils';
-import {
-  isBurnAddress,
-  isValidHexAddress,
-} from '../../../../shared/lib/hexstring-utils';
+import { isDuplicateContact, isContactBurnAddress } from '../utils';
+import { isValidHexAddress } from '../../../../shared/lib/hexstring-utils';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
@@ -100,7 +97,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
 
   const validate = useCallback((value: string) => {
     const valid =
-      !isBurnAddress(value) &&
+      !isContactBurnAddress(value) &&
       isValidHexAddress(value, { mixedCaseUseChecksum: true });
     const validEnsAddress = isValidDomainName(value);
     if (!validEnsAddress && !valid) {
@@ -187,7 +184,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
     const text = e.clipboardData.getData('text').trim();
     if (
       text &&
-      !isBurnAddress(text) &&
+      !isContactBurnAddress(text) &&
       isValidHexAddress(text, { mixedCaseUseChecksum: true })
     ) {
       e.preventDefault();
@@ -217,7 +214,7 @@ export function AddContactForm({ onSuccess }: AddContactFormProps) {
   const addressError = domainError || addressInputError;
   const newAddress = selectedAddress || input;
   const validAddress =
-    !isBurnAddress(newAddress) &&
+    !isContactBurnAddress(newAddress) &&
     isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
   const isSaveDisabled = Boolean(
     addressInputError || nameInputError || !validAddress || !newName.trim(),
