@@ -322,7 +322,7 @@ describe('TokenList', () => {
     expect(screen.queryByTestId('token-cell-ETH')).not.toBeInTheDocument();
   });
 
-  it('keeps showing skeletons when partial non-zero assets arrive', () => {
+  it('shows a non-zero native token before background loading settles', () => {
     jest
       .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
       .mockReturnValue(false);
@@ -339,13 +339,16 @@ describe('TokenList', () => {
 
     render();
 
-    expect(useHomeReady).toHaveBeenLastCalledWith(false);
-    expect(screen.getByTestId('token-list-loading')).toBeInTheDocument();
-    expect(screen.queryByTestId('token-cell-POL')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('token-cell-SOL')).not.toBeInTheDocument();
+    expect(useHomeReady).toHaveBeenLastCalledWith(true);
+    expect(screen.getByTestId('token-cell-POL')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-SOL')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
   });
 
-  it('shows a populated token list after the initial load settles', () => {
+  it('keeps a populated token list visible during background refreshes', () => {
+    jest
+      .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
+      .mockReturnValue(false);
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
         createAsset({ symbol: 'ETH', isNative: true, fiatBalance: 10 }),

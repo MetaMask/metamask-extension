@@ -144,7 +144,6 @@ describe('EthOverview', () => {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       selectedAccountGroup: 'entropy:wallet1/group1',
-      hasAccountTreeSyncingSyncedAtLeastOnce: true,
       accountTree: {
         wallets: {
           'entropy:wallet1': {

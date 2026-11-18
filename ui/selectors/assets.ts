@@ -1408,11 +1408,7 @@ export const selectAssetsHaveLoadedForSelectedAccountGroup = createSelector(
     accountTreeState,
   ): boolean => {
     const selectedGroupId = accountTreeState.selectedAccountGroup;
-    if (
-      !selectedGroupId ||
-      accountTreeState.isAccountTreeSyncingInProgress ||
-      !accountTreeState.hasAccountTreeSyncingSyncedAtLeastOnce
-    ) {
+    if (!selectedGroupId || accountTreeState.isAccountTreeSyncingInProgress) {
       return false;
     }
 
