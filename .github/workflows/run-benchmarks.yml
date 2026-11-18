@@ -352,7 +352,7 @@ jobs:
             steps.download-benchmarks.outcome == 'success' &&
             steps.skip-check.outputs.skip != 'true'
           }}
-        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/${{ inputs.base-builds-from-run != '' && ' --paired' || '' }}
+        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/${{ github.event_name == 'pull_request' && ' --paired' || '' }}
         shell: bash
 
       - name: Fail when the benchmark artifacts did not download
