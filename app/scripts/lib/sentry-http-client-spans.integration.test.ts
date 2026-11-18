@@ -1,5 +1,9 @@
 import * as Sentry from '@sentry/browser';
 import type { TransactionEvent } from '@sentry/core';
+import {
+  expectNested,
+  type SpanWindow,
+} from '../../../test/e2e/helpers/span-nesting';
 import { shouldCreateSpanForRequest } from './setupSentry';
 
 const BACKEND_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
@@ -80,6 +84,14 @@ describe('http.client spans (integration with browserTracingIntegration)', () =>
     expect(httpSpans).toHaveLength(1);
     expect(httpSpans[0].description).toBe(`GET ${BACKEND_URL}`);
     expect(httpSpans[0].parent_span_id).toBe(rootSpanId);
+    const [rootEvent] = sent;
+    expectNested(httpSpans[0] as SpanWindow, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      span_id: rootSpanId,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      start_timestamp: rootEvent.start_timestamp as number,
+      timestamp: rootEvent.timestamp,
+    });
     // The backend parents its spans on the id in the header, so the header
     // must name the http.client span that is sent, not another id.
     expect(requestHeaders[0]['sentry-trace']).toContain(

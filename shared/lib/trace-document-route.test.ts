@@ -1,4 +1,8 @@
 import * as Sentry from '@sentry/browser';
+import {
+  expectNested,
+  type SpanWindow,
+} from '../../test/e2e/helpers/span-nesting';
 import { getEnvironmentType } from './environment-type';
 import { trace, trackDocumentRouteTrace, TraceName } from './trace';
 
@@ -163,14 +167,15 @@ describe('trace with no caller in a UI document (real SDK)', () => {
             opSpanId: (op as Sentry.Span).spanContext().spanId,
             opTraceId: (op as Sentry.Span).spanContext().traceId,
             traceId: (child as Sentry.Span).spanContext().traceId,
-            parentSpanId: Sentry.spanToJSON(child as Sentry.Span)
-              .parent_span_id,
+            childJson: Sentry.spanToJSON(child as Sentry.Span),
+            opJson: Sentry.spanToJSON(op as Sentry.Span),
           }),
         ),
     );
 
     expect(result.traceId).toBe(result.opTraceId);
-    expect(result.parentSpanId).toBe(result.opSpanId);
+    expect(result.childJson.parent_span_id).toBe(result.opSpanId);
+    expectNested(result.childJson as SpanWindow, result.opJson as SpanWindow);
   });
 
   describe('with a declared parentContext', () => {
