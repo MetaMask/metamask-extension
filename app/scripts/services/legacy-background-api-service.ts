@@ -130,7 +130,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  CurrencyRateControllerSetCurrentCurrencyAction,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
@@ -277,7 +276,10 @@ import {
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
 import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
-import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
+import {
+  AddressBookControllerClearAction,
+  AddressBookControllerGetStateAction,
+} from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -415,6 +417,7 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import { prependZero } from '../../../shared/lib/string-utils';
 import type {
   SentryTracingServiceBufferedEndTraceAction,
   SentryTracingServiceBufferedTraceAction,
@@ -500,6 +503,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
+  'backupUserData',
   'captureTestError',
   'changePassword',
   'changePasswordWithPasskeyVerification',
@@ -619,6 +623,7 @@ type AllowedActions =
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
   | AddressBookControllerClearAction
+  | AddressBookControllerGetStateAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
   | ApprovalControllerAddAndShowApprovalRequestAction
@@ -644,7 +649,6 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | ClaimsControllerClearStateAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
   | GasFeeControllerEnableNonRPCGasFeeApisAction
@@ -936,16 +940,11 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the current currency for the CurrencyRateController and AssetsController.
+   * Sets the selected currency on the AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
   async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
-    await this.#messenger.call(
-      'CurrencyRateController:setCurrentCurrency',
-      currencyCode,
-    );
-
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 
@@ -5542,5 +5541,40 @@ export class LegacyBackgroundApiService {
     } catch {
       return undefined;
     }
+  }
+
+  /**
+   * Creates a JSON backup of the user's preferences, accounts, address book,
+   * and network configurations for download from the UI.
+   *
+   * @returns The backup filename and serialized data.
+   */
+  backupUserData(): { fileName: string; data: string } {
+    const preferences = this.#messenger.call('PreferencesController:getState');
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const addressBook = this.#messenger.call('AddressBookController:getState');
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const data = JSON.stringify({
+      preferences: { ...preferences },
+      internalAccounts: { internalAccounts },
+      addressBook: { ...addressBook },
+      network: { networkConfigurationsByChainId },
+    });
+
+    const date = new Date();
+    const prefixZero = (num: number): string => prependZero(num, 2);
+
+    const userDataFileName = `MetaMaskUserData.${date.getFullYear()}_${prefixZero(
+      date.getMonth() + 1,
+    )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+      date.getMinutes(),
+    )}_${prefixZero(date.getDay())}.json`;
+
+    return { fileName: userDataFileName, data };
   }
 }

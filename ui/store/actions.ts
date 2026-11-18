@@ -1726,32 +1726,17 @@ export function updateEditableParams(
 }
 
 export async function backupUserData(): Promise<{
-  filename: string;
+  fileName: string;
   data: string;
 }> {
-  let backedupData;
   try {
-    backedupData = await submitRequestToBackground<{
-      filename: string;
-      data: string;
-    }>('backupUserData');
+    return await submitRequestToBackground(
+      'LegacyBackgroundApiService:backupUserData',
+    );
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
   }
-
-  return backedupData;
-}
-
-export async function restoreUserData(jsonString: Json): Promise<true> {
-  try {
-    await submitRequestToBackground('restoreUserData', [jsonString]);
-  } catch (error) {
-    logErrorWithMessage(error);
-    throw error;
-  }
-
-  return true;
 }
 
 export function updateSlides(
@@ -6165,40 +6150,6 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
     pollingToken,
     POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
   ]);
-}
-
-/**
- * Informs the CurrencyRateController that the UI requires currency rate polling
- *
- * @param nativeCurrencies - An array of native currency symbols
- * @returns polling token that can be used to stop polling
- */
-export async function currencyRateStartPolling(
-  nativeCurrencies: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'CurrencyRateController:startPolling',
-    [{ nativeCurrencies }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the CurrencyRateController that the UI no longer requires currency rate polling
- * for the given network client.
- * If all network clients unsubscribe, the controller stops polling.
- *
- * @param pollingToken - Poll token received from calling currencyRateStartPolling
- */
-export async function currencyRateStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground(
-    'CurrencyRateController:stopPollingByPollingToken',
-    [pollingToken],
-  );
-  await removePollingTokenFromAppState(pollingToken);
 }
 
 /**
