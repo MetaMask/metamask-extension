@@ -501,7 +501,7 @@ export const TokenListItemComponent = ({
             >
               {t('nativeTokenScamWarningTitle')}
             </ModalHeader>
-            <ModalBody tabIndex={0} className="my-4">
+            <ModalBody className="my-4">
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
                 nativeCurrencySymbol ||

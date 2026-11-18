@@ -258,7 +258,7 @@ const MfaMethodDetails = ({ method }: { method: MfaDetailsMethod }) => {
               onClose={() => setModal(undefined)}
               closeButtonProps={{ ariaLabel: t('close') }}
             />
-            <ModalBody tabIndex={0}>
+            <ModalBody>
               <Box flexDirection={BoxFlexDirection.Column} gap={4}>
                 <Box
                   flexDirection={BoxFlexDirection.Column}

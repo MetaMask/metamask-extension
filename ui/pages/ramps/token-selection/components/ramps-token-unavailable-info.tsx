@@ -74,7 +74,7 @@ export function RampsTokenUnavailableInfo({
               </Text>
             </Box>
           </ModalHeader>
-          <ModalBody tabIndex={0}>
+          <ModalBody>
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}

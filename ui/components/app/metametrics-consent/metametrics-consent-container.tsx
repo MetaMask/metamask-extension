@@ -93,7 +93,7 @@ export function MetaMetricsConsentContainer() {
         >
           {t('onboardedMetametricsTitle')}
         </ModalHeader>
-        <ModalBody tabIndex={0}>
+        <ModalBody>
           <Box flexDirection={BoxFlexDirection.Column} gap={2}>
             <Text>{t('onboardedMetametricsParagraph1')}</Text>
             <Text>{t('onboardedMetametricsParagraph2')}</Text>

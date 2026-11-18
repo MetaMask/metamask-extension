@@ -577,7 +577,7 @@ export const HardwareWalletErrorModal = React.memo(
                 />
               </Box>
             </ModalHeader>
-            <ModalBody tabIndex={0}>
+            <ModalBody>
               <Box className="flex flex-col items-center gap-4">
                 <Text
                   variant={TextVariant.HeadingSm}

@@ -80,7 +80,7 @@ export function HideTokenConfirmationModal({
       <ModalOverlay />
       <ModalContent className="items-center">
         <ModalHeader>{t('hideTokenPrompt')}</ModalHeader>
-        <ModalBody tabIndex={0}>
+        <ModalBody>
           <Box
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.Center}

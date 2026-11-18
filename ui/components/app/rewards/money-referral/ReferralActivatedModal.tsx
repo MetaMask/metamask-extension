@@ -133,7 +133,7 @@ export function ReferralActivatedModal({
           ariaLabel: copy?.inviteAcceptedCloseA11y || t('close'),
         }}
       />
-      <ModalBody tabIndex={0}>
+      <ModalBody>
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}

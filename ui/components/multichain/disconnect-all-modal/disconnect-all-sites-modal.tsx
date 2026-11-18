@@ -40,7 +40,7 @@ export const DisconnectAllSitesModal = ({
         >
           {t('disconnectAllSitesQuestion')}
         </ModalHeader>
-        <ModalBody tabIndex={0}>
+        <ModalBody>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('disconnectAllSitesDescriptionText')}
           </Text>
