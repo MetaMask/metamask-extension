@@ -2,28 +2,21 @@ import React from 'react';
 
 type Props = {
   property: string;
-  ariaLabel?: string;
   value: number;
-  minValue: number;
-  maxValue: number;
+  min: number;
+  max: number;
 };
 
 const className =
   'absolute -right-1 top-0 z-10 h-full w-2 cursor-col-resize touch-none focus-visible:outline-none before:absolute before:inset-y-0 before:left-[3px] before:w-px before:bg-border-muted hover:before:bg-primary-default focus-visible:before:bg-primary-default';
 
-export const ResizeBar = ({
-  property,
-  ariaLabel = 'Resize',
-  minValue,
-  maxValue,
-  value,
-}: Props) => {
-  const resolvedValueNow = value ?? Math.round((minValue + maxValue) / 2);
+export const ResizeBar = ({ property, min, max, value }: Props) => {
+  const resolvedValueNow = value ?? Math.round((min + max) / 2);
 
   const getResizeTarget = (handle: HTMLDivElement) => handle.parentElement;
 
   const clampWidth = (width: number) =>
-    Math.min(maxValue, Math.max(minValue, Math.round(width)));
+    Math.min(max, Math.max(min, Math.round(width)));
 
   const setWidth = (target: HTMLElement, width: number) => {
     const nextWidth = clampWidth(width);
@@ -63,8 +56,8 @@ export const ResizeBar = ({
     const widthsByKey: Record<string, number> = {
       ArrowLeft: currentWidth - 16,
       ArrowRight: currentWidth + 16,
-      Home: minValue,
-      End: maxValue,
+      Home: min,
+      End: max,
     };
     const nextWidth = widthsByKey[event.key];
 
@@ -80,10 +73,10 @@ export const ResizeBar = ({
   return (
     <div
       role="separator"
-      aria-label={ariaLabel}
+      aria-label="Resize"
       aria-orientation="vertical"
-      aria-valuemin={minValue}
-      aria-valuemax={maxValue}
+      aria-valuemin={min}
+      aria-valuemax={max}
       aria-valuenow={resolvedValueNow}
       tabIndex={0}
       className={className}

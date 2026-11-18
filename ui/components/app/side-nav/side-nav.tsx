@@ -40,8 +40,8 @@ export const SideNav = () => {
       <ResizeBar
         property={sideNavWidthVariable}
         value={320}
-        minValue={240}
-        maxValue={480}
+        min={240}
+        max={480}
       />
     </div>
   );
