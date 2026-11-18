@@ -212,6 +212,50 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
     expect(result.traceId).toBe(result.rpcTraceId);
   });
 
+  describe('under an active span from another trace', () => {
+    // The span is made in a trace of its own and activated on a fork of the
+    // current scope, which keeps the ended pageload's trace id in its
+    // propagation context, as the controllers' spans do in the background.
+    function withOtherTraceActive<T>(callback: (otherTraceId: string) => T) {
+      const other = Sentry.startNewTrace(() =>
+        Sentry.startInactiveSpan({ name: 'Other Trace' }),
+      );
+      return Sentry.withActiveSpan(other, () =>
+        callback(other.spanContext().traceId),
+      );
+    }
+
+    it('starts a new trace instead of taking the ended pageload trace id', () => {
+      inContext('/service-worker.js');
+      const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });
+
+      const result = withOtherTraceActive((otherTraceId) => ({
+        otherTraceId,
+        ...noCallerTrace(),
+      }));
+
+      expect(result.traceId).not.toBe(pageloadTraceId);
+      expect(result.traceId).not.toBe(result.otherTraceId);
+      expect(result.recording).toBe(true);
+    });
+
+    it('nests under the active span when allowActiveSpanFallback is set', () => {
+      inContext('/service-worker.js');
+      const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });
+
+      const result = withOtherTraceActive((otherTraceId) => ({
+        otherTraceId,
+        traceId: trace(
+          { name: NO_CALLER, allowActiveSpanFallback: true },
+          (span) => (span as Sentry.Span).spanContext().traceId,
+        ),
+      }));
+
+      expect(result.traceId).toBe(result.otherTraceId);
+      expect(result.traceId).not.toBe(pageloadTraceId);
+    });
+  });
+
   it('leaves a document pageload trace unchanged', () => {
     inContext('/home.html');
     const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });

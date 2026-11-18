@@ -359,8 +359,8 @@ export type TraceRequest = {
    *
    * In the background (service worker or persistent background page), once
    * its pageload has ended, a trace whose parent is undeclared or does not
-   * resolve, started outside any active span, also starts a new trace, as if
-   * `root` were set. The SDK keeps the ended pageload's trace id
+   * resolve, that would not nest under the active span, also starts a new
+   * trace, as if `root` were set. The SDK keeps the ended pageload's trace id
    * and sampling decision on the scope for the background's whole life, so such
    * work would otherwise join that trace and be kept or dropped with it.
    */
@@ -608,13 +608,14 @@ export function trackBackgroundPageloadEnd(client?: Client): void {
 }
 
 /**
- * Whether new work would join the ended background pageload's trace: no
- * active span, and the scope still carries that pageload's trace id.
+ * Whether the scope still carries the ended background pageload's trace id,
+ * which a span starting without a parent would take. An active span is not
+ * considered: callers ask this only for work that would not nest under it.
  *
  * @returns True when such work should start its own trace.
  */
 function isOnEndedBackgroundPageload(): boolean {
-  if (!endedBackgroundPageloadTraceId || sentryGetActiveSpan()) {
+  if (!endedBackgroundPageloadTraceId) {
     return false;
   }
   const scopeTraceId = globalThis.sentry
@@ -1061,7 +1062,13 @@ function startSpan<T>(
   // A parent that did not resolve leaves the scope's ambient trace id, which
   // after the background pageload ended is that pageload's. `traceparent` data
   // and an active span are handled below and are not roots.
-  const root = request.root || (!parentSpan && isOnEndedBackgroundPageload());
+  // An active span that the fallback or the unresolved-parent nesting below
+  // adopts keeps the work out of the ended pageload's trace.
+  const root =
+    request.root ||
+    (!parentSpan &&
+      !((parentDeclared || allowActiveSpanFallback) && sentryGetActiveSpan()) &&
+      isOnEndedBackgroundPageload());
 
   // Read the active span before `withScope` forks the scope. `forceTransaction`
   // keeps an inherited span in transaction-level dashboards.
