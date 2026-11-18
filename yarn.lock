@@ -10132,9 +10132,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^27.2.2":
-  version: 27.2.2
-  resolution: "@metamask/smart-transactions-controller@npm:27.2.2"
+"@metamask/smart-transactions-controller@npm:^28.0.0":
+  version: 28.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:28.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.29.7"
     "@ethersproject/bytes": "npm:^5.8.0"
@@ -10145,17 +10145,17 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^7.0.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^38.0.0"
+    "@metamask/network-controller": "npm:^38.0.1"
     "@metamask/polling-controller": "npm:^17.0.0"
-    "@metamask/profile-sync-controller": "npm:^36.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/sentinel-api-service": "npm:^2.3.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/transaction-controller": "npm:^73.1.2"
-    "@metamask/utils": "npm:^12.0.1"
+    "@metamask/transaction-controller": "npm:^74.2.0"
+    "@metamask/utils": "npm:^12.0.2"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
     reselect: "npm:^5.3.0"
-  checksum: 10/cd56428e9cc0191f28b28823f397752905c6a5e4f5d809c0d72e32591e74ff6b93381679af628504887651dea036dda24f4b77234352d2652ab1439ddecc773c
+  checksum: 10/e6a6a0aa8096763e99d05462ed6c55254e8020baf944587ebbdf841c58d99c10339a8d2f84fecba0435109b715a3d9186811b59cef1097a21a794bf7af347638
   languageName: node
   linkType: hard
 
@@ -35420,7 +35420,7 @@ __metadata:
     "@metamask/shield-controller": "npm:^7.1.1"
     "@metamask/signature-controller": "npm:^40.1.1"
     "@metamask/skills": "npm:^0.3.1"
-    "@metamask/smart-transactions-controller": "npm:^27.2.2"
+    "@metamask/smart-transactions-controller": "npm:^28.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
