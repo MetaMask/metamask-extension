@@ -1,6 +1,7 @@
 import { CaipAssetType } from '@metamask/utils';
 import { CHAIN_IDS } from '../constants/network';
 import {
+  buildAssetMarketInsightsRoutePath,
   buildAssetRoutePath,
   processAssetParams,
   resolveAssetRouteLookup,
@@ -25,6 +26,14 @@ describe('asset-route', () => {
       expect(() =>
         buildAssetRoutePath('not-a-caip-asset-id' as CaipAssetType),
       ).toThrow('Invalid CAIP asset type');
+    });
+  });
+
+  describe('buildAssetMarketInsightsRoutePath', () => {
+    it('appends the market insights segment to the asset route', () => {
+      expect(buildAssetMarketInsightsRoutePath('eip155:1/slip44:60')).toBe(
+        '/asset/eip155:1/eip155%3A1%2Fslip44%3A60/market-insights',
+      );
     });
   });
 
