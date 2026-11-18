@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
-import os from 'os';
 import path from 'path';
 import type { BrowserContext, CDPSession, Page } from '@playwright/test';
 import {
@@ -10,12 +9,35 @@ import {
   resolveScreencastDir,
 } from './screencast-recorder';
 
+jest.mock('fs', () => {
+  const actual = jest.requireActual<typeof import('fs')>('fs');
+  return {
+    ...actual,
+    promises: {
+      ...actual.promises,
+      mkdir: jest.fn(async () => undefined),
+      writeFile: jest.fn(async () => undefined),
+      appendFile: jest.fn(async () => undefined),
+    },
+  };
+});
+
 const HOME = 'chrome-extension://abc/home.html';
 const INTERVAL_MS = 250;
+const DIR = '/screencast';
+const FRAMES_DIR = path.join(DIR, 'frames');
+const FRAMES_JSONL = path.join(DIR, 'frames.jsonl');
+const EVENTS_JSONL = path.join(DIR, 'events.jsonl');
 const CAPTURE = {
   format: 'jpeg',
   quality: 60,
   clip: { x: 0, y: 0, width: 1280, height: 800, scale: 1 },
+};
+
+const fsMock = fs as unknown as {
+  mkdir: jest.Mock;
+  writeFile: jest.Mock;
+  appendFile: jest.Mock;
 };
 
 function fakeSession(data = 'aGVsbG8=') {
@@ -81,32 +103,39 @@ function fakeContext(pages: FakePage[]) {
 type FakePage = ReturnType<typeof fakePage>;
 type FakeSession = ReturnType<typeof fakeSession>;
 
-const tempDirs: string[] = [];
-
-async function setup(
-  pages: FakePage[] = [fakePage()],
-  extensionPage?: FakePage,
-) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'mm-screencast-'));
-  tempDirs.push(dir);
+function setup(pages: FakePage[] = [fakePage()], extensionPage?: FakePage) {
   const context = fakeContext(pages);
   const recorder = new ScreencastRecorder({
-    dir,
+    dir: DIR,
     context: context as unknown as BrowserContext,
     extensionPage: extensionPage as Page | undefined,
   });
-  return { dir, page: pages[0], context, recorder };
+  return { page: pages[0], context, recorder };
 }
 
-async function readLines(
-  dir: string,
-  file: string,
-): Promise<Record<string, unknown>[]> {
-  const text = await fs.readFile(path.join(dir, file), 'utf-8');
-  return text
-    .split('\n')
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
+/** JSON lines appended to a file, in call order. */
+function appendedLines(file: string): Record<string, unknown>[] {
+  return fsMock.appendFile.mock.calls
+    .filter(([target]) => target === file)
+    .map(([, line]) => JSON.parse(line as string));
+}
+
+function frameLines(): Record<string, unknown>[] {
+  return appendedLines(FRAMES_JSONL);
+}
+
+function eventLines(): Record<string, unknown>[] {
+  return appendedLines(EVENTS_JSONL);
+}
+
+/** Frame images written under `frames/`. */
+function frameWrites(): { target: string; data: Buffer }[] {
+  return fsMock.writeFile.mock.calls
+    .filter(([target]) => path.dirname(target as string) === FRAMES_DIR)
+    .map(([target, data]) => ({
+      target: target as string,
+      data: data as Buffer,
+    }));
 }
 
 function eventsOf(events: Record<string, unknown>[], type: string) {
@@ -116,14 +145,14 @@ function eventsOf(events: Record<string, unknown>[], type: string) {
 beforeEach(() => {
   jest.useFakeTimers();
   jest.setSystemTime(1_700_000_000_000);
+  fsMock.mkdir.mockReset().mockResolvedValue(undefined);
+  fsMock.writeFile.mockReset().mockResolvedValue(undefined);
+  fsMock.appendFile.mockReset().mockResolvedValue(undefined);
 });
 
-afterEach(async () => {
+afterEach(() => {
   jest.clearAllTimers();
   jest.useRealTimers();
-  for (const dir of tempDirs.splice(0)) {
-    await fs.rm(dir, { recursive: true, force: true });
-  }
 });
 
 describe('screencast helpers', () => {
@@ -170,7 +199,7 @@ describe('screencast helpers', () => {
 
 describe('ScreencastRecorder', () => {
   it('attaches existing and newly opened pages and captures each on every tick', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
 
     const newPage = fakePage('chrome-extension://abc/notification.html');
@@ -187,7 +216,7 @@ describe('ScreencastRecorder', () => {
       context.session(newPage).calls('Page.captureScreenshot'),
     ).toStrictEqual([CAPTURE]);
 
-    const events = await readLines(dir, 'events.jsonl');
+    const events = eventLines();
     expect(events[0]).toStrictEqual({
       type: 'start',
       ts: expect.any(Number),
@@ -207,12 +236,13 @@ describe('ScreencastRecorder', () => {
   });
 
   it('writes frames and frames.jsonl in the contract shape', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     await jest.advanceTimersByTimeAsync(INTERVAL_MS);
     await recorder.stop();
 
-    expect(await readLines(dir, 'frames.jsonl')).toStrictEqual([
+    expect(fsMock.mkdir).toHaveBeenCalledWith(FRAMES_DIR, { recursive: true });
+    expect(frameLines()).toStrictEqual([
       {
         page: 0,
         url: HOME,
@@ -223,16 +253,18 @@ describe('ScreencastRecorder', () => {
         bytes: 5,
       },
     ]);
-    const files = await fs.readdir(path.join(dir, 'frames'));
-    expect(files).toStrictEqual(['0-1700000000250.jpg']);
-    expect(await fs.readFile(path.join(dir, 'frames', files[0]), 'utf-8')).toBe(
-      'hello',
-    );
+    const writes = frameWrites();
+    expect(writes).toHaveLength(1);
+    expect(writes[0].target).toBe(path.join(FRAMES_DIR, '0-1700000000250.jpg'));
+    expect(writes[0].data.toString('utf-8')).toBe('hello');
     expect(page.viewportSize).toHaveBeenCalled();
+    expect(context.session(page).calls('Page.captureScreenshot')).toStrictEqual(
+      [CAPTURE],
+    );
   });
 
   it('skips byte-identical consecutive frames of a page', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
 
@@ -242,13 +274,13 @@ describe('ScreencastRecorder', () => {
     await jest.advanceTimersByTimeAsync(INTERVAL_MS);
     await recorder.stop();
 
-    expect(await readLines(dir, 'frames.jsonl')).toHaveLength(2);
-    expect(await fs.readdir(path.join(dir, 'frames'))).toHaveLength(2);
+    expect(frameLines()).toHaveLength(2);
+    expect(frameWrites()).toHaveLength(2);
   });
 
   it('skips a tick while that page has a capture in flight', async () => {
     let resolveCapture: (value: { data: string }) => void = () => undefined;
-    const { page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
     session.send.mockImplementationOnce(
@@ -270,19 +302,17 @@ describe('ScreencastRecorder', () => {
   });
 
   it('logs capture and write failures without throwing', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
     session.send.mockRejectedValueOnce(new Error('target closed'));
     await jest.advanceTimersByTimeAsync(INTERVAL_MS);
-    jest.spyOn(fs, 'writeFile').mockRejectedValueOnce(new Error('disk full'));
+    fsMock.writeFile.mockRejectedValueOnce(new Error('disk full'));
     await jest.advanceTimersByTimeAsync(INTERVAL_MS);
     await expect(recorder.stop()).resolves.toBeUndefined();
 
     expect(
-      eventsOf(await readLines(dir, 'events.jsonl'), 'error').map(
-        (event) => event.message,
-      ),
+      eventsOf(eventLines(), 'error').map((event) => event.message),
     ).toStrictEqual([
       'Failed to capture frame: target closed',
       'Failed to write frame frames/0-1700000000500.jpg: disk full',
@@ -290,7 +320,7 @@ describe('ScreencastRecorder', () => {
   });
 
   it('logs repeated capture failures of a page once until a capture succeeds', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
     session.send
@@ -305,18 +335,16 @@ describe('ScreencastRecorder', () => {
 
     expect(session.calls('Page.captureScreenshot')).toHaveLength(5);
     expect(
-      eventsOf(await readLines(dir, 'events.jsonl'), 'error').map(
-        (event) => event.message,
-      ),
+      eventsOf(eventLines(), 'error').map((event) => event.message),
     ).toStrictEqual([
       'Failed to capture frame: Internal error',
       'Failed to capture frame: Unable to capture',
     ]);
-    expect(await readLines(dir, 'frames.jsonl')).toHaveLength(1);
+    expect(frameLines()).toHaveLength(1);
   });
 
   it('never captures a sensitive screen and resumes after it is left', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
 
@@ -331,18 +359,38 @@ describe('ScreencastRecorder', () => {
     await recorder.stop();
 
     expect(session.calls('Page.captureScreenshot')).toHaveLength(1);
-    const frames = await readLines(dir, 'frames.jsonl');
-    expect(frames.map((frame) => frame.url)).toStrictEqual([`${HOME}#/`]);
-    expect(
-      eventsOf(await readLines(dir, 'events.jsonl'), 'skip-sensitive'),
-    ).toStrictEqual([
+    expect(frameLines().map((frame) => frame.url)).toStrictEqual([`${HOME}#/`]);
+    expect(eventsOf(eventLines(), 'skip-sensitive')).toStrictEqual([
       { type: 'skip-sensitive', ts: expect.any(Number), page: 0 },
       { type: 'skip-sensitive', ts: expect.any(Number), page: 0 },
     ]);
   });
 
+  it('records the url from when the frame was captured, not when it is written', async () => {
+    let finishWrite: () => void = () => undefined;
+    const { page, context, recorder } = setup();
+    await recorder.start();
+    const session = context.session(page);
+    fsMock.writeFile.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finishWrite = resolve;
+        }),
+    );
+
+    await jest.advanceTimersByTimeAsync(INTERVAL_MS);
+    expect(session.calls('Page.captureScreenshot')).toHaveLength(1);
+    expect(fsMock.writeFile).toHaveBeenCalledTimes(1);
+
+    page.url.mockReturnValue(`${HOME}#/settings`);
+    finishWrite();
+    await recorder.stop();
+
+    expect(frameLines().map((frame) => frame.url)).toStrictEqual([HOME]);
+  });
+
   it('drops a frame when the page reaches a sensitive screen during the capture', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
     session.send.mockImplementationOnce(async () => {
@@ -354,12 +402,12 @@ describe('ScreencastRecorder', () => {
     await recorder.stop();
 
     expect(session.calls('Page.captureScreenshot')).toHaveLength(1);
-    await expect(readLines(dir, 'frames.jsonl')).rejects.toThrow();
-    expect(await fs.readdir(path.join(dir, 'frames'))).toStrictEqual([]);
+    expect(frameLines()).toStrictEqual([]);
+    expect(frameWrites()).toStrictEqual([]);
   });
 
   it('stops capturing a closed page and writes a null url while closing', async () => {
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
 
@@ -369,19 +417,19 @@ describe('ScreencastRecorder', () => {
     await jest.advanceTimersByTimeAsync(INTERVAL_MS);
     await recorder.stop();
 
-    const frames = await readLines(dir, 'frames.jsonl');
+    const frames = frameLines();
     expect(frames).toHaveLength(1);
     expect(frames[0].url).toBeNull();
     expect(session.calls('Page.captureScreenshot')).toHaveLength(1);
-    expect(
-      eventsOf(await readLines(dir, 'events.jsonl'), 'page-close'),
-    ).toStrictEqual([{ type: 'page-close', ts: expect.any(Number), page: 0 }]);
+    expect(eventsOf(eventLines(), 'page-close')).toStrictEqual([
+      { type: 'page-close', ts: expect.any(Number), page: 0 },
+    ]);
   });
 
   it('closes the leftover onboarding tab before attaching pages', async () => {
     const extensionPage = fakePage();
     const completionPage = fakePage(`${HOME}#/onboarding/completion`);
-    const { dir, context, recorder } = await setup(
+    const { context, recorder } = setup(
       [extensionPage, completionPage],
       extensionPage,
     );
@@ -392,21 +440,17 @@ describe('ScreencastRecorder', () => {
     expect(completionPage.close).toHaveBeenCalledTimes(1);
     expect(extensionPage.close).not.toHaveBeenCalled();
     expect(context.newCDPSession).toHaveBeenCalledTimes(1);
-    expect(
-      eventsOf(await readLines(dir, 'events.jsonl'), 'page-attach'),
-    ).toHaveLength(1);
+    expect(eventsOf(eventLines(), 'page-attach')).toHaveLength(1);
   });
 
   it('logs attach failures without throwing', async () => {
-    const { dir, context, recorder } = await setup();
+    const { context, recorder } = setup();
     context.newCDPSession.mockRejectedValueOnce(new Error('no target'));
 
     await expect(recorder.start()).resolves.toBeUndefined();
     await recorder.stop();
 
-    expect(
-      eventsOf(await readLines(dir, 'events.jsonl'), 'error'),
-    ).toStrictEqual([
+    expect(eventsOf(eventLines(), 'error')).toStrictEqual([
       {
         type: 'error',
         ts: expect.any(Number),
@@ -418,7 +462,7 @@ describe('ScreencastRecorder', () => {
 
   it('stops the timer, waits for an in-flight capture, and is idempotent', async () => {
     let resolveCapture: (value: { data: string }) => void = () => undefined;
-    const { dir, page, context, recorder } = await setup();
+    const { page, context, recorder } = setup();
     await recorder.start();
     const session = context.session(page);
     session.send.mockImplementationOnce(
@@ -441,8 +485,8 @@ describe('ScreencastRecorder', () => {
     await recorder.stop();
 
     expect(stopped).toBe(true);
-    expect(await readLines(dir, 'frames.jsonl')).toHaveLength(1);
-    const events = await readLines(dir, 'events.jsonl');
+    expect(frameLines()).toHaveLength(1);
+    const events = eventLines();
     expect(eventsOf(events, 'stop')).toHaveLength(1);
     expect(events[events.length - 1]).toStrictEqual({
       type: 'stop',

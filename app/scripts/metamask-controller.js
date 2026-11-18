@@ -3992,6 +3992,15 @@ export default class MetamaskController extends EventEmitter {
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(
         createPreinstalledSnapsMiddleware({
+          getEvmScopes: () => {
+            const chainIds = Object.keys(
+              this.controllerMessenger.call('NetworkController:getState')
+                .networkConfigurationsByChainId,
+            );
+            return chainIds.map(
+              (chainId) => `eip155:${BigInt(chainId).toString(10)}`,
+            );
+          },
           getPermissions: this.permissionController.getPermissions.bind(
             this.permissionController,
             origin,
