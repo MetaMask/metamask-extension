@@ -41,9 +41,7 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
     const additionalManifestFlags = await fetchManifestFlagsFromPRAndGit();
     merge(flags, additionalManifestFlags);
 
-    // Force-enable Sentry only when the build reports to the performance DSN.
-    // GitHub withholds `vars` from cross-repo PRs, so without it every trace
-    // and error goes to the fake DSN and trips the privacy specs.
+    // Set `flags.sentry.forceEnable` to true by default
     if (flags.sentry === undefined) {
       flags.sentry = {};
     }
