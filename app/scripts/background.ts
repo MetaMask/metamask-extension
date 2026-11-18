@@ -1107,28 +1107,8 @@ async function triggerUi() {
     firstTab?.extData &&
     firstTab.extData.indexOf('vivaldi_tab') > -1;
 
-  if (openSidePanelCount > 0) {
-    if (shouldUseSidepanel(requireController())) {
-      return;
-    }
-
-    const runtime = globalThis.chrome?.runtime;
-    if (typeof runtime?.getContexts !== 'function') {
-      return;
-    }
-
-    try {
-      const contexts = await runtime.getContexts({
-        contextTypes: [runtime.ContextType.SIDE_PANEL],
-      });
-      if (contexts.length > 0) {
-        return;
-      }
-    } catch {
-      return;
-    }
-
-    openSidePanelCount = 0;
+  if (openSidePanelCount > 0 && shouldUseSidepanel(requireController())) {
+    return;
   }
 
   // Attempt to open the sidepanel with a roundtrip request
@@ -1146,8 +1126,7 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab &&
-    openSidePanelCount === 0
+    !currentlyActiveMetamaskTab
   ) {
     uiIsTriggering = true;
     try {
