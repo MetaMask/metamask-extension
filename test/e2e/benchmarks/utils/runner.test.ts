@@ -128,6 +128,7 @@ describe('readStartupPageSignals', () => {
   const originalGetEntriesByName = performance.getEntriesByName;
   const driver = {
     executeScript: jest.fn((script: () => unknown) => script()),
+    delay: jest.fn(async () => undefined),
   } as unknown as Driver;
 
   afterEach(() => {
@@ -148,12 +149,26 @@ describe('readStartupPageSignals', () => {
     );
   });
 
-  it('reads null when the page set no hero mark', async () => {
+  it('reads null when the page set no hero mark before the timeout', async () => {
     performance.getEntriesByName = jest.fn().mockReturnValue([]);
 
-    await expect(readStartupPageSignals(driver)).resolves.toStrictEqual({
+    await expect(readStartupPageSignals(driver, 300)).resolves.toStrictEqual({
       heroPainted: null,
     });
+    expect(performance.getEntriesByName).toHaveBeenCalledTimes(4);
+  });
+
+  it('waits for a hero mark set after the first read', async () => {
+    performance.getEntriesByName = jest
+      .fn()
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([])
+      .mockReturnValue([{ startTime: 2600 }]);
+
+    await expect(readStartupPageSignals(driver)).resolves.toStrictEqual({
+      heroPainted: 2600,
+    });
+    expect(performance.getEntriesByName).toHaveBeenCalledTimes(3);
   });
 });
 

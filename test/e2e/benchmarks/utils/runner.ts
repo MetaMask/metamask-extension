@@ -369,16 +369,24 @@ const readStartupPageSignalsInPage = (): StartupPageSignals => {
 };
 
 /**
- * Read the home view's hero mark from the page.
- *
+ * Read the hero mark, waiting for it so a late paint counts as slow.
  * @param driver - The benchmark's driver, on the extension page.
+ * @param timeoutMs - How long to wait for the mark before reading null.
  */
 export async function readStartupPageSignals(
   driver: Driver,
+  timeoutMs = 10000,
 ): Promise<StartupPageSignals> {
-  return (await driver.executeScript(
-    readStartupPageSignalsInPage,
-  )) as StartupPageSignals;
+  const pollMs = 100;
+  for (let waited = 0; ; waited += pollMs) {
+    const signals = (await driver.executeScript(
+      readStartupPageSignalsInPage,
+    )) as StartupPageSignals;
+    if (signals.heroPainted !== null || waited >= timeoutMs) {
+      return signals;
+    }
+    await driver.delay(pollMs);
+  }
 }
 
 /**
