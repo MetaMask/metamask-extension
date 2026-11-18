@@ -308,4 +308,68 @@ describe('evaluatePairedGate', () => {
       },
     );
   });
+
+  describe('excluded iterations', () => {
+    type Sample = { position: number; excluded?: boolean; excludedBy?: string };
+    const samplesOf = (results: Record<string, unknown>, id: string) =>
+      (results.values as Record<string, Sample[]>)[id];
+
+    it('leaves an excluded iteration out of its run mean', () => {
+      // Head runs hold 1095 and 1105 against base runs at 1000. Excluding each head
+      // run's 1095, by either field, moves its mean to 1105 and every difference to 105.
+      const outcomes = evaluatePairedGate(
+        fourJobs((order) => {
+          const results = makeShiftedFlowResults(order, BRIDGE_IDS, 100);
+          for (const id of BRIDGE_IDS) {
+            const seen = new Set<number>();
+            for (const sample of samplesOf(results, id)) {
+              if (!seen.has(sample.position)) {
+                seen.add(sample.position);
+                if (sample.position % 2 === 0) {
+                  sample.excluded = true;
+                } else {
+                  sample.excludedBy = 'sanity';
+                }
+              }
+            }
+          }
+          return results;
+        }),
+      );
+
+      for (const outcome of outcomes) {
+        expect(outcome.decision).toMatchObject({
+          n: 8,
+          shift: 105,
+          lower: 105,
+        });
+      }
+    });
+
+    it('fails a series when every iteration of a run is excluded', () => {
+      const [job, ...rest] = fourJobs((order) =>
+        makeShiftedFlowResults(order, BRIDGE_IDS, 0),
+      );
+      const results = job.data.bridgeUserActions as Record<string, unknown>;
+      for (const sample of samplesOf(results, 'tbt')) {
+        sample.excluded = true;
+      }
+
+      const outcomes = evaluatePairedGate([job, ...rest]);
+
+      const byId = Object.fromEntries(
+        outcomes.map((outcome) => [outcome.series, outcome]),
+      );
+      expect(byId['bridgeUserActions.tbt']).toMatchObject({
+        verdict: 'incomplete',
+        failed: true,
+      });
+      expect(byId['bridgeUserActions.tbt'].problems.join()).toContain(
+        'gave no retained value',
+      );
+      expect(byId['bridgeUserActions.bridge_load_page'].verdict).toBe(
+        'no-block',
+      );
+    });
+  });
 });
