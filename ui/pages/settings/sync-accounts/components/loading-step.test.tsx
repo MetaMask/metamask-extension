@@ -16,6 +16,9 @@ describe('LoadingStep', () => {
       'h-[72px]',
       'w-[72px]',
     );
+    expect(screen.getByTestId('qr-sync-loading-spinner')).toHaveClass(
+      'translate-y-[15px]',
+    );
   });
 
   it('calls onComplete after the default delay', () => {

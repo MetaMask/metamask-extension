@@ -91,8 +91,9 @@ const LoadingStep = ({
           <Icon
             name={IconName.Loading}
             size={IconSize.Lg}
-            className="animate-spin"
+            className="animate-spin translate-y-[15px]"
             aria-hidden
+            data-testid="qr-sync-loading-spinner"
           />
         </Box>
         <Box

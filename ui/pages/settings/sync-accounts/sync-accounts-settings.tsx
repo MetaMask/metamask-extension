@@ -117,6 +117,7 @@ const SyncAccountsSettings = () => {
     async ({
       selectedAccountGroupIds,
       selectedAccountGroupCounts,
+      importSummary,
       syncedAccountCount,
       syncedWalletCount,
     }: AddDeviceSyncRequest) => {
@@ -130,6 +131,7 @@ const SyncAccountsSettings = () => {
         password,
         selectedAccountGroupIds,
         selectedAccountGroupCounts,
+        importSummary,
       ]);
     },
     [password],

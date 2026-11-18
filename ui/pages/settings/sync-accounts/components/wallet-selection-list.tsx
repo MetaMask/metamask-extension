@@ -287,6 +287,7 @@ export const WalletSelectionList = ({
         <Box
           style={{ opacity: item.isImported ? 0.5 : undefined }}
           aria-disabled={item.isImported || undefined}
+          className="[&_.multichain-account-cell]:!py-3"
           data-testid={`qr-sync-account-row-${item.groupId}`}
         >
           <MultichainAccountCell
@@ -298,7 +299,7 @@ export const WalletSelectionList = ({
                 <Box
                   flexDirection={BoxFlexDirection.Row}
                   alignItems={BoxAlignItems.Center}
-                  className="h-5"
+                  className="h-5 shrink-0"
                 >
                   <Tag data-testid={`qr-sync-imported-tag-${item.groupId}`}>
                     {t('qrSyncAlreadyImported')}

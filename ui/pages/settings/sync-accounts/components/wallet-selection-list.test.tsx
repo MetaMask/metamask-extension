@@ -150,6 +150,9 @@ describe('WalletSelectionList', () => {
     expect(screen.getByText('(2 accounts)')).toBeInTheDocument();
     expect(screen.getByText('Account 1')).toBeInTheDocument();
     expect(screen.getByText('Account 2')).toBeInTheDocument();
+    expect(screen.getByTestId(`qr-sync-account-row-${groupOneId}`)).toHaveClass(
+      '[&_.multichain-account-cell]:!py-3',
+    );
     const accountCells = screen.getAllByTestId('account-cell');
     expect(accountCells[0]).not.toHaveAttribute(
       'data-avatar-seed',
@@ -223,7 +226,9 @@ describe('WalletSelectionList', () => {
 
     expect(importedCheckbox).toBeChecked();
     expect(importedCheckbox).toBeDisabled();
-    expect(screen.getByText('Already imported')).toBeInTheDocument();
+    expect(
+      screen.getByText('Already imported').closest('.shrink-0'),
+    ).toBeInTheDocument();
     expect(importedAccount).toHaveAttribute('data-hover-disabled', 'true');
     expect(screen.getByTestId(`qr-sync-account-row-${groupOneId}`)).toHaveStyle(
       { opacity: 0.5 },

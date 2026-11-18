@@ -139,6 +139,18 @@ describe('AddWallets', () => {
       expect.objectContaining({
         selectedAccountGroupIds: expect.any(Array),
         selectedAccountGroupCounts: expect.any(Object),
+        importSummary: expect.objectContaining({
+          wallets: [
+            expect.objectContaining({
+              name: 'Wallet 1',
+              accounts: expect.any(Array),
+            }),
+            expect.objectContaining({
+              name: 'Wallet 2',
+              accounts: expect.any(Array),
+            }),
+          ],
+        }),
         syncedAccountCount: 18,
         syncedWalletCount: 2,
       }),
@@ -149,5 +161,10 @@ describe('AddWallets', () => {
     expect(
       Object.values(onAddWallets.mock.calls[0][0].selectedAccountGroupCounts),
     ).toStrictEqual([18]);
+    expect(
+      onAddWallets.mock.calls[0][0].importSummary.wallets.map(
+        (wallet: { accounts: unknown[] }) => wallet.accounts.length,
+      ),
+    ).toStrictEqual([10, 8]);
   });
 });

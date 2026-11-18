@@ -194,10 +194,26 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
     const selectedSourceAccountGroupIds = Object.keys(
       selectedAccountGroupCounts,
     ) as AccountGroupId[];
+    const selectedGroupIds = new Set(selectedAccountGroups);
+    const importSummary = {
+      wallets: Object.values(sortedWallets)
+        .map((wallet) => ({
+          id: wallet.id,
+          name: wallet.metadata?.name ?? '',
+          accounts: Object.values(wallet.groups)
+            .filter((group) => selectedGroupIds.has(group.id))
+            .map((group) => ({
+              id: group.id,
+              name: group.metadata.name,
+            })),
+        }))
+        .filter((wallet) => wallet.accounts.length > 0),
+    };
 
     await onAddWallets({
       selectedAccountGroupIds: selectedSourceAccountGroupIds,
       selectedAccountGroupCounts,
+      importSummary,
       syncedAccountCount: selectedAccountGroups.length,
       syncedWalletCount: selectedWalletCount,
     });
@@ -206,6 +222,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
     selectedAccountGroups,
     selectedWalletCount,
     sourceAccountGroupIdsByDemoId,
+    sortedWallets,
   ]);
 
   return (
