@@ -187,7 +187,6 @@ function getUseSidePanelAsDefault(
 
 /**
  * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- * The MV3 manifest has no `default_popup`, so the icon does nothing until this runs.
  *
  * @param sidePanelApi - Side panel API with `setPanelBehavior` (validated by caller).
  */
@@ -199,21 +198,11 @@ export function applyEarlySidePanelToolbarBehavior(
   });
 }
 
-/**
- * Points the toolbar icon at the side panel or the popup.
- *
- * Chrome opens `action.default_popup` instead of the side panel when a popup is set.
- * The MV3 manifest leaves that empty. Side panel preference keeps it empty. Popup
- * preference sets `popup-init.html`.
- *
- * @param useSidePanelAsDefault - Whether the toolbar click should open the side panel.
- * @param sidePanelApi - Side panel API with `setPanelBehavior`.
- */
 async function applyToolbarSidePanelPreference(
-  useSidePanelAsDefault: boolean,
+  preferSidePanel: boolean,
   sidePanelApi: SidePanelApiWithBehavior,
 ) {
-  if (useSidePanelAsDefault) {
+  if (preferSidePanel) {
     await sidePanelApi.setPanelBehavior({ openPanelOnActionClick: true });
     await setActionPopup('');
     return;
@@ -300,9 +289,6 @@ export async function openRoute({
   const opened = action.openPopup();
 
   globalThis.setTimeout(() => {
-    // The hash popup is only for this open. Putting popup-init.html back
-    // while the side panel is preferred makes later toolbar clicks open the
-    // popup, because Chrome prefers a popup over setPanelBehavior.
     setActionPopup(preferSidePanel ? '' : POPUP_INIT_FILE).catch(
       () => undefined,
     );
