@@ -6639,6 +6639,14 @@
       "comment_id": 6894252264,
       "created_at": "2026-11-15T12:23:01Z",
       "repoId": 42009758
+    },
+    {
+      "id": 12977048,
+      "name": "antontuzov",
+      "pullRequestNo": 48070,
+      "comment_id": 6982043347,
+      "created_at": "2026-11-18T14:50:02Z",
+      "repoId": 42009758
     }
   ]
 }
