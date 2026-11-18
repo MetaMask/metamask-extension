@@ -13,6 +13,10 @@ name: Main performance detector
 # the latest main commit.
 
 on:
+  workflow_run:
+    workflows: [Main]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       head_sha:
@@ -31,13 +35,24 @@ on:
         description: Dry run only, milliseconds of busy-wait added to the head build
         required: false
         type: string
+      post_slack:
+        description: Post a ping to Slack (workflow_run always does)
+        required: false
+        type: boolean
+        default: false
   push:
     branches:
       - trigger-ci-pilot-b
     paths:
       - .github/workflows/main-detector.yml
 
-run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.sha, inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+run-name: ${{ format('Main performance detector {0}{1}{2}', inputs.head_sha || github.event.workflow_run.head_sha || github.sha, inputs.mode == 'aa' && ' (aa)' || '', inputs.inject_head_ms && ' (inject)' || '') }}
+
+# One run per commit. Runs for different commits are independent and none is
+# cancelled: a later merge must not drop the check of an earlier one.
+concurrency:
+  group: main-detector-${{ inputs.head_sha || github.event.workflow_run.head_sha || github.sha }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -48,6 +63,8 @@ env:
 
 jobs:
   plan:
+    # Main runs that were cancelled never finished their builds; failed runs still upload them.
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion != 'cancelled') }}
     runs-on: ubuntu-latest
     outputs:
       proceed: ${{ steps.quick.outputs.proceed || steps.plan.outputs.proceed }}
@@ -59,7 +76,7 @@ jobs:
         id: quick
         uses: actions/github-script@v9
         env:
-          HEAD_INPUT: ${{ inputs.head_sha }}
+          HEAD_INPUT: ${{ inputs.head_sha || github.event.workflow_run.head_sha }}
           MODE: ${{ inputs.mode }}
         with:
           script: |
@@ -111,7 +128,7 @@ jobs:
         if: ${{ steps.quick.outputs.done != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          HEAD_INPUT: ${{ inputs.head_sha }}
+          HEAD_INPUT: ${{ inputs.head_sha || github.event.workflow_run.head_sha }}
           MODE: ${{ inputs.mode }}
         run: |
           set -euo pipefail
@@ -255,3 +272,13 @@ jobs:
           name: detector-result
           path: result.json
           retention-days: 30
+
+      - name: Post to Slack
+        if: ${{ github.event_name == 'workflow_run' || inputs.post_slack }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLACK_WEBHOOK_MAIN_DETECTOR: ${{ secrets.SLACK_WEBHOOK_MAIN_DETECTOR }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          yarn tsx test/e2e/benchmarks/main-detector/slack-cli.ts \
+            --result result.json --run-url "$RUN_URL"
