@@ -20,9 +20,8 @@ export type BrazeBannerCardProps = {
   onDismiss: () => void;
 };
 
-// `pr-3` matches the close button's `right-3` inset.
 const CARD_CLASSES =
-  'flex w-full items-center gap-4 rounded-xl bg-muted py-3 pl-4 pr-3 text-left';
+  'flex w-full items-center gap-4 rounded-xl bg-muted p-4 text-left';
 
 /**
  * Campaign card with separate, keyboard-accessible action and close targets.
@@ -119,7 +118,7 @@ export function BrazeBannerCard({
         size={ButtonIconSize.Sm}
         ariaLabel={t('close')}
         onClick={onDismiss}
-        className="absolute right-3 top-3"
+        className="absolute right-4 top-4"
         data-testid="braze-banner-dismiss"
       />
     </Box>

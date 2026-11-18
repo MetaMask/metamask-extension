@@ -50,9 +50,6 @@ confirmation.
   the campaign can compare both groups; they log no custom event.
 - Clicking the card logs the click and opens the link. The close button is a
   separate target: it hides the banner immediately and dismisses it in Braze,
-  which then stops serving it to the user. Braze can only record a dismissal
-  for banners that have a stable key, which Banner campaigns provide; without
-  one the banner returns on the next visit.
+  which then stops serving it to the user.
 - The banner does not send Segment events, so Cloud Mode does not forward a
-  second copy of the custom events. The carousel's Segment events share their
-  names; see the Braze SDK section of `app/scripts/lib/segment/README.md`.
+  second copy of the custom events.
