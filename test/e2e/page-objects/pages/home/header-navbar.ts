@@ -84,6 +84,9 @@ class HeaderNavbar {
 
   private readonly sideNavAccounts = '[data-testid="side-nav-accounts"]';
 
+  private readonly sideNavAccountsHeader =
+    '[data-testid="side-nav-accounts"] > div:first-child';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -273,18 +276,15 @@ class HeaderNavbar {
   async openAccountMenu(): Promise<void> {
     // Narrow layout: the button is visible straight away. Wide layout: the
     // button only exists once the side nav has rendered, and the side nav hides
-    // its account actions until the section is hovered, so keep hovering it
-    // until the button shows up.
+    // its account actions until the section is hovered, so hover it before
+    // looking for the button (Playwright counts a transparent button as visible,
+    // so it must not be checked first). Each attempt moves the pointer onto the
+    // section and then onto its header: Firefox drops its hover state when the
+    // page re-renders, and WebDriver skips a move to the position it believes
+    // the pointer is already at, so a single repeated hover would never
+    // re-trigger it.
     await this.driver.waitUntil(
       async () => {
-        if (
-          await this.driver.isElementPresentAndVisible(
-            this.accountMenuButton,
-            200,
-          )
-        ) {
-          return true;
-        }
         if (
           await this.driver.isElementPresentAndVisible(
             this.sideNavAccounts,
@@ -294,8 +294,14 @@ class HeaderNavbar {
           await this.driver.hoverElement(
             await this.driver.findElement(this.sideNavAccounts),
           );
+          await this.driver.hoverElement(
+            await this.driver.findElement(this.sideNavAccountsHeader),
+          );
         }
-        return false;
+        return await this.driver.isElementPresentAndVisible(
+          this.accountMenuButton,
+          200,
+        );
       },
       { timeout: this.driver.timeout, interval: 200 },
     );

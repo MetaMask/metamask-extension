@@ -2854,17 +2854,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'coreCEUX1492AbtestWideScreenRedesign',
     productionDefault: [
       {
-        name: 'control',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-      },
-      {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 0,
+          value: 1,
         },
       },
     ],
