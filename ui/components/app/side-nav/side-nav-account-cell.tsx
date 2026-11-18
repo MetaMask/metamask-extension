@@ -17,7 +17,9 @@ import { SideNavAccountAddress } from './side-nav-account-address';
  *
  * The balance sits in the subtitle. When the show-default-address preference
  * is on, the scoped default address follows it; otherwise the wallet name
- * passed by the list does, matching the shared account cell. The menu is
+ * passed by the list does, matching the shared account cell. The whole row is
+ * selected through a native button that covers it, so the copy and menu
+ * controls sit above that button and keep their own behaviour. The menu is
  * hidden until the row is hovered, and stays visible while its popover is open.
  *
  * @param props
@@ -54,11 +56,8 @@ export const SideNavAccountCell = ({
     accountNameString ||
     (typeof accountName === 'string' ? accountName : 'Account');
 
-  const handleClick = () => {
-    if (pending || !onClick) {
-      return;
-    }
-    onClick(accountId);
+  const handleSelect = () => {
+    onClick?.(accountId);
   };
 
   let cursorClass = 'cursor-default';
@@ -69,7 +68,9 @@ export const SideNavAccountCell = ({
   }
 
   const subtitle = showDefaultAddress ? (
-    <SideNavAccountAddress groupId={accountId} />
+    <div className="relative z-10 min-w-0">
+      <SideNavAccountAddress groupId={accountId} />
+    </div>
   ) : (
     walletName && (
       <Text
@@ -87,16 +88,23 @@ export const SideNavAccountCell = ({
 
   return (
     <div
-      className={`group/account-cell flex w-full min-w-0 items-center gap-4 p-4 text-left transition-colors duration-200 hover:bg-background-default-hover ${cursorClass}${
+      className={`group/account-cell relative flex w-full min-w-0 items-center gap-4 p-4 transition-colors duration-200 hover:bg-background-default-hover${
         selected ? ' bg-background-muted' : ''
       }${pending ? ' opacity-60' : ''}`}
-      onClick={handleClick}
       data-testid={`side-nav-account-cell-${accountId}`}
       aria-busy={pending || undefined}
     >
+      <button
+        type="button"
+        aria-label={ariaLabelName}
+        disabled={pending || !onClick}
+        onClick={handleSelect}
+        className={`absolute inset-0 ${cursorClass}`}
+        data-testid={`side-nav-account-cell-select-${accountId}`}
+      />
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <div
-          className="flex size-10 shrink-0 items-center justify-center"
+          className="pointer-events-none flex size-10 shrink-0 items-center justify-center"
           data-testid="side-nav-account-cell-avatar"
         >
           <ConnectedStatus
@@ -135,7 +143,7 @@ export const SideNavAccountCell = ({
       </div>
       {endAccessory ? (
         <div
-          className="flex shrink-0 items-center justify-end opacity-0 pointer-events-none group-hover/account-cell:pointer-events-auto group-hover/account-cell:opacity-100 has-[[aria-expanded=true]]:pointer-events-auto has-[[aria-expanded=true]]:opacity-100"
+          className="relative z-10 flex shrink-0 items-center justify-end opacity-0 pointer-events-none group-hover/account-cell:pointer-events-auto group-hover/account-cell:opacity-100 has-[[aria-expanded=true]]:pointer-events-auto has-[[aria-expanded=true]]:opacity-100"
           data-testid="side-nav-account-cell-menu"
           aria-label={`${ariaLabelName} options`}
         >

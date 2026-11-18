@@ -138,23 +138,32 @@ describe('SideNavAccountCell', () => {
     const handleClick = jest.fn();
     renderCell({ onClick: handleClick });
 
-    const cell = screen.getByTestId(`side-nav-account-cell-${accountId}`);
-    expect(cell).toHaveClass('cursor-pointer');
-    fireEvent.click(cell);
+    const select = screen.getByRole('button', { name: 'Account 1' });
+    expect(select).toHaveClass('cursor-pointer');
+    fireEvent.click(select);
 
     expect(handleClick).toHaveBeenCalledWith(accountId);
   });
 
-  it('ignores clicks and shows pending styling while a switch is in progress', () => {
+  it('disables the select button and shows pending styling while a switch is in progress', () => {
     const handleClick = jest.fn();
     renderCell({ onClick: handleClick, pending: true });
 
     const cell = screen.getByTestId(`side-nav-account-cell-${accountId}`);
-    expect(cell).toHaveClass('cursor-wait', 'opacity-60');
+    expect(cell).toHaveClass('opacity-60');
     expect(cell).toHaveAttribute('aria-busy', 'true');
-    fireEvent.click(cell);
+    const select = screen.getByRole('button', { name: 'Account 1' });
+    expect(select).toHaveClass('cursor-wait');
+    expect(select).toBeDisabled();
+    fireEvent.click(select);
 
     expect(handleClick).not.toHaveBeenCalled();
+  });
+
+  it('disables the select button when the row has no click handler', () => {
+    renderCell();
+
+    expect(screen.getByRole('button', { name: 'Account 1' })).toBeDisabled();
   });
 
   it('marks the selected account', () => {

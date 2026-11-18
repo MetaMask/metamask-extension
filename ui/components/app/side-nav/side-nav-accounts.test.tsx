@@ -213,7 +213,7 @@ describe('SideNavAccounts', () => {
     renderSideNavAccounts();
 
     await act(async () => {
-      fireEvent.click(screen.getByText('Account 2'));
+      fireEvent.click(screen.getByRole('button', { name: 'Account 2' }));
     });
 
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledTimes(1);
