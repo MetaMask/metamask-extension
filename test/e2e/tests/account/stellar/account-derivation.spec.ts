@@ -1,12 +1,13 @@
 import { Suite } from 'mocha';
 import {
-  DEFAULT_STELLAR_ADDRESS,
+  EXPECTED_STELLAR_ADDRESSES_BY_INDEX,
   HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
 } from '../../../constants';
 import { login } from '../../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
+import { waitUntilAccountTreeSyncIdle } from '../../../page-objects/flows/add-account.flow';
 import { assertAddressAtIndex } from '../../../page-objects/flows/account-list.flow';
-import { selectStellarNetwork } from '../../../page-objects/flows/stellar-network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import AccountAddressListPage from '../../../page-objects/pages/accounts/address-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -25,11 +26,10 @@ import {
  * Coverage map (mirrors Tron account cluster layout under `tests/account/`):
  * - Addresses modal: Account 1 Stellar address is shown / copyable
  * - Receive page: Account 1 Stellar address is shown
+ * - Incremental add through Account 3: derive + assert each HD index
  * - Onboarding SRP import: Stellar address is derived for Account 1
  */
 describe('Stellar account derivation', function (this: Suite) {
-  this.timeout(180_000);
-
   it("shows Account 1's Stellar address on the Addresses modal", async function () {
     await withStellarFixtures(
       {
@@ -38,7 +38,7 @@ describe('Stellar account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -49,7 +49,7 @@ describe('Stellar account derivation', function (this: Suite) {
         await assertAddressAtIndex(driver, {
           index: 0,
           networkName: STELLAR_NETWORK_NAME,
-          expectedAddress: DEFAULT_STELLAR_ADDRESS,
+          expectedAddress: EXPECTED_STELLAR_ADDRESSES_BY_INDEX[0],
         });
       },
     );
@@ -63,7 +63,7 @@ describe('Stellar account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectStellarNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         const homepage = new HomePage(driver);
         const addressList = new AccountAddressListPage(driver);
@@ -75,8 +75,51 @@ describe('Stellar account derivation', function (this: Suite) {
         await addressList.checkPageIsLoaded();
         await addressList.checkNetworkAddressIsDisplayedForNetwork({
           networkName: STELLAR_NETWORK_NAME,
-          networkAddress: shortenAddress(DEFAULT_STELLAR_ADDRESS),
+          networkAddress: shortenAddress(
+            EXPECTED_STELLAR_ADDRESSES_BY_INDEX[0],
+          ),
         });
+      },
+    );
+  });
+
+  it('derives Stellar addresses while adding multichain accounts from Account 1 to Account 3', async function () {
+    await withStellarFixtures(
+      {
+        horizonOptions: { unfunded: true },
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
+
+        const homepage = new HomePage(driver);
+        const accountList = new AccountListPage(driver);
+
+        await homepage.headerNavbar.openAccountMenu();
+        await accountList.checkPageIsLoaded();
+
+        for (
+          let index = 0;
+          index < EXPECTED_STELLAR_ADDRESSES_BY_INDEX.length;
+          index += 1
+        ) {
+          const accountLabel = `Account ${index + 1}`;
+
+          if (index > 0) {
+            await waitUntilAccountTreeSyncIdle(driver);
+            await accountList.addMultichainAccount();
+            await accountList.checkMultichainAccountNameDisplayed(accountLabel);
+          }
+
+          await assertAddressAtIndex(driver, {
+            index,
+            networkName: STELLAR_NETWORK_NAME,
+            expectedAddress: EXPECTED_STELLAR_ADDRESSES_BY_INDEX[index],
+          });
+        }
+
+        await accountList.closeMultichainAccountsPage();
       },
     );
   });
@@ -96,8 +139,8 @@ describe('Stellar account derivation', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         // Account-tree identity sync is not mocked here and is not required for
-        // Stellar derivation; selectStellarNetwork waits for the snap account.
-        await selectStellarNetwork(driver);
+        // Stellar derivation.
+        await switchToNetworkFromNetworkSelect(driver, STELLAR_NETWORK_NAME);
 
         // Refresh re-hydrates UI after Snap account alignment / Horizon sync.
         // Fresh onboarding defaults the homepage primary balance to fiat.
@@ -115,7 +158,7 @@ describe('Stellar account derivation', function (this: Suite) {
         await assertAddressAtIndex(driver, {
           index: 0,
           networkName: STELLAR_NETWORK_NAME,
-          expectedAddress: DEFAULT_STELLAR_ADDRESS,
+          expectedAddress: EXPECTED_STELLAR_ADDRESSES_BY_INDEX[0],
         });
       },
     );

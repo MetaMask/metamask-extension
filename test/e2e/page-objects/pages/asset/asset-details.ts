@@ -144,17 +144,19 @@ class AssetDetailsPage {
 
   /**
    * Asserts the Stellar trustline activation card is not present.
+   * Waits for the asset header first so absence is not checked during load.
    */
   async checkActivateCardIsAbsent(): Promise<void> {
-    console.log('Verify the asset activate card is absent');
-    await this.driver.assertElementNotPresent(this.assetActivateCard);
+    await this.driver.assertElementNotPresent(this.assetActivateCard, {
+      findElementGuard: this.assetName,
+    });
   }
 
   /**
    * Asserts the Stellar trustline activation card is visible on the asset page.
    */
   async checkActivateCardIsDisplayed(): Promise<void> {
-    console.log('Verify the asset activate card is displayed');
+    await this.driver.waitForSelector(this.assetName);
     await this.driver.waitForSelector(this.assetActivateCard);
     await this.driver.waitForSelector(this.assetActivateButton);
   }
@@ -198,17 +200,19 @@ class AssetDetailsPage {
 
   /**
    * Asserts the Inactive trustline badge is not present.
+   * Waits for the asset header first so absence is not checked during load.
    */
   async checkInactiveBadgeIsAbsent(): Promise<void> {
-    console.log('Verify the asset inactive badge is absent');
-    await this.driver.assertElementNotPresent(this.assetInactiveBadge);
+    await this.driver.assertElementNotPresent(this.assetInactiveBadge, {
+      findElementGuard: this.assetName,
+    });
   }
 
   /**
    * Asserts the Inactive trustline badge is visible on the asset page header.
    */
   async checkInactiveBadgeIsDisplayed(): Promise<void> {
-    console.log('Verify the asset inactive badge is displayed');
+    await this.driver.waitForSelector(this.assetName);
     await this.driver.waitForSelector(this.assetInactiveBadge);
   }
 

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import type { CaipAssetType } from '@metamask/utils';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
@@ -11,7 +12,8 @@ export const STELLAR_NATIVE_ASSET_ID = `${STELLAR_CHAIN_ID}/slip44:148`;
 /** Circle USDC on Stellar pubnet (classic asset used across product tests). */
 export const STELLAR_USDC_ISSUER =
   'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
-export const STELLAR_USDC_ASSET_ID = `${STELLAR_CHAIN_ID}/asset:USDC-${STELLAR_USDC_ISSUER}`;
+export const STELLAR_USDC_ASSET_ID =
+  `${STELLAR_CHAIN_ID}/asset:USDC-${STELLAR_USDC_ISSUER}` as CaipAssetType;
 
 /** Funded mock balance: 100 XLM. */
 export const XLM_BALANCE = '100.0000000';
