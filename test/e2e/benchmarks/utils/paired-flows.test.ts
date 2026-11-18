@@ -18,18 +18,18 @@ const WORKFLOWS = path.resolve(__dirname, '../../../../.github/workflows');
 const readWorkflow = (name: string) =>
   parse(readFileSync(path.join(WORKFLOWS, name), 'utf8'));
 
-/** The two `fromJSON` literals of the benchmark workflow's matrix: unpaired, then paired. */
-function workflowLegs(): [unknown, unknown] {
+/** The three `fromJSON` literals of the benchmark workflow's matrix: unpaired, paired only, then paired with the presets. */
+function workflowLegs(): [unknown, unknown, unknown] {
   const { include } = readWorkflow('run-benchmarks.yml').jobs.benchmarks
     .strategy.matrix as { include: string };
   const match =
-    /fromJSON\(inputs\.base-builds-from-run == '' && '([^']*)' \|\| '([^']*)'\)/u.exec(
+    /fromJSON\(inputs\.base-builds-from-run == '' && '([^']*)' \|\| inputs\.paired-only && '([^']*)' \|\| '([^']*)'\)/u.exec(
       include,
     );
   if (!match) {
-    throw new Error(`The matrix is not two literals: ${include}`);
+    throw new Error(`The matrix is not three literals: ${include}`);
   }
-  return [JSON.parse(match[1]), JSON.parse(match[2])];
+  return [JSON.parse(match[1]), JSON.parse(match[2]), JSON.parse(match[3])];
 }
 
 describe('paired flows', () => {
@@ -61,10 +61,13 @@ describe('paired flows', () => {
 
 describe('the benchmark workflow matrix', () => {
   it('lists the jobs getBenchmarkLegs gives', () => {
-    const [unpaired, paired] = workflowLegs();
+    const [unpaired, pairedOnly, paired] = workflowLegs();
 
     expect(unpaired).toStrictEqual(getBenchmarkLegs(false));
     expect(paired).toStrictEqual(getBenchmarkLegs(true));
+    expect(pairedOnly).toStrictEqual(
+      getBenchmarkLegs(true).filter((leg) => leg.pairedFlow !== ''),
+    );
   });
 
   it('runs every preset file on each browser once unpaired', () => {
