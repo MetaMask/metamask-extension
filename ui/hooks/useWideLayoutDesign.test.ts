@@ -5,7 +5,7 @@ import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
 import { WIDE_SCREEN_REDESIGN_AB_KEY } from '../../shared/lib/ab-testing/configs/wide-screen-redesign';
 import { DEFAULT_ROUTE, SETTINGS_ROUTE } from '../helpers/constants/routes';
 import { clearABTestExposureTrackingForTest } from './useABTest';
-import { useFullScreenDesign } from './useFullScreenDesign';
+import { useWideLayoutDesign } from './useWideLayoutDesign';
 
 const mockTrackEvent = jest.fn();
 
@@ -57,20 +57,20 @@ function mockViewportWidth(initialWidth: number) {
   };
 }
 
-function renderUseFullScreenDesign(
+function renderuseWideLayoutDesign(
   remoteFeatureFlags: Record<string, unknown> = {
     [WIDE_SCREEN_REDESIGN_AB_KEY]: { name: 'treatment' },
   },
   pathname = DEFAULT_ROUTE,
 ) {
   return renderHookWithProviderTyped(
-    () => useFullScreenDesign(),
+    () => useWideLayoutDesign(),
     { metamask: { remoteFeatureFlags } },
     pathname,
   );
 }
 
-describe('useFullScreenDesign', () => {
+describe('useWideLayoutDesign', () => {
   beforeEach(() => {
     mockTrackEvent.mockReset();
     clearABTestExposureTrackingForTest();
@@ -82,19 +82,19 @@ describe('useFullScreenDesign', () => {
 
   it('returns true when treatment is assigned and the viewport is wide', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH);
-    const { result } = renderUseFullScreenDesign();
+    const { result } = renderuseWideLayoutDesign();
     expect(result.current).toBe(true);
   });
 
   it('returns false when treatment is assigned but the viewport is narrow', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
-    const { result } = renderUseFullScreenDesign();
+    const { result } = renderuseWideLayoutDesign();
     expect(result.current).toBe(false);
   });
 
   it('returns false when control is assigned on a wide viewport', () => {
     mockViewportWidth(1280);
-    const { result } = renderUseFullScreenDesign({
+    const { result } = renderuseWideLayoutDesign({
       [WIDE_SCREEN_REDESIGN_AB_KEY]: { name: 'control' },
     });
     expect(result.current).toBe(false);
@@ -102,21 +102,13 @@ describe('useFullScreenDesign', () => {
 
   it('returns false when the assignment is missing on a wide viewport', () => {
     mockViewportWidth(1280);
-    const { result } = renderUseFullScreenDesign({});
-    expect(result.current).toBe(false);
-  });
-
-  it('ignores the retired boolean fullscreen flag', () => {
-    mockViewportWidth(1280);
-    const { result } = renderUseFullScreenDesign({
-      extensionUxFullscreenRedesign: true,
-    });
+    const { result } = renderuseWideLayoutDesign({});
     expect(result.current).toBe(false);
   });
 
   it('updates when the viewport crosses the breakpoint', () => {
     const viewport = mockViewportWidth(1280);
-    const { result } = renderUseFullScreenDesign();
+    const { result } = renderuseWideLayoutDesign();
     expect(result.current).toBe(true);
 
     act(() => viewport.resize(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1));
@@ -128,7 +120,7 @@ describe('useFullScreenDesign', () => {
 
   it('removes its media query listener on unmount', () => {
     const viewport = mockViewportWidth(1280);
-    const { unmount } = renderUseFullScreenDesign();
+    const { unmount } = renderuseWideLayoutDesign();
     expect(viewport.getListenerCount()).toBe(1);
 
     unmount();
@@ -138,7 +130,7 @@ describe('useFullScreenDesign', () => {
 
   it('records exposure on the wide home screen', () => {
     mockViewportWidth(1280);
-    renderUseFullScreenDesign();
+    renderuseWideLayoutDesign();
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -157,14 +149,14 @@ describe('useFullScreenDesign', () => {
 
   it('does not record exposure on a narrow home screen', () => {
     mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
-    renderUseFullScreenDesign();
+    renderuseWideLayoutDesign();
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('does not record exposure away from home', () => {
     mockViewportWidth(1280);
-    renderUseFullScreenDesign(
+    renderuseWideLayoutDesign(
       { [WIDE_SCREEN_REDESIGN_AB_KEY]: { name: 'treatment' } },
       SETTINGS_ROUTE,
     );
@@ -174,7 +166,7 @@ describe('useFullScreenDesign', () => {
 
   it('records exposure when a narrow home screen becomes wide', () => {
     const viewport = mockViewportWidth(WIDE_SCREEN_DESIGN_MIN_WIDTH - 1);
-    renderUseFullScreenDesign();
+    renderuseWideLayoutDesign();
     expect(mockTrackEvent).not.toHaveBeenCalled();
 
     act(() => viewport.resize(WIDE_SCREEN_DESIGN_MIN_WIDTH));

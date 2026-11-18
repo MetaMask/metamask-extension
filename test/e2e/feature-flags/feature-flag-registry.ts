@@ -3429,9 +3429,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // The client no longer reads this flag. Wide layout assignment comes from
-  // `coreCEUX1492AbtestWideScreenRedesign`. Kept until the remote flag is
-  // retired.
   extensionUxFullscreenRedesign: {
     inProd: true,
     name: 'extensionUxFullscreenRedesign',

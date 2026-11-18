@@ -9,7 +9,7 @@ import { WIDE_SCREEN_DESIGN_MIN_WIDTH } from '../../shared/constants/layout';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { useABTest } from './useABTest';
 
-const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${WIDE_SCREEN_DESIGN_MIN_WIDTH}px)`;
+const WIDE_SCREEN_MEDIA_QUERY = `(min-width: ${WIDE_SCREEN_DESIGN_MIN_WIDTH}px)`;
 
 /**
  * Subscribes to a media query and returns whether it currently matches.
@@ -38,19 +38,14 @@ function useMediaQueryMatches(query: string): boolean {
 }
 
 /**
- * Whether the wide screen redesign (side nav) should render.
- *
- * The viewport check is local. The design itself comes from
- * `coreCEUX1492AbtestWideScreenRedesign`: treatment uses the side nav, and
- * control or a missing assignment keeps the bottom nav. Exposure is recorded
- * only on the wide Home screen, where the two designs actually differ.
- *
- * @returns True when the assigned variant uses the wide layout and the
- * viewport is at least {@link WIDE_SCREEN_DESIGN_MIN_WIDTH}px.
+ * Whether the wide layout redesign should render.
+ * The viewport check is local. The design comes from
+ * `coreCEUX1492AbtestWideScreenRedesign`. Exposure is recorded
+ * only on the wide Home screen for now.
  */
-export function useFullScreenDesign(): boolean {
+export function useWideLayoutDesign(): boolean {
   const { pathname } = useLocation();
-  const isWideViewport = useMediaQueryMatches(FULL_SCREEN_DESIGN_MEDIA_QUERY);
+  const isWideViewport = useMediaQueryMatches(WIDE_SCREEN_MEDIA_QUERY);
   const isHome = pathname === DEFAULT_ROUTE;
   const { variant } = useABTest(
     WIDE_SCREEN_REDESIGN_AB_KEY,
