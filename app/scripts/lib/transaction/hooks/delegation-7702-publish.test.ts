@@ -5,6 +5,7 @@ import {
 } from '@metamask/messenger';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
+  KeyringControllerGetStateAction,
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
@@ -20,6 +21,8 @@ import {
   type FeatureFlags,
   RemoteFeatureFlagControllerGetStateAction,
 } from '@metamask/remote-feature-flag-controller';
+import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
+import { InternalKeyringType } from '../../../../../shared/constants/keyring';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
@@ -83,6 +86,10 @@ describe('Delegation 7702 Publish Hook', () => {
     KeyringControllerSignTypedMessageAction['handler']
   > = jest.fn();
 
+  const getKeyringStateMock: jest.MockedFn<
+    KeyringControllerGetStateAction['handler']
+  > = jest.fn();
+
   const signEip7702AuthorizationMock: jest.MockedFn<
     KeyringControllerSignEip7702AuthorizationAction['handler']
   > = jest.fn();
@@ -112,6 +119,7 @@ describe('Delegation 7702 Publish Hook', () => {
     const baseMessenger = new Messenger<
       MockAnyNamespace,
       | DelegationControllerSignDelegationAction
+      | KeyringControllerGetStateAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
       | RemoteFeatureFlagControllerGetStateAction
@@ -126,6 +134,7 @@ describe('Delegation 7702 Publish Hook', () => {
     messenger = new Messenger<
       'TransactionController',
       | DelegationControllerSignDelegationAction
+      | KeyringControllerGetStateAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
       | RemoteFeatureFlagControllerGetStateAction
@@ -141,6 +150,7 @@ describe('Delegation 7702 Publish Hook', () => {
     baseMessenger.delegate({
       messenger,
       actions: [
+        'KeyringController:getState',
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
@@ -150,6 +160,11 @@ describe('Delegation 7702 Publish Hook', () => {
         'TransactionController:updateTransaction',
       ] as never,
     });
+
+    baseMessenger.registerActionHandler(
+      'KeyringController:getState',
+      getKeyringStateMock,
+    );
 
     baseMessenger.registerActionHandler(
       'KeyringController:signEip7702Authorization',
@@ -185,6 +200,17 @@ describe('Delegation 7702 Publish Hook', () => {
       'TransactionController:isAtomicBatchSupported',
       isAtomicBatchSupportedMock,
     );
+
+    getKeyringStateMock.mockReturnValue({
+      isUnlocked: true,
+      keyrings: [
+        {
+          type: InternalKeyringType.hdKeyTree,
+          accounts: [TRANSACTION_META_MOCK.txParams.from.toLowerCase()],
+          metadata: { id: '1', name: '' },
+        },
+      ],
+    });
 
     hookClass = new Delegation7702PublishHook({
       messenger,
@@ -345,6 +371,97 @@ describe('Delegation 7702 Publish Hook', () => {
         to: expectedDelegationManager,
       }),
     );
+  });
+
+  it('sends the signer hardware type on sentinel relay metadata', async () => {
+    getKeyringStateMock.mockReturnValue({
+      isUnlocked: true,
+      keyrings: [
+        {
+          type: HardwareKeyringType.ledger,
+          accounts: [TRANSACTION_META_MOCK.txParams.from.toLowerCase()],
+          metadata: { id: '1', name: '' },
+        },
+      ],
+    });
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    expect(getKeyringStateMock).toHaveBeenCalled();
+    expect(submitRelayTransactionMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        metadata: expect.objectContaining({
+          accountHardwareType: 'Ledger',
+        }),
+      }),
+    );
+  });
+
+  it('omits account hardware type for non-hardware keyrings', async () => {
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    const { metadata } = submitRelayTransactionMock.mock.calls[0][0];
+    expect(metadata).not.toHaveProperty('accountHardwareType');
+  });
+
+  it('still relays when the hardware type lookup fails', async () => {
+    getKeyringStateMock.mockImplementation(() => {
+      throw new Error('keyring down');
+    });
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    const result = await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      },
+      SIGNED_TX_MOCK,
+    );
+
+    expect(result).toStrictEqual({
+      transactionHash: TRANSCATION_HASH_MOCK,
+    });
+    const { metadata } = submitRelayTransactionMock.mock.calls[0][0];
+    expect(metadata).not.toHaveProperty('accountHardwareType');
   });
 
   it('returns transaction hash from transaction relay result', async () => {

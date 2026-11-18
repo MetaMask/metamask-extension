@@ -362,6 +362,41 @@ describe('Transaction Controller Hooks', () => {
       });
     });
 
+    it('passes the hardware type lookup to the smart transaction hook', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      let lookup: ((address?: string) => string | undefined) | undefined;
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockImplementation(async (submitRequest) => {
+          lookup = submitRequest.getAccountHardwareType;
+          return { transactionHash: '0xstxHash' };
+        });
+
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockReturnValue({
+        keyrings: [{ type: 'Ledger Hardware', accounts: ['0xabc'] }],
+      });
+      const request = buildMockRequest({ messenger });
+      const { publish } = getTransactionControllerHooks(request);
+
+      await publish?.(mockTransactionMeta);
+
+      expect(lookup?.('0xabc')).toBe('Ledger');
+      expect(messenger.call).toHaveBeenCalledWith('KeyringController:getState');
+    });
+
     it('records sentinel_stx submission via metrics fragment on STX hook success', async () => {
       jest
         .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
@@ -700,6 +735,54 @@ describe('Transaction Controller Hooks', () => {
       expect(
         smartTransactionsModule.submitBatchSmartTransactionHook,
       ).toHaveBeenCalled();
+    });
+
+    it('passes the hardware type lookup to the batch smart transaction hook', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      let lookup: ((address?: string) => string | undefined) | undefined;
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockImplementation(async (submitRequest) => {
+          lookup = submitRequest.getAccountHardwareType;
+          return { results: [] };
+        });
+
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockImplementation((action: string) => {
+        if (action === 'TransactionController:getState') {
+          return { transactions: [mockBatchTransactionMeta] };
+        }
+        if (action === 'KeyringController:getState') {
+          return {
+            keyrings: [{ type: 'Ledger Hardware', accounts: ['0xabc'] }],
+          };
+        }
+        return undefined;
+      });
+
+      const request = buildMockRequest({ messenger });
+      const { publishBatch } = getTransactionControllerHooks(request);
+
+      await publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(lookup?.('0xabc')).toBe('Ledger');
+      expect(messenger.call).toHaveBeenCalledWith('KeyringController:getState');
     });
 
     it('throws when transaction is not found', async () => {

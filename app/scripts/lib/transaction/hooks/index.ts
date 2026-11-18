@@ -21,6 +21,7 @@ import {
 } from '../../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../../shared/types/metametrics';
 import { accountSupports7702ForRelay } from '../../account-supports-7702';
+import { getAccountHardwareType } from '../../../../../shared/lib/hardware-wallets';
 import {
   getSmartTransactionCommonParams,
   SmartTransactionHookMessenger,
@@ -206,6 +207,8 @@ function publishHook({
         controllerMessenger: messenger,
         isSmartTransaction,
         featureFlags,
+        getAccountHardwareType: (address) =>
+          getAccountHardwareType(messenger, address),
       });
 
       if (result?.getFeesError) {
@@ -289,6 +292,8 @@ function publishBatchHook({
       isSmartTransaction,
       featureFlags,
       transactionMeta,
+      getAccountHardwareType: (address) =>
+        getAccountHardwareType(messenger, address),
     });
 
     if (result) {
