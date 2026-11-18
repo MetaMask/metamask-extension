@@ -1,4 +1,3 @@
-import { type AddNetworkFields } from '@metamask/network-controller';
 import {
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
@@ -38,14 +37,16 @@ import {
   getShouldShowTestNetworks,
 } from '../../selectors';
 import {
+  getFeaturedEvmNetworks,
+  getChainIdToNetworkImageUrlMap,
+  type FeaturedNetwork,
+} from '../../selectors/config-registry/config-registry';
+import {
   addNetwork,
   setEditedNetwork,
   setShowTestNetworksPreference,
 } from '../../store/actions';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -85,11 +86,12 @@ const filterNetworks = <
   );
 };
 
-const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
+const AdditionalNetworkRow = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { isNetworkGasSponsored } = useIsNetworkGasSponsored(network.chainId);
   const networkImageUrl =
+    network.imageUrl ??
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
       network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
@@ -175,6 +177,8 @@ export const NetworksPageList = ({
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShouldShowTestNetworks);
   const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
@@ -209,14 +213,14 @@ export const NetworksPageList = ({
   );
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
-    const availableNetworks = FEATURED_RPCS.filter(
+    const availableNetworks = featuredNetworksBaseList.filter(
       ({ chainId }) => !evmNetworks[chainId],
     );
 
     return getFilteredFeaturedNetworks(blacklistedChainIds, availableNetworks)
       .sort((networkA, networkB) => networkA.name.localeCompare(networkB.name))
       .filter((network) => filterNetworks([network], searchQuery).length > 0);
-  }, [evmNetworks, blacklistedChainIds, searchQuery]);
+  }, [evmNetworks, blacklistedChainIds, searchQuery, featuredNetworksBaseList]);
 
   const sortedTestNetworks = useMemo(
     () =>
@@ -253,7 +257,7 @@ export const NetworksPageList = ({
           key={network.chainId}
           chainId={network.chainId}
           name={network.name}
-          iconSrc={getNetworkIcon(network)}
+          iconSrc={getNetworkIcon(network, networkImageUrls)}
           focus={false}
           selected={false}
           rpcEndpoint={
@@ -273,7 +277,13 @@ export const NetworksPageList = ({
         />
       );
     },
-    [evmNetworks, getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled],
+    [
+      evmNetworks,
+      getItemCallbacks,
+      hasMultiRpcOptions,
+      isNetworkEnabled,
+      networkImageUrls,
+    ],
   );
 
   const handleToggleTestNetworks = useCallback(

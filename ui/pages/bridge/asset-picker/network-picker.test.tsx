@@ -19,6 +19,9 @@ jest.mock('../hooks/useChainValueOrder', () => ({
 const chains = [
   { chainId: 'eip155:1' as const, name: 'Ethereum' },
   { chainId: 'eip155:8453' as const, name: 'Base' },
+  // Not in the static network image maps, so its icon resolves through the
+  // BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP fallback.
+  { chainId: 'eip155:9999' as const, name: 'Unknown Chain' },
 ];
 
 const defaultProps = {
