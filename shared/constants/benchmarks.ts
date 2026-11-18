@@ -124,6 +124,8 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
   outliers?: StatisticalResult;
+  /** Per-metric count of page loads that gave no finite value */
+  missingCount?: StatisticalResult;
   /** Per-metric observations behind `mean` and the percentiles, before filtering */
   values?: MetricSamples;
   webVitals?: WebVitalsSummary;
