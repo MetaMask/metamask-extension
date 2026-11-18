@@ -242,4 +242,90 @@ describe('maybeDetectPhishing', () => {
       }),
     );
   });
+
+  it('does not redirect Google regional search pages on MV3', async () => {
+    (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
+      url: 'https://www.google.com.hk/search?q=arbiscan',
+    });
+
+    const trackPhishingPageDisplayed = jest.fn();
+    const controller = createMockController({ testResult: true });
+
+    maybeDetectPhishing(controller, {
+      browserApi: browser,
+      isManifestV3Flag: true,
+      isFirefox: false,
+      trackPhishingPageDisplayed,
+    });
+
+    const listener = getRegisteredListener();
+    const response = listener({
+      tabId: 42,
+      url: 'https://phishing.test',
+      type: 'main_frame',
+    } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+    expect(response).toStrictEqual({});
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(browser.tabs.update).not.toHaveBeenCalled();
+    expect(trackPhishingPageDisplayed).not.toHaveBeenCalled();
+  });
+
+  it('does not redirect Google search pages on the main domain', async () => {
+    (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
+      url: 'https://www.google.com/search?q=arbiscan',
+    });
+
+    const controller = createMockController({ testResult: true });
+
+    maybeDetectPhishing(controller, {
+      browserApi: browser,
+      isManifestV3Flag: true,
+      isFirefox: false,
+      trackPhishingPageDisplayed: jest.fn(),
+    });
+
+    const listener = getRegisteredListener();
+    listener({
+      tabId: 42,
+      url: 'https://phishing.test',
+      type: 'main_frame',
+    } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(browser.tabs.update).not.toHaveBeenCalled();
+  });
+
+  it('still redirects lookalike hosts that only start with google', async () => {
+    (browser.tabs.get as jest.Mock).mockResolvedValueOnce({
+      url: 'https://www.google.com.evil.test/search?q=arbiscan',
+    });
+
+    const controller = createMockController({ testResult: true });
+
+    maybeDetectPhishing(controller, {
+      browserApi: browser,
+      isManifestV3Flag: true,
+      isFirefox: false,
+      trackPhishingPageDisplayed: jest.fn(),
+    });
+
+    const listener = getRegisteredListener();
+    listener({
+      tabId: 42,
+      url: 'https://phishing.test',
+      type: 'main_frame',
+    } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(browser.tabs.update).toHaveBeenCalledWith(
+      42,
+      expect.objectContaining({
+        url: expect.stringContaining(phishingPageHref),
+      }),
+    );
+  });
 });

@@ -55,6 +55,31 @@ function getDefaultDependencies(): PhishingDetectionDependencies {
   };
 }
 
+const GOOGLE_SEARCH_HOSTNAME_REGEX =
+  /^www\.google\.[a-z]{2,3}(?:\.[a-z]{2,3})?$/u;
+
+/**
+ * Whether the URL is a Google search results page. Matches the main domain
+ * and regional domains such as `www.google.com.hk` or `www.google.co.uk`.
+ *
+ * @param url - The URL to check.
+ * @returns `true` if the URL points to a Google search results page.
+ */
+function isGoogleSearchUrl(url: string | undefined): boolean {
+  if (!url) {
+    return false;
+  }
+
+  try {
+    const { hostname, pathname } = new URL(url);
+    return (
+      GOOGLE_SEARCH_HOSTNAME_REGEX.test(hostname) && pathname === '/search'
+    );
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Detects known phishing pages as soon as the browser begins to load the page.
  * If the page is a known phishing page, the user is redirected to the phishing
@@ -84,8 +109,10 @@ export function maybeDetectPhishing(
     try {
       const tab = await browserApi.tabs.get(tabId);
 
-      // Prevent redirect when due to Google pre-fetching
-      if (tab.url?.startsWith('https://www.google.com/search')) {
+      // Prevent redirect when due to Google pre-fetching of search results.
+      // `google.com` and its regional domains (for example `google.com.hk`)
+      // stay on their results page.
+      if (isGoogleSearchUrl(tab.url)) {
         return false;
       }
 
