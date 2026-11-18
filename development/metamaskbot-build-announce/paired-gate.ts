@@ -108,6 +108,38 @@ function buildsByPosition(
   return { builds };
 }
 
+// The page loads each run reports with no value for one series. A run's mean skips
+// them, so a head run whose slowest loads gave none would look faster than base:
+// any run with one fails the series. A run that reports no count has nothing to check.
+function missingLoadProblems(pairing: unknown, metricId: string): string[] {
+  const runs = isPlainObject(pairing) ? pairing.runs : undefined;
+  const problems: string[] = [];
+  for (const run of Array.isArray(runs) ? runs : []) {
+    if (!isPlainObject(run) || !isPlainObject(run.missingCount)) {
+      continue;
+    }
+    if (!(metricId in run.missingCount)) {
+      continue;
+    }
+    const missing = run.missingCount[metricId];
+    const label = `run ${String(run.position)} (${String(run.build)})`;
+    if (
+      typeof missing !== 'number' ||
+      !Number.isInteger(missing) ||
+      missing < 0
+    ) {
+      problems.push(
+        `${label}: the missing count for "${metricId}" is ${String(missing)}`,
+      );
+    } else if (missing > 0) {
+      problems.push(
+        `${label}: ${missing} page ${missing === 1 ? 'load' : 'loads'} gave no "${metricId}" value`,
+      );
+    }
+  }
+  return problems;
+}
+
 // The mean of each run's retained values for one series, by position, from
 // `values` (want `head`) or `baseValues` (want `base`).
 function runMeans(
@@ -169,6 +201,7 @@ function pairDifferences(
   if (!Array.isArray(baseValues) || baseValues.length === 0) {
     problems.push(`no base values for "${metricId}"`);
   }
+  problems.push(...missingLoadProblems(results.pairing, metricId));
   if (problems.length > 0) {
     return [];
   }

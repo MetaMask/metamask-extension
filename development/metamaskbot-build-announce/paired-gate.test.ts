@@ -372,4 +372,82 @@ describe('evaluatePairedGate', () => {
       );
     });
   });
+
+  describe('page loads with no value', () => {
+    const SERIES = 'startupStandardHome.heroPainted';
+    // Head runs sit at 990 against base runs at 1000: faster, if their missing loads are ignored.
+    const heroJobs = (
+      missingHead: number | string,
+      flow = 'startupStandardHome',
+    ) =>
+      [...ORDERS, ...ORDERS].map((order, index) => {
+        const builds = order.split('-');
+        const results = makePairedFlowResults({
+          order,
+          runMeans: {
+            heroPainted: builds.map((build) =>
+              build === 'head' ? 990 : 1000,
+            ) as [number, number, number, number],
+          },
+          missingByRun: { heroPainted: [0, 0, 0, 0] },
+        });
+        const { runs } = results.pairing as {
+          runs: { build: string; missingCount: object }[];
+        };
+        for (const run of runs) {
+          if (run.build === 'head') {
+            run.missingCount = { heroPainted: missingHead };
+          }
+        }
+        return {
+          name: `benchmark-chrome-webpack-${flow}-r${Math.floor(index / 2) + 1}-${order}`,
+          data: { [flow]: results },
+        };
+      });
+    const heroOutcome = (jobs: ReturnType<typeof heroJobs>) =>
+      evaluatePairedGate(jobs).find(({ series }) => series === SERIES);
+
+    it('passes when every run reports none missing', () => {
+      expect(heroOutcome(heroJobs(0))).toMatchObject({
+        verdict: 'no-block',
+        failed: false,
+      });
+    });
+
+    it('fails a series when a head run has a page load with no value, however fast the others are', () => {
+      const outcome = heroOutcome(heroJobs(1));
+
+      expect(outcome).toMatchObject({ verdict: 'incomplete', failed: true });
+      expect(outcome?.problems.join()).toContain(
+        '(head): 1 page load gave no "heroPainted" value',
+      );
+    });
+
+    it('fails a series when a base run has a page load with no value', () => {
+      const jobs = heroJobs(0);
+      for (const job of jobs) {
+        const { runs } = (
+          job.data.startupStandardHome as {
+            pairing: { runs: { build: string; missingCount: object }[] };
+          }
+        ).pairing;
+        for (const run of runs) {
+          if (run.build === 'base') {
+            run.missingCount = { heroPainted: 2 };
+          }
+        }
+      }
+
+      expect(heroOutcome(jobs)?.problems.join()).toContain(
+        '(base): 2 page loads gave no "heroPainted" value',
+      );
+    });
+
+    it('fails a series whose missing count is not a count', () => {
+      expect(heroOutcome(heroJobs('many'))).toMatchObject({
+        verdict: 'incomplete',
+        failed: true,
+      });
+    });
+  });
 });
