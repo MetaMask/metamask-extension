@@ -1152,8 +1152,8 @@ browser.runtime.onUpdateAvailable.addListener((details) => {
 setupSidePanelToolbarBehavior({
   getController: () => controller,
   waitUntilInitialized: async () => await isInitialized,
-  onUseSidePanelAsDefaultChange: (useSidePanelAsDefault) => {
-    if (!useSidePanelAsDefault) {
+  onPreferSidePanelChange: (value) => {
+    if (!value) {
       openSidePanelCount = 0;
     }
   },

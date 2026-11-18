@@ -29,7 +29,7 @@ export type SidePanelToolbarBehaviorController = {
 export type SidePanelToolbarBehaviorDeps = {
   getController: () => SidePanelToolbarBehaviorController | null | undefined;
   waitUntilInitialized: () => Promise<void>;
-  onUseSidePanelAsDefaultChange?: (useSidePanelAsDefault: boolean) => void;
+  onPreferSidePanelChange?: (useSidePanelAsDefault: boolean) => void;
 };
 
 export type SidePanelBehaviorApi = {
@@ -225,13 +225,13 @@ export async function setupSidePanelToolbarBehavior(
     const controller = deps.getController();
     const preferSidePanel = getUseSidePanelAsDefault(controller);
     if (!preferSidePanel) {
-      deps.onUseSidePanelAsDefaultChange?.(false);
+      deps.onPreferSidePanelChange?.(false);
     }
 
     controller?.controllerMessenger?.subscribe(
       'PreferencesController:stateChange',
       (useSidePanelAsDefault) => {
-        deps.onUseSidePanelAsDefaultChange?.(useSidePanelAsDefault);
+        deps.onPreferSidePanelChange?.(useSidePanelAsDefault);
         sidePanelApi
           .setPanelBehavior({
             openPanelOnActionClick: useSidePanelAsDefault,
