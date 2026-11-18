@@ -13,8 +13,10 @@ export enum PrimaryTypePermit {
 }
 
 /**
- * EIP-3009 PrimaryTypes. These move tokens directly rather than approving a
- * spender, so they are kept apart from the permit types.
+ * EIP-3009 transfer authorizations, kept apart from the permit types as they
+ * name a recipient rather than a spender. CancelAuthorization moves no tokens.
+ *
+ * @see {@link https://eips.ethereum.org/EIPS/eip-3009}
  */
 export enum PrimaryTypeTransferAuthorization {
   ReceiveWithAuthorization = 'ReceiveWithAuthorization',
@@ -22,7 +24,8 @@ export enum PrimaryTypeTransferAuthorization {
 }
 
 /**
- * EIP-712 Permit PrimaryTypes
+ * EIP-712 PrimaryTypes with dedicated handling: orders, permits and EIP-3009
+ * transfer authorizations
  */
 export const PrimaryType = {
   ...PrimaryTypeOrder,

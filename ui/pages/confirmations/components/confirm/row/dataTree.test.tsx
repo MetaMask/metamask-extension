@@ -1,4 +1,4 @@
-import { it } from '@jest/globals';
+import { describe, it } from '@jest/globals';
 import { waitFor } from '@testing-library/react';
 import React from 'react';
 
@@ -126,21 +126,18 @@ describe('DataTree', () => {
     });
   });
 
-  it.each([
+  describe.each([
     PrimaryType.TransferWithAuthorization,
     PrimaryType.ReceiveWithAuthorization,
-  ])(
-    'shows the value in token units and the validity window as dates for %s',
-    async (primaryType) => {
-      const data = {
-        value: { type: 'uint256', value: '1000000000' },
-        validAfter: { type: 'uint256', value: '0' },
-        validBefore: { type: 'uint256', value: '1800000000' },
-      };
-
-      const { getByTestId } = renderWithProvider(
+  ])('%s', (primaryType) => {
+    const renderTransferAuthorization = () =>
+      renderWithProvider(
         <DataTree
-          data={data}
+          data={{
+            value: { type: 'uint256', value: '1000000000' },
+            validAfter: { type: 'uint256', value: '1700000000' },
+            validBefore: { type: 'uint256', value: '1800000000' },
+          }}
           primaryType={primaryType}
           tokenDecimals={6}
           chainId={CHAIN_ID_MOCK}
@@ -148,19 +145,25 @@ describe('DataTree', () => {
         store,
       );
 
-      await waitFor(() => {
-        expect(
-          getByTestId('confirmation_data-value-index-0'),
-        ).toHaveTextContent(/^Value:1,000$/u);
-      });
+    it('shows value in token units', async () => {
+      const { findByTestId } = renderTransferAuthorization();
+
       expect(
-        getByTestId('confirmation_data-validAfter-index-1'),
-      ).toHaveTextContent(/^ValidAfter:0$/u);
+        await findByTestId('confirmation_data-value-index-0'),
+      ).toHaveTextContent(/^Value:1,000$/u);
+    });
+
+    it('shows the validity window as dates', async () => {
+      const { findByTestId, getByTestId } = renderTransferAuthorization();
+
+      expect(
+        await findByTestId('confirmation_data-validAfter-index-1'),
+      ).toHaveTextContent(/^ValidAfter:14 November 2023, 22:13$/u);
       expect(
         getByTestId('confirmation_data-validBefore-index-2'),
-      ).toHaveTextContent('ValidBefore:15 January 2027, 08:00');
-    },
-  );
+      ).toHaveTextContent(/^ValidBefore:15 January 2027, 08:00$/u);
+    });
+  });
 
   it('should match snapshot for order signature type', () => {
     const { container } = renderWithProvider(
