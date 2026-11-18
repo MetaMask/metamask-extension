@@ -376,6 +376,9 @@ export const calculateTimerStatistics = (
       ? durations.map((value, index) => ({
           iteration: iterations[index],
           value,
+          ...(!validateMetricValue(value, maxDuration, minDuration).valid && {
+            excluded: true as const,
+          }),
         }))
       : undefined;
 

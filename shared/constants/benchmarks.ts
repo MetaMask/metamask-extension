@@ -61,6 +61,8 @@ export type RatingDistribution = {
 export type MetricSample = {
   iteration: number;
   value: number;
+  /** Set when the sanity check dropped the value from the statistics. IQR and z-score trims leave it unset. */
+  excluded?: true;
 };
 
 /** Per-metric retained observations, in iteration order, before filtering */
