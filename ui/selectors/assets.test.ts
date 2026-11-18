@@ -1864,6 +1864,18 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
     });
 
+    it('returns false when a newly discovered group account has not started loading', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.accountTree.wallets['entropy:wallet1'].groups[
+        'entropy:wallet1/group1'
+      ].accounts.push('account2');
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
     it('returns false while the background asset load is in progress', () => {
       const state = createMockStateWithEVMNetworks();
       state.metamask.assetsLoadingStatus = {

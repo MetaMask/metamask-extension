@@ -848,6 +848,28 @@ const selectAccountTreeStateForBalances = createDeepEqualSelector(
   }),
 );
 
+export const selectSelectedAccountGroupAccountIdsForLoading =
+  createShallowEqualSelector(
+    [selectAccountTreeStateForBalances],
+    (accountTreeState): string[] => {
+      const selectedGroupId = accountTreeState.selectedAccountGroup;
+      if (!selectedGroupId) {
+        return [];
+      }
+
+      for (const wallet of Object.values(
+        accountTreeState.accountTree.wallets,
+      )) {
+        const selectedGroup = wallet.groups[selectedGroupId];
+        if (selectedGroup) {
+          return selectedGroup.accounts;
+        }
+      }
+
+      return [];
+    },
+  );
+
 /**
  * Picks internal accounts with defaults in the shape expected by core.
  *
@@ -1401,27 +1423,30 @@ export const selectAssetsHaveLoadedForSelectedAccountGroup = createSelector(
     getAssetsLoadingStatus,
     getAssetsBackgroundLoadingStatus,
     selectAccountTreeStateForBalances,
+    selectSelectedAccountGroupAccountIdsForLoading,
   ],
   (
     assetsLoadingStatus,
     assetsBackgroundLoadingStatus,
     accountTreeState,
+    selectedAccountGroupAccountIds,
   ): boolean => {
     const selectedGroupId = accountTreeState.selectedAccountGroup;
     if (!selectedGroupId || accountTreeState.isAccountTreeSyncingInProgress) {
       return false;
     }
 
-    const statuses = Object.values(
-      getAccountGroupLoadingStatus(
-        { assetsLoadingStatus },
-        accountTreeState,
-        selectedGroupId,
-      ),
+    const statuses = getAccountGroupLoadingStatus(
+      { assetsLoadingStatus },
+      accountTreeState,
+      selectedGroupId,
     );
 
     const initialLoadHasSettled =
-      statuses.length > 0 && statuses.every((status) => status === 'loaded');
+      selectedAccountGroupAccountIds.length > 0 &&
+      selectedAccountGroupAccountIds.every(
+        (accountId) => statuses[accountId] === 'loaded',
+      );
     const backgroundLoadIsRunning =
       getIsAssetsBackgroundLoadingForSelectedAccountGroup(
         { assetsBackgroundLoadingStatus },
