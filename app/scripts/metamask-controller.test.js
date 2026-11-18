@@ -4871,6 +4871,42 @@ describe('MetaMaskController', () => {
       expect(getAssets).not.toHaveBeenCalled();
     });
 
+    it('refreshes the account selected after discovery when none was selected before', async () => {
+      const accountAfterDiscovery =
+        metamaskController.accountsController.getSelectedAccount();
+      let discovered = false;
+      const previousCall = messengerCallSpy.getMockImplementation();
+      messengerCallSpy.mockImplementation((actionType, ...args) => {
+        if (
+          actionType === 'LegacyBackgroundApiService:discoverAndCreateAccounts'
+        ) {
+          discovered = true;
+        }
+        return previousCall(actionType, ...args);
+      });
+      const selectedAccountReads = [];
+      jest
+        .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+        .mockImplementation(() => {
+          const account = discovered ? accountAfterDiscovery : undefined;
+          selectedAccountReads.push(account);
+          return account;
+        });
+      const getAssets = jest
+        .spyOn(metamaskController.assetsController, 'getAssets')
+        .mockResolvedValue({});
+
+      await completeOnboarding();
+
+      expect(selectedAccountReads).toContain(undefined);
+      expect(selectedAccountReads.at(-1)).toBe(accountAfterDiscovery);
+      expect(getAssets).toHaveBeenCalledTimes(1);
+      expect(getAssets).toHaveBeenCalledWith([accountAfterDiscovery], {
+        assetTypes: ['token', 'metadata'],
+        forceUpdate: true,
+      });
+    });
+
     it('skips the asset refresh when the assets controller is missing', async () => {
       const getAssets = jest
         .spyOn(metamaskController.assetsController, 'getAssets')

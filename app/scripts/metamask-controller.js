@@ -972,10 +972,13 @@ export default class MetamaskController extends EventEmitter {
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
 
-          // Force an assets refresh once after onboarding completes.
-          if (selected && this.assetsController) {
+          // Re-resolve after sync and discovery. The account captured above
+          // can be missing until those steps create one. getSelectedAccount
+          // returns the last selected EVM account.
+          const accountToRefresh = this.accountsController.getSelectedAccount();
+          if (accountToRefresh?.address && this.assetsController) {
             await this.assetsController
-              .getAssets([selected], {
+              .getAssets([accountToRefresh], {
                 assetTypes: ['token', 'metadata'],
                 forceUpdate: true,
               })
