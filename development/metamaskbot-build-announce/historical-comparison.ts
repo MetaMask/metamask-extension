@@ -2,13 +2,14 @@
  * Historical data fetch and aggregation for performance benchmarks.
  *
  * Retrieves benchmark data from MetaMask/extension_benchmark_stats
- * and aggregates it into a mean-of-means reference for PR comment comparisons.
+ * and aggregates it into a pooled reference for PR comment comparisons.
  */
 import { calculateMean } from '../../test/e2e/benchmarks/utils/statistics';
 import { STAT_KEY } from '../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   HistoricalBaselineMetrics,
+  StatKey,
 } from '../../shared/constants/benchmarks';
 import { EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL } from './utils';
 
@@ -60,9 +61,7 @@ export async function fetchHistoricalPerformanceDataFromMain(): Promise<Historic
   }
 }
 
-type CollectedMetricValues = {
-  [K in keyof HistoricalBaselineMetrics]: number[];
-};
+type CollectedMetricValues = Record<StatKey, number[]>;
 
 type CollectedData = Record<string, Record<string, CollectedMetricValues>>;
 
@@ -93,16 +92,9 @@ function collectMetrics(
       const raw = (result[statKey] as Record<string, unknown> | undefined)?.[
         metricName
       ];
-      const arr = bucket[statKey];
-      if (arr === undefined) {
-        continue;
-      }
-      // Push a placeholder for a missing statistic rather than skipping it, so
-      // index `i` is the same run in every series. Skipping shifted later
-      // entries and let `mean[i]`, `p75[i]` and `stdDev[i]` refer to different
-      // runs — which is what allowed the three published numbers to describe
-      // different populations (MetaMask-planning#7204).
-      arr.push(
+      // A missing statistic is stored as NaN rather than skipped, so index `i`
+      // is the same run in every series (MetaMask-planning#7204).
+      bucket[statKey].push(
         typeof raw === 'number' && !Number.isNaN(raw) ? raw : Number.NaN,
       );
     }
@@ -136,97 +128,63 @@ function collectCommitPresets(
  * Converts collected per-run values for one benchmark key into
  * HistoricalBaselineMetrics entries, skipping metrics with no valid data.
  *
- * Every published statistic is averaged over the **same** set of runs. The
- * previous implementation averaged each independently — `mean` over every run,
- * `stdDev` over only the runs that recorded one, `p75`/`p95` over only the runs
- * that recorded those — so the three numbers need not have described the same
- * population, or even the same runs. That is how a baseline could report
- * `stdDev ≈ 0` alongside `p75` far above `mean` without anything being
- * impossible (MetaMask-planning#7204).
+ * All statistics describe the same runs, those with a finite `mean`
+ * (MetaMask-planning#7204). `stdDev` pools them (mean within-run variance
+ * plus variance of the run means) and is omitted unless every run recorded
+ * one. `p75` and `p95` are reported only for a single run: per-run
+ * percentiles cannot be combined, and the mean is no substitute.
  *
- * A run contributes only if it recorded `mean`, `p75` and `p95`. `stdDev`
- * remains optional because older entries predate it, but when present it is
- * averaged over exactly the contributing runs rather than over a wider set.
- *
- * Note what this `stdDev` is: the mean of each run's **within-run** scatter. It
- * does not describe run-to-run variation, and is not interchangeable with the
- * spread of the `mean` series. Consumers reasoning about between-run stability
- * need a different quantity.
- *
- * @param name - Benchmark key (used only for warning messages).
  * @param metrics - Collected arrays of values per metric.
  * @returns Map of metric name → baseline metrics.
  */
 function buildMetricBaselines(
-  name: string,
   metrics: Record<string, CollectedMetricValues>,
 ): Record<string, HistoricalBaselineMetrics> {
   const result: Record<string, HistoricalBaselineMetrics> = {};
   for (const [metric, values] of Object.entries(metrics)) {
     // Runs are collected in parallel arrays, so a shared index is the same run.
-    // Only indices present in all three series describe a complete record.
-    const complete: number[] = [];
+    const contributing: number[] = [];
     for (let i = 0; i < values.mean.length; i++) {
-      if (
-        Number.isFinite(values.mean[i]) &&
-        Number.isFinite(values.p75[i]) &&
-        Number.isFinite(values.p95[i])
-      ) {
-        complete.push(i);
+      if (Number.isFinite(values.mean[i])) {
+        contributing.push(i);
       }
     }
 
-    const pick = (series: number[]): number[] => complete.map((i) => series[i]);
+    const pick = (series: number[]): number[] =>
+      contributing.map((i) => series[i]);
 
-    if (complete.length > 0) {
-      const meanVal = calculateMean(pick(values.mean));
-      if (Number.isNaN(meanVal)) {
-        continue;
+    if (contributing.length === 0) {
+      continue;
+    }
+
+    const means = pick(values.mean);
+    const meanVal = calculateMean(means);
+
+    const stdDevs = pick(values.stdDev).filter((v) => Number.isFinite(v));
+    const baseline: HistoricalBaselineMetrics = { mean: meanVal };
+
+    if (stdDevs.length === contributing.length) {
+      // Runs are weighted equally: the history keeps no sample counts, so this
+      // equals the stdDev of the pooled samples only for equal counts.
+      const withinRunVariance = calculateMean(stdDevs.map((v) => v ** 2));
+      const betweenRunVariance = calculateMean(
+        means.map((runMean) => (runMean - meanVal) ** 2),
+      );
+      baseline.stdDev = Math.sqrt(withinRunVariance + betweenRunVariance);
+    }
+
+    if (contributing.length === 1) {
+      const [p75] = pick(values.p75);
+      const [p95] = pick(values.p95);
+      if (Number.isFinite(p75)) {
+        baseline.p75 = p75;
       }
-      const stdDevs = complete
-        .map((i) => values.stdDev?.[i])
-        .filter((v): v is number => Number.isFinite(v));
-
-      result[metric] = {
-        mean: meanVal,
-        // Emitted only when every contributing run recorded one. Averaging
-        // over a subset is what let `stdDev` describe a different population
-        // than `mean` and `p75`.
-        ...(stdDevs.length === complete.length
-          ? { stdDev: calculateMean(stdDevs) }
-          : {}),
-        p75: calculateMean(pick(values.p75)),
-        p95: calculateMean(pick(values.p95)),
-      };
-      continue;
+      if (Number.isFinite(p95)) {
+        baseline.p95 = p95;
+      }
     }
 
-    // No run recorded all three. This is the pre-existing documented fallback:
-    // percentiles stand in as the mean. It is deliberately unchanged here —
-    // it is a separate question from this fix, which is about runs that
-    // recorded *some* statistics producing a baseline whose numbers came from
-    // different run sets.
-    const finiteMeans = values.mean.filter((v) => Number.isFinite(v));
-    if (finiteMeans.length === 0) {
-      continue;
-    }
-    const meanVal = calculateMean(finiteMeans);
-    if (Number.isNaN(meanVal)) {
-      continue;
-    }
-    const finiteP75 = values.p75.filter((v) => Number.isFinite(v));
-    const finiteP95 = values.p95.filter((v) => Number.isFinite(v));
-    if (finiteP75.length === 0) {
-      console.warn(`No p75 data for ${name}/${metric}, using mean as fallback`);
-    }
-    if (finiteP95.length === 0) {
-      console.warn(`No p95 data for ${name}/${metric}, using mean as fallback`);
-    }
-    result[metric] = {
-      mean: meanVal,
-      p75: finiteP75.length > 0 ? calculateMean(finiteP75) : meanVal,
-      p95: finiteP95.length > 0 ? calculateMean(finiteP95) : meanVal,
-    };
+    result[metric] = baseline;
   }
   return result;
 }
@@ -234,12 +192,12 @@ function buildMetricBaselines(
 /**
  * Aggregates historical benchmark data from the most recent commits
  * into a baseline reference keyed by benchmark name and metric,
- * with mean, p75, and p95 values.
+ * with mean and stdDev, and p75 and p95 where a single run supplies them.
  *
  * Uses a window of 5 commits so that a single incomplete CI run
  * (e.g. missing the `pageLoad` preset) doesn't wipe out the entire
  * startup baseline, and to smooth out run-to-run variance.
- * Values from all commits are averaged together.
+ * Runs from all commits are combined per metric (see `buildMetricBaselines`).
  *
  * @param data - Full historical data file contents.
  * @returns Aggregated reference map.
@@ -261,7 +219,7 @@ export function aggregateHistoricalData(
 
   const reference: HistoricalBaselineReference = {};
   for (const [name, metrics] of Object.entries(collected)) {
-    const baselines = buildMetricBaselines(name, metrics);
+    const baselines = buildMetricBaselines(metrics);
     if (Object.keys(baselines).length > 0) {
       reference[name] = baselines;
     }

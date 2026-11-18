@@ -179,14 +179,14 @@ export type ThresholdViolation = {
 };
 
 /**
- * Aggregated historical baseline for a single metric,
- * with values for each stat key (mean, p75, p95).
+ * Aggregated historical baseline for a single metric. A percentile is present
+ * only when a single run supplies it: per-run percentiles cannot be combined.
  */
-export type HistoricalBaselineMetrics = Omit<
-  Record<StatKey, number>,
-  'stdDev'
-> & {
+export type HistoricalBaselineMetrics = {
+  mean: number;
   stdDev?: number;
+  p75?: number;
+  p95?: number;
 };
 
 export type RelativeThresholds = {
