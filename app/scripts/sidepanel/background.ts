@@ -215,9 +215,9 @@ export async function applyToolbarSidePanelBehavior(
   getController: SidePanelToolbarBehaviorDeps['getController'],
   sidePanelApi: SidePanelApiWithBehavior,
 ): Promise<void> {
-  const preferSidePanel = getUseSidePanelAsDefault(getController());
+  const useSidePanelAsDefault = getUseSidePanelAsDefault(getController());
   await sidePanelApi.setPanelBehavior({
-    openPanelOnActionClick: preferSidePanel,
+    openPanelOnActionClick: useSidePanelAsDefault,
   });
 }
 
