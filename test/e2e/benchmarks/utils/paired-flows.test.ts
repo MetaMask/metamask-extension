@@ -160,6 +160,21 @@ describe('the benchmark workflow matrix', () => {
   });
 });
 
+describe('the base build jobs', () => {
+  it('keep the base build out of the names main.yml says a reused run must hold', () => {
+    const main = readFileSync(path.join(WORKFLOWS, 'main.yml'), 'utf8');
+    const names = [...main.matchAll(/build-name: (\S+)/gu)].map(
+      (match) => match[1],
+    );
+
+    expect(names).toContain('build-test-webpack');
+    expect(names).not.toContain('base-build-test-webpack');
+    expect(
+      readFileSync(path.join(WORKFLOWS, 'build-base-test.yml'), 'utf8'),
+    ).toContain('build-name: base-build-test-webpack');
+  });
+});
+
 describe('omitFiles', () => {
   it('drops the files that run paired and keeps the order of the rest', () => {
     expect(omitFiles(['a.ts', 'b.ts', 'c.ts'], ['b.ts'])).toStrictEqual([

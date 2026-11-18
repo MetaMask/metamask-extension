@@ -17,6 +17,13 @@ on:
           test/e2e/benchmarks/utils/paired.ts), once leading with each build
           (ADR 0072's paired comparator). Unset, every job runs the head build
           alone, as before.
+      base-build-artifact-name:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          The artifact holding the base commit's build in that run. Empty is
+          `build-test-<buildType>`, the name main's runs upload it under.
 
 permissions:
   contents: read
@@ -95,7 +102,7 @@ jobs:
         if: ${{ matrix.pairedOrder != '' }}
         uses: actions/download-artifact@v7
         with:
-          name: build-test-${{ matrix.buildType }}
+          name: ${{ inputs.base-build-artifact-name || format('build-test-{0}', matrix.buildType) }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.base-builds-from-run }}
           path: base-build
