@@ -71,8 +71,7 @@ const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
-const selectedAccounts = getSelectedAccountGroupAccounts(mockMetaMaskState);
-const [selectedAccount] = selectedAccounts;
+const [selectedAccount] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
 function buildState(network: NonZeroNativeNetwork) {
@@ -143,9 +142,9 @@ function buildState(network: NonZeroNativeNetwork) {
         lastUpdated: Date.now(),
       },
     },
-    assetsLoadingStatus: Object.fromEntries(
-      selectedAccounts.map(({ id }) => [id, 'loaded' as const]),
-    ),
+    assetsLoadingStatus: {
+      [selectedAccount.id]: 'loaded' as const,
+    },
     currencyRates: {
       [network.symbol]: {
         conversionRate: 1,

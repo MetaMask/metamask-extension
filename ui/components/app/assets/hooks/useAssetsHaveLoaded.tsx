@@ -3,34 +3,32 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
   useSyncExternalStore,
 } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  selectAssetsHaveLoadedForSelectedAccountGroup,
-  selectSelectedAccountGroupAccountIdsForLoading,
-} from '../../../../selectors/assets';
+import { selectAssetsHaveLoadedForSelectedAccountGroup } from '../../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 
 const AssetsHaveLoadedContext = createContext<boolean | undefined>(undefined);
 
-const createSettledLoadsStore = () => {
-  const settledLoads = new Set<string>();
+const createSettledAccountGroupsStore = () => {
+  const settledAccountGroups = new Set<string>();
   const listeners = new Set<() => void>();
 
   return {
-    add(loadKey: string) {
-      if (settledLoads.has(loadKey)) {
+    add(accountGroupId: string) {
+      if (settledAccountGroups.has(accountGroupId)) {
         return;
       }
 
-      settledLoads.add(loadKey);
+      settledAccountGroups.add(accountGroupId);
       listeners.forEach((listener) => listener());
     },
-    has(loadKey: string | undefined) {
-      return Boolean(loadKey && settledLoads.has(loadKey));
+    has(accountGroupId: string | null | undefined) {
+      return Boolean(
+        accountGroupId && settledAccountGroups.has(accountGroupId),
+      );
     },
     subscribe(listener: () => void) {
       listeners.add(listener);
@@ -43,42 +41,29 @@ export const AssetsHaveLoadedProvider = ({
   children,
 }: React.PropsWithChildren) => {
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
-  const selectedAccountGroupAccountIds = useSelector(
-    selectSelectedAccountGroupAccountIdsForLoading,
-  );
-  const currentLoadKey = useMemo(
-    () =>
-      selectedAccountGroup
-        ? `${selectedAccountGroup}:${[...selectedAccountGroupAccountIds]
-            .sort()
-            .join(',')}`
-        : undefined,
-    [selectedAccountGroup, selectedAccountGroupAccountIds],
-  );
   const currentLoadHasSettled = useSelector(
     selectAssetsHaveLoadedForSelectedAccountGroup,
   );
-  const [settledLoads] = useState(createSettledLoadsStore);
+  const [settledAccountGroups] = useState(createSettledAccountGroupsStore);
   const getSnapshot = useCallback(
-    () => settledLoads.has(currentLoadKey),
-    [currentLoadKey, settledLoads],
+    () => settledAccountGroups.has(selectedAccountGroup),
+    [selectedAccountGroup, settledAccountGroups],
   );
-  const currentLoadPreviouslySettled = useSyncExternalStore(
-    settledLoads.subscribe,
+  const selectedGroupHasSettled = useSyncExternalStore(
+    settledAccountGroups.subscribe,
     getSnapshot,
     getSnapshot,
   );
 
   useEffect(() => {
-    if (!currentLoadKey || !currentLoadHasSettled) {
+    if (!selectedAccountGroup || !currentLoadHasSettled) {
       return;
     }
 
-    settledLoads.add(currentLoadKey);
-  }, [currentLoadHasSettled, currentLoadKey, settledLoads]);
+    settledAccountGroups.add(selectedAccountGroup);
+  }, [currentLoadHasSettled, selectedAccountGroup, settledAccountGroups]);
 
-  const assetsHaveLoaded =
-    currentLoadHasSettled || currentLoadPreviouslySettled;
+  const assetsHaveLoaded = currentLoadHasSettled || selectedGroupHasSettled;
 
   return (
     <AssetsHaveLoadedContext.Provider value={assetsHaveLoaded}>

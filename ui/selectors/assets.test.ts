@@ -1413,6 +1413,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     accountMetadata: Record<string, unknown> = {},
   ): Partial<BalanceCalculationState['metamask']> => ({
     selectedAccountGroup: 'entropy:wallet1/group1',
+    hasAccountTreeSyncingSyncedAtLeastOnce: true,
     accountTree: {
       wallets: {
         'entropy:wallet1': {
@@ -1833,6 +1834,16 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
     });
 
+    it('returns false before the account tree completes its first sync', () => {
+      const state = createMockStateWithEVMNetworks();
+      state.metamask.hasAccountTreeSyncingSyncedAtLeastOnce = false;
+      state.metamask.assetsLoadingStatus = {
+        account1: 'loaded',
+      };
+
+      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
+    });
+
     it('returns false while the first asset load is in progress', () => {
       const state = createMockStateWithEVMNetworks();
       state.metamask.assetsLoadingStatus = {
@@ -1859,18 +1870,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.assetsLoadingStatus = {
         account1: 'loaded',
         account2: 'loading',
-      };
-
-      expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);
-    });
-
-    it('returns false when a newly discovered group account has not started loading', () => {
-      const state = createMockStateWithEVMNetworks();
-      state.metamask.accountTree.wallets['entropy:wallet1'].groups[
-        'entropy:wallet1/group1'
-      ].accounts.push('account2');
-      state.metamask.assetsLoadingStatus = {
-        account1: 'loaded',
       };
 
       expect(selectAssetsHaveLoadedForSelectedAccountGroup(state)).toBe(false);

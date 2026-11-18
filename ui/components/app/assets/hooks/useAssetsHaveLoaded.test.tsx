@@ -1,10 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import {
-  selectAssetsHaveLoadedForSelectedAccountGroup,
-  selectSelectedAccountGroupAccountIdsForLoading,
-} from '../../../../selectors/assets';
+import { selectAssetsHaveLoadedForSelectedAccountGroup } from '../../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import {
   AssetsHaveLoadedProvider,
@@ -24,15 +21,11 @@ const Probe = () => {
 describe('AssetsHaveLoadedProvider', () => {
   it('keeps an account group settled during later background refreshes', () => {
     let selectedAccountGroup = 'entropy:wallet/group-1';
-    let selectedAccountGroupAccountIds = ['account-1'];
     let currentLoadHasSettled = false;
 
     jest.mocked(useSelector).mockImplementation((selector) => {
       if (selector === getSelectedAccountGroup) {
         return selectedAccountGroup;
-      }
-      if (selector === selectSelectedAccountGroupAccountIdsForLoading) {
-        return selectedAccountGroupAccountIds;
       }
       if (selector === selectAssetsHaveLoadedForSelectedAccountGroup) {
         return currentLoadHasSettled;
@@ -64,32 +57,7 @@ describe('AssetsHaveLoadedProvider', () => {
     );
     expect(screen.getByTestId('assets-have-loaded')).toHaveTextContent('true');
 
-    selectedAccountGroupAccountIds = ['account-1', 'account-2'];
-    view.rerender(
-      <AssetsHaveLoadedProvider>
-        <Probe />
-      </AssetsHaveLoadedProvider>,
-    );
-    expect(screen.getByTestId('assets-have-loaded')).toHaveTextContent('false');
-
-    currentLoadHasSettled = true;
-    view.rerender(
-      <AssetsHaveLoadedProvider>
-        <Probe />
-      </AssetsHaveLoadedProvider>,
-    );
-    expect(screen.getByTestId('assets-have-loaded')).toHaveTextContent('true');
-
-    currentLoadHasSettled = false;
-    view.rerender(
-      <AssetsHaveLoadedProvider>
-        <Probe />
-      </AssetsHaveLoadedProvider>,
-    );
-    expect(screen.getByTestId('assets-have-loaded')).toHaveTextContent('true');
-
     selectedAccountGroup = 'entropy:wallet/group-2';
-    selectedAccountGroupAccountIds = ['account-3'];
     view.rerender(
       <AssetsHaveLoadedProvider>
         <Probe />
