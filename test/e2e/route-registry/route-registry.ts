@@ -54,6 +54,8 @@ import MoneyTransactionDetailsPage from '../page-objects/pages/money/money-trans
 import NetworksPage from '../page-objects/pages/networks/networks-page';
 import NotificationDetailsPage from '../page-objects/pages/notifications/notification-details-page';
 import NotificationsListPage from '../page-objects/pages/notifications/notifications-list-page';
+import ConfirmRecoveryPhrasePage from '../page-objects/pages/onboarding/confirm-recovery-phrase-page';
+import DownloadAppPage from '../page-objects/pages/onboarding/download-app-page';
 import LoginPage from '../page-objects/pages/onboarding/login-page';
 import OnboardingCompletePage from '../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../page-objects/pages/onboarding/onboarding-metrics-page';
@@ -61,6 +63,7 @@ import OnboardingPasswordPage from '../page-objects/pages/onboarding/onboarding-
 import OnboardingPrivacySettingsPage from '../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import OnboardingSrpPage from '../page-objects/pages/onboarding/onboarding-srp-page';
 import ResetPasswordPage from '../page-objects/pages/onboarding/reset-password-page';
+import RevealRecoveryPhrasePage from '../page-objects/pages/onboarding/reveal-recovery-phrase-page';
 import SecureWalletPage from '../page-objects/pages/onboarding/secure-wallet-page';
 import SetupPasskeyPage from '../page-objects/pages/onboarding/setup-passkey-page';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
@@ -71,6 +74,7 @@ import { PerpsActivityPage } from '../page-objects/pages/perps/perps-activity-pa
 import { PerpsMarketDetailPage } from '../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../page-objects/pages/perps/perps-market-list-page';
 import { PerpsOrderEntryPage } from '../page-objects/pages/perps/perps-order-entry-page';
+import { PerpsTransactionDetailsPage } from '../page-objects/pages/perps/perps-transaction-details-page';
 import { PerpsWithdrawPage } from '../page-objects/pages/perps/perps-withdraw-page';
 import RevealSrpPage from '../page-objects/pages/reveal-srp-page';
 import RewardsPage from '../page-objects/pages/rewards/rewards-page';
@@ -162,7 +166,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/perps/market/:symbol': PerpsMarketDetailPage,
   '/perps/trade/:symbol': PerpsOrderEntryPage,
   '/perps/activity': PerpsActivityPage,
-  '/perps/transaction-details': null,
+  '/perps/transaction-details': PerpsTransactionDetailsPage,
   '/perps/withdraw': PerpsWithdrawPage,
 
   // Accounts
@@ -295,8 +299,8 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/onboarding/welcome': StartOnboardingPage,
   '/onboarding/create-password': OnboardingPasswordPage,
   '/onboarding/review-recovery-phrase': SecureWalletPage,
-  '/onboarding/confirm-recovery-phrase': null,
-  '/onboarding/reveal-recovery-phrase': null,
+  '/onboarding/confirm-recovery-phrase': ConfirmRecoveryPhrasePage,
+  '/onboarding/reveal-recovery-phrase': RevealRecoveryPhrasePage,
   '/onboarding/import-with-recovery-phrase': OnboardingSrpPage,
   '/onboarding/unlock': LoginPage,
   '/onboarding/privacy-settings': OnboardingPrivacySettingsPage,
@@ -305,6 +309,6 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/onboarding/account-exist': null,
   '/onboarding/account-not-found': null,
   '/onboarding/setup-passkey': SetupPasskeyPage,
-  '/onboarding/download-app': null,
+  '/onboarding/download-app': DownloadAppPage,
   '/onboarding/experimental-area': null,
 };

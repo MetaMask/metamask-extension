@@ -3426,7 +3426,7 @@
   },
   "deepLink_Error404_CTA_LinkText": {
     "message": "MetaMask के लेटेस्ट वर्शन में अपडेट करें",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.com/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "नेविगेट करने के लिए कोई URL उपलब्ध नहीं कराया गया था।"
@@ -6980,13 +6980,6 @@
   "onboardedMetametricsKey3": {
     "message": "अन्य प्रासंगिक प्रमोशनल सामग्री"
   },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
-  "onboardedMetametricsParagraph1": {
-    "message": "$1 के अलावा, हम यह समझने के लिए डेटा का उपयोग करना चाहेंगे कि आप मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं।",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
-  },
   "onboardedMetametricsParagraph2": {
     "message": "इससे हमें आपके साथ साझा की जाने वाली चीज़ों को निजीकृत करने में मदद मिलती है, जैसे:"
   },
@@ -9513,9 +9506,6 @@
   "restore": {
     "message": "रीस्टोर करें"
   },
-  "restoreUserData": {
-    "message": "यूज़र डेटा रीस्टोर करें"
-  },
   "restoreWalletDescription": {
     "message": "अपना $1 टाइप करें। वॉलेट इंपोर्ट करके, आप इस डिवाइस से अपना मौजूदा वॉलेट डेटा मिटा देंगे। इसे पहले जैसा नहीं किया जा सकता।",
     "description": "$1 is the Secret Recovery Phrase"
@@ -11728,7 +11718,7 @@
   },
   "stxFailureDescription": {
     "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से कॉन्टेक्ट करें।",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "stxOptInDescriptionV2": {
     "message": "अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
@@ -11872,7 +11862,7 @@
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "ट्रांसेक्शन विफल हो जाता है और हम मदद करने के लिए उपलब्ध हैं। यदि यह समस्या बनी रहती है, तो आप आगे की सहायता के लिए $1 पर हमारे ग्राहक सहायता से कॉन्टेक्ट कर सकते हैं।",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.com"
   },
   "swapFailedErrorTitle": {
     "message": "स्वैप नहीं हो पाया"
